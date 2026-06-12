@@ -12,7 +12,9 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-User=globalbot
+# This server has no dedicated service user; everything under /home/globalbot
+# runs as root (same as the previous globaleye.service).
+User=root
 WorkingDirectory=/home/globalbot/my-first-site
 EnvironmentFile=/home/globalbot/.env
 ExecStart=/usr/bin/python3 scripts/run_fno.py --strategy straddle --mode paper --lots 1
