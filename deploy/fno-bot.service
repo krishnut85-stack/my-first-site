@@ -1,0 +1,25 @@
+# F&O bot — started each trading morning by fno-bot.timer, exits after close.
+# Install:
+#   cp deploy/fno-bot.{service,timer} /etc/systemd/system/
+#   systemctl daemon-reload && systemctl enable --now fno-bot.timer
+# Logs:
+#   journalctl -u fno-bot -f
+
+[Unit]
+Description=NSE F&O trading bot (paper mode)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=globalbot
+WorkingDirectory=/home/globalbot/my-first-site
+EnvironmentFile=/home/globalbot/.env
+ExecStart=/usr/bin/python3 scripts/run_fno.py --strategy straddle --mode paper --lots 1
+Restart=on-failure
+RestartSec=30
+# the engine exits cleanly after market close; don't restart it then
+SuccessExitStatus=0
+
+[Install]
+WantedBy=multi-user.target

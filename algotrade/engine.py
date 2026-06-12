@@ -3,6 +3,8 @@
 Polls on a fixed interval during market hours, runs the strategy, enforces the
 daily loss kill switch, and squares off before the close. Designed to be
 restart-safe: positions are always read from the broker, never cached.
+
+All clocks are IST (the server may run UTC — see timeutils).
 """
 
 from __future__ import annotations
@@ -12,8 +14,10 @@ import time as time_mod
 from datetime import datetime, time
 
 from .brokers.base import Broker
+from .notify import notify
 from .risk import RiskManager
 from .strategies.base import Context, Strategy
+from .timeutils import is_weekday, now_ist
 
 log = logging.getLogger(__name__)
 
@@ -29,21 +33,28 @@ class TradingEngine:
         risk: RiskManager,
         poll_seconds: int = 60,
         history_fn=None,
+        mode: str = "paper",
     ):
         self.strategy = strategy
         self.broker = broker
         self.risk = risk
         self.poll_seconds = poll_seconds
-        self.ctx = Context(broker, risk, history_fn=history_fn)
+        self.mode = mode
+        self.ctx = Context(broker, risk, history_fn=history_fn, notify_orders=True)
         self._squared_off = False
 
     def run(self) -> None:
-        log.info("engine starting: strategy=%s poll=%ss",
-                 self.strategy.name, self.poll_seconds)
+        if not is_weekday():
+            log.info("weekend — nothing to do")
+            return
+        log.info("engine starting: strategy=%s mode=%s poll=%ss",
+                 self.strategy.name, self.mode, self.poll_seconds)
+        notify(f"{self.strategy.name} online [{self.mode.upper()}] "
+               f"max daily loss ₹{self.risk.limits.max_daily_loss:,.0f}")
         self.strategy.on_start(self.ctx)
         try:
             while True:
-                now = datetime.now()
+                now = now_ist()
                 self.ctx.now = now
                 if now.time() >= MARKET_CLOSE:
                     log.info("market closed; stopping")
@@ -57,12 +68,18 @@ class TradingEngine:
             log.warning("interrupted by user")
         finally:
             self._square_off("shutdown")
-            log.info("final pnl: %.2f", self.broker.total_pnl())
+            pnl = self.broker.total_pnl()
+            log.info("final pnl: %.2f", pnl)
+            notify(f"{self.strategy.name} done [{self.mode.upper()}] "
+                   f"day pnl ₹{pnl:,.0f}")
 
     def step(self, now: datetime) -> None:
         """One poll cycle; exceptions are contained so a bad tick can't kill the day."""
         try:
             if self.risk.check_daily_loss(self.broker):
+                if not self._squared_off:
+                    notify("KILL SWITCH: daily loss limit hit — squaring off, "
+                           "no more entries today")
                 self._square_off("kill-switch")
                 return
             if self.risk.should_square_off(now.time()):

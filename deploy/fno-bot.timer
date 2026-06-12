@@ -1,0 +1,9 @@
+[Unit]
+Description=Start the F&O bot each trading morning (IST)
+
+[Timer]
+OnCalendar=Mon-Fri 09:05 Asia/Kolkata
+Persistent=false
+
+[Install]
+WantedBy=timers.target

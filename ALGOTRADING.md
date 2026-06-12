@@ -17,20 +17,23 @@ algotrade/
 ├── instruments.py      # expiries, lot sizes, option/future symbol building
 ├── options.py          # Black-Scholes pricing, Greeks, implied volatility
 ├── risk.py             # position sizing, trailing stops, daily loss kill switch
-├── engine.py           # live/paper polling loop with EOD square-off
+├── engine.py           # live/paper polling loop with EOD square-off (IST clocks)
 ├── backtest.py         # bar-based backtester (reuses the same strategy code)
+├── notify.py           # Telegram alerts (entries, exits, kill switch, daily P&L)
+├── timeutils.py        # IST helpers (the server runs UTC)
 ├── brokers/
 │   ├── base.py         # Broker/Order/Position abstractions
 │   ├── paper.py        # simulated fills + slippage + cost model
-│   └── zerodha.py      # Kite Connect adapter (live quotes & orders)
+│   ├── kite_auth.py    # unattended TOTP login + daily token cache
+│   └── zerodha.py      # Kite Connect adapter (quotes, orders, historical bars)
 └── strategies/
     ├── ema_crossover.py    # trend-following on index futures (backtestable)
     └── short_straddle.py   # intraday ATM straddle seller with per-leg SL
 scripts/
+├── run_fno.py          # THE entry point: --strategy straddle|trend, --mode paper|live
 ├── run_backtest.py     # backtest EMA crossover on CSV bars (--demo for smoke test)
-├── run_paper.py        # live quotes, simulated fills — the recommended next step
-├── run_live.py         # real orders; gated behind --i-understand-the-risks
-└── kite_login.py       # mint the daily Kite access token
+└── kite_login.py       # manual fallback for minting a Kite access token
+deploy/                 # systemd service + timer for the trading server
 ```
 
 The same `Strategy` code runs in all three modes — backtest, paper, live —
@@ -64,20 +67,24 @@ Backtest with real data (export 5-min NIFTY futures bars to CSV with columns
 python scripts/run_backtest.py data/nifty_fut_5min.csv
 ```
 
-Paper trade during market hours (live quotes, fake fills):
+Paper trade during market hours (live quotes, fake fills). Credentials go in
+`~/.env` — same variable names as the previous server setup (`KITE_API_KEY`,
+`KITE_API_SECRET`, `ZERODHA_USER_ID`, `ZERODHA_PASSWORD`, `KITE_TOTP_SECRET`);
+login is automatic via TOTP, no morning token ritual:
 
 ```bash
-export KITE_API_KEY=... KITE_API_SECRET=...
-python scripts/kite_login.py             # prints KITE_ACCESS_TOKEN for the day
-export KITE_ACCESS_TOKEN=...
-python scripts/run_paper.py --lots 1
+python scripts/run_fno.py --strategy straddle --mode paper --lots 1
 ```
 
 Live trading (only after weeks of successful paper trading):
 
 ```bash
-python scripts/run_live.py --lots 1 --max-daily-loss 5000 --i-understand-the-risks
+python scripts/run_fno.py --mode live --lots 1 --max-daily-loss 5000 \
+    --i-understand-the-risks
 ```
+
+Server deployment (systemd + Telegram alerts): see DEPLOY.md.
+Why the previous bot lost money daily: see POSTMORTEM.md.
 
 ## Writing your own strategy
 

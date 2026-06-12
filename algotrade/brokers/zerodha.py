@@ -1,22 +1,21 @@
 """Zerodha Kite Connect adapter for live NSE F&O trading.
 
 Requires a Kite Connect app (https://developers.kite.trade) and the
-`kiteconnect` package. Credentials are read from the environment so they are
-never committed:
-
-    KITE_API_KEY      - app api_key
-    KITE_ACCESS_TOKEN - daily access token (generate each morning via login flow)
-
-Kite access tokens expire daily; run scripts/kite_login.py to mint one.
+`kiteconnect` package. Credentials come from the environment via
+kite_auth.auto_login() (TOTP auto-login with daily token cache), or pass a
+ready KiteConnect instance.
 """
 
 from __future__ import annotations
 
 import logging
-import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
+import pandas as pd
+
+from ..timeutils import IST
 from .base import Broker, Order, OrderStatus, Position, Side
+from .kite_auth import auto_login
 
 log = logging.getLogger(__name__)
 
@@ -24,22 +23,9 @@ log = logging.getLogger(__name__)
 class ZerodhaBroker(Broker):
     EXCHANGE = "NFO"
 
-    def __init__(self, api_key: str | None = None, access_token: str | None = None):
-        try:
-            from kiteconnect import KiteConnect
-        except ImportError as exc:
-            raise RuntimeError(
-                "kiteconnect not installed; run `pip install kiteconnect`"
-            ) from exc
-
-        api_key = api_key or os.environ.get("KITE_API_KEY")
-        access_token = access_token or os.environ.get("KITE_ACCESS_TOKEN")
-        if not api_key or not access_token:
-            raise RuntimeError(
-                "Set KITE_API_KEY and KITE_ACCESS_TOKEN environment variables"
-            )
-        self.kite = KiteConnect(api_key=api_key)
-        self.kite.set_access_token(access_token)
+    def __init__(self, kite=None):
+        self.kite = kite if kite is not None else auto_login()
+        self._token_cache: dict[str, int] = {}
 
     def ltp(self, symbol: str) -> float:
         key = f"{self.EXCHANGE}:{symbol}"
@@ -96,3 +82,36 @@ class ZerodhaBroker(Broker):
 
     def margins_available(self) -> float:
         return float(self.kite.margins()["equity"]["available"]["live_balance"])
+
+    def _instrument_token(self, symbol: str) -> int:
+        if not self._token_cache:
+            for inst in self.kite.instruments(self.EXCHANGE):
+                self._token_cache[inst["tradingsymbol"]] = inst["instrument_token"]
+        try:
+            return self._token_cache[symbol]
+        except KeyError:
+            raise KeyError(f"{symbol} not found in NFO instruments") from None
+
+    def history(self, symbol: str, lookback_bars: int,
+                interval: str = "5minute") -> pd.DataFrame:
+        """Recent OHLC bars for an NFO symbol (powers indicator strategies live).
+
+        Fetches a generous calendar window so weekends/holidays don't starve
+        the lookback, then trims to the requested number of bars.
+        """
+        minutes = {"minute": 1, "3minute": 3, "5minute": 5,
+                   "10minute": 10, "15minute": 15, "60minute": 60}[interval]
+        sessions_needed = (lookback_bars * minutes) / 375 + 1  # 375 trading min/day
+        days = int(sessions_needed * 2.5) + 3  # cover weekends/holidays
+        to_dt = datetime.now(IST)
+        candles = self.kite.historical_data(
+            self._instrument_token(symbol),
+            from_date=to_dt - timedelta(days=days),
+            to_date=to_dt,
+            interval=interval,
+        )
+        df = pd.DataFrame(candles)
+        if df.empty:
+            return df
+        df = df.set_index("date")[["open", "high", "low", "close", "volume"]]
+        return df.tail(lookback_bars)

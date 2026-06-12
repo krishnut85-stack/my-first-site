@@ -28,10 +28,12 @@ class Bar:
 class Context:
     """What a strategy sees: quotes, history, positions, and risk-gated orders."""
 
-    def __init__(self, broker: Broker, risk: RiskManager, history_fn=None):
+    def __init__(self, broker: Broker, risk: RiskManager, history_fn=None,
+                 notify_orders: bool = False):
         self.broker = broker
         self.risk = risk
         self._history_fn = history_fn
+        self._notify_orders = notify_orders  # engine sets True; backtests stay quiet
         self.now: datetime = datetime.now()
 
     def ltp(self, symbol: str) -> float:
@@ -61,7 +63,13 @@ class Context:
             order.status = OrderStatus.REJECTED
             order.reason = "risk check failed"
             return None
-        return self.broker.place_order(order)
+        placed = self.broker.place_order(order)
+        if self._notify_orders and placed.status is OrderStatus.FILLED:
+            from ..notify import notify
+
+            notify(f"{placed.side.value} {placed.symbol} x{placed.quantity} "
+                   f"@ ₹{placed.fill_price:.2f} [{placed.tag}]")
+        return placed
 
     def buy(self, symbol: str, quantity: int, **kw) -> Order | None:
         return self.order(symbol, Side.BUY, quantity, **kw)
