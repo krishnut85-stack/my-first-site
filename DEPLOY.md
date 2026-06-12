@@ -22,7 +22,8 @@ cd /home/globalbot
 git clone https://github.com/krishnut85-stack/my-first-site.git
 cd my-first-site
 git checkout claude/nse-fo-algo-trading-jaf5a6
-pip3 install -r requirements.txt
+# Debian's system Python is "externally managed" (PEP 668), hence the flag:
+pip3 install --break-system-packages -r requirements.txt
 python3 -m pytest tests/ -q        # should print: all passed
 ```
 
