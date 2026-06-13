@@ -31,22 +31,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from algotrade.brokers.paper import PaperBroker
 from algotrade.brokers.zerodha import ZerodhaBroker
 from algotrade.engine import TradingEngine
+from algotrade.env import load_dotenv_if_present
 from algotrade.instruments import LOT_SIZES, build_future_symbol, next_monthly_expiry
 from algotrade.risk import RiskLimits, RiskManager
 from algotrade.strategies import EmaCrossover, ShortStraddle
 from algotrade.timeutils import now_ist
-
-
-def load_dotenv_if_present() -> None:
-    for path in (Path.home() / ".env", Path(".env")):
-        if path.exists():
-            import os
-            for line in path.read_text().splitlines():
-                line = line.strip()
-                if line and not line.startswith("#") and "=" in line:
-                    k, _, v = line.partition("=")
-                    os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
-            break
 
 
 def main() -> None:

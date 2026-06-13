@@ -68,6 +68,29 @@ The timer starts the bot at 09:05 IST on weekdays; the engine waits for the
 09:15 open, trades, squares off by 15:12, and exits after close. Edit
 `ExecStart` in the service file to change strategy/lots.
 
+## 4b. Optional: the Early Bird scanner (alert-only)
+
+Scans option chains for the whole F&O universe every 10 minutes and sends
+Telegram alerts when flow looks pre-explosive (put/call writing, unusual
+volume, IV expansion). It never places orders; every signal is logged to
+`data/earlybird/` and an end-of-day scorecard reports the hit rate.
+
+```bash
+cp deploy/earlybird.service deploy/earlybird.timer /etc/systemd/system/
+systemctl daemon-reload
+systemctl enable --now earlybird.timer
+journalctl -u earlybird -f
+```
+
+Test a single scan by hand during market hours:
+
+```bash
+python3 scripts/run_earlybird.py --once
+```
+
+Judge it on a few weeks of scorecards before even thinking about trading
+its signals.
+
 ## 5. Operating it from ConnectBot
 
 ```bash

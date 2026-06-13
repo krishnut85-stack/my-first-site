@@ -26,14 +26,19 @@ algotrade/
 │   ├── paper.py        # simulated fills + slippage + cost model
 │   ├── kite_auth.py    # unattended TOTP login + daily token cache
 │   └── zerodha.py      # Kite Connect adapter (quotes, orders, historical bars)
-└── strategies/
-    ├── ema_crossover.py    # trend-following on index futures (backtestable)
-    └── short_straddle.py   # intraday ATM straddle seller with per-leg SL
+├── strategies/
+│   ├── ema_crossover.py    # trend-following on index futures (backtestable)
+│   └── short_straddle.py   # intraday ATM straddle seller with per-leg SL
+└── earlybird/          # ALERT-ONLY option-flow scanner (never trades)
+    ├── snapshot.py     # full F&O universe chain snapshots (OI/volume/IV)
+    ├── detector.py     # put/call writing, short covering, unusual volume, IV expansion
+    └── scanner.py      # alert dedup, signal log, EOD hit-rate scorecard
 scripts/
-├── run_fno.py          # THE entry point: --strategy straddle|trend, --mode paper|live
+├── run_fno.py          # THE trading entry point: --strategy straddle|trend, --mode paper|live
+├── run_earlybird.py    # option-flow scanner (Telegram alerts only)
 ├── run_backtest.py     # backtest EMA crossover on CSV bars (--demo for smoke test)
 └── kite_login.py       # manual fallback for minting a Kite access token
-deploy/                 # systemd service + timer for the trading server
+deploy/                 # systemd services + timers for the trading server
 ```
 
 The same `Strategy` code runs in all three modes — backtest, paper, live —
