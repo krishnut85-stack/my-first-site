@@ -30,7 +30,9 @@ Usage (on droplet, from /home/globalbot):
 import os
 import sys
 import json
+import shutil
 import sqlite3
+import datetime as dt
 
 import panel  # JUDGES, BASE, DB_PATH
 
@@ -75,25 +77,59 @@ def main(dry=False):
         weights[name] = w
         table.append((name, fam, n_high, edge, w, why))
 
+    # Load any existing weights so we never overwrite blindly.
+    old = {}
+    if os.path.exists(OUT):
+        try:
+            old = json.load(open(OUT))
+        except Exception as e:
+            print(f"[OPT] WARNING: existing {OUT} unreadable ({e}); treating as empty.")
+
     table.sort(key=lambda r: (r[4], r[3] if r[3] is not None else 99))
     benched = [r for r in table if r[5] == "BENCHED"]
     mean_w = sum(weights.values()) / len(weights)
     print(f"[OPT] from judge_stats @ {ts} | {len(weights)} judges | "
           f"benched {len(benched)} | mean weight {mean_w:.2f}")
-    print(f"{'JUDGE':<26}{'FAMILY':<12}{'N_HIGH':>7}{'EDGE':>8}{'WEIGHT':>8}  WHY")
+    print(f"{'JUDGE':<26}{'FAMILY':<12}{'N_HIGH':>7}{'EDGE':>8}{'WEIGHT':>8}{'WAS':>7}  WHY")
     for name, fam, n_high, edge, w, why in table:
         es = f"{edge:+.2f}" if edge is not None else "--"
         ns = f"{n_high}" if n_high is not None else "--"
-        print(f"{name:<26}{fam:<12}{ns:>7}{es:>8}{w:>8.2f}  {why}")
+        ow = old.get(name)
+        ws = f"{ow:.2f}" if isinstance(ow, (int, float)) else "--"
+        print(f"{name:<26}{fam:<12}{ns:>7}{es:>8}{w:>8.2f}{ws:>7}  {why}")
+
+    # Diff summary vs the file already on disk.
+    if old:
+        old_fired = sum(1 for v in old.values() if v == 0)
+        changed = sum(1 for n, w in weights.items()
+                      if not isinstance(old.get(n), (int, float))
+                      or abs(old.get(n, 1.0) - w) > 0.05)
+        newly_benched = sorted(n for n, w in weights.items()
+                               if w == 0 and old.get(n, 1.0) != 0)
+        un_benched = sorted(n for n in old
+                            if old.get(n) == 0 and weights.get(n, 1.0) != 0)
+        print(f"\n[OPT] EXISTING file: {len(old)} judges, {old_fired} fired.")
+        print(f"[OPT] vs PROPOSED:  {len(weights)} judges, {len(benched)} fired | "
+              f"{changed} judges change weight.")
+        if newly_benched:
+            print(f"[OPT]   newly benched: {', '.join(newly_benched)}")
+        if un_benched:
+            print(f"[OPT]   un-benched (were 0, now voting): {', '.join(un_benched)}")
 
     if dry:
-        print("[OPT] --dry: nothing written.")
+        print("\n[OPT] --dry: nothing written. Review the WAS vs WEIGHT columns above.")
         return
 
+    if old:
+        bak = f"{OUT}.bak.{dt.datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        shutil.copy2(OUT, bak)
+        print(f"\n[OPT] backed up existing weights -> {bak}")
+
     json.dump(weights, open(OUT, "w"), indent=2, sort_keys=True)
-    print(f"\n[OPT] wrote {OUT}. Next 'panel.py scan' will enforce these weights.\n"
+    print(f"[OPT] wrote {OUT}. Next 'panel.py scan' will enforce these weights.\n"
           f"[OPT] VALIDATE before trusting: re-run 'python3 panel_backtest.py' and confirm\n"
-          f"      the weighted panel's signal edge improves (or at least does not degrade).")
+          f"      the weighted panel's signal edge improves (or at least does not degrade).\n"
+          f"[OPT] To revert: cp {OUT}.bak.* {OUT}")
 
 
 if __name__ == "__main__":
