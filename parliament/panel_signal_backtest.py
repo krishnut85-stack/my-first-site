@@ -43,7 +43,8 @@ CACHE = panel.CACHE
 DB_PATH = panel.DB_PATH
 REPORT = os.path.join(panel.BASE, "panel_signal_backtest_report.txt")
 
-OFFSETS = list(range(25, 206, 5))     # bars-before-end eval points (k>=25 so fwd window exists)
+# Eval points (bars-before-end) are derived from the cached history inside run()
+# so that a deeper warmup automatically yields more in-sample periods.
 
 # --- realism knobs (match panel_executor.py defaults) ---
 SL_PCT = 0.04                  # -4% hard stop
@@ -110,18 +111,26 @@ def run(quick=False):
         raise SystemExit("[SBT] No candle cache. Run: python3 panel.py warmup")
     hist = pickle.load(open(hp, "rb"))
     nifty = hist.get("__NIFTY__")
-    syms = [s for s in hist if s != "__NIFTY__" and len(hist[s]["c"]) >= max(OFFSETS) + 60]
+    syms_all = [s for s in hist if s != "__NIFTY__" and len(hist[s]["c"]) >= 280]
+    # Adapt eval points to the history actually cached: deeper history -> more
+    # (older) eval points, so the in-sample / out-of-sample split can populate.
+    longest = max((len(hist[s]["c"]) for s in syms_all), default=0)
+    top = max(60, min(longest - 60, 900))
+    offsets = list(range(25, top, 10))
+    syms = [s for s in syms_all if len(hist[s]["c"]) >= top + 25]
     if quick:
         rng = np.random.default_rng(42)
         syms = list(rng.choice(syms, size=min(500, len(syms)), replace=False))
-    oos_cut = sorted(OFFSETS)[len(OFFSETS) // 2]   # offsets < cut = recent half = OUT-OF-SAMPLE
-    print(f"[SBT] {len(syms)} stocks x {len(OFFSETS)} eval points | weights: "
-          f"{'ON' if panel.WEIGHTS else 'FLAT'} | OOS = offsets < {oos_cut} (recent half)")
+    oos_cut = sorted(offsets)[len(offsets) // 2]   # offsets < cut = recent half = OUT-OF-SAMPLE
+    span_days = top
+    print(f"[SBT] {len(syms)} stocks x {len(offsets)} eval points (history ~{longest} bars, "
+          f"span {span_days}) | weights: {'ON' if panel.WEIGHTS else 'FLAT'} | "
+          f"OOS = offsets < {oos_cut} (recent half)")
 
     trades = []   # dict per simulated trade
     base20 = []
     t0 = time.time()
-    for ei, k in enumerate(OFFSETS, 1):
+    for ei, k in enumerate(offsets, 1):
         sub = {s: truncate(hist[s], k) for s in syms}
         nif_trunc = nifty["c"][: len(nifty["c"]) - k] if nifty is not None else None
         if nif_trunc is not None:
@@ -156,12 +165,12 @@ def run(quick=False):
             net, reason = res
             trades.append({"sym": s, "pattern": "A" if sig == 1 else "B",
                            "regime": regime, "oos": oos, "net": net, "reason": reason})
-        print(f"[SBT] eval {ei}/{len(OFFSETS)} ({time.time()-t0:.0f}s, {len(trades)} trades)")
+        print(f"[SBT] eval {ei}/{len(offsets)} ({time.time()-t0:.0f}s, {len(trades)} trades)")
 
     b20 = float(np.mean(base20)) * 100 if base20 else 0.0
     L = []
-    L.append(f"PANEL SIGNAL BACKTEST — {len(syms)} stocks, {len(OFFSETS)} eval points, "
-             f"weights {'ON' if panel.WEIGHTS else 'FLAT'}")
+    L.append(f"PANEL SIGNAL BACKTEST — {len(syms)} stocks, {len(offsets)} eval points "
+             f"(history ~{longest} bars), weights {'ON' if panel.WEIGHTS else 'FLAT'}")
     L.append(f"Realism: next-open entry, {MAX_GAP_STOCK*100:.0f}% gap-skip, -{SL_PCT*100:.0f}% SL, "
              f"{TIME_STOP_DAYS}d time-stop, {SLIP*1e4:.0f}bps slip/side, "
              f"{ROUND_TRIP_COST*100:.2f}% round-trip cost")
