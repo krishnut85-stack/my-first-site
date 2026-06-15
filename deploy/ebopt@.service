@@ -1,0 +1,28 @@
+# Early Bird OPTIONS v2 paper scalper — systemd template, one instance per structure.
+# Run all three:
+#   cp deploy/ebopt@.service /etc/systemd/system/
+#   systemctl daemon-reload
+#   systemctl enable --now ebopt@credit ebopt@debit ebopt@naked
+# Logs:
+#   journalctl -u ebopt@credit -f      (or @debit / @naked)
+#
+# Each instance keeps its own ledger (data/earlybird_options_v2/<structure>/) so
+# they trade the same signals head-to-head without colliding. PAPER only.
+# Internal market-hours gate; idles outside the session, so no timer needed.
+
+[Unit]
+Description=Early Bird OPTIONS v2 paper scalper (%i)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/globalbot/my-first-site
+EnvironmentFile=/home/globalbot/.env
+ExecStart=/usr/bin/python3 scripts/run_earlybird_options_v2.py --structure %i
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
