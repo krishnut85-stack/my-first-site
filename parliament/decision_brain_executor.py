@@ -54,6 +54,7 @@ STRATEGY_TAG  = "PARLIAMENT"
 SIGNAL_SOURCE = "decision_brain"
 
 MAX_OPEN      = 5             # safety cap on concurrent PARLIAMENT paper positions
+DAILY_LOSS_LIMIT = 6000.0    # working kill switch: stop new entries if today's realised PARLIAMENT loss exceeds this (the brain's own kill switch is bugged - queries a 'trades' table that doesn't exist)
 TOP_N_CAND    = 15           # feed the brain the strongest N candidates
 MIN_TECH      = 11.0         # 0-20; >=11 normalises to >=55 (a "supporting" technical)
 MIN_PRICE     = 50.0
@@ -193,6 +194,23 @@ def _parliament_open(trades):
 def _held_symbols(trades):
     return {t["symbol"] for t in _parliament_open(trades)}
 
+def _today_realized_pnl():
+    """Sum of today's CLOSED PARLIAMENT pnl (exit_ts is UTC). Working kill switch."""
+    import sqlite3
+    from datetime import timezone
+    try:
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        conn = sqlite3.connect("/home/globalbot/paper/trades.db")
+        v = conn.execute(
+            "SELECT COALESCE(SUM(pnl),0) FROM paper_trades "
+            "WHERE UPPER(strategy)=? AND status='CLOSED' AND substr(exit_ts,1,10)=?",
+            (STRATEGY_TAG, today)).fetchone()[0]
+        conn.close()
+        return float(v or 0)
+    except Exception as e:
+        log.warning(f"daily pnl check failed: {e}")
+        return 0.0
+
 
 # ============================== run (scan -> decide -> trade) ==================
 def cmd_run():
@@ -207,6 +225,11 @@ def cmd_run():
         nifty_close = None
     rg_score, rg_label = regime_score(kite)
     notify(f"run: regime {rg_label} (layer score {rg_score:.0f}/100)")
+
+    day_pnl = _today_realized_pnl()
+    if day_pnl <= -DAILY_LOSS_LIMIT:
+        notify(f"run: KILL SWITCH - today's realised PnL ₹{day_pnl:.0f} <= -₹{DAILY_LOSS_LIMIT:.0f}, "
+               f"no new entries"); cmd_manage(kite); return
 
     trades = get_open_paper_trades()
     held = _held_symbols(trades)
