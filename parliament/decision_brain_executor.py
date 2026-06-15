@@ -41,6 +41,7 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, "/home/globalbot")
 
+import decision_brain  # module (to raise the per-day cap)
 from decision_brain import DecisionBrain, Candidate, LayerScore  # the unchanged judge
 
 # ----------------------------- CONFIG -----------------------------------------
@@ -272,14 +273,20 @@ def cmd_run():
     if not cands:
         return
 
+    # Take up to MAX_OPEN of the day's strongest names (not just best-of-day=1).
+    # Raise the brain's per-day cap to match so _check_daily_cap allows up to
+    # MAX_OPEN equity TRADEs/day (cumulative across runs -> no over-trading).
+    decision_brain.DAILY_TRADE_CAPS["equity"] = MAX_OPEN
     brain = DecisionBrain(mode="paper", kite=kite)
-    decisions = brain.decide_best_of_day(cands)
-
     slots = MAX_OPEN - len(_parliament_open(get_open_paper_trades()))
-    placed = 0
-    for d in decisions:
-        if d.action != "TRADE" or slots <= 0:
+    placed = trade_verdicts = 0
+    for c in cands:                       # cands sorted strongest-first
+        if slots <= 0:
+            break
+        d = brain.decide(c)              # commits decision + counts toward daily cap
+        if d.action != "TRADE":
             continue
+        trade_verdicts += 1
         try:
             oid = paper_place_order(
                 strategy=STRATEGY_TAG, signal_source=SIGNAL_SOURCE,
@@ -296,8 +303,7 @@ def cmd_run():
                    f"sup {d.supporting_layers}/11 | {oid}")
         except Exception as e:
             log.warning(f"place {d.symbol}: {e}")
-    notify(f"run: placed {placed} (brain TRADE verdicts: "
-           f"{sum(1 for d in decisions if d.action=='TRADE')})")
+    notify(f"run: placed {placed} (TRADE verdicts {trade_verdicts}, slots left {max(slots,0)})")
     cmd_manage(kite)
 
 
