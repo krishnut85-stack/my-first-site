@@ -52,7 +52,7 @@ class CFG:
     MAX_ENTRIES_DAY  = 10
     MIN_SCORE        = 80
     IV_MAX_RISE      = 25.0          # skip if signal IV already rose > this % (peak premium)
-    MOM_MIN          = 0.002         # underlying must be >=0.2% in your direction intraday
+    MOM_ADVERSE      = 0.005         # only skip if underlying moves > this % AGAINST the signal
     SPREAD_WIDTH     = 1            # strikes between the two legs of a spread
     ITM_STEPS        = 1            # how many strikes ITM for the naked structure
     MIN_LEG_OI       = 5_000
@@ -251,11 +251,16 @@ class EBOptions2:
         return float(m.group(1)) if m else None
 
     def _momentum_ok(self, sym, direction):
+        """Only block if the underlying is moving CLEARLY AGAINST the signal.
+        (Requiring it to already move FOR you rejected ~everything, esp. near open.)"""
         ltp, prev = stock_quote(self.kite, sym)
         if not ltp or not prev:
-            return False, ltp
+            return True, ltp   # no data -> don't block on momentum; other gates apply
         chg = ltp / prev - 1
-        ok = chg >= CFG.MOM_MIN if direction == "BULLISH" else chg <= -CFG.MOM_MIN
+        if direction == "BULLISH":
+            ok = chg > -CFG.MOM_ADVERSE      # not falling hard
+        else:
+            ok = chg < CFG.MOM_ADVERSE       # not rising hard
         return ok, ltp
 
     # ---------- entry ----------
@@ -295,7 +300,7 @@ class EBOptions2:
             # momentum confirmation on the underlying
             ok, spot = self._momentum_ok(sym, s["direction"])
             if not ok:
-                log.info("skip %s: no intraday %s confirmation", sym, s["direction"])
+                log.info("skip %s: underlying moving against the %s signal", sym, s["direction"])
                 continue
             legs = build_legs(chain, spot, s["direction"], self.structure)
             if not legs:
