@@ -1,0 +1,9 @@
+[Unit]
+Description=Start the Early Bird scanner each trading morning (IST)
+
+[Timer]
+OnCalendar=Mon-Fri 09:10 Asia/Kolkata
+Persistent=false
+
+[Install]
+WantedBy=timers.target

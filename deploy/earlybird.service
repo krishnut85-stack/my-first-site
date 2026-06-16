@@ -1,0 +1,23 @@
+# Early Bird option-flow scanner — ALERT-ONLY, never places orders.
+# Install:
+#   cp deploy/earlybird.{service,timer} /etc/systemd/system/
+#   systemctl daemon-reload && systemctl enable --now earlybird.timer
+# Logs:
+#   journalctl -u earlybird -f
+
+[Unit]
+Description=Early Bird F&O option-flow scanner (alert-only)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/globalbot/my-first-site
+EnvironmentFile=/home/globalbot/.env
+ExecStart=/usr/bin/python3 scripts/run_earlybird.py --interval 600
+Restart=on-failure
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target

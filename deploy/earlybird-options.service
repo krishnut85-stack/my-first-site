@@ -1,0 +1,29 @@
+# Early Bird OPTIONS paper-trader — buys ATM options on strong scanner signals.
+# INTRADAY + PAPER ONLY. Squares off every position the same day. Depends on the
+# Early Bird scanner running (it produces data/earlybird/signals_<date>.jsonl).
+#
+# Install:
+#   cp deploy/earlybird-options.service /etc/systemd/system/
+#   systemctl daemon-reload && systemctl enable --now earlybird-options
+# Logs:
+#   journalctl -u earlybird-options -f
+#
+# The process runs continuously and idles outside market hours (internal gate),
+# so no timer is needed — enabling it is enough.
+
+[Unit]
+Description=Early Bird OPTIONS paper-trader (intraday, paper)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/globalbot/my-first-site
+EnvironmentFile=/home/globalbot/.env
+ExecStart=/usr/bin/python3 scripts/run_earlybird_options.py
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.venv/
+venv/
+
+# never commit credentials or trading logs/data
+.env
+*.log
+data/*.csv
