@@ -28,8 +28,25 @@ import argparse
 from datetime import datetime, timedelta
 
 TRADES_DB = os.environ.get("EQ_TRADES_DB", "/home/globalbot/paper/trades.db")
+SECTOR_FILE = os.environ.get("EQ_SECTOR_FILE", "/home/globalbot/data/nifty500_sectors.csv")
 DEFAULT_STRATEGY = "ELON_CODE"
 DEFAULT_DAILY_LOSS_CAP = float(os.environ.get("EQ_MAX_DAILY_LOSS", "20000"))
+
+
+def load_sector_map():
+    """symbol -> sector from a 'SYMBOL,Sector' file (optional)."""
+    m = {}
+    try:
+        with open(SECTOR_FILE) as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "," not in line:
+                    continue
+                sym, sec = line.split(",", 1)
+                m[sym.strip().upper()] = sec.strip()
+    except Exception:
+        pass
+    return m
 
 
 def _fmt(n, dp=0):
@@ -165,6 +182,25 @@ def analyze(rows, strategy, daily_cap):
     for s, d in reversed(ranked[-5:]):
         print(f"    {s:<14}{d['n']:>3} trades   Rs {_fmt(d['pnl'])}")
 
+    # ---- by sector (did correlated bets sink together?) ----
+    sector_map = load_sector_map()
+    sector_concentration = 0
+    if sector_map:
+        _rule("BY SECTOR (concentration / correlated risk)")
+        by_sec = {}
+        for r in closed:
+            sec = sector_map.get(r.get("symbol"), "UNKNOWN")
+            d = by_sec.setdefault(sec, {"n": 0, "pnl": 0.0})
+            d["n"] += 1
+            d["pnl"] += float(r.get("pnl") or 0)
+        print(f"  {'sector':<32}{'trades':>8}{'net P&L':>14}")
+        for sec, d in sorted(by_sec.items(), key=lambda x: x[1]["pnl"]):
+            print(f"  {sec[:32]:<32}{d['n']:>8}{('Rs ' + _fmt(d['pnl'])):>14}")
+        # flag if one sector drove most of the losses
+        worst = min(by_sec.values(), key=lambda d: d["pnl"])
+        if worst["pnl"] < 0 and gross_loss and (worst["pnl"] / gross_loss) > 0.5:
+            sector_concentration = 1
+
     # ---- auto suggestions (rule-based) ----
     _rule("WHAT TO IMPROVE (auto-diagnosis)")
     tips = []
@@ -191,6 +227,9 @@ def analyze(rows, strategy, daily_cap):
     if cap_hits > 0:
         tips.append(f"Hit the daily loss cap on {cap_hits} day(s). Good - the brake worked. "
                     "Review those days' symbols above for a common cause (e.g. a market-wide selloff).")
+    if sector_concentration:
+        tips.append("Over half the losses came from ONE sector - correlated bets sank together. "
+                    "Lower EQ_MAX_PER_SECTOR (e.g. 2) to spread risk more.")
     if win_rate >= 55 and profit_factor != float("inf") and profit_factor >= 1.3:
         tips.append("Healthy stats. Let it gather more trades before changing anything - "
                     "small samples lie.")

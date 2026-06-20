@@ -109,6 +109,14 @@ MAX_DAILY_LOSS = float(os.environ.get("EQ_MAX_DAILY_LOSS", "20000"))   # rupees;
 # NOTE: the halt is computed from TODAY's realised P&L only (date-based query),
 # so when the date rolls over the loss resets to 0 and trading RESUMES next day.
 
+# --- sector concentration cap (tail-risk insurance, not a profit booster) ----
+# With unlimited positions, a sector-wide selloff could open many correlated
+# longs that all lose together. Cap how many open positions share a sector.
+# (inversion: don't let one sector's bad hour sink the whole day.)
+SECTOR_FILE = os.environ.get("EQ_SECTOR_FILE", f"{HOME}/data/nifty500_sectors.csv")
+MAX_PER_SECTOR = int(os.environ.get("EQ_MAX_PER_SECTOR", "3"))   # 0 = unlimited
+SECTOR_MAP = {}   # symbol -> sector, loaded at startup from SECTOR_FILE
+
 DRY_RUN = os.environ.get("EQ_STUDY_RECORD", "0").strip() != "1"
 
 # Fallback universe if the Nifty 500 file is missing (liquid large caps so the
@@ -192,6 +200,29 @@ def load_universe():
     log.warning(f"no universe file at {UNIVERSE_FILE} - using {len(FALLBACK_UNIVERSE)} "
                 f"fallback large caps. Drop a nifty500.txt there for the full list.")
     return list(FALLBACK_UNIVERSE)
+
+
+def load_sector_map():
+    """symbol -> sector from a 'SYMBOL,Sector' file (built from the NSE Nifty 500
+    list's Industry column). Symbols not in the map are left UNCAPPED (fail-open)."""
+    m = {}
+    try:
+        with open(SECTOR_FILE) as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "," not in line:
+                    continue
+                sym, sec = line.split(",", 1)
+                sym, sec = sym.strip().upper(), sec.strip()
+                if sym and sec:
+                    m[sym] = sec
+    except Exception:
+        pass
+    return m
+
+
+def sector_of(sym):
+    return SECTOR_MAP.get(sym, "UNKNOWN")
 
 
 # --- time helpers -----------------------------------------------------------
@@ -395,6 +426,12 @@ def eval_armed(kite, quotes, place_order, get_open, halted):
     open_syms = {t[1] for t in open_trades}
     n_open = len(open_trades)
     realised, n_today = _today_realised_pnl_and_count()
+    # how many open positions sit in each sector right now (for the cap)
+    sector_counts = {}
+    for _t in open_trades:
+        _sec = sector_of(_t[1])
+        if _sec != "UNKNOWN":
+            sector_counts[_sec] = sector_counts.get(_sec, 0) + 1
 
     for sym in list(ARMED.keys()):
         a = ARMED[sym]
@@ -435,6 +472,12 @@ def eval_armed(kite, quotes, place_order, get_open, halted):
         if MAX_TRADES_PER_DAY > 0 and n_today >= MAX_TRADES_PER_DAY:
             log.info(f"[RISK] daily trade cap {MAX_TRADES_PER_DAY} hit - no new entries")
             continue
+        sec = sector_of(sym)
+        if (MAX_PER_SECTOR > 0 and sec != "UNKNOWN"
+                and sector_counts.get(sec, 0) >= MAX_PER_SECTOR):
+            log.info(f"[RISK] sector '{sec}' already has {MAX_PER_SECTOR} positions "
+                     f"- skip {sym} (avoid correlated bets)")
+            continue  # keep armed; a slot may free up when one closes
         if not _entries_allowed_now():
             del ARMED[sym]; continue
 
@@ -442,6 +485,9 @@ def eval_armed(kite, quotes, place_order, get_open, halted):
         entry = round(last, 2)
         stop_px = round(entry * (1 - STOP_PCT / 100.0), 2)
         target_px = round(entry * (1 + TARGET_PCT / 100.0), 2)
+
+        if sec != "UNKNOWN":
+            sector_counts[sec] = sector_counts.get(sec, 0) + 1   # reserve the slot
 
         if DRY_RUN:
             log.info(f"[DRY] WOULD BUY {sym} qty={qty} @~{entry} "
@@ -481,7 +527,8 @@ def main():
              f"confirm +{CONFIRM_PCT}% off low. Long only, intraday, square-off 15:15.")
     log.info(f"FILTERS: regime=skip new longs when {REGIME_INDEX} down > {REGIME_DOWN_PCT}% | "
              f"entry window {NO_NEW_ENTRY_BEFORE[0]:02d}:{NO_NEW_ENTRY_BEFORE[1]:02d}-"
-             f"{NO_NEW_ENTRY_AFTER[0]:02d}:{NO_NEW_ENTRY_AFTER[1]:02d} (skip opening noise)")
+             f"{NO_NEW_ENTRY_AFTER[0]:02d}:{NO_NEW_ENTRY_AFTER[1]:02d} (skip opening noise) | "
+             f"max {MAX_PER_SECTOR} positions/sector")
 
     try:
         kite = get_kite()
@@ -505,6 +552,14 @@ def main():
             place_order = get_open = record_exit = None
 
     universe = load_universe()
+    SECTOR_MAP.update(load_sector_map())
+    if SECTOR_MAP:
+        _nsec = len(set(SECTOR_MAP.values()))
+        log.info(f"sector map: {len(SECTOR_MAP)} symbols across {_nsec} sectors "
+                 f"(cap {MAX_PER_SECTOR}/sector) from {SECTOR_FILE}")
+    else:
+        log.warning(f"no sector map at {SECTOR_FILE} - sector cap DISABLED (all uncapped). "
+                    f"Generate it to enable the cap.")
     halt_logged_day = None
     last_idle_msg = 0
 
