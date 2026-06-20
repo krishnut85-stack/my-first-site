@@ -62,7 +62,17 @@ MARKET_OPEN = (9, 15)
 MARKET_CLOSE = (15, 30)
 SQUARE_OFF = (15, 15)            # flatten everything from 15:15 (before MIS auto)
 NO_NEW_ENTRY_AFTER = (14, 45)    # stop opening new trades late in the day
+# Skip the chaotic opening minutes: the day's low forms in the first 30 min ~27%
+# of the time, and VWAP reversion is most reliable AFTER the open. (evidence-based)
+NO_NEW_ENTRY_BEFORE = (9, 45)
 POLL_SECONDS = int(os.environ.get("EQ_POLL_SECONDS", "60"))
+
+# --- market-regime filter (THE biggest profit lever for mean reversion) -----
+# Mean reversion works in choppy markets and bleeds in trends. So we do NOT buy
+# dips when the broad market (NIFTY 50) is itself selling off hard - that is a
+# market-wide knife, not a single-stock dip. (inversion: don't fight the tide.)
+REGIME_INDEX = os.environ.get("EQ_REGIME_INDEX", "NSE:NIFTY 50")
+REGIME_DOWN_PCT = float(os.environ.get("EQ_REGIME_DOWN_PCT", "0.75"))  # index down > this % -> block new longs
 
 # --- mean-reversion setup knobs --------------------------------------------
 # Stock must be at least this % BELOW its day VWAP to be "stretched" (a dip).
@@ -209,7 +219,8 @@ def _in_squareoff_window():
 
 
 def _entries_allowed_now():
-    return _hm() < NO_NEW_ENTRY_AFTER
+    # only the calm mid-session window: after the open noise, before the close
+    return NO_NEW_ENTRY_BEFORE <= _hm() < NO_NEW_ENTRY_AFTER
 
 
 def _today_str():
@@ -246,6 +257,24 @@ def fetch_quotes(kite, symbols):
             }
         time.sleep(0.35)   # stay under Kite rate limit
     return out
+
+
+def regime_blocks_entries(kite):
+    """Market-regime filter. Returns (blocked, nifty_change_pct).
+    Blocks NEW long entries when NIFTY 50 is down more than REGIME_DOWN_PCT on the
+    day (a market-wide selloff). Fails OPEN (no block) if the index can't be read."""
+    try:
+        q = kite.quote([REGIME_INDEX])
+        d = q.get(REGIME_INDEX) or {}
+        last = float(d.get("last_price") or 0)
+        prev = float((d.get("ohlc") or {}).get("close") or 0)
+        if last <= 0 or prev <= 0:
+            return False, 0.0
+        chg = (last - prev) / prev * 100.0
+        return (chg <= -abs(REGIME_DOWN_PCT)), chg
+    except Exception as e:
+        log.debug(f"regime read failed (fail-open): {e}")
+        return False, 0.0
 
 
 # --- position / risk bookkeeping (read from paper_trades) -------------------
@@ -450,6 +479,9 @@ def main():
              f"target={TARGET_PCT}% stop={STOP_PCT}%")
     log.info(f"SETUP: buy dips >= {STRETCH_MIN_PCT}% below VWAP, skip knives > {KNIFE_PCT}% down, "
              f"confirm +{CONFIRM_PCT}% off low. Long only, intraday, square-off 15:15.")
+    log.info(f"FILTERS: regime=skip new longs when {REGIME_INDEX} down > {REGIME_DOWN_PCT}% | "
+             f"entry window {NO_NEW_ENTRY_BEFORE[0]:02d}:{NO_NEW_ENTRY_BEFORE[1]:02d}-"
+             f"{NO_NEW_ENTRY_AFTER[0]:02d}:{NO_NEW_ENTRY_AFTER[1]:02d} (skip opening noise)")
 
     try:
         kite = get_kite()
@@ -507,12 +539,22 @@ def main():
                                     f"<= -{MAX_DAILY_LOSS:.0f}) - NO new entries today")
                         halt_logged_day = _today_str()
 
+            # 2b) market-regime filter: don't buy dips into a market-wide selloff
+            regime_block, nifty_chg = regime_blocks_entries(kite)
+            if regime_block:
+                log.info(f"[REGIME] NIFTY 50 {nifty_chg:+.2f}% (<= -{REGIME_DOWN_PCT}%) "
+                         f"- market selling off, no new longs this cycle")
+                ARMED.clear()   # don't sit on stale dips during a downtrend
+
+            # entries are blocked by either the loss cap OR a risk-off market
+            entry_block = halted or regime_block
+
             # 3) buy armed setups that confirmed the turn
             open_syms = {t[1] for t in _my_open_trades(get_open)} if get_open else set()
-            eval_armed(kite, quotes, place_order, get_open, halted)
+            eval_armed(kite, quotes, place_order, get_open, entry_block)
 
             # 4) scan for new dips to arm (every good signal; no position cap unless set)
-            if (not halted and _entries_allowed_now()
+            if (not entry_block and _entries_allowed_now()
                     and (MAX_POSITIONS <= 0 or len(open_syms) < MAX_POSITIONS)):
                 scan_and_arm(quotes, open_syms)
 
