@@ -88,9 +88,13 @@ TARGET_PCT = float(os.environ.get("EQ_TARGET_PCT", "1.5"))   # +1.5% take-profit
 STOP_PCT = float(os.environ.get("EQ_STOP_PCT", "0.8"))       # -0.8% hard stop
 
 # --- inversion risk caps ----------------------------------------------------
-PER_TRADE_NOTIONAL = float(os.environ.get("EQ_PER_TRADE_NOTIONAL", "50000"))  # rupees/position
-MAX_POSITIONS = int(os.environ.get("EQ_MAX_POSITIONS", "5"))
-MAX_TRADES_PER_DAY = int(os.environ.get("EQ_MAX_TRADES_PER_DAY", "15"))
+# Per user: Elon takes EVERY good signal - no position-count or trades/day cap.
+# A trade still needs a size to compute share qty, so PER_TRADE_NOTIONAL stays.
+# The DAILY LOSS CAP is deliberately KEPT as the single remaining brake (the
+# core inversion safeguard): one bad day still halts trading for the day.
+PER_TRADE_NOTIONAL = float(os.environ.get("EQ_PER_TRADE_NOTIONAL", "100000"))  # rupees/position
+MAX_POSITIONS = int(os.environ.get("EQ_MAX_POSITIONS", "0"))        # 0 = UNLIMITED
+MAX_TRADES_PER_DAY = int(os.environ.get("EQ_MAX_TRADES_PER_DAY", "0"))  # 0 = UNLIMITED
 MAX_DAILY_LOSS = float(os.environ.get("EQ_MAX_DAILY_LOSS", "5000"))   # rupees; halt for day
 
 DRY_RUN = os.environ.get("EQ_STUDY_RECORD", "0").strip() != "1"
@@ -395,9 +399,9 @@ def eval_armed(kite, quotes, place_order, get_open, halted):
             continue
         if sym in open_syms:
             del ARMED[sym]; continue
-        if n_open >= MAX_POSITIONS:
-            continue  # keep armed; a slot may free up
-        if n_today >= MAX_TRADES_PER_DAY:
+        if MAX_POSITIONS > 0 and n_open >= MAX_POSITIONS:
+            continue  # keep armed; a slot may free up (only if a cap is set)
+        if MAX_TRADES_PER_DAY > 0 and n_today >= MAX_TRADES_PER_DAY:
             log.info(f"[RISK] daily trade cap {MAX_TRADES_PER_DAY} hit - no new entries")
             continue
         if not _entries_allowed_now():
@@ -437,8 +441,10 @@ def main():
     _load_env()
     log.info(f"=== ELON CODE (inversion mean-reversion equity bot) starting ===")
     log.info(f"DRY_RUN={DRY_RUN} (set EQ_STUDY_RECORD=1 to record simulated trades)")
-    log.info(f"RISK caps: notional/trade={PER_TRADE_NOTIONAL} max_pos={MAX_POSITIONS} "
-             f"max_trades/day={MAX_TRADES_PER_DAY} daily_loss_cap={MAX_DAILY_LOSS} "
+    _pos = MAX_POSITIONS if MAX_POSITIONS > 0 else "UNLIMITED"
+    _tpd = MAX_TRADES_PER_DAY if MAX_TRADES_PER_DAY > 0 else "UNLIMITED"
+    log.info(f"RISK: notional/trade={PER_TRADE_NOTIONAL} max_pos={_pos} "
+             f"max_trades/day={_tpd} daily_loss_cap={MAX_DAILY_LOSS} (only brake) "
              f"target={TARGET_PCT}% stop={STOP_PCT}%")
     log.info(f"SETUP: buy dips >= {STRETCH_MIN_PCT}% below VWAP, skip knives > {KNIFE_PCT}% down, "
              f"confirm +{CONFIRM_PCT}% off low. Long only, intraday, square-off 15:15.")
@@ -503,8 +509,9 @@ def main():
             open_syms = {t[1] for t in _my_open_trades(get_open)} if get_open else set()
             eval_armed(kite, quotes, place_order, get_open, halted)
 
-            # 4) scan for new dips to arm (only if we still have room + not halted)
-            if not halted and _entries_allowed_now() and len(open_syms) < MAX_POSITIONS:
+            # 4) scan for new dips to arm (every good signal; no position cap unless set)
+            if (not halted and _entries_allowed_now()
+                    and (MAX_POSITIONS <= 0 or len(open_syms) < MAX_POSITIONS)):
                 scan_and_arm(quotes, open_syms)
 
         except Exception as e:
