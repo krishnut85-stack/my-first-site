@@ -95,7 +95,9 @@ STOP_PCT = float(os.environ.get("EQ_STOP_PCT", "0.8"))       # -0.8% hard stop
 PER_TRADE_NOTIONAL = float(os.environ.get("EQ_PER_TRADE_NOTIONAL", "100000"))  # rupees/position
 MAX_POSITIONS = int(os.environ.get("EQ_MAX_POSITIONS", "0"))        # 0 = UNLIMITED
 MAX_TRADES_PER_DAY = int(os.environ.get("EQ_MAX_TRADES_PER_DAY", "0"))  # 0 = UNLIMITED
-MAX_DAILY_LOSS = float(os.environ.get("EQ_MAX_DAILY_LOSS", "5000"))   # rupees; halt for day
+MAX_DAILY_LOSS = float(os.environ.get("EQ_MAX_DAILY_LOSS", "20000"))   # rupees; halt for TODAY only
+# NOTE: the halt is computed from TODAY's realised P&L only (date-based query),
+# so when the date rolls over the loss resets to 0 and trading RESUMES next day.
 
 DRY_RUN = os.environ.get("EQ_STUDY_RECORD", "0").strip() != "1"
 
