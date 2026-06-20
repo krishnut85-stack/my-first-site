@@ -79,7 +79,12 @@ CONFIRM_PCT = float(os.environ.get("EQ_CONFIRM_PCT", "0.15"))
 ARM_MAX_CYCLES = int(os.environ.get("EQ_ARM_MAX_CYCLES", "30"))
 
 # --- exits ------------------------------------------------------------------
-TARGET_PCT = float(os.environ.get("EQ_TARGET_PCT", "1.0"))   # +1.0% take-profit
+# Zerodha intraday round-trip cost is ~0.11% of the position (brokerage + STT +
+# exchange + stamp + GST). So the target must clear that AND give a healthy
+# reward:risk. +1.5% nets ~+1.39% after charges, vs the 0.8% stop -> ~1.6:1.
+# (Income tax on intraday profit is separate: slab-rate on net annual profit.)
+# A bigger target is hit less often - paper-test 1.0 vs 1.5 vs 2.0 to compare.
+TARGET_PCT = float(os.environ.get("EQ_TARGET_PCT", "1.5"))   # +1.5% take-profit
 STOP_PCT = float(os.environ.get("EQ_STOP_PCT", "0.8"))       # -0.8% hard stop
 
 # --- inversion risk caps ----------------------------------------------------
