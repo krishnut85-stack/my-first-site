@@ -28,6 +28,7 @@ import os
 import sys
 import csv
 import glob
+import time
 import sqlite3
 import argparse
 from datetime import datetime, date
@@ -157,13 +158,22 @@ def main():
     ap.add_argument("--file", help="specific CSV file")
     ap.add_argument("--inbox", default=DEFAULT_INBOX, help="folder; use newest CSV")
     ap.add_argument("--write", action="store_true", help="insert into fno_signals (default: preview only)")
+    ap.add_argument("--max-age-hours", type=float, default=18.0,
+                    help="with --write, refuse to load a file older than this (stale-file guard)")
     args = ap.parse_args()
 
     path = args.file or pick_newest(args.inbox)
     if not path or not os.path.exists(path):
         print(f"ERROR: no CSV found (file={args.file}, inbox={args.inbox})")
         sys.exit(1)
-    print(f"reading: {path}")
+    age_h = (time.time() - os.path.getmtime(path)) / 3600.0
+    print(f"reading: {path}  (age {age_h:.1f}h)")
+
+    # stale-file guard: if you forgot to upload today, don't trade yesterday's file
+    if args.write and age_h > args.max_age_hours:
+        print(f"\nSTALE FILE ({age_h:.1f}h > {args.max_age_hours}h) - nothing written. "
+              f"Upload today's Trendlyne file and re-run.")
+        sys.exit(0)
 
     signals = build_signals(path)
     bull = sum(1 for s in signals if s["direction"] == "BULLISH")
