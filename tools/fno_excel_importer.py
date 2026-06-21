@@ -36,6 +36,9 @@ from datetime import datetime, date
 HOME = "/home/globalbot"
 EVENTS_DB = os.environ.get("EQ_EVENTS_DB", f"{HOME}/paper/events.db")
 DEFAULT_INBOX = os.environ.get("FNO_INBOX", f"{HOME}/data/fno_inbox")
+# remembers the last file we loaded so the daily cron imports each distinct file
+# ONCE - and never re-trades a file you already used (e.g. Fri's file on Mon+Tue).
+STATE_FILE = os.environ.get("FNO_IMPORT_STATE", f"{HOME}/data/.fno_last_import")
 
 # strong build-ups only
 BUILDUP_MAP = {
@@ -158,8 +161,8 @@ def main():
     ap.add_argument("--file", help="specific CSV file")
     ap.add_argument("--inbox", default=DEFAULT_INBOX, help="folder; use newest CSV")
     ap.add_argument("--write", action="store_true", help="insert into fno_signals (default: preview only)")
-    ap.add_argument("--max-age-hours", type=float, default=18.0,
-                    help="with --write, refuse to load a file older than this (stale-file guard)")
+    ap.add_argument("--force", action="store_true",
+                    help="with --write, import even if this exact file was already loaded")
     args = ap.parse_args()
 
     path = args.file or pick_newest(args.inbox)
@@ -169,11 +172,18 @@ def main():
     age_h = (time.time() - os.path.getmtime(path)) / 3600.0
     print(f"reading: {path}  (age {age_h:.1f}h)")
 
-    # stale-file guard: if you forgot to upload today, don't trade yesterday's file
-    if args.write and age_h > args.max_age_hours:
-        print(f"\nSTALE FILE ({age_h:.1f}h > {args.max_age_hours}h) - nothing written. "
-              f"Upload today's Trendlyne file and re-run.")
-        sys.exit(0)
+    # import-each-file-ONCE guard: signature = name + last-modified time. If the
+    # newest file is the same one we already loaded (you forgot to upload a new
+    # one), do nothing - never re-trade an already-used file.
+    sig = f"{os.path.basename(path)}|{int(os.path.getmtime(path))}"
+    if args.write and not args.force:
+        try:
+            if open(STATE_FILE).read().strip() == sig:
+                print(f"\nALREADY IMPORTED this file - nothing written. "
+                      f"Upload a new Trendlyne file to load fresh signals (or use --force).")
+                sys.exit(0)
+        except Exception:
+            pass
 
     signals = build_signals(path)
     bull = sum(1 for s in signals if s["direction"] == "BULLISH")
@@ -186,6 +196,10 @@ def main():
 
     if args.write:
         ins, skipped = write_signals(signals)
+        try:
+            open(STATE_FILE, "w").write(sig)   # remember we've now loaded this file
+        except Exception as e:
+            print(f"(warning: could not write state file: {e})")
         print(f"\nWROTE {ins} signals into fno_signals (skipped {skipped} already loaded today).")
         print("The running fno_paper_study.py will pick these up (score >= 65).")
     else:
