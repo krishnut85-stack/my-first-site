@@ -15,15 +15,6 @@ Design (decided with user 2026-06-17):
   - Tag      : FNO_PAPER_STUDY  (V222-immune; separate from gir_fno ledger)
   - Min score: OI_SIGNAL_MIN_SCORE = 65 (matches gir.py)
 
-PULLBACK ENTRY (added 2026-06-19):
-  The raw signal is a LAGGING confirmation (OI/volume/price already moved), so
-  buying at the signal tick == buying the top, which is what bled gir_fno -46k.
-  Instead of buying immediately, each signal is now ARMED and we wait for the
-  underlying to retrace toward its day VWAP before entering, with confirmation.
-  If no clean pullback comes within the window (or price runs away), we SKIP the
-  trade entirely. Toggle with FNO_PULLBACK (default 1=on). Set FNO_PULLBACK=0 to
-  restore the old buy-at-signal behaviour for an A/B comparison in fno_outcomes.
-
 SAFETY: runs in DRY_RUN mode by default. In dry-run it logs exactly what it
 WOULD place but calls nothing. Flip to recording mode (env FNO_STUDY_RECORD=1) only
 after one clean dry-run cycle confirms strike resolution on a real signal.
@@ -49,6 +40,7 @@ except Exception:
 # --- paths / constants ------------------------------------------------------
 HOME = "/home/globalbot"
 EVENTS_DB = f"{HOME}/paper/events.db"
+TRADES_DB = f"{HOME}/paper/trades.db"
 TOKEN_FILE = f"{HOME}/data/kite_token.json"
 ENV_FILE = f"{HOME}/.env"
 
@@ -56,6 +48,10 @@ OI_SIGNAL_MIN_SCORE = 65        # match gir.py
 FNO_MIN_DTE = 15                # match gir.py
 TARGET_PCT = 0.30               # +30% premium target
 STOP_PCT = 0.50                 # -50% premium stop
+# Daily loss cap (inversion safety): once today's realised loss hits this, STOP
+# opening new trades for the rest of the day. Resets next day (date-based). Rupees.
+# 0 = disabled. F&O is the momentum lane that bled before - this is its brake.
+MAX_DAILY_LOSS = float(os.environ.get("FNO_MAX_DAILY_LOSS", "15000"))
 SQUARE_OFF = (15, 20)           # 15:20 IST square-off (market still open)
 MARKET_OPEN = (9, 15)           # 09:15 IST
 MARKET_CLOSE = (15, 30)         # 15:30 IST
@@ -65,41 +61,6 @@ STRATEGY_TAG = "FNO_PAPER_STUDY"
 # Set at startup to current max(id) so the backlog is ignored and we only
 # trade signals generated from launch forward (clean forward test).
 HWM_FILE = "/home/globalbot/fno_study_hwm.txt"
-
-# --- pullback-entry config (the fix for "bought the top") -------------------
-# Master switch. 1 = wait for a pullback toward VWAP before entering (default).
-# 0 = legacy: buy immediately at the signal tick (for A/B comparison).
-PULLBACK_ENABLED = os.environ.get("FNO_PULLBACK", "1").strip() == "1"
-# How far back toward VWAP price must retrace before we'll enter.
-# 1.0 = must touch VWAP. 0.5 = halfway back from signal price to VWAP.
-# Lower (e.g. 0.6) = stricter/better entries but fewer fills. Tune on paper.
-PULLBACK_FRAC = float(os.environ.get("FNO_PULLBACK_FRAC", "0.5"))
-# Fallback retrace when VWAP is unusable (missing, or on the wrong side of
-# spot): require this fraction of spot as a simple % pullback. 0.004 = 0.4%.
-PULLBACK_PCT = float(os.environ.get("FNO_PULLBACK_PCT", "0.004"))
-# Max poll cycles to wait for the pullback before abandoning the signal.
-# 20 cycles * 30s = ~10 minutes. No pullback in that window -> NO TRADE.
-PULLBACK_MAX_POLLS = int(os.environ.get("FNO_PULLBACK_MAX_POLLS", "20"))
-# Abandon if price extends this multiple of the signal->VWAP span the WRONG
-# way (the move left without us) -> NO TRADE rather than chase.
-PULLBACK_RUNAWAY_FRAC = float(os.environ.get("FNO_PULLBACK_RUNAWAY_FRAC", "1.0"))
-# Require one confirmation cycle (price ticking back your way off the pullback
-# extreme) before entering. 1 = safer/recommended, 0 = enter on touch.
-PULLBACK_CONFIRM = os.environ.get("FNO_PULLBACK_CONFIRM", "1").strip() == "1"
-
-# --- EARLY-SELECTION filters ("pick it up before it runs up") ---------------
-# These reject the LATE signals before they ever become a trade. They read the
-# columns gir.py already writes into fno_signals, so they need no gir.py change.
-#
-# 1) Skip day-old signals. gir.py emits both intraday (~1h) and daily (~24h-old)
-#    OI signals. The daily ones are the most-extended, worst entries. Default ON.
-SKIP_DAILY = os.environ.get("FNO_SKIP_DAILY", "1").strip() == "1"
-# 2) Skip already-extended signals. If spot has ALREADY moved more than this %,
-#    the move is gone and we'd be chasing the top. Lower = earlier/stricter.
-#    The signal patterns themselves need ~0.3% move, so this keeps the 0.3-0.8%
-#    "just starting" band and rejects the big already-run spikes. Default 0.8%.
-EARLY_ONLY = os.environ.get("FNO_EARLY_ONLY", "1").strip() == "1"
-MAX_EXTENSION_PCT = float(os.environ.get("FNO_MAX_EXTENSION_PCT", "0.8"))
 
 # Indices ARE traded. NIFTY/BANKNIFTY/FINNIFTY use special spot keys and their
 # own expiry rule (weekly for NIFTY). Lot size (NIFTY=65 in 2026) comes from
@@ -194,27 +155,6 @@ def _spot_ltp(kite, underlying):
     except Exception as e:
         log.warning(f"spot LTP failed for {underlying} ({key}): {e}")
         return None
-
-
-def _spot_and_vwap(kite, underlying):
-    """
-    Return (last_price, day_vwap) for the underlying using kite.quote(), which
-    includes 'average_price' = the day's volume-weighted average price (VWAP).
-    VWAP is our pullback reference: a stretched signal that snaps back toward
-    VWAP is a better, lower-risk entry than buying the spike. Returns (None,None)
-    on failure; (last, None) if VWAP is unavailable (caller uses % fallback).
-    """
-    key = INDEX_SPOT_KEY.get(underlying, f"NSE:{underlying}")
-    try:
-        q = kite.quote([key])
-        d = q[key]
-        last = float(d.get("last_price") or 0)
-        vwap = float(d.get("average_price") or 0)
-        return (last if last > 0 else None, vwap if vwap > 0 else None)
-    except Exception as e:
-        log.warning(f"quote failed for {underlying} ({key}): {e}")
-        # fall back to plain LTP so we at least have a spot
-        return (_spot_ltp(kite, underlying), None)
 
 
 def resolve_atm_option(kite, underlying, opt_type, is_index=False):
@@ -320,6 +260,23 @@ def _in_squareoff_window():
         return False
     hm = (now.hour, now.minute)
     return SQUARE_OFF <= hm <= MARKET_CLOSE
+
+
+def _today_realised_pnl():
+    """Today's realised P&L for FNO_PAPER_STUDY (closed trades, IST date). Drives
+    the daily loss cap; resets automatically when the date rolls over."""
+    try:
+        today = _ist_now().strftime("%Y-%m-%d")
+        c = sqlite3.connect(TRADES_DB, timeout=5)
+        row = c.execute(
+            "SELECT COALESCE(SUM(pnl),0) FROM paper_trades "
+            "WHERE strategy=? AND status='CLOSED' AND substr(entry_ts,1,10)=?",
+            (STRATEGY_TAG, today)).fetchone()
+        c.close()
+        return float(row[0] or 0)
+    except Exception as e:
+        log.debug(f"daily pnl read skipped: {e}")
+        return 0.0
 
 
 def _get_hwm():
@@ -499,176 +456,9 @@ def _record_outcome(sym, pattern, direction, score, status, reason, tsym="", pre
         log.debug(f"outcome record skipped: {e}")
 
 
-# --- pullback entry state machine -------------------------------------------
-# PENDING holds signals that have fired but are WAITING for a pullback before we
-# buy. Key = (UNDERLYING, DIRECTION). One pending per underlying+direction.
-PENDING = {}
-
-
-def _opt_type_for(direction):
-    return "CE" if direction == "BULLISH" else "PE" if direction == "BEARISH" else None
-
-
-def _early_ok(sig):
-    """
-    Gate every signal BEFORE it can become a trade. Rejects the late entries:
-      - daily-mode signals (OI up to ~24h old)
-      - signals where spot has already extended past MAX_EXTENSION_PCT (chasing)
-    Returns True if the signal is fresh/early enough to act on; otherwise records
-    a SKIPPED outcome (so you can count what was filtered, and why) and returns False.
-    """
-    sym = sig.get("symbol")
-    direction = (sig.get("direction") or "").upper()
-    pattern = sig.get("pattern")
-    score = sig.get("score")
-
-    if SKIP_DAILY and (sig.get("mode") == "daily"):
-        _record_outcome(sym, pattern, direction, score, "SKIPPED", "stale_daily_signal")
-        return False
-
-    if EARLY_ONLY:
-        try:
-            ext = abs(float(sig.get("spot_change_pct") or 0))
-        except Exception:
-            ext = 0.0
-        if ext > MAX_EXTENSION_PCT:
-            _record_outcome(sym, pattern, direction, score, "SKIPPED",
-                            f"already_extended_{ext:.2f}pct")
-            log.info(f"[EARLY] skip {sym}/{direction}: spot already moved {ext:.2f}%"
-                     f" (> {MAX_EXTENSION_PCT}%) - not chasing the run-up")
-            return False
-    return True
-
-
-def _arm_pending(kite, sig, open_set):
-    """
-    Called when a fresh signal arrives (instead of buying immediately).
-    Records the signal-time spot + VWAP and computes the price we want to see
-    before entering. Returns:
-      True  -> armed (now waiting for the pullback; do NOT place yet)
-      None  -> not armable here; caller should fall back to immediate place_signal
-               (which records the proper SKIPPED reason, or buys in legacy mode).
-    """
-    sym = sig["symbol"]
-    direction = (sig["direction"] or "").upper()
-
-    # reuse place_signal's skip logic for these by falling through
-    if _opt_type_for(direction) is None:
-        return None
-    if sym.upper() in SKIP_UNDERLYINGS:
-        return None
-    if (sym.upper(), direction) in (open_set or set()):
-        return None
-
-    key = (sym.upper(), direction)
-    if key in PENDING:
-        # already waiting on this underlying+direction; don't double-arm/place
-        return True
-
-    spot, vwap = _spot_and_vwap(kite, sym)
-    if not spot or spot <= 0:
-        # can't get spot -> let place_signal handle it (it will skip/resolve)
-        return None
-
-    # pullback target: retrace PULLBACK_FRAC of the way from spot toward VWAP,
-    # but only if VWAP sits on the side we'd actually pull back to. Otherwise
-    # use a simple % retrace against the signal direction.
-    use_vwap = (
-        vwap and vwap > 0 and (
-            (direction == "BULLISH" and vwap < spot) or
-            (direction == "BEARISH" and vwap > spot)
-        )
-    )
-    if use_vwap:
-        span = abs(spot - vwap)
-        target = (spot - PULLBACK_FRAC * span) if direction == "BULLISH" \
-            else (spot + PULLBACK_FRAC * span)
-        ref = f"vwap={vwap:.2f}"
-    else:
-        span = spot * PULLBACK_PCT
-        target = (spot - span) if direction == "BULLISH" else (spot + span)
-        ref = f"%fallback({PULLBACK_PCT:.3%})"
-
-    PENDING[key] = {
-        "sig": sig, "spot0": spot, "vwap": vwap, "target": target,
-        "span": max(span, spot * 1e-4), "extreme": spot, "polls": 0,
-        "pulled": False,
-    }
-    log.info(f"[PULLBACK] armed {sym}/{direction} spot={spot:.2f} {ref} "
-             f"-> wait for {target:.2f} (up to {PULLBACK_MAX_POLLS} polls)")
-    return True
-
-
-def eval_pending(kite, paper_place_order, open_set):
-    """
-    Each poll cycle: re-check every armed signal. Enter when price has pulled
-    back to target AND (optionally) confirmed a turn back your way. Drop the
-    signal if it runs away or the wait window expires (-> NO TRADE, by design).
-    """
-    if not PENDING:
-        return
-    for key in list(PENDING.keys()):
-        p = PENDING[key]
-        sig = p["sig"]
-        sym = sig["symbol"]
-        direction = key[1]
-
-        spot, _vwap = _spot_and_vwap(kite, sym)
-        if not spot or spot <= 0:
-            p["polls"] += 1
-            if p["polls"] >= PULLBACK_MAX_POLLS:
-                _record_outcome(sym, sig["pattern"], direction, sig["score"],
-                                "SKIPPED", "pullback_no_spot")
-                del PENDING[key]
-            continue
-
-        if direction == "BULLISH":
-            if spot < p["extreme"]:
-                p["extreme"] = spot
-            # runaway: kept climbing instead of dipping -> let it go
-            if spot - p["spot0"] > PULLBACK_RUNAWAY_FRAC * p["span"]:
-                log.info(f"[PULLBACK] {sym}/{direction} ran away (no dip) -> skip")
-                _record_outcome(sym, sig["pattern"], direction, sig["score"],
-                                "SKIPPED", "pullback_runaway")
-                del PENDING[key]
-                continue
-            if spot <= p["target"]:
-                p["pulled"] = True
-            confirmed = (not PULLBACK_CONFIRM) or (spot > p["extreme"])
-        else:  # BEARISH
-            if spot > p["extreme"]:
-                p["extreme"] = spot
-            if p["spot0"] - spot > PULLBACK_RUNAWAY_FRAC * p["span"]:
-                log.info(f"[PULLBACK] {sym}/{direction} ran away (no pop) -> skip")
-                _record_outcome(sym, sig["pattern"], direction, sig["score"],
-                                "SKIPPED", "pullback_runaway")
-                del PENDING[key]
-                continue
-            if spot >= p["target"]:
-                p["pulled"] = True
-            confirmed = (not PULLBACK_CONFIRM) or (spot < p["extreme"])
-
-        if p["pulled"] and confirmed:
-            log.info(f"[PULLBACK] {sym}/{direction} pulled back to {spot:.2f} "
-                     f"(target {p['target']:.2f}, was {p['spot0']:.2f}) -> ENTER")
-            # enter now: resolves the ATM at the CURRENT (cheaper) premium
-            place_signal(kite, paper_place_order, sig, open_set, via_pullback=True)
-            del PENDING[key]
-            continue
-
-        p["polls"] += 1
-        if p["polls"] >= PULLBACK_MAX_POLLS:
-            log.info(f"[PULLBACK] {sym}/{direction} no clean pullback in "
-                     f"{PULLBACK_MAX_POLLS} polls -> skip")
-            _record_outcome(sym, sig["pattern"], direction, sig["score"],
-                            "SKIPPED", "pullback_timeout")
-            del PENDING[key]
-
-
-def place_signal(kite, paper_place_order, sig, open_set=None, via_pullback=False):
+def place_signal(kite, paper_place_order, sig, open_set=None):
     """sig is a dict row from fno_signals. Returns True if placed/dry-logged.
-    open_set: set of (UNDERLYING,DIRECTION) already open - skip if present.
-    via_pullback: True when called by the pullback gate (entry already timed)."""
+    open_set: set of (UNDERLYING,DIRECTION) already open - skip if present."""
     sym = sig["symbol"]
     direction = (sig["direction"] or "").upper()
     score = sig["score"]
@@ -679,7 +469,7 @@ def place_signal(kite, paper_place_order, sig, open_set=None, via_pullback=False
         _record_outcome(sym, pattern, direction, score, "SKIPPED", "excluded_underlying")
         return False
 
-    opt_type = _opt_type_for(direction)
+    opt_type = "CE" if direction == "BULLISH" else "PE" if direction == "BEARISH" else None
     if opt_type is None:
         _record_outcome(sym, pattern, direction, score, "SKIPPED", "non_directional")
         return False
@@ -702,12 +492,11 @@ def place_signal(kite, paper_place_order, sig, open_set=None, via_pullback=False
 
     sl_limit = round(premium * (1 - STOP_PCT), 2)     # -50%
     target = round(premium * (1 + TARGET_PCT), 2)     # +30%
-    entry_tag = "PULLBACK" if via_pullback else "SIGNAL_TICK"
 
     if DRY_RUN:
         log.info(
             f"[DRY] WOULD BUY {tsym} qty={lot} @~{premium:.2f} "
-            f"(tgt {target:.2f} / sl {sl_limit:.2f}) entry={entry_tag} "
+            f"(tgt {target:.2f} / sl {sl_limit:.2f}) "
             f"sig={sym}/{pattern}/{direction}/score={score}"
         )
         return True
@@ -736,11 +525,10 @@ def place_signal(kite, paper_place_order, sig, open_set=None, via_pullback=False
                 "entry_premium": premium,
                 "target": target,
                 "stop": sl_limit,
-                "entry_mode": entry_tag,
             },
         )
-        log.info(f"PLACED {tsym} qty={lot} @{premium:.2f} id={oid} [{pattern}] entry={entry_tag}")
-        _record_outcome(sym, pattern, direction, score, "PLACED", entry_tag.lower(), tsym, premium)
+        log.info(f"PLACED {tsym} qty={lot} @{premium:.2f} id={oid} [{pattern}]")
+        _record_outcome(sym, pattern, direction, score, "PLACED", "ok", tsym, premium)
         return True
     except Exception as e:
         log.error(f"place failed {sym}/{tsym}: {e}")
@@ -778,12 +566,8 @@ def main():
     _load_env()
     log.info(f"FNO paper study starting. DRY_RUN={DRY_RUN} "
              f"(set FNO_STUDY_RECORD=1 to RECORD paper trades (still simulated, never real))")
-    log.info(f"PULLBACK_ENABLED={PULLBACK_ENABLED} frac={PULLBACK_FRAC} "
-             f"pct_fallback={PULLBACK_PCT} max_polls={PULLBACK_MAX_POLLS} "
-             f"runaway={PULLBACK_RUNAWAY_FRAC} confirm={PULLBACK_CONFIRM}")
-    log.info(f"EARLY filters: skip_daily={SKIP_DAILY} early_only={EARLY_ONLY} "
-             f"max_extension={MAX_EXTENSION_PCT}% "
-             f"(rejects day-old + already-run signals so we select before the spike)")
+    log.info(f"daily loss cap: {MAX_DAILY_LOSS:.0f} rupees (0=off) - halts new trades "
+             f"for the day if hit, resumes next day. Set FNO_MAX_DAILY_LOSS to change.")
     try:
         kite = get_kite()
         log.info("Kite session established")
@@ -813,18 +597,12 @@ def main():
     hwm = _init_hwm()
 
     last_closed_msg = 0
+    halt_logged_day = None
     while True:
         try:
             if not _market_open_now():
                 # outside market hours: do nothing (no stale-quote exits, no
-                # entries). Drop any armed-but-unfilled pullbacks so nothing
-                # carries to the next session on a stale reference price.
-                if PENDING:
-                    for key, p in list(PENDING.items()):
-                        s = p["sig"]
-                        _record_outcome(s["symbol"], s["pattern"], key[1],
-                                        s["score"], "SKIPPED", "pullback_market_closed")
-                    PENDING.clear()
+                # entries). Log once every ~10 min so the log isn't silent.
                 if time.time() - last_closed_msg > 600:
                     log.info("market closed - idle (no trading/exits outside 09:15-15:30 IST Mon-Fri)")
                     last_closed_msg = time.time()
@@ -837,38 +615,41 @@ def main():
                 if n:
                     log.info(f"exits this cycle: {n}")
 
-            # current open positions (used to block stacking on both paths)
+            # 2) daily loss cap (inversion: stop the bad day before it compounds)
+            halted = False
+            if get_open and MAX_DAILY_LOSS > 0:
+                realised = _today_realised_pnl()
+                if realised <= -abs(MAX_DAILY_LOSS):
+                    halted = True
+                    today = _ist_now().strftime("%Y-%m-%d")
+                    if halt_logged_day != today:
+                        log.warning(f"[RISK] daily loss cap hit (realised {realised:.0f} "
+                                    f"<= -{MAX_DAILY_LOSS:.0f}) - NO new trades today")
+                        halt_logged_day = today
+
+            # 3) place new signals (id > hwm only), one per underlying+direction
             open_set = _open_underlying_dirs(get_open) if get_open else set()
-
-            # 2) EVALUATE ARMED PULLBACKS - may place entries this cycle
-            if PULLBACK_ENABLED:
-                eval_pending(kite, paper_place_order, open_set)
-                open_set = _open_underlying_dirs(get_open) if get_open else open_set
-
-            # 3) intake new signals (id > hwm only)
             sigs, hwm = fetch_new_signals(hwm)
             if sigs:
+                # advance HWM either way so signals seen during a halt are NOT
+                # re-traded tomorrow when the cap resets (they'd be stale).
                 _set_hwm(hwm)
-                log.info(f"{len(sigs)} new signal(s) score>={OI_SIGNAL_MIN_SCORE}")
-                placed = armed = 0
-                for s in sigs:
-                    # EARLY GATE: drop day-old / already-extended signals first
-                    if not _early_ok(s):
-                        continue
-                    if PULLBACK_ENABLED:
-                        # arm it and wait for the retrace instead of buying now
-                        if _arm_pending(kite, s, open_set) is True:
-                            armed += 1
-                            continue
-                        # _arm_pending returned None -> fall through to legacy place
-                    if place_signal(kite, paper_place_order, s, open_set):
-                        placed += 1
-                        # add to open_set immediately so a duplicate in the
-                        # same batch is also skipped
-                        open_set.add((str(s["symbol"]).upper(),
-                                      (s["direction"] or "").upper()))
-                log.info(f"cycle: {placed} placed, {armed} armed (awaiting pullback), "
-                         f"of {len(sigs)} signal(s)")
+                if halted:
+                    log.info(f"[RISK] dropping {len(sigs)} signal(s) - daily loss cap active")
+                    for s in sigs:
+                        _record_outcome(s["symbol"], s["pattern"], s["direction"],
+                                        s["score"], "SKIPPED", "daily_loss_halt")
+                else:
+                    log.info(f"{len(sigs)} new signal(s) score>={OI_SIGNAL_MIN_SCORE}")
+                    placed = 0
+                    for s in sigs:
+                        if place_signal(kite, paper_place_order, s, open_set):
+                            placed += 1
+                            # add to open_set immediately so a duplicate in the
+                            # same batch is also skipped
+                            open_set.add((str(s["symbol"]).upper(),
+                                          (s["direction"] or "").upper()))
+                    log.info(f"cycle: {placed}/{len(sigs)} actioned")
         except Exception as e:
             log.error(f"loop error: {e}")
         time.sleep(POLL_SECONDS)
