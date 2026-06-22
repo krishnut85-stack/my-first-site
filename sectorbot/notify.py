@@ -11,8 +11,44 @@ from datetime import date
 from email.message import EmailMessage
 
 from . import config
+from .backtest import run_backtest
 from .bot import run_simulation
 from .data_loader import resolve_csv
+
+
+def _backtest_section() -> tuple[list[str], str]:
+    """Build the backtest part of the email as (plain_lines, html)."""
+    bt = run_backtest(verbose=False)
+    if not bt["ok"]:
+        msg = f"Backtest: building history ({bt['days']} day snapshot saved, need 2+)."
+        return ["", msg], f"<h3>Backtest</h3><p style='color:#555'>{msg}</p>"
+
+    strat = bt["strategy_return_pct"]
+    bench = bt["benchmark_return_pct"]
+    edge = strat - bench
+    lines = [
+        "",
+        f"Backtest over {bt['days']} day(s):",
+        f"  Strategy (top picks): {strat:+.2f}%",
+        f"  Benchmark (all)     : {bench:+.2f}%",
+        f"  Edge vs benchmark   : {edge:+.2f}%",
+        f"  Days beating bench  : {bt['win_rate_pct']:.0f}%",
+    ]
+    color = "#0a8f3c" if edge >= 0 else "#c62828"
+    html = (
+        "<h3>Backtest "
+        f"({bt['days']} day(s))</h3>"
+        "<table cellpadding='6' style='border-collapse:collapse'>"
+        f"<tr><td>Strategy (top picks)</td><td style='text-align:right'>{strat:+.2f}%</td></tr>"
+        f"<tr><td>Benchmark (all industries)</td><td style='text-align:right'>{bench:+.2f}%</td></tr>"
+        f"<tr><td><b>Edge vs benchmark</b></td>"
+        f"<td style='text-align:right;color:{color}'><b>{edge:+.2f}%</b></td></tr>"
+        f"<tr><td>Days beating benchmark</td><td style='text-align:right'>{bt['win_rate_pct']:.0f}%</td></tr>"
+        "</table>"
+        "<p style='font-size:0.8em;color:#777'>Coarse test on reported day-moves; "
+        "ignores costs/slippage. Not advice.</p>"
+    )
+    return lines, html
 
 
 def build_email(result: dict, csv_path=None) -> tuple[str, str, str]:
@@ -53,6 +89,8 @@ def build_email(result: dict, csv_path=None) -> tuple[str, str, str]:
             f"<tr><td>{t.symbol}</td><td style='text-align:right'>{t.price:.2f}</td>"
             f"<td>{t.reason}</td></tr>"
         )
+    bt_lines, bt_html = _backtest_section()
+    lines.extend(bt_lines)
     plain = "\n".join(lines)
 
     color = "#0a8f3c" if pnl >= 0 else "#c62828"
@@ -72,6 +110,7 @@ def build_email(result: dict, csv_path=None) -> tuple[str, str, str]:
     <table cellpadding="6" style="border-collapse:collapse">
       {''.join(exit_html) or '<tr><td>none today</td></tr>'}
     </table>
+    {bt_html}
     </body></html>"""
     return subject, plain, html
 

@@ -10,17 +10,40 @@ def test_explicit_path_wins():
     assert resolve_csv("/tmp/foo.csv").name == "foo.csv"
 
 
-def test_picks_newest_csv_in_data_dir(tmp_path, monkeypatch):
+def test_picks_latest_dated_csv_in_data_dir(tmp_path, monkeypatch):
     older = tmp_path / "2026-06-20.csv"
     newer = tmp_path / "2026-06-22.csv"
     older.write_text("x")
     newer.write_text("y")
-    import os, time
-    os.utime(older, (time.time() - 100, time.time() - 100))
-
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
     monkeypatch.setattr(config, "CSV_OVERRIDE", "")
     assert resolve_csv().name == "2026-06-22.csv"
+
+
+def test_dated_file_beats_bundled_even_with_equal_mtimes(tmp_path, monkeypatch):
+    # simulate a CI checkout: all files share the same mtime
+    import os, time
+    bundled = tmp_path / "sectors.csv"
+    dated = tmp_path / "2026.06.22.csv"   # dots, like the user's upload
+    bundled.write_text("old")
+    dated.write_text("new")
+    ts = time.time()
+    os.utime(bundled, (ts, ts))
+    os.utime(dated, (ts, ts))
+
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    monkeypatch.setattr(config, "CSV_OVERRIDE", "")
+    assert resolve_csv().name == "2026.06.22.csv"
+
+
+def test_separator_independent_date_ordering(tmp_path, monkeypatch):
+    a = tmp_path / "2026.06.22.csv"
+    b = tmp_path / "2026-06-23.csv"   # later date, different separator
+    a.write_text("a")
+    b.write_text("b")
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    monkeypatch.setattr(config, "CSV_OVERRIDE", "")
+    assert resolve_csv().name == "2026-06-23.csv"
 
 
 def test_falls_back_to_bundled(tmp_path, monkeypatch):

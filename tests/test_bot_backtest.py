@@ -41,4 +41,15 @@ def test_email_builder_produces_subject_and_bodies():
     assert "SectorBot" in subject
     assert "PAPER" in plain
     assert "<html" in html
+    assert "Backtest" in plain      # backtest section included
+    assert "Backtest" in html
     assert config.EMAIL_TO  # recipient configured
+
+
+def test_email_includes_backtest_results_with_snapshots(tmp_path, monkeypatch):
+    shutil.copy(config.DATA_CSV, tmp_path / "2026-06-20.csv")
+    shutil.copy(config.DATA_CSV, tmp_path / "2026-06-21.csv")
+    monkeypatch.setattr(config, "SNAPSHOTS_DIR", tmp_path)
+    result = run_simulation(steps=3, verbose=False)
+    _, plain, _ = build_email(result)
+    assert "Strategy" in plain and "Benchmark" in plain
