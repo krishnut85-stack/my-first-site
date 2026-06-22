@@ -23,6 +23,33 @@ python -m sectorbot rank        # ranked industries from your data
 python -m sectorbot sim         # run the paper-trading simulation
 python -m sectorbot dashboard   # write ../dashboard.html to view in a browser
 python -m sectorbot backtest    # replay data/snapshots/*.csv (needs 2+ days)
+python -m sectorbot email       # email today's picks/exits to you
+```
+
+## Email alerts
+
+`python -m sectorbot email` emails the day's picks + simulated exits to
+**krishnut85@gmail.com** (change via the `EMAIL_TO` env var). With no SMTP
+credentials it does a safe **dry-run** (prints the email instead of sending).
+
+To actually send via Gmail: enable 2-step verification, create an **App
+password**, then set:
+
+```bash
+export SMTP_HOST=smtp.gmail.com SMTP_PORT=465
+export SMTP_USER=krishnut85@gmail.com
+export SMTP_PASSWORD=your_16_char_app_password
+python -m sectorbot email
+```
+
+Automate it daily with cron, e.g. `30 16 * * 1-5 cd /path/to/my-first-site &&
+python -m sectorbot email` (after your Termius upload).
+
+## Tests
+
+```bash
+pip install pytest
+pytest            # 29 tests covering scoring, risk rules, broker, backtest, email
 ```
 
 Open `dashboard.html` in any browser (or link it from `index.html`) to see the

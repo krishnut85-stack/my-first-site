@@ -1,0 +1,113 @@
+"""Email alerts: send the daily picks + simulated exits.
+
+Uses only the standard library (smtplib + email). Credentials are read from
+environment variables (see config.py). If SMTP isn't configured the email is
+printed to the console instead of sent -- so this is always safe to run.
+"""
+
+import smtplib
+import ssl
+from datetime import date
+from email.message import EmailMessage
+
+from . import config
+from .bot import run_simulation
+from .data_loader import resolve_csv
+
+
+def build_email(result: dict, csv_path=None) -> tuple[str, str, str]:
+    """Return (subject, plain_text, html) for the day's simulation result."""
+    pnl = result["pnl"]
+    pnl_pct = result["pnl_pct"]
+    src = resolve_csv(csv_path).name
+    subject = (
+        f"SectorBot {date.today().isoformat()} · "
+        f"paper P&L {pnl:+,.0f} ({pnl_pct:+.2f}%)"
+    )
+
+    lines = [
+        "SectorBot daily summary (PAPER / simulation — not advice)",
+        f"Data file: {src}",
+        f"Capital mode: {config.CAPITAL_MODE.upper()} | "
+        f"Gross deployed: Rs {result['invested']:,.0f}",
+        f"Simulated P&L: Rs {pnl:,.0f} ({pnl_pct:+.2f}%)",
+        "",
+        "Top industries selected:",
+    ]
+    pick_html = []
+    for p in result["picks"]:
+        i = p.industry
+        lines.append(f"  • {i.name} (score {i.score:.1f}, PE {i.pe}) -> {', '.join(p.symbols)}")
+        pick_html.append(
+            f"<tr><td>{i.name}</td><td style='text-align:right'>{i.score:.1f}</td>"
+            f"<td>{', '.join(p.symbols)}</td></tr>"
+        )
+
+    exits = [t for t in result["broker"].trades if t.side == "SELL"]
+    lines.append("")
+    lines.append(f"Simulated exits today: {len(exits)}")
+    exit_html = []
+    for t in exits:
+        lines.append(f"  SELL {t.symbol} @ {t.price:.2f} [{t.reason}]")
+        exit_html.append(
+            f"<tr><td>{t.symbol}</td><td style='text-align:right'>{t.price:.2f}</td>"
+            f"<td>{t.reason}</td></tr>"
+        )
+    plain = "\n".join(lines)
+
+    color = "#0a8f3c" if pnl >= 0 else "#c62828"
+    html = f"""<html><body style="font-family:-apple-system,sans-serif;color:#222">
+    <h2 style="color:#764ba2">SectorBot · {date.today().isoformat()}</h2>
+    <p style="background:#fff8e1;border-left:5px solid #f4b400;padding:10px">
+      <b>Paper simulation — not investment advice.</b> Data file: {src}</p>
+    <p style="font-size:1.3em;color:{color}"><b>P&amp;L: Rs {pnl:,.0f} ({pnl_pct:+.2f}%)</b><br>
+      <span style="font-size:0.7em;color:#555">Capital {config.CAPITAL_MODE.upper()},
+      deployed Rs {result['invested']:,.0f}</span></p>
+    <h3>Top industries</h3>
+    <table cellpadding="6" style="border-collapse:collapse">
+      <tr><th align="left">Industry</th><th>Score</th><th align="left">Symbols</th></tr>
+      {''.join(pick_html)}
+    </table>
+    <h3>Simulated exits ({len(exits)})</h3>
+    <table cellpadding="6" style="border-collapse:collapse">
+      {''.join(exit_html) or '<tr><td>none today</td></tr>'}
+    </table>
+    </body></html>"""
+    return subject, plain, html
+
+
+def send_email(subject: str, plain: str, html: str) -> bool:
+    """Send via SMTP, or print to console if SMTP isn't configured.
+
+    Returns True if an email was actually sent.
+    """
+    if not (config.SMTP_HOST and config.SMTP_USER and config.SMTP_PASSWORD):
+        print("\n[email dry-run] SMTP not configured — would have sent:\n")
+        print(f"To: {config.EMAIL_TO}\nSubject: {subject}\n")
+        print(plain + "\n")
+        print("Set SMTP_HOST/SMTP_USER/SMTP_PASSWORD env vars to actually send.")
+        return False
+
+    msg = EmailMessage()
+    msg["Subject"] = subject
+    msg["From"] = config.EMAIL_FROM or config.SMTP_USER
+    msg["To"] = config.EMAIL_TO
+    msg.set_content(plain)
+    msg.add_alternative(html, subtype="html")
+
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL(config.SMTP_HOST, config.SMTP_PORT, context=context) as server:
+        server.login(config.SMTP_USER, config.SMTP_PASSWORD)
+        server.send_message(msg)
+    print(f"Email sent to {config.EMAIL_TO}")
+    return True
+
+
+def send_daily(csv_path=None) -> bool:
+    result = run_simulation(verbose=False, csv_path=csv_path)
+    subject, plain, html = build_email(result, csv_path)
+    return send_email(subject, plain, html)
+
+
+if __name__ == "__main__":
+    send_daily()

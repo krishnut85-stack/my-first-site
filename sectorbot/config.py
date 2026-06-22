@@ -62,6 +62,22 @@ ATR_HISTORY_BARS = 60          # how much history to pull for the ATR calc
 
 DAILY_LOSS_LIMIT_PCT = 0.05    # stop opening new trades after a 5% drawdown
 
+# --- Email alerts ----------------------------------------------------------
+# Daily picks + simulated exits can be emailed to you. Credentials come from
+# environment variables so nothing secret is committed. If they're not set,
+# the bot prints the email to the console instead of sending (safe dry-run).
+#
+# Gmail setup: turn on 2-step verification, create an "App password", then:
+#   export SMTP_HOST=smtp.gmail.com SMTP_PORT=465
+#   export SMTP_USER=krishnut85@gmail.com
+#   export SMTP_PASSWORD=your_16_char_app_password
+EMAIL_TO = os.environ.get("EMAIL_TO", "krishnut85@gmail.com")
+EMAIL_FROM = os.environ.get("EMAIL_FROM", os.environ.get("SMTP_USER", ""))
+SMTP_HOST = os.environ.get("SMTP_HOST", "")
+SMTP_PORT = int(os.environ.get("SMTP_PORT", "465"))
+SMTP_USER = os.environ.get("SMTP_USER", "")
+SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
+
 # --- Scoring weights (transparent momentum + quality blend) ----------------
 WEIGHTS = {
     "qtr_change": 0.20,        # Qtr Change %
