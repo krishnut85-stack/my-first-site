@@ -99,7 +99,12 @@ def score_industries(industries: list[Industry], breadth=None) -> list[Industry]
             + _cap(ind.breadth, 0, 13) * w["breadth"] * 5
         )
         ind.fundamental_score = fund
-        b = breadth.get(normalize_sector(ind.sector)) if breadth else None
+        # prefer industry-level breadth (exact name), fall back to sector-level
+        b = None
+        if breadth:
+            b = breadth.get(normalize_sector(ind.name)) or breadth.get(
+                normalize_sector(ind.sector)
+            )
         ind.sector_breadth_score = b["score"] if b else 0.0
         if config.USE_BREADTH_BLEND and b:
             ind.score = (

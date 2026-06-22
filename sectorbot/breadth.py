@@ -65,10 +65,21 @@ def load_breadth(csv_path) -> dict[str, dict]:
 
 
 def load_breadth_scores(path=None) -> dict[str, dict]:
-    """Load breadth for the newest breadth CSV in data/, or {} if none."""
-    from .data_loader import resolve_breadth_csv
+    """Combined breadth keyed by normalized name, merged across all breadth
+    CSVs in data/ (e.g. sector-level AND industry-level).
 
-    p = path or resolve_breadth_csv()
-    if not p:
-        return {}
-    return load_breadth(p)
+    Industries are looked up by their own name first, then by sector name
+    (see screener), so an industry-level breadth file gives a more precise
+    match while a sector-level file covers everything else. Newer files win
+    on key collisions.
+    """
+    from .data_loader import list_breadth_csvs
+
+    if path:
+        return load_breadth(path)
+
+    combined: dict[str, dict] = {}
+    # oldest first so the newest file's values take precedence
+    for p in reversed(list_breadth_csvs()):
+        combined.update(load_breadth(p))
+    return combined

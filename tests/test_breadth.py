@@ -75,6 +75,37 @@ def test_blend_changes_scores(tmp_path):
     assert with_blend[name] != no_blend[name]
 
 
+INDUSTRY_BREADTH_CSV = textwrap.dedent("""\
+    S.No,NAME,NO. OF STOCKS,MARKET CAP,MOMENTUM SCORE,RSI > 50,MFI > 50,LTP > SMA20,LTP > SMA50,LTP > SMA200,SMA50 > SMA200,DAY GAINERS%,WEEK GAINERS%
+    1,Aluminium and Aluminium Products,24,"6,11,015.7",99.0,100%,100%,100%,100%,100%,100%,100%,100%
+""")
+
+
+def test_multiple_breadth_files_merge(tmp_path, monkeypatch):
+    (tmp_path / "sector-breadth.csv").write_text(BREADTH_CSV)
+    (tmp_path / "industry-breadth.csv").write_text(INDUSTRY_BREADTH_CSV)
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    from sectorbot.breadth import load_breadth_scores
+
+    merged = load_breadth_scores()
+    # contains both a sector key and an industry key
+    assert "metals and mining" in merged
+    assert "aluminium and aluminium products" in merged
+
+
+def test_industry_breadth_preferred_over_sector(tmp_path, monkeypatch):
+    # sector file: Metals & Mining (weak). industry file: the industry itself
+    # (all-bullish -> ~100). The industry's own breadth must win.
+    (tmp_path / "sector-breadth.csv").write_text(BREADTH_CSV)
+    (tmp_path / "industry-breadth.csv").write_text(INDUSTRY_BREADTH_CSV)
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+
+    ranked = score_industries(load_industries(config.DATA_CSV))
+    alu = next(i for i in ranked if i.name == "Aluminium and Aluminium Products")
+    # industry-level all-bullish breadth ~ very high, not the weak Metals sector
+    assert alu.sector_breadth_score > 90
+
+
 def test_blend_respects_toggle(monkeypatch, tmp_path):
     p = tmp_path / "breadth.csv"
     p.write_text(BREADTH_CSV)

@@ -100,9 +100,12 @@ SectorBot can blend two Trendlyne CSVs:
 
 1. **Fundamentals** (industry level) — PE, ROE, returns, Industry Score. This is
    the primary file (`sectors.csv` / your dated upload).
-2. **Sector breadth** (sector level) — Momentum Score, RSI>50, MFI>50,
-   LTP>SMA20/50/200, SMA50>SMA200, day/week gainers. Export from Trendlyne's
-   "Sector rotation & bullish/bearish breadth" page.
+2. **Breadth** — Momentum Score, RSI>50, MFI>50, LTP>SMA20/50/200,
+   SMA50>SMA200, day/week gainers. Export from Trendlyne's "bullish/bearish
+   breadth" page. You can supply **sector-level and/or industry-level** breadth
+   files (same columns; the NAME column is sectors or industries). All breadth
+   files in `data/` are merged; each industry is matched by its **own name
+   first** (industry-level file), then by its **sector** (sector-level file).
 
 The bot **auto-detects each file by its headers**, so just drop both into
 `sectorbot/data/` (any names ending in `.csv`; date them to control recency).
