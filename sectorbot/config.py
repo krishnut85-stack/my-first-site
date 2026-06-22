@@ -32,6 +32,36 @@ LIVE_TRADING = False
 KITE_API_KEY = os.environ.get("KITE_API_KEY", "")
 KITE_API_SECRET = os.environ.get("KITE_API_SECRET", "")
 KITE_ACCESS_TOKEN = os.environ.get("KITE_ACCESS_TOKEN", "")
+# Path to a file holding the daily access token (e.g. the one your TOTP
+# auto-login already writes). Used only if KITE_ACCESS_TOKEN isn't set.
+KITE_TOKEN_FILE = os.environ.get("KITE_TOKEN_FILE", "")
+
+
+def resolve_access_token() -> str:
+    """Return the Kite access token from the env var, else from KITE_TOKEN_FILE.
+
+    The token file may be: the raw token on one line; JSON with an
+    'access_token'/'token' key; or KEY=VALUE lines. We never log its contents.
+    """
+    if KITE_ACCESS_TOKEN.strip():
+        return KITE_ACCESS_TOKEN.strip()
+    if KITE_TOKEN_FILE and Path(KITE_TOKEN_FILE).exists():
+        raw = Path(KITE_TOKEN_FILE).read_text().strip()
+        try:
+            import json
+            d = json.loads(raw)
+            if isinstance(d, dict):
+                for k in ("access_token", "accessToken", "token"):
+                    if d.get(k):
+                        return str(d[k]).strip()
+        except Exception:  # noqa: BLE001
+            pass
+        for line in raw.splitlines():
+            if "access_token" in line.lower() and "=" in line:
+                return line.split("=", 1)[1].strip().strip('"\'')
+        if raw and "\n" not in raw:
+            return raw
+    return ""
 
 # Use REAL Kite prices for paper trading when keys are present. This is still
 # PAPER (no real orders) -- it just simulates against actual market data so the

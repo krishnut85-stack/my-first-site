@@ -85,10 +85,16 @@ class KiteDataSource:
             raise RuntimeError(
                 "pykiteconnect not installed. Run: pip install kiteconnect"
             ) from exc
-        if not (config.KITE_API_KEY and config.KITE_ACCESS_TOKEN):
-            raise RuntimeError("KITE_API_KEY / KITE_ACCESS_TOKEN not configured.")
+        if not config.KITE_API_KEY:
+            raise RuntimeError("KITE_API_KEY not configured.")
+        access_token = config.resolve_access_token()
+        if not access_token:
+            raise RuntimeError(
+                "No Kite access token. Set KITE_ACCESS_TOKEN or KITE_TOKEN_FILE "
+                "(e.g. the kite_token.json your main bot refreshes daily)."
+            )
         self.kite = KiteConnect(api_key=config.KITE_API_KEY)
-        self.kite.set_access_token(config.KITE_ACCESS_TOKEN)
+        self.kite.set_access_token(access_token)
         self._tokens = None  # lazy symbol -> instrument_token cache
 
     def last_price(self, symbol: str) -> float:  # pragma: no cover
