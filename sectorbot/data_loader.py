@@ -21,6 +21,20 @@ from . import config
 IST = timezone(timedelta(hours=5, minutes=30))
 
 
+def classify_csv(path: Path) -> str:
+    """Identify a CSV by its header: 'breadth', 'fundamentals', or 'unknown'."""
+    try:
+        with open(path, newline="", encoding="utf-8") as f:
+            header = f.readline().upper()
+    except OSError:
+        return "unknown"
+    if "MOMENTUM SCORE" in header and "RSI > 50" in header:
+        return "breadth"
+    if "INDUSTRY SCORE" in header or "PE TTM" in header:
+        return "fundamentals"
+    return "unknown"
+
+
 def _date_key(path: Path) -> int:
     """Numeric date pulled from the filename digits, e.g.
     2026-06-22 / 2026.06.22 / 20260622 -> 20260622. No digits -> -1.
@@ -38,15 +52,27 @@ def resolve_csv(explicit: Optional[str] = None) -> Path:
     if config.CSV_OVERRIDE:
         return Path(config.CSV_OVERRIDE).expanduser()
 
-    # Prefer the file with the latest date in its name; tie-break on mtime.
-    csvs = sorted(
-        config.DATA_DIR.glob("*.csv"),
-        key=lambda p: (_date_key(p), p.stat().st_mtime),
-        reverse=True,
-    )
+    # Pick the newest fundamentals/unknown CSV; never the breadth file.
+    csvs = [
+        p for p in config.DATA_DIR.glob("*.csv")
+        if classify_csv(p) != "breadth"
+    ]
+    csvs.sort(key=lambda p: (_date_key(p), p.stat().st_mtime), reverse=True)
     if csvs:
         return csvs[0]
     return config.DATA_CSV
+
+
+def resolve_breadth_csv() -> Optional[Path]:
+    """Newest sector-breadth CSV in data/ (latest date in name), or None."""
+    breadths = [
+        p for p in config.DATA_DIR.glob("*.csv")
+        if classify_csv(p) == "breadth"
+    ]
+    if not breadths:
+        return None
+    breadths.sort(key=lambda p: (_date_key(p), p.stat().st_mtime), reverse=True)
+    return breadths[0]
 
 
 def list_snapshots() -> list[Path]:

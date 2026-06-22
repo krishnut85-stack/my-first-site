@@ -73,9 +73,14 @@ def build_email(result: dict, csv_path=None) -> tuple[str, str, str]:
     pick_html = []
     for p in result["picks"]:
         i = p.industry
-        lines.append(f"  • {i.name} (score {i.score:.1f}, PE {i.pe}) -> {', '.join(p.symbols)}")
+        lines.append(
+            f"  • {i.name} (score {i.score:.1f} = fund {i.fundamental_score:.1f} "
+            f"+ breadth {i.sector_breadth_score:.0f}, PE {i.pe}) -> {', '.join(p.symbols)}"
+        )
         pick_html.append(
             f"<tr><td>{i.name}</td><td style='text-align:right'>{i.score:.1f}</td>"
+            f"<td style='text-align:right'>{i.fundamental_score:.1f}</td>"
+            f"<td style='text-align:right'>{i.sector_breadth_score:.0f}</td>"
             f"<td>{', '.join(p.symbols)}</td></tr>"
         )
 
@@ -103,7 +108,7 @@ def build_email(result: dict, csv_path=None) -> tuple[str, str, str]:
       deployed Rs {result['invested']:,.0f}</span></p>
     <h3>Top industries</h3>
     <table cellpadding="6" style="border-collapse:collapse">
-      <tr><th align="left">Industry</th><th>Score</th><th align="left">Symbols</th></tr>
+      <tr><th align="left">Industry</th><th>Score</th><th>Fund</th><th>Breadth</th><th align="left">Symbols</th></tr>
       {''.join(pick_html)}
     </table>
     <h3>Simulated exits ({len(exits)})</h3>
