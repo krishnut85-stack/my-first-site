@@ -17,6 +17,10 @@ def test_session_opens_positions_within_capital(tmp_path, monkeypatch):
     assert result["cash"] >= 0
     # never deploy more than the starting capital
     assert result["holdings_value"] <= pf.starting_capital + 1
+    # report figures must reconcile: equity == cash + holdings value
+    assert abs(result["equity"] - (result["cash"] + result["holdings_value"])) < 0.01
+    # unrealized must equal equity change from a single price snapshot
+    assert abs(result["unrealized"] - result["total_pnl"]) < 0.01
 
 
 def test_positions_persist_and_no_double_buy(tmp_path, monkeypatch):
