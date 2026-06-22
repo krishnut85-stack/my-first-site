@@ -139,12 +139,26 @@ def send_email(subject: str, plain: str, html: str) -> bool:
     msg.set_content(plain)
     msg.add_alternative(html, subtype="html")
 
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL(config.SMTP_HOST, config.SMTP_PORT, context=context) as server:
-        server.login(config.SMTP_USER, config.SMTP_PASSWORD)
-        server.send_message(msg)
-    print(f"Email sent to {config.EMAIL_TO}")
-    return True
+    # Email must never crash the run. The portfolio has already been saved by
+    # the time we get here; a delivery failure is just logged.
+    try:
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL(config.SMTP_HOST, config.SMTP_PORT,
+                              context=context, timeout=30) as server:
+            server.login(config.SMTP_USER, config.SMTP_PASSWORD)
+            server.send_message(msg)
+        print(f"Email sent to {config.EMAIL_TO}")
+        return True
+    except OSError as exc:
+        print(f"[email] WARNING: could not send ({exc}).")
+        print("[email] If this is 'Network is unreachable' on a VPS, your host "
+              "likely blocks outbound SMTP (DigitalOcean blocks 25/465/587 by "
+              "default). Ask support to unblock it, or switch to an HTTP email "
+              "API. The portfolio run itself succeeded.")
+        return False
+    except Exception as exc:  # noqa: BLE001
+        print(f"[email] WARNING: send failed ({exc}). Portfolio run still OK.")
+        return False
 
 
 def send_daily(csv_path=None) -> bool:
