@@ -186,16 +186,23 @@ and the `USE_BREADTH_BLEND` toggle live in `config.py`. If no breadth file is
 present, the bot just uses fundamentals. The CLI `rank` and the daily email show
 the `Fund` and `Breadth` components alongside the blended score.
 
-## Rotation vs hold (`REBALANCE` in `config.py`)
+## Rotation with BUFFER BANDS (`REBALANCE` in `config.py`)
 
-- **`REBALANCE = True`** (default) — every run, the bot **sells holdings that have
-  dropped out of today's top `MAX_POSITIONS` picks and buys the new leaders**, so
-  each upload actually rotates the portfolio toward the latest ranking. A hard
-  stop-loss still applies as a floor. This is momentum rotation — higher turnover
-  (in real trading that means more brokerage, STT and slippage).
-- **`REBALANCE = False`** — low-churn: hold each name until its
-  stop-loss / take-profit / trailing / ATR exit fires; buy new leaders only with
-  spare cash. Lets winners run.
+The default minimises churn and taxes — it trades only when a holding genuinely
+deteriorates, not on daily noise:
+
+- **`REBALANCE = True`** (default, buffer bands):
+  - **Buy** to fill up to `MAX_POSITIONS` (8) from the best-ranked names you
+    don't already hold.
+  - **Sell** a holding **only when it drops out of the top `SELL_RANK_BUFFER`
+    (15)** — it is *not* sold for slipping a place or two. A hard stop-loss is the
+    floor. → typically a few trades a *month*, not daily. Lower cost, and longer
+    holds are more tax-efficient (LTCG vs STCG).
+- **`REBALANCE = False`** — pure exit-rule hold (SL / TP / trailing / ATR); buy
+  new leaders only with spare cash.
+
+Tune `MAX_POSITIONS` (how many to hold) and `SELL_RANK_BUFFER` (how sticky) to
+trade off responsiveness vs churn. A wider buffer = fewer trades.
 
 ## Capital & exit rules (all in `config.py`)
 

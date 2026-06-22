@@ -59,15 +59,14 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
 
     pf = Portfolio.load()
 
-    # Today's ranked picks, and the target set we want to hold (top N stocks).
+    # Today's ranked symbols (best first) and the buffer "keep" band.
     picks = build_watchlist(csv_path)
     ranked_symbols = []
     for pick in picks:
         for sym in pick.symbols:
             if sym not in ranked_symbols:
                 ranked_symbols.append(sym)
-    target = ranked_symbols[: config.MAX_POSITIONS]
-    target_set = set(target)
+    keep_band = set(ranked_symbols[: config.SELL_RANK_BUFFER])  # e.g. top 15
 
     # --- 1. manage existing positions -------------------------------------
     exits = []
@@ -77,12 +76,13 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
             continue
         h = pf.holdings[sym]
         if config.REBALANCE:
-            # rotate out anything no longer in today's top picks
-            if sym not in target_set:
-                pnl = pf.sell(sym, ltp, reason="rotated out (left top picks)")
+            # buffer band: sell ONLY when it drops out of the top SELL_RANK_BUFFER
+            if sym not in keep_band:
+                pnl = pf.sell(sym, ltp,
+                              reason=f"rotated out (left top {config.SELL_RANK_BUFFER})")
                 exits.append((sym, ltp, "rotated out", pnl))
                 continue
-            # still a leader: keep it, but honor a hard stop-loss as a floor
+            # still within the band: keep, but honor a hard stop-loss as a floor
             change = (ltp - h["avg_price"]) / h["avg_price"]
             if change <= -config.STOP_LOSS_PCT:
                 pnl = pf.sell(sym, ltp, reason=f"stop-loss {change:+.1%}")
@@ -98,12 +98,13 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
                 pnl = pf.sell(sym, ltp, reason=reason)
                 exits.append((sym, ltp, reason, pnl))
 
-    # --- 2. buy target picks not already held, with available cash --------
+    # --- 2. fill open slots with the best-ranked names not already held ----
     per_name_budget = min(config.PAPER_CAPITAL * config.MAX_ALLOCATION_PER_NAME,
                           config.PAPER_CAPITAL / max(config.MAX_POSITIONS, 1))
-    buy_list = target if config.REBALANCE else ranked_symbols
     entries = []
-    for sym in buy_list:
+    for sym in ranked_symbols:
+        if config.REBALANCE and len(pf.holdings) >= config.MAX_POSITIONS:
+            break  # already hold the target number of names
         if sym in pf.holdings:
             continue
         ltp = _safe_price(ds, sym)

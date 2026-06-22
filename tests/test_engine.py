@@ -74,8 +74,9 @@ def test_rebalance_holds_only_top_picks(tmp_path, monkeypatch):
         for s in p.symbols:
             if s not in syms:
                 syms.append(s)
-    target = set(syms[: config.MAX_POSITIONS])
-    assert set(r["portfolio"].holdings).issubset(target)
+    keep_band = set(syms[: config.SELL_RANK_BUFFER])
+    # holdings stay within the buffer band, and never exceed MAX_POSITIONS
+    assert set(r["portfolio"].holdings).issubset(keep_band)
     assert len(r["portfolio"].holdings) <= config.MAX_POSITIONS
 
 
