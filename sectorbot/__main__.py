@@ -34,12 +34,13 @@ def cmd_rank() -> None:
     csv = _csv_arg()
     print(f"\nUsing data file: {resolve_csv(csv)}")
     ranked = score_industries(load_industries(csv))
-    print(f"\n{'#':>3}  {'Industry':34} {'Sector':30} {'Score':>6} {'PE':>7}")
-    print("-" * 86)
+    print(f"\n{'#':>3}  {'Industry':34} {'Sector':28} {'Score':>6} {'Fund':>6} {'Breadth':>7} {'PE':>7}")
+    print("-" * 100)
     for i, ind in enumerate(ranked[:25], 1):
         pe = f"{ind.pe:.1f}" if ind.pe is not None else "-"
-        print(f"{i:>3}  {ind.name[:34]:34} {ind.sector[:30]:30} {ind.score:6.1f} {pe:>7}")
-    print("\n(Ranking of YOUR data — not a prediction, not advice.)\n")
+        print(f"{i:>3}  {ind.name[:34]:34} {ind.sector[:28]:28} {ind.score:6.1f} "
+              f"{ind.fundamental_score:6.1f} {ind.sector_breadth_score:7.1f} {pe:>7}")
+    print("\nScore = fundamentals + breadth blend. Not a prediction, not advice.\n")
 
 
 def cmd_sim() -> None:

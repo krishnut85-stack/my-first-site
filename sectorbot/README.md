@@ -94,6 +94,30 @@ flags needed. You can also force a file with `--csv path/to/file.csv` or the
 `SECTORBOT_CSV` env var. To build backtest history, also copy each day's file
 into `sectorbot/data/snapshots/` (see the README there).
 
+## Two data files: fundamentals + sector breadth (blended)
+
+SectorBot can blend two Trendlyne CSVs:
+
+1. **Fundamentals** (industry level) — PE, ROE, returns, Industry Score. This is
+   the primary file (`sectors.csv` / your dated upload).
+2. **Sector breadth** (sector level) — Momentum Score, RSI>50, MFI>50,
+   LTP>SMA20/50/200, SMA50>SMA200, day/week gainers. Export from Trendlyne's
+   "Sector rotation & bullish/bearish breadth" page.
+
+The bot **auto-detects each file by its headers**, so just drop both into
+`sectorbot/data/` (any names ending in `.csv`; date them to control recency).
+Each industry's score becomes:
+
+```
+score = fundamental_score * BLEND_FUNDAMENTAL_WEIGHT
+      + sector_breadth_score (0-100) * BLEND_BREADTH_WEIGHT
+```
+
+matched by sector name (`&`/`and`, commas and casing are normalised). Weights
+and the `USE_BREADTH_BLEND` toggle live in `config.py`. If no breadth file is
+present, the bot just uses fundamentals. The CLI `rank` and the daily email show
+the `Fund` and `Breadth` components alongside the blended score.
+
 ## Capital & exit rules (all in `config.py`)
 
 - **Capital mode** — `"unlimited"` (invest `NOTIONAL_PER_NAME` in every pick, no

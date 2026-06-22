@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from . import config
+from .breadth import load_breadth_scores, normalize_sector
 from .data_loader import resolve_csv
 
 
@@ -46,6 +47,8 @@ class Industry:
     breadth: float
     pe: Optional[float]
     score: float = 0.0
+    fundamental_score: float = 0.0   # score before the breadth blend
+    sector_breadth_score: float = 0.0  # 0-100 breadth of this industry's sector
 
 
 def load_industries(csv_path=None) -> list[Industry]:
@@ -76,11 +79,17 @@ def load_industries(csv_path=None) -> list[Industry]:
     return out
 
 
-def score_industries(industries: list[Industry]) -> list[Industry]:
-    """Attach a score to each industry and return them sorted, best first."""
+def score_industries(industries: list[Industry], breadth=None) -> list[Industry]:
+    """Attach a score to each industry and return them sorted, best first.
+
+    If a sector-breadth map is available (or auto-loaded), each industry's
+    fundamental score is blended with its sector's breadth score.
+    """
+    if breadth is None:
+        breadth = load_breadth_scores()
     w = config.WEIGHTS
     for ind in industries:
-        ind.score = (
+        fund = (
             _cap(ind.qtr_change, -50, 80) * w["qtr_change"]
             + _cap(ind.half_change, -50, 120) * w["half_change"]
             + _cap(ind.year_change, -60, 150) * w["year_change"]
@@ -89,6 +98,16 @@ def score_industries(industries: list[Industry]) -> list[Industry]:
             + _cap(ind.rev_growth, -50, 80) * w["rev_growth"]
             + _cap(ind.breadth, 0, 13) * w["breadth"] * 5
         )
+        ind.fundamental_score = fund
+        b = breadth.get(normalize_sector(ind.sector)) if breadth else None
+        ind.sector_breadth_score = b["score"] if b else 0.0
+        if config.USE_BREADTH_BLEND and b:
+            ind.score = (
+                fund * config.BLEND_FUNDAMENTAL_WEIGHT
+                + b["score"] * config.BLEND_BREADTH_WEIGHT
+            )
+        else:
+            ind.score = fund
     return sorted(industries, key=lambda i: i.score, reverse=True)
 
 

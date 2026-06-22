@@ -88,3 +88,27 @@ WEIGHTS = {
     "rev_growth": 0.05,        # Revenue growth Qtr YoY%
     "breadth": 0.05,           # Advances/Declines ratio
 }
+
+# --- Sector-breadth blend --------------------------------------------------
+# A separate Trendlyne CSV (sector bullish/bearish breadth) can be blended in.
+# Each industry's fundamental score gets a tilt from its SECTOR's breadth score.
+# Final score = fundamental * BLEND_FUNDAMENTAL_WEIGHT
+#             + sector_breadth (0-100) * BLEND_BREADTH_WEIGHT
+USE_BREADTH_BLEND = True
+BLEND_FUNDAMENTAL_WEIGHT = 1.0
+BLEND_BREADTH_WEIGHT = 0.5
+
+# Breadth columns are the % of a sector's stocks that are bullish on each
+# signal (0-100); MOMENTUM SCORE is already 0-100. Weights sum to 1.0 so the
+# breadth score is also 0-100. Long-term trend (SMA200, golden cross) weighted
+# highest.
+BREADTH_WEIGHTS = {
+    "momentum_score": 0.25,    # MOMENTUM SCORE
+    "rsi50": 0.10,             # % with RSI > 50
+    "mfi50": 0.10,             # % with MFI > 50
+    "sma20": 0.05,             # % with LTP > SMA20
+    "sma50": 0.10,             # % with LTP > SMA50
+    "sma200": 0.20,            # % with LTP > SMA200 (long-term trend)
+    "golden_cross": 0.15,      # % with SMA50 > SMA200
+    "week_gainers": 0.05,      # WEEK GAINERS %
+}
