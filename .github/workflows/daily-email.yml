@@ -1,0 +1,40 @@
+name: SectorBot daily email
+
+# Emails the day's picks + simulated exits.
+#
+# IMPORTANT:
+#  • Scheduled (cron) runs only happen from the DEFAULT branch (main), so this
+#    starts working once PR #3 is merged.
+#  • The job uses the CSV committed in the repo (it cannot see files you upload
+#    only to your laptop via Termius). To email on fresh data, commit/push the
+#    day's CSV into sectorbot/data/ before the run (Working Copy can do this),
+#    or trigger the workflow manually after pushing.
+#  • Set the SMTP secrets below or the job will just dry-run (print, not send).
+
+on:
+  schedule:
+    # 10:15 UTC = 15:45 IST, just after Indian market close, Mon–Fri.
+    # (GitHub may delay scheduled runs by a few minutes under load.)
+    - cron: "15 10 * * 1-5"
+  workflow_dispatch: {}   # lets you run it on demand from the Actions tab
+
+jobs:
+  email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Send daily email
+        env:
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+        run: python -m sectorbot email

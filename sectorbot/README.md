@@ -45,6 +45,31 @@ python -m sectorbot email
 Automate it daily with cron, e.g. `30 16 * * 1-5 cd /path/to/my-first-site &&
 python -m sectorbot email` (after your Termius upload).
 
+### Automated daily email via GitHub Actions
+
+`.github/workflows/daily-email.yml` runs `python -m sectorbot email` on a
+schedule (10:15 UTC ≈ 15:45 IST, Mon–Fri) and can also be run on demand from
+the **Actions** tab.
+
+Setup:
+1. **Merge PR #3 into `main`.** Scheduled runs only fire from the default
+   branch, so the daily job won't start until this is on `main`.
+2. In GitHub: **Settings → Secrets and variables → Actions → New repository
+   secret**, add:
+   - `SMTP_HOST` = `smtp.gmail.com`
+   - `SMTP_PORT` = `465`
+   - `SMTP_USER` = `krishnut85@gmail.com`
+   - `SMTP_PASSWORD` = your Gmail **App password**
+   - `EMAIL_TO` = `krishnut85@gmail.com` (optional; defaults to this)
+3. Test it: Actions tab → *SectorBot daily email* → **Run workflow**.
+
+Without the secrets the job still succeeds but only **dry-runs** (prints the
+email in the logs instead of sending).
+
+⚠️ The Action uses the CSV **committed in the repo** — it cannot see files you
+upload only to your laptop. To email on fresh data, commit/push the day's CSV
+into `sectorbot/data/` (e.g. via Working Copy) before the run.
+
 ## Tests
 
 ```bash
