@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from . import config
+from .data_loader import resolve_csv
 
 
 def _num(value: Optional[str]) -> Optional[float]:
@@ -35,6 +36,7 @@ def _cap(value: Optional[float], lo: float, hi: float) -> float:
 class Industry:
     name: str
     sector: str
+    day_change: float
     industry_score: float
     qtr_change: float
     half_change: float
@@ -47,7 +49,7 @@ class Industry:
 
 
 def load_industries(csv_path=None) -> list[Industry]:
-    csv_path = csv_path or config.DATA_CSV
+    csv_path = resolve_csv(csv_path)
     out: list[Industry] = []
     with open(csv_path, newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
@@ -60,6 +62,7 @@ def load_industries(csv_path=None) -> list[Industry]:
                 Industry(
                     name=row["Name"].strip(),
                     sector=row["Sector"].strip(),
+                    day_change=_num(row.get("Day Change %")) or 0.0,
                     industry_score=iscore,
                     qtr_change=qtr,
                     half_change=half,

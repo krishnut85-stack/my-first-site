@@ -12,9 +12,9 @@ from .bot import run_simulation
 from .screener import score_industries, load_industries
 
 
-def _rank_rows(limit=20) -> str:
+def _rank_rows(csv_path=None, limit=20) -> str:
     rows = []
-    for i, ind in enumerate(score_industries(load_industries())[:limit], 1):
+    for i, ind in enumerate(score_industries(load_industries(csv_path))[:limit], 1):
         pe = f"{ind.pe:.1f}" if ind.pe is not None else "—"
         hot = " 🔥" if ind.pe and ind.pe > config.MAX_PORTFOLIO_PE else ""
         rows.append(
@@ -39,9 +39,9 @@ def _pick_rows(result) -> str:
     return "\n".join(rows)
 
 
-def generate(path=None) -> str:
+def generate(path=None, csv_path=None) -> str:
     path = path or config.DASHBOARD_HTML
-    result = run_simulation(verbose=False)
+    result = run_simulation(verbose=False, csv_path=csv_path)
     pnl_class = "pos" if result["pnl"] >= 0 else "neg"
 
     doc = f"""<!DOCTYPE html>
@@ -82,10 +82,13 @@ def generate(path=None) -> str:
 
   <div class="box">
     <h2>Simulated portfolio</h2>
-    <p>Starting capital: <b>Rs {result['broker'].starting_capital:,.0f}</b> &nbsp;·&nbsp;
-       Ending equity: <b>Rs {result['equity']:,.0f}</b></p>
+    <p>Capital mode: <b>{config.CAPITAL_MODE.upper()}</b> &nbsp;·&nbsp;
+       Gross deployed: <b>Rs {result['invested']:,.0f}</b></p>
     <p class="kpi {pnl_class}">P&amp;L: Rs {result['pnl']:,.0f} ({result['pnl_pct']:+.2f}%)</p>
-    <p>{len(result['broker'].trades)} simulated trades across {len(result['picks'])} industries.</p>
+    <p>{len(result['broker'].trades)} simulated trades across {len(result['picks'])} industries.
+       Exit rules: SL {config.STOP_LOSS_PCT:.0%}, TP {config.TAKE_PROFIT_PCT:.0%},
+       trailing {config.TRAILING_SL_PCT:.0%} after +{config.TRAILING_ACTIVATE_PCT:.0%},
+       ATR {config.ATR_MULT}×.</p>
   </div>
 
   <div class="box">
@@ -101,7 +104,7 @@ def generate(path=None) -> str:
     <p style="color:#777;font-size:0.9em;">🔥 = PE above {config.MAX_PORTFOLIO_PE} (looks overheated, skipped by the bot)</p>
     <table>
       <tr><th>#</th><th>Industry</th><th>Sector</th><th>Score</th><th>Qtr%</th><th>1Yr%</th><th>PE</th></tr>
-      {_rank_rows()}
+      {_rank_rows(csv_path)}
     </table>
   </div>
 </body>

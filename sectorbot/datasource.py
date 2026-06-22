@@ -11,10 +11,12 @@ import hashlib
 from typing import Protocol
 
 from . import config
+from .indicators import Bar
 
 
 class DataSource(Protocol):
     def last_price(self, symbol: str) -> float: ...
+    def history(self, symbol: str, bars: int) -> list[Bar]: ...
 
 
 class PaperDataSource:
@@ -52,6 +54,23 @@ class PaperDataSource:
     def advance(self, symbol: str) -> None:
         self._step[symbol] = self._step.get(symbol, 0) + 1
 
+    def history(self, symbol: str, bars: int) -> list[Bar]:
+        """Deterministic synthetic OHLC history so ATR can be computed offline.
+
+        NOT real market data -- volatility here is fabricated. For real ATR,
+        use KiteDataSource.history (Kite historical API).
+        """
+        base = self._base.get(symbol) or self._seed(symbol)
+        out: list[Bar] = []
+        for i in range(bars):
+            wobble = ((hash((symbol, "hist", i)) % 200) - 100) / 100.0
+            close = round(base * (1 + 0.012 * wobble), 2)
+            spread = abs(wobble) * 0.01 * base + 0.5
+            high = round(close + spread, 2)
+            low = round(max(close - spread, 1.0), 2)
+            out.append(Bar(high=high, low=low, close=close))
+        return out
+
 
 class KiteDataSource:
     """Live prices via Kite Connect. Requires pykiteconnect + valid keys.
@@ -74,6 +93,22 @@ class KiteDataSource:
     def last_price(self, symbol: str) -> float:  # pragma: no cover
         quote = self.kite.ltp([f"NSE:{symbol}"])
         return float(quote[f"NSE:{symbol}"]["last_price"])
+
+    def history(self, symbol: str, bars: int) -> list[Bar]:  # pragma: no cover
+        """Real OHLC via Kite historical_data. Requires the instrument token.
+
+        Sketch (you must map symbol -> instrument_token from kite.instruments()):
+            from datetime import date, timedelta
+            token = self._token_for(symbol)
+            data = self.kite.historical_data(
+                token, date.today() - timedelta(days=bars * 2), date.today(), "day"
+            )
+            return [Bar(d["high"], d["low"], d["close"]) for d in data][-bars:]
+        """
+        raise NotImplementedError(
+            "Map symbol->instrument_token and call kite.historical_data(). "
+            "See the docstring above."
+        )
 
 
 def get_datasource() -> DataSource:

@@ -22,10 +22,30 @@ cd my-first-site
 python -m sectorbot rank        # ranked industries from your data
 python -m sectorbot sim         # run the paper-trading simulation
 python -m sectorbot dashboard   # write ../dashboard.html to view in a browser
+python -m sectorbot backtest    # replay data/snapshots/*.csv (needs 2+ days)
 ```
 
 Open `dashboard.html` in any browser (or link it from `index.html`) to see the
 rankings and simulated P&L.
+
+## Daily CSV workflow (Termius)
+
+Just upload today's file into `sectorbot/data/` with **any name ending in
+`.csv`** (e.g. `2026-06-22.csv`). The bot **auto-selects the newest file** — no
+flags needed. You can also force a file with `--csv path/to/file.csv` or the
+`SECTORBOT_CSV` env var. To build backtest history, also copy each day's file
+into `sectorbot/data/snapshots/` (see the README there).
+
+## Capital & exit rules (all in `config.py`)
+
+- **Capital mode** — `"unlimited"` (invest `NOTIONAL_PER_NAME` in every pick, no
+  cash cap) or `"fixed"` (spread `PAPER_CAPITAL`, cash-constrained).
+- **Hard stop-loss / take-profit** — fixed % from entry.
+- **Trailing stop ("trailing profit")** — arms after `TRAILING_ACTIVATE_PCT`
+  profit, then exits on a `TRAILING_SL_PCT` drop from the peak, locking gains.
+- **ATR stop** — volatility-adaptive stop at `entry − ATR_MULT × ATR`
+  (Wilder's ATR over `ATR_PERIOD` bars). In paper mode ATR uses synthetic
+  history; live mode uses Kite historical data.
 
 ## How the ranking works
 
