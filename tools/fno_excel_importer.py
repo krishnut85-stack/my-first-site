@@ -64,18 +64,55 @@ def _f(x):
 
 
 def _exp_date(s):
-    """Parse Trendlyne expiry 'DD-MM-YY' -> date (for nearest-expiry pick)."""
-    try:
-        return datetime.strptime((s or "").strip(), "%d-%m-%y").date()
-    except Exception:
-        return date.max
+    """Parse Trendlyne expiry -> date (CSV gives 'DD-MM-YY' string; XLSX may give
+    a real datetime). Used to pick the nearest-expiry future."""
+    if hasattr(s, "year"):                      # datetime/date from xlsx
+        try:
+            return s.date() if hasattr(s, "date") else s
+        except Exception:
+            return date.max
+    for fmt in ("%d-%m-%y", "%d-%m-%Y", "%Y-%m-%d"):
+        try:
+            return datetime.strptime(str(s).strip(), fmt).date()
+        except Exception:
+            continue
+    return date.max
 
 
 def pick_newest(inbox):
-    files = sorted(glob.glob(os.path.join(inbox, "*.csv")) +
-                   glob.glob(os.path.join(inbox, "*.CSV")),
-                   key=os.path.getmtime, reverse=True)
+    pats = ["*.csv", "*.CSV", "*.xlsx", "*.XLSX", "*.xlsm"]
+    files = []
+    for p in pats:
+        files += glob.glob(os.path.join(inbox, p))
+    files = sorted(set(files), key=os.path.getmtime, reverse=True)
     return files[0] if files else None
+
+
+def read_rows(path):
+    """Read a CSV or XLSX export into a list of dict rows (headers from row 1).
+    Trendlyne sometimes gives .csv, sometimes .xlsx - handle both."""
+    if path.lower().endswith((".xlsx", ".xlsm")):
+        try:
+            from openpyxl import load_workbook
+        except ImportError:
+            print("ERROR: this is an .xlsx file but 'openpyxl' isn't installed.\n"
+                  "  Fix: pip3 install openpyxl   (or download the data as CSV instead)")
+            sys.exit(2)
+        wb = load_workbook(path, read_only=True, data_only=True)
+        ws = wb.active
+        it = ws.iter_rows(values_only=True)
+        try:
+            header = [str(h).strip() if h is not None else "" for h in next(it)]
+        except StopIteration:
+            wb.close(); return []
+        out = []
+        for r in it:
+            out.append({header[i]: (r[i] if i < len(r) else None)
+                        for i in range(len(header))})
+        wb.close()
+        return out
+    with open(path, newline="") as f:
+        return list(csv.DictReader(f))
 
 
 def score(day_pct, oi_pct):
@@ -86,7 +123,7 @@ def score(day_pct, oi_pct):
 
 def build_signals(path):
     """Return list of signal dicts from the near-month future of each underlying."""
-    rows = list(csv.DictReader(open(path, newline="")))
+    rows = read_rows(path)
     futs = [r for r in rows if _norm(r.get("OPTION TYPE")) == "future"]
     # near-month future per symbol
     nearest = {}
