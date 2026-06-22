@@ -3,7 +3,8 @@
 Priority:
   1. an explicit path passed in code / on the CLI (--csv ...)
   2. the SECTORBOT_CSV environment variable
-  3. the most recently modified *.csv in data/  (your daily Termius upload)
+  3. the *.csv in data/ with the latest date in its filename (your daily
+     upload, e.g. 2026-06-22.csv or 2026.06.22.csv); mtime breaks ties
   4. the bundled data/sectors.csv fallback
 
 This means your workflow is simply: scp/upload today's file into
@@ -20,15 +21,27 @@ from . import config
 IST = timezone(timedelta(hours=5, minutes=30))
 
 
+def _date_key(path: Path) -> int:
+    """Numeric date pulled from the filename digits, e.g.
+    2026-06-22 / 2026.06.22 / 20260622 -> 20260622. No digits -> -1.
+
+    Using the filename (not the file mtime) makes selection deterministic even
+    in CI, where `git checkout` gives every file the same modified-time.
+    """
+    digits = "".join(ch for ch in path.stem if ch.isdigit())
+    return int(digits) if digits else -1
+
+
 def resolve_csv(explicit: Optional[str] = None) -> Path:
     if explicit:
         return Path(explicit).expanduser()
     if config.CSV_OVERRIDE:
         return Path(config.CSV_OVERRIDE).expanduser()
 
+    # Prefer the file with the latest date in its name; tie-break on mtime.
     csvs = sorted(
         config.DATA_DIR.glob("*.csv"),
-        key=lambda p: p.stat().st_mtime,
+        key=lambda p: (_date_key(p), p.stat().st_mtime),
         reverse=True,
     )
     if csvs:
