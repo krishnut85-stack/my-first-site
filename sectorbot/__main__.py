@@ -20,7 +20,7 @@ from .backtest import run_backtest
 from .bot import run_simulation
 from .data_loader import resolve_csv, save_snapshot
 from .engine import run_paper_session
-from .notify import send_daily, send_portfolio
+from .notify import send_daily, send_portfolio, write_portfolio_report
 from .report import generate
 from .screener import score_industries, load_industries
 
@@ -69,11 +69,15 @@ def cmd_snapshot() -> None:
 
 
 def cmd_trade() -> None:
-    # run the persistent paper session once, print it, then email that result
+    # run the persistent paper session once, print it, write a report file, and
+    # email it only if SMTP is configured (email failures never crash the run).
     result = run_paper_session(verbose=True, csv_path=_csv_arg())
     if result.get("aborted"):
-        return  # nothing to email; portfolio left untouched
-    send_portfolio(result=result)
+        return  # portfolio left untouched; nothing to report
+    txt, html = write_portfolio_report(result)
+    print(f"Report written: {txt}")
+    if config.SMTP_HOST and config.SMTP_USER and config.SMTP_PASSWORD:
+        send_portfolio(result=result)
 
 
 def cmd_token_check() -> None:

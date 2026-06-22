@@ -2,3 +2,5 @@ __pycache__/
 *.pyc
 .env
 sectorbot/data/portfolio.json
+portfolio_report.txt
+portfolio_report.html

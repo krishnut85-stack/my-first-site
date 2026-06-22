@@ -229,6 +229,18 @@ def build_portfolio_email(result: dict) -> tuple[str, str, str]:
     return subject, plain, html
 
 
+def write_portfolio_report(result: dict) -> tuple[str, str]:
+    """Write the latest portfolio summary to plain + HTML files on disk.
+
+    Returns (txt_path, html_path). Use this instead of email when the host
+    blocks SMTP -- view with `cat portfolio_report.txt` or open the HTML.
+    """
+    _, plain, html = build_portfolio_email(result)
+    config.PORTFOLIO_REPORT_TXT.write_text(plain, encoding="utf-8")
+    config.PORTFOLIO_REPORT_HTML.write_text(html, encoding="utf-8")
+    return str(config.PORTFOLIO_REPORT_TXT), str(config.PORTFOLIO_REPORT_HTML)
+
+
 def send_portfolio(result=None, csv_path=None) -> bool:
     if result is None:
         from .engine import run_paper_session

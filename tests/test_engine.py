@@ -44,6 +44,20 @@ def test_synthetic_flag_when_no_kite_keys(tmp_path, monkeypatch):
     assert result["real_data"] is False
 
 
+def test_write_portfolio_report_creates_files(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "PORTFOLIO_JSON", tmp_path / "pf.json")
+    monkeypatch.setattr(config, "USE_KITE_DATA", False)
+    monkeypatch.setattr(config, "PORTFOLIO_REPORT_TXT", tmp_path / "r.txt")
+    monkeypatch.setattr(config, "PORTFOLIO_REPORT_HTML", tmp_path / "r.html")
+    from sectorbot.notify import write_portfolio_report
+
+    result = run_paper_session(verbose=False)
+    txt, html = write_portfolio_report(result)
+    assert (tmp_path / "r.txt").exists()
+    assert (tmp_path / "r.html").exists()
+    assert "paper portfolio" in (tmp_path / "r.txt").read_text().lower()
+
+
 def test_aborts_when_real_data_required_but_unavailable(tmp_path, monkeypatch):
     # USE_KITE_DATA on but no keys -> synthetic -> MUST abort and not write state
     pf_path = tmp_path / "pf.json"

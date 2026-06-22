@@ -14,6 +14,8 @@ DATA_DIR = BASE_DIR / "data"            # drop your daily CSVs here (via Termius
 DATA_CSV = DATA_DIR / "sectors.csv"     # fallback if no dated file is found
 SNAPSHOTS_DIR = DATA_DIR / "snapshots"  # historical daily CSVs for backtesting
 PORTFOLIO_JSON = DATA_DIR / "portfolio.json"  # persistent paper portfolio state
+PORTFOLIO_REPORT_TXT = BASE_DIR.parent / "portfolio_report.txt"   # latest run, plain
+PORTFOLIO_REPORT_HTML = BASE_DIR.parent / "portfolio_report.html"  # latest run, html
 DASHBOARD_HTML = BASE_DIR.parent / "dashboard.html"  # written into my-first-site
 
 # A daily upload can be named anything ending in .csv (e.g. 2026-06-22.csv).
