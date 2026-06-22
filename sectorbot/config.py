@@ -13,6 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"            # drop your daily CSVs here (via Termius)
 DATA_CSV = DATA_DIR / "sectors.csv"     # fallback if no dated file is found
 SNAPSHOTS_DIR = DATA_DIR / "snapshots"  # historical daily CSVs for backtesting
+PORTFOLIO_JSON = DATA_DIR / "portfolio.json"  # persistent paper portfolio state
 DASHBOARD_HTML = BASE_DIR.parent / "dashboard.html"  # written into my-first-site
 
 # A daily upload can be named anything ending in .csv (e.g. 2026-06-22.csv).
@@ -25,21 +26,29 @@ CSV_OVERRIDE = os.environ.get("SECTORBOT_CSV", "")
 # understand the risk, have tested for a long time, and have read the README.
 LIVE_TRADING = False
 
-# --- Kite Connect (only needed for live data / live orders) ----------------
+# --- Kite Connect ----------------------------------------------------------
+# Needed for REAL market prices (paper trading on live data) and for live
+# orders. Set these as environment variables / GitHub secrets.
 KITE_API_KEY = os.environ.get("KITE_API_KEY", "")
 KITE_API_SECRET = os.environ.get("KITE_API_SECRET", "")
 KITE_ACCESS_TOKEN = os.environ.get("KITE_ACCESS_TOKEN", "")
+
+# Use REAL Kite prices for paper trading when keys are present. This is still
+# PAPER (no real orders) -- it just simulates against actual market data so the
+# track record is meaningful. Falls back to synthetic prices if Kite is
+# unavailable. Set LIVE_TRADING (above) only when you truly want real orders.
+USE_KITE_DATA = True
 
 # --- Capital / position sizing --------------------------------------------
 # CAPITAL_MODE:
 #   "fixed"     -> spread PAPER_CAPITAL across picks, cash-constrained
 #   "unlimited" -> no cash limit; invest NOTIONAL_PER_NAME in every pick
-CAPITAL_MODE = "unlimited"
-PAPER_CAPITAL = 100_000.0      # used only in "fixed" mode
+CAPITAL_MODE = "fixed"
+PAPER_CAPITAL = 1_000_000.0    # Rs 10 lakh paper capital (fixed mode)
 NOTIONAL_PER_NAME = 50_000.0   # rupees per stock in "unlimited" mode
 TOP_N_INDUSTRIES = 8           # how many top-ranked industries to invest in
 MAX_NAMES_PER_INDUSTRY = 4     # cap symbols taken from each industry
-MAX_ALLOCATION_PER_NAME = 0.15 # (fixed mode only) cap per stock vs capital
+MAX_ALLOCATION_PER_NAME = 0.15 # (fixed mode) cap per stock vs capital (1.5L)
 MAX_PORTFOLIO_PE = 60          # skip industries trading above this PE (overheated)
 
 # --- Exit rules ------------------------------------------------------------

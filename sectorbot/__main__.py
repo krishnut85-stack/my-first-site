@@ -5,6 +5,7 @@
   python -m sectorbot dashboard [--csv FILE] # write dashboard.html
   python -m sectorbot backtest               # replay data/snapshots/*.csv
   python -m sectorbot email [--csv FILE]      # email daily picks/exits
+  python -m sectorbot trade [--csv FILE]      # run persistent paper portfolio + email
   python -m sectorbot snapshot                # save today's CSV to snapshots/
 
 Daily workflow: upload today's CSV into sectorbot/data/ via Termius (any name
@@ -17,7 +18,8 @@ from . import config
 from .backtest import run_backtest
 from .bot import run_simulation
 from .data_loader import resolve_csv, save_snapshot
-from .notify import send_daily
+from .engine import run_paper_session
+from .notify import send_daily, send_portfolio
 from .report import generate
 from .screener import score_industries, load_industries
 
@@ -65,6 +67,12 @@ def cmd_snapshot() -> None:
     print(f"Snapshot saved: {dst}")
 
 
+def cmd_trade() -> None:
+    # run the persistent paper session once, print it, then email that result
+    result = run_paper_session(verbose=True, csv_path=_csv_arg())
+    send_portfolio(result=result)
+
+
 def main() -> None:
     cmds = {
         "rank": cmd_rank,
@@ -72,6 +80,7 @@ def main() -> None:
         "dashboard": cmd_dashboard,
         "backtest": cmd_backtest,
         "email": cmd_email,
+        "trade": cmd_trade,
         "snapshot": cmd_snapshot,
     }
     choice = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else "sim"

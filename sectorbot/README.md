@@ -24,7 +24,36 @@ python -m sectorbot sim         # run the paper-trading simulation
 python -m sectorbot dashboard   # write ../dashboard.html to view in a browser
 python -m sectorbot backtest    # replay data/snapshots/*.csv (needs 2+ days)
 python -m sectorbot email       # email today's picks/exits to you
+python -m sectorbot trade       # run the PERSISTENT paper portfolio + email
 ```
+
+## Paper trading on REAL Kite prices (persistent portfolio)
+
+`python -m sectorbot trade` maintains a real **forward track record**: it keeps a
+portfolio in `data/portfolio.json` (cash, positions, realised P&L, equity
+history) that **carries across runs**. Each run prices every holding, applies
+the exit rules (SL / TP / trailing / ATR), books realised P&L, then buys new top
+picks with spare cash. Capital is **₹10 lakh** (`config.PAPER_CAPITAL`,
+`CAPITAL_MODE="fixed"`, max 15% per name).
+
+- **It is still PAPER** — no real orders are ever placed.
+- With Kite keys set (`USE_KITE_DATA=True`, default) it trades on **real market
+  prices**, so the track record is meaningful. Without keys it falls back to
+  **synthetic** prices (clearly flagged "NOT real") so it still runs.
+- Going live later = set `LIVE_TRADING=True` and implement order placement; the
+  paper portfolio is your evidence before that.
+
+### Kite setup (for real prices)
+1. Get a paid **Kite Connect** subscription (~₹2,000/mo) → API key + secret.
+2. Add GitHub secrets: `KITE_API_KEY`, `KITE_API_SECRET`, `KITE_ACCESS_TOKEN`.
+3. ⚠️ **The access token expires daily** — Kite requires a fresh login each day.
+   You must refresh `KITE_ACCESS_TOKEN` before the run, or that day falls back to
+   synthetic prices. Automating this token refresh is the main operational
+   hurdle of running unattended.
+
+⚠️ Even on real prices, **paper results overstate live results** — they ignore
+brokerage, STT/GST, slippage, spread and market impact. Treat this as a research
+track record, not a profit promise.
 
 ## Email alerts
 

@@ -1,5 +1,5 @@
-# SectorBot runs in PAPER mode using only the Python standard library.
-# The dependency below is ONLY needed if you later enable live trading/data
-# via Kite Connect (config.LIVE_TRADING = True).
-
-# kiteconnect>=4.2.0
+# SectorBot's paper engine runs on the standard library alone (synthetic prices).
+# kiteconnect is needed to trade the paper portfolio on REAL market prices
+# (config.USE_KITE_DATA) and, later, for live order placement. It is safe to
+# install even if you have no keys yet -- the bot falls back to synthetic data.
+kiteconnect>=4.2.0

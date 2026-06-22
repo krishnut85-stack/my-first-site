@@ -153,5 +153,75 @@ def send_daily(csv_path=None) -> bool:
     return send_email(subject, plain, html)
 
 
+def build_portfolio_email(result: dict) -> tuple[str, str, str]:
+    """Email for a persistent paper-portfolio session (engine.run_paper_session)."""
+    pf = result["portfolio"]
+    real = result["real_data"]
+    tag = "REAL Kite prices" if real else "SYNTHETIC prices — NOT real"
+    subject = (
+        f"SectorBot portfolio {date.today().isoformat()} · "
+        f"equity Rs {result['equity']:,.0f} ({result['total_pnl_pct']:+.2f}%)"
+    )
+
+    lines = [
+        f"SectorBot paper portfolio ({tag}) — not investment advice",
+        f"Starting capital: Rs {pf.starting_capital:,.0f}",
+        f"Equity now: Rs {result['equity']:,.0f} ({result['total_pnl_pct']:+.2f}%)",
+        f"Cash: Rs {result['cash']:,.0f} | Holdings: Rs {result['holdings_value']:,.0f}",
+        f"Unrealised P&L: Rs {result['unrealized']:,.0f} | "
+        f"Realised P&L: Rs {result['realized']:,.0f}",
+        "",
+        f"Holdings ({len(pf.holdings)}):",
+    ]
+    hold_html = []
+    for s, h in pf.holdings.items():
+        ltp = result["price_of"](s)
+        pnl = (ltp - h["avg_price"]) * h["qty"]
+        lines.append(f"  {s} x{h['qty']} @ {h['avg_price']:.2f} -> {ltp:.2f} "
+                     f"(P&L {pnl:+,.0f}, since {h['entry_date']})")
+        hold_html.append(
+            f"<tr><td>{s}</td><td style='text-align:right'>{h['qty']}</td>"
+            f"<td style='text-align:right'>{h['avg_price']:.2f}</td>"
+            f"<td style='text-align:right'>{ltp:.2f}</td>"
+            f"<td style='text-align:right'>{pnl:+,.0f}</td><td>{h['entry_date']}</td></tr>"
+        )
+
+    exits = result["exits"]
+    lines.append("")
+    lines.append(f"Exits this run: {len(exits)}")
+    for s, ltp, reason, pnl in exits:
+        lines.append(f"  SELL {s} @ {ltp:.2f} [{reason}] P&L {pnl:+,.0f}")
+    plain = "\n".join(lines)
+
+    color = "#0a8f3c" if result["total_pnl"] >= 0 else "#c62828"
+    warn = ("" if real else
+            "<b>These are SYNTHETIC prices — set Kite keys for real data.</b> ")
+    html = f"""<html><body style="font-family:-apple-system,sans-serif;color:#222">
+    <h2 style="color:#764ba2">SectorBot portfolio · {date.today().isoformat()}</h2>
+    <p style="background:#fff8e1;border-left:5px solid #f4b400;padding:10px">
+      {warn}Paper trading ({tag}). Not investment advice.</p>
+    <p style="font-size:1.3em;color:{color}"><b>Equity Rs {result['equity']:,.0f}
+      ({result['total_pnl_pct']:+.2f}%)</b><br>
+      <span style="font-size:0.7em;color:#555">Cash Rs {result['cash']:,.0f} ·
+      Unrealised {result['unrealized']:+,.0f} · Realised {result['realized']:+,.0f}</span></p>
+    <h3>Holdings ({len(pf.holdings)})</h3>
+    <table cellpadding="6" style="border-collapse:collapse">
+      <tr><th align="left">Stock</th><th>Qty</th><th>Entry</th><th>LTP</th><th>P&amp;L</th><th align="left">Since</th></tr>
+      {''.join(hold_html) or '<tr><td>no holdings</td></tr>'}
+    </table>
+    <h3>Exits this run ({len(exits)})</h3>
+    <ul>{''.join(f"<li>{s} @ {ltp:.2f} [{reason}] P&L {pnl:+,.0f}</li>" for s, ltp, reason, pnl in exits) or '<li>none</li>'}</ul>
+    </body></html>"""
+    return subject, plain, html
+
+
+def send_portfolio(result=None, csv_path=None) -> bool:
+    if result is None:
+        from .engine import run_paper_session
+        result = run_paper_session(verbose=False, csv_path=csv_path)
+    subject, plain, html = build_portfolio_email(result)
+    return send_email(subject, plain, html)
+
+
 if __name__ == "__main__":
     send_daily()
