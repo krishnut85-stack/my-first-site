@@ -166,6 +166,14 @@ SectorBot can blend two Trendlyne CSVs:
 
 The bot **auto-detects each file by its headers**, so just drop both into
 `sectorbot/data/` (any names ending in `.csv`; date them to control recency).
+
+**Recommended daily set (just 2 files):**
+1. **Fundamentals** (industry level).
+2. **Industry breadth — equi-weighted** (Trendlyne Industry breadth page, set the
+   toggle to *Equi-weighted* before Export). Equi-weighted counts every stock
+   equally, so it measures true breadth; market-cap weighting can look bullish
+   just because one mega-cap is up. The industry-level file already covers every
+   industry, so you don't also need the sector-level or market-cap versions.
 Each industry's score becomes:
 
 ```
