@@ -11,10 +11,13 @@ sectorbot/data/ (any name ending in .csv) and run the bot -- it picks the
 newest one automatically.
 """
 
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
 from . import config
+
+IST = timezone(timedelta(hours=5, minutes=30))
 
 
 def resolve_csv(explicit: Optional[str] = None) -> Path:
@@ -38,3 +41,19 @@ def list_snapshots() -> list[Path]:
     if not config.SNAPSHOTS_DIR.exists():
         return []
     return sorted(config.SNAPSHOTS_DIR.glob("*.csv"))
+
+
+def save_snapshot(explicit: Optional[str] = None) -> Path:
+    """Copy today's active CSV into snapshots/<YYYY-MM-DD>.csv (IST date).
+
+    Re-running on the same day overwrites that day's snapshot, so repeated
+    runs never create duplicates. Returns the snapshot path.
+    """
+    import shutil
+
+    src = resolve_csv(explicit)
+    config.SNAPSHOTS_DIR.mkdir(parents=True, exist_ok=True)
+    today = datetime.now(IST).date().isoformat()
+    dst = config.SNAPSHOTS_DIR / f"{today}.csv"
+    shutil.copyfile(src, dst)
+    return dst
