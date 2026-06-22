@@ -16,7 +16,6 @@ prices (clearly flagged) and the numbers are not real.
 from . import config
 from .bot import build_watchlist
 from .datasource import PaperDataSource, get_datasource
-from .indicators import atr
 from .portfolio import Portfolio
 from .risk import PositionState, decide_exit
 
@@ -27,6 +26,17 @@ def _safe_price(ds, symbol):
         return float(p) if p and p > 0 else None
     except Exception:  # noqa: BLE001
         return None
+
+
+def _safe_atr(ds, symbol):
+    """ATR from history, or 0.0 if history is unavailable (e.g. no Kite
+    historical-data subscription). The ATR stop is simply skipped then; the
+    other exit rules still apply."""
+    try:
+        from .indicators import atr as _atr
+        return _atr(ds.history(symbol, config.ATR_HISTORY_BARS), config.ATR_PERIOD)
+    except Exception:  # noqa: BLE001
+        return 0.0
 
 
 def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
@@ -64,7 +74,7 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
             qty = int(budget // ltp)
             if qty <= 0:
                 continue
-            a = atr(ds.history(sym, config.ATR_HISTORY_BARS), config.ATR_PERIOD)
+            a = _safe_atr(ds, sym)
             if pf.buy(sym, qty, ltp, atr=a, reason="entry"):
                 entries.append((sym, ltp, qty))
 
