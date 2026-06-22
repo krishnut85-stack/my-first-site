@@ -42,6 +42,21 @@ def _safe_atr(ds, symbol):
 def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
     ds = get_datasource()
     real_data = not isinstance(ds, PaperDataSource)
+
+    # SAFETY: never trade a real portfolio with synthetic prices. If real data
+    # is required (USE_KITE_DATA) but unavailable (token expired, missing keys,
+    # wrong shell/cron env), refuse and leave the portfolio UNTOUCHED. Mixing
+    # real entry prices with synthetic prices would fire bogus stop-losses and
+    # destroy the track record.
+    if config.USE_KITE_DATA and not real_data:
+        msg = ("ABORT: real Kite data required (USE_KITE_DATA=True) but "
+               "unavailable — token/keys missing or invalid. Portfolio left "
+               "UNCHANGED. Fix the Kite token and re-run. (For a synthetic "
+               "demo set USE_KITE_DATA=False.)")
+        if verbose:
+            print("\n" + "!" * 66 + f"\n  {msg}\n" + "!" * 66 + "\n")
+        return {"aborted": True, "message": msg, "real_data": False}
+
     pf = Portfolio.load()
 
     # --- 1. manage existing positions (exits) -----------------------------
