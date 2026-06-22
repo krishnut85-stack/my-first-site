@@ -89,14 +89,19 @@ def pick_newest(inbox):
 
 
 def read_rows(path):
-    """Read a CSV or XLSX export into a list of dict rows (headers from row 1).
-    Trendlyne sometimes gives .csv, sometimes .xlsx - handle both."""
-    if path.lower().endswith((".xlsx", ".xlsm")):
+    """Read a Trendlyne export into a list of dict rows (headers from row 1).
+    Sniffs ACTUAL content, not the extension: a real .xlsx is a ZIP starting
+    with 'PK'; a file named .xlsx that is really CSV/text is read as delimited
+    text. This handles Trendlyne mislabeling the format (.xlsx that is really CSV)."""
+    with open(path, "rb") as fh:
+        magic = fh.read(2)
+
+    if magic == b"PK":                       # genuine xlsx (zip archive)
         try:
             from openpyxl import load_workbook
         except ImportError:
-            print("ERROR: this is an .xlsx file but 'openpyxl' isn't installed.\n"
-                  "  Fix: pip3 install openpyxl   (or download the data as CSV instead)")
+            print("ERROR: real .xlsx file but 'openpyxl' isn't installed.\n"
+                  "  Fix: apt-get install -y python3-openpyxl")
             sys.exit(2)
         wb = load_workbook(path, read_only=True, data_only=True)
         ws = wb.active
@@ -105,14 +110,17 @@ def read_rows(path):
             header = [str(h).strip() if h is not None else "" for h in next(it)]
         except StopIteration:
             wb.close(); return []
-        out = []
-        for r in it:
-            out.append({header[i]: (r[i] if i < len(r) else None)
-                        for i in range(len(header))})
+        out = [{header[i]: (r[i] if i < len(r) else None) for i in range(len(header))}
+               for r in it]
         wb.close()
         return out
-    with open(path, newline="") as f:
-        return list(csv.DictReader(f))
+
+    # otherwise it's delimited text (covers .csv AND a .xlsx that is really CSV)
+    with open(path, newline="", encoding="utf-8", errors="replace") as f:
+        sample = f.read(8192)
+        f.seek(0)
+        delim = "\t" if sample.count("\t") > sample.count(",") else ","
+        return list(csv.DictReader(f, delimiter=delim))
 
 
 def score(day_pct, oi_pct):
