@@ -5,6 +5,7 @@
   python -m sectorbot dashboard [--csv FILE] # write dashboard.html
   python -m sectorbot backtest               # replay data/snapshots/*.csv
   python -m sectorbot email [--csv FILE]      # email daily picks/exits
+  python -m sectorbot snapshot                # save today's CSV to snapshots/
 
 Daily workflow: upload today's CSV into sectorbot/data/ via Termius (any name
 ending in .csv). The bot auto-uses the newest file -- no flags needed.
@@ -15,7 +16,7 @@ import sys
 from . import config
 from .backtest import run_backtest
 from .bot import run_simulation
-from .data_loader import resolve_csv
+from .data_loader import resolve_csv, save_snapshot
 from .notify import send_daily
 from .report import generate
 from .screener import score_industries, load_industries
@@ -58,6 +59,11 @@ def cmd_email() -> None:
     send_daily(csv_path=_csv_arg())
 
 
+def cmd_snapshot() -> None:
+    dst = save_snapshot(_csv_arg())
+    print(f"Snapshot saved: {dst}")
+
+
 def main() -> None:
     cmds = {
         "rank": cmd_rank,
@@ -65,6 +71,7 @@ def main() -> None:
         "dashboard": cmd_dashboard,
         "backtest": cmd_backtest,
         "email": cmd_email,
+        "snapshot": cmd_snapshot,
     }
     choice = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else "sim"
     if choice not in cmds:

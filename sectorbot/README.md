@@ -66,6 +66,12 @@ Setup:
 Without the secrets the job still succeeds but only **dry-runs** (prints the
 email in the logs instead of sending).
 
+The workflow also **auto-saves a dated snapshot** (`python -m sectorbot
+snapshot`) of the day's CSV into `sectorbot/data/snapshots/` and commits it
+back to the repo, so your backtest history builds itself over time. Re-running
+on the same day overwrites that day's snapshot (no duplicates). Because the
+Action commits to the repo, **pull before you push** from Working Copy.
+
 ⚠️ The Action uses the CSV **committed in the repo** — it cannot see files you
 upload only to your laptop. To email on fresh data, commit/push the day's CSV
 into `sectorbot/data/` (e.g. via Working Copy) before the run.
