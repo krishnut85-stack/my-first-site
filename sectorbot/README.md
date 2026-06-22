@@ -186,6 +186,17 @@ and the `USE_BREADTH_BLEND` toggle live in `config.py`. If no breadth file is
 present, the bot just uses fundamentals. The CLI `rank` and the daily email show
 the `Fund` and `Breadth` components alongside the blended score.
 
+## Rotation vs hold (`REBALANCE` in `config.py`)
+
+- **`REBALANCE = True`** (default) — every run, the bot **sells holdings that have
+  dropped out of today's top `MAX_POSITIONS` picks and buys the new leaders**, so
+  each upload actually rotates the portfolio toward the latest ranking. A hard
+  stop-loss still applies as a floor. This is momentum rotation — higher turnover
+  (in real trading that means more brokerage, STT and slippage).
+- **`REBALANCE = False`** — low-churn: hold each name until its
+  stop-loss / take-profit / trailing / ATR exit fires; buy new leaders only with
+  spare cash. Lets winners run.
+
 ## Capital & exit rules (all in `config.py`)
 
 - **Capital mode** — `"unlimited"` (invest `NOTIONAL_PER_NAME` in every pick, no

@@ -83,6 +83,15 @@ MAX_NAMES_PER_INDUSTRY = 4     # cap symbols taken from each industry
 MAX_ALLOCATION_PER_NAME = 0.15 # (fixed mode) cap per stock vs capital (1.5L)
 MAX_PORTFOLIO_PE = 60          # skip industries trading above this PE (overheated)
 
+# --- Rebalance (rotation) --------------------------------------------------
+# REBALANCE=True  -> every run, SELL holdings that have dropped out of today's
+#   top picks and BUY the new leaders, so each upload actually rotates the
+#   portfolio toward the latest ranking. A hard stop-loss still applies as a
+#   floor. Higher turnover (= more brokerage/STT/slippage in real life).
+# REBALANCE=False -> low-churn: hold until SL/TP/trailing/ATR fires.
+REBALANCE = True
+MAX_POSITIONS = 8              # number of top-ranked stocks to hold
+
 # --- Exit rules ------------------------------------------------------------
 STOP_LOSS_PCT = 0.10           # hard stop: exit if price falls 10% from entry
 TAKE_PROFIT_PCT = 0.25         # hard target: book profit at +25% from entry

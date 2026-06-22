@@ -59,39 +59,63 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
 
     pf = Portfolio.load()
 
-    # --- 1. manage existing positions (exits) -----------------------------
+    # Today's ranked picks, and the target set we want to hold (top N stocks).
+    picks = build_watchlist(csv_path)
+    ranked_symbols = []
+    for pick in picks:
+        for sym in pick.symbols:
+            if sym not in ranked_symbols:
+                ranked_symbols.append(sym)
+    target = ranked_symbols[: config.MAX_POSITIONS]
+    target_set = set(target)
+
+    # --- 1. manage existing positions -------------------------------------
     exits = []
     for sym in list(pf.holdings.keys()):
         ltp = _safe_price(ds, sym)
         if ltp is None:
             continue
         h = pf.holdings[sym]
-        state = PositionState(sym, h["avg_price"], h["qty"],
-                              atr=h.get("atr", 0.0),
-                              peak_price=h.get("peak_price", h["avg_price"]))
-        should_exit, reason = decide_exit(state, ltp)
-        h["peak_price"] = state.peak_price  # persist updated high-water mark
-        if should_exit:
-            pnl = pf.sell(sym, ltp, reason=reason)
-            exits.append((sym, ltp, reason, pnl))
+        if config.REBALANCE:
+            # rotate out anything no longer in today's top picks
+            if sym not in target_set:
+                pnl = pf.sell(sym, ltp, reason="rotated out (left top picks)")
+                exits.append((sym, ltp, "rotated out", pnl))
+                continue
+            # still a leader: keep it, but honor a hard stop-loss as a floor
+            change = (ltp - h["avg_price"]) / h["avg_price"]
+            if change <= -config.STOP_LOSS_PCT:
+                pnl = pf.sell(sym, ltp, reason=f"stop-loss {change:+.1%}")
+                exits.append((sym, ltp, "stop-loss", pnl))
+        else:
+            # low-churn: SL / TP / trailing / ATR
+            state = PositionState(sym, h["avg_price"], h["qty"],
+                                  atr=h.get("atr", 0.0),
+                                  peak_price=h.get("peak_price", h["avg_price"]))
+            should_exit, reason = decide_exit(state, ltp)
+            h["peak_price"] = state.peak_price
+            if should_exit:
+                pnl = pf.sell(sym, ltp, reason=reason)
+                exits.append((sym, ltp, reason, pnl))
 
-    # --- 2. open new top picks with spare cash ----------------------------
-    per_name_budget = config.PAPER_CAPITAL * config.MAX_ALLOCATION_PER_NAME
+    # --- 2. buy target picks not already held, with available cash --------
+    per_name_budget = min(config.PAPER_CAPITAL * config.MAX_ALLOCATION_PER_NAME,
+                          config.PAPER_CAPITAL / max(config.MAX_POSITIONS, 1))
+    buy_list = target if config.REBALANCE else ranked_symbols
     entries = []
-    for pick in build_watchlist(csv_path):
-        for sym in pick.symbols:
-            if sym in pf.holdings:
-                continue
-            ltp = _safe_price(ds, sym)
-            if ltp is None:
-                continue
-            budget = min(per_name_budget, pf.cash)
-            qty = int(budget // ltp)
-            if qty <= 0:
-                continue
-            a = _safe_atr(ds, sym)
-            if pf.buy(sym, qty, ltp, atr=a, reason="entry"):
-                entries.append((sym, ltp, qty))
+    for sym in buy_list:
+        if sym in pf.holdings:
+            continue
+        ltp = _safe_price(ds, sym)
+        if ltp is None:
+            continue
+        budget = min(per_name_budget, pf.cash)
+        qty = int(budget // ltp)
+        if qty <= 0:
+            continue
+        a = _safe_atr(ds, sym)
+        if pf.buy(sym, qty, ltp, atr=a, reason="entry"):
+            entries.append((sym, ltp, qty))
 
     # --- 3. record + save -------------------------------------------------
     # Snapshot each price ONCE so every figure in the report reconciles
