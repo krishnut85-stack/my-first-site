@@ -94,7 +94,13 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
                 entries.append((sym, ltp, qty))
 
     # --- 3. record + save -------------------------------------------------
-    price_of = lambda s: (_safe_price(ds, s) or pf.holdings.get(s, {}).get("avg_price", 0.0))
+    # Snapshot each price ONCE so every figure in the report reconciles
+    # (live prices tick between fetches otherwise: equity != cash + holdings).
+    price_snapshot = {
+        s: (_safe_price(ds, s) or pf.holdings[s]["avg_price"])
+        for s in pf.holdings
+    }
+    price_of = lambda s: price_snapshot.get(s) or pf.holdings.get(s, {}).get("avg_price", 0.0)
     equity = pf.equity(price_of)
     unreal = pf.unrealized_pnl(price_of)
     from .portfolio import _today
