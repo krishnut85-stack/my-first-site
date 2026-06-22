@@ -36,19 +36,17 @@ jobs:
       - name: Install dependencies (Kite client for real prices)
         run: pip install -r requirements.txt
 
-      - name: Run paper portfolio + email
+      - name: Send daily ranking email (one-shot, synthetic)
+        # The REAL persistent portfolio (sectorbot trade) runs on the droplet
+        # with real Kite prices. This GitHub job is a synthetic-data ranking
+        # email backup only -- it must NOT run the persistent portfolio.
         env:
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          # Real Kite prices when these are set (still PAPER, no real orders).
-          # KITE_ACCESS_TOKEN must be refreshed daily (Kite tokens expire).
-          KITE_API_KEY: ${{ secrets.KITE_API_KEY }}
-          KITE_API_SECRET: ${{ secrets.KITE_API_SECRET }}
-          KITE_ACCESS_TOKEN: ${{ secrets.KITE_ACCESS_TOKEN }}
-        run: python -m sectorbot trade
+        run: python -m sectorbot email
 
       - name: Save today's snapshot for backtest history
         run: python -m sectorbot snapshot

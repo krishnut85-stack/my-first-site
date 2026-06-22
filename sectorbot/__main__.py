@@ -71,6 +71,8 @@ def cmd_snapshot() -> None:
 def cmd_trade() -> None:
     # run the persistent paper session once, print it, then email that result
     result = run_paper_session(verbose=True, csv_path=_csv_arg())
+    if result.get("aborted"):
+        return  # nothing to email; portfolio left untouched
     send_portfolio(result=result)
 
 

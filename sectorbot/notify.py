@@ -219,6 +219,9 @@ def send_portfolio(result=None, csv_path=None) -> bool:
     if result is None:
         from .engine import run_paper_session
         result = run_paper_session(verbose=False, csv_path=csv_path)
+    if result.get("aborted"):
+        print("Portfolio run aborted — no email sent.")
+        return False
     subject, plain, html = build_portfolio_email(result)
     return send_email(subject, plain, html)
 
