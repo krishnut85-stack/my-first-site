@@ -89,30 +89,48 @@ class KiteDataSource:
             raise RuntimeError("KITE_API_KEY / KITE_ACCESS_TOKEN not configured.")
         self.kite = KiteConnect(api_key=config.KITE_API_KEY)
         self.kite.set_access_token(config.KITE_ACCESS_TOKEN)
+        self._tokens = None  # lazy symbol -> instrument_token cache
 
     def last_price(self, symbol: str) -> float:  # pragma: no cover
         quote = self.kite.ltp([f"NSE:{symbol}"])
         return float(quote[f"NSE:{symbol}"]["last_price"])
 
-    def history(self, symbol: str, bars: int) -> list[Bar]:  # pragma: no cover
-        """Real OHLC via Kite historical_data. Requires the instrument token.
+    def _token(self, symbol: str):  # pragma: no cover
+        if self._tokens is None:
+            self._tokens = {
+                i["tradingsymbol"]: i["instrument_token"]
+                for i in self.kite.instruments("NSE")
+            }
+        return self._tokens.get(symbol)
 
-        Sketch (you must map symbol -> instrument_token from kite.instruments()):
-            from datetime import date, timedelta
-            token = self._token_for(symbol)
-            data = self.kite.historical_data(
-                token, date.today() - timedelta(days=bars * 2), date.today(), "day"
-            )
-            return [Bar(d["high"], d["low"], d["close"]) for d in data][-bars:]
-        """
-        raise NotImplementedError(
-            "Map symbol->instrument_token and call kite.historical_data(). "
-            "See the docstring above."
+    def history(self, symbol: str, bars: int) -> list[Bar]:  # pragma: no cover
+        """Real daily OHLC via Kite historical_data ([] if unavailable)."""
+        from datetime import date, timedelta
+
+        token = self._token(symbol)
+        if not token:
+            return []
+        data = self.kite.historical_data(
+            token, date.today() - timedelta(days=bars * 2), date.today(), "day"
         )
+        return [Bar(d["high"], d["low"], d["close"]) for d in data][-bars:]
 
 
 def get_datasource() -> DataSource:
-    """Return the right data source for the current config."""
-    if config.LIVE_TRADING and config.KITE_API_KEY:
-        return KiteDataSource()
+    """Return the right price feed.
+
+    Uses real Kite data when USE_KITE_DATA (or LIVE_TRADING) is on AND keys are
+    present; otherwise synthetic. Any Kite init failure falls back to synthetic
+    so the bot never crashes -- but it prints a clear warning so you know the
+    numbers are not real.
+    """
+    want_kite = (config.USE_KITE_DATA or config.LIVE_TRADING) and config.KITE_API_KEY
+    if want_kite:
+        try:
+            ds = KiteDataSource()
+            print("[data] Using REAL Kite market data.")
+            return ds
+        except Exception as exc:  # noqa: BLE001
+            print(f"[data] WARNING: Kite unavailable ({exc}). "
+                  "Falling back to SYNTHETIC prices -- numbers are NOT real.")
     return PaperDataSource()

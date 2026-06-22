@@ -33,26 +33,34 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Send daily email
+      - name: Install dependencies (Kite client for real prices)
+        run: pip install -r requirements.txt
+
+      - name: Run paper portfolio + email
         env:
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-        run: python -m sectorbot email
+          # Real Kite prices when these are set (still PAPER, no real orders).
+          # KITE_ACCESS_TOKEN must be refreshed daily (Kite tokens expire).
+          KITE_API_KEY: ${{ secrets.KITE_API_KEY }}
+          KITE_API_SECRET: ${{ secrets.KITE_API_SECRET }}
+          KITE_ACCESS_TOKEN: ${{ secrets.KITE_ACCESS_TOKEN }}
+        run: python -m sectorbot trade
 
       - name: Save today's snapshot for backtest history
         run: python -m sectorbot snapshot
 
-      - name: Commit snapshot if changed
+      - name: Commit snapshot + portfolio if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add sectorbot/data/snapshots/
+          git add sectorbot/data/snapshots/ sectorbot/data/portfolio.json
           if git diff --staged --quiet; then
-            echo "No snapshot changes to commit."
+            echo "Nothing to commit."
           else
-            git commit -m "Auto-snapshot $(TZ=Asia/Kolkata date +%F)"
+            git commit -m "Auto-update portfolio + snapshot $(TZ=Asia/Kolkata date +%F)"
             git push
           fi
