@@ -121,5 +121,11 @@ def top_industries(n=None, max_pe=None, csv_path=None) -> list[Industry]:
     n = n or config.TOP_N_INDUSTRIES
     max_pe = max_pe if max_pe is not None else config.MAX_PORTFOLIO_PE
     ranked = score_industries(load_industries(csv_path))
-    picks = [i for i in ranked if i.pe is None or i.pe <= max_pe]
+    picks = []
+    for i in ranked:
+        if i.pe is not None and i.pe > max_pe:
+            continue  # overheated valuation
+        if config.AVOID_OVEREXTENDED and i.qtr_change > config.MAX_QTR_RUNUP_PCT:
+            continue  # parabolic recent run-up -> high reversal risk
+        picks.append(i)
     return picks[:n]

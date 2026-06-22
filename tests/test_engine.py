@@ -62,6 +62,38 @@ def test_write_portfolio_report_creates_files(tmp_path, monkeypatch):
     assert "paper portfolio" in (tmp_path / "r.txt").read_text().lower()
 
 
+def test_rebalance_holds_only_top_picks(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "PORTFOLIO_JSON", tmp_path / "pf.json")
+    monkeypatch.setattr(config, "USE_KITE_DATA", False)
+    monkeypatch.setattr(config, "REBALANCE", True)
+    from sectorbot.bot import build_watchlist
+
+    r = run_paper_session(verbose=False)
+    syms = []
+    for p in build_watchlist():
+        for s in p.symbols:
+            if s not in syms:
+                syms.append(s)
+    keep_band = set(syms[: config.SELL_RANK_BUFFER])
+    # holdings stay within the buffer band, and never exceed MAX_POSITIONS
+    assert set(r["portfolio"].holdings).issubset(keep_band)
+    assert len(r["portfolio"].holdings) <= config.MAX_POSITIONS
+
+
+def test_rebalance_rotates_out_stale_holding(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "PORTFOLIO_JSON", tmp_path / "pf.json")
+    monkeypatch.setattr(config, "USE_KITE_DATA", False)
+    monkeypatch.setattr(config, "REBALANCE", True)
+    from sectorbot.portfolio import Portfolio
+
+    pf = Portfolio(config.PAPER_CAPITAL, config.PAPER_CAPITAL)
+    pf.buy("ZZZJUNK", 1, 100.0)  # not in any top pick
+    pf.save(tmp_path / "pf.json")
+
+    r = run_paper_session(verbose=False)
+    assert "ZZZJUNK" not in r["portfolio"].holdings  # rotated out
+
+
 def test_aborts_when_real_data_required_but_unavailable(tmp_path, monkeypatch):
     # USE_KITE_DATA on but no keys -> synthetic -> MUST abort and not write state
     pf_path = tmp_path / "pf.json"

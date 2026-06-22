@@ -186,6 +186,32 @@ and the `USE_BREADTH_BLEND` toggle live in `config.py`. If no breadth file is
 present, the bot just uses fundamentals. The CLI `rank` and the daily email show
 the `Fund` and `Breadth` components alongside the blended score.
 
+## Rotation with BUFFER BANDS (`REBALANCE` in `config.py`)
+
+The default minimises churn and taxes — it trades only when a holding genuinely
+deteriorates, not on daily noise:
+
+- **`REBALANCE = True`** (default, buffer bands):
+  - **Buy** to fill up to `MAX_POSITIONS` (8) from the best-ranked names you
+    don't already hold.
+  - **Sell** a holding **only when it drops out of the top `SELL_RANK_BUFFER`
+    (15)** — it is *not* sold for slipping a place or two. A hard stop-loss is the
+    floor. → typically a few trades a *month*, not daily. Lower cost, and longer
+    holds are more tax-efficient (LTCG vs STCG).
+- **`REBALANCE = False`** — pure exit-rule hold (SL / TP / trailing / ATR); buy
+  new leaders only with spare cash.
+
+Tune `MAX_POSITIONS` (how many to hold) and `SELL_RANK_BUFFER` (how sticky) to
+trade off responsiveness vs churn. A wider buffer = fewer trades.
+
+## Over-extended guard (`AVOID_OVEREXTENDED`)
+
+Momentum's worst failure is the "momentum crash" — buying a stock that has gone
+**parabolic** right before it reverses. To reduce this, the bot **skips
+industries whose recent quarter run-up exceeds `MAX_QTR_RUNUP_PCT` (60%)**. It
+keeps normal momentum but drops the blow-off names (e.g. an industry up 200% in a
+quarter). Turn off with `AVOID_OVEREXTENDED = False`.
+
 ## Capital & exit rules (all in `config.py`)
 
 - **Capital mode** — `"unlimited"` (invest `NOTIONAL_PER_NAME` in every pick, no
