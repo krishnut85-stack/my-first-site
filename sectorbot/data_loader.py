@@ -63,16 +63,20 @@ def resolve_csv(explicit: Optional[str] = None) -> Path:
     return config.DATA_CSV
 
 
-def resolve_breadth_csv() -> Optional[Path]:
-    """Newest sector-breadth CSV in data/ (latest date in name), or None."""
+def list_breadth_csvs() -> list[Path]:
+    """All breadth CSVs in data/ (sector- and industry-level), newest first."""
     breadths = [
         p for p in config.DATA_DIR.glob("*.csv")
         if classify_csv(p) == "breadth"
     ]
-    if not breadths:
-        return None
     breadths.sort(key=lambda p: (_date_key(p), p.stat().st_mtime), reverse=True)
-    return breadths[0]
+    return breadths
+
+
+def resolve_breadth_csv() -> Optional[Path]:
+    """Newest breadth CSV in data/ (latest date in name), or None."""
+    breadths = list_breadth_csvs()
+    return breadths[0] if breadths else None
 
 
 def list_snapshots() -> list[Path]:
