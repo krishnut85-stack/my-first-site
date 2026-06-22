@@ -96,24 +96,32 @@ def read_rows(path):
     with open(path, "rb") as fh:
         magic = fh.read(2)
 
-    if magic == b"PK":                       # genuine xlsx (zip archive)
+    if magic == b"PK":                       # looks like an xlsx (zip archive)
+        import zipfile
+        if not zipfile.is_zipfile(path):
+            print("ERROR: this .xlsx is an incomplete/corrupted Excel file (bad zip).\n"
+                  "  Easiest fix: on Trendlyne choose 'Download CSV' instead of Excel,\n"
+                  "  then upload that .csv - CSV works reliably.")
+            sys.exit(2)
         try:
             from openpyxl import load_workbook
         except ImportError:
             print("ERROR: real .xlsx file but 'openpyxl' isn't installed.\n"
                   "  Fix: apt-get install -y python3-openpyxl")
             sys.exit(2)
-        wb = load_workbook(path, read_only=True, data_only=True)
-        ws = wb.active
-        it = ws.iter_rows(values_only=True)
         try:
+            wb = load_workbook(path, read_only=True, data_only=True)
+            ws = wb.active
+            it = ws.iter_rows(values_only=True)
             header = [str(h).strip() if h is not None else "" for h in next(it)]
-        except StopIteration:
-            wb.close(); return []
-        out = [{header[i]: (r[i] if i < len(r) else None) for i in range(len(header))}
-               for r in it]
-        wb.close()
-        return out
+            out = [{header[i]: (r[i] if i < len(r) else None) for i in range(len(header))}
+                   for r in it]
+            wb.close()
+            return out
+        except Exception as e:
+            print(f"ERROR: could not read this .xlsx ({type(e).__name__}: {e}).\n"
+                  "  Easiest fix: download the data as CSV from Trendlyne instead.")
+            sys.exit(2)
 
     # otherwise it's delimited text (covers .csv AND a .xlsx that is really CSV)
     with open(path, newline="", encoding="utf-8", errors="replace") as f:
