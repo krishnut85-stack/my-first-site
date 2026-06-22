@@ -1,0 +1,5 @@
+# SectorBot runs in PAPER mode using only the Python standard library.
+# The dependency below is ONLY needed if you later enable live trading/data
+# via Kite Connect (config.LIVE_TRADING = True).
+
+# kiteconnect>=4.2.0
