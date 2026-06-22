@@ -41,3 +41,16 @@ def test_overheated_industry_excluded():
     picks = top_industries(n=10, max_pe=60, csv_path=config.DATA_CSV)
     names = {p.name for p in picks}
     assert "Telecom Cables" not in names
+
+
+def test_overextended_industry_excluded(monkeypatch):
+    # A parabolic quarter run-up must be skipped when the guard is on.
+    monkeypatch.setattr(config, "AVOID_OVEREXTENDED", True)
+    monkeypatch.setattr(config, "MAX_QTR_RUNUP_PCT", 60.0)
+    picks = top_industries(n=20, max_pe=999, csv_path=config.DATA_CSV)
+    assert all(i.qtr_change <= 60.0 for i in picks)
+
+    # With the guard off, an over-extended name can appear.
+    monkeypatch.setattr(config, "AVOID_OVEREXTENDED", False)
+    picks_off = top_industries(n=20, max_pe=999, csv_path=config.DATA_CSV)
+    assert any(i.qtr_change > 60.0 for i in picks_off)

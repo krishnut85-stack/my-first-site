@@ -83,6 +83,14 @@ MAX_NAMES_PER_INDUSTRY = 4     # cap symbols taken from each industry
 MAX_ALLOCATION_PER_NAME = 0.15 # (fixed mode) cap per stock vs capital (1.5L)
 MAX_PORTFOLIO_PE = 60          # skip industries trading above this PE (overheated)
 
+# --- Over-extended guard ---------------------------------------------------
+# Avoid buying the most PARABOLIC names. Research shows extreme/vertical
+# momentum has the steepest reversal ("momentum crash") risk -- this is the
+# "am I buying the very top?" protection. Skip an industry whose recent quarter
+# run-up exceeds MAX_QTR_RUNUP_PCT. Keeps normal momentum, drops the blow-offs.
+AVOID_OVEREXTENDED = True
+MAX_QTR_RUNUP_PCT = 60.0       # skip industries up more than this % in a quarter
+
 # --- Rebalance (rotation with BUFFER BANDS) --------------------------------
 # REBALANCE=True uses buffer bands to minimise churn & taxes (no fixed calendar):
 #   • BUY  to fill up to MAX_POSITIONS from the best-ranked names you don't hold.

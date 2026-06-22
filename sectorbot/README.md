@@ -204,6 +204,14 @@ deteriorates, not on daily noise:
 Tune `MAX_POSITIONS` (how many to hold) and `SELL_RANK_BUFFER` (how sticky) to
 trade off responsiveness vs churn. A wider buffer = fewer trades.
 
+## Over-extended guard (`AVOID_OVEREXTENDED`)
+
+Momentum's worst failure is the "momentum crash" — buying a stock that has gone
+**parabolic** right before it reverses. To reduce this, the bot **skips
+industries whose recent quarter run-up exceeds `MAX_QTR_RUNUP_PCT` (60%)**. It
+keeps normal momentum but drops the blow-off names (e.g. an industry up 200% in a
+quarter). Turn off with `AVOID_OVEREXTENDED = False`.
+
 ## Capital & exit rules (all in `config.py`)
 
 - **Capital mode** — `"unlimited"` (invest `NOTIONAL_PER_NAME` in every pick, no
