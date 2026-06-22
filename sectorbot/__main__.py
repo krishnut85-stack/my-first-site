@@ -7,6 +7,7 @@
   python -m sectorbot email [--csv FILE]      # email daily picks/exits
   python -m sectorbot trade [--csv FILE]      # run persistent paper portfolio + email
   python -m sectorbot snapshot                # save today's CSV to snapshots/
+  python -m sectorbot token-check             # verify Kite token + real data (safe)
 
 Daily workflow: upload today's CSV into sectorbot/data/ via Termius (any name
 ending in .csv). The bot auto-uses the newest file -- no flags needed.
@@ -73,6 +74,27 @@ def cmd_trade() -> None:
     send_portfolio(result=result)
 
 
+def cmd_token_check() -> None:
+    """Confirm a Kite token resolves and real prices work -- without ever
+    printing the token itself (only its length + last 4 chars)."""
+    tok = config.resolve_access_token()
+    if not tok:
+        print("No access token resolved.")
+        print("Set KITE_ACCESS_TOKEN, or KITE_TOKEN_FILE to your kite_token.json.")
+        return
+    print(f"Token resolved: length {len(tok)}, ends ...{tok[-4:]}  (value hidden)")
+    if not config.KITE_API_KEY:
+        print("KITE_API_KEY is not set — cannot test live fetch.")
+        return
+    try:
+        from .datasource import KiteDataSource
+        ds = KiteDataSource()
+        price = ds.last_price("RELIANCE")
+        print(f"✅ Kite live data OK — RELIANCE LTP = {price}")
+    except Exception as exc:  # noqa: BLE001
+        print(f"❌ Kite check failed: {exc}")
+
+
 def main() -> None:
     cmds = {
         "rank": cmd_rank,
@@ -82,6 +104,7 @@ def main() -> None:
         "email": cmd_email,
         "trade": cmd_trade,
         "snapshot": cmd_snapshot,
+        "token-check": cmd_token_check,
     }
     choice = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else "sim"
     if choice not in cmds:

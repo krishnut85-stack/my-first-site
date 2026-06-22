@@ -43,13 +43,41 @@ picks with spare cash. Capital is **₹10 lakh** (`config.PAPER_CAPITAL`,
 - Going live later = set `LIVE_TRADING=True` and implement order placement; the
   paper portfolio is your evidence before that.
 
-### Kite setup (for real prices)
-1. Get a paid **Kite Connect** subscription (~₹2,000/mo) → API key + secret.
-2. Add GitHub secrets: `KITE_API_KEY`, `KITE_API_SECRET`, `KITE_ACCESS_TOKEN`.
-3. ⚠️ **The access token expires daily** — Kite requires a fresh login each day.
-   You must refresh `KITE_ACCESS_TOKEN` before the run, or that day falls back to
-   synthetic prices. Automating this token refresh is the main operational
-   hurdle of running unattended.
+### Recommended: run on your server (droplet), reuse the daily token
+
+If you already run another bot that logs into Kite daily via TOTP and writes the
+access token to a file (e.g. `/home/globalbot/data/kite_token.json`), the safest
+setup is to run SectorBot **on that same machine** and reuse that token. No
+second login, and **no Kite/TOTP secrets in GitHub**.
+
+```bash
+# one-time on the droplet
+git clone <your repo> ~/sectorbot && cd ~/sectorbot
+pip install -r requirements.txt
+export KITE_API_KEY=...                       # from /home/globalbot/.env
+export KITE_TOKEN_FILE=/home/globalbot/data/kite_token.json
+python -m sectorbot token-check               # verifies real data (token hidden)
+
+# daily, after market close (server is UTC; 10:15 UTC = 15:45 IST)
+crontab -e
+# 15 10 * * 1-5  /home/YOU/sectorbot/scripts/run_on_droplet.sh >> ~/sectorbot.log 2>&1
+```
+
+`scripts/run_on_droplet.sh` loads the creds and runs `python -m sectorbot trade`.
+`portfolio.json` persists on the droplet's disk across runs — no git needed.
+Upload your daily CSVs straight to the droplet's `sectorbot/data/` (e.g. via
+Termius SFTP).
+
+> 🔒 **Security:** `KITE_TOTP_SECRET` is your 2FA seed and `ZERODHA_PASSWORD` is
+> your password. Keep them only in the droplet's private `.env` (gitignored).
+> Never commit them and never store them in GitHub. `token-check` prints only the
+> token's length + last 4 chars, never the token itself.
+
+### Alternative: GitHub Actions (more fragile)
+You *can* run on GitHub with `KITE_API_KEY`/`KITE_API_SECRET`/`KITE_ACCESS_TOKEN`
+as repo secrets, but the access token **expires daily** and GitHub runners are
+ephemeral, so you'd need to regenerate and re-store it every day. The droplet
+avoids all of this — prefer it.
 
 ⚠️ Even on real prices, **paper results overstate live results** — they ignore
 brokerage, STT/GST, slippage, spread and market impact. Treat this as a research
