@@ -105,6 +105,29 @@ def test_status_command_runs(tmp_path, monkeypatch, capsys):
     assert "Current holdings" in out
 
 
+def test_status_shows_winrate_and_drawdown(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(config, "PORTFOLIO_JSON", tmp_path / "pf.json")
+    pf = Portfolio(1_000_000, 1_000_000)
+    pf.trades = [
+        {"date": "d1", "side": "SELL", "symbol": "ABC", "qty": 10, "price": 110,
+         "reason": "rotated out", "pnl": 4200},
+        {"date": "d2", "side": "SELL", "symbol": "XYZ", "qty": 5, "price": 90,
+         "reason": "stop-loss", "pnl": -3100},
+    ]
+    pf.history = [{"date": "d1", "equity": 1_000_000},
+                  {"date": "d2", "equity": 1_012_000},
+                  {"date": "d3", "equity": 990_000}]
+    pf.save(tmp_path / "pf.json")
+
+    from sectorbot.__main__ import cmd_status
+    cmd_status()
+    out = capsys.readouterr().out
+    assert "Win rate" in out
+    assert "50%" in out               # 1 win / 2 closed
+    assert "Max drawdown" in out
+    assert "Best trade" in out
+
+
 def test_aborts_when_real_data_required_but_unavailable(tmp_path, monkeypatch):
     # USE_KITE_DATA on but no keys -> synthetic -> MUST abort and not write state
     pf_path = tmp_path / "pf.json"

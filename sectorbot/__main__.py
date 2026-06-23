@@ -98,6 +98,35 @@ def cmd_status() -> None:
     print(f"  Realised P&L     : Rs {pf.realized_pnl:,.0f}")
     print(f"  Holdings: {len(pf.holdings)}   ·   Trades logged: {len(pf.trades)}")
 
+    # --- performance metrics (from closed trades + equity history) --------
+    closed = [t for t in pf.trades if t.get("side") == "SELL" and "pnl" in t]
+    wins = [t for t in closed if t["pnl"] > 0]
+    losses = [t for t in closed if t["pnl"] <= 0]
+    print("\n  Performance:")
+    if not closed:
+        print("    (no closed trades yet — metrics appear after the first sell)")
+    else:
+        win_rate = len(wins) / len(closed) * 100
+        avg_win = sum(t["pnl"] for t in wins) / len(wins) if wins else 0.0
+        avg_loss = sum(t["pnl"] for t in losses) / len(losses) if losses else 0.0
+        best = max(closed, key=lambda t: t["pnl"])
+        worst = min(closed, key=lambda t: t["pnl"])
+        print(f"    Closed trades : {len(closed)}  ({len(wins)} wins / {len(losses)} losses)")
+        print(f"    Win rate      : {win_rate:.0f}%")
+        print(f"    Avg win/loss  : +{avg_win:,.0f} / {avg_loss:,.0f}")
+        print(f"    Best trade    : {best['symbol']} {best['pnl']:+,.0f}")
+        print(f"    Worst trade   : {worst['symbol']} {worst['pnl']:+,.0f}")
+
+    # max drawdown from the equity curve (largest peak-to-trough drop)
+    eqs = [h["equity"] for h in pf.history]
+    if len(eqs) >= 2:
+        peak = eqs[0]
+        mdd = 0.0
+        for e in eqs:
+            peak = max(peak, e)
+            mdd = min(mdd, (e - peak) / peak)
+        print(f"    Max drawdown  : {mdd * 100:.2f}%  (worst peak-to-dip on the equity curve)")
+
     print("\n  Equity history (last 12 runs):")
     for h in pf.history[-12:]:
         print(f"    {h['date']}    Rs {h['equity']:,.0f}")
