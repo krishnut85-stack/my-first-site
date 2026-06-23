@@ -94,6 +94,17 @@ def test_rebalance_rotates_out_stale_holding(tmp_path, monkeypatch):
     assert "ZZZJUNK" not in r["portfolio"].holdings  # rotated out
 
 
+def test_status_command_runs(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(config, "PORTFOLIO_JSON", tmp_path / "pf.json")
+    monkeypatch.setattr(config, "USE_KITE_DATA", False)
+    run_paper_session(verbose=False)  # create a saved portfolio
+    from sectorbot.__main__ import cmd_status
+    cmd_status()
+    out = capsys.readouterr().out
+    assert "ACTIVITY" in out
+    assert "Current holdings" in out
+
+
 def test_aborts_when_real_data_required_but_unavailable(tmp_path, monkeypatch):
     # USE_KITE_DATA on but no keys -> synthetic -> MUST abort and not write state
     pf_path = tmp_path / "pf.json"

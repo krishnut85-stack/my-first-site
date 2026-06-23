@@ -7,6 +7,7 @@
   python -m sectorbot email [--csv FILE]      # email daily picks/exits
   python -m sectorbot trade [--csv FILE]      # run persistent paper portfolio + email
   python -m sectorbot snapshot                # save today's CSV to snapshots/
+  python -m sectorbot status                  # show saved activity (no live data)
   python -m sectorbot token-check             # verify Kite token + real data (safe)
 
 Daily workflow: upload today's CSV into sectorbot/data/ via Termius (any name
@@ -80,6 +81,44 @@ def cmd_trade() -> None:
         send_portfolio(result=result)
 
 
+def cmd_status() -> None:
+    """Show the saved bot activity (no live data needed): equity history,
+    recent trades, and current holdings from portfolio.json."""
+    from .portfolio import Portfolio
+    pf = Portfolio.load()
+    start = pf.starting_capital
+    latest = pf.history[-1]["equity"] if pf.history else start
+    ret = (latest - start) / start * 100 if start else 0.0
+
+    print("\n" + "=" * 60)
+    print("  SectorBot · ACTIVITY")
+    print("=" * 60)
+    print(f"  Starting capital : Rs {start:,.0f}")
+    print(f"  Latest equity    : Rs {latest:,.0f}  ({ret:+.2f}%)")
+    print(f"  Realised P&L     : Rs {pf.realized_pnl:,.0f}")
+    print(f"  Holdings: {len(pf.holdings)}   ·   Trades logged: {len(pf.trades)}")
+
+    print("\n  Equity history (last 12 runs):")
+    for h in pf.history[-12:]:
+        print(f"    {h['date']}    Rs {h['equity']:,.0f}")
+
+    print("\n  Recent trades (last 12):")
+    if not pf.trades:
+        print("    (none yet)")
+    for t in pf.trades[-12:]:
+        pnl = t.get("pnl")
+        pnl_s = f"   P&L {pnl:+,.0f}" if pnl is not None else ""
+        print(f"    {t['date']}  {t['side']:4} {t['symbol']:12} x{t['qty']:<5} "
+              f"@ {t['price']:>9.2f}  [{t.get('reason','')}]{pnl_s}")
+
+    print("\n  Current holdings:")
+    if not pf.holdings:
+        print("    (none)")
+    for s, h in pf.holdings.items():
+        print(f"    {s:12} x{h['qty']:<5} @ {h['avg_price']:>9.2f}  since {h['entry_date']}")
+    print("=" * 60 + "\n")
+
+
 def cmd_token_check() -> None:
     """Confirm a Kite token resolves and real prices work -- without ever
     printing the token itself (only its length + last 4 chars)."""
@@ -110,6 +149,7 @@ def main() -> None:
         "email": cmd_email,
         "trade": cmd_trade,
         "snapshot": cmd_snapshot,
+        "status": cmd_status,
         "token-check": cmd_token_check,
     }
     choice = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else "sim"
