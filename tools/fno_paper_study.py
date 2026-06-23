@@ -52,6 +52,10 @@ STOP_PCT = 0.50                 # -50% premium stop
 # opening new trades for the rest of the day. Resets next day (date-based). Rupees.
 # 0 = disabled. F&O is the momentum lane that bled before - this is its brake.
 MAX_DAILY_LOSS = float(os.environ.get("FNO_MAX_DAILY_LOSS", "15000"))
+# Cap simultaneous open positions. Day 1 flooded 24 option buys at once, all
+# squared off together at a loss before the daily cap could trip. Bounding the
+# count stops the batch flood. 0 = unlimited.
+MAX_POSITIONS = int(os.environ.get("FNO_MAX_POSITIONS", "0"))
 SQUARE_OFF = (15, 20)           # 15:20 IST square-off (market still open)
 MARKET_OPEN = (9, 15)           # 09:15 IST
 MARKET_CLOSE = (15, 30)         # 15:30 IST
@@ -432,6 +436,21 @@ def manage_open_positions(kite, get_open, record_exit):
     return closed
 
 
+def _count_open_positions(get_open):
+    """Number of OPEN FNO_PAPER_STUDY positions right now (for the position cap)."""
+    n = 0
+    if not get_open:
+        return 0
+    try:
+        for t in get_open():
+            g = (lambda k: t[k] if isinstance(t, dict) else t[k])
+            if g("strategy") == STRATEGY_TAG:
+                n += 1
+    except Exception:
+        pass
+    return n
+
+
 def _open_underlying_dirs(get_open):
     """Return set of (UNDERLYING, DIRECTION) that currently have an OPEN
     FNO_PAPER_STUDY position. Used to enforce ONE position per underlying+
@@ -590,6 +609,8 @@ def main():
              f"(set FNO_STUDY_RECORD=1 to RECORD paper trades (still simulated, never real))")
     log.info(f"daily loss cap: {MAX_DAILY_LOSS:.0f} rupees (0=off) - halts new trades "
              f"for the day if hit, resumes next day. Set FNO_MAX_DAILY_LOSS to change.")
+    log.info(f"max simultaneous positions: {MAX_POSITIONS if MAX_POSITIONS>0 else 'UNLIMITED'} "
+             f"(set FNO_MAX_POSITIONS to bound the batch)")
     try:
         kite = get_kite()
         log.info("Kite session established")
@@ -665,10 +686,16 @@ def main():
                                         s["score"], "SKIPPED", "daily_loss_halt")
                 else:
                     log.info(f"{len(sigs)} new signal(s) score>={OI_SIGNAL_MIN_SCORE}")
+                    open_count = _count_open_positions(get_open)
                     placed = 0
                     for s in sigs:
+                        if MAX_POSITIONS > 0 and open_count >= MAX_POSITIONS:
+                            log.info(f"[RISK] max positions {MAX_POSITIONS} reached "
+                                     f"- skipping remaining signals this cycle")
+                            break
                         if place_signal(kite, paper_place_order, s, open_set):
                             placed += 1
+                            open_count += 1
                             # add to open_set immediately so a duplicate in the
                             # same batch is also skipped
                             open_set.add((str(s["symbol"]).upper(),
