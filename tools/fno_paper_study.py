@@ -130,7 +130,29 @@ def get_kite():
         raise RuntimeError("KITE_API_KEY / access_token missing - cannot login")
     k = KiteConnect(api_key=api_key)
     k.set_access_token(token)
+    try:
+        _TOKEN_MTIME[0] = os.path.getmtime(TOKEN_FILE)
+    except Exception:
+        pass
     return k
+
+
+# Kite tokens expire DAILY; the main bot rewrites kite_token.json each morning.
+# Re-read it whenever it changes so our session never goes stale mid-run.
+_TOKEN_MTIME = [0.0]
+
+
+def refresh_token(kite):
+    try:
+        mt = os.path.getmtime(TOKEN_FILE)
+        if mt != _TOKEN_MTIME[0]:
+            tok = (json.load(open(TOKEN_FILE)).get("access_token") or "").strip()
+            if tok:
+                kite.set_access_token(tok)
+                _TOKEN_MTIME[0] = mt
+                log.info("Kite access token reloaded from token file (daily refresh)")
+    except Exception as e:
+        log.debug(f"token refresh skipped: {e}")
 
 
 # --- instrument cache -------------------------------------------------------
@@ -608,6 +630,8 @@ def main():
                     last_closed_msg = time.time()
                 time.sleep(POLL_SECONDS)
                 continue
+
+            refresh_token(kite)   # pick up the daily-refreshed Kite token
 
             # 1) MANAGE EXITS FIRST (batched price call; live quotes only)
             if get_open and record_exit:

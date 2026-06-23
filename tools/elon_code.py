@@ -170,7 +170,30 @@ def get_kite():
         raise RuntimeError("KITE_API_KEY / access_token missing - cannot login")
     k = KiteConnect(api_key=api_key)
     k.set_access_token(token)
+    try:
+        _TOKEN_MTIME[0] = os.path.getmtime(TOKEN_FILE)
+    except Exception:
+        pass
     return k
+
+
+# Kite access tokens expire DAILY. The main bot rewrites kite_token.json each
+# morning; we must re-read it or our session goes stale (was: "Incorrect
+# api_key or access_token" + no quotes all day). Reload whenever the file changes.
+_TOKEN_MTIME = [0.0]
+
+
+def refresh_token(kite):
+    try:
+        mt = os.path.getmtime(TOKEN_FILE)
+        if mt != _TOKEN_MTIME[0]:
+            tok = (json.load(open(TOKEN_FILE)).get("access_token") or "").strip()
+            if tok:
+                kite.set_access_token(tok)
+                _TOKEN_MTIME[0] = mt
+                log.info("Kite access token reloaded from token file (daily refresh)")
+    except Exception as e:
+        log.debug(f"token refresh skipped: {e}")
 
 
 # --- paper_trader helpers ---------------------------------------------------
@@ -573,6 +596,7 @@ def main():
                 time.sleep(POLL_SECONDS)
                 continue
 
+            refresh_token(kite)   # pick up the daily-refreshed Kite token
             quotes = fetch_quotes(kite, universe)
             if not quotes:
                 log.warning("no quotes this cycle")
