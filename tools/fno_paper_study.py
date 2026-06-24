@@ -68,11 +68,18 @@ SQUARE_OFF = (15, 20)           # 15:20 IST square-off (market still open)
 MARKET_OPEN = (9, 15)           # 09:15 IST
 MARKET_CLOSE = (15, 30)         # 15:30 IST
 POLL_SECONDS = 30               # signal poll + position monitor cadence
-STRATEGY_TAG = "FNO_PAPER_STUDY"
-# High-water-mark: only trade signals with id strictly greater than this.
-# Set at startup to current max(id) so the backlog is ignored and we only
-# trade signals generated from launch forward (clean forward test).
-HWM_FILE = "/home/globalbot/fno_study_hwm.txt"
+# Strategy tag is configurable so a dedicated instance (e.g. FNO_BUILDUP) can run
+# our Trendlyne build-up signals in its OWN lane, separate from gir's signals.
+STRATEGY_TAG = os.environ.get("FNO_STRATEGY_TAG", "FNO_PAPER_STUDY")
+# Signal-source filters (pattern prefix, case-insensitive):
+#   FNO_PATTERN_INCLUDE=EXCEL_  -> trade ONLY our build-up signals
+#   FNO_PATTERN_EXCLUDE=EXCEL_  -> trade everything EXCEPT ours (gir's lane)
+# gir's signals (PUT_WRITING/CALL_WRITING/etc.) were crowding ours out; this
+# splits the two cleanly so each can be evaluated on its own.
+PATTERN_INCLUDE = os.environ.get("FNO_PATTERN_INCLUDE", "").strip().upper()
+PATTERN_EXCLUDE = os.environ.get("FNO_PATTERN_EXCLUDE", "").strip().upper()
+# High-water-mark file: per-instance so two lanes keep independent positions.
+HWM_FILE = os.environ.get("FNO_HWM_FILE", "/home/globalbot/fno_study_hwm.txt")
 
 # Indices ARE traded. NIFTY/BANKNIFTY/FINNIFTY use special spot keys and their
 # own expiry rule (weekly for NIFTY). Lot size (NIFTY=65 in 2026) comes from
@@ -513,6 +520,13 @@ def place_signal(kite, paper_place_order, sig, open_set=None):
     score = sig["score"]
     pattern = sig["pattern"]
 
+    # signal-source filter: keep this lane to only the patterns it owns
+    pu = str(pattern or "").upper()
+    if PATTERN_INCLUDE and not pu.startswith(PATTERN_INCLUDE):
+        return False   # silently skip (other lane's signal); HWM still advances
+    if PATTERN_EXCLUDE and pu.startswith(PATTERN_EXCLUDE):
+        return False
+
     # hard skip: underlyings whose spot/ATM can't be resolved reliably
     if sym.upper() in SKIP_UNDERLYINGS:
         _record_outcome(sym, pattern, direction, score, "SKIPPED", "excluded_underlying")
@@ -627,6 +641,9 @@ def main():
     _load_env()
     log.info(f"FNO paper study starting. DRY_RUN={DRY_RUN} "
              f"(set FNO_STUDY_RECORD=1 to RECORD paper trades (still simulated, never real))")
+    _lane = (f"INCLUDE={PATTERN_INCLUDE}" if PATTERN_INCLUDE else
+             f"EXCLUDE={PATTERN_EXCLUDE}" if PATTERN_EXCLUDE else "ALL signals")
+    log.info(f"LANE: tag={STRATEGY_TAG} | source filter={_lane} | hwm={HWM_FILE}")
     log.info(f"daily loss cap: {MAX_DAILY_LOSS:.0f} rupees (0=off) - halts new trades "
              f"for the day if hit, resumes next day. Set FNO_MAX_DAILY_LOSS to change.")
     log.info(f"max simultaneous positions: {MAX_POSITIONS if MAX_POSITIONS>0 else 'UNLIMITED'} "
