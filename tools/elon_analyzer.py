@@ -201,6 +201,41 @@ def analyze(rows, strategy, daily_cap):
         if worst["pnl"] < 0 and gross_loss and (worst["pnl"] / gross_loss) > 0.5:
             sector_concentration = 1
 
+    # ---- by signal source (which FEED makes/loses money) ----
+    # Critical when one strategy tag is fed by multiple signal sources (e.g. the
+    # F&O bot trades BOTH our Trendlyne build-ups AND gir.py's own signals).
+    ours_split = None
+    if any(r.get("signal_source") for r in closed):
+        _rule("BY SIGNAL SOURCE (which feed makes/loses money)")
+        by_src = {}
+        for r in closed:
+            src = (r.get("signal_source") or "unknown")
+            d = by_src.setdefault(src, {"n": 0, "w": 0, "pnl": 0.0})
+            d["n"] += 1
+            if float(r.get("pnl") or 0) > 0:
+                d["w"] += 1
+            d["pnl"] += float(r.get("pnl") or 0)
+        print(f"  {'signal source':<34}{'trades':>7}{'win%':>6}{'net P&L':>14}")
+        for src, d in sorted(by_src.items(), key=lambda x: x[1]["pnl"]):
+            wr = d["w"] / d["n"] * 100 if d["n"] else 0
+            print(f"  {src[:34]:<34}{d['n']:>7}{wr:>5.0f}%{('Rs ' + _fmt(d['pnl'])):>14}")
+        # high-level: OUR build-up feed vs everything else (e.g. gir.py)
+        ours = {"n": 0, "w": 0, "pnl": 0.0}
+        rest = {"n": 0, "w": 0, "pnl": 0.0}
+        for r in closed:
+            s = (r.get("signal_source") or "").upper()
+            b = ours if ("EXCEL" in s or "BUILDUP" in s or "BUILD_UP" in s) else rest
+            b["n"] += 1
+            if float(r.get("pnl") or 0) > 0:
+                b["w"] += 1
+            b["pnl"] += float(r.get("pnl") or 0)
+        if ours["n"] and rest["n"]:
+            ours_split = (ours, rest)
+            ow = ours["w"] / ours["n"] * 100
+            rw = rest["w"] / rest["n"] * 100
+            print(f"\n  => OUR build-up feed : {ours['n']:>3} trades  {ow:>3.0f}% win  Rs {_fmt(ours['pnl'])}")
+            print(f"  => other (gir etc.)  : {rest['n']:>3} trades  {rw:>3.0f}% win  Rs {_fmt(rest['pnl'])}")
+
     # ---- auto suggestions (rule-based) ----
     _rule("WHAT TO IMPROVE (auto-diagnosis)")
     tips = []
@@ -230,6 +265,17 @@ def analyze(rows, strategy, daily_cap):
     if sector_concentration:
         tips.append("Over half the losses came from ONE sector - correlated bets sank together. "
                     "Lower EQ_MAX_PER_SECTOR (e.g. 2) to spread risk more.")
+    if ours_split:
+        _o, _r = ours_split
+        if _o["pnl"] < 0 <= _r["pnl"]:
+            tips.append("OUR build-up feed is the loser; gir's signals are fine. Fix the "
+                        "build-up signal/exits specifically, not the whole F&O bot.")
+        elif _r["pnl"] < 0 <= _o["pnl"]:
+            tips.append("OUR build-up feed is PROFITABLE; gir's signals drag it down. "
+                        "Consider isolating the bot to trade ONLY build-up signals.")
+        elif _o["pnl"] < 0 and _r["pnl"] < 0:
+            tips.append("BOTH feeds lose - fix exits/sizing first (done: R:R flip + sizing), "
+                        "then improve each signal feed separately.")
     if win_rate >= 55 and profit_factor != float("inf") and profit_factor >= 1.3:
         tips.append("Healthy stats. Let it gather more trades before changing anything - "
                     "small samples lie.")
