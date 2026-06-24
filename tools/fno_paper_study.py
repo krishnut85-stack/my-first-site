@@ -46,8 +46,16 @@ ENV_FILE = f"{HOME}/.env"
 
 OI_SIGNAL_MIN_SCORE = 65        # match gir.py
 FNO_MIN_DTE = 15                # match gir.py
-TARGET_PCT = 0.30               # +30% premium target
-STOP_PCT = 0.50                 # -50% premium stop
+# RISK:REWARD - flipped from the original +30%/-50% (which needed a 62.5% win
+# rate just to break even). +50%/-30% only needs 37.5% - profitable at our ~44%.
+# Let winners run, cut losers fast. Env-configurable so we can keep tuning.
+TARGET_PCT = float(os.environ.get("FNO_TARGET_PCT", "0.50"))   # +50% premium target
+STOP_PCT = float(os.environ.get("FNO_STOP_PCT", "0.30"))       # -30% premium stop
+# Fixed rupee sizing: buy ~TRADE_BUDGET worth (not a blind 1 lot, which ranged
+# from tiny to 60k and caused single 17k losses). Skip options whose 1 lot
+# already costs more than MAX_LOT_COST (too risky / too expensive to size).
+TRADE_BUDGET = float(os.environ.get("FNO_TRADE_BUDGET", "20000"))
+MAX_LOT_COST = float(os.environ.get("FNO_MAX_LOT_COST", "35000"))
 # Daily loss cap (inversion safety): once today's realised loss hits this, STOP
 # opening new trades for the rest of the day. Resets next day (date-based). Rupees.
 # 0 = disabled. F&O is the momentum lane that bled before - this is its brake.
@@ -531,13 +539,22 @@ def place_signal(kite, paper_place_order, sig, open_set=None):
         return False
     tsym, lot, premium = resolved
 
-    sl_limit = round(premium * (1 - STOP_PCT), 2)     # -50%
-    target = round(premium * (1 + TARGET_PCT), 2)     # +30%
+    # fixed rupee sizing: skip if one lot is too expensive, else buy ~TRADE_BUDGET
+    lot_cost = premium * lot
+    if lot_cost > MAX_LOT_COST:
+        _record_outcome(sym, pattern, direction, score, "SKIPPED",
+                        f"lot_cost_{int(lot_cost)}_over_max", tsym, premium)
+        return False
+    n_lots = max(1, round(TRADE_BUDGET / lot_cost)) if lot_cost > 0 else 1
+    qty = n_lots * lot
+
+    sl_limit = round(premium * (1 - STOP_PCT), 2)     # -30%
+    target = round(premium * (1 + TARGET_PCT), 2)     # +50%
 
     if DRY_RUN:
         log.info(
-            f"[DRY] WOULD BUY {tsym} qty={lot} @~{premium:.2f} "
-            f"(tgt {target:.2f} / sl {sl_limit:.2f}) "
+            f"[DRY] WOULD BUY {tsym} qty={qty} ({n_lots}lot) @~{premium:.2f} "
+            f"~Rs{int(qty*premium)} (tgt {target:.2f} / sl {sl_limit:.2f}) "
             f"sig={sym}/{pattern}/{direction}/score={score}"
         )
         return True
@@ -550,7 +567,7 @@ def place_signal(kite, paper_place_order, sig, open_set=None):
             exchange="NFO",
             product="MIS",          # intraday; squared off same day
             side="BUY",
-            qty=lot,
+            qty=qty,
             price=premium,
             order_type="MARKET",
             tag=STRATEGY_TAG,
@@ -564,11 +581,14 @@ def place_signal(kite, paper_place_order, sig, open_set=None):
                 "direction": direction,
                 "score": score,
                 "entry_premium": premium,
+                "lots": n_lots,
+                "notional": round(qty * premium, 2),
                 "target": target,
                 "stop": sl_limit,
             },
         )
-        log.info(f"PLACED {tsym} qty={lot} @{premium:.2f} id={oid} [{pattern}]")
+        log.info(f"PLACED {tsym} qty={qty} ({n_lots}lot) @{premium:.2f} "
+                 f"~Rs{int(qty*premium)} id={oid} [{pattern}]")
         _record_outcome(sym, pattern, direction, score, "PLACED", "ok", tsym, premium)
         return True
     except Exception as e:
@@ -611,6 +631,9 @@ def main():
              f"for the day if hit, resumes next day. Set FNO_MAX_DAILY_LOSS to change.")
     log.info(f"max simultaneous positions: {MAX_POSITIONS if MAX_POSITIONS>0 else 'UNLIMITED'} "
              f"(set FNO_MAX_POSITIONS to bound the batch)")
+    log.info(f"R:R = +{TARGET_PCT*100:.0f}% target / -{STOP_PCT*100:.0f}% stop "
+             f"(break-even win rate {STOP_PCT/(STOP_PCT+TARGET_PCT)*100:.0f}%) | "
+             f"size ~Rs{TRADE_BUDGET:.0f}/trade, skip if 1 lot > Rs{MAX_LOT_COST:.0f}")
     try:
         kite = get_kite()
         log.info("Kite session established")
