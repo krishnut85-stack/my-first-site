@@ -257,6 +257,13 @@ def _telegram_portfolio_summary(result: dict) -> str:
         f"Realised {result['realized']:+,.0f}",
         f"Holdings: {len(result['portfolio'].holdings)} · Exits: {len(exits)}",
     ]
+    if result.get("data_stale"):
+        lines.insert(1, f"⚠️ <b>STALE DATA</b> (file {result.get('data_date')}) "
+                        f"— upload today's CSV!")
+    elif result.get("data_date"):
+        lines.append(f"Data: {result['data_date']}")
+    if result.get("regime_blocked"):
+        lines.append("🛑 Market downtrend — holding cash, no new buys")
     for s, ltp, reason, pnl in exits[:8]:
         lines.append(f"  SELL {s} @ {ltp:.2f} [{reason}] P&amp;L {pnl:+,.0f}")
     return "\n".join(lines)

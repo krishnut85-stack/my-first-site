@@ -101,7 +101,14 @@ class KiteDataSource:
         quote = self.kite.ltp([f"NSE:{symbol}"])
         return float(quote[f"NSE:{symbol}"]["last_price"])
 
+    # Index instrument tokens aren't always in the equity dump; hard-map the
+    # common ones so the regime filter can pull index history reliably.
+    _INDEX_TOKENS = {"NIFTY 50": 256265, "NIFTY BANK": 260105,
+                     "NIFTY 500": 268041}
+
     def _token(self, symbol: str):  # pragma: no cover
+        if symbol in self._INDEX_TOKENS:
+            return self._INDEX_TOKENS[symbol]
         if self._tokens is None:
             self._tokens = {
                 i["tradingsymbol"]: i["instrument_token"]

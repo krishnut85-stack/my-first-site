@@ -135,6 +135,19 @@ DAILY_LOSS_LIMIT_PCT = 0.05    # stop opening new trades after a 5% drawdown
 INCLUDE_TRADING_COSTS = True
 BACKTEST_COST_PER_SIDE_PCT = 0.0012   # 0.12% per buy and per sell, all-in
 
+# --- Market-regime filter (don't fight a falling market) -------------------
+# Buying strong stocks while the WHOLE market is in a downtrend is the fastest
+# way to lose money in a momentum strategy ("momentum crashes" happen in bear
+# markets). When the broad index is below its long moving average, we STOP
+# opening new positions and sit in cash until the trend turns back up. Existing
+# positions are still managed by the normal exit rules. This "trend overlay" is
+# one of the most reliable, well-documented ways to cut the worst drawdowns.
+# Fail-open: if the index trend can't be determined (no Kite history, offline),
+# trading is allowed as normal so the bot never freezes by accident.
+USE_REGIME_FILTER = True
+REGIME_INDEX = "NIFTY 50"      # broad-market gauge (NSE index)
+REGIME_SMA = 200               # days; index above its 200-day average = uptrend
+
 # --- Email alerts ----------------------------------------------------------
 # Daily picks + simulated exits can be emailed to you. Credentials come from
 # environment variables so nothing secret is committed. If they're not set,
