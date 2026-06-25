@@ -122,6 +122,19 @@ ATR_HISTORY_BARS = 60          # how much history to pull for the ATR calc
 
 DAILY_LOSS_LIMIT_PCT = 0.05    # stop opening new trades after a 5% drawdown
 
+# --- Trading costs (makes the backtest HONEST) -----------------------------
+# Real buys/sells cost money: brokerage + STT + exchange fees + GST + stamp
+# duty + SEBI charges, PLUS slippage (you rarely fill at the screen price).
+# Without these, a backtest looks better than reality. We subtract an all-in
+# cost every time the strategy buys or sells.
+#
+# BACKTEST_COST_PER_SIDE_PCT is one conservative "per side" number (as a
+# fraction). NSE delivery equity is roughly ~0.05% on a buy and ~0.12% on a
+# sell (STT is sell-heavy); add slippage and 0.12% per side all-in is a fair,
+# slightly conservative default. Lower it if your real cost sheet is cheaper.
+INCLUDE_TRADING_COSTS = True
+BACKTEST_COST_PER_SIDE_PCT = 0.0012   # 0.12% per buy and per sell, all-in
+
 # --- Email alerts ----------------------------------------------------------
 # Daily picks + simulated exits can be emailed to you. Credentials come from
 # environment variables so nothing secret is committed. If they're not set,

@@ -45,8 +45,9 @@ def _backtest_section() -> tuple[list[str], str]:
         f"<td style='text-align:right;color:{color}'><b>{edge:+.2f}%</b></td></tr>"
         f"<tr><td>Days beating benchmark</td><td style='text-align:right'>{bt['win_rate_pct']:.0f}%</td></tr>"
         "</table>"
-        "<p style='font-size:0.8em;color:#777'>Coarse test on reported day-moves; "
-        "ignores costs/slippage. Not advice.</p>"
+        "<p style='font-size:0.8em;color:#777'>Coarse test on reported day-moves, "
+        f"{'net of trading costs/slippage' if bt.get('costs_included') else 'costs OFF'}. "
+        "Not advice.</p>"
     )
     return lines, html
 
