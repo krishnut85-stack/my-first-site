@@ -63,6 +63,28 @@ def resolve_csv(explicit: Optional[str] = None) -> Path:
     return config.DATA_CSV
 
 
+def active_csv_info(explicit: Optional[str] = None) -> dict:
+    """Describe the CSV the bot is about to trade on: its name, the date in its
+    filename, and whether it looks STALE (more than ~3 days old, which survives
+    weekends/holidays without crying wolf).
+
+    Used to warn you on Telegram if you forgot to upload today's data — so the
+    bot can never silently trade on a week-old file.
+    """
+    p = resolve_csv(explicit)
+    digits = "".join(ch for ch in p.stem if ch.isdigit())
+    date_str, stale, age_days = None, False, None
+    if len(digits) == 8:
+        try:
+            d = datetime.strptime(digits, "%Y%m%d").date()
+            date_str = d.isoformat()
+            age_days = (datetime.now(IST).date() - d).days
+            stale = age_days > 3
+        except ValueError:
+            pass
+    return {"name": p.name, "date": date_str, "age_days": age_days, "stale": stale}
+
+
 def list_breadth_csvs() -> list[Path]:
     """All breadth CSVs in data/ (sector- and industry-level), newest first."""
     breadths = [

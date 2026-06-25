@@ -202,6 +202,17 @@ def run_paper_session() -> dict:
 
 
 @mcp.tool()
+def check_universe() -> dict:
+    """Audit the tradeable stock universe: for each top-ranked industry, how
+    many stocks are mapped, which are live on Kite vs dead, and which top
+    industries have NO stocks (blind spots the bot can't trade). Uses real Kite
+    prices when configured."""
+    from sectorbot.instruments import audit_universe
+    ds = _ds()
+    return audit_universe(ds=ds if _is_real(ds) else None)
+
+
+@mcp.tool()
 def send_telegram_alert(message: str) -> dict:
     """Send a free-text alert to your configured Telegram chat. Safe no-op
     (console dry-run) if TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID aren't set."""

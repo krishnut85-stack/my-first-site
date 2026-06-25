@@ -8,6 +8,7 @@
   python -m sectorbot trade [--csv FILE]      # run persistent paper portfolio + email
   python -m sectorbot snapshot                # save today's CSV to snapshots/
   python -m sectorbot status                  # show saved activity (no live data)
+  python -m sectorbot universe-check          # audit stock coverage + live tickers
   python -m sectorbot token-check             # verify Kite token + real data (safe)
 
 Daily workflow: upload today's CSV into sectorbot/data/ via Termius (any name
@@ -148,6 +149,44 @@ def cmd_status() -> None:
     print("=" * 60 + "\n")
 
 
+def cmd_universe_check() -> None:
+    """Audit the tradeable universe: how many stocks map to each top industry,
+    which are live on Kite, and which top industries have NO stocks (blind
+    spots). Uses real Kite prices when keys are set, else just shows coverage."""
+    from .datasource import PaperDataSource, get_datasource
+    from .instruments import audit_universe
+
+    ds = get_datasource()
+    real = not isinstance(ds, PaperDataSource)
+    report = audit_universe(ds=ds if real else None)
+
+    print("\n" + "=" * 64)
+    print(f"  SectorBot · UNIVERSE CHECK   (source: {report['source']})")
+    print("=" * 64)
+    for row in report["industries"]:
+        if real and row["checked"]:
+            alive = sum(1 for c in row["checked"] if c["alive"])
+            dead = [c["symbol"] for c in row["checked"] if not c["alive"]]
+            tag = f"{alive}/{row['mapped']} live"
+            if dead:
+                tag += f"  ✗ dead: {', '.join(dead)}"
+        else:
+            tag = f"{row['mapped']} mapped"
+        flag = "  ⚠️ NO STOCKS" if row["mapped"] == 0 else ""
+        print(f"  {row['industry'][:38]:38} {tag}{flag}")
+    if report["coverage_holes"]:
+        print("-" * 64)
+        print(f"  Blind spots (top industries with no stocks): "
+              f"{len(report['coverage_holes'])}")
+        for h in report["coverage_holes"]:
+            print(f"    • {h}")
+        print("  → add rows for these to sectorbot/data/industry_symbols.csv")
+    if not real:
+        print("-" * 64)
+        print("  (No Kite keys — coverage only. Set keys to check live prices.)")
+    print("=" * 64 + "\n")
+
+
 def cmd_token_check() -> None:
     """Confirm a Kite token resolves and real prices work -- without ever
     printing the token itself (only its length + last 4 chars)."""
@@ -179,6 +218,7 @@ def main() -> None:
         "trade": cmd_trade,
         "snapshot": cmd_snapshot,
         "status": cmd_status,
+        "universe-check": cmd_universe_check,
         "token-check": cmd_token_check,
     }
     choice = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else "sim"

@@ -14,6 +14,13 @@ DATA_DIR = BASE_DIR / "data"            # drop your daily CSVs here (via Termius
 DATA_CSV = DATA_DIR / "sectors.csv"     # fallback if no dated file is found
 SNAPSHOTS_DIR = DATA_DIR / "snapshots"  # historical daily CSVs for backtesting
 PORTFOLIO_JSON = DATA_DIR / "portfolio.json"  # persistent paper portfolio state
+# Tradeable universe (industry -> stocks). Priority order:
+#   1. data/universe.csv         -> stock-level export you drop in (Symbol,
+#      Industry[,Market Cap/Volume]); auto-grouped, sorted by liquidity.
+#   2. data/industry_symbols.csv -> the editable default shipped with the bot.
+#   3. the in-code fallback map in instruments.py.
+UNIVERSE_CSV = DATA_DIR / "universe.csv"
+INDUSTRY_SYMBOLS_CSV = DATA_DIR / "industry_symbols.csv"
 PORTFOLIO_REPORT_TXT = BASE_DIR.parent / "portfolio_report.txt"   # latest run, plain
 PORTFOLIO_REPORT_HTML = BASE_DIR.parent / "portfolio_report.html"  # latest run, html
 DASHBOARD_HTML = BASE_DIR.parent / "dashboard.html"  # written into my-first-site
@@ -134,6 +141,19 @@ DAILY_LOSS_LIMIT_PCT = 0.05    # stop opening new trades after a 5% drawdown
 # slightly conservative default. Lower it if your real cost sheet is cheaper.
 INCLUDE_TRADING_COSTS = True
 BACKTEST_COST_PER_SIDE_PCT = 0.0012   # 0.12% per buy and per sell, all-in
+
+# --- Market-regime filter (don't fight a falling market) -------------------
+# Buying strong stocks while the WHOLE market is in a downtrend is the fastest
+# way to lose money in a momentum strategy ("momentum crashes" happen in bear
+# markets). When the broad index is below its long moving average, we STOP
+# opening new positions and sit in cash until the trend turns back up. Existing
+# positions are still managed by the normal exit rules. This "trend overlay" is
+# one of the most reliable, well-documented ways to cut the worst drawdowns.
+# Fail-open: if the index trend can't be determined (no Kite history, offline),
+# trading is allowed as normal so the bot never freezes by accident.
+USE_REGIME_FILTER = True
+REGIME_INDEX = "NIFTY 50"      # broad-market gauge (NSE index)
+REGIME_SMA = 200               # days; index above its 200-day average = uptrend
 
 # --- Email alerts ----------------------------------------------------------
 # Daily picks + simulated exits can be emailed to you. Credentials come from
