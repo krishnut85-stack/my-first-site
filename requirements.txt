@@ -3,3 +3,9 @@
 # (config.USE_KITE_DATA) and, later, for live order placement. It is safe to
 # install even if you have no keys yet -- the bot falls back to synthetic data.
 kiteconnect>=4.2.0
+
+# 'mcp' powers the local MCP bridge (kite_mcp_server.py) that lets Claude Code
+# call the Kite-backed engine as chat tools. Only needed to run the bridge --
+# the bot itself works without it. (Telegram alerts use the standard library.)
+mcp>=1.2.0
+

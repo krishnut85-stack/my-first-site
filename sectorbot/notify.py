@@ -241,6 +241,26 @@ def write_portfolio_report(result: dict) -> tuple[str, str]:
     return str(config.PORTFOLIO_REPORT_TXT), str(config.PORTFOLIO_REPORT_HTML)
 
 
+def _telegram_portfolio_summary(result: dict) -> str:
+    """Short, phone-friendly summary of a portfolio run for Telegram."""
+    real = result["real_data"]
+    tag = "REAL Kite prices" if real else "SYNTHETIC prices — NOT real"
+    exits = result["exits"]
+    lines = [
+        f"<b>📊 SectorBot · {date.today().isoformat()}</b>",
+        f"<i>Paper trading ({tag})</i>",
+        f"Equity: <b>Rs {result['equity']:,.0f}</b> "
+        f"({result['total_pnl_pct']:+.2f}%)",
+        f"Cash Rs {result['cash']:,.0f} · "
+        f"Unrealised {result['unrealized']:+,.0f} · "
+        f"Realised {result['realized']:+,.0f}",
+        f"Holdings: {len(result['portfolio'].holdings)} · Exits: {len(exits)}",
+    ]
+    for s, ltp, reason, pnl in exits[:8]:
+        lines.append(f"  SELL {s} @ {ltp:.2f} [{reason}] P&amp;L {pnl:+,.0f}")
+    return "\n".join(lines)
+
+
 def send_portfolio(result=None, csv_path=None) -> bool:
     if result is None:
         from .engine import run_paper_session
@@ -249,7 +269,12 @@ def send_portfolio(result=None, csv_path=None) -> bool:
         print("Portfolio run aborted — no email sent.")
         return False
     subject, plain, html = build_portfolio_email(result)
-    return send_email(subject, plain, html)
+    sent = send_email(subject, plain, html)
+    # Telegram is a separate, independent channel: a phone push that works even
+    # when the host blocks outbound SMTP. Safe no-op if it isn't configured.
+    from .telegram import send_telegram
+    tg = send_telegram(_telegram_portfolio_summary(result))
+    return sent or tg
 
 
 if __name__ == "__main__":
