@@ -138,6 +138,16 @@ SMTP_PORT = int(os.environ.get("SMTP_PORT", "465"))
 SMTP_USER = os.environ.get("SMTP_USER", "")
 SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
 
+# --- Telegram alerts -------------------------------------------------------
+# Push alerts to your phone instantly via a Telegram bot. Unlike SMTP, the Bot
+# API is plain HTTPS, so it works on hosts that block outbound mail ports (e.g.
+# DigitalOcean blocks 25/465/587 by default). Setup:
+#   1. Message @BotFather -> /newbot -> copy the token  -> TELEGRAM_BOT_TOKEN
+#   2. Message your new bot once (so it is allowed to reply to you).
+#   3. Message @userinfobot to get your numeric id      -> TELEGRAM_CHAT_ID
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
+
 # --- Scoring weights (transparent momentum + quality blend) ----------------
 WEIGHTS = {
     "qtr_change": 0.20,        # Qtr Change %
