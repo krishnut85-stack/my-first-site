@@ -14,6 +14,13 @@ DATA_DIR = BASE_DIR / "data"            # drop your daily CSVs here (via Termius
 DATA_CSV = DATA_DIR / "sectors.csv"     # fallback if no dated file is found
 SNAPSHOTS_DIR = DATA_DIR / "snapshots"  # historical daily CSVs for backtesting
 PORTFOLIO_JSON = DATA_DIR / "portfolio.json"  # persistent paper portfolio state
+# Tradeable universe (industry -> stocks). Priority order:
+#   1. data/universe.csv         -> stock-level export you drop in (Symbol,
+#      Industry[,Market Cap/Volume]); auto-grouped, sorted by liquidity.
+#   2. data/industry_symbols.csv -> the editable default shipped with the bot.
+#   3. the in-code fallback map in instruments.py.
+UNIVERSE_CSV = DATA_DIR / "universe.csv"
+INDUSTRY_SYMBOLS_CSV = DATA_DIR / "industry_symbols.csv"
 PORTFOLIO_REPORT_TXT = BASE_DIR.parent / "portfolio_report.txt"   # latest run, plain
 PORTFOLIO_REPORT_HTML = BASE_DIR.parent / "portfolio_report.html"  # latest run, html
 DASHBOARD_HTML = BASE_DIR.parent / "dashboard.html"  # written into my-first-site
