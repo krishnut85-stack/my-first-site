@@ -156,22 +156,50 @@ def audit_universe(ds=None, top_n: Optional[int] = None) -> dict:
     they are blind spots worth filling in your universe CSV.
     """
     from .screener import top_industries
+    inds = top_industries(n=top_n)
+
+    # Gather every unique symbol and price them in ONE batched call, so a live
+    # ticker is never falsely flagged 'dead' just because a fast sequence of
+    # per-symbol requests tripped Kite's rate limit.
+    prices: dict[str, float] = {}
+    if ds is not None:
+        all_syms: list[str] = []
+        for ind in inds:
+            for s in symbols_for(ind.name):
+                if s not in all_syms:
+                    all_syms.append(s)
+        prices = _batch_prices(ds, all_syms)
+
     rows = []
     coverage_holes = []
-    for ind in top_industries(n=top_n):
+    for ind in inds:
         syms = symbols_for(ind.name)
         if not syms:
             coverage_holes.append(ind.name)
-        checked = []
-        if ds is not None:
-            for s in syms:
-                try:
-                    p = ds.last_price(s)
-                    ok = bool(p and p > 0)
-                except Exception:  # noqa: BLE001
-                    ok = False
-                checked.append({"symbol": s, "alive": ok})
+        checked = ([{"symbol": s, "alive": bool(prices.get(s, 0.0) > 0)}
+                    for s in syms] if ds is not None else [])
         rows.append({"industry": ind.name, "mapped": len(syms),
                      "symbols": syms, "checked": checked})
     return {"source": universe_source(), "industries": rows,
             "coverage_holes": coverage_holes}
+
+
+def _batch_prices(ds, symbols: list[str]) -> dict[str, float]:
+    """Price many symbols at once, using ds.last_prices when available (one Kite
+    call) and falling back to per-symbol calls otherwise."""
+    if not symbols:
+        return {}
+    batch = getattr(ds, "last_prices", None)
+    if callable(batch):
+        try:
+            return batch(symbols)
+        except Exception:  # noqa: BLE001
+            pass
+    out: dict[str, float] = {}
+    for s in symbols:
+        try:
+            p = ds.last_price(s)
+            out[s] = float(p) if p else 0.0
+        except Exception:  # noqa: BLE001
+            out[s] = 0.0
+    return out

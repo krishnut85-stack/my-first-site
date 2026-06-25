@@ -51,6 +51,9 @@ class PaperDataSource:
         price = self._base[symbol] * (1 + drift * step + wobble)
         return round(max(price, 1.0), 2)
 
+    def last_prices(self, symbols: list[str]) -> dict[str, float]:
+        return {s: self.last_price(s) for s in symbols}
+
     def advance(self, symbol: str) -> None:
         self._step[symbol] = self._step.get(symbol, 0) + 1
 
@@ -100,6 +103,22 @@ class KiteDataSource:
     def last_price(self, symbol: str) -> float:  # pragma: no cover
         quote = self.kite.ltp([f"NSE:{symbol}"])
         return float(quote[f"NSE:{symbol}"]["last_price"])
+
+    def last_prices(self, symbols: list[str]) -> dict[str, float]:  # pragma: no cover
+        """Fetch many LTPs in ONE call (Kite allows up to ~500), chunked to be
+        safe. Avoids the per-symbol rate-limiting that makes a sequential audit
+        report live tickers as 'dead'. Missing/invalid symbols map to 0.0."""
+        out: dict[str, float] = {}
+        for i in range(0, len(symbols), 200):
+            chunk = symbols[i:i + 200]
+            try:
+                quote = self.kite.ltp([f"NSE:{s}" for s in chunk])
+            except Exception:  # noqa: BLE001
+                quote = {}
+            for s in chunk:
+                d = quote.get(f"NSE:{s}")
+                out[s] = float(d["last_price"]) if d and d.get("last_price") else 0.0
+        return out
 
     # Index instrument tokens aren't always in the equity dump; hard-map the
     # common ones so the regime filter can pull index history reliably.
