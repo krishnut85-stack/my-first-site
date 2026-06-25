@@ -264,6 +264,11 @@ def _telegram_portfolio_summary(result: dict) -> str:
         lines.append(f"Data: {result['data_date']}")
     if result.get("regime_blocked"):
         lines.append("🛑 Market downtrend — holding cash, no new buys")
+    sc = result.get("scorecard")
+    if sc:
+        edge = (f" (edge {sc['edge_vs_index_pct']:+.1f}% vs index)"
+                if sc.get("edge_vs_index_pct") is not None else "")
+        lines.append(f"📈 Verdict: <b>{sc['verdict']}</b>{edge}")
     for s, ltp, reason, pnl in exits[:8]:
         lines.append(f"  SELL {s} @ {ltp:.2f} [{reason}] P&amp;L {pnl:+,.0f}")
     return "\n".join(lines)

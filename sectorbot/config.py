@@ -155,6 +155,13 @@ USE_REGIME_FILTER = True
 REGIME_INDEX = "NIFTY 50"      # broad-market gauge (NSE index)
 REGIME_SMA = 200               # days; index above its 200-day average = uptrend
 
+# --- Honest scorecard / finish line ----------------------------------------
+# The whole point of paper trading is to answer ONE question: is this strategy
+# genuinely worth it — i.e. does it beat just buying a Nifty index fund, after
+# costs? The scorecard tracks that and gives a plain verdict. Below MIN_TRACK_DAYS
+# of history it refuses to judge (early results are noise, not signal).
+MIN_TRACK_DAYS = 30            # need at least this many runs before any verdict
+
 # --- Email alerts ----------------------------------------------------------
 # Daily picks + simulated exits can be emailed to you. Credentials come from
 # environment variables so nothing secret is committed. If they're not set,

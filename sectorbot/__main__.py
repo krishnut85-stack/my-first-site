@@ -8,6 +8,7 @@
   python -m sectorbot trade [--csv FILE]      # run persistent paper portfolio + email
   python -m sectorbot snapshot                # save today's CSV to snapshots/
   python -m sectorbot status                  # show saved activity (no live data)
+  python -m sectorbot scorecard               # honest verdict: working? beating index?
   python -m sectorbot universe-check          # audit stock coverage + live tickers
   python -m sectorbot token-check             # verify Kite token + real data (safe)
 
@@ -149,6 +150,14 @@ def cmd_status() -> None:
     print("=" * 60 + "\n")
 
 
+def cmd_scorecard() -> None:
+    """Honest verdict: is the paper strategy working, and is it beating a simple
+    Nifty index fund after costs? Reads the saved portfolio (no live data)."""
+    from .portfolio import Portfolio
+    from .scorecard import compute_scorecard, format_scorecard
+    print("\n" + format_scorecard(compute_scorecard(Portfolio.load())) + "\n")
+
+
 def cmd_universe_check() -> None:
     """Audit the tradeable universe: how many stocks map to each top industry,
     which are live on Kite, and which top industries have NO stocks (blind
@@ -218,6 +227,7 @@ def main() -> None:
         "trade": cmd_trade,
         "snapshot": cmd_snapshot,
         "status": cmd_status,
+        "scorecard": cmd_scorecard,
         "universe-check": cmd_universe_check,
         "token-check": cmd_token_check,
     }

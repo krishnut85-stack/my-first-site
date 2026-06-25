@@ -202,6 +202,17 @@ def run_paper_session() -> dict:
 
 
 @mcp.tool()
+def scorecard() -> dict:
+    """Honest verdict on the paper strategy: total return, the Nifty index
+    return over the same period, the edge vs index (the number that matters),
+    drawdown, win-rate, and a plain-English verdict (TOO EARLY / LOSING /
+    LAGGING THE INDEX / PROMISING). Reads the saved portfolio."""
+    from sectorbot.portfolio import Portfolio
+    from sectorbot.scorecard import compute_scorecard
+    return compute_scorecard(Portfolio.load())
+
+
+@mcp.tool()
 def check_universe() -> dict:
     """Audit the tradeable stock universe: for each top-ranked industry, how
     many stocks are mapped, which are live on Kite vs dead, and which top
