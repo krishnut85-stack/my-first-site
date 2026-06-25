@@ -137,10 +137,18 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
     equity = pf.equity(price_of)
     unreal = pf.unrealized_pnl(price_of)
     from .portfolio import _today
-    pf.history.append({"date": _today(), "equity": round(equity, 2)})
+    # Record the Nifty level alongside equity (real data only) so the scorecard
+    # can compare the strategy to a simple index fund over the same period.
+    point = {"date": _today(), "equity": round(equity, 2)}
+    if real_data:
+        idx_level = _safe_price(ds, config.REGIME_INDEX)
+        if idx_level:
+            point["index"] = round(idx_level, 2)
+    pf.history.append(point)
     pf.save()
 
     from .data_loader import active_csv_info
+    from .scorecard import compute_scorecard
     data_info = active_csv_info(csv_path)
 
     result = {
@@ -152,6 +160,7 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
         "exits": exits, "entries": entries, "price_of": price_of,
         "regime_uptrend": uptrend, "regime_blocked": regime_blocked,
         "data_date": data_info["date"], "data_stale": data_info["stale"],
+        "scorecard": compute_scorecard(pf),
     }
     if verbose:
         _print(result)
