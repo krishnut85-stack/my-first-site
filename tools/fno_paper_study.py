@@ -64,6 +64,13 @@ MAX_DAILY_LOSS = float(os.environ.get("FNO_MAX_DAILY_LOSS", "15000"))
 # squared off together at a loss before the daily cap could trip. Bounding the
 # count stops the batch flood. 0 = unlimited.
 MAX_POSITIONS = int(os.environ.get("FNO_MAX_POSITIONS", "0"))
+# SMART HOLD: instead of blindly squaring off at 15:20, use LIVE Kite data to
+# decide hold-vs-sell. Hold a winner overnight only if the move still has legs
+# (option rising above its day VWAP + underlying closing our way). Off by default.
+SMART_HOLD = os.environ.get("FNO_SMART_HOLD", "0").strip() == "1"
+HOLD_MIN_PROFIT = float(os.environ.get("FNO_HOLD_MIN_PROFIT", "0.15"))  # only hold winners >= +15%
+MAX_HOLD_DAYS = int(os.environ.get("FNO_MAX_HOLD_DAYS", "2"))           # force exit after N days
+MAX_OVERNIGHT = int(os.environ.get("FNO_MAX_OVERNIGHT", "3"))           # cap positions carried overnight
 SQUARE_OFF = (15, 20)           # 15:20 IST square-off (market still open)
 MARKET_OPEN = (9, 15)           # 09:15 IST
 MARKET_CLOSE = (15, 30)         # 15:30 IST
@@ -376,11 +383,83 @@ def _batch_ltp(kite, symbols):
     return out
 
 
+def _underlying_changes(kite, underlyings):
+    """{underlying: day_change_pct} from live Kite quotes. Used by smart-hold to
+    check whether the stock is still closing in our direction."""
+    out = {}
+    keymap = {}
+    for u in {u for u in underlyings if u}:
+        keymap[INDEX_SPOT_KEY.get(u, f"NSE:{u}")] = u
+    if not keymap:
+        return out
+    try:
+        q = kite.quote(list(keymap.keys()))
+        for k, u in keymap.items():
+            d = q.get(k) or {}
+            last = float(d.get("last_price") or 0)
+            prev = float((d.get("ohlc") or {}).get("close") or 0)
+            if last > 0 and prev > 0:
+                out[u] = (last - prev) / prev * 100.0
+    except Exception as e:
+        log.debug(f"underlying quote failed: {e}")
+    return out
+
+
+def _option_state(kite, syms):
+    """{option: {last, vwap, oi}} - VWAP tells us if the option is being bought up
+    (last > vwap = intraday momentum in our favour)."""
+    out = {}
+    keys = [f"NFO:{s}" for s in {s for s in syms if s}]
+    if not keys:
+        return out
+    try:
+        q = kite.quote(keys)
+        for s in {s for s in syms if s}:
+            d = q.get(f"NFO:{s}") or {}
+            out[s] = {"last": float(d.get("last_price") or 0),
+                      "vwap": float(d.get("average_price") or 0),
+                      "oi": float(d.get("oi") or 0)}
+    except Exception as e:
+        log.debug(f"option quote failed: {e}")
+    return out
+
+
+def _days_held(entry_ts):
+    try:
+        return (datetime.utcnow() - datetime.fromisoformat(str(entry_ts))).days
+    except Exception:
+        return 0
+
+
+def _should_hold(tsym, entry, ltp, under_change, opt_state, held_so_far):
+    """Data-driven HOLD-vs-SELL decision (smart-hold). Returns True to HOLD a
+    winner overnight ONLY if its move still has legs:
+      1. position is a real winner (>= HOLD_MIN_PROFIT),
+      2. option still trading above its own day VWAP (being bought, not fading),
+      3. underlying still closing our way (CE: stock up, PE: stock down),
+      4. we haven't already hit the overnight cap."""
+    if held_so_far >= MAX_OVERNIGHT:
+        return False
+    if not entry or (ltp - entry) / entry < HOLD_MIN_PROFIT:
+        return False
+    opt = opt_state.get(tsym) or {}
+    if opt.get("vwap", 0) > 0 and opt.get("last", 0) < opt["vwap"]:
+        return False
+    if under_change is None:
+        return False
+    is_ce = tsym.upper().endswith("CE")
+    if is_ce and under_change <= 0:
+        return False
+    if (not is_ce) and under_change >= 0:
+        return False
+    return True
+
+
 def manage_open_positions(kite, get_open, record_exit):
     """
-    Close OPEN FNO_PAPER_STUDY trades on target/stop/square-off.
-    Uses ONE batched LTP call for all positions (not one-per-trade) to avoid
-    Kite rate-limiting, which was starving exits.
+    Close OPEN trades on target/stop/square-off. With FNO_SMART_HOLD on, a winner
+    that still has momentum is HELD overnight instead of squared off (uses live
+    Kite data: option-vs-VWAP + underlying day move). Uses batched quotes.
     """
     try:
         opens = get_open()
@@ -393,7 +472,7 @@ def manage_open_positions(kite, get_open, record_exit):
     # position is ever closed on a stale/frozen quote.
     squareoff = _in_squareoff_window()
 
-    # collect our open positions first
+    # collect our open positions (with underlying + entry time for smart-hold)
     mine = []
     for t in opens:
         g = (lambda k: t[k] if isinstance(t, dict) else t[k])
@@ -405,7 +484,15 @@ def manage_open_positions(kite, get_open, record_exit):
             entry = float(g("entry_price") or 0)
             if entry <= 0 or not tsym:
                 continue
-            mine.append((tid, tsym, entry))
+            und = ""
+            try:
+                meta = g("meta_json")
+                if meta:
+                    und = (json.loads(meta).get("underlying") or "").upper()
+            except Exception:
+                pass
+            mine.append({"tid": tid, "tsym": tsym, "entry": entry,
+                         "entry_ts": g("entry_ts"), "und": und})
         except Exception:
             continue
 
@@ -413,15 +500,24 @@ def manage_open_positions(kite, get_open, record_exit):
         return 0
 
     # ONE batched price fetch for everything
-    prices = _batch_ltp(kite, [m[1] for m in mine])
+    prices = _batch_ltp(kite, [m["tsym"] for m in mine])
+
+    # smart-hold prep: at square-off, pull underlying move + option VWAP for winners
+    under_chg, opt_state = {}, {}
+    if SMART_HOLD and squareoff and not DRY_RUN:
+        winners = [m for m in mine
+                   if (prices.get(m["tsym"]) or 0) >= m["entry"] * (1 + HOLD_MIN_PROFIT)]
+        if winners:
+            under_chg = _underlying_changes(kite, [m["und"] for m in winners])
+            opt_state = _option_state(kite, [m["tsym"] for m in winners])
+    held_count = sum(1 for m in mine if _days_held(m["entry_ts"]) >= 1)
 
     closed = 0
-    for tid, tsym, entry in mine:
+    for m in mine:
+        tid, tsym, entry = m["tid"], m["tsym"], m["entry"]
         ltp = prices.get(tsym)
-        if not ltp or ltp <= 0:
-            continue
-        if ltp > entry * 5 or ltp < entry * 0.05:
-            continue  # reject bad/stale quote silently (no log spam at this volume)
+        if not ltp or ltp <= 0 or ltp > entry * 5 or ltp < entry * 0.05:
+            continue  # missing/bad quote
 
         target_px = entry * (1 + TARGET_PCT)
         stop_px = entry * (1 - STOP_PCT)
@@ -432,7 +528,17 @@ def manage_open_positions(kite, get_open, record_exit):
         elif ltp <= stop_px:
             reason, exit_px = "STOP", round(stop_px, 2)
         elif squareoff:
-            reason, exit_px = "SQUARE_OFF_1520", round(ltp, 2)
+            held_days = _days_held(m["entry_ts"])
+            # SMART HOLD: carry a winner overnight if its move still has legs
+            if (SMART_HOLD and not DRY_RUN and held_days < MAX_HOLD_DAYS
+                    and _should_hold(tsym, entry, ltp, under_chg.get(m["und"]),
+                                     opt_state, held_count)):
+                held_count += 1
+                log.info(f"HELD overnight {tsym} id={tid} @{ltp:.2f} "
+                         f"(+{(ltp - entry) / entry * 100:.0f}%, day{held_days}) - momentum intact")
+                continue
+            reason = "MAX_HOLD_EXIT" if (SMART_HOLD and held_days >= MAX_HOLD_DAYS) else "SQUARE_OFF_1520"
+            exit_px = round(ltp, 2)
 
         if not reason:
             continue
@@ -651,6 +757,12 @@ def main():
     log.info(f"R:R = +{TARGET_PCT*100:.0f}% target / -{STOP_PCT*100:.0f}% stop "
              f"(break-even win rate {STOP_PCT/(STOP_PCT+TARGET_PCT)*100:.0f}%) | "
              f"size ~Rs{TRADE_BUDGET:.0f}/trade, skip if 1 lot > Rs{MAX_LOT_COST:.0f}")
+    if SMART_HOLD:
+        log.info(f"SMART HOLD: ON - carry a winner (>= +{HOLD_MIN_PROFIT*100:.0f}%) overnight if "
+                 f"option>VWAP & underlying still our way; max {MAX_OVERNIGHT} held, "
+                 f"force-exit after {MAX_HOLD_DAYS} days")
+    else:
+        log.info("SMART HOLD: OFF - intraday square-off at 15:20 (set FNO_SMART_HOLD=1 to enable)")
     try:
         kite = get_kite()
         log.info("Kite session established")
