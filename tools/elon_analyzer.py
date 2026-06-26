@@ -236,6 +236,34 @@ def analyze(rows, strategy, daily_cap):
             print(f"\n  => OUR build-up feed : {ours['n']:>3} trades  {ow:>3.0f}% win  Rs {_fmt(ours['pnl'])}")
             print(f"  => other (gir etc.)  : {rest['n']:>3} trades  {rw:>3.0f}% win  Rs {_fmt(rest['pnl'])}")
 
+    # ---- by direction (bullish CE vs bearish PE) ----
+    dir_split = None
+    by_dir = {}
+    for r in closed:
+        sym = (r.get("symbol") or "").upper()
+        src = (r.get("signal_source") or "").upper()
+        if sym.endswith("CE") or "BULL" in src or "LONG_BUILD" in src:
+            d = "BULLISH (CE / long build-up)"
+        elif sym.endswith("PE") or "BEAR" in src or "SHORT_BUILD" in src:
+            d = "BEARISH (PE / short build-up)"
+        else:
+            continue
+        b = by_dir.setdefault(d, {"n": 0, "w": 0, "pnl": 0.0})
+        b["n"] += 1
+        if float(r.get("pnl") or 0) > 0:
+            b["w"] += 1
+        b["pnl"] += float(r.get("pnl") or 0)
+    if len(by_dir) >= 1 and sum(v["n"] for v in by_dir.values()) >= 1:
+        _rule("BY DIRECTION (bullish vs bearish)")
+        print(f"  {'direction':<32}{'trades':>7}{'win%':>6}{'net P&L':>14}")
+        for d, b in sorted(by_dir.items(), key=lambda x: x[1]["pnl"]):
+            wr = b["w"] / b["n"] * 100 if b["n"] else 0
+            print(f"  {d:<32}{b['n']:>7}{wr:>5.0f}%{('Rs ' + _fmt(b['pnl'])):>14}")
+        bull = by_dir.get("BULLISH (CE / long build-up)")
+        bear = by_dir.get("BEARISH (PE / short build-up)")
+        if bull and bear:
+            dir_split = (bull, bear)
+
     # ---- auto suggestions (rule-based) ----
     _rule("WHAT TO IMPROVE (auto-diagnosis)")
     tips = []
@@ -276,6 +304,15 @@ def analyze(rows, strategy, daily_cap):
         elif _o["pnl"] < 0 and _r["pnl"] < 0:
             tips.append("BOTH feeds lose - fix exits/sizing first (done: R:R flip + sizing), "
                         "then improve each signal feed separately.")
+    if dir_split:
+        _b, _e = dir_split
+        if _b["pnl"] < 0 <= _e["pnl"]:
+            tips.append(f"BULLISH (CE) trades lose (Rs {_fmt(_b['pnl'])}) while BEARISH (PE) win "
+                        f"(Rs {_fmt(_e['pnl'])}). Consider trading only short build-ups, or add a "
+                        "market-regime filter so you don't buy calls into a falling market.")
+        elif _e["pnl"] < 0 <= _b["pnl"]:
+            tips.append(f"BEARISH (PE) trades lose (Rs {_fmt(_e['pnl'])}) while BULLISH (CE) win "
+                        f"(Rs {_fmt(_b['pnl'])}). Consider favouring long build-ups.")
     if win_rate >= 55 and profit_factor != float("inf") and profit_factor >= 1.3:
         tips.append("Healthy stats. Let it gather more trades before changing anything - "
                     "small samples lie.")
