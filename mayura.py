@@ -60,8 +60,8 @@ MAYURA_TRAIL_ARM_PCT      = 0.10   # start trailing once the stock is +10% up…
 MAYURA_TRAIL_GIVEBACK_PCT = 0.10   # …then exit if it falls 10% from its peak
 MAYURA_TAKE_PROFIT_PCT    = 1.00   # hard cap at +100% (rare; trailing does the work)
 MAYURA_ATR_MULT           = 2.5    # volatility-based stop distance
-MAYURA_MAX_HOLDING_DAYS   = 45     # exit 'dead money' after ~1.5 months…
-MAYURA_TIME_STOP_MIN_GAIN = 0.05   # …but only if it's still under +5% (winners ride on)
+MAYURA_MAX_HOLDING_DAYS   = 15     # cut 'dead money' after ~2 weeks (failed follow-through)…
+MAYURA_TIME_STOP_MIN_GAIN = 0.05   # …only if it's still under +5% (a running winner rides on)
 
 
 def _use_mayura_settings() -> None:
