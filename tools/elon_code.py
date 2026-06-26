@@ -60,7 +60,14 @@ STRATEGY_TAG = "ELON_CODE"
 # --- timing -----------------------------------------------------------------
 MARKET_OPEN = (9, 15)
 MARKET_CLOSE = (15, 30)
-SQUARE_OFF = (15, 15)            # flatten everything from 15:15 (before MIS auto)
+# Square-off time (env EQ_SQUAREOFF="HH:MM"). Default 15:00 - flatten before the
+# closing-rush volatility, not at 15:15.
+try:
+    _eqso = os.environ.get("EQ_SQUAREOFF", "15:00").strip()
+    SQUARE_OFF = (int(_eqso.split(":")[0]), int(_eqso.split(":")[1]))
+except Exception:
+    SQUARE_OFF = (15, 0)
+SQUAREOFF_REASON = f"SQUARE_OFF_{SQUARE_OFF[0]:02d}{SQUARE_OFF[1]:02d}"
 NO_NEW_ENTRY_AFTER = (14, 45)    # stop opening new trades late in the day
 # Skip the chaotic opening minutes: the day's low forms in the first 30 min ~27%
 # of the time, and VWAP reversion is most reliable AFTER the open. (evidence-based)
@@ -395,7 +402,7 @@ def manage_exits(quotes, get_open, record_exit):
         elif ltp <= stop_px:
             reason, exit_px = "STOP", round(stop_px, 2)
         elif squareoff:
-            reason, exit_px = "SQUARE_OFF_1515", round(ltp, 2)
+            reason, exit_px = SQUAREOFF_REASON, round(ltp, 2)
         if not reason:
             continue
         if DRY_RUN:
@@ -547,7 +554,8 @@ def main():
              f"max_trades/day={_tpd} daily_loss_cap={MAX_DAILY_LOSS} (only brake) "
              f"target={TARGET_PCT}% stop={STOP_PCT}%")
     log.info(f"SETUP: buy dips >= {STRETCH_MIN_PCT}% below VWAP, skip knives > {KNIFE_PCT}% down, "
-             f"confirm +{CONFIRM_PCT}% off low. Long only, intraday, square-off 15:15.")
+             f"confirm +{CONFIRM_PCT}% off low. Long only, intraday, square-off "
+             f"{SQUARE_OFF[0]:02d}:{SQUARE_OFF[1]:02d}.")
     log.info(f"FILTERS: regime=skip new longs when {REGIME_INDEX} down > {REGIME_DOWN_PCT}% | "
              f"entry window {NO_NEW_ENTRY_BEFORE[0]:02d}:{NO_NEW_ENTRY_BEFORE[1]:02d}-"
              f"{NO_NEW_ENTRY_AFTER[0]:02d}:{NO_NEW_ENTRY_AFTER[1]:02d} (skip opening noise) | "

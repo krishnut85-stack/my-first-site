@@ -268,7 +268,8 @@ def analyze(rows, strategy, daily_cap):
     _rule("WHAT TO IMPROVE (auto-diagnosis)")
     tips = []
     stop_share = by_reason.get("STOP", {}).get("n", 0) / len(closed) * 100
-    sq_share = by_reason.get("SQUARE_OFF_1515", {}).get("n", 0) / len(closed) * 100
+    sq_share = sum(d["n"] for r, d in by_reason.items()
+                   if r.startswith("SQUARE_OFF")) / len(closed) * 100
     tgt_share = by_reason.get("TARGET", {}).get("n", 0) / len(closed) * 100
 
     if profit_factor != float("inf") and profit_factor < 1:

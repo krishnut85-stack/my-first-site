@@ -71,7 +71,13 @@ SMART_HOLD = os.environ.get("FNO_SMART_HOLD", "0").strip() == "1"
 HOLD_MIN_PROFIT = float(os.environ.get("FNO_HOLD_MIN_PROFIT", "0.15"))  # only hold winners >= +15%
 MAX_HOLD_DAYS = int(os.environ.get("FNO_MAX_HOLD_DAYS", "2"))           # force exit after N days
 MAX_OVERNIGHT = int(os.environ.get("FNO_MAX_OVERNIGHT", "3"))           # cap positions carried overnight
-SQUARE_OFF = (15, 20)           # 15:20 IST square-off (market still open)
+# Square-off time (env FNO_SQUAREOFF="HH:MM"). Default 15:00 - before close rush.
+try:
+    _fso = os.environ.get("FNO_SQUAREOFF", "15:00").strip()
+    SQUARE_OFF = (int(_fso.split(":")[0]), int(_fso.split(":")[1]))
+except Exception:
+    SQUARE_OFF = (15, 0)
+SQUAREOFF_REASON = f"SQUARE_OFF_{SQUARE_OFF[0]:02d}{SQUARE_OFF[1]:02d}"
 MARKET_OPEN = (9, 15)           # 09:15 IST
 MARKET_CLOSE = (15, 30)         # 15:30 IST
 POLL_SECONDS = 30               # signal poll + position monitor cadence
@@ -537,7 +543,7 @@ def manage_open_positions(kite, get_open, record_exit):
                 log.info(f"HELD overnight {tsym} id={tid} @{ltp:.2f} "
                          f"(+{(ltp - entry) / entry * 100:.0f}%, day{held_days}) - momentum intact")
                 continue
-            reason = "MAX_HOLD_EXIT" if (SMART_HOLD and held_days >= MAX_HOLD_DAYS) else "SQUARE_OFF_1520"
+            reason = "MAX_HOLD_EXIT" if (SMART_HOLD and held_days >= MAX_HOLD_DAYS) else SQUAREOFF_REASON
             exit_px = round(ltp, 2)
 
         if not reason:
@@ -762,7 +768,8 @@ def main():
                  f"option>VWAP & underlying still our way; max {MAX_OVERNIGHT} held, "
                  f"force-exit after {MAX_HOLD_DAYS} days")
     else:
-        log.info("SMART HOLD: OFF - intraday square-off at 15:20 (set FNO_SMART_HOLD=1 to enable)")
+        log.info(f"SMART HOLD: OFF - intraday square-off at {SQUARE_OFF[0]:02d}:{SQUARE_OFF[1]:02d} "
+                 f"(set FNO_SMART_HOLD=1 to enable)")
     try:
         kite = get_kite()
         log.info("Kite session established")
