@@ -193,15 +193,31 @@ def cmd_rank() -> None:
     def _c(v):  # format an optional DVM pillar (0-100) or a dash
         return f"{v:4.0f}" if v is not None else "   -"
 
+    from sectorbot import instruments
     print(f"  Data file: {resolve_csv(None)}")
     smart = config.USE_SMART_SCORE
-    print(f"  Brain: {'SMART DVM (Durability/Valuation/Momentum)' if smart else 'legacy momentum+breadth'}\n")
+    print(f"  Industry brain: {'SMART DVM (Durability/Valuation/Momentum)' if smart else 'legacy momentum+breadth'}")
+    if instruments.has_stock_signals():
+        print("  Stock brain   : ✅ ranking real stocks by their Trendlyne "
+              "DVM/checklist/technicals (universe.csv)")
+    else:
+        print("  Stock brain   : — (drop a Trendlyne STOCK export as "
+              "mayura_data/universe.csv to enable per-stock ranking)")
+    print()
     if smart:
         print(f"  {'#':>3}  {'Industry':28} {'Score':>6} {'D':>4} {'V':>4} {'M':>4} {'PE':>6}  Symbols")
         print("  " + "-" * 86)
+        show_scores = instruments.has_stock_signals()
         for i, ind in enumerate(top_industries(n=12), 1):
             pe = f"{ind.pe:.0f}" if ind.pe is not None else "-"
-            syms = ", ".join(symbols_for(ind.name)[:3]) or "(none mapped)"
+            picks = symbols_for(ind.name)[:3]
+            if show_scores:
+                syms = ", ".join(
+                    f"{s}({instruments.stock_score(s):.0f})"
+                    if instruments.stock_score(s) is not None else s
+                    for s in picks) or "(none mapped)"
+            else:
+                syms = ", ".join(picks) or "(none mapped)"
             print(f"  {i:>3}  {ind.name[:28]:28} {ind.score:6.1f} "
                   f"{_c(ind.durability)} {_c(ind.valuation)} {_c(ind.momentum)} "
                   f"{pe:>6}  {syms}")

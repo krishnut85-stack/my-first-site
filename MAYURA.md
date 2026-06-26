@@ -97,6 +97,25 @@ See the live D/V/M breakdown any time with `python mayura.py rank`. Turn the
 brain off with `USE_SMART_SCORE = False` to fall back to the old momentum+breadth
 score. Logic + tests live in `sectorbot/smart.py` and `tests/test_smart.py`.
 
+### Stock-level brain — using even MORE Trendlyne data
+
+The industry DVM above picks the best *industries*. To also pick the best
+*stocks* inside them, drop a Trendlyne **stock screener export** into
+`mayura_data/universe.csv`. Mayura then ranks the real stocks in each top
+industry by a per-stock score built from their own Trendlyne columns:
+
+- **DVM Scores** (Durability/Valuation/Momentum) — the main per-stock rank
+- **Trendlyne Checklist Score** — overall quality
+- **Technicals** — RSI, MFI, Delivery Volume %, multi-timeframe returns
+- **Valuation** — PE, Price/Book (cheaper ranks higher)
+
+Any subset of columns works (missing ones are skipped). A *partial* export never
+shrinks coverage — industries it doesn't list keep their default stocks.
+`python mayura.py rank` shows each stock's score in brackets, e.g.
+`GESHIP(76), COCHINSHIP(74)`. Format + how-to: `mayura_data/README.md` and
+`mayura_data/universe.sample.csv`. Logic + tests: `sectorbot/stocks.py` and
+`tests/test_stocks.py`.
+
 ## How Mayura turns those features into a paper trade
 
 ```
