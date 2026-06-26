@@ -170,6 +170,15 @@ USE_REGIME_FILTER = True
 REGIME_INDEX = "NIFTY 50"      # broad-market gauge (NSE index)
 REGIME_SMA = 200               # days; index above its 200-day average = uptrend
 
+# What to do in a DOWNTREND (index below its 200-DMA):
+#   "block"   -> open NO new positions, sit in cash (default; safest).
+#   "reduced" -> SMART MIDDLE: still buy, but only the strongest few leaders and
+#                at a smaller size — because relative-strength leaders can keep
+#                running even while the index falls.
+REGIME_DOWNTREND_MODE = "block"
+REGIME_DOWNTREND_MAX_POSITIONS = 3    # in reduced mode, hold at most this many
+REGIME_DOWNTREND_SIZE_FACTOR = 0.5    # …each at this fraction of normal size
+
 # --- Honest scorecard / finish line ----------------------------------------
 # The whole point of paper trading is to answer ONE question: is this strategy
 # genuinely worth it — i.e. does it beat just buying a Nifty index fund, after

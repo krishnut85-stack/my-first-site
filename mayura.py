@@ -63,6 +63,11 @@ MAYURA_ATR_MULT           = 2.5    # volatility-based stop distance
 MAYURA_MAX_HOLDING_DAYS   = 10     # cut 'dead money' after ~10 days (failed follow-through)…
 MAYURA_TIME_STOP_MIN_GAIN = 0.05   # …only if it's still under +5% (a running winner rides on)
 MAYURA_FAILED_BREAKOUT_EXIT = True # exit the moment price falls back below SMA50 (breakout failed)
+# In a market DOWNTREND (NIFTY below its 200-DMA): "reduced" = smart middle —
+# still buy, but only the strongest few leaders at smaller size. "block" = cash.
+MAYURA_DOWNTREND_MODE          = "reduced"
+MAYURA_DOWNTREND_MAX_POSITIONS = 3      # hold at most 3 leaders in a downtrend
+MAYURA_DOWNTREND_SIZE_FACTOR   = 0.5    # …each at half the normal size
 
 
 def _use_mayura_settings() -> None:
@@ -80,6 +85,9 @@ def _use_mayura_settings() -> None:
     config.MAX_HOLDING_DAYS = MAYURA_MAX_HOLDING_DAYS
     config.TIME_STOP_MIN_GAIN_PCT = MAYURA_TIME_STOP_MIN_GAIN
     config.USE_FAILED_BREAKOUT_EXIT = MAYURA_FAILED_BREAKOUT_EXIT
+    config.REGIME_DOWNTREND_MODE = MAYURA_DOWNTREND_MODE
+    config.REGIME_DOWNTREND_MAX_POSITIONS = MAYURA_DOWNTREND_MAX_POSITIONS
+    config.REGIME_DOWNTREND_SIZE_FACTOR = MAYURA_DOWNTREND_SIZE_FACTOR
 
 
 def _use_mayura_paths() -> None:
@@ -139,7 +147,11 @@ def _mayura_telegram(result: dict) -> str:
                         "— upload today's Trendlyne CSV!")
     elif result.get("data_date"):
         lines.append(f"Data: {result['data_date']}")
-    if result.get("regime_blocked"):
+    if result.get("regime_reduced"):
+        lines.append(f"🟠 Downtrend — reduced: top "
+                     f"{config.REGIME_DOWNTREND_MAX_POSITIONS} leaders, "
+                     f"{config.REGIME_DOWNTREND_SIZE_FACTOR:.0%} size")
+    elif result.get("regime_blocked"):
         lines.append("🛑 Market downtrend — Mayura holds cash, no new buys")
     sc = result.get("scorecard")
     if sc:
@@ -172,7 +184,12 @@ def _print_mayura(result: dict) -> None:
     if result.get("data_date"):
         warn = "  ⚠️ STALE — drop today's CSV in mayura_data/" if result.get("data_stale") else ""
         print(f"  Data file date   : {result['data_date']}{warn}")
-    if result.get("regime_blocked"):
+    if result.get("regime_reduced"):
+        print(f"  Regime           : DOWNTREND — REDUCED mode: top "
+              f"{config.REGIME_DOWNTREND_MAX_POSITIONS} leaders at "
+              f"{config.REGIME_DOWNTREND_SIZE_FACTOR:.0%} size "
+              f"({config.REGIME_INDEX} below {config.REGIME_SMA}-DMA)")
+    elif result.get("regime_blocked"):
         print(f"  Regime           : DOWNTREND — holding cash, no new buys "
               f"({config.REGIME_INDEX} below {config.REGIME_SMA}-DMA)")
     print(f"  Holdings ({len(pf.holdings)}):")
@@ -425,6 +442,44 @@ def cmd_data() -> None:
     print("  above into this folder, then run `python mayura.py run`. 🦚\n")
 
 
+def cmd_regime() -> None:
+    """Show WHY Mayura thinks the market is up/down: NIFTY's latest close vs its
+    own 200-day average. Cross-check these numbers on your Kite/TradingView."""
+    _banner("MARKET REGIME (NIFTY 50 vs its 200-day average)")
+    from sectorbot.datasource import PaperDataSource, get_datasource
+    ds = get_datasource()
+    if isinstance(ds, PaperDataSource):
+        print("\n  Synthetic data — no real index to judge. Load your Kite keys"
+              "\n  (set -a; source .env; set +a) and re-run.\n")
+        return
+    try:
+        bars = ds.history(config.REGIME_INDEX, config.REGIME_SMA + 10)
+    except Exception as exc:  # noqa: BLE001
+        print(f"\n  Could not fetch {config.REGIME_INDEX} history: {exc}\n")
+        return
+    closes = [b.close for b in bars if b.close and b.close > 0]
+    if len(closes) < config.REGIME_SMA:
+        print(f"\n  Only {len(closes)} daily bars available — need "
+              f"{config.REGIME_SMA}. Trend unknown → Mayura ALLOWS trading "
+              "(fail-open).\n")
+        return
+    sma = sum(closes[-config.REGIME_SMA:]) / config.REGIME_SMA
+    last = closes[-1]
+    up = last >= sma
+    print(f"""
+  {config.REGIME_INDEX} latest close : {last:,.1f}
+  {config.REGIME_SMA}-day average       : {sma:,.1f}
+  Difference            : {(last / sma - 1) * 100:+.1f}%  vs the 200-DMA
+  Daily bars used       : {len(closes)}
+
+  Verdict : {'📈 UPTREND — new buys allowed' if up else '🛑 DOWNTREND — ' + ('reduced (smart middle)' if config.REGIME_DOWNTREND_MODE == 'reduced' else 'holding cash')}
+
+  👉 Cross-check: open NIFTY 50 daily chart on Kite/TradingView, add a 200-day
+     SMA. If price is below that line, Mayura is right. Holiday/your location do
+     NOT affect this — it's Indian market data, computed on the server. 🦚
+""")
+
+
 def cmd_rules() -> None:
     """Show Mayura's exit rules in plain English (how it manages each trade)."""
     _banner("EXIT RULES (how Mayura protects each trade)")
@@ -441,7 +496,7 @@ def cmd_rules() -> None:
   🌊 ATR stop         : a volatility-based stop ({MAYURA_ATR_MULT}× ATR below entry)
   ⏳ Time stop        : exit after {MAYURA_MAX_HOLDING_DAYS} days IF still under +{MAYURA_TIME_STOP_MIN_GAIN:.0%}
                         (frees 'dead money'; a running winner is left to trail)
-  🛡️ Market regime    : no NEW buys while NIFTY is below its 200-day average
+  🛡️ Market regime    : in a NIFTY downtrend, {'buy only the top ' + str(MAYURA_DOWNTREND_MAX_POSITIONS) + ' leaders at ' + format(MAYURA_DOWNTREND_SIZE_FACTOR, '.0%') + ' size (smart middle)' if MAYURA_DOWNTREND_MODE == 'reduced' else 'hold cash, no new buys'}
 
   Position size       : ~{config.MAX_ALLOCATION_PER_NAME:.0%} of capital per stock, up to {config.MAX_POSITIONS} names.
 
@@ -461,6 +516,7 @@ COMMANDS = {
     "universe": cmd_universe,
     "data": cmd_data,
     "rules": cmd_rules,
+    "regime": cmd_regime,
 }
 
 

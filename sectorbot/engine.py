@@ -144,14 +144,21 @@ def run_paper_session(verbose: bool = True, csv_path=None,
     # the single biggest protection against momentum-crash drawdowns.
     from .regime import market_in_uptrend
     uptrend = market_in_uptrend(ds)
-    regime_blocked = config.USE_REGIME_FILTER and not uptrend
+    downtrend = config.USE_REGIME_FILTER and not uptrend
+    # Smart-middle: in a downtrend, instead of sitting in 100% cash, optionally
+    # buy only the strongest few leaders at a reduced size.
+    reduced = downtrend and config.REGIME_DOWNTREND_MODE == "reduced"
+    regime_blocked = downtrend and not reduced
 
+    max_positions = (config.REGIME_DOWNTREND_MAX_POSITIONS if reduced
+                     else config.MAX_POSITIONS)
+    size_factor = config.REGIME_DOWNTREND_SIZE_FACTOR if reduced else 1.0
     per_name_budget = min(config.PAPER_CAPITAL * config.MAX_ALLOCATION_PER_NAME,
-                          config.PAPER_CAPITAL / max(config.MAX_POSITIONS, 1))
+                          config.PAPER_CAPITAL / max(config.MAX_POSITIONS, 1)) * size_factor
     entries = []
     if not regime_blocked:
         for sym in ranked_symbols:
-            if config.REBALANCE and len(pf.holdings) >= config.MAX_POSITIONS:
+            if len(pf.holdings) >= max_positions:
                 break  # already hold the target number of names
             if sym in pf.holdings:
                 continue
@@ -200,6 +207,7 @@ def run_paper_session(verbose: bool = True, csv_path=None,
         "total_pnl_pct": (equity - pf.starting_capital) / pf.starting_capital * 100,
         "exits": exits, "entries": entries, "price_of": price_of,
         "regime_uptrend": uptrend, "regime_blocked": regime_blocked,
+        "regime_reduced": reduced, "max_positions": max_positions,
         "data_date": data_info["date"], "data_stale": data_info["stale"],
         "scorecard": compute_scorecard(pf),
     }

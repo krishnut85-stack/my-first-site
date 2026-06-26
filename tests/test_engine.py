@@ -205,3 +205,39 @@ def test_failed_breakout_exit(monkeypatch, tmp_path):
     res = run_paper_session(verbose=False, ranked_symbols=["FAILCO"],
                             levels={"FAILCO": price + 50})
     assert "failed breakout" in [r for _, _, r, _ in res["exits"]]
+
+
+def test_smart_middle_reduced_in_downtrend(monkeypatch, tmp_path):
+    # Force a downtrend; "reduced" mode should still buy, but at most N leaders.
+    from sectorbot import config, regime
+    from sectorbot.engine import run_paper_session
+
+    monkeypatch.setattr(config, "USE_KITE_DATA", False)
+    monkeypatch.setattr(config, "REBALANCE", False)
+    monkeypatch.setattr(config, "USE_REGIME_FILTER", True)
+    monkeypatch.setattr(config, "REGIME_DOWNTREND_MODE", "reduced")
+    monkeypatch.setattr(config, "REGIME_DOWNTREND_MAX_POSITIONS", 3)
+    monkeypatch.setattr(config, "REGIME_DOWNTREND_SIZE_FACTOR", 0.5)
+    monkeypatch.setattr(config, "PORTFOLIO_JSON", tmp_path / "p.json")
+    monkeypatch.setattr(regime, "market_in_uptrend", lambda ds, default=True: False)
+
+    syms = [f"SYM{i}" for i in range(8)]
+    res = run_paper_session(verbose=False, ranked_symbols=syms)
+    assert res["regime_reduced"] is True
+    assert 1 <= len(res["portfolio"].holdings) <= 3   # only the top few leaders
+
+
+def test_block_mode_holds_cash_in_downtrend(monkeypatch, tmp_path):
+    from sectorbot import config, regime
+    from sectorbot.engine import run_paper_session
+
+    monkeypatch.setattr(config, "USE_KITE_DATA", False)
+    monkeypatch.setattr(config, "REBALANCE", False)
+    monkeypatch.setattr(config, "USE_REGIME_FILTER", True)
+    monkeypatch.setattr(config, "REGIME_DOWNTREND_MODE", "block")
+    monkeypatch.setattr(config, "PORTFOLIO_JSON", tmp_path / "p.json")
+    monkeypatch.setattr(regime, "market_in_uptrend", lambda ds, default=True: False)
+
+    res = run_paper_session(verbose=False, ranked_symbols=["SYM0", "SYM1"])
+    assert res["regime_blocked"] is True
+    assert len(res["portfolio"].holdings) == 0          # 100% cash
