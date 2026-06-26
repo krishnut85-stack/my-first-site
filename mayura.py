@@ -283,6 +283,76 @@ def cmd_universe() -> None:
     cmd_universe_check()
 
 
+def cmd_data() -> None:
+    """Audit the Trendlyne files you've downloaded into mayura_data/.
+
+    Tells you which of the 3 useful files are present, whether they're fresh,
+    and (for the stock export) which DVM/technical columns Mayura detected — so
+    your manual download workflow is foolproof. This is the data Kite CANNOT
+    give: fundamentals, breadth and DVM/checklist/technical scores."""
+    _banner("TRENDLYNE DATA CHECK")
+    from sectorbot import instruments
+    from sectorbot.data_loader import (active_csv_info, classify_csv,
+                                       resolve_breadth_csv, resolve_csv)
+    from sectorbot.stocks import resolve_columns
+    import csv as _csv
+
+    print(f"  Folder: {config.DATA_DIR}\n")
+
+    # 1) Fundamentals (Sector Dashboard) — industry PE/ROE/growth, NOT on Kite.
+    info = active_csv_info()
+    fund = resolve_csv()
+    if fund.exists() and classify_csv(fund) == "fundamentals":
+        fresh = "⚠️ STALE — download today's" if info["stale"] else "fresh"
+        print(f"  1. Fundamentals  : ✅ {fund.name}  (date {info['date']}, {fresh})")
+    else:
+        print("  1. Fundamentals  : ❌ MISSING")
+        print("       → Trendlyne ▸ Sector Dashboard ▸ Export  →  save as "
+              "fundamentals-YYYY-MM-DD.csv")
+
+    # 2) Breadth (Market Breadth Analysis, equi-weighted) — RSI/MFI/SMA %.
+    breadth = resolve_breadth_csv()
+    if breadth:
+        print(f"  2. Breadth       : ✅ {breadth.name}")
+    else:
+        print("  2. Breadth       : ❌ MISSING")
+        print("       → Trendlyne ▸ Market Breadth (set Equi-weighted) ▸ Export "
+              " →  save as industry-breadth-equi-YYYY-MM-DD.csv")
+
+    # 3) Stock export (universe.csv) — DVM/checklist/technicals per stock.
+    uni = config.UNIVERSE_CSV
+    if uni.exists():
+        try:
+            with open(uni, newline="", encoding="utf-8") as f:
+                fields = next(_csv.reader(f), [])
+        except OSError:
+            fields = []
+        found = resolve_columns(fields)
+        nice = {
+            "durability": "Durability", "valuation": "Valuation",
+            "momentum": "Momentum", "checklist": "Checklist",
+            "pe": "PE", "pbv": "P/B", "rsi": "RSI", "mfi": "MFI",
+            "delivery": "Delivery%", "month_change": "MonthΔ",
+            "qtr_change": "QtrΔ", "week_change": "WeekΔ", "day_change": "DayΔ",
+        }
+        have = [nice[k] for k in nice if k in found]
+        print(f"  3. Stock export  : ✅ universe.csv  → using: "
+              f"{', '.join(have) if have else 'symbol+industry only (no scores)'}")
+        instruments.reload_universe()
+        if instruments.has_stock_signals():
+            print("       Stock brain ON — picks ranked by real per-stock data.")
+        else:
+            print("       (No score columns detected — add DVM/checklist/RSI etc. "
+                  "for smarter stock picks.)")
+    else:
+        print("  3. Stock export  : ⬜ optional (RECOMMENDED) — universe.csv")
+        print("       → Trendlyne ▸ a Stock Screener with DVM columns ▸ Export "
+              " →  save as universe.csv  (see universe.sample.csv)")
+
+    print("\n  These are exactly the things Kite can't give you. Drop the files")
+    print("  above into this folder, then run `python mayura.py run`. 🦚\n")
+
+
 COMMANDS = {
     "run": cmd_run,
     "rank": cmd_rank,
@@ -290,6 +360,7 @@ COMMANDS = {
     "scorecard": cmd_scorecard,
     "check": cmd_check,
     "universe": cmd_universe,
+    "data": cmd_data,
 }
 
 
