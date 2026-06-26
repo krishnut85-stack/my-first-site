@@ -178,3 +178,30 @@ def test_time_stop_exits_dead_money_not_winners(monkeypatch, tmp_path):
     res = run_paper_session(verbose=False, ranked_symbols=["DEADCO"])
     reasons = [r for _, _, r, _ in res["exits"]]
     assert "time stop" in reasons
+
+
+def test_failed_breakout_exit(monkeypatch, tmp_path):
+    # Price below the stored breakout level (SMA50) -> 'failed breakout' exit.
+    from sectorbot import config
+    from sectorbot.datasource import PaperDataSource
+    from sectorbot.engine import run_paper_session
+    from sectorbot.portfolio import Portfolio
+
+    monkeypatch.setattr(config, "USE_KITE_DATA", False)
+    monkeypatch.setattr(config, "REBALANCE", False)
+    monkeypatch.setattr(config, "USE_FAILED_BREAKOUT_EXIT", True)
+    monkeypatch.setattr(config, "USE_REGIME_FILTER", False)
+    monkeypatch.setattr(config, "MAX_HOLDING_DAYS", 0)
+    monkeypatch.setattr(config, "PORTFOLIO_JSON", tmp_path / "p.json")
+
+    price = PaperDataSource().last_price("FAILCO")
+    pf = Portfolio(1_000_000, 500_000)
+    # breakout level set ABOVE current price -> price is below SMA50 -> exit
+    pf.holdings["FAILCO"] = {"qty": 10, "avg_price": price, "entry_date": "2026-06-01",
+                             "peak_price": price, "atr": 0.0,
+                             "breakout_level": price + 50}
+    pf.save(tmp_path / "p.json")
+
+    res = run_paper_session(verbose=False, ranked_symbols=["FAILCO"],
+                            levels={"FAILCO": price + 50})
+    assert "failed breakout" in [r for _, _, r, _ in res["exits"]]

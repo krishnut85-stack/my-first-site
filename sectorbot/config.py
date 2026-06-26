@@ -137,6 +137,13 @@ DAILY_LOSS_LIMIT_PCT = 0.05    # stop opening new trades after a 5% drawdown
 MAX_HOLDING_DAYS = 0
 TIME_STOP_MIN_GAIN_PCT = 0.05
 
+# Failed-breakout exit (exit-rule mode): sell as soon as price falls back BELOW
+# the breakout level (the SMA50 captured at entry) — the cleanest "this breakout
+# has failed" signal, usually faster than the time stop. Needs a breakout_level
+# stored on the holding (Mayura's watchlist mode supplies it). Default off so the
+# equity bot is unaffected.
+USE_FAILED_BREAKOUT_EXIT = False
+
 # --- Trading costs (makes the backtest HONEST) -----------------------------
 # Real buys/sells cost money: brokerage + STT + exchange fees + GST + stamp
 # duty + SEBI charges, PLUS slippage (you rarely fill at the screen price).

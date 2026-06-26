@@ -79,12 +79,13 @@ def test_breakout_watchlist_loads_ranks_and_filters(tmp_path):
         encoding="utf-8",
     )
     wl = load_breakout_watchlist(csv)
-    syms = [s for s, _ in wl]
+    syms = [d["symbol"] for d in wl]
     assert "STRONG" in syms and "WEAK" in syms      # real stocks kept
     assert "" not in syms                            # no-symbol row dropped
     assert "GILT10BETA" not in syms                  # ETF dropped
     assert syms[0] == "STRONG"                       # ranked best-first
-    assert wl[0][1] > wl[-1][1]
+    assert wl[0]["score"] > wl[-1]["score"]
+    assert wl[0]["sma50"] is not None                # breakout level captured
 
 
 def test_breakout_watchlist_empty_for_non_breakout_csv(tmp_path):

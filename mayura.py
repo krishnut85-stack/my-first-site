@@ -60,8 +60,9 @@ MAYURA_TRAIL_ARM_PCT      = 0.10   # start trailing once the stock is +10% up…
 MAYURA_TRAIL_GIVEBACK_PCT = 0.10   # …then exit if it falls 10% from its peak
 MAYURA_TAKE_PROFIT_PCT    = 1.00   # hard cap at +100% (rare; trailing does the work)
 MAYURA_ATR_MULT           = 2.5    # volatility-based stop distance
-MAYURA_MAX_HOLDING_DAYS   = 15     # cut 'dead money' after ~2 weeks (failed follow-through)…
+MAYURA_MAX_HOLDING_DAYS   = 10     # cut 'dead money' after ~10 days (failed follow-through)…
 MAYURA_TIME_STOP_MIN_GAIN = 0.05   # …only if it's still under +5% (a running winner rides on)
+MAYURA_FAILED_BREAKOUT_EXIT = True # exit the moment price falls back below SMA50 (breakout failed)
 
 
 def _use_mayura_settings() -> None:
@@ -78,6 +79,7 @@ def _use_mayura_settings() -> None:
     config.ATR_MULT = MAYURA_ATR_MULT
     config.MAX_HOLDING_DAYS = MAYURA_MAX_HOLDING_DAYS
     config.TIME_STOP_MIN_GAIN_PCT = MAYURA_TIME_STOP_MIN_GAIN
+    config.USE_FAILED_BREAKOUT_EXIT = MAYURA_FAILED_BREAKOUT_EXIT
 
 
 def _use_mayura_paths() -> None:
@@ -206,9 +208,10 @@ def cmd_run() -> None:
 
     # WATCHLIST MODE: if a Trendlyne breakout export is present, trade it directly.
     wl = _breakout_watchlist()
-    ranked = None
+    ranked, levels = None, None
     if wl:
-        ranked = [s for s, _ in wl]
+        ranked = [d["symbol"] for d in wl]
+        levels = {d["symbol"]: d["sma50"] for d in wl if d.get("sma50")}
         print(f"  Mode        : 🎯 BREAKOUT WATCHLIST — {len(ranked)} stocks from "
               f"your Trendlyne export (top: {', '.join(ranked[:5])})\n")
     else:
@@ -216,7 +219,7 @@ def cmd_run() -> None:
 
     # verbose=False so the engine's own "SectorBot" printout is suppressed; we
     # render Mayura's branded summary instead.
-    result = run_paper_session(verbose=False, ranked_symbols=ranked)
+    result = run_paper_session(verbose=False, ranked_symbols=ranked, levels=levels)
     if ranked and not result.get("aborted"):
         # In watchlist mode the fundamentals-CSV date is irrelevant — what
         # matters is the breakout universe.csv. Don't show a misleading "stale".
@@ -255,8 +258,8 @@ def cmd_rank() -> None:
               f"export — this is what Mayura trades)\n")
         print(f"  {'#':>3}  {'Symbol':14} {'Breakout score':>14}")
         print("  " + "-" * 36)
-        for i, (sym, sc) in enumerate(wl[:20], 1):
-            print(f"  {i:>3}  {sym:14} {sc:>14.1f}")
+        for i, d in enumerate(wl[:20], 1):
+            print(f"  {i:>3}  {d['symbol']:14} {d['score']:>14.1f}")
         mode = ("EARLY-STAGE: fresh golden cross (green just crossed red), "
                 "parabolic/extended names demoted" if config.BREAKOUT_EARLY_STAGE
                 else "continuation: strength near 52-week high")
@@ -428,7 +431,9 @@ def cmd_rules() -> None:
     print(f"""
   Mayura manages every position with these rules (first to trigger wins):
 
-  🛑 Hard stop-loss   : exit at  −{MAYURA_STOP_LOSS_PCT:.0%}  from entry  (cut a failed breakout fast)
+  💔 Failed breakout  : exit the moment price falls back BELOW its SMA50
+                        (breakout level) — fastest 'this one failed' signal
+  🛑 Hard stop-loss   : exit at  −{MAYURA_STOP_LOSS_PCT:.0%}  from entry  (hard floor)
   📈 Trailing stop    : once a stock is +{MAYURA_TRAIL_ARM_PCT:.0%}, follow its peak and exit
                         if it drops {MAYURA_TRAIL_GIVEBACK_PCT:.0%} from the high
                         → this RIDES the run and LOCKS the gain when it turns down

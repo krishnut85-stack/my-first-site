@@ -184,10 +184,11 @@ def breakout_score(row, cm: dict[str, str]) -> Optional[float]:
     ])
 
 
-def load_breakout_watchlist(path) -> list[tuple[str, float]]:
-    """Load a flat Trendlyne breakout export as [(NSE symbol, score)] ranked
-    best-first. Skips rows with no NSE symbol and ETFs/GSec funds. Returns []
-    if the file isn't a recognizable breakout export (no symbol + no signals)."""
+def load_breakout_watchlist(path) -> list[dict]:
+    """Load a flat Trendlyne breakout export as a best-first list of dicts:
+    {"symbol", "score", "sma50", "sma200", "dist52"}. `sma50` is the breakout
+    level (used for the failed-breakout exit). Skips rows with no NSE symbol and
+    ETFs/GSec funds. Returns [] if the file isn't a breakout export."""
     import csv
     try:
         with open(path, newline="", encoding="utf-8-sig") as f:
@@ -198,7 +199,12 @@ def load_breakout_watchlist(path) -> list[tuple[str, float]]:
             signal_fields = {"dist52", "sma50", "rs_qtr", "deliv_month"}
             if not (signal_fields & cm.keys()):
                 return []   # no breakout signals -> not this kind of file
-            out: list[tuple[str, float]] = []
+
+            def col(r, f):
+                c = cm.get(f)
+                return _num(r.get(c)) if c else None
+
+            out: list[dict] = []
             seen = set()
             for r in reader:
                 sym = (r.get(cm["symbol"]) or "").strip().upper()
@@ -211,10 +217,14 @@ def load_breakout_watchlist(path) -> list[tuple[str, float]]:
                 if sc is None:
                     continue
                 seen.add(sym)
-                out.append((sym, round(sc, 1)))
+                out.append({
+                    "symbol": sym, "score": round(sc, 1),
+                    "sma50": col(r, "sma50"), "sma200": col(r, "sma200"),
+                    "dist52": col(r, "dist52"),
+                })
     except OSError:
         return []
-    out.sort(key=lambda t: t[1], reverse=True)
+    out.sort(key=lambda d: d["score"], reverse=True)
     return out
 
 

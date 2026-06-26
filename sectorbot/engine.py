@@ -53,12 +53,14 @@ def _safe_atr(ds, symbol):
 
 
 def run_paper_session(verbose: bool = True, csv_path=None,
-                      ranked_symbols=None) -> dict:
+                      ranked_symbols=None, levels=None) -> dict:
     """Run one paper session.
 
     If `ranked_symbols` is given (best-first), Mayura trades THAT list directly
     (e.g. a Trendlyne breakout watchlist) instead of ranking industries → stocks.
-    All risk rules, the regime filter and sizing still apply identically."""
+    `levels` is an optional {symbol: breakout_level} map (e.g. entry SMA50) used
+    for the failed-breakout exit. All risk rules, the regime filter and sizing
+    still apply identically."""
     ds = get_datasource()
     real_data = not isinstance(ds, PaperDataSource)
 
@@ -108,7 +110,15 @@ def run_paper_session(verbose: bool = True, csv_path=None,
                 pnl = pf.sell(sym, ltp, reason=f"stop-loss {change:+.1%}")
                 exits.append((sym, ltp, "stop-loss", pnl))
         else:
-            # low-churn: TIME STOP / SL / TP / trailing / ATR
+            # low-churn: FAILED-BREAKOUT / TIME STOP / SL / TP / trailing / ATR
+            # Failed-breakout exit: price fell back below the breakout level
+            # (the SMA50 captured at entry) -> the breakout failed, get out.
+            if config.USE_FAILED_BREAKOUT_EXIT:
+                lvl = h.get("breakout_level")
+                if lvl and ltp < lvl:
+                    pnl = pf.sell(sym, ltp, reason=f"failed breakout (<SMA50 {lvl:.0f})")
+                    exits.append((sym, ltp, "failed breakout", pnl))
+                    continue
             # Time stop ("dead money"): held too long without progress -> exit
             # and free the capital. A running stock (gain above the threshold)
             # is left to the trailing stop, so winners are never time-stopped.
@@ -153,7 +163,8 @@ def run_paper_session(verbose: bool = True, csv_path=None,
             if qty <= 0:
                 continue
             a = _safe_atr(ds, sym)
-            if pf.buy(sym, qty, ltp, atr=a, reason="entry"):
+            lvl = (levels or {}).get(sym)
+            if pf.buy(sym, qty, ltp, atr=a, reason="entry", breakout_level=lvl):
                 entries.append((sym, ltp, qty))
 
     # --- 3. record + save -------------------------------------------------
