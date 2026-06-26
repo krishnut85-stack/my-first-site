@@ -39,7 +39,13 @@ def _safe_atr(ds, symbol):
         return 0.0
 
 
-def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
+def run_paper_session(verbose: bool = True, csv_path=None,
+                      ranked_symbols=None) -> dict:
+    """Run one paper session.
+
+    If `ranked_symbols` is given (best-first), Mayura trades THAT list directly
+    (e.g. a Trendlyne breakout watchlist) instead of ranking industries → stocks.
+    All risk rules, the regime filter and sizing still apply identically."""
     ds = get_datasource()
     real_data = not isinstance(ds, PaperDataSource)
 
@@ -60,12 +66,13 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
     pf = Portfolio.load()
 
     # Today's ranked symbols (best first) and the buffer "keep" band.
-    picks = build_watchlist(csv_path)
-    ranked_symbols = []
-    for pick in picks:
-        for sym in pick.symbols:
-            if sym not in ranked_symbols:
-                ranked_symbols.append(sym)
+    if ranked_symbols is None:
+        picks = build_watchlist(csv_path)
+        ranked_symbols = []
+        for pick in picks:
+            for sym in pick.symbols:
+                if sym not in ranked_symbols:
+                    ranked_symbols.append(sym)
     keep_band = set(ranked_symbols[: config.SELL_RANK_BUFFER])  # e.g. top 15
 
     # --- 1. manage existing positions -------------------------------------

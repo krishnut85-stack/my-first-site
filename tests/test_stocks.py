@@ -63,3 +63,32 @@ def test_liquidity_sort_still_works_without_signals(tmp_path, monkeypatch):
     assert instruments.has_stock_signals() is False
     assert instruments.symbols_for("Banks") == ["BIGBANK", "MIDBANK", "SMALLB"]
     instruments.reload_universe()
+
+
+def test_breakout_watchlist_loads_ranks_and_filters(tmp_path):
+    from sectorbot.stocks import load_breakout_watchlist
+    csv = tmp_path / "universe.csv"
+    csv.write_text(
+        '"Stock","% Distance from 52W high","Day SMA50","Day SMA200",'
+        '"Delivery% Vol  Avg Month","Delivery% Vol  Avg 6M",'
+        '"Returns vs Nifty500 quarter%","NSE Code"\n'
+        '"Strong Co","2","100","80","60","20","80","STRONG"\n'
+        '"Weak Co","19","100","99","21","20","1","WEAK"\n'
+        '"No Symbol","5","100","80","50","20","30",""\n'
+        '"Some ETF","1","100","80","50","20","5","GILT10BETA"\n',
+        encoding="utf-8",
+    )
+    wl = load_breakout_watchlist(csv)
+    syms = [s for s, _ in wl]
+    assert "STRONG" in syms and "WEAK" in syms      # real stocks kept
+    assert "" not in syms                            # no-symbol row dropped
+    assert "GILT10BETA" not in syms                  # ETF dropped
+    assert syms[0] == "STRONG"                       # ranked best-first
+    assert wl[0][1] > wl[-1][1]
+
+
+def test_breakout_watchlist_empty_for_non_breakout_csv(tmp_path):
+    from sectorbot.stocks import load_breakout_watchlist
+    csv = tmp_path / "u.csv"
+    csv.write_text("Symbol,Industry\nAAA,Banks\n", encoding="utf-8")
+    assert load_breakout_watchlist(csv) == []   # no breakout signals

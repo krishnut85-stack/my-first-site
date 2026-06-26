@@ -155,19 +155,45 @@ def _print_mayura(result: dict) -> None:
     print("-" * 70)
 
 
+def _breakout_watchlist():
+    """If a Trendlyne breakout export sits in universe.csv, return it as a
+    best-first [(symbol, score)] list; else None. This is Mayura's 'trade my
+    breakout list directly' mode."""
+    from sectorbot.stocks import load_breakout_watchlist
+    if not config.UNIVERSE_CSV.exists():
+        return None
+    wl = load_breakout_watchlist(config.UNIVERSE_CSV)
+    return wl or None
+
+
 def cmd_run() -> None:
     """The main event: one paper-trading session + a Telegram ping."""
     _banner("DAILY RUN")
     print(f"  {BLESSING}\n")
     print(f"  Data folder : {config.DATA_DIR}")
-    print(f"  Portfolio   : {config.PORTFOLIO_JSON}  (Mayura's own track record)\n")
+    print(f"  Portfolio   : {config.PORTFOLIO_JSON}  (Mayura's own track record)")
     from sectorbot.engine import run_paper_session
     from sectorbot.notify import write_portfolio_report
     from sectorbot.telegram import send_telegram
 
+    # WATCHLIST MODE: if a Trendlyne breakout export is present, trade it directly.
+    wl = _breakout_watchlist()
+    ranked = None
+    if wl:
+        ranked = [s for s, _ in wl]
+        print(f"  Mode        : 🎯 BREAKOUT WATCHLIST — {len(ranked)} stocks from "
+              f"your Trendlyne export (top: {', '.join(ranked[:5])})\n")
+    else:
+        print(f"  Mode        : industry DVM ranking (no breakout universe.csv)\n")
+
     # verbose=False so the engine's own "SectorBot" printout is suppressed; we
     # render Mayura's branded summary instead.
-    result = run_paper_session(verbose=False)
+    result = run_paper_session(verbose=False, ranked_symbols=ranked)
+    if ranked and not result.get("aborted"):
+        # In watchlist mode the fundamentals-CSV date is irrelevant — what
+        # matters is the breakout universe.csv. Don't show a misleading "stale".
+        result["data_stale"] = False
+        result["data_date"] = None
     if result.get("aborted"):
         # Engine refused (e.g. real Kite data required but unavailable). The
         # portfolio was left untouched — nothing to report or send.
@@ -194,6 +220,18 @@ def cmd_rank() -> None:
         return f"{v:4.0f}" if v is not None else "   -"
 
     from sectorbot import instruments
+    # If a breakout watchlist is present, show THAT (it's what Mayura will trade).
+    wl = _breakout_watchlist()
+    if wl:
+        print(f"  🎯 BREAKOUT WATCHLIST  ({len(wl)} stocks from your Trendlyne "
+              f"export — this is what Mayura trades)\n")
+        print(f"  {'#':>3}  {'Symbol':14} {'Breakout score':>14}")
+        print("  " + "-" * 36)
+        for i, (sym, sc) in enumerate(wl[:20], 1):
+            print(f"  {i:>3}  {sym:14} {sc:>14.1f}")
+        print("\n  Score = 52-week-high nearness + relative strength + delivery "
+              "spike + trend.\n  Not a prediction, not advice. 🦚\n")
+        return
     print(f"  Data file: {resolve_csv(None)}")
     smart = config.USE_SMART_SCORE
     print(f"  Industry brain: {'SMART DVM (Durability/Valuation/Momentum)' if smart else 'legacy momentum+breadth'}")

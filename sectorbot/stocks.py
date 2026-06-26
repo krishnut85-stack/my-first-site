@@ -87,6 +87,98 @@ def _get(row, colmap, field) -> Optional[float]:
     return _num(row.get(col)) if col else None
 
 
+# --- Breakout watchlist (direct stock list, no Industry column needed) ------
+# Aliases for a Trendlyne "early-breakout" stock export (the columns the Easy
+# Mode screener produces). Used by load_breakout_watchlist below.
+_BREAKOUT_ALIASES: dict[str, tuple[str, ...]] = {
+    "symbol": ("nse code", "nsecode", "symbol", "ticker", "tradingsymbol"),
+    "name": ("stock", "stock name", "company", "name"),
+    "dist52": ("% distance from 52w high", "distance from 52w high",
+               "% distance from 52 week high", "away from 52w high",
+               "% away from 52 week high"),
+    "sma50": ("day sma50", "sma50", "day sma 50", "sma 50"),
+    "sma200": ("day sma200", "sma200", "day sma 200", "sma 200"),
+    "deliv_month": ("delivery% vol avg month", "delivery % vol avg month",
+                    "delivery% volume avg month"),
+    "deliv_6m": ("delivery% vol avg 6m", "delivery % vol avg 6m",
+                 "delivery% volume avg 6m"),
+    "rs_qtr": ("returns vs nifty500 quarter%", "return vs nifty500 quarter%",
+               "returns vs nifty500 quarter", "returns vs nifty 500 quarter%"),
+    "rs_ind_week": ("returns vs industry week%", "return vs industry week%"),
+    "rsi": ("rsi", "day rsi"),
+}
+
+_ETF_HINTS = ("ETF", "GSEC", "BENCHMARK", "LIQUIDBEES", "GILT")
+
+
+def _resolve(fieldnames, aliases) -> dict[str, str]:
+    have = {_norm(c): c for c in (fieldnames or [])}
+    out = {}
+    for field, names in aliases.items():
+        for a in names:
+            if a in have:
+                out[field] = have[a]
+                break
+    return out
+
+
+def breakout_score(row, cm: dict[str, str]) -> Optional[float]:
+    """0–100 early-breakout score for one stock from the Trendlyne screener
+    columns. Higher = stronger/closer-to-breakout. Uses whatever is present."""
+    def g(f):
+        c = cm.get(f)
+        return _num(row.get(c)) if c else None
+
+    dist = g("dist52")          # % below the 52-week high; smaller = closer
+    sma50, sma200 = g("sma50"), g("sma200")
+    gap = ((sma50 - sma200) / sma200) if (sma50 and sma200 and sma200 > 0) else None
+    dm, d6 = g("deliv_month"), g("deliv_6m")
+    spike = (dm / d6) if (dm and d6 and d6 > 0) else None   # accumulation ratio
+    rsq = g("rs_qtr")           # relative strength vs Nifty500 (quarter)
+    rsi = g("rsi")
+    return _blend([
+        (_low(dist, 0, 25), 0.35),        # ⭐ nearness to 52-week high
+        (_high(rsq, 0, 80), 0.30),        # ⭐ relative strength
+        (_high(spike, 1.0, 2.5), 0.20),   # delivery accumulation spike
+        (_high(gap, 0, 0.5), 0.10),       # SMA50-over-SMA200 trend strength
+        (_high(rsi, 45, 70), 0.05),       # momentum, if column present
+    ])
+
+
+def load_breakout_watchlist(path) -> list[tuple[str, float]]:
+    """Load a flat Trendlyne breakout export as [(NSE symbol, score)] ranked
+    best-first. Skips rows with no NSE symbol and ETFs/GSec funds. Returns []
+    if the file isn't a recognizable breakout export (no symbol + no signals)."""
+    import csv
+    try:
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            cm = _resolve(reader.fieldnames, _BREAKOUT_ALIASES)
+            if "symbol" not in cm:
+                return []
+            signal_fields = {"dist52", "sma50", "rs_qtr", "deliv_month"}
+            if not (signal_fields & cm.keys()):
+                return []   # no breakout signals -> not this kind of file
+            out: list[tuple[str, float]] = []
+            seen = set()
+            for r in reader:
+                sym = (r.get(cm["symbol"]) or "").strip().upper()
+                nm = (r.get(cm.get("name", "")) or "").upper()
+                if not sym or sym in seen:
+                    continue
+                if any(h in nm or h in sym for h in _ETF_HINTS):
+                    continue   # skip bond ETFs / GSec funds that slip in
+                sc = breakout_score(r, cm)
+                if sc is None:
+                    continue
+                seen.add(sym)
+                out.append((sym, round(sc, 1)))
+    except OSError:
+        return []
+    out.sort(key=lambda t: t[1], reverse=True)
+    return out
+
+
 def score_row(row, colmap: dict[str, str]) -> Optional[float]:
     """A 0–100 smart score for one stock row, from whatever columns exist.
 
