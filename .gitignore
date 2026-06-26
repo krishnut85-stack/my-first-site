@@ -4,3 +4,8 @@ __pycache__/
 sectorbot/data/portfolio.json
 portfolio_report.txt
 portfolio_report.html
+mayura_data/mayura_portfolio.json
+mayura_data/snapshots/*.csv
+mayura_report.txt
+mayura_report.html
+mayura_dashboard.html
