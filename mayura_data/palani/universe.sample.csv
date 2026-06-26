@@ -1,0 +1,4 @@
+NSE Code,Stock Name,Industry,Sector,Durability Score,Valuation Score,Momentum Score,Trendlyne Checklist Score,PE TTM,Price to Book TTM,RSI,MFI,Delivery Volume %,Month Change %,Qtr Change %
+GESHIP,Great Eastern Shipping,Shipping,Transportation,82,70,75,68,8,1.2,61,58,55,6,18
+COCHINSHIP,Cochin Shipyard,Shipping,Transportation,90,30,95,75,55,9,68,70,48,9,40
+GODREJCP,Godrej Consumer,Household Products,FMCG,88,60,55,80,45,8,52,50,60,3,8

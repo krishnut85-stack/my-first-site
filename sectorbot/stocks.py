@@ -106,6 +106,18 @@ _BREAKOUT_ALIASES: dict[str, tuple[str, ...]] = {
                "returns vs nifty500 quarter", "returns vs nifty 500 quarter%"),
     "rs_ind_week": ("returns vs industry week%", "return vs industry week%"),
     "rsi": ("rsi", "day rsi"),
+    # extra columns used by the quality / accumulation strategy profiles
+    "durability": ("durability", "durability score", "durability score (d)"),
+    "valuation": ("valuation", "valuation score", "valuation score (v)"),
+    "momentum": ("momentum", "momentum score", "momentum score (m)"),
+    "checklist": ("trendlyne checklist score", "checklist score", "stock score",
+                  "trendlyne score", "checklist"),
+    "pe": ("pe ttm", "pe", "pe ratio", "p/e"),
+    "pbv": ("price to book ttm", "price to book", "pb", "pbv", "p/b"),
+    "mfi": ("mfi", "mfi(14)", "money flow index"),
+    "volume": ("volume", "day volume", "traded value", "turnover"),
+    "fii": ("fii holding change%", "fii holding change", "change in fii holding%",
+            "fii change%", "fii holding qoq%"),
 }
 
 _ETF_HINTS = ("ETF", "GSEC", "BENCHMARK", "LIQUIDBEES", "GILT")
@@ -184,21 +196,61 @@ def breakout_score(row, cm: dict[str, str]) -> Optional[float]:
     ])
 
 
-def load_breakout_watchlist(path) -> list[dict]:
-    """Load a flat Trendlyne breakout export as a best-first list of dicts:
-    {"symbol", "score", "sma50", "sma200", "dist52"}. `sma50` is the breakout
-    level (used for the failed-breakout exit). Skips rows with no NSE symbol and
-    ETFs/GSec funds. Returns [] if the file isn't a breakout export."""
+def quality_score(row, cm: dict[str, str]) -> Optional[float]:
+    """0–100 QUALITY+VALUE score (the Tiruchendur profile): strong, durable,
+    fairly-priced businesses. Uses Trendlyne DVM + checklist + PE/PBV."""
+    def g(f):
+        c = cm.get(f)
+        return _num(row.get(c)) if c else None
+    return _blend([
+        (_high(g("durability"), 0, 100), 0.30),   # financial strength
+        (_high(g("valuation"), 0, 100), 0.25),     # fair / cheap valuation
+        (_high(g("checklist"), 0, 100), 0.15),     # overall quality checklist
+        (_high(g("momentum"), 0, 100), 0.10),      # some trend
+        (_low(g("pe"), 10, 70), 0.12),             # cheaper PE scores higher
+        (_low(g("pbv"), 1, 12), 0.08),             # cheaper P/B scores higher
+    ])
+
+
+def accumulation_score(row, cm: dict[str, str]) -> Optional[float]:
+    """0–100 ACCUMULATION score (the Madurai profile): follow the smart money —
+    delivery spikes, money-flow, FII buying and relative strength."""
+    def g(f):
+        c = cm.get(f)
+        return _num(row.get(c)) if c else None
+    dm, d6 = g("deliv_month"), g("deliv_6m")
+    spike = (dm / d6) if (dm and d6 and d6 > 0) else None
+    return _blend([
+        (_high(spike, 1.0, 2.5), 0.35),            # delivery accumulation spike
+        (_high(g("rs_qtr"), 0, 60), 0.25),         # relative strength vs Nifty500
+        (_high(g("mfi"), 40, 80), 0.15),           # money flow index
+        (_high(g("fii"), 0, 2), 0.15),             # FII holding increase % (if any)
+        (_high(g("rsi"), 45, 70), 0.10),           # momentum, not overbought
+    ])
+
+
+# Strategy profile -> scoring function. Each Mayura temple uses one.
+SCORERS = {
+    "breakout": breakout_score,        # 🌄 Palani
+    "quality": quality_score,          # 🌊 Tiruchendur
+    "accumulation": accumulation_score,  # 🛕 Madurai
+}
+
+
+def load_watchlist(path, profile: str = "breakout") -> list[dict]:
+    """Load a flat Trendlyne stock export as a best-first list of dicts:
+    {"symbol", "score", "sma50", "sma200", "dist52"}, scored by the chosen
+    `profile` (breakout | quality | accumulation). `sma50` is the breakout level
+    (failed-breakout exit). Skips no-symbol rows and ETFs/GSec funds. Returns []
+    if the file has no usable signals for that profile."""
     import csv
+    scorer = SCORERS.get(profile, breakout_score)
     try:
         with open(path, newline="", encoding="utf-8-sig") as f:
             reader = csv.DictReader(f)
             cm = _resolve(reader.fieldnames, _BREAKOUT_ALIASES)
             if "symbol" not in cm:
                 return []
-            signal_fields = {"dist52", "sma50", "rs_qtr", "deliv_month"}
-            if not (signal_fields & cm.keys()):
-                return []   # no breakout signals -> not this kind of file
 
             def col(r, f):
                 c = cm.get(f)
@@ -213,7 +265,7 @@ def load_breakout_watchlist(path) -> list[dict]:
                     continue
                 if any(h in nm or h in sym for h in _ETF_HINTS):
                     continue   # skip bond ETFs / GSec funds that slip in
-                sc = breakout_score(r, cm)
+                sc = scorer(r, cm)
                 if sc is None:
                     continue
                 seen.add(sym)
@@ -226,6 +278,11 @@ def load_breakout_watchlist(path) -> list[dict]:
         return []
     out.sort(key=lambda d: d["score"], reverse=True)
     return out
+
+
+def load_breakout_watchlist(path) -> list[dict]:
+    """Back-compat: the breakout profile (Palani)."""
+    return load_watchlist(path, "breakout")
 
 
 def score_row(row, colmap: dict[str, str]) -> Optional[float]:

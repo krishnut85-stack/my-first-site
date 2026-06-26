@@ -18,19 +18,29 @@ This is a clean, single-command launcher built on the proven `sectorbot` engine
 as Mayura and locked to paper mode. It does NOT duplicate the strategy code — it
 reuses it, so there is only one tested engine to trust.
 
+THREE STRATEGIES (the abodes of Lord Muruga) — each independent, own portfolio:
+    🌄 palani       breakout / momentum   (fresh golden cross)
+    🌊 tiruchendur  quality + value       (DVM Durability/Valuation, low PE)
+    🛕 madurai      accumulation          (delivery spike, money-flow, FII)
+
 USAGE
 -----
-    python mayura.py run        # ⭐ the main one: run a paper session + Telegram you
-    python mayura.py rank       # show today's top-ranked industries (no trading)
-    python mayura.py status     # your saved track record (equity, trades, win-rate)
-    python mayura.py scorecard  # honest verdict: is it beating the Nifty index?
-    python mayura.py check       # check the Kite token + Telegram are wired up
-    python mayura.py universe    # audit which stocks Mayura can actually trade
+    python mayura.py run               # run ALL three strategies + Telegram you
+    python mayura.py run palani        # run just one strategy
+    python mayura.py rank [strategy]   # show a strategy's scored watchlist
+    python mayura.py status [strategy] # a strategy's track record
+    python mayura.py scorecard [strat] # honest verdict vs the Nifty index
+    python mayura.py rules [strategy]  # that strategy's exit rules
+    python mayura.py data [strategy]   # which Trendlyne columns it detected
+    python mayura.py check             # Kite token + Telegram wired? (global)
+    python mayura.py regime            # NIFTY vs its 200-DMA (global)
 
-Daily rhythm: drop today's Trendlyne CSV into sectorbot/data/ (any name ending
-.csv), then run `python mayura.py run`. Mayura prices your holdings on real Kite
-data, applies the exit rules, buys fresh leaders, saves the portfolio, and pings
-your phone on Telegram. See MAYURA.md for the Trendlyne features it feeds on.
+Each strategy reads its OWN screen from mayura_data/<strategy>/universe.csv and
+keeps its OWN portfolio there. Build a different Trendlyne screen per strategy
+(see the README in each folder), upload it, then `python mayura.py run`. Mayura
+prices holdings on real Kite data, applies that strategy's exit rules, buys its
+leaders, saves the portfolio, and pings your phone — once per strategy.
+Omitting [strategy] runs/show all three. PAPER ONLY.
 """
 
 import sys
@@ -44,74 +54,108 @@ from sectorbot import config
 PEACOCK = "🦚"
 BLESSING = "ஓம் சரவணபவ — Vel Muruga! May this run be steady, not greedy."
 
-# Mayura is its OWN bot. It borrows the proven strategy code from `sectorbot`,
-# but runs on a completely SEPARATE data folder and a SEPARATE portfolio, so it
-# never shares a track record or data with the equity bot. (Same engine design,
-# two independent cars.) These paths are applied to `config` at startup.
+# Mayura is its OWN bot, and it now runs THREE independent strategies — named
+# after three abodes of Lord Muruga. Each has its OWN data folder, its OWN
+# universe.csv (a different Trendlyne screen) and its OWN portfolio/track record,
+# so they make separate decisions and you can see which edge wins. They share
+# only the proven engine code.
 REPO_ROOT = Path(__file__).resolve().parent
 MAYURA_DATA = REPO_ROOT / "mayura_data"
 
-# --- Mayura's EXIT RULES (tweak these freely) -------------------------------
-# Breakouts run for days–weeks then fall, so exits matter more than entries.
-# These are tuned to: cut failed breakouts fast, then RIDE a winner and lock the
-# gain with a trailing stop when it turns down, and free 'dead money' on time.
-MAYURA_STOP_LOSS_PCT      = 0.08   # cut a failed breakout at −8% from entry
-MAYURA_TRAIL_ARM_PCT      = 0.10   # start trailing once the stock is +10% up…
-MAYURA_TRAIL_GIVEBACK_PCT = 0.10   # …then exit if it falls 10% from its peak
-MAYURA_TAKE_PROFIT_PCT    = 1.00   # hard cap at +100% (rare; trailing does the work)
-MAYURA_ATR_MULT           = 2.5    # volatility-based stop distance
-MAYURA_MAX_HOLDING_DAYS   = 10     # cut 'dead money' after ~10 days (failed follow-through)…
-MAYURA_TIME_STOP_MIN_GAIN = 0.05   # …only if it's still under +5% (a running winner rides on)
-MAYURA_FAILED_BREAKOUT_EXIT = True # exit the moment price falls back below SMA50 (breakout failed)
 # In a market DOWNTREND (NIFTY below its 200-DMA): "reduced" = smart middle —
-# still buy, but only the strongest few leaders at smaller size. "block" = cash.
+# still buy, but only the strongest few leaders at smaller size. Shared by all.
 MAYURA_DOWNTREND_MODE          = "reduced"
-MAYURA_DOWNTREND_MAX_POSITIONS = 3      # hold at most 3 leaders in a downtrend
-MAYURA_DOWNTREND_SIZE_FACTOR   = 0.5    # …each at half the normal size
+MAYURA_DOWNTREND_MAX_POSITIONS = 3
+MAYURA_DOWNTREND_SIZE_FACTOR   = 0.5
+
+# --- The three temple-strategies (tweak freely) -----------------------------
+# Each "exits" block tunes how that strategy manages a trade. Edit the numbers.
+STRATEGIES = {
+    "palani": {
+        "name": "Palani", "emoji": "🌄",
+        "tagline": "breakout / momentum — buy the fresh golden cross",
+        "profile": "breakout",   # scoring profile in sectorbot/stocks.py
+        "exits": dict(stop=0.08, trail_arm=0.10, trail_give=0.10, tp=1.00,
+                      atr=2.5, hold_days=10, time_min=0.05, failed_breakout=True),
+    },
+    "tiruchendur": {
+        "name": "Tiruchendur", "emoji": "🌊",
+        "tagline": "quality + value — strong, fairly-priced businesses",
+        "profile": "quality",
+        "exits": dict(stop=0.12, trail_arm=0.15, trail_give=0.12, tp=1.00,
+                      atr=3.0, hold_days=45, time_min=0.05, failed_breakout=False),
+    },
+    "madurai": {
+        "name": "Madurai", "emoji": "🛕",
+        "tagline": "accumulation — follow the smart money (delivery/MFI/FII)",
+        "profile": "accumulation",
+        "exits": dict(stop=0.10, trail_arm=0.12, trail_give=0.10, tp=1.00,
+                      atr=2.5, hold_days=20, time_min=0.05, failed_breakout=False),
+    },
+}
+STRATEGY_ORDER = ["palani", "tiruchendur", "madurai"]
+CURRENT: dict = {}   # the active strategy (set by _use_strategy)
 
 
-def _use_mayura_settings() -> None:
-    """Apply Mayura's breakout exit rules at runtime (this process only, so the
-    equity bot's own config is never touched). Switches to EXIT-RULE mode so the
-    trailing stop actually runs."""
-    config.REBALANCE = False                # use SL/TP/trailing/ATR, not rotation
-    config.STOP_LOSS_PCT = MAYURA_STOP_LOSS_PCT
+def _migrate_legacy_palani(folder: Path) -> None:
+    """One-time: move the original single-Mayura data (mayura_data/universe.csv +
+    mayura_portfolio.json) into the Palani folder so its track record carries on."""
+    import shutil
+    legacy_uni = MAYURA_DATA / "universe.csv"
+    legacy_pf = MAYURA_DATA / "mayura_portfolio.json"
+    if legacy_uni.exists() and not (folder / "universe.csv").exists():
+        shutil.copy2(legacy_uni, folder / "universe.csv")
+    if legacy_pf.exists() and not (folder / "portfolio.json").exists():
+        shutil.copy2(legacy_pf, folder / "portfolio.json")
+
+
+def _use_strategy(key: str) -> None:
+    """Point the shared engine at one temple-strategy's OWN folder + portfolio,
+    and apply that strategy's exit rules (this process only — the equity bot is
+    never touched)."""
+    global CURRENT
+    s = STRATEGIES[key]
+    CURRENT = {**s, "key": key}
+    folder = MAYURA_DATA / key
+    (folder / "snapshots").mkdir(parents=True, exist_ok=True)
+    if key == "palani":
+        _migrate_legacy_palani(folder)
+    # paths (independent per strategy)
+    config.DATA_DIR = folder
+    config.DATA_CSV = folder / "fundamentals.csv"
+    config.SNAPSHOTS_DIR = folder / "snapshots"
+    config.PORTFOLIO_JSON = folder / "portfolio.json"
+    config.UNIVERSE_CSV = folder / "universe.csv"
+    config.PORTFOLIO_REPORT_TXT = REPO_ROOT / f"mayura_{key}_report.txt"
+    config.PORTFOLIO_REPORT_HTML = REPO_ROOT / f"mayura_{key}_report.html"
+    config.DASHBOARD_HTML = REPO_ROOT / f"mayura_{key}_dashboard.html"
+    # exit rules (EXIT-RULE mode so the trailing stop runs)
+    e = s["exits"]
+    config.REBALANCE = False
+    config.STOP_LOSS_PCT = e["stop"]
     config.USE_TRAILING_STOP = True
-    config.TRAILING_ACTIVATE_PCT = MAYURA_TRAIL_ARM_PCT
-    config.TRAILING_SL_PCT = MAYURA_TRAIL_GIVEBACK_PCT
-    config.TAKE_PROFIT_PCT = MAYURA_TAKE_PROFIT_PCT
+    config.TRAILING_ACTIVATE_PCT = e["trail_arm"]
+    config.TRAILING_SL_PCT = e["trail_give"]
+    config.TAKE_PROFIT_PCT = e["tp"]
     config.USE_ATR_STOP = True
-    config.ATR_MULT = MAYURA_ATR_MULT
-    config.MAX_HOLDING_DAYS = MAYURA_MAX_HOLDING_DAYS
-    config.TIME_STOP_MIN_GAIN_PCT = MAYURA_TIME_STOP_MIN_GAIN
-    config.USE_FAILED_BREAKOUT_EXIT = MAYURA_FAILED_BREAKOUT_EXIT
+    config.ATR_MULT = e["atr"]
+    config.MAX_HOLDING_DAYS = e["hold_days"]
+    config.TIME_STOP_MIN_GAIN_PCT = e["time_min"]
+    config.USE_FAILED_BREAKOUT_EXIT = e["failed_breakout"]
     config.REGIME_DOWNTREND_MODE = MAYURA_DOWNTREND_MODE
     config.REGIME_DOWNTREND_MAX_POSITIONS = MAYURA_DOWNTREND_MAX_POSITIONS
     config.REGIME_DOWNTREND_SIZE_FACTOR = MAYURA_DOWNTREND_SIZE_FACTOR
 
 
-def _use_mayura_paths() -> None:
-    """Point the shared engine at Mayura's OWN data + portfolio + reports.
-
-    The engine reads every path from `config` at call time, so overriding these
-    module globals here makes Mayura fully independent without forking the code.
-    Industry→symbol reference maps stay shared (generic lookup tables, not the
-    other bot's data)."""
-    MAYURA_DATA.mkdir(parents=True, exist_ok=True)
-    config.DATA_DIR = MAYURA_DATA
-    config.DATA_CSV = MAYURA_DATA / "fundamentals.csv"          # fallback name
-    config.SNAPSHOTS_DIR = MAYURA_DATA / "snapshots"
-    config.PORTFOLIO_JSON = MAYURA_DATA / "mayura_portfolio.json"
-    config.UNIVERSE_CSV = MAYURA_DATA / "universe.csv"          # optional override
-    config.PORTFOLIO_REPORT_TXT = REPO_ROOT / "mayura_report.txt"
-    config.PORTFOLIO_REPORT_HTML = REPO_ROOT / "mayura_report.html"
-    config.DASHBOARD_HTML = REPO_ROOT / "mayura_dashboard.html"
-
-
 def _banner(subtitle: str) -> None:
+    title = "M A Y U R A"
+    if CURRENT:
+        title = f"M A Y U R A › {CURRENT['emoji']} {CURRENT['name'].upper()}"
     print()
     print("=" * 70)
-    print(f"  {PEACOCK}  M A Y U R A   ·   PAPER TRADING   ·   {subtitle}")
+    print(f"  {PEACOCK}  {title}   ·   {subtitle}")
+    if CURRENT:
+        print(f"      {CURRENT['tagline']}")
     print(f"      In the name of Lord Muruga — discipline over fear & greed.")
     print("=" * 70)
 
@@ -132,8 +176,9 @@ def _mayura_telegram(result: dict) -> str:
     real = result["real_data"]
     tag = "REAL Kite prices" if real else "SYNTHETIC prices — NOT real"
     exits = result["exits"]
+    who = f"{CURRENT['emoji']} {CURRENT['name']}" if CURRENT else "Mayura"
     lines = [
-        f"{PEACOCK} <b>Mayura · {date.today().isoformat()}</b>",
+        f"{PEACOCK} <b>Mayura · {who} · {date.today().isoformat()}</b>",
         f"<i>Paper trading ({tag}) · Vel Muruga 🙏</i>",
         f"Equity: <b>Rs {result['equity']:,.0f}</b> "
         f"({result['total_pnl_pct']:+.2f}%)",
@@ -172,8 +217,9 @@ def _print_mayura(result: dict) -> None:
     """Mayura's own portfolio printout (so the screen says Mayura, not SectorBot)."""
     pf = result["portfolio"]
     tag = "REAL Kite prices" if result["real_data"] else "SYNTHETIC — NOT real"
+    who = f"{CURRENT['emoji']} {CURRENT['name']}" if CURRENT else "Mayura"
     print("-" * 70)
-    print(f"  {PEACOCK} Mayura paper portfolio   ({tag})")
+    print(f"  {PEACOCK} {who} paper portfolio   ({tag})")
     print(f"  Starting capital : Rs {pf.starting_capital:,.0f}")
     print(f"  Equity (now)     : Rs {result['equity']:,.0f}  "
           f"({result['total_pnl_pct']:+.2f}%)")
@@ -202,14 +248,14 @@ def _print_mayura(result: dict) -> None:
     print("-" * 70)
 
 
-def _breakout_watchlist():
-    """If a Trendlyne breakout export sits in universe.csv, return it as a
-    best-first [(symbol, score)] list; else None. This is Mayura's 'trade my
-    breakout list directly' mode."""
-    from sectorbot.stocks import load_breakout_watchlist
+def _watchlist():
+    """Load THIS strategy's universe.csv, scored by its profile (breakout /
+    quality / accumulation). Returns a best-first list of dicts, or None."""
+    from sectorbot.stocks import load_watchlist
     if not config.UNIVERSE_CSV.exists():
         return None
-    wl = load_breakout_watchlist(config.UNIVERSE_CSV)
+    profile = CURRENT.get("profile", "breakout") if CURRENT else "breakout"
+    wl = load_watchlist(config.UNIVERSE_CSV, profile)
     return wl or None
 
 
@@ -217,22 +263,22 @@ def cmd_run() -> None:
     """The main event: one paper-trading session + a Telegram ping."""
     _banner("DAILY RUN")
     print(f"  {BLESSING}\n")
-    print(f"  Data folder : {config.DATA_DIR}")
-    print(f"  Portfolio   : {config.PORTFOLIO_JSON}  (Mayura's own track record)")
+    print(f"  Strategy    : {CURRENT['emoji']} {CURRENT['name']} — {CURRENT['tagline']}")
+    print(f"  Folder      : {config.DATA_DIR}")
     from sectorbot.engine import run_paper_session
     from sectorbot.notify import write_portfolio_report
     from sectorbot.telegram import send_telegram
 
-    # WATCHLIST MODE: if a Trendlyne breakout export is present, trade it directly.
-    wl = _breakout_watchlist()
-    ranked, levels = None, None
-    if wl:
-        ranked = [d["symbol"] for d in wl]
-        levels = {d["symbol"]: d["sma50"] for d in wl if d.get("sma50")}
-        print(f"  Mode        : 🎯 BREAKOUT WATCHLIST — {len(ranked)} stocks from "
-              f"your Trendlyne export (top: {', '.join(ranked[:5])})\n")
-    else:
-        print(f"  Mode        : industry DVM ranking (no breakout universe.csv)\n")
+    wl = _watchlist()
+    if not wl:
+        print(f"\n  ⏭  No universe.csv for {CURRENT['name']} yet — upload this "
+              f"strategy's Trendlyne screen to:\n     {config.UNIVERSE_CSV}\n"
+              "     (see the README in that folder). Skipping.\n")
+        return
+    ranked = [d["symbol"] for d in wl]
+    levels = {d["symbol"]: d["sma50"] for d in wl if d.get("sma50")}
+    print(f"  Watchlist   : 🎯 {len(ranked)} stocks ({CURRENT['profile']} score; "
+          f"top: {', '.join(ranked[:5])})\n")
 
     # verbose=False so the engine's own "SectorBot" printout is suppressed; we
     # render Mayura's branded summary instead.
@@ -260,66 +306,19 @@ def cmd_run() -> None:
 
 def cmd_rank() -> None:
     _banner("TODAY'S RANKING")
-    from sectorbot.data_loader import resolve_csv
-    from sectorbot.instruments import symbols_for
-    from sectorbot.screener import top_industries
-
-    def _c(v):  # format an optional DVM pillar (0-100) or a dash
-        return f"{v:4.0f}" if v is not None else "   -"
-
-    from sectorbot import instruments
-    # If a breakout watchlist is present, show THAT (it's what Mayura will trade).
-    wl = _breakout_watchlist()
-    if wl:
-        print(f"  🎯 BREAKOUT WATCHLIST  ({len(wl)} stocks from your Trendlyne "
-              f"export — this is what Mayura trades)\n")
-        print(f"  {'#':>3}  {'Symbol':14} {'Breakout score':>14}")
-        print("  " + "-" * 36)
-        for i, d in enumerate(wl[:20], 1):
-            print(f"  {i:>3}  {d['symbol']:14} {d['score']:>14.1f}")
-        mode = ("EARLY-STAGE: fresh golden cross (green just crossed red), "
-                "parabolic/extended names demoted" if config.BREAKOUT_EARLY_STAGE
-                else "continuation: strength near 52-week high")
-        print(f"\n  Score model = {mode}")
-        print("  + delivery accumulation + relative strength. Not advice. 🦚\n")
+    wl = _watchlist()
+    if not wl:
+        print(f"\n  ⏭  No universe.csv for {CURRENT['name']} yet — upload this "
+              f"strategy's Trendlyne screen to:\n     {config.UNIVERSE_CSV}\n")
         return
-    print(f"  Data file: {resolve_csv(None)}")
-    smart = config.USE_SMART_SCORE
-    print(f"  Industry brain: {'SMART DVM (Durability/Valuation/Momentum)' if smart else 'legacy momentum+breadth'}")
-    if instruments.has_stock_signals():
-        print("  Stock brain   : ✅ ranking real stocks by their Trendlyne "
-              "DVM/checklist/technicals (universe.csv)")
-    else:
-        print("  Stock brain   : — (drop a Trendlyne STOCK export as "
-              "mayura_data/universe.csv to enable per-stock ranking)")
-    print()
-    if smart:
-        print(f"  {'#':>3}  {'Industry':28} {'Score':>6} {'D':>4} {'V':>4} {'M':>4} {'PE':>6}  Symbols")
-        print("  " + "-" * 86)
-        show_scores = instruments.has_stock_signals()
-        for i, ind in enumerate(top_industries(n=12), 1):
-            pe = f"{ind.pe:.0f}" if ind.pe is not None else "-"
-            picks = symbols_for(ind.name)[:3]
-            if show_scores:
-                syms = ", ".join(
-                    f"{s}({instruments.stock_score(s):.0f})"
-                    if instruments.stock_score(s) is not None else s
-                    for s in picks) or "(none mapped)"
-            else:
-                syms = ", ".join(picks) or "(none mapped)"
-            print(f"  {i:>3}  {ind.name[:28]:28} {ind.score:6.1f} "
-                  f"{_c(ind.durability)} {_c(ind.valuation)} {_c(ind.momentum)} "
-                  f"{pe:>6}  {syms}")
-        print("\n  D=Durability  V=Valuation  M=Momentum  (0–100 each, from your "
-              "Trendlyne CSV).")
-    else:
-        print(f"  {'#':>3}  {'Industry':32} {'Score':>6} {'PE':>7}  Tradeable symbols")
-        print("  " + "-" * 78)
-        for i, ind in enumerate(top_industries(n=12), 1):
-            pe = f"{ind.pe:.1f}" if ind.pe is not None else "-"
-            syms = ", ".join(symbols_for(ind.name)[:4]) or "(none mapped)"
-            print(f"  {i:>3}  {ind.name[:32]:32} {ind.score:6.1f} {pe:>7}  {syms}")
-    print("\n  Ranking of existing data — not a prediction, not advice.\n")
+    print(f"  🎯 {CURRENT['name']} watchlist — {len(wl)} stocks, scored by the "
+          f"'{CURRENT['profile']}' model\n")
+    print(f"  {'#':>3}  {'Symbol':14} {'Score':>8}")
+    print("  " + "-" * 30)
+    for i, d in enumerate(wl[:20], 1):
+        print(f"  {i:>3}  {d['symbol']:14} {d['score']:>8.1f}")
+    print(f"\n  Profile '{CURRENT['profile']}' — {CURRENT['tagline']}.")
+    print("  Ranking of existing data — not a prediction, not advice. 🦚\n")
 
 
 def cmd_status() -> None:
@@ -386,30 +385,9 @@ def cmd_data() -> None:
     from sectorbot.stocks import resolve_columns
     import csv as _csv
 
-    print(f"  Folder: {config.DATA_DIR}\n")
-
-    # 1) Fundamentals (Sector Dashboard) — industry PE/ROE/growth, NOT on Kite.
-    info = active_csv_info()
-    fund = resolve_csv()
-    if fund.exists() and classify_csv(fund) == "fundamentals":
-        fresh = "⚠️ STALE — download today's" if info["stale"] else "fresh"
-        print(f"  1. Fundamentals  : ✅ {fund.name}  (date {info['date']}, {fresh})")
-    else:
-        print("  1. Fundamentals  : ❌ MISSING")
-        print("       → Trendlyne ▸ Sector Dashboard ▸ Export  →  save as "
-              "fundamentals-YYYY-MM-DD.csv")
-
-    # 2) Breadth (Market Breadth Analysis, equi-weighted) — RSI/MFI/SMA %.
-    breadth = resolve_breadth_csv()
-    if breadth:
-        print(f"  2. Breadth       : ✅ {breadth.name}")
-    else:
-        print("  2. Breadth       : ❌ MISSING")
-        print("       → Trendlyne ▸ Market Breadth (set Equi-weighted) ▸ Export "
-              " →  save as industry-breadth-equi-YYYY-MM-DD.csv")
-
-    # 3) Stock export (universe.csv) — DVM/checklist/technicals per stock.
     uni = config.UNIVERSE_CSV
+    print(f"  Strategy : {CURRENT['emoji']} {CURRENT['name']} ({CURRENT['profile']})")
+    print(f"  Folder   : {config.DATA_DIR}\n")
     if uni.exists():
         try:
             with open(uni, newline="", encoding="utf-8") as f:
@@ -418,28 +396,22 @@ def cmd_data() -> None:
             fields = []
         found = resolve_columns(fields)
         nice = {
-            "durability": "Durability", "valuation": "Valuation",
-            "momentum": "Momentum", "checklist": "Checklist",
-            "pe": "PE", "pbv": "P/B", "rsi": "RSI", "mfi": "MFI",
-            "delivery": "Delivery%", "month_change": "MonthΔ",
-            "qtr_change": "QtrΔ", "week_change": "WeekΔ", "day_change": "DayΔ",
+            "symbol": "NSE Code", "durability": "Durability",
+            "valuation": "Valuation", "momentum": "Momentum",
+            "checklist": "Checklist", "pe": "PE", "pbv": "P/B", "rsi": "RSI",
+            "mfi": "MFI", "deliv_month": "Delivery%", "fii": "FII",
+            "dist52": "52WHigh%", "sma50": "SMA50", "sma200": "SMA200",
+            "rs_qtr": "RelStr",
         }
         have = [nice[k] for k in nice if k in found]
-        print(f"  3. Stock export  : ✅ universe.csv  → using: "
-              f"{', '.join(have) if have else 'symbol+industry only (no scores)'}")
-        instruments.reload_universe()
-        if instruments.has_stock_signals():
-            print("       Stock brain ON — picks ranked by real per-stock data.")
-        else:
-            print("       (No score columns detected — add DVM/checklist/RSI etc. "
-                  "for smarter stock picks.)")
+        wl = _watchlist()
+        n = len(wl) if wl else 0
+        print(f"  universe.csv : ✅ {n} tradeable stocks")
+        print(f"  columns used : {', '.join(have) if have else '(symbol only)'}")
     else:
-        print("  3. Stock export  : ⬜ optional (RECOMMENDED) — universe.csv")
-        print("       → Trendlyne ▸ a Stock Screener with DVM columns ▸ Export "
-              " →  save as universe.csv  (see universe.sample.csv)")
-
-    print("\n  These are exactly the things Kite can't give you. Drop the files")
-    print("  above into this folder, then run `python mayura.py run`. 🦚\n")
+        print("  universe.csv : ❌ MISSING — upload this strategy's Trendlyne screen here.")
+        print("     See the README in this folder for which filters to use.")
+    print()
 
 
 def cmd_regime() -> None:
@@ -481,59 +453,66 @@ def cmd_regime() -> None:
 
 
 def cmd_rules() -> None:
-    """Show Mayura's exit rules in plain English (how it manages each trade)."""
-    _banner("EXIT RULES (how Mayura protects each trade)")
+    """Show THIS strategy's exit rules in plain English (each temple differs)."""
+    _banner("EXIT RULES")
+    fb = ("💔 Failed breakout  : exit the moment price falls below its SMA50\n"
+          if config.USE_FAILED_BREAKOUT_EXIT else "")
     print(f"""
-  Mayura manages every position with these rules (first to trigger wins):
+  {CURRENT['emoji']} {CURRENT['name']} manages each trade with these rules
+  (first to trigger wins):
 
-  💔 Failed breakout  : exit the moment price falls back BELOW its SMA50
-                        (breakout level) — fastest 'this one failed' signal
-  🛑 Hard stop-loss   : exit at  −{MAYURA_STOP_LOSS_PCT:.0%}  from entry  (hard floor)
-  📈 Trailing stop    : once a stock is +{MAYURA_TRAIL_ARM_PCT:.0%}, follow its peak and exit
-                        if it drops {MAYURA_TRAIL_GIVEBACK_PCT:.0%} from the high
-                        → this RIDES the run and LOCKS the gain when it turns down
-  🎯 Take-profit      : hard cap at +{MAYURA_TAKE_PROFIT_PCT:.0%}  (rare — trailing usually fires first)
-  🌊 ATR stop         : a volatility-based stop ({MAYURA_ATR_MULT}× ATR below entry)
-  ⏳ Time stop        : exit after {MAYURA_MAX_HOLDING_DAYS} days IF still under +{MAYURA_TIME_STOP_MIN_GAIN:.0%}
-                        (frees 'dead money'; a running winner is left to trail)
-  🛡️ Market regime    : in a NIFTY downtrend, {'buy only the top ' + str(MAYURA_DOWNTREND_MAX_POSITIONS) + ' leaders at ' + format(MAYURA_DOWNTREND_SIZE_FACTOR, '.0%') + ' size (smart middle)' if MAYURA_DOWNTREND_MODE == 'reduced' else 'hold cash, no new buys'}
+  {fb}🛑 Hard stop-loss   : exit at  −{config.STOP_LOSS_PCT:.0%}  from entry
+  📈 Trailing stop    : once +{config.TRAILING_ACTIVATE_PCT:.0%}, follow the peak; exit if it
+                        drops {config.TRAILING_SL_PCT:.0%} from the high (rides + locks the gain)
+  🎯 Take-profit      : hard cap at +{config.TAKE_PROFIT_PCT:.0%}  (rare)
+  🌊 ATR stop         : volatility-based ({config.ATR_MULT}× ATR below entry)
+  ⏳ Time stop        : exit after {config.MAX_HOLDING_DAYS} days IF still under +{config.TIME_STOP_MIN_GAIN_PCT:.0%}
+  🛡️ Market regime    : in a NIFTY downtrend, buy only the top
+                        {config.REGIME_DOWNTREND_MAX_POSITIONS} leaders at {config.REGIME_DOWNTREND_SIZE_FACTOR:.0%} size (smart middle)
 
-  Position size       : ~{config.MAX_ALLOCATION_PER_NAME:.0%} of capital per stock, up to {config.MAX_POSITIONS} names.
-
-  Example: buy at 100 → runs to 150 (peak) → trailing exits at ~135 (locks +35%).
-           Or buy at 100 → falls to 92 → stop-loss exits at −8%. Small loss, big wins.
-
-  Edit these in mayura.py (MAYURA_* constants at the top). Paper only. 🦚
+  Edit each strategy's numbers in mayura.py (STRATEGIES → exits). Paper only. 🦚
 """)
 
 
-COMMANDS = {
-    "run": cmd_run,
-    "rank": cmd_rank,
-    "status": cmd_status,
-    "scorecard": cmd_scorecard,
-    "check": cmd_check,
+# Commands that run once for the WHOLE bot (not per strategy).
+GLOBAL_COMMANDS = {"check": cmd_check, "regime": cmd_regime}
+# Commands that run PER strategy (loop all three unless one is named).
+PER_STRATEGY_COMMANDS = {
+    "run": cmd_run, "rank": cmd_rank, "status": cmd_status,
+    "scorecard": cmd_scorecard, "data": cmd_data, "rules": cmd_rules,
     "universe": cmd_universe,
-    "data": cmd_data,
-    "rules": cmd_rules,
-    "regime": cmd_regime,
 }
 
 
 def main() -> None:
     _assert_paper_only()
-    _use_mayura_paths()      # independent: own data folder + portfolio
-    _use_mayura_settings()   # breakout exit rules (this process only)
-    choice = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else "run"
-    if choice in ("-h", "--help", "help"):
+    args = [a for a in sys.argv[1:] if not a.startswith("-")]
+    choice = args[0] if args else "run"
+    strat = args[1].lower() if len(args) > 1 else None
+    if choice in ("-h", "--help", "help") or "-h" in sys.argv or "--help" in sys.argv:
         print(__doc__)
         return
-    fn = COMMANDS.get(choice)
+
+    if choice in GLOBAL_COMMANDS:
+        GLOBAL_COMMANDS[choice]()
+        return
+
+    fn = PER_STRATEGY_COMMANDS.get(choice)
     if not fn:
         print(f"{PEACOCK} Unknown command '{choice}'.")
-        print(f"   Use one of: {', '.join(COMMANDS)}  (or --help)")
+        print(f"   Commands: {', '.join(list(PER_STRATEGY_COMMANDS) + list(GLOBAL_COMMANDS))}")
+        print(f"   Strategies: {', '.join(STRATEGY_ORDER)}  (omit to run all three)")
         sys.exit(1)
-    fn()
+
+    if strat and strat not in STRATEGIES:
+        print(f"{PEACOCK} Unknown strategy '{strat}'. Use one of: "
+              f"{', '.join(STRATEGY_ORDER)}")
+        sys.exit(1)
+
+    keys = [strat] if strat else STRATEGY_ORDER
+    for key in keys:
+        _use_strategy(key)
+        fn()
 
 
 if __name__ == "__main__":

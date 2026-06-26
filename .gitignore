@@ -7,6 +7,12 @@ portfolio_report.html
 mayura_data/mayura_portfolio.json
 mayura_data/snapshots/*.csv
 mayura_data/universe.csv
-mayura_report.txt
-mayura_report.html
-mayura_dashboard.html
+mayura_data/*/universe.csv
+mayura_data/*/portfolio.json
+mayura_data/*/snapshots/*.csv
+mayura_report*.txt
+mayura_report*.html
+mayura_dashboard*.html
+mayura_*_report.txt
+mayura_*_report.html
+mayura_*_dashboard.html
