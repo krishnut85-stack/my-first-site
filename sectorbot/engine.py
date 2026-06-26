@@ -20,6 +20,19 @@ from .portfolio import Portfolio
 from .risk import PositionState, decide_exit
 
 
+def _holding_days(entry_date) -> int:
+    """Calendar days a position has been held, from its entry_date (YYYY-MM-DD)."""
+    if not entry_date:
+        return 0
+    try:
+        from datetime import date, datetime
+        from .data_loader import IST
+        y, m, d = (int(x) for x in str(entry_date).split("-"))
+        return (datetime.now(IST).date() - date(y, m, d)).days
+    except Exception:  # noqa: BLE001
+        return 0
+
+
 def _safe_price(ds, symbol):
     try:
         p = ds.last_price(symbol)
@@ -95,7 +108,17 @@ def run_paper_session(verbose: bool = True, csv_path=None,
                 pnl = pf.sell(sym, ltp, reason=f"stop-loss {change:+.1%}")
                 exits.append((sym, ltp, "stop-loss", pnl))
         else:
-            # low-churn: SL / TP / trailing / ATR
+            # low-churn: TIME STOP / SL / TP / trailing / ATR
+            # Time stop ("dead money"): held too long without progress -> exit
+            # and free the capital. A running stock (gain above the threshold)
+            # is left to the trailing stop, so winners are never time-stopped.
+            if config.MAX_HOLDING_DAYS:
+                gain = (ltp - h["avg_price"]) / h["avg_price"]
+                days = _holding_days(h.get("entry_date"))
+                if days >= config.MAX_HOLDING_DAYS and gain < config.TIME_STOP_MIN_GAIN_PCT:
+                    pnl = pf.sell(sym, ltp, reason=f"time stop ({days}d, {gain:+.1%})")
+                    exits.append((sym, ltp, "time stop", pnl))
+                    continue
             state = PositionState(sym, h["avg_price"], h["qty"],
                                   atr=h.get("atr", 0.0),
                                   peak_price=h.get("peak_price", h["avg_price"]))

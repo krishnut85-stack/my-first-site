@@ -51,6 +51,34 @@ BLESSING = "ஓம் சரவணபவ — Vel Muruga! May this run be steady,
 REPO_ROOT = Path(__file__).resolve().parent
 MAYURA_DATA = REPO_ROOT / "mayura_data"
 
+# --- Mayura's EXIT RULES (tweak these freely) -------------------------------
+# Breakouts run for days–weeks then fall, so exits matter more than entries.
+# These are tuned to: cut failed breakouts fast, then RIDE a winner and lock the
+# gain with a trailing stop when it turns down, and free 'dead money' on time.
+MAYURA_STOP_LOSS_PCT      = 0.08   # cut a failed breakout at −8% from entry
+MAYURA_TRAIL_ARM_PCT      = 0.10   # start trailing once the stock is +10% up…
+MAYURA_TRAIL_GIVEBACK_PCT = 0.10   # …then exit if it falls 10% from its peak
+MAYURA_TAKE_PROFIT_PCT    = 1.00   # hard cap at +100% (rare; trailing does the work)
+MAYURA_ATR_MULT           = 2.5    # volatility-based stop distance
+MAYURA_MAX_HOLDING_DAYS   = 45     # exit 'dead money' after ~1.5 months…
+MAYURA_TIME_STOP_MIN_GAIN = 0.05   # …but only if it's still under +5% (winners ride on)
+
+
+def _use_mayura_settings() -> None:
+    """Apply Mayura's breakout exit rules at runtime (this process only, so the
+    equity bot's own config is never touched). Switches to EXIT-RULE mode so the
+    trailing stop actually runs."""
+    config.REBALANCE = False                # use SL/TP/trailing/ATR, not rotation
+    config.STOP_LOSS_PCT = MAYURA_STOP_LOSS_PCT
+    config.USE_TRAILING_STOP = True
+    config.TRAILING_ACTIVATE_PCT = MAYURA_TRAIL_ARM_PCT
+    config.TRAILING_SL_PCT = MAYURA_TRAIL_GIVEBACK_PCT
+    config.TAKE_PROFIT_PCT = MAYURA_TAKE_PROFIT_PCT
+    config.USE_ATR_STOP = True
+    config.ATR_MULT = MAYURA_ATR_MULT
+    config.MAX_HOLDING_DAYS = MAYURA_MAX_HOLDING_DAYS
+    config.TIME_STOP_MIN_GAIN_PCT = MAYURA_TIME_STOP_MIN_GAIN
+
 
 def _use_mayura_paths() -> None:
     """Point the shared engine at Mayura's OWN data + portfolio + reports.
@@ -394,6 +422,31 @@ def cmd_data() -> None:
     print("  above into this folder, then run `python mayura.py run`. 🦚\n")
 
 
+def cmd_rules() -> None:
+    """Show Mayura's exit rules in plain English (how it manages each trade)."""
+    _banner("EXIT RULES (how Mayura protects each trade)")
+    print(f"""
+  Mayura manages every position with these rules (first to trigger wins):
+
+  🛑 Hard stop-loss   : exit at  −{MAYURA_STOP_LOSS_PCT:.0%}  from entry  (cut a failed breakout fast)
+  📈 Trailing stop    : once a stock is +{MAYURA_TRAIL_ARM_PCT:.0%}, follow its peak and exit
+                        if it drops {MAYURA_TRAIL_GIVEBACK_PCT:.0%} from the high
+                        → this RIDES the run and LOCKS the gain when it turns down
+  🎯 Take-profit      : hard cap at +{MAYURA_TAKE_PROFIT_PCT:.0%}  (rare — trailing usually fires first)
+  🌊 ATR stop         : a volatility-based stop ({MAYURA_ATR_MULT}× ATR below entry)
+  ⏳ Time stop        : exit after {MAYURA_MAX_HOLDING_DAYS} days IF still under +{MAYURA_TIME_STOP_MIN_GAIN:.0%}
+                        (frees 'dead money'; a running winner is left to trail)
+  🛡️ Market regime    : no NEW buys while NIFTY is below its 200-day average
+
+  Position size       : ~{config.MAX_ALLOCATION_PER_NAME:.0%} of capital per stock, up to {config.MAX_POSITIONS} names.
+
+  Example: buy at 100 → runs to 150 (peak) → trailing exits at ~135 (locks +35%).
+           Or buy at 100 → falls to 92 → stop-loss exits at −8%. Small loss, big wins.
+
+  Edit these in mayura.py (MAYURA_* constants at the top). Paper only. 🦚
+""")
+
+
 COMMANDS = {
     "run": cmd_run,
     "rank": cmd_rank,
@@ -402,12 +455,14 @@ COMMANDS = {
     "check": cmd_check,
     "universe": cmd_universe,
     "data": cmd_data,
+    "rules": cmd_rules,
 }
 
 
 def main() -> None:
     _assert_paper_only()
-    _use_mayura_paths()   # ← make Mayura independent: own data folder + portfolio
+    _use_mayura_paths()      # independent: own data folder + portfolio
+    _use_mayura_settings()   # breakout exit rules (this process only)
     choice = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else "run"
     if choice in ("-h", "--help", "help"):
         print(__doc__)

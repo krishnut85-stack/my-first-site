@@ -129,6 +129,14 @@ ATR_HISTORY_BARS = 60          # how much history to pull for the ATR calc
 
 DAILY_LOSS_LIMIT_PCT = 0.05    # stop opening new trades after a 5% drawdown
 
+# Time stop ("how many days do we hold?"): in exit-rule mode (REBALANCE=False),
+# exit a position after MAX_HOLDING_DAYS calendar days, but ONLY if it is "dead
+# money" — gain still below TIME_STOP_MIN_GAIN_PCT. A stock that is genuinely
+# running stays in (the trailing stop manages it); this just frees capital from
+# names that went sideways. 0 = disabled (default; the equity bot is unaffected).
+MAX_HOLDING_DAYS = 0
+TIME_STOP_MIN_GAIN_PCT = 0.05
+
 # --- Trading costs (makes the backtest HONEST) -----------------------------
 # Real buys/sells cost money: brokerage + STT + exchange fees + GST + stamp
 # duty + SEBI charges, PLUS slippage (you rarely fill at the screen price).

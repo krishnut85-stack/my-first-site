@@ -137,3 +137,44 @@ def test_aborts_when_real_data_required_but_unavailable(tmp_path, monkeypatch):
     result = run_paper_session(verbose=False)
     assert result.get("aborted") is True
     assert not pf_path.exists()  # portfolio left untouched / not created
+
+
+def test_holding_days_counts_calendar_days():
+    from datetime import datetime, timedelta
+    from sectorbot.engine import _holding_days
+    from sectorbot.data_loader import IST
+    assert _holding_days(None) == 0
+    assert _holding_days("not-a-date") == 0
+    ten_ago = (datetime.now(IST).date() - timedelta(days=10)).isoformat()
+    assert _holding_days(ten_ago) == 10
+
+
+def test_time_stop_exits_dead_money_not_winners(monkeypatch, tmp_path):
+    # A position held past MAX_HOLDING_DAYS with a small gain is time-stopped;
+    # a running winner past the same age is left for the trailing stop.
+    from datetime import datetime, timedelta
+    from sectorbot import config
+    from sectorbot.data_loader import IST
+    from sectorbot.engine import run_paper_session
+    from sectorbot.portfolio import Portfolio
+
+    monkeypatch.setattr(config, "USE_KITE_DATA", False)
+    monkeypatch.setattr(config, "REBALANCE", False)
+    monkeypatch.setattr(config, "MAX_HOLDING_DAYS", 30)
+    monkeypatch.setattr(config, "TIME_STOP_MIN_GAIN_PCT", 0.05)
+    monkeypatch.setattr(config, "USE_REGIME_FILTER", False)
+    monkeypatch.setattr(config, "PORTFOLIO_JSON", tmp_path / "p.json")
+
+    from sectorbot.datasource import PaperDataSource
+    price = PaperDataSource().last_price("DEADCO")   # entry == current -> flat
+
+    old = (datetime.now(IST).date() - timedelta(days=40)).isoformat()
+    pf = Portfolio(1_000_000, 500_000)
+    # DEAD: flat name (entry == current price) held 40 days -> time-stopped
+    pf.holdings["DEADCO"] = {"qty": 10, "avg_price": price, "entry_date": old,
+                             "peak_price": price, "atr": 0.0}
+    pf.save(tmp_path / "p.json")
+
+    res = run_paper_session(verbose=False, ranked_symbols=["DEADCO"])
+    reasons = [r for _, _, r, _ in res["exits"]]
+    assert "time stop" in reasons
