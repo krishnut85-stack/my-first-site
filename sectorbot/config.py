@@ -218,6 +218,19 @@ SMART_WEIGHTS = {
 # (a clean, aligned uptrend). 0 disables the bonus.
 SMART_ALIGNMENT_BONUS = 10.0
 
+# --- Breakout watchlist: EARLY-STAGE vs continuation -----------------------
+# A breakout watchlist (mayura_data/universe.csv) can be scored two ways:
+#   • BREAKOUT_EARLY_STAGE = True  (default) -> favour a FRESH golden cross
+#     (SMA50 just above SMA200) and DEMOTE already-extended/parabolic names.
+#     This catches stocks "when the green just crosses and is about to go up,"
+#     not after they have already run 3-6x.
+#   • False -> the older "buy strength near the 52-week high" (continuation)
+#     model, which by design buys stocks that are ALREADY running.
+BREAKOUT_EARLY_STAGE = True
+# A cross is "fresh" while SMA50 is within this % above SMA200. Beyond it the
+# trend is treated as increasingly mature/extended and scored lower.
+FRESH_CROSS_MAX_PCT = 10.0
+
 # --- Sector-breadth blend --------------------------------------------------
 # A separate Trendlyne CSV (sector bullish/bearish breadth) can be blended in.
 # Each industry's fundamental score gets a tilt from its SECTOR's breadth score.

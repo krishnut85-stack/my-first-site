@@ -123,25 +123,64 @@ def _resolve(fieldnames, aliases) -> dict[str, str]:
 
 
 def breakout_score(row, cm: dict[str, str]) -> Optional[float]:
-    """0–100 early-breakout score for one stock from the Trendlyne screener
-    columns. Higher = stronger/closer-to-breakout. Uses whatever is present."""
+    """0–100 breakout score for one stock from the Trendlyne screener columns.
+
+    Two models (config.BREAKOUT_EARLY_STAGE):
+      • EARLY-STAGE (default): reward a FRESH golden cross (SMA50 just above
+        SMA200) and DEMOTE already-extended/parabolic trends — catch the move
+        as it begins, not after a 3-6x run.
+      • Continuation: the older 'buy strength near the 52-week high' model.
+    Uses whatever columns are present (graceful degrade)."""
     def g(f):
         c = cm.get(f)
         return _num(row.get(c)) if c else None
 
     dist = g("dist52")          # % below the 52-week high; smaller = closer
     sma50, sma200 = g("sma50"), g("sma200")
-    gap = ((sma50 - sma200) / sma200) if (sma50 and sma200 and sma200 > 0) else None
+    # SMA50-over-SMA200 gap, in PERCENT. ~0% = a brand-new cross; large = mature.
+    gap = ((sma50 - sma200) / sma200 * 100) if (sma50 and sma200 and sma200 > 0) else None
     dm, d6 = g("deliv_month"), g("deliv_6m")
     spike = (dm / d6) if (dm and d6 and d6 > 0) else None   # accumulation ratio
     rsq = g("rs_qtr")           # relative strength vs Nifty500 (quarter)
     rsi = g("rsi")
+
+    if not config.BREAKOUT_EARLY_STAGE:
+        # Continuation model — buys stocks already running near their highs.
+        return _blend([
+            (_low(dist, 0, 25), 0.35),
+            (_high(rsq, 0, 80), 0.30),
+            (_high(spike, 1.0, 2.5), 0.20),
+            (_high(gap, 0, 50), 0.10),
+            (_high(rsi, 45, 70), 0.05),
+        ])
+
+    # EARLY-STAGE model.
+    # 1) Fresh-cross sweet spot: 100 while SMA50 is 0..FRESH_CROSS_MAX_PCT above
+    #    SMA200 (just crossed), fading as the trend matures, 0 if no cross yet.
+    fresh = config.FRESH_CROSS_MAX_PCT
+    if gap is None:
+        cross = None
+    elif gap < 0:
+        cross = 0.0                                   # SMA50 below SMA200: no cross
+    elif gap <= fresh:
+        cross = 100.0                                 # ⭐ brand-new golden cross
+    else:
+        cross = max(0.0, 100.0 - (gap - fresh) * 2.0)  # mature/extended -> lower
+    # 2) Position vs 52-week high: room to run is good; AT the high = late.
+    if dist is None:
+        pos = None
+    elif dist < 5:
+        pos = 50.0                                    # right at the top: late-ish
+    elif dist <= 45:
+        pos = 100.0                                   # healthy room above the base
+    else:
+        pos = max(0.0, 100.0 - (dist - 45) * 2.0)     # too deep below high
     return _blend([
-        (_low(dist, 0, 25), 0.35),        # ⭐ nearness to 52-week high
-        (_high(rsq, 0, 80), 0.30),        # ⭐ relative strength
-        (_high(spike, 1.0, 2.5), 0.20),   # delivery accumulation spike
-        (_high(gap, 0, 0.5), 0.10),       # SMA50-over-SMA200 trend strength
-        (_high(rsi, 45, 70), 0.05),       # momentum, if column present
+        (cross, 0.45),                    # ⭐ FRESH golden cross = early entry
+        (_high(spike, 1.0, 2.5), 0.20),   # delivery accumulation starting
+        (_high(rsq, 0, 40), 0.20),        # some relative strength (modest)
+        (pos, 0.10),                      # not already at the very top
+        (_high(rsi, 45, 65), 0.05),       # rising, not yet overbought
     ])
 
 

@@ -229,8 +229,11 @@ def cmd_rank() -> None:
         print("  " + "-" * 36)
         for i, (sym, sc) in enumerate(wl[:20], 1):
             print(f"  {i:>3}  {sym:14} {sc:>14.1f}")
-        print("\n  Score = 52-week-high nearness + relative strength + delivery "
-              "spike + trend.\n  Not a prediction, not advice. 🦚\n")
+        mode = ("EARLY-STAGE: fresh golden cross (green just crossed red), "
+                "parabolic/extended names demoted" if config.BREAKOUT_EARLY_STAGE
+                else "continuation: strength near 52-week high")
+        print(f"\n  Score model = {mode}")
+        print("  + delivery accumulation + relative strength. Not advice. 🦚\n")
         return
     print(f"  Data file: {resolve_csv(None)}")
     smart = config.USE_SMART_SCORE
