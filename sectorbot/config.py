@@ -199,6 +199,25 @@ WEIGHTS = {
     "breadth": 0.05,           # Advances/Declines ratio
 }
 
+# --- SMART DVM score (Mayura's brain — uses MAX Trendlyne columns) ---------
+# When True, Mayura ranks industries on a Trendlyne-style DVM score built from
+# every useful column in your CSV (ROE/ROA/profit & revenue growth = Durability;
+# PEG/PE/PBV/dividend yield = Valuation; week→year change + breadth = Momentum),
+# instead of the older momentum-only blend. Set False to revert to the plain
+# fundamental+breadth score. See sectorbot/smart.py.
+USE_SMART_SCORE = True
+# Weights of the three DVM pillars (sum ~1.0). Momentum-led but quality-aware:
+# we still chase trend, but Durability stops us buying junk and Valuation stops
+# us paying any price. Tune to taste.
+SMART_WEIGHTS = {
+    "durability": 0.35,
+    "valuation": 0.20,
+    "momentum": 0.45,
+}
+# Extra points added to the momentum pillar when ALL timeframes are positive
+# (a clean, aligned uptrend). 0 disables the bonus.
+SMART_ALIGNMENT_BONUS = 10.0
+
 # --- Sector-breadth blend --------------------------------------------------
 # A separate Trendlyne CSV (sector bullish/bearish breadth) can be blended in.
 # Each industry's fundamental score gets a tilt from its SECTOR's breadth score.

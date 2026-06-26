@@ -128,13 +128,31 @@ def cmd_rank() -> None:
     from sectorbot.data_loader import resolve_csv
     from sectorbot.instruments import symbols_for
     from sectorbot.screener import top_industries
-    print(f"  Data file: {resolve_csv(None)}\n")
-    print(f"  {'#':>3}  {'Industry':32} {'Score':>6} {'PE':>7}  Tradeable symbols")
-    print("  " + "-" * 78)
-    for i, ind in enumerate(top_industries(n=12), 1):
-        pe = f"{ind.pe:.1f}" if ind.pe is not None else "-"
-        syms = ", ".join(symbols_for(ind.name)[:4]) or "(none mapped)"
-        print(f"  {i:>3}  {ind.name[:32]:32} {ind.score:6.1f} {pe:>7}  {syms}")
+
+    def _c(v):  # format an optional DVM pillar (0-100) or a dash
+        return f"{v:4.0f}" if v is not None else "   -"
+
+    print(f"  Data file: {resolve_csv(None)}")
+    smart = config.USE_SMART_SCORE
+    print(f"  Brain: {'SMART DVM (Durability/Valuation/Momentum)' if smart else 'legacy momentum+breadth'}\n")
+    if smart:
+        print(f"  {'#':>3}  {'Industry':28} {'Score':>6} {'D':>4} {'V':>4} {'M':>4} {'PE':>6}  Symbols")
+        print("  " + "-" * 86)
+        for i, ind in enumerate(top_industries(n=12), 1):
+            pe = f"{ind.pe:.0f}" if ind.pe is not None else "-"
+            syms = ", ".join(symbols_for(ind.name)[:3]) or "(none mapped)"
+            print(f"  {i:>3}  {ind.name[:28]:28} {ind.score:6.1f} "
+                  f"{_c(ind.durability)} {_c(ind.valuation)} {_c(ind.momentum)} "
+                  f"{pe:>6}  {syms}")
+        print("\n  D=Durability  V=Valuation  M=Momentum  (0–100 each, from your "
+              "Trendlyne CSV).")
+    else:
+        print(f"  {'#':>3}  {'Industry':32} {'Score':>6} {'PE':>7}  Tradeable symbols")
+        print("  " + "-" * 78)
+        for i, ind in enumerate(top_industries(n=12), 1):
+            pe = f"{ind.pe:.1f}" if ind.pe is not None else "-"
+            syms = ", ".join(symbols_for(ind.name)[:4]) or "(none mapped)"
+            print(f"  {i:>3}  {ind.name[:32]:32} {ind.score:6.1f} {pe:>7}  {syms}")
     print("\n  Ranking of existing data — not a prediction, not advice.\n")
 
 

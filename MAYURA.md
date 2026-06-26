@@ -76,6 +76,27 @@ is paper-only and deliberately does not use it).
 
 ---
 
+## 🧠 The SMART brain — DVM scoring (now LIVE)
+
+Mayura no longer ranks on momentum alone. It now computes a **Trendlyne-style
+DVM score** for every industry, straight from the columns already in your CSV —
+so it actively *uses* the data behind Trendlyne's flagship **DVM Scores** feature:
+
+| Pillar | What it measures | Trendlyne columns it reads |
+|--------|------------------|-----------------------------|
+| **D — Durability** | Is the business financially strong? | ROE, ROA, Net Profit growth YoY, Revenue growth, Industry Score |
+| **V — Valuation** | Is it reasonably priced? (cheaper = higher) | PE-to-Growth (PEG), PE, Price/Book, Dividend yield |
+| **M — Momentum** | Strong *and consistent* trend? | Week/Month/Qtr/Half/Year change + market breadth, with an alignment bonus when every timeframe is positive |
+
+`Smart score = 0.35·D + 0.20·V + 0.45·M` (tunable in `config.SMART_WEIGHTS`).
+It's momentum-led (we still chase trend) but **Durability stops Mayura buying
+junk** and **Valuation stops it paying any price** for that trend. Missing
+columns are skipped and weights re-normalised, so a leaner CSV still works.
+
+See the live D/V/M breakdown any time with `python mayura.py rank`. Turn the
+brain off with `USE_SMART_SCORE = False` to fall back to the old momentum+breadth
+score. Logic + tests live in `sectorbot/smart.py` and `tests/test_smart.py`.
+
 ## How Mayura turns those features into a paper trade
 
 ```
