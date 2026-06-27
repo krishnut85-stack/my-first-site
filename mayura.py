@@ -23,7 +23,7 @@ SIX FACES — Arumugam (Lord Muruga as worshipped at his six temples), independe
     🌊 senthil      quality + value       (DVM Durability/Valuation) — Tiruchendur
     🛕 subramanya   accumulation          (delivery/MFI/FII)         — Madurai
     📜 swaminatha   filings-driven        (buy on bullish NSE/BSE news) — Swamimalai
-    🕊️ thanikesa    (to be defined)                                  — Thiruttani
+    🕊️ thanikesa    small-cap momentum    (pure technicals)            — Thiruttani
     🍃 solaimalai   (to be defined)                                  — Pazhamudircholai
 
 USAGE
@@ -118,11 +118,13 @@ STRATEGIES = {
     },
     "thanikesa": {  # Thanikesa of THIRUTTANI — the calm, contented victor
         "name": "Thanikesa", "emoji": "🕊️",
-        "tagline": "to be defined — the calm victor (awaiting your direction)",
-        "profile": "quality",   # placeholder until you tell me its strategy
-        "exits": dict(stop=0.12, trail_arm=0.15, trail_give=0.12, tp=1.00,
-                      atr=3.0, hold_days=40, time_min=0.05, failed_breakout=False,
-                      max_ext=0.50),
+        "tagline": "small-cap momentum — pure technicals (trend + 52w-high + RS)",
+        "profile": "technical",   # pure price/volume scorer (no fundamentals)
+        # Small caps move fast & hard both ways: keep a firm stop, arm the
+        # trailing profit-lock early, and exit a failed breakout quickly.
+        "exits": dict(stop=0.10, trail_arm=0.10, trail_give=0.12, tp=1.00,
+                      atr=2.5, hold_days=20, time_min=0.05, failed_breakout=True,
+                      max_ext=0.30),   # don't chase already-parabolic small caps
     },
     "solaimalai": {  # Solaimalai Murugan of PAZHAMUDIRCHOLAI — abundance
         "name": "Solaimalai", "emoji": "🍃",

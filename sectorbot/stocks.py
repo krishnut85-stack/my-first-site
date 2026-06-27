@@ -265,11 +265,63 @@ def accumulation_score(row, cm: dict[str, str]) -> Optional[float]:
     return base * _extension_factor(g("sma50"), g("sma200")) if base is not None else None
 
 
+def technical_score(row, cm: dict[str, str]) -> Optional[float]:
+    """0–100 PURE-TECHNICAL momentum score (the Thiruttani / Thanikesa profile,
+    built for SMALL CAPS). No fundamentals at all — only price, trend, relative
+    strength and volume:
+
+      • must be in an UPTREND (SMA50 > SMA200); below = rejected to ~0
+      • rewards proximity to the 52-week high (George & Hwang momentum anchor)
+      • rewards relative strength vs the index and healthy (not overbought) RSI
+      • rewards delivery/volume confirmation and money-flow
+
+    The small-cap UNIVERSE is set by the Trendlyne screen you export (filter
+    Market Cap = Small Cap); this scorer just ranks whatever stocks are in it.
+    The _extension_factor still demotes already-parabolic names so we ride
+    momentum without chasing a stock that has already gone vertical."""
+    def g(f):
+        c = cm.get(f)
+        return _num(row.get(c)) if c else None
+
+    dist = g("dist52")              # % below 52-week high; smaller = nearer high
+    sma50, sma200 = g("sma50"), g("sma200")
+    gap = ((sma50 - sma200) / sma200 * 100) if (sma50 and sma200 and sma200 > 0) else None
+    rsq = g("rs_qtr")              # relative strength vs Nifty500 (quarter)
+    rsi = g("rsi")
+    mfi = g("mfi")
+    dm, d6 = g("deliv_month"), g("deliv_6m")
+    spike = (dm / d6) if (dm and d6 and d6 > 0) else None
+
+    # Uptrend gate: no golden cross => not a momentum candidate.
+    fresh = config.FRESH_CROSS_MAX_PCT
+    if gap is None:
+        trend = None
+    elif gap < 0:
+        trend = 0.0                                   # SMA50 below SMA200 -> reject
+    elif gap <= fresh:
+        trend = 100.0                                 # fresh, clean uptrend
+    else:
+        trend = max(40.0, 100.0 - (gap - fresh) * 1.5)  # mature but still trending
+    # 52-week-high proximity: nearer the high = stronger momentum.
+    prox = _low(dist, 0, 40) if dist is not None else None
+
+    base = _blend([
+        (trend, 0.30),                     # established / fresh uptrend
+        (prox, 0.25),                      # near the 52-week high (momentum)
+        (_high(rsq, 0, 50), 0.20),         # relative strength vs the index
+        (_high(rsi, 50, 70), 0.10),        # momentum, not yet overbought
+        (_high(spike, 1.0, 2.5), 0.10),    # volume/delivery confirmation
+        (_high(mfi, 45, 80), 0.05),        # money flow
+    ])
+    return base * _extension_factor(sma50, sma200) if base is not None else None
+
+
 # Strategy profile -> scoring function. Each Mayura temple uses one.
 SCORERS = {
     "breakout": breakout_score,        # 🌄 Palani
     "quality": quality_score,          # 🌊 Tiruchendur
     "accumulation": accumulation_score,  # 🛕 Madurai
+    "technical": technical_score,      # 🕊️ Thiruttani (small-cap momentum)
 }
 
 
