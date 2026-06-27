@@ -214,13 +214,29 @@ def breakout_score(row, cm: dict[str, str]) -> Optional[float]:
     ])
 
 
+def _extension_factor(sma50, sma200) -> float:
+    """A 0.5–1.0 multiplier that DEMOTES already-run-up stocks, using the
+    SMA50-over-SMA200 gap as a proxy for how extended/mature the trend is.
+    ~1.0 when fresh/near (gap ≤ 20%), falling to 0.5 for very stretched names
+    (gap ≥ 80%). Keeps the ranking off parabolic stocks, matching the buy-time
+    extension guard."""
+    if not (sma50 and sma200 and sma200 > 0):
+        return 1.0
+    gap = (sma50 - sma200) / sma200 * 100.0
+    if gap <= 20:
+        return 1.0
+    if gap >= 80:
+        return 0.5
+    return 1.0 - (gap - 20) / 60.0 * 0.5
+
+
 def quality_score(row, cm: dict[str, str]) -> Optional[float]:
     """0–100 QUALITY+VALUE score (the Tiruchendur profile): strong, durable,
     fairly-priced businesses. Uses Trendlyne DVM + checklist + PE/PBV."""
     def g(f):
         c = cm.get(f)
         return _num(row.get(c)) if c else None
-    return _blend([
+    base = _blend([
         (_high(g("durability"), 0, 100), 0.30),   # financial strength
         (_high(g("valuation"), 0, 100), 0.25),     # fair / cheap valuation
         (_high(g("checklist"), 0, 100), 0.15),     # overall quality checklist
@@ -228,6 +244,7 @@ def quality_score(row, cm: dict[str, str]) -> Optional[float]:
         (_low(g("pe"), 10, 70), 0.12),             # cheaper PE scores higher
         (_low(g("pbv"), 1, 12), 0.08),             # cheaper P/B scores higher
     ])
+    return base * _extension_factor(g("sma50"), g("sma200")) if base is not None else None
 
 
 def accumulation_score(row, cm: dict[str, str]) -> Optional[float]:
@@ -238,13 +255,14 @@ def accumulation_score(row, cm: dict[str, str]) -> Optional[float]:
         return _num(row.get(c)) if c else None
     dm, d6 = g("deliv_month"), g("deliv_6m")
     spike = (dm / d6) if (dm and d6 and d6 > 0) else None
-    return _blend([
+    base = _blend([
         (_high(spike, 1.0, 2.5), 0.35),            # delivery accumulation spike
         (_high(g("rs_qtr"), 0, 60), 0.25),         # relative strength vs Nifty500
         (_high(g("mfi"), 40, 80), 0.15),           # money flow index
         (_high(g("fii"), 0, 2), 0.15),             # FII holding increase % (if any)
         (_high(g("rsi"), 45, 70), 0.10),           # momentum, not overbought
     ])
+    return base * _extension_factor(g("sma50"), g("sma200")) if base is not None else None
 
 
 # Strategy profile -> scoring function. Each Mayura temple uses one.
