@@ -139,6 +139,8 @@ def _use_strategy(key: str) -> None:
     # file named by the strategy (mayura_data/<key>.csv) — whichever you upload.
     _uni_candidates = [folder / "universe.csv", MAYURA_DATA / f"{key}.csv",
                        folder / f"{key}.csv"]
+    if key == "dandapani":   # you also call the breakout strategy "mayura"
+        _uni_candidates += [MAYURA_DATA / "mayura.csv", folder / "mayura.csv"]
     config.UNIVERSE_CSV = next((c for c in _uni_candidates if c.exists()),
                               folder / "universe.csv")
     config.PORTFOLIO_REPORT_TXT = REPO_ROOT / f"mayura_{key}_report.txt"
