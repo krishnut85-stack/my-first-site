@@ -278,6 +278,18 @@ OHLC_HISTORY_BARS = int(os.environ.get("OHLC_HISTORY_BARS", "260"))  # ~1yr of d
 OHLC_MAX_SYMBOLS = int(os.environ.get("OHLC_MAX_SYMBOLS", "150"))    # cap fetches
 OHLC_FETCH_DELAY = float(os.environ.get("OHLC_FETCH_DELAY", "0.25")) # secs/req (rate limit)
 
+# --- Solaimalai: quant multi-factor + Greenblatt special situations --------
+# Cross-sectional factor weights (z-scored, then percentile-ranked). Higher is
+# better for each. momentum + vcp + trend lead; low-vol + relative-strength temper.
+SOLAIMALAI_FACTOR_WEIGHTS = {
+    "momentum": 0.30, "vcp": 0.20, "trend": 0.20, "lowvol": 0.15, "rs": 0.15,
+}
+# A bullish "special situation" (buyback / demerger / spin-off / promoter buying)
+# in recent filings BOOSTS the composite by this many points (capped at 100). A
+# red-flag filing zeroes the score (blocked). Filings are a conviction overlay
+# here, not a hard gate (fail-open: no filings = pure quant score stands).
+SOLAIMALAI_SPECIAL_BOOST = float(os.environ.get("SOLAIMALAI_SPECIAL_BOOST", "12"))
+
 # --- Scoring weights (transparent momentum + quality blend) ----------------
 WEIGHTS = {
     "qtr_change": 0.20,        # Qtr Change %

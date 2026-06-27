@@ -244,3 +244,58 @@ def thanikesa_score(bars: list[Bar], index: list[Bar] | None = None) -> Optional
 SCORERS_OHLC = {
     "thanikesa": thanikesa_score,
 }
+
+
+# --- Quant multi-factor model (Solaimalai) ---------------------------------
+def raw_factors(bars: list[Bar], index: list[Bar] | None = None) -> Optional[dict]:
+    """Raw (un-normalised) factor values for the AQR-style multi-factor model.
+    Higher is better for every factor (low-vol is negated). None if too short."""
+    if len(bars) < 50:
+        return None
+    vol = volatility_pct(bars)
+    return {
+        "momentum": momentum(bars),                       # 12-1 price momentum
+        "lowvol": (-vol if vol is not None else None),    # less vol = higher
+        "trend": trend_template(bars)["score"],           # Stage-2 quality 0..100
+        "vcp": vcp(bars)["score"],                         # coiled-base 0..100
+        "rs": relative_strength(bars, index) if index else None,  # vs market
+    }
+
+
+def composite_zscore(rows: list[dict], weights: dict[str, float]) -> dict[str, float]:
+    """Cross-sectional multi-factor compositing — the core 'quant' step.
+
+    rows: [{"symbol":.., "factors": {factor: value|None}}]. For each factor we
+    z-score across the whole universe (so factors on different scales combine
+    fairly), take a weighted average of the available z-scores, then map every
+    stock to a 0..100 PERCENTILE rank (robust to outliers). Returns {symbol: 0..100}.
+    """
+    import bisect
+    from statistics import pstdev
+
+    keys = list(weights)
+    stats: dict[str, Optional[tuple[float, float]]] = {}
+    for k in keys:
+        vals = [r["factors"].get(k) for r in rows if r["factors"].get(k) is not None]
+        if len(vals) >= 2:
+            mean = sum(vals) / len(vals)
+            sd = pstdev(vals)
+            stats[k] = (mean, sd) if sd > 0 else None
+        else:
+            stats[k] = None
+
+    composites: dict[str, float] = {}
+    for r in rows:
+        num = den = 0.0
+        for k in keys:
+            st, v = stats[k], r["factors"].get(k)
+            if st and v is not None:
+                z = (v - st[0]) / st[1]
+                num += weights[k] * z
+                den += weights[k]
+        composites[r["symbol"]] = (num / den) if den > 0 else 0.0
+
+    ordered = sorted(composites.values())
+    n = len(ordered)
+    return {sym: round(bisect.bisect_right(ordered, c) / n * 100, 1) if n else 0.0
+            for sym, c in composites.items()}

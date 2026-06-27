@@ -24,7 +24,7 @@ SIX FACES — Arumugam (Lord Muruga as worshipped at his six temples), independe
     🛕 subramanya   accumulation          (delivery/MFI/FII)         — Madurai
     📜 swaminatha   filings-driven        (buy on bullish NSE/BSE news) — Swamimalai
     🕊️ thanikesa    small-cap momentum    (Minervini VCP+Stage2, from OHLC) — Thiruttani
-    🍃 solaimalai   (to be defined)                                  — Pazhamudircholai
+    🍃 solaimalai   quant multi-factor    (factors + VCP + special situations) — Pazhamudircholai
 
 USAGE
 -----
@@ -130,11 +130,12 @@ STRATEGIES = {
     },
     "solaimalai": {  # Solaimalai Murugan of PAZHAMUDIRCHOLAI — abundance
         "name": "Solaimalai", "emoji": "🍃",
-        "tagline": "to be defined — the hill of ripe fruits (awaiting your direction)",
-        "profile": "accumulation",   # placeholder until you tell me its strategy
-        "exits": dict(stop=0.12, trail_arm=0.15, trail_give=0.12, tp=1.00,
-                      atr=3.0, hold_days=30, time_min=0.05, failed_breakout=False,
-                      max_ext=0.50),
+        "tagline": "out-of-the-box — quant multi-factor + VCP + special situations",
+        "compute": "multifactor",   # cross-sectional z-score from live OHLC
+        "profile": "accumulation",   # (only if it ever falls back to CSV)
+        "exits": dict(stop=0.10, trail_arm=0.12, trail_give=0.12, tp=1.00,
+                      atr=2.8, hold_days=30, time_min=0.05, failed_breakout=False,
+                      max_ext=0.40),
     },
 }
 STRATEGY_ORDER = ["dandapani", "senthil", "subramanya",
@@ -369,6 +370,8 @@ def _watchlist():
         return None
     if CURRENT and CURRENT.get("compute") == "ohlc":
         return _ohlc_watchlist()
+    if CURRENT and CURRENT.get("compute") == "multifactor":
+        return _multifactor_watchlist()
     from sectorbot.stocks import load_watchlist
     profile = CURRENT.get("profile", "breakout") if CURRENT else "breakout"
     wl = load_watchlist(config.UNIVERSE_CSV, profile)
@@ -413,6 +416,68 @@ def _ohlc_watchlist():
             time.sleep(config.OHLC_FETCH_DELAY)
     out.sort(key=lambda d: d["score"], reverse=True)
     return out or None
+
+
+def _multifactor_watchlist():
+    """Solaimalai: AQR-style quant multi-factor (cross-sectional z-scores from
+    live OHLC) + a Greenblatt special-situations overlay from filings. Two-pass:
+    gather raw factors for the whole pool, z-score/percentile them, then boost
+    special situations and block red-flags on the top names. Returns engine-shaped
+    dicts (symbol/score/sma50/sma200/dist52)."""
+    import time
+    from sectorbot import technicals as T
+    from sectorbot.stocks import load_symbols
+    from sectorbot.datasource import get_datasource
+
+    rows = load_symbols(config.UNIVERSE_CSV)
+    if not rows:
+        return None
+    symbols = [r["symbol"] for r in rows][: config.OHLC_MAX_SYMBOLS]
+    ds = get_datasource()
+    idx = ds.history(config.REGIME_INDEX, config.OHLC_HISTORY_BARS)
+    print(f"  🧮 Solaimalai: computing multi-factor scores from live OHLC for "
+          f"{len(symbols)} candidates…")
+    data = []
+    for i, sym in enumerate(symbols):
+        try:
+            bars = ds.history(sym, config.OHLC_HISTORY_BARS)
+        except Exception:  # noqa: BLE001
+            bars = []
+        if not bars:
+            continue
+        f = T.raw_factors(bars, idx)
+        if not f:
+            continue
+        s50, s200, dist = T.levels(bars)
+        data.append({"symbol": sym, "factors": f,
+                     "sma50": s50, "sma200": s200, "dist52": dist})
+        if config.OHLC_FETCH_DELAY and i < len(symbols) - 1:
+            time.sleep(config.OHLC_FETCH_DELAY)
+    if not data:
+        return None
+    # Cross-sectional composite (the quant step).
+    scores = T.composite_zscore(data, config.SOLAIMALAI_FACTOR_WEIGHTS)
+    for d in data:
+        d["score"] = scores.get(d["symbol"], 0.0)
+        d.pop("factors", None)
+    # Greenblatt special-situations overlay on the top names (filings) — boost
+    # buyback/demerger/spin-off/promoter-buying, block red-flags. Fail-open.
+    data.sort(key=lambda d: d["score"], reverse=True)
+    if date.today().weekday() < 5:        # skip the network on weekends
+        from sectorbot import filings
+        top = data[: config.FILINGS_SCAN_TOP]
+        print(f"  ⭐ Checking filings for special situations on the top "
+              f"{len(top)} names…")
+        for d in top:
+            a = filings.assess_symbol(d["symbol"])
+            if a["verdict"] == "bearish":
+                d["score"] = 0.0
+                d["event"] = "🚫 " + (a.get("headline", "")[:34])
+            elif a.get("special"):
+                d["score"] = min(100.0, d["score"] + config.SOLAIMALAI_SPECIAL_BOOST)
+                d["event"] = "⭐ " + ", ".join(a["special"])
+        data.sort(key=lambda d: d["score"], reverse=True)
+    return data or None
 
 
 def _filings_gate(ranked: list) -> dict:
@@ -525,10 +590,10 @@ def cmd_rank() -> None:
         return
     print(f"  🎯 {CURRENT['name']} watchlist — {len(wl)} stocks, scored by the "
           f"'{CURRENT['profile']}' model\n")
-    print(f"  {'#':>3}  {'Symbol':14} {'Score':>8}")
-    print("  " + "-" * 30)
+    print(f"  {'#':>3}  {'Symbol':14} {'Score':>8}  Note")
+    print("  " + "-" * 46)
     for i, d in enumerate(wl[:20], 1):
-        print(f"  {i:>3}  {d['symbol']:14} {d['score']:>8.1f}")
+        print(f"  {i:>3}  {d['symbol']:14} {d['score']:>8.1f}  {d.get('event','')}")
     print(f"\n  Profile '{CURRENT['profile']}' — {CURRENT['tagline']}.")
     print("  Ranking of existing data — not a prediction, not advice. 🦚\n")
 
@@ -629,18 +694,22 @@ def cmd_data() -> None:
     uni = config.UNIVERSE_CSV
     print(f"  Strategy : {CURRENT['emoji']} {CURRENT['name']} ({CURRENT['profile']})")
     print(f"  Folder   : {config.DATA_DIR}\n")
-    if CURRENT.get("compute") == "ohlc":
-        # OHLC strategies don't screen columns — the CSV is just a candidate pool
-        # and the edge is computed from live bars. Count cheaply (no fetching).
+    if CURRENT.get("compute") in ("ohlc", "multifactor"):
+        # These strategies don't screen columns — the CSV is just a candidate
+        # pool and the edge is computed from live bars. Count cheaply (no fetch).
         from sectorbot.stocks import load_symbols
+        how = ("🧮 LIVE Kite OHLC — quant multi-factor (momentum + low-vol + "
+               "trend + VCP + RS) z-scored, plus a Greenblatt special-situations "
+               "overlay from filings."
+               if CURRENT.get("compute") == "multifactor" else
+               f"🧮 LIVE Kite OHLC — {CURRENT.get('ohlc_scorer','technical')} "
+               "(Minervini VCP + Stage-2 + momentum + RS).")
         if uni.exists():
             syms = load_symbols(uni)
             print(f"  universe.csv : ✅ {len(syms)} candidate stocks (pool only)")
-            print(f"  scoring      : 🧮 computed from LIVE Kite OHLC — "
-                  f"{CURRENT.get('ohlc_scorer','technical')} (VCP + Stage-2 + "
-                  f"momentum + RS). No Trendlyne columns needed.")
-            print(f"  note         : upload a STABLE small-cap pool once "
-                  f"(e.g. Nifty Smallcap 250); only NSE Code column is required.")
+            print(f"  scoring      : {how}")
+            print(f"  note         : upload a STABLE pool once (e.g. an index "
+                  f"constituent list); only the NSE Code column is required.")
         else:
             print(f"  screen file  : ❌ MISSING — upload a candidate pool as")
             print(f"     {config.UNIVERSE_CSV_PRIMARY}")

@@ -99,6 +99,30 @@ BEARISH: dict[str, float] = {
     "offer for sale": 1, "net loss": 3, "loss widens": 3, "loss for the": 2,
 }
 
+# Greenblatt-style SPECIAL SITUATIONS — the event-driven edge most retail
+# ignores. Phrase -> tag. Used by Solaimalai as a conviction BOOST (not a gate).
+SPECIAL: dict[str, str] = {
+    "buyback": "buyback", "buy-back": "buyback", "buy back of": "buyback",
+    "demerger": "demerger", "de-merger": "demerger",
+    "scheme of arrangement": "demerger", "composite scheme": "demerger",
+    "spin-off": "spinoff", "spin off": "spinoff", "spinoff": "spinoff",
+    "promoter acquired": "promoter-buying", "increase in promoter": "promoter-buying",
+    "acquisition of shares by promoter": "promoter-buying",
+    "preferential allotment to promoter": "promoter-buying",
+    "open offer": "open-offer", "bonus issue": "bonus",
+}
+
+
+def special_situations(announcements: list[Announcement]) -> list[str]:
+    """Distinct Greenblatt special-situation tags found in the filings."""
+    tags = set()
+    for a in announcements:
+        for phrase, tag in SPECIAL.items():
+            if phrase in a.text:
+                tags.add(tag)
+    return sorted(tags)
+
+
 # Pure-noise subjects we never act on (so they don't dilute scoring).
 NOISE = (
     "trading window", "newspaper publication", "compliance certificate",
@@ -143,7 +167,8 @@ def assess(announcements: list[Announcement]) -> dict:
     neutral. Returns the driving headline(s) so the alert can explain itself."""
     if not announcements:
         return {"verdict": "neutral", "headline": "", "reasons": [],
-                "bull": 0.0, "bear": 0.0, "n": 0}
+                "bull": 0.0, "bear": 0.0, "n": 0, "special": []}
+    special = special_situations(announcements)
     best_bull = None
     worst_bear = None
     for a in announcements:
@@ -160,13 +185,13 @@ def assess(announcements: list[Announcement]) -> dict:
     if worst_bear is not None:
         a, bear, reasons = worst_bear
         return {"verdict": "bearish", "headline": a.subject, "reasons": reasons,
-                "bull": 0.0, "bear": bear, "n": len(announcements)}
+                "bull": 0.0, "bear": bear, "n": len(announcements), "special": special}
     if best_bull is not None:
         a, bull, reasons = best_bull
         return {"verdict": "bullish", "headline": a.subject, "reasons": reasons,
-                "bull": bull, "bear": 0.0, "n": len(announcements)}
+                "bull": bull, "bear": 0.0, "n": len(announcements), "special": special}
     return {"verdict": "neutral", "headline": "", "reasons": [],
-            "bull": 0.0, "bear": 0.0, "n": len(announcements)}
+            "bull": 0.0, "bear": 0.0, "n": len(announcements), "special": special}
 
 
 # --- Fetch (network; isolated so the classifier tests run offline) ----------
@@ -267,7 +292,7 @@ def assess_symbol(symbol: str, days_back: int | None = None,
         # Distinguish "couldn't fetch" from "genuinely nothing": we can't tell
         # for sure, so report 'unknown' — the safe, no-buy state.
         return {"symbol": symbol, "verdict": "unknown", "headline": "",
-                "reasons": [], "bull": 0.0, "bear": 0.0, "n": 0}
+                "reasons": [], "bull": 0.0, "bear": 0.0, "n": 0, "special": []}
     result = assess(anns)
     result["symbol"] = symbol
     return result
