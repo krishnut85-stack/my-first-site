@@ -129,6 +129,7 @@ _BREAKOUT_ALIASES["dist52"] += ("% distance from 52week high",
 _BREAKOUT_ALIASES["deliv_month"] += ("delivery% volume avg month",)
 _BREAKOUT_ALIASES["deliv_6m"] += ("delivery% volume avg 6month",)
 _BREAKOUT_ALIASES["rs_qtr"] += ("nifty500 quarter change %",)
+_BREAKOUT_ALIASES["pbv"] += ("pbv adjusted",)
 
 _ETF_HINTS = ("ETF", "GSEC", "BENCHMARK", "LIQUIDBEES", "GILT")
 
@@ -259,7 +260,13 @@ def load_watchlist(path, profile: str = "breakout") -> list[dict]:
         with open(path, newline="", encoding="utf-8-sig") as f:
             reader = csv.DictReader(f)
             cm = _resolve(reader.fieldnames, _BREAKOUT_ALIASES)
-            if "symbol" not in cm:
+            # A Trendlyne export can carry TWO symbol columns ("NSE code" filled
+            # + "NSE Code" sometimes empty). Gather ALL of them and per row use
+            # the first non-empty, so no stock is dropped.
+            sym_aliases = set(_BREAKOUT_ALIASES["symbol"])
+            sym_cols = [c for c in (reader.fieldnames or [])
+                        if _norm(c) in sym_aliases]
+            if not sym_cols:
                 return []
 
             def col(r, f):
@@ -269,7 +276,12 @@ def load_watchlist(path, profile: str = "breakout") -> list[dict]:
             out: list[dict] = []
             seen = set()
             for r in reader:
-                sym = (r.get(cm["symbol"]) or "").strip().upper()
+                sym = ""
+                for sc in sym_cols:
+                    v = (r.get(sc) or "").strip()
+                    if v:
+                        sym = v.upper()
+                        break
                 nm = (r.get(cm.get("name", "")) or "").upper()
                 if not sym or sym in seen:
                     continue

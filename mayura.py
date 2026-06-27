@@ -135,7 +135,12 @@ def _use_strategy(key: str) -> None:
     config.DATA_CSV = folder / "fundamentals.csv"
     config.SNAPSHOTS_DIR = folder / "snapshots"
     config.PORTFOLIO_JSON = folder / "portfolio.json"
-    config.UNIVERSE_CSV = folder / "universe.csv"
+    # Universe: accept either the folder file (folder/universe.csv) OR a flat
+    # file named by the strategy (mayura_data/<key>.csv) — whichever you upload.
+    _uni_candidates = [folder / "universe.csv", MAYURA_DATA / f"{key}.csv",
+                       folder / f"{key}.csv"]
+    config.UNIVERSE_CSV = next((c for c in _uni_candidates if c.exists()),
+                              folder / "universe.csv")
     config.PORTFOLIO_REPORT_TXT = REPO_ROOT / f"mayura_{key}_report.txt"
     config.PORTFOLIO_REPORT_HTML = REPO_ROOT / f"mayura_{key}_report.html"
     config.DASHBOARD_HTML = REPO_ROOT / f"mayura_{key}_dashboard.html"
