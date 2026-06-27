@@ -188,11 +188,14 @@ def _use_strategy(key: str) -> None:
     # whether it was dropped flat in mayura_data/ OR inside mayura_data/<key>/.
     # (Linux is case-sensitive, but a screen export shouldn't be lost over a
     # capital letter or a wrong folder.)
-    for searchdir in (MAYURA_DATA, folder):
+    # CRITICAL: a generic "universe.csv" only counts INSIDE this strategy's OWN
+    # folder. We must NEVER pick the shared/legacy mayura_data/universe.csv for a
+    # named strategy — that would make every face trade another face's shares.
+    for searchdir, allow_generic in ((MAYURA_DATA, False), (folder, True)):
         try:
             for p in sorted(searchdir.glob("*.csv")):
                 stem = p.stem.lower()
-                if stem == key or stem == "universe":
+                if stem == key or (allow_generic and stem == "universe"):
                     _uni_candidates.insert(0, p)
         except OSError:
             pass
