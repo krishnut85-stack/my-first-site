@@ -130,6 +130,13 @@ _BREAKOUT_ALIASES["deliv_month"] += ("delivery% volume avg month",)
 _BREAKOUT_ALIASES["deliv_6m"] += ("delivery% volume avg 6month",)
 _BREAKOUT_ALIASES["rs_qtr"] += ("nifty500 quarter change %",)
 _BREAKOUT_ALIASES["pbv"] += ("pbv adjusted",)
+# Delivery can be exported as VOLUME (not %) — accept both; the month/6M ratio
+# detects accumulation either way.
+_BREAKOUT_ALIASES["deliv_month"] += ("delivery volume avg month",
+                                     "delivery vol avg month", "delivery vol. avg month")
+_BREAKOUT_ALIASES["deliv_6m"] += ("delivery volume avg 6month",
+                                  "delivery vol avg 6month", "delivery vol. avg 6m",
+                                  "delivery vol avg 6m")
 
 _ETF_HINTS = ("ETF", "GSEC", "BENCHMARK", "LIQUIDBEES", "GILT")
 
