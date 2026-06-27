@@ -166,7 +166,8 @@ class KiteDataSource:
         data = self.kite.historical_data(
             token, date.today() - timedelta(days=bars * 2), date.today(), "day"
         )
-        return [Bar(d["high"], d["low"], d["close"]) for d in data][-bars:]
+        return [Bar(d["high"], d["low"], d["close"], d.get("volume", 0))
+                for d in data][-bars:]
 
 
 def get_datasource() -> DataSource:

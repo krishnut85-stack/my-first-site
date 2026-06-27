@@ -1,34 +1,33 @@
-# 🕊️ Thanikesa — small-cap momentum (PURE technicals)
+# 🕊️ Thanikesa — small-cap momentum (Minervini VCP + Stage-2)
 
 *Thanikesa of **Thiruttani** — the calm, contented victor.* This face hunts
-**small-cap** winners using **pure technicals only** — price, trend, relative
-strength and volume. **No fundamentals** (no DVM / ROCE / PEG / PE). It rides
-momentum but refuses to chase a stock that has already gone parabolic.
+**small-cap** winners the way 2× US Investing Champion **Mark Minervini** does —
+**computed from live Kite OHLC**, not screened from Trendlyne columns.
 
-## What it rewards (sectorbot/stocks.py → technical_score)
-- **Uptrend gate**: must have SMA50 > SMA200 (golden cross). Below = rejected.
-- **52-week-high proximity**: nearer the high = stronger momentum (George & Hwang).
-- **Relative strength** vs Nifty500 (quarter).
-- **Healthy RSI** (50–70 — momentum, not overbought).
-- **Volume/delivery confirmation** + money-flow (MFI).
-- Already-parabolic names (huge SMA50-over-SMA200 gap) are demoted.
+## What it computes (sectorbot/technicals.py)
+- **Stage-2 trend template** (Minervini's 8 checks): price above rising 150/200-DMA,
+  50 > 150 > 200, ≥30% above the 52-week low, within 25% of the 52-week high.
+- **VCP — Volatility Contraction Pattern**: successive pullbacks getting
+  *tighter*, volume *drying up*, price *coiled just under the pivot* (ready to
+  break out). The core of Minervini's method.
+- **Momentum** (6-month return, skipping the last month) + **relative strength**
+  vs the NIFTY. Already-parabolic names are demoted.
+- Hard gate: not in a Stage-2 uptrend ⇒ heavily demoted (momentum needs trend).
 
-## Trendlyne screen to build → save export here as `universe.csv`
-Easy Mode filters:
-- **Market Cap → Small Cap** (this is what makes it the small-cap face)
-- **Day SMA50 > Day SMA200** (uptrend)
-- **% Distance from 52-week high** small (e.g. within 25%)
-- **Return vs Nifty500 (3M / Quarter) > 0** (relative strength)
-- **Day RSI 50–75**, optional **Volume Shockers**
+## You don't screen anything — just give it a candidate pool
+Upload a **stable small-cap universe ONCE** as `universe.csv` (or
+`mayura_data/thanikesa.csv`). The only required column is **NSE Code**.
+Good pools: **Nifty Smallcap 250** constituents, or your own small-cap list.
+Mayura then computes the VCP/Stage-2 edge on these from live bars every run.
 
-Columns to include: **NSE Code, Day SMA50, Day SMA200, % Distance from 52week
-high, Returns vs Nifty500 quarter%, Day RSI, Day MFI, Delivery% volume Avg
-Month + 6Month** (the more technical columns, the better the score).
+`python mayura.py rank thanikesa`  → see the live-computed ranking
+`python mayura.py data thanikesa`  → confirm the pool size (no fetching)
 
 ## Exit personality (fast, small-cap aware)
-−10% stop · trail arms at +10%, gives back 12% · **failed-breakout exit ON**
-(exits if price falls back below SMA50) · 20-day hold · skip if >30% above the
-200-DMA. Edit in mayura.py → STRATEGIES["thanikesa"].
+−10% stop · trail arms at +10%, gives back 12% · **failed-breakout exit ON** ·
+20-day hold · skip if >30% above the 200-DMA. Edit in mayura.py →
+STRATEGIES["thanikesa"].
 
-> Small caps are volatile and illiquid — the firm stop + failed-breakout exit
-> are deliberate. Paper only.
+> Computing the edge fetches ~1 year of bars per name (capped at
+> OHLC_MAX_SYMBOLS=150, ~0.25s each to respect Kite rate limits), so a run takes
+> a minute or two. Paper only.

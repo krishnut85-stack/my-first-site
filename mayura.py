@@ -23,7 +23,7 @@ SIX FACES — Arumugam (Lord Muruga as worshipped at his six temples), independe
     🌊 senthil      quality + value       (DVM Durability/Valuation) — Tiruchendur
     🛕 subramanya   accumulation          (delivery/MFI/FII)         — Madurai
     📜 swaminatha   filings-driven        (buy on bullish NSE/BSE news) — Swamimalai
-    🕊️ thanikesa    small-cap momentum    (pure technicals)            — Thiruttani
+    🕊️ thanikesa    small-cap momentum    (Minervini VCP+Stage2, from OHLC) — Thiruttani
     🍃 solaimalai   (to be defined)                                  — Pazhamudircholai
 
 USAGE
@@ -118,8 +118,10 @@ STRATEGIES = {
     },
     "thanikesa": {  # Thanikesa of THIRUTTANI — the calm, contented victor
         "name": "Thanikesa", "emoji": "🕊️",
-        "tagline": "small-cap momentum — pure technicals (trend + 52w-high + RS)",
-        "profile": "technical",   # pure price/volume scorer (no fundamentals)
+        "tagline": "small-cap momentum — Minervini VCP + Stage-2 (computed from OHLC)",
+        "compute": "ohlc",          # score from live Kite bars, not CSV columns
+        "ohlc_scorer": "thanikesa",  # sectorbot/technicals.py SCORERS_OHLC
+        "profile": "technical",      # (only used if it ever falls back to CSV)
         # Small caps move fast & hard both ways: keep a firm stop, arm the
         # trailing profit-lock early, and exit a failed breakout quickly.
         "exits": dict(stop=0.10, trail_arm=0.10, trail_give=0.12, tp=1.00,
@@ -360,14 +362,57 @@ def _present_csvs_hint() -> str:
 
 
 def _watchlist():
-    """Load THIS strategy's universe.csv, scored by its profile (breakout /
-    quality / accumulation). Returns a best-first list of dicts, or None."""
-    from sectorbot.stocks import load_watchlist
+    """Load THIS strategy's watchlist, best-first. CSV-scored strategies use
+    their Trendlyne columns; OHLC strategies (Thanikesa) COMPUTE the score from
+    live Kite price bars. Returns a list of dicts or None."""
     if not config.UNIVERSE_CSV.exists():
         return None
+    if CURRENT and CURRENT.get("compute") == "ohlc":
+        return _ohlc_watchlist()
+    from sectorbot.stocks import load_watchlist
     profile = CURRENT.get("profile", "breakout") if CURRENT else "breakout"
     wl = load_watchlist(config.UNIVERSE_CSV, profile)
     return wl or None
+
+
+def _ohlc_watchlist():
+    """Compute the watchlist from live OHLC bars (Minervini VCP/Stage-2 etc.).
+    The universe CSV is just the candidate pool (e.g. Nifty Smallcap 250); the
+    EDGE is computed here, not screened. Returns best-first dicts shaped like
+    load_watchlist (symbol/score/sma50/sma200/dist52) so the engine is unchanged."""
+    import time
+    from sectorbot import technicals as T
+    from sectorbot.stocks import load_symbols
+    from sectorbot.datasource import get_datasource
+
+    rows = load_symbols(config.UNIVERSE_CSV)
+    if not rows:
+        return None
+    symbols = [r["symbol"] for r in rows][: config.OHLC_MAX_SYMBOLS]
+    scorer = T.SCORERS_OHLC.get(CURRENT.get("ohlc_scorer", "thanikesa"),
+                                T.thanikesa_score)
+    ds = get_datasource()
+    idx = ds.history(config.REGIME_INDEX, config.OHLC_HISTORY_BARS)
+    print(f"  🧮 Computing {CURRENT['name']} edge from live OHLC for "
+          f"{len(symbols)} candidates (this takes a moment)…")
+    out = []
+    for i, sym in enumerate(symbols):
+        try:
+            bars = ds.history(sym, config.OHLC_HISTORY_BARS)
+        except Exception:  # noqa: BLE001  (rate limit / bad symbol -> skip)
+            bars = []
+        if not bars:
+            continue
+        sc = scorer(bars, idx)
+        if sc is None:
+            continue
+        s50, s200, dist = T.levels(bars)
+        out.append({"symbol": sym, "score": round(sc, 1),
+                    "sma50": s50, "sma200": s200, "dist52": dist})
+        if config.OHLC_FETCH_DELAY and i < len(symbols) - 1:
+            time.sleep(config.OHLC_FETCH_DELAY)
+    out.sort(key=lambda d: d["score"], reverse=True)
+    return out or None
 
 
 def _filings_gate(ranked: list) -> dict:
@@ -584,6 +629,23 @@ def cmd_data() -> None:
     uni = config.UNIVERSE_CSV
     print(f"  Strategy : {CURRENT['emoji']} {CURRENT['name']} ({CURRENT['profile']})")
     print(f"  Folder   : {config.DATA_DIR}\n")
+    if CURRENT.get("compute") == "ohlc":
+        # OHLC strategies don't screen columns — the CSV is just a candidate pool
+        # and the edge is computed from live bars. Count cheaply (no fetching).
+        from sectorbot.stocks import load_symbols
+        if uni.exists():
+            syms = load_symbols(uni)
+            print(f"  universe.csv : ✅ {len(syms)} candidate stocks (pool only)")
+            print(f"  scoring      : 🧮 computed from LIVE Kite OHLC — "
+                  f"{CURRENT.get('ohlc_scorer','technical')} (VCP + Stage-2 + "
+                  f"momentum + RS). No Trendlyne columns needed.")
+            print(f"  note         : upload a STABLE small-cap pool once "
+                  f"(e.g. Nifty Smallcap 250); only NSE Code column is required.")
+        else:
+            print(f"  screen file  : ❌ MISSING — upload a candidate pool as")
+            print(f"     {config.UNIVERSE_CSV_PRIMARY}")
+        print()
+        return
     if uni.exists():
         try:
             with open(uni, newline="", encoding="utf-8") as f:

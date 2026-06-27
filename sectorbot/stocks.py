@@ -379,6 +379,41 @@ def load_watchlist(path, profile: str = "breakout") -> list[dict]:
     return out
 
 
+def load_symbols(path) -> list[dict]:
+    """Just the symbols (and name) from a flat export — for OHLC strategies that
+    compute their score from live price bars, not CSV columns. The CSV only needs
+    a symbol column (e.g. 'NSE Code'); it's a stable candidate universe, not a
+    daily screen. Skips ETFs/GSec funds and de-dupes. Returns [{symbol}]."""
+    import csv
+    try:
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            cm = _resolve(reader.fieldnames, _BREAKOUT_ALIASES)
+            sym_aliases = set(_BREAKOUT_ALIASES["symbol"])
+            sym_cols = [c for c in (reader.fieldnames or [])
+                        if _norm(c) in sym_aliases]
+            if not sym_cols:
+                return []
+            out, seen = [], set()
+            for r in reader:
+                sym = ""
+                for sc in sym_cols:
+                    v = (r.get(sc) or "").strip()
+                    if v:
+                        sym = v.upper()
+                        break
+                nm = (r.get(cm.get("name", "")) or "").upper()
+                if not sym or sym in seen:
+                    continue
+                if any(h in nm or h in sym for h in _ETF_HINTS):
+                    continue
+                seen.add(sym)
+                out.append({"symbol": sym})
+    except OSError:
+        return []
+    return out
+
+
 def load_breakout_watchlist(path) -> list[dict]:
     """Back-compat: the breakout profile (Palani)."""
     return load_watchlist(path, "breakout")
