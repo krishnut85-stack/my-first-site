@@ -18,20 +18,24 @@ This is a clean, single-command launcher built on the proven `sectorbot` engine
 as Mayura and locked to paper mode. It does NOT duplicate the strategy code — it
 reuses it, so there is only one tested engine to trust.
 
-THREE STRATEGIES (Lord Muruga as worshipped at three temples) — each independent:
+SIX FACES — Arumugam (Lord Muruga as worshipped at his six temples), independent:
     🌄 dandapani    breakout / momentum   (fresh golden cross)      — Palani
     🌊 senthil      quality + value       (DVM Durability/Valuation) — Tiruchendur
     🛕 subramanya   accumulation          (delivery/MFI/FII)         — Madurai
+    📜 swaminatha   filings-driven        (buy on bullish NSE/BSE news) — Swamimalai
+    🕊️ thanikesa    (to be defined)                                  — Thiruttani
+    🍃 solaimalai   (to be defined)                                  — Pazhamudircholai
 
 USAGE
 -----
-    python mayura.py run               # run ALL three strategies + Telegram you
-    python mayura.py run palani        # run just one strategy
+    python mayura.py run               # run ALL faces + Telegram you
+    python mayura.py run dandapani     # run just one strategy
     python mayura.py rank [strategy]   # show a strategy's scored watchlist
     python mayura.py status [strategy] # a strategy's track record
     python mayura.py scorecard [strat] # honest verdict vs the Nifty index
     python mayura.py rules [strategy]  # that strategy's exit rules
     python mayura.py data [strategy]   # which Trendlyne columns it detected
+    python mayura.py filings swaminatha # dry-run the filings reader (no trades)
     python mayura.py check             # Kite token + Telegram wired? (global)
     python mayura.py regime            # NIFTY vs its 200-DMA (global)
 
@@ -238,7 +242,7 @@ def _assert_paper_only() -> None:
 # --------------------------------------------------------------------------
 # Telegram summary — Mayura-branded, phone-friendly
 # --------------------------------------------------------------------------
-def _mayura_telegram(result: dict) -> str:
+def _mayura_telegram(result: dict, filings_summary: dict | None = None) -> str:
     real = result["real_data"]
     tag = "REAL Kite prices" if real else "SYNTHETIC prices — NOT real"
     exits = result["exits"]
@@ -253,6 +257,17 @@ def _mayura_telegram(result: dict) -> str:
         f"Realised {result['realized']:+,.0f}",
         f"Holdings: {len(result['portfolio'].holdings)} · Exits: {len(exits)}",
     ]
+    if filings_summary and filings_summary.get("ran"):
+        fs = filings_summary
+        lines.append(f"📜 Filings: scanned {fs['scanned']} · "
+                     f"✅ {len(fs['buy'])} bullish · 🚫 {len(fs['blocked'])} "
+                     f"red-flag · {len(fs['neutral'])} quiet")
+        for sym in fs["buy"][:5]:
+            head = fs["verdicts"][sym].get("headline", "")[:48]
+            lines.append(f"  ✅ {sym}: {head}")
+        for sym in fs["blocked"][:3]:
+            head = fs["verdicts"][sym].get("headline", "")[:48]
+            lines.append(f"  🚫 {sym}: {head}")
     if result.get("data_stale"):
         lines.insert(1, f"⚠️ <b>STALE DATA</b> (file {result.get('data_date')}) "
                         "— upload today's Trendlyne CSV!")
@@ -353,6 +368,36 @@ def _watchlist():
     return wl or None
 
 
+def _filings_gate(ranked: list) -> dict:
+    """Swaminatha's brain: read recent NSE/BSE filings for the top-ranked
+    candidates and keep ONLY those with bullish news (red-flag filings are
+    blocked). Returns a summary dict; 'buy' is the filtered, rank-ordered list
+    the engine should trade. FAIL-SAFE: a stock we can't read is NOT bought."""
+    from sectorbot import filings
+    # Don't hammer the exchange on weekends — the engine is the authority on
+    # actual holidays (it checks Kite), this just avoids pointless fetches.
+    if date.today().weekday() >= 5:
+        print("  📜 Filings: weekend — skipping (engine will report 'resting').")
+        return {"ran": False, "buy": ranked}
+    scan = ranked[: config.FILINGS_SCAN_TOP]
+    print(f"  📜 Reading {config.FILINGS_SOURCE.upper()} filings for the top "
+          f"{len(scan)} candidates (last {config.FILINGS_DAYS_BACK} days)…")
+    verdicts = {sym: filings.assess_symbol(sym) for sym in scan}
+    buckets = filings.gate(verdicts)
+    summary = {"ran": True, "scanned": len(scan), "verdicts": verdicts, **buckets}
+    print(f"     ✅ {len(buckets['buy'])} bullish · 🚫 {len(buckets['blocked'])} "
+          f"red-flag · {len(buckets['neutral'])} quiet · "
+          f"{len(buckets['unknown'])} unreadable")
+    if buckets["buy"]:
+        print(f"     Buy candidates: {', '.join(buckets['buy'][:8])}")
+    if buckets["blocked"]:
+        print(f"     Blocked (red flag): {', '.join(buckets['blocked'][:8])}")
+    if not buckets["buy"]:
+        print("     No bullish filings today — Mayura will manage existing "
+              "holdings but buy nothing new. (No news = no buy.)")
+    return summary
+
+
 def cmd_run() -> None:
     """The main event: one paper-trading session + a Telegram ping."""
     _banner("DAILY RUN")
@@ -375,7 +420,15 @@ def cmd_run() -> None:
     print(f"  Watchlist   : 🎯 {len(ranked)} stocks ({CURRENT['profile']} score; "
           f"top: {', '.join(ranked[:5])})")
     print(f"  Guard       : skip any stock >{config.MAX_EXTENSION_ABOVE_SMA200:.0%} "
-          f"above its 200-DMA (no chasing already-run-up names)\n")
+          f"above its 200-DMA (no chasing already-run-up names)")
+
+    # SWAMINATHA: read NSE/BSE filings and keep ONLY stocks with bullish news.
+    filings_summary = None
+    if CURRENT.get("uses_filings"):
+        filings_summary = _filings_gate(ranked)
+        if filings_summary.get("ran"):
+            ranked = filings_summary["buy"]   # bullish-only, rank order preserved
+    print()
 
     # verbose=False so the engine's own "SectorBot" printout is suppressed; we
     # render Mayura's branded summary instead.
@@ -410,7 +463,8 @@ def cmd_run() -> None:
     _print_mayura(result)
     txt, _ = write_portfolio_report(result)
     print(f"  Report written: {txt}")
-    delivered = send_telegram(_mayura_telegram(result), message_thread_id=topic)
+    delivered = send_telegram(_mayura_telegram(result, filings_summary),
+                              message_thread_id=topic)
     print(f"  Telegram: {'sent 🙏' if delivered else 'dry-run (set the two env vars)'}")
     print(f"\n  {PEACOCK} May Lord Muruga guide steady gains. Paper only.\n")
 
@@ -443,6 +497,35 @@ def cmd_scorecard() -> None:
     from sectorbot.portfolio import Portfolio
     from sectorbot.scorecard import compute_scorecard, format_scorecard
     print("\n" + format_scorecard(compute_scorecard(Portfolio.load())) + "\n")
+
+
+def cmd_filings() -> None:
+    """Dry-run Swaminatha's filings reader: show the bullish / red-flag verdict
+    for each top candidate WITHOUT trading. Great for sanity-checking the feed."""
+    _banner("FILINGS READ")
+    if not CURRENT.get("uses_filings"):
+        print(f"\n  {CURRENT['name']} is not a filings strategy. Try: "
+              f"python mayura.py filings swaminatha\n")
+        return
+    wl = _watchlist()
+    if not wl:
+        print(f"\n  ⏭  No screen for {CURRENT['name']} yet — upload its base "
+              f"export as:\n     {config.UNIVERSE_CSV_PRIMARY}\n")
+        print(_present_csvs_hint())
+        return
+    from sectorbot import filings
+    scan = [d["symbol"] for d in wl][: config.FILINGS_SCAN_TOP]
+    print(f"\n  📜 Reading {config.FILINGS_SOURCE.upper()} filings for {len(scan)} "
+          f"candidates (last {config.FILINGS_DAYS_BACK} days). No trading.\n")
+    print(f"  {'Symbol':14} {'Verdict':9} Headline")
+    print("  " + "-" * 64)
+    icon = {"bullish": "✅", "bearish": "🚫", "neutral": "·", "unknown": "❓"}
+    for sym in scan:
+        a = filings.assess_symbol(sym)
+        v = a["verdict"]
+        print(f"  {sym:14} {icon.get(v,'?')} {v:7} {a.get('headline','')[:46]}")
+    print("\n  ✅ bullish = would buy · 🚫 red flag = blocked · ❓ unreadable = "
+          "skipped (no news = no buy). Paper only. 🦚\n")
 
 
 def cmd_check() -> None:
@@ -681,6 +764,13 @@ def cmd_rules() -> None:
     _banner("EXIT RULES")
     fb = ("💔 Failed breakout  : exit the moment price falls below its SMA50\n"
           if config.USE_FAILED_BREAKOUT_EXIT else "")
+    if CURRENT.get("uses_filings"):
+        print(f"""
+  📜 ENTRY GATE (Swaminatha only): before buying, reads {config.FILINGS_SOURCE.upper()}
+     filings (last {config.FILINGS_DAYS_BACK} days) for the top {config.FILINGS_SCAN_TOP} candidates.
+     ✅ Buys ONLY on a bullish filing (order win, approval, buyback, upgrade…)
+     🚫 Blocks any red flag (SEBI action, default, auditor exit, pledge…)
+     ❓ Can't read it = no buy (no news, no trade).""")
     print(f"""
   {CURRENT['emoji']} {CURRENT['name']} manages each trade with these rules
   (first to trigger wins):
@@ -707,7 +797,7 @@ GLOBAL_COMMANDS = {"check": cmd_check, "regime": cmd_regime,
 PER_STRATEGY_COMMANDS = {
     "run": cmd_run, "rank": cmd_rank, "status": cmd_status,
     "scorecard": cmd_scorecard, "data": cmd_data, "rules": cmd_rules,
-    "universe": cmd_universe,
+    "universe": cmd_universe, "filings": cmd_filings,
 }
 
 

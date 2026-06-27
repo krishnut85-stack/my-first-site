@@ -257,6 +257,19 @@ SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
 
+# --- Swaminatha: NSE/BSE filings gate --------------------------------------
+# The Swaminatha face (Mayura's "Guru") reads recent corporate filings and only
+# (paper-)buys a stock when the filing is BULLISH. A clear red-flag filing
+# (SEBI action, default, auditor resignation, pledge, etc.) blocks the buy.
+# These settings are read by sectorbot/filings.py and mayura.py.
+FILINGS_SOURCE = os.environ.get("FILINGS_SOURCE", "nse")  # "nse" (symbol-based)
+FILINGS_DAYS_BACK = int(os.environ.get("FILINGS_DAYS_BACK", "7"))  # look-back window
+FILINGS_SCAN_TOP = int(os.environ.get("FILINGS_SCAN_TOP", "25"))   # cap fetches/day
+FILINGS_REQUEST_TIMEOUT = int(os.environ.get("FILINGS_REQUEST_TIMEOUT", "15"))
+# If filings can't be fetched (e.g. NSE blocks the server), be SAFE: no clear
+# bullish news = no buy. True keeps Swaminatha from buying blind on fetch errors.
+FILINGS_REQUIRE_BULLISH = True
+
 # --- Scoring weights (transparent momentum + quality blend) ----------------
 WEIGHTS = {
     "qtr_change": 0.20,        # Qtr Change %
