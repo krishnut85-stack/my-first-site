@@ -8,6 +8,36 @@ explicitly turn LIVE_TRADING on AND supply Kite Connect keys.
 import os
 from pathlib import Path
 
+
+def _autoload_dotenv() -> None:
+    """Load a .env file from the repo root into os.environ if present, so you
+    never have to remember to `source .env` before running a command. Existing
+    environment variables always win (we never overwrite a real env var). Tiny,
+    zero-dependency parser: KEY=VALUE lines, '#' comments, optional quotes."""
+    here = Path(__file__).resolve().parent
+    for root in (here.parent, here):          # repo root, then package dir
+        env_file = root / ".env"
+        if not env_file.exists():
+            continue
+        try:
+            for raw in env_file.read_text().splitlines():
+                line = raw.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                if line.startswith("export "):
+                    line = line[len("export "):]
+                key, _, val = line.partition("=")
+                key = key.strip()
+                val = val.strip().strip('"').strip("'")
+                if key and key not in os.environ:
+                    os.environ[key] = val
+        except OSError:
+            pass
+        break
+
+
+_autoload_dotenv()
+
 # --- Paths -----------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"            # drop your daily CSVs here (via Termius)

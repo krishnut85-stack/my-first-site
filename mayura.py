@@ -602,18 +602,78 @@ def cmd_telegram_setup() -> None:
     print(f"  {'chat id':>16}  {'topic id':>9}  {'topic name / text'}")
     print("  " + "-" * 60)
     seen = set()
+    detected: dict[str, str] = {}   # env var -> value, auto-matched by topic name
+    chat_id = None
+    # Build name -> strategy-key map (so a topic literally named "Swaminatha"
+    # auto-maps to TELEGRAM_TOPIC_SWAMINATHA). Also accept the message text, so
+    # typing the strategy name into a topic works even if the topic-created
+    # event has scrolled out of getUpdates' 24h window.
+    name_to_key = {STRATEGIES[k]["name"].lower(): k for k in STRATEGY_ORDER}
+    name_to_key.update({k: k for k in STRATEGY_ORDER})
     for u in rows:
         m = u.get("message") or u.get("channel_post") or {}
         chat = m.get("chat", {})
         thread = m.get("message_thread_id")
-        name = (m.get("forum_topic_created", {}) or {}).get("name") or (m.get("text") or "")
+        topic_name = (m.get("forum_topic_created", {}) or {}).get("name") or ""
+        text = m.get("text") or ""
+        label = topic_name or text
         key = (chat.get("id"), thread)
+        if chat.get("id") is not None and (chat.get("type") in ("group", "supergroup")):
+            chat_id = chat.get("id")
+        # try to auto-match this topic to one of the six faces
+        for probe in (topic_name, text):
+            sk = name_to_key.get(probe.strip().lower())
+            if sk and thread is not None:
+                detected[f"TELEGRAM_TOPIC_{sk.upper()}"] = str(thread)
+                break
         if key in seen:
             continue
         seen.add(key)
         print(f"  {str(chat.get('id')):>16}  {str(thread or '-'):>9}  "
-              f"{(chat.get('title') or '')} | {name[:30]}")
-    print("\n  Match each topic name to its topic id above. 🦚\n")
+              f"{(chat.get('title') or '')} | {label[:30]}")
+    if chat_id is not None:
+        detected["TELEGRAM_CHAT_ID"] = str(chat_id)
+
+    if not detected:
+        print("\n  Couldn't auto-match any topic names. Make sure each topic is "
+              "NAMED after a face (Dandapani/Senthil/Subramanya/Swaminatha/"
+              "Thanikesa/Solaimalai) or type that name as a message in the "
+              "topic, then re-run. 🦚\n")
+        return
+    print("\n  ✅ Auto-detected:")
+    for k, v in detected.items():
+        print(f"       {k}={v}")
+    written = _upsert_env(detected)
+    if written:
+        print(f"\n  📝 Written into {written}. Run `source .env` (or just re-run "
+              "Mayura — it now auto-loads .env). Vel Muruga! 🦚\n")
+    else:
+        print("\n  Could not find a .env to update — add the lines above "
+              "manually.\n")
+
+
+def _upsert_env(values: dict) -> "Path | None":
+    """Insert/replace KEY=VALUE lines in the repo-root .env (create if missing).
+    Returns the path written, or None on failure. Never touches other lines."""
+    env_path = REPO_ROOT / ".env"
+    try:
+        lines = env_path.read_text().splitlines() if env_path.exists() else []
+        remaining = dict(values)
+        out = []
+        for line in lines:
+            stripped = line.strip()
+            key = stripped.split("=", 1)[0].strip() if "=" in stripped else ""
+            key = key[len("export "):].strip() if key.startswith("export ") else key
+            if key in remaining:
+                out.append(f"{key}={remaining.pop(key)}")
+            else:
+                out.append(line)
+        for k, v in remaining.items():     # any not already present → append
+            out.append(f"{k}={v}")
+        env_path.write_text("\n".join(out) + "\n")
+        return env_path
+    except OSError:
+        return None
 
 
 def cmd_rules() -> None:
