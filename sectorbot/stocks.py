@@ -105,20 +105,30 @@ _BREAKOUT_ALIASES: dict[str, tuple[str, ...]] = {
     "rs_qtr": ("returns vs nifty500 quarter%", "return vs nifty500 quarter%",
                "returns vs nifty500 quarter", "returns vs nifty 500 quarter%"),
     "rs_ind_week": ("returns vs industry week%", "return vs industry week%"),
-    "rsi": ("rsi", "day rsi"),
-    # extra columns used by the quality / accumulation strategy profiles
-    "durability": ("durability", "durability score", "durability score (d)"),
-    "valuation": ("valuation", "valuation score", "valuation score (v)"),
-    "momentum": ("momentum", "momentum score", "momentum score (m)"),
-    "checklist": ("trendlyne checklist score", "checklist score", "stock score",
-                  "trendlyne score", "checklist"),
-    "pe": ("pe ttm", "pe", "pe ratio", "p/e"),
+    "rsi": ("day rsi", "rsi"),
+    # extra columns (quality / accumulation profiles). EXACT Trendlyne masterlist
+    # names are listed first so direct exports parse without manual fixes.
+    "durability": ("trendlyne durability score", "durability", "durability score",
+                   "durability score (d)"),
+    "valuation": ("trendlyne valuation score", "valuation", "valuation score",
+                  "valuation score (v)"),
+    "momentum": ("trendlyne momentum score", "normalized momentum score",
+                 "momentum", "momentum score", "momentum score (m)"),
+    "checklist": ("tl checklist positive score", "trendlyne checklist score",
+                  "checklist score", "stock score", "trendlyne score", "checklist"),
+    "pe": ("pe ttm price to earnings", "pe ttm", "pe", "pe ratio", "p/e"),
     "pbv": ("price to book ttm", "price to book", "pb", "pbv", "p/b"),
-    "mfi": ("mfi", "mfi(14)", "money flow index"),
+    "mfi": ("day mfi", "mfi", "mfi(14)", "money flow index"),
     "volume": ("volume", "day volume", "traded value", "turnover"),
-    "fii": ("fii holding change%", "fii holding change", "change in fii holding%",
-            "fii change%", "fii holding qoq%"),
+    "fii": ("fii holding change qoq %", "fii holding change%", "fii holding change",
+            "change in fii holding%", "fii change%", "fii holding qoq%"),
 }
+# Append exact masterlist names to existing keys.
+_BREAKOUT_ALIASES["dist52"] += ("% distance from 52week high",
+                                "discount to 52week high %")
+_BREAKOUT_ALIASES["deliv_month"] += ("delivery% volume avg month",)
+_BREAKOUT_ALIASES["deliv_6m"] += ("delivery% volume avg 6month",)
+_BREAKOUT_ALIASES["rs_qtr"] += ("nifty500 quarter change %",)
 
 _ETF_HINTS = ("ETF", "GSEC", "BENCHMARK", "LIQUIDBEES", "GILT")
 
