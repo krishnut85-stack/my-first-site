@@ -135,14 +135,15 @@ def _use_strategy(key: str) -> None:
     config.DATA_CSV = folder / "fundamentals.csv"
     config.SNAPSHOTS_DIR = folder / "snapshots"
     config.PORTFOLIO_JSON = folder / "portfolio.json"
-    # Universe: accept either the folder file (folder/universe.csv) OR a flat
-    # file named by the strategy (mayura_data/<key>.csv) — whichever you upload.
-    _uni_candidates = [folder / "universe.csv", MAYURA_DATA / f"{key}.csv",
+    # CONVENTION: each strategy's screen is a file named after the strategy,
+    # uploaded flat into mayura_data/  →  mayura_data/<strategy>.csv
+    #   mayura_data/dandapani.csv · mayura_data/senthil.csv · mayura_data/subramanya.csv
+    # (the older folder/universe.csv still works as a fallback).
+    config.UNIVERSE_CSV_PRIMARY = MAYURA_DATA / f"{key}.csv"
+    _uni_candidates = [MAYURA_DATA / f"{key}.csv", folder / "universe.csv",
                        folder / f"{key}.csv"]
-    if key == "dandapani":   # you also call the breakout strategy "mayura"
-        _uni_candidates += [MAYURA_DATA / "mayura.csv", folder / "mayura.csv"]
     config.UNIVERSE_CSV = next((c for c in _uni_candidates if c.exists()),
-                              folder / "universe.csv")
+                              MAYURA_DATA / f"{key}.csv")
     config.PORTFOLIO_REPORT_TXT = REPO_ROOT / f"mayura_{key}_report.txt"
     config.PORTFOLIO_REPORT_HTML = REPO_ROOT / f"mayura_{key}_report.html"
     config.DASHBOARD_HTML = REPO_ROOT / f"mayura_{key}_dashboard.html"
@@ -294,9 +295,8 @@ def cmd_run() -> None:
 
     wl = _watchlist()
     if not wl:
-        print(f"\n  ⏭  No universe.csv for {CURRENT['name']} yet — upload this "
-              f"strategy's Trendlyne screen to:\n     {config.UNIVERSE_CSV}\n"
-              "     (see the README in that folder). Skipping.\n")
+        print(f"\n  ⏭  No screen for {CURRENT['name']} yet — upload its Trendlyne "
+              f"export as:\n     {config.UNIVERSE_CSV_PRIMARY}\n     Skipping.\n")
         return
     ranked = [d["symbol"] for d in wl]
     levels = {d["symbol"]: d["sma50"] for d in wl if d.get("sma50")}
@@ -335,8 +335,8 @@ def cmd_rank() -> None:
     _banner("TODAY'S RANKING")
     wl = _watchlist()
     if not wl:
-        print(f"\n  ⏭  No universe.csv for {CURRENT['name']} yet — upload this "
-              f"strategy's Trendlyne screen to:\n     {config.UNIVERSE_CSV}\n")
+        print(f"\n  ⏭  No screen for {CURRENT['name']} yet — upload its Trendlyne "
+              f"export as:\n     {config.UNIVERSE_CSV_PRIMARY}\n")
         return
     print(f"  🎯 {CURRENT['name']} watchlist — {len(wl)} stocks, scored by the "
           f"'{CURRENT['profile']}' model\n")
@@ -436,8 +436,8 @@ def cmd_data() -> None:
         print(f"  universe.csv : ✅ {n} tradeable stocks")
         print(f"  columns used : {', '.join(have) if have else '(symbol only)'}")
     else:
-        print("  universe.csv : ❌ MISSING — upload this strategy's Trendlyne screen here.")
-        print("     See the README in this folder for which filters to use.")
+        print(f"  screen file  : ❌ MISSING — upload this strategy's Trendlyne")
+        print(f"     export as:  {config.UNIVERSE_CSV_PRIMARY}")
     print()
 
 
