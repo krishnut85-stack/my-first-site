@@ -68,6 +68,9 @@ MAYURA_DATA = REPO_ROOT / "mayura_data"
 MAYURA_DOWNTREND_MODE          = "reduced"
 MAYURA_DOWNTREND_MAX_POSITIONS = 3
 MAYURA_DOWNTREND_SIZE_FACTOR   = 0.5
+# Give a fresh breakout this many days before the failed-breakout exit can fire
+# (avoids same-day whipsaws; market holidays are skipped entirely anyway).
+MAYURA_BREAKOUT_GRACE_DAYS     = 3
 
 # --- The three temple-deity strategies (tweak freely) -----------------------
 # Names are the form of Muruga at each temple. Each "exits" block tunes how that
@@ -170,6 +173,8 @@ def _use_strategy(key: str) -> None:
     config.MAX_HOLDING_DAYS = e["hold_days"]
     config.TIME_STOP_MIN_GAIN_PCT = e["time_min"]
     config.USE_FAILED_BREAKOUT_EXIT = e["failed_breakout"]
+    config.BREAKOUT_GRACE_DAYS = MAYURA_BREAKOUT_GRACE_DAYS
+    config.SKIP_MARKET_HOLIDAYS = True   # never trade on a holiday/weekend
     config.MAX_EXTENSION_ABOVE_SMA200 = e.get("max_ext", 0.0)
     config.REGIME_DOWNTREND_MODE = MAYURA_DOWNTREND_MODE
     config.REGIME_DOWNTREND_MAX_POSITIONS = MAYURA_DOWNTREND_MAX_POSITIONS
@@ -335,6 +340,9 @@ def cmd_run() -> None:
         result["data_stale"] = False
         result["data_date"] = None
     topic = _topic_id()
+    if result.get("market_closed"):
+        print(f"\n  📴 {result['message']}\n")   # no Telegram spam on holidays
+        return
     if result.get("aborted"):
         # Engine refused (e.g. real Kite data required but unavailable). The
         # portfolio was left untouched — nothing to report or send.

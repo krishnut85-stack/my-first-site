@@ -241,3 +241,61 @@ def test_block_mode_holds_cash_in_downtrend(monkeypatch, tmp_path):
     res = run_paper_session(verbose=False, ranked_symbols=["SYM0", "SYM1"])
     assert res["regime_blocked"] is True
     assert len(res["portfolio"].holdings) == 0          # 100% cash
+
+
+def test_market_holiday_skips_session(monkeypatch, tmp_path):
+    # If the market didn't trade today, the session does nothing (no exits/buys).
+    from sectorbot import config
+    import sectorbot.engine as eng
+    from sectorbot.engine import run_paper_session
+
+    class HolidayDS:   # not a PaperDataSource -> engine treats it as real data
+        def market_traded_today(self):
+            return False
+        def last_price(self, s):
+            return 100.0
+        def last_prices(self, ss):
+            return {s: 100.0 for s in ss}
+        def history(self, s, n):
+            return []
+
+    monkeypatch.setattr(config, "USE_KITE_DATA", False)
+    monkeypatch.setattr(config, "SKIP_MARKET_HOLIDAYS", True)
+    monkeypatch.setattr(config, "PORTFOLIO_JSON", tmp_path / "p.json")
+    monkeypatch.setattr(eng, "get_datasource", lambda: HolidayDS())
+
+    res = run_paper_session(verbose=False, ranked_symbols=["AAA", "BBB"])
+    assert res.get("market_closed") is True
+    assert res["exits"] == [] and res["entries"] == []
+
+
+def test_breakout_grace_blocks_early_exit(monkeypatch, tmp_path):
+    # A position below its breakout level but held < grace days is NOT sold.
+    from datetime import datetime, timedelta
+    from sectorbot import config, regime
+    from sectorbot.data_loader import IST
+    from sectorbot.datasource import PaperDataSource
+    from sectorbot.engine import run_paper_session
+    from sectorbot.portfolio import Portfolio
+
+    monkeypatch.setattr(config, "USE_KITE_DATA", False)
+    monkeypatch.setattr(config, "REBALANCE", False)
+    monkeypatch.setattr(config, "USE_FAILED_BREAKOUT_EXIT", True)
+    monkeypatch.setattr(config, "BREAKOUT_GRACE_DAYS", 3)
+    monkeypatch.setattr(config, "USE_REGIME_FILTER", False)
+    monkeypatch.setattr(config, "MAX_HOLDING_DAYS", 0)
+    monkeypatch.setattr(config, "PORTFOLIO_JSON", tmp_path / "p.json")
+    monkeypatch.setattr(regime, "market_in_uptrend", lambda ds, default=True: True)
+
+    price = PaperDataSource().last_price("FRESHCO")
+    today = datetime.now(IST).date().isoformat()
+    pf = Portfolio(1_000_000, 0)   # no cash, so no new buys
+    pf.holdings["FRESHCO"] = {"qty": 1, "avg_price": price, "entry_date": today,
+                             "peak_price": price, "atr": 0.0,
+                             "breakout_level": price + 100}  # below level
+    pf.save(tmp_path / "p.json")
+
+    res = run_paper_session(verbose=False, ranked_symbols=["FRESHCO"],
+                            levels={"FRESHCO": price + 100})
+    # held 0 days < grace 3 -> NOT a failed-breakout exit
+    assert "failed breakout" not in [r for _, _, r, _ in res["exits"]]

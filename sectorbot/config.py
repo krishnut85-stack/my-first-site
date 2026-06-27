@@ -143,6 +143,14 @@ TIME_STOP_MIN_GAIN_PCT = 0.05
 # stored on the holding (Mayura's watchlist mode supplies it). Default off so the
 # equity bot is unaffected.
 USE_FAILED_BREAKOUT_EXIT = False
+# Grace period: don't fire the failed-breakout exit within this many days of
+# entry — give a fresh breakout time to develop (and avoid same-day whipsaws).
+BREAKOUT_GRACE_DAYS = 0
+
+# Skip the whole session if the market did NOT trade today (holiday/weekend):
+# prices are stale, so running exits would be bogus. Default off (equity bot
+# unchanged); Mayura turns it on.
+SKIP_MARKET_HOLIDAYS = False
 
 # Extension guard ("never chase a stock that already ran up"): refuse to BUY any
 # stock whose LIVE price is more than this fraction above its 200-day average —

@@ -120,6 +120,27 @@ class KiteDataSource:
                 out[s] = float(d["last_price"]) if d and d.get("last_price") else 0.0
         return out
 
+    def market_traded_today(self) -> bool:  # pragma: no cover
+        """True if the NSE actually traded today (not a holiday/weekend). Checks a
+        liquid stock's last trade time vs today's IST date. Fail-OPEN (returns
+        True) if it can't tell, so the bot never freezes by mistake."""
+        from datetime import datetime
+        from .data_loader import IST
+        try:
+            q = self.kite.quote(["NSE:RELIANCE"])
+            d = q.get("NSE:RELIANCE", {})
+            ltt = d.get("last_trade_time") or d.get("timestamp")
+            if ltt is None:
+                return True
+            if isinstance(ltt, str):
+                try:
+                    ltt = datetime.fromisoformat(ltt)
+                except ValueError:
+                    return True
+            return ltt.date() == datetime.now(IST).date()
+        except Exception:  # noqa: BLE001
+            return True
+
     # Index instrument tokens aren't always in the equity dump; hard-map the
     # common ones so the regime filter can pull index history reliably.
     _INDEX_TOKENS = {"NIFTY 50": 256265, "NIFTY BANK": 260105,

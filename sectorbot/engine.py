@@ -81,6 +81,19 @@ def run_paper_session(verbose: bool = True, csv_path=None,
 
     pf = Portfolio.load()
 
+    # MARKET-HOLIDAY GUARD: if the exchange didn't trade today (holiday/weekend),
+    # prices are stale — running exits/buys would be bogus. Leave everything
+    # untouched. (Fail-open: only skips when we're SURE the market was closed.)
+    if (config.SKIP_MARKET_HOLIDAYS and real_data
+            and hasattr(ds, "market_traded_today") and not ds.market_traded_today()):
+        msg = ("market closed today (holiday/weekend) — no trading, holdings "
+               "left unchanged")
+        if verbose:
+            print(f"\n  {msg}\n")
+        return {"market_closed": True, "aborted": False, "message": msg,
+                "real_data": real_data, "portfolio": pf,
+                "exits": [], "entries": []}
+
     # Today's ranked symbols (best first) and the buffer "keep" band.
     if ranked_symbols is None:
         picks = build_watchlist(csv_path)
@@ -116,7 +129,9 @@ def run_paper_session(verbose: bool = True, csv_path=None,
             # (the SMA50 captured at entry) -> the breakout failed, get out.
             if config.USE_FAILED_BREAKOUT_EXIT:
                 lvl = h.get("breakout_level")
-                if lvl and ltp < lvl:
+                held = _holding_days(h.get("entry_date"))
+                # grace: give a fresh breakout time before calling it failed
+                if lvl and ltp < lvl and held >= config.BREAKOUT_GRACE_DAYS:
                     pnl = pf.sell(sym, ltp, reason=f"failed breakout (<SMA50 {lvl:.0f})")
                     exits.append((sym, ltp, "failed breakout", pnl))
                     continue
