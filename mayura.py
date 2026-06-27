@@ -100,8 +100,37 @@ STRATEGIES = {
                       atr=2.5, hold_days=20, time_min=0.05, failed_breakout=False,
                       max_ext=0.40),   # skip if >40% above 200-DMA
     },
+    # --- The three NEW faces (Arumugam = six faces). The remaining Aaru Padai
+    #     Veedu abodes. Swaminatha reads NSE/BSE filings; the other two await
+    #     the user's direction (dormant until a screen is uploaded). ----------
+    "swaminatha": {  # Swaminathaswami of SWAMIMALAI — the Guru who taught Om
+        "name": "Swaminatha", "emoji": "📜",
+        "tagline": "filings-driven — read NSE/BSE announcements, buy on bullish news",
+        "profile": "quality",   # base screen; the filings gate decides the buy
+        "uses_filings": True,    # the news/filings face (engine support coming)
+        "exits": dict(stop=0.10, trail_arm=0.12, trail_give=0.10, tp=1.00,
+                      atr=2.5, hold_days=15, time_min=0.05, failed_breakout=False,
+                      max_ext=0.40),
+    },
+    "thanikesa": {  # Thanikesa of THIRUTTANI — the calm, contented victor
+        "name": "Thanikesa", "emoji": "🕊️",
+        "tagline": "to be defined — the calm victor (awaiting your direction)",
+        "profile": "quality",   # placeholder until you tell me its strategy
+        "exits": dict(stop=0.12, trail_arm=0.15, trail_give=0.12, tp=1.00,
+                      atr=3.0, hold_days=40, time_min=0.05, failed_breakout=False,
+                      max_ext=0.50),
+    },
+    "solaimalai": {  # Solaimalai Murugan of PAZHAMUDIRCHOLAI — abundance
+        "name": "Solaimalai", "emoji": "🍃",
+        "tagline": "to be defined — the hill of ripe fruits (awaiting your direction)",
+        "profile": "accumulation",   # placeholder until you tell me its strategy
+        "exits": dict(stop=0.12, trail_arm=0.15, trail_give=0.12, tp=1.00,
+                      atr=3.0, hold_days=30, time_min=0.05, failed_breakout=False,
+                      max_ext=0.50),
+    },
 }
-STRATEGY_ORDER = ["dandapani", "senthil", "subramanya"]
+STRATEGY_ORDER = ["dandapani", "senthil", "subramanya",
+                  "swaminatha", "thanikesa", "solaimalai"]
 CURRENT: dict = {}   # the active strategy (set by _use_strategy)
 
 
@@ -545,7 +574,8 @@ def cmd_telegram_setup() -> None:
         return
     print("""
   STEP 1 — In Telegram: create a group called "Mayura" → group settings →
-           enable "Topics". Create three topics: Dandapani, Senthil, Subramanya.
+           enable "Topics". Create SIX topics (Arumugam — Muruga's six faces):
+           Dandapani, Senthil, Subramanya, Swaminatha, Thanikesa, Solaimalai.
   STEP 2 — Add your Mayura bot to the group and make it an Admin.
   STEP 3 — In EACH topic, type any message (e.g. "hi").
   STEP 4 — Run this command. It prints the ids below — copy them into .env:
@@ -554,6 +584,9 @@ def cmd_telegram_setup() -> None:
       TELEGRAM_TOPIC_DANDAPANI=<Dandapani topic id>
       TELEGRAM_TOPIC_SENTHIL=<Senthil topic id>
       TELEGRAM_TOPIC_SUBRAMANYA=<Subramanya topic id>
+      TELEGRAM_TOPIC_SWAMINATHA=<Swaminatha topic id>
+      TELEGRAM_TOPIC_THANIKESA=<Thanikesa topic id>
+      TELEGRAM_TOPIC_SOLAIMALAI=<Solaimalai topic id>
 """)
     url = f"https://api.telegram.org/bot{config.TELEGRAM_BOT_TOKEN}/getUpdates"
     try:
