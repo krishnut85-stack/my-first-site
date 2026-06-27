@@ -143,6 +143,15 @@ def _use_strategy(key: str) -> None:
     config.UNIVERSE_CSV_PRIMARY = MAYURA_DATA / f"{key}.csv"
     _uni_candidates = [MAYURA_DATA / f"{key}.csv", folder / "universe.csv",
                        folder / f"{key}.csv"]
+    # Case-insensitive: accept Subramanya.csv / SENTHIL.csv etc. (Linux is
+    # case-sensitive, but a screen export shouldn't be lost over capitalisation).
+    try:
+        for p in MAYURA_DATA.glob("*.csv"):
+            if p.stem.lower() == key:
+                _uni_candidates.insert(0, p)
+                break
+    except OSError:
+        pass
     config.UNIVERSE_CSV = next((c for c in _uni_candidates if c.exists()),
                               MAYURA_DATA / f"{key}.csv")
     config.PORTFOLIO_REPORT_TXT = REPO_ROOT / f"mayura_{key}_report.txt"
