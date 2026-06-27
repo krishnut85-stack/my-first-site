@@ -359,7 +359,16 @@ def cmd_run() -> None:
         result["data_date"] = None
     topic = _topic_id()
     if result.get("market_closed"):
-        print(f"\n  📴 {result['message']}\n")   # no Telegram spam on holidays
+        print(f"\n  📴 {result['message']}\n")
+        # Send a short "resting today" ping so you get daily confirmation each
+        # strategy (and its topic) is alive, even on holidays/weekends. No
+        # trading happens — holdings are untouched.
+        who = f"{CURRENT['emoji']} {CURRENT['name']}" if CURRENT else "Mayura"
+        msg = (f"{PEACOCK} <b>Mayura · {who} · {date.today().isoformat()}</b>\n"
+               f"😴 Market closed today (holiday/weekend) — resting, no trades.\n"
+               f"<i>Holdings untouched. Vel Muruga 🙏</i>")
+        delivered = send_telegram(msg, message_thread_id=topic)
+        print(f"  Telegram: {'sent 🙏' if delivered else 'dry-run (set the two env vars)'}")
         return
     if result.get("aborted"):
         # Engine refused (e.g. real Kite data required but unavailable). The
