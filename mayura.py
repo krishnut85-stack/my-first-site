@@ -146,15 +146,18 @@ def _use_strategy(key: str) -> None:
     config.UNIVERSE_CSV_PRIMARY = MAYURA_DATA / f"{key}.csv"
     _uni_candidates = [MAYURA_DATA / f"{key}.csv", folder / "universe.csv",
                        folder / f"{key}.csv"]
-    # Case-insensitive: accept Subramanya.csv / SENTHIL.csv etc. (Linux is
-    # case-sensitive, but a screen export shouldn't be lost over capitalisation).
-    try:
-        for p in MAYURA_DATA.glob("*.csv"):
-            if p.stem.lower() == key:
-                _uni_candidates.insert(0, p)
-                break
-    except OSError:
-        pass
+    # Case-insensitive AND location-tolerant: accept Subramanya.csv / SENTHIL.csv
+    # whether it was dropped flat in mayura_data/ OR inside mayura_data/<key>/.
+    # (Linux is case-sensitive, but a screen export shouldn't be lost over a
+    # capital letter or a wrong folder.)
+    for searchdir in (MAYURA_DATA, folder):
+        try:
+            for p in sorted(searchdir.glob("*.csv")):
+                stem = p.stem.lower()
+                if stem == key or stem == "universe":
+                    _uni_candidates.insert(0, p)
+        except OSError:
+            pass
     config.UNIVERSE_CSV = next((c for c in _uni_candidates if c.exists()),
                               MAYURA_DATA / f"{key}.csv")
     config.PORTFOLIO_REPORT_TXT = REPO_ROOT / f"mayura_{key}_report.txt"
@@ -296,6 +299,20 @@ def _topic_id():
     return os.environ.get(f"TELEGRAM_TOPIC_{CURRENT['key'].upper()}") or None
 
 
+def _present_csvs_hint() -> str:
+    """List the CSVs actually on disk so a filename/location mismatch is obvious
+    (e.g. you uploaded 'Subramanya.csv' into the wrong folder)."""
+    found = []
+    folder = MAYURA_DATA / CURRENT["key"] if CURRENT else None
+    for d in (MAYURA_DATA, folder):
+        if d and d.exists():
+            for p in sorted(d.glob("*.csv")):
+                found.append(f"       • {p}")
+    if not found:
+        return f"     (no .csv files found under {MAYURA_DATA})"
+    return "     CSV files I can see right now:\n" + "\n".join(found)
+
+
 def _watchlist():
     """Load THIS strategy's universe.csv, scored by its profile (breakout /
     quality / accumulation). Returns a best-first list of dicts, or None."""
@@ -320,7 +337,8 @@ def cmd_run() -> None:
     wl = _watchlist()
     if not wl:
         print(f"\n  ⏭  No screen for {CURRENT['name']} yet — upload its Trendlyne "
-              f"export as:\n     {config.UNIVERSE_CSV_PRIMARY}\n     Skipping.\n")
+              f"export as:\n     {config.UNIVERSE_CSV_PRIMARY}\n     Skipping.")
+        print(_present_csvs_hint())
         return
     ranked = [d["symbol"] for d in wl]
     levels = {d["symbol"]: d["sma50"] for d in wl if d.get("sma50")}
