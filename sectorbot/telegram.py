@@ -24,10 +24,13 @@ def configured() -> bool:
     return bool(config.TELEGRAM_BOT_TOKEN and config.TELEGRAM_CHAT_ID)
 
 
-def send_telegram(text: str, parse_mode: str = "HTML") -> bool:
+def send_telegram(text: str, parse_mode: str = "HTML",
+                  message_thread_id=None) -> bool:
     """Send `text` to the configured Telegram chat. Returns True if delivered.
 
-    Falls back to a console dry-run when no token/chat id is configured.
+    `message_thread_id` posts into a specific FORUM TOPIC of a group (so each
+    Mayura strategy can have its own topic under one 'Mayura' group). Falls back
+    to a console dry-run when no token/chat id is configured.
     """
     if not configured():
         print("\n[telegram dry-run] TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID not set "
@@ -37,12 +40,15 @@ def send_telegram(text: str, parse_mode: str = "HTML") -> bool:
         return False
 
     url = f"https://api.telegram.org/bot{config.TELEGRAM_BOT_TOKEN}/sendMessage"
-    payload = urllib.parse.urlencode({
+    fields = {
         "chat_id": config.TELEGRAM_CHAT_ID,
         "text": text[:4096],          # Telegram hard limit per message
         "parse_mode": parse_mode,
         "disable_web_page_preview": "true",
-    }).encode()
+    }
+    if message_thread_id:
+        fields["message_thread_id"] = str(message_thread_id)
+    payload = urllib.parse.urlencode(fields).encode()
 
     try:
         with urllib.request.urlopen(url, data=payload, timeout=20) as resp:

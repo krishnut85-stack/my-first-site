@@ -43,6 +43,7 @@ leaders, saves the portfolio, and pings your phone — once per strategy.
 Omitting [strategy] runs/show all three. PAPER ONLY.
 """
 
+import os
 import sys
 from datetime import date
 from pathlib import Path
@@ -272,6 +273,15 @@ def _print_mayura(result: dict) -> None:
     print("-" * 70)
 
 
+def _topic_id():
+    """The Telegram forum-topic id for the active strategy, from the env var
+    TELEGRAM_TOPIC_<STRATEGY> (e.g. TELEGRAM_TOPIC_DANDAPANI). None = no topic
+    (posts to the group's General / a plain chat)."""
+    if not CURRENT:
+        return None
+    return os.environ.get(f"TELEGRAM_TOPIC_{CURRENT['key'].upper()}") or None
+
+
 def _watchlist():
     """Load THIS strategy's universe.csv, scored by its profile (breakout /
     quality / accumulation). Returns a best-first list of dicts, or None."""
@@ -315,18 +325,19 @@ def cmd_run() -> None:
         # matters is the breakout universe.csv. Don't show a misleading "stale".
         result["data_stale"] = False
         result["data_date"] = None
+    topic = _topic_id()
     if result.get("aborted"):
         # Engine refused (e.g. real Kite data required but unavailable). The
         # portfolio was left untouched — nothing to report or send.
         print(f"  {PEACOCK} Skipped: {result['message']}")
-        send_telegram(f"{PEACOCK} <b>Mayura</b> skipped today: "
-                      f"{result['message']}")
+        send_telegram(f"{PEACOCK} <b>Mayura · {CURRENT['name']}</b> skipped: "
+                      f"{result['message']}", message_thread_id=topic)
         return
 
     _print_mayura(result)
     txt, _ = write_portfolio_report(result)
     print(f"  Report written: {txt}")
-    delivered = send_telegram(_mayura_telegram(result))
+    delivered = send_telegram(_mayura_telegram(result), message_thread_id=topic)
     print(f"  Telegram: {'sent 🙏' if delivered else 'dry-run (set the two env vars)'}")
     print(f"\n  {PEACOCK} May Lord Muruga guide steady gains. Paper only.\n")
 
@@ -479,6 +490,55 @@ def cmd_regime() -> None:
 """)
 
 
+def cmd_telegram_setup() -> None:
+    """Help wire a 'Mayura' group with one TOPIC per strategy. It reads recent
+    Telegram updates and prints each chat id + topic (thread) id, so you can put
+    them in .env."""
+    _banner("TELEGRAM TOPICS SETUP")
+    import json, urllib.request
+    if not config.TELEGRAM_BOT_TOKEN:
+        print("\n  Set TELEGRAM_BOT_TOKEN first (source your .env).\n")
+        return
+    print("""
+  STEP 1 — In Telegram: create a group called "Mayura" → group settings →
+           enable "Topics". Create three topics: Dandapani, Senthil, Subramanya.
+  STEP 2 — Add your Mayura bot to the group and make it an Admin.
+  STEP 3 — In EACH topic, type any message (e.g. "hi").
+  STEP 4 — Run this command. It prints the ids below — copy them into .env:
+
+      TELEGRAM_CHAT_ID=<the group id (a negative number)>
+      TELEGRAM_TOPIC_DANDAPANI=<Dandapani topic id>
+      TELEGRAM_TOPIC_SENTHIL=<Senthil topic id>
+      TELEGRAM_TOPIC_SUBRAMANYA=<Subramanya topic id>
+""")
+    url = f"https://api.telegram.org/bot{config.TELEGRAM_BOT_TOKEN}/getUpdates"
+    try:
+        data = json.loads(urllib.request.urlopen(url, timeout=20).read())
+    except Exception as exc:  # noqa: BLE001
+        print(f"  Could not fetch updates: {exc}\n")
+        return
+    rows = data.get("result", [])
+    if not rows:
+        print("  No recent messages found. Post a message in each topic, then "
+              "re-run (getUpdates only shows the last ~24h).\n")
+        return
+    print(f"  {'chat id':>16}  {'topic id':>9}  {'topic name / text'}")
+    print("  " + "-" * 60)
+    seen = set()
+    for u in rows:
+        m = u.get("message") or u.get("channel_post") or {}
+        chat = m.get("chat", {})
+        thread = m.get("message_thread_id")
+        name = (m.get("forum_topic_created", {}) or {}).get("name") or (m.get("text") or "")
+        key = (chat.get("id"), thread)
+        if key in seen:
+            continue
+        seen.add(key)
+        print(f"  {str(chat.get('id')):>16}  {str(thread or '-'):>9}  "
+              f"{(chat.get('title') or '')} | {name[:30]}")
+    print("\n  Match each topic name to its topic id above. 🦚\n")
+
+
 def cmd_rules() -> None:
     """Show THIS strategy's exit rules in plain English (each temple differs)."""
     _banner("EXIT RULES")
@@ -504,7 +564,8 @@ def cmd_rules() -> None:
 
 
 # Commands that run once for the WHOLE bot (not per strategy).
-GLOBAL_COMMANDS = {"check": cmd_check, "regime": cmd_regime}
+GLOBAL_COMMANDS = {"check": cmd_check, "regime": cmd_regime,
+                   "telegram-setup": cmd_telegram_setup}
 # Commands that run PER strategy (loop all three unless one is named).
 PER_STRATEGY_COMMANDS = {
     "run": cmd_run, "rank": cmd_rank, "status": cmd_status,
