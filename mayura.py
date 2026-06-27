@@ -18,10 +18,10 @@ This is a clean, single-command launcher built on the proven `sectorbot` engine
 as Mayura and locked to paper mode. It does NOT duplicate the strategy code — it
 reuses it, so there is only one tested engine to trust.
 
-THREE STRATEGIES (the abodes of Lord Muruga) — each independent, own portfolio:
-    🌄 palani       breakout / momentum   (fresh golden cross)
-    🌊 tiruchendur  quality + value       (DVM Durability/Valuation, low PE)
-    🛕 madurai      accumulation          (delivery spike, money-flow, FII)
+THREE STRATEGIES (Lord Muruga as worshipped at three temples) — each independent:
+    🌄 dandapani    breakout / momentum   (fresh golden cross)      — Palani
+    🌊 senthil      quality + value       (DVM Durability/Valuation) — Tiruchendur
+    🛕 subramanya   accumulation          (delivery/MFI/FII)         — Madurai
 
 USAGE
 -----
@@ -54,11 +54,11 @@ from sectorbot import config
 PEACOCK = "🦚"
 BLESSING = "ஓம் சரவணபவ — Vel Muruga! May this run be steady, not greedy."
 
-# Mayura is its OWN bot, and it now runs THREE independent strategies — named
-# after three abodes of Lord Muruga. Each has its OWN data folder, its OWN
-# universe.csv (a different Trendlyne screen) and its OWN portfolio/track record,
-# so they make separate decisions and you can see which edge wins. They share
-# only the proven engine code.
+# Mayura is its OWN bot, and it now runs THREE independent strategies — each
+# named after Lord Muruga AS WORSHIPPED at one of his temples. Each has its OWN
+# data folder, its OWN universe.csv (a different Trendlyne screen) and its OWN
+# portfolio/track record, so they make separate decisions and you can see which
+# edge wins. They share only the proven engine code.
 REPO_ROOT = Path(__file__).resolve().parent
 MAYURA_DATA = REPO_ROOT / "mayura_data"
 
@@ -68,27 +68,28 @@ MAYURA_DOWNTREND_MODE          = "reduced"
 MAYURA_DOWNTREND_MAX_POSITIONS = 3
 MAYURA_DOWNTREND_SIZE_FACTOR   = 0.5
 
-# --- The three temple-strategies (tweak freely) -----------------------------
-# Each "exits" block tunes how that strategy manages a trade. Edit the numbers.
+# --- The three temple-deity strategies (tweak freely) -----------------------
+# Names are the form of Muruga at each temple. Each "exits" block tunes how that
+# strategy manages a trade. Edit the numbers freely.
 STRATEGIES = {
-    "palani": {
-        "name": "Palani", "emoji": "🌄",
-        "tagline": "breakout / momentum — buy the fresh golden cross",
+    "dandapani": {  # Dandayuthapani of PALANI — his weapon strikes
+        "name": "Dandapani", "emoji": "🌄",
+        "tagline": "breakout / momentum — strike the fresh golden cross",
         "profile": "breakout",   # scoring profile in sectorbot/stocks.py
         "exits": dict(stop=0.08, trail_arm=0.10, trail_give=0.10, tp=1.00,
                       atr=2.5, hold_days=10, time_min=0.05, failed_breakout=True,
                       max_ext=0.30),   # skip if >30% above 200-DMA (freshest)
     },
-    "tiruchendur": {
-        "name": "Tiruchendur", "emoji": "🌊",
-        "tagline": "quality + value — strong, fairly-priced businesses",
+    "senthil": {  # Senthil Aandavan of TIRUCHENDUR — steady & enduring
+        "name": "Senthil", "emoji": "🌊",
+        "tagline": "quality + value — strong, fairly-priced, enduring",
         "profile": "quality",
         "exits": dict(stop=0.12, trail_arm=0.15, trail_give=0.12, tp=1.00,
                       atr=3.0, hold_days=45, time_min=0.05, failed_breakout=False,
                       max_ext=0.50),   # quality may be pricier, but still capped
     },
-    "madurai": {
-        "name": "Madurai", "emoji": "🛕",
+    "subramanya": {  # Subramanya Swamy of THIRUPPARANKUNDRAM (Madurai)
+        "name": "Subramanya", "emoji": "🛕",
         "tagline": "accumulation — follow the smart money (delivery/MFI/FII)",
         "profile": "accumulation",
         "exits": dict(stop=0.10, trail_arm=0.12, trail_give=0.10, tp=1.00,
@@ -96,20 +97,26 @@ STRATEGIES = {
                       max_ext=0.40),   # skip if >40% above 200-DMA
     },
 }
-STRATEGY_ORDER = ["palani", "tiruchendur", "madurai"]
+STRATEGY_ORDER = ["dandapani", "senthil", "subramanya"]
 CURRENT: dict = {}   # the active strategy (set by _use_strategy)
 
 
-def _migrate_legacy_palani(folder: Path) -> None:
-    """One-time: move the original single-Mayura data (mayura_data/universe.csv +
-    mayura_portfolio.json) into the Palani folder so its track record carries on."""
+def _migrate_to_dandapani(folder: Path) -> None:
+    """One-time: carry the original single-Mayura / 'palani' data into the
+    Dandapani folder so its track record continues. Looks (in order) at the old
+    'palani' folder, then the legacy mayura_data/universe.csv + portfolio."""
     import shutil
-    legacy_uni = MAYURA_DATA / "universe.csv"
-    legacy_pf = MAYURA_DATA / "mayura_portfolio.json"
-    if legacy_uni.exists() and not (folder / "universe.csv").exists():
-        shutil.copy2(legacy_uni, folder / "universe.csv")
-    if legacy_pf.exists() and not (folder / "portfolio.json").exists():
-        shutil.copy2(legacy_pf, folder / "portfolio.json")
+    srcs_uni = [MAYURA_DATA / "palani" / "universe.csv", MAYURA_DATA / "universe.csv"]
+    srcs_pf = [MAYURA_DATA / "palani" / "portfolio.json",
+               MAYURA_DATA / "mayura_portfolio.json"]
+    if not (folder / "universe.csv").exists():
+        for s in srcs_uni:
+            if s.exists():
+                shutil.copy2(s, folder / "universe.csv"); break
+    if not (folder / "portfolio.json").exists():
+        for s in srcs_pf:
+            if s.exists():
+                shutil.copy2(s, folder / "portfolio.json"); break
 
 
 def _use_strategy(key: str) -> None:
@@ -121,8 +128,8 @@ def _use_strategy(key: str) -> None:
     CURRENT = {**s, "key": key}
     folder = MAYURA_DATA / key
     (folder / "snapshots").mkdir(parents=True, exist_ok=True)
-    if key == "palani":
-        _migrate_legacy_palani(folder)
+    if key == "dandapani":
+        _migrate_to_dandapani(folder)
     # paths (independent per strategy)
     config.DATA_DIR = folder
     config.DATA_CSV = folder / "fundamentals.csv"
