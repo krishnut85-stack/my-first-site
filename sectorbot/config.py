@@ -144,6 +144,13 @@ TIME_STOP_MIN_GAIN_PCT = 0.05
 # equity bot is unaffected.
 USE_FAILED_BREAKOUT_EXIT = False
 
+# Extension guard ("never chase a stock that already ran up"): refuse to BUY any
+# stock whose LIVE price is more than this fraction above its 200-day average —
+# i.e. already parabolic/extended (what we must NOT chase). Uses the live Kite
+# price vs the SMA200 supplied from your screen. 0 = disabled (equity bot
+# unaffected). Mayura sets a per-strategy value.
+MAX_EXTENSION_ABOVE_SMA200 = 0.0
+
 # --- Trading costs (makes the backtest HONEST) -----------------------------
 # Real buys/sells cost money: brokerage + STT + exchange fees + GST + stamp
 # duty + SEBI charges, PLUS slippage (you rarely fill at the screen price).

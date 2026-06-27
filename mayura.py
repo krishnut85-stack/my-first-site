@@ -76,21 +76,24 @@ STRATEGIES = {
         "tagline": "breakout / momentum — buy the fresh golden cross",
         "profile": "breakout",   # scoring profile in sectorbot/stocks.py
         "exits": dict(stop=0.08, trail_arm=0.10, trail_give=0.10, tp=1.00,
-                      atr=2.5, hold_days=10, time_min=0.05, failed_breakout=True),
+                      atr=2.5, hold_days=10, time_min=0.05, failed_breakout=True,
+                      max_ext=0.30),   # skip if >30% above 200-DMA (freshest)
     },
     "tiruchendur": {
         "name": "Tiruchendur", "emoji": "🌊",
         "tagline": "quality + value — strong, fairly-priced businesses",
         "profile": "quality",
         "exits": dict(stop=0.12, trail_arm=0.15, trail_give=0.12, tp=1.00,
-                      atr=3.0, hold_days=45, time_min=0.05, failed_breakout=False),
+                      atr=3.0, hold_days=45, time_min=0.05, failed_breakout=False,
+                      max_ext=0.50),   # quality may be pricier, but still capped
     },
     "madurai": {
         "name": "Madurai", "emoji": "🛕",
         "tagline": "accumulation — follow the smart money (delivery/MFI/FII)",
         "profile": "accumulation",
         "exits": dict(stop=0.10, trail_arm=0.12, trail_give=0.10, tp=1.00,
-                      atr=2.5, hold_days=20, time_min=0.05, failed_breakout=False),
+                      atr=2.5, hold_days=20, time_min=0.05, failed_breakout=False,
+                      max_ext=0.40),   # skip if >40% above 200-DMA
     },
 }
 STRATEGY_ORDER = ["palani", "tiruchendur", "madurai"]
@@ -142,6 +145,7 @@ def _use_strategy(key: str) -> None:
     config.MAX_HOLDING_DAYS = e["hold_days"]
     config.TIME_STOP_MIN_GAIN_PCT = e["time_min"]
     config.USE_FAILED_BREAKOUT_EXIT = e["failed_breakout"]
+    config.MAX_EXTENSION_ABOVE_SMA200 = e.get("max_ext", 0.0)
     config.REGIME_DOWNTREND_MODE = MAYURA_DOWNTREND_MODE
     config.REGIME_DOWNTREND_MAX_POSITIONS = MAYURA_DOWNTREND_MAX_POSITIONS
     config.REGIME_DOWNTREND_SIZE_FACTOR = MAYURA_DOWNTREND_SIZE_FACTOR
@@ -245,6 +249,11 @@ def _print_mayura(result: dict) -> None:
         print("  Exits this run:")
         for s, ltp, reason, pnl in result["exits"]:
             print(f"    SELL {s:12} @ {ltp:>9.2f}  [{reason}]  P&L {pnl:+,.0f}")
+    skx = result.get("skipped_extended") or []
+    if skx:
+        print(f"  Skipped ({len(skx)}) — already too far above 200-DMA (not chased):")
+        for s, ltp, pct in skx[:8]:
+            print(f"    {s:12} @ {ltp:>9.2f}  (+{pct*100:.0f}% vs 200-DMA)")
     print("-" * 70)
 
 
@@ -277,12 +286,16 @@ def cmd_run() -> None:
         return
     ranked = [d["symbol"] for d in wl]
     levels = {d["symbol"]: d["sma50"] for d in wl if d.get("sma50")}
+    ext_levels = {d["symbol"]: d["sma200"] for d in wl if d.get("sma200")}
     print(f"  Watchlist   : 🎯 {len(ranked)} stocks ({CURRENT['profile']} score; "
-          f"top: {', '.join(ranked[:5])})\n")
+          f"top: {', '.join(ranked[:5])})")
+    print(f"  Guard       : skip any stock >{config.MAX_EXTENSION_ABOVE_SMA200:.0%} "
+          f"above its 200-DMA (no chasing already-run-up names)\n")
 
     # verbose=False so the engine's own "SectorBot" printout is suppressed; we
     # render Mayura's branded summary instead.
-    result = run_paper_session(verbose=False, ranked_symbols=ranked, levels=levels)
+    result = run_paper_session(verbose=False, ranked_symbols=ranked,
+                               levels=levels, ext_levels=ext_levels)
     if ranked and not result.get("aborted"):
         # In watchlist mode the fundamentals-CSV date is irrelevant — what
         # matters is the breakout universe.csv. Don't show a misleading "stale".
@@ -467,6 +480,8 @@ def cmd_rules() -> None:
   🎯 Take-profit      : hard cap at +{config.TAKE_PROFIT_PCT:.0%}  (rare)
   🌊 ATR stop         : volatility-based ({config.ATR_MULT}× ATR below entry)
   ⏳ Time stop        : exit after {config.MAX_HOLDING_DAYS} days IF still under +{config.TIME_STOP_MIN_GAIN_PCT:.0%}
+  🚫 Extension guard  : NEVER buy a stock already >{config.MAX_EXTENSION_ABOVE_SMA200:.0%} above its
+                        200-DMA (no chasing parabolic / already-run-up names)
   🛡️ Market regime    : in a NIFTY downtrend, buy only the top
                         {config.REGIME_DOWNTREND_MAX_POSITIONS} leaders at {config.REGIME_DOWNTREND_SIZE_FACTOR:.0%} size (smart middle)
 

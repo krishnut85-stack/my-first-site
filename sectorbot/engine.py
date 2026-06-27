@@ -53,14 +53,15 @@ def _safe_atr(ds, symbol):
 
 
 def run_paper_session(verbose: bool = True, csv_path=None,
-                      ranked_symbols=None, levels=None) -> dict:
+                      ranked_symbols=None, levels=None, ext_levels=None) -> dict:
     """Run one paper session.
 
     If `ranked_symbols` is given (best-first), Mayura trades THAT list directly
     (e.g. a Trendlyne breakout watchlist) instead of ranking industries → stocks.
     `levels` is an optional {symbol: breakout_level} map (e.g. entry SMA50) used
-    for the failed-breakout exit. All risk rules, the regime filter and sizing
-    still apply identically."""
+    for the failed-breakout exit. `ext_levels` is {symbol: SMA200} used by the
+    extension guard to skip already-parabolic names. All risk rules, the regime
+    filter and sizing still apply identically."""
     ds = get_datasource()
     real_data = not isinstance(ds, PaperDataSource)
 
@@ -156,6 +157,7 @@ def run_paper_session(verbose: bool = True, csv_path=None,
     per_name_budget = min(config.PAPER_CAPITAL * config.MAX_ALLOCATION_PER_NAME,
                           config.PAPER_CAPITAL / max(config.MAX_POSITIONS, 1)) * size_factor
     entries = []
+    skipped_extended = []
     if not regime_blocked:
         for sym in ranked_symbols:
             if len(pf.holdings) >= max_positions:
@@ -165,6 +167,12 @@ def run_paper_session(verbose: bool = True, csv_path=None,
             ltp = _safe_price(ds, sym)
             if ltp is None:
                 continue
+            # EXTENSION GUARD: never chase a stock already far above its 200-DMA.
+            if config.MAX_EXTENSION_ABOVE_SMA200 and ext_levels:
+                ref = ext_levels.get(sym)
+                if ref and ref > 0 and ltp > ref * (1 + config.MAX_EXTENSION_ABOVE_SMA200):
+                    skipped_extended.append((sym, round(ltp, 2), ltp / ref - 1))
+                    continue  # already parabolic — skip
             budget = min(per_name_budget, pf.cash)
             qty = int(budget // ltp)
             if qty <= 0:
@@ -208,6 +216,7 @@ def run_paper_session(verbose: bool = True, csv_path=None,
         "exits": exits, "entries": entries, "price_of": price_of,
         "regime_uptrend": uptrend, "regime_blocked": regime_blocked,
         "regime_reduced": reduced, "max_positions": max_positions,
+        "skipped_extended": skipped_extended,
         "data_date": data_info["date"], "data_stale": data_info["stale"],
         "scorecard": compute_scorecard(pf),
     }
