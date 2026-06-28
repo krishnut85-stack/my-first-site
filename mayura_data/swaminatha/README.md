@@ -7,18 +7,28 @@ the full text** and judge whether it's a genuine, **MATERIAL bullish catalyst**
 (e.g. "Transrail Lighting secures ~Rs 459 cr MENA order" — is that big vs its
 revenue?), runs basic safety checks, and only then places a (paper) buy.
 
-## How it works (sectorbot/gemini.py + sectorbot/filings.py)
-1. **Fetch** today's NSE announcements across ALL companies (last 2 days).
-2. **Pre-filter** (free keywords) to potential catalysts — order wins, approvals,
-   buybacks, contracts… — so Gemini is only called on the promising few.
-3. **Safety gate** (before spending a Gemini call): real, tradeable stock,
-   price ≥ `NEWS_MIN_PRICE` (no penny stocks), avg daily turnover ≥
-   `NEWS_MIN_TURNOVER_CR` (liquid enough to exit).
-4. **Gemini judges** the full news (with Google Search grounding for context):
-   bullish? material vs company size? one-off or strategic? already priced in?
-   → `{verdict, material, confidence, reason}`.
-5. **Buy** only if **bullish + material + confidence ≥ `NEWS_MIN_CONFIDENCE`**.
-   Same exit rules (tight stop, trailing) as the other faces.
+## How it works — INTRADAY, every 30 min during market hours
+News breaks any time, so Swaminatha **polls every 30 min (9:30–16:00 IST)** and
+reacts within ~30 min — it does NOT wait for the close. Cost is controlled by a
+funnel where Gemini is the LAST, most-filtered step:
+1. **Fetch** today's NSE announcements market-wide.
+2. **Keyword pre-filter** (free) → catalysts only (order wins, approvals, buybacks,
+   mergers).
+3. **Dedupe** (free) → skip filings already read in an earlier poll
+   (`seen_news.json`), so **each filing is judged ONCE**, not every 30 min.
+4. **Order-value floor** (free regex) → skip small orders (< `NEWS_MIN_ORDER_CR`,
+   default ₹100 cr). This is the big cost cut.
+5. **Hard daily Gemini cap** (`NEWS_MAX_GEMINI_CALLS_DAILY`, default 30) →
+   absolute cost ceiling across all of today's polls (`gemini_count.json`).
+6. **Safety gate** (Kite) → real, tradeable, price ≥ `NEWS_MIN_PRICE`, liquid
+   enough (avg turnover ≥ `NEWS_MIN_TURNOVER_CR`).
+7. **🤖 Gemini** reads the full news (Google Search grounding): bullish? material
+   vs company size? one-off or strategic? priced in? → verdict + confidence.
+8. **Buy** only if **bullish + material + confidence ≥ `NEWS_MIN_CONFIDENCE`**.
+   Tight stop / trailing like the other faces. Only Telegrams when it BUYS.
+
+→ Net effect: typically only a handful of big, fresh, liquid catalysts reach
+Gemini per day — a few cents — and the daily cap guarantees the ceiling.
 
 ## Setup — you need a Gemini API key (one time)
 Get a key from Google AI Studio, then add it to the droplet's `.env`:

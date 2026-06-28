@@ -404,59 +404,140 @@ def _avg_turnover_cr(bars) -> float:
     return (sum(vals) / len(vals) / 1e7) if vals else 0.0
 
 
+def _seen_news_path():
+    return MAYURA_DATA / "swaminatha" / "seen_news.json"
+
+
+def _load_seen_news() -> dict:
+    """{ann_id: 'YYYY-MM-DD'} of filings already judged, so the intraday poller
+    never re-reads or re-buys the same filing across its 15-min runs."""
+    import json
+    try:
+        return json.loads(_seen_news_path().read_text())
+    except (OSError, ValueError):
+        return {}
+
+
+def _save_seen_news(seen: dict) -> None:
+    import json
+    try:
+        _seen_news_path().parent.mkdir(parents=True, exist_ok=True)
+        _seen_news_path().write_text(json.dumps(seen))
+    except OSError:
+        pass
+
+
+def _prune_seen_news(seen: dict, keep_days: int) -> dict:
+    """Drop entries older than keep_days so the file doesn't grow forever."""
+    from datetime import timedelta
+    cutoff = (date.today() - timedelta(days=keep_days)).isoformat()
+    return {k: v for k, v in seen.items() if v >= cutoff}
+
+
+def _gemini_count_path():
+    return MAYURA_DATA / "swaminatha" / "gemini_count.json"
+
+
+def _gemini_daily_count() -> int:
+    """Gemini calls already spent TODAY (across all of today's 30-min polls), so
+    the hard daily cap holds even though each poll is a fresh process."""
+    import json
+    try:
+        d = json.loads(_gemini_count_path().read_text())
+        return int(d.get("count", 0)) if d.get("date") == date.today().isoformat() else 0
+    except (OSError, ValueError):
+        return 0
+
+
+def _save_gemini_count(n: int) -> None:
+    import json
+    try:
+        _gemini_count_path().parent.mkdir(parents=True, exist_ok=True)
+        _gemini_count_path().write_text(
+            json.dumps({"date": date.today().isoformat(), "count": n}))
+    except OSError:
+        pass
+
+
 def _news_watchlist():
-    """Swaminatha: read today's market-wide NSE announcements, let Gemini judge
-    which are MATERIAL bullish catalysts, run basic safety checks, and return the
-    buys (engine-shaped). Market-wide but safety-gated. None if nothing qualifies."""
+    """Swaminatha (INTRADAY): poll market-wide NSE announcements, judge only the
+    NEW ones with Gemini, safety-gate them, and return material-bullish buys.
+    Runs every ~15 min during market hours; de-dupes against filings already seen
+    so each filing is read once and acted on promptly. None if nothing new."""
     import time
     from sectorbot import filings, gemini, technicals as T
     from sectorbot.datasource import get_datasource
 
     if not gemini.configured():
-        print("  ⚠️ GEMINI_API_KEY not set — Swaminatha needs it to read news. "
-              "Add it to .env. Skipping (no buys).")
+        print("  ⚠️ GEMINI_API_KEY not set / not found — Swaminatha needs it to "
+              "read news. Skipping (no buys).")
         return None
     if date.today().weekday() >= 5:
         print("  📜 Weekend — no fresh filings; Swaminatha rests.")
         return None
     anns = filings.fetch_market_announcements(config.NEWS_DAYS_BACK)
     if not anns:
-        print("  📜 Couldn't fetch market announcements (NSE blocked the server?) "
-              "— nothing to act on today.")
+        print("  📜 Couldn't fetch market announcements (NSE blocked the server?).")
         return None
-    # Cheap keyword pre-filter, then de-dupe to one event per symbol.
-    cands, seen = [], set()
+
+    seen = _prune_seen_news(_load_seen_news(), config.NEWS_DAYS_BACK + 2)
+    # Cheap keyword pre-filter; skip filings already judged; one event per symbol.
+    cands, sym_seen = [], set()
     for a in anns:
-        if a.symbol in seen or not filings.is_candidate(a):
+        if a.symbol in sym_seen or not filings.is_candidate(a):
             continue
-        seen.add(a.symbol)
+        if filings.ann_id(a) in seen:
+            continue                                  # already read in an earlier poll
+        sym_seen.add(a.symbol)
         cands.append(a)
-    print(f"  📜 {len(anns)} announcements → {len(cands)} candidate events to read.")
+    # Cheap value-floor gate (no AI): drop small orders before anything costly,
+    # and mark them seen so later polls don't re-check them.
+    before = len(cands)
+    priced = []
+    for a in cands:
+        if filings.passes_value_floor(a, config.NEWS_MIN_ORDER_CR):
+            priced.append(a)
+        else:
+            seen[filings.ann_id(a)] = date.today().isoformat()
+    cands = priced
+    print(f"  📜 {len(anns)} announcements → {before} fresh catalysts → "
+          f"{len(cands)} pass the ₹{config.NEWS_MIN_ORDER_CR:.0f}cr value floor.")
 
     ds = get_datasource()
+    daily = _gemini_daily_count()
     out = []
     calls = 0
     for a in cands:
-        if calls >= config.NEWS_MAX_GEMINI_CALLS:
-            print(f"  🤖 Hit the daily Gemini cap ({config.NEWS_MAX_GEMINI_CALLS}).")
+        if daily >= config.NEWS_MAX_GEMINI_CALLS_DAILY:
+            print(f"  🤖 Daily Gemini cap reached ({config.NEWS_MAX_GEMINI_CALLS_DAILY}). "
+                  "Stopping — protects your cost.")
             break
-        # SAFETY GATE first (before spending a Gemini call): real, liquid stock.
+        if calls >= config.NEWS_MAX_GEMINI_CALLS:
+            break
+        aid = filings.ann_id(a)
+        # SAFETY GATE (before spending a Gemini call): real, liquid stock.
         try:
             bars = ds.history(a.symbol, config.OHLC_HISTORY_BARS)
         except Exception:  # noqa: BLE001
             bars = []
         if not bars:
+            seen[aid] = date.today().isoformat()      # bad symbol — don't retry today
             continue
         price = bars[-1].close
-        if price < config.NEWS_MIN_PRICE:
-            continue                                  # penny stock — skip
-        if _avg_turnover_cr(bars) < config.NEWS_MIN_TURNOVER_CR:
-            continue                                  # too illiquid — skip
+        if price < config.NEWS_MIN_PRICE or \
+                _avg_turnover_cr(bars) < config.NEWS_MIN_TURNOVER_CR:
+            seen[aid] = date.today().isoformat()      # penny/illiquid — won't change today
+            continue
         # Gemini reads the FULL news and judges materiality.
         news = f"{a.subject}. {a.detail}".strip()
         verdict = gemini.judge_news(a.symbol, a.detail.split('.')[0], news)
         calls += 1
+        daily += 1
+        _save_gemini_count(daily)
         time.sleep(config.OHLC_FETCH_DELAY)
+        if verdict is None:
+            continue                                  # Gemini hiccup — retry next poll
+        seen[aid] = date.today().isoformat()          # judged once; never re-judge
         if not gemini.is_buy(verdict):
             continue
         s50, s200, dist = T.levels(bars)
@@ -464,10 +545,11 @@ def _news_watchlist():
                     "score": round(verdict["confidence"] * 100, 1),
                     "sma50": s50, "sma200": s200, "dist52": dist,
                     "event": "📰 " + verdict["reason"][:46]})
-    print(f"  🤖 Gemini read {calls} events → {len(out)} material-bullish buy(s).")
-    if out:
-        for d in out:
-            print(f"     ✅ {d['symbol']}  {d['event']}")
+    _save_seen_news(seen)
+    print(f"  🤖 Gemini read {calls} this poll ({daily}/{config.NEWS_MAX_GEMINI_CALLS_DAILY} "
+          f"today) → {len(out)} material-bullish buy(s).")
+    for d in out:
+        print(f"     ✅ {d['symbol']}  {d['event']}")
     return out or None
 
 
@@ -680,18 +762,10 @@ def cmd_run() -> None:
     if not wl:
         topic = _topic_id()
         if is_news:
-            # News face on a trading day with nothing worth buying — confirm it
-            # ran (so you know it's alive), but no trade. Stay quiet if the key
-            # is missing (that's a setup issue, surfaced by `check`, not a daily ping).
-            from sectorbot import gemini as _gem
-            print(f"\n  📜 No material bullish news to act on today.\n")
-            if date.today().weekday() < 5 and _gem.configured():
-                send_telegram(
-                    f"{PEACOCK} <b>Mayura · {CURRENT['emoji']} {CURRENT['name']} · "
-                    f"{date.today().isoformat()}</b>\n📜 Read today's filings — "
-                    "nothing material & bullish enough to buy. Holdings managed as "
-                    "usual.\n<i>Paper only · Vel Muruga 🙏</i>",
-                    message_thread_id=topic)
+            # Intraday poller: nothing NEW worth buying this poll. Stay QUIET —
+            # it runs every ~15 min, so a ping each time would be spam. It only
+            # Telegrams when it actually buys on a fresh filing.
+            print(f"\n  📜 No new material filing to act on this poll.\n")
             return
         print(f"\n  ⏭  No screen for {CURRENT['name']} yet — upload its Trendlyne "
               f"export as:\n     {config.UNIVERSE_CSV_PRIMARY}\n     Skipping.")

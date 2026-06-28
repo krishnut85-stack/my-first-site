@@ -271,6 +271,52 @@ _NSE_MKT_ANN = (_NSE_HOME + "/api/corporate-announcements?index=equities"
                 "&from_date={f}&to_date={t}")
 
 
+# Order/contract phrases that trigger the cheap value-floor check (no AI).
+_ORDER_WORDS = (
+    "bags order", "receives order", "secures order", "wins order", "won order",
+    "order worth", "orders worth", "order win", "bags orders", "secures orders",
+    "receives orders", "wins orders", "new order", "new orders", "work order",
+    "purchase order", "order inflow", "order book", "contract worth",
+    "bags contract", "awarded contract", "letter of award", "letter of intent",
+)
+
+
+def order_value_cr(text: str) -> Optional[float]:
+    """Largest rupee amount mentioned, in ₹ CRORE (None if no number found).
+    Handles 'Rs 459 crore', 'Rs. 1,200 cr', '₹459cr', 'X lakh crore'."""
+    import re
+    t = text.lower().replace(",", "")
+    best = None
+    for m in re.finditer(r"(?:rs\.?|inr|₹)?\s*([0-9]+(?:\.[0-9]+)?)\s*"
+                         r"(lakh crore|crore|cr)\b", t):
+        val = float(m.group(1))
+        if "lakh crore" in m.group(2):
+            val *= 100000
+        best = val if best is None or val > best else best
+    return best
+
+
+def passes_value_floor(ann: Announcement, min_cr: float) -> bool:
+    """Cheap pre-Gemini gate. For ORDER/CONTRACT news with a stated value, require
+    value >= min_cr (small orders skipped, no AI). Non-order catalysts, or orders
+    with no stated number, pass through (let Gemini judge). No network."""
+    t = ann.text
+    if not any(w in t for w in _ORDER_WORDS):
+        return True                          # not an order-type catalyst
+    val = order_value_cr(t)
+    if val is None:
+        return True                          # order but no number — let Gemini decide
+    return val >= min_cr
+
+
+def ann_id(ann: Announcement) -> str:
+    """A stable id for one announcement, so the intraday news poller judges/acts
+    on each filing exactly once (not every 15 minutes)."""
+    import hashlib
+    raw = f"{ann.symbol}|{ann.date}|{ann.subject[:80]}|{ann.detail[:120]}"
+    return hashlib.sha1(raw.encode()).hexdigest()[:16]
+
+
 def is_candidate(ann: Announcement) -> bool:
     """Cheap pre-filter (no AI): does this announcement look like a potential
     MATERIAL bullish catalyst worth a Gemini read? (order/contract/approval/

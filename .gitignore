@@ -10,6 +10,8 @@ mayura_data/universe.csv
 mayura_data/*/universe.csv
 mayura_data/*/portfolio.json
 mayura_data/*/snapshots/*.csv
+mayura_data/*/seen_news.json
+mayura_data/*/gemini_count.json
 mayura_data/dandapani.csv
 mayura_data/senthil.csv
 mayura_data/subramanya.csv
