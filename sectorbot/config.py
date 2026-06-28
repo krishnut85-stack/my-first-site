@@ -276,7 +276,7 @@ FILINGS_REQUIRE_BULLISH = True
 # (e.g. Nifty Smallcap 250) uploaded once — not a daily screen.
 OHLC_HISTORY_BARS = int(os.environ.get("OHLC_HISTORY_BARS", "260"))  # ~1yr of days
 OHLC_MAX_SYMBOLS = int(os.environ.get("OHLC_MAX_SYMBOLS", "520"))    # cap fetches (covers Nifty 500)
-OHLC_FETCH_DELAY = float(os.environ.get("OHLC_FETCH_DELAY", "0.25")) # secs/req (rate limit)
+OHLC_FETCH_DELAY = float(os.environ.get("OHLC_FETCH_DELAY", "0.35")) # secs/req (~<3/s, Kite historical limit)
 
 # --- Thanikesa: lenient valuation guard ("a little freedom") ---------------
 # Thanikesa is a momentum face, so it WILL favour leaders near their highs. To
