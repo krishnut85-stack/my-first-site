@@ -48,12 +48,15 @@ def test_judge_none_on_garbage(monkeypatch):
 
 
 # --- buy decision ----------------------------------------------------------
-def test_is_buy_requires_bullish_material_confident(monkeypatch):
+def test_is_buy_requires_bullish_material_sound_confident(monkeypatch):
     monkeypatch.setattr(config, "NEWS_MIN_CONFIDENCE", 0.6)
-    assert gemini.is_buy({"verdict": "bullish", "material": True, "confidence": 0.7})
-    assert not gemini.is_buy({"verdict": "bullish", "material": True, "confidence": 0.5})
-    assert not gemini.is_buy({"verdict": "bullish", "material": False, "confidence": 0.9})
-    assert not gemini.is_buy({"verdict": "neutral", "material": True, "confidence": 0.9})
+    ok = {"verdict": "bullish", "material": True, "financially_sound": True,
+          "confidence": 0.7}
+    assert gemini.is_buy(ok)
+    assert not gemini.is_buy({**ok, "confidence": 0.5})           # low conviction
+    assert not gemini.is_buy({**ok, "material": False})           # not material
+    assert not gemini.is_buy({**ok, "financially_sound": False})  # weak company -> trap
+    assert not gemini.is_buy({**ok, "verdict": "neutral"})        # not bullish
     assert not gemini.is_buy(None)
 
 

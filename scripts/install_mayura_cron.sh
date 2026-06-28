@@ -22,6 +22,7 @@ NEW="$(cat <<CRON
 50 10 * * 1-5 $SH thanikesa  >> $LOG 2>&1
 10 11 * * 1-5 $SH solaimalai >> $LOG 2>&1
 */30 4-10 * * 1-5 $SH swaminatha >> $LOG 2>&1
+0 5 * * 0 $SH swaminatha >> $LOG 2>&1
 CRON
 )"
 

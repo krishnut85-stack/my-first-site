@@ -26,24 +26,34 @@ from . import config
 _ENDPOINT = ("https://generativelanguage.googleapis.com/v1beta/models/"
              "{model}:generateContent?key={key}")
 
-_PROMPT = """You are a disciplined Indian equity analyst. A corporate \
-announcement just came for {company} (NSE: {symbol}).
+_PROMPT = """You are a disciplined, SKEPTICAL Indian equity analyst. Good news on \
+a weak company is a trap, not a buy. A corporate announcement just came for \
+{company} (NSE: {symbol}).
 
 ANNOUNCEMENT:
 \"\"\"{news}\"\"\"
 
-Decide whether this is a GENUINE, MATERIAL, BULLISH catalyst worth buying the \
-stock today for a short-to-medium swing. Think hard about:
-- the SIZE of the order/event vs the company's annual revenue and market cap \
+Decide whether to BUY this stock today for a short-to-medium swing. You must be \
+satisfied on BOTH of these, using web search to verify:
+
+1) IS THE NEWS A MATERIAL BULLISH CATALYST?
+   - size of the order/event vs the company's annual revenue & market cap \
 (a small order for a big company is NOT material),
-- whether it is one-off or recurring/strategic,
-- whether it is likely already known/priced in,
-- any red flags or caveats in the text.
-Use web search to check the company's scale and recent price action if useful.
+   - one-off or recurring/strategic, and whether it's likely already priced in.
+
+2) IS THE COMPANY FINANCIALLY SOUND ENOUGH TO OWN?
+   - debt/leverage: AVOID heavily indebted companies,
+   - revenue trend: AVOID declining revenue,
+   - profitability: AVOID deep or worsening losses,
+   - any governance / audit / promoter-pledge red flags.
+   A company winning an order while drowning in debt or losing revenue is NOT a buy.
+
+Return verdict "bullish" ONLY if the news is material AND the company is \
+financially sound. When unsure, do NOT say bullish.
 
 Respond with ONLY compact JSON, no prose:
 {{"verdict":"bullish|neutral|bearish","material":true|false,\
-"confidence":0.0,"reason":"one short sentence"}}"""
+"financially_sound":true|false,"confidence":0.0,"reason":"one short sentence"}}"""
 
 
 def configured() -> bool:
@@ -103,6 +113,7 @@ def judge_news(symbol: str, company: str, news: str, _post=None) -> Optional[dic
         return {
             "verdict": str(data.get("verdict", "neutral")).strip().lower(),
             "material": bool(data.get("material", False)),
+            "financially_sound": bool(data.get("financially_sound", False)),
             "confidence": float(data.get("confidence", 0) or 0),
             "reason": str(data.get("reason", "")).strip()[:160],
         }
@@ -111,7 +122,10 @@ def judge_news(symbol: str, company: str, news: str, _post=None) -> Optional[dic
 
 
 def is_buy(verdict: Optional[dict]) -> bool:
-    """A confident, material, bullish read is the only thing we act on."""
+    """Buy ONLY a confident, material, bullish event on a financially SOUND
+    company — never on good news alone (a debt-laden / loss-making company that
+    wins an order is a trap)."""
     return bool(verdict and verdict["verdict"] == "bullish"
-                and verdict["material"]
+                and verdict.get("material")
+                and verdict.get("financially_sound")
                 and verdict["confidence"] >= config.NEWS_MIN_CONFIDENCE)

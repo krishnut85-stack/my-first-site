@@ -472,9 +472,21 @@ def _news_watchlist():
         print("  ⚠️ GEMINI_API_KEY not set / not found — Swaminatha needs it to "
               "read news. Skipping (no buys).")
         return None
-    if date.today().weekday() >= 5:
-        print("  📜 Weekend — no fresh filings; Swaminatha rests.")
+    # Holiday rule: NO Gemini on Saturdays or market holidays. Sunday is allowed
+    # ONCE (a weekly preview of weekend filings — no trades, doesn't block Monday).
+    wd = date.today().weekday()
+    ds = get_datasource()
+    is_sunday = (wd == 6)
+    if wd == 5:
+        print("  📜 Saturday — Swaminatha rests (no Gemini calls).")
         return None
+    if not is_sunday and hasattr(ds, "market_traded_today") \
+            and not ds.market_traded_today():
+        print("  📜 Market holiday — no trading today, Swaminatha rests "
+              "(no Gemini calls).")
+        return None
+    if is_sunday:
+        print("  📜 Sunday weekly read — previewing weekend filings (no trades).")
     anns = filings.fetch_market_announcements(config.NEWS_DAYS_BACK)
     if not anns:
         print("  📜 Couldn't fetch market announcements (NSE blocked the server?).")
@@ -503,7 +515,6 @@ def _news_watchlist():
     print(f"  📜 {len(anns)} announcements → {before} fresh catalysts → "
           f"{len(cands)} pass the ₹{config.NEWS_MIN_ORDER_CR:.0f}cr value floor.")
 
-    ds = get_datasource()
     daily = _gemini_daily_count()
     out = []
     calls = 0
@@ -545,7 +556,10 @@ def _news_watchlist():
                     "score": round(verdict["confidence"] * 100, 1),
                     "sma50": s50, "sma200": s200, "dist52": dist,
                     "event": "📰 " + verdict["reason"][:46]})
-    _save_seen_news(seen)
+    # Persist 'seen' only on real trading days. The Sunday preview must NOT mark
+    # filings seen, or Monday would skip them — we want Monday to actually buy them.
+    if not is_sunday:
+        _save_seen_news(seen)
     print(f"  🤖 Gemini read {calls} this poll ({daily}/{config.NEWS_MAX_GEMINI_CALLS_DAILY} "
           f"today) → {len(out)} material-bullish buy(s).")
     for d in out:
@@ -794,16 +808,25 @@ def cmd_run() -> None:
     topic = _topic_id()
     if result.get("market_closed"):
         print(f"\n  📴 {result['message']}\n")
-        # Send a short "resting today" ping so you get daily confirmation each
-        # strategy (and its topic) is alive, even on holidays/weekends. No
-        # trading happens — holdings are untouched.
         who = f"{CURRENT['emoji']} {CURRENT['name']}" if CURRENT else "Mayura"
-        age = _pool_age_note()
-        msg = (f"{PEACOCK} <b>Mayura · {who} · {date.today().isoformat()}</b>\n"
-               f"😴 Market closed today (holiday/weekend) — resting, no trades.\n"
-               + (age + "\n" if age else "") +
-               f"<i>Holdings untouched. Vel Muruga 🙏</i>")
-        delivered = send_telegram(msg, message_thread_id=topic)
+        if is_news and news_buys:
+            # Sunday weekly preview: market shut, so no trade — but tell the user
+            # which weekend filings to watch when Monday opens.
+            lines = [f"{PEACOCK} <b>Mayura · {who} · {date.today().isoformat()}</b>",
+                     "🗓️ <b>Weekend filings to watch Monday</b> (no trade today):"]
+            for sym, reason in news_buys[:8]:
+                lines.append(f"  📰 {sym}: {reason.replace('📰 ', '')}")
+            lines.append("<i>Will act on these at Monday's open if still valid. "
+                         "Paper only 🙏</i>")
+            delivered = send_telegram("\n".join(lines), message_thread_id=topic)
+        else:
+            # Short "resting today" ping so each strategy/topic confirms it's alive.
+            age = _pool_age_note()
+            msg = (f"{PEACOCK} <b>Mayura · {who} · {date.today().isoformat()}</b>\n"
+                   f"😴 Market closed today (holiday/weekend) — resting, no trades.\n"
+                   + (age + "\n" if age else "") +
+                   f"<i>Holdings untouched. Vel Muruga 🙏</i>")
+            delivered = send_telegram(msg, message_thread_id=topic)
         print(f"  Telegram: {'sent 🙏' if delivered else 'dry-run (set the two env vars)'}")
         return
     if result.get("aborted"):
@@ -882,8 +905,8 @@ def cmd_filings() -> None:
     print(f"\n  📜 {len(anns)} announcements → {len(cands)} candidates pass the "
           f"₹{config.NEWS_MIN_ORDER_CR:.0f}cr floor. Asking Gemini (cap "
           f"{config.NEWS_MAX_GEMINI_CALLS_DAILY}/day)… No trading.\n")
-    print(f"  {'Symbol':12} {'Verdict':9} {'Mat':4} {'Conf':5} Reason")
-    print("  " + "-" * 66)
+    print(f"  {'Symbol':12} {'Verdict':9} {'Mat':4} {'Sound':5} {'Conf':5} Reason")
+    print("  " + "-" * 72)
     for a in cands[: config.NEWS_MAX_GEMINI_CALLS]:
         news = f"{a.subject}. {a.detail}".strip()
         v = gemini.judge_news(a.symbol, a.detail.split('.')[0], news)
@@ -892,8 +915,10 @@ def cmd_filings() -> None:
             continue
         buy = "✅" if gemini.is_buy(v) else "·"
         print(f"  {buy} {a.symbol:10} {v['verdict']:8} {str(v['material']):4} "
-              f"{v['confidence']:.2f}  {v['reason'][:38]}")
-    print("\n  ✅ = would buy (bullish + material + confident). Paper only. 🦚\n")
+              f"{str(v.get('financially_sound', '')):5} {v['confidence']:.2f}  "
+              f"{v['reason'][:34]}")
+    print("\n  ✅ = would buy (bullish + material + financially sound + confident). "
+          "Paper only. 🦚\n")
 
 
 def cmd_check() -> None:
