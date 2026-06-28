@@ -8,10 +8,33 @@ real feed later is a one-line change and does not touch the trading logic.
 """
 
 import hashlib
+import time
 from typing import Protocol
 
 from . import config
 from .indicators import Bar
+
+
+def _retry_kite(call, attempts: int = 4, base_delay: float = 1.0, sleep=time.sleep):
+    """Call a Kite API function, retrying with exponential backoff on transient
+    failures (rate-limit / network / busy). This is how Mayura COEXISTS with
+    other bots that share the same Kite token — if it gets throttled it simply
+    waits (1s, 2s, 4s…) and tries again, instead of fighting or failing. Auth
+    errors (bad/expired token, permissions) are NOT retried — they won't fix
+    themselves. `call` is a zero-arg callable; `sleep` is injectable for tests."""
+    last = None
+    for i in range(attempts):
+        try:
+            return call()
+        except Exception as exc:  # noqa: BLE001
+            msg = str(exc).lower()
+            if any(w in msg for w in ("token", "api_key", "api key", "permission",
+                                      "forbidden", "unauthor", "invalid")):
+                raise   # auth/permission — retrying is pointless
+            last = exc
+            if i < attempts - 1:
+                sleep(base_delay * (2 ** i))
+    raise last
 
 
 class DataSource(Protocol):
@@ -101,7 +124,7 @@ class KiteDataSource:
         self._tokens = None  # lazy symbol -> instrument_token cache
 
     def last_price(self, symbol: str) -> float:  # pragma: no cover
-        quote = self.kite.ltp([f"NSE:{symbol}"])
+        quote = _retry_kite(lambda: self.kite.ltp([f"NSE:{symbol}"]))
         return float(quote[f"NSE:{symbol}"]["last_price"])
 
     def last_prices(self, symbols: list[str]) -> dict[str, float]:  # pragma: no cover
@@ -112,7 +135,7 @@ class KiteDataSource:
         for i in range(0, len(symbols), 200):
             chunk = symbols[i:i + 200]
             try:
-                quote = self.kite.ltp([f"NSE:{s}" for s in chunk])
+                quote = _retry_kite(lambda: self.kite.ltp([f"NSE:{s}" for s in chunk]))
             except Exception:  # noqa: BLE001
                 quote = {}
             for s in chunk:
@@ -127,7 +150,7 @@ class KiteDataSource:
         from datetime import datetime
         from .data_loader import IST
         try:
-            q = self.kite.quote(["NSE:RELIANCE"])
+            q = _retry_kite(lambda: self.kite.quote(["NSE:RELIANCE"]))
             d = q.get("NSE:RELIANCE", {})
             ltt = d.get("last_trade_time") or d.get("timestamp")
             if ltt is None:
@@ -163,9 +186,9 @@ class KiteDataSource:
         token = self._token(symbol)
         if not token:
             return []
-        data = self.kite.historical_data(
+        data = _retry_kite(lambda: self.kite.historical_data(
             token, date.today() - timedelta(days=bars * 2), date.today(), "day"
-        )
+        ))
         return [Bar(d["high"], d["low"], d["close"], d.get("volume", 0))
                 for d in data][-bars:]
 
