@@ -820,9 +820,11 @@ def cmd_filings() -> None:
 
 
 def cmd_check() -> None:
-    """Verify the two APIs Mayura needs: Kite (prices) and Telegram (alerts)."""
+    """Verify the APIs Mayura needs: Kite (prices), Telegram (alerts), Gemini
+    (Swaminatha news). Prints progress before each step so it never looks stuck."""
     _banner("WIRING CHECK")
     # Kite
+    print("  Checking Kite…", flush=True)
     tok = config.resolve_access_token()
     if tok:
         print(f"  Kite token   : ✅ resolved (len {len(tok)}, ...{tok[-4:]})")
@@ -839,6 +841,7 @@ def cmd_check() -> None:
         print("  Kite token   : ⚠️ none — set KITE_TOKEN_FILE or KITE_ACCESS_TOKEN")
         print("                 (without it, Mayura uses SYNTHETIC demo prices)")
     # Telegram
+    print("  Checking Telegram…", flush=True)
     from sectorbot.telegram import configured, send_telegram
     if configured():
         ok = send_telegram(f"{PEACOCK} Mayura wiring check — Telegram is live. "
@@ -847,9 +850,12 @@ def cmd_check() -> None:
     else:
         print("  Telegram     : ⚠️ TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID not set")
         print("                 (alerts will print to console instead)")
-    # Gemini (Swaminatha news face)
+    # Gemini (Swaminatha news face) — the live call uses Google Search grounding,
+    # which can take 15-40s. Say so, so it doesn't look frozen.
     from sectorbot import gemini
     if gemini.configured():
+        print(f"  Checking Gemini ({config.GEMINI_MODEL}) — web-grounded call, "
+              f"may take ~30s…", flush=True)
         v = gemini.judge_news(
             "TESTCO", "Test Company",
             "Test Company bags an order worth Rs 5000 crore, ~3x its annual revenue.")
@@ -858,10 +864,10 @@ def cmd_check() -> None:
                   f"material={v['material']}/conf={v['confidence']:.2f}")
         else:
             print(f"  Gemini       : ❌ key set but call failed (model "
-                  f"{config.GEMINI_MODEL}? network?)")
+                  f"{config.GEMINI_MODEL}? network? key valid?)")
     else:
-        print("  Gemini       : ⚠️ GEMINI_API_KEY not set — Swaminatha (news) "
-              "won't buy until you add it")
+        print("  Gemini       : ⚠️ GEMINI_API_KEY not set / not found in "
+              "/home/globalbot/.env — Swaminatha (news) won't buy until it is")
     print()
 
 
