@@ -21,6 +21,7 @@ NEW="$(cat <<CRON
 40 10 * * 1-5 $SH subramanya >> $LOG 2>&1
 50 10 * * 1-5 $SH thanikesa  >> $LOG 2>&1
 10 11 * * 1-5 $SH solaimalai >> $LOG 2>&1
+20 11 * * 1-5 $SH swaminatha >> $LOG 2>&1
 CRON
 )"
 
@@ -30,4 +31,4 @@ CRON
 echo "✅ Mayura cron installed (no nano used). Mayura's scheduled faces:"
 crontab -l | grep 'mayura_cron.sh'
 echo
-echo "🦚 Each face runs at its own time, 15:50–16:40 IST, Mon–Fri."
+echo "🦚 Each face runs at its own time, 15:50–16:50 IST, Mon–Fri."

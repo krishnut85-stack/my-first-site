@@ -681,9 +681,11 @@ def cmd_run() -> None:
         topic = _topic_id()
         if is_news:
             # News face on a trading day with nothing worth buying — confirm it
-            # ran (so you know it's alive), but no trade.
+            # ran (so you know it's alive), but no trade. Stay quiet if the key
+            # is missing (that's a setup issue, surfaced by `check`, not a daily ping).
+            from sectorbot import gemini as _gem
             print(f"\n  📜 No material bullish news to act on today.\n")
-            if date.today().weekday() < 5:
+            if date.today().weekday() < 5 and _gem.configured():
                 send_telegram(
                     f"{PEACOCK} <b>Mayura · {CURRENT['emoji']} {CURRENT['name']} · "
                     f"{date.today().isoformat()}</b>\n📜 Read today's filings — "
