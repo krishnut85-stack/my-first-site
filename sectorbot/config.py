@@ -308,6 +308,11 @@ SOLAIMALAI_FACTOR_WEIGHTS = {
 # here, not a hard gate (fail-open: no filings = pure quant score stands).
 SOLAIMALAI_SPECIAL_BOOST = float(os.environ.get("SOLAIMALAI_SPECIAL_BOOST", "12"))
 
+# How many days before a pool/screen file is flagged "stale" in the alert, so you
+# know when to re-upload a fresh Trendlyne export. Index pools rarely change, but
+# Trendlyne valuation/DVM scores drift over weeks.
+POOL_STALE_DAYS = int(os.environ.get("POOL_STALE_DAYS", "45"))
+
 # --- Scoring weights (transparent momentum + quality blend) ----------------
 WEIGHTS = {
     "qtr_change": 0.20,        # Qtr Change %

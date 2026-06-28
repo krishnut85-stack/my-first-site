@@ -265,6 +265,9 @@ def _mayura_telegram(result: dict, filings_summary: dict | None = None) -> str:
         f"Realised {result['realized']:+,.0f}",
         f"Holdings: {len(result['portfolio'].holdings)} · Exits: {len(exits)}",
     ]
+    age = _pool_age_note()
+    if age:
+        lines.append(age)
     if filings_summary and filings_summary.get("ran"):
         fs = filings_summary
         lines.append(f"📜 Filings: scanned {fs['scanned']} · "
@@ -385,6 +388,23 @@ def _pool_csvs() -> list:
             seen.add(rp)
             files.append(p)
     return files
+
+
+def _pool_age_note() -> str:
+    """A short note about how old the freshest pool/screen file is, so you know
+    when to re-upload. '' if there's no file."""
+    import time as _time
+    if CURRENT and CURRENT.get("compute") in ("ohlc", "value_multifactor"):
+        paths = [p for p in _pool_csvs() if p.exists()]
+    else:
+        paths = [config.UNIVERSE_CSV] if config.UNIVERSE_CSV.exists() else []
+    if not paths:
+        return ""
+    newest = max(paths, key=lambda p: p.stat().st_mtime)
+    age = (_time.time() - newest.stat().st_mtime) / 86400.0
+    stale = age > config.POOL_STALE_DAYS
+    flag = " ⚠️ consider re-uploading a fresh export" if stale else ""
+    return f"📁 Pool: {newest.name} · {age:.0f}d old{flag}"
 
 
 def _watchlist():
@@ -610,8 +630,10 @@ def cmd_run() -> None:
         # strategy (and its topic) is alive, even on holidays/weekends. No
         # trading happens — holdings are untouched.
         who = f"{CURRENT['emoji']} {CURRENT['name']}" if CURRENT else "Mayura"
+        age = _pool_age_note()
         msg = (f"{PEACOCK} <b>Mayura · {who} · {date.today().isoformat()}</b>\n"
                f"😴 Market closed today (holiday/weekend) — resting, no trades.\n"
+               + (age + "\n" if age else "") +
                f"<i>Holdings untouched. Vel Muruga 🙏</i>")
         delivered = send_telegram(msg, message_thread_id=topic)
         print(f"  Telegram: {'sent 🙏' if delivered else 'dry-run (set the two env vars)'}")
