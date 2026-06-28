@@ -895,6 +895,65 @@ def _upsert_env(values: dict) -> "Path | None":
         return None
 
 
+def cmd_explain(symbol: str) -> None:
+    """Show WHY a stock scores what it does — the full OHLC factor breakdown
+    (Stage-2 trend template, VCP, momentum, relative strength). So you can see
+    exactly why e.g. RRKABEL ranks high (or shouldn't)."""
+    _banner(f"WHY: {symbol}")
+    if not symbol:
+        print("\n  Usage: python mayura.py explain <SYMBOL>   (e.g. RRKABEL)\n")
+        return
+    from sectorbot import technicals as T
+    from sectorbot.datasource import PaperDataSource, get_datasource
+    ds = get_datasource()
+    if isinstance(ds, PaperDataSource):
+        print("\n  Synthetic data — load your Kite keys (.env) for real numbers.\n")
+        return
+    bars = ds.history(symbol, config.OHLC_HISTORY_BARS)
+    idx = ds.history(config.REGIME_INDEX, config.OHLC_HISTORY_BARS)
+    if not bars:
+        print(f"\n  No OHLC for {symbol} (bad symbol or not on NSE).\n")
+        return
+    tt = T.trend_template(bars)
+    v = T.vcp(bars)
+    mom = T.momentum(bars)
+    rs = T.relative_strength(bars, idx)
+    vol = T.volatility_pct(bars)
+    s50, s200, dist = T.levels(bars)
+    ext = ((bars[-1].close / s200 - 1) * 100) if (s200 and s200 > 0) else None
+    print(f"\n  Price {bars[-1].close:,.1f}  ·  {len(bars)} daily bars\n")
+    print("  📐 STAGE-2 TREND TEMPLATE (Minervini's 8 checks):")
+    labels = {"above_150_200": "price above 150 & 200-DMA",
+              "150_above_200": "150-DMA above 200-DMA",
+              "200_rising": "200-DMA trending up",
+              "50_above_150_200": "50 > 150 > 200-DMA",
+              "above_50": "price above 50-DMA",
+              "30pct_above_low": "≥30% above 52-week low",
+              "within_25pct_high": "within 25% of 52-week high"}
+    for k, ok in tt["checks"].items():
+        print(f"     {'✅' if ok else '❌'} {labels.get(k, k)}")
+    print(f"     → trend score {tt['score']:.0f}/100  ({'Stage-2 ✅' if T.is_stage2(bars) else 'NOT Stage-2 ❌'})")
+    print(f"\n  🌀 VCP (volatility contraction): score {v['score']:.0f}/100  "
+          f"{'is-VCP ✅' if v['is_vcp'] else 'not a clean VCP'}")
+    print(f"     contractions {v['contractions']} (want shrinking) · "
+          f"latest tightness {v['tightness']} · near-pivot {v['near_pivot']} · "
+          f"vol-dry-up {v['vol_dryup']}")
+    print(f"\n  🚀 Momentum (6-mo, skip 1-mo): "
+          f"{mom*100:+.1f}%" if mom is not None else "  🚀 Momentum: n/a")
+    print(f"  💪 Relative strength vs NIFTY: "
+          f"{rs*100:+.1f}%" if rs is not None else "  💪 RS: n/a")
+    print(f"  📊 Daily volatility: {vol*100:.2f}%" if vol is not None else "  📊 vol: n/a")
+    print(f"  📍 {dist:.1f}% below 52-wk high · {ext:+.0f}% vs its 200-DMA"
+          if (dist is not None and ext is not None) else "")
+    th = T.thanikesa_score(bars, idx)
+    print(f"\n  🕊️ Thanikesa score: {th}")
+    if ext is not None and ext > config.MAX_EXTENSION_ABOVE_SMA200 * 100:
+        print(f"  ⚠️ {ext:.0f}% above 200-DMA exceeds the {config.MAX_EXTENSION_ABOVE_SMA200:.0%} "
+              "extension guard — it would be SKIPPED at buy time even if ranked high.")
+    print("\n  Note: these are PURE technicals — they say nothing about PE/PB/"
+          "valuation. A stock can be a perfect momentum setup AND expensive. 🦚\n")
+
+
 def cmd_rules() -> None:
     """Show THIS strategy's exit rules in plain English (each temple differs)."""
     _banner("EXIT RULES")
@@ -948,6 +1007,12 @@ def main() -> None:
 
     if choice in GLOBAL_COMMANDS:
         GLOBAL_COMMANDS[choice]()
+        return
+
+    if choice == "explain":
+        # `explain <SYMBOL>` — factor breakdown, strategy-agnostic.
+        _use_strategy("thanikesa")          # sets config context for OHLC
+        cmd_explain((args[1] if len(args) > 1 else "").upper())
         return
 
     fn = PER_STRATEGY_COMMANDS.get(choice)
