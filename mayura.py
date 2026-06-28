@@ -365,16 +365,39 @@ def _present_csvs_hint() -> str:
     return "     CSV files I can see right now:\n" + "\n".join(found)
 
 
+def _pool_csvs() -> list:
+    """All CSV files that make up the current strategy's pool. Drop several files
+    into mayura_data/<strategy>/ (e.g. small.csv + micro.csv) and Mayura MERGES
+    them automatically — plus the flat mayura_data/<strategy>.csv if present.
+    Only this strategy's own files; never the shared universe.csv."""
+    if not CURRENT:
+        return []
+    key = CURRENT["key"]
+    files, seen = [], set()
+    flat = MAYURA_DATA / f"{key}.csv"
+    folder = MAYURA_DATA / key
+    candidates = [flat] if flat.exists() else []
+    if folder.exists():
+        candidates += sorted(folder.glob("*.csv"))
+    for p in candidates:
+        rp = p.resolve()
+        if p.exists() and rp not in seen:
+            seen.add(rp)
+            files.append(p)
+    return files
+
+
 def _watchlist():
     """Load THIS strategy's watchlist, best-first. CSV-scored strategies use
     their Trendlyne columns; OHLC strategies (Thanikesa) COMPUTE the score from
     live Kite price bars. Returns a list of dicts or None."""
+    compute = CURRENT.get("compute") if CURRENT else None
+    if compute == "ohlc":
+        return _ohlc_watchlist()
+    if compute == "value_multifactor":
+        return _value_multifactor_watchlist()
     if not config.UNIVERSE_CSV.exists():
         return None
-    if CURRENT and CURRENT.get("compute") == "ohlc":
-        return _ohlc_watchlist()
-    if CURRENT and CURRENT.get("compute") == "value_multifactor":
-        return _value_multifactor_watchlist()
     from sectorbot.stocks import load_watchlist
     profile = CURRENT.get("profile", "breakout") if CURRENT else "breakout"
     wl = load_watchlist(config.UNIVERSE_CSV, profile)
@@ -383,21 +406,31 @@ def _watchlist():
 
 def _ohlc_watchlist():
     """Compute the watchlist from live OHLC bars (Minervini VCP/Stage-2 etc.).
-    The universe CSV is just the candidate pool (e.g. Nifty Smallcap 250); the
-    EDGE is computed here, not screened. Returns best-first dicts shaped like
-    load_watchlist (symbol/score/sma50/sma200/dist52) so the engine is unchanged."""
+    The pool CSV(s) are just the candidate universe (e.g. Smallcap 250 + Microcap
+    250); the EDGE is computed here, not screened. Returns best-first dicts shaped
+    like load_watchlist (symbol/score/sma50/sma200/dist52) so the engine is unchanged."""
     import time
     from sectorbot import technicals as T
     from sectorbot.stocks import load_symbols, load_valuations
     from sectorbot.datasource import get_datasource
 
-    rows = load_symbols(config.UNIVERSE_CSV)
+    paths = _pool_csvs()
+    rows, seen = [], set()
+    for p in paths:                          # MERGE all pool files, de-duped
+        for r in load_symbols(p):
+            if r["symbol"] not in seen:
+                seen.add(r["symbol"])
+                rows.append(r)
     if not rows:
         return None
+    if len(paths) > 1:
+        print(f"  🧩 Merged {len(paths)} pool files → {len(rows)} unique stocks.")
     symbols = [r["symbol"] for r in rows][: config.OHLC_MAX_SYMBOLS]
     scorer = T.SCORERS_OHLC.get(CURRENT.get("ohlc_scorer", "thanikesa"),
                                 T.thanikesa_score)
-    vals = load_valuations(config.UNIVERSE_CSV)   # {} unless the pool has valuation
+    vals = {}
+    for p in paths:
+        vals.update(load_valuations(p))       # {} unless a pool file has valuation
     if vals and config.THANIKESA_VALUATION_FLOOR:
         print(f"  💰 Valuation guard ON (skip Trendlyne valuation < "
               f"{config.THANIKESA_VALUATION_FLOOR:.0f}; demote up to "
@@ -461,9 +494,17 @@ def _value_multifactor_watchlist():
     from sectorbot import technicals as T
     from sectorbot.stocks import load_fundamental_factors
 
-    data = load_fundamental_factors(config.UNIVERSE_CSV)
+    paths = _pool_csvs()
+    data, seen = [], set()
+    for p in paths:                          # MERGE all pool files, de-duped
+        for r in load_fundamental_factors(p):
+            if r["symbol"] not in seen:
+                seen.add(r["symbol"])
+                data.append(r)
     if not data:
         return None
+    if len(paths) > 1:
+        print(f"  🧩 Merged {len(paths)} pool files.")
     print(f"  🧮 Solaimalai: value+quality multi-factor over {len(data)} stocks "
           f"(weights {config.SOLAIMALAI_FUND_WEIGHTS}).")
     scores = T.composite_zscore(data, config.SOLAIMALAI_FUND_WEIGHTS)
@@ -705,39 +746,51 @@ def cmd_data() -> None:
     uni = config.UNIVERSE_CSV
     print(f"  Strategy : {CURRENT['emoji']} {CURRENT['name']} ({CURRENT['profile']})")
     print(f"  Folder   : {config.DATA_DIR}\n")
+    pool = _pool_csvs()
     if CURRENT.get("compute") == "value_multifactor":
-        # Solaimalai: value+quality from a Trendlyne fundamentals export.
+        # Solaimalai: value+quality from Trendlyne fundamentals export(s).
         from sectorbot.stocks import load_fundamental_factors
-        if uni.exists():
-            data = load_fundamental_factors(uni)
-            print(f"  universe.csv : ✅ {len(data)} stocks with usable factors")
+        if pool:
+            data, seen = [], set()
+            for p in pool:
+                for r in load_fundamental_factors(p):
+                    if r["symbol"] not in seen:
+                        seen.add(r["symbol"]); data.append(r)
+            print(f"  pool files   : 🧩 {len(pool)} ({', '.join(p.name for p in pool)})")
+            print(f"  universe     : ✅ {len(data)} stocks with usable factors")
             print(f"  scoring      : 🧮 VALUE + QUALITY cross-sectional z-score "
                   f"(Trendlyne DVM/PE/PBV) + Greenblatt special-situations "
                   f"overlay from filings. Large/mid-cap; value-led.")
-            print(f"  note         : upload a Trendlyne LARGE/MID-cap export with "
+            print(f"  note         : upload Trendlyne LARGE/MID-cap export(s) with "
                   f"NSE Code + Durability/Valuation/PE/PBV/Momentum columns.")
         else:
             print(f"  screen file  : ❌ MISSING — upload a Trendlyne export as")
-            print(f"     {config.UNIVERSE_CSV_PRIMARY}")
+            print(f"     {config.UNIVERSE_CSV_PRIMARY}  (or drop files in {config.DATA_DIR})")
         print()
         return
     if CURRENT.get("compute") == "ohlc":
-        # Thanikesa: the CSV is a candidate pool; the edge is computed from live
-        # bars. Count cheaply (no fetch). Valuation guard if the pool carries it.
+        # Thanikesa: pool CSV(s) are the candidate universe; the edge is computed
+        # from live bars. Count cheaply (no fetch). Valuation guard if present.
         from sectorbot.stocks import load_symbols, load_valuations
-        if uni.exists():
-            syms = load_symbols(uni)
-            guard = "ON 💰" if load_valuations(uni) else "off (bare symbol list)"
-            print(f"  universe.csv : ✅ {len(syms)} candidate stocks (pool only)")
+        if pool:
+            syms, seen, vals = [], set(), {}
+            for p in pool:
+                for r in load_symbols(p):
+                    if r["symbol"] not in seen:
+                        seen.add(r["symbol"]); syms.append(r)
+                vals.update(load_valuations(p))
+            guard = "ON 💰" if vals else "off (bare symbol list)"
+            print(f"  pool files   : 🧩 {len(pool)} ({', '.join(p.name for p in pool)})")
+            print(f"  universe     : ✅ {len(syms)} unique candidate stocks")
             print(f"  scoring      : 🧮 LIVE Kite OHLC — "
                   f"{CURRENT.get('ohlc_scorer','technical')} (Minervini VCP + "
                   f"Stage-2 + momentum + RS).")
             print(f"  valuation guard : {guard}")
-            print(f"  note         : pool can be a bare NSE-Code list; add a "
-                  f"Trendlyne Valuation Score column to enable the value guard.")
+            print(f"  note         : drop several files in {config.DATA_DIR} "
+                  f"(e.g. small.csv + micro.csv) — Mayura merges them.")
         else:
             print(f"  screen file  : ❌ MISSING — upload a candidate pool as")
-            print(f"     {config.UNIVERSE_CSV_PRIMARY}")
+            print(f"     {config.UNIVERSE_CSV_PRIMARY}  (or drop files in {config.DATA_DIR})")
         print()
         return
     if uni.exists():

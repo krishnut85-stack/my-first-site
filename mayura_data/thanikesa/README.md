@@ -15,10 +15,12 @@
 - Hard gate: not in a Stage-2 uptrend ⇒ heavily demoted (momentum needs trend).
 
 ## You don't screen anything — just give it a candidate pool
-Upload a **stable small-cap universe ONCE** as `universe.csv` (or
-`mayura_data/thanikesa.csv`). The only required column is **NSE Code**.
-Good pools: **Nifty Smallcap 250** constituents, or your own small-cap list.
-Mayura then computes the VCP/Stage-2 edge on these from live bars every run.
+Upload one or more pool files. The only required column is **NSE Code**.
+**Multiple files are MERGED automatically** — drop e.g. `small.csv` (Nifty
+Smallcap 250) and `micro.csv` (Nifty Microcap 250) into this folder
+(`mayura_data/thanikesa/`) and Mayura combines + de-dupes them every run. A
+single flat `mayura_data/thanikesa.csv` also works. Mayura then computes the
+VCP/Stage-2 edge on the merged pool from live bars.
 
 ## 💰 Valuation guard ("a little freedom") — optional but recommended
 Pure momentum will favour leaders near their highs even when they're pricey
