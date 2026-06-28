@@ -875,10 +875,13 @@ def cmd_filings() -> None:
     for a in anns:
         if a.symbol in seen or not filings.is_candidate(a):
             continue
+        if not filings.passes_value_floor(a, config.NEWS_MIN_ORDER_CR):
+            continue                          # same ₹cr floor the live run uses
         seen.add(a.symbol)
         cands.append(a)
-    print(f"\n  📜 {len(anns)} announcements → {len(cands)} candidate events. "
-          f"Asking Gemini (max {config.NEWS_MAX_GEMINI_CALLS})… No trading.\n")
+    print(f"\n  📜 {len(anns)} announcements → {len(cands)} candidates pass the "
+          f"₹{config.NEWS_MIN_ORDER_CR:.0f}cr floor. Asking Gemini (cap "
+          f"{config.NEWS_MAX_GEMINI_CALLS_DAILY}/day)… No trading.\n")
     print(f"  {'Symbol':12} {'Verdict':9} {'Mat':4} {'Conf':5} Reason")
     print("  " + "-" * 66)
     for a in cands[: config.NEWS_MAX_GEMINI_CALLS]:
