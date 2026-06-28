@@ -46,6 +46,9 @@ class Announcement:
 BULLISH: dict[str, float] = {
     "bags order": 3, "bags an order": 3, "receives order": 3, "secured order": 3,
     "secures order": 3, "wins order": 3, "won order": 3, "order worth": 3,
+    "order win": 3, "orders worth": 3, "bags orders": 3, "secures orders": 3,
+    "receives orders": 3, "wins orders": 3, "secured orders": 3, "new orders": 2,
+    "order inflow": 2, "order book": 1, "bags a contract": 3,
     "new order": 2, "work order": 2, "letter of intent": 2, "letter of award": 3,
     "awarded contract": 3, "awarded a contract": 3, "contract worth": 3,
     "bags contract": 3, "purchase order": 2,
@@ -105,6 +108,8 @@ SPECIAL: dict[str, str] = {
     "buyback": "buyback", "buy-back": "buyback", "buy back of": "buyback",
     "demerger": "demerger", "de-merger": "demerger",
     "scheme of arrangement": "demerger", "composite scheme": "demerger",
+    "amalgamation": "merger", "merger approval": "merger",
+    "approval of merger": "merger", "approves merger": "merger",
     "spin-off": "spinoff", "spin off": "spinoff", "spinoff": "spinoff",
     "promoter acquired": "promoter-buying", "increase in promoter": "promoter-buying",
     "acquisition of shares by promoter": "promoter-buying",
@@ -259,6 +264,68 @@ def _fetch_nse(symbol: str, days_back: int, timeout: int) -> list[Announcement]:
             continue
         out.append(Announcement(symbol=symbol, date=str(date_str),
                                 subject=subject, detail=detail))
+    return out
+
+
+_NSE_MKT_ANN = (_NSE_HOME + "/api/corporate-announcements?index=equities"
+                "&from_date={f}&to_date={t}")
+
+
+def is_candidate(ann: Announcement) -> bool:
+    """Cheap pre-filter (no AI): does this announcement look like a potential
+    MATERIAL bullish catalyst worth a Gemini read? (order/contract/approval/
+    buyback/etc., or a special situation). Keeps Gemini calls to a minimum."""
+    verdict, _, _, _ = classify(ann.text)
+    return verdict == "bullish" or bool(special_situations([ann]))
+
+
+def fetch_market_announcements(days_back: int | None = None,
+                               timeout: int | None = None) -> list[Announcement]:  # pragma: no cover
+    """Pull recent NSE corporate announcements MARKET-WIDE (all companies), for
+    the Swaminatha news face. Cookie-primed; [] on any failure. Each Announcement
+    carries the company name in its detail so Gemini has context."""
+    import http.cookiejar
+    import urllib.request
+    from datetime import date, timedelta
+
+    days_back = config.NEWS_DAYS_BACK if days_back is None else days_back
+    timeout = config.FILINGS_REQUEST_TIMEOUT if timeout is None else timeout
+    today = date.today()
+    frm = today - timedelta(days=days_back)
+    url = _NSE_MKT_ANN.format(f=frm.strftime("%d-%m-%Y"), t=today.strftime("%d-%m-%Y"))
+
+    cj = http.cookiejar.CookieJar()
+    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
+
+    def _get(u: str) -> bytes:
+        req = urllib.request.Request(u, headers=_HEADERS)
+        with opener.open(req, timeout=timeout) as r:
+            return r.read()
+
+    try:
+        _get(_NSE_HOME)  # prime cookies
+        data = json.loads(_get(url))
+    except Exception:  # noqa: BLE001
+        return []
+
+    rows = data if isinstance(data, list) else data.get("data", []) or []
+    out: list[Announcement] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        symbol = (row.get("symbol") or "").strip().upper()
+        if not symbol:
+            continue
+        name = (row.get("sm_name") or row.get("smName") or "").strip()
+        subject = (row.get("desc") or row.get("attchmntText") or "").strip()
+        detail = (row.get("attchmntText") or "").strip()
+        date_str = (row.get("an_dt") or row.get("sort_date") or "")
+        if not subject and not detail:
+            continue
+        # company name first so Gemini has context in the news text
+        body = (f"{name}. " if name else "") + detail
+        out.append(Announcement(symbol=symbol, date=str(date_str),
+                                subject=subject, detail=body))
     return out
 
 

@@ -22,7 +22,7 @@ SIX FACES — Arumugam (Lord Muruga as worshipped at his six temples), independe
     🌄 dandapani    breakout / momentum   (fresh golden cross)      — Palani
     🌊 senthil      quality + value       (DVM Durability/Valuation) — Tiruchendur
     🛕 subramanya   accumulation          (delivery/MFI/FII)         — Madurai
-    📜 swaminatha   filings-driven        (buy on bullish NSE/BSE news) — Swamimalai
+    📜 swaminatha   news-driven (Gemini)  (reads full filing, buys material news) — Swamimalai
     🕊️ thanikesa    small-cap momentum    (Minervini VCP+Stage2, valuation-aware) — Thiruttani
     🍃 solaimalai   large/mid value+quality (quant + special situations)      — Pazhamudircholai
 
@@ -109,12 +109,13 @@ STRATEGIES = {
     #     the user's direction (dormant until a screen is uploaded). ----------
     "swaminatha": {  # Swaminathaswami of SWAMIMALAI — the Guru who taught Om
         "name": "Swaminatha", "emoji": "📜",
-        "tagline": "filings-driven — read NSE/BSE announcements, buy on bullish news",
-        "profile": "quality",   # base screen; the filings gate decides the buy
-        "uses_filings": True,    # the news/filings face (engine support coming)
-        "exits": dict(stop=0.10, trail_arm=0.12, trail_give=0.10, tp=1.00,
+        "tagline": "news-driven — Gemini reads the full filing, buys MATERIAL bullish events",
+        "compute": "news",       # market-wide announcements + Gemini judgment
+        "profile": "quality",    # (only if it ever falls back to CSV)
+        # Event-driven swing: news can reverse fast, so a tighter stop.
+        "exits": dict(stop=0.08, trail_arm=0.10, trail_give=0.10, tp=1.00,
                       atr=2.5, hold_days=15, time_min=0.05, failed_breakout=False,
-                      max_ext=0.40),
+                      max_ext=0.50),
     },
     "thanikesa": {  # Thanikesa of THIRUTTANI — the calm, contented victor
         "name": "Thanikesa", "emoji": "🕊️",
@@ -250,7 +251,8 @@ def _assert_paper_only() -> None:
 # --------------------------------------------------------------------------
 # Telegram summary — Mayura-branded, phone-friendly
 # --------------------------------------------------------------------------
-def _mayura_telegram(result: dict, filings_summary: dict | None = None) -> str:
+def _mayura_telegram(result: dict, filings_summary: dict | None = None,
+                     news_buys: list | None = None) -> str:
     real = result["real_data"]
     tag = "REAL Kite prices" if real else "SYNTHETIC prices — NOT real"
     exits = result["exits"]
@@ -268,6 +270,10 @@ def _mayura_telegram(result: dict, filings_summary: dict | None = None) -> str:
     age = _pool_age_note()
     if age:
         lines.append(age)
+    if news_buys:
+        lines.append(f"📰 Gemini-approved news buys: {len(news_buys)}")
+        for sym, reason in news_buys[:6]:
+            lines.append(f"  ✅ {sym}: {reason.replace('📰 ', '')}")
     if filings_summary and filings_summary.get("ran"):
         fs = filings_summary
         lines.append(f"📜 Filings: scanned {fs['scanned']} · "
@@ -390,6 +396,81 @@ def _pool_csvs() -> list:
     return files
 
 
+def _avg_turnover_cr(bars) -> float:
+    """Average daily traded value (₹ crore) over the recent bars — a liquidity
+    proxy for the safety gate. 0 if volume is unknown."""
+    recent = bars[-20:] if len(bars) >= 20 else bars
+    vals = [b.volume * b.close for b in recent if b.volume]
+    return (sum(vals) / len(vals) / 1e7) if vals else 0.0
+
+
+def _news_watchlist():
+    """Swaminatha: read today's market-wide NSE announcements, let Gemini judge
+    which are MATERIAL bullish catalysts, run basic safety checks, and return the
+    buys (engine-shaped). Market-wide but safety-gated. None if nothing qualifies."""
+    import time
+    from sectorbot import filings, gemini, technicals as T
+    from sectorbot.datasource import get_datasource
+
+    if not gemini.configured():
+        print("  ⚠️ GEMINI_API_KEY not set — Swaminatha needs it to read news. "
+              "Add it to .env. Skipping (no buys).")
+        return None
+    if date.today().weekday() >= 5:
+        print("  📜 Weekend — no fresh filings; Swaminatha rests.")
+        return None
+    anns = filings.fetch_market_announcements(config.NEWS_DAYS_BACK)
+    if not anns:
+        print("  📜 Couldn't fetch market announcements (NSE blocked the server?) "
+              "— nothing to act on today.")
+        return None
+    # Cheap keyword pre-filter, then de-dupe to one event per symbol.
+    cands, seen = [], set()
+    for a in anns:
+        if a.symbol in seen or not filings.is_candidate(a):
+            continue
+        seen.add(a.symbol)
+        cands.append(a)
+    print(f"  📜 {len(anns)} announcements → {len(cands)} candidate events to read.")
+
+    ds = get_datasource()
+    out = []
+    calls = 0
+    for a in cands:
+        if calls >= config.NEWS_MAX_GEMINI_CALLS:
+            print(f"  🤖 Hit the daily Gemini cap ({config.NEWS_MAX_GEMINI_CALLS}).")
+            break
+        # SAFETY GATE first (before spending a Gemini call): real, liquid stock.
+        try:
+            bars = ds.history(a.symbol, config.OHLC_HISTORY_BARS)
+        except Exception:  # noqa: BLE001
+            bars = []
+        if not bars:
+            continue
+        price = bars[-1].close
+        if price < config.NEWS_MIN_PRICE:
+            continue                                  # penny stock — skip
+        if _avg_turnover_cr(bars) < config.NEWS_MIN_TURNOVER_CR:
+            continue                                  # too illiquid — skip
+        # Gemini reads the FULL news and judges materiality.
+        news = f"{a.subject}. {a.detail}".strip()
+        verdict = gemini.judge_news(a.symbol, a.detail.split('.')[0], news)
+        calls += 1
+        time.sleep(config.OHLC_FETCH_DELAY)
+        if not gemini.is_buy(verdict):
+            continue
+        s50, s200, dist = T.levels(bars)
+        out.append({"symbol": a.symbol,
+                    "score": round(verdict["confidence"] * 100, 1),
+                    "sma50": s50, "sma200": s200, "dist52": dist,
+                    "event": "📰 " + verdict["reason"][:46]})
+    print(f"  🤖 Gemini read {calls} events → {len(out)} material-bullish buy(s).")
+    if out:
+        for d in out:
+            print(f"     ✅ {d['symbol']}  {d['event']}")
+    return out or None
+
+
 def _pool_age_note() -> str:
     """A short note about how old the freshest pool/screen file is, so you know
     when to re-upload. '' if there's no file."""
@@ -416,6 +497,8 @@ def _watchlist():
         return _ohlc_watchlist()
     if compute == "value_multifactor":
         return _value_multifactor_watchlist()
+    if compute == "news":
+        return _news_watchlist()
     if not config.UNIVERSE_CSV.exists():
         return None
     from sectorbot.stocks import load_watchlist
@@ -592,8 +675,22 @@ def cmd_run() -> None:
     from sectorbot.notify import write_portfolio_report
     from sectorbot.telegram import send_telegram
 
+    is_news = CURRENT.get("compute") == "news"
     wl = _watchlist()
     if not wl:
+        topic = _topic_id()
+        if is_news:
+            # News face on a trading day with nothing worth buying — confirm it
+            # ran (so you know it's alive), but no trade.
+            print(f"\n  📜 No material bullish news to act on today.\n")
+            if date.today().weekday() < 5:
+                send_telegram(
+                    f"{PEACOCK} <b>Mayura · {CURRENT['emoji']} {CURRENT['name']} · "
+                    f"{date.today().isoformat()}</b>\n📜 Read today's filings — "
+                    "nothing material & bullish enough to buy. Holdings managed as "
+                    "usual.\n<i>Paper only · Vel Muruga 🙏</i>",
+                    message_thread_id=topic)
+            return
         print(f"\n  ⏭  No screen for {CURRENT['name']} yet — upload its Trendlyne "
               f"export as:\n     {config.UNIVERSE_CSV_PRIMARY}\n     Skipping.")
         print(_present_csvs_hint())
@@ -601,17 +698,12 @@ def cmd_run() -> None:
     ranked = [d["symbol"] for d in wl]
     levels = {d["symbol"]: d["sma50"] for d in wl if d.get("sma50")}
     ext_levels = {d["symbol"]: d["sma200"] for d in wl if d.get("sma200")}
-    print(f"  Watchlist   : 🎯 {len(ranked)} stocks ({CURRENT['profile']} score; "
-          f"top: {', '.join(ranked[:5])})")
-    print(f"  Guard       : skip any stock >{config.MAX_EXTENSION_ABOVE_SMA200:.0%} "
-          f"above its 200-DMA (no chasing already-run-up names)")
+    news_buys = [(d["symbol"], d.get("event", "")) for d in wl] if is_news else None
+    label = ("material-bullish news buys" if is_news
+             else f"stocks ({CURRENT['profile']} score)")
+    print(f"  Watchlist   : 🎯 {len(ranked)} {label}; top: {', '.join(ranked[:5])}")
 
-    # SWAMINATHA: read NSE/BSE filings and keep ONLY stocks with bullish news.
     filings_summary = None
-    if CURRENT.get("uses_filings"):
-        filings_summary = _filings_gate(ranked)
-        if filings_summary.get("ran"):
-            ranked = filings_summary["buy"]   # bullish-only, rank order preserved
     print()
 
     # verbose=False so the engine's own "SectorBot" printout is suppressed; we
@@ -649,7 +741,7 @@ def cmd_run() -> None:
     _print_mayura(result)
     txt, _ = write_portfolio_report(result)
     print(f"  Report written: {txt}")
-    delivered = send_telegram(_mayura_telegram(result, filings_summary),
+    delivered = send_telegram(_mayura_telegram(result, filings_summary, news_buys),
                               message_thread_id=topic)
     print(f"  Telegram: {'sent 🙏' if delivered else 'dry-run (set the two env vars)'}")
     print(f"\n  {PEACOCK} May Lord Muruga guide steady gains. Paper only.\n")
@@ -686,32 +778,43 @@ def cmd_scorecard() -> None:
 
 
 def cmd_filings() -> None:
-    """Dry-run Swaminatha's filings reader: show the bullish / red-flag verdict
-    for each top candidate WITHOUT trading. Great for sanity-checking the feed."""
-    _banner("FILINGS READ")
-    if not CURRENT.get("uses_filings"):
-        print(f"\n  {CURRENT['name']} is not a filings strategy. Try: "
+    """Dry-run Swaminatha's news reader: show what today's market announcements
+    are, and Gemini's verdict on the material-bullish candidates — WITHOUT
+    trading. Great for sanity-checking the feed + the Gemini key."""
+    _banner("NEWS READ (dry-run)")
+    if CURRENT.get("compute") != "news":
+        print(f"\n  {CURRENT['name']} is not the news face. Try: "
               f"python mayura.py filings swaminatha\n")
         return
-    wl = _watchlist()
-    if not wl:
-        print(f"\n  ⏭  No screen for {CURRENT['name']} yet — upload its base "
-              f"export as:\n     {config.UNIVERSE_CSV_PRIMARY}\n")
-        print(_present_csvs_hint())
+    from sectorbot import filings, gemini
+    if not gemini.configured():
+        print("\n  ⚠️ GEMINI_API_KEY not set — add it to .env to enable the AI "
+              "judge. (Set -a; source .env; set +a)\n")
         return
-    from sectorbot import filings
-    scan = [d["symbol"] for d in wl][: config.FILINGS_SCAN_TOP]
-    print(f"\n  📜 Reading {config.FILINGS_SOURCE.upper()} filings for {len(scan)} "
-          f"candidates (last {config.FILINGS_DAYS_BACK} days). No trading.\n")
-    print(f"  {'Symbol':14} {'Verdict':9} Headline")
-    print("  " + "-" * 64)
-    icon = {"bullish": "✅", "bearish": "🚫", "neutral": "·", "unknown": "❓"}
-    for sym in scan:
-        a = filings.assess_symbol(sym)
-        v = a["verdict"]
-        print(f"  {sym:14} {icon.get(v,'?')} {v:7} {a.get('headline','')[:46]}")
-    print("\n  ✅ bullish = would buy · 🚫 red flag = blocked · ❓ unreadable = "
-          "skipped (no news = no buy). Paper only. 🦚\n")
+    anns = filings.fetch_market_announcements(config.NEWS_DAYS_BACK)
+    if not anns:
+        print("\n  Couldn't fetch market announcements (NSE blocked the server?).\n")
+        return
+    cands, seen = [], set()
+    for a in anns:
+        if a.symbol in seen or not filings.is_candidate(a):
+            continue
+        seen.add(a.symbol)
+        cands.append(a)
+    print(f"\n  📜 {len(anns)} announcements → {len(cands)} candidate events. "
+          f"Asking Gemini (max {config.NEWS_MAX_GEMINI_CALLS})… No trading.\n")
+    print(f"  {'Symbol':12} {'Verdict':9} {'Mat':4} {'Conf':5} Reason")
+    print("  " + "-" * 66)
+    for a in cands[: config.NEWS_MAX_GEMINI_CALLS]:
+        news = f"{a.subject}. {a.detail}".strip()
+        v = gemini.judge_news(a.symbol, a.detail.split('.')[0], news)
+        if not v:
+            print(f"  {a.symbol:12} (no verdict)")
+            continue
+        buy = "✅" if gemini.is_buy(v) else "·"
+        print(f"  {buy} {a.symbol:10} {v['verdict']:8} {str(v['material']):4} "
+              f"{v['confidence']:.2f}  {v['reason'][:38]}")
+    print("\n  ✅ = would buy (bullish + material + confident). Paper only. 🦚\n")
 
 
 def cmd_check() -> None:
@@ -742,6 +845,21 @@ def cmd_check() -> None:
     else:
         print("  Telegram     : ⚠️ TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID not set")
         print("                 (alerts will print to console instead)")
+    # Gemini (Swaminatha news face)
+    from sectorbot import gemini
+    if gemini.configured():
+        v = gemini.judge_news(
+            "TESTCO", "Test Company",
+            "Test Company bags an order worth Rs 5000 crore, ~3x its annual revenue.")
+        if v:
+            print(f"  Gemini       : ✅ live — sample verdict {v['verdict']}/"
+                  f"material={v['material']}/conf={v['confidence']:.2f}")
+        else:
+            print(f"  Gemini       : ❌ key set but call failed (model "
+                  f"{config.GEMINI_MODEL}? network?)")
+    else:
+        print("  Gemini       : ⚠️ GEMINI_API_KEY not set — Swaminatha (news) "
+              "won't buy until you add it")
     print()
 
 

@@ -270,6 +270,21 @@ FILINGS_REQUEST_TIMEOUT = int(os.environ.get("FILINGS_REQUEST_TIMEOUT", "15"))
 # bullish news = no buy. True keeps Swaminatha from buying blind on fetch errors.
 FILINGS_REQUIRE_BULLISH = True
 
+# --- Swaminatha: Gemini news-reading face ----------------------------------
+# Reads today's NSE/BSE announcements market-wide, lets Gemini read the FULL
+# news and judge whether it's a genuine, MATERIAL bullish catalyst, runs basic
+# safety checks, then paper-buys. Needs a (paid) Gemini API key on the droplet.
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+GEMINI_TIMEOUT = int(os.environ.get("GEMINI_TIMEOUT", "30"))
+GEMINI_USE_SEARCH = True          # Google Search grounding for materiality context
+NEWS_DAYS_BACK = int(os.environ.get("NEWS_DAYS_BACK", "2"))      # announcement look-back
+NEWS_MAX_GEMINI_CALLS = int(os.environ.get("NEWS_MAX_GEMINI_CALLS", "40"))  # daily cost cap
+NEWS_MIN_CONFIDENCE = float(os.environ.get("NEWS_MIN_CONFIDENCE", "0.6"))   # Gemini conviction
+# Basic safety checks before ANY news-driven buy (market-wide can surface junk):
+NEWS_MIN_PRICE = float(os.environ.get("NEWS_MIN_PRICE", "20"))             # no penny stocks
+NEWS_MIN_TURNOVER_CR = float(os.environ.get("NEWS_MIN_TURNOVER_CR", "1.0"))  # avg daily ₹cr (liquidity)
+
 # --- OHLC technical engine (Thanikesa VCP / Stage-2; Solaimalai) -----------
 # These strategies COMPUTE their edge from live Kite OHLC bars instead of
 # screening Trendlyne columns. The universe CSV is just a stable candidate pool
