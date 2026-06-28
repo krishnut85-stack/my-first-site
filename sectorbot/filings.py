@@ -203,13 +203,59 @@ def assess(announcements: list[Announcement]) -> dict:
 _NSE_HOME = "https://www.nseindia.com"
 _NSE_ANN = (_NSE_HOME +
             "/api/corporate-announcements?index=equities&symbol={sym}")
+# Full browser headers — NSE rejects bare requests. Referer points at the
+# corporate-filings page (the proven set from our SEBI order-management work).
 _HEADERS = {
     "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                   "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"),
-    "Accept": "application/json, text/plain, */*",
+                   "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
     "Accept-Language": "en-US,en;q=0.9",
+    "Accept-Encoding": "gzip, deflate",
+    "Connection": "keep-alive",
     "Referer": _NSE_HOME + "/companies-listing/corporate-filings-announcements",
 }
+
+# Cached, cookie-primed requests.Session. NSE only answers the API if you FIRST
+# hit the site to collect cookies on the SAME session. Cookies expire, so we
+# re-prime every ~10 minutes. (requests ships with kiteconnect, so it's present.)
+_SESSION = None
+_SESSION_TS = 0.0
+
+
+def _nse_session():  # pragma: no cover (network)
+    """A requests.Session primed with NSE cookies + browser headers, refreshed
+    every 10 min. The cookie-priming is THE reason the API stops blocking."""
+    global _SESSION, _SESSION_TS
+    import time
+    import requests
+    now = time.time()
+    if _SESSION is not None and (now - _SESSION_TS) < 600:
+        return _SESSION
+    s = requests.Session()
+    s.headers.update(_HEADERS)
+    try:                                       # prime cookies (home + filings page)
+        s.get(_NSE_HOME, timeout=config.FILINGS_REQUEST_TIMEOUT)
+        s.get(_NSE_HOME + "/companies-listing/corporate-filings-announcements",
+              timeout=config.FILINGS_REQUEST_TIMEOUT)
+    except Exception:  # noqa: BLE001
+        pass
+    _SESSION, _SESSION_TS = s, now
+    return s
+
+
+def _nse_json(url: str):  # pragma: no cover (network)
+    """GET a NSE API url on the primed session → parsed JSON, or None. Re-primes
+    once and retries if the first try is blocked (stale cookies)."""
+    global _SESSION
+    for attempt in range(2):
+        try:
+            r = _nse_session().get(url, timeout=config.FILINGS_REQUEST_TIMEOUT)
+            if r.status_code == 200 and r.text.strip():
+                return r.json()
+        except Exception:  # noqa: BLE001
+            pass
+        _SESSION = None                        # force a fresh primed session, retry
+    return None
 
 
 def _within(date_str: str, days_back: int) -> bool:
@@ -228,24 +274,11 @@ def _within(date_str: str, days_back: int) -> bool:
 
 
 def _fetch_nse(symbol: str, days_back: int, timeout: int) -> list[Announcement]:  # pragma: no cover
-    """Pull recent announcements for an NSE symbol. Cookie-primed (NSE blocks
-    cold requests). Returns [] on any failure — caller treats that as 'unknown'."""
-    import http.cookiejar
-    import urllib.request
-
-    cj = http.cookiejar.CookieJar()
-    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
-
-    def _get(url: str) -> bytes:
-        req = urllib.request.Request(url, headers=_HEADERS)
-        with opener.open(req, timeout=timeout) as r:
-            return r.read()
-
-    try:
-        _get(_NSE_HOME)  # prime cookies
-        raw = _get(_NSE_ANN.format(sym=urllib.request.quote(symbol)))
-        data = json.loads(raw)
-    except Exception:  # noqa: BLE001  (network/JSON/blocking — all -> unknown)
+    """Pull recent announcements for an NSE symbol via the primed session.
+    Returns [] on any failure — caller treats that as 'unknown'."""
+    from urllib.parse import quote
+    data = _nse_json(_NSE_ANN.format(sym=quote(symbol, safe="")))
+    if data is None:
         return []
 
     rows = data if isinstance(data, list) else data.get("data", []) or []
@@ -325,35 +358,15 @@ def is_candidate(ann: Announcement) -> bool:
     return verdict == "bullish" or bool(special_situations([ann]))
 
 
-def fetch_market_announcements(days_back: int | None = None,
-                               timeout: int | None = None) -> list[Announcement]:  # pragma: no cover
-    """Pull recent NSE corporate announcements MARKET-WIDE (all companies), for
-    the Swaminatha news face. Cookie-primed; [] on any failure. Each Announcement
-    carries the company name in its detail so Gemini has context."""
-    import http.cookiejar
-    import urllib.request
+def _nse_market_announcements(days_back: int) -> list[Announcement]:  # pragma: no cover
+    """NSE market-wide announcements (native NSE symbols — no mapping needed)."""
     from datetime import date, timedelta
-
-    days_back = config.NEWS_DAYS_BACK if days_back is None else days_back
-    timeout = config.FILINGS_REQUEST_TIMEOUT if timeout is None else timeout
     today = date.today()
     frm = today - timedelta(days=days_back)
     url = _NSE_MKT_ANN.format(f=frm.strftime("%d-%m-%Y"), t=today.strftime("%d-%m-%Y"))
-
-    cj = http.cookiejar.CookieJar()
-    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
-
-    def _get(u: str) -> bytes:
-        req = urllib.request.Request(u, headers=_HEADERS)
-        with opener.open(req, timeout=timeout) as r:
-            return r.read()
-
-    try:
-        _get(_NSE_HOME)  # prime cookies
-        data = json.loads(_get(url))
-    except Exception:  # noqa: BLE001
+    data = _nse_json(url)
+    if data is None:
         return []
-
     rows = data if isinstance(data, list) else data.get("data", []) or []
     out: list[Announcement] = []
     for row in rows:
@@ -368,10 +381,104 @@ def fetch_market_announcements(days_back: int | None = None,
         date_str = (row.get("an_dt") or row.get("sort_date") or "")
         if not subject and not detail:
             continue
-        # company name first so Gemini has context in the news text
         body = (f"{name}. " if name else "") + detail
         out.append(Announcement(symbol=symbol, date=str(date_str),
                                 subject=subject, detail=body))
+    return out
+
+
+# --- BSE fallback (api.bseindia.com is far more server-tolerant than NSE) ----
+_BSE_ANN = ("https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w"
+            "?strCat=-1&strPrevDate={f}&strToDate={t}&strType=C&strSearch=P&pageno=1")
+_BSE_HEADERS = {
+    "User-Agent": _HEADERS["User-Agent"],
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Referer": "https://www.bseindia.com/",
+    "Origin": "https://www.bseindia.com",
+}
+_ISIN_TO_NSE = None   # {ISIN: NSE symbol}, built once from the NSE equity master
+
+
+def _isin_to_nse_symbol():  # pragma: no cover (network)
+    """Map ISIN -> NSE symbol from the NSE equity master on archives.nseindia.com
+    (that host is NOT anti-bot, unlike www.nseindia.com). Built once per process.
+    Lets us turn BSE announcements (which carry no NSE symbol) into tradeable ones."""
+    global _ISIN_TO_NSE
+    if _ISIN_TO_NSE is not None:
+        return _ISIN_TO_NSE
+    _ISIN_TO_NSE = {}
+    import csv
+    import io
+    import requests
+    try:
+        r = requests.get("https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv",
+                         headers={"User-Agent": _HEADERS["User-Agent"]},
+                         timeout=config.FILINGS_REQUEST_TIMEOUT)
+        if r.status_code == 200:
+            reader = csv.DictReader(io.StringIO(r.text))
+            for row in reader:
+                isin = (row.get(" ISIN NUMBER") or row.get("ISIN NUMBER") or "").strip()
+                sym = (row.get("SYMBOL") or "").strip().upper()
+                if isin and sym:
+                    _ISIN_TO_NSE[isin] = sym
+    except Exception:  # noqa: BLE001
+        pass
+    return _ISIN_TO_NSE
+
+
+def _bse_market_announcements(days_back: int) -> list[Announcement]:  # pragma: no cover
+    """BSE market-wide announcements, mapped to NSE symbols via ISIN. BSE rows
+    carry SCRIP_CD + ISIN; we keep only those we can map to an NSE symbol."""
+    from datetime import date, timedelta
+    import requests
+    today = date.today()
+    frm = today - timedelta(days=days_back)
+    url = _BSE_ANN.format(f=frm.strftime("%Y%m%d"), t=today.strftime("%Y%m%d"))
+    try:
+        r = requests.get(url, headers=_BSE_HEADERS,
+                         timeout=config.FILINGS_REQUEST_TIMEOUT)
+        if r.status_code != 200 or not r.text.strip():
+            return []
+        data = r.json()
+    except Exception:  # noqa: BLE001
+        return []
+    rows = data.get("Table", []) if isinstance(data, dict) else (data or [])
+    isin_map = _isin_to_nse_symbol()
+    out: list[Announcement] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        isin = (row.get("ISIN") or row.get("ISIN_NUMBER") or "").strip()
+        symbol = isin_map.get(isin, "")
+        if not symbol:                          # can't trade it on NSE — skip
+            continue
+        name = (row.get("SLONGNAME") or row.get("SHORTNAME") or "").strip()
+        subject = (row.get("NEWSSUB") or row.get("HEADLINE")
+                   or row.get("CATEGORYNAME") or "").strip()
+        detail = (row.get("MORE") or row.get("HEADLINE") or "").strip()
+        date_str = (row.get("NEWS_DT") or row.get("DT_TM") or "")
+        if not subject and not detail:
+            continue
+        body = (f"{name}. " if name else "") + detail
+        out.append(Announcement(symbol=symbol, date=str(date_str),
+                                subject=subject, detail=body))
+    return out
+
+
+def fetch_market_announcements(days_back: int | None = None,
+                               timeout: int | None = None) -> list[Announcement]:  # pragma: no cover
+    """Recent corporate announcements MARKET-WIDE for the Swaminatha news face.
+    Tries NSE first (native symbols); falls back to BSE (more server-tolerant,
+    mapped to NSE symbols via ISIN). [] if both are unreachable."""
+    days_back = config.NEWS_DAYS_BACK if days_back is None else days_back
+    out = _nse_market_announcements(days_back)
+    if out:
+        print(f"  📰 source: NSE ({len(out)} announcements)")
+        return out
+    out = _bse_market_announcements(days_back)
+    if out:
+        print(f"  📰 source: BSE fallback ({len(out)} announcements mapped to NSE)")
     return out
 
 
