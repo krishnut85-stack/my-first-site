@@ -9,31 +9,44 @@ import os
 from pathlib import Path
 
 
+def _load_env_file(path: "Path") -> None:
+    """Load KEY=VALUE lines from one .env into os.environ. Existing env vars
+    always win (we never overwrite). Tiny parser: '#' comments, optional quotes,
+    optional leading 'export '."""
+    try:
+        for raw in path.read_text().splitlines():
+            line = raw.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            if line.startswith("export "):
+                line = line[len("export "):]
+            key, _, val = line.partition("=")
+            key = key.strip()
+            val = val.strip().strip('"').strip("'")
+            if key and key not in os.environ:
+                os.environ[key] = val
+    except OSError:
+        pass
+
+
 def _autoload_dotenv() -> None:
-    """Load a .env file from the repo root into os.environ if present, so you
-    never have to remember to `source .env` before running a command. Existing
-    environment variables always win (we never overwrite a real env var). Tiny,
-    zero-dependency parser: KEY=VALUE lines, '#' comments, optional quotes."""
+    """Auto-load env files so you never paste/copy keys or use nano. Order (first
+    wins, never overwritten):
+      1. Mayura's OWN .env   (repo root)  -> Telegram token + per-topic ids
+      2. the SHARED bot .env (/home/globalbot/.env, override via MAYURA_SHARED_ENV)
+         -> the API keys your main bot already holds: KITE_API_KEY/SECRET,
+            GEMINI_API_KEY, etc. Loaded at runtime; nothing secret is copied here."""
     here = Path(__file__).resolve().parent
-    for root in (here.parent, here):          # repo root, then package dir
-        env_file = root / ".env"
-        if not env_file.exists():
+    candidates = [here.parent / ".env", here / ".env",
+                  Path(os.environ.get("MAYURA_SHARED_ENV", "/home/globalbot/.env"))]
+    seen = set()
+    for p in candidates:
+        rp = str(p)
+        if rp in seen:
             continue
-        try:
-            for raw in env_file.read_text().splitlines():
-                line = raw.strip()
-                if not line or line.startswith("#") or "=" not in line:
-                    continue
-                if line.startswith("export "):
-                    line = line[len("export "):]
-                key, _, val = line.partition("=")
-                key = key.strip()
-                val = val.strip().strip('"').strip("'")
-                if key and key not in os.environ:
-                    os.environ[key] = val
-        except OSError:
-            pass
-        break
+        seen.add(rp)
+        if p.exists():
+            _load_env_file(p)
 
 
 _autoload_dotenv()

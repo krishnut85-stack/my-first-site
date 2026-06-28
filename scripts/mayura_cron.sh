@@ -35,12 +35,18 @@ if [ -f "$REPO/.venv/bin/activate" ]; then
   source "$REPO/.venv/bin/activate"
 fi
 
-# 2) Secrets: Kite API key + Telegram token/chat id. Stay ONLY on the droplet.
+# 2) Secrets, loaded at runtime (NEVER copied into this repo):
+#    a) Mayura's OWN .env  -> Telegram token + per-topic ids
+#    b) the SHARED bot .env -> API keys your main bot already holds
+#       (KITE_API_KEY/SECRET, GEMINI_API_KEY, …). Mayura's own values win.
 if [ -f "$REPO/.env" ]; then
-  set -a
-  # shellcheck disable=SC1091
-  . "$REPO/.env"
-  set +a
+  set -a; # shellcheck disable=SC1091
+  . "$REPO/.env"; set +a
+fi
+SHARED_ENV="${MAYURA_SHARED_ENV:-/home/globalbot/.env}"
+if [ -f "$SHARED_ENV" ]; then
+  set -a; # shellcheck disable=SC1091
+  . "$SHARED_ENV"; set +a
 fi
 
 # 3) Daily Kite access token your main bot refreshes via TOTP.
