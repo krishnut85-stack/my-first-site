@@ -23,8 +23,8 @@ SIX FACES — Arumugam (Lord Muruga as worshipped at his six temples), independe
     🌊 senthil      quality + value       (DVM Durability/Valuation) — Tiruchendur
     🛕 subramanya   accumulation          (delivery/MFI/FII)         — Madurai
     📜 swaminatha   filings-driven        (buy on bullish NSE/BSE news) — Swamimalai
-    🕊️ thanikesa    small-cap momentum    (Minervini VCP+Stage2, from OHLC) — Thiruttani
-    🍃 solaimalai   quant multi-factor    (factors + VCP + special situations) — Pazhamudircholai
+    🕊️ thanikesa    small-cap momentum    (Minervini VCP+Stage2, valuation-aware) — Thiruttani
+    🍃 solaimalai   large/mid value+quality (quant + special situations)      — Pazhamudircholai
 
 USAGE
 -----
@@ -118,7 +118,7 @@ STRATEGIES = {
     },
     "thanikesa": {  # Thanikesa of THIRUTTANI — the calm, contented victor
         "name": "Thanikesa", "emoji": "🕊️",
-        "tagline": "small-cap momentum — Minervini VCP + Stage-2 (computed from OHLC)",
+        "tagline": "small-cap momentum — Minervini VCP + Stage-2, valuation-aware",
         "compute": "ohlc",          # score from live Kite bars, not CSV columns
         "ohlc_scorer": "thanikesa",  # sectorbot/technicals.py SCORERS_OHLC
         "profile": "technical",      # (only used if it ever falls back to CSV)
@@ -130,12 +130,12 @@ STRATEGIES = {
     },
     "solaimalai": {  # Solaimalai Murugan of PAZHAMUDIRCHOLAI — abundance
         "name": "Solaimalai", "emoji": "🍃",
-        "tagline": "out-of-the-box — quant multi-factor + VCP + special situations",
-        "compute": "multifactor",   # cross-sectional z-score from live OHLC
-        "profile": "accumulation",   # (only if it ever falls back to CSV)
-        "exits": dict(stop=0.10, trail_arm=0.12, trail_give=0.12, tp=1.00,
-                      atr=2.8, hold_days=30, time_min=0.05, failed_breakout=False,
-                      max_ext=0.40),
+        "tagline": "large/mid-cap value+quality quant + Greenblatt special situations",
+        "compute": "value_multifactor",   # cross-sectional z-score of CSV fundamentals
+        "profile": "quality",        # (only if it ever falls back to CSV)
+        "exits": dict(stop=0.12, trail_arm=0.15, trail_give=0.12, tp=1.00,
+                      atr=3.0, hold_days=45, time_min=0.05, failed_breakout=False,
+                      max_ext=0.50),
     },
 }
 STRATEGY_ORDER = ["dandapani", "senthil", "subramanya",
@@ -373,8 +373,8 @@ def _watchlist():
         return None
     if CURRENT and CURRENT.get("compute") == "ohlc":
         return _ohlc_watchlist()
-    if CURRENT and CURRENT.get("compute") == "multifactor":
-        return _multifactor_watchlist()
+    if CURRENT and CURRENT.get("compute") == "value_multifactor":
+        return _value_multifactor_watchlist()
     from sectorbot.stocks import load_watchlist
     profile = CURRENT.get("profile", "breakout") if CURRENT else "breakout"
     wl = load_watchlist(config.UNIVERSE_CSV, profile)
@@ -388,7 +388,7 @@ def _ohlc_watchlist():
     load_watchlist (symbol/score/sma50/sma200/dist52) so the engine is unchanged."""
     import time
     from sectorbot import technicals as T
-    from sectorbot.stocks import load_symbols
+    from sectorbot.stocks import load_symbols, load_valuations
     from sectorbot.datasource import get_datasource
 
     rows = load_symbols(config.UNIVERSE_CSV)
@@ -397,6 +397,11 @@ def _ohlc_watchlist():
     symbols = [r["symbol"] for r in rows][: config.OHLC_MAX_SYMBOLS]
     scorer = T.SCORERS_OHLC.get(CURRENT.get("ohlc_scorer", "thanikesa"),
                                 T.thanikesa_score)
+    vals = load_valuations(config.UNIVERSE_CSV)   # {} unless the pool has valuation
+    if vals and config.THANIKESA_VALUATION_FLOOR:
+        print(f"  💰 Valuation guard ON (skip Trendlyne valuation < "
+              f"{config.THANIKESA_VALUATION_FLOOR:.0f}; demote up to "
+              f"{config.THANIKESA_VALUATION_FULL:.0f}).")
     ds = get_datasource()
     idx = ds.history(config.REGIME_INDEX, config.OHLC_HISTORY_BARS)
     print(f"  🧮 Computing {CURRENT['name']} edge from live OHLC for "
@@ -412,56 +417,59 @@ def _ohlc_watchlist():
         sc = scorer(bars, idx)
         if sc is None:
             continue
+        # Valuation guard (lenient): skip the very expensive, demote the rest.
+        note = ""
+        info = vals.get(sym)
+        if info and config.THANIKESA_VALUATION_FLOOR:
+            vscore = info.get("valuation")
+            if vscore is not None:
+                if vscore < config.THANIKESA_VALUATION_FLOOR:
+                    if config.OHLC_FETCH_DELAY and i < len(symbols) - 1:
+                        time.sleep(config.OHLC_FETCH_DELAY)
+                    continue   # too expensive — skipped
+                sc *= _valuation_factor(vscore)
+                if vscore < config.THANIKESA_VALUATION_FULL:
+                    note = f"💰 val {vscore:.0f} (pricey)"
         s50, s200, dist = T.levels(bars)
         out.append({"symbol": sym, "score": round(sc, 1),
-                    "sma50": s50, "sma200": s200, "dist52": dist})
+                    "sma50": s50, "sma200": s200, "dist52": dist, "event": note})
         if config.OHLC_FETCH_DELAY and i < len(symbols) - 1:
             time.sleep(config.OHLC_FETCH_DELAY)
     out.sort(key=lambda d: d["score"], reverse=True)
     return out or None
 
 
-def _multifactor_watchlist():
-    """Solaimalai: AQR-style quant multi-factor (cross-sectional z-scores from
-    live OHLC) + a Greenblatt special-situations overlay from filings. Two-pass:
-    gather raw factors for the whole pool, z-score/percentile them, then boost
-    special situations and block red-flags on the top names. Returns engine-shaped
-    dicts (symbol/score/sma50/sma200/dist52)."""
-    import time
-    from sectorbot import technicals as T
-    from sectorbot.stocks import load_symbols
-    from sectorbot.datasource import get_datasource
+def _valuation_factor(vscore: float) -> float:
+    """0.65–1.0 multiplier: cheap (>= FULL) keeps full score, expensive (at the
+    FLOOR) is demoted to THANIKESA_VALUATION_MIN_FACTOR. Linear in between."""
+    floor, full = config.THANIKESA_VALUATION_FLOOR, config.THANIKESA_VALUATION_FULL
+    if vscore >= full:
+        return 1.0
+    if vscore <= floor or full <= floor:
+        return config.THANIKESA_VALUATION_MIN_FACTOR
+    frac = (vscore - floor) / (full - floor)
+    return config.THANIKESA_VALUATION_MIN_FACTOR + frac * (1 - config.THANIKESA_VALUATION_MIN_FACTOR)
 
-    rows = load_symbols(config.UNIVERSE_CSV)
-    if not rows:
-        return None
-    symbols = [r["symbol"] for r in rows][: config.OHLC_MAX_SYMBOLS]
-    ds = get_datasource()
-    idx = ds.history(config.REGIME_INDEX, config.OHLC_HISTORY_BARS)
-    print(f"  🧮 Solaimalai: computing multi-factor scores from live OHLC for "
-          f"{len(symbols)} candidates…")
-    data = []
-    for i, sym in enumerate(symbols):
-        try:
-            bars = ds.history(sym, config.OHLC_HISTORY_BARS)
-        except Exception:  # noqa: BLE001
-            bars = []
-        if not bars:
-            continue
-        f = T.raw_factors(bars, idx)
-        if not f:
-            continue
-        s50, s200, dist = T.levels(bars)
-        data.append({"symbol": sym, "factors": f,
-                     "sma50": s50, "sma200": s200, "dist52": dist})
-        if config.OHLC_FETCH_DELAY and i < len(symbols) - 1:
-            time.sleep(config.OHLC_FETCH_DELAY)
+
+def _value_multifactor_watchlist():
+    """Solaimalai: large/mid-cap VALUE + QUALITY quant + Greenblatt special
+    situations. Reads fundamental factors from a Trendlyne export, cross-
+    sectionally z-scores them (the 'quant' step), then overlays filings to BOOST
+    special situations (buyback/demerger/promoter buying) and BLOCK red-flags.
+    Value-led, so it deliberately AVOIDS the expensive momentum leaders Thanikesa
+    holds. Returns engine-shaped dicts (symbol/score/sma50/sma200/dist52)."""
+    from sectorbot import technicals as T
+    from sectorbot.stocks import load_fundamental_factors
+
+    data = load_fundamental_factors(config.UNIVERSE_CSV)
     if not data:
         return None
-    # Cross-sectional composite (the quant step).
-    scores = T.composite_zscore(data, config.SOLAIMALAI_FACTOR_WEIGHTS)
+    print(f"  🧮 Solaimalai: value+quality multi-factor over {len(data)} stocks "
+          f"(weights {config.SOLAIMALAI_FUND_WEIGHTS}).")
+    scores = T.composite_zscore(data, config.SOLAIMALAI_FUND_WEIGHTS)
     for d in data:
         d["score"] = scores.get(d["symbol"], 0.0)
+        d["event"] = ""
         d.pop("factors", None)
     # Greenblatt special-situations overlay on the top names (filings) — boost
     # buyback/demerger/spin-off/promoter-buying, block red-flags. Fail-open.
@@ -697,22 +705,36 @@ def cmd_data() -> None:
     uni = config.UNIVERSE_CSV
     print(f"  Strategy : {CURRENT['emoji']} {CURRENT['name']} ({CURRENT['profile']})")
     print(f"  Folder   : {config.DATA_DIR}\n")
-    if CURRENT.get("compute") in ("ohlc", "multifactor"):
-        # These strategies don't screen columns — the CSV is just a candidate
-        # pool and the edge is computed from live bars. Count cheaply (no fetch).
-        from sectorbot.stocks import load_symbols
-        how = ("🧮 LIVE Kite OHLC — quant multi-factor (momentum + low-vol + "
-               "trend + VCP + RS) z-scored, plus a Greenblatt special-situations "
-               "overlay from filings."
-               if CURRENT.get("compute") == "multifactor" else
-               f"🧮 LIVE Kite OHLC — {CURRENT.get('ohlc_scorer','technical')} "
-               "(Minervini VCP + Stage-2 + momentum + RS).")
+    if CURRENT.get("compute") == "value_multifactor":
+        # Solaimalai: value+quality from a Trendlyne fundamentals export.
+        from sectorbot.stocks import load_fundamental_factors
+        if uni.exists():
+            data = load_fundamental_factors(uni)
+            print(f"  universe.csv : ✅ {len(data)} stocks with usable factors")
+            print(f"  scoring      : 🧮 VALUE + QUALITY cross-sectional z-score "
+                  f"(Trendlyne DVM/PE/PBV) + Greenblatt special-situations "
+                  f"overlay from filings. Large/mid-cap; value-led.")
+            print(f"  note         : upload a Trendlyne LARGE/MID-cap export with "
+                  f"NSE Code + Durability/Valuation/PE/PBV/Momentum columns.")
+        else:
+            print(f"  screen file  : ❌ MISSING — upload a Trendlyne export as")
+            print(f"     {config.UNIVERSE_CSV_PRIMARY}")
+        print()
+        return
+    if CURRENT.get("compute") == "ohlc":
+        # Thanikesa: the CSV is a candidate pool; the edge is computed from live
+        # bars. Count cheaply (no fetch). Valuation guard if the pool carries it.
+        from sectorbot.stocks import load_symbols, load_valuations
         if uni.exists():
             syms = load_symbols(uni)
+            guard = "ON 💰" if load_valuations(uni) else "off (bare symbol list)"
             print(f"  universe.csv : ✅ {len(syms)} candidate stocks (pool only)")
-            print(f"  scoring      : {how}")
-            print(f"  note         : upload a STABLE pool once (e.g. an index "
-                  f"constituent list); only the NSE Code column is required.")
+            print(f"  scoring      : 🧮 LIVE Kite OHLC — "
+                  f"{CURRENT.get('ohlc_scorer','technical')} (Minervini VCP + "
+                  f"Stage-2 + momentum + RS).")
+            print(f"  valuation guard : {guard}")
+            print(f"  note         : pool can be a bare NSE-Code list; add a "
+                  f"Trendlyne Valuation Score column to enable the value guard.")
         else:
             print(f"  screen file  : ❌ MISSING — upload a candidate pool as")
             print(f"     {config.UNIVERSE_CSV_PRIMARY}")

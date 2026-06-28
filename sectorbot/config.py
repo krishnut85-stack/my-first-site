@@ -278,9 +278,27 @@ OHLC_HISTORY_BARS = int(os.environ.get("OHLC_HISTORY_BARS", "260"))  # ~1yr of d
 OHLC_MAX_SYMBOLS = int(os.environ.get("OHLC_MAX_SYMBOLS", "520"))    # cap fetches (covers Nifty 500)
 OHLC_FETCH_DELAY = float(os.environ.get("OHLC_FETCH_DELAY", "0.25")) # secs/req (rate limit)
 
-# --- Solaimalai: quant multi-factor + Greenblatt special situations --------
-# Cross-sectional factor weights (z-scored, then percentile-ranked). Higher is
-# better for each. momentum + vcp + trend lead; low-vol + relative-strength temper.
+# --- Thanikesa: lenient valuation guard ("a little freedom") ---------------
+# Thanikesa is a momentum face, so it WILL favour leaders near their highs. To
+# avoid blindly buying "Getting Expensive" names (like RR Kabel: PE 57, P/B 11,
+# Trendlyne Valuation 33.8), it reads the Trendlyne Valuation Score (0..100,
+# HIGHER = cheaper) from the pool CSV — IF that column is present. Only active
+# when the pool carries valuation data; a bare NSE-symbol list disables it.
+#   • Below FLOOR  -> SKIP (too expensive, no freedom).
+#   • FLOOR..FULL  -> kept but DEMOTED (the "little freedom" zone).
+#   • >= FULL      -> no penalty (cheap enough).
+# Raise the FLOOR (e.g. 35) to be stricter; lower it (e.g. 0) to disable.
+THANIKESA_VALUATION_FLOOR = float(os.environ.get("THANIKESA_VALUATION_FLOOR", "20"))
+THANIKESA_VALUATION_FULL = float(os.environ.get("THANIKESA_VALUATION_FULL", "55"))
+THANIKESA_VALUATION_MIN_FACTOR = 0.65   # most an expensive name is demoted
+
+# --- Solaimalai: large/mid-cap VALUE + QUALITY quant + special situations ---
+# Re-tuned (was momentum-heavy, which overlapped Thanikesa). Now value- and
+# quality-led from Trendlyne fundamentals, cross-sectionally z-scored, with the
+# Greenblatt special-situations overlay. Run on a LARGE/MID-cap pool so it never
+# overlaps small-cap Thanikesa. Factors (higher = better) from the CSV.
+SOLAIMALAI_FUND_WEIGHTS = {"value": 0.45, "quality": 0.40, "trend": 0.15}
+# (legacy OHLC weights kept for reference / fallback if ever switched back)
 SOLAIMALAI_FACTOR_WEIGHTS = {
     "momentum": 0.30, "vcp": 0.20, "trend": 0.20, "lowvol": 0.15, "rs": 0.15,
 }

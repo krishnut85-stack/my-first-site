@@ -20,6 +20,19 @@ Upload a **stable small-cap universe ONCE** as `universe.csv` (or
 Good pools: **Nifty Smallcap 250** constituents, or your own small-cap list.
 Mayura then computes the VCP/Stage-2 edge on these from live bars every run.
 
+## 💰 Valuation guard ("a little freedom") — optional but recommended
+Pure momentum will favour leaders near their highs even when they're pricey
+(e.g. RR Kabel: PE 57, P/B 11). To temper that, add a **Trendlyne Valuation
+Score** column to the pool CSV (export the Nifty Smallcap 250 from Trendlyne
+with NSE Code + Valuation Score instead of the bare NSE list). Then Mayura:
+- **Skips** anything below `THANIKESA_VALUATION_FLOOR` (default 20 — only the
+  truly absurd), and
+- **Demotes** "Getting Expensive" names between the floor and
+  `THANIKESA_VALUATION_FULL` (default 55) — they can still appear if momentum
+  is strong, just lower. That's the "little freedom."
+Raise the floor (e.g. 35) to block RR Kabel-type names outright; set it to 0 to
+turn the guard off. A bare NSE-Code list simply runs without the guard.
+
 `python mayura.py rank thanikesa`  → see the live-computed ranking
 `python mayura.py data thanikesa`  → confirm the pool size (no fetching)
 

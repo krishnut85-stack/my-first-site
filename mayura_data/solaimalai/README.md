@@ -1,36 +1,38 @@
-# 🍃 Solaimalai — out-of-the-box (quant multi-factor + special situations)
+# 🍃 Solaimalai — large/mid-cap VALUE + QUALITY quant + special situations
 
 *Solaimalai Murugan of **Pazhamudircholai** — the hill of ripe fruits,
-abundance.* The most sophisticated face: it thinks like a **quant fund** and a
-**special-situations hedge fund** at once. Everything is **computed from live
-Kite OHLC + NSE/BSE filings** — you don't screen anything.
+abundance.* Deliberately the **opposite of Thanikesa**: instead of chasing
+expensive small-cap momentum, it buys **durable, fairly-priced large & mid-caps**
+and tilts toward **event-driven (Greenblatt) special situations**. So the two
+faces hold *different* stocks.
 
-## Three edges, combined
-1. **Quant multi-factor (AQR-style)** — each stock in the pool is scored on
-   five factors, **z-scored across the whole universe**, then percentile-ranked:
-   - Momentum (12-1) · Low-volatility · Stage-2 trend quality · VCP coil ·
-     Relative strength vs NIFTY
-2. **Minervini VCP + Stage-2** — the volatility-contraction structure feeds the
-   `vcp` and `trend` factors above (shared engine with Thanikesa).
-3. **Greenblatt special situations** — recent filings are scanned for
-   **buybacks, demergers, spin-offs, promoter buying, open offers**. A match
-   **boosts** the score (+SOLAIMALAI_SPECIAL_BOOST). A **red-flag** filing
-   (SEBI/default/auditor exit…) **zeroes** it. Filings are a conviction overlay,
-   not a gate — if they can't be read, the quant score stands (fail-open).
+## Three edges, combined (cross-sectional z-score)
+1. **VALUE (45%)** — Trendlyne Valuation Score (cheap = high) + low PE + low P/B.
+   This is why it **avoids "Getting Expensive" names** like RR Kabel.
+2. **QUALITY (40%)** — Durability score + Trendlyne checklist (strong balance
+   sheets, consistent businesses).
+3. **TREND (15%)** — a little momentum so we don't buy value traps.
+Each factor is z-scored across the whole universe (the "quant" step), then
+**Greenblatt special situations** from filings **boost** the score
+(buyback / demerger / spin-off / promoter buying) and **red-flags block** it.
 
-## You don't screen — just give it a candidate pool
-Upload a **stable universe ONCE** as `universe.csv` (or
-`mayura_data/solaimalai.csv`); only the **NSE Code** column is required.
-Good pools: a broad index list (Nifty 500), or your own watch-universe.
+## Universe — LARGE/MID cap (so it never overlaps small-cap Thanikesa)
+Upload a **Trendlyne export** as `solaimalai.csv` (or
+`mayura_data/solaimalai/universe.csv`) built from a large/mid index — e.g.
+**Nifty 200** or **Nifty LargeMidcap 250** — with these columns:
+**NSE Code, Trendlyne Durability Score, Trendlyne Valuation Score, PE TTM,
+PBV, Trendlyne Momentum Score** (and Day SMA50/SMA200 for the exit guards).
 
-`python mayura.py rank solaimalai` → live multi-factor ranking (⭐ = special
-situation, 🚫 = red flag blocked).
+> Unlike Thanikesa (bare symbol list + live OHLC), Solaimalai needs the
+> fundamental columns — value & quality can't be computed from price alone.
+
+`python mayura.py rank solaimalai`  → value+quality ranking (⭐ special
+situation, 🚫 red flag, 💰 cheap-quality leaders rise to the top).
 
 ## Tuning (config.py)
-- `SOLAIMALAI_FACTOR_WEIGHTS` — the factor blend (momentum/vcp/trend/lowvol/rs)
+- `SOLAIMALAI_FUND_WEIGHTS` — value / quality / trend blend
 - `SOLAIMALAI_SPECIAL_BOOST` — how much a special situation lifts the score
-- `OHLC_MAX_SYMBOLS` / `OHLC_FETCH_DELAY` — pool cap & rate-limit pacing
 
-## Exit personality (medium, multi-factor)
-−10% stop · trail +12%/12% · 30-day hold · skip if >40% above the 200-DMA.
+## Exit personality (patient, large/mid)
+−12% stop · trail +15%/12% · 45-day hold · skip if >50% above the 200-DMA.
 Edit in mayura.py → STRATEGIES["solaimalai"]. Paper only.

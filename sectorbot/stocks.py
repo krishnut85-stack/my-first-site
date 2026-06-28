@@ -414,6 +414,99 @@ def load_symbols(path) -> list[dict]:
     return out
 
 
+def load_valuations(path) -> dict[str, dict]:
+    """For Thanikesa's valuation guard: map symbol -> {valuation, pe, pbv} if the
+    pool CSV carries those Trendlyne columns. Empty dict if none present (guard
+    then stays off — a bare NSE-symbol list is fine)."""
+    import csv
+    out: dict[str, dict] = {}
+    try:
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            cm = _resolve(reader.fieldnames, _BREAKOUT_ALIASES)
+            if not any(k in cm for k in ("valuation", "pe", "pbv")):
+                return {}
+            sym_aliases = set(_BREAKOUT_ALIASES["symbol"])
+            sym_cols = [c for c in (reader.fieldnames or [])
+                        if _norm(c) in sym_aliases]
+            for r in reader:
+                sym = ""
+                for sc in sym_cols:
+                    v = (r.get(sc) or "").strip()
+                    if v:
+                        sym = v.upper()
+                        break
+                if not sym:
+                    continue
+                out[sym] = {
+                    "valuation": _num(r.get(cm.get("valuation", ""))),
+                    "pe": _num(r.get(cm.get("pe", ""))),
+                    "pbv": _num(r.get(cm.get("pbv", ""))),
+                }
+    except OSError:
+        return {}
+    return out
+
+
+def load_fundamental_factors(path) -> list[dict]:
+    """For Solaimalai: read VALUE / QUALITY / TREND factors per stock from a
+    Trendlyne export, ready for cross-sectional z-scoring. Returns
+    [{symbol, factors:{value,quality,trend}, valuation, sma50, sma200, dist52}].
+    Each factor is 0..100, higher = better (value = cheaper). [] if unusable."""
+    import csv
+    out: list[dict] = []
+    try:
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            cm = _resolve(reader.fieldnames, _BREAKOUT_ALIASES)
+            sym_aliases = set(_BREAKOUT_ALIASES["symbol"])
+            sym_cols = [c for c in (reader.fieldnames or [])
+                        if _norm(c) in sym_aliases]
+            if not sym_cols:
+                return []
+
+            def col(r, fld):
+                c = cm.get(fld)
+                return _num(r.get(c)) if c else None
+
+            seen = set()
+            for r in reader:
+                sym = ""
+                for sc in sym_cols:
+                    v = (r.get(sc) or "").strip()
+                    if v:
+                        sym = v.upper()
+                        break
+                nm = (r.get(cm.get("name", "")) or "").upper()
+                if not sym or sym in seen:
+                    continue
+                if any(h in nm or h in sym for h in _ETF_HINTS):
+                    continue
+                val_score = col(r, "valuation")
+                value = _blend([
+                    (_high(val_score, 0, 100), 0.5),   # Trendlyne valuation (cheap=high)
+                    (_low(col(r, "pe"), 10, 70), 0.25),  # lower PE = higher
+                    (_low(col(r, "pbv"), 1, 12), 0.25),  # lower P/B = higher
+                ])
+                quality = _blend([
+                    (_high(col(r, "durability"), 0, 100), 0.6),
+                    (_high(col(r, "checklist"), 0, 100), 0.4),
+                ])
+                trend = _high(col(r, "momentum"), 0, 100)
+                if value is None and quality is None and trend is None:
+                    continue
+                seen.add(sym)
+                out.append({"symbol": sym,
+                            "factors": {"value": value, "quality": quality,
+                                        "trend": trend},
+                            "valuation": val_score,
+                            "sma50": col(r, "sma50"), "sma200": col(r, "sma200"),
+                            "dist52": col(r, "dist52")})
+    except OSError:
+        return []
+    return out
+
+
 def load_breakout_watchlist(path) -> list[dict]:
     """Back-compat: the breakout profile (Palani)."""
     return load_watchlist(path, "breakout")
