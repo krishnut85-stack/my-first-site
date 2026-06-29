@@ -34,8 +34,15 @@ real keys**. Run `python mayura.py check` to confirm both are live.
 > bot/group with the main equity bot. `MAYURA_BOT_TOKEN`/`MAYURA_CHAT_ID` always
 > win; the generic `TELEGRAM_BOT_TOKEN`/`TELEGRAM_CHAT_ID` are only a fallback.
 > Each face posts to its own topic via `MAYURA_TOPIC_<FACE>` (e.g.
-> `MAYURA_TOPIC_DANDAPANI`). `python mayura.py telegram-setup` auto-detects and
-> writes these for you.
+> `MAYURA_TOPIC_DANDAPANI`).
+>
+> **No editing needed.** If Mayura's `.env` already has your working
+> `TELEGRAM_*` settings, just run this once — it copies them into the `MAYURA_*`
+> names for you (no nano, idempotent):
+>
+> ```bash
+> bash scripts/mayura_isolate_env.sh
+> ```
 
 ---
 
