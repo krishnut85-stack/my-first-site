@@ -36,7 +36,8 @@ USAGE
     python mayura.py rules [strategy]  # that strategy's exit rules
     python mayura.py data [strategy]   # which Trendlyne columns it detected
     python mayura.py filings swaminatha # dry-run the filings reader (no trades)
-    python mayura.py check             # Kite token + Telegram wired? (global)
+    python mayura.py health            # one-shot status of ALL faces (global)
+    python mayura.py check             # Kite token + Telegram + Gemini wired? (global)
     python mayura.py regime            # NIFTY vs its 200-DMA (global)
 
 Each strategy reads its OWN screen from mayura_data/<strategy>/universe.csv and
@@ -921,6 +922,52 @@ def cmd_filings() -> None:
           "Paper only. 🦚\n")
 
 
+def cmd_health() -> None:
+    """One-shot status of the whole bot: every face's paper portfolio (holdings,
+    book equity, realised P&L, last trade) + today's news activity. All from
+    local saved state — fast, no network."""
+    _banner("MAYURA HEALTH")
+    from sectorbot.portfolio import Portfolio
+    from sectorbot import gemini
+    from sectorbot.telegram import configured as tg_ok
+    kite = "✅" if config.resolve_access_token() else "❌"
+    print(f"  Wiring : Kite {kite} · Telegram {'✅' if tg_ok() else '❌'} · "
+          f"Gemini {'✅' if gemini.configured() else '❌'}\n")
+    print(f"  {'Face':13}{'Mode':13}{'Pool':11}{'Hold':>5}{'BookEq':>11}"
+          f"{'Realised':>10}  LastTrade")
+    print("  " + "-" * 78)
+    for key in STRATEGY_ORDER:
+        _use_strategy(key)
+        pf = Portfolio.load()
+        book = pf.cash + sum(h["qty"] * h["avg_price"] for h in pf.holdings.values())
+        last_trade = max((t.get("date", "") for t in getattr(pf, "trades", [])),
+                         default="—")
+        compute = STRATEGIES[key].get("compute", "csv")
+        mode = {"value_multifactor": "value-quant", "ohlc": "vcp-ohlc",
+                "news": "news-AI"}.get(compute, "screen")
+        if compute == "news":
+            pool = "live news"
+        elif compute in ("ohlc", "value_multifactor"):
+            pool = f"{len(_pool_csvs())} file(s)" if _pool_csvs() else "none ❌"
+        else:
+            pool = "✅" if config.UNIVERSE_CSV.exists() else "none ❌"
+        s = STRATEGIES[key]
+        print(f"  {s['emoji']} {s['name']:10}{mode:13}{pool:11}"
+              f"{len(pf.holdings):>5}{book:>11,.0f}{pf.realized_pnl:>10,.0f}"
+              f"  {last_trade}")
+        if pf.holdings:
+            print(f"       holds: {', '.join(pf.holdings)}")
+    # Swaminatha news activity today
+    _use_strategy("swaminatha")
+    seen = _load_seen_news()
+    today = date.today().isoformat()
+    seen_today = sum(1 for v in seen.values() if v == today)
+    print(f"\n  📜 News today: {seen_today} filing(s) read · Gemini "
+          f"{_gemini_daily_count()}/{config.NEWS_MAX_GEMINI_CALLS_DAILY} calls used")
+    print("  (BookEq = cash + holdings at cost; run `status <face>` for live P&L. "
+          "Paper only.) 🦚\n")
+
+
 def cmd_check() -> None:
     """Verify the APIs Mayura needs: Kite (prices), Telegram (alerts), Gemini
     (Swaminatha news). Prints progress before each step so it never looks stuck."""
@@ -1312,7 +1359,7 @@ def cmd_rules() -> None:
 
 # Commands that run once for the WHOLE bot (not per strategy).
 GLOBAL_COMMANDS = {"check": cmd_check, "regime": cmd_regime,
-                   "telegram-setup": cmd_telegram_setup}
+                   "telegram-setup": cmd_telegram_setup, "health": cmd_health}
 # Commands that run PER strategy (loop all three unless one is named).
 PER_STRATEGY_COMMANDS = {
     "run": cmd_run, "rank": cmd_rank, "status": cmd_status,
