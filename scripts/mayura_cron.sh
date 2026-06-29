@@ -31,18 +31,19 @@ if [ -f "$REPO/.venv/bin/activate" ]; then
   source "$REPO/.venv/bin/activate"
 fi
 
-# 2) Secrets, loaded at runtime (NEVER copied into this repo):
-#    a) Mayura's OWN .env  -> Telegram token + per-topic ids
-#    b) the SHARED bot .env -> API keys your main bot already holds
-#       (KITE_API_KEY/SECRET, GEMINI_API_KEY, …). Mayura's own values win.
-if [ -f "$REPO/.env" ]; then
-  set -a; # shellcheck disable=SC1091
-  . "$REPO/.env"; set +a
-fi
+# 2) Secrets, loaded at runtime (NEVER copied into this repo). ORDER MATTERS:
+#    load the SHARED bot .env FIRST (KITE_API_KEY/SECRET, GEMINI_API_KEY …), then
+#    Mayura's OWN .env LAST so Mayura's TELEGRAM_BOT_TOKEN / CHAT_ID / TOPIC_* win.
+#    (If loaded the other way round, the main bot's Telegram clobbers Mayura's and
+#    alerts go to the WRONG group — do not change this order.)
 SHARED_ENV="${MAYURA_SHARED_ENV:-/home/globalbot/.env}"
 if [ -f "$SHARED_ENV" ]; then
   set -a; # shellcheck disable=SC1091
   . "$SHARED_ENV"; set +a
+fi
+if [ -f "$REPO/.env" ]; then
+  set -a; # shellcheck disable=SC1091
+  . "$REPO/.env"; set +a
 fi
 
 # 3) Daily Kite access token your main bot refreshes via TOTP.
