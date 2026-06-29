@@ -28,6 +28,15 @@ def _closes(bars: list[Bar]) -> list[float]:
     return [b.close for b in bars]
 
 
+def drop_today(bars: list[Bar], today_iso: str) -> list[Bar]:
+    """Drop a trailing PARTIAL bar dated today, so morning signals are computed
+    on the last SETTLED session (yesterday's close), not today's half-formed
+    candle. No-op if the last bar isn't today's."""
+    if bars and getattr(bars[-1], "date", "") == today_iso:
+        return bars[:-1]
+    return bars
+
+
 def sma(values: list[float], period: int) -> Optional[float]:
     if len(values) < period or period <= 0:
         return None

@@ -14,15 +14,11 @@
 # same moment — and don't fight your OTHER bots that share the same Kite token.
 # Thanikesa is heaviest (~200 live OHLC fetches, ~2-3 min) so give it room.
 #
-# Install (one time, on the droplet) — times are UTC; IST = UTC + 5:30:
-#   chmod +x /root/sectorbot/scripts/mayura_cron.sh
-#   crontab -e     # add (Mon–Fri, after the 15:30 IST close), staggered:
-#   20 10 * * 1-5 /root/sectorbot/scripts/mayura_cron.sh dandapani  >> /root/sectorbot/mayura_cron.log 2>&1  # 15:50 IST
-#   30 10 * * 1-5 /root/sectorbot/scripts/mayura_cron.sh senthil    >> /root/sectorbot/mayura_cron.log 2>&1  # 16:00 IST
-#   40 10 * * 1-5 /root/sectorbot/scripts/mayura_cron.sh subramanya >> /root/sectorbot/mayura_cron.log 2>&1  # 16:10 IST
-#   50 10 * * 1-5 /root/sectorbot/scripts/mayura_cron.sh thanikesa  >> /root/sectorbot/mayura_cron.log 2>&1  # 16:20 IST (heavy)
-#   10 11 * * 1-5 /root/sectorbot/scripts/mayura_cron.sh solaimalai >> /root/sectorbot/mayura_cron.log 2>&1  # 16:40 IST
-# Pick minutes that fall in GAPS when your other Kite bots are idle.
+# EASIEST: run  bash scripts/install_mayura_cron.sh  (writes the schedule, no nano).
+# The 5 EOD faces run JUST AFTER THE OPEN (~9:20–9:45 IST): they decide on the
+# last settled close (yesterday) and buy at today's open — the professional
+# "signal on close, execute next open" model. Swaminatha (news) is intraday.
+# Times are UTC; IST = UTC + 5:30. Thanikesa/Solaimalai are heavy (live OHLC).
 set -euo pipefail
 
 # Repo root (this script lives in scripts/).

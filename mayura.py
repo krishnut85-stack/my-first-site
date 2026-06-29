@@ -635,14 +635,20 @@ def _ohlc_watchlist():
         print(f"  💰 Valuation guard ON (skip Trendlyne valuation < "
               f"{config.THANIKESA_VALUATION_FLOOR:.0f}; demote up to "
               f"{config.THANIKESA_VALUATION_FULL:.0f}).")
+    # Run just after the open: compute signals on the SETTLED close (drop today's
+    # half-formed bar) and let the engine buy at today's open. Pro standard.
+    from datetime import datetime as _dt
+    from sectorbot.data_loader import IST
+    today_iso = _dt.now(IST).date().isoformat()
     ds = get_datasource()
-    idx = ds.history(config.REGIME_INDEX, config.OHLC_HISTORY_BARS)
-    print(f"  🧮 Computing {CURRENT['name']} edge from live OHLC for "
+    idx = T.drop_today(ds.history(config.REGIME_INDEX, config.OHLC_HISTORY_BARS),
+                       today_iso)
+    print(f"  🧮 Computing {CURRENT['name']} edge from settled OHLC for "
           f"{len(symbols)} candidates (this takes a moment)…")
     out = []
     for i, sym in enumerate(symbols):
         try:
-            bars = ds.history(sym, config.OHLC_HISTORY_BARS)
+            bars = T.drop_today(ds.history(sym, config.OHLC_HISTORY_BARS), today_iso)
         except Exception:  # noqa: BLE001  (rate limit / bad symbol -> skip)
             bars = []
         if not bars:

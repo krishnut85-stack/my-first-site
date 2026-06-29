@@ -189,7 +189,8 @@ class KiteDataSource:
         data = _retry_kite(lambda: self.kite.historical_data(
             token, date.today() - timedelta(days=bars * 2), date.today(), "day"
         ))
-        return [Bar(d["high"], d["low"], d["close"], d.get("volume", 0))
+        return [Bar(d["high"], d["low"], d["close"], d.get("volume", 0),
+                    str(d.get("date", ""))[:10])
                 for d in data][-bars:]
 
 
