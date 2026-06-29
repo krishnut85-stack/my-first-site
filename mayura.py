@@ -30,6 +30,7 @@ USAGE
 -----
     python mayura.py run               # run ALL faces + Telegram you
     python mayura.py run dandapani     # run just one strategy
+    python mayura.py report [strategy] # EOD report + P&L per strategy (read-only)
     python mayura.py rank [strategy]   # show a strategy's scored watchlist
     python mayura.py status [strategy] # a strategy's track record
     python mayura.py scorecard [strat] # honest verdict vs the Nifty index
@@ -257,6 +258,7 @@ def _mayura_telegram(result: dict, filings_summary: dict | None = None,
     real = result["real_data"]
     tag = "REAL Kite prices" if real else "SYNTHETIC prices — NOT real"
     exits = result["exits"]
+    entries = result.get("entries", [])
     who = f"{CURRENT['emoji']} {CURRENT['name']}" if CURRENT else "Mayura"
     lines = [
         f"{PEACOCK} <b>Mayura · {who} · {date.today().isoformat()}</b>",
@@ -266,7 +268,8 @@ def _mayura_telegram(result: dict, filings_summary: dict | None = None,
         f"Cash Rs {result['cash']:,.0f} · "
         f"Unrealised {result['unrealized']:+,.0f} · "
         f"Realised {result['realized']:+,.0f}",
-        f"Holdings: {len(result['portfolio'].holdings)} · Exits: {len(exits)}",
+        f"Holdings: {len(result['portfolio'].holdings)} · "
+        f"Buys: {len(entries)} · Exits: {len(exits)}",
     ]
     age = _pool_age_note()
     if age:
@@ -302,8 +305,17 @@ def _mayura_telegram(result: dict, filings_summary: dict | None = None,
         edge = (f" (edge {sc['edge_vs_index_pct']:+.1f}% vs Nifty)"
                 if sc.get("edge_vs_index_pct") is not None else "")
         lines.append(f"📈 Verdict: <b>{sc['verdict']}</b>{edge}")
-    for s, ltp, reason, pnl in exits[:8]:
-        lines.append(f"  SELL {s} @ {ltp:.2f} [{reason}] P&amp;L {pnl:+,.0f}")
+    # Every TRADE, listed individually so you see each buy and sell this run.
+    if entries:
+        lines.append(f"🟢 <b>Bought ({len(entries)})</b>:")
+        for s, ltp, qty in entries[:12]:
+            lines.append(f"  🟢 BUY {s} ×{qty} @ {ltp:.2f} "
+                         f"(Rs {qty * ltp:,.0f})")
+    if exits:
+        lines.append(f"🔴 <b>Sold ({len(exits)})</b>:")
+        for s, ltp, reason, pnl in exits[:12]:
+            lines.append(f"  🔴 SELL {s} @ {ltp:.2f} [{reason}] "
+                         f"P&amp;L {pnl:+,.0f}")
     lines.append("")
     lines.append("<i>Paper only — not investment advice.</i>")
     return "\n".join(lines)
@@ -353,12 +365,15 @@ def _print_mayura(result: dict) -> None:
 
 
 def _topic_id():
-    """The Telegram forum-topic id for the active strategy, from the env var
-    TELEGRAM_TOPIC_<STRATEGY> (e.g. TELEGRAM_TOPIC_DANDAPANI). None = no topic
+    """The Telegram forum-topic id for the active strategy. Mayura's OWN var
+    MAYURA_TOPIC_<STRATEGY> wins (e.g. MAYURA_TOPIC_DANDAPANI); the older
+    TELEGRAM_TOPIC_<STRATEGY> is accepted as a fallback. None = no topic
     (posts to the group's General / a plain chat)."""
     if not CURRENT:
         return None
-    return os.environ.get(f"TELEGRAM_TOPIC_{CURRENT['key'].upper()}") or None
+    key = CURRENT["key"].upper()
+    return (os.environ.get(f"MAYURA_TOPIC_{key}")
+            or os.environ.get(f"TELEGRAM_TOPIC_{key}") or None)
 
 
 def _present_csvs_hint() -> str:
@@ -883,6 +898,82 @@ def cmd_scorecard() -> None:
     print("\n" + format_scorecard(compute_scorecard(Portfolio.load())) + "\n")
 
 
+def cmd_report() -> None:
+    """End-of-day report + P&L for THIS strategy. Prices every holding on LIVE
+    Kite data, computes per-position and total P&L, and Telegrams it to the
+    strategy's own topic. Read-only: it NEVER trades, so it's safe to run after
+    the close. `python mayura.py report` does all six faces (each to its topic)."""
+    _banner("EOD REPORT & P&L")
+    from sectorbot.portfolio import Portfolio
+    from sectorbot.datasource import PaperDataSource, get_datasource
+    from sectorbot.telegram import send_telegram
+
+    pf = Portfolio.load()
+    ds = get_datasource()
+    real = not isinstance(ds, PaperDataSource)
+    syms = list(pf.holdings)
+    # ONE batched LTP call (avoids per-symbol rate limits), snapshot once so
+    # every number reconciles (equity == cash + holdings value).
+    prices = ds.last_prices(syms) if syms else {}
+    price_of = lambda s: prices.get(s) or pf.holdings[s]["avg_price"]
+
+    rows = []
+    for s, h in pf.holdings.items():
+        ltp = price_of(s)
+        qty, avg = h["qty"], h["avg_price"]
+        pnl = (ltp - avg) * qty
+        pct = (ltp / avg - 1) * 100 if avg else 0.0
+        rows.append((s, qty, avg, ltp, qty * ltp, pnl, pct))
+    rows.sort(key=lambda r: r[5], reverse=True)   # best P&L first
+
+    holdings_value = sum(r[4] for r in rows)
+    equity = pf.cash + holdings_value
+    unreal = sum(r[5] for r in rows)
+    total_pnl = equity - pf.starting_capital
+    total_pct = total_pnl / pf.starting_capital * 100 if pf.starting_capital else 0.0
+    tag = "REAL Kite prices" if real else "SYNTHETIC — NOT real"
+    who = f"{CURRENT['emoji']} {CURRENT['name']}" if CURRENT else "Mayura"
+
+    # --- console -----------------------------------------------------------
+    print(f"\n  {PEACOCK} {who} — EOD report ({tag})")
+    print(f"  Equity Rs {equity:,.0f} ({total_pct:+.2f}%) · Cash Rs {pf.cash:,.0f} "
+          f"· Holdings Rs {holdings_value:,.0f}")
+    print(f"  Unrealised Rs {unreal:+,.0f} · Realised Rs {pf.realized_pnl:+,.0f}")
+    if rows:
+        print(f"\n  {'Symbol':12}{'Qty':>6}{'Avg':>10}{'LTP':>10}"
+              f"{'Value':>12}{'P&L':>11}{'P&L%':>8}")
+        print("  " + "-" * 69)
+        for s, qty, avg, ltp, val, pnl, pct in rows:
+            print(f"  {s:12}{qty:>6}{avg:>10.2f}{ltp:>10.2f}"
+                  f"{val:>12,.0f}{pnl:>11,.0f}{pct:>7.1f}%")
+    else:
+        print("\n  (no open holdings)")
+    print()
+
+    # --- telegram ----------------------------------------------------------
+    lines = [
+        f"{PEACOCK} <b>Mayura · {who} · EOD {date.today().isoformat()}</b>",
+        f"<i>Daily report & P&amp;L ({tag}) · Vel Muruga 🙏</i>",
+        f"Equity: <b>Rs {equity:,.0f}</b> ({total_pct:+.2f}%)",
+        f"Cash Rs {pf.cash:,.0f} · Holdings Rs {holdings_value:,.0f}",
+        f"Unrealised <b>{unreal:+,.0f}</b> · Realised <b>{pf.realized_pnl:+,.0f}</b>",
+        f"Open positions: {len(rows)}",
+    ]
+    if rows:
+        lines.append("")
+        for s, qty, avg, ltp, val, pnl, pct in rows[:15]:
+            sign = "🟢" if pnl >= 0 else "🔴"
+            lines.append(f"{sign} {s} ×{qty} @ {ltp:.2f} "
+                         f"(in {avg:.2f}) P&amp;L {pnl:+,.0f} ({pct:+.1f}%)")
+    else:
+        lines.append("No open holdings — fully in cash.")
+    lines.append("")
+    lines.append("<i>Paper only — not investment advice.</i>")
+    topic = _topic_id()
+    delivered = send_telegram("\n".join(lines), message_thread_id=topic)
+    print(f"  Telegram: {'sent 🙏' if delivered else 'dry-run (set the env vars)'}\n")
+
+
 def cmd_filings() -> None:
     """Dry-run Swaminatha's news reader: show what today's market announcements
     are, and Gemini's verdict on the material-bullish candidates — WITHOUT
@@ -1175,15 +1266,21 @@ def cmd_telegram_setup() -> None:
            Dandapani, Senthil, Subramanya, Swaminatha, Thanikesa, Solaimalai.
   STEP 2 — Add your Mayura bot to the group and make it an Admin.
   STEP 3 — In EACH topic, type any message (e.g. "hi").
-  STEP 4 — Run this command. It prints the ids below — copy them into .env:
+  STEP 4 — Run this command. It prints the ids below — copy them into .env.
+           NOTE: Mayura uses its OWN MAYURA_* vars so it can NEVER clash with the
+           main equity bot's TELEGRAM_* vars (that's how an alert once went to the
+           wrong group — never again). Also set MAYURA_BOT_TOKEN to YOUR Mayura
+           bot's token (the GIR Crypto bot), kept totally separate from the main
+           bot's TELEGRAM_BOT_TOKEN:
 
-      TELEGRAM_CHAT_ID=<the group id (a negative number)>
-      TELEGRAM_TOPIC_DANDAPANI=<Dandapani topic id>
-      TELEGRAM_TOPIC_SENTHIL=<Senthil topic id>
-      TELEGRAM_TOPIC_SUBRAMANYA=<Subramanya topic id>
-      TELEGRAM_TOPIC_SWAMINATHA=<Swaminatha topic id>
-      TELEGRAM_TOPIC_THANIKESA=<Thanikesa topic id>
-      TELEGRAM_TOPIC_SOLAIMALAI=<Solaimalai topic id>
+      MAYURA_BOT_TOKEN=<your Mayura bot token from @BotFather>
+      MAYURA_CHAT_ID=<the group id (a negative number)>
+      MAYURA_TOPIC_DANDAPANI=<Dandapani topic id>
+      MAYURA_TOPIC_SENTHIL=<Senthil topic id>
+      MAYURA_TOPIC_SUBRAMANYA=<Subramanya topic id>
+      MAYURA_TOPIC_SWAMINATHA=<Swaminatha topic id>
+      MAYURA_TOPIC_THANIKESA=<Thanikesa topic id>
+      MAYURA_TOPIC_SOLAIMALAI=<Solaimalai topic id>
 """)
     url = f"https://api.telegram.org/bot{config.TELEGRAM_BOT_TOKEN}/getUpdates"
     try:
@@ -1221,7 +1318,7 @@ def cmd_telegram_setup() -> None:
         for probe in (topic_name, text):
             sk = name_to_key.get(probe.strip().lower())
             if sk and thread is not None:
-                detected[f"TELEGRAM_TOPIC_{sk.upper()}"] = str(thread)
+                detected[f"MAYURA_TOPIC_{sk.upper()}"] = str(thread)
                 break
         if key in seen:
             continue
@@ -1229,7 +1326,7 @@ def cmd_telegram_setup() -> None:
         print(f"  {str(chat.get('id')):>16}  {str(thread or '-'):>9}  "
               f"{(chat.get('title') or '')} | {label[:30]}")
     if chat_id is not None:
-        detected["TELEGRAM_CHAT_ID"] = str(chat_id)
+        detected["MAYURA_CHAT_ID"] = str(chat_id)
 
     if not detected:
         print("\n  Couldn't auto-match any topic names. Make sure each topic is "
@@ -1370,7 +1467,7 @@ GLOBAL_COMMANDS = {"check": cmd_check, "regime": cmd_regime,
 PER_STRATEGY_COMMANDS = {
     "run": cmd_run, "rank": cmd_rank, "status": cmd_status,
     "scorecard": cmd_scorecard, "data": cmd_data, "rules": cmd_rules,
-    "universe": cmd_universe, "filings": cmd_filings,
+    "universe": cmd_universe, "filings": cmd_filings, "report": cmd_report,
 }
 
 

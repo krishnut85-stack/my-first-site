@@ -267,8 +267,16 @@ SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
 #   1. Message @BotFather -> /newbot -> copy the token  -> TELEGRAM_BOT_TOKEN
 #   2. Message your new bot once (so it is allowed to reply to you).
 #   3. Message @userinfobot to get your numeric id      -> TELEGRAM_CHAT_ID
-TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
-TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
+#
+# MAYURA ISOLATION: Mayura is its OWN bot in its OWN group, and must NEVER share
+# a token/chat with the main equity bot (an env load-order slip once sent Mayura
+# alerts into the wrong group). So Mayura's OWN vars — MAYURA_BOT_TOKEN /
+# MAYURA_CHAT_ID — ALWAYS WIN when present. The generic TELEGRAM_* vars are only
+# the fallback (what the main bot uses), so the two can never collide again.
+TELEGRAM_BOT_TOKEN = (os.environ.get("MAYURA_BOT_TOKEN")
+                      or os.environ.get("TELEGRAM_BOT_TOKEN", ""))
+TELEGRAM_CHAT_ID = (os.environ.get("MAYURA_CHAT_ID")
+                    or os.environ.get("TELEGRAM_CHAT_ID", ""))
 
 # --- Swaminatha: NSE/BSE filings gate --------------------------------------
 # The Swaminatha face (Mayura's "Guru") reads recent corporate filings and only

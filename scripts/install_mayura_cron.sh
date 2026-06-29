@@ -17,7 +17,8 @@ chmod +x "$SH"
 # Times are UTC (IST = UTC + 5:30). The 5 EOD faces run JUST AFTER THE OPEN: they
 # decide on the last settled close (yesterday) and buy at today's open — the
 # professional "signal on close, execute next open" model (no look-ahead bias).
-# Swaminatha (news) is intraday + a Sunday preview.
+# Swaminatha (news) is intraday + a Sunday preview. The EOD report (read-only
+# P&L per face → each topic) fires once after the 15:30 IST close (10:10 UTC).
 NEW="$(cat <<CRON
 50 3 * * 1-5 $SH dandapani  >> $LOG 2>&1
 55 3 * * 1-5 $SH senthil    >> $LOG 2>&1
@@ -26,6 +27,7 @@ NEW="$(cat <<CRON
 15 4 * * 1-5 $SH solaimalai >> $LOG 2>&1
 */30 4-10 * * 1-5 $SH swaminatha >> $LOG 2>&1
 0 5 * * 0 $SH swaminatha >> $LOG 2>&1
+10 10 * * 1-5 $SH report >> $LOG 2>&1
 CRON
 )"
 
@@ -35,4 +37,4 @@ CRON
 echo "✅ Mayura cron installed (no nano used). Mayura's scheduled faces:"
 crontab -l | grep 'mayura_cron.sh'
 echo
-echo "🦚 5 faces decide on settled close + buy at the open (9:20–9:45 IST); Swaminatha polls news every 30 min, Mon–Fri."
+echo "🦚 5 faces decide on settled close + buy at the open (9:20–9:45 IST); Swaminatha polls news every 30 min, Mon–Fri; EOD report + P&L per face at 15:40 IST."

@@ -6,9 +6,11 @@
 # REAL Kite prices and Telegrams you the result. PAPER ONLY — never a real order.
 #
 # Usage:
-#   mayura_cron.sh            -> run ALL faces (one burst; simple, but heavier)
-#   mayura_cron.sh <face>     -> run ONLY that face (dandapani/senthil/subramanya/
-#                                thanikesa/solaimalai/swaminatha)
+#   mayura_cron.sh                 -> run ALL faces (one burst; simple, heavier)
+#   mayura_cron.sh <face>          -> run ONLY that face (back-compat = "run <face>")
+#   mayura_cron.sh <cmd> [face]    -> any command, e.g.  report dandapani
+#                                     (faces: dandapani/senthil/subramanya/
+#                                      thanikesa/solaimalai/swaminatha)
 #
 # STAGGER each face at its OWN cron time so they never hit the Kite API at the
 # same moment — and don't fight your OTHER bots that share the same Kite token.
@@ -49,9 +51,22 @@ fi
 # 3) Daily Kite access token your main bot refreshes via TOTP.
 export KITE_TOKEN_FILE="${KITE_TOKEN_FILE:-/home/globalbot/data/kite_token.json}"
 
-# 4) Run Mayura (paper session + Telegram). Python resolves to the venv's.
-#    Optional $1 = a single face, so each can be cron-scheduled at its own time
-#    (staggered Kite access). No arg = all faces, sequentially.
-FACE="${1:-}"
-echo "===== Mayura cron run ${FACE:-(all)}: $(date -u '+%Y-%m-%d %H:%M:%S UTC') ====="
-python mayura.py run ${FACE}
+# 4) Run Mayura (paper session/report + Telegram). Python resolves to the venv's.
+#    Args are flexible so cron can stagger BOTH the daily run AND the EOD report:
+#      $SH dandapani          -> "run dandapani"  (back-compat: bare face = run)
+#      $SH run dandapani      -> "run dandapani"
+#      $SH report dandapani   -> "report dandapani"  (EOD P&L to its topic)
+#      $SH report             -> EOD report for ALL faces
+#    No args = run all faces, sequentially.
+ARG1="${1:-}"
+ARG2="${2:-}"
+case "$ARG1" in
+  run|report|rank|status|scorecard|data|rules|universe|filings|health|check|regime|telegram-setup)
+    CMD="$ARG1"; FACE="$ARG2" ;;          # explicit command (+ optional face)
+  "")
+    CMD="run"; FACE="" ;;                  # no args -> run all faces
+  *)
+    CMD="run"; FACE="$ARG1" ;;             # bare face -> run that face
+esac
+echo "===== Mayura cron ${CMD} ${FACE:-(all)}: $(date -u '+%Y-%m-%d %H:%M:%S UTC') ====="
+python mayura.py "$CMD" ${FACE}

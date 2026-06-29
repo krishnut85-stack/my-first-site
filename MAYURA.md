@@ -9,7 +9,8 @@
 > is ever placed. Markets fall. Test for months. Vel Muruga 🙏
 
 ```bash
-python mayura.py run        # ⭐ daily paper session + Telegram alert
+python mayura.py run        # ⭐ daily paper session + Telegram alert (each trade listed)
+python mayura.py report     # 🧾 EOD report + P&L per strategy (read-only; to each topic)
 python mayura.py rank       # today's top-ranked industries (no trading)
 python mayura.py status     # your saved track record
 python mayura.py scorecard  # honest verdict: beating the Nifty index?
@@ -24,10 +25,17 @@ python mayura.py universe   # which stocks can Mayura actually trade?
 | API | What it does in Mayura | Where it's wired |
 |-----|------------------------|------------------|
 | **Kite Connect (Zerodha)** | Real NSE last-traded prices + history. **Read-only** — Mayura has NO order-placing tool. | `KITE_API_KEY`, `KITE_TOKEN_FILE` (or `KITE_ACCESS_TOKEN`) |
-| **Telegram Bot API** | Pushes the daily result to your phone. Plain HTTPS, works even where SMTP is blocked. | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` |
+| **Telegram Bot API** | Pushes the daily result + EOD P&L to your phone. Plain HTTPS, works even where SMTP is blocked. | `MAYURA_BOT_TOKEN`, `MAYURA_CHAT_ID`, `MAYURA_TOPIC_<FACE>` |
 
 Set them in a private `.env` on your server (see `.env.example`) — **never commit
 real keys**. Run `python mayura.py check` to confirm both are live.
+
+> 🔒 **Mayura uses its OWN `MAYURA_*` Telegram vars** so it can *never* share a
+> bot/group with the main equity bot. `MAYURA_BOT_TOKEN`/`MAYURA_CHAT_ID` always
+> win; the generic `TELEGRAM_BOT_TOKEN`/`TELEGRAM_CHAT_ID` are only a fallback.
+> Each face posts to its own topic via `MAYURA_TOPIC_<FACE>` (e.g.
+> `MAYURA_TOPIC_DANDAPANI`). `python mayura.py telegram-setup` auto-detects and
+> writes these for you.
 
 ---
 
