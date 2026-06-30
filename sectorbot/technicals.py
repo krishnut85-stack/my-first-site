@@ -248,10 +248,66 @@ def thanikesa_score(bars: list[Bar], index: list[Bar] | None = None) -> Optional
     return round(base, 1) if base is not None else None
 
 
+def _new_high_breakout(bars: list[Bar], lookback: int = 30, recent: int = 3):
+    """Livermore 'pivotal point': did today's close break ABOVE the highest high
+    of the prior `lookback` bars (excluding the last `recent`)? Returns
+    (broke: bool, strength: float) where strength = close/pivot - 1."""
+    if len(bars) < lookback + recent + 1:
+        return False, 0.0
+    prior = bars[-(lookback + recent):-recent]
+    pivot = max((b.high for b in prior), default=0.0)
+    c = bars[-1].close
+    if pivot <= 0:
+        return False, 0.0
+    return c > pivot, (c / pivot - 1.0)
+
+
+def _volume_surge(bars: list[Bar], period: int = 50) -> Optional[float]:
+    """Latest bar's volume vs its recent average (breakout confirmation — the
+    'tape'). 1.0 = average, 2.0 = double. None if volume data is missing."""
+    vols = [b.volume for b in bars[-period:] if b.volume]
+    if len(vols) < 10 or not bars[-1].volume:
+        return None
+    avg = sum(vols) / len(vols)
+    return (bars[-1].volume / avg) if avg > 0 else None
+
+
+def livermore_score(bars: list[Bar], index: list[Bar] | None = None) -> Optional[float]:
+    """Jesse Livermore breakout-leader score (0–100) — his principles in code:
+      • trade WITH the trend  — hard Stage-2 gate (None otherwise; he stood aside)
+      • enter at the PIVOTAL POINT — a fresh breakout above a recent pivot high
+      • buy LEADERS near their highs — within 15% of the 52-week high
+      • confirm with momentum, relative strength and a volume surge (the 'tape')
+    Strict by design: returns None for anything not trending or far from a
+    breakout, so it trades rarely and only the strongest setups (no overtrading)."""
+    if len(bars) < 60:
+        return None
+    if not is_stage2(bars):                       # only with the trend
+        return None
+    _, _, dist = levels(bars)
+    if dist is None or dist > 15.0:               # must be a leader near its highs
+        return None
+    broke, strength = _new_high_breakout(bars)    # the pivotal point
+    breakout = 100.0 if broke else _scale(strength, -0.06, 0.0)  # at/near the pivot
+    prox = _scale(15.0 - dist, 0.0, 15.0)         # closer to highs = stronger leader
+    mom = _scale(momentum(bars), 0.0, 0.60)
+    rs = _scale(relative_strength(bars, index), 0.0, 0.30) if index else None
+    vol = _scale(_volume_surge(bars), 1.0, 2.0)   # 1x..2x average -> 0..100
+    base = _blend([
+        (breakout, 0.35),   # the breakout itself (pivotal point)
+        (prox, 0.20),       # leadership: near the highs
+        (mom, 0.20),        # momentum
+        (rs, 0.15),         # beating the market
+        (vol, 0.10),        # volume confirmation (the tape)
+    ])
+    return round(base, 1) if base is not None else None
+
+
 # OHLC scorers (symbol-level, computed from live bars). Each takes
 # (stock_bars, index_bars) and returns 0..100 or None.
 SCORERS_OHLC = {
     "thanikesa": thanikesa_score,
+    "livermore": livermore_score,
 }
 
 

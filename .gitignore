@@ -18,6 +18,8 @@ mayura_data/subramanya.csv
 mayura_data/swaminatha.csv
 mayura_data/thanikesa.csv
 mayura_data/solaimalai.csv
+mayura_data/livermore.csv
+mayura_data/livermore/*.csv
 mayura_report*.txt
 mayura_report*.html
 mayura_dashboard*.html
