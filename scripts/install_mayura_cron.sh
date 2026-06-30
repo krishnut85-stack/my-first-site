@@ -25,7 +25,6 @@ NEW="$(cat <<CRON
 0 4 * * 1-5 $SH subramanya >> $LOG 2>&1
 5 4 * * 1-5 $SH thanikesa  >> $LOG 2>&1
 15 4 * * 1-5 $SH solaimalai >> $LOG 2>&1
-25 4 * * 1-5 $SH livermore  >> $LOG 2>&1
 */30 4-10 * * 1-5 $SH swaminatha >> $LOG 2>&1
 0 5 * * 0 $SH swaminatha >> $LOG 2>&1
 10 10 * * 1-5 $SH report >> $LOG 2>&1

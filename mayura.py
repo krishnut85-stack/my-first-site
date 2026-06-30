@@ -25,7 +25,6 @@ SIX FACES — Arumugam (Lord Muruga as worshipped at his six temples), independe
     📜 swaminatha   news-driven (Gemini)  (reads full filing, buys material news) — Swamimalai
     🕊️ thanikesa    small-cap momentum    (Minervini VCP+Stage2, valuation-aware) — Thiruttani
     🍃 solaimalai   large/mid value+quality (quant + special situations)      — Pazhamudircholai
-    📈 livermore    trend-following breakout (pivotal-point, cut losses/let run) — guest tribute
 
 USAGE
 -----
@@ -142,24 +141,9 @@ STRATEGIES = {
                       atr=3.0, hold_days=45, time_min=0.05, failed_breakout=False,
                       max_ext=0.50),
     },
-    # --- A 7th "guest" face: Jesse Livermore's classic trend-following rules.
-    #     Not one of the Aaru Padai Veedu — a tribute edge the user asked for. ---
-    "livermore": {  # 📈 Jesse Livermore — trend + pivotal-point breakout
-        "name": "Livermore", "emoji": "📈",
-        "tagline": "trend + pivotal breakout — cut losses fast, let winners run",
-        "compute": "ohlc",            # score from live Kite bars (like Thanikesa)
-        "ohlc_scorer": "livermore",    # sectorbot/technicals.py SCORERS_OHLC
-        "profile": "technical",        # (only used if it ever falls back to CSV)
-        # Livermore's exits: CUT LOSERS QUICKLY (tight 7% stop), arm the trailing
-        # lock early (+5%), then give winners a WIDE leash (15%) so they RUN for a
-        # long time (120 days). Exit a failed breakout fast (price back below SMA50).
-        "exits": dict(stop=0.07, trail_arm=0.05, trail_give=0.15, tp=1.00,
-                      atr=3.0, hold_days=120, time_min=0.05, failed_breakout=True,
-                      max_ext=0.40),
-    },
 }
 STRATEGY_ORDER = ["dandapani", "senthil", "subramanya",
-                  "swaminatha", "thanikesa", "solaimalai", "livermore"]
+                  "swaminatha", "thanikesa", "solaimalai"]
 CURRENT: dict = {}   # the active strategy (set by _use_strategy)
 
 
