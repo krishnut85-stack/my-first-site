@@ -43,7 +43,7 @@ def main():
         import market_calendar as _mc
         _today = dt.datetime.now(dt.timezone(dt.timedelta(hours=5, minutes=30))).date()
         if not _mc.is_trading_day(_today):
-            raise SystemExit(f"[PX] {_today} is not an NSE trading day - standing down")
+            print(f"[PX] {_today} is not an NSE trading day - standing down"); raise SystemExit(0)
         print(f"[PX] calendar check OK: {_today} is a trading day")
     except SystemExit:
         raise
@@ -54,7 +54,7 @@ def main():
     age_h = (dt.datetime.now(dt.timezone(dt.timedelta(hours=5, minutes=30))) -
              dt.datetime.fromisoformat(ts)).total_seconds() / 3600
     if age_h > 20:
-        raise SystemExit(f"[PX] latest run #{rid} is {age_h:.0f}h old — stale, refusing to execute")
+        print(f"[PX] latest run #{rid} is {age_h:.0f}h old — stale, refusing to execute"); raise SystemExit(0)
     sigs = con.execute("SELECT symbol, signal FROM results WHERE run_id=? AND signal>0 "
                        "ORDER BY mean DESC", (rid,)).fetchall()
     ai = {r[0]: (r[1], r[2]) for r in con.execute(
@@ -82,7 +82,7 @@ def main():
         nif_ltp = kite.ltp("NSE:NIFTY 50")["NSE:NIFTY 50"]["last_price"]
         gap = nif_ltp / nif_close[-1] - 1
         if nif_close is not None and gap < MAX_GAP_NIFTY:
-            raise SystemExit(f"[PX] NIFTY gapped {gap*100:+.2f}% overnight -> guard, no entries today")
+            print(f"[PX] NIFTY gapped {gap*100:+.2f}% overnight -> guard, no entries today"); raise SystemExit(0)
         print(f"[PX] NIFTY gap check OK ({gap*100:+.2f}%)")
     except SystemExit:
         raise
