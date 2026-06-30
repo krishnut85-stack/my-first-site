@@ -38,6 +38,7 @@ USAGE
     python mayura.py data [strategy]   # which Trendlyne columns it detected
     python mayura.py filings swaminatha # dry-run the filings reader (no trades)
     python mayura.py health            # one-shot status of ALL faces (global)
+    python mayura.py doctor            # WHERE alerts go + P&L/win-loss per face (global)
     python mayura.py check             # Kite token + Telegram + Gemini wired? (global)
     python mayura.py regime            # NIFTY vs its 200-DMA (global)
 
@@ -1065,6 +1066,76 @@ def cmd_health() -> None:
           "Paper only.) 🦚\n")
 
 
+def cmd_doctor() -> None:
+    """FULL diagnosis: for EVERY face, show (1) exactly where its alert goes —
+    bot token + chat id + topic — so we can PROVE Mayura posts only to its own
+    group, and (2) live P&L: realised, unrealised, win/loss record. One command,
+    the whole truth. Read-only — never trades."""
+    _banner("MAYURA DOCTOR")
+    from sectorbot.portfolio import Portfolio
+    from sectorbot.datasource import PaperDataSource, get_datasource
+
+    # --- 1. Telegram destination (isolation proof) ------------------------
+    tok = config.TELEGRAM_BOT_TOKEN
+    chat = config.TELEGRAM_CHAT_ID
+    mayura_tok = os.environ.get("MAYURA_BOT_TOKEN", "")
+    mayura_chat = os.environ.get("MAYURA_CHAT_ID", "")
+    main_chat = os.environ.get("TELEGRAM_CHAT_ID", "")
+    tok4 = f"…{tok[-4:]}" if tok else "(none)"
+    print("  📡 WHERE ALERTS GO (this is the isolation check):")
+    print(f"     Active bot token : {tok4}")
+    print(f"     Active chat id   : {chat or '(none)'}")
+    if mayura_tok or mayura_chat:
+        same = (chat == mayura_chat and bool(mayura_chat))
+        print(f"     MAYURA_* vars    : SET (chat {mayura_chat or '—'}) "
+              f"{'✅ active' if same else '⚠️ NOT the active chat!'}")
+    else:
+        print("     MAYURA_* vars    : ⚠️ MISSING — falling back to the generic "
+              "TELEGRAM_* (the MAIN bot's). Run scripts/mayura_isolate_env.sh")
+    if main_chat and chat == main_chat and chat != mayura_chat:
+        print(f"     🚨 DANGER: active chat == the MAIN bot's TELEGRAM_CHAT_ID "
+              f"({main_chat}). Mayura would post into the main group! "
+              "Run scripts/mayura_isolate_env.sh")
+    print()
+
+    # --- 2. Per-face P&L + alert topic ------------------------------------
+    ds = get_datasource()
+    real = not isinstance(ds, PaperDataSource)
+    print(f"  💰 P&L PER STRATEGY ({'REAL Kite prices' if real else 'SYNTHETIC'}):")
+    print(f"  {'Face':12}{'Topic':>6}{'Buys':>6}{'Sells':>6}{'Win/Loss':>10}"
+          f"{'Realised':>11}{'Unreal':>11}{'Total%':>9}")
+    print("  " + "-" * 77)
+    tot_real = tot_unreal = 0.0
+    for key in STRATEGY_ORDER:
+        _use_strategy(key)
+        pf = Portfolio.load()
+        topic = _topic_id() or "—"
+        trades = getattr(pf, "trades", [])
+        buys = [t for t in trades if t.get("side") == "BUY"]
+        sells = [t for t in trades if t.get("side") == "SELL"]
+        wins = sum(1 for t in sells if (t.get("pnl") or 0) > 0)
+        losses = sum(1 for t in sells if (t.get("pnl") or 0) <= 0)
+        syms = list(pf.holdings)
+        prices = ds.last_prices(syms) if syms else {}
+        price_of = lambda s: prices.get(s) or pf.holdings[s]["avg_price"]
+        unreal = pf.unrealized_pnl(price_of)
+        equity = pf.cash + sum(h["qty"] * price_of(s) for s, h in pf.holdings.items())
+        total_pct = ((equity - pf.starting_capital) / pf.starting_capital * 100
+                     if pf.starting_capital else 0.0)
+        tot_real += pf.realized_pnl
+        tot_unreal += unreal
+        s = STRATEGIES[key]
+        print(f"  {s['emoji']} {s['name']:9}{str(topic):>6}{len(buys):>6}"
+              f"{len(sells):>6}{f'{wins}/{losses}':>10}{pf.realized_pnl:>11,.0f}"
+              f"{unreal:>11,.0f}{total_pct:>8.1f}%")
+    print("  " + "-" * 77)
+    print(f"  {'TOTAL':12}{'':>6}{'':>6}{'':>6}{'':>10}{tot_real:>11,.0f}"
+          f"{tot_unreal:>11,.0f}")
+    print(f"\n  Reading this: each face has its OWN Topic (a different number = a "
+          "different room).\n  Win/Loss counts CLOSED trades only. Unreal = open "
+          "positions at live price.\n  All paper money — nothing real was traded. 🦚\n")
+
+
 def cmd_check() -> None:
     """Verify the APIs Mayura needs: Kite (prices), Telegram (alerts), Gemini
     (Swaminatha news). Prints progress before each step so it never looks stuck."""
@@ -1462,7 +1533,8 @@ def cmd_rules() -> None:
 
 # Commands that run once for the WHOLE bot (not per strategy).
 GLOBAL_COMMANDS = {"check": cmd_check, "regime": cmd_regime,
-                   "telegram-setup": cmd_telegram_setup, "health": cmd_health}
+                   "telegram-setup": cmd_telegram_setup, "health": cmd_health,
+                   "doctor": cmd_doctor}
 # Commands that run PER strategy (loop all three unless one is named).
 PER_STRATEGY_COMMANDS = {
     "run": cmd_run, "rank": cmd_rank, "status": cmd_status,
