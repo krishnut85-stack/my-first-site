@@ -1,27 +1,3 @@
-# __GIR_TG_TOPIC_ROUTING__ (auto top-inject, lazy env, json)
-try:
- import os as _o, requests as _r
- _b=_r.sessions.Session.request
- _MAP=[('[M11 HEALTH]','TG_THREAD_HEALTH'),('[EQUITY]','TG_THREAD_PHOENIX'),('[FNO]','TG_THREAD_FNO')]
- def _f(self,*a,**k):
-  try:
-   u=k.get('url') or (a[1] if len(a)>1 else '')
-   if 'sendMessage' in str(u):
-    j=k.get('json')
-    if isinstance(j,dict) and 'message_thread_id' not in j:
-     t=str(j.get('text',''))
-     for tag,var in _MAP:
-      if tag in t:
-       _v=_o.environ.get(var,'').strip()
-       if _v: j=dict(j); j['message_thread_id']=int(_v); k['json']=j
-       break
-  except Exception: pass
-  return _b(self,*a,**k)
- _r.sessions.Session.request=_f
-except Exception: pass
-# __GIR_TG_TOPIC_ROUTING_END__
-import os
-import re
 #!/usr/bin/env python3
 """
 GIR v26.0 — Autonomous NSE Trader
@@ -98,15 +74,6 @@ import os
 import sys
 import json
 import time
-_UNCONF_ALERT_TS = {}   # tsym -> last unconfirmed-alert epoch (Telegram dedup)
-def _unconf_should_alert(tsym, cooldown=1800):
-    """True if this symbol has not been alerted within cooldown seconds."""
-    now = time.time()
-    last = _UNCONF_ALERT_TS.get(tsym, 0)
-    if now - last >= cooldown:
-        _UNCONF_ALERT_TS[tsym] = now
-        return True
-    return False
 import math
 import hashlib
 import logging
@@ -118,28 +85,6 @@ from pathlib import Path
 
 import requests
 import pyotp
-
-# ============================================================================
-# PAPER MODE (Phase 2A 2026-05-21) — every kite.place_order / place_gtt /
-# modify_gtt routes through paper_trader.py when PAPER_MODE=True.
-# If paper_trader import fails, PAPER_MODE defaults to False and a loud
-# warning prints. Bot then behaves as before.
-# ============================================================================
-sys.path.insert(0, '/home/globalbot/paper')
-try:
-    from paper_trader import (
-        PAPER_MODE,
-        record_event,
-        paper_place_order,
-        paper_place_gtt,
-        paper_modify_gtt,
-        paper_cancel_gtt,
-        paper_record_exit,
-        paper_gemini_call,
-    )
-except Exception as _paper_e:
-    PAPER_MODE = False
-    print(f"[PAPER_TRADER IMPORT FAILED] {_paper_e} — bot in LIVE mode!", file=sys.stderr)
 
 try:
     from kiteconnect import KiteConnect
@@ -157,26 +102,6 @@ except ImportError as _nbe:
     print(f"WARNING: news_brain.py not importable: {_nbe} - LLM mode disabled")
 
 # V78: Trade recorder (silent observation, never blocks orders)
-# PATCH_V107_ATR_SHADOW: shadow mode ATR-based SL comparison (no action)
-try:
-    from atr_shadow import AtrShadow
-    _V107_ATR_SHADOW = AtrShadow()
-    _V107_ATR_AVAILABLE = True
-except Exception as _e_v107:
-    _V107_ATR_AVAILABLE = False
-    _V107_ATR_SHADOW = None
-# PATCH_V105_REGIME_FNO
-try:
-    from regime_monitor_fno import FnoRegimeMonitor
-    _V105_FNO_REGIME_AVAILABLE = True
-except Exception as _e_v105_fno:
-    _V105_FNO_REGIME_AVAILABLE = False
-# PATCH_V105_REGIME_EQUITY
-try:
-    from regime_monitor_equity import EquityRegimeMonitor
-    _V105_EQ_REGIME_AVAILABLE = True
-except Exception as _e_v105_eq:
-    _V105_EQ_REGIME_AVAILABLE = False
 try:
     from trade_recorder import TradeRecorder
     _TRADE_RECORDER_AVAILABLE = True
@@ -225,72 +150,15 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 
 # ── Capital wall ──
 EQUITY_PCT = 0.75
-
-# ============================================================
-# OBSERVATION MODE CAPITAL OVERRIDE - added 2026-05-22
-# When paper_capital_ledger has rows AND observation_meta.mode=OBSERVATION,
-# the bot uses paper ledger balance instead of real Kite capital for sizing.
-# Falls back to real capital on any failure. Read-only on the ledger DB.
-# ============================================================
-
-def _paper_available():
-    """PATCH_CAP1: shared paper cap. Returns (override_total - total open deployment
-    across ALL sleeves). Used in paper mode instead of live Kite margin so equity,
-    F&O and Hunter respect ONE ceiling. Returns None on failure (caller falls back)."""
-    try:
-        _t = _observation_capital_override()
-        if _t is None or _t <= 0:
-            return None
-        import sqlite3 as _sql
-        _c = _sql.connect("/home/globalbot/paper/trades.db", timeout=2)
-        _cur = _c.cursor()
-        _cur.execute("SELECT COALESCE(SUM(qty*entry_price),0) FROM paper_trades WHERE status='OPEN'")
-        _dep = _cur.fetchone()[0] or 0
-        _c.close()
-        return max(0.0, float(_t) - float(_dep))
-    except Exception:
-        return None
-
-def _observation_capital_override():
-    """Return paper ledger total (initial + daily deposits + realized P&L) if
-    observation mode is active. Returns None on failure or if mode is off."""
-    try:
-        import sqlite3 as _sql
-        _conn = _sql.connect("/home/globalbot/paper/trades.db", timeout=2)
-        _cur = _conn.cursor()
-        # Check mode
-        _cur.execute("SELECT value FROM observation_meta WHERE key='mode'")
-        _row = _cur.fetchone()
-        if not _row or _row[0] != "OBSERVATION":
-            _conn.close()
-            return None
-        # Sum deposits
-        _cur.execute("SELECT COALESCE(SUM(amount), 0) FROM paper_capital_ledger")
-        _deposits = _cur.fetchone()[0] or 0
-        # Add realized P&L from closed paper trades
-        _cur.execute("SELECT COALESCE(SUM(pnl), 0) FROM paper_trades WHERE status='CLOSED'")
-        _pnl = _cur.fetchone()[0] or 0
-        _conn.close()
-        _total = float(_deposits) + float(_pnl)
-        if _total <= 0:
-            return None
-        return _total
-    except Exception:
-        return None
-
-
 FNO_PCT = 0.25
 
 # ── Equity config ──
-EQ_MAX_POS = 10  # V209_5x5x5: was 6, rebalanced for Hunter 4→5 expansion (total 5+5+5=15)  # raised 5->10 per user 2026-06-10
+EQ_MAX_POS = 12                 # V102: raised 10->12 (more capacity for V92-V100 candidate quality)
 EQ_MAX_PER_SECTOR = 3           # V79_FIX3: 2->3 (allow more sector concentration when signals cluster)
 EQ_RISK_PER_TRADE = 0.02
-EQ_INITIAL_SL_PCT = 0.06   # P3 2026-05-21: 0.035 -> 0.06 wider initial SL       # V203_INITIAL_WIDEN: 0.025 -> 0.035. 2.5% was clipped by intraday noise on volatile days (May 11 2026 NIFTY -1.08%). Wider initial lets ATR-based SL fire; trailing (EQ_TRAIL_SL_PCT) stays 2.5% to lock profits.
-EQ_TRAIL_SL_PCT = 0.07   # P3 2026-05-21: 0.040 -> 0.07 wider trail SL
-# P3 2026-05-21: Time-stop constants
-EQ_MAX_HOLD_DAYS  = 30    # Force exit equity positions after 30 days
-FNO_MAX_HOLD_DAYS = 5     # AUDIT_V231: 7->5. Force exit F&O after 5 days if not working (theta protection)         # V204_TRAIL_WIDEN: 0.025 -> 0.040. 2.5% choked winners (avg +Rs.228 exits at +2-3%). V85 winner data shows score-missing trades fell to DEFAULT tier; widen DEFAULT to match CONV>=80 tier.
-EQ_DEAD_MONEY_DAYS = 10
+EQ_INITIAL_SL_PCT = 0.035       # V203_INITIAL_WIDEN: 0.025 -> 0.035. 2.5% was clipped by intraday noise on volatile days (May 11 2026 NIFTY -1.08%). Wider initial lets ATR-based SL fire; trailing (EQ_TRAIL_SL_PCT) stays 2.5% to lock profits.
+EQ_TRAIL_SL_PCT = 0.025         # V79_FIX2: 0.035 -> 0.025 reverted with V79_FIX1
+EQ_DEAD_MONEY_DAYS = 15
 EQ_KELLY_FRACTION = 0.80
 EQ_MIN_CONFIDENCE = 42
 EQ_T2_ATR_MULT = 14             # Target 2 = 14 x ATR (from v9.1 backtest)
@@ -298,7 +166,7 @@ EQ_PROFIT_LOCK_MIN = 15         # Minutes after entry before profit lock
 EQ_SCAN_INTERVAL_MIN = 30       # Scan every 30 minutes
 
 # ── F&O config ──
-FNO_MAX_POS = 2
+FNO_MAX_POS = 5
 FNO_MAX_PER_STOCK = 1
 FNO_MAX_PER_SECTOR = 2          # PATCH_V3_SECTOR_CAP: max 2 F&O positions per sector
 FNO_VIX_MAX = 22.0              # PATCH_V4_VIX_FILTER: block F&O entries when India VIX > 22
@@ -356,11 +224,11 @@ def FNO_CAP_PER_TRADE_FN(capital):
     if capital < 200000:  return 0.70
     return 0.95
 FNO_CAP_PER_TRADE = 0.30  # default for small capital; overridden at runtime        # 30% of F&O capital per trade
-FNO_SL_PCT = 0.25   # P3 2026-05-21: 0.30 -> 0.25               # 30% SL on premium
+FNO_SL_PCT = 0.30               # 30% SL on premium
 FNO_GTT_LIMIT_OFFSET = 0.005  # FIX_V60: was 5%
 EQ_GTT_LIMIT_OFFSET = 0.05  # FIX_V60
-FNO_TRAIL_ACTIVATE = 0.20   # AUDIT_V225: 0.50 -> 0.20, lock profit at +20% not +50% (was effectively disabling trail)
-FNO_TRAIL_PCT = 0.15 if V104_FAST_FNO_TRAIL else 0.20      # AUDIT_V225: 0.10 -> 0.15 trail width to reduce whipsaw
+FNO_TRAIL_ACTIVATE = 0.05 if V104_FAST_FNO_TRAIL else 0.10  # V104_v2: +5% (was +10%)
+FNO_TRAIL_PCT = 0.10 if V104_FAST_FNO_TRAIL else 0.20      # V104_v2: 10% trail (was 20%)
 FNO_TRAIL_DRY_RUN = False
 
 # V27 Stage 2: LLM news brain integration (dry-run = log only, no trades)
@@ -374,7 +242,7 @@ FNO_DTE_WARN = 20               # Warning at DTE <= 20
 FNO_MIN_OI = 50000
 FNO_MAX_SPREAD = 0.08  # V75: 5% -> 8%           # 5% max bid-ask spread
 FNO_MIN_CATALYST = 60           # PATCH_V28_SECTOR_LOG: sector over-cap logs demoted to DEBUG           # Minimum catalyst score
-FNO_SCAN_INTERVAL_MIN = 3        # PATCH_FNOTIMING: 15->3, act on signals within 3min
+FNO_SCAN_INTERVAL_MIN = 15      # Scan every 15 minutes
 
 # ── Risk ──
 CRASH_NIFTY_DROP = 0.05         # Block if Nifty drops > 5% intraday
@@ -391,7 +259,6 @@ BLOCKED_SUFFIXES = ["-SM", "-ST", "-BE", "-BZ", "-IL", "-BL"]
 # Past incident: bot greeted "Market opens in 75 min" on a Saturday because
 # old list had Holi Mar 10 (actual: Mar 3), missing Good Friday/Bakri Id/Muharram.
 _NSE_HOLIDAYS_OFFICIAL = {
-    date(2026, 1, 15),   # Municipal Corporation Elections Maharashtra (Thu)
     date(2026, 1, 26),   # Republic Day (Mon)
     date(2026, 3, 3),    # Holi (Tue)
     date(2026, 3, 26),   # Shri Ram Navami (Thu)
@@ -401,14 +268,12 @@ _NSE_HOLIDAYS_OFFICIAL = {
     date(2026, 5, 1),    # Maharashtra Day (Fri)
     date(2026, 5, 28),   # Bakri Id (Thu)
     date(2026, 6, 26),   # Muharram (Fri)
-    date(2026, 9, 14),   # Ganesh Chaturthi (Mon)
+    # Aug 15 (Independence Day) is Saturday — already closed
     date(2026, 10, 2),   # Gandhi Jayanti (Fri)
-    date(2026, 10, 20),  # Dussehra (Tue)
-    date(2026, 11, 10),  # Diwali-Balipratipada (Tue)
-    date(2026, 11, 24),  # Prakash Gurpurb Sri Guru Nanak Dev (Tue)
+    date(2026, 10, 21),  # Diwali Balipratipada (Wed)
+    # Nov 8 (Diwali Laxmi Pujan) is Sunday — Muhurat session only
+    date(2026, 11, 25),  # Guru Nanak Jayanti (Wed)
     date(2026, 12, 25),  # Christmas (Fri)
-    # Aug 15 (Independence Day) is Saturday - already closed by weekend gate.
-    # Nov 8 (Diwali Laxmi Pujan) is Sunday - Muhurat session only, not traded by bot.
 }
 _NSE_HOLIDAYS_LEGACY = {
     date(2026, 1, 26), date(2026, 3, 10), date(2026, 3, 30), date(2026, 3, 31),
@@ -783,342 +648,6 @@ def _kite_retry(fn, *args, max_retries=3, backoff=1.0, **kwargs):
 
 
 # ═══════════════════════════════════════════════════════════════
-
-# V210_SAFE_PLACE_ORDER
-_V210_MODULE_COOLDOWN = set()
-_V210_POSITIONS_CACHE = {"ts": 0, "data": None}
-
-
-# ═══════════════════════════════════════════════════════════════
-# V222 — TRADER DISCIPLINE GATE (deployed 2026-05-25)
-# Permanent, bypass-proof, fail-closed.
-# Enforces 7 professional trader rules backed by SEBI data + Indian
-# market expert consensus + algo desk literature.
-# Defaults can be tuned via env vars: V222_OTM_CAP, V222_DTE_CAP, etc.
-# ═══════════════════════════════════════════════════════════════
-def _v222_parse_fno_symbol(tsym):
-    """Parse NSE F&O option tradingsymbol -> dict.
-    AUDIT_V228: handles BOTH expiry formats + '&' underlyings (M&M, GVT&D):
-      monthly: UNDERLYING + YY + MON(3 letters) + STRIKE + CE/PE  (RADICO26JUN3700CE)
-      weekly:  UNDERLYING + YY + M(1:1-9/O/N/D) + DD + STRIKE + CE/PE  (NIFTY2661622900PE)
-    """
-    try:
-        if not tsym or tsym[-2:] not in ("CE", "PE"):
-            return None
-        opt_type = tsym[-2:]
-        body = tsym[:-2]
-        m = re.match(r"^([A-Z&]+?)(\d{2})(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(\d+)$", body)
-        if m:
-            underlying, yy, mon, strike_str = m.groups()
-            return {
-                "underlying": underlying,
-                "expiry_str": f"{yy}{mon}",
-                "strike": float(strike_str),
-                "opt_type": opt_type,
-            }
-        m = re.match(r"^([A-Z&]+?)(\d{2})([1-9OND])(\d{2})(\d+)$", body)
-        if m:
-            underlying, yy, mcode, dd, strike_str = m.groups()
-            if 1 <= int(dd) <= 31:
-                return {
-                    "underlying": underlying,
-                    "expiry_str": f"{yy}{mcode}{dd}",
-                    "strike": float(strike_str),
-                    "opt_type": opt_type,
-                }
-        return None
-    except Exception:
-        return None
-
-
-def _v222_dte_from_expiry(expiry_str):
-    """AUDIT_V228: days-to-expiry from V222 expiry_str.
-      monthly 'YYMON' (e.g. 26JUN) -> last Thursday of month (NSE monthly convention)
-      weekly  'YYMDD' (e.g. 26616) -> exact date (2026-Jun-16)
-    """
-    try:
-        import datetime as _dt, calendar, re as _re
-        today = _dt.date.today()
-        _MON3 = {"JAN":1,"FEB":2,"MAR":3,"APR":4,"MAY":5,"JUN":6,
-                 "JUL":7,"AUG":8,"SEP":9,"OCT":10,"NOV":11,"DEC":12}
-        _WK = {"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9,
-               "O":10,"N":11,"D":12}
-        m = _re.match(r"^(\d{2})([A-Z]{3})$", expiry_str)
-        if m and m.group(2) in _MON3:
-            yy = 2000 + int(m.group(1)); mon = _MON3[m.group(2)]
-            last_day = calendar.monthrange(yy, mon)[1]
-            d = _dt.date(yy, mon, last_day)
-            while d.weekday() != 3:
-                d -= _dt.timedelta(days=1)
-            return (d - today).days
-        m = _re.match(r"^(\d{2})([1-9OND])(\d{2})$", expiry_str)
-        if m and m.group(2) in _WK:
-            yy = 2000 + int(m.group(1)); mon = _WK[m.group(2)]; dd = int(m.group(3))
-            return (_dt.date(yy, mon, dd) - today).days
-        return None
-    except Exception:
-        return None
-
-
-def _v222_trader_gate(order_params, context=""):
-    """
-    V222 TRADER DISCIPLINE GATE
-    Returns (allowed: bool, reason: str)
-    F&O orders only — equity/Hunter pass through untouched.
-    """
-    try:
-        tsym = order_params.get("tradingsymbol", "")
-        exch = order_params.get("exchange", "")
-        # Non-F&O orders skip entirely (equity, Hunter, etc)
-        if exch != "NFO":
-            return True, "v222_non_fno_skip"
-        # SELL orders skip (exit logic)
-        if order_params.get("transaction_type") != "BUY":
-            return True, "v222_sell_skip"
-        # HARD_FNO_KILL (Jun 2026): old F&O lane retired - new bot owns F&O.
-        # Blocks every NEW NFO entry; SELLs/exits already passed above.
-        return False, "fno_lane_retired"
-
-        parsed = _v222_parse_fno_symbol(tsym)
-        if not parsed:
-            log.warning(f"[V222] {context} {tsym} unparseable — fail-closed")
-            return False, "v222_unparseable_symbol"
-
-        strike = parsed["strike"]
-        opt_type = parsed["opt_type"]
-        dte = _v222_dte_from_expiry(parsed["expiry_str"])
-        if dte is None:
-            log.warning(f"[V222] {context} {tsym} DTE compute failed — fail-closed")
-            return False, "v222_dte_compute_fail"
-
-        # Rule B: DTE CAP (21-day rule from TastyTrade research + DaysToExpiry)
-        V222_DTE_CAP = int(os.environ.get("V222_DTE_CAP", "35"))  # PATCH_C: 21->35, monthly opts ~25 DTE
-        if dte > V222_DTE_CAP:
-            log.info(f"[V222] {context} REJECTED {tsym}: dte={dte} > {V222_DTE_CAP} (theta-decay rule)")
-            return False, f"v222_dte_exceeded_{dte}"
-
-        # Rule A: OTM CAP (SEBI analyst Hariprasad K — deep OTM = retail death)
-        # Need spot price to compute OTM%. Fetch from Kite if available.
-        V222_OTM_CAP = float(os.environ.get("V222_OTM_CAP", "0.03"))  # 3%
-        underlying = parsed["underlying"]
-        # AUDIT_V230: NSE index quote symbols differ from the F&O underlying name.
-        # kite.ltp("NSE:FINNIFTY") returns NOTHING -> spot=None -> every index option
-        # fail-closed. Correct Kite index quote keys (confirmed via Kite docs):
-        _V230_INDEX_QUOTE = {
-            "NIFTY": "NSE:NIFTY 50",
-            "BANKNIFTY": "NSE:NIFTY BANK",
-            "FINNIFTY": "NSE:NIFTY FIN SERVICE",
-            "MIDCPNIFTY": "NSE:NIFTY MIDCAP SELECT",
-            "NIFTYNXT50": "NSE:NIFTY NEXT 50",
-        }
-        _q_key = _V230_INDEX_QUOTE.get(underlying, f"NSE:{underlying}")
-        spot = None
-        try:
-            kite = KiteSession.kite()
-            if kite is not None:
-                q = kite.ltp([_q_key])
-                spot = q.get(_q_key, {}).get("last_price")
-        except Exception as _e:
-            log.debug(f"[V222] spot fetch failed for {underlying} ({_q_key}): {_e}")
-
-        # AUDIT_V230: pre-market / no-LTP fallback -> previous close via quote() ohlc,
-        # so V222 can still verify OTM instead of fail-closing.
-        if (spot is None or spot <= 0) and kite is not None:
-            try:
-                _vq = kite.quote([_q_key]).get(_q_key, {})
-                spot = (_vq.get("ohlc", {}) or {}).get("close", 0) or None
-                if spot:
-                    log.info(f"[V222] {context} {tsym} using prev-close {spot:.0f} via {_q_key} (no live LTP) [V230]")
-            except Exception as _e2:
-                log.debug(f"[V222] prev-close fallback failed for {_q_key}: {_e2}")
-
-        if spot is None or spot <= 0:
-            log.warning(f"[V222] {context} {tsym} spot unavailable ({_q_key}) — fail-closed (cannot verify OTM)")
-            return False, "v222_spot_unavailable"
-
-        if opt_type == "CE":
-            otm_pct = (strike - spot) / spot
-        else:
-            otm_pct = (spot - strike) / spot
-
-        if otm_pct > V222_OTM_CAP:
-            log.info(f"[V222] {context} REJECTED {tsym}: otm={otm_pct*100:.1f}% > {V222_OTM_CAP*100:.0f}% (lottery-ticket rule, spot={spot:.0f} strike={strike:.0f})")
-            return False, f"v222_otm_exceeded_{otm_pct*100:.1f}pct"
-
-        # Rule F: Catalyst-relative DTE (TradingBlock + Barchart consensus)
-        # If V33 lane (catalyst-driven), DTE must be within +3 to +10 of catalyst.
-        # Heuristic: V33 context strings contain "V33" or "EARNINGS"
-        if "V33" in context or "EARNINGS" in context.upper():
-            V222_CATALYST_DTE_MAX = int(os.environ.get("V222_CATALYST_DTE_MAX", "10"))
-            if dte > V222_CATALYST_DTE_MAX:
-                log.info(f"[V222] {context} REJECTED {tsym}: catalyst trade dte={dte} > {V222_CATALYST_DTE_MAX} (catalyst-DTE match rule)")
-                return False, f"v222_catalyst_dte_mismatch_{dte}"
-
-        # Rule C: DAILY F&O TRADE CAP (SEBI cost-discipline)
-        V222_DAILY_FNO_CAP = int(os.environ.get("V222_DAILY_FNO_CAP", "10"))
-        today_fno = 0
-        try:
-            import sqlite3 as _sql
-            _c = _sql.connect("/home/globalbot/paper/trades.db")
-            _r = _c.execute(
-                "SELECT COUNT(*) FROM paper_trades "
-                "WHERE strategy='gir_fno' AND date(entry_ts,'localtime')=date('now','localtime')"
-            )
-            today_fno = (_r.fetchone() or [0])[0] or 0
-            _c.close()
-        except Exception as _e:
-            log.warning(f"[V222] daily-cap query failed: {_e}")
-
-        if today_fno >= V222_DAILY_FNO_CAP:
-            log.info(f"[V222] {context} REJECTED {tsym}: daily cap reached ({today_fno}/{V222_DAILY_FNO_CAP})")
-            return False, f"v222_daily_cap_{today_fno}"
-
-        # Rule G: STRATEGY DEGRADATION (Finance Magnates + GoatFundedTrader)
-        # Auto-reduce capital allocation based on rolling P&L. Tiered.
-        # 15 trades -EV → 50% capital; 30 trades -EV → 25%; 50 trades -EV → DISABLED
-        try:
-            import sqlite3 as _sql
-            _c = _sql.connect("/home/globalbot/paper/trades.db")
-            _r = _c.execute(
-                "SELECT pnl FROM paper_trades WHERE strategy='gir_fno' AND status='CLOSED' "
-                "ORDER BY entry_ts DESC LIMIT 50"
-            )
-            rows = [r[0] for r in _r.fetchall() if r[0] is not None]
-            _c.close()
-
-            if len(rows) >= 50 and sum(rows) < 0:
-                log.info(f"[V222] {context} REJECTED {tsym}: STRATEGY DISABLED — gir_fno last 50 trades EV={sum(rows):.0f}")
-                return False, "v222_strategy_disabled_50t"
-            if len(rows) >= 30 and sum(rows[:30]) < 0:
-                # 25% capital reduction signaling — log as warning, still allow but flag
-                log.warning(f"[V222] {context} CAUTION {tsym}: gir_fno 30-trade EV={sum(rows[:30]):.0f}<0 — running at 25% capital")
-            elif len(rows) >= 15 and sum(rows[:15]) < 0:
-                log.warning(f"[V222] {context} CAUTION {tsym}: gir_fno 15-trade EV={sum(rows[:15]):.0f}<0 — running at 50% capital")
-        except Exception as _e:
-            log.debug(f"[V222] degradation check failed: {_e}")
-
-        # Rule D+E: Delta band + R:R minimum
-        # Defer to V223 (needs Greeks computation + explicit target field).
-        # V222 covers the highest-impact rules (OTM, DTE, catalyst-DTE, daily cap, strategy degradation).
-        # Together these would have blocked 100% of today's F&O losers.
-
-        log.info(f"[V222] {context} PASSED {tsym}: otm={otm_pct*100:.1f}% dte={dte} today_fno={today_fno}")
-        return True, "v222_passed"
-
-    except Exception as _e:
-        log.error(f"[V222] gate exception ({context}): {_e} — FAIL-CLOSED")
-        return False, f"v222_exception"
-
-
-def _safe_place_order(kite, order_params, positions_dict=None, save_fn=None, cooldown=None, context=""):
-    # V222 GATE — first thing inside the function
-    _v222_allowed, _v222_reason = _v222_trader_gate(order_params, context=context)
-    if not _v222_allowed:
-        try:
-            health.fire(f"V222 BLOCK {_v222_reason}: {order_params.get('tradingsymbol','?')} [{context}]")
-        except Exception: pass
-        return None
-    import time as _t210
-    symbol = order_params.get("tradingsymbol", "UNKNOWN")
-    txn = order_params.get("transaction_type", "")
-    qty = order_params.get("quantity", 0)
-    cd = cooldown if cooldown is not None else _V210_MODULE_COOLDOWN
-    if symbol in cd:
-        log.warning(f"[V210] {symbol} in cooldown [{context}]"); return None
-    # V213_BUY_DEDUP_GUARD: prevent duplicate BUYs by checking Kite live positions
-    if txn == "BUY":
-        try:
-            now = _t210.time()
-            if now - _V210_POSITIONS_CACHE["ts"] > 5 or _V210_POSITIONS_CACHE["data"] is None:
-                _V210_POSITIONS_CACHE["data"] = kite.positions().get("net", [])
-                _V210_POSITIONS_CACHE["ts"] = now
-            net = _V210_POSITIONS_CACHE["data"]
-            existing_qty = sum(
-                p.get("quantity", 0) for p in net
-                if p.get("tradingsymbol") == symbol
-            )
-        except Exception as _e213:
-            log.critical(f"[V213] positions fetch failed, BLOCKING BUY {symbol} fail-closed: {_e213}")
-            try: health.fire(f"V213 FETCH FAIL BLOCK {symbol}")
-            except Exception: pass
-            cd.add(symbol)
-            return None
-        if existing_qty > 0:
-            log.critical(f"[V213_BUY_DEDUP] {symbol} already held qty={existing_qty}, BLOCKING duplicate BUY [{context}]")
-            try: health.fire(f"V213 BUY DEDUP BLOCK {symbol}")
-            except Exception: pass
-            cd.add(symbol)
-            return None
-    if txn == "SELL":
-        try:
-            now = _t210.time()
-            if now - _V210_POSITIONS_CACHE["ts"] > 5 or _V210_POSITIONS_CACHE["data"] is None:
-                _V210_POSITIONS_CACHE["data"] = kite.positions().get("net", [])
-                _V210_POSITIONS_CACHE["ts"] = now
-            net = _V210_POSITIONS_CACHE["data"]
-            kite_qty = sum(p.get("quantity", 0) for p in net if p.get("tradingsymbol") == symbol)
-        except Exception as _e:
-            log.error(f"[V210] positions fetch failed: {_e}"); return None
-        if kite_qty <= 0:
-            if positions_dict is not None and symbol in positions_dict:
-                log.critical(f"[V210_AMNESIA] {symbol} mem has it, Kite doesnt, ABORT SELL [{context}]")
-                try: health.fire(f"AMNESIA BLOCK {symbol}")
-                except Exception: pass
-                positions_dict.pop(symbol, None)
-                if save_fn:
-                    try: save_fn()
-                    except Exception: pass
-            else:
-                log.critical(f"[V210_NAKED_BLOCK] {symbol} qty={qty} blocked [{context}]")
-                try: health.fire(f"NAKED SHORT BLOCKED {symbol}")
-                except Exception: pass
-            cd.add(symbol); return None
-        if kite_qty < qty:
-            log.warning(f"[V210] {symbol} clamping {qty} to {kite_qty}")
-            order_params["quantity"] = kite_qty; qty = kite_qty
-    try:
-        mp = [{"exchange": order_params.get("exchange","NFO"),"tradingsymbol":symbol,
-               "transaction_type":txn,"variety":order_params.get("variety","regular"),
-               "product":order_params.get("product","NRML"),"order_type":order_params.get("order_type","LIMIT"),
-               "quantity":qty,"price":order_params.get("price",0) or 0}]
-        req = kite.order_margins(mp)[0].get("total", 0)
-        _pa = _paper_available() if PAPER_MODE else None
-        avail = _pa if _pa is not None else kite.margins("equity").get("available", {}).get("live_balance", 0)
-        if PAPER_MODE and _pa is not None:
-            log.info(f"[PATCH_CAP1] paper available (shared cap) = Rs.{avail:.0f}")
-        if req > avail * 0.98:
-            log.error(f"[V210_MARGIN_BLOCK] {symbol}: req={req:.0f} avail={avail:.0f}")
-            try: health.fire(f"MARGIN BLOCK {symbol}")
-            except Exception: pass
-            cd.add(symbol); return None
-    except Exception as _me:
-        log.warning(f"[V210] margin precheck failed {symbol}: {_me}")
-    try:
-        if PAPER_MODE:
-            oid = paper_place_order(
-                strategy=("gir_fno" if order_params.get("exchange") == "NFO" else "gir_eq"),
-                signal_source=str(context),
-                symbol=order_params.get("tradingsymbol", symbol),
-                exchange=order_params.get("exchange", ""),
-                product=order_params.get("product", ""),
-                side=order_params.get("transaction_type", txn),
-                qty=int(order_params.get("quantity", qty) or 0),
-                price=float(order_params.get("price", 0) or 0),
-                order_type=order_params.get("order_type", "MARKET"),
-                tag=order_params.get("tag"),
-                meta={"variety": order_params.get("variety"), "txn": txn, "context": str(context)},
-            )
-        else:
-            oid = (kite.place_order)(**order_params)
-        log.info(f"[V210] {'PAPER' if PAPER_MODE else 'OK'} {symbol} {txn} qty={qty} id={oid} [{context}]")
-        return oid
-    except Exception as _pe:
-        log.error(f"[V210] exception {symbol}: {_pe}")
-        cd.add(symbol)
-        try: health.fire(f"ORDER EXCEPTION {symbol}: {str(_pe)[:80]}")
-        except Exception: pass
-        return None
-
 # FIX_V29_ZERODHA_RULES: central exchange-rule compliance helpers
 # Every price/qty touching Kite API must pass through these
 # ═══════════════════════════════════════════════════════════════
@@ -1408,28 +937,10 @@ def _validate_gtt_tick(symbol, exchange, trigger, limit_price):
     return t_ok and p_ok
 
 # FIX_V60P2_TICK_GUARD: blocks tick-non-compliant GTT API calls
-# V212_FIXES: 1) F&O AMO disabled 2) premium-elevation guard 3) UOA detector
-FNO_AMO_ENABLED = False              # V212: F&O AMO disabled. Intraday-only entries.
-FNO_PREMIUM_ELEVATION_BLOCK = 1.50   # Skip option if today_high/today_open >= 1.50 (+50%)
-UOA_ENABLED = True                   # V212: UOA detector live
-UOA_VOLUME_SPIKE_RATIO = 3.0         # today_vol / avg_20d_vol must be >= 3.0
-UOA_MAX_PREMIUM_RATIO = 1.30         # premium / yesterday_close <= 1.30 (not exploded)
-UOA_BOOTSTRAP_DAYS = 30              # Pull 30 days historical on first start
-UOA_SCAN_INTERVAL_MIN = 5            # Scan every 5 min during market hours
-UOA_NEAR_ATM_PCT = 0.05              # +/- 5% strikes around spot
-UOA_SIGNAL_SCORE = 78                # Score for UOA-detected candidates
-UOA_OI_DELTA_MIN_PCT = 5.0           # V212.2: today_OI must be >= +5% vs yesterday (institutional accumulation)
-
-# V211_FIXES: see below for changes 1-4
-_V211_GTT_PERMANENT_SKIP = set()
-_V211_GTT_REFRESHED_TODAY = {"date": None}
-
 def _safe_place_gtt(kite, **kwargs):
-    tsym = kwargs.get("tradingsymbol")
-    exch = kwargs.get("exchange")
-    if tsym in _V211_GTT_PERMANENT_SKIP:
-        return None
     try:
+        tsym = kwargs.get("tradingsymbol")
+        exch = kwargs.get("exchange")
         trigs = kwargs.get("trigger_values") or []
         orders = kwargs.get("orders") or []
         for tv in trigs:
@@ -1437,73 +948,8 @@ def _safe_place_gtt(kite, **kwargs):
                 if not _validate_gtt_tick(tsym, exch, tv, o.get("price", 0)):
                     log.error(f"[V60P2_GUARD] place_gtt BLOCKED {exch}:{tsym} trig={tv} price={o.get('price')}")
                     return None
-        _ltp = kwargs.get("last_price", 0) or 0
-        if _ltp > 0:
-            _need = 0.09 if _ltp <= 50.0 else 0.0025 * _ltp
-            for tv in trigs:
-                if abs(tv - _ltp) < _need:
-                    log.error(f"[V104_GAP_GUARD] place_gtt BLOCKED {exch}:{tsym} trig={tv} ltp={_ltp} gap={abs(tv-_ltp):.4f} need={_need:.4f}")
-                    return None
-        if PAPER_MODE:
-            _orders = (kwargs.get("orders") or [{}])
-            _o0 = _orders[0] if _orders else {}
-            _trigs = (kwargs.get("trigger_values") or [0])
-            return paper_place_gtt(
-                strategy="gir",
-                symbol=kwargs.get("tradingsymbol", "UNKNOWN"),
-                exchange=kwargs.get("exchange", ""),
-                trigger_value=float(_trigs[0] or 0),
-                limit_price=float(_o0.get("price", 0) or 0),
-                qty=int(_o0.get("quantity", 0) or 0),
-                transaction_type=_o0.get("transaction_type", "SELL"),
-                product=_o0.get("product", "CNC"),
-                meta={"trigger_type": kwargs.get("trigger_type"), "last_price": kwargs.get("last_price")},
-            )
         return kite.place_gtt(**kwargs)
     except Exception as e:
-        _emsg = str(e).lower()
-        if "invalid instrument" in _emsg or "instrument not found" in _emsg:
-            try:
-                import datetime as _dt211
-                _today_str = str(_dt211.date.today())
-                if _V211_GTT_REFRESHED_TODAY.get("date") != _today_str:
-                    log.warning(f"[V211_FIX1] {exch}:{tsym} invalid instrument - refreshing tick cache (one-time today)")
-                    try:
-                        TickSizeCache.load(kite=kite, force=True)
-                    except Exception as _re:
-                        log.error(f"[V211_FIX1] TickSizeCache refresh failed: {_re}")
-                    _V211_GTT_REFRESHED_TODAY["date"] = _today_str
-                    try:
-                        if PAPER_MODE:
-                            _orders = (kwargs.get("orders") or [{}])
-                            _o0 = _orders[0] if _orders else {}
-                            _trigs = (kwargs.get("trigger_values") or [0])
-                            return paper_place_gtt(
-                                strategy="gir",
-                                symbol=kwargs.get("tradingsymbol", "UNKNOWN"),
-                                exchange=kwargs.get("exchange", ""),
-                                trigger_value=float(_trigs[0] or 0),
-                                limit_price=float(_o0.get("price", 0) or 0),
-                                qty=int(_o0.get("quantity", 0) or 0),
-                                transaction_type=_o0.get("transaction_type", "SELL"),
-                                product=_o0.get("product", "CNC"),
-                                meta={"v211_retry": True, "trigger_type": kwargs.get("trigger_type")},
-                            )
-                        return kite.place_gtt(**kwargs)
-                    except Exception as _re2:
-                        if "invalid instrument" not in str(_re2).lower():
-                            log.error(f"[V211_FIX1] retry raised non-invalid: {_re2}")
-                            raise
-                _V211_GTT_PERMANENT_SKIP.add(tsym)
-                log.critical(f"[V211_FIX1] {exch}:{tsym} Invalid instrument persists - PERMANENT SKIP today, SL UNPLACEABLE")
-                try:
-                    health.fire(f"SL UNPLACEABLE {tsym}: Invalid instrument. Position NAKED. Manual exit required.")
-                except Exception:
-                    pass
-                return None
-            except Exception as _outer:
-                log.error(f"[V211_FIX1] inner handler failed: {_outer}")
-                return None
         log.error(f"[V60P2_GUARD] place_gtt raised: {e}")
         raise
 
@@ -1518,29 +964,6 @@ def _safe_modify_gtt(kite, **kwargs):
                 if not _validate_gtt_tick(tsym, exch, tv, o.get("price", 0)):
                     log.error(f"[V60P2_GUARD] modify_gtt BLOCKED {exch}:{tsym} trig={tv} price={o.get('price')}")
                     return None
-        # [V104_GAP_GUARD] Zerodha rule (zerodha.com/tos/gtt):
-        #   LTP<=50: gap>=0.09 absolute. LTP>50: gap>=0.25% of LTP.
-        _ltp = kwargs.get("last_price", 0) or 0
-        if _ltp > 0:
-            _need = 0.09 if _ltp <= 50.0 else 0.0025 * _ltp
-            for tv in trigs:
-                if abs(tv - _ltp) < _need:
-                    log.error(f"[V104_GAP_GUARD] modify_gtt BLOCKED {exch}:{tsym} trig={tv} ltp={_ltp} gap={abs(tv-_ltp):.4f} need={_need:.4f}")
-                    return None
-        if PAPER_MODE:
-            _orders = (kwargs.get("orders") or [{}])
-            _o0 = _orders[0] if _orders else {}
-            _trigs = (kwargs.get("trigger_values") or [0])
-            return paper_modify_gtt(
-                strategy="gir",
-                trigger_id=str(kwargs.get("trigger_id", "")),
-                symbol=kwargs.get("tradingsymbol", "UNKNOWN"),
-                new_trigger=float(_trigs[0] or 0),
-                new_limit=float(_o0.get("price", 0) or 0),
-                qty=int(_o0.get("quantity", 0) or 0),
-                reason="trail_modify",
-                meta={"trigger_type": kwargs.get("trigger_type")},
-            )
         return kite.modify_gtt(**kwargs)
     except Exception as e:
         log.error(f"[V60P2_GUARD] modify_gtt raised: {e}")
@@ -1988,48 +1411,6 @@ class KiteWrapper:
             return self._kite.quote(instruments)
 
 
-
-# PAPER MODE HARD BLOCK - 2026-05-22
-def _apply_paper_hard_block(kite_instance):
-    import uuid as _uuid_pb
-    if getattr(kite_instance, "_paper_hard_blocked", False):
-        return kite_instance
-    def _bpo(*a, **kw):
-        fid = f"PAPER_BLOCKED_{_uuid_pb.uuid4().hex[:12]}"
-        try: log.warning(f"HARD_BLOCK place_order kwargs={kw} -> {fid}")
-        except: pass
-        return fid
-    def _bpg(*a, **kw):
-        fid = int(_uuid_pb.uuid4().int % 1_000_000_000)
-        try: log.warning(f"HARD_BLOCK place_gtt kwargs={kw} -> {fid}")
-        except: pass
-        return {"trigger_id": fid}
-    def _bmg(*a, **kw):
-        try: log.warning(f"HARD_BLOCK modify_gtt kwargs={kw}")
-        except: pass
-        return {"trigger_id": kw.get("trigger_id") or (a[0] if a else 0)}
-    def _bcg(*a, **kw):
-        try: log.warning(f"HARD_BLOCK cancel_gtt kwargs={kw}")
-        except: pass
-        return {"trigger_id": kw.get("trigger_id") or (a[0] if a else 0)}
-    def _bco(*a, **kw):
-        try: log.warning(f"HARD_BLOCK cancel_order kwargs={kw}")
-        except: pass
-        return {"order_id": kw.get("order_id") or (a[0] if a else "blocked")}
-    kite_instance.place_order  = _bpo
-    kite_instance.place_gtt    = _bpg
-    kite_instance.modify_gtt   = _bmg
-    kite_instance.cancel_gtt   = _bcg
-    kite_instance.cancel_order = _bco
-    kite_instance._paper_hard_blocked = True
-    try:
-        log.warning("=" * 60)
-        log.warning("PAPER_MODE_HARD ACTIVE: real Kite writes BLOCKED")
-        log.warning("Reads (ltp/holdings/positions) unaffected")
-        log.warning("=" * 60)
-    except: pass
-    return kite_instance
-
 class KiteSession:
     """
     Manages Kite login and access token.
@@ -2055,7 +1436,6 @@ class KiteSession:
 
                 if saved_date == str(today_ist()) and saved_token:
                     kite.set_access_token(saved_token)
-                    _apply_paper_hard_block(kite)
                     try:
                         profile = kite.profile()
                         log.info(f"Kite: reused token for {profile.get('user_name', ZERODHA_USER_ID)}")
@@ -2127,8 +1507,6 @@ class KiteSession:
                     return False
 
                 kite.set_access_token(access_token)
-
-                _apply_paper_hard_block(kite)
                 profile = kite.profile()
                 log.info(f"Kite: logged in as {profile.get('user_name', ZERODHA_USER_ID)}")
 
@@ -2303,7 +1681,7 @@ class IVTracker:
 
     HISTORY_FILE = "/home/globalbot/data/iv_history.json"
     MAX_HISTORY = 252
-    MIN_HISTORY_FOR_RANK = 10  # V221: lowered from 30 - 10 sessions sufficient for IV rank signal
+    MIN_HISTORY_FOR_RANK = 30
 
     def __init__(self):
         self.history = {}
@@ -2514,24 +1892,6 @@ class GTTManager:
             log.error(f"GTT {self.name}: fetch failed: {e}")
             return {}
 
-
-    def _mirror_paper_sl(self, symbol, sl_value):
-        """PAPER_SL_MIRROR: write live stop into open paper_trades row. PAPER_MODE only. Never raises."""
-        try:
-            if not PAPER_MODE:
-                return
-            if sl_value is None or sl_value <= 0:
-                return
-            import sqlite3 as _sq
-            with _DB_LOCK:
-                _c = _sq.connect(str(TRADES_DB))
-                _c.execute("UPDATE paper_trades SET sl_trigger=?, current_sl=? WHERE symbol=? AND status='OPEN'",
-                           (float(sl_value), float(sl_value), symbol))
-                _c.commit(); _c.close()
-            log.info(f"[PAPER_SL_MIRROR] {self.name} {symbol}: sl<-{sl_value}")
-        except Exception as _e:
-            log.error(f"[PAPER_SL_MIRROR] {self.name} {symbol}: failed {_e}")
-
     def ensure_gtt(self, symbol, exchange, qty, sl_price, target_price=0):
         """
         Ensure exactly ONE GTT exists for this symbol.
@@ -2559,10 +1919,6 @@ class GTTManager:
         except Exception as _e:
             log.error(f"[PATCH_V1_INLOSS] {self.name} {symbol}: LTP check failed: {_e}")
         # END_PATCH_V1_INLOSS_FLOOR
-        try:
-            self._mirror_paper_sl(symbol, sl_price)
-        except Exception as _e_msl:
-            log.warning(f"[AUDIT_V225] _mirror_paper_sl failed for {symbol}: {_e_msl}")
 
         active = self._get_active_gtts()
         existing = active.get(symbol, [])
@@ -4378,7 +3734,7 @@ class AMOEngine:
         try:
             limit_price = round(price * 1.01, 1)  # 1% above last close
 
-            order_id = _safe_place_order(kite, dict(
+            order_id = kite.place_order(
                 variety="amo",
                 exchange=exchange,
                 tradingsymbol=symbol,
@@ -4389,7 +3745,7 @@ class AMOEngine:
                 product=product,
                 validity="DAY",
                 market_protection=_V104_mp(5),  # SEBI mandatory
-            ), context="L3840")
+            )
             log.info(f"AMO {self.name}: placed {symbol} x{qty} @ {limit_price} id={order_id}")
 
             self._placed.append({
@@ -4500,7 +3856,6 @@ class EODReporter:
                     _atok = _ajson.load(_atf)
                 kite = _KC(api_key=_ak)
                 kite.set_access_token(_atok["access_token"])
-                _apply_paper_hard_block(kite)
             except Exception as _ae:
                 lines.append(f"_(auth fallback failed: {_ae})_")
 
@@ -4821,33 +4176,105 @@ class EODReporter:
 
     @staticmethod
     def generate_fno_report(fno_module):
-        """RECONCILER: realized P&L from paper_trades (same DB as latest.md).
-        Previously read live Kite -> always Rs.0 in paper mode."""
-        import sqlite3 as _s
-        from datetime import datetime as _dt, timezone as _tz, timedelta as _td
-        _d=_dt.now(_tz(_td(hours=5,minutes=30))).date().isoformat()
+        """Generate F&O EOD summary.
+
+        V27 Stage 2 PATCH (Bug #6 follow-up): Filter out phantom positions.
+        Only include positions with non-zero qty in Kite. For positions that
+        closed today, fetch real exit price from tradebook.
+        """
+        positions = fno_module.positions
+        if not positions:
+            return "F&O: No open positions"
+
+        kite = KiteSession.kite()
+        if not kite:
+            return "F&O: Kite not connected for EOD"
+
         try:
-            _c=_s.connect("/home/globalbot/paper/trades.db",timeout=2); _c.row_factory=_s.Row
-            _cl=_c.execute("SELECT symbol,qty,entry_price,pnl,pnl_pct,exit_reason FROM paper_trades WHERE strategy='gir_fno' AND status='CLOSED' AND date(exit_ts)=?",(_d,)).fetchall()
-            _op=_c.execute("SELECT symbol,qty,entry_price FROM paper_trades WHERE strategy='gir_fno' AND status='OPEN'").fetchall()
-            _c.close()
-        except Exception as _e:
-            return f"F&O EOD error (db): {_e}"
-        _p=sum((r["pnl"] or 0) for r in _cl)
-        _L=[f"*F&O EOD: {len(_op)} open, {len(_cl)} closed today*\n"]
-        if _op:
-            _L.append("*OPEN POSITIONS:*")
-            for r in _op: _L.append(f"`{r['symbol'][:20]:20s}` qty {r['qty']} @ {r['entry_price']:.2f} | OPEN")
-        if _cl:
-            _L.append("\n*CLOSED TODAY:*")
-            for r in _cl:
-                _em="+" if (r["pnl"] or 0)>=0 else ""
-                _L.append(f"`{r['symbol'][:20]:20s}` {_em}Rs.{(r['pnl'] or 0):,.0f} ({(r['pnl_pct'] or 0):+.1f}%) | {r['exit_reason']}")
-        _L.append(f"\n*Closed Realized P&L: Rs.{_p:,.0f}*")
-        _L.append(f"*Day Total: Rs.{_p:,.0f}*")
-        try: _L.append(f"F&O Capital: Rs.{fno_module.capital:,.0f}")
-        except Exception: pass
-        return "\n".join(_L)
+            # Build Kite truth: which positions have qty != 0
+            _kite_qtys = {}
+            try:
+                for _kp in kite.positions().get("net", []):
+                    if _kp.get("exchange") == "NFO":
+                        _kite_qtys[_kp.get("tradingsymbol", "")] = _kp.get("quantity", 0)
+            except Exception as _ke:
+                return f"F&O EOD: Kite positions fetch failed: {_ke}"
+
+            # Build today's tradebook for realized exits
+            _tradebook = {}
+            try:
+                for _t in (kite.trades() or []):
+                    if _t.get("exchange") != "NFO":
+                        continue
+                    _tsym = _t.get("tradingsymbol", "")
+                    _ttype = _t.get("transaction_type", "")
+                    _qty = _t.get("quantity", 0)
+                    _avg = _t.get("average_price", 0)
+                    if _tsym not in _tradebook:
+                        _tradebook[_tsym] = {"sell_qty": 0, "sell_value": 0}
+                    if _ttype == "SELL":
+                        _tradebook[_tsym]["sell_qty"] += _qty
+                        _tradebook[_tsym]["sell_value"] += _qty * _avg
+            except Exception as _te:
+                log.warning(f"F&O EOD: tradebook fetch failed: {_te}")
+
+            _open_syms = [t for t, q in _kite_qtys.items() if q != 0]
+            _ltp_data = {}
+            if _open_syms:
+                try:
+                    _ltp_data = kite.ltp([f"NFO:{s}" for s in _open_syms])
+                except Exception as _le:
+                    log.warning(f"F&O EOD: LTP fetch failed: {_le}")
+
+            open_lines, closed_lines = [], []
+            total_open_pnl = 0
+            total_closed_pnl = 0
+            open_count = 0
+            closed_count = 0
+
+            for key, pos in positions.items():
+                tsym = pos.get("tradingsymbol", "")
+                if not tsym:
+                    continue
+                entry = pos.get("entry_price", 0)
+                direction = pos.get("direction", "")
+                _kqty = _kite_qtys.get(tsym, 0)
+
+                if _kqty != 0:
+                    ltp = _ltp_data.get(f"NFO:{tsym}", {}).get("last_price", 0)
+                    pnl = (ltp - entry) * abs(_kqty) if ltp > 0 and entry > 0 else 0
+                    total_open_pnl += pnl
+                    emoji = "+" if pnl >= 0 else ""
+                    open_lines.append(f"`{tsym[:20]:20s}`  {emoji}Rs.{pnl:,.0f} | OPEN | {direction}")
+                    open_count += 1
+                else:
+                    _tb = _tradebook.get(tsym)
+                    if _tb and _tb["sell_qty"] > 0:
+                        _avg_sell = _tb["sell_value"] / _tb["sell_qty"]
+                        _real_pnl = (_avg_sell - entry) * _tb["sell_qty"]
+                        total_closed_pnl += _real_pnl
+                        emoji = "+" if _real_pnl >= 0 else ""
+                        closed_lines.append(f"`{tsym[:20]:20s}`  {emoji}Rs.{_real_pnl:,.0f} | CLOSED at {_avg_sell:,.1f} | {direction}")
+                        closed_count += 1
+                    else:
+                        closed_lines.append(f"`{tsym[:20]:20s}`  CLOSED (no tradebook entry) | {direction}")
+                        closed_count += 1
+
+            lines = [f"*F&O EOD: {open_count} open, {closed_count} closed today*\n"]
+            if open_lines:
+                lines.append("*OPEN POSITIONS:*")
+                lines.extend(open_lines)
+                lines.append(f"\n*Open Unrealized P&L: Rs.{total_open_pnl:,.0f}*")
+            if closed_lines:
+                lines.append("\n*CLOSED TODAY:*")
+                lines.extend(closed_lines)
+                lines.append(f"*Closed Realized P&L: Rs.{total_closed_pnl:,.0f}*")
+            lines.append(f"\n*Day Total: Rs.{(total_open_pnl + total_closed_pnl):,.0f}*")
+            lines.append(f"F&O Capital: Rs.{fno_module.capital:,.0f}")
+            return "\n".join(lines)
+
+        except Exception as e:
+            return f"F&O EOD error: {e}"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -6014,41 +5441,12 @@ class OrderGuard:
             cls._daily_count = 0
             cls._daily_date = today
 
-    # V110_SAMEDAY: In-memory same-session SL blacklist.
-    # Cleared on bot restart (03:25 UTC cron). Bypasses ALL filter logic.
-    # Hooks: mark_sl_hit() called from F&O position-close detection.
-    _V110_SL_BLACKLIST = set()
-
-    @classmethod
-    def mark_sl_hit(cls, symbol_or_root):
-        """Called when a position closes at a loss. Blocks same-day re-entry."""
-        try:
-            cls._V110_SL_BLACKLIST.add(symbol_or_root)
-            import logging as _l110
-            _l110.getLogger().warning(f"[V110_SAMEDAY] BLACKLIST add: {symbol_or_root} (total: {len(cls._V110_SL_BLACKLIST)})")
-        except Exception:
-            pass
-
     @classmethod
     def can_place_order(cls, symbol, is_fno=False):
         """
         Check all order guards before placing.
         Returns (True, "OK") or (False, "reason").
         """
-        # V110_SAMEDAY: hard block re-entry on symbols that lost today.
-        # For F&O, extract the underlying root (e.g. ASIANPAINT from ASIANPAINT26JUN2200PE).
-        try:
-            _v110_key = symbol
-            if is_fno:
-                import re as _re110
-                _m = _re110.match(r"^([A-Z]+)\d", symbol)
-                if _m:
-                    _v110_key = _m.group(1)
-            if _v110_key in cls._V110_SL_BLACKLIST:
-                return False, f"V110_SAMEDAY_SL_BLOCK_{_v110_key}"
-        except Exception:
-            pass
-
         cls._reset_daily()
         now = time.time()
 
@@ -6543,14 +5941,6 @@ class EquityModule:
     def __init__(self):
         self.positions = {}     # symbol -> position dict
         self.gtt = GTTManager("EQUITY")
-        try:
-            if _V105_EQ_REGIME_AVAILABLE:
-                self.regime_monitor = EquityRegimeMonitor(self)
-            else:
-                self.regime_monitor = None
-        except Exception as _e_v105_eq_init:
-            log.error(f"[V105_REGIME_EQ] init: {_e_v105_eq_init}")
-            self.regime_monitor = None
         self.risk = None        # Initialized after capital is known
         self.telegram = TelegramThrottle("EQUITY", max_per_hour=15)
         self.news = None        # Initialized after symbols are loaded
@@ -6566,8 +5956,6 @@ class EquityModule:
         self.all_symbols = set()
         self.fno_stocks = set()  # Loaded from Kite
         self._pos_file = DATA_DIR / "equity_positions.json"
-        self.positions = self._load_positions()
-        self._reject_cooldown = set()
         self._trades_file = DATA_DIR / "equity_trades.json"
         self._last_scan = None
         self._last_trail_check = None
@@ -6701,9 +6089,8 @@ class EquityModule:
         else:
             log.info(f"EQUITY: NewsBrain disabled (USE_LLM_NEWS={USE_LLM_NEWS})")
 
-        # V216_PRESERVE_LOAD: do NOT wipe loaded positions.
-        # _sync_holdings prunes phantoms (positions in self.positions not in Kite).
-        # Original V28 wipe was redundant — phantom protection is in _sync_holdings.
+        # PATCH_V28_KITE_ONLY_EQUITY: DO NOT load from JSON. Kite is the only source of truth.
+        self.positions = {}
 
         # FIX_V56_TICK_SIZE: load tick-size cache BEFORE any GTT placement
         # Prevents TRENT-class (Apr 23 2026) rejection where hardcoded 0.05 used for 0.10-tick stock
@@ -6762,15 +6149,6 @@ class EquityModule:
                 _t.sleep(1)
         if total > 0:
             self.capital = round(total * EQUITY_PCT, 2)
-            # OBSERVATION MODE OVERRIDE
-            _obs_total = _observation_capital_override()
-            if _obs_total is not None:
-                _obs_eq = round(_obs_total * EQUITY_PCT, 2)
-                try:
-                    log.info(f"[OBSERVATION] equity capital override: real={self.capital} -> paper={_obs_eq}")
-                except Exception:
-                    pass
-                self.capital = _obs_eq
             invested = sum(
                 p.get("qty", 0) * p.get("entry_price", 0)
                 for p in self.positions.values()
@@ -6780,18 +6158,6 @@ class EquityModule:
         else:
             log.warning(f"[PATCH_V10_CAPITAL_RETRY] Equity: all 3 attempts returned 0, preserving previous capital={self.capital}")
 
-
-    def _load_positions(self):
-        # V215_LOAD_UNWRAP: JSON is {"positions": {...}}, unwrap inner dict
-        import json as _j, os as _o
-        try:
-            if _o.path.exists(self._pos_file):
-                with open(self._pos_file) as _f: d = _j.load(_f)
-                _pos = d.get("positions", d) if isinstance(d, dict) else {}
-                if not isinstance(_pos, dict): _pos = {}
-                log.info(f"[V210_EQ_LOAD] {len(_pos)} positions"); return _pos
-        except Exception as _e: log.error(f"[V210_EQ_LOAD] {_e}")
-        return {}
 
     def _save_positions(self):
         """Save positions to file."""
@@ -7058,8 +6424,8 @@ class EquityModule:
                             if h.get("tradingsymbol") == sym:
                                 fill_avg = h.get("average_price", 0)
                                 break
-                    except Exception as _e_fa:
-                        log.warning(f"[AUDIT_V225] fill_avg lookup failed for {sym}: {_e_fa}")
+                    except Exception:
+                        pass
                 
                 if fill_avg <= 0:
                     log.error(f"[FIX_V55_AMO_RECOVERY] {sym} fill detected but avg=0 — skipping GTT (hourly audit will retry)")
@@ -7343,9 +6709,6 @@ class EquityModule:
             "entry_time": pos.get("entry_time", ""),
             "exit_time": now_ist().isoformat(),
             "source": pos.get("source", "UNKNOWN"),
-            "score": pos.get("score", 0),
-            "stock_pct_at_entry": pos.get("stock_pct_at_entry", 0),
-            "catalyst": pos.get("catalyst", ""),
         }
         # Append to trades file
         trades = load_json(self._trades_file, {"trades": []})
@@ -7601,36 +6964,6 @@ class EquityModule:
         # Bypasses V83_KILL_MACRO_EQ + V83_HOURLY when ALL hold:
         #   intraday move +3% to +12%, vol_ratio>=2x, turnover>=Rs2Cr, score>=60
         # Catches GODREJIND/TEJASNET/CARTRADE class movers; price filter blocks news-only bleed.
-        # === BRAIN GATE (added 2026-05-27) =====================================
-        # The decision_brain is the final authority. It calls all configured
-        # scorers, applies cooldown + daily-cap + sizing, and returns TRADE/
-        # SKIP/BLOCK. We honor its decision before any other entry logic.
-        try:
-            from decision_brain import DecisionBrain, Candidate, collect_layers
-            if not hasattr(self, "_brain"):
-                self._brain = DecisionBrain(mode="paper")
-            if not hasattr(self, "_expert_panel"):
-                self._expert_panel = ExpertPanel(self.trendlyne,
-                                                 getattr(self, "_sector_rotation", None),
-                                                 getattr(self, "news_brain", None))
-            _bcand = Candidate(symbol=symbol, category="equity",
-                               direction=direction, ltp=0.0,
-                               sector=getattr(self, "_sector_map", {}).get(symbol, "UNKNOWN"))
-            _bcand = collect_layers(_bcand, gir_instance=self._expert_panel, kite=KiteSession.kite())
-            try:
-                _bq = KiteSession.kite().quote([f"NSE:{symbol}"]).get(f"NSE:{symbol}", {})
-                _bcand.ltp = float(_bq.get("last_price", 0) or 0.0)
-            except Exception:
-                _bcand.ltp = 0.0
-            _bdec = self._brain.decide(_bcand)
-            if _bdec.action != "TRADE":
-                log.info(f"[BRAIN] BLOCKED {symbol}: {_bdec.reason}")
-                return False
-            log.info(f"[BRAIN] APPROVED {symbol}: score={_bdec.final_score:.1f} sup={_bdec.supporting_layers}/11")
-        except Exception as _be:
-            log.warning(f"[BRAIN] error for {symbol}, falling through to legacy: {_be}")
-        # === END BRAIN GATE ====================================================
-
         _v101_bypass = False
         try:
             if direction == "BULLISH" and score >= 60:
@@ -7777,46 +7110,6 @@ class EquityModule:
             log.warning(f"[V83_HOURLY] check failed for {symbol}: {_v83he}, allowing")
         # ═══ END V83 GUARDS ═══
 
-        # ═══ V206_ENTRY_QUALITY_GATES (deployed 15-May-2026) ═══
-        # Three gates targeting confirmed leak patterns:
-        # A) Opening 15-min reversal zone (9:15-9:30 IST)
-        # B) Chasing guard (stock already +4% intraday)
-        # C) Per-cycle entry cap (max 3 per 30-min cycle)
-        # All gates respect V101 price-confirmed bypass.
-        try:
-            # Gate A — 9:15-9:30 reversal zone
-            _v206_now = now_ist()
-            _v206_hm = _v206_now.hour * 60 + _v206_now.minute
-            if 555 <= _v206_hm < 570 and not _v101_bypass:
-                log.info(f"[V206A_OPENING] BLOCKED {symbol}: 9:15-9:30 reversal zone (use AMO or wait)")
-                return False
-
-            # Gate B — Chasing guard
-            if cand:
-                _v206_pct = float(cand.get("stock_pct_at_entry", 0) or 0)
-                if _v206_pct > 4.0 and not _v101_bypass:
-                    log.info(f"[V206B_CHASING] BLOCKED {symbol}: +{_v206_pct:.1f}% intraday (chasing top, >4% extended)")
-                    return False
-
-            # Gate C — Per-cycle entry cap
-            import time as _v206_time
-            _v206_cycle_start = getattr(EquityModule, "_v206_cycle_start", 0)
-            _v206_count = getattr(EquityModule, "_v206_count", 0)
-            _v206_clock = _v206_time.time()
-            if _v206_clock - _v206_cycle_start > 1800:
-                EquityModule._v206_cycle_start = _v206_clock
-                EquityModule._v206_count = 0
-                _v206_count = 0
-            if _v206_count >= 3 and not _v101_bypass:
-                log.info(f"[V206C_CYCLE_CAP] BLOCKED {symbol}: 3 entries this 30-min cycle (cap reached)")
-                return False
-            # V206 counter bump — increment on entries that pass all 3 gates
-            EquityModule._v206_count = _v206_count + 1
-            log.info(f"[V206_PASS] {symbol}: V206 gates cleared (count={EquityModule._v206_count}/3 this cycle)")
-        except Exception as _v206e:
-            log.warning(f"[V206_ENTRY_QUALITY_GATES] check failed for {symbol}: {_v206e}, allowing")
-        # ═══ END V206 GATES ═══
-
         can, reason = self._can_enter(symbol)
         if not can:
             # V80_FIX1: if blocked due to position cap, try replacement
@@ -7922,62 +7215,6 @@ class EquityModule:
                     )
                     return False
 
-                # V108_DAY_TREND_GATE (PEAK-BASED, hotfix May 13):
-                # Block if stock dropped > 1.5% FROM INTRADAY HIGH AND score < 85.
-                # This catches BOTH "red day falling" AND "green day reversal" knives.
-                # Example caught: IIFL +5% green day but -5.9% from intraday high.
-                _v108_fk_threshold = -1.5
-                _v108_score_required = 85
-                _v108_day_high = _stock_q.get("ohlc", {}).get("high", 0)
-                if _v108_day_high > 0 and _s_ltp > 0:
-                    _v108_drop_from_high = (_s_ltp - _v108_day_high) / _v108_day_high * 100
-                else:
-                    _v108_drop_from_high = 0
-                if _v108_drop_from_high < _v108_fk_threshold and (score or 0) < _v108_score_required:
-                    _v108_rescue = False
-                    _v108_rescue_reason = ""
-                    try:
-                        _v108_q = _stock_q.get("ohlc", {})
-                        _v108_day_low = _v108_q.get("low", 0)
-                        _v108_day_open = _v108_q.get("open", 0)
-                        _v108_avg_price = _stock_q.get("average_price", 0)
-                        _v108_vwap = _v108_avg_price if _v108_avg_price > 0 else _v108_day_open
-                        if _v108_day_low > 0 and _s_ltp > 0:
-                            _v108_bounce_pct = (_s_ltp - _v108_day_low) / _v108_day_low * 100
-                            _v108_above_vwap = _s_ltp > _v108_vwap if _v108_vwap > 0 else False
-                            _v108_above_open = _s_ltp > _v108_day_open if _v108_day_open > 0 else False
-                            if _v108_bounce_pct > 0.5 and _v108_above_vwap and _v108_above_open:
-                                _v108_rescue = True
-                                _v108_rescue_reason = (
-                                    f"RESCUED: bounce={_v108_bounce_pct:+.2f}% off low, "
-                                    f"LTP={_s_ltp:.2f} > VWAP={_v108_vwap:.2f} > open={_v108_day_open:.2f}"
-                                )
-                    except Exception as _v108_re:
-                        log.warning(f"[V108] {symbol} rescue check error: {_v108_re}")
-
-                    if not _v108_rescue:
-                        log.info(
-                            f"[V108_DAY_TREND_GATE] {symbol} BLOCKED: drop_from_high "
-                            f"{_v108_drop_from_high:+.2f}% (day high {_v108_day_high:.2f}, ltp {_s_ltp:.2f}) "
-                            f"< {_v108_fk_threshold}% AND score={score} < {_v108_score_required}"
-                        )
-                        try:
-                            from __main__ import health
-                            health.fire(
-                                f"V108 BLOCK: {symbol}\n"
-                                f"Drop from high {_v108_drop_from_high:+.2f}% "
-                                f"(high {_v108_day_high:.2f} -> ltp {_s_ltp:.2f}), "
-                                f"score {score} below {_v108_score_required}"
-                            )
-                        except Exception:
-                            pass
-                        return False
-                    else:
-                        log.info(
-                            f"[V108_DAY_TREND_GATE] {symbol} ALLOWED despite "
-                            f"down {_stock_pct:+.2f}% / score {score}: {_v108_rescue_reason}"
-                        )
-
                 log.debug(
                     f"[V28 A10] {symbol} regime OK: NIFTY {_nifty_pct:+.2f}%, "
                     f"stock {_stock_pct:+.2f}%, rel {_rel_strength:+.2f}%"
@@ -8062,7 +7299,7 @@ class EquityModule:
                 return False
 
             # ── Place order ──
-            order_id = _safe_place_order(kite, dict(
+            order_id = kite.place_order(
                 variety=kite.VARIETY_REGULAR,
                 exchange="NSE",
                 tradingsymbol=symbol,
@@ -8073,7 +7310,7 @@ class EquityModule:
                 product="CNC",
                 validity="DAY",
                 market_protection=_V104_mp(5),  # SEBI mandatory — 5% market protection
-            ), context="L7552")
+            )
             log.info(f"Equity: ORDER PLACED {symbol} qty={qty} price={price} order_id={order_id}")
             OrderGuard.record_order(symbol)
 
@@ -8140,17 +7377,6 @@ class EquityModule:
             target = round(price + EQ_T2_ATR_MULT * atr, 2)
 
             # ── Save position (fill confirmed) ──
-            # V108B: capture day-change-at-entry for future analysis (real data, not proxy)
-            _v108b_stock_pct = 0.0
-            try:
-                _v108b_q = kite.quote([f"NSE:{symbol}"]).get(f"NSE:{symbol}", {})
-                _v108b_ltp = _v108b_q.get("last_price", 0)
-                _v108b_prev = _v108b_q.get("ohlc", {}).get("close", 0)
-                if _v108b_ltp > 0 and _v108b_prev > 0:
-                    _v108b_stock_pct = (_v108b_ltp - _v108b_prev) / _v108b_prev * 100
-            except Exception:
-                pass
-
             self.positions[symbol] = {
                 "symbol": symbol,
                 "qty": qty,
@@ -8164,7 +7390,6 @@ class EquityModule:
                 "order_id": str(order_id),
                 "source": source,
                 "score": score,
-                "stock_pct_at_entry": round(_v108b_stock_pct, 2),
                 "v85_partial_taken": False,
             }
             self.available -= cost
@@ -8278,7 +7503,7 @@ class EquityModule:
                     _v85_half = _v85_qty // 2
                     if _v85_half > 0:
                         try:
-                            _v85_partial_oid = _safe_place_order(kite, dict(
+                            _v85_partial_oid = kite.place_order(
                                 variety=kite.VARIETY_REGULAR,
                                 exchange="NSE",
                                 tradingsymbol=sym,
@@ -8288,7 +7513,7 @@ class EquityModule:
                                 product="CNC",
                                 validity="DAY",
                                 market_protection=_V104_mp(5),
-                            ), context="L7768")
+                            )
                             log.info(f"[V85_PARTIAL_TAKE] {sym}: +{_v85_unreal_pct:.1f}%, selling {_v85_half}/{_v85_qty} @ market")
                             pos["qty"] = _v85_qty - _v85_half
                             pos["v85_partial_taken"] = True
@@ -8302,13 +7527,6 @@ class EquityModule:
 
                 # Calculate new trailing SL using tiered width
                 new_sl = _snap_sl_tick_up(ltp * (1 - _v85_trail_pct), symbol=sym, exchange="NSE")
-
-                # PATCH_V107_ATR_SHADOW: log what ATR-based SL would be (no action)
-                if _V107_ATR_AVAILABLE and _V107_ATR_SHADOW is not None:
-                    try:
-                        _V107_ATR_SHADOW.shadow_check(kite, sym, ltp, new_sl, _v85_trail_pct, pos)
-                    except Exception as _e_v107_run:
-                        log.warning(f"[V107_ATR_SHADOW] {sym}: {_e_v107_run}")
 
                 # CRITICAL SAFETY CHECKS:
                 # 1. New SL must be HIGHER than old SL (only moves UP)
@@ -8373,7 +7591,7 @@ class EquityModule:
             except Exception as _v85_pse:
                 log.warning(f"[V85_PRE_SELL_CHECK] {symbol}: holdings check failed ({_v85_pse}), proceeding cautiously")
 
-            order_id = _safe_place_order(kite, dict(
+            order_id = kite.place_order(
                 variety=kite.VARIETY_REGULAR,
                 exchange="NSE",
                 tradingsymbol=symbol,
@@ -8383,7 +7601,7 @@ class EquityModule:
                 product="CNC",
                 validity="DAY",
                 market_protection=_V104_mp(5),  # SEBI mandatory
-            ), context="L7863")
+            )
             log.info(f"Equity: SELL {symbol} x{qty} reason={reason} order_id={order_id}")
 
             # V85_EXIT_POLL: poll up to 30s for COMPLETE status
@@ -8450,7 +7668,7 @@ class EquityModule:
     }
 
     @classmethod
-    def _dead_money_days_for(cls, catalyst_text, default=10):
+    def _dead_money_days_for(cls, catalyst_text, default=15):
         """Pick a dead-money window based on catalyst type keywords."""
         if not catalyst_text:
             return default
@@ -8531,7 +7749,7 @@ class EquityModule:
             if OrderGuard.check_pending_orders(kite, best_sym):
                 return
             try:
-                order_id = _safe_place_order(kite, dict(
+                order_id = kite.place_order(
                     variety=kite.VARIETY_REGULAR,
                     exchange="NSE",
                     tradingsymbol=best_sym,
@@ -8542,7 +7760,7 @@ class EquityModule:
                     product="CNC",
                     validity="DAY",
                     market_protection=_V104_mp(5),
-                ), context="L8021")
+                )
                 log.info(f"Equity PRESS WINNER: {best_sym} +{add_qty} @ {best_ltp} (was up {best_gain*100:.1f}%, idle {idle_pct*100:.0f}%) order={order_id}")
                 OrderGuard.record_order(best_sym)
 
@@ -8685,8 +7903,8 @@ class EquityModule:
                 try:
                     entry_dt = _dt.fromisoformat(entry_time.replace("Z", "+00:00"))
                     days_held = (now_ist() - entry_dt).days
-                    if days_held < 5:
-                        continue  # 5 days room to breathe (V-tune 2026-06-10)
+                    if days_held < 7:
+                        continue  # 7 days room to breathe
                     entry_price = float(pos.get("entry_price", 0) or 0)
                     if entry_price <= 0:
                         continue
@@ -9134,14 +8352,6 @@ class EquityModule:
             if self._last_trail_check != n.hour * 60 + n.minute:
                 self._last_trail_check = n.hour * 60 + n.minute
                 self.check_trailing_sl()
-
-        # PATCH_V105_REGIME_EQUITY tick
-        if is_market_hours():
-            try:
-                if getattr(self, "regime_monitor", None) is not None:
-                    self.regime_monitor.maybe_run(n)
-            except Exception as _e_v105_eq_tick:
-                log.error(f"[V105_REGIME_EQ] tick: {_e_v105_eq_tick}")
 
         # FIX_V29_MIDDAY_AUDIT: midday GTT safety check at 12:30
         if n.hour == 12 and n.minute == 30:
@@ -9990,29 +9200,6 @@ class OISnapshotEngine:
                         "catalyst": f"OI {_tag} {pattern}: spot {spot_change_pct:+.2f}% CE_OI {ce_oi_change_pct:+.0f}% PE_OI {pe_oi_change_pct:+.0f}%".strip(),
                         "source": _src,
                     })
-                    # FNO_PAPER_STUDY_HOOK (additive 2026-06-17): persist signal for paper study.
-                    # Never raises — wrapped so a logging failure can never block the scanner.
-                    try:
-                        import sqlite3 as _fps_sql, time as _fps_time
-                        _fps_db = "/home/globalbot/paper/events.db"
-                        _fps_c = _fps_sql.connect(_fps_db, timeout=2)
-                        _fps_c.execute("CREATE TABLE IF NOT EXISTS fno_signals ("
-                            "id INTEGER PRIMARY KEY AUTOINCREMENT, ts_utc TEXT, symbol TEXT, "
-                            "direction TEXT, pattern TEXT, score REAL, spot_change_pct REAL, "
-                            "ce_oi_change_pct REAL, pe_oi_change_pct REAL, mode TEXT, "
-                            "consumed INTEGER DEFAULT 0)")
-                        _fps_c.execute("CREATE INDEX IF NOT EXISTS idx_fps_consumed ON fno_signals(consumed)")
-                        _fps_c.execute("INSERT INTO fno_signals "
-                            "(ts_utc,symbol,direction,pattern,score,spot_change_pct,"
-                            "ce_oi_change_pct,pe_oi_change_pct,mode,consumed) "
-                            "VALUES (?,?,?,?,?,?,?,?,?,0)",
-                            (_fps_time.strftime('%Y-%m-%dT%H:%M:%S', _fps_time.gmtime()),
-                             sym, direction, pattern, score, spot_change_pct,
-                             ce_oi_change_pct, pe_oi_change_pct, mode))
-                        _fps_c.commit(); _fps_c.close()
-                    except Exception as _fps_e:
-                        try: log.debug(f"[FNO_PAPER_STUDY_HOOK] persist skipped: {_fps_e}")
-                        except Exception: pass
                     # PATCH_V74A_OI_DEDUP: skip if same sym/direction/score logged in last 30 min
                     _v74_key = (sym, direction)
                     _v74_now = time.time()
@@ -10035,307 +9222,6 @@ def _v101c_register_modules(equity, fno):
     except Exception as e:
         log.warning(f"[V101C] module registration failed (non-fatal): {e}")
 
-
-
-# V212 UOA DETECTOR - Unusual Options Activity
-# ============================================================================
-import sqlite3 as _v212_sqlite3
-import threading as _v212_threading
-
-class UOADetector:
-    """V212 Unusual Options Activity detector."""
-
-    def __init__(self, fno_module):
-        self.fno = fno_module
-        self.db_path = str(DATA_DIR / "uoa_volume_baseline.db")
-        self._lock = _v212_threading.Lock()
-        self._bootstrap_done = False
-        self._bootstrap_started = False
-        self._last_scan_minute = -1
-        self._init_db()
-
-    def _init_db(self):
-        try:
-            with self._lock:
-                con = _v212_sqlite3.connect(self.db_path)
-                cur = con.cursor()
-                cur.execute("""CREATE TABLE IF NOT EXISTS contract_volume (
-                    tradingsymbol TEXT NOT NULL,
-                    trade_date TEXT NOT NULL,
-                    volume INTEGER NOT NULL,
-                    close_price REAL NOT NULL,
-                    PRIMARY KEY (tradingsymbol, trade_date)
-                )""")
-                cur.execute("CREATE INDEX IF NOT EXISTS idx_tsym ON contract_volume(tradingsymbol)")
-                con.commit()
-                con.close()
-                log.info(f"[V212_UOA] DB initialized at {self.db_path}")
-        except Exception as _e:
-            log.error(f"[V212_UOA] DB init failed: {_e}")
-
-    def bootstrap_async(self):
-        if self._bootstrap_started:
-            return
-        self._bootstrap_started = True
-        def _worker():
-            try:
-                self._bootstrap_sync()
-            except Exception as _e:
-                log.error(f"[V212_UOA] bootstrap worker failed: {_e}")
-            finally:
-                self._bootstrap_done = True
-        _v212_threading.Thread(target=_worker, daemon=True, name="UOABootstrap").start()
-        log.info("[V212_UOA] bootstrap thread started (background)")
-
-    def _bootstrap_sync(self):
-        kite = KiteSession.kite()
-        if not kite:
-            log.warning("[V212_UOA] no kite session for bootstrap")
-            return
-        try:
-            contracts = self._get_uoa_universe(kite)
-            log.info(f"[V212_UOA] bootstrap: {len(contracts)} contracts to backfill")
-            from datetime import datetime, timedelta
-            _to = datetime.now()
-            _from = _to - timedelta(days=UOA_BOOTSTRAP_DAYS + 5)
-            _filled = 0
-            with self._lock:
-                con = _v212_sqlite3.connect(self.db_path)
-                cur = con.cursor()
-                for ic, contract in enumerate(contracts):
-                    try:
-                        token = contract.get("instrument_token")
-                        tsym = contract.get("tradingsymbol", "")
-                        if not token or not tsym:
-                            continue
-                        if ic % 10 == 0 and ic > 0:
-                            time.sleep(1.0)
-                        hist = kite.historical_data(token, _from, _to, "day")
-                        for row in hist or []:
-                            try:
-                                _date = row["date"].strftime("%Y-%m-%d") if hasattr(row["date"], "strftime") else str(row["date"])[:10]
-                                cur.execute(
-                                    "INSERT OR REPLACE INTO contract_volume (tradingsymbol, trade_date, volume, close_price) VALUES (?,?,?,?)",
-                                    (tsym, _date, int(row.get("volume", 0)), float(row.get("close", 0)))
-                                )
-                                _filled += 1
-                            except Exception:
-                                pass
-                    except Exception as _ce:
-                        log.debug(f"[V212_UOA] bootstrap {tsym}: {_ce}")
-                        continue
-                con.commit()
-                con.close()
-            log.info(f"[V212_UOA] bootstrap complete: {_filled} rows for {len(contracts)} contracts")
-        except Exception as _e:
-            log.error(f"[V212_UOA] bootstrap_sync failed: {_e}")
-
-    def _get_uoa_universe(self, kite):
-        out = []
-        try:
-            if not getattr(self.fno, "_nfo_instruments", None):
-                return out
-            stock_keys = [f"NSE:{s}" for s in self.fno.fno_stocks]
-            spots = {}
-            try:
-                for i in range(0, len(stock_keys), 250):
-                    batch = stock_keys[i:i+250]
-                    resp = kite.ltp(batch)
-                    for k, v in resp.items():
-                        sym = k.replace("NSE:", "")
-                        spots[sym] = v.get("last_price", 0)
-            except Exception as _se:
-                log.warning(f"[V212_UOA] spot fetch failed: {_se}")
-                return out
-            from datetime import datetime as _dt
-            _today = _dt.now().date()
-            _max_exp_days = 60
-            for inst in self.fno._nfo_instruments:
-                try:
-                    if inst.get("instrument_type") not in ("CE", "PE"):
-                        continue
-                    name = inst.get("name", "")
-                    if name not in self.fno.fno_stocks:
-                        continue
-                    spot = spots.get(name, 0)
-                    if spot <= 0:
-                        continue
-                    strike = inst.get("strike", 0)
-                    if strike <= 0:
-                        continue
-                    if abs(strike - spot) / spot > UOA_NEAR_ATM_PCT:
-                        continue
-                    exp = inst.get("expiry")
-                    if not exp:
-                        continue
-                    _exp_d = exp if hasattr(exp, "year") else None
-                    if _exp_d is None:
-                        continue
-                    _dte = (_exp_d - _today).days
-                    if _dte < 0 or _dte > _max_exp_days:
-                        continue
-                    out.append(inst)
-                except Exception:
-                    continue
-            return out
-        except Exception as _e:
-            log.error(f"[V212_UOA] universe build failed: {_e}")
-            return out
-
-    def detect_signals(self):
-        if not UOA_ENABLED:
-            return []
-        if not self._bootstrap_done:
-            return []
-        kite = KiteSession.kite()
-        if not kite or not is_market_hours():
-            return []
-        _n = now_ist()
-        _cur_min = _n.hour * 60 + _n.minute
-        if _cur_min - self._last_scan_minute < UOA_SCAN_INTERVAL_MIN:
-            return []
-        self._last_scan_minute = _cur_min
-        signals = []
-        try:
-            contracts = self._get_uoa_universe(kite)
-            if not contracts:
-                return []
-            tsyms_to_inst = {f"NFO:{c['tradingsymbol']}": c for c in contracts}
-            keys = list(tsyms_to_inst.keys())
-            quotes = {}
-            for i in range(0, len(keys), 200):
-                batch = keys[i:i+200]
-                try:
-                    quotes.update(kite.quote(batch))
-                except Exception as _qe:
-                    log.debug(f"[V212_UOA] quote batch failed: {_qe}")
-                    continue
-            with self._lock:
-                con = _v212_sqlite3.connect(self.db_path)
-                cur = con.cursor()
-                for key, q in quotes.items():
-                    try:
-                        inst = tsyms_to_inst.get(key)
-                        if not inst:
-                            continue
-                        tsym = inst["tradingsymbol"]
-                        today_vol = q.get("volume", 0) or 0
-                        ohlc = q.get("ohlc", {})
-                        yest_close = ohlc.get("close", 0) or 0
-                        today_open = ohlc.get("open", 0) or 0
-                        today_high = ohlc.get("high", 0) or 0
-                        ltp = q.get("last_price", 0) or 0
-                        # V212.2_OI_DELTA: read OI fields for institutional-accumulation check
-                        today_oi = q.get("oi", 0) or 0
-                        oi_day_change = q.get("oi_day_change", 0) or 0
-                        if today_vol <= 0 or yest_close <= 0 or ltp <= 0:
-                            continue
-                        cur.execute(
-                            "SELECT AVG(volume) FROM contract_volume WHERE tradingsymbol=? AND volume>0",
-                            (tsym,)
-                        )
-                        row = cur.fetchone()
-                        avg_vol = (row[0] if row and row[0] else 0) or 0
-                        if avg_vol < 100:
-                            continue
-                        vol_ratio = today_vol / avg_vol
-                        prem_ratio = ltp / yest_close
-                        if today_open > 0:
-                            today_elev = today_high / today_open
-                        else:
-                            today_elev = 1.0
-                        # [OI2] real OI delta vs stored baseline (contract_oi). Kite has no oi_day_change field.
-                        oi_delta_pct = None
-                        try:
-                            _b = cur.execute("SELECT oi FROM contract_oi WHERE tradingsymbol=? AND trade_date<? ORDER BY trade_date DESC LIMIT 1", (tsym, now_ist().isoformat()[:10])).fetchone()
-                            if _b and _b[0] and today_oi > 0:
-                                oi_delta_pct = ((today_oi - _b[0]) / _b[0]) * 100.0
-                        except Exception:
-                            oi_delta_pct = None
-                        _oi_disp = f"{oi_delta_pct:+.1f}%" if oi_delta_pct is not None else "n/a"
-                        if (vol_ratio >= UOA_VOLUME_SPIKE_RATIO
-                            and prem_ratio <= UOA_MAX_PREMIUM_RATIO
-                            and today_elev < FNO_PREMIUM_ELEVATION_BLOCK):
-                            underlying = inst.get("name", "")
-                            opt_type = inst.get("instrument_type", "")
-                            direction = "BULLISH" if opt_type == "CE" else "BEARISH"
-                            cand = {
-                                "symbol": underlying,
-                                "direction": direction,
-                                "score": UOA_SIGNAL_SCORE + (5 if (oi_delta_pct or 0) >= 5.0 else 0),  # [OI2] soft OI-build boost
-                                "catalyst": f"UOA: {tsym} vol={vol_ratio:.1f}x avg OI {_oi_disp} prem={prem_ratio:.2f}x yest",
-                                "source": "UOA",
-                                "timestamp": now_ist().isoformat(),
-                                "uoa_tsym": tsym,
-                                "uoa_vol_ratio": round(vol_ratio, 2),
-                                "uoa_oi_delta_pct": (round(oi_delta_pct, 2) if oi_delta_pct is not None else None),
-                                "uoa_prem_ratio": round(prem_ratio, 2),
-                            }
-                            signals.append(cand)
-                            log.info(f"[V212_UOA] SIGNAL {tsym} vol={vol_ratio:.1f}x OI {_oi_disp} prem={prem_ratio:.2f}x -> {underlying} {direction}")
-                    except Exception:
-                        continue
-                con.close()
-            if signals:
-                try:
-                    _msg = f"V212 UOA: {len(signals)} signal(s)\n"
-                    for s in signals[:5]:
-                        _msg += f"- {s['uoa_tsym']} vol={s['uoa_vol_ratio']}x prem={s['uoa_prem_ratio']}x\n"
-                    log.info("[V212_UOA] %s", _msg)  # M11-mute: was health.fire (Telegram), now log-only
-                except Exception:
-                    pass
-            return signals
-        except Exception as _e:
-            log.error(f"[V212_UOA] detect_signals failed: {_e}")
-            return []
-
-    def save_eod_snapshot(self):
-        kite = KiteSession.kite()
-        if not kite:
-            return
-        try:
-            contracts = self._get_uoa_universe(kite)
-            tsyms_to_inst = {f"NFO:{c['tradingsymbol']}": c for c in contracts}
-            keys = list(tsyms_to_inst.keys())
-            quotes = {}
-            for i in range(0, len(keys), 200):
-                batch = keys[i:i+200]
-                try:
-                    quotes.update(kite.quote(batch))
-                except Exception:
-                    continue
-            from datetime import date as _date
-            _today = str(_date.today())
-            _saved = 0
-            with self._lock:
-                con = _v212_sqlite3.connect(self.db_path)
-                cur = con.cursor()
-                for key, q in quotes.items():
-                    try:
-                        inst = tsyms_to_inst.get(key)
-                        if not inst:
-                            continue
-                        tsym = inst["tradingsymbol"]
-                        vol = int(q.get("volume", 0) or 0)
-                        ltp = float(q.get("last_price", 0) or 0)
-                        if vol > 0 and ltp > 0:
-                            cur.execute(
-                                "INSERT OR REPLACE INTO contract_volume (tradingsymbol, trade_date, volume, close_price) VALUES (?,?,?,?)",
-                                (tsym, _today, vol, ltp)
-                            )
-                            try:  # [OI2] daily OI snapshot for delta baseline
-                                cur.execute("INSERT OR REPLACE INTO contract_oi (tradingsymbol, trade_date, oi) VALUES (?,?,?)", (tsym, _today, int(q.get("oi", 0) or 0)))
-                            except Exception:
-                                pass
-                            _saved += 1
-                    except Exception:
-                        continue
-                con.commit()
-                con.close()
-            log.info(f"[V212_UOA] EOD snapshot saved: {_saved} contracts")
-        except Exception as _e:
-            log.error(f"[V212_UOA] EOD snapshot failed: {_e}")
-# END V212 UOA DETECTOR
 
 class FnoModule:
     """
@@ -10382,14 +9268,6 @@ class FnoModule:
     def __init__(self):
         self.positions = {}     # key -> position dict
         self.gtt = GTTManager("FNO")
-        try:
-            if _V105_FNO_REGIME_AVAILABLE:
-                self.regime_monitor = FnoRegimeMonitor(self)
-            else:
-                self.regime_monitor = None
-        except Exception as _e_v105_fno_init:
-            log.error(f"[V105_REGIME_FNO] init: {_e_v105_fno_init}")
-            self.regime_monitor = None
         self.risk = None
         self.telegram = TelegramThrottle("FNO", max_per_hour=15)
         self.news = None
@@ -10408,8 +9286,6 @@ class FnoModule:
         self.fno_stocks = set()
         self._nfo_instruments = []
         self._pos_file = DATA_DIR / "fno_positions.json"
-        self.positions = self._load_positions()
-        self._reject_cooldown = set()
         self._trades_file = DATA_DIR / "fno_trades.json"
         self._last_scan = None
         self._last_trail_check = None
@@ -10499,20 +9375,19 @@ class FnoModule:
     # holding an FNO_MAX_POS slot hostage.
     # ============================================================
     def _fno_amo_stale_cancel_window(self):
-        """V211_FIX4: extended 09:20-09:30 -> 09:20-15:30. Idempotency marker
-        still ensures we only act once per day, but window now catches AMOs that
-        missed the narrow morning slot (restart, network)."""
+        """True between 09:20 and 09:30 IST (mirrors equity stale window)."""
         try:
             from datetime import datetime
             try:
                 from zoneinfo import ZoneInfo
                 now = datetime.now(ZoneInfo("Asia/Kolkata"))
             except Exception:
+                # V77_FIX9: refuse to act on UTC fallback
                 log.error("[V77_FIX9] zoneinfo unavailable - refusing AMO stale window check")
                 return False
             hm = now.hour * 60 + now.minute
-            # 09:20 = 560, 15:30 = 930
-            return 560 <= hm <= 930
+            # 09:20 = 560, 09:30 = 570
+            return 560 <= hm <= 570
         except Exception:
             return False
 
@@ -10885,17 +9760,14 @@ class FnoModule:
                     ivr = iv_tracker.iv_rank(sym)
                 except Exception:
                     ivr = None
-                # V220 FAIL_CLOSED: unknown IVR = skip. No earnings options without IV opinion.
-                if ivr is None:
-                    log.info(f"[FIX_V33_EARNINGS][V220] {sym} skipped: IVR unavailable (fail-closed)")
-                    continue
-                if ivr > 70:
-                    log.info(f"[FIX_V33_EARNINGS] {sym} skipped: IVR={ivr:.0f}>70")
-                    continue
-                if ivr < 30:
-                    iv_boost = 5
-                elif ivr < 50:
-                    iv_boost = 2
+                if ivr is not None:
+                    if ivr > 70:
+                        log.info(f"[FIX_V33_EARNINGS] {sym} skipped: IVR={ivr:.0f}>70")
+                        continue
+                    if ivr < 30:
+                        iv_boost = 5
+                    elif ivr < 50:
+                        iv_boost = 2
                 score = 70 + (7 - days_to) * 3 + iv_boost
                 # V81: tier-weighted boost (research: pre-earnings drift strongest in smaller caps)
                 _v81_mcap = 0
@@ -10926,11 +9798,12 @@ class FnoModule:
         return out
 
     def _fno_amo_premarket_place(self):
-        """V212: F&O AMO disabled. Intraday-only entries via scan_and_trade.
-        Original: at 08:45 IST read pool, apply GIFT Nifty filter, place top 3 AMOs.
+        """At 08:45 IST: read pool, apply GIFT Nifty filter, place top 3 AMOs.
+
+        PATCH_V9_AMO_ARCH: if pool is empty, run one final aggressive scan at
+        threshold 60 before giving up.
+        PATCH_V28_FALLBACK_ONCE: fallback scan must fire only ONCE per day, not every minute.
         """
-        if not FNO_AMO_ENABLED:
-            return
         try:
             if self._fno_amo_is_premarket_place_time():
                 # PATCH_V28_FALLBACK_ONCE: idempotency marker for fallback scan
@@ -11067,34 +9940,6 @@ class FnoModule:
                 filtered.append(c)
             log.info(f"[PATCH_V73_DIAG] after GIFT filter: {len(filtered)}/{len(candidates)} survived (gift_pct={gift_pct:+.2f}%, bear_thr={bear_threshold:+.2f}%, bull_thr={bull_threshold:+.2f}%)")
 
-                        # === V223_BUILDUP_AUTHORITY: leading OI-buildup owns direction ===
-            try:
-                _bd = {}
-                if getattr(self, '_oi_engine', None):
-                    for _s in (self._oi_engine.detect_buildup_signals(mode="daily") or []):
-                        _sym = _s.get('symbol'); _dir = _s.get('direction'); _sc = _s.get('score', 0)
-                        if _sym and _dir in ('BULLISH', 'BEARISH') and _sc >= 75:
-                            if _sym not in _bd or _sc > _bd[_sym][1]:
-                                _bd[_sym] = (_dir, _sc)
-                if _bd:
-                    _seen = set(); _recon = []
-                    for _c in filtered:
-                        _cs = _c.get('symbol')
-                        if _cs in _bd:
-                            _wdir, _wsc = _bd[_cs]
-                            if _c.get('direction') != _wdir:
-                                log.info("[V223_BUILDUP_AUTHORITY] %s direction %s->%s (buildup score=%s)" % (_cs, _c.get('direction'), _wdir, _wsc))
-                            _c['direction'] = _wdir
-                            _c['_buildup_authoritative'] = True
-                            _c['score'] = max(_c.get('score', 0), 9000 + _wsc)
-                            if _cs in _seen:
-                                continue
-                            _seen.add(_cs)
-                        _recon.append(_c)
-                    filtered = _recon
-                    log.info("[V223_BUILDUP_AUTHORITY] enforced on %s symbol(s) from %s buildup signal(s)" % (len(_seen), len(_bd)))
-            except Exception as _v223e:
-                log.error("[V223_BUILDUP_AUTHORITY] failed (non-fatal): %s" % _v223e)
             filtered.sort(key=lambda c: c.get("score", 0), reverse=True)
 
             # FIX_V42_FNO_AMO_CAP: mirror V28_A2 equity fix — count live FNO positions + pending AMOs
@@ -11197,7 +10042,7 @@ class FnoModule:
                         log.info(f"[PATCH_V1_FNO_AMO] {sym}: cost {cost:.0f} > 50% of available {self.available:.0f}, skip")
                         continue
                     limit_price = round(premium * 1.02, 1)
-                    order_id = _safe_place_order(kite, dict(
+                    order_id = kite.place_order(
                         variety="amo",
                         exchange="NFO",
                         tradingsymbol=tsym,
@@ -11207,7 +10052,7 @@ class FnoModule:
                         price=limit_price,
                         product="NRML",
                         validity="DAY",
-                    ), positions_dict=self.positions, save_fn=self._save_positions, cooldown=self._reject_cooldown, context="L10332")
+                    )
                     log.info(f"[PATCH_V1_FNO_AMO] PLACED {tsym} x{qty} @ {limit_price} id={order_id} score={score}")
                     placed_list.append({"tsym": tsym, "qty": qty, "price": limit_price, "score": score, "catalyst": catalyst})
                     try:
@@ -11344,13 +10189,6 @@ class FnoModule:
         # PATCH_V5_OI_LOGGER: initialize OI snapshot engine
         try:
             self._oi_engine = OISnapshotEngine(self)
-            try:
-                self._uoa = UOADetector(self)
-                self._uoa.bootstrap_async()
-                log.info("[V212_UOA] UOADetector initialized, bootstrap started")
-            except Exception as _v212_ie:
-                log.error(f"[V212_UOA] init failed: {_v212_ie}")
-                self._uoa = None
             log.info("[PATCH_V5_OI] OISnapshotEngine initialized")
         except Exception as _e:
             log.error(f"[PATCH_V5_OI] init failed: {_e}")
@@ -11372,9 +10210,10 @@ class FnoModule:
             log.error(f"[PATCH_V8_SECTOR] init failed: {_e}")
             self._sector_rotation = None
 
-        # V216_PRESERVE_LOAD: do NOT wipe loaded positions.
-        # _sync_positions prunes phantoms (PATCH_V28_KITE_ONLY block inside _sync_positions).
-        # Apr 16 phantom incident is solved by phantom-key pruning, not by wiping.
+        # PATCH_V28_KITE_ONLY: DO NOT load from JSON. Kite is the only source of truth.
+        # Previous behavior loaded phantom positions from live_fno.json that persisted
+        # after manual Kite sells (Apr 16 2026 SURAJEST/BANKNIFTY phantom incident).
+        self.positions = {}  # start empty, populate from Kite only
         self._sync_positions()
 
         # Run F&O GTT audit on startup
@@ -11415,15 +10254,6 @@ class FnoModule:
                 _t.sleep(1)
         if total > 0:
             self.capital = round(total * FNO_PCT, 2)
-            # OBSERVATION MODE OVERRIDE
-            _obs_total = _observation_capital_override()
-            if _obs_total is not None:
-                _obs_fno = round(_obs_total * FNO_PCT, 2)
-                try:
-                    log.info(f"[OBSERVATION] FNO capital override: real={self.capital} -> paper={_obs_fno}")
-                except Exception:
-                    pass
-                self.capital = _obs_fno
             invested = sum(
                 p.get("cost", 0) for p in self.positions.values()
             )
@@ -11432,18 +10262,6 @@ class FnoModule:
         else:
             log.warning(f"[PATCH_V10_CAPITAL_RETRY] FNO: all 3 attempts returned 0, preserving previous capital={self.capital}")
 
-
-    def _load_positions(self):
-        # V215_LOAD_UNWRAP: JSON is {"positions": {...}}, unwrap inner dict
-        import json as _j, os as _o
-        try:
-            if _o.path.exists(self._pos_file):
-                with open(self._pos_file) as _f: d = _j.load(_f)
-                _pos = d.get("positions", d) if isinstance(d, dict) else {}
-                if not isinstance(_pos, dict): _pos = {}
-                log.info(f"[V210_FNO_LOAD] {len(_pos)} positions"); return _pos
-        except Exception as _e: log.error(f"[V210_FNO_LOAD] {_e}")
-        return {}
 
     def _save_positions(self):
         save_json(self._pos_file, {"positions": self.positions})
@@ -11633,16 +10451,6 @@ class FnoModule:
         # ── Step 1: Get live quotes for all candidates (batch) ──
         # Process in batches of 20 (Kite API limit)
         scored_candidates = []
-        # [OI2] latest pre-today OI per contract, one DB read per call
-        _OI2_BASE = {}
-        try:
-            import sqlite3 as _s3, datetime as _dt2
-            _c2 = _s3.connect("/home/globalbot/data/uoa_volume_baseline.db")
-            for _ts2, _oi2 in _c2.execute("SELECT tradingsymbol, oi FROM contract_oi WHERE trade_date<? ORDER BY trade_date ASC", (_dt2.date.today().isoformat(),)):
-                _OI2_BASE[_ts2] = _oi2
-            _c2.close()
-        except Exception:
-            _OI2_BASE = {}
         for i in range(0, min(len(candidates), 40), 20):
             if i > 0: time.sleep(0.3)  # FIX_V51: Kite rate limit between batches
             batch = candidates[i:i+20]
@@ -11660,7 +10468,7 @@ class FnoModule:
 
                 ltp = q.get("last_price", 0)
                 oi = q.get("oi", 0)
-                oi_change = (oi - _OI2_BASE[tsym]) if (_OI2_BASE.get(tsym) and oi > 0) else 0  # [OI2] real delta
+                oi_change = q.get("oi_day_change", 0)  # Today's OI change
                 volume = q.get("volume", 0)
                 depth = q.get("depth", {})
                 # PATCH_V70_AUDIT_CLEANUP: removed unused ohlc/prev_close pair (neither was read)
@@ -11848,17 +10656,8 @@ class FnoModule:
 
         return best
 
-    def enter(self, symbol, catalyst, direction, score, cand=None):
-        """Place a real F&O BUY order.
-        V212.1: cand param added. When cand['source']=='UOA' and cand['uoa_tsym']
-        present, bot uses the exact UOA-flagged contract instead of _find_best_option.
-        """
-        # AUDIT_V227: NO pre-market F&O entries. User disabled F&O AMO (gap up/down
-        # fills unreliable). Block ALL new F&O entries outside market hours at the
-        # single choke point so no caller (scan/roll/amo/v76) can place pre-open.
-        if not is_market_hours():
-            log.info(f"[V227] F&O entry blocked for {symbol}: not market hours (pre-market/closed)")
-            return False
+    def enter(self, symbol, catalyst, direction, score):
+        """Place a real F&O BUY order."""
         if len(self.positions) >= FNO_MAX_POS:
             return False
         # Check per-stock limit
@@ -12041,54 +10840,8 @@ class FnoModule:
             except Exception:
                 pass
 
-            # V212.1_UOA_DIRECT: if UOA source, use the exact contract UOA flagged
-            option = None
-            try:
-                if cand and cand.get("source") == "UOA" and cand.get("uoa_tsym"):
-                    _uoa_tsym = cand["uoa_tsym"]
-                    # Build option dict directly from kite for the UOA-flagged contract
-                    _uoa_q = kite.quote([f"NFO:{_uoa_tsym}"]).get(f"NFO:{_uoa_tsym}", {})
-                    _uoa_ltp = _uoa_q.get("last_price", 0) or 0
-                    _uoa_depth = _uoa_q.get("depth", {})
-                    _uoa_asks = _uoa_depth.get("sell", [])
-                    _uoa_best_ask = _uoa_asks[0].get("price", 0) if _uoa_asks else 0
-                    _uoa_premium = _uoa_best_ask if _uoa_best_ask > 0 else _uoa_ltp
-                    if _uoa_premium <= 0:
-                        log.warning(f"[V212.1_UOA_DIRECT] {_uoa_tsym}: no premium quote, falling back to _find_best_option")
-                    else:
-                        # Find instrument metadata
-                        _uoa_inst = None
-                        for _i in self._nfo_instruments:
-                            if _i.get("tradingsymbol") == _uoa_tsym:
-                                _uoa_inst = _i
-                                break
-                        if not _uoa_inst:
-                            log.warning(f"[V212.1_UOA_DIRECT] {_uoa_tsym}: instrument metadata not found, falling back")
-                        else:
-                            from datetime import date as _v212_1_date
-                            _uoa_exp = _uoa_inst.get("expiry")
-                            _uoa_dte = (_uoa_exp - _v212_1_date.today()).days if hasattr(_uoa_exp, "year") else 30
-                            option = {
-                                "tradingsymbol": _uoa_tsym,
-                                "lot_size": _uoa_inst.get("lot_size", 0),
-                                "premium": _uoa_premium,
-                                "expiry": _uoa_exp,
-                                "dte": _uoa_dte,
-                                "strike": _uoa_inst.get("strike", 0),
-                                "oi": _uoa_q.get("oi", 0),
-                                "oi_change": 0,
-                                "spread": 0,
-                                "cost": _uoa_inst.get("lot_size", 0) * _uoa_premium,
-                                "approx_delta": 0.5,
-                                "daily_theta": 0.0,
-                            }
-                            log.info(f"[V212.1_UOA_DIRECT] {_uoa_tsym} selected directly: premium={_uoa_premium} lot={option['lot_size']}")
-            except Exception as _v212_1_e:
-                log.error(f"[V212.1_UOA_DIRECT] failed: {_v212_1_e}, falling back to _find_best_option")
-                option = None
-            # Fallback: not UOA, or UOA direct selection failed
-            if not option:
-                option = self._find_best_option(kite, symbol, direction, spot, catalyst_score=score)
+            # Find best option
+            option = self._find_best_option(kite, symbol, direction, spot, catalyst_score=score)
             if not option:
                 log.info(f"FNO: no suitable option for {symbol} {direction}")
                 return False
@@ -12097,68 +10850,6 @@ class FnoModule:
             lot = option["lot_size"]
             premium = option["premium"]
             cost = lot * premium
-
-            # V212_PREMIUM_GUARD: block entry if option already exploded today.
-            # The COFORGE/HCLTECH bug: bot entered after option ran up 50-100% intraday.
-            try:
-                _v212_q = kite.quote([f"NFO:{tsym}"]).get(f"NFO:{tsym}", {})
-                _v212_ohlc = _v212_q.get("ohlc", {})
-                _v212_today_open = _v212_ohlc.get("open", 0) or 0
-                _v212_today_high = _v212_ohlc.get("high", 0) or 0
-                if _v212_today_open > 0 and _v212_today_high > 0:
-                    # PATCH_FNOTIMING: block on CURRENT price vs open, not today's HIGH.
-                    _v212_now = _v212_q.get("last_price", 0) or _v212_today_high
-                    _v212_elev = _v212_now / _v212_today_open
-                    if _v212_elev >= FNO_PREMIUM_ELEVATION_BLOCK:
-                        log.warning(f"[V212_PREMIUM_GUARD] BLOCKED {tsym}: today high/open = {_v212_elev:.2f} >= {FNO_PREMIUM_ELEVATION_BLOCK} (option already exploded)")
-                        try:
-                            health.fire(f"V212 BLOCK {tsym}: already up {(_v212_elev-1)*100:.0f}% today, skipping entry")
-                        except Exception:
-                            pass
-                        return False
-            except Exception as _v212_pe:
-                log.debug(f"[V212_PREMIUM_GUARD] check failed for {tsym}: {_v212_pe}, allowing entry")
-            # END V212_PREMIUM_GUARD
-
-            # === ENTRY MOMENTUM GATE (2026-06-10, Option A: snapshot-based) ===
-            # UOA flags activity but never confirmed DIRECTION. Require the option premium
-            # to be trending up on the day before deploying capital. Fail-closed.
-            try:
-                _g_open  = _v212_today_open
-                _g_high  = _v212_ohlc.get("high", 0) or 0
-                _g_low   = _v212_ohlc.get("low", 0) or 0
-                _g_close = _v212_ohlc.get("close", 0) or 0
-                _g_now   = _v212_now
-                _g_vol   = _v212_q.get("volume", _v212_q.get("volume_traded", 0)) or 0
-                if _g_open <= 0 or _g_now <= 0:
-                    log.warning(f"FNO ENTRY-GATE {tsym}: no premium data - REJECT (fail-closed)")
-                    return False
-                _up_on_day = _g_now > _g_open
-                _rng = (_g_high - _g_low)
-                _pos_in_range = ((_g_now - _g_low) / _rng) if _rng > 0 else 0.0
-                _near_high = _pos_in_range >= 0.60
-                _above_prev = (_g_now > _g_close) if _g_close > 0 else True
-                _has_vol = _g_vol > 0
-                # V234: high-conviction UOA (score>=78) doesn't need price already near-high.
-                # UOA catches EARLY accumulation; demanding _near_high defeats that edge.
-                # Weak signals still require the full 4-way confirmation.
-                _strong_uoa = (score or 0) >= 78
-                if _strong_uoa:
-                    _confirmed = _up_on_day and _above_prev and _has_vol
-                else:
-                    _confirmed = _up_on_day and _near_high and _above_prev and _has_vol
-                if not _confirmed:
-                    log.info(f"FNO ENTRY-GATE {tsym}: ALERT-ONLY (no momentum confirm) up={_up_on_day} rangepos={_pos_in_range:.2f} abovePrev={_above_prev} vol={_g_vol}")
-                    try:
-                        if _unconf_should_alert(tsym): log.info(f"[M11-mute] ENTRY-GATE {tsym}: flagged but unconfirmed - not sized")
-                    except Exception:
-                        pass
-                    return False
-                log.info(f"FNO ENTRY-GATE {tsym}: CONFIRMED rangepos={_pos_in_range:.2f} - proceeding")
-            except Exception as _ge:
-                log.warning(f"FNO ENTRY-GATE {tsym}: check failed ({_ge}) - REJECT (fail-closed)")
-                return False
-            # === END ENTRY MOMENTUM GATE ===
 
             # V28 D4: Smart F&O sizing (respects your constraint that small F&O capital
             # can't always fit 30% — without allowing 95% catastrophic single-trade risk).
@@ -12231,7 +10922,7 @@ class FnoModule:
                     smart_price = _clamped
             
             # Place order with smart price
-            order_id = _safe_place_order(kite, dict(
+            order_id = kite.place_order(
                 variety=kite.VARIETY_REGULAR,
                 exchange="NFO",
                 tradingsymbol=tsym,
@@ -12242,7 +10933,7 @@ class FnoModule:
                 product="NRML",
                 validity="DAY",
                 market_protection=_V104_mp(5),  # SEBI mandatory
-            ), positions_dict=self.positions, save_fn=self._save_positions, cooldown=self._reject_cooldown, context="L11221")
+            )
             log.info(f"FNO: ORDER PLACED {tsym} lot={lot} premium={premium} order_id={order_id}")
             OrderGuard.record_order(tsym)
             OrderGuard.record_order(symbol)  # Block both tradingsymbol and underlying
@@ -12252,15 +10943,6 @@ class FnoModule:
             fill_price = 0.0
             order_status = None
             _poll_max_sec = 15
-
-            # _V224_FNO_PAPER_FILL: paper orders never appear in real kite.orders().
-            # The poll below searches the live Kite book for a PAPER_ id it can
-            # never find -> times out -> cancels a trade paper_trader already recorded.
-            # Fix: treat paper order as instantly COMPLETE at smart_price, skip poll.
-            if PAPER_MODE and isinstance(order_id, str) and order_id.startswith("PAPER_"):
-                order_status = "COMPLETE"
-                fill_price = float(smart_price) if smart_price else float(premium)
-                log.info(f"FNO: {tsym} PAPER FILLED at {fill_price} (id={order_id}) [V224]")
             _poll_interval = 1.5
             _elapsed = 0.0
             while _elapsed < _poll_max_sec:
@@ -12419,30 +11101,8 @@ class FnoModule:
                     log.error(f"FNO trail per-position error {p.get('tradingsymbol')}: {e}")
             
             # Prune stale peaks for closed positions
-            # V110_SAMEDAY: detect GTT-fired SL exits and blacklist underlying for the day
             stale = [k for k in list(peaks.keys()) if k not in live_symbols]
             for k in stale:
-                try:
-                    _v110_peak_data = peaks.get(k, {})
-                    _v110_entry = float(_v110_peak_data.get("avg", 0) or 0)
-                    _v110_peak_px = float(_v110_peak_data.get("peak", 0) or 0)
-                    # If position closed and was NOT in profit (peak <= entry*1.05),
-                    # treat as SL hit and blacklist underlying.
-                    if _v110_entry > 0 and _v110_peak_px <= _v110_entry * 1.05:
-                        import re as _re_v110
-                        _m_v110 = _re_v110.match(r"^([A-Z]+)\d", k)
-                        _v110_root = _m_v110.group(1) if _m_v110 else k
-                        OrderGuard.mark_sl_hit(_v110_root)
-                        log.warning(f"[V110_SAMEDAY] SL-fired exit detected: {k} root={_v110_root} entry={_v110_entry} peak={_v110_peak_px}")
-                        # V79D_LOSS_RECORD: persist loss to loss_history.json so V79C cross-day cooldown sees it
-                        try:
-                            _v79d_pnl_pct = ((_v110_peak_px - _v110_entry) / _v110_entry) * 100.0 if _v110_entry > 0 else 0.0
-                            get_loss_tracker().record_loss(_v110_root, _v79d_pnl_pct)
-                            log.info(f"[V79D_LOSS_RECORD] persisted loss: {_v110_root} pnl_pct={_v79d_pnl_pct:.2f}")
-                        except Exception as _v79de:
-                            log.warning(f"[V79D_LOSS_RECORD] failed for {_v110_root}: {_v79de}")
-                except Exception as _v110_e:
-                    log.warning(f"[V110_SAMEDAY] detection failed for {k}: {_v110_e}")
                 del peaks[k]
                 log.info(f"FNO trail: pruned peak for closed position {k}")
             
@@ -12510,12 +11170,12 @@ class FnoModule:
             
             # Step 1: Sell current position
             qty = pos.get("qty", 0)
-            sell_id = _safe_place_order(kite, dict(
+            sell_id = kite.place_order(
                 variety=kite.VARIETY_REGULAR, exchange="NFO",
                 tradingsymbol=tsym, transaction_type="SELL",
                 quantity=qty, order_type="MARKET", product="NRML",
                 validity="DAY", market_protection=_V104_mp(5),
-            ), positions_dict=self.positions, save_fn=self._save_positions, cooldown=self._reject_cooldown, context="L11491")
+            )
             log.info(f"FNO ROLL: sold {tsym} x{qty} for roll — awaiting fill confirmation")
             OrderGuard.record_order(tsym)
             
@@ -12563,13 +11223,13 @@ class FnoModule:
             new_premium = next_option["premium"]
             
             try:
-                buy_id = _safe_place_order(kite, dict(
+                buy_id = kite.place_order(
                     variety=kite.VARIETY_REGULAR, exchange="NFO",
                     tradingsymbol=new_tsym, transaction_type="BUY",
                     quantity=new_lot, order_type="LIMIT",
                     price=round(new_premium * 1.005, 1),
                     product="NRML", validity="DAY", market_protection=_V104_mp(5),
-                ), positions_dict=self.positions, save_fn=self._save_positions, cooldown=self._reject_cooldown, context="L11544")
+                )
                 # PATCH_V70_AUDIT_CLEANUP: validate buy_id (was captured but discarded)
                 if not buy_id:
                     raise RuntimeError(f"place_order returned empty order_id for {new_tsym}")
@@ -12624,37 +11284,6 @@ class FnoModule:
         
         for key in list(self.positions.keys()):
             pos = self.positions[key]
-
-            # AUDIT_V231 TIME-STOP: enforce FNO_MAX_HOLD_DAYS (was dead config — never
-            # enforced). A bought option that hasn't WORKED within N days bleeds theta on
-            # a thesis that didn't play out -> exit. BUT let winners run (trail handles
-            # those): only time-exit if the position is NOT meaningfully in profit.
-            try:
-                _entry_iso = pos.get("entry_time", "")
-                if _entry_iso:
-                    _entry_dt = datetime.fromisoformat(_entry_iso)
-                    _days_held = (now_ist() - _entry_dt).days
-                    if _days_held >= FNO_MAX_HOLD_DAYS:
-                        _ts_entry = pos.get("entry_price", 0) or 0
-                        _ts_ltp = 0
-                        try:
-                            _ts_kite = KiteSession.kite()
-                            if _ts_kite:
-                                _ts_q = _ts_kite.ltp([f"NFO:{pos['tradingsymbol']}"])
-                                _ts_ltp = _ts_q.get(f"NFO:{pos['tradingsymbol']}", {}).get("last_price", 0) or 0
-                        except Exception:
-                            _ts_ltp = 0
-                        # "working" = up >= trail-activate level; let those ride.
-                        _ts_winning = (_ts_entry > 0 and _ts_ltp >= _ts_entry * (1 + FNO_TRAIL_ACTIVATE))
-                        if not _ts_winning:
-                            log.info(f"[V231_TIME_STOP] {pos.get('tradingsymbol','?')} held {_days_held}d >= {FNO_MAX_HOLD_DAYS}d, not working (entry={_ts_entry} ltp={_ts_ltp}) — theta exit")
-                            self._exit_position(key, f"TIME_STOP_{_days_held}D")
-                            continue
-                        else:
-                            log.info(f"[V231_TIME_STOP] {pos.get('tradingsymbol','?')} held {_days_held}d but WINNING (ltp={_ts_ltp} vs entry={_ts_entry}) — let trail manage")
-            except Exception as _e231:
-                log.warning(f"[V231_TIME_STOP] check failed for {key}: {_e231}")
-
             expiry_str = pos.get("expiry", "")
             try:
                 expiry = datetime.strptime(expiry_str, "%Y-%m-%d").date()
@@ -12703,28 +11332,7 @@ class FnoModule:
             if qty <= 0 or not tsym:
                 return
 
-            # V210_SAFETY_GATE: live Kite check before SELL to prevent naked shorts
-            # Added 2026-05-18 after UNITDSPR naked short incident
-            try:
-                import sys as _sys
-                if '/home/globalbot' not in _sys.path:
-                    _sys.path.insert(0, '/home/globalbot')
-                from safety_gate import can_sell_fno as _can_sell_fno
-                _allowed, _safe_qty, _reason = _can_sell_fno(kite, tsym, qty)
-                if not _allowed:
-                    log.error(f"[V210_SAFETY_GATE] BLOCK FNO SELL {tsym} qty={qty}: {_reason}")
-                    try:
-                        self.positions.pop(key, None)
-                        self._save_positions()
-                    except Exception as _e_pop:
-                        log.warning(f"[AUDIT_V225] positions.pop/save failed for {key}: {_e_pop}")
-                    return
-                qty = _safe_qty
-            except Exception as _sg_err:
-                log.error(f"[V210_SAFETY_GATE] gate check failed for {tsym}: {_sg_err} - REFUSING to sell")
-                return
-
-            order_id = _safe_place_order(kite, dict(
+            order_id = kite.place_order(
                 variety=kite.VARIETY_REGULAR,
                 exchange="NFO",
                 tradingsymbol=tsym,
@@ -12734,7 +11342,7 @@ class FnoModule:
                 product="NRML",
                 validity="DAY",
                 market_protection=_V104_mp(5),  # SEBI mandatory
-            ), positions_dict=self.positions, save_fn=self._save_positions, cooldown=self._reject_cooldown, context="L11674")
+            )
             log.info(f"FNO: SELL {tsym} x{qty} reason={reason}")
 
             # V85_EXIT_POLL: poll up to 30s for COMPLETE status
@@ -13042,7 +11650,7 @@ class FnoModule:
         # PATCH_V5_OI_LOGGER: Source 6 — OI buildup signals
         if self._oi_engine:
             try:
-                oi_candidates = self._oi_engine.detect_buildup_signals(mode="daily")  # V223: daily, not intraday
+                oi_candidates = self._oi_engine.detect_buildup_signals()
                 if oi_candidates:
                     candidates.extend(oi_candidates)
                     log.info(f"[PATCH_V5_OI] {len(oi_candidates)} OI buildup candidates added to F&O scan")
@@ -13117,16 +11725,6 @@ class FnoModule:
                     log.info(f"[PATCH_V200_RISING] {len(_ro_cands)} rising-option candidates merged into F&O queue")
         except Exception as _roe:
             log.error(f"[PATCH_V200_RISING] scanner failed: {_roe}")
-
-        # V212 Source 9: UOA detector — institutional volume accumulation
-        try:
-            if getattr(self, "_uoa", None) is not None:
-                _uoa_cands = self._uoa.detect_signals()
-                if _uoa_cands:
-                    candidates.extend(_uoa_cands)
-                    log.info(f"[V212_UOA] {len(_uoa_cands)} UOA candidates merged into F&O queue")
-        except Exception as _ue:
-            log.error(f"[V212_UOA] scan_and_trade hook failed: {_ue}")
 
         # Source 5: Earnings plays — pre-earnings IV expansion strategy
         # PATCH_V7_SIGNAL_QUALITY: inherit direction from other signals on same stock, skip if none
@@ -13385,7 +11983,6 @@ class FnoModule:
         # PATCH_V28_SOURCE_WEIGHT: boost scores based on source reliability
         # Filing/Brokerage = highest conviction, News/Momentum = lowest
         _SOURCE_WEIGHTS = {
-            "UOA": 1.35,          # V232: leading pre-explosion source must win top-5 (F&O brain only)
             "FILING": 1.15,        # NSE filings — hard data, highest conviction
             "BROKERAGE": 1.12,     # Analyst upgrades/downgrades — professional research
             "PROMOTER_BUY": 1.10,  # Insider buying — strong signal
@@ -13394,7 +11991,7 @@ class FnoModule:
             "BREAKOUT": 1.0,       # Technical — no boost
             "SECTOR_ROTATION": 1.0,# Sector play — no boost
             "NEWS": 0.95,          # RSS headlines — noisy, slight penalty
-            "MOMENTUM": 0.80,      # AUDIT_V229: 1.00->0.80, demote price-already-moved so it stops crowding slots
+            "MOMENTUM": 1.00,      # Price momentum (V93: 0.90->1.00, V85+V83_HOURLY already filter noise)
             "SUPERSTAR_BUY": 1.20, # V94: superstar investor bulk/block buy — highest predictive signal
             "FII_BLOCK_BUY": 1.15, # V94: FII institutional bulk/block buy
             "DII_BLOCK_BUY": 1.10, # V94: DII (MF/insurance) bulk/block buy
@@ -13409,16 +12006,6 @@ class FnoModule:
             "RESULTS_PREPOSITION": 1.10, # V98: pre-position 3-7d before quarterly results
             "INSIDER_PIT_BUY": 1.10,   # V99: insider/DP buy disclosures (Reg 7(2)) — confirmation signal
             "INSIDER_PIT_SELL": 1.05,  # V99: insider/DP sell disclosures (BEARISH, weaker — tax/diversification noise)
-            # AUDIT_V229: PROACTIVE PRIORITY — boost LEADING (pre-move) signals so they win
-            # the top-5 slots instead of being crowded out by reactive "already moved" sources.
-            "EARNINGS_TRADER_V33":  1.30,  # pre-earnings IV expansion, 14-21d early (LEADING)
-            "EARNINGS_PLAY":        1.28,  # pre-earnings positioning (LEADING)
-            "EARNINGS_MODERATE":    1.22,  # pre-earnings, moderate conviction (LEADING)
-            "OI_BUILDUP":           1.30,  # institutional OI positioning before news (LEADING)
-            "OI":                   1.30,  # alias for OI buildup source (LEADING)
-            "UOA":                  1.25,  # unusual options activity — institutional accumulation (LEADING)
-            # Reactive "already moved" sources DEMOTED so they cannot crowd out leading signals:
-            "RISING_OPT":           0.75,  # AUDIT_V229: premium already exploded — the "already up X%" trap
         }
         for c in candidates:
             _src = c.get("source", "")
@@ -13491,7 +12078,7 @@ class FnoModule:
             except Exception as _pe:
                 log.error(f"[FIX_V46_PANEL_FNO] {cand.get('symbol')} error: {_pe}")
                 continue  # FIX_V51: panel crash = BLOCK, never fall through to enter
-            success = self.enter(cand["symbol"], cand.get("catalyst", ""), cand["direction"], cand.get("score", 0), cand=cand)  # V212.1 thread cand
+            success = self.enter(cand["symbol"], cand.get("catalyst", ""), cand["direction"], cand.get("score", 0))
             if success:
                 entered += 1
                 if entered >= 2:
@@ -13595,14 +12182,6 @@ class FnoModule:
                 self._last_trail_check = n.hour * 60 + n.minute
                 self.check_trailing_sl()
 
-        # PATCH_V105_REGIME_FNO tick
-        if is_market_hours():
-            try:
-                if getattr(self, "regime_monitor", None) is not None:
-                    self.regime_monitor.maybe_run(n)
-            except Exception as _e_v105_fno_tick:
-                log.error(f"[V105_REGIME_FNO] tick: {_e_v105_fno_tick}")
-
         # FIX_V76_OI_INTRADAY: removed n.minute<5 gate.
         # OLD: required minute 0-4 AND new hour. Single-tick miss = lost hour.
         # NEW: hour-throttle alone (first scan in a new hour triggers save).
@@ -13623,11 +12202,6 @@ class FnoModule:
                     self._oi_engine.take_snapshot(is_eod=True)
                 except Exception as _e:
                     log.error(f"[PATCH_V9_AMO_ARCH] EOD snapshot failed: {_e}")
-                try:
-                    if getattr(self, "_uoa", None) is not None:
-                        self._uoa.save_eod_snapshot()
-                except Exception as _ue:
-                    log.error(f"[V212_UOA] EOD snapshot failed: {_ue}")
 
         # PATCH_V8_SECTOR_ROTATION: refresh sector ranking every 15 minutes
         if is_market_hours() and self._sector_rotation and n.minute % SECTOR_ROTATION_REFRESH_MIN == 0:
@@ -13703,15 +12277,6 @@ class FnoModule:
                 _ts = _p.get("tradingsymbol") or _p.get("symbol") or ""
                 if _ts:
                     _held.add(_ts)
-            # V211_FIX2: Fallback to Kite truth (covers V204-style memory gaps)
-            try:
-                for _kp in (kite.positions().get("net", []) or []):
-                    if _kp.get("exchange") == "NFO" and _kp.get("quantity", 0) > 0:
-                        _kts = _kp.get("tradingsymbol", "")
-                        if _kts:
-                            _held.add(_kts)
-            except Exception as _hke:
-                log.debug(f"[V211_FIX2] Kite positions fallback failed: {_hke}")
             for o in orders:
                 try:
                     if o.get("exchange") != "NFO":
@@ -13761,10 +12326,9 @@ class FnoModule:
                     if _best_bid <= 0:
                         continue
                     _cur_price = float(o.get("price", 0) or 0)
-                    # V211_FIX3: 5% floor was too tight for OTM options. Loosened to 50%.
-                    _floor = _ltp * 0.50
+                    _floor = _ltp * 0.95
                     if _best_bid < _floor:
-                        log.warning(f"[V211_FIX3] {tsym} oid={oid} best_bid={_best_bid} < LTP*0.50={_floor:.4f} - NOT chasing (freak crash protection)")
+                        log.warning(f"[PATCH_V64] {tsym} oid={oid} best_bid={_best_bid} < LTP*0.95={_floor:.4f} - NOT chasing (freak crash protection)")
                         self._stuck_mod_times[oid] = _now
                         continue
                     if abs(_cur_price - _best_bid) < 1e-6:
@@ -14282,7 +12846,7 @@ def main():
         f"F&O: {'OK' if fno_ok else 'FAILED'} | Rs.{fno.capital:,.0f}\n"
         f"Stocks: {len(equity.all_symbols)} | F&O: {len(fno.fno_stocks)}\n"
         f"Positions: EQ={len(equity.positions)} FNO={len(fno.positions)}\n"
-        f"Mode: {'PAPER' if PAPER_MODE else 'LIVE'} — {'virtual fills, no real orders' if PAPER_MODE else 'real orders only'}",
+        f"Mode: LIVE — real orders only",
     )
 
     # Main loop — runs every 60 seconds
