@@ -95,6 +95,17 @@ CONFIRM_PCT = float(os.environ.get("EQ_CONFIRM_PCT", "0.15"))
 # Max poll cycles to wait for the turn before abandoning the setup (no trade).
 ARM_MAX_CYCLES = int(os.environ.get("EQ_ARM_MAX_CYCLES", "30"))
 
+# --- TREND FILTER (the #1 mean-reversion fix; default ON) -------------------
+# Mean reversion BLEEDS when you buy dips in DOWN-trending stocks (slow knives
+# that never bounce and quietly stop you out). So only dip-buy a stock still in
+# an UPTREND: its latest DAILY close above its long SMA. This single change is
+# exactly what turned the Phoenix lane profitable. Set EQ_TREND_FILTER=0 to
+# revert to the old "buy any dip" behaviour.
+TREND_FILTER = os.environ.get("EQ_TREND_FILTER", "1").strip() == "1"
+TREND_SMA = int(os.environ.get("EQ_TREND_SMA", "50"))     # daily SMA for the uptrend test
+TREND_HIST_BARS = int(os.environ.get("EQ_TREND_BARS", "80"))
+_TREND_CACHE = {}   # sym -> (date_str, in_uptrend); one daily-bar fetch per stock/day
+
 # --- exits ------------------------------------------------------------------
 # Zerodha intraday round-trip cost is ~0.11% of the position (brokerage + STT +
 # exchange + stamp + GST). So the target must clear that AND give a healthy
@@ -446,6 +457,37 @@ def scan_and_arm(quotes, open_syms):
                      f"({below_vwap:.2f}% below, day {day_change:+.2f}%) - waiting for turn")
 
 
+def _in_uptrend(kite, sym):
+    """Only dip-buy a stock still trending UP: its latest DAILY close above its
+    TREND_SMA-day average. Cached once per stock per day to limit Kite calls.
+    Fail-OPEN (returns True) if it can't be determined, so a data hiccup never
+    silently blocks the whole strategy."""
+    if not TREND_FILTER:
+        return True
+    today = _today_str()
+    cached = _TREND_CACHE.get(sym)
+    if cached and cached[0] == today:
+        return cached[1]
+    ok = True
+    try:
+        import datetime as _dt
+        q = kite.ltp([f"NSE:{sym}"]).get(f"NSE:{sym}", {})
+        tok = q.get("instrument_token")
+        if tok:
+            to = _dt.datetime.now()
+            frm = to - _dt.timedelta(days=TREND_HIST_BARS * 2 + 10)
+            bars = kite.historical_data(tok, frm, to, "day")
+            closes = [b["close"] for b in bars]
+            if len(closes) >= TREND_SMA:
+                sma = sum(closes[-TREND_SMA:]) / TREND_SMA
+                ok = closes[-1] > sma
+    except Exception as e:  # noqa: BLE001
+        log.debug(f"trend check {sym}: {e}")
+        ok = True
+    _TREND_CACHE[sym] = (today, ok)
+    return ok
+
+
 def eval_armed(kite, quotes, place_order, get_open, halted):
     """Buy an armed stock once it ticks back UP off its low (the turn), if risk
     caps allow. Drop it if it keeps falling, rallies past VWAP, or times out."""
@@ -491,6 +533,12 @@ def eval_armed(kite, quotes, place_order, get_open, halted):
         turned = last >= a["low_seen"] * (1 + CONFIRM_PCT / 100.0)
         if not turned:
             continue
+
+        # TREND FILTER (the fix): only dip-buy stocks still in an uptrend - don't
+        # catch knives in downtrends (the #1 mean-reversion killer).
+        if not _in_uptrend(kite, sym):
+            log.info(f"[ARM] {sym} below {TREND_SMA}-DMA (downtrend) - abandon (no knife-catching)")
+            del ARMED[sym]; continue
 
         # ---- risk gates (inversion: refuse the trade if any cap is hit) ----
         if halted:
@@ -556,6 +604,9 @@ def main():
     log.info(f"SETUP: buy dips >= {STRETCH_MIN_PCT}% below VWAP, skip knives > {KNIFE_PCT}% down, "
              f"confirm +{CONFIRM_PCT}% off low. Long only, intraday, square-off "
              f"{SQUARE_OFF[0]:02d}:{SQUARE_OFF[1]:02d}.")
+    log.info(f"TREND FILTER: {'ON' if TREND_FILTER else 'OFF'} - "
+             + (f"only dip-buy stocks ABOVE their {TREND_SMA}-DMA (no knife-catching in downtrends)"
+                if TREND_FILTER else "buying ANY dip (old behaviour)"))
     log.info(f"FILTERS: regime=skip new longs when {REGIME_INDEX} down > {REGIME_DOWN_PCT}% | "
              f"entry window {NO_NEW_ENTRY_BEFORE[0]:02d}:{NO_NEW_ENTRY_BEFORE[1]:02d}-"
              f"{NO_NEW_ENTRY_AFTER[0]:02d}:{NO_NEW_ENTRY_AFTER[1]:02d} (skip opening noise) | "
