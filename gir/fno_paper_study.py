@@ -102,6 +102,17 @@ LIV_MAX_NEW_PER_DAY = int(os.environ.get("FNO_LIV_MAX_NEW", "3"))        # don't
 LIV_DISASTER_STOP   = float(os.environ.get("FNO_LIV_DISASTER", "0.60"))  # premium backstop only
 LIV_TRAIL_SMA       = int(os.environ.get("FNO_LIV_TRAIL", "10"))         # exit when underlying breaks this MA
 LIV_EXPIRY_EXIT_DTE = int(os.environ.get("FNO_LIV_EXP_DTE", "2"))        # close before the expiry/theta cliff
+# --- CHAMPION / AMBITION MODE: pyramid into winners (Livermore's signature) --
+# The Livermore exits already LET CHAMPIONS RUN overnight/multi-day (no clock
+# square-off; they hold until the UNDERLYING trend breaks). Ambition adds the
+# trillionaire move: ADD a smaller tranche each time a winner advances another
+# LIV_PYRAMID_STEP beyond its highest tranche, up to LIV_PYRAMID_MAX adds. Only
+# ever adds at HIGHER prices (never to a loser) -> winners get big, losers stay
+# small. Set FNO_LIV_PYRAMID=0 to disable.
+LIV_PYRAMID      = os.environ.get("FNO_LIV_PYRAMID", "1").strip() == "1"
+LIV_PYRAMID_MAX  = int(os.environ.get("FNO_LIV_PYRAMID_MAX", "2"))       # extra tranches beyond the first
+LIV_PYRAMID_STEP = float(os.environ.get("FNO_LIV_PYRAMID_STEP", "0.30")) # add when up >=30% from the top tranche
+LIV_PYRAMID_SIZE = float(os.environ.get("FNO_LIV_PYRAMID_SIZE", "0.6"))  # add size = 60% of the first tranche
 
 # Strategy tag is configurable so a dedicated instance (e.g. FNO_BUILDUP) can run
 # our Trendlyne build-up signals in its OWN lane, separate from gir's signals.
@@ -588,6 +599,63 @@ def _livermore_decide(kite, m, ltp):
     return None, None
 
 
+def livermore_pyramid(kite, place_order, get_open):
+    """AMBITION: pyramid into winners. For each open Livermore option that has
+    advanced >= LIV_PYRAMID_STEP beyond its HIGHEST existing tranche (and holds
+    fewer than LIV_PYRAMID_MAX adds), buy ANOTHER, smaller tranche of the SAME
+    contract. Only ever adds at higher prices -> never adds to a loser. Returns
+    the number of adds placed. Self-throttling: it only fires again once price
+    advances another full step beyond the new tranche."""
+    if not (LIVERMORE_MODE and LIV_PYRAMID and place_order and get_open):
+        return 0
+    try:
+        opens = [t for t in get_open() if t["strategy"] == STRATEGY_TAG]
+    except Exception as e:  # noqa: BLE001
+        log.error(f"pyramid get_open failed: {e}")
+        return 0
+    groups = {}                                   # same option tradingsymbol = same position
+    for t in opens:
+        groups.setdefault(t["symbol"], []).append(t)
+    if not groups:
+        return 0
+    prices = _batch_ltp(kite, list(groups.keys()))
+    added = 0
+    for tsym, trades in groups.items():
+        ltp = prices.get(tsym)
+        if not ltp or ltp <= 0:
+            continue
+        if len(trades) >= 1 + LIV_PYRAMID_MAX:        # already at max tranches
+            continue
+        entries = [float(t["entry_price"] or 0) for t in trades]
+        ref = max(entries) if entries else 0.0        # pyramid UP from the top tranche
+        if ref <= 0 or ltp < ref * (1 + LIV_PYRAMID_STEP):
+            continue                                  # not advanced enough (or a loser)
+        try:
+            md = json.loads(trades[0]["meta_json"]) if trades[0]["meta_json"] else {}
+        except Exception:  # noqa: BLE001
+            md = {}
+        add_qty = max(1, int(int(trades[0]["qty"] or 0) * LIV_PYRAMID_SIZE))
+        if add_qty * ltp > MAX_LOT_COST * (1 + LIV_PYRAMID_MAX):   # sanity cap
+            continue
+        try:
+            place_order(
+                strategy=STRATEGY_TAG, signal_source="LIV_PYRAMID",
+                symbol=tsym, exchange="NFO", product="MIS", side="BUY",
+                qty=add_qty, price=ltp, order_type="MARKET", tag=STRATEGY_TAG,
+                sl_trigger=round(ltp * (1 - LIV_DISASTER_STOP), 2),
+                sl_limit=round(ltp * (1 - LIV_DISASTER_STOP), 2),
+                time_stop_days=0,
+                meta={**md, "entry_premium": ltp, "notional": round(add_qty * ltp, 2),
+                      "liv_pyramid_add": len(trades)})
+            added += 1
+            log.info(f"[LIV PYRAMID] +{tsym} x{add_qty} @{ltp:.2f} "
+                     f"(tranche {len(trades)+1}/{1+LIV_PYRAMID_MAX}, "
+                     f"up >= {LIV_PYRAMID_STEP*100:.0f}% from {ref:.2f}) - riding the winner")
+        except Exception as e:  # noqa: BLE001
+            log.error(f"pyramid add failed {tsym}: {e}")
+    return added
+
+
 def manage_open_positions(kite, get_open, record_exit):
     """
     Close OPEN trades on target/stop/square-off. With FNO_SMART_HOLD on, a winner
@@ -949,6 +1017,10 @@ def main():
                  f"DTE>={LIV_MIN_DTE}); exits = underlying structure stop + "
                  f"let-winners-run (disaster backstop -{LIV_DISASTER_STOP*100:.0f}%, "
                  f"expiry exit <={LIV_EXPIRY_EXIT_DTE}d). No fixed target, no clock square-off.")
+        log.info("CHAMPION MODE: winners RUN overnight/multi-day until the underlying "
+                 "trend breaks" + (f"; PYRAMID ON - add {LIV_PYRAMID_SIZE:.0%} tranche each "
+                 f"+{LIV_PYRAMID_STEP*100:.0f}% advance, up to {LIV_PYRAMID_MAX} adds (never to a loser)."
+                 if LIV_PYRAMID else "; pyramiding OFF."))
     if SMART_HOLD:
         log.info(f"SMART HOLD: ON - carry a winner (>= +{HOLD_MIN_PROFIT*100:.0f}%) overnight if "
                  f"option>VWAP & underlying still our way; max {MAX_OVERNIGHT} held, "
@@ -1016,6 +1088,13 @@ def main():
                         log.warning(f"[RISK] daily loss cap hit (realised {realised:.0f} "
                                     f"<= -{MAX_DAILY_LOSS:.0f}) - NO new trades today")
                         halt_logged_day = today
+
+            # 2b) AMBITION (Livermore): pyramid into winners - never when halted
+            if (LIVERMORE_MODE and LIV_PYRAMID and not halted and not DRY_RUN
+                    and paper_place_order and get_open):
+                a = livermore_pyramid(kite, paper_place_order, get_open)
+                if a:
+                    log.info(f"[LIV PYRAMID] added to {a} winner(s) this cycle")
 
             # 3) place new signals (id > hwm only), one per underlying+direction
             open_set = _open_underlying_dirs(get_open) if get_open else set()
