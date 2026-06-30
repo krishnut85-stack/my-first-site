@@ -27,6 +27,7 @@ def today(): return now().strftime("%Y-%m-%d")
 OI_VEL_MIN=8.0; IV_RISE_MIN=5.0; SPOT_FLAT_MAX=0.5; PREM_MAX=1.10
 LOT_COST_MIN=3000; LOT_COST_MAX=12000; MAX_OPEN=2; MAX_MONTH=5; MONTH_BUDGET=25000
 TARGET=1.5; DTE_EXIT=7; STALE_SESSIONS=2; STALE_MIN_GAIN=1.30; RAVEN_FRESH_S=1800
+STOP=0.30  # hard stop-loss: cut a losing option once premium is 30% below entry
 # ---- env autodetect ----
 def env_pick(*subs):
     for k,v in os.environ.items():
@@ -173,7 +174,7 @@ def main():
         if fired:
             c.execute("INSERT INTO tickets(d,sym,qty,entry,cost,status,expiry,und,hi_ltp) VALUES(?,?,?,?,?,?,?,?,?)",(d,sym,lot,ltp,cost,"OPEN",exp_,und,ltp))
             open_n+=1; m_n+=1; m_cost+=cost; fired_this_run=1
-            tg(f"🦅 PAPER ENTRY {sym} 1 lot ({lot}) @ Rs.{ltp} cost Rs.{cost:.0f}\nOI+{oi_vel:.1f}% IV+{iv_rise:.1f}% spot {spot_mv:.2f}% prem {prem_r:.2f}x RAVEN:{und}\nNo SL. Target +150%. Budget {m_n}/{MAX_MONTH}, Rs.{m_cost:.0f}/{MONTH_BUDGET}")
+            tg(f"🦅 PAPER ENTRY {sym} 1 lot ({lot}) @ Rs.{ltp} cost Rs.{cost:.0f}\nOI+{oi_vel:.1f}% IV+{iv_rise:.1f}% spot {spot_mv:.2f}% prem {prem_r:.2f}x RAVEN:{und}\nSL -{STOP*100:.0f}%. Target +150%. Budget {m_n}/{MAX_MONTH}, Rs.{m_cost:.0f}/{MONTH_BUDGET}")
     # exits
     for tid,d0,sym,qty,entry,cost,exp_,und,hi in c.execute("SELECT id,d,sym,qty,entry,cost,expiry,und,hi_ltp FROM tickets WHERE status='OPEN'").fetchall():
         q=quotes.get(f"NFO:{sym}")
@@ -186,7 +187,8 @@ def main():
         dte=(datetime.datetime.strptime(exp_,"%Y-%m-%d").date()-t.date()).days
         ses=len(c.execute("SELECT DISTINCT d FROM snaps WHERE d>?",(d0,)).fetchall())
         reason=None
-        if ltp>=entry*(1+TARGET): reason=f"TARGET_+{TARGET*100:.0f}%"
+        if ltp<=entry*(1-STOP): reason=f"STOP_-{STOP*100:.0f}%"
+        elif ltp>=entry*(1+TARGET): reason=f"TARGET_+{TARGET*100:.0f}%"
         elif dte<=DTE_EXIT: reason=f"DTE_{dte}"
         elif ses>=STALE_SESSIONS and ltp<entry*STALE_MIN_GAIN: reason="STALE_NO_MOVE"
         if reason:

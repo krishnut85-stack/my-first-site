@@ -98,7 +98,7 @@ class CFG:
     ENTRY_HEADROOM     = 0.97            # enter only if LTP <= 97% of upper circuit
 
     # --- exits ---
-    STOP_PCT           = 0.04            # hard stop 4% below entry
+    STOP_PCT           = 0.06            # hard stop 6% below entry (was 4%: too tight, noise stop-outs)
     TARGET_PCT         = 0.06            # first target +6% -> book partial, stop to breakeven
     PARTIAL_FRACTION   = 0.5             # sell half at target
     TRAIL_PCT          = 0.04            # after partial, trail 4% off the peak
