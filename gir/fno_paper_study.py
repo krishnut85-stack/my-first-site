@@ -81,6 +81,28 @@ SQUAREOFF_REASON = f"SQUARE_OFF_{SQUARE_OFF[0]:02d}{SQUARE_OFF[1]:02d}"
 MARKET_OPEN = (9, 15)           # 09:15 IST
 MARKET_CLOSE = (15, 30)         # 15:30 IST
 POLL_SECONDS = 30               # signal poll + position monitor cadence
+
+# --- LIVERMORE MODE (FNO_LIVERMORE=1) ---------------------------------------
+# Re-shapes F&O to follow Jesse Livermore's principles instead of buying ATM
+# options on a raw OI score (which lost money at a ~20% win rate):
+#   * trade WITH the trend - enter only on a pivotal breakout of the UNDERLYING
+#   * don't overtrade        - higher score bar + a hard daily new-trade cap
+#   * cut losses on STRUCTURE - exit when the underlying breaks the pivot/trend,
+#                               NOT on a -30% option-premium wiggle (noise)
+#   * let winners RUN         - trail with the trend; no fixed +50% cap, no clock
+#                               square-off (premature exits kill the big winners)
+#   * reduce the wasting-asset drag - use longer-dated contracts (less theta)
+# Config-gated and PAPER-only; set FNO_LIVERMORE=0 to revert to the old study.
+LIVERMORE_MODE      = os.environ.get("FNO_LIVERMORE", "0").strip() == "1"
+LIV_MIN_SCORE       = float(os.environ.get("FNO_LIV_MIN_SCORE", "75"))   # be selective
+LIV_TREND_SMA       = int(os.environ.get("FNO_LIV_TREND_SMA", "50"))     # underlying trend filter
+LIV_PIVOT_LOOKBACK  = int(os.environ.get("FNO_LIV_PIVOT", "20"))         # pivotal high/low window
+LIV_MIN_DTE         = int(os.environ.get("FNO_LIV_MIN_DTE", "25"))       # longer-dated -> less theta
+LIV_MAX_NEW_PER_DAY = int(os.environ.get("FNO_LIV_MAX_NEW", "3"))        # don't overtrade
+LIV_DISASTER_STOP   = float(os.environ.get("FNO_LIV_DISASTER", "0.60"))  # premium backstop only
+LIV_TRAIL_SMA       = int(os.environ.get("FNO_LIV_TRAIL", "10"))         # exit when underlying breaks this MA
+LIV_EXPIRY_EXIT_DTE = int(os.environ.get("FNO_LIV_EXP_DTE", "2"))        # close before the expiry/theta cliff
+
 # Strategy tag is configurable so a dedicated instance (e.g. FNO_BUILDUP) can run
 # our Trendlyne build-up signals in its OWN lane, separate from gir's signals.
 STRATEGY_TAG = os.environ.get("FNO_STRATEGY_TAG", "FNO_PAPER_STUDY")
@@ -211,7 +233,7 @@ def _spot_ltp(kite, underlying):
         return None
 
 
-def resolve_atm_option(kite, underlying, opt_type, is_index=False):
+def resolve_atm_option(kite, underlying, opt_type, is_index=False, min_dte=None):
     """
     Return (tradingsymbol, lot_size, ltp) for the ATM CE/PE of `underlying`.
     Expiry rule:
@@ -247,12 +269,13 @@ def resolve_atm_option(kite, underlying, opt_type, is_index=False):
                 return -1
         return (exp - today).days if exp else -1
 
-    if is_index:
-        # nearest available expiry (weekly for NIFTY), must be today or later
+    _min = FNO_MIN_DTE if min_dte is None else min_dte
+    if is_index and min_dte is None:
+        # default: nearest available expiry (weekly for NIFTY), today or later
         valid_exp = sorted({_dte(r) for r in rows if _dte(r) >= 0})
     else:
-        # stocks: nearest monthly expiry with enough room
-        valid_exp = sorted({_dte(r) for r in rows if _dte(r) >= FNO_MIN_DTE})
+        # stocks (and Livermore mode, incl. indices): require room / longer DTE
+        valid_exp = sorted({_dte(r) for r in rows if _dte(r) >= _min})
     if not valid_exp:
         log.warning(f"{underlying}: no valid expiry found")
         return None
@@ -276,7 +299,9 @@ def resolve_atm_option(kite, underlying, opt_type, is_index=False):
         return None
     if ltp <= 0:
         return None
-    return (tsym, lot, ltp)
+    _exp = atm.get("expiry")
+    exp_str = _exp.isoformat() if hasattr(_exp, "isoformat") else str(_exp)
+    return (tsym, lot, ltp, exp_str)
 
 
 # --- paper placement (reuse the bot's own paper_trader) ---------------------
@@ -461,6 +486,108 @@ def _should_hold(tsym, entry, ltp, under_change, opt_state, held_so_far):
     return True
 
 
+def _today_placed_count():
+    """How many trades this lane PLACED today (UTC) - feeds the Livermore daily
+    new-trade cap so we don't overtrade."""
+    try:
+        c = sqlite3.connect(EVENTS_DB, timeout=3)
+        d = datetime.utcnow().strftime("%Y-%m-%d")
+        n = c.execute("SELECT COUNT(*) FROM fno_outcomes WHERE status='PLACED' "
+                      "AND substr(ts_utc,1,10)=?", (d,)).fetchone()[0]
+        c.close()
+        return int(n or 0)
+    except Exception:
+        return 0
+
+
+def _underlying_daily(kite, underlying, bars):
+    """Daily OHLC of the UNDERLYING (not the option). Livermore reads the
+    underlying's trend and pivots, never the option's noisy premium. [] if n/a."""
+    key = INDEX_SPOT_KEY.get(underlying, f"NSE:{underlying}")
+    try:
+        q = kite.ltp([key]).get(key, {})
+        tok = q.get("instrument_token")
+        if not tok:
+            return []
+        to = datetime.now()
+        frm = to - timedelta(days=int(bars * 1.9) + 10)
+        return kite.historical_data(tok, frm, to, "day") or []
+    except Exception as e:
+        log.debug(f"underlying daily failed {underlying}: {e}")
+        return []
+
+
+def _livermore_entry_ok(kite, underlying, opt_type):
+    """Livermore entry gate on the UNDERLYING: only buy a CALL when price is in an
+    uptrend AND breaks above a recent pivotal high with the day turning up (mirror
+    for a PUT). Returns (ok, reason, pivot_level)."""
+    need = max(LIV_TREND_SMA, LIV_PIVOT_LOOKBACK) + 3
+    bars = _underlying_daily(kite, underlying, need)
+    if len(bars) < LIV_TREND_SMA + 2:
+        return False, "no_underlying_history", None
+    closes = [float(b["close"]) for b in bars]
+    highs = [float(b["high"]) for b in bars]
+    lows = [float(b["low"]) for b in bars]
+    last, prev = closes[-1], closes[-2]
+    o_last = float(bars[-1]["open"])
+    sma = sum(closes[-LIV_TREND_SMA:]) / LIV_TREND_SMA
+    pivot_high = max(highs[-(LIV_PIVOT_LOOKBACK + 1):-1])  # excludes today
+    pivot_low = min(lows[-(LIV_PIVOT_LOOKBACK + 1):-1])
+    if opt_type == "CE":
+        if last <= sma:
+            return False, "not_uptrend", None
+        if last <= pivot_high:
+            return False, "no_pivot_breakout", None
+        if not (last > prev or last > o_last):
+            return False, "no_upturn", None
+        return True, f"breakout>{pivot_high:.1f} in uptrend", round(pivot_high, 2)
+    else:  # PE
+        if last >= sma:
+            return False, "not_downtrend", None
+        if last >= pivot_low:
+            return False, "no_pivot_breakdown", None
+        if not (last < prev or last < o_last):
+            return False, "no_downturn", None
+        return True, f"breakdown<{pivot_low:.1f} in downtrend", round(pivot_low, 2)
+
+
+def _livermore_decide(kite, m, ltp):
+    """Livermore exit decision for one open position. Cuts losses on STRUCTURE
+    (underlying breaks the trend/pivot) and lets winners RUN (no fixed target, no
+    clock square-off). Backstops: a wide premium disaster stop + an expiry exit.
+    Returns (reason, exit_px) or (None, None)."""
+    entry = m["entry"]
+    # 1) wide disaster backstop on premium (last-resort only, not a noise stop)
+    if entry and ltp <= entry * (1 - LIV_DISASTER_STOP):
+        return "LIV_DISASTER", round(ltp, 2)
+    # 2) expiry safety - never ride a wasting asset into the theta cliff
+    exp = m.get("expiry")
+    if exp:
+        try:
+            ed = datetime.strptime(str(exp)[:10], "%Y-%m-%d").date()
+            if (ed - datetime.now().date()).days <= LIV_EXPIRY_EXIT_DTE:
+                return "LIV_EXPIRY", round(ltp, 2)
+        except Exception:
+            pass
+    # 3) trend/structure exit on the UNDERLYING (the real thesis)
+    und, opt_type, pivot = m.get("und"), m.get("opt_type"), m.get("pivot")
+    if not und or opt_type not in ("CE", "PE"):
+        return None, None
+    bars = _underlying_daily(kite, und, max(LIV_TRAIL_SMA, LIV_TREND_SMA) + 3)
+    if len(bars) < LIV_TRAIL_SMA + 1:
+        return None, None
+    closes = [float(b["close"]) for b in bars]
+    last = closes[-1]
+    trail = sum(closes[-LIV_TRAIL_SMA:]) / LIV_TRAIL_SMA
+    if opt_type == "CE":
+        if last < trail or (pivot and last < pivot):
+            return "LIV_TREND_BREAK", round(ltp, 2)
+    else:
+        if last > trail or (pivot and last > pivot):
+            return "LIV_TREND_BREAK", round(ltp, 2)
+    return None, None
+
+
 def manage_open_positions(kite, get_open, record_exit):
     """
     Close OPEN trades on target/stop/square-off. With FNO_SMART_HOLD on, a winner
@@ -490,15 +617,21 @@ def manage_open_positions(kite, get_open, record_exit):
             entry = float(g("entry_price") or 0)
             if entry <= 0 or not tsym:
                 continue
-            und = ""
+            und = ""; pivot = None; expiry = None
             try:
                 meta = g("meta_json")
                 if meta:
-                    und = (json.loads(meta).get("underlying") or "").upper()
+                    md = json.loads(meta)
+                    und = (md.get("underlying") or "").upper()
+                    pivot = md.get("liv_pivot")
+                    expiry = md.get("expiry")
             except Exception:
                 pass
+            _tu = str(tsym).upper()
+            opt_type = "CE" if _tu.endswith("CE") else "PE" if _tu.endswith("PE") else None
             mine.append({"tid": tid, "tsym": tsym, "entry": entry,
-                         "entry_ts": g("entry_ts"), "und": und})
+                         "entry_ts": g("entry_ts"), "und": und,
+                         "opt_type": opt_type, "pivot": pivot, "expiry": expiry})
         except Exception:
             continue
 
@@ -522,8 +655,28 @@ def manage_open_positions(kite, get_open, record_exit):
     for m in mine:
         tid, tsym, entry = m["tid"], m["tsym"], m["entry"]
         ltp = prices.get(tsym)
-        if not ltp or ltp <= 0 or ltp > entry * 5 or ltp < entry * 0.05:
-            continue  # missing/bad quote
+        if not ltp or ltp <= 0:
+            continue  # missing quote
+        if not LIVERMORE_MODE and (ltp > entry * 5 or ltp < entry * 0.05):
+            continue  # bad quote (legacy guard; Livermore lets the disaster stop fire)
+
+        # LIVERMORE exits: structure stop + let-winners-run, no clock square-off
+        if LIVERMORE_MODE:
+            reason, exit_px = _livermore_decide(kite, m, ltp)
+            if not reason:
+                continue
+            if DRY_RUN:
+                log.info(f"[DRY] WOULD CLOSE {tsym} id={tid} @{exit_px:.2f} "
+                         f"reason={reason} (entry {entry:.2f}, ltp {ltp:.2f})")
+                closed += 1
+                continue
+            try:
+                record_exit(trade_id=tid, exit_price=exit_px, exit_reason=reason)
+                log.info(f"CLOSED {tsym} id={tid} @{exit_px:.2f} reason={reason} (ltp {ltp:.2f})")
+                closed += 1
+            except Exception as e:
+                log.error(f"record_exit failed {tsym} id={tid}: {e}")
+            continue
 
         target_px = entry * (1 + TARGET_PCT)
         stop_px = entry * (1 - STOP_PCT)
@@ -659,11 +812,26 @@ def place_signal(kite, paper_place_order, sig, open_set=None):
         _record_outcome(sym, pattern, direction, score, "SKIPPED", "already_open")
         return False
 
-    resolved = resolve_atm_option(kite, sym, opt_type, is_index=is_index)
+    # --- LIVERMORE gates: selective, trend-confirmed, don't overtrade ---------
+    liv_pivot = None
+    if LIVERMORE_MODE:
+        if score < LIV_MIN_SCORE:
+            _record_outcome(sym, pattern, direction, score, "SKIPPED", "liv_score_low")
+            return False
+        if _today_placed_count() >= LIV_MAX_NEW_PER_DAY:
+            _record_outcome(sym, pattern, direction, score, "SKIPPED", "liv_daily_cap")
+            return False
+        ok, why, liv_pivot = _livermore_entry_ok(kite, sym, opt_type)
+        if not ok:
+            _record_outcome(sym, pattern, direction, score, "SKIPPED", f"liv_{why}")
+            return False
+
+    resolved = resolve_atm_option(kite, sym, opt_type, is_index=is_index,
+                                  min_dte=(LIV_MIN_DTE if LIVERMORE_MODE else None))
     if not resolved:
         _record_outcome(sym, pattern, direction, score, "SKIPPED", f"{opt_type}_unresolved")
         return False
-    tsym, lot, premium = resolved
+    tsym, lot, premium, expiry = resolved
 
     # fixed rupee sizing: skip if one lot is too expensive, else buy ~TRADE_BUDGET
     lot_cost = premium * lot
@@ -674,14 +842,22 @@ def place_signal(kite, paper_place_order, sig, open_set=None):
     n_lots = max(1, round(TRADE_BUDGET / lot_cost)) if lot_cost > 0 else 1
     qty = n_lots * lot
 
-    sl_limit = round(premium * (1 - STOP_PCT), 2)     # -30%
-    target = round(premium * (1 + TARGET_PCT), 2)     # +50%
+    if LIVERMORE_MODE:
+        # cut losses on STRUCTURE (handled in manage); keep only a WIDE premium
+        # backstop here, and NO fixed target so winners can run.
+        sl_limit = round(premium * (1 - LIV_DISASTER_STOP), 2)
+        target = None
+    else:
+        sl_limit = round(premium * (1 - STOP_PCT), 2)     # -30%
+        target = round(premium * (1 + TARGET_PCT), 2)     # +50%
 
     if DRY_RUN:
+        _tgt = f"{target:.2f}" if target else "RUN-with-trend"
         log.info(
             f"[DRY] WOULD BUY {tsym} qty={qty} ({n_lots}lot) @~{premium:.2f} "
-            f"~Rs{int(qty*premium)} (tgt {target:.2f} / sl {sl_limit:.2f}) "
+            f"~Rs{int(qty*premium)} (tgt {_tgt} / sl {sl_limit:.2f}) "
             f"sig={sym}/{pattern}/{direction}/score={score}"
+            + (f" [LIV pivot {liv_pivot}]" if LIVERMORE_MODE else "")
         )
         return True
 
@@ -711,6 +887,10 @@ def place_signal(kite, paper_place_order, sig, open_set=None):
                 "notional": round(qty * premium, 2),
                 "target": target,
                 "stop": sl_limit,
+                "expiry": expiry,
+                "liv": LIVERMORE_MODE,
+                "liv_pivot": liv_pivot,
+                "opt_type": opt_type,
             },
         )
         log.info(f"PLACED {tsym} qty={qty} ({n_lots}lot) @{premium:.2f} "
@@ -763,6 +943,12 @@ def main():
     log.info(f"R:R = +{TARGET_PCT*100:.0f}% target / -{STOP_PCT*100:.0f}% stop "
              f"(break-even win rate {STOP_PCT/(STOP_PCT+TARGET_PCT)*100:.0f}%) | "
              f"size ~Rs{TRADE_BUDGET:.0f}/trade, skip if 1 lot > Rs{MAX_LOT_COST:.0f}")
+    if LIVERMORE_MODE:
+        log.info("LIVERMORE MODE: ON - trend+pivot entries only "
+                 f"(score>={LIV_MIN_SCORE:.0f}, max {LIV_MAX_NEW_PER_DAY} new/day, "
+                 f"DTE>={LIV_MIN_DTE}); exits = underlying structure stop + "
+                 f"let-winners-run (disaster backstop -{LIV_DISASTER_STOP*100:.0f}%, "
+                 f"expiry exit <={LIV_EXPIRY_EXIT_DTE}d). No fixed target, no clock square-off.")
     if SMART_HOLD:
         log.info(f"SMART HOLD: ON - carry a winner (>= +{HOLD_MIN_PROFIT*100:.0f}%) overnight if "
                  f"option>VWAP & underlying still our way; max {MAX_OVERNIGHT} held, "
