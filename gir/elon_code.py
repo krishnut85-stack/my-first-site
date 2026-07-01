@@ -125,8 +125,12 @@ PER_TRADE_NOTIONAL = float(os.environ.get("EQ_PER_TRADE_NOTIONAL", "100000"))  #
 MAX_POSITIONS = int(os.environ.get("EQ_MAX_POSITIONS", "0"))        # 0 = UNLIMITED
 MAX_TRADES_PER_DAY = int(os.environ.get("EQ_MAX_TRADES_PER_DAY", "0"))  # 0 = UNLIMITED
 MAX_DAILY_LOSS = float(os.environ.get("EQ_MAX_DAILY_LOSS", "20000"))   # rupees; halt for TODAY only
-# NOTE: the halt is computed from TODAY's realised P&L only (date-based query),
-# so when the date rolls over the loss resets to 0 and trading RESUMES next day.
+# The halt resets when the IST date rolls over (date-based query), so trading
+# RESUMES next day. By default the cap now also counts OPEN-position unrealised
+# loss (mark-to-market), not just closed trades -- otherwise a big book can sit
+# deep in the red without ever tripping the only brake. Set EQ_HALT_INCLUDE_OPEN=0
+# to revert to realised-only.
+HALT_INCLUDE_OPEN = os.environ.get("EQ_HALT_INCLUDE_OPEN", "1").strip() == "1"
 
 # --- sector concentration cap (tail-risk insurance, not a profit booster) ----
 # With unlimited positions, a sector-wide selloff could open many correlated
@@ -406,9 +410,18 @@ def manage_exits(quotes, get_open, record_exit):
         q = quotes.get(sym)
         ltp = q["last"] if q else 0
         if not ltp or ltp <= 0:
+            # In the square-off window an intraday position MUST be flattened --
+            # never carry it (broker MIS auto-squares live anyway). If the live
+            # tick is missing, fall back to any known price so the paper book
+            # can't silently hold a position overnight.
             if squareoff:
-                pass  # fall through to square-off using last known? skip if no price
-            continue
+                ltp = (q or {}).get("prev_close") or (q or {}).get("vwap") or 0
+                if ltp <= 0:
+                    log.error(f"[SQUAREOFF] {sym}: no price available to close paper "
+                              f"position; verify broker MIS auto-square-off covered it.")
+                    continue
+            else:
+                continue
         target_px = entry * (1 + TARGET_PCT / 100.0)
         stop_px = entry * (1 - STOP_PCT / 100.0)
         reason = exit_px = None
@@ -685,10 +698,20 @@ def main():
             halted = False
             if get_open:
                 realised, n_today = _today_realised_pnl_and_count()
-                if realised <= -abs(MAX_DAILY_LOSS):
+                # Mark open positions to market so the cap sees the WHOLE day's
+                # exposure, not just booked losses (the realised-only version let
+                # a red book run untouched until it closed).
+                exposure = realised
+                if HALT_INCLUDE_OPEN:
+                    for _tid, _sym, _entry, _qty in _my_open_trades(get_open):
+                        _q = quotes.get(_sym)
+                        if _q and _q["last"] > 0 and _entry > 0:
+                            exposure += (_q["last"] - _entry) * _qty
+                if exposure <= -abs(MAX_DAILY_LOSS):
                     halted = True
                     if halt_logged_day != _today_str():
-                        log.warning(f"[RISK] daily loss cap hit (realised {realised:.0f} "
+                        _kind = "realised+open MTM" if HALT_INCLUDE_OPEN else "realised"
+                        log.warning(f"[RISK] daily loss cap hit ({_kind} {exposure:.0f} "
                                     f"<= -{MAX_DAILY_LOSS:.0f}) - NO new entries today")
                         halt_logged_day = _today_str()
 
