@@ -24,9 +24,11 @@ HONEST TEST: monthly returns vs a buy-&-hold Nifty benchmark, TRAIN/VALIDATE
 date split, Monte Carlo. Must beat the index out-of-sample to be a candidate.
 NRO-legal: plain delivery (CNC) stocks.
 
-DATA (upload via Termius): CSVs with a Symbol column and an Industry/Sector
-column (NSE constituent lists or Trendlyne exports) dropped into --dir
-(default /home/globalbot/data/elon2/). All CSVs there are combined.
+DATA (upload via Termius): drop your CSVs into --dir (default
+/home/globalbot/data/elon2/). ANY filename works -- every *.csv there is read
+and combined -- e.g. 500.csv, mid.csv, micro.csv. Each CSV MUST have a Symbol
+column AND an Industry/Sector column (NSE constituent lists or Trendlyne
+exports). Nifty 50 mega-caps are auto-excluded.
 
 USAGE
   python3 elon_stocks.py --selftest
