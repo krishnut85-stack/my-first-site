@@ -1,0 +1,11 @@
+# LIVE-TRADEABLE subset: only sectors with a liquid NSE ETF (delivery/CNC, NRO).
+# Re-validate the momentum edge on THIS (what you can actually buy) before live:
+#   python3 elon_momentum.py --days 3000 --universe indices_tradeable.txt
+# Sector -> ETF: 50->NIFTYBEES, NEXT50->JUNIORBEES, BANK->BANKBEES,
+#               IT->ITBEES, PHARMA->PHARMABEES, PSU BANK->PSUBNKBEES
+NIFTY 50
+NIFTY NEXT 50
+NIFTY BANK
+NIFTY IT
+NIFTY PHARMA
+NIFTY PSU BANK

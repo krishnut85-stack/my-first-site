@@ -93,12 +93,44 @@ def monte_carlo(rets, iters=2000):
             "p05_pct": finals[int(0.05 * iters)] * 100, "median_pct": finals[iters // 2] * 100}
 
 
+# --- shared ranking logic (used by BOTH backtest and the live/paper bot) ------
+def momentum_scores(monthly, months, i, P):
+    """At month index i: blended relative-momentum score + 12m absolute momentum
+    for every symbol with enough history. Single source of truth for backtest
+    AND live, so paper == live can never disagree on the signal."""
+    syms = [s for s in monthly if s != P.benchmark] or list(monthly)
+    scores, abs_moms = {}, {}
+    for s in syms:
+        c = monthly[s]
+        m = months[i]
+        if m not in c:
+            continue
+        if all(months[i - lb] in c for lb in P.lookbacks):
+            rs = [c[m] / c[months[i - lb]] - 1 for lb in P.lookbacks if c[months[i - lb]] > 0]
+            if len(rs) == len(P.lookbacks):
+                scores[s] = sum(rs) / len(rs)
+        base = c.get(months[i - P.abs_lookback], 0)
+        abs_moms[s] = (c[m] / base - 1) if base > 0 else -1.0
+    return scores, abs_moms
+
+
+def select_weights(scores, abs_moms, reg, P):
+    """Dual momentum: hold top-N by relative momentum, but ONLY if absolute
+    momentum > 0 AND market regime is up; empty slots stay in cash. Returns
+    {sym: weight}."""
+    weights = {}
+    if reg and scores:
+        for s in sorted(scores, key=scores.get, reverse=True)[:P.top_n]:
+            if abs_moms.get(s, -1) > 0:
+                weights[s] = 1.0 / P.top_n
+    return weights
+
+
 # --- the pure backtest core (no Kite; unit-testable) -------------------------
 def backtest(monthly, months, regime_ok, P):
     """monthly: {sym: {YYYY-MM: close}}. months: sorted list of YYYY-MM.
     regime_ok: {YYYY-MM: bool} (broad market above 200-DMA). Returns
     (dates, strat_rets, bench_rets) of month-over-month returns, net of costs."""
-    syms = [s for s in monthly if s != P.benchmark] or list(monthly)
     lb_max = max(P.lookbacks + (P.abs_lookback,))
     strat, bench, dates = [], [], []
     prev_w = {}
@@ -106,25 +138,8 @@ def backtest(monthly, months, regime_ok, P):
     for i in range(lb_max, len(months) - 1):
         m, nxt = months[i], months[i + 1]
         reg = regime_ok.get(m, True) if P.use_regime else True
-        # blended relative momentum for each sym with full history
-        scores = {}
-        for s in syms:
-            c = monthly[s]
-            if all(months[i - lb] in c for lb in P.lookbacks) and m in c:
-                try:
-                    rs = [c[m] / c[months[i - lb]] - 1 for lb in P.lookbacks
-                          if c[months[i - lb]] > 0]
-                    if len(rs) == len(P.lookbacks):
-                        scores[s] = sum(rs) / len(rs)
-                except Exception:
-                    pass
-        weights = {}
-        if reg and scores:
-            for s in sorted(scores, key=scores.get, reverse=True)[:P.top_n]:
-                base = monthly[s].get(months[i - P.abs_lookback], 0)
-                abs_mom = (monthly[s][m] / base - 1) if base > 0 else -1
-                if abs_mom > 0:                       # absolute-momentum crash guard
-                    weights[s] = 1.0 / P.top_n        # empty slots implicitly -> cash
+        scores, abs_moms = momentum_scores(monthly, months, i, P)   # shared with live
+        weights = select_weights(scores, abs_moms, reg, P)          # empty slots -> cash
         cash_w = 1.0 - sum(weights.values())
         # turnover cost (one-way turnover x per-side cost)
         turnover = sum(abs(weights.get(k, 0) - prev_w.get(k, 0))
