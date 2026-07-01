@@ -283,7 +283,18 @@ def _trend_ok_from_daily(daily_closes_before, P):
 
 
 def run_kite_backtest(P, days, universe):
-    kite = E.get_kite()
+    # Load /home/globalbot/.env first so KITE_API_KEY is present -- the live bot
+    # does this in main(); the backtest must too, or get_kite() can't log in.
+    E._load_env()
+    try:
+        kite = E.get_kite()
+    except Exception as e:
+        print(f"[backtest] Kite login failed: {e}\n"
+              "  -> Ensure KITE_API_KEY is in /home/globalbot/.env and the daily\n"
+              "     token file exists (the main bot refreshes it each morning).\n"
+              "     Quick check: python3 elon_code.py token-check  (or run: \n"
+              "     set -a; source /home/globalbot/.env; set +a  before this).")
+        return []
     print(f"[backtest] Kite session up. Universe={len(universe)} symbols, {days} day(s).")
     to = dt.datetime.now()
     frm = to - dt.timedelta(days=days + P.trend_sma * 2 + 15)   # enough for the SMA
