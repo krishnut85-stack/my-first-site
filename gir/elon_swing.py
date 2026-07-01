@@ -311,6 +311,41 @@ def run_sweep(days, universe):
     return rows
 
 
+def run_breakdown(days, universe):
+    """Run the best sweep config and show P&L YEAR BY YEAR -- answers the
+    'when did it go loss->profit?' question. If it's + in some regimes and - in
+    others, the strategy is regime-dependent (usable with a regime overlay), not
+    simply dead."""
+    P = SwingP()
+    P.use_revert = False; P.target_pct = 8; P.stop_pct = 5; P.max_hold = 20
+    bars_by_sym, regime = _login_and_fetch(P, days, universe)
+    if not bars_by_sym:
+        print("[swing] no data fetched."); return
+    trades = _simulate_all(bars_by_sym, P, regime)
+    if not trades:
+        print("[swing] no trades."); return
+    by_year = {}
+    for t in trades:
+        by_year.setdefault(t.day[:4], []).append(t)
+    print("\n" + "=" * 72)
+    print("  ELON SWING · YEAR-BY-YEAR  (config: buy RSI2<10 dip, target 8% / stop 5%)")
+    print("=" * 72)
+    print(f"  {'year':6} {'trades':>7} {'win%':>6} {'exp/trade':>10} {'net':>14}")
+    print("  " + "-" * 60)
+    for y in sorted(by_year):
+        s = summarize(by_year[y])
+        flag = " <= LOSS" if s["net"] < 0 else ""
+        print(f"  {y:6} {s['trades']:>7} {s['win_rate_pct']:>5.1f} "
+              f"{s['expectancy_per_trade']:>+10.0f} {s['net']:>+14,.0f}{flag}")
+    print("  " + "-" * 60)
+    win_years = [y for y in by_year if summarize(by_year[y])["net"] > 0]
+    print(f"  Profitable in {len(win_years)}/{len(by_year)} years: {', '.join(sorted(win_years)) or 'none'}")
+    print("=" * 72)
+    print("  If it wins in choppy/correcting years and loses in melt-up bull years,")
+    print("  it's a REGIME-dependent edge (run only in the right regime), not dead.\n")
+    return by_year
+
+
 def _report(all_s, tr_s, val_s, mc, cut, P):
     def line(lbl, s):
         if not s or s.get("trades", 0) == 0:
@@ -410,6 +445,8 @@ def main():
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--sweep", action="store_true",
                     help="fetch once, test several exit configs, judge out-of-sample")
+    ap.add_argument("--breakdown", action="store_true",
+                    help="run the best config and show P&L year by year (regime check)")
     ap.add_argument("--days", type=int, default=250)
     ap.add_argument("--universe", default=None)
     args = ap.parse_args()
@@ -420,6 +457,8 @@ def main():
                       if l.strip() and not l.startswith("#")])
     if args.sweep:
         run_sweep(args.days, universe)
+    elif args.breakdown:
+        run_breakdown(args.days, universe)
     else:
         run_swing(SwingP(), args.days, universe)
 
