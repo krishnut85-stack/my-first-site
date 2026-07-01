@@ -56,6 +56,16 @@ class SwingP:
     cost_pct: float = float(os.environ.get("EQS_COST_PCT", "0.30")) # delivery all-in round trip
     notional: float = float(os.environ.get("EQS_NOTIONAL", "100000"))
     use_regime: bool = os.environ.get("EQS_USE_REGIME", "1").strip() == "1"
+    # --- exit shaping (fix the backwards payoff: let winners run) ------------
+    # target_pct>0 : take profit at +target% (let a win be BIG enough to clear
+    #                the 0.30% delivery cost). 0 = off.
+    # trail_pct>0  : after price rises, exit if it falls trail% from the peak
+    #                (rides the trend, protects the gain). 0 = off.
+    # use_revert   : the ORIGINAL quick exit at >5-DMA (tiny wins). Turn OFF when
+    #                using target/trail so winners aren't cut short.
+    target_pct: float = float(os.environ.get("EQS_TARGET_PCT", "0"))
+    trail_pct: float = float(os.environ.get("EQS_TRAIL_PCT", "0"))
+    use_revert: bool = os.environ.get("EQS_USE_REVERT", "1").strip() == "1"
 
 
 # --- tiny indicators ---------------------------------------------------------
@@ -117,7 +127,7 @@ def simulate_symbol_swing(sym, bars, P, regime_ok=None):
                     and day_ret > -P.knife_pct and reg):
                 entry = bars[t + 1]["open"]
                 if entry and entry > 0:
-                    pos = {"idx": t + 1, "entry": entry,
+                    pos = {"idx": t + 1, "entry": entry, "peak": entry,
                            "stop": entry * (1 - P.stop_pct / 100.0),
                            "date": str(bars[t + 1]["date"])[:10]}
                     t += 1; continue
@@ -125,15 +135,20 @@ def simulate_symbol_swing(sym, bars, P, regime_ok=None):
         else:
             b = bars[t]
             held = t - pos["idx"]
+            pos["peak"] = max(pos["peak"], b["high"])
             reason = exit_px = None
             if b["low"] <= pos["stop"]:                 # hard stop first (conservative)
                 reason, exit_px = "STOP", pos["stop"]
-            else:
-                sma5 = _sma(closes[:t + 1], P.sma_exit)
-                if sma5 is not None and closes[t] >= sma5:   # reverted -> take it
-                    reason, exit_px = "REVERT", closes[t]
-                elif held >= P.max_hold:                     # thesis stalled -> free capital
-                    reason, exit_px = "TIME", closes[t]
+            elif P.target_pct > 0 and b["high"] >= pos["entry"] * (1 + P.target_pct / 100.0):
+                reason, exit_px = "TARGET", round(pos["entry"] * (1 + P.target_pct / 100.0), 2)
+            elif (P.trail_pct > 0 and pos["peak"] > pos["entry"]
+                  and b["low"] <= pos["peak"] * (1 - P.trail_pct / 100.0)):
+                reason, exit_px = "TRAIL", round(pos["peak"] * (1 - P.trail_pct / 100.0), 2)
+            elif P.use_revert and _sma(closes[:t + 1], P.sma_exit) is not None \
+                    and closes[t] >= _sma(closes[:t + 1], P.sma_exit):   # quick reversion exit
+                reason, exit_px = "REVERT", closes[t]
+            elif held >= P.max_hold:                     # thesis stalled -> free capital
+                reason, exit_px = "TIME", closes[t]
             if reason:
                 trades.append(_book(sym, pos["date"], pos["entry"], exit_px, reason, P, pos["stop"]))
                 pos = None
@@ -179,43 +194,121 @@ def _regime_map(kite, P, days):
     return out
 
 
-def run_swing(P, days, universe):
+def _login_and_fetch(P, days, universe):
+    """Log in, fetch daily bars for the whole universe ONCE, and the regime map.
+    Returns (bars_by_sym, regime) or (None, None) on login failure."""
     E._load_env()
     try:
         kite = E.get_kite()
     except Exception as e:
         print(f"[swing] Kite login failed: {e}\n  -> source /home/globalbot/.env first.")
-        return
+        return None, None
     regime = _regime_map(kite, P, days) if P.use_regime else None
     print(f"[swing] Kite up. Universe={len(universe)}, ~{days}d daily bars "
-          f"(regime filter {'ON' if regime else 'OFF'}).")
+          f"(regime filter {'ON' if regime else 'OFF'}). Fetching once...")
     to = dt.datetime.now()
     frm = to - dt.timedelta(days=days + 320)          # +320 cal days warms up the 200-DMA
-    all_trades = []
+    bars_by_sym = {}
     for i, sym in enumerate(universe, 1):
         try:
             tok = E._TOKENS.get(sym) or kite.ltp([f"NSE:{sym}"]).get(f"NSE:{sym}", {}).get("instrument_token")
             if not tok:
                 continue
-            bars = kite.historical_data(tok, frm, to, "day")
+            bars_by_sym[sym] = kite.historical_data(tok, frm, to, "day")
             time.sleep(0.3)
         except Exception as e:
             print(f"  {sym}: fetch failed ({e})")
-            continue
-        all_trades += simulate_symbol_swing(sym, bars, P, regime)
         if i % 50 == 0:
-            print(f"  ...{i}/{len(universe)} symbols, {len(all_trades)} trades so far")
+            print(f"  ...{i}/{len(universe)} symbols fetched")
+    return bars_by_sym, regime
 
-    if not all_trades:
-        print("[swing] no trades generated.")
-        return
-    days_sorted = sorted({t.day for t in all_trades})
+
+def _simulate_all(bars_by_sym, P, regime):
+    trades = []
+    for sym, bars in bars_by_sym.items():
+        trades += simulate_symbol_swing(sym, bars, P, regime)
+    return trades
+
+
+def _split_stats(trades):
+    if not trades:
+        return None, None, None, None, None
+    days_sorted = sorted({t.day for t in trades})
     cut = days_sorted[int(len(days_sorted) * 0.7)] if len(days_sorted) >= 4 else days_sorted[-1]
-    train = [t for t in all_trades if t.day < cut]
-    val = [t for t in all_trades if t.day >= cut]
-    _report(summarize(all_trades), summarize(train), summarize(val),
-            monte_carlo(all_trades), cut, P)
-    return all_trades
+    train = [t for t in trades if t.day < cut]
+    val = [t for t in trades if t.day >= cut]
+    return summarize(trades), summarize(train), summarize(val), monte_carlo(trades), cut
+
+
+def run_swing(P, days, universe):
+    bars_by_sym, regime = _login_and_fetch(P, days, universe)
+    if not bars_by_sym:
+        print("[swing] no data fetched."); return
+    trades = _simulate_all(bars_by_sym, P, regime)
+    if not trades:
+        print("[swing] no trades generated."); return
+    all_s, tr_s, val_s, mc, cut = _split_stats(trades)
+    _report(all_s, tr_s, val_s, mc, cut, P)
+    return trades
+
+
+# --- SWEEP: fetch once, test several exit configs, judge on OUT-OF-SAMPLE -----
+def _sweep_configs():
+    """Pre-registered configs. Baseline first, then hypotheses that fix the
+    backwards payoff (let winners run) and add selectivity. Judged on VALIDATE."""
+    def cfg(**kw):
+        p = SwingP()
+        for k, v in kw.items():
+            setattr(p, k, v)
+        return p
+    return [
+        ("baseline (revert exit)",      cfg()),
+        ("target 6% / stop 4",          cfg(use_revert=False, target_pct=6, stop_pct=4, max_hold=15)),
+        ("target 8% / stop 5",          cfg(use_revert=False, target_pct=8, stop_pct=5, max_hold=20)),
+        ("trail 5% / stop 6",           cfg(use_revert=False, trail_pct=5, stop_pct=6, max_hold=20)),
+        ("selective RSI5 + tgt8/stop5", cfg(rsi_buy=5, use_revert=False, target_pct=8, stop_pct=5, max_hold=20)),
+        ("selective RSI5 + trail5",     cfg(rsi_buy=5, use_revert=False, trail_pct=5, stop_pct=6, max_hold=20)),
+    ]
+
+
+def run_sweep(days, universe):
+    base = SwingP()
+    bars_by_sym, regime = _login_and_fetch(base, days, universe)
+    if not bars_by_sym:
+        print("[swing] no data fetched."); return
+    print(f"\n[sweep] data fetched for {len(bars_by_sym)} symbols. Testing configs...\n")
+    print("=" * 84)
+    print("  ELON SWING · EXIT SWEEP  (same data, judged OUT-OF-SAMPLE)")
+    print("=" * 84)
+    print(f"  {'config':30} {'trades':>7} {'win%':>6} {'exp(ALL)':>9} "
+          f"{'exp(VALIDATE)':>13} {'net(ALL)':>12}")
+    print("  " + "-" * 80)
+    rows = []
+    for name, P in _sweep_configs():
+        trades = _simulate_all(bars_by_sym, P, regime)
+        all_s, tr_s, val_s, mc, cut = _split_stats(trades) if trades else (None,)*5
+        rows.append((name, all_s, val_s))
+        if not all_s:
+            print(f"  {name:30} {'0':>7} (no trades)"); continue
+        va = val_s.get("expectancy_per_trade") if val_s and val_s.get("trades") else None
+        print(f"  {name:30} {all_s['trades']:>7} {all_s['win_rate_pct']:>5.1f} "
+              f"{all_s['expectancy_per_trade']:>+9.0f} "
+              f"{(('%+.0f' % va) if va is not None else 'n/a'):>13} "
+              f"{all_s['net']:>+12,.0f}")
+    print("  " + "-" * 80)
+    winners = [(n, a, v) for (n, a, v) in rows
+               if a and v and v.get("trades")
+               and v["expectancy_per_trade"] > 0 and a["expectancy_per_trade"] > 0]
+    if winners:
+        print("  CANDIDATES (positive IN-sample AND OUT-of-sample):")
+        for n, a, v in winners:
+            print(f"    ✓ {n}: exp(ALL) Rs {a['expectancy_per_trade']:+.0f}, "
+                  f"exp(OOS) Rs {v['expectancy_per_trade']:+.0f}")
+    else:
+        print("  NO CANDIDATE survived out-of-sample. Honest answer: this signal is")
+        print("  not tradeable with these exits. We either rethink it or drop it.")
+    print("=" * 84 + "\n")
+    return rows
 
 
 def _report(all_s, tr_s, val_s, mc, cut, P):
@@ -315,6 +408,8 @@ def selftest():
 def main():
     ap = argparse.ArgumentParser(description="Elon Swing: buy fear in strong companies (NRO delivery).")
     ap.add_argument("--selftest", action="store_true")
+    ap.add_argument("--sweep", action="store_true",
+                    help="fetch once, test several exit configs, judge out-of-sample")
     ap.add_argument("--days", type=int, default=250)
     ap.add_argument("--universe", default=None)
     args = ap.parse_args()
@@ -323,7 +418,10 @@ def main():
     universe = (E.load_universe() if not args.universe
                 else [l.strip().upper() for l in open(args.universe)
                       if l.strip() and not l.startswith("#")])
-    run_swing(SwingP(), args.days, universe)
+    if args.sweep:
+        run_sweep(args.days, universe)
+    else:
+        run_swing(SwingP(), args.days, universe)
 
 
 if __name__ == "__main__":
