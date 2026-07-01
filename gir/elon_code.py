@@ -132,6 +132,19 @@ MAX_DAILY_LOSS = float(os.environ.get("EQ_MAX_DAILY_LOSS", "20000"))   # rupees;
 # to revert to realised-only.
 HALT_INCLUDE_OPEN = os.environ.get("EQ_HALT_INCLUDE_OPEN", "1").strip() == "1"
 
+# --- Phase 3: candidate ranking + time-stop (edge upgrades) -----------------
+# When several dips confirm the turn in the SAME cycle, don't take them in
+# arbitrary dict order -- take the BEST first, so under any cap (positions,
+# sector, trades/day) the strongest setups win the slot. Score favours a deeper
+# stretch below VWAP (more room to revert) with liquidity as the tiebreaker.
+# Ranking only changes ORDER, so it's safe to leave ON; EQ_RANK_CANDIDATES=0
+# restores first-come order.
+RANK_CANDIDATES = os.environ.get("EQ_RANK_CANDIDATES", "1").strip() == "1"
+# Mean reversion has a clock: if a position hasn't hit target or stop within
+# TIME_STOP_MIN minutes, the thesis has stalled -- exit and free the capital.
+# 0 = OFF (default; enable only after the backtest shows it helps).
+TIME_STOP_MIN = int(os.environ.get("EQ_TIME_STOP_MIN", "0"))
+
 # --- sector concentration cap (tail-risk insurance, not a profit booster) ----
 # With unlimited positions, a sector-wide selloff could open many correlated
 # longs that all lose together. Cap how many open positions share a sector.
@@ -359,21 +372,36 @@ def regime_blocks_entries(kite):
 
 # --- position / risk bookkeeping (read from paper_trades) -------------------
 def _my_open_trades(get_open):
-    """Open EQ_PAPER_STUDY trades as list of (trade_id, symbol, entry, qty)."""
+    """Open EQ trades as list of (trade_id, symbol, entry, qty, entry_ts).
+    entry_ts (may be None) powers the live time-stop."""
     mine = []
     try:
         for t in get_open():
-            g = (lambda k: t[k] if isinstance(t, dict) else t[k])
             try:
-                if g("strategy") != STRATEGY_TAG:
+                if t["strategy"] != STRATEGY_TAG:
                     continue
-                mine.append((g("trade_id"), g("symbol"),
-                             float(g("entry_price") or 0), int(g("qty") or 0)))
+                ets = t["entry_ts"] if "entry_ts" in t.keys() else None
+                mine.append((t["trade_id"], t["symbol"],
+                             float(t["entry_price"] or 0), int(t["qty"] or 0), ets))
             except Exception:
                 continue
     except Exception as e:
         log.error(f"get_open failed: {e}")
     return mine
+
+
+def _minutes_since(ts_str):
+    """Whole minutes since an entry timestamp string (IST-naive). None if it
+    can't be parsed -- callers then simply skip the time-stop for that trade."""
+    if not ts_str:
+        return None
+    try:
+        s = str(ts_str).replace("T", " ").strip()[:19]
+        t0 = datetime.strptime(s, "%Y-%m-%d %H:%M:%S")
+        now = _ist_now().replace(tzinfo=None)
+        return (now - t0).total_seconds() / 60.0
+    except Exception:
+        return None
 
 
 def _today_realised_pnl_and_count():
@@ -404,7 +432,7 @@ def manage_exits(quotes, get_open, record_exit):
     """Close open EQ trades on target / stop / 15:15 square-off."""
     squareoff = _in_squareoff_window()
     closed = 0
-    for tid, sym, entry, qty in _my_open_trades(get_open):
+    for tid, sym, entry, qty, entry_ts in _my_open_trades(get_open):
         if entry <= 0:
             continue
         q = quotes.get(sym)
@@ -429,6 +457,9 @@ def manage_exits(quotes, get_open, record_exit):
             reason, exit_px = "TARGET", round(target_px, 2)
         elif ltp <= stop_px:
             reason, exit_px = "STOP", round(stop_px, 2)
+        elif TIME_STOP_MIN > 0 and (_minutes_since(entry_ts) or 0) >= TIME_STOP_MIN:
+            # thesis stalled: no target/stop hit within the time budget -> exit flat
+            reason, exit_px = f"TIME_{TIME_STOP_MIN}M", round(ltp, 2)
         elif squareoff:
             reason, exit_px = SQUAREOFF_REASON, round(ltp, 2)
         if not reason:
@@ -516,9 +547,24 @@ def _in_uptrend(kite, sym):
     return ok
 
 
+def _candidate_score(q):
+    """Rank confirmed dips so the BEST setup wins a scarce slot: a deeper stretch
+    below VWAP means more room to revert, with liquidity (log turnover) as the
+    tiebreaker. Higher = better."""
+    import math
+    last, vwap = q["last"], q["vwap"]
+    below = (vwap - last) / vwap * 100.0 if vwap > 0 else 0.0
+    turnover = last * (q.get("volume") or 0)
+    return below * 1.0 + math.log10(turnover + 1.0) * 0.5
+
+
 def eval_armed(kite, quotes, place_order, get_open, halted):
     """Buy an armed stock once it ticks back UP off its low (the turn), if risk
-    caps allow. Drop it if it keeps falling, rallies past VWAP, or times out."""
+    caps allow. Drop it if it keeps falling, rallies past VWAP, or times out.
+
+    Two phases: (A) advance every armed setup and collect those that confirm the
+    turn AND pass the trend filter; (B) take them BEST-FIRST (candidate ranking)
+    so that under any cap the strongest dips win the slot."""
     if not ARMED:
         return 0
     placed = 0
@@ -533,6 +579,9 @@ def eval_armed(kite, quotes, place_order, get_open, halted):
         if _sec != "UNKNOWN":
             sector_counts[_sec] = sector_counts.get(_sec, 0) + 1
 
+    # --- Phase A: advance each armed setup; collect the ones that CONFIRM the
+    #     turn AND pass the trend filter (the buyable candidates this cycle) ----
+    candidates = []   # (score, sym, q)
     for sym in list(ARMED.keys()):
         a = ARMED[sym]
         a["cycles"] += 1
@@ -568,6 +617,18 @@ def eval_armed(kite, quotes, place_order, get_open, halted):
             log.info(f"[ARM] {sym} below {TREND_SMA}-DMA (downtrend) - abandon (no knife-catching)")
             del ARMED[sym]; continue
 
+        candidates.append((_candidate_score(q), sym, q))
+
+    # --- Phase B: buy BEST-FIRST so scarce slots reward the strongest dips ----
+    if RANK_CANDIDATES:
+        candidates.sort(key=lambda c: c[0], reverse=True)
+
+    for score, sym, q in candidates:
+        a = ARMED.get(sym)
+        if a is None:
+            continue
+        last, vwap = q["last"], q["vwap"]
+
         # ---- risk gates (inversion: refuse the trade if any cap is hit) ----
         if halted:
             continue
@@ -596,7 +657,7 @@ def eval_armed(kite, quotes, place_order, get_open, halted):
             sector_counts[sec] = sector_counts.get(sec, 0) + 1   # reserve the slot
 
         if DRY_RUN:
-            log.info(f"[DRY] WOULD BUY {sym} qty={qty} @~{entry} "
+            log.info(f"[DRY] WOULD BUY {sym} qty={qty} @~{entry} (rank {score:.2f}) "
                      f"(tgt {target_px} / sl {stop_px}) turned off low {a['low_seen']:.2f}")
             del ARMED[sym]
             placed += 1; n_open += 1; n_today += 1
@@ -608,9 +669,9 @@ def eval_armed(kite, quotes, place_order, get_open, halted):
                 qty=qty, price=entry, order_type="MARKET", tag=STRATEGY_TAG,
                 sl_trigger=stop_px, sl_limit=stop_px, time_stop_days=0,
                 meta={"study": "equity_meanrev", "vwap": round(vwap, 2),
-                      "target": target_px, "stop": stop_px,
+                      "target": target_px, "stop": stop_px, "rank_score": round(score, 2),
                       "low_seen": round(a["low_seen"], 2), "entry_mode": "PULLBACK"})
-            log.info(f"BOUGHT {sym} qty={qty} @{entry} id={oid} (tgt {target_px}/sl {stop_px})")
+            log.info(f"BOUGHT {sym} qty={qty} @{entry} id={oid} (tgt {target_px}/sl {stop_px}, rank {score:.2f})")
             del ARMED[sym]
             placed += 1; n_open += 1; n_today += 1
         except Exception as e:
@@ -635,6 +696,9 @@ def main():
     log.info(f"TREND FILTER: {'ON' if TREND_FILTER else 'OFF'} - "
              + (f"only dip-buy stocks ABOVE their {TREND_SMA}-DMA (no knife-catching in downtrends)"
                 if TREND_FILTER else "buying ANY dip (old behaviour)"))
+    log.info(f"EDGE: candidate-ranking={'ON (best dip first)' if RANK_CANDIDATES else 'OFF'} | "
+             f"time-stop={str(TIME_STOP_MIN) + 'm' if TIME_STOP_MIN > 0 else 'OFF'} | "
+             f"daily-loss cap counts open MTM={'YES' if HALT_INCLUDE_OPEN else 'no'}")
     log.info(f"FILTERS: regime=skip new longs when {REGIME_INDEX} down > {REGIME_DOWN_PCT}% | "
              f"entry window {NO_NEW_ENTRY_BEFORE[0]:02d}:{NO_NEW_ENTRY_BEFORE[1]:02d}-"
              f"{NO_NEW_ENTRY_AFTER[0]:02d}:{NO_NEW_ENTRY_AFTER[1]:02d} (skip opening noise) | "
@@ -703,7 +767,7 @@ def main():
                 # a red book run untouched until it closed).
                 exposure = realised
                 if HALT_INCLUDE_OPEN:
-                    for _tid, _sym, _entry, _qty in _my_open_trades(get_open):
+                    for _tid, _sym, _entry, _qty, _ets in _my_open_trades(get_open):
                         _q = quotes.get(_sym)
                         if _q and _q["last"] > 0 and _entry > 0:
                             exposure += (_q["last"] - _entry) * _qty
