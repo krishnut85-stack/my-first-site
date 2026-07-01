@@ -27,9 +27,11 @@ USAGE (on the droplet, after: cd /home/globalbot && set -a && source .env && set
   python3 elon_momentum_live.py --selftest     # offline engine tests (no Kite)
   python3 elon_momentum_live.py --run          # one daily cycle (PAPER)
   python3 elon_momentum_live.py --status        # scorecard: paper equity vs Nifty
-Cron (daily ~16:00 IST after close):
-  0 16 * * 1-5  cd /home/globalbot && set -a && . ./.env && set +a && \
+Cron (daily ~09:20 IST, in-session so paper fills at LIVE prices == live orders):
+  50 3 * * 1-5  cd /home/globalbot && set -a && . ./.env && set +a && \
                 python3 elon_momentum_live.py --run >> elon_momentum.log 2>&1
+  # 09:20 IST = 03:50 UTC. (Never trades at night: after-hours live runs queue AMOs
+  # that execute at the next open.)
 """
 
 import os
@@ -51,6 +53,9 @@ def _today():
     return dt.datetime.now(IST).strftime("%Y-%m-%d")
 def _month():
     return dt.datetime.now(IST).strftime("%Y-%m")
+def _market_open_now():
+    n = dt.datetime.now(IST)
+    return n.weekday() < 5 and (9, 15) <= (n.hour, n.minute) <= (15, 30)
 
 # --- sector index -> tradeable NSE ETF (DELIVERY/CNC, NRO-legal) --------------
 # Only genuinely liquid ETFs. Sectors without a liquid ETF are simply not traded
@@ -160,11 +165,15 @@ class LiveExecutor(PaperExecutor):
     def _place(self, etf, qty, side):
         if etf not in ETF_WHITELIST:
             print(f"[LIVE] REFUSED {etf}: not in ETF whitelist"); return False
+        # NEVER trade at night: in-session -> regular market order (fills now);
+        # outside market hours -> AMO, which the broker executes at the NEXT open.
+        variety = self.kite.VARIETY_REGULAR if _market_open_now() else self.kite.VARIETY_AMO
         try:
             self.kite.place_order(
-                variety=self.kite.VARIETY_REGULAR, exchange="NSE", tradingsymbol=etf,
+                variety=variety, exchange="NSE", tradingsymbol=etf,
                 transaction_type=side, quantity=int(qty),
                 product=self.kite.PRODUCT_CNC, order_type=self.kite.ORDER_TYPE_MARKET)
+            print(f"[LIVE] {side} {etf} x{qty} ({variety})")
             return True
         except Exception as e:  # noqa: BLE001
             print(f"[LIVE] order failed {side} {etf} x{qty}: {e}"); return False
@@ -190,15 +199,24 @@ class LiveExecutor(PaperExecutor):
 # --- decision (pure; unit-tested) --------------------------------------------
 def decide_targets(held_sectors, scores, abs_moms, regime_now, is_rebalance, P):
     """Which sectors to hold after this cycle.
-      - market unhealthy (regime off) -> CASH (sell all).
+      - market unhealthy (Nifty below 200-DMA) -> CASH (sell all; don't catch
+        knives by reinvesting into a market-wide selloff).
       - rebalance day -> full top-N dual-momentum selection.
-      - normal day -> keep only held sectors whose 12m momentum is still > 0
-        (daily risk exit; no new buys until the next rebalance)."""
+      - normal day, market HEALTHY -> keep holdings whose 12m momentum is still
+        > 0, and if that frees a slot, REFILL it with the next-best qualifying
+        sector (stay fully invested in the winners; Q3)."""
     if not regime_now:
         return set()
     if is_rebalance:
         return set(select_weights(scores, abs_moms, True, P).keys())
-    return {s for s in held_sectors if abs_moms.get(s, -1) > 0}
+    keep = {s for s in held_sectors if abs_moms.get(s, -1) > 0}   # survivors
+    if len(keep) < P.top_n:                                        # a slot broke down -> refill
+        for s in sorted(scores, key=scores.get, reverse=True):
+            if len(keep) >= P.top_n:
+                break
+            if abs_moms.get(s, -1) > 0:
+                keep.add(s)
+    return keep
 
 
 def apply_targets(target_sectors, L, ltp, executor, P, reason):
@@ -267,8 +285,12 @@ def run_cycle(P):
     months = sorted({m for c in monthly.values() for m in c})
     i = len(months) - 1
     scores, abs_moms = momentum_scores(monthly, months, i, P)
-    nclose = [b["close"] for b in nifty_daily]
+    # regime on the last COMPLETED daily close (drop today's still-forming bar)
+    nclose = [b["close"] for b in nifty_daily if str(b["date"])[:10] != _today()]
     regime_now = (len(nclose) > 200 and nclose[-1] > sum(nclose[-200:]) / 200) if P.use_regime else True
+    if not _market_open_now():
+        print("[momentum] NOTE: market closed — paper fills use last price; live "
+              "orders would queue as AMO for the next open. Best run ~09:20 IST.")
 
     held_sectors = {h["sector"] for h in L["holdings"].values()}
     is_rebalance = L.get("last_rebalance") != _month()
@@ -368,10 +390,11 @@ def selftest():
     print(f"  [3] rebalance -> top-N, abs>0 only   : {'PASS' if ok3 else 'FAIL'} ({t3})")
     ok &= ok3
 
-    # decide_targets: non-rebalance day risk exit (held pharma turned abs<0 -> drop).
+    # decide_targets: non-rebalance day. Held PHARMA broke down (abs<0) in a
+    # HEALTHY market -> sell it AND refill the slot with the next-best (BANK). (Q3)
     t4 = decide_targets({"NIFTY IT", "NIFTY PHARMA"}, scores, absm, True, False, P)
-    ok4 = t4 == {"NIFTY IT"}
-    print(f"  [4] daily risk exit of broken sector : {'PASS' if ok4 else 'FAIL'} ({t4})")
+    ok4 = t4 == {"NIFTY IT", "NIFTY BANK"}
+    print(f"  [4] risk exit + REFILL with next-best: {'PASS' if ok4 else 'FAIL'} ({t4})")
     ok &= ok4
 
     # apply_targets: sell non-target, buy target toward equal weight.
