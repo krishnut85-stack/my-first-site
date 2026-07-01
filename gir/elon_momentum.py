@@ -163,6 +163,26 @@ def _regime_by_month(bars, sma=200):
     return out
 
 
+def _hist_chunked(kite, tok, frm, to, interval="day", max_days=1900):
+    """Kite caps daily history at ~2000 days/request. Fetch in <=1900-day chunks
+    and concatenate (deduped) so we can pull 10+ years for the momentum lookbacks."""
+    out, cur = [], frm
+    while cur < to:
+        end = min(cur + dt.timedelta(days=max_days), to)
+        try:
+            out += kite.historical_data(tok, cur, end, interval)
+        except Exception as e:
+            print(f"    chunk {str(cur)[:10]}..{str(end)[:10]} failed ({e})")
+        cur = end + dt.timedelta(days=1)
+        time.sleep(0.3)
+    seen, dedup = set(), []
+    for b in out:
+        d = str(b["date"])[:10]
+        if d not in seen:
+            seen.add(d); dedup.append(b)
+    return dedup
+
+
 def _fetch(P, days, universe):
     E._load_env()
     try:
@@ -174,14 +194,15 @@ def _fetch(P, days, universe):
     frm = to - dt.timedelta(days=days + 400)
     syms = list(dict.fromkeys(universe + [P.benchmark]))
     monthly, regime = {}, {}
-    print(f"[momentum] Kite up. Fetching {len(syms)} instruments (daily -> monthly)...")
+    print(f"[momentum] Kite up. Fetching {len(syms)} instruments (daily -> monthly, chunked)...")
     for i, sym in enumerate(syms, 1):
         try:
             tok = E._TOKENS.get(sym) or kite.ltp([f"NSE:{sym}"]).get(f"NSE:{sym}", {}).get("instrument_token")
             if not tok:
                 continue
-            bars = kite.historical_data(tok, frm, to, "day")
-            time.sleep(0.3)
+            bars = _hist_chunked(kite, tok, frm, to, "day")
+            if not bars:
+                continue
         except Exception as e:
             print(f"  {sym}: fetch failed ({e})")
             continue
