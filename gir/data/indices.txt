@@ -1,0 +1,31 @@
+# NSE indices + sectors for the "buy fear" backtest (Kite historical_data).
+# Cleaner mean-reversion than single stocks: no single-company blow-up risk.
+# Tradeable NRO/CNC via ETFs (e.g. NIFTYBEES, BANKBEES, ITBEES) or F&O futures.
+# Names must match Kite's index tradingsymbol; any that don't resolve are skipped.
+#
+# --- broad market ---
+NIFTY 50
+NIFTY NEXT 50
+NIFTY 100
+NIFTY 200
+NIFTY 500
+NIFTY MIDCAP 100
+NIFTY SMLCAP 100
+NIFTY MIDCAP 50
+# --- sectoral (this is your "industries" dimension, index-level) ---
+NIFTY BANK
+NIFTY IT
+NIFTY PHARMA
+NIFTY FMCG
+NIFTY AUTO
+NIFTY METAL
+NIFTY ENERGY
+NIFTY REALTY
+NIFTY MEDIA
+NIFTY INFRA
+NIFTY PSU BANK
+NIFTY PVT BANK
+NIFTY FIN SERVICE
+NIFTY COMMODITIES
+NIFTY CONSUMPTION
+NIFTY PSE
