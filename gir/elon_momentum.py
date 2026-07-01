@@ -282,6 +282,46 @@ def run(P, days, universe):
     return dates, strat, bench
 
 
+def run_lookback_compare(days, universe):
+    """Q1: is a FASTER rotation signal better? Fetch once, test several ranking
+    lookback blends (the 200-DMA / 12m regime brake stays SLOW), judge on the
+    out-of-sample window. Keeps knob-1 (crash brake) fixed, tunes knob-2 (speed)."""
+    monthly, regime = _fetch(MomP(), days, universe)
+    if not monthly:
+        print("[momentum] no data."); return
+    months = sorted({m for s in monthly.values() for m in s})
+    configs = [("current 3/6/12", (3, 6, 12)), ("faster 1/3/6", (1, 3, 6)),
+               ("fast 1/2/3", (1, 2, 3)), ("medium 3/6", (3, 6)),
+               ("mixed 1/3/6/12", (1, 3, 6, 12)), ("classic 12", (12,))]
+    print("\n" + "=" * 82)
+    print("  ELON MOMENTUM · ROTATION-SPEED SWEEP  (regime brake fixed; judged OOS)")
+    print("=" * 82)
+    print(f"  {'lookback blend':16} {'CAGR(ALL)':>10} {'Sharpe(ALL)':>12} "
+          f"{'CAGR(OOS)':>10} {'Sharpe(OOS)':>12} {'maxDD':>8}")
+    print("  " + "-" * 78)
+    rows = []
+    for name, lb in configs:
+        P = MomP(); P.lookbacks = lb
+        _, strat, bench = backtest(monthly, months, regime, P)
+        a, cut = stats(strat), len(strat) * 7 // 10
+        v = stats(strat[cut:])
+        if not a or not v:
+            print(f"  {name:16} (insufficient data)"); continue
+        rows.append((name, a, v))
+        print(f"  {name:16} {a['cagr_pct']:>+9.1f}% {a['sharpe']:>12.2f} "
+              f"{v['cagr_pct']:>+9.1f}% {v['sharpe']:>12.2f} {a['maxdd_pct']:>7.1f}%")
+    nb = stats(bench)
+    print("  " + "-" * 78)
+    print(f"  {'Nifty B&H':16} {nb['cagr_pct']:>+9.1f}% {nb['sharpe']:>12.2f}")
+    if rows:
+        best = max(rows, key=lambda r: r[2]["sharpe"])
+        print(f"\n  Best OUT-OF-SAMPLE Sharpe: '{best[0]}' "
+              f"(OOS Sharpe {best[2]['sharpe']:.2f}, CAGR {best[2]['cagr_pct']:+.1f}%)")
+        print("  -> if a faster blend clearly wins OOS, we switch Strategy 1 to it.")
+    print("=" * 82 + "\n")
+    return rows
+
+
 # --- offline self-test -------------------------------------------------------
 def selftest():
     P = MomP(); P.use_regime = False; P.top_n = 1; P.per_side_cost = 0.15
@@ -331,6 +371,8 @@ def selftest():
 def main():
     ap = argparse.ArgumentParser(description="Elon Momentum: dual-momentum sector rotation (NRO).")
     ap.add_argument("--selftest", action="store_true")
+    ap.add_argument("--compare", action="store_true",
+                    help="sweep rotation-speed lookback blends, judged out-of-sample")
     ap.add_argument("--days", type=int, default=2500)     # ~10yr of daily bars
     ap.add_argument("--universe", default=None)
     args = ap.parse_args()
@@ -339,7 +381,10 @@ def main():
     universe = (E.load_universe() if not args.universe
                 else [l.strip().upper() for l in open(args.universe)
                       if l.strip() and not l.startswith("#")])
-    run(MomP(), args.days, universe)
+    if args.compare:
+        run_lookback_compare(args.days, universe)
+    else:
+        run(MomP(), args.days, universe)
 
 
 if __name__ == "__main__":
