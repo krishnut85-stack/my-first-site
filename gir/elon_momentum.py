@@ -55,8 +55,11 @@ class MomP:
     # DEFENSIVE SLEEVE (GEM + gold): when stocks are weak, park the non-equity
     # weight in the strongest DEFENSIVE asset (gold / bonds / liquid) by its own
     # momentum -- not idle cash. GOLDBEES = gold ETF, LIQUIDBEES = cash-like floor.
+    # GOLDBEES=gold, GSEC10IETF=govt bonds (gilt, sovereign), LIQUIDBEES=cash-like.
+    # All safe, delivery-only, no leverage. Any symbol that doesn't resolve on
+    # Kite is simply skipped, so the basket is swappable via EQM_DEFENSIVE.
     defensive: tuple = tuple(x.strip() for x in
-                             os.environ.get("EQM_DEFENSIVE", "GOLDBEES,LIQUIDBEES").split(",") if x.strip())
+                             os.environ.get("EQM_DEFENSIVE", "GOLDBEES,GSEC10IETF,LIQUIDBEES").split(",") if x.strip())
 
 
 # --- portfolio stats ---------------------------------------------------------

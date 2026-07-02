@@ -45,8 +45,10 @@ import urllib.parse
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import elon_code as E                                       # noqa: E402
-from elon_momentum import (MomP, momentum_scores, select_weights,             # noqa: E402
+from elon_momentum import (MomP, momentum_scores, select_weights, best_defensive,  # noqa: E402
                            _hist_chunked, _monthly_from_daily, _regime_by_month)
+
+_DEFENSIVE = MomP().defensive           # gold / gilt / liquid safe-harbour ETFs
 
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
 def _today():
@@ -70,7 +72,7 @@ ETF_MAP = {
     "NIFTY PSU BANK": "PSUBNKBEES",
 }
 TRADEABLE_SECTORS = list(ETF_MAP.keys())
-ETF_WHITELIST = set(ETF_MAP.values())
+ETF_WHITELIST = set(ETF_MAP.values()) | set(_DEFENSIVE)   # equity + defensive ETFs
 
 LEDGER_PATH = os.environ.get("EQM_LEDGER", "/home/globalbot/elon_momentum_paper.json")
 START_CAPITAL = float(os.environ.get("EQM_CAPITAL", "1000000"))   # Rs 10L paper
@@ -219,26 +221,40 @@ def decide_targets(held_sectors, scores, abs_moms, regime_now, is_rebalance, P):
     return keep
 
 
-def apply_targets(target_sectors, L, ltp, executor, P, reason):
-    """Sell anything not in target, then (equal-weight) buy toward target."""
-    held = set(L["holdings"])
-    target_etfs = {ETF_MAP[s] for s in target_sectors if s in ETF_MAP}
-    for etf in list(held - target_etfs):
-        p = ltp.get(etf)
-        if p:
-            executor.sell(etf, L["holdings"][etf]["qty"], p, reason)
-    if not target_sectors:
-        return
+def build_weights(targets, monthly, months, i, ltp, P):
+    """Equity weights (top-N equal), then route the REMAINING weight to the
+    strongest DEFENSIVE asset (gold/gilt/liquid) instead of idle cash. Returns
+    ({etf: weight}, {etf: label})."""
+    weights, labels = {}, {}
+    for s in targets:
+        etf = ETF_MAP.get(s)
+        if etf:
+            weights[etf] = 1.0 / max(P.top_n, 1)
+            labels[etf] = s
+    cash_w = 1.0 - sum(weights.values())
+    if cash_w > 0.02:
+        dpick = best_defensive(monthly, months, i, P)     # gold/gilt/liquid by momentum
+        if dpick and ltp.get(dpick):
+            weights[dpick] = weights.get(dpick, 0) + cash_w
+            labels[dpick] = "DEFENSIVE"
+    return weights, labels
+
+
+def _rebalance(weights, labels, L, ltp, executor, reason):
+    """Rebalance the book to {etf: weight}: sell anything not targeted (incl. a
+    defensive ETF no longer picked), then buy underweight names toward target."""
+    for etf in list(L["holdings"]):
+        if etf not in weights and ltp.get(etf):
+            executor.sell(etf, L["holdings"][etf]["qty"], ltp[etf], reason)
     equity = L["cash"] + sum(L["holdings"][e]["qty"] * ltp.get(e, 0) for e in L["holdings"])
-    per = equity / max(P.top_n, 1)                  # size to N slots; empty slots -> cash
-    for s in target_sectors:
-        etf, p = ETF_MAP.get(s), ltp.get(ETF_MAP.get(s, ""))
-        if not etf or not p:
+    for etf, w in weights.items():
+        p = ltp.get(etf)
+        if not p:
             continue
-        cur_val = L["holdings"].get(etf, {}).get("qty", 0) * p
-        qty = int((per - cur_val) // p)
+        cur = L["holdings"].get(etf, {}).get("qty", 0) * p
+        qty = int((w * equity - cur) // p)
         if qty > 0:
-            executor.buy(etf, qty, p, s, reason)
+            executor.buy(etf, qty, p, labels.get(etf, "?"), reason)
 
 
 # --- one daily cycle ---------------------------------------------------------
@@ -257,7 +273,7 @@ def run_cycle(P):
     # 1) data: monthly closes for the tradeable sectors + Nifty; daily regime; ETF LTPs
     to = dt.datetime.now()
     frm = to - dt.timedelta(days=520)               # ~14mo warms up the 12m lookback
-    syms = list(dict.fromkeys(TRADEABLE_SECTORS + [P.benchmark]))
+    syms = list(dict.fromkeys(TRADEABLE_SECTORS + [P.benchmark] + list(P.defensive)))
     monthly, nifty_daily = {}, []
     for s in syms:
         try:
@@ -298,9 +314,10 @@ def run_cycle(P):
               else "RISK-OFF (regime)" if not regime_now else "risk-check")
     targets = decide_targets(held_sectors, scores, abs_moms, regime_now, is_rebalance, P)
 
-    # 3) execute the diff
+    # 3) execute: equity targets + defensive sleeve for the rest (never idle cash)
     before = {e: dict(h) for e, h in L["holdings"].items()}
-    apply_targets(targets, L, ltp, executor, P, reason)
+    weights, labels = build_weights(targets, monthly, months, i, ltp, P)
+    _rebalance(weights, labels, L, ltp, executor, reason)
     if is_rebalance and regime_now:
         L["last_rebalance"] = _month()
 
@@ -310,12 +327,13 @@ def run_cycle(P):
                                 "nifty": round(nclose[-1], 2)})
     save_ledger(L)
 
-    # 5) report + isolated Telegram
-    hold_str = ", ".join(f"{ETF_MAP[s]}({s.replace('NIFTY ','')})" for s in sorted(targets)) or "CASH"
+    # 5) report + isolated Telegram (holdings now include the defensive sleeve)
+    hold_str = ", ".join(f"{e}({h.get('sector','?')})" for e, h in sorted(L["holdings"].items())) or "CASH"
     ret = (equity / L["starting_capital"] - 1) * 100
     changed = before != L["holdings"]
+    regtxt = "UP" if regime_now else "DOWN → defensive (gold/gilt/liquid)"
     msg = (f"🚀 ELON MOMENTUM [{L['mode']}] {_today()}\n"
-           f"Regime: {'UP' if regime_now else 'DOWN → cash'} | {reason}\n"
+           f"Regime: {regtxt} | {reason}\n"
            f"Hold: {hold_str}\n"
            f"Equity Rs {equity:,.0f} ({ret:+.2f}%) | Cash Rs {L['cash']:,.0f}")
     print("\n" + msg + "\n")
@@ -397,14 +415,29 @@ def selftest():
     print(f"  [4] risk exit + REFILL with next-best: {'PASS' if ok4 else 'FAIL'} ({t4})")
     ok &= ok4
 
-    # apply_targets: sell non-target, buy target toward equal weight.
+    # build_weights + _rebalance: buys the equity ETFs (full equity, no cash left).
     L2 = {"cash": 1_000_000, "holdings": {}, "trades": [], "starting_capital": 1_000_000}
     ltp = {"ITBEES": 40.0, "BANKBEES": 50.0}
-    apply_targets({"NIFTY IT", "NIFTY BANK"}, L2, ltp, PaperExecutor(L2), P, "t")
+    w2, lab2 = build_weights({"NIFTY IT", "NIFTY BANK"}, {}, [], 0, ltp, P)
+    _rebalance(w2, lab2, L2, ltp, PaperExecutor(L2), "t")
     ok5 = set(L2["holdings"]) == {"ITBEES", "BANKBEES"} and L2["cash"] < 1_000_000
-    print(f"  [5] apply_targets buys the ETFs      : {'PASS' if ok5 else 'FAIL'} "
-          f"(cash {L2['cash']:,.0f}, holds {set(L2['holdings'])})")
+    print(f"  [5] rebalance buys the equity ETFs   : {'PASS' if ok5 else 'FAIL'} "
+          f"(holds {set(L2['holdings'])})")
     ok &= ok5
+
+    # DEFENSIVE SLEEVE: regime off (no equity targets) + gold rising -> book goes
+    # into GOLDBEES, NOT idle cash.
+    mm = [f"20{y:02d}-{mo:02d}" for y in range(23, 25) for mo in range(1, 13)]
+    monthly = {"GOLDBEES": {m: round(100 * (1.03 ** i), 3) for i, m in enumerate(mm)},
+               "LIQUIDBEES": {m: round(100 * (1.005 ** i), 3) for i, m in enumerate(mm)}}
+    Pd = MomP(); Pd.top_n = 2
+    w3, lab3 = build_weights(set(), monthly, mm, len(mm) - 1, {"GOLDBEES": 60.0, "LIQUIDBEES": 100.0}, Pd)
+    L3 = {"cash": 1_000_000, "holdings": {}, "trades": [], "starting_capital": 1_000_000}
+    _rebalance(w3, lab3, L3, {"GOLDBEES": 60.0, "LIQUIDBEES": 100.0}, PaperExecutor(L3), "risk-off")
+    ok_def = "GOLDBEES" in L3["holdings"]
+    print(f"  [D] risk-off -> DEFENSIVE (gold), not cash: {'PASS' if ok_def else 'FAIL'} "
+          f"(holds {set(L3['holdings'])})")
+    ok &= ok_def
 
     # live is OFF unless explicitly enabled.
     ok6 = not (LIVE and LIVE_CONFIRM)

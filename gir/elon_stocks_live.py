@@ -42,9 +42,11 @@ import urllib.parse
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import elon_code as E                                       # noqa: E402
-from elon_momentum import _hist_chunked, stats              # noqa: E402
+from elon_momentum import _hist_chunked, stats, best_defensive, MomP  # noqa: E402
 from elon_stocks import (StockP, load_universe, stock_scores, select_stocks,   # noqa: E402
                          _monthly_close_turnover, _regime_by_month)
+
+_DEFENSIVE = MomP().defensive           # gold / gilt / liquid safe-harbour ETFs
 
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
 def _today():
@@ -205,12 +207,12 @@ def run_cycle(P):
     L = load_ledger()
     live = LIVE and LIVE_CONFIRM
     L["mode"] = "LIVE" if live else "PAPER"
-    executor = LiveExecutor(L, kite, set(sector_map)) if live else PaperExecutor(L)
+    executor = LiveExecutor(L, kite, set(sector_map) | set(_DEFENSIVE)) if live else PaperExecutor(L)
 
     # data: universe monthly close + turnover, Nifty regime (heavy monthly fetch)
     to = dt.datetime.now()
     frm = to - dt.timedelta(days=int(os.environ.get("EQS2_DAYS", "700")) + 400)
-    syms = list(sector_map) + [P.benchmark]
+    syms = list(sector_map) + [P.benchmark] + list(_DEFENSIVE)
     monthly, turnover, nifty_daily = {}, {}, []
     print(f"[stocks] fetching {len(syms)} symbols...")
     for n, s in enumerate(syms, 1):
@@ -233,7 +235,7 @@ def run_cycle(P):
         print("[stocks] insufficient data."); return
 
     # live LTPs for fills + stop checks (one batched call)
-    uni = list(sector_map)
+    uni = list(sector_map) + list(_DEFENSIVE)
     ltp = {}
     for i in range(0, len(uni), 250):
         chunk = uni[i:i + 250]
@@ -254,21 +256,23 @@ def run_cycle(P):
         print("[stocks] NOTE: market closed — paper fills use last price; live queues AMO. "
               "Best run ~09:20 IST.")
 
-    # STOP-LOSS pass (daily, price-based) -- runs regardless of momentum
+    # STOP-LOSS pass (daily, price-based) -- stocks only, skip the defensive ETFs
     for sym in list(L["holdings"]):
+        if sym in _DEFENSIVE:
+            continue
         p = ltp.get(sym, 0)
         stop = L["holdings"][sym].get("stop_price", 0)
         if p and stop and p <= stop:
             executor.sell(sym, L["holdings"][sym]["qty"], p, f"STOP_{STOP_PCT:.0f}%")
 
-    held = list(L["holdings"])
+    held = [s for s in L["holdings"] if s not in _DEFENSIVE]   # stock holdings only
     is_rebalance = L.get("last_rebalance") != _month()
     reason = ("REBALANCE" if (is_rebalance and regime_now)
               else "RISK-OFF" if not regime_now else "risk-check")
     targets = decide_targets(held, scores, absm, turnover_m, sector_map, regime_now, is_rebalance, P)
 
-    # execute: sell non-targets, then buy targets toward equal weight
-    for sym in [s for s in L["holdings"] if s not in targets]:
+    # execute: sell non-target STOCKS (leave defensive alone), then buy targets
+    for sym in [s for s in L["holdings"] if s not in _DEFENSIVE and s not in targets]:
         if ltp.get(sym):
             executor.sell(sym, L["holdings"][sym]["qty"], ltp[sym], reason)
     slots = P.top_sectors * P.per_sector
@@ -282,6 +286,20 @@ def run_cycle(P):
         qty = int((per - cur) // p)
         if qty > 0:
             executor.buy(sym, qty, p, sector_map.get(sym, "?"), reason)
+
+    # DEFENSIVE SLEEVE: park the leftover cash (empty slots / risk-off) in the
+    # strongest gold/gilt/liquid ETF instead of idle cash.
+    def_etf = best_defensive(monthly, months, i, MomP())
+    for d in [s for s in L["holdings"] if s in _DEFENSIVE and s != def_etf]:
+        if ltp.get(d):                                        # rotate out old defensive
+            executor.sell(d, L["holdings"][d]["qty"], ltp[d], "defensive-rotate")
+    if def_etf and ltp.get(def_etf):
+        equity = L["cash"] + sum(L["holdings"][s]["qty"] * ltp.get(s, 0) for s in L["holdings"])
+        spend = L["cash"] - equity * 0.02                     # keep a 2% cash buffer
+        p = ltp[def_etf]
+        qty = int(spend // p) if spend > p else 0
+        if qty > 0:
+            executor.buy(def_etf, qty, p, "DEFENSIVE", "defensive")
     if is_rebalance and regime_now:
         L["last_rebalance"] = _month()
 
@@ -293,7 +311,7 @@ def run_cycle(P):
     names = ", ".join(sorted(L["holdings"])) or "CASH"
     ret = (equity / L["starting_capital"] - 1) * 100
     msg = (f"📈 ELON STOCKS [{L['mode']}] {_today()}\n"
-           f"Regime: {'UP' if regime_now else 'DOWN → cash'} | {reason}\n"
+           f"Regime: {'UP' if regime_now else 'DOWN → defensive (gold/gilt/liquid)'} | {reason}\n"
            f"Hold ({len(L['holdings'])}): {names}\n"
            f"Equity Rs {equity:,.0f} ({ret:+.2f}%) | Cash Rs {L['cash']:,.0f}")
     print("\n" + msg + "\n")
