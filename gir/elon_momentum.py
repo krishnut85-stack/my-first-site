@@ -50,8 +50,13 @@ class MomP:
     abs_lookback: int = int(os.environ.get("EQM_ABS_LB", "12"))   # absolute-momentum months
     use_regime: bool = os.environ.get("EQM_USE_REGIME", "1").strip() == "1"
     per_side_cost: float = float(os.environ.get("EQM_COST_PCT", "0.15"))  # % per side (~0.30% round trip)
-    cash_annual: float = float(os.environ.get("EQM_CASH_ANNUAL", "0.06")) # liquid-fund yield when in cash
+    cash_annual: float = float(os.environ.get("EQM_CASH_ANNUAL", "0.06")) # liquid-fund yield (floor)
     benchmark: str = os.environ.get("EQM_BENCHMARK", "NIFTY 50")
+    # DEFENSIVE SLEEVE (GEM + gold): when stocks are weak, park the non-equity
+    # weight in the strongest DEFENSIVE asset (gold / bonds / liquid) by its own
+    # momentum -- not idle cash. GOLDBEES = gold ETF, LIQUIDBEES = cash-like floor.
+    defensive: tuple = tuple(x.strip() for x in
+                             os.environ.get("EQM_DEFENSIVE", "GOLDBEES,LIQUIDBEES").split(",") if x.strip())
 
 
 # --- portfolio stats ---------------------------------------------------------
@@ -98,7 +103,8 @@ def momentum_scores(monthly, months, i, P):
     """At month index i: blended relative-momentum score + 12m absolute momentum
     for every symbol with enough history. Single source of truth for backtest
     AND live, so paper == live can never disagree on the signal."""
-    syms = [s for s in monthly if s != P.benchmark] or list(monthly)
+    excl = {P.benchmark} | set(getattr(P, "defensive", ()))   # defensive ETFs aren't equities
+    syms = [s for s in monthly if s not in excl] or list(monthly)
     scores, abs_moms = {}, {}
     for s in syms:
         c = monthly[s]
@@ -126,6 +132,23 @@ def select_weights(scores, abs_moms, reg, P):
     return weights
 
 
+def best_defensive(monthly, months, i, P):
+    """The strongest DEFENSIVE asset (gold/bonds/liquid) by blended momentum at
+    month i, or None. LIQUIDBEES in the basket acts as the natural cash floor, so
+    gold is chosen only when it's actually trending up vs the safe floor."""
+    best, best_sc = None, -9e9
+    for s in getattr(P, "defensive", ()):
+        c = monthly.get(s)
+        if not c or months[i] not in c or not all(months[i - lb] in c for lb in P.lookbacks):
+            continue
+        rs = [c[months[i]] / c[months[i - lb]] - 1 for lb in P.lookbacks if c[months[i - lb]] > 0]
+        if len(rs) == len(P.lookbacks):
+            sc = sum(rs) / len(rs)
+            if sc > best_sc:
+                best, best_sc = s, sc
+    return best
+
+
 # --- the pure backtest core (no Kite; unit-testable) -------------------------
 def backtest(monthly, months, regime_ok, P):
     """monthly: {sym: {YYYY-MM: close}}. months: sorted list of YYYY-MM.
@@ -141,12 +164,23 @@ def backtest(monthly, months, regime_ok, P):
         scores, abs_moms = momentum_scores(monthly, months, i, P)   # shared with live
         weights = select_weights(scores, abs_moms, reg, P)          # empty slots -> cash
         cash_w = 1.0 - sum(weights.values())
-        # turnover cost (one-way turnover x per-side cost)
-        turnover = sum(abs(weights.get(k, 0) - prev_w.get(k, 0))
-                       for k in set(weights) | set(prev_w))
+        # DEFENSIVE SLEEVE: the non-equity weight goes to the strongest defensive
+        # asset (gold/bonds/liquid), not idle cash -- earning ITS return.
+        def_pick = best_defensive(monthly, months, i, P)
+        def_ret = cash_m
+        if def_pick:
+            dc = monthly[def_pick]
+            if m in dc and nxt in dc and dc[m] > 0:
+                def_ret = dc[nxt] / dc[m] - 1
+        # turnover cost: include the defensive holding as a position
+        cur_w = dict(weights)
+        if cash_w > 1e-6 and def_pick:
+            cur_w[def_pick] = cur_w.get(def_pick, 0) + cash_w
+        turnover = sum(abs(cur_w.get(k, 0) - prev_w.get(k, 0))
+                       for k in set(cur_w) | set(prev_w))
         cost = turnover * P.per_side_cost / 100.0
         # realised next-month return
-        r = cash_w * cash_m
+        r = cash_w * def_ret
         for s, w in weights.items():
             c = monthly[s]
             if m in c and nxt in c and c[m] > 0:
@@ -155,7 +189,7 @@ def backtest(monthly, months, regime_ok, P):
         b = monthly.get(P.benchmark)
         bench.append((b[nxt] / b[m] - 1) if (b and m in b and nxt in b and b[m] > 0) else 0.0)
         dates.append(nxt)
-        prev_w = weights
+        prev_w = cur_w
     return dates, strat, bench
 
 
@@ -207,9 +241,10 @@ def _fetch(P, days, universe):
         return None, None
     to = dt.datetime.now()
     frm = to - dt.timedelta(days=days + 400)
-    syms = list(dict.fromkeys(universe + [P.benchmark]))
+    syms = list(dict.fromkeys(universe + [P.benchmark] + list(P.defensive)))
     monthly, regime = {}, {}
-    print(f"[momentum] Kite up. Fetching {len(syms)} instruments (daily -> monthly, chunked)...")
+    print(f"[momentum] Kite up. Fetching {len(syms)} instruments "
+          f"(incl. defensive {list(P.defensive)}; daily -> monthly, chunked)...")
     for i, sym in enumerate(syms, 1):
         try:
             tok = E._TOKENS.get(sym) or kite.ltp([f"NSE:{sym}"]).get(f"NSE:{sym}", {}).get("instrument_token")
@@ -235,8 +270,10 @@ def _split_and_report(dates, strat, bench, P, label="ELON MOMENTUM · SECTOR ROT
     print(f"  {label}  (NRO delivery via ETFs — paper)")
     print("=" * 74)
     print(f"  Rules: hold top {P.top_n} sectors by blended {P.lookbacks} mth momentum; "
-          f"only if 12m>0 & Nifty>200DMA, else cash. Monthly rebalance.")
-    print(f"  Cost : {P.per_side_cost:.2f}%/side   Cash yield: {P.cash_annual*100:.0f}%/yr")
+          f"only if 12m>0 & Nifty>200DMA. Monthly rebalance.")
+    print(f"  DEFENSIVE SLEEVE: when weak, rotate to strongest of {list(P.defensive)} "
+          f"(not idle cash).")
+    print(f"  Cost : {P.per_side_cost:.2f}%/side   Cash floor: {P.cash_annual*100:.0f}%/yr")
     print("-" * 74)
 
     def block(name, s, b):
@@ -358,12 +395,25 @@ def selftest():
     print(f"  [3] regime OFF -> forced to cash             : {'PASS' if ok3 else 'FAIL'} "
           f"(strat {stats(s3)['total_pct']:+.1f}%)")
 
+    # DEFENSIVE SLEEVE: equities weak (regime off) BUT gold rising -> the strategy
+    # should ride GOLD (not sit in flat cash).
+    P5 = MomP(); P5.use_regime = True; P5.top_n = 1   # defensive = GOLDBEES,LIQUIDBEES
+    falling = {m: round(100 * (0.98 ** i), 4) for i, m in enumerate(months)}
+    goldup = {m: round(100 * (1.02 ** i), 4) for i, m in enumerate(months)}
+    liquid = {m: round(100 * (1.005 ** i), 4) for i, m in enumerate(months)}
+    dset = {"A": falling, "B": falling, "NIFTY 50": falling,
+            "GOLDBEES": goldup, "LIQUIDBEES": liquid}
+    _, s5, _ = backtest(dset, months, {m: False for m in months}, P5)
+    ok5 = stats(s5)["total_pct"] > 25   # rode gold up, not the ~18% cash floor
+    print(f"  [5] weak stocks + gold up -> rides GOLD       : {'PASS' if ok5 else 'FAIL'} "
+          f"(strat {stats(s5)['total_pct']:+.1f}% vs ~18% cash)")
+
     mc = monte_carlo(strat)
     ok4 = mc is not None
     print(f"  [4] Monte Carlo produces stats               : {'PASS' if ok4 else 'FAIL'}")
 
-    ok = ok1 and ok2 and ok3 and ok4
-    print("\n" + ("✓ ALL SELF-TESTS PASSED — rotation engine verified offline."
+    ok = ok1 and ok2 and ok3 and ok4 and ok5
+    print("\n" + ("✓ ALL SELF-TESTS PASSED — rotation + defensive sleeve verified offline."
                   if ok else "✗ SELF-TEST FAILURES."))
     return ok
 
