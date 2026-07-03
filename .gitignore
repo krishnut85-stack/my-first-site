@@ -4,3 +4,10 @@ __pycache__/
 sectorbot/data/portfolio.json
 portfolio_report.txt
 portfolio_report.html
+# Rama runtime files (its own portfolio, dropped live data, reports) — the
+# catalysts.sample.csv template is committed, but a live catalysts.csv is not.
+rama/data/portfolio.json
+rama/data/catalysts.csv
+rama_portfolio_report.txt
+rama_portfolio_report.html
+rama_dashboard.html
