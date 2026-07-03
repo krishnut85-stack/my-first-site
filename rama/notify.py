@@ -269,12 +269,44 @@ def _telegram_portfolio_summary(result: dict) -> str:
         edge = (f" (edge {sc['edge_vs_index_pct']:+.1f}% vs index)"
                 if sc.get("edge_vs_index_pct") is not None else "")
         lines.append(f"📈 Verdict: <b>{sc['verdict']}</b>{edge}")
+    if result.get("sizing_label"):
+        lines.append(f"📐 Sizing: {result['sizing_label']}")
+    entries = result.get("entries") or []
+    for s, ltp, qty in entries[:8]:
+        lines.append(f"  🟢 BUY {s} @ {ltp:.2f} x{qty}")
     for s, ltp, reason, pnl in exits[:8]:
-        lines.append(f"  SELL {s} @ {ltp:.2f} [{reason}] P&amp;L {pnl:+,.0f}")
+        lines.append(f"  🔴 SELL {s} @ {ltp:.2f} [{reason}] P&amp;L {pnl:+,.0f}")
+    vetoes = result.get("vetoes") or []
+    if vetoes:
+        lines.append(f"🚫 Audit vetoes: {len(vetoes)} "
+                     f"(e.g. {vetoes[0][0]} — {vetoes[0][1]})")
+    live = result.get("live_orders") or []
+    if live:
+        placed = sum(1 for o in live if o.status == "PLACED")
+        dry = sum(1 for o in live if o.status == "DRY_RUN")
+        rej = sum(1 for o in live if o.status == "REJECTED")
+        lines.append(f"⚡ Live routing: {placed} placed · {dry} dry-run · "
+                     f"{rej} rejected (OPS cap {config.MAX_ORDERS_PER_SEC}/s)")
     return "\n".join(lines)
 
 
+def send_run_telegram(result=None, csv_path=None) -> bool:
+    """Push a phone-friendly run summary to Telegram. Independent of SMTP — a
+    Telegram push works even where outbound mail is blocked. Delivers if the two
+    TELEGRAM_* env vars are set, otherwise prints a dry-run preview. Never raises.
+    """
+    if result is None:
+        from .engine import run_paper_session
+        result = run_paper_session(verbose=False, csv_path=csv_path)
+    if result.get("aborted"):
+        return False
+    from .telegram import send_telegram
+    return send_telegram(_telegram_portfolio_summary(result))
+
+
 def send_portfolio(result=None, csv_path=None) -> bool:
+    """Email the portfolio summary (Telegram is handled separately by
+    send_run_telegram so the two channels don't double up)."""
     if result is None:
         from .engine import run_paper_session
         result = run_paper_session(verbose=False, csv_path=csv_path)
@@ -282,12 +314,7 @@ def send_portfolio(result=None, csv_path=None) -> bool:
         print("Portfolio run aborted — no email sent.")
         return False
     subject, plain, html = build_portfolio_email(result)
-    sent = send_email(subject, plain, html)
-    # Telegram is a separate, independent channel: a phone push that works even
-    # when the host blocks outbound SMTP. Safe no-op if it isn't configured.
-    from .telegram import send_telegram
-    tg = send_telegram(_telegram_portfolio_summary(result))
-    return sent or tg
+    return send_email(subject, plain, html)
 
 
 if __name__ == "__main__":

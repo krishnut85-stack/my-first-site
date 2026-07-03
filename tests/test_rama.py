@@ -126,3 +126,21 @@ def test_paper_session_runs_synthetic(tmp_path, monkeypatch):
     assert not result.get("aborted")
     assert "sizing_label" in result
     assert "vetoes" in result and "entries" in result
+
+
+def test_telegram_summary_and_dry_run(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "USE_KITE_DATA", False)
+    monkeypatch.setattr(config, "PORTFOLIO_JSON", tmp_path / "pf.json")
+    # ensure Telegram is treated as NOT configured -> safe dry-run, no network
+    monkeypatch.setattr(config, "TELEGRAM_BOT_TOKEN", "")
+    monkeypatch.setattr(config, "TELEGRAM_CHAT_ID", "")
+    from rama.engine import run_paper_session
+    from rama.notify import _telegram_portfolio_summary, send_run_telegram
+    result = run_paper_session(verbose=False)
+    summary = _telegram_portfolio_summary(result)
+    assert "Rama" in summary
+    assert "Verdict" in summary          # scorecard line present
+    assert "Sizing" in summary           # Kelly/flat-cap label present
+    assert "BUY" in summary              # entries listed
+    # dry-run: not configured -> returns False, never raises
+    assert send_run_telegram(result) is False

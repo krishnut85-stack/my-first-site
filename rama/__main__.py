@@ -23,7 +23,8 @@ from .backtest import run_backtest
 from .bot import run_simulation
 from .data_loader import resolve_csv, save_snapshot
 from .engine import run_paper_session
-from .notify import send_daily, send_portfolio, write_portfolio_report
+from .notify import (send_daily, send_portfolio, send_run_telegram,
+                     write_portfolio_report)
 from .report import generate
 from .screener import score_industries, load_industries
 
@@ -93,6 +94,10 @@ def cmd_trade() -> None:
         print(f"Live dashboard : {gen_live()}")
     except Exception as exc:  # noqa: BLE001 — dashboard must never break a run
         print(f"(dashboard skipped: {exc})")
+    # Telegram phone alert every run — delivers if TELEGRAM_* are set, else prints
+    # a dry-run preview. Independent of SMTP, so it works even where mail is blocked.
+    send_run_telegram(result)
+    # Email only when SMTP is configured.
     if config.SMTP_HOST and config.SMTP_USER and config.SMTP_PASSWORD:
         send_portfolio(result=result)
 
