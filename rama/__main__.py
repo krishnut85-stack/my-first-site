@@ -58,6 +58,13 @@ def cmd_dashboard() -> None:
     print(f"Dashboard written to: {out}")
 
 
+def cmd_livedash() -> None:
+    """Render the live Rama·Quant dashboard from the real paper track record."""
+    from .dashboard import generate as gen_live
+    out = gen_live()
+    print(f"Live dashboard written to: {out}")
+
+
 def cmd_backtest() -> None:
     run_backtest()
 
@@ -222,6 +229,7 @@ def main() -> None:
         "rank": cmd_rank,
         "sim": cmd_sim,
         "dashboard": cmd_dashboard,
+        "livedash": cmd_livedash,
         "backtest": cmd_backtest,
         "email": cmd_email,
         "trade": cmd_trade,

@@ -144,6 +144,29 @@ CATALYST_WEIGHT = 0.5          # how strongly the catalyst score tilts the rank
 CATALYST_LOOKBACK_DAYS = 30    # ignore disclosures/deals older than this
 CATALYST_FETCH_LIVE = False    # try live NSE/BSE fetch (needs network); default off
 
+# --- Live order execution (SEBI retail-algo guardrails, enforced in code) ---
+# Rama stays PAPER by default (LIVE_TRADING=False, above). When you go live,
+# orders route through your broker (Kite Connect) tagged with your Algo-ID, and
+# Rama enforces SEBI's Feb-2025 retail-algo framework directly in code:
+#   • MAX_ORDERS_PER_SEC — hard token-bucket cap kept UNDER SEBI's 10 OPS
+#     threshold, so a personal (unregistered) algo stays compliant. (Rama's
+#     swing strategy places a few orders a MONTH, so this is a safety ceiling,
+#     never a target — order speed is not where an edge comes from.)
+#   • KILL_SWITCH_FILE — if this file exists, ALL order placement halts at once.
+#   • ORDER_LOG — every attempted/placed/rejected order is appended to disk.
+#   • LIVE_DRY_RUN — even with LIVE_TRADING on, Rama logs but does NOT send until
+#     you deliberately flip this off (a second safety latch).
+# You must ALSO arrange, broker-side (Rama cannot): a Kite Connect subscription,
+# your broker's algo approval / Algo-ID, and static-IP whitelisting.
+MAX_ORDERS_PER_SEC = 8                          # < SEBI's 10 OPS registration line
+KILL_SWITCH_FILE = BASE_DIR / "KILL_SWITCH"     # `touch` this file to halt instantly
+ORDER_LOG = DATA_DIR / "order_log.jsonl"        # audit trail of every order attempt
+ALGO_ID = os.environ.get("RAMA_ALGO_ID", "")    # broker-issued tag; required to send
+LIVE_DRY_RUN = True                             # log-only latch; flip off to truly send
+LIVE_EXCHANGE = "NSE"
+LIVE_PRODUCT = "CNC"                            # "CNC" delivery | "MIS" intraday
+LIVE_ORDER_TYPE = "MARKET"
+
 # --- Over-extended guard ---------------------------------------------------
 # Avoid buying the most PARABOLIC names. Research shows extreme/vertical
 # momentum has the steepest reversal ("momentum crash") risk -- this is the
