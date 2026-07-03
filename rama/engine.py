@@ -70,6 +70,20 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
                 symbol_meta[sym] = pick.industry
     keep_band = set(ranked_symbols[: config.SELL_RANK_BUFFER])  # e.g. top 15
 
+    # LIVE ROUTING: when LIVE_TRADING is on, every paper decision is ALSO routed
+    # through the SEBI-guarded LiveBroker (rate-limited < 10 OPS, kill switch,
+    # order log). It stays a logged DRY_RUN until you flip LIVE_DRY_RUN off and
+    # set an Algo-ID. The paper portfolio stays the source of truth either way.
+    live_orders = []
+    live = None
+    if config.LIVE_TRADING:
+        from .live_broker import LiveBroker
+        live = LiveBroker(kite=getattr(ds, "kite", None))
+
+    def _route(symbol, qty, side, reason):
+        if live is not None and qty > 0:
+            live_orders.append(live.place(symbol, qty, side, reason))
+
     # --- 1. manage existing positions -------------------------------------
     exits = []
     for sym in list(pf.holdings.keys()):
@@ -80,15 +94,19 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
         if config.REBALANCE:
             # buffer band: sell ONLY when it drops out of the top SELL_RANK_BUFFER
             if sym not in keep_band:
+                qty = h["qty"]
                 pnl = pf.sell(sym, ltp,
                               reason=f"rotated out (left top {config.SELL_RANK_BUFFER})")
                 exits.append((sym, ltp, "rotated out", pnl))
+                _route(sym, qty, "SELL", "rotated out")
                 continue
             # still within the band: keep, but honor a hard stop-loss as a floor
             change = (ltp - h["avg_price"]) / h["avg_price"]
             if change <= -config.STOP_LOSS_PCT:
+                qty = h["qty"]
                 pnl = pf.sell(sym, ltp, reason=f"stop-loss {change:+.1%}")
                 exits.append((sym, ltp, "stop-loss", pnl))
+                _route(sym, qty, "SELL", "stop-loss")
         else:
             # low-churn: SL / TP / trailing / ATR
             state = PositionState(sym, h["avg_price"], h["qty"],
@@ -97,8 +115,10 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
             should_exit, reason = decide_exit(state, ltp)
             h["peak_price"] = state.peak_price
             if should_exit:
+                qty = h["qty"]
                 pnl = pf.sell(sym, ltp, reason=reason)
                 exits.append((sym, ltp, reason, pnl))
+                _route(sym, qty, "SELL", reason)
 
     # --- 2. fill open slots with the best-ranked names not already held ----
     # REGIME FILTER: only open NEW positions when the broad market is trending
@@ -143,6 +163,7 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
             a = _safe_atr(ds, sym)
             if pf.buy(sym, qty, ltp, atr=a, reason="entry"):
                 entries.append((sym, ltp, qty))
+                _route(sym, qty, "BUY", "entry")
 
     # --- 3. record + save -------------------------------------------------
     # Snapshot each price ONCE so every figure in the report reconciles
@@ -176,7 +197,7 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
         "total_pnl": equity - pf.starting_capital,
         "total_pnl_pct": (equity - pf.starting_capital) / pf.starting_capital * 100,
         "exits": exits, "entries": entries, "vetoes": vetoes, "price_of": price_of,
-        "sizing_label": sizing_label,
+        "sizing_label": sizing_label, "live_orders": live_orders,
         "regime_uptrend": uptrend, "regime_blocked": regime_blocked,
         "data_date": data_info["date"], "data_stale": data_info["stale"],
         "scorecard": compute_scorecard(pf),
@@ -224,6 +245,12 @@ def _print(r: dict) -> None:
         print(f"  Audit vetoes ({len(r['vetoes'])}):")
         for s, reason in r["vetoes"][:8]:
             print(f"    SKIP {s:12} [{reason}]")
+    if r.get("live_orders"):
+        placed = sum(1 for o in r["live_orders"] if o.status == "PLACED")
+        dry = sum(1 for o in r["live_orders"] if o.status == "DRY_RUN")
+        rej = sum(1 for o in r["live_orders"] if o.status == "REJECTED")
+        print(f"  Live routing     : {placed} PLACED · {dry} DRY_RUN · {rej} REJECTED"
+              f"  (OPS cap {config.MAX_ORDERS_PER_SEC}/s)")
     print("=" * 66)
     if not r["real_data"]:
         print("  Set Kite keys to trade on real prices. Not advice.\n")

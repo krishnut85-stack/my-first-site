@@ -53,10 +53,48 @@ All knobs live in `rama/config.py`. Rama defaults `SIZING_MODE = "kelly"`
 (sectorbot stays on flat sizing). Toggle any pillar with `USE_AUDIT_GATE`,
 `USE_CATALYST_SIGNAL`, or `SIZING_MODE = "fixed"`.
 
+## Live dashboard + daily cron (droplet)
+
+`python -m rama trade` runs the paper session **and regenerates the live
+dashboard** (`rama_dashboard.html`) at the end — so a single scheduled run keeps
+the wall-board current. Use the ready-made runner and a cron line:
+
+```bash
+# once, on your Indian server (SEBI requires Indian hosting):
+chmod +x scripts/run_rama.sh
+scripts/run_rama.sh                 # paper run on real Kite prices + dashboard
+
+# daily after close (10:15 UTC ≈ 15:45 IST, Mon–Fri):
+crontab -e
+15 10 * * 1-5 /path/to/my-first-site/scripts/run_rama.sh >> ~/rama.log 2>&1
+```
+
+The dashboard auto-refreshes every 30s; point a browser (or a kiosk screen) at
+`rama_dashboard.html` and it stays live between runs.
+
+## Going live (only after the scorecard earns it)
+
+Rama already contains the SEBI-compliant execution path (`live_broker.py`):
+orders are rate-limited **under 10 OPS**, guarded by a **kill switch**
+(`touch rama/KILL_SWITCH` to halt everything), and **fully logged**. When
+`LIVE_TRADING` is on, the engine routes every entry/exit through it — but it
+stays a **logged DRY_RUN** until you deliberately turn off every safety latch:
+
+1. Prove the edge: `python -m rama scorecard` must beat a Nifty index fund after
+   costs, over a real track record — not a few days.
+2. Broker side (Rama can't do these): a **Kite Connect** subscription, your
+   broker's **algo approval / Algo-ID**, and **static-IP whitelisting**.
+3. Then, and only then: `export RAMA_ALGO_ID=...`, set `LIVE_TRADING = True`,
+   and finally `LIVE_DRY_RUN = False`. Start with tiny size.
+
+**Kill switch:** `touch rama/KILL_SWITCH` stops all order placement instantly;
+delete the file to resume.
+
 ## Tests
 
 ```bash
-pytest tests/test_rama.py     # Kelly math, catalyst signal, audit gate, e2e run
+pytest tests/test_rama.py tests/test_rama_live.py   # sizing, catalysts, audit,
+                                                    # rate limit, kill switch, routing
 ```
 
 *Not investment advice. Paper simulation only.*

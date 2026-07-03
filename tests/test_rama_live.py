@@ -98,3 +98,25 @@ def test_rejects_nonpositive_qty(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "ORDER_LOG", tmp_path / "o.jsonl")
     monkeypatch.setattr(config, "KILL_SWITCH_FILE", tmp_path / "none")
     assert _fast_broker().place("KEI", 0, "BUY").status == "REJECTED"
+
+
+# --- engine routes entries through the live broker (dry-run) ----------------
+
+def test_engine_routes_orders_when_live(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "USE_KITE_DATA", False)     # synthetic prices
+    monkeypatch.setattr(config, "LIVE_TRADING", True)       # turn live routing on
+    monkeypatch.setattr(config, "LIVE_DRY_RUN", True)       # but keep the latch on
+    monkeypatch.setattr(config, "PORTFOLIO_JSON", tmp_path / "pf.json")
+    monkeypatch.setattr(config, "ORDER_LOG", tmp_path / "o.jsonl")
+    monkeypatch.setattr(config, "KILL_SWITCH_FILE", tmp_path / "none")
+    from rama.engine import run_paper_session
+    result = run_paper_session(verbose=False)
+    assert not result.get("aborted")
+    orders = result["live_orders"]
+    assert orders, "entries should have been routed to the live broker"
+    # latch is on -> everything is a logged DRY_RUN, nothing actually sent
+    assert all(o.status == "DRY_RUN" for o in orders)
+    # the paper portfolio still recorded the entries (source of truth)
+    assert result["entries"]
+    # and the audit trail was written
+    assert (tmp_path / "o.jsonl").exists()

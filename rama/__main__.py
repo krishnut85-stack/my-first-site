@@ -86,6 +86,13 @@ def cmd_trade() -> None:
         return  # portfolio left untouched; nothing to report
     txt, html = write_portfolio_report(result)
     print(f"Report written: {txt}")
+    # refresh the live Rama·Quant dashboard from the just-updated portfolio so a
+    # scheduled `trade` run keeps the wall-board current with no extra cron line.
+    try:
+        from .dashboard import generate as gen_live
+        print(f"Live dashboard : {gen_live()}")
+    except Exception as exc:  # noqa: BLE001 — dashboard must never break a run
+        print(f"(dashboard skipped: {exc})")
     if config.SMTP_HOST and config.SMTP_USER and config.SMTP_PASSWORD:
         send_portfolio(result=result)
 
