@@ -136,7 +136,7 @@ def format_report(r: dict, source: str) -> str:
 
 def main() -> None:
     import sys
-    from .cross import load_panel
+    from .cross import load_series
     from pathlib import Path
     args = sys.argv[1:]
 
@@ -147,7 +147,7 @@ def main() -> None:
     if not path or not Path(path).exists():
         raise SystemExit("usage: python3 -m garuda.setups --csv daily.csv "
                          "[--entry 10] [--exit 65] [--hold 10]")
-    panel = load_panel(path)
+    panel = load_series(path)   # per-stock; scales to the whole universe
     r = backtest(panel,
                  entry_rsi=_opt("--entry", float, 10.0),
                  exit_rsi=_opt("--exit", float, 65.0),

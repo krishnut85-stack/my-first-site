@@ -56,10 +56,18 @@ def test_reports_win_rate_but_verdict_uses_net():
     assert "LOSING" in r["verdict"] or "WEAK" in r["verdict"]
 
 
-def test_load_panel(tmp_path):
+def test_load_panel_and_series(tmp_path):
+    # long format: symbol,date,close (scales to the whole universe)
     p = tmp_path / "daily.csv"
-    p.write_text("date,AAA,BBB\n2026-07-01,100,200\n2026-07-02,101,199\n"
-                 "2026-07-03,bad,198\n")   # last row dropped (non-numeric)
+    p.write_text(
+        "symbol,date,close\n"
+        "AAA,2026-07-01,100\nAAA,2026-07-02,101\n"
+        "BBB,2026-07-01,200\nBBB,2026-07-02,199\nBBB,2026-07-03,198\n")
+    from garuda.cross import load_series
+    series = load_series(p)
+    assert series["AAA"] == [100.0, 101.0]
+    assert series["BBB"] == [200.0, 199.0, 198.0]   # keeps every date per stock
+    # the aligned panel keeps only shared dates (07-01, 07-02)
     panel = load_panel(p)
     assert panel["AAA"] == [100.0, 101.0]
     assert panel["BBB"] == [200.0, 199.0]

@@ -21,26 +21,38 @@ from pathlib import Path
 from . import config
 
 
-def load_panel(path) -> dict:
-    """Load a wide CSV (date,SYM1,SYM2,...) into {symbol: [closes]} keeping only
-    rows where every symbol has a numeric price (clean alignment)."""
+def _load_long(path) -> dict:
+    """Read a long CSV (symbol,date,close) into {symbol: {date: close}}. This
+    scales to the whole 2000-5000 stock universe — no wide-row alignment needed."""
+    data: dict = {}
     with open(path, newline="", encoding="utf-8") as f:
-        rows = list(csv.reader(f))
-    if len(rows) < 2:
+        r = csv.DictReader(f)
+        for row in r:
+            s = row.get("symbol") or row.get("Symbol")
+            d = row.get("date") or row.get("Date")
+            c = row.get("close") or row.get("Close")
+            if not s or c in (None, ""):
+                continue
+            try:
+                data.setdefault(s, {})[d] = float(str(c).replace(",", ""))
+            except ValueError:
+                continue
+    return data
+
+
+def load_series(path) -> dict:
+    """{symbol: [closes sorted by date]} — each stock independent (for setups)."""
+    return {s: [v for _, v in sorted(dv.items())] for s, dv in _load_long(path).items()}
+
+
+def load_panel(path) -> dict:
+    """{symbol: [closes]} aligned to the dates ALL stocks share (for the
+    cross-sectional backtest, which must compare stocks on the same days)."""
+    data = _load_long(path)
+    if not data:
         return {}
-    syms = [s.strip() for s in rows[0][1:]]
-    panel = {s: [] for s in syms}
-    for r in rows[1:]:
-        if len(r) < len(syms) + 1:
-            continue
-        try:
-            vals = [float(str(r[i + 1]).replace(",", "").strip()) for i in range(len(syms))]
-        except ValueError:
-            continue
-        if all(v > 0 for v in vals):
-            for i, s in enumerate(syms):
-                panel[s].append(vals[i])
-    return panel
+    common = sorted(set.intersection(*[set(dv) for dv in data.values()]))
+    return {s: [data[s][d] for d in common] for s in data if len(data[s]) >= len(common)}
 
 
 def run_cross(panel: dict, mode: str = "reversion", pick: int = 10,
