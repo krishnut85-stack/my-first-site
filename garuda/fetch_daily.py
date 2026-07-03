@@ -55,8 +55,38 @@ def _universe(kite, exchange: str) -> dict:
     return tokens
 
 
+def _done_symbols(out) -> set:
+    """Symbols already present in a partial CSV (for --resume)."""
+    done = set()
+    if os.path.exists(out):
+        try:
+            with open(out, newline="", encoding="utf-8") as f:
+                r = csv.reader(f)
+                next(r, None)                 # header
+                for row in r:
+                    if row:
+                        done.add(row[0])
+        except Exception:  # noqa: BLE001
+            pass
+    return done
+
+
+def _hist_retry(kite, tok, frm, to):
+    """Historical fetch with backoff on rate-limit; None if it truly fails."""
+    for attempt in range(4):
+        try:
+            return kite.historical_data(tok, frm, to, "day")
+        except Exception as exc:  # noqa: BLE001
+            m = str(exc).lower()
+            if any(k in m for k in ("too many", "throttl", "rate", "429")):
+                time.sleep(0.6 * (attempt + 1))
+                continue
+            return None
+    return None
+
+
 def fetch_daily(symbols=None, days=400, out="daily.csv", exchange="NSE",
-                all_stocks=False, limit=0) -> str:
+                all_stocks=False, limit=0, resume=True, sleep=0.2) -> str:
     kite = _kite()
     tokens = _universe(kite, exchange)
 
@@ -66,31 +96,37 @@ def fetch_daily(symbols=None, days=400, out="daily.csv", exchange="NSE",
     if limit:
         symbols = symbols[:limit]
 
-    print(f"Fetching {len(symbols)} {exchange} stocks x {days}d (this takes a few min)...")
+    done = _done_symbols(out) if resume else set()
+    todo = [s for s in symbols if s not in done]
+    mode = "a" if done else "w"
+    if done:
+        print(f"Resuming {out}: {len(done)} already fetched, {len(todo)} to go.")
+    print(f"Fetching {len(todo)} {exchange} stocks x {days}d "
+          f"(~{len(todo) // 180 + 1} min at the Kite rate limit)...", flush=True)
+
     from datetime import date, timedelta
     frm = date.today() - timedelta(days=days)
-
-    written = rows = 0
-    with open(out, "w", newline="", encoding="utf-8") as f:
+    written = len(done)
+    with open(out, mode, newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["symbol", "date", "close"])
-        for n, s in enumerate(symbols, 1):
+        if mode == "w":
+            w.writerow(["symbol", "date", "close"])
+        for n, s in enumerate(todo, 1):
             tok = tokens.get(s)
             if not tok:
                 continue
-            try:
-                data = kite.historical_data(tok, frm, date.today(), "day")
-            except Exception:  # noqa: BLE001 — skip a bad symbol, keep going
+            data = _hist_retry(kite, tok, frm, date.today())
+            if not data:
                 continue
             for d in data:
                 w.writerow([s, d["date"].date().isoformat(), d["close"]])
-                rows += 1
             written += 1
+            f.flush()                         # survive a kill: never lose buffered rows
             if n % 100 == 0:
-                print(f"  {n}/{len(symbols)} done ({written} with data)...")
-            time.sleep(0.22)  # respect Kite's historical rate limit
+                print(f"  {n}/{len(todo)} done, {written} total with data...", flush=True)
+            time.sleep(sleep)
 
-    print(f"Wrote {written} stocks, {rows} rows -> {out}")
+    print(f"Wrote {written} stocks total -> {out}")
     print(f"Now run: python3 -m garuda.setups --csv {out}")
     return out
 
@@ -135,6 +171,8 @@ def main() -> None:
         exchange=exchange,
         all_stocks=("--all" in args),
         limit=_opt("--limit", int, 0),
+        resume=("--fresh" not in args),   # resume a partial file by default
+        sleep=_opt("--sleep", float, 0.2),
     )
 
 
