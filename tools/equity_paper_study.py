@@ -1,0 +1,516 @@
+#!/usr/bin/env python3
+"""
+equity_paper_study.py  -  Standalone Zerodha Kite INTRADAY stock paper bot
+============================================================================
+A separate, self-contained paper-trading bot for CASH equities (Nifty 500),
+built on INVERSION THINKING: its first job is to NOT lose, and only then to win.
+
+  "Rather than trying to win, avoid losing."  - Charlie Munger
+
+It does NOT depend on gir.py. It scans prices itself, and it reuses only the
+bot's existing Kite login pattern + paper_trader.py for simulated fills.
+
+STRATEGY (the one edge that actually works for you: mean reversion)
+------------------------------------------------------------------
+Buy WEAKNESS, never chase strength. A quality stock that dips below its day
+VWAP and then STARTS TO TURN BACK UP is bought for the snap back toward VWAP.
+We never buy a stock that has already run up (that is what bled the F&O lane),
+and we never catch a falling knife (a stock crashing on bad news).
+
+INVERSION / AVOID-LOSING RISK RULES (premeditatio malorum)
+----------------------------------------------------------
+  - HARD per-trade stop, set BEFORE entry.
+  - DAILY LOSS CAP: once today's realised P&L hits the cap, STOP for the day.
+  - Max concurrent positions, max trades/day, one position per symbol.
+  - Falling-knife filter: skip anything down more than EQ_KNIFE_PCT on the day.
+  - Long only (shorting is an extra way to lose; excluded in v1).
+  - Square off everything by 15:15 IST. Nothing held overnight.
+  - If nothing is a clean low-risk setup, it does NOTHING. Cash is a position.
+
+SAFETY: DRY_RUN by default (logs WOULD-BUY/SELL, places nothing). Set
+EQ_STUDY_RECORD=1 to record simulated paper trades (still never real money).
+
+Login: same pattern as the rest of the bot - daily token file, falls back to .env.
+"""
+
+import os
+import sys
+import time
+import json
+import sqlite3
+import logging
+from datetime import datetime, timedelta
+
+try:
+    from zoneinfo import ZoneInfo
+    IST = ZoneInfo("Asia/Kolkata")
+except Exception:
+    IST = None
+
+# --- paths ------------------------------------------------------------------
+HOME = "/home/globalbot"
+EVENTS_DB = f"{HOME}/paper/events.db"
+TRADES_DB = f"{HOME}/paper/trades.db"
+TOKEN_FILE = f"{HOME}/data/kite_token.json"
+ENV_FILE = f"{HOME}/.env"
+UNIVERSE_FILE = os.environ.get("EQ_UNIVERSE_FILE", f"{HOME}/data/nifty500.txt")
+
+STRATEGY_TAG = "EQ_PAPER_STUDY"
+
+# --- timing -----------------------------------------------------------------
+MARKET_OPEN = (9, 15)
+MARKET_CLOSE = (15, 30)
+SQUARE_OFF = (15, 15)            # flatten everything from 15:15 (before MIS auto)
+NO_NEW_ENTRY_AFTER = (14, 45)    # stop opening new trades late in the day
+POLL_SECONDS = int(os.environ.get("EQ_POLL_SECONDS", "60"))
+
+# --- mean-reversion setup knobs --------------------------------------------
+# Stock must be at least this % BELOW its day VWAP to be "stretched" (a dip).
+STRETCH_MIN_PCT = float(os.environ.get("EQ_STRETCH_MIN_PCT", "0.5"))
+# Falling-knife guard: skip if the stock is down MORE than this % on the day
+# (that is a news disaster, not a dip - inversion: avoid the obvious blow-up).
+KNIFE_PCT = float(os.environ.get("EQ_KNIFE_PCT", "4.0"))
+# Liquidity floor: day turnover (last * volume) must clear this (rupees).
+MIN_TURNOVER = float(os.environ.get("EQ_MIN_TURNOVER", "20000000"))   # ~2 cr
+# Confirmation: after arming, price must tick back UP this % off the low we saw
+# before we buy (don't buy while it is still falling).
+CONFIRM_PCT = float(os.environ.get("EQ_CONFIRM_PCT", "0.15"))
+# Max poll cycles to wait for the turn before abandoning the setup (no trade).
+ARM_MAX_CYCLES = int(os.environ.get("EQ_ARM_MAX_CYCLES", "30"))
+
+# --- exits ------------------------------------------------------------------
+# Zerodha intraday round-trip cost is ~0.11% of the position (brokerage + STT +
+# exchange + stamp + GST). So the target must clear that AND give a healthy
+# reward:risk. +1.5% nets ~+1.39% after charges, vs the 0.8% stop -> ~1.6:1.
+# (Income tax on intraday profit is separate: slab-rate on net annual profit.)
+# A bigger target is hit less often - paper-test 1.0 vs 1.5 vs 2.0 to compare.
+TARGET_PCT = float(os.environ.get("EQ_TARGET_PCT", "1.5"))   # +1.5% take-profit
+STOP_PCT = float(os.environ.get("EQ_STOP_PCT", "0.8"))       # -0.8% hard stop
+
+# --- inversion risk caps ----------------------------------------------------
+PER_TRADE_NOTIONAL = float(os.environ.get("EQ_PER_TRADE_NOTIONAL", "50000"))  # rupees/position
+MAX_POSITIONS = int(os.environ.get("EQ_MAX_POSITIONS", "5"))
+MAX_TRADES_PER_DAY = int(os.environ.get("EQ_MAX_TRADES_PER_DAY", "15"))
+MAX_DAILY_LOSS = float(os.environ.get("EQ_MAX_DAILY_LOSS", "5000"))   # rupees; halt for day
+
+DRY_RUN = os.environ.get("EQ_STUDY_RECORD", "0").strip() != "1"
+
+# Fallback universe if the Nifty 500 file is missing (liquid large caps so the
+# bot still runs). Replace by dropping a full nifty500.txt at UNIVERSE_FILE.
+FALLBACK_UNIVERSE = [
+    "RELIANCE", "TCS", "HDFCBANK", "ICICIBANK", "INFY", "SBIN", "BHARTIARTL",
+    "ITC", "LT", "KOTAKBANK", "AXISBANK", "HINDUNILVR", "BAJFINANCE", "MARUTI",
+    "SUNPHARMA", "TATAMOTORS", "TATASTEEL", "WIPRO", "ONGC", "POWERGRID",
+    "NTPC", "ULTRACEMCO", "TITAN", "ASIANPAINT", "HCLTECH", "ADANIPORTS",
+    "COALINDIA", "JSWSTEEL", "GRASIM", "DRREDDY", "CIPLA", "BPCL", "BAJAJFINSV",
+    "TECHM", "NESTLEIND", "HINDALCO", "DIVISLAB", "BRITANNIA", "EICHERMOT",
+    "HEROMOTOCO", "INDUSINDBK", "M&M", "SBILIFE", "HDFCLIFE", "APOLLOHOSP",
+    "TATACONSUM", "UPL", "BAJAJ-AUTO", "SHREECEM", "PIDILITIND",
+]
+
+# --- logging ----------------------------------------------------------------
+logging.basicConfig(level=logging.INFO,
+                    format="%(asctime)s [EQ_STUDY] %(levelname)s %(message)s")
+log = logging.getLogger("eq_study")
+
+
+# --- .env loader ------------------------------------------------------------
+def _load_env():
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(ENV_FILE)
+    except Exception:
+        try:
+            for line in open(ENV_FILE):
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    os.environ.setdefault(k.strip(), v.strip())
+        except Exception as e:
+            log.warning(f".env load failed: {e}")
+
+
+# --- Kite login (same pattern as the rest of the bot) -----------------------
+def get_kite():
+    from kiteconnect import KiteConnect
+    api_key = os.environ.get("KITE_API_KEY", "").strip()
+    token = ""
+    try:
+        _td = json.load(open(TOKEN_FILE))
+        token = (_td.get("access_token") or "").strip()
+    except Exception:
+        pass
+    if not token:
+        token = os.environ.get("KITE_ACCESS_TOKEN", "").strip()
+    if not (api_key and token):
+        raise RuntimeError("KITE_API_KEY / access_token missing - cannot login")
+    k = KiteConnect(api_key=api_key)
+    k.set_access_token(token)
+    return k
+
+
+# --- paper_trader helpers ---------------------------------------------------
+def _import_paper_helpers():
+    sys.path.insert(0, f"{HOME}/paper")
+    from paper_trader import (paper_place_order, get_open_paper_trades,
+                              paper_record_exit)
+    return paper_place_order, get_open_paper_trades, paper_record_exit
+
+
+# --- universe ---------------------------------------------------------------
+def load_universe():
+    """One symbol per line in UNIVERSE_FILE (Nifty 500). Falls back to a built-in
+    liquid list so the bot always runs. Lines starting with # are ignored."""
+    syms = []
+    try:
+        with open(UNIVERSE_FILE) as f:
+            for line in f:
+                s = line.strip().upper()
+                if s and not s.startswith("#"):
+                    syms.append(s)
+    except Exception:
+        pass
+    if syms:
+        log.info(f"universe: {len(syms)} symbols from {UNIVERSE_FILE}")
+        return syms
+    log.warning(f"no universe file at {UNIVERSE_FILE} - using {len(FALLBACK_UNIVERSE)} "
+                f"fallback large caps. Drop a nifty500.txt there for the full list.")
+    return list(FALLBACK_UNIVERSE)
+
+
+# --- time helpers -----------------------------------------------------------
+def _ist_now():
+    return datetime.now(IST) if IST else datetime.utcnow()
+
+
+def _hm():
+    n = _ist_now()
+    return (n.hour, n.minute)
+
+
+def _market_open_now():
+    n = _ist_now()
+    if n.weekday() >= 5:
+        return False
+    return MARKET_OPEN <= _hm() <= MARKET_CLOSE
+
+
+def _in_squareoff_window():
+    n = _ist_now()
+    if n.weekday() >= 5:
+        return False
+    return SQUARE_OFF <= _hm() <= MARKET_CLOSE
+
+
+def _entries_allowed_now():
+    return _hm() < NO_NEW_ENTRY_AFTER
+
+
+def _today_str():
+    return _ist_now().strftime("%Y-%m-%d")
+
+
+# --- market data ------------------------------------------------------------
+def fetch_quotes(kite, symbols):
+    """Batched kite.quote() for the whole universe. Returns
+    {SYM: {last, vwap, prev_close, high, low, volume}}. Invalid symbols drop out."""
+    out = {}
+    CHUNK = 200
+    for i in range(0, len(symbols), CHUNK):
+        batch = symbols[i:i + CHUNK]
+        keys = [f"NSE:{s}" for s in batch]
+        try:
+            q = kite.quote(keys)
+        except Exception as e:
+            log.warning(f"quote batch failed ({len(batch)} syms): {e}")
+            time.sleep(0.4)
+            continue
+        for s in batch:
+            d = q.get(f"NSE:{s}")
+            if not d:
+                continue
+            ohlc = d.get("ohlc") or {}
+            out[s] = {
+                "last": float(d.get("last_price") or 0),
+                "vwap": float(d.get("average_price") or 0),
+                "prev_close": float(ohlc.get("close") or 0),
+                "high": float(ohlc.get("high") or 0),
+                "low": float(ohlc.get("low") or 0),
+                "volume": float(d.get("volume") or 0),
+            }
+        time.sleep(0.35)   # stay under Kite rate limit
+    return out
+
+
+# --- position / risk bookkeeping (read from paper_trades) -------------------
+def _my_open_trades(get_open):
+    """Open EQ_PAPER_STUDY trades as list of (trade_id, symbol, entry, qty)."""
+    mine = []
+    try:
+        for t in get_open():
+            g = (lambda k: t[k] if isinstance(t, dict) else t[k])
+            try:
+                if g("strategy") != STRATEGY_TAG:
+                    continue
+                mine.append((g("trade_id"), g("symbol"),
+                             float(g("entry_price") or 0), int(g("qty") or 0)))
+            except Exception:
+                continue
+    except Exception as e:
+        log.error(f"get_open failed: {e}")
+    return mine
+
+
+def _today_realised_pnl_and_count():
+    """(realised_pnl_today, trades_opened_today) for EQ_PAPER_STUDY, from DB.
+    Used for the daily loss cap and the per-day trade cap. Date = entry date IST-ish."""
+    pnl = 0.0
+    count = 0
+    try:
+        c = sqlite3.connect(TRADES_DB, timeout=5)
+        c.row_factory = sqlite3.Row
+        like = _today_str() + "%"
+        rows = c.execute(
+            "SELECT status, COALESCE(pnl,0) pnl FROM paper_trades "
+            "WHERE strategy=? AND substr(entry_ts,1,10)=?",
+            (STRATEGY_TAG, _today_str())).fetchall()
+        c.close()
+        for r in rows:
+            count += 1
+            if r["status"] == "CLOSED":
+                pnl += float(r["pnl"] or 0)
+    except Exception as e:
+        log.debug(f"daily pnl read skipped: {e}")
+    return pnl, count
+
+
+# --- exits ------------------------------------------------------------------
+def manage_exits(quotes, get_open, record_exit):
+    """Close open EQ trades on target / stop / 15:15 square-off."""
+    squareoff = _in_squareoff_window()
+    closed = 0
+    for tid, sym, entry, qty in _my_open_trades(get_open):
+        if entry <= 0:
+            continue
+        q = quotes.get(sym)
+        ltp = q["last"] if q else 0
+        if not ltp or ltp <= 0:
+            if squareoff:
+                pass  # fall through to square-off using last known? skip if no price
+            continue
+        target_px = entry * (1 + TARGET_PCT / 100.0)
+        stop_px = entry * (1 - STOP_PCT / 100.0)
+        reason = exit_px = None
+        if ltp >= target_px:
+            reason, exit_px = "TARGET", round(target_px, 2)
+        elif ltp <= stop_px:
+            reason, exit_px = "STOP", round(stop_px, 2)
+        elif squareoff:
+            reason, exit_px = "SQUARE_OFF_1515", round(ltp, 2)
+        if not reason:
+            continue
+        if DRY_RUN:
+            log.info(f"[DRY] WOULD SELL {sym} qty={qty} @{exit_px} reason={reason} "
+                     f"(entry {entry:.2f}, ltp {ltp:.2f})")
+            closed += 1
+            continue
+        try:
+            record_exit(trade_id=tid, exit_price=exit_px, exit_reason=reason)
+            log.info(f"SOLD {sym} qty={qty} @{exit_px} reason={reason} (entry {entry:.2f})")
+            closed += 1
+        except Exception as e:
+            log.error(f"record_exit failed {sym}: {e}")
+    return closed
+
+
+# --- entry: arm + confirm (the mean-reversion pullback) ---------------------
+# ARMED[sym] = dict(low_seen, vwap, cycles)
+ARMED = {}
+
+
+def scan_and_arm(quotes, open_syms):
+    """Find quality stocks stretched BELOW VWAP and not crashing, and arm them.
+    Arming != buying; we still wait for the turn (confirm) in eval_armed()."""
+    for sym, q in quotes.items():
+        if sym in open_syms or sym in ARMED:
+            continue
+        last, vwap, prev = q["last"], q["vwap"], q["prev_close"]
+        if last <= 0 or vwap <= 0 or prev <= 0:
+            continue
+        day_change = (last - prev) / prev * 100.0
+        below_vwap = (vwap - last) / vwap * 100.0
+        turnover = last * q["volume"]
+        # mean-reversion dip: red on the day, stretched below VWAP, liquid,
+        # but NOT a falling knife (down more than KNIFE_PCT = news blow-up).
+        if (below_vwap >= STRETCH_MIN_PCT and day_change <= 0
+                and day_change >= -KNIFE_PCT and turnover >= MIN_TURNOVER):
+            ARMED[sym] = {"low_seen": min(last, q["low"] or last),
+                          "vwap": vwap, "cycles": 0}
+            log.info(f"[ARM] {sym} last={last:.2f} vwap={vwap:.2f} "
+                     f"({below_vwap:.2f}% below, day {day_change:+.2f}%) - waiting for turn")
+
+
+def eval_armed(kite, quotes, place_order, get_open, halted):
+    """Buy an armed stock once it ticks back UP off its low (the turn), if risk
+    caps allow. Drop it if it keeps falling, rallies past VWAP, or times out."""
+    if not ARMED:
+        return 0
+    placed = 0
+    open_trades = _my_open_trades(get_open)
+    open_syms = {t[1] for t in open_trades}
+    n_open = len(open_trades)
+    realised, n_today = _today_realised_pnl_and_count()
+
+    for sym in list(ARMED.keys()):
+        a = ARMED[sym]
+        a["cycles"] += 1
+        q = quotes.get(sym)
+        if not q or q["last"] <= 0:
+            if a["cycles"] >= ARM_MAX_CYCLES:
+                del ARMED[sym]
+            continue
+        last, vwap = q["last"], q["vwap"]
+        a["low_seen"] = min(a["low_seen"], last)
+        prev = q["prev_close"]
+        day_change = (last - prev) / prev * 100.0 if prev else 0
+
+        # abandon conditions (no trade)
+        if day_change < -KNIFE_PCT:
+            log.info(f"[ARM] {sym} broke down ({day_change:+.2f}%) - abandon (knife)")
+            del ARMED[sym]; continue
+        if last >= vwap:
+            log.info(f"[ARM] {sym} reclaimed VWAP before turn - abandon (no edge left)")
+            del ARMED[sym]; continue
+        if a["cycles"] >= ARM_MAX_CYCLES:
+            log.info(f"[ARM] {sym} no turn in {ARM_MAX_CYCLES} cycles - abandon")
+            del ARMED[sym]; continue
+
+        # confirmation: ticked back up off the low, still below VWAP (room to revert)
+        turned = last >= a["low_seen"] * (1 + CONFIRM_PCT / 100.0)
+        if not turned:
+            continue
+
+        # ---- risk gates (inversion: refuse the trade if any cap is hit) ----
+        if halted:
+            continue
+        if sym in open_syms:
+            del ARMED[sym]; continue
+        if n_open >= MAX_POSITIONS:
+            continue  # keep armed; a slot may free up
+        if n_today >= MAX_TRADES_PER_DAY:
+            log.info(f"[RISK] daily trade cap {MAX_TRADES_PER_DAY} hit - no new entries")
+            continue
+        if not _entries_allowed_now():
+            del ARMED[sym]; continue
+
+        qty = max(1, int(PER_TRADE_NOTIONAL / last))
+        entry = round(last, 2)
+        stop_px = round(entry * (1 - STOP_PCT / 100.0), 2)
+        target_px = round(entry * (1 + TARGET_PCT / 100.0), 2)
+
+        if DRY_RUN:
+            log.info(f"[DRY] WOULD BUY {sym} qty={qty} @~{entry} "
+                     f"(tgt {target_px} / sl {stop_px}) turned off low {a['low_seen']:.2f}")
+            del ARMED[sym]
+            placed += 1; n_open += 1; n_today += 1
+            continue
+        try:
+            oid = place_order(
+                strategy=STRATEGY_TAG, signal_source="MEANREV_PULLBACK",
+                symbol=sym, exchange="NSE", product="MIS", side="BUY",
+                qty=qty, price=entry, order_type="MARKET", tag=STRATEGY_TAG,
+                sl_trigger=stop_px, sl_limit=stop_px, time_stop_days=0,
+                meta={"study": "equity_meanrev", "vwap": round(vwap, 2),
+                      "target": target_px, "stop": stop_px,
+                      "low_seen": round(a["low_seen"], 2), "entry_mode": "PULLBACK"})
+            log.info(f"BOUGHT {sym} qty={qty} @{entry} id={oid} (tgt {target_px}/sl {stop_px})")
+            del ARMED[sym]
+            placed += 1; n_open += 1; n_today += 1
+        except Exception as e:
+            log.error(f"place failed {sym}: {e}")
+            del ARMED[sym]
+    return placed
+
+
+# --- main loop --------------------------------------------------------------
+def main():
+    _load_env()
+    log.info(f"Equity paper study starting. DRY_RUN={DRY_RUN} "
+             f"(set EQ_STUDY_RECORD=1 to record simulated trades)")
+    log.info(f"RISK caps: notional/trade={PER_TRADE_NOTIONAL} max_pos={MAX_POSITIONS} "
+             f"max_trades/day={MAX_TRADES_PER_DAY} daily_loss_cap={MAX_DAILY_LOSS} "
+             f"target={TARGET_PCT}% stop={STOP_PCT}%")
+    log.info(f"SETUP: buy dips >= {STRETCH_MIN_PCT}% below VWAP, skip knives > {KNIFE_PCT}% down, "
+             f"confirm +{CONFIRM_PCT}% off low. Long only, intraday, square-off 15:15.")
+
+    try:
+        kite = get_kite()
+        log.info("Kite session established")
+    except Exception as e:
+        log.error(f"Kite login failed: {e}")
+        sys.exit(1)
+
+    place_order = get_open = record_exit = None
+    if not DRY_RUN:
+        try:
+            place_order, get_open, record_exit = _import_paper_helpers()
+            log.info("paper_trader helpers imported")
+        except Exception as e:
+            log.error(f"cannot import paper_trader: {e}")
+            sys.exit(1)
+    else:
+        try:
+            place_order, get_open, record_exit = _import_paper_helpers()
+        except Exception:
+            place_order = get_open = record_exit = None
+
+    universe = load_universe()
+    halt_logged_day = None
+    last_idle_msg = 0
+
+    while True:
+        try:
+            if not _market_open_now():
+                ARMED.clear()
+                if time.time() - last_idle_msg > 600:
+                    log.info("market closed - idle (09:15-15:30 IST Mon-Fri only)")
+                    last_idle_msg = time.time()
+                time.sleep(POLL_SECONDS)
+                continue
+
+            quotes = fetch_quotes(kite, universe)
+            if not quotes:
+                log.warning("no quotes this cycle")
+                time.sleep(POLL_SECONDS)
+                continue
+
+            # 1) EXITS first (target/stop/square-off)
+            if get_open and record_exit:
+                manage_exits(quotes, get_open, record_exit)
+
+            # 2) daily loss cap (inversion: stop the bad day before it compounds)
+            halted = False
+            if get_open:
+                realised, n_today = _today_realised_pnl_and_count()
+                if realised <= -abs(MAX_DAILY_LOSS):
+                    halted = True
+                    if halt_logged_day != _today_str():
+                        log.warning(f"[RISK] daily loss cap hit (realised {realised:.0f} "
+                                    f"<= -{MAX_DAILY_LOSS:.0f}) - NO new entries today")
+                        halt_logged_day = _today_str()
+
+            # 3) buy armed setups that confirmed the turn
+            open_syms = {t[1] for t in _my_open_trades(get_open)} if get_open else set()
+            eval_armed(kite, quotes, place_order, get_open, halted)
+
+            # 4) scan for new dips to arm (only if we still have room + not halted)
+            if not halted and _entries_allowed_now() and len(open_syms) < MAX_POSITIONS:
+                scan_and_arm(quotes, open_syms)
+
+        except Exception as e:
+            log.error(f"loop error: {e}")
+        time.sleep(POLL_SECONDS)
+
+
+if __name__ == "__main__":
+    main()
