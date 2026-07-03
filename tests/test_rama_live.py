@@ -83,8 +83,10 @@ def test_real_send_tags_algo_id(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "LIVE_TRADING", True)
     monkeypatch.setattr(config, "LIVE_DRY_RUN", False)
     monkeypatch.setattr(config, "ALGO_ID", "RAMA-ALGO-1")
+    monkeypatch.setattr(config, "LIVE_ALLOWED_IPS", ["64.227.155.177"])
     fk = FakeKite()
-    br = LiveBroker(kite=fk, rate_limiter=RateLimiter(1000))
+    br = LiveBroker(kite=fk, rate_limiter=RateLimiter(1000),
+                    ip_resolver=lambda: "64.227.155.177")   # on the droplet
     res = br.place("KEI", 7, "BUY", reason="entry")
     assert res.status == "PLACED" and res.order_id == "OID123"
     o = fk.orders[0]
@@ -98,6 +100,45 @@ def test_rejects_nonpositive_qty(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "ORDER_LOG", tmp_path / "o.jsonl")
     monkeypatch.setattr(config, "KILL_SWITCH_FILE", tmp_path / "none")
     assert _fast_broker().place("KEI", 0, "BUY").status == "REJECTED"
+
+
+# --- SEBI static-IP guard (orders only from the whitelisted droplet) --------
+
+def _live_ready(monkeypatch, tmp_path):
+    monkeypatch.setattr(config, "ORDER_LOG", tmp_path / "o.jsonl")
+    monkeypatch.setattr(config, "KILL_SWITCH_FILE", tmp_path / "none")
+    monkeypatch.setattr(config, "LIVE_TRADING", True)
+    monkeypatch.setattr(config, "LIVE_DRY_RUN", False)
+    monkeypatch.setattr(config, "ALGO_ID", "RAMA-ALGO-1")
+    monkeypatch.setattr(config, "LIVE_ENFORCE_IP", True)
+    monkeypatch.setattr(config, "LIVE_ALLOWED_IPS", ["64.227.155.177"])
+
+
+def test_ip_guard_blocks_wrong_ip(tmp_path, monkeypatch):
+    class FakeKite:
+        def place_order(self, **kw):
+            raise AssertionError("must NOT send from a non-whitelisted IP")
+    _live_ready(monkeypatch, tmp_path)
+    br = LiveBroker(kite=FakeKite(), rate_limiter=RateLimiter(1000),
+                    ip_resolver=lambda: "13.37.13.37")   # some GitHub runner IP
+    res = br.place("KEI", 5, "BUY")
+    assert res.status == "DRY_RUN" and "not whitelisted" in res.reason
+
+
+def test_ip_guard_failopen_when_unknown(tmp_path, monkeypatch):
+    class FakeKite:
+        def __init__(self):
+            self.n = 0
+        def place_order(self, **kw):
+            self.n += 1
+            return "OID"
+    _live_ready(monkeypatch, tmp_path)
+    fk = FakeKite()
+    br = LiveBroker(kite=fk, rate_limiter=RateLimiter(1000),
+                    ip_resolver=lambda: None)            # can't determine IP
+    res = br.place("KEI", 5, "BUY")
+    # fail-open: proceeds (Zerodha still gates), so it never freezes offline
+    assert res.status == "PLACED" and fk.n == 1
 
 
 # --- engine routes entries through the live broker (dry-run) ----------------

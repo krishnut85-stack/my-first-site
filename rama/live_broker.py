@@ -62,6 +62,23 @@ def kill_switch_engaged() -> bool:
     return config.KILL_SWITCH_FILE.exists()
 
 
+def detect_public_ip(timeout: float = 2.0) -> str | None:
+    """Best-effort public IP of this host, or None if it can't be determined."""
+    import urllib.request
+    for url in ("https://api.ipify.org", "https://checkip.amazonaws.com"):
+        try:
+            with urllib.request.urlopen(url, timeout=timeout) as r:  # noqa: S310
+                ip = r.read().decode().strip()
+                if ip:
+                    return ip
+        except Exception:  # noqa: BLE001
+            continue
+    return None
+
+
+_UNSET = object()
+
+
 def _log_order(record: dict) -> None:
     try:
         config.ORDER_LOG.parent.mkdir(parents=True, exist_ok=True)
@@ -89,9 +106,21 @@ class LiveBroker:
            kill switch apply regardless.
     """
 
-    def __init__(self, kite=None, rate_limiter: RateLimiter | None = None):
+    def __init__(self, kite=None, rate_limiter: RateLimiter | None = None,
+                 ip_resolver=detect_public_ip):
         self.kite = kite
         self.limiter = rate_limiter or RateLimiter(config.MAX_ORDERS_PER_SEC)
+        self.ip_resolver = ip_resolver
+        self._ip_cache = _UNSET
+
+    def _my_ip(self):
+        """Resolve this host's public IP once and cache it for the session."""
+        if self._ip_cache is _UNSET:
+            try:
+                self._ip_cache = self.ip_resolver()
+            except Exception:  # noqa: BLE001
+                self._ip_cache = None
+        return self._ip_cache
 
     def _would_send(self) -> tuple[bool, str]:
         """Decide whether this is a REAL send or a logged dry-run, with reason."""
@@ -103,6 +132,13 @@ class LiveBroker:
             return False, "no ALGO_ID (SEBI: order must carry your broker Algo-ID)"
         if self.kite is None:
             return False, "no Kite client"
+        # SEBI static-IP: Zerodha silently rejects orders from a non-whitelisted
+        # host. Block a real send from the wrong IP; fail-open only if unknown.
+        if config.LIVE_ENFORCE_IP:
+            ip = self._my_ip()
+            if ip and ip not in config.LIVE_ALLOWED_IPS:
+                return False, (f"IP {ip} not whitelisted — live orders must run on "
+                               f"the droplet ({', '.join(config.LIVE_ALLOWED_IPS)})")
         return True, "live"
 
     def place(self, symbol: str, qty: int, side: str, reason: str = "") -> OrderResult:

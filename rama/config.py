@@ -167,6 +167,18 @@ LIVE_EXCHANGE = "NSE"
 LIVE_PRODUCT = "CNC"                            # "CNC" delivery | "MIS" intraday
 LIVE_ORDER_TYPE = "MARKET"
 
+# --- Static-IP whitelist guard (SEBI Apr-2026 requirement, enforced in code) -
+# Zerodha only accepts orders from a whitelisted static IP. Live orders MUST run
+# from the droplet 64.227.155.177 — an order from any OTHER host (GitHub Actions,
+# a laptop, another server) is SILENTLY REJECTED by Zerodha. So before any REAL
+# send, Rama best-effort checks its own public IP and refuses to send from a
+# non-whitelisted host. It fail-opens only when the IP genuinely can't be
+# determined (offline), so it never freezes trading by mistake.
+LIVE_ENFORCE_IP = True
+LIVE_ALLOWED_IPS = [ip.strip() for ip in
+                    os.environ.get("RAMA_ALLOWED_IPS", "64.227.155.177").split(",")
+                    if ip.strip()]
+
 # --- Over-extended guard ---------------------------------------------------
 # Avoid buying the most PARABOLIC names. Research shows extreme/vertical
 # momentum has the steepest reversal ("momentum crash") risk -- this is the
