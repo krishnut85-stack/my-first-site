@@ -124,6 +124,44 @@ def backtest(panel: dict, **kw) -> dict:
     }
 
 
+def sweep(panel: dict, grids: dict | None = None) -> list:
+    """Grid-search entry/exit/hold/trend and return configs ranked by avg-return
+    per trade after costs (best first). No stop-loss in the grid — it hurt."""
+    import itertools
+    g = grids or {
+        "entry": [5, 10, 15, 20, 25, 30],
+        "exit": [65, 75, 85],
+        "hold": [10, 15, 20, 30],
+        "trend": [True, False],
+    }
+    out = []
+    for e, x, h, t in itertools.product(g["entry"], g["exit"], g["hold"], g["trend"]):
+        r = backtest(panel, entry_rsi=e, exit_rsi=x, max_hold=h, use_trend=t)
+        if r.get("trades"):
+            out.append({"avg": r["avg_return_pct"], "pf": r["profit_factor"] or 0.0,
+                        "win": r["win_rate_pct"], "trades": r["trades"],
+                        "entry": e, "exit": x, "hold": h, "trend": t})
+    out.sort(key=lambda d: d["avg"], reverse=True)
+    return out
+
+
+def format_sweep(rows: list, top: int = 15) -> str:
+    lines = ["=" * 72,
+             f"  {config.BOT_NAME} · RSI-2 SWEEP  (ranked by avg-return/trade after costs)",
+             "=" * 72,
+             f"  {'#':>2} {'avg%':>6} {'PF':>5} {'win%':>5} {'trades':>7}  "
+             f"{'entry':>5} {'exit':>4} {'hold':>4} {'trend':>5}",
+             "-" * 72]
+    for i, d in enumerate(rows[:top], 1):
+        lines.append(f"  {i:>2} {d['avg']:>6.2f} {d['pf']:>5.2f} {d['win']:>5.1f} "
+                     f"{d['trades']:>7}  {d['entry']:>5} {d['exit']:>4} {d['hold']:>4} "
+                     f"{'no' if not d['trend'] else 'yes':>5}")
+    lines += ["-" * 72,
+              "  Reproduce the best row:  --entry E --exit X --hold H [--no-trend]",
+              "=" * 72]
+    return "\n".join(lines)
+
+
 def format_report(r: dict, source: str) -> str:
     if r["trades"] == 0:
         return f"RSI-2 oversold bounce · {source}\n  {r['verdict']}"
@@ -158,6 +196,9 @@ def main() -> None:
         raise SystemExit("usage: python3 -m garuda.setups --csv daily.csv "
                          "[--entry 10] [--exit 65] [--hold 10]")
     panel = load_series(path)   # per-stock; scales to the whole universe
+    if "--sweep" in args:
+        print(format_sweep(sweep(panel)))
+        return
     r = backtest(panel,
                  entry_rsi=_opt("--entry", float, 10.0),
                  exit_rsi=_opt("--exit", float, 65.0),
