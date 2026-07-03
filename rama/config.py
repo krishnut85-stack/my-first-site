@@ -179,6 +179,21 @@ LIVE_ALLOWED_IPS = [ip.strip() for ip in
                     os.environ.get("RAMA_ALLOWED_IPS", "64.227.155.177").split(",")
                     if ip.strip()]
 
+# --- Parliament auditor (SEPARATE, advisory AI audit panel) ----------------
+# A fully self-contained audit panel in rama/parliament/ that plugs into Rama's
+# external_auditor hook ONLY when USE_PARLIAMENT_AUDIT is on. Advisory-only: it
+# can VETO a weak candidate but never forces a buy. Design mirrors the proven
+# analyst -> panel -> executor pipeline with JSON-style verdicts and a
+# provider->rules FALLBACK CHAIN, so it always returns a decision even offline.
+# The core engine stays independent of it — nothing imports it unless enabled.
+USE_PARLIAMENT_AUDIT = False
+PARLIAMENT_PROVIDER = os.environ.get("RAMA_PARLIAMENT_PROVIDER", "rules")  # rules|gemini|claude
+PARLIAMENT_MIN_CONFIDENCE = 0.6   # veto only when the panel is at least this sure
+PARLIAMENT_TIMEOUT = 15.0         # seconds per LLM call before falling back to rules
+# API keys are read at runtime from the environment and NEVER committed.
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+
 # --- Over-extended guard ---------------------------------------------------
 # Avoid buying the most PARABOLIC names. Research shows extreme/vertical
 # momentum has the steepest reversal ("momentum crash") risk -- this is the

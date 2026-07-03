@@ -133,7 +133,12 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
     per_name_budget = position_budget(pf)
     _, sizing_label = target_fraction(pf)
 
-    # VALIDATE: the audit gate (and insider/catalyst scores) can veto a candidate
+    # VALIDATE: the audit gate (and insider/catalyst scores) can veto a candidate.
+    # If the SEPARATE Parliament panel is switched on, install it as the second
+    # (advisory) auditor; otherwise the engine never touches that subpackage.
+    if config.USE_PARLIAMENT_AUDIT:
+        from .parliament import enable as _enable_parliament
+        _enable_parliament()
     from .audit import audit_candidate
     from .catalysts import load_catalyst_scores
     cat_scores = load_catalyst_scores() if config.USE_CATALYST_SIGNAL else {}

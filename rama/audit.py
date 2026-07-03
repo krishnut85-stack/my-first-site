@@ -82,8 +82,8 @@ def audit_candidate(symbol, industry, ltp, uptrend=None,
                 symbol, industry,
                 {"ltp": ltp, "uptrend": uptrend, "catalyst_score": catalyst_score},
             )
-            if not ok:
-                return AuditResult(False, f"Claude veto: {reason}")
+            # surface the external auditor's own reason on BOTH veto and accept
+            return AuditResult(bool(ok), reason)
         except Exception as exc:  # noqa: BLE001 — a broken hook must never trade
             return AuditResult(False, f"auditor error ({exc})")
 

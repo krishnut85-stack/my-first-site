@@ -8,6 +8,9 @@ portfolio_report.html
 # catalysts.sample.csv template is committed, but a live catalysts.csv is not.
 rama/data/portfolio.json
 rama/data/catalysts.csv
+rama/data/order_log.jsonl
+rama/data/parliament_log.jsonl
+rama/KILL_SWITCH
 rama_portfolio_report.txt
 rama_portfolio_report.html
 rama_dashboard.html

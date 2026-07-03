@@ -53,6 +53,24 @@ All knobs live in `rama/config.py`. Rama defaults `SIZING_MODE = "kelly"`
 (sectorbot stays on flat sizing). Toggle any pillar with `USE_AUDIT_GATE`,
 `USE_CATALYST_SIGNAL`, or `SIZING_MODE = "fixed"`.
 
+## Parliament — a separate, advisory AI audit panel (optional)
+
+`rama/parliament/` is a **fully isolated** subpackage (`analyst → panel →
+executor`) that plugs into Rama's `external_auditor` hook **only** when
+`USE_PARLIAMENT_AUDIT = True`. Nothing in Rama's core imports it otherwise.
+
+- **Advisory-only:** it can VETO a weak candidate; it never forces a buy.
+- **Fallback chain:** with `PARLIAMENT_PROVIDER = "gemini"` or `"claude"` it asks
+  an LLM for a JSON verdict; if the provider errors, times out, or has no key,
+  it silently drops to the deterministic **rules** lenses. So it always decides,
+  even offline. Keys (`GEMINI_API_KEY` / `ANTHROPIC_API_KEY`) are read from the
+  environment at runtime and never committed.
+- **Auditable:** every deliberation is logged to `data/parliament_log.jsonl`.
+
+Enable it: set `USE_PARLIAMENT_AUDIT = True` (and optionally a provider + key).
+It then runs as a second opinion after the built-in rule auditor — both must
+pass for Rama to size a trade.
+
 ## Live dashboard + daily cron (droplet)
 
 `python -m rama trade` runs the paper session **and regenerates the live
