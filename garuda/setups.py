@@ -51,8 +51,14 @@ def sma(closes, period: int):
 
 
 def oversold_bounce_trades(closes, entry_rsi=10.0, exit_rsi=65.0,
-                           trend_sma=200, max_hold=10, cost_per_side=None):
-    """Return a list of per-trade net returns for one stock's daily closes."""
+                           trend_sma=200, max_hold=10, cost_per_side=None,
+                           stop_loss=0.0, profit_target=0.0, use_trend=True):
+    """Return a list of per-trade net returns for one stock's daily closes.
+
+    stop_loss / profit_target (fractions, 0 = off) cut losers / lock winners at
+    the close that breaches them — the principled fix for a high win rate that
+    still loses (it caps the rare falling-knife trades that eat the small wins).
+    Checked at the daily close, so there is no intraday lookahead."""
     cost = config.CROSS_COST_PER_SIDE if cost_per_side is None else cost_per_side
     if len(closes) < trend_sma + 5:
         return []
@@ -61,14 +67,18 @@ def oversold_bounce_trades(closes, entry_rsi=10.0, exit_rsi=65.0,
     trades = []
     i = trend_sma
     while i < len(closes) - 1:
-        in_uptrend = s[i] is not None and closes[i] > s[i]
+        in_uptrend = (not use_trend) or (s[i] is not None and closes[i] > s[i])
         oversold = r[i] is not None and r[i] < entry_rsi
         if in_uptrend and oversold:
             entry = closes[i]
             j = i + 1
             while j < len(closes) - 1:
-                recovered = r[j] is not None and r[j] > exit_rsi
-                if recovered or (j - i) >= max_hold:
+                px = closes[j]
+                if stop_loss and px <= entry * (1 - stop_loss):
+                    break                              # stop-loss hit
+                if profit_target and px >= entry * (1 + profit_target):
+                    break                              # profit target hit
+                if (r[j] is not None and r[j] > exit_rsi) or (j - i) >= max_hold:
                     break
                 j += 1
             ret = (closes[j] - entry) / entry - 2 * cost   # entry + exit cost
@@ -151,7 +161,10 @@ def main() -> None:
     r = backtest(panel,
                  entry_rsi=_opt("--entry", float, 10.0),
                  exit_rsi=_opt("--exit", float, 65.0),
-                 max_hold=_opt("--hold", int, 10))
+                 max_hold=_opt("--hold", int, 10),
+                 stop_loss=_opt("--stop", float, 0.0),        # e.g. 0.05 = cut at -5%
+                 profit_target=_opt("--target", float, 0.0),  # e.g. 0.06 = take +6%
+                 use_trend=("--no-trend" not in args))         # drop the uptrend filter
     print(format_report(r, f"{path} ({len(panel)} symbols)"))
 
 

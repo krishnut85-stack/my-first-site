@@ -44,6 +44,22 @@ def test_downtrend_triggers_nothing():
     assert oversold_bounce_trades(down) == []
 
 
+def test_stop_loss_caps_worst_trade():
+    closes = _uptrend_with_dips()
+    no_stop = oversold_bounce_trades(closes, cost_per_side=0.0)
+    with_stop = oversold_bounce_trades(closes, cost_per_side=0.0, stop_loss=0.03)
+    # a 3% stop means no realised trade should be far below -3% (minus a little slip)
+    assert min(with_stop) >= min(no_stop) - 1e-9
+    assert min(with_stop) > -0.10           # worst loss is contained
+
+
+def test_no_trend_filter_allows_more_trades():
+    closes = _uptrend_with_dips()
+    strict = oversold_bounce_trades(closes, cost_per_side=0.0, use_trend=True)
+    loose = oversold_bounce_trades(closes, cost_per_side=0.0, use_trend=False)
+    assert len(loose) >= len(strict)         # dropping the filter = more entries
+
+
 def test_backtest_aggregates_and_flags_costs():
     panel = {"A": _uptrend_with_dips(seed=1), "B": _uptrend_with_dips(seed=2)}
     free = backtest(panel, cost_per_side=0.0)
