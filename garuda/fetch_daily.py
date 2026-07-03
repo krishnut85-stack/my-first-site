@@ -95,14 +95,34 @@ def fetch_daily(symbols=None, days=400, out="daily.csv", exchange="NSE",
     return out
 
 
+def _read_symbols_file(path) -> list:
+    """Read symbols from a file: an NSE constituent CSV (has a 'Symbol' column)
+    or a plain one-symbol-per-line list."""
+    with open(path, newline="", encoding="utf-8") as f:
+        rows = list(csv.reader(f))
+    if not rows:
+        return []
+    header = [c.strip().lower() for c in rows[0]]
+    if "symbol" in header:
+        idx = header.index("symbol")
+        return [r[idx].strip().upper() for r in rows[1:] if len(r) > idx and r[idx].strip()]
+    return [r[0].strip().upper() for r in rows if r and r[0].strip()]
+
+
 def main() -> None:
     args = sys.argv[1:]
 
     def _opt(flag, cast, default):
         return cast(args[args.index(flag) + 1]) if flag in args else default
 
-    syms_arg = _opt("--symbols", str, "")
-    symbols = [s.strip().upper() for s in syms_arg.split(",") if s.strip()] or None
+    symbols = None
+    sfile = _opt("--symbols-file", str, "")
+    if sfile:
+        symbols = _read_symbols_file(sfile)
+        print(f"Loaded {len(symbols)} symbols from {sfile}")
+    else:
+        syms_arg = _opt("--symbols", str, "")
+        symbols = [s.strip().upper() for s in syms_arg.split(",") if s.strip()] or None
     # default: `--all` alone pulls the WHOLE market (NSE + BSE ~5000+); pass an
     # explicit --exchange NSE / BSE to restrict.
     exchange = _opt("--exchange", str, "").upper()
