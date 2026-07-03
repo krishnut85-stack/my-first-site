@@ -43,12 +43,22 @@ def _kite():
     return k
 
 
+def _universe(kite, exchange: str) -> dict:
+    """{tradingsymbol: instrument_token} of EQ stocks. exchange 'BOTH' = the
+    whole market: NSE + BSE unioned (NSE token preferred for shared names)."""
+    exchanges = ["NSE", "BSE"] if exchange == "BOTH" else [exchange]
+    tokens: dict = {}
+    for ex in exchanges:
+        for i in kite.instruments(ex):
+            if i.get("instrument_type") == "EQ":
+                tokens.setdefault(i["tradingsymbol"], i["instrument_token"])
+    return tokens
+
+
 def fetch_daily(symbols=None, days=400, out="daily.csv", exchange="NSE",
                 all_stocks=False, limit=0) -> str:
     kite = _kite()
-    instruments = kite.instruments(exchange)
-    tokens = {i["tradingsymbol"]: i["instrument_token"]
-              for i in instruments if i.get("instrument_type") == "EQ"}
+    tokens = _universe(kite, exchange)
 
     if all_stocks:
         symbols = sorted(tokens)
@@ -93,11 +103,16 @@ def main() -> None:
 
     syms_arg = _opt("--symbols", str, "")
     symbols = [s.strip().upper() for s in syms_arg.split(",") if s.strip()] or None
+    # default: `--all` alone pulls the WHOLE market (NSE + BSE ~5000+); pass an
+    # explicit --exchange NSE / BSE to restrict.
+    exchange = _opt("--exchange", str, "").upper()
+    if not exchange:
+        exchange = "BOTH" if ("--all" in args) else "NSE"
     fetch_daily(
         symbols=symbols,
         days=_opt("--days", int, 400),
         out=_opt("--out", str, "daily.csv"),
-        exchange=_opt("--exchange", str, "NSE").upper(),
+        exchange=exchange,
         all_stocks=("--all" in args),
         limit=_opt("--limit", int, 0),
     )
