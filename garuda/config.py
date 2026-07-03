@@ -37,3 +37,10 @@ BARS_PER_YEAR = 75 * 250
 
 # --- Paper capital (for a rupee view of the equity curve) ------------------
 PAPER_CAPITAL = 1_000_000.0
+
+# --- Cross-sectional (rank-all-stocks) backtest ----------------------------
+# Daily rebalance on delivery is COSTLY: brokerage + STT + exchange + GST +
+# stamp + slippage, both sides. ~0.10% per side (0.20% round trip EVERY day) is
+# a fair, slightly optimistic figure for liquid names. This is deliberately
+# heavy because daily churn is exactly what quietly bleeds retail accounts.
+CROSS_COST_PER_SIDE = 0.0010
