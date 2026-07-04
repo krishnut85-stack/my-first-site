@@ -81,6 +81,22 @@ class GarudaLive:
             out.update(syms)
         return out
 
+    @property
+    def streaming(self):
+        return self.feed.streaming
+
+    def start_stream(self):
+        """Begin real-time websocket streaming for the whole universe. Ticks
+        update live prices + today's OHLC as they arrive (no polling/rate limit)."""
+        def on_update(sym, ltp, ohlc):
+            if ltp:
+                self.prices[sym] = ltp
+            if ohlc:
+                self.day_ohlc[sym] = {"o": ohlc.get("open"), "h": ohlc.get("high"),
+                                      "l": ohlc.get("low"), "pc": ohlc.get("close"),
+                                      "ltp": ltp}
+        return self.feed.start_stream(sorted(self.all_symbols()), on_update)
+
     # --- daily scan ---------------------------------------------------------
     def scan(self, force=False):
         """Book the day's exits + entries. PAPER, but timed like live trading:

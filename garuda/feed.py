@@ -35,6 +35,7 @@ class KiteFeed:
     def __init__(self):
         self.kite = None
         self._tokens = None
+        self.kws = None            # KiteTicker (websocket) once streaming
         try:
             from kiteconnect import KiteConnect  # type: ignore
             key = os.environ.get("KITE_API_KEY", "")
@@ -48,6 +49,54 @@ class KiteFeed:
     @property
     def live(self) -> bool:
         return self.kite is not None
+
+    @property
+    def streaming(self) -> bool:
+        return self.kws is not None
+
+    def start_stream(self, symbols, on_update) -> bool:
+        """Open a KiteTicker websocket and push real-time ticks to on_update(sym,
+        ltp, ohlc). Returns True if the stream started. Auto-reconnects."""
+        if not self.kite or not symbols:
+            return False
+        try:
+            from kiteconnect import KiteTicker  # type: ignore
+        except Exception:  # noqa: BLE001
+            return False
+        tokens, tok2sym = [], {}
+        for s in symbols:
+            tk = self._token(s)
+            if tk:
+                tokens.append(tk)
+                tok2sym[tk] = s
+        if not tokens:
+            return False
+        key = os.environ.get("KITE_API_KEY", "")
+        kws = KiteTicker(key, _resolve_token())
+
+        def on_ticks(ws, ticks):
+            for t in ticks:
+                s = tok2sym.get(t.get("instrument_token"))
+                if s:
+                    on_update(s, t.get("last_price"), t.get("ohlc") or {})
+
+        def on_connect(ws, response):
+            for i in range(0, len(tokens), 3000):
+                chunk = tokens[i:i + 3000]
+                ws.subscribe(chunk)
+                ws.set_mode(ws.MODE_QUOTE, chunk)   # ltp + ohlc + volume
+            print(f"[ticker] connected, streaming {len(tokens)} symbols", flush=True)
+
+        kws.on_ticks = on_ticks
+        kws.on_connect = on_connect
+        kws.on_error = lambda ws, code, reason: print(f"[ticker] error {code}: {reason}", flush=True)
+        try:
+            kws.connect(threaded=True)
+        except Exception as exc:  # noqa: BLE001
+            print(f"[ticker] connect failed: {exc}", flush=True)
+            return False
+        self.kws = kws
+        return True
 
     def ltp(self, symbols) -> dict:
         """{symbol: last_price} for a list of NSE symbols (empty if unavailable)."""

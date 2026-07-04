@@ -308,5 +308,5 @@ function render(d){
 async function poll(){try{const r=await fetch('/data?token='+encodeURIComponent(TOKEN));
  if(r.status===403){document.getElementById('list').innerHTML='<div style="padding:16px;color:#f5b23e">Access denied — bad or missing ?token= in the URL.</div>';return;}
  if(r.ok)render(await r.json());}catch(e){}}
-clocks();poll();setInterval(clocks,1000);setInterval(poll,3000);
+clocks();poll();setInterval(clocks,1000);setInterval(poll,1500);
 </script></body></html>

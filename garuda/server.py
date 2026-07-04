@@ -29,13 +29,17 @@ _TOKEN = {"value": ""}
 _LIVE = {"obj": None}      # the GarudaLive instance (for on-demand chart requests)
 
 
-def _refresh_loop(live: GarudaLive, every: float = 3.0):
+def _refresh_loop(live: GarudaLive, every: float = 2.0):
     chart_tick = 0
     while True:
         try:
-            live.refresh_prices(full=(chart_tick % 2 == 0))  # whole universe every ~6s
+            if live.streaming:
+                if chart_tick % 15 == 0:       # websocket feeds prices live; poll as backup
+                    live.refresh_prices(full=True)
+            else:
+                live.refresh_prices(full=(chart_tick % 3 == 0))  # no stream -> poll ~6s
             live.maybe_scan()                  # auto-book the day's trades once, live
-            if chart_tick % 20 == 0:           # refresh chart candles ~once a minute
+            if chart_tick % 30 == 0:           # refresh chart candles ~once a minute
                 for p in live.portfolios.values():
                     if p.holdings:
                         top = max(p.holdings.items(),
@@ -100,13 +104,14 @@ def main():
         for k, r in live.scan().items():
             print(f"[scan] {k}: {r}", flush=True)
 
-    live.refresh_prices()
+    live.refresh_prices(full=True)             # seed last prices (works even when closed)
+    streaming = live.start_stream()            # real-time websocket ticks (KiteTicker)
     _STATE["json"] = json.dumps(live.build_state()).encode()
     threading.Thread(target=_refresh_loop, args=(live,), daemon=True).start()
 
     print(f"Garuda dashboard: http://0.0.0.0:{port}/?token={token}", flush=True)
-    print(f"  (Kite feed: {'LIVE' if live.feed.live else 'offline — pricing at last close'})",
-          flush=True)
+    print(f"  (Kite feed: {'LIVE' if live.feed.live else 'offline — pricing at last close'}"
+          f" · websocket: {'ON' if streaming else 'off (polling)'})", flush=True)
     ThreadingHTTPServer(("0.0.0.0", port), Handler).serve_forever()
 
 
