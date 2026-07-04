@@ -102,7 +102,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
         <div id=cquote class=qbadge></div>
       </div>
       <div class=chartwrap><div class=chart id=chart></div><div class=rsi id=rsi></div></div>
-      <div class=leg>scroll to zoom · drag to pan · hover for OHLC · <span class=g>▲</span> buy (RSI-2 &lt; 5) · <span class=r>▼</span> sell (RSI-2 &gt; 85) · amber = RSI-2</div>
+      <div class=leg>scroll to zoom · drag to pan · hover for OHLC · <span style=color:#3aa0ff>MA20</span> · <span style=color:#c586ff>MA50</span> · volume bars · <span class=g>▲</span> buy (RSI-2&lt;5) · <span class=r>▼</span> sell (RSI-2&gt;85)</div>
       <div class=sig id=sig></div>
     </div>
     <div class=chartcard>
@@ -148,7 +148,7 @@ function setSVG(el,vw,vh,inner){
  el.replaceChildren(doc.documentElement);
 }
 // ---- interactive candlestick chart (TradingView Lightweight Charts) --------
-let mainChart,candleSeries,rsiChart,rsiSeries,curChartSym=null,syncing=false;
+let mainChart,candleSeries,volSeries,ma20Series,ma50Series,rsiChart,rsiSeries,curChartSym=null,syncing=false;
 function chartOpts(h){return {height:h,autoSize:true,
  layout:{background:{color:'#0a0e14'},textColor:'#7d8b9c',fontFamily:'ui-monospace,Menlo,monospace'},
  grid:{vertLines:{color:'#141b26'},horzLines:{color:'#141b26'}},
@@ -158,7 +158,12 @@ function chartOpts(h){return {height:h,autoSize:true,
   horzLine:{color:'#3ad6b0',labelBackgroundColor:'#0e2a20'}}};}
 function ensureCharts(){
  if(mainChart)return;
- mainChart=LightweightCharts.createChart(document.getElementById('chart'),chartOpts(300));
+ mainChart=LightweightCharts.createChart(document.getElementById('chart'),chartOpts(320));
+ // volume histogram on its own overlay scale pinned to the bottom (like TradingView)
+ volSeries=mainChart.addHistogramSeries({priceScaleId:'vol',priceFormat:{type:'volume'},priceLineVisible:false,lastValueVisible:false});
+ mainChart.priceScale('vol').applyOptions({scaleMargins:{top:0.82,bottom:0}});
+ ma20Series=mainChart.addLineSeries({color:'#3aa0ff',lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
+ ma50Series=mainChart.addLineSeries({color:'#c586ff',lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false});
  candleSeries=mainChart.addCandlestickSeries({upColor:'#22d37a',downColor:'#ff5d5d',
   wickUpColor:'#22d37a',wickDownColor:'#ff5d5d',borderVisible:false});
  rsiChart=LightweightCharts.createChart(document.getElementById('rsi'),chartOpts(120));
@@ -176,12 +181,17 @@ function drawChart(ch,sym){
  const ok=ch&&ch.candles&&ch.candles.length;
  if(!ok&&!mainChart){chartEl.innerHTML='<div class=cempty>no chart data for '+(sym||'—')+'</div>';rsiEl.innerHTML='';return;}
  if(!mainChart){chartEl.innerHTML='';rsiEl.innerHTML='';ensureCharts();}
- if(!ok){candleSeries.setData([]);rsiSeries.setData([]);candleSeries.setMarkers([]);return;}
- candleSeries.setData(ch.candles.map(c=>({time:c.t,open:c.o,high:c.h,low:c.l,close:c.c})));
+ if(!ok){[candleSeries,volSeries,ma20Series,ma50Series,rsiSeries].forEach(s=>s.setData([]));candleSeries.setMarkers([]);return;}
+ const C=ch.candles;
+ candleSeries.setData(C.map(c=>({time:c.t,open:c.o,high:c.h,low:c.l,close:c.c})));
  candleSeries.setMarkers((ch.markers||[]).map(m=>({time:m.t,
   position:m.type==='buy'?'belowBar':'aboveBar',color:m.type==='buy'?'#22d37a':'#ff5d5d',
   shape:m.type==='buy'?'arrowUp':'arrowDown'})));
- const rd=[];for(let i=0;i<ch.candles.length;i++)if(ch.rsi[i]!=null)rd.push({time:ch.candles[i].t,value:ch.rsi[i]});
+ // volume bars (green/red by up/down day) — only where Kite volume is available
+ volSeries.setData(C.filter(c=>c.v!=null).map(c=>({time:c.t,value:c.v,color:c.c>=c.o?'#14392a':'#3a1c1f'})));
+ const line=arr=>{const o=[];for(let i=0;i<C.length;i++)if(arr&&arr[i]!=null)o.push({time:C[i].t,value:arr[i]});return o;};
+ ma20Series.setData(line(ch.ma20));ma50Series.setData(line(ch.ma50));
+ const rd=[];for(let i=0;i<C.length;i++)if(ch.rsi[i]!=null)rd.push({time:C[i].t,value:ch.rsi[i]});
  rsiSeries.setData(rd);
  if(curChartSym!==sym){fitChart();curChartSym=sym;}
 }

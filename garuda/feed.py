@@ -117,5 +117,5 @@ class KiteFeed:
             dt = d.get("date")
             t = dt.strftime("%Y-%m-%d") if hasattr(dt, "strftime") else str(dt)[:10]
             out.append({"t": t, "o": d["open"], "h": d["high"],
-                        "l": d["low"], "c": d["close"]})
+                        "l": d["low"], "c": d["close"], "v": d.get("volume", 0)})
         return out[-days:]
