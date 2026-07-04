@@ -32,6 +32,8 @@ class GarudaLive:
         self.charts = {}      # symbol -> {candles, rsi, markers}
         self.last_signals = {k: {"buys": [], "sells": []} for k in PROFILES}
         self.last_scan_date = None    # IST date of the last executed scan (once/session)
+        self.intraday = []            # today's live combined-equity samples (P&L curve)
+        self.intraday_day = None
         # Every symbol's dated daily closes from the local CSVs — the guaranteed
         # chart source when Kite's historical API isn't available for a name.
         from .cross import _load_long
@@ -170,6 +172,23 @@ class GarudaLive:
                 self.day_ohlc[s] = d
         else:                                  # no quote access -> plain LTP
             self.prices.update(self.feed.ltp(syms))
+
+    def live_equity(self):
+        """Current combined equity across both paper books at live prices."""
+        return sum(pf.equity(lambda s: self.price_of(s, pf.holdings.get(s, {}).get("entry_price", 0)))
+                   for pf in self.portfolios.values())
+
+    def snapshot_equity(self):
+        """Append a live combined-equity sample for today's intraday P&L curve
+        (resets each new day). Only samples while the market is open."""
+        if not is_market_open():
+            return
+        today = _today()
+        if self.intraday_day != today:
+            self.intraday_day = today
+            self.intraday = []
+        self.intraday.append(round(self.live_equity(), 0))
+        self.intraday = self.intraday[-600:]
 
     def chart_for(self, symbol):
         """On-demand chart for any symbol (used when a row is clicked)."""
@@ -310,7 +329,9 @@ class GarudaLive:
         hs = self.portfolios["smallcap"].history
         hm = self.portfolios["microcap"].history
         n = min(len(hs), len(hm))
-        totals["curve"] = [round(hs[i]["equity"] + hm[i]["equity"], 0) for i in range(n)]
+        daily = [round(hs[i]["equity"] + hm[i]["equity"], 0) for i in range(n)]
+        # daily track record + today's live intraday samples + the current tip
+        totals["curve"] = daily + self.intraday + [totals["equity"]]
         return {"live": self.feed.live, "profiles": profs, "totals": totals,
                 "market_open": is_market_open(), "market_status": market_status(),
                 "last_scan": self.last_scan_date, "today": _today()}

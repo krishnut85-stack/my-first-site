@@ -39,6 +39,8 @@ def _refresh_loop(live: GarudaLive, every: float = 2.0):
             else:
                 live.refresh_prices(full=(chart_tick % 3 == 0))  # no stream -> poll ~6s
             live.maybe_scan()                  # auto-book the day's trades once, live
+            if chart_tick % 30 == 0:           # sample the live P&L curve ~1/min (open only)
+                live.snapshot_equity()
             if chart_tick % 30 == 0:           # refresh chart candles ~once a minute
                 for p in live.portfolios.values():
                     if p.holdings:
