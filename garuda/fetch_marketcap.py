@@ -1,9 +1,8 @@
-"""Fetch full market cap (₹ crore) per NSE symbol -> marketcap.csv.
+"""Fetch market cap (₹ crore) per NSE symbol -> marketcap.csv, via Yahoo Finance.
 
-Kite doesn't expose market cap, so we pull it from NSE's public quote API
-(the trade_info section carries totalMarketCap). Best-effort: NSE rate-limits
-and needs a session cookie, so this fetches politely and skips what it can't
-get. Run it from the daily cron; the dashboard reads marketcap.csv if present.
+Kite has no fundamentals and NSE blocks datacenter IPs, so we use Yahoo's quote
+API (works from cloud servers, and batches many symbols per request). NSE
+symbols map to Yahoo as SYMBOL.NS. Best-effort: writes whatever it gets.
 
     python3 -m garuda.fetch_marketcap --symbols-file smallcap_list.csv micro.csv --out marketcap.csv
 
@@ -21,20 +20,43 @@ from urllib.parse import quote
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/120.0 Safari/537.36")
-HOME = "https://www.nseindia.com"
-API = "https://www.nseindia.com/api/quote-equity?symbol={}&section=trade_info"
 
 
-def _opener():
+def yahoo_session():
     cj = http.cookiejar.CookieJar()
     op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
-    op.addheaders = [("User-Agent", UA), ("Accept", "application/json, text/plain, */*"),
-                     ("Accept-Language", "en-US,en;q=0.9"), ("Referer", HOME + "/")]
+    op.addheaders = [("User-Agent", UA), ("Accept", "*/*")]
+    for url in ("https://fc.yahoo.com", "https://finance.yahoo.com"):
+        try:
+            op.open(url, timeout=20).read()
+        except Exception:  # noqa: BLE001 — just seeding cookies
+            pass
+    crumb = ""
     try:
-        op.open(HOME, timeout=20).read()      # seed the session cookie
+        crumb = op.open("https://query2.finance.yahoo.com/v1/test/getcrumb",
+                        timeout=20).read().decode().strip()
     except Exception:  # noqa: BLE001
         pass
-    return op
+    return op, crumb
+
+
+def batch_mcap(op, crumb, syms):
+    q = ",".join(s + ".NS" for s in syms)
+    url = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + quote(q)
+    if crumb:
+        url += "&crumb=" + quote(crumb)
+    out = {}
+    try:
+        raw = op.open(url, timeout=25).read()
+        d = json.loads(raw)
+        for r in d.get("quoteResponse", {}).get("result", []):
+            sym = (r.get("symbol") or "").replace(".NS", "")
+            mc = r.get("marketCap")
+            if sym and mc:
+                out[sym] = mc / 1e7          # rupees -> ₹ crore
+    except Exception as exc:  # noqa: BLE001
+        print(f"[mcap] batch failed: {exc}", flush=True)
+    return out
 
 
 def _symbols(files):
@@ -49,16 +71,6 @@ def _symbols(files):
                 if s:
                     syms.append(s)
     return sorted(set(syms))
-
-
-def market_cap(op, symbol):
-    try:
-        raw = op.open(API.format(quote(symbol)), timeout=20).read()
-        d = json.loads(raw)
-        mc = d.get("marketDeptOrderBook", {}).get("tradeInfo", {}).get("totalMarketCap")
-        return float(mc) if mc else None
-    except Exception:  # noqa: BLE001
-        return None
 
 
 def main():
@@ -79,23 +91,27 @@ def main():
     syms = _symbols(files)
     if not syms:
         raise SystemExit(f"no symbols found in {files}")
-    print(f"[mcap] fetching market cap for {len(syms)} symbols from NSE…", flush=True)
-    op = _opener()
-    rows, ok = [], 0
-    for i, s in enumerate(syms, 1):
-        mc = market_cap(op, s)
-        if mc:
-            rows.append((s, round(mc, 2)))
-            ok += 1
-        if i % 50 == 0:
-            print(f"[mcap] {i}/{len(syms)} ({ok} with data)", flush=True)
-            op = _opener()                    # refresh the session periodically
-        time.sleep(0.35)                      # be polite to NSE
+
+    op, crumb = yahoo_session()
+    print(f"[mcap] Yahoo session (crumb: {'ok' if crumb else 'none'}); "
+          f"fetching {len(syms)} symbols…", flush=True)
+    rows = []
+    for i in range(0, len(syms), 50):
+        chunk = syms[i:i + 50]
+        m = batch_mcap(op, crumb, chunk)
+        for s in chunk:
+            if s in m:
+                rows.append((s, round(m[s], 2)))
+        print(f"[mcap] {min(i + 50, len(syms))}/{len(syms)} ({len(rows)} with data)", flush=True)
+        time.sleep(1.0)
     with open(out, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["symbol", "marketcap"])
         w.writerows(rows)
     print(f"[mcap] wrote {len(rows)} market caps -> {out}", flush=True)
+    if not rows:
+        print("[mcap] got nothing — Yahoo may be blocking this IP too; "
+              "market cap will show — on the dashboard.", flush=True)
 
 
 if __name__ == "__main__":
