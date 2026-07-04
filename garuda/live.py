@@ -62,6 +62,12 @@ class GarudaLive:
         if syms:
             self.prices.update(self.feed.ltp(syms))
 
+    def chart_for(self, symbol):
+        """On-demand chart for any symbol (used when a row is clicked)."""
+        if symbol and symbol not in self.charts:
+            self.refresh_chart(symbol)
+        return self.charts.get(symbol)
+
     def refresh_chart(self, symbol):
         """Cache daily candles + RSI-2 + entry/exit markers for one symbol."""
         candles = self.feed.ohlc_daily(symbol, 60)
@@ -97,7 +103,8 @@ class GarudaLive:
                 day_pnl += pnl
                 positions.append({"sym": s, "qty": h["qty"],
                                   "entry": round(h["entry_price"], 2), "ltp": round(ltp, 2),
-                                  "chg": round(chg, 2), "pnl": round(pnl, 0)})
+                                  "chg": round(chg, 2), "pnl": round(pnl, 0),
+                                  "rsi2": h.get("rsi2_entry")})
             positions.sort(key=lambda x: x["pnl"], reverse=True)
             equity = pf.equity(lambda s: self.price_of(s, pf.holdings.get(s, {}).get("entry_price", 0)))
             win, pfac = _live_stats(pf)
@@ -122,6 +129,11 @@ class GarudaLive:
         }
         totals["pnl_pct"] = round((totals["equity"] / totals["capital"] - 1) * 100, 2) \
             if totals["capital"] else 0.0
+        # combined equity curve (P&L chart) — sum both portfolios by scan index
+        hs = self.portfolios["smallcap"].history
+        hm = self.portfolios["microcap"].history
+        n = min(len(hs), len(hm))
+        totals["curve"] = [round(hs[i]["equity"] + hm[i]["equity"], 0) for i in range(n)]
         return {"live": self.feed.live, "profiles": profs, "totals": totals}
 
 

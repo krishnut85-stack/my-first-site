@@ -26,6 +26,7 @@ from .live import GarudaLive
 _HTML = (Path(__file__).parent / "dashboard_live.html").read_text(encoding="utf-8")
 _STATE = {"json": b'{"profiles":[]}'}
 _TOKEN = {"value": ""}
+_LIVE = {"obj": None}      # the GarudaLive instance (for on-demand chart requests)
 
 
 def _refresh_loop(live: GarudaLive, every: float = 3.0):
@@ -62,6 +63,10 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(403, b"denied", "text/plain")
         if path == "/data":
             return self._send(200, _STATE["json"], "application/json")
+        if path == "/chart":
+            sym = parse_qs(urlparse(self.path).query).get("sym", [""])[0].upper()
+            ch = _LIVE["obj"].chart_for(sym) if (_LIVE["obj"] and sym) else None
+            return self._send(200, json.dumps(ch or {}).encode(), "application/json")
         return self._send(200, _HTML.encode(), "text/html")
 
     def _send(self, code, body, ctype):
@@ -84,6 +89,7 @@ def main():
     _TOKEN["value"] = token
     port = opt("--port", int, 8501)
     live = GarudaLive(csv_dir=opt("--csv-dir", str, "."))
+    _LIVE["obj"] = live
 
     if "--scan" in args:
         for k, r in live.scan().items():

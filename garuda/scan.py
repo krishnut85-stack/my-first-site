@@ -76,6 +76,7 @@ def run_scan(profile, series: dict, portfolio: LivePortfolio, live_prices=None):
         if qty <= 0:
             continue
         if portfolio.buy(sym, qty, price, entry_len=len(series[sym])):
+            portfolio.holdings[sym]["rsi2_entry"] = round(cur, 1)
             buys.append({"symbol": sym, "price": round(price, 2), "qty": qty,
                          "rsi2": round(cur, 1)})
 
