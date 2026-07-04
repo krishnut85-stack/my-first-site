@@ -32,14 +32,24 @@ class GarudaLive:
         # Every symbol's daily closes from the local CSVs — the guaranteed chart
         # source when Kite's historical API isn't available for a name.
         self.series_by_sym = {}
-        for prof in PROFILES.values():
-            for s, c in self._series(prof).items():
-                self.series_by_sym.setdefault(s, c)
+        for k, prof in PROFILES.items():
+            s = self._series(prof)
+            for sym, c in s.items():
+                self.series_by_sym.setdefault(sym, c)
+            print(f"[garuda] {k}: loaded {len(s)} symbols for charts "
+                  f"({prof.daily_csv})", flush=True)
 
     # --- data ---------------------------------------------------------------
     def _series(self, profile):
-        p = self.csv_dir / profile.daily_csv
-        return load_series(p) if p.exists() else {}
+        # Look in the given csv-dir first, then the usual repo locations, so the
+        # chart data loads even if --csv-dir points somewhere the CSV isn't.
+        for base in (self.csv_dir, Path.cwd(), config.BASE_DIR, config.BASE_DIR.parent):
+            p = Path(base) / profile.daily_csv
+            if p.exists():
+                s = load_series(p)
+                if s:
+                    return s
+        return {}
 
     def held_symbols(self):
         out = set()
@@ -95,6 +105,9 @@ class GarudaLive:
         always draws."""
         candles = self.feed.ohlc_daily(symbol, 60) or self._candles_from_series(symbol, 60)
         if not candles:
+            print(f"[garuda] no chart data for {symbol} "
+                  f"(kite+csv both empty; in csv={symbol in self.series_by_sym})",
+                  flush=True)
             return
         closes = [c["c"] for c in candles]
         r = rsi(closes, 2)
@@ -131,10 +144,11 @@ class GarudaLive:
             positions.sort(key=lambda x: x["pnl"], reverse=True)
             equity = pf.equity(lambda s: self.price_of(s, pf.holdings.get(s, {}).get("entry_price", 0)))
             win, pfac = _live_stats(pf)
-            win_kind = "closed"
-            if win is None and positions:      # no closed trades yet -> live win rate
-                green = sum(1 for x in positions if x["pnl"] > 0)
-                win, win_kind = round(green / len(positions) * 100), "open"
+            win_kind = "live"
+            if win is None:                    # no closed live trades yet
+                win, win_kind = prof.proven_win, "backtest"
+            green = sum(1 for x in positions if x["pnl"] > 0)
+            win_open = round(green / len(positions) * 100) if positions else None
             chart_sym = positions[0]["sym"] if positions else None
             best = positions[0] if positions else None
             worst = positions[-1] if positions else None
@@ -144,7 +158,9 @@ class GarudaLive:
                 "capital": pf.starting_capital, "equity": round(equity, 0),
                 "pnl_pct": round((equity / pf.starting_capital - 1) * 100, 2),
                 "day_pnl": round(day_pnl, 0), "positions": positions,
-                "win": win, "win_kind": win_kind, "pf": pfac, "cash": round(pf.cash, 0),
+                "win": win, "win_kind": win_kind, "win_open": win_open,
+                "proven_win": prof.proven_win, "proven_ret": prof.proven_ret,
+                "pf": pfac, "cash": round(pf.cash, 0),
                 "buys": self.last_signals[k]["buys"], "sells": self.last_signals[k]["sells"],
                 "chart_sym": chart_sym, "chart": self.charts.get(chart_sym),
             })

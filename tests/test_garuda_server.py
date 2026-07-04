@@ -35,15 +35,18 @@ def test_chart_falls_back_to_local_csv(tmp_path, monkeypatch):
     assert live.chart_for("UNKNOWN") is None      # nothing to draw -> None, no crash
 
 
-def test_live_win_rate_from_open_positions(tmp_path, monkeypatch):
+def test_win_rate_shows_backtest_until_live_trades(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
     live = GarudaLive(csv_dir=str(tmp_path))
     pf = live.portfolios["smallcap"]
-    pf.buy("UP", 10, 100.0, entry_len=250)        # will be marked in profit
-    pf.buy("DN", 10, 100.0, entry_len=250)        # will be marked at a loss
+    pf.buy("UP", 10, 100.0, entry_len=250)        # in profit
+    pf.buy("DN", 10, 100.0, entry_len=250)        # at a loss
     live.prices = {"UP": 110.0, "DN": 90.0}
     sc = next(p for p in live.build_state()["profiles"] if p["key"] == "smallcap")
-    assert sc["win"] == 50 and sc["win_kind"] == "open"   # 1 of 2 green
+    # no closed trades yet -> headline win rate is the validated backtest figure,
+    # with the live "green now" ratio exposed separately.
+    assert sc["win"] == 68 and sc["win_kind"] == "backtest"
+    assert sc["win_open"] == 50                    # 1 of 2 positions green right now
 
 
 def test_server_token_gate():

@@ -16,9 +16,8 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .mkt{font-weight:800;padding:2px 8px;border-radius:4px;font-size:11px}
 .mkt.open{color:var(--grn);border:1px solid #204d3a;background:#0e2a20}.mkt.closed{color:var(--mut);border:1px solid var(--line)}
 @keyframes blink{50%{opacity:.4}}.ist{color:var(--acc)}.loc{color:var(--mut)}
-.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0}
 .stile{background:var(--card);padding:11px 14px}.stile .l{color:var(--mut);font-size:10px}.stile .v{font-size:19px;font-weight:800;margin-top:3px}
-@media(max-width:600px){.summary{grid-template-columns:repeat(2,1fr)}}
 .g{color:var(--grn)}.r{color:var(--red)}.a{color:var(--amb)}.muted{color:var(--mut)}
 
 /* ---- Zerodha-style split: LEFT live list · RIGHT two charts ---- */
@@ -87,7 +86,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
       </div>
       <div class=chartwrap><svg class=chart id=chart viewBox="0 0 620 240" preserveAspectRatio=none></svg>
       <svg class=rsi id=rsi viewBox="0 0 620 70" preserveAspectRatio=none></svg></div>
-      <div class=leg>▲ BUY = RSI-2 &lt; 5 (a 2-day oversold dip — NOT the RSI-14 Zerodha shows by default) · ▼ SELL = RSI-2 &gt; 85.</div>
+      <div class=leg><span class=g>▲ BUY</span> RSI-2 &lt; 5 · <span class=r>▼ SELL</span> RSI-2 &gt; 85 · amber line = RSI-2</div>
       <div class=sig id=sig></div>
     </div>
     <div class=chartcard>
@@ -154,28 +153,34 @@ async function loadChart(sym){curSym=sym;document.getElementById('csym').textCon
 function render(d){
  if(!d)return;DATA=d;
  const t=d.totals||{equity:0,pnl_pct:0,day_pnl:0,positions:0};drawPnl(t.curve);
+ let wsum=0,wn=0,anyLive=false;
+ d.profiles.forEach(p=>{if(p.win!=null&&p.positions.length){wsum+=p.win*p.positions.length;wn+=p.positions.length;}if(p.win_kind==='live')anyLive=true;});
+ const combWin=wn?Math.round(wsum/wn):null;
  document.getElementById('summary').innerHTML=
   `<div class=stile><div class=l>COMBINED EQUITY (PAPER)</div><div class=v>${money(t.equity)}</div></div>
    <div class=stile><div class=l>TOTAL P&L</div><div class="v ${t.pnl_pct>=0?'g':'r'}">${pct(t.pnl_pct)}</div></div>
    <div class=stile><div class=l>DAY P&L</div><div class="v ${t.day_pnl>=0?'g':'r'}">${(t.day_pnl>=0?'+':'')+money(t.day_pnl)}</div></div>
+   <div class=stile><div class=l>WIN RATE ${anyLive?'(live)':'(backtest)'}</div><div class="v a">${combWin==null?'—':combWin+'%'}</div></div>
    <div class=stile><div class=l>OPEN POSITIONS</div><div class=v>${t.positions}</div></div>`;
  const q=(document.getElementById('search').value||'').trim().toUpperCase();
  const list=document.getElementById('list');let html='';
  d.profiles.forEach(p=>{
   if(FILTER!=='all'&&FILTER!==p.key)return;
   const rows=p.positions.filter(x=>!q||x.sym.includes(q));
-  const win=p.win==null?'—':(p.win+'%'+(p.win_kind==='open'?' live':''));
-  const pf=p.pf==null?'':' · PF '+p.pf;
+  const wl=p.win_kind==='live'?'live':'avg';
+  const win=p.win==null?'—':p.win+'% <span class=muted>'+wl+'</span>';
+  const green=p.win_open==null?'':` · <b class=g>${p.win_open}%</b> up now`;
   html+=`<div class=bothdr>
     <div class=nm>${p.name} <span class=d>· ${p.desc}</span></div>
-    <div class=bstat>${money(p.equity)} · <b class="${p.pnl_pct>=0?'g':'r'}">${pct(p.pnl_pct)}</b> · win <b class=a>${win}</b> · ${p.positions.length} pos${pf}</div>
+    <div class=bstat>${money(p.equity)} · <b class="${p.pnl_pct>=0?'g':'r'}">${pct(p.pnl_pct)}</b> · WIN <b class=a>${win}</b>${green} · ${p.positions.length} pos</div>
   </div>`;
-  html+=`<table class=wl><tr><th class=sym>SYMBOL</th><th>RSI-2</th><th>LTP</th><th>CHG</th><th>P&L</th></tr>`;
-  if(!rows.length)html+=`<tr><td colspan=5 class=muted style=text-align:center>${q?'no match':'no open positions'}</td></tr>`;
+  html+=`<table class=wl><tr><th class=sym>SYMBOL</th><th>QTY</th><th>RSI-2</th><th>LTP</th><th>CHG</th><th>P&L</th></tr>`;
+  if(!rows.length)html+=`<tr><td colspan=6 class=muted style=text-align:center>${q?'no match':'no open positions'}</td></tr>`;
   rows.forEach(x=>{const key=p.key+x.sym,pv=prev[key],cls=pv==null?'':(x.ltp>pv?'flash-up':(x.ltp<pv?'flash-dn':''));prev[key]=x.ltp;
    const sel=x.sym===curSym?' sel':'';
    html+=`<tr class="prow${sel}" data-sym="${x.sym}" onclick="loadChart('${x.sym}')">
     <td class=sym>${x.sym}<span class=mtag>${p.key==='smallcap'?'SC':'MC'}</span></td>
+    <td>${x.qty}</td>
     <td class=a>${x.rsi2==null?'—':x.rsi2}</td>
     <td class="${cls}">${x.ltp.toFixed(2)}</td>
     <td class="${x.chg>=0?'g':'r'}">${pct(x.chg)}</td>
