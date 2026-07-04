@@ -131,7 +131,7 @@ function svgWrap(vw,vh,body){return `<svg class=csvg viewBox="0 0 ${vw} ${vh}" p
 function drawChart(ch,sym){
  document.getElementById('csym').textContent=sym||'—';
  const chartEl=document.getElementById('chart'),rsiEl=document.getElementById('rsi');
- if(!ch||!ch.candles||!ch.candles.length){chartEl.innerHTML='<div class=cempty>loading chart…</div>';rsiEl.innerHTML='';return;}
+ if(!ch||!ch.candles||!ch.candles.length){chartEl.innerHTML='<div class=cempty>no chart data for '+(sym||'—')+'</div>';rsiEl.innerHTML='';return;}
  const d=ch.candles,n=d.length,hi=Math.max(...d.map(x=>x.h)),lo=Math.min(...d.map(x=>x.l)),rng=(hi-lo)||1;
  const W=620,H=240,cw=W/n,y=v=>10+(hi-v)/rng*(H-30);let s='';
  // price grid + labels so the chart area is unmistakable
@@ -147,6 +147,8 @@ function drawChart(ch,sym){
  let rs=`<line x1=0 y1=${ry(85)} x2=620 y2=${ry(85)} stroke=#4d2020 stroke-dasharray=3/><line x1=0 y1=${ry(5)} x2=620 y2=${ry(5)} stroke=#204d3a stroke-dasharray=3/>`;
  let pts='';for(let i=0;i<n;i++)if(r[i]!=null)pts+=`${i*cw+cw/2},${ry(r[i])} `;
  rs+=`<polyline fill=none stroke=#f5b23e stroke-width=1.5 points="${pts}"/>`;rsiEl.innerHTML=svgWrap(620,rh,rs);
+ // diagnostic: did the browser actually build SVG nodes from the innerHTML?
+ if(!chartEl.querySelector('svg'))chartEl.innerHTML='<div class=cempty style=color:#ff5d5d>DIAG: SVG-innerHTML failed ('+n+' candles received)</div>';
 }
 function drawPnl(curve){
  const c=document.getElementById('pnlchart');
@@ -171,7 +173,9 @@ function updateQuote(sym){
 function previewSym(){const s=(document.getElementById('csearch').value||'').trim().toUpperCase();if(s)loadChart(s);}
 async function loadChart(sym){curSym=sym;document.getElementById('csym').textContent=sym;updateQuote(sym);
  document.querySelectorAll('.prow').forEach(r=>r.classList.toggle('sel',r.dataset.sym===sym));
- try{const r=await fetch('/chart?sym='+encodeURIComponent(sym)+'&token='+encodeURIComponent(TOKEN));drawChart(await r.json(),sym);}catch(e){}}
+ try{const r=await fetch('/chart?sym='+encodeURIComponent(sym)+'&token='+encodeURIComponent(TOKEN));
+  const j=await r.json();drawChart(j,sym);}
+ catch(e){document.getElementById('chart').innerHTML='<div class=cempty style=color:#ff5d5d>DIAG: '+(e&&e.message||e)+'</div>';document.getElementById('rsi').innerHTML='';}}
 
 function render(d){
  if(!d)return;DATA=d;
