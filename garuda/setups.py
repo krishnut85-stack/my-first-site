@@ -44,10 +44,47 @@ def rsi(closes, period: int = 2):
 
 
 def sma(closes, period: int):
+    """Simple moving average, O(n) via a rolling sum (was O(n*period))."""
     out = [None] * len(closes)
-    for i in range(period - 1, len(closes)):
-        out[i] = sum(closes[i - period + 1:i + 1]) / period
+    if period <= 0 or len(closes) < period:
+        return out
+    run = sum(closes[:period])
+    out[period - 1] = run / period
+    for i in range(period, len(closes)):
+        run += closes[i] - closes[i - period]
+        out[i] = run / period
     return out
+
+
+def _simulate(closes, r, s, entry_rsi, exit_rsi, trend_sma, max_hold, cost,
+              stop_loss, profit_target, use_trend):
+    """The trade loop given PRE-COMPUTED rsi (r) and sma (s). Split out so the
+    sweep computes the indicators once per stock, not once per parameter combo."""
+    trades = []
+    i = trend_sma
+    n = len(closes)
+    while i < n - 1:
+        in_uptrend = (not use_trend) or (s[i] is not None and closes[i] > s[i])
+        if in_uptrend and (r[i] is not None and r[i] < entry_rsi) and closes[i] > 0:
+            entry = closes[i]
+            j = i + 1
+            while j < n - 1:
+                px = closes[j]
+                if px <= 0:
+                    break
+                if stop_loss and px <= entry * (1 - stop_loss):
+                    break
+                if profit_target and px >= entry * (1 + profit_target):
+                    break
+                if (r[j] is not None and r[j] > exit_rsi) or (j - i) >= max_hold:
+                    break
+                j += 1
+            if closes[j] > 0:
+                trades.append((closes[j] - entry) / entry - 2 * cost)
+            i = j + 1
+        else:
+            i += 1
+    return trades
 
 
 def oversold_bounce_trades(closes, entry_rsi=10.0, exit_rsi=65.0,
@@ -64,32 +101,8 @@ def oversold_bounce_trades(closes, entry_rsi=10.0, exit_rsi=65.0,
         return []
     r = rsi(closes, 2)
     s = sma(closes, trend_sma)
-    trades = []
-    i = trend_sma
-    while i < len(closes) - 1:
-        in_uptrend = (not use_trend) or (s[i] is not None and closes[i] > s[i])
-        oversold = r[i] is not None and r[i] < entry_rsi
-        if in_uptrend and oversold and closes[i] > 0:
-            entry = closes[i]
-            j = i + 1
-            while j < len(closes) - 1:
-                px = closes[j]
-                if px <= 0:
-                    break                              # bad/zero-price row: stop here
-                if stop_loss and px <= entry * (1 - stop_loss):
-                    break                              # stop-loss hit
-                if profit_target and px >= entry * (1 + profit_target):
-                    break                              # profit target hit
-                if (r[j] is not None and r[j] > exit_rsi) or (j - i) >= max_hold:
-                    break
-                j += 1
-            exitp = closes[j]
-            if exitp > 0:                              # skip trades on garbage prices
-                trades.append((exitp - entry) / entry - 2 * cost)
-            i = j + 1
-        else:
-            i += 1
-    return trades
+    return _simulate(closes, r, s, entry_rsi, exit_rsi, trend_sma, max_hold,
+                     cost, stop_loss, profit_target, use_trend)
 
 
 def backtest(panel: dict, **kw) -> dict:
@@ -131,19 +144,37 @@ def sweep(panel: dict, grids: dict | None = None) -> list:
     """Grid-search entry/exit/hold/trend and return configs ranked by avg-return
     per trade after costs (best first). No stop-loss in the grid — it hurt."""
     import itertools
+    import statistics
     g = grids or {
         "entry": [5, 10, 15, 20, 25, 30],
         "exit": [65, 75, 85],
         "hold": [10, 15, 20, 30],
         "trend": [True, False],
     }
+    trend_sma = 200
+    cost = config.CROSS_COST_PER_SIDE
+    # Compute rsi + sma ONCE per stock (the expensive part), reuse for every combo.
+    prepared = []
+    for closes in panel.values():
+        if len(closes) >= trend_sma + 5:
+            prepared.append((closes, rsi(closes, 2), sma(closes, trend_sma)))
+    print(f"  prepared {len(prepared)} stocks with enough history", flush=True)
+
+    combos = list(itertools.product(g["entry"], g["exit"], g["hold"], g["trend"]))
     out = []
-    for e, x, h, t in itertools.product(g["entry"], g["exit"], g["hold"], g["trend"]):
-        r = backtest(panel, entry_rsi=e, exit_rsi=x, max_hold=h, use_trend=t)
-        if r.get("trades"):
-            out.append({"avg": r["avg_return_pct"], "pf": r["profit_factor"] or 0.0,
-                        "win": r["win_rate_pct"], "trades": r["trades"],
+    for ci, (e, x, h, t) in enumerate(combos, 1):
+        rets = []
+        for closes, r, s in prepared:
+            rets.extend(_simulate(closes, r, s, e, x, trend_sma, h, cost, 0.0, 0.0, t))
+        if rets:
+            wins = [a for a in rets if a > 0]
+            gl = -sum(a for a in rets if a <= 0)
+            out.append({"avg": statistics.mean(rets) * 100,
+                        "pf": (sum(wins) / gl) if gl > 0 else 0.0,
+                        "win": len(wins) / len(rets) * 100, "trades": len(rets),
                         "entry": e, "exit": x, "hold": h, "trend": t})
+        if ci % 12 == 0 or ci == len(combos):
+            print(f"  swept {ci}/{len(combos)} combos...", flush=True)
     out.sort(key=lambda d: d["avg"], reverse=True)
     return out
 
