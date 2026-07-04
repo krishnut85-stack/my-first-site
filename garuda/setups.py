@@ -69,11 +69,13 @@ def oversold_bounce_trades(closes, entry_rsi=10.0, exit_rsi=65.0,
     while i < len(closes) - 1:
         in_uptrend = (not use_trend) or (s[i] is not None and closes[i] > s[i])
         oversold = r[i] is not None and r[i] < entry_rsi
-        if in_uptrend and oversold:
+        if in_uptrend and oversold and closes[i] > 0:
             entry = closes[i]
             j = i + 1
             while j < len(closes) - 1:
                 px = closes[j]
+                if px <= 0:
+                    break                              # bad/zero-price row: stop here
                 if stop_loss and px <= entry * (1 - stop_loss):
                     break                              # stop-loss hit
                 if profit_target and px >= entry * (1 + profit_target):
@@ -81,8 +83,9 @@ def oversold_bounce_trades(closes, entry_rsi=10.0, exit_rsi=65.0,
                 if (r[j] is not None and r[j] > exit_rsi) or (j - i) >= max_hold:
                     break
                 j += 1
-            ret = (closes[j] - entry) / entry - 2 * cost   # entry + exit cost
-            trades.append(ret)
+            exitp = closes[j]
+            if exitp > 0:                              # skip trades on garbage prices
+                trades.append((exitp - entry) / entry - 2 * cost)
             i = j + 1
         else:
             i += 1

@@ -38,6 +38,15 @@ def test_oversold_bounce_has_edge_on_reverting_uptrend():
     assert avg > 0                # and positive expectancy before costs
 
 
+def test_handles_zero_price_rows_without_crashing():
+    # some illiquid microcaps carry 0.0 closes — must not ZeroDivision
+    closes = _uptrend_with_dips()
+    closes[300] = 0.0
+    closes[301] = 0.0
+    trades = oversold_bounce_trades(closes, cost_per_side=0.0)  # no exception
+    assert all(isinstance(x, float) for x in trades)
+
+
 def test_downtrend_triggers_nothing():
     # strictly declining -> never above SMA-200 -> the trend filter blocks entry
     down = [1000.0 * (0.999 ** i) for i in range(400)]
