@@ -34,6 +34,7 @@ def _refresh_loop(live: GarudaLive, every: float = 3.0):
     while True:
         try:
             live.refresh_prices()
+            live.maybe_scan()                  # auto-book the day's trades once, live
             if chart_tick % 20 == 0:           # refresh chart candles ~once a minute
                 for p in live.portfolios.values():
                     if p.holdings:

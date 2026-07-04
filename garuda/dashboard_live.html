@@ -48,6 +48,9 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 .chartwrap{padding:8px 6px 4px}svg.chart,svg.rsi{width:100%;display:block}
 .leg{color:var(--mut);font-size:10px;padding:0 14px 10px}
 .qbadge{font-size:11px}.qbadge b{font-size:15px}
+.mktnote{margin:8px 0 0;padding:8px 12px;border-radius:8px;font-size:11px;border:1px solid var(--line)}
+.mktnote.open{color:var(--grn);border-color:#204d3a;background:#0c1a14}
+.mktnote.closed{color:var(--mut);background:#10141b}
 .foot{margin-top:16px;color:var(--mut);font-size:10px;border-top:1px solid var(--line);padding-top:10px}
 .sig{padding:8px 14px;border-top:1px solid var(--line);font-size:11px}
 .sig h4{margin:0 0 6px;color:var(--mut);font-size:10px;letter-spacing:1px;text-transform:uppercase}
@@ -62,6 +65,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 </div>
 
 <div class=summary id=summary></div>
+<div class=mktnote id=mktnote></div>
 
 <div class=main>
   <!-- LEFT: live share list, grouped by bot, updating from Kite -->
@@ -162,6 +166,10 @@ function render(d){
    <div class=stile><div class=l>DAY P&L</div><div class="v ${t.day_pnl>=0?'g':'r'}">${(t.day_pnl>=0?'+':'')+money(t.day_pnl)}</div></div>
    <div class=stile><div class=l>WIN RATE ${anyLive?'(live)':'(backtest)'}</div><div class="v a">${combWin==null?'—':combWin+'%'}</div></div>
    <div class=stile><div class=l>OPEN POSITIONS</div><div class=v>${t.positions}</div></div>`;
+ const mo=d.market_open,note=document.getElementById('mktnote');note.className='mktnote '+(mo?'open':'closed');
+ note.innerHTML=mo
+   ? `● <b>MARKET OPEN</b> — trading live at Kite prices. New RSI-2 entries/exits book during the session${d.last_scan?' · last scan '+d.last_scan:''}.`
+   : `<b>${d.market_status||'MARKET CLOSED'}</b> — holding ${t.positions} positions from the last session at their last traded price. <b>No trades are booked while the market is closed</b>; new entries/exits resume at 09:15 IST on the next trading day.`;
  const q=(document.getElementById('search').value||'').trim().toUpperCase();
  const list=document.getElementById('list');let html='';
  d.profiles.forEach(p=>{

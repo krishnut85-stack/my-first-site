@@ -10,7 +10,8 @@ from pathlib import Path
 from . import config
 from .cross import load_series
 from .feed import KiteFeed
-from .portfolio import LivePortfolio
+from .market import is_market_open, market_status
+from .portfolio import LivePortfolio, _today
 from .scan import run_scan
 from .setups import rsi
 from .strategy import PROFILES
@@ -29,6 +30,7 @@ class GarudaLive:
         self.prices = {}      # symbol -> live ltp
         self.charts = {}      # symbol -> {candles, rsi, buy_i, sell_i}
         self.last_signals = {k: {"buys": [], "sells": []} for k in PROFILES}
+        self.last_scan_date = None    # IST date of the last executed scan (once/session)
         # Every symbol's daily closes from the local CSVs — the guaranteed chart
         # source when Kite's historical API isn't available for a name.
         self.series_by_sym = {}
@@ -58,19 +60,36 @@ class GarudaLive:
         return out
 
     # --- daily scan ---------------------------------------------------------
-    def scan(self):
+    def scan(self, force=False):
+        """Book the day's exits + entries. PAPER, but timed like live trading:
+        it only transacts while the market is open, and fills at the live price
+        — never on a weekend/holiday or outside 09:15-15:30 IST. Pass force=True
+        to override (e.g. a manual backfill)."""
+        if not force and not is_market_open():
+            return {k: {"status": f"no trades — market {market_status().lower()}"}
+                    for k in PROFILES}
+        self.refresh_prices()          # fill entries/exits at the live price
         results = {}
         for k, prof in PROFILES.items():
             series = self._series(prof)
             if not series:
                 results[k] = {"error": f"{prof.daily_csv} not found in {self.csv_dir}"}
                 continue
-            res = run_scan(prof, series, self.portfolios[k])
+            res = run_scan(prof, series, self.portfolios[k], live_prices=self.prices)
             self.portfolios[k].save(_pf_path(k))
             self.last_signals[k] = {"buys": [b["symbol"] for b in res["buys"]],
                                     "sells": [s["symbol"] for s in res["sells"]]}
             results[k] = res
+        self.last_scan_date = _today()
         return results
+
+    def maybe_scan(self):
+        """Auto-run the scan once per trading session, the moment the market is
+        open — so entries/exits appear live, not pre-booked on a closed market."""
+        if is_market_open() and self.last_scan_date != _today():
+            print(f"[garuda] market open — running the daily scan ({_today()})", flush=True)
+            return self.scan()
+        return None
 
     # --- live price refresh (call on a timer) ------------------------------
     def refresh_prices(self):
@@ -177,7 +196,9 @@ class GarudaLive:
         hm = self.portfolios["microcap"].history
         n = min(len(hs), len(hm))
         totals["curve"] = [round(hs[i]["equity"] + hm[i]["equity"], 0) for i in range(n)]
-        return {"live": self.feed.live, "profiles": profs, "totals": totals}
+        return {"live": self.feed.live, "profiles": profs, "totals": totals,
+                "market_open": is_market_open(), "market_status": market_status(),
+                "last_scan": self.last_scan_date}
 
 
 def _live_stats(pf):

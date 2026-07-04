@@ -49,6 +49,34 @@ def test_win_rate_shows_backtest_until_live_trades(tmp_path, monkeypatch):
     assert sc["win_open"] == 50                    # 1 of 2 positions green right now
 
 
+def test_market_hours_gate():
+    from datetime import datetime
+    from garuda.market import is_market_open, is_trading_day, HOLIDAYS
+    sat = datetime(2026, 7, 4, 11, 0)          # Saturday, mid-day
+    mon_open = datetime(2026, 7, 6, 11, 0)     # Monday, 11:00 IST
+    mon_pre = datetime(2026, 7, 6, 8, 50)      # Monday, before 09:15
+    mon_post = datetime(2026, 7, 6, 16, 0)     # Monday, after 15:30
+    assert not is_market_open(sat) and not is_trading_day(sat)
+    assert is_market_open(mon_open)
+    assert not is_market_open(mon_pre) and not is_market_open(mon_post)
+    HOLIDAYS.add("2026-07-06")
+    try:
+        assert not is_market_open(mon_open)    # holiday overrides
+    finally:
+        HOLIDAYS.discard("2026-07-06")
+
+
+def test_scan_books_nothing_when_market_closed(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    monkeypatch.setattr("garuda.live.is_market_open", lambda *a: False)
+    live = GarudaLive(csv_dir=str(tmp_path))
+    live.series_by_sym["KEI"] = [100.0 - i * 0.5 for i in range(60)]  # oversold-ish
+    res = live.scan()                          # market closed -> no trades
+    assert all("status" in v for v in res.values())
+    assert not any(pf.holdings for pf in live.portfolios.values())
+    assert live.build_state()["market_open"] is False
+
+
 def test_server_token_gate():
     srv._TOKEN["value"] = "secret"
     srv._STATE["json"] = json.dumps({"profiles": []}).encode()
