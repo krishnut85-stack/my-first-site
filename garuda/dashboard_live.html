@@ -102,7 +102,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
                  onkeydown="if(event.key==='Enter')previewSym()">
           <button class=cbtn onclick=previewSym()>view</button>
           <button class=cbtn onclick=fitChart() title="fit / reset zoom">⤢ fit</button>
-          <button class=cbtn onclick="openPro(curChartSym)" title="full TradingView chart: drawing tools, indicators, timeframes">⛶ pro</button>
+          <button class=cbtn onclick="openPro(curChartSym)" title="open this stock on TradingView (new tab) — full tools + NSE data via your login">⛶ TradingView ↗</button>
         </div>
         <div id=cquote class=qbadge></div>
       </div>
@@ -117,11 +117,6 @@ table{width:100%;border-collapse:collapse;font-size:12px}
   </div>
 </div>
 <div class=foot id=foot>Garuda · paper on live Kite prices · served from your droplet · <span id=upd></span></div>
-</div>
-<div id=promodal class=promodal>
-  <div class=prohead><b id=prosym>Pro chart</b>
-    <button class=cbtn onclick=closePro()>✕ close</button></div>
-  <div id=tvpro class=tvpro></div>
 </div>
 <script>/* TradingView Lightweight Charts v4.2.0 (Apache-2.0) */
 /*!
@@ -203,22 +198,12 @@ function drawChart(ch,sym){
  rsiSeries.setData(rd);
  if(curChartSym!==sym){fitChart();curChartSym=sym;}
 }
-// full TradingView chart (all drawing tools + indicators) in an overlay
+// open the REAL TradingView chart in a new tab — uses your logged-in TradingView
+// session so NSE data + all tools work (the free embed has no NSE data).
 function openPro(sym){
  sym=sym||curChartSym;if(!sym)return;
- document.getElementById('prosym').textContent='Pro chart · NSE:'+sym;
- document.getElementById('promodal').style.display='flex';
- const make=()=>{document.getElementById('tvpro').innerHTML='';
-  new TradingView.widget({autosize:true,symbol:'NSE:'+sym,interval:'D',timezone:'Asia/Kolkata',
-   theme:'dark',style:'1',locale:'en',container_id:'tvpro',hide_side_toolbar:false,
-   allow_symbol_change:true,withdateranges:true,studies:['STD;SMA','RSI@tv-basicstudies']});};
- if(window.TradingView&&window.TradingView.widget){make();}
- else{const s=document.createElement('script');s.src='https://s3.tradingview.com/tv.js';
-  s.onload=make;s.onerror=()=>{document.getElementById('tvpro').innerHTML='<div class=cempty style="color:#ff5d5d;padding:30px">Could not load TradingView (no internet on this computer?)</div>';};
-  document.head.appendChild(s);}
+ window.open('https://www.tradingview.com/chart/?symbol='+encodeURIComponent('NSE:'+sym),'_blank','noopener');
 }
-function closePro(){document.getElementById('promodal').style.display='none';document.getElementById('tvpro').innerHTML='';}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closePro();});
 function watchItem(sym){for(const p of (DATA?.profiles||[]))for(const x of (p.watch||[]))if(x.sym===sym)return x;return null;}
 // live candle: while the market is open, grow today's bar with the price like Zerodha
 function liveTick(){
