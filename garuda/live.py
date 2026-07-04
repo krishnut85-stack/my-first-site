@@ -31,16 +31,21 @@ class GarudaLive:
         self.charts = {}      # symbol -> {candles, rsi, buy_i, sell_i}
         self.last_signals = {k: {"buys": [], "sells": []} for k in PROFILES}
         self.last_scan_date = None    # IST date of the last executed scan (once/session)
-        # Every symbol's daily closes from the local CSVs — the guaranteed chart
-        # source when Kite's historical API isn't available for a name.
-        self.series_by_sym = {}
-        self.universe = {}        # per-profile symbol list (for search/preview)
+        # Every symbol's dated daily closes from the local CSVs — the guaranteed
+        # chart source when Kite's historical API isn't available for a name.
+        from .cross import _load_long
+        self.series_by_sym = {}     # sym -> [closes]
+        self.dated_by_sym = {}      # sym -> [(date, close)] sorted by date
+        self.universe = {}          # per-profile symbol list (for search/preview)
         for k, prof in PROFILES.items():
-            s = self._series(prof)
-            for sym, c in s.items():
-                self.series_by_sym.setdefault(sym, c)
-            self.universe[k] = sorted(s.keys())
-            print(f"[garuda] {k}: loaded {len(s)} symbols for charts "
+            path = self._csv_path(prof)
+            long = _load_long(path) if path else {}
+            for sym, dv in long.items():
+                items = sorted(dv.items())
+                self.dated_by_sym.setdefault(sym, items)
+                self.series_by_sym.setdefault(sym, [c for _, c in items])
+            self.universe[k] = sorted(long.keys())
+            print(f"[garuda] {k}: loaded {len(long)} symbols for charts "
                   f"({prof.daily_csv})", flush=True)
         # Pre-compute each stock's latest RSI-2 (daily bars, so it's static
         # intraday) for the live market-watch list.
@@ -50,16 +55,18 @@ class GarudaLive:
             self.rsi_by_sym[sym] = round(r[-1], 1) if r and r[-1] is not None else None
 
     # --- data ---------------------------------------------------------------
-    def _series(self, profile):
+    def _csv_path(self, profile):
         # Look in the given csv-dir first, then the usual repo locations, so the
         # chart data loads even if --csv-dir points somewhere the CSV isn't.
         for base in (self.csv_dir, Path.cwd(), config.BASE_DIR, config.BASE_DIR.parent):
             p = Path(base) / profile.daily_csv
             if p.exists():
-                s = load_series(p)
-                if s:
-                    return s
-        return {}
+                return p
+        return None
+
+    def _series(self, profile):
+        p = self._csv_path(profile)
+        return load_series(p) if p else {}
 
     def held_symbols(self):
         out = set()
@@ -120,42 +127,46 @@ class GarudaLive:
             self.refresh_chart(symbol)
         return self.charts.get(symbol)
 
-    def _candles_from_series(self, symbol, days=60):
-        """Synthesise daily candles from the local CSV closes so every symbol
-        renders a chart even when Kite has no history for it. Each bar's body
-        spans yesterday's close -> today's close."""
-        closes = self.series_by_sym.get(symbol)
-        if not closes:
+    def _candles_from_series(self, symbol, days=300):
+        """Synthesise dated daily candles from the local CSV closes so every
+        symbol renders a chart even when Kite has no history for it. Each bar's
+        body spans yesterday's close -> today's close."""
+        dated = self.dated_by_sym.get(symbol)
+        if not dated:
             return []
-        closes = closes[-days:]
-        out, prev = [], closes[0]
-        for c in closes:
-            out.append({"o": round(prev, 2), "h": round(max(prev, c), 2),
+        dated = dated[-days:]
+        out, prev = [], dated[0][1]
+        for dt, c in dated:
+            out.append({"t": dt, "o": round(prev, 2), "h": round(max(prev, c), 2),
                         "l": round(min(prev, c), 2), "c": round(c, 2)})
             prev = c
         return out
 
     def refresh_chart(self, symbol):
-        """Cache daily candles + RSI-2 + entry/exit markers for one symbol.
-        Prefers real Kite OHLC; falls back to local-CSV closes so the chart
-        always draws."""
-        candles = self.feed.ohlc_daily(symbol, 60) or self._candles_from_series(symbol, 60)
+        """Cache ~1yr of daily candles + RSI-2 + all oversold/overbought signal
+        markers for one symbol. Prefers real Kite OHLC; falls back to local-CSV
+        closes so the chart always draws."""
+        candles = self.feed.ohlc_daily(symbol, 300) or self._candles_from_series(symbol, 300)
         if not candles:
             print(f"[garuda] no chart data for {symbol} "
-                  f"(kite+csv both empty; in csv={symbol in self.series_by_sym})",
+                  f"(kite+csv both empty; in csv={symbol in self.dated_by_sym})",
                   flush=True)
             return
         closes = [c["c"] for c in candles]
         r = rsi(closes, 2)
-        buy_i = next((i for i, v in enumerate(r) if i > 5 and v is not None and v < 8), None)
-        sell_i = None
-        if buy_i is not None:
-            sell_i = next((i for i in range(buy_i + 1, len(r))
-                           if r[i] is not None and r[i] > 85), None)
+        markers, prev = [], None
+        for i, v in enumerate(r):
+            if v is None:
+                continue
+            if v < 5 and (prev is None or prev >= 5):        # crossed into oversold
+                markers.append({"t": candles[i]["t"], "type": "buy"})
+            elif v > 85 and (prev is None or prev <= 85):    # crossed into overbought
+                markers.append({"t": candles[i]["t"], "type": "sell"})
+            prev = v
         self.charts[symbol] = {
             "candles": candles,
             "rsi": [round(v, 1) if v is not None else None for v in r],
-            "buy_i": buy_i, "sell_i": sell_i,
+            "markers": markers,
         }
 
     # --- state for the dashboard -------------------------------------------

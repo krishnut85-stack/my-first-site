@@ -28,10 +28,12 @@ def test_chart_falls_back_to_local_csv(tmp_path, monkeypatch):
     # local CSV closes so clicking a share always shows a candle chart.
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
     live = GarudaLive(csv_dir=str(tmp_path))
-    live.series_by_sym["KEI"] = [100.0 + i for i in range(40)]
+    live.dated_by_sym["KEI"] = [(f"2026-{(i // 28) + 1:02d}-{(i % 28) + 1:02d}", 100.0 + i)
+                                for i in range(40)]
     ch = live.chart_for("KEI")
     assert ch and ch["candles"] and len(ch["candles"]) == 40
-    assert all({"o", "h", "l", "c"} <= set(c) for c in ch["candles"])
+    assert all({"t", "o", "h", "l", "c"} <= set(c) for c in ch["candles"])
+    assert "markers" in ch
     assert live.chart_for("UNKNOWN") is None      # nothing to draw -> None, no crash
 
 

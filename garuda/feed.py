@@ -77,7 +77,7 @@ class KiteFeed:
         return (self._tokens or {}).get(symbol)
 
     def ohlc_daily(self, symbol, days=70) -> list:
-        """Recent daily candles [{o,h,l,c}] for one symbol ([] if unavailable)."""
+        """Recent daily candles [{t,o,h,l,c}] for one symbol ([] if unavailable)."""
         if not self.kite:
             return []
         tok = self._token(symbol)
@@ -89,5 +89,10 @@ class KiteFeed:
                 tok, date.today() - timedelta(days=days * 2), date.today(), "day")
         except Exception:  # noqa: BLE001
             return []
-        return [{"o": d["open"], "h": d["high"], "l": d["low"], "c": d["close"]}
-                for d in data][-days:]
+        out = []
+        for d in data:
+            dt = d.get("date")
+            t = dt.strftime("%Y-%m-%d") if hasattr(dt, "strftime") else str(dt)[:10]
+            out.append({"t": t, "o": d["open"], "h": d["high"],
+                        "l": d["low"], "c": d["close"]})
+        return out[-days:]
