@@ -45,6 +45,10 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 
 .chartcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .chead{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:8px}
+.cpreview{display:flex;align-items:center;gap:4px}
+.csearch{background:#0b1017;border:1px solid var(--line);border-radius:6px;color:var(--txt);padding:4px 9px;font:inherit;font-size:12px;width:160px;max-width:42vw}
+.cbtn{background:var(--card);border:1px solid var(--acc);color:var(--acc);border-radius:6px;padding:4px 11px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.cbtn:hover{background:#0e2a20}
 .chartwrap{padding:8px 6px 4px}svg.chart,svg.rsi{width:100%;display:block}
 .leg{color:var(--mut);font-size:10px;padding:0 14px 10px}
 .qbadge{font-size:11px}.qbadge b{font-size:15px}
@@ -86,6 +90,11 @@ table{width:100%;border-collapse:collapse;font-size:12px}
     <div class=chartcard>
       <div class=chead>
         <div><b id=csym>—</b> <span class=muted>· daily candles + RSI-2</span></div>
+        <div class=cpreview>
+          <input class=csearch id=csearch placeholder="preview any symbol e.g. KEI" autocomplete=off
+                 onkeydown="if(event.key==='Enter')previewSym()">
+          <button class=cbtn onclick=previewSym()>view</button>
+        </div>
         <div id=cquote class=qbadge></div>
       </div>
       <div class=chartwrap><svg class=chart id=chart viewBox="0 0 620 240" preserveAspectRatio=none></svg>
@@ -146,10 +155,11 @@ function drawPnl(curve){
 function findPos(sym){for(const p of (DATA?.profiles||[]))for(const x of p.positions)if(x.sym===sym)return{x,p};return null;}
 function updateQuote(sym){
  const f=findPos(sym);const el=document.getElementById('cquote');const sg=document.getElementById('sig');
- if(!f){el.innerHTML='';sg.innerHTML='';return;}
+ if(!f){el.innerHTML='<span class=muted>preview · not held</span>';sg.innerHTML='';return;}
  const x=f.x;el.innerHTML=`<b>${x.ltp.toFixed(2)}</b> <span class="${x.chg>=0?'g':'r'}">${pct(x.chg)}</span> <span class=muted>· entry ${x.entry.toFixed(2)} · RSI-2 ${x.rsi2==null?'—':x.rsi2}</span>`;
  sg.innerHTML=`<h4>${LABEL[f.p.key]} · position</h4>Holding <b>${x.qty}</b> @ ₹${x.entry.toFixed(2)} · now ₹${x.ltp.toFixed(2)} · P&L <b class="${x.pnl>=0?'g':'r'}">${(x.pnl>=0?'+':'')+money(x.pnl)}</b>`;
 }
+function previewSym(){const s=(document.getElementById('csearch').value||'').trim().toUpperCase();if(s)loadChart(s);}
 async function loadChart(sym){curSym=sym;document.getElementById('csym').textContent=sym;updateQuote(sym);
  document.querySelectorAll('.prow').forEach(r=>r.classList.toggle('sel',r.dataset.sym===sym));
  try{const r=await fetch('/chart?sym='+encodeURIComponent(sym)+'&token='+encodeURIComponent(TOKEN));drawChart(await r.json(),sym);}catch(e){}}
