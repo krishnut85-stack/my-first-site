@@ -30,16 +30,22 @@ def run_scan(profile, series: dict, portfolio: LivePortfolio, live_prices=None):
     r_cache = {s: rsi(c, 2) for s, c in series.items() if len(c) > 2}
 
     # --- 1. exits -------------------------------------------------------------
+    # Count hold-days from calendar dates, not series length: the daily fetch is
+    # a rolling window so len(series) is ~constant day to day. Increment once per
+    # new scan-date so restarts don't over-count.
+    today = _today()
     sells = []
     for sym, h in list(portfolio.holdings.items()):
         c = series.get(sym)
         if not c:
             continue
-        held = len(c) - h.get("entry_len", len(c))
+        if h.get("last_date") != today:
+            h["bars_held"] = h.get("bars_held", 0) + 1
+            h["last_date"] = today
         cur = (r_cache.get(sym) or [None])[-1]
         recovered = cur is not None and cur > profile.exit_rsi
-        if recovered or held >= profile.max_hold:
-            reason = "RSI recovered" if recovered else f"{profile.max_hold}-bar hold"
+        if recovered or h.get("bars_held", 0) >= profile.max_hold:
+            reason = "RSI recovered" if recovered else f"{profile.max_hold}-day hold"
             pnl = portfolio.sell(sym, price_of(sym), reason=reason)
             sells.append({"symbol": sym, "price": round(price_of(sym), 2),
                           "pnl": round(pnl, 2), "reason": reason})

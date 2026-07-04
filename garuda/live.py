@@ -102,7 +102,10 @@ class GarudaLive:
             equity = pf.equity(lambda s: self.price_of(s, pf.holdings.get(s, {}).get("entry_price", 0)))
             win, pfac = _live_stats(pf)
             chart_sym = positions[0]["sym"] if positions else None
+            best = positions[0] if positions else None
+            worst = positions[-1] if positions else None
             profs.append({
+                "best": best, "worst": worst,
                 "key": k, "name": prof.name, "desc": prof.daily_csv.replace("_daily.csv", ""),
                 "capital": pf.starting_capital, "equity": round(equity, 0),
                 "pnl_pct": round((equity / pf.starting_capital - 1) * 100, 2),
@@ -111,7 +114,15 @@ class GarudaLive:
                 "buys": self.last_signals[k]["buys"], "sells": self.last_signals[k]["sells"],
                 "chart_sym": chart_sym, "chart": self.charts.get(chart_sym),
             })
-        return {"live": self.feed.live, "profiles": profs}
+        totals = {
+            "equity": round(sum(p["equity"] for p in profs), 0),
+            "capital": round(sum(p["capital"] for p in profs), 0),
+            "day_pnl": round(sum(p["day_pnl"] for p in profs), 0),
+            "positions": sum(len(p["positions"]) for p in profs),
+        }
+        totals["pnl_pct"] = round((totals["equity"] / totals["capital"] - 1) * 100, 2) \
+            if totals["capital"] else 0.0
+        return {"live": self.feed.live, "profiles": profs, "totals": totals}
 
 
 def _live_stats(pf):

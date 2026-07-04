@@ -49,7 +49,8 @@ class LivePortfolio:
         date = date or _today()
         self.cash -= cost
         self.holdings[symbol] = {"qty": qty, "entry_price": price,
-                                 "entry_date": date, "entry_len": entry_len}
+                                 "entry_date": date, "entry_len": entry_len,
+                                 "bars_held": 0, "last_date": date}
         self.trades.append({"date": date, "side": "BUY", "symbol": symbol,
                             "qty": qty, "price": round(price, 2)})
         return True

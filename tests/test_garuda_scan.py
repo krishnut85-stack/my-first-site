@@ -54,6 +54,20 @@ def test_scan_no_position_cap_fills_by_cash():
     assert pf.cash >= 0                         # never oversold cash
 
 
+def test_scan_exits_on_max_hold():
+    prof = PROFILES["smallcap"]
+    series = {f"S{i}": _reverting(seed=i) for i in range(6)}
+    pf = LivePortfolio(prof.capital)
+    run_scan(prof, series, pf)                      # open some positions
+    assert pf.holdings
+    # make a holding look long-held (past max_hold), from an old scan date
+    for h in pf.holdings.values():
+        h["bars_held"] = prof.max_hold
+        h["last_date"] = "2000-01-01"
+    r = run_scan(prof, series, pf)                  # today's scan bumps it over -> exit
+    assert r["sells"], "a maxed-out hold should be sold"
+
+
 def test_scan_exits_on_hold_and_records_equity():
     prof = PROFILES["smallcap"]
     series = {f"S{i}": _reverting(seed=i) for i in range(10)}
