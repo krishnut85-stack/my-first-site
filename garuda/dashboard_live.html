@@ -61,6 +61,10 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 .chart,.rsi,.pnlchart{width:100%;display:block}
 #chart{height:300px;border-radius:6px;overflow:hidden}
 #rsi{height:120px;border-radius:6px;overflow:hidden;margin-top:2px}
+.rsiwrap{position:relative}
+.zone{position:absolute;left:2px;right:56px;pointer-events:none;border-radius:2px;font-size:9px;padding:1px 5px;letter-spacing:.5px}
+.zsell{top:8%;height:12.6%;background:rgba(255,93,93,.13);color:#ff9a9a}
+.zbuy{bottom:8%;height:4.2%;background:rgba(34,211,122,.16);color:#7ff0b6;display:flex;align-items:center}
 .csvg{width:100%;height:auto;display:block;background:#0a0e14;border-radius:6px}
 .cempty{padding:44px 10px;text-align:center;color:var(--mut);font-size:12px;background:#0a0e14;border-radius:6px}
 .leg{color:var(--mut);font-size:10px;padding:0 14px 10px}
@@ -109,7 +113,10 @@ table{width:100%;border-collapse:collapse;font-size:12px}
         </div>
         <div id=cquote class=qbadge></div>
       </div>
-      <div class=chartwrap><div class=chart id=chart></div><div class=rsi id=rsi></div></div>
+      <div class=chartwrap><div class=chart id=chart></div>
+      <div class=rsiwrap><div class=rsi id=rsi></div>
+        <div class="zone zsell">SELL ZONE · overbought</div>
+        <div class="zone zbuy">BUY ZONE · oversold</div></div></div>
       <div class=leg><span style=color:#3aa0ff>MA20</span> · <span style=color:#c586ff>MA50</span> · volume bars · <b style=color:#f5b23e>yellow = RSI-2</b>: dips to <b class=g>BUY 5</b> = oversold (we buy) · spikes to <b class=r>SELL 85</b> = overbought (we sell) · scroll=zoom, drag=pan</div>
       <div class=sig id=sig></div>
     </div>
@@ -178,7 +185,10 @@ function ensureCharts(){
  candleSeries=mainChart.addCandlestickSeries({upColor:'#22d37a',downColor:'#ff5d5d',
   wickUpColor:'#22d37a',wickDownColor:'#ff5d5d',borderVisible:false});
  rsiChart=LightweightCharts.createChart(document.getElementById('rsi'),chartOpts(120));
- rsiSeries=rsiChart.addLineSeries({color:'#f5b23e',lineWidth:2,priceLineVisible:false});
+ rsiChart.applyOptions({timeScale:{visible:false}});   // dates shown on the chart above
+ rsiSeries=rsiChart.addLineSeries({color:'#f5b23e',lineWidth:2,priceLineVisible:false,
+  autoscaleInfoProvider:()=>({priceRange:{minValue:0,maxValue:100}})});   // fixed 0-100 so the zone bands line up
+ rsiSeries.priceScale().applyOptions({scaleMargins:{top:0.08,bottom:0.08}});
  rsiSeries.createPriceLine({price:85,color:'#ff5d5d',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'SELL 85'});
  rsiSeries.createPriceLine({price:5,color:'#22d37a',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'BUY 5'});
  // keep the two time axes locked together when you zoom/pan either one
