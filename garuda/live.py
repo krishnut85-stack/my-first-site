@@ -54,6 +54,30 @@ class GarudaLive:
         for sym, closes in self.series_by_sym.items():
             r = rsi(closes, 2) if len(closes) > 2 else []
             self.rsi_by_sym[sym] = round(r[-1], 1) if r and r[-1] is not None else None
+        # optional market caps (₹ crore) from marketcap.csv (symbol,marketcap)
+        self.mcap_by_sym = self._load_mcap()
+
+    def _load_mcap(self):
+        import csv as _csv
+        for base in (self.csv_dir, Path.cwd(), config.BASE_DIR, config.BASE_DIR.parent):
+            p = Path(base) / "marketcap.csv"
+            if p.exists():
+                out = {}
+                try:
+                    with open(p, newline="", encoding="utf-8") as f:
+                        for row in _csv.DictReader(f):
+                            s = row.get("symbol") or row.get("Symbol")
+                            m = row.get("marketcap") or row.get("mcap") or row.get("MarketCap")
+                            if s and m:
+                                try:
+                                    out[s.strip()] = float(str(m).replace(",", ""))
+                                except ValueError:
+                                    pass
+                    print(f"[garuda] loaded {len(out)} market caps ({p.name})", flush=True)
+                    return out
+                except Exception:  # noqa: BLE001
+                    pass
+        return {}
 
     # --- data ---------------------------------------------------------------
     def _csv_path(self, profile):
@@ -226,9 +250,19 @@ class GarudaLive:
                 prev_close = o.get("pc") or (closes[-1] if closes else 0.0)
                 ltp = self.price_of(sym, prev_close)
                 chg = (ltp - prev_close) / prev_close * 100 if prev_close else 0.0
+                cl = closes or []
+
+                def _cb(n, _cl=cl, _ltp=ltp):
+                    return round((_ltp - _cl[-n]) / _cl[-n] * 100, 2) \
+                        if len(_cl) >= n and _cl[-n] > 0 else None
+                win = cl[-252:]
                 h = pf.holdings.get(sym)
                 watch.append({
                     "sym": sym, "ltp": round(ltp, 2), "chg": round(chg, 2),
+                    "chg_w": _cb(5), "chg_m": _cb(21),
+                    "hi52": round(max(win), 2) if win else None,
+                    "lo52": round(min(win), 2) if win else None,
+                    "mcap": self.mcap_by_sym.get(sym),
                     "rsi2": self.rsi_by_sym.get(sym), "held": bool(h),
                     "qty": h["qty"] if h else None,
                     "pnl": round((ltp - h["entry_price"]) * h["qty"], 0) if h else None,

@@ -43,6 +43,10 @@ curl -s -A "$UA" "https://nsearchives.nseindia.com/content/indices/ind_niftymicr
 [ -f smallcap_list.csv ] && python3 -m garuda.fetch_daily --symbols-file smallcap_list.csv --out niftysmallcap250_daily.csv --fresh
 [ -f micro.csv ]         && python3 -m garuda.fetch_daily --symbols-file micro.csv         --out microcap_daily.csv       --fresh
 
+# 2b. market caps from NSE (best-effort; the dashboard shows what it gets)
+python3 -m garuda.fetch_marketcap --symbols-file smallcap_list.csv micro.csv --out marketcap.csv || \
+  echo "[warn] market cap fetch failed — MCAP column will show —"
+
 # 3. restart the server (it auto-scans + trades live at 09:15 IST on its own)
 pkill -f "garuda.server" 2>/dev/null || true
 sleep 2

@@ -33,7 +33,9 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .bothdr{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;background:linear-gradient(90deg,#111a26,#0f141c);border-top:1px solid var(--line);flex-wrap:wrap}
 .bothdr .nm{font-weight:800;font-size:13px}.bothdr .nm .d{color:var(--mut);font-weight:400;font-size:10px}
 .bstat{font-size:10px;color:var(--mut)}.bstat b{font-size:12px}
-.listwrap{max-height:62vh;overflow-y:auto}
+.listwrap{max-height:62vh;overflow-y:auto;overflow-x:auto}
+.wl{min-width:560px}
+.sorth{cursor:pointer;user-select:none}.sorth:hover{color:var(--acc)}
 table{width:100%;border-collapse:collapse;font-size:12px}
 .wl th,.wl td{text-align:right;padding:6px 10px;border-bottom:1px solid #17202c;white-space:nowrap}
 .wl th{color:var(--mut);font-weight:600;font-size:10px;position:sticky;top:0;background:var(--panel);z-index:1}
@@ -66,6 +68,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 .foot{margin-top:16px;color:var(--mut);font-size:10px;border-top:1px solid var(--line);padding-top:10px}
 .sig{padding:8px 14px;border-top:1px solid var(--line);font-size:11px}
 .sig h4{margin:0 0 6px;color:var(--mut);font-size:10px;letter-spacing:1px;text-transform:uppercase}
+.tech{margin-top:6px;color:var(--mut);font-size:11px}
 .chip{display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;border-radius:4px;font-size:11px}
 .chip.buy{background:#0e2a20;color:var(--grn);border:1px solid #204d3a}.chip.sell{background:#2a1416;color:var(--red);border:1px solid #4d2020}
 </style></head><body><div class=wrap>
@@ -130,7 +133,10 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 </script>
 <script>
 const TOKEN=new URLSearchParams(location.search).get('token')||'';
-const prev={};let DATA=null,curSym=null,FILTER='all';
+const prev={};let DATA=null,curSym=null,FILTER='all',SORT={key:'sym',dir:1};
+function setSort(k){if(SORT.key===k)SORT.dir=-SORT.dir;else{SORT.key=k;SORT.dir=(k==='sym'?1:-1);}render(DATA);}
+function sortArrow(k){return SORT.key===k?(SORT.dir>0?' ▲':' ▼'):'';}
+function fmtCr(v){if(v==null)return '—';if(v>=1e5)return (v/1e5).toFixed(2)+'L Cr';if(v>=1e3)return (v/1e3).toFixed(1)+'K Cr';return Math.round(v)+' Cr';}
 const LABEL={smallcap:'SMALL CAP',microcap:'MICRO CAP'};
 function money(v){return "₹"+Math.round(v).toLocaleString('en-IN');}
 function pct(v){return(v==null?'—':(v>=0?"+":"")+(+v).toFixed(2)+"%");}
@@ -226,11 +232,13 @@ function findPos(sym){for(const p of (DATA?.profiles||[])){for(const x of p.posi
 function updateQuote(sym){
  const f=findPos(sym);const el=document.getElementById('cquote');const sg=document.getElementById('sig');
  if(!f){el.innerHTML='<span class=muted>—</span>';sg.innerHTML='';return;}
- const x=f.x;
- el.innerHTML=`<b>${x.ltp.toFixed(2)}</b> <span class="${x.chg>=0?'g':'r'}">${pct(x.chg)}</span> <span class=muted>· RSI-2 ${x.rsi2==null?'—':x.rsi2}</span>`;
- sg.innerHTML=f.held
-  ? `<h4>${LABEL[f.p.key]} · position</h4>Holding <b>${x.qty}</b> @ ₹${x.entry.toFixed(2)} · now ₹${x.ltp.toFixed(2)} · P&L <b class="${x.pnl>=0?'g':'r'}">${(x.pnl>=0?'+':'')+money(x.pnl)}</b>`
-  : `<span class=muted>${LABEL[f.p.key]||''} · live price · not held</span>`;
+ const x=f.x,w=watchItem(sym)||x;
+ const cc=v=>v==null?'muted':(v>=0?'g':'r');
+ el.innerHTML=`<b>${x.ltp.toFixed(2)}</b> <span class="${cc(x.chg)}">${pct(x.chg)}</span> <span class=muted>· RSI-2 ${x.rsi2==null?'—':x.rsi2}</span>`;
+ const tech=`<div class=tech>1D <b class="${cc(w.chg)}">${w.chg==null?'—':pct(w.chg)}</b> · 1W <b class="${cc(w.chg_w)}">${w.chg_w==null?'—':pct(w.chg_w)}</b> · 1M <b class="${cc(w.chg_m)}">${w.chg_m==null?'—':pct(w.chg_m)}</b> · 52W H <b>${w.hi52==null?'—':w.hi52}</b> L <b>${w.lo52==null?'—':w.lo52}</b> · Mcap <b>${fmtCr(w.mcap)}</b></div>`;
+ sg.innerHTML=(f.held
+  ? `<h4>${LABEL[f.p.key]} · position</h4>Holding <b>${x.qty}</b> @ ₹${x.entry.toFixed(2)} · P&L <b class="${cc(x.pnl)}">${(x.pnl>=0?'+':'')+money(x.pnl)}</b>`
+  : `<span class=muted>${LABEL[f.p.key]||''} · live price · not held</span>`)+tech;
 }
 function previewSym(){const s=(document.getElementById('csearch').value||'').trim().toUpperCase();if(s)loadChart(s);}
 async function loadChart(sym){curSym=sym;document.getElementById('csym').textContent=sym;updateQuote(sym);
@@ -267,11 +275,15 @@ function render(d){
     <div class=nm>${p.name} <span class=d>· ${p.desc}</span></div>
     <div class=bstat>${money(p.equity)} · <b class="${p.pnl_pct>=0?'g':'r'}">${pct(p.pnl_pct)}</b> · WIN <b class=a>${win}</b>${green} · ${p.positions.length} pos</div>
   </div>`;
-  // live market-watch: every stock with a Kite LTP; held names float to the top
-  const watch=(p.watch||[]).filter(x=>!q||x.sym.includes(q))
-    .sort((a,b)=>(b.held-a.held)||(a.sym<b.sym?-1:1));
-  html+=`<table class=wl><tr><th class=sym>SYMBOL</th><th>QTY</th><th>RSI-2</th><th>LTP</th><th>CHG</th><th>P&L</th></tr>`;
-  if(!watch.length)html+=`<tr><td colspan=6 class=muted style=text-align:center>${q?'no match in '+p.name:'loading live prices…'}</td></tr>`;
+  // live market-watch / screener: click a header to sort by that column
+  const watch=(p.watch||[]).filter(x=>!q||x.sym.includes(q)).sort((a,b)=>{
+    if(SORT.key==='sym')return (a.sym<b.sym?-1:a.sym>b.sym?1:0)*SORT.dir;
+    let av=a[SORT.key],bv=b[SORT.key];av=(av==null?-Infinity:av);bv=(bv==null?-Infinity:bv);
+    return (av-bv)*SORT.dir;});
+  const th=(k,label)=>`<th class="sorth${k==='sym'?' sym':''}" onclick="setSort('${k}')">${label}${sortArrow(k)}</th>`;
+  html+=`<table class=wl><tr>${th('sym','SYMBOL')}${th('qty','QTY')}${th('rsi2','RSI-2')}${th('ltp','LTP')}${th('chg','1D')}${th('chg_w','1W')}${th('chg_m','1M')}${th('mcap','MCAP')}${th('pnl','P&L')}</tr>`;
+  if(!watch.length)html+=`<tr><td colspan=9 class=muted style=text-align:center>${q?'no match in '+p.name:'loading live prices…'}</td></tr>`;
+  const pcell=v=>`<td class="${v==null?'muted':(v>=0?'g':'r')}">${v==null?'—':pct(v)}</td>`;
   watch.forEach(x=>{const key=p.key+x.sym,pv=prev[key],cls=pv==null?'':(x.ltp>pv?'flash-up':(x.ltp<pv?'flash-dn':''));prev[key]=x.ltp;
    const sel=x.sym===curSym?' sel':'',hl=x.held?' held':'';
    html+=`<tr class="prow${sel}${hl}" data-sym="${x.sym}" onclick="loadChart('${x.sym}')">
@@ -279,7 +291,8 @@ function render(d){
     <td>${x.qty==null?'—':x.qty}</td>
     <td class=a>${x.rsi2==null?'—':x.rsi2}</td>
     <td class="${cls}">${x.ltp.toFixed(2)}</td>
-    <td class="${x.chg>=0?'g':'r'}">${pct(x.chg)}</td>
+    ${pcell(x.chg)}${pcell(x.chg_w)}${pcell(x.chg_m)}
+    <td class=muted>${fmtCr(x.mcap)}</td>
     <td class="${x.pnl==null?'muted':(x.pnl>=0?'g':'r')}">${x.pnl==null?'—':(x.pnl>=0?'+':'')+money(x.pnl)}</td></tr>`;});
   html+=`</table>`;
  });
