@@ -156,6 +156,9 @@ def main() -> None:
     if sfile:
         symbols = _read_symbols_file(sfile)
         print(f"Loaded {len(symbols)} symbols from {sfile}")
+        if not symbols:
+            raise SystemExit(f"0 symbols read from {sfile} — the download probably "
+                             f"failed (404/HTML). Check it:  head -3 {sfile}")
     else:
         syms_arg = _opt("--symbols", str, "")
         symbols = [s.strip().upper() for s in syms_arg.split(",") if s.strip()] or None

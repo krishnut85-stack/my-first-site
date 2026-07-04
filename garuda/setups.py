@@ -230,6 +230,19 @@ def main() -> None:
         raise SystemExit("usage: python3 -m garuda.setups --csv daily.csv "
                          "[--entry 10] [--exit 65] [--hold 10]")
     panel = load_series(path)   # per-stock; scales to the whole universe
+    # --exclude a,b : drop symbols listed in these files (e.g. isolate microcaps
+    # by running allstocks.csv and excluding the Nifty 500 = everything smaller).
+    excl_arg = _opt("--exclude", str, "")
+    if excl_arg:
+        from .fetch_daily import _read_symbols_file
+        excl = set()
+        for ef in excl_arg.split(","):
+            ef = ef.strip()
+            if ef and Path(ef).exists():
+                excl.update(_read_symbols_file(ef))
+        if excl:
+            panel = {s: v for s, v in panel.items() if s not in excl}
+            print(f"  excluded {len(excl)} symbols; {len(panel)} remain")
     if "--sweep" in args:
         print(format_sweep(sweep(panel)))
         return
