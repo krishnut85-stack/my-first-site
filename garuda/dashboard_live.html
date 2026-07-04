@@ -202,7 +202,8 @@ function drawChart(ch,sym){
  ma20Series.setData(line(ch.ma20));ma50Series.setData(line(ch.ma50));
  const rd=[];for(let i=0;i<C.length;i++)if(ch.rsi[i]!=null)rd.push({time:C[i].t,value:ch.rsi[i]});
  rsiSeries.setData(rd);
- if(curChartSym!==sym){fitChart();curChartSym=sym;}
+ if(curChartSym!==sym){const n=C.length;   // open on the recent ~90 sessions (readable), not the whole year
+  mainChart.timeScale().setVisibleLogicalRange({from:Math.max(0,n-90),to:n+2});curChartSym=sym;}
 }
 // open the REAL TradingView chart in a new tab — uses your logged-in TradingView
 // session so NSE data + all tools work (the free embed has no NSE data).
