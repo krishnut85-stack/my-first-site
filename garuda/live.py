@@ -42,6 +42,12 @@ class GarudaLive:
             self.universe[k] = sorted(s.keys())
             print(f"[garuda] {k}: loaded {len(s)} symbols for charts "
                   f"({prof.daily_csv})", flush=True)
+        # Pre-compute each stock's latest RSI-2 (daily bars, so it's static
+        # intraday) for the live market-watch list.
+        self.rsi_by_sym = {}
+        for sym, closes in self.series_by_sym.items():
+            r = rsi(closes, 2) if len(closes) > 2 else []
+            self.rsi_by_sym[sym] = round(r[-1], 1) if r and r[-1] is not None else None
 
     # --- data ---------------------------------------------------------------
     def _series(self, profile):
@@ -59,6 +65,12 @@ class GarudaLive:
         out = set()
         for pf in self.portfolios.values():
             out.update(pf.holdings)
+        return out
+
+    def all_symbols(self):
+        out = set()
+        for syms in self.universe.values():
+            out.update(syms)
         return out
 
     # --- daily scan ---------------------------------------------------------
@@ -94,8 +106,11 @@ class GarudaLive:
         return None
 
     # --- live price refresh (call on a timer) ------------------------------
-    def refresh_prices(self):
-        syms = list(self.held_symbols())
+    def refresh_prices(self, full=False):
+        """Price held names every tick; the whole universe on a slower cadence
+        (full=True) so every stock shows a live Kite LTP like a market-watch."""
+        syms = sorted(self.all_symbols() | self.held_symbols()) if full \
+            else list(self.held_symbols())
         if syms:
             self.prices.update(self.feed.ltp(syms))
 
@@ -163,6 +178,20 @@ class GarudaLive:
                                   "chg": round(chg, 2), "pnl": round(pnl, 0),
                                   "rsi2": h.get("rsi2_entry")})
             positions.sort(key=lambda x: x["pnl"], reverse=True)
+            # market-watch: every universe stock with a live LTP + day change
+            watch = []
+            for sym in self.universe.get(k, []):
+                closes = self.series_by_sym.get(sym)
+                prev_close = closes[-1] if closes else 0.0
+                ltp = self.price_of(sym, prev_close)
+                chg = (ltp - prev_close) / prev_close * 100 if prev_close else 0.0
+                h = pf.holdings.get(sym)
+                watch.append({
+                    "sym": sym, "ltp": round(ltp, 2), "chg": round(chg, 2),
+                    "rsi2": self.rsi_by_sym.get(sym), "held": bool(h),
+                    "qty": h["qty"] if h else None,
+                    "pnl": round((ltp - h["entry_price"]) * h["qty"], 0) if h else None,
+                })
             equity = pf.equity(lambda s: self.price_of(s, pf.holdings.get(s, {}).get("entry_price", 0)))
             win, pfac = _live_stats(pf)
             win_kind = "live"
@@ -181,7 +210,7 @@ class GarudaLive:
                 "day_pnl": round(day_pnl, 0), "positions": positions,
                 "win": win, "win_kind": win_kind, "win_open": win_open,
                 "proven_win": prof.proven_win, "proven_ret": prof.proven_ret,
-                "universe": self.universe.get(k, []),
+                "universe": self.universe.get(k, []), "watch": watch,
                 "pf": pfac, "cash": round(pf.cash, 0),
                 "buys": self.last_signals[k]["buys"], "sells": self.last_signals[k]["sells"],
                 "chart_sym": chart_sym, "chart": self.charts.get(chart_sym),

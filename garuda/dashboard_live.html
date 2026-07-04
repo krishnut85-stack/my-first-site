@@ -39,6 +39,8 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 .wl th{color:var(--mut);font-weight:600;font-size:10px;position:sticky;top:0;background:var(--panel);z-index:1}
 .wl td.sym,.wl th.sym{text-align:left;font-weight:700}
 .prow{cursor:pointer}.prow:hover td{background:#101a26}.prow.sel td{background:#0e1c24}.prow.sel td.sym{color:var(--acc)}
+.prow.held td{background:#0b1a13}.prow.held.sel td{background:#0e2418}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--grn);margin-right:6px;vertical-align:middle}
 .mtag{font-size:9px;color:var(--mut);border:1px solid var(--line);border-radius:3px;padding:0 4px;margin-left:6px}
 .flash-up{animation:fu .6s}.flash-dn{animation:fd .6s}
 @keyframes fu{from{background:#0c2a1e}to{background:transparent}}@keyframes fd{from{background:#301416}to{background:transparent}}
@@ -155,13 +157,16 @@ function drawPnl(curve){
  c.innerHTML=svgWrap(W,H,`<polyline fill=none stroke=${col} stroke-width=2 points="${pts}"/>`);
  document.getElementById('pnlnow').textContent=money(curve[n-1]);
 }
-// find a position record across both bots for the quote header
-function findPos(sym){for(const p of (DATA?.profiles||[]))for(const x of p.positions)if(x.sym===sym)return{x,p};return null;}
+// find a stock record (position first for entry/P&L, else the watch row) for the quote header
+function findPos(sym){for(const p of (DATA?.profiles||[])){for(const x of p.positions)if(x.sym===sym)return{x,p,held:true};for(const x of (p.watch||[]))if(x.sym===sym)return{x,p,held:false};}return null;}
 function updateQuote(sym){
  const f=findPos(sym);const el=document.getElementById('cquote');const sg=document.getElementById('sig');
- if(!f){el.innerHTML='<span class=muted>preview · not held</span>';sg.innerHTML='';return;}
- const x=f.x;el.innerHTML=`<b>${x.ltp.toFixed(2)}</b> <span class="${x.chg>=0?'g':'r'}">${pct(x.chg)}</span> <span class=muted>· entry ${x.entry.toFixed(2)} · RSI-2 ${x.rsi2==null?'—':x.rsi2}</span>`;
- sg.innerHTML=`<h4>${LABEL[f.p.key]} · position</h4>Holding <b>${x.qty}</b> @ ₹${x.entry.toFixed(2)} · now ₹${x.ltp.toFixed(2)} · P&L <b class="${x.pnl>=0?'g':'r'}">${(x.pnl>=0?'+':'')+money(x.pnl)}</b>`;
+ if(!f){el.innerHTML='<span class=muted>—</span>';sg.innerHTML='';return;}
+ const x=f.x;
+ el.innerHTML=`<b>${x.ltp.toFixed(2)}</b> <span class="${x.chg>=0?'g':'r'}">${pct(x.chg)}</span> <span class=muted>· RSI-2 ${x.rsi2==null?'—':x.rsi2}</span>`;
+ sg.innerHTML=f.held
+  ? `<h4>${LABEL[f.p.key]} · position</h4>Holding <b>${x.qty}</b> @ ₹${x.entry.toFixed(2)} · now ₹${x.ltp.toFixed(2)} · P&L <b class="${x.pnl>=0?'g':'r'}">${(x.pnl>=0?'+':'')+money(x.pnl)}</b>`
+  : `<span class=muted>${LABEL[f.p.key]||''} · live price · not held</span>`;
 }
 function previewSym(){const s=(document.getElementById('csearch').value||'').trim().toUpperCase();if(s)loadChart(s);}
 async function loadChart(sym){curSym=sym;document.getElementById('csym').textContent=sym;updateQuote(sym);
@@ -196,32 +201,26 @@ function render(d){
     <div class=nm>${p.name} <span class=d>· ${p.desc}</span></div>
     <div class=bstat>${money(p.equity)} · <b class="${p.pnl_pct>=0?'g':'r'}">${pct(p.pnl_pct)}</b> · WIN <b class=a>${win}</b>${green} · ${p.positions.length} pos</div>
   </div>`;
+  // live market-watch: every stock with a Kite LTP; held names float to the top
+  const watch=(p.watch||[]).filter(x=>!q||x.sym.includes(q))
+    .sort((a,b)=>(b.held-a.held)||(a.sym<b.sym?-1:1));
   html+=`<table class=wl><tr><th class=sym>SYMBOL</th><th>QTY</th><th>RSI-2</th><th>LTP</th><th>CHG</th><th>P&L</th></tr>`;
-  rows.forEach(x=>{const key=p.key+x.sym,pv=prev[key],cls=pv==null?'':(x.ltp>pv?'flash-up':(x.ltp<pv?'flash-dn':''));prev[key]=x.ltp;
-   const sel=x.sym===curSym?' sel':'';
-   html+=`<tr class="prow${sel}" data-sym="${x.sym}" onclick="loadChart('${x.sym}')">
-    <td class=sym>${x.sym}<span class=mtag>${p.key==='smallcap'?'SC':'MC'}</span></td>
-    <td>${x.qty}</td>
+  if(!watch.length)html+=`<tr><td colspan=6 class=muted style=text-align:center>${q?'no match in '+p.name:'loading live prices…'}</td></tr>`;
+  watch.forEach(x=>{const key=p.key+x.sym,pv=prev[key],cls=pv==null?'':(x.ltp>pv?'flash-up':(x.ltp<pv?'flash-dn':''));prev[key]=x.ltp;
+   const sel=x.sym===curSym?' sel':'',hl=x.held?' held':'';
+   html+=`<tr class="prow${sel}${hl}" data-sym="${x.sym}" onclick="loadChart('${x.sym}')">
+    <td class=sym>${x.held?'<span class=dot></span>':''}${x.sym}<span class=mtag>${p.key==='smallcap'?'SC':'MC'}</span></td>
+    <td>${x.qty==null?'—':x.qty}</td>
     <td class=a>${x.rsi2==null?'—':x.rsi2}</td>
     <td class="${cls}">${x.ltp.toFixed(2)}</td>
     <td class="${x.chg>=0?'g':'r'}">${pct(x.chg)}</td>
-    <td class="${x.pnl>=0?'g':'r'}">${(x.pnl>=0?'+':'')+money(x.pnl)}</td></tr>`;});
-  // when searching, also surface matching names from the full universe (not yet
-  // held) as clickable preview rows — so typing a symbol always shows the share.
-  const held=new Set(p.positions.map(x=>x.sym));
-  const previews=q?(p.universe||[]).filter(s=>s.includes(q)&&!held.has(s)).slice(0,60):[];
-  previews.forEach(s=>{const sel=s===curSym?' sel':'';
-   html+=`<tr class="prow${sel}" data-sym="${s}" onclick="loadChart('${s}')">
-    <td class=sym>${s}<span class=mtag>${p.key==='smallcap'?'SC':'MC'}</span></td>
-    <td class=muted>—</td><td class=muted>—</td><td class=muted>—</td>
-    <td class=muted>preview</td><td class=muted>chart →</td></tr>`;});
-  if(!rows.length&&!previews.length)html+=`<tr><td colspan=6 class=muted style=text-align:center>${q?'no match in '+p.name:'no open positions'}</td></tr>`;
+    <td class="${x.pnl==null?'muted':(x.pnl>=0?'g':'r')}">${x.pnl==null?'—':(x.pnl>=0?'+':'')+money(x.pnl)}</td></tr>`;});
   html+=`</table>`;
  });
- list.innerHTML=html||'<div class=muted style=padding:20px;text-align:center>No positions yet.</div>';
+ list.innerHTML=html||'<div class=muted style=padding:20px;text-align:center>loading…</div>';
  document.getElementById('upd').textContent='updated '+new Date().toLocaleTimeString('en-GB',{hour12:false});
- // default the chart to the first visible position; keep live quote fresh
- if(!curSym){const first=d.profiles.flatMap(x=>x.positions)[0];if(first)loadChart(first.sym);}
+ // default the chart to the first visible stock; keep the live quote fresh
+ if(!curSym){const first=d.profiles.flatMap(x=>x.watch||[])[0];if(first)loadChart(first.sym);}
  else updateQuote(curSym);
 }
 async function poll(){try{const r=await fetch('/data?token='+encodeURIComponent(TOKEN));
