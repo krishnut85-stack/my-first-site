@@ -23,7 +23,7 @@ from urllib.parse import urlparse, parse_qs
 
 from .live import GarudaLive
 
-_HTML = (Path(__file__).parent / "dashboard_live.html").read_text(encoding="utf-8")
+_HTML_PATH = Path(__file__).parent / "dashboard_live.html"
 _STATE = {"json": b'{"profiles":[]}'}
 _TOKEN = {"value": ""}
 _LIVE = {"obj": None}      # the GarudaLive instance (for on-demand chart requests)
@@ -68,12 +68,16 @@ class Handler(BaseHTTPRequestHandler):
             sym = parse_qs(urlparse(self.path).query).get("sym", [""])[0].upper()
             ch = _LIVE["obj"].chart_for(sym) if (_LIVE["obj"] and sym) else None
             return self._send(200, json.dumps(ch or {}).encode(), "application/json")
-        return self._send(200, _HTML.encode(), "text/html")
+        # read fresh from disk each request so a `git pull` updates the page
+        # without needing a server restart.
+        return self._send(200, _HTML_PATH.read_bytes(), "text/html")
 
     def _send(self, code, body, ctype):
         self.send_response(code)
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(body)))
+        # never let the browser cache a stale dashboard/data
+        self.send_header("Cache-Control", "no-store, no-cache, must-revalidate")
         self.end_headers()
         self.wfile.write(body)
 
