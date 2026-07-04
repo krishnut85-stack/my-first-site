@@ -127,28 +127,33 @@ function clocks(){
  document.getElementById('ist').textContent=`IST ${p.weekday} ${p.hour}:${p.minute}:${p.second}`;
  document.getElementById('loc').textContent=`Local ${new Date().toLocaleTimeString('en-GB',{hour12:false})}`;
 }
-function svgWrap(vw,vh,body){return `<svg class=csvg viewBox="0 0 ${vw} ${vh}" preserveAspectRatio=none style="aspect-ratio:${vw}/${vh}">${body}</svg>`;}
+// Build a real SVG node from a well-formed XML string (quoted attrs) via
+// DOMParser — renders reliably in every browser, unlike innerHTML on <svg>.
+function setSVG(el,vw,vh,inner){
+ const xml=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${vw} ${vh}" preserveAspectRatio="none" class="csvg" style="aspect-ratio:${vw}/${vh}">${inner}</svg>`;
+ const doc=new DOMParser().parseFromString(xml,"image/svg+xml");
+ if(doc.getElementsByTagName("parsererror").length){el.innerHTML='<div class=cempty style=color:#ff5d5d>chart parse error</div>';return;}
+ el.replaceChildren(doc.documentElement);
+}
 function drawChart(ch,sym){
  document.getElementById('csym').textContent=sym||'—';
  const chartEl=document.getElementById('chart'),rsiEl=document.getElementById('rsi');
  if(!ch||!ch.candles||!ch.candles.length){chartEl.innerHTML='<div class=cempty>no chart data for '+(sym||'—')+'</div>';rsiEl.innerHTML='';return;}
  const d=ch.candles,n=d.length,hi=Math.max(...d.map(x=>x.h)),lo=Math.min(...d.map(x=>x.l)),rng=(hi-lo)||1;
  const W=620,H=240,cw=W/n,y=v=>10+(hi-v)/rng*(H-30);let s='';
- // price grid + labels so the chart area is unmistakable
  for(let g=0;g<=4;g++){const v=hi-rng*g/4,gy=y(v);
-  s+=`<line x1=0 y1=${gy} x2=${W} y2=${gy} stroke=#1e2836 stroke-width=1/><text x=4 y=${gy-2} fill=#7d8b9c font-size=9>${v.toFixed(1)}</text>`;}
+  s+=`<line x1="0" y1="${gy}" x2="${W}" y2="${gy}" stroke="#1e2836" stroke-width="1"/><text x="4" y="${gy-2}" fill="#7d8b9c" font-size="9">${v.toFixed(1)}</text>`;}
  for(let i=0;i<n;i++){const x=i*cw+cw/2,up=d[i].c>=d[i].o,col=up?'#22d37a':'#ff5d5d';
-  s+=`<line x1=${x} y1=${y(d[i].h)} x2=${x} y2=${y(d[i].l)} stroke=${col} stroke-width=1.4/>`;
-  const yo=y(d[i].o),yc=y(d[i].c);s+=`<rect x=${x-cw*0.35} y=${Math.min(yo,yc)} width=${Math.max(1.5,cw*0.7)} height=${Math.max(2,Math.abs(yo-yc))} fill=${col}/>`;}
- if(ch.buy_i!=null){const bx=ch.buy_i*cw+cw/2;s+=`<text x=${bx} y=${y(d[ch.buy_i].l)+16} fill=#22d37a font-size=13 text-anchor=middle>▲</text>`;}
- if(ch.sell_i!=null){const sx=ch.sell_i*cw+cw/2;s+=`<text x=${sx} y=${y(d[ch.sell_i].h)-8} fill=#ff5d5d font-size=13 text-anchor=middle>▼</text>`;}
- chartEl.innerHTML=svgWrap(W,H,s);
- const r=ch.rsi,rh=70,ry=v=>8+(100-v)/100*(rh-16);
- let rs=`<line x1=0 y1=${ry(85)} x2=620 y2=${ry(85)} stroke=#4d2020 stroke-dasharray=3/><line x1=0 y1=${ry(5)} x2=620 y2=${ry(5)} stroke=#204d3a stroke-dasharray=3/>`;
+  s+=`<line x1="${x}" y1="${y(d[i].h)}" x2="${x}" y2="${y(d[i].l)}" stroke="${col}" stroke-width="1.4"/>`;
+  const yo=y(d[i].o),yc=y(d[i].c);s+=`<rect x="${x-cw*0.35}" y="${Math.min(yo,yc)}" width="${Math.max(1.5,cw*0.7)}" height="${Math.max(2,Math.abs(yo-yc))}" fill="${col}"/>`;}
+ if(ch.buy_i!=null){const bx=ch.buy_i*cw+cw/2;s+=`<text x="${bx}" y="${y(d[ch.buy_i].l)+16}" fill="#22d37a" font-size="13" text-anchor="middle">&#9650;</text>`;}
+ if(ch.sell_i!=null){const sx=ch.sell_i*cw+cw/2;s+=`<text x="${sx}" y="${y(d[ch.sell_i].h)-8}" fill="#ff5d5d" font-size="13" text-anchor="middle">&#9660;</text>`;}
+ setSVG(chartEl,W,H,s);
+ const r=ch.rsi||[],rh=70,ry=v=>8+(100-v)/100*(rh-16);
+ let rs=`<line x1="0" y1="${ry(85)}" x2="620" y2="${ry(85)}" stroke="#4d2020" stroke-dasharray="3"/><line x1="0" y1="${ry(5)}" x2="620" y2="${ry(5)}" stroke="#204d3a" stroke-dasharray="3"/>`;
  let pts='';for(let i=0;i<n;i++)if(r[i]!=null)pts+=`${i*cw+cw/2},${ry(r[i])} `;
- rs+=`<polyline fill=none stroke=#f5b23e stroke-width=1.5 points="${pts}"/>`;rsiEl.innerHTML=svgWrap(620,rh,rs);
- // diagnostic: did the browser actually build SVG nodes from the innerHTML?
- if(!chartEl.querySelector('svg'))chartEl.innerHTML='<div class=cempty style=color:#ff5d5d>DIAG: SVG-innerHTML failed ('+n+' candles received)</div>';
+ rs+=`<polyline fill="none" stroke="#f5b23e" stroke-width="1.5" points="${pts}"/>`;
+ setSVG(rsiEl,620,rh,rs);
 }
 function drawPnl(curve){
  const c=document.getElementById('pnlchart');
@@ -156,7 +161,7 @@ function drawPnl(curve){
  const hi=Math.max(...curve),lo=Math.min(...curve),rng=(hi-lo)||1,W=620,H=150,n=curve.length;
  const up=curve[n-1]>=curve[0],col=up?'#22d37a':'#ff5d5d';let pts='';
  for(let i=0;i<n;i++)pts+=`${i/(n-1)*W},${10+(hi-curve[i])/rng*(H-20)} `;
- c.innerHTML=svgWrap(W,H,`<polyline fill=none stroke=${col} stroke-width=2 points="${pts}"/>`);
+ setSVG(c,W,H,`<polyline fill="none" stroke="${col}" stroke-width="2" points="${pts}"/>`);
  document.getElementById('pnlnow').textContent=money(curve[n-1]);
 }
 // find a stock record (position first for entry/P&L, else the watch row) for the quote header
