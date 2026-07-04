@@ -6,14 +6,17 @@ credentials read from the environment (never committed), completes the TOTP
 2FA, exchanges the request_token for a fresh access_token, and writes it to
 KITE_TOKEN_FILE. Run it from cron before the market opens.
 
-Required env (put these in /home/globalbot/.env, chmod 600 — NEVER in git):
-    KITE_API_KEY        your Kite Connect app api_key
-    KITE_API_SECRET     your Kite Connect app api_secret
-    KITE_USER_ID        your Zerodha client id (e.g. AB1234)
-    KITE_PASSWORD       your Zerodha login password
-    KITE_TOTP_SECRET    the base32 seed behind your authenticator ("external
-                        TOTP" secret from Zerodha profile > settings > 2FA)
-    KITE_TOKEN_FILE     where to write the token (e.g. /home/globalbot/data/kite_token.json)
+This is a FALLBACK only — the token at KITE_TOKEN_FILE is normally refreshed by
+the existing system each morning, and the feed just reads it. This script logs
+in fresh solely when that token is missing or stale.
+
+Env is already present in /home/globalbot/.env (do NOT re-add or commit it):
+    KITE_API_KEY        Kite Connect app api_key
+    KITE_API_SECRET     Kite Connect app api_secret
+    ZERODHA_USER_ID     Zerodha client id (e.g. AB1234)
+    ZERODHA_PASSWORD    Zerodha login password
+    KITE_TOTP_SECRET    base32 TOTP seed
+    KITE_TOKEN_FILE     token path (e.g. /home/globalbot/data/kite_token.json)
 
 Stdlib only (urllib + a hand-rolled TOTP) — no pip needed beyond kiteconnect,
 which the feed already uses.
@@ -71,8 +74,8 @@ class _Grab(urllib.request.HTTPRedirectHandler):
 def fetch_access_token() -> str:
     key = os.environ["KITE_API_KEY"]
     secret = os.environ["KITE_API_SECRET"]
-    uid = os.environ["KITE_USER_ID"]
-    pwd = os.environ["KITE_PASSWORD"]
+    uid = os.environ["ZERODHA_USER_ID"]
+    pwd = os.environ["ZERODHA_PASSWORD"]
     seed = os.environ["KITE_TOTP_SECRET"]
 
     cj = http.cookiejar.CookieJar()
@@ -111,7 +114,9 @@ def main():
         print(f"[kite_login] FAILED: {exc}", flush=True)
         raise SystemExit(1)
     out = os.environ.get("KITE_TOKEN_FILE", "").strip()
-    payload = json.dumps({"access_token": access})
+    from datetime import datetime, timedelta, timezone
+    today = datetime.now(timezone(timedelta(hours=5, minutes=30))).date().isoformat()
+    payload = json.dumps({"date": today, "access_token": access})
     if out:
         Path(out).parent.mkdir(parents=True, exist_ok=True)
         Path(out).write_text(payload)

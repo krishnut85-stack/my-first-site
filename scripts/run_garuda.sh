@@ -23,11 +23,14 @@ UA="Mozilla/5.0"
 
 echo "=== Garuda refresh $(date -u) ==="
 
-# 0. auto-refresh the Kite access token (daily expiry) — no manual step
-if python3 -m garuda.kite_login; then
-  echo "[ok] Kite token refreshed"
+# 0. Kite token: the existing system refreshes it each morning, so just READ it.
+#    Only fall back to a fresh auto-login if today's token isn't there yet.
+TODAY_IST="$(TZ=Asia/Kolkata date +%F)"
+if [ -f "$KITE_TOKEN_FILE" ] && grep -q "\"$TODAY_IST\"" "$KITE_TOKEN_FILE"; then
+  echo "[ok] using today's Kite token from $KITE_TOKEN_FILE"
 else
-  echo "[warn] token refresh failed — will run on the existing token if still valid"
+  echo "[info] today's token not found — running fallback auto-login"
+  python3 -m garuda.kite_login || echo "[warn] fallback login failed — will try the existing token"
 fi
 
 # 1. refresh the constituent lists (best-effort; keep the old file on failure)
