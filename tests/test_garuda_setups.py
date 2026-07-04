@@ -62,6 +62,13 @@ def test_stop_loss_caps_worst_trade():
     assert min(with_stop) > -0.10           # worst loss is contained
 
 
+def test_oos_window_counts_fewer_trades():
+    closes = _uptrend_with_dips()
+    full = oversold_bounce_trades(closes, cost_per_side=0.0)
+    recent = oversold_bounce_trades(closes, cost_per_side=0.0, oos=0.3)  # last 30%
+    assert 0 < len(recent) < len(full)     # only trades entering in the window count
+
+
 def test_no_trend_filter_allows_more_trades():
     closes = _uptrend_with_dips()
     strict = oversold_bounce_trades(closes, cost_per_side=0.0, use_trend=True)

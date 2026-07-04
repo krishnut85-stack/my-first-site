@@ -57,7 +57,7 @@ def sma(closes, period: int):
 
 
 def _simulate(closes, r, s, entry_rsi, exit_rsi, trend_sma, max_hold, cost,
-              stop_loss, profit_target, use_trend):
+              stop_loss, profit_target, use_trend, start_i=0):
     """The trade loop given PRE-COMPUTED rsi (r) and sma (s). Split out so the
     sweep computes the indicators once per stock, not once per parameter combo."""
     trades = []
@@ -79,7 +79,7 @@ def _simulate(closes, r, s, entry_rsi, exit_rsi, trend_sma, max_hold, cost,
                 if (r[j] is not None and r[j] > exit_rsi) or (j - i) >= max_hold:
                     break
                 j += 1
-            if closes[j] > 0:
+            if closes[j] > 0 and i >= start_i:   # start_i>0 -> out-of-sample window
                 trades.append((closes[j] - entry) / entry - 2 * cost)
             i = j + 1
         else:
@@ -89,7 +89,7 @@ def _simulate(closes, r, s, entry_rsi, exit_rsi, trend_sma, max_hold, cost,
 
 def oversold_bounce_trades(closes, entry_rsi=10.0, exit_rsi=65.0,
                            trend_sma=200, max_hold=10, cost_per_side=None,
-                           stop_loss=0.0, profit_target=0.0, use_trend=True):
+                           stop_loss=0.0, profit_target=0.0, use_trend=True, oos=0.0):
     """Return a list of per-trade net returns for one stock's daily closes.
 
     stop_loss / profit_target (fractions, 0 = off) cut losers / lock winners at
@@ -101,8 +101,9 @@ def oversold_bounce_trades(closes, entry_rsi=10.0, exit_rsi=65.0,
         return []
     r = rsi(closes, 2)
     s = sma(closes, trend_sma)
+    start_i = int(len(closes) * (1 - oos)) if 0 < oos < 1 else 0
     return _simulate(closes, r, s, entry_rsi, exit_rsi, trend_sma, max_hold,
-                     cost, stop_loss, profit_target, use_trend)
+                     cost, stop_loss, profit_target, use_trend, start_i)
 
 
 def backtest(panel: dict, **kw) -> dict:
@@ -252,8 +253,13 @@ def main() -> None:
                  max_hold=_opt("--hold", int, 10),
                  stop_loss=_opt("--stop", float, 0.0),        # e.g. 0.05 = cut at -5%
                  profit_target=_opt("--target", float, 0.0),  # e.g. 0.06 = take +6%
-                 use_trend=("--no-trend" not in args))         # drop the uptrend filter
-    print(format_report(r, f"{path} ({len(panel)} symbols)"))
+                 use_trend=("--no-trend" not in args),         # drop the uptrend filter
+                 oos=_opt("--oos", float, 0.0))                # e.g. 0.3 = only last 30%
+    oos = _opt("--oos", float, 0.0)
+    label = f"{path} ({len(panel)} symbols)"
+    if 0 < oos < 1:
+        label += f"  [OUT-OF-SAMPLE: last {oos:.0%} only]"
+    print(format_report(r, label))
 
 
 if __name__ == "__main__":
