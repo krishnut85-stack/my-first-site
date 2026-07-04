@@ -102,7 +102,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
         <div id=cquote class=qbadge></div>
       </div>
       <div class=chartwrap><div class=chart id=chart></div><div class=rsi id=rsi></div></div>
-      <div class=leg>scroll to zoom · drag to pan · hover for OHLC · <span style=color:#3aa0ff>MA20</span> · <span style=color:#c586ff>MA50</span> · volume bars · <span class=g>▲</span> buy (RSI-2&lt;5) · <span class=r>▼</span> sell (RSI-2&gt;85)</div>
+      <div class=leg>scroll to zoom · drag to pan · hover for OHLC · <span style=color:#3aa0ff>MA20</span> · <span style=color:#c586ff>MA50</span> · volume bars · RSI-2 pane below</div>
       <div class=sig id=sig></div>
     </div>
     <div class=chartcard>
@@ -184,9 +184,7 @@ function drawChart(ch,sym){
  if(!ok){[candleSeries,volSeries,ma20Series,ma50Series,rsiSeries].forEach(s=>s.setData([]));candleSeries.setMarkers([]);return;}
  const C=ch.candles;
  candleSeries.setData(C.map(c=>({time:c.t,open:c.o,high:c.h,low:c.l,close:c.c})));
- candleSeries.setMarkers((ch.markers||[]).map(m=>({time:m.t,
-  position:m.type==='buy'?'belowBar':'aboveBar',color:m.type==='buy'?'#22d37a':'#ff5d5d',
-  shape:m.type==='buy'?'arrowUp':'arrowDown'})));
+ candleSeries.setMarkers([]);   // no per-signal arrows — they clutter the candles
  // volume bars (green/red by up/down day) — only where Kite volume is available
  volSeries.setData(C.filter(c=>c.v!=null).map(c=>({time:c.t,value:c.v,color:c.c>=c.o?'#14392a':'#3a1c1f'})));
  const line=arr=>{const o=[];for(let i=0;i<C.length;i++)if(arr&&arr[i]!=null)o.push({time:C[i].t,value:arr[i]});return o;};
