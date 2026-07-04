@@ -67,6 +67,29 @@ class KiteFeed:
                     out[s] = float(d["last_price"])
         return out
 
+    def ohlc_quote(self, symbols) -> dict:
+        """{sym: {o,h,l,pc,ltp}} — today's open/high/low, previous close and the
+        last price, via kite.ohlc(). Lets the dashboard form today's candle live
+        like a real broker chart. Empty if unavailable."""
+        if not self.kite or not symbols:
+            return {}
+        out = {}
+        syms = list(symbols)
+        for i in range(0, len(syms), 200):
+            chunk = syms[i:i + 200]
+            try:
+                q = self.kite.ohlc([f"NSE:{s}" for s in chunk])
+            except Exception:  # noqa: BLE001
+                q = {}
+            for s in chunk:
+                d = q.get(f"NSE:{s}")
+                if d and d.get("last_price"):
+                    o = d.get("ohlc") or {}
+                    out[s] = {"o": o.get("open"), "h": o.get("high"),
+                              "l": o.get("low"), "pc": o.get("close"),
+                              "ltp": float(d["last_price"])}
+        return out
+
     def _token(self, symbol):
         if self._tokens is None and self.kite:
             try:

@@ -185,6 +185,14 @@ function drawChart(ch,sym){
  rsiSeries.setData(rd);
  if(curChartSym!==sym){fitChart();curChartSym=sym;}
 }
+function watchItem(sym){for(const p of (DATA?.profiles||[]))for(const x of (p.watch||[]))if(x.sym===sym)return x;return null;}
+// live candle: while the market is open, grow today's bar with the price like Zerodha
+function liveTick(){
+ if(!mainChart||!candleSeries||!curChartSym||!DATA||!DATA.market_open||!DATA.today)return;
+ const x=watchItem(curChartSym);if(!x||x.o==null||x.ltp==null)return;
+ try{candleSeries.update({time:DATA.today,open:x.o,
+  high:Math.max(x.h==null?x.ltp:x.h,x.ltp),low:Math.min(x.l==null?x.ltp:x.l,x.ltp),close:x.ltp});}catch(e){}
+}
 function drawPnl(curve){
  const c=document.getElementById('pnlchart');
  if(!curve||curve.length<2){c.innerHTML='<div class=cempty>P&L curve builds as the daily scans run</div>';document.getElementById('pnlnow').textContent='';return;}
@@ -261,6 +269,7 @@ function render(d){
  // default the chart to the first visible stock; keep the live quote fresh
  if(!curSym){const first=d.profiles.flatMap(x=>x.watch||[])[0];if(first)loadChart(first.sym);}
  else updateQuote(curSym);
+ liveTick();
 }
 async function poll(){try{const r=await fetch('/data?token='+encodeURIComponent(TOKEN));
  if(r.status===403){document.getElementById('list').innerHTML='<div style="padding:16px;color:#f5b23e">Access denied — bad or missing ?token= in the URL.</div>';return;}

@@ -28,7 +28,8 @@ class GarudaLive:
         self.portfolios = {k: LivePortfolio.load(_pf_path(k), p.capital)
                            for k, p in PROFILES.items()}
         self.prices = {}      # symbol -> live ltp
-        self.charts = {}      # symbol -> {candles, rsi, buy_i, sell_i}
+        self.day_ohlc = {}    # symbol -> {o,h,l,pc,ltp} today (for the live candle)
+        self.charts = {}      # symbol -> {candles, rsi, markers}
         self.last_signals = {k: {"buys": [], "sells": []} for k in PROFILES}
         self.last_scan_date = None    # IST date of the last executed scan (once/session)
         # Every symbol's dated daily closes from the local CSVs — the guaranteed
@@ -115,10 +116,19 @@ class GarudaLive:
     # --- live price refresh (call on a timer) ------------------------------
     def refresh_prices(self, full=False):
         """Price held names every tick; the whole universe on a slower cadence
-        (full=True) so every stock shows a live Kite LTP like a market-watch."""
+        (full=True) so every stock shows a live Kite LTP like a market-watch.
+        Uses ohlc() so we also get today's open/high/low for a live candle."""
         syms = sorted(self.all_symbols() | self.held_symbols()) if full \
             else list(self.held_symbols())
-        if syms:
+        if not syms:
+            return
+        q = self.feed.ohlc_quote(syms)
+        if q:
+            for s, d in q.items():
+                if d.get("ltp"):
+                    self.prices[s] = d["ltp"]
+                self.day_ohlc[s] = d
+        else:                                  # no quote access -> plain LTP
             self.prices.update(self.feed.ltp(syms))
 
     def chart_for(self, symbol):
@@ -193,7 +203,8 @@ class GarudaLive:
             watch = []
             for sym in self.universe.get(k, []):
                 closes = self.series_by_sym.get(sym)
-                prev_close = closes[-1] if closes else 0.0
+                o = self.day_ohlc.get(sym, {})
+                prev_close = o.get("pc") or (closes[-1] if closes else 0.0)
                 ltp = self.price_of(sym, prev_close)
                 chg = (ltp - prev_close) / prev_close * 100 if prev_close else 0.0
                 h = pf.holdings.get(sym)
@@ -202,6 +213,7 @@ class GarudaLive:
                     "rsi2": self.rsi_by_sym.get(sym), "held": bool(h),
                     "qty": h["qty"] if h else None,
                     "pnl": round((ltp - h["entry_price"]) * h["qty"], 0) if h else None,
+                    "o": o.get("o"), "h": o.get("h"), "l": o.get("l"),   # today, for the live candle
                 })
             equity = pf.equity(lambda s: self.price_of(s, pf.holdings.get(s, {}).get("entry_price", 0)))
             win, pfac = _live_stats(pf)
@@ -241,7 +253,7 @@ class GarudaLive:
         totals["curve"] = [round(hs[i]["equity"] + hm[i]["equity"], 0) for i in range(n)]
         return {"live": self.feed.live, "profiles": profs, "totals": totals,
                 "market_open": is_market_open(), "market_status": market_status(),
-                "last_scan": self.last_scan_date}
+                "last_scan": self.last_scan_date, "today": _today()}
 
 
 def _live_stats(pf):
