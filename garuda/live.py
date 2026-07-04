@@ -34,10 +34,12 @@ class GarudaLive:
         # Every symbol's daily closes from the local CSVs — the guaranteed chart
         # source when Kite's historical API isn't available for a name.
         self.series_by_sym = {}
+        self.universe = {}        # per-profile symbol list (for search/preview)
         for k, prof in PROFILES.items():
             s = self._series(prof)
             for sym, c in s.items():
                 self.series_by_sym.setdefault(sym, c)
+            self.universe[k] = sorted(s.keys())
             print(f"[garuda] {k}: loaded {len(s)} symbols for charts "
                   f"({prof.daily_csv})", flush=True)
 
@@ -179,6 +181,7 @@ class GarudaLive:
                 "day_pnl": round(day_pnl, 0), "positions": positions,
                 "win": win, "win_kind": win_kind, "win_open": win_open,
                 "proven_win": prof.proven_win, "proven_ret": prof.proven_ret,
+                "universe": self.universe.get(k, []),
                 "pf": pfac, "cash": round(pf.cash, 0),
                 "buys": self.last_signals[k]["buys"], "sells": self.last_signals[k]["sells"],
                 "chart_sym": chart_sym, "chart": self.charts.get(chart_sym),

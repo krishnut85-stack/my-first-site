@@ -167,14 +167,18 @@ async function loadChart(sym){curSym=sym;document.getElementById('csym').textCon
 function render(d){
  if(!d)return;DATA=d;
  const t=d.totals||{equity:0,pnl_pct:0,day_pnl:0,positions:0};drawPnl(t.curve);
- let wsum=0,wn=0,anyLive=false;
- d.profiles.forEach(p=>{if(p.win!=null&&p.positions.length){wsum+=p.win*p.positions.length;wn+=p.positions.length;}if(p.win_kind==='live')anyLive=true;});
- const combWin=wn?Math.round(wsum/wn):null;
+ let wsum=0,wn=0,psum=0,pn=0,anyLive=false;
+ d.profiles.forEach(p=>{
+   if(p.win!=null&&p.positions.length){wsum+=p.win*p.positions.length;wn+=p.positions.length;}
+   if(p.proven_win!=null){psum+=p.proven_win;pn++;}
+   if(p.win_kind==='live')anyLive=true;});
+ // live positions-weighted win rate if we have trades; else the validated average
+ const combWin=wn?Math.round(wsum/wn):(pn?Math.round(psum/pn):null);
  document.getElementById('summary').innerHTML=
   `<div class=stile><div class=l>COMBINED EQUITY (PAPER)</div><div class=v>${money(t.equity)}</div></div>
    <div class=stile><div class=l>TOTAL P&L</div><div class="v ${t.pnl_pct>=0?'g':'r'}">${pct(t.pnl_pct)}</div></div>
    <div class=stile><div class=l>DAY P&L</div><div class="v ${t.day_pnl>=0?'g':'r'}">${(t.day_pnl>=0?'+':'')+money(t.day_pnl)}</div></div>
-   <div class=stile><div class=l>WIN RATE ${anyLive?'(live)':'(backtest)'}</div><div class="v a">${combWin==null?'—':combWin+'%'}</div></div>
+   <div class=stile><div class=l>WIN RATE ${anyLive?'(live)':'(validated)'}</div><div class="v a">${combWin==null?'—':combWin+'%'}</div></div>
    <div class=stile><div class=l>OPEN POSITIONS</div><div class=v>${t.positions}</div></div>`;
  const mo=d.market_open,note=document.getElementById('mktnote');note.className='mktnote '+(mo?'open':'closed');
  note.innerHTML=mo
@@ -193,7 +197,6 @@ function render(d){
     <div class=bstat>${money(p.equity)} · <b class="${p.pnl_pct>=0?'g':'r'}">${pct(p.pnl_pct)}</b> · WIN <b class=a>${win}</b>${green} · ${p.positions.length} pos</div>
   </div>`;
   html+=`<table class=wl><tr><th class=sym>SYMBOL</th><th>QTY</th><th>RSI-2</th><th>LTP</th><th>CHG</th><th>P&L</th></tr>`;
-  if(!rows.length)html+=`<tr><td colspan=6 class=muted style=text-align:center>${q?'no match':'no open positions'}</td></tr>`;
   rows.forEach(x=>{const key=p.key+x.sym,pv=prev[key],cls=pv==null?'':(x.ltp>pv?'flash-up':(x.ltp<pv?'flash-dn':''));prev[key]=x.ltp;
    const sel=x.sym===curSym?' sel':'';
    html+=`<tr class="prow${sel}" data-sym="${x.sym}" onclick="loadChart('${x.sym}')">
@@ -203,6 +206,16 @@ function render(d){
     <td class="${cls}">${x.ltp.toFixed(2)}</td>
     <td class="${x.chg>=0?'g':'r'}">${pct(x.chg)}</td>
     <td class="${x.pnl>=0?'g':'r'}">${(x.pnl>=0?'+':'')+money(x.pnl)}</td></tr>`;});
+  // when searching, also surface matching names from the full universe (not yet
+  // held) as clickable preview rows — so typing a symbol always shows the share.
+  const held=new Set(p.positions.map(x=>x.sym));
+  const previews=q?(p.universe||[]).filter(s=>s.includes(q)&&!held.has(s)).slice(0,60):[];
+  previews.forEach(s=>{const sel=s===curSym?' sel':'';
+   html+=`<tr class="prow${sel}" data-sym="${s}" onclick="loadChart('${s}')">
+    <td class=sym>${s}<span class=mtag>${p.key==='smallcap'?'SC':'MC'}</span></td>
+    <td class=muted>—</td><td class=muted>—</td><td class=muted>—</td>
+    <td class=muted>preview</td><td class=muted>chart →</td></tr>`;});
+  if(!rows.length&&!previews.length)html+=`<tr><td colspan=6 class=muted style=text-align:center>${q?'no match in '+p.name:'no open positions'}</td></tr>`;
   html+=`</table>`;
  });
  list.innerHTML=html||'<div class=muted style=padding:20px;text-align:center>No positions yet.</div>';
