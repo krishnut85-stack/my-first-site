@@ -227,7 +227,8 @@ function liveTick(){
  if(!mainChart||!candleSeries||!curChartSym||!DATA||!DATA.market_open||!DATA.today)return;
  const x=watchItem(curChartSym);if(!x||x.o==null||x.ltp==null)return;
  try{candleSeries.update({time:DATA.today,open:x.o,
-  high:Math.max(x.h==null?x.ltp:x.h,x.ltp),low:Math.min(x.l==null?x.ltp:x.l,x.ltp),close:x.ltp});}catch(e){}
+  high:Math.max(x.h==null?x.ltp:x.h,x.ltp),low:Math.min(x.l==null?x.ltp:x.l,x.ltp),close:x.ltp});
+  if(rsiSeries&&x.rsi2!=null)rsiSeries.update({time:DATA.today,value:x.rsi2});}catch(e){}
 }
 function drawPnl(curve){
  const c=document.getElementById('pnlchart');
@@ -246,7 +247,8 @@ function updateQuote(sym){
  const x=f.x,w=watchItem(sym)||x;
  const cc=v=>v==null?'muted':(v>=0?'g':'r');
  el.innerHTML=`<b>${x.ltp.toFixed(2)}</b> <span class="${cc(x.chg)}">${pct(x.chg)}</span> <span class=muted>· RSI-2 ${x.rsi2==null?'—':x.rsi2}</span>`;
- const tech=`<div class=tech>1D <b class="${cc(w.chg)}">${w.chg==null?'—':pct(w.chg)}</b> · 1W <b class="${cc(w.chg_w)}">${w.chg_w==null?'—':pct(w.chg_w)}</b> · 1M <b class="${cc(w.chg_m)}">${w.chg_m==null?'—':pct(w.chg_m)}</b> · 52W H <b>${w.hi52==null?'—':w.hi52}</b> L <b>${w.lo52==null?'—':w.lo52}</b> · Mcap <b>${fmtCr(w.mcap)}</b></div>`;
+ const lmc=w.mcap==null?null:w.mcap*(1+(w.chg||0)/100);
+ const tech=`<div class=tech>1D <b class="${cc(w.chg)}">${w.chg==null?'—':pct(w.chg)}</b> · 1W <b class="${cc(w.chg_w)}">${w.chg_w==null?'—':pct(w.chg_w)}</b> · 1M <b class="${cc(w.chg_m)}">${w.chg_m==null?'—':pct(w.chg_m)}</b> · 52W H <b>${w.hi52==null?'—':w.hi52}</b> L <b>${w.lo52==null?'—':w.lo52}</b> · Mcap <b>${fmtCr(lmc)}</b></div>`;
  sg.innerHTML=(f.held
   ? `<h4>${LABEL[f.p.key]} · position</h4>Holding <b>${x.qty}</b> @ ₹${x.entry.toFixed(2)} · P&L <b class="${cc(x.pnl)}">${(x.pnl>=0?'+':'')+money(x.pnl)}</b>`
   : `<span class=muted>${LABEL[f.p.key]||''} · live price · not held</span>`)+tech;
@@ -303,7 +305,7 @@ function render(d){
     <td class=a>${x.rsi2==null?'—':x.rsi2}</td>
     <td class="${cls}">${x.ltp.toFixed(2)}</td>
     ${pcell(x.chg)}${pcell(x.chg_w)}${pcell(x.chg_m)}
-    <td class=muted>${fmtCr(x.mcap)}</td>
+    <td class=muted>${fmtCr(x.mcap==null?null:x.mcap*(1+(x.chg||0)/100))}</td>
     <td class="${x.pnl==null?'muted':(x.pnl>=0?'g':'r')}">${x.pnl==null?'—':(x.pnl>=0?'+':'')+money(x.pnl)}</td></tr>`;});
   html+=`</table>`;
  });

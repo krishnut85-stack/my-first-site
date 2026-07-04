@@ -228,6 +228,7 @@ class GarudaLive:
 
     def build_state(self):
         profs = []
+        mkt_open = is_market_open()
         for k, prof in PROFILES.items():
             pf = self.portfolios[k]
             positions = []
@@ -256,6 +257,12 @@ class GarudaLive:
                     return round((_ltp - _cl[-n]) / _cl[-n] * 100, 2) \
                         if len(_cl) >= n and _cl[-n] > 0 else None
                 win = cl[-252:]
+                # live provisional RSI-2 (current price as today's close) while open
+                if mkt_open and cl:
+                    lr = rsi(cl[-25:] + [ltp], 2)
+                    rsi2 = round(lr[-1], 1) if lr and lr[-1] is not None else self.rsi_by_sym.get(sym)
+                else:
+                    rsi2 = self.rsi_by_sym.get(sym)
                 h = pf.holdings.get(sym)
                 watch.append({
                     "sym": sym, "ltp": round(ltp, 2), "chg": round(chg, 2),
@@ -263,7 +270,7 @@ class GarudaLive:
                     "hi52": round(max(win), 2) if win else None,
                     "lo52": round(min(win), 2) if win else None,
                     "mcap": self.mcap_by_sym.get(sym),
-                    "rsi2": self.rsi_by_sym.get(sym), "held": bool(h),
+                    "rsi2": rsi2, "held": bool(h),
                     "qty": h["qty"] if h else None,
                     "pnl": round((ltp - h["entry_price"]) * h["qty"], 0) if h else None,
                     "o": o.get("o"), "h": o.get("h"), "l": o.get("l"),   # today, for the live candle
