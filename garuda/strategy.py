@@ -20,6 +20,7 @@ class Profile:
     key: str
     name: str
     index_csv_url: str          # NSE constituent list (for fetching the universe)
+    daily_csv: str              # local daily-bars CSV (symbol,date,close) the scanner reads
     entry_rsi: float = 5.0
     exit_rsi: float = 85.0
     max_hold: int = 30
@@ -31,8 +32,10 @@ class Profile:
 PROFILES = {
     "smallcap": Profile(
         "smallcap", "Garuda-SC",
-        "https://archives.nseindia.com/content/indices/ind_niftysmallcap250list.csv"),
+        "https://archives.nseindia.com/content/indices/ind_niftysmallcap250list.csv",
+        "niftysmallcap250_daily.csv"),
     "microcap": Profile(
         "microcap", "Garuda-MC",
-        "https://nsearchives.nseindia.com/content/indices/ind_niftymicrocap250_list.csv"),
+        "https://nsearchives.nseindia.com/content/indices/ind_niftymicrocap250_list.csv",
+        "microcap_daily.csv"),
 }

@@ -14,3 +14,7 @@ rama/KILL_SWITCH
 rama_portfolio_report.txt
 rama_portfolio_report.html
 rama_dashboard.html
+
+# Garuda live runtime
+garuda/data/garuda_*_portfolio.json
+garuda_server.log

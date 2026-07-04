@@ -45,7 +45,7 @@ def test_portfolio_rejects_overspend():
 def test_scan_no_position_cap_fills_by_cash():
     # 60 always-oversold-ish names; with ~2% each on 10L, ~50 should fill (cash-
     # bound), NOT an arbitrary 20 cap.
-    prof = Profile("t", "T", "", entry_rsi=99, exit_rsi=85, max_hold=30,
+    prof = Profile("t", "T", "", "", entry_rsi=99, exit_rsi=85, max_hold=30,
                    use_trend=False, capital=1_000_000, alloc_pct=0.02)
     series = {f"S{i}": _reverting(seed=i) for i in range(60)}
     pf = LivePortfolio(prof.capital)
