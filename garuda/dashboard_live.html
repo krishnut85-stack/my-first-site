@@ -49,7 +49,11 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 .csearch{background:#0b1017;border:1px solid var(--line);border-radius:6px;color:var(--txt);padding:4px 9px;font:inherit;font-size:12px;width:160px;max-width:42vw}
 .cbtn{background:var(--card);border:1px solid var(--acc);color:var(--acc);border-radius:6px;padding:4px 11px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
 .cbtn:hover{background:#0e2a20}
-.chartwrap{padding:8px 6px 4px}svg.chart,svg.rsi{width:100%;display:block}
+.chartwrap{padding:8px 6px 4px}
+.chart,.rsi,.pnlchart{width:100%;display:block}
+.csvg{width:100%;height:auto;display:block;background:#0a0e14;border-radius:6px}
+.rsi .csvg{margin-top:4px}
+.cempty{padding:44px 10px;text-align:center;color:var(--mut);font-size:12px;background:#0a0e14;border-radius:6px}
 .leg{color:var(--mut);font-size:10px;padding:0 14px 10px}
 .qbadge{font-size:11px}.qbadge b{font-size:15px}
 .foot{margin-top:16px;color:var(--mut);font-size:10px;border-top:1px solid var(--line);padding-top:10px}
@@ -93,14 +97,13 @@ table{width:100%;border-collapse:collapse;font-size:12px}
         </div>
         <div id=cquote class=qbadge></div>
       </div>
-      <div class=chartwrap><svg class=chart id=chart viewBox="0 0 620 240" preserveAspectRatio=none></svg>
-      <svg class=rsi id=rsi viewBox="0 0 620 70" preserveAspectRatio=none></svg></div>
+      <div class=chartwrap><div class=chart id=chart></div><div class=rsi id=rsi></div></div>
       <div class=leg><span class=g>▲ BUY</span> RSI-2 &lt; 5 · <span class=r>▼ SELL</span> RSI-2 &gt; 85 · amber line = RSI-2</div>
       <div class=sig id=sig></div>
     </div>
     <div class=chartcard>
       <div class=chead><div><b>PORTFOLIO P&L</b> <span class=muted>· combined equity curve (paper)</span></div><div id=pnlnow class=muted></div></div>
-      <div class=chartwrap><svg class=chart id=pnlchart viewBox="0 0 620 150" preserveAspectRatio=none></svg></div>
+      <div class=chartwrap><div class=pnlchart id=pnlchart></div></div>
     </div>
   </div>
 </div>
@@ -122,29 +125,34 @@ function clocks(){
  document.getElementById('ist').textContent=`IST ${p.weekday} ${p.hour}:${p.minute}:${p.second}`;
  document.getElementById('loc').textContent=`Local ${new Date().toLocaleTimeString('en-GB',{hour12:false})}`;
 }
+function svgWrap(vw,vh,body){return `<svg class=csvg viewBox="0 0 ${vw} ${vh}" preserveAspectRatio=none style="aspect-ratio:${vw}/${vh}">${body}</svg>`;}
 function drawChart(ch,sym){
  document.getElementById('csym').textContent=sym||'—';
- if(!ch||!ch.candles||!ch.candles.length){document.getElementById('chart').innerHTML='<text x=310 y=120 fill=#7d8b9c font-size=12 text-anchor=middle>loading chart…</text>';document.getElementById('rsi').innerHTML='';return;}
+ const chartEl=document.getElementById('chart'),rsiEl=document.getElementById('rsi');
+ if(!ch||!ch.candles||!ch.candles.length){chartEl.innerHTML='<div class=cempty>loading chart…</div>';rsiEl.innerHTML='';return;}
  const d=ch.candles,n=d.length,hi=Math.max(...d.map(x=>x.h)),lo=Math.min(...d.map(x=>x.l)),rng=(hi-lo)||1;
  const W=620,H=240,cw=W/n,y=v=>10+(hi-v)/rng*(H-30);let s='';
+ // price grid + labels so the chart area is unmistakable
+ for(let g=0;g<=4;g++){const v=hi-rng*g/4,gy=y(v);
+  s+=`<line x1=0 y1=${gy} x2=${W} y2=${gy} stroke=#1e2836 stroke-width=1/><text x=4 y=${gy-2} fill=#7d8b9c font-size=9>${v.toFixed(1)}</text>`;}
  for(let i=0;i<n;i++){const x=i*cw+cw/2,up=d[i].c>=d[i].o,col=up?'#22d37a':'#ff5d5d';
-  s+=`<line x1=${x} y1=${y(d[i].h)} x2=${x} y2=${y(d[i].l)} stroke=${col} stroke-width=1/>`;
-  const yo=y(d[i].o),yc=y(d[i].c);s+=`<rect x=${x-cw*0.3} y=${Math.min(yo,yc)} width=${cw*0.6} height=${Math.max(2,Math.abs(yo-yc))} fill=${col}/>`;}
+  s+=`<line x1=${x} y1=${y(d[i].h)} x2=${x} y2=${y(d[i].l)} stroke=${col} stroke-width=1.4/>`;
+  const yo=y(d[i].o),yc=y(d[i].c);s+=`<rect x=${x-cw*0.35} y=${Math.min(yo,yc)} width=${Math.max(1.5,cw*0.7)} height=${Math.max(2,Math.abs(yo-yc))} fill=${col}/>`;}
  if(ch.buy_i!=null){const bx=ch.buy_i*cw+cw/2;s+=`<text x=${bx} y=${y(d[ch.buy_i].l)+16} fill=#22d37a font-size=13 text-anchor=middle>▲</text>`;}
  if(ch.sell_i!=null){const sx=ch.sell_i*cw+cw/2;s+=`<text x=${sx} y=${y(d[ch.sell_i].h)-8} fill=#ff5d5d font-size=13 text-anchor=middle>▼</text>`;}
- document.getElementById('chart').innerHTML=s;
+ chartEl.innerHTML=svgWrap(W,H,s);
  const r=ch.rsi,rh=70,ry=v=>8+(100-v)/100*(rh-16);
  let rs=`<line x1=0 y1=${ry(85)} x2=620 y2=${ry(85)} stroke=#4d2020 stroke-dasharray=3/><line x1=0 y1=${ry(5)} x2=620 y2=${ry(5)} stroke=#204d3a stroke-dasharray=3/>`;
  let pts='';for(let i=0;i<n;i++)if(r[i]!=null)pts+=`${i*cw+cw/2},${ry(r[i])} `;
- rs+=`<polyline fill=none stroke=#f5b23e stroke-width=1.5 points="${pts}"/>`;document.getElementById('rsi').innerHTML=rs;
+ rs+=`<polyline fill=none stroke=#f5b23e stroke-width=1.5 points="${pts}"/>`;rsiEl.innerHTML=svgWrap(620,rh,rs);
 }
 function drawPnl(curve){
  const c=document.getElementById('pnlchart');
- if(!curve||curve.length<2){c.innerHTML='<text x=310 y=75 fill=#7d8b9c font-size=11 text-anchor=middle>P&L curve builds as the daily scans run</text>';document.getElementById('pnlnow').textContent='';return;}
+ if(!curve||curve.length<2){c.innerHTML='<div class=cempty>P&L curve builds as the daily scans run</div>';document.getElementById('pnlnow').textContent='';return;}
  const hi=Math.max(...curve),lo=Math.min(...curve),rng=(hi-lo)||1,W=620,H=150,n=curve.length;
  const up=curve[n-1]>=curve[0],col=up?'#22d37a':'#ff5d5d';let pts='';
  for(let i=0;i<n;i++)pts+=`${i/(n-1)*W},${10+(hi-curve[i])/rng*(H-20)} `;
- c.innerHTML=`<polyline fill=none stroke=${col} stroke-width=2 points="${pts}"/>`;
+ c.innerHTML=svgWrap(W,H,`<polyline fill=none stroke=${col} stroke-width=2 points="${pts}"/>`);
  document.getElementById('pnlnow').textContent=money(curve[n-1]);
 }
 // find a position record across both bots for the quote header
