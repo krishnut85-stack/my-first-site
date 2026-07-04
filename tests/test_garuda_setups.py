@@ -83,3 +83,13 @@ def test_backtest_aggregates_and_flags_costs():
     assert free["trades"] > 0
     assert dear["avg_return_pct"] < free["avg_return_pct"]
     assert "win_rate_pct" in free
+
+
+def test_totp_rfc6238_vectors():
+    """Guard the hand-rolled TOTP used for the automatic Kite login."""
+    import base64
+    from garuda.kite_login import totp
+    sec = base64.b32encode(b"12345678901234567890").decode()
+    assert totp(sec, 59) == "287082"
+    assert totp(sec, 1111111109) == "081804"
+    assert totp(sec, 1234567890) == "005924"
