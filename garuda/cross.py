@@ -16,9 +16,18 @@ so this makes the net number impossible to hide.
 
 import csv
 import statistics
+import sys
 from pathlib import Path
 
 from . import config
+
+# Whole-market CSVs can carry the odd oversized field; lift the default 128 KB
+# cap so the loader never dies on one bad row (a half-written file, a stray
+# quote). Fall back gracefully if the platform rejects sys.maxsize.
+try:
+    csv.field_size_limit(sys.maxsize)
+except OverflowError:
+    csv.field_size_limit(2**31 - 1)
 
 
 def _load_long(path) -> dict:
