@@ -86,7 +86,7 @@ def _hist_retry(kite, tok, frm, to):
 
 
 def fetch_daily(symbols=None, days=400, out="daily.csv", exchange="NSE",
-                all_stocks=False, limit=0, resume=True, sleep=0.2) -> str:
+                all_stocks=False, limit=0, resume=True, sleep=0.2, ohlc=False) -> str:
     kite = _kite()
     tokens = _universe(kite, exchange)
 
@@ -110,7 +110,8 @@ def fetch_daily(symbols=None, days=400, out="daily.csv", exchange="NSE",
     with open(out, mode, newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         if mode == "w":
-            w.writerow(["symbol", "date", "close"])
+            w.writerow(["symbol", "date", "open", "high", "low", "close"]
+                       if ohlc else ["symbol", "date", "close"])
         for n, s in enumerate(todo, 1):
             tok = tokens.get(s)
             if not tok:
@@ -119,7 +120,11 @@ def fetch_daily(symbols=None, days=400, out="daily.csv", exchange="NSE",
             if not data:
                 continue
             for d in data:
-                w.writerow([s, d["date"].date().isoformat(), d["close"]])
+                dt = d["date"].date().isoformat()
+                if ohlc:
+                    w.writerow([s, dt, d["open"], d["high"], d["low"], d["close"]])
+                else:
+                    w.writerow([s, dt, d["close"]])
             written += 1
             f.flush()                         # survive a kill: never lose buffered rows
             if n % 100 == 0:
@@ -176,6 +181,7 @@ def main() -> None:
         limit=_opt("--limit", int, 0),
         resume=("--fresh" not in args),   # resume a partial file by default
         sleep=_opt("--sleep", float, 0.2),
+        ohlc=("--ohlc" in args),           # write open/high/low/close (for intraday tests)
     )
 
 

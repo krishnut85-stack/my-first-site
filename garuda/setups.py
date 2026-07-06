@@ -181,6 +181,110 @@ def sweep(panel: dict, grids: dict | None = None) -> list:
     return out
 
 
+def _rsi2_at(prev2, prev1, cur):
+    """2-period RSI using `cur` as the latest price (matches rsi(...,2))."""
+    c1, c2 = prev1 - prev2, cur - prev1
+    ag = (max(c1, 0.0) + max(c2, 0.0)) / 2.0
+    al = (max(-c1, 0.0) + max(-c2, 0.0)) / 2.0
+    return 100.0 if al == 0 else 100.0 - 100.0 / (1.0 + ag / al)
+
+
+def _simulate_intraday(closes, highs, r, entry_rsi, exit_rsi, max_hold, cost):
+    """Same entries as baseline, but exit INTRADAY at the day's HIGH the first
+    day RSI-2 (using that high) would cross exit_rsi — the optimistic best case
+    for an intraday exit. No lookahead beyond the current day's own high."""
+    trades = []
+    i, n = 2, len(closes)
+    while i < n - 1:
+        if r[i] is not None and r[i] < entry_rsi and closes[i] > 0:
+            entry, j, exit_px = closes[i], i + 1, None
+            while j < n - 1:
+                if highs[j] > 0 and _rsi2_at(closes[j - 2], closes[j - 1], highs[j]) > exit_rsi:
+                    exit_px = highs[j]                 # sold into the intraday spike
+                    break
+                if (r[j] is not None and r[j] > exit_rsi) or (j - i) >= max_hold:
+                    exit_px = closes[j]
+                    break
+                j += 1
+            if exit_px is None:
+                exit_px = closes[j]
+            if exit_px > 0:
+                trades.append((exit_px - entry) / entry - 2 * cost)
+            i = j + 1
+        else:
+            i += 1
+    return trades
+
+
+def _stats(rets):
+    if not rets:
+        return None
+    wins = [x for x in rets if x > 0]
+    gl = -sum(x for x in rets if x <= 0)
+    return {"trades": len(rets), "win": len(wins) / len(rets) * 100,
+            "avg": statistics.mean(rets) * 100,
+            "pf": (sum(wins) / gl) if gl > 0 else None,
+            "avg_win": (statistics.mean(wins) * 100) if wins else 0.0,
+            "avg_loss": (statistics.mean([x for x in rets if x <= 0]) * 100)
+                        if len(wins) < len(rets) else 0.0}
+
+
+def compare_intraday(ohlc_panel: dict, entry_rsi=5.0, exit_rsi=85.0, max_hold=30):
+    """Baseline daily-close exit vs the intraday high-exit, on OHLC data."""
+    cost = config.CROSS_COST_PER_SIDE
+    base, intra = [], []
+    for closes, highs in ohlc_panel.values():
+        if len(closes) < max_hold + 5:
+            continue
+        r = rsi(closes, 2)
+        base.extend(_simulate(closes, r, [None] * len(closes), entry_rsi, exit_rsi,
+                              2, max_hold, cost, 0.0, 0.0, False))
+        intra.extend(_simulate_intraday(closes, highs, r, entry_rsi, exit_rsi, max_hold, cost))
+    return {"Baseline (daily-close exit, LIVE)": _stats(base),
+            "Intraday exit (sell at high when RSI-2>85)": _stats(intra)}
+
+
+def load_ohlc(path) -> dict:
+    """Read symbol,date,open,high,low,close -> {symbol: ([closes], [highs])}."""
+    rows_by = {}
+    with open(path, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            s = row.get("symbol") or row.get("Symbol")
+            try:
+                d = row["date"]
+                c = float(row["close"])
+                h = float(row["high"])
+            except (KeyError, ValueError, TypeError):
+                continue
+            if s:
+                rows_by.setdefault(s, []).append((d, h, c))
+    out = {}
+    for s, rows in rows_by.items():
+        rows.sort()
+        out[s] = ([c for _, _, c in rows], [h for _, h, _ in rows])
+    return out
+
+
+def format_intraday(res: dict, source: str) -> str:
+    lines = ["=" * 82,
+             f"  {config.BOT_NAME} · INTRADAY vs DAILY-CLOSE EXIT   (entry<5, exit>85, 30d hold)",
+             f"  Data: {source}   ·   costs both sides   ·   intraday = optimistic (sell at the high)",
+             "=" * 82,
+             f"  {'variant':<44}{'win%':>6}{'avg%/trade':>12}{'PF':>7}{'trades':>8}",
+             "-" * 82]
+    for name, s in res.items():
+        if not s:
+            lines.append(f"  {name:<44}{'— no trades —':>33}")
+            continue
+        lines.append(f"  {name:<44}{s['win']:>5.0f}%{s['avg']:>+11.2f}%"
+                     f"{(s['pf'] or 0):>7.2f}{s['trades']:>8}")
+    lines += ["-" * 82,
+              "  If the intraday row doesn't clearly beat baseline on avg%/trade AND PF,",
+              "  reacting intraday only whipsaws — even selling at the perfect peak doesn't help.",
+              "=" * 82]
+    return "\n".join(lines)
+
+
 def compare_exits(panel: dict, entry_rsi=5.0, exit_rsi=85.0, max_hold=30,
                   use_trend=False) -> list:
     """Run the LIVE settings (baseline) against stop-loss / profit-target
@@ -300,6 +404,17 @@ def main() -> None:
         if excl:
             panel = {s: v for s, v in panel.items() if s not in excl}
             print(f"  excluded {len(excl)} symbols; {len(panel)} remain")
+    if "--intraday" in args:
+        ohlc = load_ohlc(path)
+        if not ohlc or all(len(h) == 0 for _, h in ohlc.values()):
+            raise SystemExit("This CSV has no 'high' column. Re-fetch with --ohlc:\n"
+                             "  python3 -m garuda.fetch_daily --symbols-file <list> "
+                             "--out <name>_ohlc.csv --ohlc --fresh")
+        res = compare_intraday(ohlc, entry_rsi=_opt("--entry", float, 5.0),
+                               exit_rsi=_opt("--exit", float, 85.0),
+                               max_hold=_opt("--hold", int, 30))
+        print(format_intraday(res, f"{path} ({len(ohlc)} symbols)"))
+        return
     if "--sweep" in args:
         print(format_sweep(sweep(panel)))
         return
