@@ -51,6 +51,17 @@ def test_win_rate_shows_backtest_until_live_trades(tmp_path, monkeypatch):
     assert sc["win_open"] == 50                    # 1 of 2 positions green right now
 
 
+def test_state_exposes_index_reading(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    live = GarudaLive(csv_dir=str(tmp_path))
+    # offline -> no Kite -> empty index, but the key is always present so the
+    # header can render a live Nifty reading when the feed is live.
+    st = live.build_state()
+    assert st["index"] == {}
+    live.index = {"NIFTY 50": {"ltp": 24832.30, "pc": 24720.0, "chg": 0.45}}
+    assert live.build_state()["index"]["NIFTY 50"]["chg"] == 0.45
+
+
 def test_market_hours_gate():
     from datetime import datetime
     from garuda.market import is_market_open, is_trading_day, HOLIDAYS

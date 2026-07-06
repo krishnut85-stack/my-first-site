@@ -139,6 +139,26 @@ class KiteFeed:
                               "ltp": float(d["last_price"])}
         return out
 
+    def index_quote(self, names=("NIFTY 50", "NIFTY BANK")) -> dict:
+        """{name: {ltp, pc, chg}} for NSE indices (Nifty 50, Bank Nifty). Uses
+        kite.ohlc('NSE:NIFTY 50'); pc is the previous close, chg the day %.
+        Empty if unavailable — the header just hides the reading then."""
+        if not self.kite or not names:
+            return {}
+        try:
+            q = self.kite.ohlc([f"NSE:{n}" for n in names])
+        except Exception:  # noqa: BLE001
+            return {}
+        out = {}
+        for n in names:
+            d = q.get(f"NSE:{n}")
+            if d and d.get("last_price"):
+                pc = (d.get("ohlc") or {}).get("close")
+                ltp = float(d["last_price"])
+                out[n] = {"ltp": round(ltp, 2), "pc": pc,
+                          "chg": round((ltp - pc) / pc * 100, 2) if pc else 0.0}
+        return out
+
     def _token(self, symbol):
         if self._tokens is None and self.kite:
             try:

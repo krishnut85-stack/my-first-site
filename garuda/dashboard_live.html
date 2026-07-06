@@ -34,6 +34,9 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .bothdr .nm{font-weight:800;font-size:13px}.bothdr .nm .d{color:var(--mut);font-weight:400;font-size:10px}
 .strat{font-size:9px;font-weight:600;color:var(--acc);background:rgba(120,170,255,.10);border:1px solid var(--line);border-radius:3px;padding:1px 6px;margin-left:4px;letter-spacing:.02em}
 .rules{font-size:10px;color:var(--mut);padding:3px 12px 7px;background:#0f141c;border-bottom:1px solid var(--line);line-height:1.35}
+.idxbox{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.idx{font-size:13px;color:var(--mut);white-space:nowrap}.idx b{color:var(--txt);font-weight:700;margin-right:6px;letter-spacing:.03em}
+.idx .v{color:var(--txt);font-weight:600}
 .bstat{font-size:10px;color:var(--mut)}.bstat b{font-size:12px}
 .listwrap{max-height:62vh;overflow-y:auto;overflow-x:auto}
 .wl{min-width:560px}
@@ -81,7 +84,8 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 </style></head><body><div class=wrap>
 <div class=top>
   <div><div class=brand><b>GARUDA</b> <span class=q>⚡ QUANT</span></div>
-    <div class=tag>Uptrend RSI-2 + Momentum · Zerodha Kite · PAPER</div></div>
+    <div class=tag>Uptrend RSI-2 + Momentum · Zerodha Kite · PAPER</div>
+    <div class=idxbox id=idxbox></div></div>
   <div class=clocks><span class=live>● LIVE · PAPER</span> <span class=mkt id=mkt>—</span><br>
     <span class=ist id=ist>IST —</span><br><span class=loc id=loc>Local —</span></div>
 </div>
@@ -283,6 +287,10 @@ async function loadChart(sym){curSym=sym;document.getElementById('csym').textCon
 
 function render(d){
  if(!d)return;DATA=d;
+ // live index reading (Nifty 50 / Bank Nifty) in the header
+ const idx=d.index||{};
+ const pill=(nm,q)=>!q?'':`<span class=idx><b>${nm}</b><span class=v>${q.ltp.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}</span> <span class="${q.chg>=0?'g':'r'}">${q.chg>=0?'▲':'▼'} ${Math.abs(q.chg).toFixed(2)}%</span></span>`;
+ document.getElementById('idxbox').innerHTML=pill('NIFTY 50',idx['NIFTY 50'])+pill('BANK NIFTY',idx['NIFTY BANK']);
  const t=d.totals||{equity:0,pnl_pct:0,day_pnl:0,positions:0};drawPnl(t.curve);
  let wsum=0,wn=0,psum=0,pn=0,anyLive=false;
  d.profiles.forEach(p=>{

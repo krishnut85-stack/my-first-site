@@ -28,6 +28,7 @@ class GarudaLive:
         self.portfolios = {k: LivePortfolio.load(_pf_path(k), p.capital)
                            for k, p in PROFILES.items()}
         self.prices = {}      # symbol -> live ltp
+        self.index = {}       # NSE index name -> {ltp, pc, chg} (Nifty 50, Bank Nifty)
         self.day_ohlc = {}    # symbol -> {o,h,l,pc,ltp} today (for the live candle)
         self.charts = {}      # symbol -> {candles, rsi, markers}
         self.last_signals = {k: {"buys": [], "sells": []} for k in PROFILES}
@@ -160,6 +161,9 @@ class GarudaLive:
         """Price held names every tick; the whole universe on a slower cadence
         (full=True) so every stock shows a live Kite LTP like a market-watch.
         Uses ohlc() so we also get today's open/high/low for a live candle."""
+        idx = self.feed.index_quote()      # live Nifty 50 / Bank Nifty for the header
+        if idx:
+            self.index = idx
         syms = sorted(self.all_symbols() | self.held_symbols()) if full \
             else list(self.held_symbols())
         if not syms:
@@ -335,6 +339,7 @@ class GarudaLive:
         # daily track record + today's live intraday samples + the current tip
         totals["curve"] = daily + self.intraday + [totals["equity"]]
         return {"live": self.feed.live, "profiles": profs, "totals": totals,
+                "index": self.index,
                 "market_open": is_market_open(), "market_status": market_status(),
                 "last_scan": self.last_scan_date, "today": _today()}
 
