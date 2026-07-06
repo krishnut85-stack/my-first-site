@@ -84,7 +84,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 </style></head><body><div class=wrap>
 <div class=top>
   <div><div class=brand><b>GARUDA</b> <span class=q>⚡ QUANT</span></div>
-    <div class=tag>Uptrend RSI-2 + Momentum · Zerodha Kite · PAPER</div>
+    <div class=tag>RSI-2 dip · Momentum · Strength · Zerodha Kite · PAPER</div>
     <div class=idxbox id=idxbox></div></div>
   <div class=clocks><span class=paper>PAPER</span> <span class=mkt id=mkt>—</span><br>
     <span class=ist id=ist>IST —</span><br><span class=loc id=loc>Local —</span></div>
@@ -126,7 +126,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
       <div class=rsiwrap><div class=rsi id=rsi></div>
         <div class="zone zsell" id=zsell>SELL ZONE · overbought</div>
         <div class="zone zbuy" id=zbuy>BUY ZONE · oversold</div></div></div>
-      <div class=leg><span style=color:#3aa0ff>MA20</span> · <span style=color:#c586ff>MA50</span> · volume bars · <b style=color:#f5b23e>yellow = RSI-2</b>: dips to <b class=g>BUY 10</b> = oversold (we buy) · spikes to <b class=r>SELL 85</b> = overbought (we sell) · scroll=zoom, drag=pan</div>
+      <div class=leg id=leg><span style=color:#3aa0ff>MA20</span> · <span style=color:#c586ff>MA50</span> · volume bars · <b style=color:#f5b23e>yellow = RSI-2</b>: dips to <b class=g>BUY 10</b> = oversold (we buy) · spikes to <b class=r>SELL 85</b> = overbought (we sell) · scroll=zoom, drag=pan</div>
       <div class=sig id=sig></div>
     </div>
     <div class=chartcard>
@@ -215,20 +215,23 @@ function fitChart(){if(mainChart){mainChart.timeScale().fitContent();rsiChart.ti
 // swap the RSI pane between the RSI-2 dip view (BUY 10 / SELL 85 zones) and the
 // STRENGTH view (RSI-14 with the 55-70 buy band), per the book being viewed.
 function setRsiMode(strength){
- const zs=document.getElementById('zsell'),zb=document.getElementById('zbuy'),sub=document.getElementById('csub');
+ const zs=document.getElementById('zsell'),zb=document.getElementById('zbuy'),sub=document.getElementById('csub'),lg=document.getElementById('leg');
  rsiLines.forEach(l=>{try{rsiSeries.removePriceLine(l);}catch(e){}});rsiLines=[];
+ const base='<span style=color:#3aa0ff>MA20</span> · <span style=color:#c586ff>MA50</span> · volume bars · ';
  if(strength){
   rsiLines.push(rsiSeries.createPriceLine({price:70,color:'#f5b23e',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'70'}));
   rsiLines.push(rsiSeries.createPriceLine({price:55,color:'#22d37a',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'BUY 55'}));
   if(zs)zs.style.display='none';
   if(zb){zb.style.top='33%';zb.style.bottom='auto';zb.style.height='13%';zb.textContent='STRENGTH ZONE · RSI-14 55-70';}
   if(sub)sub.textContent='· daily candles + RSI-14';
+  if(lg)lg.innerHTML=base+'<b style=color:#f5b23e>yellow = RSI-14</b>: buy the <b class=g>55-70</b> strength band in an uptrend · exit on a 12% trailing stop · scroll=zoom, drag=pan';
  }else{
   rsiLines.push(rsiSeries.createPriceLine({price:85,color:'#ff5d5d',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'SELL 85'}));
   rsiLines.push(rsiSeries.createPriceLine({price:10,color:'#22d37a',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'BUY 10'}));
   if(zs)zs.style.display='';
   if(zb){zb.style.top='auto';zb.style.bottom='8%';zb.style.height='4.2%';zb.textContent='BUY ZONE · oversold';}
   if(sub)sub.textContent='· daily candles + RSI-2';
+  if(lg)lg.innerHTML=base+'<b style=color:#f5b23e>yellow = RSI-2</b>: dips to <b class=g>BUY 10</b> = oversold (we buy) · spikes to <b class=r>SELL 85</b> = overbought (we sell) · scroll=zoom, drag=pan';
  }
  curStrengthMode=strength;
 }
@@ -246,7 +249,7 @@ function drawChart(ch,sym){
  volSeries.setData(C.filter(c=>c.v!=null).map(c=>({time:c.t,value:c.v,color:c.c>=c.o?'#14392a':'#3a1c1f'})));
  const line=arr=>{const o=[];for(let i=0;i<C.length;i++)if(arr&&arr[i]!=null)o.push({time:C[i].t,value:arr[i]});return o;};
  ma20Series.setData(line(ch.ma20));ma50Series.setData(line(ch.ma50));
- const strengthMode=FILTER==='strength';setRsiMode(strengthMode);   // RSI-14 for the strength book
+ const ab=activeBook(sym),strengthMode=!!(ab&&ab.key==='strength');setRsiMode(strengthMode);   // RSI-14 for the strength book
  const rsiArr=strengthMode?(ch.rsi14||[]):(ch.rsi||[]);
  const rd=[];for(let i=0;i<C.length;i++)if(rsiArr[i]!=null)rd.push({time:C[i].t,value:rsiArr[i]});
  rsiSeries.setData(rd);
@@ -293,14 +296,26 @@ function drawPnl(curve){
   `<circle cx="${X(n-1)}" cy="${Y(curve[n-1])}" r="3" fill="${col}"/>${xlab}`);
  document.getElementById('pnlnow').textContent=money(curve[n-1]);
 }
+// which book to view a symbol THROUGH: prefer the active tab (a stock can sit in
+// several books), else the first book it's in. Keeps the chart/legend/quote all
+// agreeing on RSI-2-dip vs RSI-14-strength.
+function activeBook(sym){
+ const profs=DATA?.profiles||[],inBook=p=>p.positions.some(x=>x.sym===sym)||(p.watch||[]).some(x=>x.sym===sym);
+ if(FILTER!=='all'){const p=profs.find(p=>p.key===FILTER);if(p&&inBook(p))return p;}
+ return profs.find(inBook)||null;
+}
 // find a stock record (position first for entry/P&L, else the watch row) for the quote header
-function findPos(sym){for(const p of (DATA?.profiles||[])){for(const x of p.positions)if(x.sym===sym)return{x,p,held:true};for(const x of (p.watch||[]))if(x.sym===sym)return{x,p,held:false};}return null;}
+function findPos(sym){const p=activeBook(sym);if(!p)return null;
+ for(const x of p.positions)if(x.sym===sym)return{x,p,held:true};
+ for(const x of (p.watch||[]))if(x.sym===sym)return{x,p,held:false};
+ return null;}
 function updateQuote(sym){
  const f=findPos(sym);const el=document.getElementById('cquote');const sg=document.getElementById('sig');
  if(!f){el.innerHTML='<span class=muted>—</span>';sg.innerHTML='';return;}
  const x=f.x,w=watchItem(sym)||x;
  const cc=v=>v==null?'muted':(v>=0?'g':'r');
- el.innerHTML=`<b>${x.ltp.toFixed(2)}</b> <span class="${cc(x.chg)}">${pct(x.chg)}</span> <span class=muted>· RSI-2 ${x.rsi2==null?'—':x.rsi2}</span>`;
+ const isStr=f.p.key==='strength',rlab=isStr?'RSI-14':'RSI-2',rval=isStr?(x.rsi14??w.rsi14):(x.rsi2??w.rsi2);
+ el.innerHTML=`<b>${x.ltp.toFixed(2)}</b> <span class="${cc(x.chg)}">${pct(x.chg)}</span> <span class=muted>· ${rlab} ${rval==null?'—':rval}</span>`;
  const lmc=w.mcap==null?null:w.mcap*(1+(w.chg||0)/100);
  const tech=`<div class=tech>1D <b class="${cc(w.chg)}">${w.chg==null?'—':pct(w.chg)}</b> · 1W <b class="${cc(w.chg_w)}">${w.chg_w==null?'—':pct(w.chg_w)}</b> · 1M <b class="${cc(w.chg_m)}">${w.chg_m==null?'—':pct(w.chg_m)}</b> · 52W H <b>${w.hi52==null?'—':w.hi52}</b> L <b>${w.lo52==null?'—':w.lo52}</b> · Mcap <b>${fmtCr(lmc)}</b></div>`;
  sg.innerHTML=(f.held
