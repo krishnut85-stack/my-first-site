@@ -108,6 +108,106 @@ def oversold_bounce_trades(closes, entry_rsi=10.0, exit_rsi=65.0,
                      cost, stop_loss, profit_target, use_trend, start_i)
 
 
+def backtest_costs(panel: dict, cost_levels, entry_rsi=5.0, exit_rsi=85.0, max_hold=30):
+    """RSI-2 edge at rising cost/side levels — the honest liquidity/penny test:
+    an edge that only survives at 0.1% costs is untradeable in illiquid names."""
+    prepared = [(c, rsi(c, 2)) for c in panel.values() if len(c) >= max_hold + 5]
+    out = []
+    for cost in cost_levels:
+        rets = []
+        for closes, r in prepared:
+            rets.extend(_simulate(closes, r, [None] * len(closes), entry_rsi, exit_rsi,
+                                  2, max_hold, cost, 0.0, 0.0, False))
+        out.append((cost, _stats(rets)))
+    return out
+
+
+def format_costs(rows, source: str) -> str:
+    lines = ["=" * 74,
+             f"  {config.BOT_NAME} · EDGE vs SLIPPAGE   (RSI-2, entry<5 exit>85 30d)",
+             f"  Data: {source}", "=" * 74,
+             f"  {'cost/side':>9}{'round-trip':>12}{'win%':>7}{'avg%/trade':>12}{'PF':>7}  verdict",
+             "-" * 74]
+    for cost, s in rows:
+        if not s:
+            continue
+        v = ("dead" if s["avg"] <= 0 else "thin" if (s["pf"] or 0) < 1.2 else "edge")
+        lines.append(f"  {cost * 100:>8.2f}%{cost * 200:>11.2f}%{s['win']:>6.0f}%"
+                     f"{s['avg']:>+11.2f}%{(s['pf'] or 0):>7.2f}  {v}")
+    lines += ["-" * 74,
+              "  Illiquid/penny names really cost 1-5% a side to get in and out.",
+              "  Read where 'avg%/trade' turns negative — beyond that, the edge is fiction.",
+              "=" * 74]
+    return "\n".join(lines)
+
+
+def _dated_trades(closes, r, entry_rsi, exit_rsi, max_hold, cost):
+    """[(entry_index, exit_index, net_return)] for one stock (time-ordered)."""
+    trades, i, n = [], 2, len(closes)
+    while i < n - 1:
+        if r[i] is not None and r[i] < entry_rsi and closes[i] > 0:
+            entry, j = closes[i], i + 1
+            while j < n - 1 and not ((r[j] is not None and r[j] > exit_rsi) or (j - i) >= max_hold):
+                j += 1
+            if closes[j] > 0:
+                trades.append((i, j, (closes[j] - entry) / entry - 2 * cost))
+            i = j + 1
+        else:
+            i += 1
+    return trades
+
+
+def backtest_sizing(panel: dict, entry_rsi=5.0, exit_rsi=85.0, max_hold=30,
+                    base=0.02, cap=0.9):
+    """Portfolio equity sim comparing position-sizing DISCIPLINE. Same trades,
+    different sizing -> shows the effect on max drawdown and final return.
+    (Edge per trade is identical; discipline shapes RISK, which is the point.)"""
+    cost = config.CROSS_COST_PER_SIDE
+    trades = []
+    for closes in panel.values():
+        if len(closes) >= max_hold + 5:
+            r = rsi(closes, 2)
+            trades += _dated_trades(closes, r, entry_rsi, exit_rsi, max_hold, cost)
+    trades.sort(key=lambda t: t[0])              # by entry day (approx real order)
+
+    def run(sizer):
+        eq, peak, mdd, mult, prev = 1.0, 1.0, 0.0, 1.0, None
+        for _, _, ret in trades:
+            mult = sizer(prev, mult)
+            eq *= 1.0 + min(base * mult, cap) * ret
+            peak = max(peak, eq)
+            mdd = min(mdd, eq / peak - 1.0)
+            prev = ret
+        return {"ret": (eq - 1) * 100, "mdd": mdd * 100}
+
+    rules = {
+        "Flat 2%/trade (current Garuda)": lambda p, m: 1.0,
+        "Dux: halve size after a loss": lambda p, m: 1.0 if p is None or p > 0 else 0.5,
+        "Dux: cut hard after a loss (x0.33)": lambda p, m: 1.0 if p is None or p > 0
+        else max(0.33, m * 0.33),
+        "Anti (double up after a loss)": lambda p, m: 1.0 if p is None or p > 0
+        else min(4.0, m * 2.0),
+    }
+    return {name: run(fn) for name, fn in rules.items()}, len(trades)
+
+
+def format_sizing(res, ntr, source: str) -> str:
+    rows, _ = res if isinstance(res, tuple) else (res, 0)
+    lines = ["=" * 76,
+             f"  {config.BOT_NAME} · SIZING DISCIPLINE   ({ntr} trades, {source})",
+             "  Same trades & edge — only the position sizing differs (Dux's rules).",
+             "=" * 76,
+             f"  {'sizing rule':<40}{'total return%':>15}{'max drawdown%':>16}",
+             "-" * 76]
+    for name, s in rows.items():
+        lines.append(f"  {name:<40}{s['ret']:>+14.1f}%{s['mdd']:>+15.1f}%")
+    lines += ["-" * 76,
+              "  Discipline doesn't add return — it cuts DRAWDOWN (smaller worst-case loss).",
+              "  'Anti' (adding after losses) is the gambler's trap: watch its drawdown blow out.",
+              "=" * 76]
+    return "\n".join(lines)
+
+
 def backtest(panel: dict, **kw) -> dict:
     """Run the setup across every stock in the panel and aggregate honestly."""
     all_rets = []
@@ -434,6 +534,19 @@ def main() -> None:
                                exit_rsi=_opt("--exit", float, 85.0),
                                max_hold=_opt("--hold", int, 30))
         print(format_intraday(res, f"{path} ({len(ohlc)} symbols)"))
+        return
+    if "--costs" in args:
+        levels = [0.0010, 0.0030, 0.0050, 0.0100, 0.0300, 0.0500]
+        rows = backtest_costs(panel, levels, entry_rsi=_opt("--entry", float, 5.0),
+                              exit_rsi=_opt("--exit", float, 85.0),
+                              max_hold=_opt("--hold", int, 30))
+        print(format_costs(rows, f"{path} ({len(panel)} symbols)"))
+        return
+    if "--discipline" in args:
+        res, ntr = backtest_sizing(panel, entry_rsi=_opt("--entry", float, 5.0),
+                                   exit_rsi=_opt("--exit", float, 85.0),
+                                   max_hold=_opt("--hold", int, 30))
+        print(format_sizing(res, ntr, f"{path} ({len(panel)} symbols)"))
         return
     if "--sweep" in args:
         print(format_sweep(sweep(panel)))
