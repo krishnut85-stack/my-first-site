@@ -180,6 +180,61 @@ def sweep(panel: dict, grids: dict | None = None) -> list:
     return out
 
 
+def compare_exits(panel: dict, entry_rsi=5.0, exit_rsi=85.0, max_hold=30,
+                  use_trend=False) -> list:
+    """Run the LIVE settings (baseline) against stop-loss / profit-target
+    variants, side by side, so you can SEE whether stops help or hurt."""
+    base = dict(entry_rsi=entry_rsi, exit_rsi=exit_rsi, max_hold=max_hold,
+                use_trend=use_trend)
+    variants = [
+        ("Baseline (live: no stop/target)", 0.0, 0.0),
+        ("+ Stop-loss -5%", 0.05, 0.0),
+        ("+ Stop-loss -8%", 0.08, 0.0),
+        ("+ Stop-loss -12%", 0.12, 0.0),
+        ("+ Profit target +5%", 0.0, 0.05),
+        ("+ Profit target +10%", 0.0, 0.10),
+        ("+ Profit target +15%", 0.0, 0.15),
+        ("+ Stop -8% & Target +10%", 0.08, 0.10),
+        ("+ Stop -12% & Target +8%", 0.12, 0.08),
+    ]
+    rows = []
+    for name, sl, pt in variants:
+        r = backtest(panel, stop_loss=sl, profit_target=pt, **base)
+        rows.append((name, r))
+    return rows
+
+
+def format_compare(rows: list, source: str, settings: str) -> str:
+    lines = ["=" * 84,
+             f"  {config.BOT_NAME} · RSI-2 EXIT COMPARISON   ({settings})",
+             f"  Data: {source}   ·   costs charged both sides",
+             "=" * 84,
+             f"  {'variant':<32}{'win%':>6}{'avg%/trade':>12}{'PF':>7}"
+             f"{'avgWin%':>9}{'avgLoss%':>9}{'trades':>8}",
+             "-" * 84]
+    base_avg = base_pf = None
+    for name, r in rows:
+        if r.get("trades", 0) == 0:
+            lines.append(f"  {name:<32}{'— no trades —':>42}")
+            continue
+        pf = r["profit_factor"]
+        if base_avg is None:
+            base_avg, base_pf = r["avg_return_pct"], (pf or 0)
+        flag = ""
+        if name.startswith("+"):
+            better = r["avg_return_pct"] >= base_avg and (pf or 0) >= base_pf
+            flag = "  << beats baseline" if better else ""
+        lines.append(
+            f"  {name:<32}{r['win_rate_pct']:>5.0f}%{r['avg_return_pct']:>+11.2f}%"
+            f"{(pf if pf else 0):>7.2f}{r['avg_win_pct']:>+9.1f}{r['avg_loss_pct']:>9.1f}"
+            f"{r['trades']:>8}{flag}")
+    lines += ["-" * 84,
+              "  Read: a variant only truly helps if BOTH avg%/trade AND PF beat the baseline.",
+              "  RSI-2 mean-reversion usually LOSES edge with tight stops (they exit before the bounce).",
+              "=" * 84]
+    return "\n".join(lines)
+
+
 def format_sweep(rows: list, top: int = 15) -> str:
     lines = ["=" * 72,
              f"  {config.BOT_NAME} · RSI-2 SWEEP  (ranked by avg-return/trade after costs)",
@@ -246,6 +301,15 @@ def main() -> None:
             print(f"  excluded {len(excl)} symbols; {len(panel)} remain")
     if "--sweep" in args:
         print(format_sweep(sweep(panel)))
+        return
+    if "--compare" in args:
+        e = _opt("--entry", float, 5.0)
+        x = _opt("--exit", float, 85.0)
+        h = _opt("--hold", int, 30)
+        ut = ("--trend" in args)          # default OFF to match the live strategy
+        rows = compare_exits(panel, entry_rsi=e, exit_rsi=x, max_hold=h, use_trend=ut)
+        settings = f"entry<{e:g}, exit>{x:g}, {h}-day hold, trend={'on' if ut else 'off'}"
+        print(format_compare(rows, f"{path} ({len(panel)} symbols)", settings))
         return
     r = backtest(panel,
                  entry_rsi=_opt("--entry", float, 10.0),
