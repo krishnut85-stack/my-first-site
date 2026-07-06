@@ -51,12 +51,16 @@ class GarudaLive:
             self.universe[k] = sorted(long.keys())
             print(f"[garuda] {k}: loaded {len(long)} symbols for charts "
                   f"({prof.daily_csv})", flush=True)
-        # Pre-compute each stock's latest RSI-2 (daily bars, so it's static
-        # intraday) for the live market-watch list.
+        # Pre-compute each stock's latest RSI-2 AND RSI-14 (daily bars, static
+        # intraday) for the market-watch — RSI-2 for the dip books, RSI-14 for
+        # the STRENGTH book (whose signal is the 55-70 RSI-14 band).
         self.rsi_by_sym = {}
+        self.rsi14_by_sym = {}
         for sym, closes in self.series_by_sym.items():
-            r = rsi(closes, 2) if len(closes) > 2 else []
-            self.rsi_by_sym[sym] = round(r[-1], 1) if r and r[-1] is not None else None
+            r2 = rsi(closes, 2) if len(closes) > 2 else []
+            self.rsi_by_sym[sym] = round(r2[-1], 1) if r2 and r2[-1] is not None else None
+            r14 = rsi(closes, 14) if len(closes) > 14 else []
+            self.rsi14_by_sym[sym] = round(r14[-1], 1) if r14 and r14[-1] is not None else None
         # optional market caps (₹ crore) from marketcap.csv (symbol,marketcap)
         self.mcap_by_sym = self._load_mcap()
 
@@ -295,7 +299,7 @@ class GarudaLive:
                     "hi52": round(max(win), 2) if win else None,
                     "lo52": round(min(win), 2) if win else None,
                     "mcap": self.mcap_by_sym.get(sym),
-                    "rsi2": rsi2, "held": bool(h),
+                    "rsi2": rsi2, "rsi14": self.rsi14_by_sym.get(sym), "held": bool(h),
                     "qty": h["qty"] if h else None,
                     "pnl": round((ltp - h["entry_price"]) * h["qty"], 0) if h else None,
                     "o": o.get("o"), "h": o.get("h"), "l": o.get("l"),   # today, for the live candle
