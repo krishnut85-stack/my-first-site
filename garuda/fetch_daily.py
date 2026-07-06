@@ -86,7 +86,8 @@ def _hist_retry(kite, tok, frm, to):
 
 
 def fetch_daily(symbols=None, days=400, out="daily.csv", exchange="NSE",
-                all_stocks=False, limit=0, resume=True, sleep=0.2, ohlc=False) -> str:
+                all_stocks=False, limit=0, resume=True, sleep=0.2, ohlc=False,
+                workers=1) -> str:
     kite = _kite()
     tokens = _universe(kite, exchange)
 
@@ -101,37 +102,56 @@ def fetch_daily(symbols=None, days=400, out="daily.csv", exchange="NSE",
     mode = "a" if done else "w"
     if done:
         print(f"Resuming {out}: {len(done)} already fetched, {len(todo)} to go.")
-    print(f"Fetching {len(todo)} {exchange} stocks x {days}d "
-          f"(~{len(todo) // 180 + 1} min at the Kite rate limit)...", flush=True)
+    workers = max(1, workers)
+    eta = len(todo) // (36 * workers) + 1     # ~36 stocks/min per worker (API latency-bound)
+    print(f"Fetching {len(todo)} {exchange} stocks x {days}d with {workers} worker(s) "
+          f"(~{eta} min)...", flush=True)
 
     from datetime import date, timedelta
+    import threading
+    from concurrent.futures import ThreadPoolExecutor
     frm = date.today() - timedelta(days=days)
-    written = len(done)
+    today = date.today()
+    lock = threading.Lock()
+    ctr = {"written": len(done), "n": 0}
+
+    def _rows_for(s):
+        tok = tokens.get(s)
+        if not tok:
+            return None
+        data = _hist_retry(kite, tok, frm, today)
+        if not data:
+            return None
+        return [([s, d["date"].date().isoformat(), d["open"], d["high"], d["low"], d["close"]]
+                 if ohlc else [s, d["date"].date().isoformat(), d["close"]]) for d in data]
+
     with open(out, mode, newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         if mode == "w":
             w.writerow(["symbol", "date", "open", "high", "low", "close"]
                        if ohlc else ["symbol", "date", "close"])
-        for n, s in enumerate(todo, 1):
-            tok = tokens.get(s)
-            if not tok:
-                continue
-            data = _hist_retry(kite, tok, frm, date.today())
-            if not data:
-                continue
-            for d in data:
-                dt = d["date"].date().isoformat()
-                if ohlc:
-                    w.writerow([s, dt, d["open"], d["high"], d["low"], d["close"]])
-                else:
-                    w.writerow([s, dt, d["close"]])
-            written += 1
-            f.flush()                         # survive a kill: never lose buffered rows
-            if n % 100 == 0:
-                print(f"  {n}/{len(todo)} done, {written} total with data...", flush=True)
-            time.sleep(sleep)
 
-    print(f"Wrote {written} stocks total -> {out}")
+        def _handle(s):
+            rows = _rows_for(s)              # network call happens OUTSIDE the lock
+            with lock:                       # only the write is serialised
+                ctr["n"] += 1
+                if rows:
+                    w.writerows(rows)
+                    f.flush()                # survive a kill: never lose buffered rows
+                    ctr["written"] += 1
+                if ctr["n"] % 100 == 0:
+                    print(f"  {ctr['n']}/{len(todo)} done, {ctr['written']} "
+                          f"with data...", flush=True)
+
+        if workers > 1:                      # parallel fetch — ~workers x faster
+            with ThreadPoolExecutor(max_workers=workers) as ex:
+                list(ex.map(_handle, todo))
+        else:                                # sequential (paced by --sleep)
+            for s in todo:
+                _handle(s)
+                time.sleep(sleep)
+
+    print(f"Wrote {ctr['written']} stocks total -> {out}")
     print(f"Now run: python3 -m garuda.setups --csv {out}")
     return out
 
@@ -182,6 +202,7 @@ def main() -> None:
         resume=("--fresh" not in args),   # resume a partial file by default
         sleep=_opt("--sleep", float, 0.2),
         ohlc=("--ohlc" in args),           # write open/high/low/close (for intraday tests)
+        workers=_opt("--workers", int, 1), # >1 = parallel fetch (~workers x faster)
     )
 
 
