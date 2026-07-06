@@ -303,6 +303,15 @@ def compare_strategies(panel: dict, cost=None) -> dict:
         add("RSI-14 reversion (30/70)", _run_strategy(closes,
             lambda i: r14[i] is not None and r14[i] < 30,
             lambda j, i: r14[j] is not None and r14[j] > 70, 20, cost, start=14))
+        # 10. STRENGTH swing (the Indian positional-swing filter): buy strong-but-
+        #     not-overbought stocks in an uptrend (close>200SMA, RSI-14 55-70) and
+        #     let them run with a 12% trailing stop. Buys STRENGTH, not dips — the
+        #     kind of setup that can catch momentum runners RSI-2 never touches.
+        #     (ADX>25 + volume are further filters; added once OHLCV data is on.)
+        add("Strength swing RSI-14 55-70 (>200SMA)", _run_strategy(closes,
+            lambda i: (s200[i] is not None and closes[i] > s200[i]
+                       and r14[i] is not None and 55 <= r14[i] <= 70),
+            lambda j, i: False, 90, cost, start=200, trail=0.12))
 
     return {name: _stats(rets) for name, rets in res.items()}
 
