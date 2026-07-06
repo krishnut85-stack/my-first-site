@@ -524,6 +524,13 @@ def main() -> None:
         if excl:
             panel = {s: v for s, v in panel.items() if s not in excl}
             print(f"  excluded {len(excl)} symbols; {len(panel)} remain")
+    # price filter: isolate penny stocks (--maxprice 50) or exclude them (--minprice)
+    maxp = _opt("--maxprice", float, 0.0)
+    minp = _opt("--minprice", float, 0.0)
+    if maxp or minp:
+        panel = {s: v for s, v in panel.items() if v and
+                 (not maxp or v[-1] <= maxp) and (not minp or v[-1] >= minp)}
+        print(f"  price filter (<= {maxp or '∞'}, >= {minp or 0}): {len(panel)} stocks")
     if "--intraday" in args:
         ohlc = load_ohlc(path)
         if not ohlc or all(len(h) == 0 for _, h in ohlc.values()):
