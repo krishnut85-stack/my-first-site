@@ -265,6 +265,7 @@ class GarudaLive:
                                   "entry": round(h["entry_price"], 2), "ltp": round(ltp, 2),
                                   "chg": round(chg, 2), "pnl": round(pnl, 0),
                                   "rsi2": h.get("rsi2_entry"), "mom": h.get("mom"),
+                                  "rsi14": h.get("rsi14"),
                                   "peak": round(h["peak"], 2) if h.get("peak") else None})
             positions.sort(key=lambda x: x["pnl"], reverse=True)
             # market-watch: every universe stock with a live LTP + day change

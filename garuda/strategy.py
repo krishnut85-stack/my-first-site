@@ -46,7 +46,10 @@ class Profile:
     max_hold: int = 30
     use_trend: bool = False     # rsi2 only: require close > 200-SMA (the uptrend filter)
     breakout: int = 20          # momentum only: new N-day-high entry
-    trail: float = 0.15         # momentum only: trailing-stop fraction off the peak
+    trail: float = 0.15         # momentum/strength: trailing-stop fraction off the peak
+    rsi_lo: float = 55.0        # strength only: RSI-14 entry band (buy strong-not-overbought)
+    rsi_hi: float = 70.0
+    trend_ma: int = 200         # strength only: uptrend SMA length
     capital: float = 1_000_000.0    # Rs 10 lakh
     alloc_pct: float = 0.02         # ~2% per name -> up to ~50 names (no hard cap)
     proven_win: float = 0.0         # validated backtest win rate (%) — shown until live trades close
@@ -83,4 +86,20 @@ PROFILES = {
         # momentum wins less often but wins bigger; win% is the backtest estimate
         # (pending an exact droplet re-run) — ret & PF are the figures from the run.
         proven_win=44.0, proven_ret=1.33, proven_pf=1.23),
+    # 4th book — the whole-NSE STRENGTH swing. The 10-strategy showdown on 3,697
+    # liquid NSE stocks crowned it the clear winner: +5.94%/trade, PF 2.95 (2005
+    # trades). It BUYS STRENGTH (RSI-14 55-70 in an uptrend) and lets it run on a
+    # 12% trailing stop — the engine that catches the momentum runners the RSI-2
+    # dip books structurally miss. Universe: the top ~1,500 liquid NSE names.
+    # NOTE: trend-following, so the fat +5.94% partly reflects a bull regime;
+    # expect thinner returns (and more whipsaw) in choppy/bear markets. PAPER.
+    "strength": Profile(
+        "strength", "Garuda-STR",
+        "",                                  # no index — built as top-1500-by-mcap list
+        "strength_daily.csv",
+        strategy="strength", label="Strength swing · RSI-14 55-70 + 200-DMA",
+        rules="Buy RSI-14 in 55-70 above the 200-DMA (buy strength) · Sell on a 12% "
+              "trailing stop or 90-day hold",
+        rsi_lo=55.0, rsi_hi=70.0, trend_ma=200, trail=0.12, max_hold=90,
+        proven_win=55.0, proven_ret=5.94, proven_pf=2.95),
 }

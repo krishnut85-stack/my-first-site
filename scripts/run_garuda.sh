@@ -45,9 +45,13 @@ curl -s -A "$UA" "https://archives.nseindia.com/content/indices/ind_niftynext50l
 [ -f smallcap_list.csv ] && python3 -m garuda.fetch_daily --symbols-file smallcap_list.csv --out niftysmallcap250_daily.csv --fresh
 [ -f micro.csv ]         && python3 -m garuda.fetch_daily --symbols-file micro.csv         --out microcap_daily.csv       --fresh
 [ -f next50_list.csv ]   && python3 -m garuda.fetch_daily --symbols-file next50_list.csv   --out next50_daily.csv         --fresh
+# 4th book — STRENGTH swing on the top ~1500 liquid NSE names. strength_list.csv
+# is built once (top-1500 by market cap); here we just refresh its daily bars in
+# parallel (~1500 names take a few minutes, not half an hour).
+[ -f strength_list.csv ] && python3 -m garuda.fetch_daily --symbols-file strength_list.csv --out strength_daily.csv       --fresh --workers 5
 
 # 2b. market caps from Yahoo (best-effort; the dashboard shows what it gets)
-python3 -m garuda.fetch_marketcap --symbols-file smallcap_list.csv micro.csv next50_list.csv --out marketcap.csv || \
+python3 -m garuda.fetch_marketcap --symbols-file smallcap_list.csv micro.csv next50_list.csv strength_list.csv --out marketcap.csv || \
   echo "[warn] market cap fetch failed — MCAP column will show —"
 
 # 3. restart the server (it auto-scans + trades live at 09:15 IST on its own)

@@ -30,6 +30,10 @@ def test_profiles_use_proven_settings():
     assert n50.strategy == "momentum"       # Next 50 runs breakout + trailing stop
     assert n50.breakout == 20 and n50.trail == 0.15 and n50.max_hold == 120
     assert n50.label
+    st = PROFILES["strength"]               # 4th book: whole-NSE strength swing
+    assert st.strategy == "strength"
+    assert st.rsi_lo == 55 and st.rsi_hi == 70 and st.trend_ma == 200
+    assert st.trail == 0.12 and st.max_hold == 90 and st.label
 
 
 def test_portfolio_buy_sell_cash():
@@ -100,6 +104,34 @@ def test_momentum_holds_while_above_trailing_stop():
     r = run_scan(prof, series, pf, live_prices={"AAA": 190.0})
     assert not r["sells"] and "AAA" in pf.holdings
     assert pf.holdings["AAA"]["peak"] == 200.0       # peak unchanged by a dip
+
+
+def test_strength_buys_uptrend_strength_and_trails_out():
+    prof = PROFILES["strength"]
+    pf = LivePortfolio(prof.capital)
+    # a long steady climb (well above the 200-DMA) that ends in a +3/-2 chop so
+    # RSI-14 lands at ~60 — inside the 55-70 strength band, not pinned at 100.
+    base = [100.0 + i for i in range(292)]
+    tail, p = [], base[-1]
+    for _ in range(7):
+        p += 3; tail.append(p); p -= 2; tail.append(p)
+    series = {"AAA": base + tail}
+    r = run_scan(prof, series, pf, live_prices={"AAA": 420.0})
+    assert r["buys"] and "AAA" in pf.holdings
+    assert pf.holdings["AAA"]["peak"] == 420.0 and pf.holdings["AAA"].get("rsi14")
+    # give back >12% off the 420 peak (360 < 369.6) -> trailing-stop exit
+    r2 = run_scan(prof, series, pf, live_prices={"AAA": 360.0})
+    assert r2["sells"] and "trailing stop" in r2["sells"][0]["reason"]
+    assert "AAA" not in pf.holdings
+
+
+def test_strength_skips_downtrend_and_overbought():
+    prof = PROFILES["strength"]
+    pf = LivePortfolio(prof.capital)
+    # a long steady DECLINE: price below its 200-day SMA -> never buy (no strength)
+    down = {"DN": _rising(320, start=420.0, step=-1.0)}
+    r = run_scan(prof, down, pf, live_prices={"DN": 95.0})
+    assert not r["buys"] and not pf.holdings
 
 
 def test_scan_exits_on_hold_and_records_equity():

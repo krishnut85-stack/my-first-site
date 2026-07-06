@@ -101,6 +101,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
         <span class=wtab data-f=smallcap onclick="setFilter('smallcap',this)">SMALL CAP</span>
         <span class=wtab data-f=microcap onclick="setFilter('microcap',this)">MICRO CAP</span>
         <span class=wtab data-f=next50 onclick="setFilter('next50',this)">NEXT 50</span>
+        <span class=wtab data-f=strength onclick="setFilter('strength',this)">STRENGTH</span>
         <input class=wsearch id=search placeholder="search…" oninput="render(DATA)">
       </div>
       <div class=listwrap id=list></div>
@@ -152,8 +153,8 @@ const prev={};let DATA=null,curSym=null,FILTER='all',SORT={key:'sym',dir:1};
 function setSort(k){if(SORT.key===k)SORT.dir=-SORT.dir;else{SORT.key=k;SORT.dir=(k==='sym'?1:-1);}render(DATA);}
 function sortArrow(k){return SORT.key===k?(SORT.dir>0?' ▲':' ▼'):'';}
 function fmtCr(v){if(v==null)return '—';if(v>=1e5)return (v/1e5).toFixed(2)+'L Cr';if(v>=1e3)return (v/1e3).toFixed(1)+'K Cr';return Math.round(v)+' Cr';}
-const LABEL={smallcap:'SMALL CAP',microcap:'MICRO CAP',next50:'NEXT 50'};
-const TAG={smallcap:'SC',microcap:'MC',next50:'N50'};
+const LABEL={smallcap:'SMALL CAP',microcap:'MICRO CAP',next50:'NEXT 50',strength:'STRENGTH'};
+const TAG={smallcap:'SC',microcap:'MC',next50:'N50',strength:'STR'};
 function money(v){return "₹"+Math.round(v).toLocaleString('en-IN');}
 function pct(v){return(v==null?'—':(v>=0?"+":"")+(+v).toFixed(2)+"%");}
 function setFilter(f,el){FILTER=f;document.querySelectorAll('.wtab').forEach(t=>t.classList.remove('on'));el.classList.add('on');render(DATA);}

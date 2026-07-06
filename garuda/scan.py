@@ -23,8 +23,11 @@ from .setups import rsi, sma
 def run_scan(profile, series: dict, portfolio: LivePortfolio, live_prices=None):
     """Dispatch to the profile's engine. series: {symbol: [closes]} (latest last).
     live_prices: optional {symbol: ltp} to price against right now."""
-    if getattr(profile, "strategy", "rsi2") == "momentum":
+    strat = getattr(profile, "strategy", "rsi2")
+    if strat == "momentum":
         return _run_momentum(profile, series, portfolio, live_prices)
+    if strat == "strength":
+        return _run_strength(profile, series, portfolio, live_prices)
     return _run_rsi2(profile, series, portfolio, live_prices)
 
 
@@ -167,5 +170,67 @@ def _run_momentum(profile, series, portfolio, live_prices=None):
             portfolio.holdings[sym]["mom"] = round((strength - 1) * 100, 1)
             buys.append({"symbol": sym, "price": round(price, 2), "qty": qty,
                          "mom": round((strength - 1) * 100, 1)})
+
+    return _result(profile, portfolio, buys, sells, price_of)
+
+
+def _run_strength(profile, series, portfolio, live_prices=None):
+    """The whole-NSE STRENGTH swing (showdown winner: +5.94%/trade, PF 2.95).
+    Buy strong-but-not-overbought names in an uptrend — RSI-14 inside [rsi_lo,
+    rsi_hi] AND close > trend_ma-SMA — strongest first, and let them run on a
+    trailing stop (peak-tracked, checked daily like the backtest)."""
+    price_of = _price_of(series, portfolio, live_prices)
+    today = _today()
+    ma = max(2, profile.trend_ma)
+    r_cache = {s: rsi(c, 14) for s, c in series.items() if len(c) > 14}
+    s_cache = {s: sma(c, ma) for s, c in series.items() if len(c) >= ma}
+
+    # --- 1. exits: trailing stop off the running peak, or max hold ------------
+    sells, sold_today = [], set()
+    for sym, h in list(portfolio.holdings.items()):
+        c = series.get(sym)
+        if not c:
+            continue
+        _tick_hold(h, today)
+        px = price_of(sym)
+        peak = max(h.get("peak", h["entry_price"]), px)
+        h["peak"] = peak
+        stopped = profile.trail and px <= peak * (1 - profile.trail)
+        if stopped or h.get("bars_held", 0) >= profile.max_hold:
+            reason = f"{profile.trail:.0%} trailing stop" if stopped \
+                else f"{profile.max_hold}-day hold"
+            pnl = portfolio.sell(sym, px, reason=reason)
+            sold_today.add(sym)
+            sells.append({"symbol": sym, "price": round(px, 2),
+                          "pnl": round(pnl, 2), "reason": reason})
+
+    # --- 2. entries: RSI-14 in [lo,hi] AND above the trend SMA, strongest first
+    candidates = []
+    for sym, c in series.items():
+        if sym in portfolio.holdings or sym in sold_today or len(c) < ma + 5:
+            continue
+        rr, ss = r_cache.get(sym), s_cache.get(sym)
+        cur = (rr or [None])[-1]
+        s200 = (ss or [None])[-1]
+        price = price_of(sym)
+        if cur is None or s200 is None or price <= 0:
+            continue
+        if not (profile.rsi_lo <= cur <= profile.rsi_hi and price > s200):
+            continue
+        candidates.append((cur, sym, price, c))
+    candidates.sort(reverse=True)                # strongest RSI (within band) first
+
+    per_name = profile.capital * profile.alloc_pct
+    buys = []
+    for cur, sym, price, c in candidates:
+        budget = min(per_name, portfolio.cash)
+        qty = int(budget // price)
+        if qty <= 0:
+            continue
+        if portfolio.buy(sym, qty, price, entry_len=len(c)):
+            portfolio.holdings[sym]["peak"] = price
+            portfolio.holdings[sym]["rsi14"] = round(cur, 1)
+            buys.append({"symbol": sym, "price": round(price, 2), "qty": qty,
+                         "rsi14": round(cur, 1)})
 
     return _result(profile, portfolio, buys, sells, price_of)
