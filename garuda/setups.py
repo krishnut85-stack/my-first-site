@@ -20,6 +20,7 @@ can shrink forward and mean-reversion carries 'catch a falling knife' tail risk.
 Measured, not promised.
 """
 
+import csv
 import statistics
 
 from . import config
