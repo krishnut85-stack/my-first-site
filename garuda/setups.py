@@ -190,10 +190,21 @@ def _rsi2_at(prev2, prev1, cur):
     return 100.0 if al == 0 else 100.0 - 100.0 / (1.0 + ag / al)
 
 
-def _simulate_intraday(closes, highs, r, entry_rsi, exit_rsi, max_hold, cost):
-    """Same entries as baseline, but exit INTRADAY at the day's HIGH the first
-    day RSI-2 (using that high) would cross exit_rsi — the optimistic best case
-    for an intraday exit. No lookahead beyond the current day's own high."""
+def _rsi2_threshold(prev2, prev1, target):
+    """The price at which 2-period RSI (given the two prior closes) first reaches
+    `target` on the way up — i.e. where a limit sell would actually fill."""
+    rs = 100.0 / (100.0 - target) - 1.0 if target < 100 else 1e9
+    c1 = prev1 - prev2
+    if c1 >= 0:
+        return prev1 - c1 / rs if rs > 0 else prev1
+    return prev1 + rs * (-c1)
+
+
+def _simulate_intraday(closes, highs, r, entry_rsi, exit_rsi, max_hold, cost, realistic=False):
+    """Same entries as baseline, but exit INTRADAY the first day RSI-2 (using
+    that day's high) crosses exit_rsi. realistic=False sells at the day's HIGH
+    (optimistic ceiling); realistic=True sells at the RSI-2=exit_rsi threshold
+    price (what a limit order would actually get)."""
     trades = []
     i, n = 2, len(closes)
     while i < n - 1:
@@ -201,7 +212,11 @@ def _simulate_intraday(closes, highs, r, entry_rsi, exit_rsi, max_hold, cost):
             entry, j, exit_px = closes[i], i + 1, None
             while j < n - 1:
                 if highs[j] > 0 and _rsi2_at(closes[j - 2], closes[j - 1], highs[j]) > exit_rsi:
-                    exit_px = highs[j]                 # sold into the intraday spike
+                    if realistic:
+                        thr = _rsi2_threshold(closes[j - 2], closes[j - 1], exit_rsi)
+                        exit_px = min(highs[j], max(thr, 0.01))   # limit fill, capped by the high
+                    else:
+                        exit_px = highs[j]                        # sold at the peak
                     break
                 if (r[j] is not None and r[j] > exit_rsi) or (j - i) >= max_hold:
                     exit_px = closes[j]
@@ -231,18 +246,21 @@ def _stats(rets):
 
 
 def compare_intraday(ohlc_panel: dict, entry_rsi=5.0, exit_rsi=85.0, max_hold=30):
-    """Baseline daily-close exit vs the intraday high-exit, on OHLC data."""
+    """Baseline daily-close exit vs the REALISTIC intraday exit (limit at the
+    RSI-2=exit price) vs the OPTIMISTIC ceiling (sell at the high)."""
     cost = config.CROSS_COST_PER_SIDE
-    base, intra = [], []
+    base, real, opt = [], [], []
     for closes, highs in ohlc_panel.values():
         if len(closes) < max_hold + 5:
             continue
         r = rsi(closes, 2)
         base.extend(_simulate(closes, r, [None] * len(closes), entry_rsi, exit_rsi,
                               2, max_hold, cost, 0.0, 0.0, False))
-        intra.extend(_simulate_intraday(closes, highs, r, entry_rsi, exit_rsi, max_hold, cost))
+        real.extend(_simulate_intraday(closes, highs, r, entry_rsi, exit_rsi, max_hold, cost, True))
+        opt.extend(_simulate_intraday(closes, highs, r, entry_rsi, exit_rsi, max_hold, cost, False))
     return {"Baseline (daily-close exit, LIVE)": _stats(base),
-            "Intraday exit (sell at high when RSI-2>85)": _stats(intra)}
+            "Intraday REALISTIC (limit at RSI-2=85 price)": _stats(real),
+            "Intraday CEILING (sell at the high)": _stats(opt)}
 
 
 def load_ohlc(path) -> dict:
@@ -269,19 +287,20 @@ def load_ohlc(path) -> dict:
 def format_intraday(res: dict, source: str) -> str:
     lines = ["=" * 82,
              f"  {config.BOT_NAME} · INTRADAY vs DAILY-CLOSE EXIT   (entry<5, exit>85, 30d hold)",
-             f"  Data: {source}   ·   costs both sides   ·   intraday = optimistic (sell at the high)",
+             f"  Data: {source}   ·   costs both sides",
              "=" * 82,
-             f"  {'variant':<44}{'win%':>6}{'avg%/trade':>12}{'PF':>7}{'trades':>8}",
+             f"  {'variant':<46}{'win%':>6}{'avg%/trade':>12}{'PF':>7}{'trades':>7}",
              "-" * 82]
     for name, s in res.items():
         if not s:
-            lines.append(f"  {name:<44}{'— no trades —':>33}")
+            lines.append(f"  {name:<46}{'— no trades —':>32}")
             continue
-        lines.append(f"  {name:<44}{s['win']:>5.0f}%{s['avg']:>+11.2f}%"
-                     f"{(s['pf'] or 0):>7.2f}{s['trades']:>8}")
+        lines.append(f"  {name:<46}{s['win']:>5.0f}%{s['avg']:>+11.2f}%"
+                     f"{(s['pf'] or 0):>7.2f}{s['trades']:>7}")
     lines += ["-" * 82,
-              "  If the intraday row doesn't clearly beat baseline on avg%/trade AND PF,",
-              "  reacting intraday only whipsaws — even selling at the perfect peak doesn't help.",
+              "  The REALISTIC row is what you'd actually get (limit sell at the RSI-2=85 price).",
+              "  The CEILING (sell at the exact high) is impossible — it's only an upper bound.",
+              "  Build intraday exits ONLY if REALISTIC clearly beats baseline on avg%/trade AND PF.",
               "=" * 82]
     return "\n".join(lines)
 
