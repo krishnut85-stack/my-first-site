@@ -61,7 +61,7 @@ def _simulate(closes, r, s, entry_rsi, exit_rsi, trend_sma, max_hold, cost,
     """The trade loop given PRE-COMPUTED rsi (r) and sma (s). Split out so the
     sweep computes the indicators once per stock, not once per parameter combo."""
     trades = []
-    i = trend_sma
+    i = trend_sma if use_trend else 2   # no trend filter -> no SMA warmup needed
     n = len(closes)
     while i < n - 1:
         in_uptrend = (not use_trend) or (s[i] is not None and closes[i] > s[i])
@@ -97,10 +97,11 @@ def oversold_bounce_trades(closes, entry_rsi=10.0, exit_rsi=65.0,
     still loses (it caps the rare falling-knife trades that eat the small wins).
     Checked at the daily close, so there is no intraday lookahead."""
     cost = config.CROSS_COST_PER_SIDE if cost_per_side is None else cost_per_side
-    if len(closes) < trend_sma + 5:
+    need = (trend_sma + 5) if use_trend else (max_hold + 5)
+    if len(closes) < need:
         return []
     r = rsi(closes, 2)
-    s = sma(closes, trend_sma)
+    s = sma(closes, trend_sma) if use_trend else [None] * len(closes)
     start_i = int(len(closes) * (1 - oos)) if 0 < oos < 1 else 0
     return _simulate(closes, r, s, entry_rsi, exit_rsi, trend_sma, max_hold,
                      cost, stop_loss, profit_target, use_trend, start_i)
