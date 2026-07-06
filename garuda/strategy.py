@@ -39,7 +39,8 @@ class Profile:
     index_csv_url: str          # NSE constituent list (for fetching the universe)
     daily_csv: str              # local daily-bars CSV (symbol,date,close) the scanner reads
     strategy: str = "rsi2"      # "rsi2" (mean-reversion) or "momentum" (breakout+trail)
-    label: str = ""             # human-readable strategy name for the dashboard
+    label: str = ""             # short strategy badge for the dashboard header
+    rules: str = ""             # full plain-English entry/exit rules (shown on the dashboard)
     entry_rsi: float = 5.0
     exit_rsi: float = 85.0
     max_hold: int = 30
@@ -58,14 +59,20 @@ PROFILES = {
         "smallcap", "Garuda-SC",
         "https://archives.nseindia.com/content/indices/ind_niftysmallcap250list.csv",
         "niftysmallcap250_daily.csv",
-        strategy="rsi2", label="RSI-2 dip · uptrend filter", use_trend=True,
+        strategy="rsi2", label="RSI-2 < 10 dip · uptrend",
+        rules="BUY: RSI-2 < 10 while price is above its 200-day average (buy the dip, "
+              "only in an uptrend).  SELL: when RSI-2 recovers above 85, or after 30 days.",
+        use_trend=True,
         entry_rsi=10.0,   # dip-depth test: <10 gives ~same edge as <5, more trades
         proven_win=66.0, proven_ret=0.94, proven_pf=1.85),
     "microcap": Profile(
         "microcap", "Garuda-MC",
         "https://nsearchives.nseindia.com/content/indices/ind_niftymicrocap250_list.csv",
         "microcap_daily.csv",
-        strategy="rsi2", label="RSI-2 dip · uptrend filter", use_trend=True,
+        strategy="rsi2", label="RSI-2 < 10 dip · uptrend",
+        rules="BUY: RSI-2 < 10 while price is above its 200-day average (buy the dip, "
+              "only in an uptrend).  SELL: when RSI-2 recovers above 85, or after 30 days.",
+        use_trend=True,
         entry_rsi=10.0,   # dip-depth test: <10 marginally beat <5 (+1.34% PF 2.14)
         proven_win=70.0, proven_ret=1.34, proven_pf=2.14),
     "next50": Profile(
@@ -73,6 +80,8 @@ PROFILES = {
         "https://archives.nseindia.com/content/indices/ind_niftynext50list.csv",
         "next50_daily.csv",
         strategy="momentum", label="Momentum · 20d breakout + 15% trail",
+        rules="BUY: a fresh 20-day high (breakout), strongest momentum first.  "
+              "SELL: on a 15% trailing stop from the peak, or after 120 days.",
         breakout=20, trail=0.15, max_hold=120,
         # momentum wins less often but wins bigger; win% is the backtest estimate
         # (pending an exact droplet re-run) — ret & PF are the figures from the run.

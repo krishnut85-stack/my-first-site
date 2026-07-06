@@ -308,7 +308,7 @@ class GarudaLive:
             profs.append({
                 "best": best, "worst": worst,
                 "key": k, "name": prof.name, "desc": prof.daily_csv.replace("_daily.csv", ""),
-                "strategy": prof.strategy, "label": prof.label,
+                "strategy": prof.strategy, "label": prof.label, "rules": prof.rules,
                 "capital": pf.starting_capital, "equity": round(equity, 0),
                 "pnl_pct": round((equity / pf.starting_capital - 1) * 100, 2),
                 "day_pnl": round(day_pnl, 0), "positions": positions,
