@@ -339,9 +339,11 @@ class GarudaLive:
         daily = [round(sum(h[i]["equity"] for h in histories), 0) for i in range(n)]
         # daily track record + today's live intraday samples + the current tip
         totals["curve"] = daily + self.intraday + [totals["equity"]]
+        from .market import HOLIDAYS
         return {"live": self.feed.live, "profiles": profs, "totals": totals,
                 "index": self.index,
                 "market_open": is_market_open(), "market_status": market_status(),
+                "holidays": sorted(HOLIDAYS),
                 "last_scan": self.last_scan_date, "today": _today()}
 
 

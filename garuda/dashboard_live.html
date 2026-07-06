@@ -13,8 +13,8 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .tag{color:var(--mut);font-size:11px;margin-top:2px}
 .clocks{text-align:right;font-size:11px;line-height:1.6}
 .live{background:var(--red);color:#fff;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:800;animation:blink 1.5s infinite}
-.mkt{font-weight:800;padding:2px 8px;border-radius:4px;font-size:11px}
-.mkt.open{color:var(--grn);border:1px solid #204d3a;background:#0e2a20}.mkt.closed{color:var(--mut);border:1px solid var(--line)}
+.mkt{font-weight:800;padding:2px 8px;border-radius:4px;font-size:11px;animation:blink 1.5s infinite}
+.mkt.open{color:var(--grn);border:1px solid #204d3a;background:#0e2a20}.mkt.closed{color:var(--red);border:1px solid #4d2020;background:#2a1416}
 @keyframes blink{50%{opacity:.4}}.ist{color:var(--acc)}.loc{color:var(--mut)}
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0}
 .stile{background:var(--card);padding:11px 14px}.stile .l{color:var(--mut);font-size:10px}.stile .v{font-size:19px;font-weight:800;margin-top:3px}
@@ -149,7 +149,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 </script>
 <script>
 const TOKEN=new URLSearchParams(location.search).get('token')||'';
-const prev={};let DATA=null,curSym=null,FILTER='all',SORT={key:'sym',dir:1};
+const prev={};let DATA=null,curSym=null,FILTER='all',SORT={key:'sym',dir:1},HOLI=new Set();
 function setSort(k){if(SORT.key===k)SORT.dir=-SORT.dir;else{SORT.key=k;SORT.dir=(k==='sym'?1:-1);}render(DATA);}
 function sortArrow(k){return SORT.key===k?(SORT.dir>0?' ▲':' ▼'):'';}
 function fmtCr(v){if(v==null)return '—';if(v>=1e5)return (v/1e5).toFixed(2)+'L Cr';if(v>=1e3)return (v/1e3).toFixed(1)+'K Cr';return Math.round(v)+' Cr';}
@@ -159,10 +159,17 @@ function money(v){return "₹"+Math.round(v).toLocaleString('en-IN');}
 function pct(v){return(v==null?'—':(v>=0?"+":"")+(+v).toFixed(2)+"%");}
 function setFilter(f,el){FILTER=f;document.querySelectorAll('.wtab').forEach(t=>t.classList.remove('on'));el.classList.add('on');render(DATA);}
 function clocks(){
- const p=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kolkata',weekday:'short',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).formatToParts(new Date()).map(x=>[x.type,x.value]));
- const mins=+p.hour*60+ +p.minute,wknd=['Sat','Sun'].includes(p.weekday);
- let st,cls;if(wknd){st='CLOSED · WEEKEND';cls='closed';}else if(mins<555){st='PRE-OPEN';cls='closed';}
- else if(mins<=930){st='● MARKET OPEN';cls='open';}else{st='CLOSED';cls='closed';}
+ const p=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kolkata',weekday:'short',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).formatToParts(new Date()).map(x=>[x.type,x.value]));
+ const iso=`${p.year}-${p.month}-${p.day}`;
+ const mins=+p.hour*60+ +p.minute,wknd=['Sat','Sun'].includes(p.weekday),holi=HOLI.has(iso);
+ // blink LIVE (green) only during the 09:15-15:30 session on a real trading day;
+ // otherwise blink CLOSED (red) with the reason — weekend / NSE holiday / off-hours.
+ let st,cls='closed';
+ if(wknd)st='● CLOSED · WEEKEND';
+ else if(holi)st='● CLOSED · NSE HOLIDAY';
+ else if(mins<555)st='● CLOSED · PRE-OPEN';
+ else if(mins<=930){st='● LIVE';cls='open';}
+ else st='● CLOSED';
  const m=document.getElementById('mkt');m.textContent=st;m.className='mkt '+cls;
  document.getElementById('ist').textContent=`IST ${p.weekday} ${p.hour}:${p.minute}:${p.second}`;
  document.getElementById('loc').textContent=`Local ${new Date().toLocaleTimeString('en-GB',{hour12:false})}`;
@@ -288,6 +295,7 @@ async function loadChart(sym){curSym=sym;document.getElementById('csym').textCon
 
 function render(d){
  if(!d)return;DATA=d;
+ if(d.holidays)HOLI=new Set(d.holidays);   // NSE holiday list -> the clock blinks CLOSED on them
  // live index reading (Nifty 50 / Bank Nifty) in the header
  const idx=d.index||{};
  const pill=(nm,q)=>!q?'':`<span class=idx><b>${nm}</b><span class=v>${q.ltp.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}</span> <span class="${q.chg>=0?'g':'r'}">${q.chg>=0?'▲':'▼'} ${Math.abs(q.chg).toFixed(2)}%</span></span>`;

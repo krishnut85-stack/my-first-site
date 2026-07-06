@@ -77,6 +77,12 @@ def test_market_hours_gate():
         assert not is_market_open(mon_open)    # holiday overrides
     finally:
         HOLIDAYS.discard("2026-07-06")
+    # a seeded fixed NSE holiday (Republic Day, a weekday) is closed all day
+    from garuda.market import market_status
+    rep = datetime(2026, 1, 26, 11, 0)
+    assert "2026-01-26" in HOLIDAYS
+    assert not is_market_open(rep)
+    assert market_status(rep) == "CLOSED · NSE HOLIDAY"
 
 
 def test_scan_books_nothing_when_market_closed(tmp_path, monkeypatch):
