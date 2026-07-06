@@ -208,6 +208,127 @@ def format_sizing(res, ntr, source: str) -> str:
     return "\n".join(lines)
 
 
+def _rolling_std(closes, period):
+    out = [None] * len(closes)
+    for i in range(period - 1, len(closes)):
+        w = closes[i - period + 1:i + 1]
+        out[i] = statistics.pstdev(w)
+    return out
+
+
+def _run_strategy(closes, entry_ok, exit_ok, max_hold, cost, start=2,
+                  stop=0.0, target=0.0, trail=0.0):
+    """Generic long-only trade loop. entry_ok(i)->bool, exit_ok(j,i)->bool, plus
+    optional profit-locking: stop-loss, profit target, and trailing stop (all
+    fractions, 0=off), checked at the daily close (no intraday lookahead)."""
+    trades, i, n = [], max(start, 2), len(closes)
+    while i < n - 1:
+        if closes[i] > 0 and entry_ok(i):
+            entry, j, peak = closes[i], i + 1, closes[i]
+            while j < n - 1:
+                px = closes[j]
+                peak = max(peak, px)
+                if ((stop and px <= entry * (1 - stop)) or
+                        (target and px >= entry * (1 + target)) or
+                        (trail and px <= peak * (1 - trail)) or
+                        exit_ok(j, i) or (j - i) >= max_hold):
+                    break
+                j += 1
+            if closes[j] > 0:
+                trades.append((closes[j] - entry) / entry - 2 * cost)
+            i = j + 1
+        else:
+            i += 1
+    return trades
+
+
+def compare_strategies(panel: dict, cost=None) -> dict:
+    """Run 7 genuinely DIFFERENT long-only strategies on the same data so we can
+    see whether anything beats RSI-2 mean-reversion (not just tune it)."""
+    cost = config.CROSS_COST_PER_SIDE if cost is None else cost
+    res = {}
+
+    def add(name, rets):
+        res.setdefault(name, []).extend(rets)
+
+    for closes in panel.values():
+        n = len(closes)
+        if n < 60:
+            continue
+        r2 = rsi(closes, 2)
+        r14 = rsi(closes, 14)
+        s10, s20, s50 = sma(closes, 10), sma(closes, 20), sma(closes, 50)
+        s200 = sma(closes, 200)
+        sd20 = _rolling_std(closes, 20)
+        hi20 = [max(closes[max(0, i - 19):i + 1]) for i in range(n)]
+        lo10 = [min(closes[max(0, i - 9):i + 1]) for i in range(n)]
+
+        def up(i):    # consecutive
+            return closes[i] > closes[i - 1]
+
+        # 1. RSI-2 reversion (the current live strategy)
+        add("RSI-2 reversion (LIVE)", _run_strategy(closes,
+            lambda i: r2[i] is not None and r2[i] < 5,
+            lambda j, i: r2[j] is not None and r2[j] > 85, 30, cost))
+        # 2. RSI-2 only in an uptrend (close > 200-SMA)
+        add("RSI-2 + uptrend (>200SMA)", _run_strategy(closes,
+            lambda i: r2[i] is not None and r2[i] < 5 and s200[i] is not None and closes[i] > s200[i],
+            lambda j, i: r2[j] is not None and r2[j] > 85, 30, cost, start=200))
+        # 3. Bollinger reversion (buy lower band, exit middle)
+        add("Bollinger reversion (20,2)", _run_strategy(closes,
+            lambda i: sd20[i] is not None and closes[i] < s20[i] - 2 * sd20[i],
+            lambda j, i: s20[j] is not None and closes[j] > s20[j], 20, cost, start=20))
+        # 4. 3 down days -> bounce (simple reversion)
+        add("3 down-days dip buy", _run_strategy(closes,
+            lambda i: i > 3 and closes[i] < closes[i - 1] < closes[i - 2] < closes[i - 3],
+            lambda j, i: j >= i + 2 and closes[j] > closes[j - 1] > closes[j - 2], 10, cost, start=4))
+        # 5. 20-day breakout, exit on 10-day low (Donchian momentum)
+        add("20d breakout (momentum)", _run_strategy(closes,
+            lambda i: closes[i] >= hi20[i] and closes[i] > 0,
+            lambda j, i: closes[j] <= lo10[j], 60, cost, start=20))
+        # 6. MOMENTUM + PROFIT LOCK: breakout, take +12% or a 10% trailing stop
+        add("Momentum + profit lock (12%/trail10%)", _run_strategy(closes,
+            lambda i: closes[i] >= hi20[i] and closes[i] > 0,
+            lambda j, i: False, 90, cost, start=20, target=0.12, trail=0.10))
+        # 7. MOMENTUM + trailing stop only (let winners run, lock the giveback)
+        add("Momentum + trailing stop 15%", _run_strategy(closes,
+            lambda i: closes[i] >= hi20[i] and closes[i] > 0,
+            lambda j, i: False, 120, cost, start=20, trail=0.15))
+        # 8. 10/50 SMA golden cross (trend-following)
+        add("10/50 SMA cross (trend)", _run_strategy(closes,
+            lambda i: s10[i] is not None and s50[i] is not None and s10[i] > s50[i]
+            and s10[i - 1] <= s50[i - 1],
+            lambda j, i: s10[j] is not None and s50[j] is not None and s10[j] < s50[j], 90, cost, start=51))
+        # 9. RSI-14 reversion (the "normal" RSI everyone uses)
+        add("RSI-14 reversion (30/70)", _run_strategy(closes,
+            lambda i: r14[i] is not None and r14[i] < 30,
+            lambda j, i: r14[j] is not None and r14[j] > 70, 20, cost, start=14))
+
+    return {name: _stats(rets) for name, rets in res.items()}
+
+
+def format_strategies(res: dict, source: str) -> str:
+    ranked = sorted(res.items(),
+                    key=lambda kv: (kv[1]["avg"] if kv[1] else -9), reverse=True)
+    lines = ["=" * 80,
+             f"  {config.BOT_NAME} · STRATEGY SHOWDOWN   ({len(res)} strategies, same data)",
+             f"  Data: {source}   ·   costs both sides   ·   ranked by avg%/trade",
+             "=" * 80,
+             f"  {'#':>2} {'strategy':<32}{'win%':>6}{'avg%/trade':>12}{'PF':>7}{'trades':>8}",
+             "-" * 80]
+    for k, (name, s) in enumerate(ranked, 1):
+        if not s:
+            lines.append(f"  {k:>2} {name:<32}{'— no trades —':>33}")
+            continue
+        lines.append(f"  {k:>2} {name:<32}{s['win']:>5.0f}%{s['avg']:>+11.2f}%"
+                     f"{(s['pf'] or 0):>7.2f}{s['trades']:>8}")
+    lines += ["-" * 80,
+              "  Positive avg%/trade AND PF>1.2 = a real edge on this data. Most will be thin/negative.",
+              "  This is the honest test: does ANY strategy beat RSI-2 here, or is the whole space thin?",
+              "=" * 80]
+    return "\n".join(lines)
+
+
 def backtest(panel: dict, **kw) -> dict:
     """Run the setup across every stock in the panel and aggregate honestly."""
     all_rets = []
@@ -541,6 +662,9 @@ def main() -> None:
                                exit_rsi=_opt("--exit", float, 85.0),
                                max_hold=_opt("--hold", int, 30))
         print(format_intraday(res, f"{path} ({len(ohlc)} symbols)"))
+        return
+    if "--strategies" in args:
+        print(format_strategies(compare_strategies(panel), f"{path} ({len(panel)} symbols)"))
         return
     if "--costs" in args:
         levels = [0.0010, 0.0030, 0.0050, 0.0100, 0.0300, 0.0500]
