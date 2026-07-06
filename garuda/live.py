@@ -260,7 +260,8 @@ class GarudaLive:
                 positions.append({"sym": s, "qty": h["qty"],
                                   "entry": round(h["entry_price"], 2), "ltp": round(ltp, 2),
                                   "chg": round(chg, 2), "pnl": round(pnl, 0),
-                                  "rsi2": h.get("rsi2_entry")})
+                                  "rsi2": h.get("rsi2_entry"), "mom": h.get("mom"),
+                                  "peak": round(h["peak"], 2) if h.get("peak") else None})
             positions.sort(key=lambda x: x["pnl"], reverse=True)
             # market-watch: every universe stock with a live LTP + day change
             watch = []
@@ -307,11 +308,13 @@ class GarudaLive:
             profs.append({
                 "best": best, "worst": worst,
                 "key": k, "name": prof.name, "desc": prof.daily_csv.replace("_daily.csv", ""),
+                "strategy": prof.strategy, "label": prof.label,
                 "capital": pf.starting_capital, "equity": round(equity, 0),
                 "pnl_pct": round((equity / pf.starting_capital - 1) * 100, 2),
                 "day_pnl": round(day_pnl, 0), "positions": positions,
                 "win": win, "win_kind": win_kind, "win_open": win_open,
                 "proven_win": prof.proven_win, "proven_ret": prof.proven_ret,
+                "proven_pf": prof.proven_pf,
                 "universe": self.universe.get(k, []), "watch": watch,
                 "pf": pfac, "cash": round(pf.cash, 0),
                 "buys": self.last_signals[k]["buys"], "sells": self.last_signals[k]["sells"],

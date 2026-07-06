@@ -32,6 +32,7 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .wsearch{flex:1;min-width:90px;background:#0b1017;border:1px solid var(--line);border-radius:6px;color:var(--txt);padding:4px 9px;font:inherit;font-size:12px}
 .bothdr{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;background:linear-gradient(90deg,#111a26,#0f141c);border-top:1px solid var(--line);flex-wrap:wrap}
 .bothdr .nm{font-weight:800;font-size:13px}.bothdr .nm .d{color:var(--mut);font-weight:400;font-size:10px}
+.strat{font-size:9px;font-weight:600;color:var(--acc);background:rgba(120,170,255,.10);border:1px solid var(--line);border-radius:3px;padding:1px 6px;margin-left:4px;letter-spacing:.02em}
 .bstat{font-size:10px;color:var(--mut)}.bstat b{font-size:12px}
 .listwrap{max-height:62vh;overflow-y:auto;overflow-x:auto}
 .wl{min-width:560px}
@@ -303,9 +304,11 @@ function render(d){
   const wl=p.win_kind==='live'?'live':'avg';
   const win=p.win==null?'—':p.win+'% <span class=muted>'+wl+'</span>';
   const green=p.win_open==null?'':` · <b class=g>${p.win_open}%</b> up now`;
+  const strat=p.label?`<span class=strat title="the validated engine this book trades">${p.label}</span>`:'';
+  const pf=p.proven_pf?` · PF <b class=a>${p.proven_pf.toFixed(2)}</b>`:'';
   html+=`<div class=bothdr>
-    <div class=nm>${p.name} <span class=d>· ${p.desc}</span></div>
-    <div class=bstat>${money(p.equity)} · <b class="${p.pnl_pct>=0?'g':'r'}">${pct(p.pnl_pct)}</b> · WIN <b class=a>${win}</b>${green} · ${p.positions.length} pos</div>
+    <div class=nm>${p.name} <span class=d>· ${p.desc}</span> ${strat}</div>
+    <div class=bstat>${money(p.equity)} · <b class="${p.pnl_pct>=0?'g':'r'}">${pct(p.pnl_pct)}</b> · WIN <b class=a>${win}</b>${green}${pf} · ${p.positions.length} pos</div>
   </div>`;
   // live market-watch / screener: click a header to sort by that column
   const watch=(p.watch||[]).filter(x=>!q||x.sym.includes(q)).sort((a,b)=>{

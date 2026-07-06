@@ -23,8 +23,13 @@ def test_profiles_use_proven_settings():
     sc, mc = PROFILES["smallcap"], PROFILES["microcap"]
     for p in (sc, mc):
         assert p.entry_rsi == 5 and p.exit_rsi == 85 and p.max_hold == 30
-        assert p.use_trend is False
-        assert p.capital == 1_000_000
+        assert p.strategy == "rsi2"
+        assert p.use_trend is True          # the uptrend filter is now ON (the showdown winner)
+        assert p.label and p.capital == 1_000_000
+    n50 = PROFILES["next50"]
+    assert n50.strategy == "momentum"       # Next 50 runs breakout + trailing stop
+    assert n50.breakout == 20 and n50.trail == 0.15 and n50.max_hold == 120
+    assert n50.label
 
 
 def test_portfolio_buy_sell_cash():
@@ -66,6 +71,35 @@ def test_scan_exits_on_max_hold():
         h["last_date"] = "2000-01-01"
     r = run_scan(prof, series, pf)                  # today's scan bumps it over -> exit
     assert r["sells"], "a maxed-out hold should be sold"
+
+
+def _rising(days=60, start=100.0, step=1.0):
+    return [start + i * step for i in range(days)]
+
+
+def test_momentum_enters_on_breakout_and_trails_out():
+    prof = PROFILES["next50"]                       # the momentum book
+    pf = LivePortfolio(prof.capital)
+    series = {"AAA": _rising(60)}                    # steady climb, last=159
+    # a live price above every prior close = a fresh 20-day high -> breakout entry
+    r = run_scan(prof, series, pf, live_prices={"AAA": 200.0})
+    assert r["buys"] and "AAA" in pf.holdings
+    assert pf.holdings["AAA"]["peak"] == 200.0       # peak seeded at entry
+    # price gives back >15% off the 200 peak (160 < 170) -> trailing-stop exit
+    r2 = run_scan(prof, series, pf, live_prices={"AAA": 160.0})
+    assert r2["sells"] and "trailing stop" in r2["sells"][0]["reason"]
+    assert "AAA" not in pf.holdings
+
+
+def test_momentum_holds_while_above_trailing_stop():
+    prof = PROFILES["next50"]
+    pf = LivePortfolio(prof.capital)
+    series = {"AAA": _rising(60)}
+    run_scan(prof, series, pf, live_prices={"AAA": 200.0})
+    # a shallow pullback (5% < 15% trail) must NOT stop us out
+    r = run_scan(prof, series, pf, live_prices={"AAA": 190.0})
+    assert not r["sells"] and "AAA" in pf.holdings
+    assert pf.holdings["AAA"]["peak"] == 200.0       # peak unchanged by a dip
 
 
 def test_scan_exits_on_hold_and_records_equity():
