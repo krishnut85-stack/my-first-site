@@ -60,8 +60,7 @@ PROFILES = {
         "https://archives.nseindia.com/content/indices/ind_niftysmallcap250list.csv",
         "niftysmallcap250_daily.csv",
         strategy="rsi2", label="RSI-2 < 10 dip · uptrend",
-        rules="BUY: RSI-2 < 10 while price is above its 200-day average (buy the dip, "
-              "only in an uptrend).  SELL: when RSI-2 recovers above 85, or after 30 days.",
+        rules="Buy RSI-2 < 10 in an uptrend (> 200-DMA) · Sell RSI-2 > 85 or 30-day hold",
         use_trend=True,
         entry_rsi=10.0,   # dip-depth test: <10 gives ~same edge as <5, more trades
         proven_win=66.0, proven_ret=0.94, proven_pf=1.85),
@@ -70,8 +69,7 @@ PROFILES = {
         "https://nsearchives.nseindia.com/content/indices/ind_niftymicrocap250_list.csv",
         "microcap_daily.csv",
         strategy="rsi2", label="RSI-2 < 10 dip · uptrend",
-        rules="BUY: RSI-2 < 10 while price is above its 200-day average (buy the dip, "
-              "only in an uptrend).  SELL: when RSI-2 recovers above 85, or after 30 days.",
+        rules="Buy RSI-2 < 10 in an uptrend (> 200-DMA) · Sell RSI-2 > 85 or 30-day hold",
         use_trend=True,
         entry_rsi=10.0,   # dip-depth test: <10 marginally beat <5 (+1.34% PF 2.14)
         proven_win=70.0, proven_ret=1.34, proven_pf=2.14),
@@ -80,8 +78,7 @@ PROFILES = {
         "https://archives.nseindia.com/content/indices/ind_niftynext50list.csv",
         "next50_daily.csv",
         strategy="momentum", label="Momentum · 20d breakout + 15% trail",
-        rules="BUY: a fresh 20-day high (breakout), strongest momentum first.  "
-              "SELL: on a 15% trailing stop from the peak, or after 120 days.",
+        rules="Buy a fresh 20-day high · Sell on a 15% trailing stop or 120-day hold",
         breakout=20, trail=0.15, max_hold=120,
         # momentum wins less often but wins bigger; win% is the backtest estimate
         # (pending an exact droplet re-run) — ret & PF are the figures from the run.
