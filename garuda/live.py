@@ -231,6 +231,7 @@ class GarudaLive:
             return
         closes = [c["c"] for c in candles]
         r = rsi(closes, 2)
+        r14 = rsi(closes, 14)                     # for the STRENGTH book's chart pane
         ma20, ma50 = sma(closes, 20), sma(closes, 50)
         markers, prev = [], None
         for i, v in enumerate(r):
@@ -244,6 +245,7 @@ class GarudaLive:
         self.charts[symbol] = {
             "candles": candles,
             "rsi": [round(v, 1) if v is not None else None for v in r],
+            "rsi14": [round(v, 1) if v is not None else None for v in r14],
             "ma20": [round(v, 2) if v is not None else None for v in ma20],
             "ma50": [round(v, 2) if v is not None else None for v in ma50],
             "markers": markers,
