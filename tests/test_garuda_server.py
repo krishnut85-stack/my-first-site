@@ -51,15 +51,23 @@ def test_win_rate_shows_backtest_until_live_trades(tmp_path, monkeypatch):
     assert sc["win_open"] == 50                    # 1 of 2 positions green right now
 
 
-def test_day_pnl_is_todays_move_not_cumulative(tmp_path, monkeypatch):
+def test_day_pnl_baseline_entry_if_opened_today_else_prev_close(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    from garuda.portfolio import _today
     live = GarudaLive(csv_dir=str(tmp_path))
-    live.portfolios["smallcap"].buy("KEI", 10, 100.0, entry_len=250)
-    live.day_ohlc["KEI"] = {"pc": 130.0}       # prev close far above the entry
-    live.prices["KEI"] = 131.0                 # +31 since entry, but only +1 today
+    pf = live.portfolios["smallcap"]
+    pf.buy("NEW", 10, 100.0, entry_len=250)          # opened TODAY (entry_date=today)
+    live.day_ohlc["NEW"] = {"pc": 130.0}
+    live.prices["NEW"] = 131.0
+    pf.buy("OLD", 10, 100.0, entry_len=250)
+    pf.holdings["OLD"]["entry_date"] = "2000-01-01"  # held from a prior day
+    live.day_ohlc["OLD"] = {"pc": 130.0}
+    live.prices["OLD"] = 131.0
     sc = next(p for p in live.build_state()["profiles"] if p["key"] == "smallcap")
-    assert sc["positions"][0]["pnl"] == 310     # position total since entry (131-100)*10
-    assert sc["day_pnl"] == 10                   # DAY tile = today only (131-130)*10, not 310
+    # NEW opened today -> day P&L from ENTRY: (131-100)*10 = 310 (it wasn't held at
+    # yesterday's close). OLD held from before -> from PREV CLOSE: (131-130)*10 = 10.
+    assert sc["day_pnl"] == 320
+    assert next(x for x in sc["positions"] if x["sym"] == "NEW")["pnl"] == 310  # total since entry
 
 
 def test_state_exposes_index_reading(tmp_path, monkeypatch):

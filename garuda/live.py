@@ -258,6 +258,7 @@ class GarudaLive:
     def build_state(self):
         profs = []
         mkt_open = is_market_open()
+        today = _today()
         for k, prof in PROFILES.items():
             pf = self.portfolios[k]
             positions = []
@@ -266,8 +267,11 @@ class GarudaLive:
                 ltp = self.price_of(s, h["entry_price"])
                 chg = (ltp - h["entry_price"]) / h["entry_price"] * 100 if h["entry_price"] else 0
                 pnl = (ltp - h["entry_price"]) * h["qty"]     # position total (since entry)
-                prev = self.day_ohlc.get(s, {}).get("pc") or h["entry_price"]
-                day_pnl += (ltp - prev) * h["qty"]            # TODAY's move only (for the DAY P&L tile)
+                # DAY P&L baseline: a position OPENED TODAY only participated from its
+                # fill, so measure from entry; an older hold measures from prev close.
+                base = h["entry_price"] if h.get("entry_date") == today \
+                    else (self.day_ohlc.get(s, {}).get("pc") or h["entry_price"])
+                day_pnl += (ltp - base) * h["qty"]
                 positions.append({"sym": s, "qty": h["qty"],
                                   "entry": round(h["entry_price"], 2), "ltp": round(ltp, 2),
                                   "chg": round(chg, 2), "pnl": round(pnl, 0),
