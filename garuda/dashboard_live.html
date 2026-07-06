@@ -120,7 +120,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
       <div class=rsiwrap><div class=rsi id=rsi></div>
         <div class="zone zsell">SELL ZONE · overbought</div>
         <div class="zone zbuy">BUY ZONE · oversold</div></div></div>
-      <div class=leg><span style=color:#3aa0ff>MA20</span> · <span style=color:#c586ff>MA50</span> · volume bars · <b style=color:#f5b23e>yellow = RSI-2</b>: dips to <b class=g>BUY 5</b> = oversold (we buy) · spikes to <b class=r>SELL 85</b> = overbought (we sell) · scroll=zoom, drag=pan</div>
+      <div class=leg><span style=color:#3aa0ff>MA20</span> · <span style=color:#c586ff>MA50</span> · volume bars · <b style=color:#f5b23e>yellow = RSI-2</b>: dips to <b class=g>BUY 10</b> = oversold (we buy) · spikes to <b class=r>SELL 85</b> = overbought (we sell) · scroll=zoom, drag=pan</div>
       <div class=sig id=sig></div>
     </div>
     <div class=chartcard>
@@ -194,7 +194,7 @@ function ensureCharts(){
   autoscaleInfoProvider:()=>({priceRange:{minValue:0,maxValue:100}})});   // fixed 0-100 so the zone bands line up
  rsiSeries.priceScale().applyOptions({scaleMargins:{top:0.08,bottom:0.08}});
  rsiSeries.createPriceLine({price:85,color:'#ff5d5d',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'SELL 85'});
- rsiSeries.createPriceLine({price:5,color:'#22d37a',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'BUY 5'});
+ rsiSeries.createPriceLine({price:10,color:'#22d37a',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'BUY 10'});
  // keep the two time axes locked together when you zoom/pan either one
  mainChart.timeScale().subscribeVisibleLogicalRangeChange(r=>{if(r&&!syncing){syncing=true;rsiChart.timeScale().setVisibleLogicalRange(r);syncing=false;}});
  rsiChart.timeScale().subscribeVisibleLogicalRangeChange(r=>{if(r&&!syncing){syncing=true;mainChart.timeScale().setVisibleLogicalRange(r);syncing=false;}});

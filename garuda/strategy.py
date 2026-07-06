@@ -4,9 +4,13 @@ The strategy showdown (9 strategies x 3 universes, costs both sides, ranked by
 avg %/trade) picked a different best-fit engine per book. These profiles run the
 winners:
 
-    Smallcap  ·  RSI-2 dip-buy, UPTREND-FILTERED   +0.99%/trade  PF 1.89  67% win
-    Microcap  ·  RSI-2 dip-buy, UPTREND-FILTERED   +1.33%/trade  PF 2.11  69% win
+    Smallcap  ·  RSI-2<10 dip-buy, UPTREND-FILTERED   +0.94%/trade  PF 1.85  66% win
+    Microcap  ·  RSI-2<10 dip-buy, UPTREND-FILTERED   +1.34%/trade  PF 2.14  70% win
     Next 50   ·  20-day breakout + 15% trailing stop  +1.33%/trade  PF 1.23
+
+Entry depth: the dip-depth sweep showed RSI-2<10 captures ~the same per-trade
+edge as the classic <5 while taking ~5-10% more trades (and on microcap it edged
+<5 outright), so both mean-reversion books buy at RSI-2 < 10.
 
 Why not plain RSI-2 everywhere? Because plain RSI-2 is ~break-even after costs
 (+0.10% micro, +0.01% small). Adding the "only buy the dip while price is above
@@ -55,13 +59,15 @@ PROFILES = {
         "https://archives.nseindia.com/content/indices/ind_niftysmallcap250list.csv",
         "niftysmallcap250_daily.csv",
         strategy="rsi2", label="RSI-2 dip · uptrend filter", use_trend=True,
-        proven_win=67.0, proven_ret=0.99, proven_pf=1.89),
+        entry_rsi=10.0,   # dip-depth test: <10 gives ~same edge as <5, more trades
+        proven_win=66.0, proven_ret=0.94, proven_pf=1.85),
     "microcap": Profile(
         "microcap", "Garuda-MC",
         "https://nsearchives.nseindia.com/content/indices/ind_niftymicrocap250_list.csv",
         "microcap_daily.csv",
         strategy="rsi2", label="RSI-2 dip · uptrend filter", use_trend=True,
-        proven_win=69.0, proven_ret=1.33, proven_pf=2.11),
+        entry_rsi=10.0,   # dip-depth test: <10 marginally beat <5 (+1.34% PF 2.14)
+        proven_win=70.0, proven_ret=1.34, proven_pf=2.14),
     "next50": Profile(
         "next50", "Garuda-N50",
         "https://archives.nseindia.com/content/indices/ind_niftynext50list.csv",

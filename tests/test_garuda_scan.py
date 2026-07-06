@@ -22,7 +22,7 @@ def _reverting(days=400, seed=1):
 def test_profiles_use_proven_settings():
     sc, mc = PROFILES["smallcap"], PROFILES["microcap"]
     for p in (sc, mc):
-        assert p.entry_rsi == 5 and p.exit_rsi == 85 and p.max_hold == 30
+        assert p.entry_rsi == 10 and p.exit_rsi == 85 and p.max_hold == 30
         assert p.strategy == "rsi2"
         assert p.use_trend is True          # the uptrend filter is now ON (the showdown winner)
         assert p.label and p.capital == 1_000_000
