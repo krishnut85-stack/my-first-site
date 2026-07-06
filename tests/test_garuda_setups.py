@@ -97,6 +97,15 @@ def test_compare_trend_ma_covers_each_length():
     assert all(s and s["trades"] > 0 for s in res.values())
 
 
+def test_compare_dip_depth_sweeps_thresholds():
+    from garuda.setups import compare_dip_depth
+    panel = {f"S{i}": _uptrend_with_dips(seed=i) for i in range(6)}
+    res = compare_dip_depth(panel, cost=0.0, thresholds=(5, 20), ma=200)
+    assert set(res) == {"RSI-2 < 5  (uptrend)", "RSI-2 < 20  (uptrend)"}
+    # a shallower threshold (<20) must trigger at least as many entries as <5
+    assert res["RSI-2 < 20  (uptrend)"]["trades"] >= res["RSI-2 < 5  (uptrend)"]["trades"]
+
+
 def test_totp_rfc6238_vectors():
     """Guard the hand-rolled TOTP used for the automatic Kite login."""
     import base64

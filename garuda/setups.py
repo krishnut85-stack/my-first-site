@@ -389,6 +389,62 @@ def format_trend_ma(res: dict, source: str) -> str:
     return "\n".join(lines)
 
 
+def compare_dip_depth(panel: dict, cost=None, thresholds=(5, 10, 15, 20, 25, 30),
+                      ma=200) -> dict:
+    """RSI-2 dip-buy WITH the uptrend filter (close > `ma`-SMA), sweeping the
+    ENTRY threshold. Deep (RSI<5) = only violent dips — misses momentum runners
+    like AEGISLOG that never fall that far. Shallow (RSI<30) = also buys mild
+    pullbacks in strong uptrends, so it CAN ride those runners. Same exit (RSI>85
+    or 30-day hold). Question: does buying shallower dips-in-uptrends pay, or does
+    it just let weaker setups in?"""
+    cost = config.CROSS_COST_PER_SIDE if cost is None else cost
+    res = {}
+
+    def add(name, rets):
+        res.setdefault(name, []).extend(rets)
+
+    for closes in panel.values():
+        if len(closes) < ma + 10:
+            continue
+        r2 = rsi(closes, 2)
+        s = sma(closes, ma)
+        for t in thresholds:
+            entry = (lambda i, _t=t, _r=r2, _s=s, _c=closes:
+                     _r[i] is not None and _r[i] < _t
+                     and _s[i] is not None and _c[i] > _s[i])
+            add(f"RSI-2 < {t}  (uptrend)", _run_strategy(closes, entry,
+                lambda j, i, _r=r2: _r[j] is not None and _r[j] > 85,
+                30, cost, start=ma))
+    return {name: _stats(rets) for name, rets in res.items()}
+
+
+def format_dip_depth(res: dict, source: str) -> str:
+    best = max((kv for kv in res.items() if kv[1]),
+               key=lambda kv: kv[1]["avg"], default=(None, None))[0]
+
+    def thr(name):
+        return int(name.split("<")[1].split("(")[0].strip())
+    rows = sorted(res.items(), key=lambda kv: thr(kv[0]))
+    lines = ["=" * 80,
+             f"  {config.BOT_NAME} · DIP-DEPTH TEST   (RSI-2 + 200-SMA uptrend, exit RSI>85/30d)",
+             f"  Data: {source}   ·   costs both sides   ·   only the entry threshold changes",
+             "=" * 80,
+             f"  {'entry (buy the dip)':<26}{'win%':>6}{'avg%/trade':>12}{'PF':>7}{'trades':>8}",
+             "-" * 80]
+    for name, s in rows:
+        star = "  <- best" if name == best else ""
+        if not s:
+            lines.append(f"  {name:<26}{'— no trades —':>33}")
+            continue
+        lines.append(f"  {name:<26}{s['win']:>5.0f}%{s['avg']:>+11.2f}%"
+                     f"{(s['pf'] or 0):>7.2f}{s['trades']:>8}{star}")
+    lines += ["-" * 80,
+              "  Shallower (RSI<30) catches momentum names that never dip hard — but also weaker setups.",
+              "  Best avg%/trade AND PF>1.2 AND enough trades wins. Deep (<5) is the current live setting.",
+              "=" * 80]
+    return "\n".join(lines)
+
+
 def backtest(panel: dict, **kw) -> dict:
     """Run the setup across every stock in the panel and aggregate honestly."""
     all_rets = []
@@ -728,6 +784,9 @@ def main() -> None:
         return
     if "--trendma" in args:
         print(format_trend_ma(compare_trend_ma(panel), f"{path} ({len(panel)} symbols)"))
+        return
+    if "--dipdepth" in args:
+        print(format_dip_depth(compare_dip_depth(panel), f"{path} ({len(panel)} symbols)"))
         return
     if "--costs" in args:
         levels = [0.0010, 0.0030, 0.0050, 0.0100, 0.0300, 0.0500]
