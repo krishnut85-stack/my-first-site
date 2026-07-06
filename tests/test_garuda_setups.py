@@ -85,6 +85,18 @@ def test_backtest_aggregates_and_flags_costs():
     assert "win_rate_pct" in free
 
 
+def test_compare_trend_ma_covers_each_length():
+    from garuda.setups import compare_trend_ma
+    panel = {f"S{i}": _uptrend_with_dips(seed=i) for i in range(6)}
+    res = compare_trend_ma(panel, cost=0.0, mas=(0, 50, 200))
+    assert set(res) == {"no filter (plain RSI-2)", "50-day SMA filter", "200-day SMA filter"}
+    # the unfiltered variant must take at least as many trades as any filtered one
+    unf = res["no filter (plain RSI-2)"]["trades"]
+    assert unf >= res["50-day SMA filter"]["trades"]
+    assert unf >= res["200-day SMA filter"]["trades"]
+    assert all(s and s["trades"] > 0 for s in res.values())
+
+
 def test_totp_rfc6238_vectors():
     """Guard the hand-rolled TOTP used for the automatic Kite login."""
     import base64

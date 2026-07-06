@@ -329,6 +329,66 @@ def format_strategies(res: dict, source: str) -> str:
     return "\n".join(lines)
 
 
+def compare_trend_ma(panel: dict, cost=None, mas=(0, 20, 50, 100, 150, 200)) -> dict:
+    """RSI-2 dip-buy (entry RSI<5, exit RSI>85 or 30-day hold — EXACTLY the live
+    rules) with DIFFERENT trend-filter lengths. 0 = no filter (plain RSI-2); each
+    other value only buys when close > that SMA. Only the trend gate changes, so
+    this isolates precisely what the filter length is worth — is 200 too strict?"""
+    cost = config.CROSS_COST_PER_SIDE if cost is None else cost
+    res = {}
+
+    def add(name, rets):
+        res.setdefault(name, []).extend(rets)
+
+    for closes in panel.values():
+        if len(closes) < 60:
+            continue
+        r2 = rsi(closes, 2)
+        for m in mas:
+            if m == 0:
+                name = "no filter (plain RSI-2)"
+                entry = lambda i, _r=r2: _r[i] is not None and _r[i] < 5
+                start = 2
+            else:
+                s = sma(closes, m)
+                name = f"{m}-day SMA filter"
+                entry = (lambda i, _r=r2, _s=s, _c=closes:
+                         _r[i] is not None and _r[i] < 5
+                         and _s[i] is not None and _c[i] > _s[i])
+                start = m
+            add(name, _run_strategy(closes, entry,
+                lambda j, i, _r=r2: _r[j] is not None and _r[j] > 85,
+                30, cost, start=start))
+    return {name: _stats(rets) for name, rets in res.items()}
+
+
+def format_trend_ma(res: dict, source: str) -> str:
+    best = max((kv for kv in res.items() if kv[1]),
+               key=lambda kv: kv[1]["avg"], default=(None, None))[0]
+
+    def malen(name):
+        return 0 if name.startswith("no filter") else int(name.split("-")[0])
+    rows = sorted(res.items(), key=lambda kv: malen(kv[0]))   # strictness gradient
+    lines = ["=" * 80,
+             f"  {config.BOT_NAME} · TREND-FILTER LENGTH TEST   (RSI-2 dip, same entry/exit)",
+             f"  Data: {source}   ·   costs both sides   ·   only the SMA length changes",
+             "=" * 80,
+             f"  {'trend filter':<30}{'win%':>6}{'avg%/trade':>12}{'PF':>7}{'trades':>8}",
+             "-" * 80]
+    for name, s in rows:
+        star = "  <- best" if name == best else ""
+        if not s:
+            lines.append(f"  {name:<30}{'— no trades —':>33}")
+            continue
+        lines.append(f"  {name:<30}{s['win']:>5.0f}%{s['avg']:>+11.2f}%"
+                     f"{(s['pf'] or 0):>7.2f}{s['trades']:>8}{star}")
+    lines += ["-" * 80,
+              "  Shorter SMA = looser filter = more trades, but more falling knives get in.",
+              "  Pick the length with the best avg%/trade AND PF>1.2 AND enough trades to trust.",
+              "=" * 80]
+    return "\n".join(lines)
+
+
 def backtest(panel: dict, **kw) -> dict:
     """Run the setup across every stock in the panel and aggregate honestly."""
     all_rets = []
@@ -665,6 +725,9 @@ def main() -> None:
         return
     if "--strategies" in args:
         print(format_strategies(compare_strategies(panel), f"{path} ({len(panel)} symbols)"))
+        return
+    if "--trendma" in args:
+        print(format_trend_ma(compare_trend_ma(panel), f"{path} ({len(panel)} symbols)"))
         return
     if "--costs" in args:
         levels = [0.0010, 0.0030, 0.0050, 0.0100, 0.0300, 0.0500]
