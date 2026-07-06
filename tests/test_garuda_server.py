@@ -51,6 +51,17 @@ def test_win_rate_shows_backtest_until_live_trades(tmp_path, monkeypatch):
     assert sc["win_open"] == 50                    # 1 of 2 positions green right now
 
 
+def test_day_pnl_is_todays_move_not_cumulative(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    live = GarudaLive(csv_dir=str(tmp_path))
+    live.portfolios["smallcap"].buy("KEI", 10, 100.0, entry_len=250)
+    live.day_ohlc["KEI"] = {"pc": 130.0}       # prev close far above the entry
+    live.prices["KEI"] = 131.0                 # +31 since entry, but only +1 today
+    sc = next(p for p in live.build_state()["profiles"] if p["key"] == "smallcap")
+    assert sc["positions"][0]["pnl"] == 310     # position total since entry (131-100)*10
+    assert sc["day_pnl"] == 10                   # DAY tile = today only (131-130)*10, not 310
+
+
 def test_state_exposes_index_reading(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
     live = GarudaLive(csv_dir=str(tmp_path))

@@ -265,8 +265,9 @@ class GarudaLive:
             for s, h in pf.holdings.items():
                 ltp = self.price_of(s, h["entry_price"])
                 chg = (ltp - h["entry_price"]) / h["entry_price"] * 100 if h["entry_price"] else 0
-                pnl = (ltp - h["entry_price"]) * h["qty"]
-                day_pnl += pnl
+                pnl = (ltp - h["entry_price"]) * h["qty"]     # position total (since entry)
+                prev = self.day_ohlc.get(s, {}).get("pc") or h["entry_price"]
+                day_pnl += (ltp - prev) * h["qty"]            # TODAY's move only (for the DAY P&L tile)
                 positions.append({"sym": s, "qty": h["qty"],
                                   "entry": round(h["entry_price"], 2), "ltp": round(ltp, 2),
                                   "chg": round(chg, 2), "pnl": round(pnl, 0),
@@ -288,12 +289,15 @@ class GarudaLive:
                     return round((_ltp - _cl[-n]) / _cl[-n] * 100, 2) \
                         if len(_cl) >= n and _cl[-n] > 0 else None
                 win = cl[-252:]
-                # live provisional RSI-2 (current price as today's close) while open
+                # live provisional RSI-2 AND RSI-14 (current price as today's close) while open
                 if mkt_open and cl:
                     lr = rsi(cl[-25:] + [ltp], 2)
                     rsi2 = round(lr[-1], 1) if lr and lr[-1] is not None else self.rsi_by_sym.get(sym)
+                    lr14 = rsi(cl[-40:] + [ltp], 14)
+                    rsi14 = round(lr14[-1], 1) if lr14 and lr14[-1] is not None else self.rsi14_by_sym.get(sym)
                 else:
                     rsi2 = self.rsi_by_sym.get(sym)
+                    rsi14 = self.rsi14_by_sym.get(sym)
                 h = pf.holdings.get(sym)
                 watch.append({
                     "sym": sym, "ltp": round(ltp, 2), "chg": round(chg, 2),
@@ -301,7 +305,7 @@ class GarudaLive:
                     "hi52": round(max(win), 2) if win else None,
                     "lo52": round(min(win), 2) if win else None,
                     "mcap": self.mcap_by_sym.get(sym),
-                    "rsi2": rsi2, "rsi14": self.rsi14_by_sym.get(sym), "held": bool(h),
+                    "rsi2": rsi2, "rsi14": rsi14, "held": bool(h),
                     "qty": h["qty"] if h else None,
                     "pnl": round((ltp - h["entry_price"]) * h["qty"], 0) if h else None,
                     "o": o.get("o"), "h": o.get("h"), "l": o.get("l"),   # today, for the live candle
@@ -339,10 +343,19 @@ class GarudaLive:
         }
         totals["pnl_pct"] = round((totals["equity"] / totals["capital"] - 1) * 100, 2) \
             if totals["capital"] else 0.0
-        # combined equity curve (P&L chart) — sum both portfolios by scan index
-        histories = [pf.history for pf in self.portfolios.values()]
-        n = min((len(h) for h in histories), default=0)
-        daily = [round(sum(h[i]["equity"] for h in histories), 0) for i in range(n)]
+        # combined equity curve (P&L chart) — sum the books RIGHT-aligned (all
+        # histories end 'today'), so a later-added book (e.g. strength) doesn't
+        # truncate the curve; before a book existed, count it at its start capital.
+        pfs = list(self.portfolios.values())
+        histories = [pf.history for pf in pfs]
+        m = max((len(h) for h in histories), default=0)
+        daily = []
+        for i in range(m):
+            total = 0.0
+            for h, pf in zip(histories, pfs):
+                idx = i - (m - len(h))            # align each history to the right end
+                total += h[idx]["equity"] if idx >= 0 else pf.starting_capital
+            daily.append(round(total, 0))
         # daily track record + today's live intraday samples + the current tip
         totals["curve"] = daily + self.intraday + [totals["equity"]]
         from .market import HOLIDAYS

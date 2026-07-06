@@ -183,7 +183,7 @@ function setSVG(el,vw,vh,inner){
  el.replaceChildren(doc.documentElement);
 }
 // ---- interactive candlestick chart (TradingView Lightweight Charts) --------
-let mainChart,candleSeries,volSeries,ma20Series,ma50Series,rsiChart,rsiSeries,curChartSym=null,syncing=false,rsiLines=[],curStrengthMode=false;
+let mainChart,candleSeries,volSeries,ma20Series,ma50Series,rsiChart,rsiSeries,curChartSym=null,syncing=false,rsiLines=[],curRsiField='rsi2',curBook=null;
 function chartOpts(h){return {height:h,autoSize:true,
  layout:{background:{color:'#0a0e14'},textColor:'#7d8b9c',fontFamily:'ui-monospace,Menlo,monospace'},
  grid:{vertLines:{color:'#141b26'},horzLines:{color:'#141b26'}},
@@ -214,26 +214,31 @@ function ensureCharts(){
 function fitChart(){if(mainChart){mainChart.timeScale().fitContent();rsiChart.timeScale().fitContent();}}
 // swap the RSI pane between the RSI-2 dip view (BUY 10 / SELL 85 zones) and the
 // STRENGTH view (RSI-14 with the 55-70 buy band), per the book being viewed.
-function setRsiMode(strength){
+function setRsiMode(strat){   // 'strength' (RSI-14 55-70) | 'momentum' (breakout) | 'rsi2' (dip)
  const zs=document.getElementById('zsell'),zb=document.getElementById('zbuy'),sub=document.getElementById('csub'),lg=document.getElementById('leg');
  rsiLines.forEach(l=>{try{rsiSeries.removePriceLine(l);}catch(e){}});rsiLines=[];
  const base='<span style=color:#3aa0ff>MA20</span> · <span style=color:#c586ff>MA50</span> · volume bars · ';
- if(strength){
+ if(strat==='strength'){
   rsiLines.push(rsiSeries.createPriceLine({price:70,color:'#f5b23e',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'70'}));
   rsiLines.push(rsiSeries.createPriceLine({price:55,color:'#22d37a',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'BUY 55'}));
   if(zs)zs.style.display='none';
   if(zb){zb.style.top='33%';zb.style.bottom='auto';zb.style.height='13%';zb.textContent='STRENGTH ZONE · RSI-14 55-70';}
   if(sub)sub.textContent='· daily candles + RSI-14';
   if(lg)lg.innerHTML=base+'<b style=color:#f5b23e>yellow = RSI-14</b>: buy the <b class=g>55-70</b> strength band in an uptrend · exit on a 12% trailing stop · scroll=zoom, drag=pan';
+ }else if(strat==='momentum'){
+  if(zs)zs.style.display='none';
+  if(zb)zb.style.display='none';                 // momentum has no RSI zone — it trades breakouts
+  if(sub)sub.textContent='· daily candles + RSI-2 (reference)';
+  if(lg)lg.innerHTML=base+'<b style=color:#f5b23e>yellow = RSI-2</b> (reference only) · this book buys <b class=g>20-day breakouts</b> and exits on a <b class=r>15% trailing stop</b> · scroll=zoom, drag=pan';
  }else{
   rsiLines.push(rsiSeries.createPriceLine({price:85,color:'#ff5d5d',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'SELL 85'}));
   rsiLines.push(rsiSeries.createPriceLine({price:10,color:'#22d37a',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'BUY 10'}));
   if(zs)zs.style.display='';
-  if(zb){zb.style.top='auto';zb.style.bottom='8%';zb.style.height='4.2%';zb.textContent='BUY ZONE · oversold';}
+  if(zb){zb.style.display='';zb.style.top='auto';zb.style.bottom='8%';zb.style.height='4.2%';zb.textContent='BUY ZONE · oversold';}
   if(sub)sub.textContent='· daily candles + RSI-2';
   if(lg)lg.innerHTML=base+'<b style=color:#f5b23e>yellow = RSI-2</b>: dips to <b class=g>BUY 10</b> = oversold (we buy) · spikes to <b class=r>SELL 85</b> = overbought (we sell) · scroll=zoom, drag=pan';
  }
- curStrengthMode=strength;
+ curRsiField=(strat==='strength')?'rsi14':'rsi2';
 }
 function drawChart(ch,sym){
  document.getElementById('csym').textContent=sym||'—';
@@ -249,8 +254,8 @@ function drawChart(ch,sym){
  volSeries.setData(C.filter(c=>c.v!=null).map(c=>({time:c.t,value:c.v,color:c.c>=c.o?'#14392a':'#3a1c1f'})));
  const line=arr=>{const o=[];for(let i=0;i<C.length;i++)if(arr&&arr[i]!=null)o.push({time:C[i].t,value:arr[i]});return o;};
  ma20Series.setData(line(ch.ma20));ma50Series.setData(line(ch.ma50));
- const ab=activeBook(sym),strengthMode=!!(ab&&ab.key==='strength');setRsiMode(strengthMode);   // RSI-14 for the strength book
- const rsiArr=strengthMode?(ch.rsi14||[]):(ch.rsi||[]);
+ const ab=activeBook(sym),strat=ab?ab.strategy:'rsi2';setRsiMode(strat);   // RSI-14 for strength, breakout note for momentum
+ const rsiArr=(strat==='strength')?(ch.rsi14||[]):(ch.rsi||[]);
  const rd=[];for(let i=0;i<C.length;i++)if(rsiArr[i]!=null)rd.push({time:C[i].t,value:rsiArr[i]});
  rsiSeries.setData(rd);
  if(curChartSym!==sym){const n=C.length;   // open on the recent ~90 sessions (readable), not the whole year
@@ -269,7 +274,7 @@ function liveTick(){
  const x=watchItem(curChartSym);if(!x||x.o==null||x.ltp==null)return;
  try{candleSeries.update({time:DATA.today,open:x.o,
   high:Math.max(x.h==null?x.ltp:x.h,x.ltp),low:Math.min(x.l==null?x.ltp:x.l,x.ltp),close:x.ltp});
-  const rv=curStrengthMode?x.rsi14:x.rsi2;if(rsiSeries&&rv!=null)rsiSeries.update({time:DATA.today,value:rv});}catch(e){}
+  const rv=x[curRsiField];if(rsiSeries&&rv!=null)rsiSeries.update({time:DATA.today,value:rv});}catch(e){}
 }
 function drawPnl(curve){
  const c=document.getElementById('pnlchart');
@@ -301,6 +306,7 @@ function drawPnl(curve){
 // agreeing on RSI-2-dip vs RSI-14-strength.
 function activeBook(sym){
  const profs=DATA?.profiles||[],inBook=p=>p.positions.some(x=>x.sym===sym)||(p.watch||[]).some(x=>x.sym===sym);
+ if(curBook){const p=profs.find(p=>p.key===curBook);if(p&&inBook(p))return p;}   // the row you clicked wins
  if(FILTER!=='all'){const p=profs.find(p=>p.key===FILTER);if(p&&inBook(p))return p;}
  return profs.find(inBook)||null;
 }
@@ -314,7 +320,7 @@ function updateQuote(sym){
  if(!f){el.innerHTML='<span class=muted>—</span>';sg.innerHTML='';return;}
  const x=f.x,w=watchItem(sym)||x;
  const cc=v=>v==null?'muted':(v>=0?'g':'r');
- const isStr=f.p.key==='strength',rlab=isStr?'RSI-14':'RSI-2',rval=isStr?(x.rsi14??w.rsi14):(x.rsi2??w.rsi2);
+ const isStr=f.p.strategy==='strength',rlab=isStr?'RSI-14':'RSI-2',rval=isStr?(w.rsi14??x.rsi14):(w.rsi2??x.rsi2);   // prefer the LIVE watch RSI over the frozen entry value
  el.innerHTML=`<b>${x.ltp.toFixed(2)}</b> <span class="${cc(x.chg)}">${pct(x.chg)}</span> <span class=muted>· ${rlab} ${rval==null?'—':rval}</span>`;
  const lmc=w.mcap==null?null:w.mcap*(1+(w.chg||0)/100);
  const tech=`<div class=tech>1D <b class="${cc(w.chg)}">${w.chg==null?'—':pct(w.chg)}</b> · 1W <b class="${cc(w.chg_w)}">${w.chg_w==null?'—':pct(w.chg_w)}</b> · 1M <b class="${cc(w.chg_m)}">${w.chg_m==null?'—':pct(w.chg_m)}</b> · 52W H <b>${w.hi52==null?'—':w.hi52}</b> L <b>${w.lo52==null?'—':w.lo52}</b> · Mcap <b>${fmtCr(lmc)}</b></div>`;
@@ -323,7 +329,7 @@ function updateQuote(sym){
   : `<span class=muted>${LABEL[f.p.key]||''} · live price · not held</span>`)+tech;
 }
 function previewSym(){const s=(document.getElementById('csearch').value||'').trim().toUpperCase();if(s)loadChart(s);}
-async function loadChart(sym){curSym=sym;document.getElementById('csym').textContent=sym;updateQuote(sym);
+async function loadChart(sym,book){curSym=sym;curBook=book||null;document.getElementById('csym').textContent=sym;updateQuote(sym);
  document.querySelectorAll('.prow').forEach(r=>r.classList.toggle('sel',r.dataset.sym===sym));
  try{const r=await fetch('/chart?sym='+encodeURIComponent(sym)+'&token='+encodeURIComponent(TOKEN));
   const j=await r.json();drawChart(j,sym);}
@@ -365,20 +371,21 @@ function render(d){
     <div class=nm>${p.name} <span class=d>· ${p.desc}</span> ${strat}</div>
     <div class=bstat>${money(p.equity)} · <b class="${p.pnl_pct>=0?'g':'r'}">${pct(p.pnl_pct)}</b> · WIN <b class=a>${win}</b>${green}${pf} · ${p.positions.length} pos</div>
   </div>${rules}`;
-  // live market-watch / screener: click a header to sort by that column
-  const watch=(p.watch||[]).filter(x=>!q||x.sym.includes(q)).sort((a,b)=>{
-    if(SORT.key==='sym')return (a.sym<b.sym?-1:a.sym>b.sym?1:0)*SORT.dir;
-    let av=a[SORT.key],bv=b[SORT.key];av=(av==null?-Infinity:av);bv=(bv==null?-Infinity:bv);
-    return (av-bv)*SORT.dir;});
-  const th=(k,label)=>`<th class="sorth${k==='sym'?' sym':''}" onclick="setSort('${k}')">${label}${sortArrow(k)}</th>`;
   // the STRENGTH book signals on RSI-14 (55-70 band); the dip books on RSI-2
   const rk=p.key==='strength'?'rsi14':'rsi2', rlabel=p.key==='strength'?'RSI-14':'RSI-2';
-  html+=`<table class=wl><tr>${th('sym','SYMBOL')}${th('qty','QTY')}${th(rk,rlabel)}${th('ltp','LTP')}${th('chg','1D')}${th('chg_w','1W')}${th('chg_m','1M')}${th('mcap','MCAP')}${th('pnl','P&L')}</tr>`;
+  // 'rsi' is a LOGICAL sort key so each table sorts by ITS OWN rsi field (rk), never a hidden one
+  const skey=SORT.key==='rsi'?rk:SORT.key;
+  const watch=(p.watch||[]).filter(x=>!q||x.sym.includes(q)).sort((a,b)=>{
+    if(skey==='sym')return (a.sym<b.sym?-1:a.sym>b.sym?1:0)*SORT.dir;
+    let av=a[skey],bv=b[skey];av=(av==null?-Infinity:av);bv=(bv==null?-Infinity:bv);
+    return (av-bv)*SORT.dir;});
+  const th=(k,label)=>`<th class="sorth${k==='sym'?' sym':''}" onclick="setSort('${k}')">${label}${sortArrow(k)}</th>`;
+  html+=`<table class=wl><tr>${th('sym','SYMBOL')}${th('qty','QTY')}${th('rsi',rlabel)}${th('ltp','LTP')}${th('chg','1D')}${th('chg_w','1W')}${th('chg_m','1M')}${th('mcap','MCAP')}${th('pnl','P&L')}</tr>`;
   if(!watch.length)html+=`<tr><td colspan=9 class=muted style=text-align:center>${q?'no match in '+p.name:'loading live prices…'}</td></tr>`;
   const pcell=v=>`<td class="${v==null?'muted':(v>=0?'g':'r')}">${v==null?'—':pct(v)}</td>`;
   watch.forEach(x=>{const key=p.key+x.sym,pv=prev[key],cls=pv==null?'':(x.ltp>pv?'flash-up':(x.ltp<pv?'flash-dn':''));prev[key]=x.ltp;
    const sel=x.sym===curSym?' sel':'',hl=x.held?' held':'';
-   html+=`<tr class="prow${sel}${hl}" data-sym="${x.sym}" onclick="loadChart('${x.sym}')">
+   html+=`<tr class="prow${sel}${hl}" data-sym="${x.sym}" onclick="loadChart('${x.sym}','${p.key}')">
     <td class=sym>${x.held?'<span class="dot '+((x.pnl==null||x.pnl>=0)?'up':'dn')+'"></span>':''}${x.sym}<span class=mtag>${TAG[p.key]||''}</span></td>
     <td>${x.qty==null?'—':x.qty}</td>
     <td class=a>${x[rk]==null?'—':x[rk]}</td>
