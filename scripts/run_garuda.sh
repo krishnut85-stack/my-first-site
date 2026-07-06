@@ -38,13 +38,16 @@ curl -s -A "$UA" "https://archives.nseindia.com/content/indices/ind_niftysmallca
   grep -qi symbol smallcap_list.new && mv smallcap_list.new smallcap_list.csv || rm -f smallcap_list.new
 curl -s -A "$UA" "https://nsearchives.nseindia.com/content/indices/ind_niftymicrocap250_list.csv" -o micro.new && \
   grep -qi symbol micro.new && mv micro.new micro.csv || rm -f micro.new
+curl -s -A "$UA" "https://archives.nseindia.com/content/indices/ind_niftynext50list.csv" -o next50.new && \
+  grep -qi symbol next50.new && mv next50.new next50_list.csv || rm -f next50.new
 
-# 2. fetch fresh daily bars for the FULL universe (all 250 + 250)
+# 2. fetch fresh daily bars for the FULL universe (smallcap 250 + microcap 250 + next 50)
 [ -f smallcap_list.csv ] && python3 -m garuda.fetch_daily --symbols-file smallcap_list.csv --out niftysmallcap250_daily.csv --fresh
 [ -f micro.csv ]         && python3 -m garuda.fetch_daily --symbols-file micro.csv         --out microcap_daily.csv       --fresh
+[ -f next50_list.csv ]   && python3 -m garuda.fetch_daily --symbols-file next50_list.csv   --out next50_daily.csv         --fresh
 
-# 2b. market caps from NSE (best-effort; the dashboard shows what it gets)
-python3 -m garuda.fetch_marketcap --symbols-file smallcap_list.csv micro.csv --out marketcap.csv || \
+# 2b. market caps from Yahoo (best-effort; the dashboard shows what it gets)
+python3 -m garuda.fetch_marketcap --symbols-file smallcap_list.csv micro.csv next50_list.csv --out marketcap.csv || \
   echo "[warn] market cap fetch failed — MCAP column will show —"
 
 # 3. restart the server (it auto-scans + trades live at 09:15 IST on its own)

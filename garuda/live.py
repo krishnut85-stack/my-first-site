@@ -326,10 +326,9 @@ class GarudaLive:
         totals["pnl_pct"] = round((totals["equity"] / totals["capital"] - 1) * 100, 2) \
             if totals["capital"] else 0.0
         # combined equity curve (P&L chart) — sum both portfolios by scan index
-        hs = self.portfolios["smallcap"].history
-        hm = self.portfolios["microcap"].history
-        n = min(len(hs), len(hm))
-        daily = [round(hs[i]["equity"] + hm[i]["equity"], 0) for i in range(n)]
+        histories = [pf.history for pf in self.portfolios.values()]
+        n = min((len(h) for h in histories), default=0)
+        daily = [round(sum(h[i]["equity"] for h in histories), 0) for i in range(n)]
         # daily track record + today's live intraday samples + the current tip
         totals["curve"] = daily + self.intraday + [totals["equity"]]
         return {"live": self.feed.live, "profiles": profs, "totals": totals,

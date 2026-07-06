@@ -40,4 +40,8 @@ PROFILES = {
         "microcap", "Garuda-MC",
         "https://nsearchives.nseindia.com/content/indices/ind_niftymicrocap250_list.csv",
         "microcap_daily.csv", proven_win=71.0, proven_ret=1.82),
+    "next50": Profile(
+        "next50", "Garuda-N50",
+        "https://archives.nseindia.com/content/indices/ind_niftynext50list.csv",
+        "next50_daily.csv", proven_win=61.0, proven_ret=0.08),
 }
