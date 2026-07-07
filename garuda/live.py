@@ -35,6 +35,8 @@ class GarudaLive:
         self.last_scan_date = None    # IST date of the last executed scan (once/session)
         self.intraday = []            # today's live combined-equity samples (P&L curve)
         self.intraday_day = None
+        self.day_base = {}            # per-book equity at the start of today (for DAY P&L)
+        self.day_base_date = None
         # Every symbol's dated daily closes from the local CSVs — the guaranteed
         # chart source when Kite's historical API isn't available for a name.
         from .cross import _load_long
@@ -259,19 +261,16 @@ class GarudaLive:
         profs = []
         mkt_open = is_market_open()
         today = _today()
+        if self.day_base_date != today:      # new trading day -> re-baseline DAY P&L
+            self.day_base_date = today
+            self.day_base = {}
         for k, prof in PROFILES.items():
             pf = self.portfolios[k]
             positions = []
-            day_pnl = 0.0
             for s, h in pf.holdings.items():
                 ltp = self.price_of(s, h["entry_price"])
                 chg = (ltp - h["entry_price"]) / h["entry_price"] * 100 if h["entry_price"] else 0
                 pnl = (ltp - h["entry_price"]) * h["qty"]     # position total (since entry)
-                # DAY P&L baseline: a position OPENED TODAY only participated from its
-                # fill, so measure from entry; an older hold measures from prev close.
-                base = h["entry_price"] if h.get("entry_date") == today \
-                    else (self.day_ohlc.get(s, {}).get("pc") or h["entry_price"])
-                day_pnl += (ltp - base) * h["qty"]
                 positions.append({"sym": s, "qty": h["qty"],
                                   "entry": round(h["entry_price"], 2), "ltp": round(ltp, 2),
                                   "chg": round(chg, 2), "pnl": round(pnl, 0),
@@ -315,6 +314,11 @@ class GarudaLive:
                     "o": o.get("o"), "h": o.get("h"), "l": o.get("l"),   # today, for the live candle
                 })
             equity = pf.equity(lambda s: self.price_of(s, pf.holdings.get(s, {}).get("entry_price", 0)))
+            # DAY P&L = equity now minus this book's equity at the START of today
+            # (snapshotted on the first build of each trading day). Resets cleanly
+            # every day; immune to stale previous-close data when the market's shut.
+            base = self.day_base.setdefault(k, round(equity, 0))
+            day_pnl = equity - base
             win, pfac = _live_stats(pf)
             win_kind = "live"
             if win is None:                    # no closed live trades yet

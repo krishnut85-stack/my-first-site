@@ -51,23 +51,20 @@ def test_win_rate_shows_backtest_until_live_trades(tmp_path, monkeypatch):
     assert sc["win_open"] == 50                    # 1 of 2 positions green right now
 
 
-def test_day_pnl_baseline_entry_if_opened_today_else_prev_close(tmp_path, monkeypatch):
+def test_day_pnl_resets_each_day_via_equity_baseline(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
-    from garuda.portfolio import _today
     live = GarudaLive(csv_dir=str(tmp_path))
     pf = live.portfolios["smallcap"]
-    pf.buy("NEW", 10, 100.0, entry_len=250)          # opened TODAY (entry_date=today)
-    live.day_ohlc["NEW"] = {"pc": 130.0}
-    live.prices["NEW"] = 131.0
-    pf.buy("OLD", 10, 100.0, entry_len=250)
-    pf.holdings["OLD"]["entry_date"] = "2000-01-01"  # held from a prior day
-    live.day_ohlc["OLD"] = {"pc": 130.0}
-    live.prices["OLD"] = 131.0
-    sc = next(p for p in live.build_state()["profiles"] if p["key"] == "smallcap")
-    # NEW opened today -> day P&L from ENTRY: (131-100)*10 = 310 (it wasn't held at
-    # yesterday's close). OLD held from before -> from PREV CLOSE: (131-130)*10 = 10.
-    assert sc["day_pnl"] == 320
-    assert next(x for x in sc["positions"] if x["sym"] == "NEW")["pnl"] == 310  # total since entry
+    pf.buy("KEI", 10, 100.0, entry_len=250)
+    live.prices["KEI"] = 100.0
+    sc1 = next(p for p in live.build_state()["profiles"] if p["key"] == "smallcap")
+    assert sc1["day_pnl"] == 0                     # first build of the day -> baseline, 0
+    live.prices["KEI"] = 105.0                     # +5 * 10 = +50 during the day
+    sc2 = next(p for p in live.build_state()["profiles"] if p["key"] == "smallcap")
+    assert sc2["day_pnl"] == 50
+    live.day_base_date = "2000-01-01"              # simulate a new trading day
+    sc3 = next(p for p in live.build_state()["profiles"] if p["key"] == "smallcap")
+    assert sc3["day_pnl"] == 0                     # re-baselined -> resets, even at the same price
 
 
 def test_state_exposes_index_reading(tmp_path, monkeypatch):
