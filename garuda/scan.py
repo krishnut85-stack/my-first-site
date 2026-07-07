@@ -34,6 +34,8 @@ def run_scan(profile, series: dict, portfolio: LivePortfolio, live_prices=None):
         return _run_scalein(profile, series, portfolio, live_prices)
     if strat == "hi52":
         return _run_hi52(profile, series, portfolio, live_prices)
+    if strat == "crash":
+        return _run_crash(profile, series, portfolio, live_prices)
     return _run_rsi2(profile, series, portfolio, live_prices)
 
 
@@ -253,6 +255,66 @@ def _run_hi52(profile, series, portfolio, live_prices=None):
             portfolio.holdings[sym]["mom"] = round(mom * 100, 1)
             buys.append({"symbol": sym, "price": round(price, 2), "qty": qty,
                          "mom": round(mom * 100, 1)})
+
+    return _result(profile, portfolio, buys, sells, price_of)
+
+
+def _run_crash(profile, series, portfolio, live_prices=None):
+    """The CRASH-BOUNCE book (the LAB's best rupee portfolio: +41.8% CAGR in the
+    5.5y simulation). Buys panic — a stock down 8%+ over 5 days that is still
+    above its 50-DMA — and holds the recovery on a WIDE 25% trail / 180 days.
+    Wins <50% of trades by design; the patient exit pays for the duds."""
+    price_of = _price_of(series, portfolio, live_prices)
+    today = _today()
+
+    # --- 1. exits: wide trailing stop off the running peak, or max hold -------
+    sells, sold_today = [], set()
+    for sym, h in list(portfolio.holdings.items()):
+        c = series.get(sym)
+        if not c:
+            continue
+        _tick_hold(h, today)
+        px = price_of(sym)
+        peak = max(h.get("peak", h["entry_price"]), px)
+        h["peak"] = peak
+        stopped = profile.trail and px <= peak * (1 - profile.trail)
+        if stopped or h.get("bars_held", 0) >= profile.max_hold:
+            reason = (f"{profile.trail:.0%} trailing stop" if stopped
+                      else f"{profile.max_hold}-day hold")
+            pnl = portfolio.sell(sym, px, reason=reason)
+            sold_today.add(sym)
+            sells.append({"symbol": sym, "price": round(px, 2),
+                          "pnl": round(pnl, 2), "reason": reason})
+
+    # --- 2. entries: -8%-plus week, still above the 50-DMA, deepest first -----
+    candidates = []
+    for sym, c in series.items():
+        if sym in portfolio.holdings or sym in sold_today or len(c) < 60:
+            continue
+        price = price_of(sym)
+        if price <= 0 or c[-5] <= 0:
+            continue
+        wk = price / c[-5] - 1.0                  # 5-bar return, priced live
+        if wk > -0.08:
+            continue
+        s = sma(c, 50)
+        if s[-1] is None or price <= s[-1]:       # below the 50-DMA = maybe death,
+            continue                              # not panic — skip it
+        candidates.append((wk, sym, price, c))
+    candidates.sort()                             # most negative = deepest panic first
+
+    per_name = profile.capital * profile.alloc_pct
+    buys = []
+    for wk, sym, price, c in candidates:
+        budget = min(per_name, portfolio.cash)
+        qty = int(budget // price)
+        if qty <= 0:
+            continue
+        if portfolio.buy(sym, qty, price, entry_len=len(c)):
+            portfolio.holdings[sym]["peak"] = price
+            portfolio.holdings[sym]["mom"] = round(wk * 100, 1)   # crash depth %
+            buys.append({"symbol": sym, "price": round(price, 2), "qty": qty,
+                         "mom": round(wk * 100, 1)})
 
     return _result(profile, portfolio, buys, sells, price_of)
 

@@ -167,4 +167,22 @@ PROFILES = {
               "or a 120-day hold",
         trail=0.15, max_hold=120,
         proven_win=42.0, proven_ret=1.92, proven_pf=1.31),
+    # 9th book — CRASH BOUNCE, the LAB's best portfolio. Validated three ways:
+    # DISCOVER found the entry (TEST +1.81%/t with the old exit), the exit sweep
+    # picked 25%/180d on TRAIN and it HELD on untouched TEST (+2.25%/t, 1491
+    # trades), and the rupee simulation crowned it: Rs 10L -> Rs 66.5L in ~5.5y
+    # (+41.8% CAGR) with a SMALLER worst drawdown (27.9%) than the tighter exit.
+    # The anomaly: fear overshoots — a hard week on a stock still above its
+    # 50-DMA is usually panic, not death. Wins only ~46% of trades; the wide
+    # patient exit lets the recoveries pay for the duds. Expect losing years
+    # (2025 was -13% in the backtest) — that is the price of the CAGR. PAPER.
+    "crash": Profile(
+        "crash", "Garuda-CRSH",
+        "",                                  # shares strength's top-1500 universe
+        "strength_daily.csv",                # reuse strength's daily bars — no extra fetch
+        strategy="crash", label="Crash bounce · -8% week over 50-DMA + 25% trail",
+        rules="Buy a stock down 8%+ over 5 days while still above its 50-DMA "
+              "(panic, not death) · Sell on a 25% trailing stop or a 180-day hold",
+        trail=0.25, max_hold=180,
+        proven_win=46.0, proven_ret=2.25, proven_pf=0.0),
 }
