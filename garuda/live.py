@@ -38,6 +38,10 @@ def _day_base_path():
     return config.DATA_DIR / "garuda_day_base.json"
 
 
+def _equity_log_path():
+    return config.DATA_DIR / "garuda_equity_log.json"
+
+
 class GarudaLive:
     def __init__(self, csv_dir="."):
         self.csv_dir = Path(csv_dir)
@@ -59,6 +63,9 @@ class GarudaLive:
         # so a mid-session server restart keeps today's baseline instead of
         # re-zeroing DAY P&L and losing the morning's move.
         self.day_base_date, self.day_base = self._load_day_base()
+        # persistent, timestamped grand-total equity samples (the P&L graph's
+        # memory: [{t: 'YYYY-MM-DD HH:MM', v: equity}]) — survives restarts/days.
+        self.equity_log = self._load_equity_log()
         # Every symbol's dated daily closes from the local CSVs — the guaranteed
         # chart source when Kite's historical API isn't available for a name.
         from .cross import _load_long
@@ -107,6 +114,51 @@ class GarudaLive:
                 {"date": self.day_base_date, "base": self.day_base}))
         except Exception:  # noqa: BLE001
             pass
+
+    def _load_equity_log(self):
+        import json
+        p = _equity_log_path()
+        if p.exists():
+            try:
+                d = json.loads(p.read_text())
+                return d if isinstance(d, list) else []
+            except Exception:  # noqa: BLE001
+                pass
+        return []
+
+    def _save_equity_log(self):
+        import json
+        try:
+            _equity_log_path().write_text(json.dumps(self.equity_log[-4000:]))
+        except Exception:  # noqa: BLE001
+            pass
+
+    @staticmethod
+    def _ist_now():
+        from datetime import datetime, timezone, timedelta
+        return datetime.now(timezone(timedelta(hours=5, minutes=30)))
+
+    def grand_equity(self):
+        """Total paper equity across all 7 books (6 equity + the options book),
+        priced live — the number the dashboard's TOTAL tile shows."""
+        eq = self.live_equity()                       # 6 equity books
+        nifty = (self.index.get("NIFTY 50") or {}).get("ltp") or 0.0
+        eq += self.options.state(nifty)["equity"]     # + the weekly condor book
+        return eq
+
+    def record_equity(self):
+        """Append a timestamped grand-total equity sample so the P&L graph keeps a
+        real, persistent multi-day record. Sampled ~1/min while the market is open."""
+        if not is_market_open() or not self.prices:
+            return
+        t = self._ist_now().strftime("%Y-%m-%d %H:%M")
+        v = round(self.grand_equity(), 0)
+        if self.equity_log and self.equity_log[-1]["t"] == t:
+            self.equity_log[-1]["v"] = v              # same minute -> update in place
+        else:
+            self.equity_log.append({"t": t, "v": v})
+        self.equity_log = self.equity_log[-4000:]
+        self._save_equity_log()
 
     def _load_mcap(self):
         import csv as _csv
@@ -249,6 +301,7 @@ class GarudaLive:
             self.intraday = []
         self.intraday.append(round(self.live_equity(), 0))
         self.intraday = self.intraday[-600:]
+        self.record_equity()          # persist a timestamped grand-total sample
 
     def chart_for(self, symbol):
         """On-demand chart for any symbol (used when a row is clicked)."""
@@ -440,6 +493,25 @@ class GarudaLive:
         totals["day_pnl"] = round(totals["day_pnl"] + options["day_pnl"], 0)
         totals["pnl_pct"] = round((totals["equity"] / totals["capital"] - 1) * 100, 2) \
             if totals["capital"] else 0.0
+        # timestamped grand-total curve for the P&L graph (persistent memory).
+        # Prefer the recorded live log; otherwise seed from the daily backtest
+        # track record (real dates at the 15:30 close, options flat at capital) so
+        # the graph shows history from the first load. Always ends at the live tip.
+        if self.equity_log:
+            curve_ts = list(self.equity_log)
+        else:
+            longest = max(histories, key=len, default=[])
+            dates = [h.get("date", "") for h in longest]
+            opt_cap = self.options.starting_capital
+            curve_ts = [{"t": (dates[i] + " 15:30") if i < len(dates) and dates[i]
+                         else "pt%d" % (i + 1), "v": round(v + opt_cap, 0)}
+                        for i, v in enumerate(daily)]
+        tip_t = self._ist_now().strftime("%Y-%m-%d %H:%M")
+        if not curve_ts or curve_ts[-1]["t"] != tip_t:
+            curve_ts = curve_ts + [{"t": tip_t, "v": totals["equity"]}]
+        else:
+            curve_ts = curve_ts[:-1] + [{"t": tip_t, "v": totals["equity"]}]
+        totals["curve_ts"] = curve_ts
         if base_changed:                     # persist today's baseline across restarts
             self._save_day_base()
         from .market import HOLIDAYS

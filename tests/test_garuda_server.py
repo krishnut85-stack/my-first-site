@@ -106,6 +106,34 @@ def test_state_exposes_options_book(tmp_path, monkeypatch):
     assert o2["in_range"] is True and o2["max_loss_rs"] == 20000
 
 
+def test_pnl_curve_is_timestamped_and_matches_grand_total(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    live = GarudaLive(csv_dir=str(tmp_path))
+    pf = live.portfolios["smallcap"]
+    pf.buy("KEI", 10, 100.0, entry_len=250)
+    pf.history = [{"date": "2026-07-01", "equity": 1000000},
+                  {"date": "2026-07-02", "equity": 1002000}]
+    live.prices["KEI"] = 105.0
+    st = live.build_state()
+    cts = st["totals"]["curve_ts"]
+    assert cts and all({"t", "v"} <= set(pt) for pt in cts)   # every point is timestamped
+    assert cts[0]["t"].startswith("2026-07-01")               # seeded from the daily record
+    # the graph's live tip must equal the grand-total the tiles show (7 books)
+    assert cts[-1]["v"] == st["totals"]["equity"]
+
+
+def test_equity_log_persists_across_restart(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    monkeypatch.setattr("garuda.live.is_market_open", lambda *a: True)
+    live = GarudaLive(csv_dir=str(tmp_path))
+    live.prices["KEI"] = 100.0                     # feed warmed up
+    live.record_equity()
+    assert len(live.equity_log) == 1 and {"t", "v"} <= set(live.equity_log[0])
+    # a restart reloads the persisted timestamped log (multi-day memory)
+    live2 = GarudaLive(csv_dir=str(tmp_path))
+    assert live2.equity_log == live.equity_log
+
+
 def test_state_exposes_index_reading(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
     live = GarudaLive(csv_dir=str(tmp_path))
