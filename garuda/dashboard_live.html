@@ -49,6 +49,7 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .condor .cell .l{color:var(--mut);font-size:9px;letter-spacing:.05em}
 .condor .cell .v{font-size:16px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
 .condor .note{color:var(--mut);font-size:10px;margin-top:14px;line-height:1.5}
+.allnote{color:var(--mut);font-size:11px;padding:9px 12px;border-bottom:1px solid var(--line);background:#0f141c}
 
 /* ---- Zerodha-style split: LEFT live list · RIGHT two charts ---- */
 .main{display:grid;grid-template-columns:minmax(330px,0.85fr) 1.35fr;gap:14px;margin-top:12px;align-items:start}
@@ -480,6 +481,7 @@ function render(d){
   `<table class=pltbl><tr><th>STRATEGY</th><th>EQUITY</th><th>P&amp;L</th><th>P&amp;L %</th></tr>${plrows}</table>`;
  const q=(document.getElementById('search').value||'').trim().toUpperCase();
  const list=document.getElementById('list');let html='';
+ if(FILTER==='all')html+=`<div class=allnote>ALL — open positions across every strategy book (${d.totals?d.totals.positions:0} total). Click a book tab above to browse its full live watch-list.</div>`;
  d.profiles.forEach(p=>{
   if(FILTER!=='all'&&FILTER!==p.key)return;
   const rows=p.positions.filter(x=>!q||x.sym.includes(q));
@@ -497,13 +499,17 @@ function render(d){
   const rk=p.key==='strength'?'rsi14':'rsi2', rlabel=p.key==='strength'?'RSI-14':'RSI-2';
   // 'rsi' is a LOGICAL sort key so each table sorts by ITS OWN rsi field (rk), never a hidden one
   const skey=SORT.key==='rsi'?rk:SORT.key;
-  const watch=(p.watch||[]).filter(x=>!q||x.sym.includes(q)).sort((a,b)=>{
+  // ALL tab = the cross-strategy portfolio -> show each book's HELD positions
+  // only (not its 250-name universe, which would bury the other books). A
+  // specific book tab shows that book's full live watch-list.
+  const allTab=FILTER==='all';
+  const watch=(p.watch||[]).filter(x=>(!q||x.sym.includes(q))&&(!allTab||x.held)).sort((a,b)=>{
     if(skey==='sym')return (a.sym<b.sym?-1:a.sym>b.sym?1:0)*SORT.dir;
     let av=a[skey],bv=b[skey];av=(av==null?-Infinity:av);bv=(bv==null?-Infinity:bv);
     return (av-bv)*SORT.dir;});
   const th=(k,label)=>`<th class="sorth${k==='sym'?' sym':''}" onclick="setSort('${k}')">${label}${sortArrow(k)}</th>`;
   html+=`<table class=wl><tr>${th('sym','SYMBOL')}${th('qty','QTY')}${th('rsi',rlabel)}${th('ltp','LTP')}${th('chg','1D')}${th('chg_w','1W')}${th('chg_m','1M')}${th('mcap','MCAP')}${th('pnl','P&L')}</tr>`;
-  if(!watch.length)html+=`<tr><td colspan=9 class=muted style=text-align:center>${q?'no match in '+p.name:'loading live prices…'}</td></tr>`;
+  if(!watch.length)html+=`<tr><td colspan=9 class=muted style=text-align:center>${q?'no match in '+p.name:(allTab?'no open positions':'loading live prices…')}</td></tr>`;
   const pcell=v=>`<td class="${v==null?'muted':(v>=0?'g':'r')}">${v==null?'—':pct(v)}</td>`;
   watch.forEach(x=>{const key=p.key+x.sym,pv=prev[key],cls=pv==null?'':(x.ltp>pv?'flash-up':(x.ltp<pv?'flash-dn':''));prev[key]=x.ltp;
    const sel=x.sym===curSym?' sel':'',hl=x.held?' held':'';
