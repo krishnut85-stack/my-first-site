@@ -97,6 +97,16 @@ def test_compare_trend_ma_covers_each_length():
     assert all(s and s["trades"] > 0 for s in res.values())
 
 
+def test_compare_winrate_ranks_shallow_exits():
+    from garuda.setups import compare_winrate
+    panel = {f"S{i}": _uptrend_with_dips(seed=i) for i in range(6)}
+    res = compare_winrate(panel, cost=0.0)
+    assert any("first up-close" in k for k in res)
+    assert any("target" in k for k in res)
+    # every shallow-exit variant should trigger some trades on reverting-uptrend data
+    assert all(s and s["trades"] > 0 for s in res.values())
+
+
 def test_compare_momentum_returns_the_variants():
     from garuda.setups import compare_momentum
     panel = {f"S{i}": _uptrend_with_dips(seed=i) for i in range(6)}

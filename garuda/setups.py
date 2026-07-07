@@ -316,6 +316,68 @@ def compare_strategies(panel: dict, cost=None) -> dict:
     return {name: _stats(rets) for name, rets in res.items()}
 
 
+def compare_winrate(panel: dict, cost=None) -> dict:
+    """HIGH-WIN-RATE mean reversion: buy RSI-2 oversold (uptrend-filtered) and
+    take a SHALLOW profit fast. Different exits trade win% against size. Ranked by
+    win% — but a high win% is worthless unless avg%/trade stays POSITIVE."""
+    cost = config.CROSS_COST_PER_SIDE if cost is None else cost
+    res = {}
+
+    def add(name, rets):
+        res.setdefault(name, []).extend(rets)
+
+    for closes in panel.values():
+        if len(closes) < 210:
+            continue
+        r2 = rsi(closes, 2)
+        s200 = sma(closes, 200)
+
+        def entry(i, _r=r2, _s=s200, _c=closes):
+            return (_r[i] is not None and _r[i] < 10
+                    and _s[i] is not None and _c[i] > _s[i])
+
+        # 1. exit on the FIRST up-close — fastest, should give the highest win%
+        add("exit first up-close", _run_strategy(closes, entry,
+            lambda j, i, _c=closes: _c[j] > _c[j - 1], 20, cost, start=200))
+        # 2. take a small +2% profit target (else RSI>85 / hold)
+        add("+2% target", _run_strategy(closes, entry,
+            lambda j, i, _r=r2: _r[j] is not None and _r[j] > 85, 20, cost, start=200, target=0.02))
+        # 3. +3% target
+        add("+3% target", _run_strategy(closes, entry,
+            lambda j, i, _r=r2: _r[j] is not None and _r[j] > 85, 20, cost, start=200, target=0.03))
+        # 4. exit when RSI-2 just crosses back above the midline (50)
+        add("exit RSI-2>50", _run_strategy(closes, entry,
+            lambda j, i, _r=r2: _r[j] is not None and _r[j] > 50, 20, cost, start=200))
+        # 5. the current LIVE exit (RSI>85 or 30-day hold) — for reference
+        add("exit RSI-2>85 or 30d (LIVE)", _run_strategy(closes, entry,
+            lambda j, i, _r=r2: _r[j] is not None and _r[j] > 85, 30, cost, start=200))
+    return {name: _stats(rets) for name, rets in res.items()}
+
+
+def format_winrate(res: dict, source: str) -> str:
+    ranked = sorted(res.items(),
+                    key=lambda kv: (kv[1]["win"] if kv[1] else -9), reverse=True)
+    lines = ["=" * 80,
+             f"  {config.BOT_NAME} · WIN-RATE MAXIMIZER   (RSI-2 dip, uptrend-filtered · shallow exits)",
+             f"  Data: {source}   ·   costs both sides   ·   ranked by WIN%",
+             "=" * 80,
+             f"  {'exit rule':<32}{'win%':>6}{'avg%/trade':>12}{'PF':>7}{'trades':>8}",
+             "-" * 80]
+    for name, s in ranked:
+        if not s:
+            lines.append(f"  {name:<32}{'— no trades —':>33}")
+            continue
+        flag = "" if s["avg"] > 0 else "  <- LOSES money"
+        lines.append(f"  {name:<32}{s['win']:>5.0f}%{s['avg']:>+11.2f}%"
+                     f"{(s['pf'] or 0):>7.2f}{s['trades']:>8}{flag}")
+    lines += ["-" * 80,
+              "  Highest win% at the top — but ONLY trust a row whose avg%/trade is POSITIVE.",
+              "  A high win% with a negative avg%/trade is the classic trap (small wins, fat losers).",
+              "  We want the highest win% that STILL clears costs (avg%/trade > 0, PF > 1).",
+              "=" * 80]
+    return "\n".join(lines)
+
+
 def compare_momentum(panel: dict, cost=None) -> dict:
     """'Catch the stocks going UP' — momentum variants that buy active strength /
     new highs and exit ONLY on a trailing stop (let winners run). Different from
@@ -865,6 +927,9 @@ def main() -> None:
         return
     if "--momentum" in args:
         print(format_momentum(compare_momentum(panel), f"{path} ({len(panel)} symbols)"))
+        return
+    if "--winrate" in args:
+        print(format_winrate(compare_winrate(panel), f"{path} ({len(panel)} symbols)"))
         return
     if "--dipdepth" in args:
         print(format_dip_depth(compare_dip_depth(panel), f"{path} ({len(panel)} symbols)"))
