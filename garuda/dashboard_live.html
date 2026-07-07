@@ -18,6 +18,14 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .mkt.preopen{color:var(--amb);border:1px solid #4d3a20;background:#2a2214}
 @keyframes blink{50%{opacity:.4}}.ist{color:var(--acc)}.loc{color:var(--mut)}
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0}
+.pltbl{width:100%;border-collapse:collapse;font-size:12px;margin:0 0 12px;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.pltbl th{text-align:right;color:var(--mut);font-weight:600;padding:6px 10px;border-bottom:1px solid var(--line);font-size:9px;letter-spacing:.05em}
+.pltbl th:first-child{text-align:left}
+.pltbl td{padding:6px 10px;border-bottom:1px solid #141b26;text-align:right;font-variant-numeric:tabular-nums}
+.pltbl td:first-child{text-align:left;font-weight:700}
+.pltbl td .sub{color:var(--mut);font-weight:400;font-size:9px;margin-left:5px}
+.pltbl tr.pltot td{border-top:2px solid var(--line);border-bottom:none;font-weight:800;background:#0f141c}
+.pltbl .g{color:var(--grn)}.pltbl .r{color:var(--red)}
 .stile{background:var(--card);padding:11px 14px}.stile .l{color:var(--mut);font-size:10px}.stile .v{font-size:19px;font-weight:800;margin-top:3px}
 .g{color:var(--grn)}.r{color:var(--red)}.a{color:var(--amb)}.muted{color:var(--mut)}
 
@@ -92,6 +100,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 </div>
 
 <div class=summary id=summary></div>
+<div id=pltable></div>
 
 <div class=main>
   <!-- LEFT: live share list, grouped by bot, updating from Kite -->
@@ -362,6 +371,18 @@ function render(d){
    <div class=stile><div class=l>DAY P&L</div><div class="v ${t.day_pnl>=0?'g':'r'}">${(t.day_pnl>=0?'+':'')+money(t.day_pnl)}</div></div>
    <div class=stile><div class=l>WIN RATE ${anyLive?'(live)':'(validated)'}</div><div class="v a">${combWin==null?'—':combWin+'%'}</div></div>
    <div class=stile><div class=l>OPEN POSITIONS</div><div class=v>${t.positions}</div></div>`;
+ // per-strategy P&L breakdown: money made/lost by each book, green up / red down
+ const plr=v=>v>=0?'g':'r', plsign=v=>(v>=0?'+':'')+money(v);
+ let plrows='';
+ d.profiles.forEach(p=>{const pl=p.equity-p.capital;
+  plrows+=`<tr><td>${LABEL[p.key]||p.name}<span class=sub>${p.positions.length} pos</span></td>`+
+   `<td>${money(p.equity)}</td><td class="${plr(pl)}">${plsign(pl)}</td>`+
+   `<td class="${plr(p.pnl_pct)}">${pct(p.pnl_pct)}</td></tr>`;});
+ const tpl=t.equity-t.capital;
+ plrows+=`<tr class=pltot><td>TOTAL</td><td>${money(t.equity)}</td>`+
+  `<td class="${plr(tpl)}">${plsign(tpl)}</td><td class="${plr(t.pnl_pct)}">${pct(t.pnl_pct)}</td></tr>`;
+ document.getElementById('pltable').innerHTML=
+  `<table class=pltbl><tr><th>STRATEGY</th><th>EQUITY</th><th>P&amp;L</th><th>P&amp;L %</th></tr>${plrows}</table>`;
  const q=(document.getElementById('search').value||'').trim().toUpperCase();
  const list=document.getElementById('list');let html='';
  d.profiles.forEach(p=>{
