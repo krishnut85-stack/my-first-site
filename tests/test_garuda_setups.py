@@ -97,6 +97,17 @@ def test_compare_trend_ma_covers_each_length():
     assert all(s and s["trades"] > 0 for s in res.values())
 
 
+def test_scalein_raises_win_rate_over_single_entry():
+    from garuda.setups import compare_scalein
+    panel = {f"S{i}": _uptrend_with_dips(seed=i) for i in range(8)}
+    res = compare_scalein(panel, cost=0.0)
+    single = res["single entry (no scale-in)"]
+    scaled = res["scale-in up to 4 units"]
+    assert single and scaled
+    # averaging down should lift the win rate vs a single entry on reverting data
+    assert scaled["win"] >= single["win"]
+
+
 def test_compare_winrate_ranks_shallow_exits():
     from garuda.setups import compare_winrate
     panel = {f"S{i}": _uptrend_with_dips(seed=i) for i in range(6)}

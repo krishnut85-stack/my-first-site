@@ -378,6 +378,77 @@ def format_winrate(res: dict, source: str) -> str:
     return "\n".join(lines)
 
 
+def _scale_in_trades(closes, r2, s200, entry_rsi, exit_rsi, max_units, cost):
+    """Connors-TPS scale-in: buy the RSI-2 dip (in an uptrend), ADD another unit
+    each further down-day it stays oversold (up to max_units), exit the whole
+    averaged position when RSI-2 recovers. Lower average entry -> a small bounce
+    wins -> high win rate; but a name that never recovers is a max-sized loser."""
+    trades, i, n = [], 200, len(closes)
+    while i < n - 1:
+        if not (r2[i] is not None and r2[i] < entry_rsi
+                and s200[i] is not None and closes[i] > s200[i]):
+            i += 1
+            continue
+        entries = [closes[i]]                       # equal-size units, first at the signal
+        j = i + 1
+        while j < n - 1:
+            if r2[j] is not None and r2[j] > exit_rsi:
+                break                               # RSI recovered -> exit the whole position
+            if (len(entries) < max_units and r2[j] is not None and r2[j] < entry_rsi
+                    and closes[j] < entries[-1]):
+                entries.append(closes[j])           # still oversold & lower -> add a unit
+            j += 1
+        exit_px = closes[j]
+        if exit_px > 0:
+            avg = sum(entries) / len(entries)
+            trades.append((exit_px - avg) / avg - 2 * cost)
+        i = j + 1
+    return trades
+
+
+def compare_scalein(panel: dict, cost=None) -> dict:
+    """Scale-in (average-down) vs a single entry — how high does win% go, and does
+    the fat-loss tail still leave it profitable?"""
+    cost = config.CROSS_COST_PER_SIDE if cost is None else cost
+    res = {}
+
+    def add(name, rets):
+        res.setdefault(name, []).extend(rets)
+
+    for closes in panel.values():
+        if len(closes) < 210:
+            continue
+        r2 = rsi(closes, 2)
+        s200 = sma(closes, 200)
+        add("single entry (no scale-in)", _scale_in_trades(closes, r2, s200, 10, 50, 1, cost))
+        add("scale-in up to 2 units", _scale_in_trades(closes, r2, s200, 10, 50, 2, cost))
+        add("scale-in up to 3 units", _scale_in_trades(closes, r2, s200, 10, 50, 3, cost))
+        add("scale-in up to 4 units", _scale_in_trades(closes, r2, s200, 10, 50, 4, cost))
+    return {name: _stats(rets) for name, rets in res.items()}
+
+
+def format_scalein(res: dict, source: str) -> str:
+    order = ["single entry (no scale-in)", "scale-in up to 2 units",
+             "scale-in up to 3 units", "scale-in up to 4 units"]
+    lines = ["=" * 80,
+             f"  {config.BOT_NAME} · SCALE-IN (average-down) · RSI-2 dip, uptrend-filtered",
+             f"  Data: {source}   ·   costs both sides   ·   more units = lower avg entry",
+             "=" * 80,
+             f"  {'method':<28}{'win%':>6}{'avg%/trade':>12}{'avg win':>9}{'avg loss':>9}{'PF':>7}{'trades':>8}",
+             "-" * 80]
+    for name in order:
+        s = res.get(name)
+        if not s:
+            continue
+        lines.append(f"  {name:<28}{s['win']:>5.0f}%{s['avg']:>+11.2f}%"
+                     f"{s['avg_win']:>+8.1f}%{s['avg_loss']:>+8.1f}%{(s['pf'] or 0):>7.2f}{s['trades']:>8}")
+    lines += ["-" * 80,
+              "  More units push WIN% up (lower average entry) — watch 'avg loss' balloon at the same time.",
+              "  The honest test: does the higher win% keep avg%/trade POSITIVE, or do the fat losers eat it?",
+              "=" * 80]
+    return "\n".join(lines)
+
+
 def compare_momentum(panel: dict, cost=None) -> dict:
     """'Catch the stocks going UP' — momentum variants that buy active strength /
     new highs and exit ONLY on a trailing stop (let winners run). Different from
@@ -930,6 +1001,9 @@ def main() -> None:
         return
     if "--winrate" in args:
         print(format_winrate(compare_winrate(panel), f"{path} ({len(panel)} symbols)"))
+        return
+    if "--scalein" in args:
+        print(format_scalein(compare_scalein(panel), f"{path} ({len(panel)} symbols)"))
         return
     if "--dipdepth" in args:
         print(format_dip_depth(compare_dip_depth(panel), f"{path} ({len(panel)} symbols)"))
