@@ -316,6 +316,75 @@ def compare_strategies(panel: dict, cost=None) -> dict:
     return {name: _stats(rets) for name, rets in res.items()}
 
 
+def compare_momentum(panel: dict, cost=None) -> dict:
+    """'Catch the stocks going UP' — momentum variants that buy active strength /
+    new highs and exit ONLY on a trailing stop (let winners run). Different from
+    the STRENGTH book (which buys the RSI-55-70 pullback) — these chase breakouts
+    and new highs. Which flavor actually pays after costs on this universe?"""
+    cost = config.CROSS_COST_PER_SIDE if cost is None else cost
+    res = {}
+
+    def add(name, rets):
+        res.setdefault(name, []).extend(rets)
+
+    for closes in panel.values():
+        n = len(closes)
+        if n < 260:
+            continue
+        s20, s50, s200 = sma(closes, 20), sma(closes, 50), sma(closes, 200)
+        hi20 = [max(closes[max(0, i - 19):i + 1]) for i in range(n)]
+        hi55 = [max(closes[max(0, i - 54):i + 1]) for i in range(n)]
+        hi252 = [max(closes[max(0, i - 251):i + 1]) for i in range(n)]
+
+        # 1. NEW 52-WEEK HIGH breakout — the strongest "going up" signal — trail 20%
+        add("52-week-high breakout · trail 20%", _run_strategy(closes,
+            lambda i, _c=closes, _h=hi252: _c[i] >= _h[i] and _c[i] > 0,
+            lambda j, i: False, 250, cost, start=252, trail=0.20))
+        # 2. 55-day Donchian breakout (Turtle-style) — trail 15%
+        add("55-day-high breakout · trail 15%", _run_strategy(closes,
+            lambda i, _c=closes, _h=hi55: _c[i] >= _h[i] and _c[i] > 0,
+            lambda j, i: False, 180, cost, start=55, trail=0.15))
+        # 3. STACKED MAs (close>20>50>200, all aligned up) — a clean uptrend — trail 15%
+        add("Stacked MAs close>20>50>200 · trail 15%", _run_strategy(closes,
+            lambda i, _c=closes, _a=s20, _b=s50, _d=s200:
+            (_a[i] is not None and _b[i] is not None and _d[i] is not None
+             and _c[i] > _a[i] > _b[i] > _d[i]),
+            lambda j, i: False, 180, cost, start=200, trail=0.15))
+        # 4. STRONG 3-month mover (>25% in 63d) still in an uptrend — trail 20%
+        add("3-mo momentum >25% (>200SMA) · trail 20%", _run_strategy(closes,
+            lambda i, _c=closes, _d=s200:
+            (i >= 63 and _d[i] is not None and _c[i] > _d[i]
+             and _c[i - 63] > 0 and _c[i] / _c[i - 63] - 1 > 0.25),
+            lambda j, i: False, 180, cost, start=200, trail=0.20))
+        # 5. 20-day breakout with a TIGHT 10% trail (faster momentum, quicker cut)
+        add("20-day-high breakout · trail 10%", _run_strategy(closes,
+            lambda i, _c=closes, _h=hi20: _c[i] >= _h[i] and _c[i] > 0,
+            lambda j, i: False, 120, cost, start=20, trail=0.10))
+    return {name: _stats(rets) for name, rets in res.items()}
+
+
+def format_momentum(res: dict, source: str) -> str:
+    ranked = sorted(res.items(),
+                    key=lambda kv: (kv[1]["avg"] if kv[1] else -9), reverse=True)
+    lines = ["=" * 80,
+             f"  {config.BOT_NAME} · MOMENTUM CATCHER   (buy what's going up · trail out · let it run)",
+             f"  Data: {source}   ·   costs both sides   ·   ranked by avg%/trade",
+             "=" * 80,
+             f"  {'#':>2} {'strategy':<38}{'win%':>6}{'avg%/trade':>11}{'PF':>6}{'trades':>8}",
+             "-" * 80]
+    for k, (name, s) in enumerate(ranked, 1):
+        if not s:
+            lines.append(f"  {k:>2} {name:<38}{'— no trades —':>31}")
+            continue
+        lines.append(f"  {k:>2} {name:<38}{s['win']:>5.0f}%{s['avg']:>+10.2f}%"
+                     f"{(s['pf'] or 0):>6.2f}{s['trades']:>8}")
+    lines += ["-" * 80,
+              "  Momentum WINS LESS OFTEN but WINS BIG — judge by avg%/trade & PF>1.2, not win%.",
+              "  Compare the winner to the STRENGTH book (+5.94%, PF 2.95): only add a 5th tab if it clears that bar.",
+              "=" * 80]
+    return "\n".join(lines)
+
+
 def format_strategies(res: dict, source: str) -> str:
     ranked = sorted(res.items(),
                     key=lambda kv: (kv[1]["avg"] if kv[1] else -9), reverse=True)
@@ -793,6 +862,9 @@ def main() -> None:
         return
     if "--trendma" in args:
         print(format_trend_ma(compare_trend_ma(panel), f"{path} ({len(panel)} symbols)"))
+        return
+    if "--momentum" in args:
+        print(format_momentum(compare_momentum(panel), f"{path} ({len(panel)} symbols)"))
         return
     if "--dipdepth" in args:
         print(format_dip_depth(compare_dip_depth(panel), f"{path} ({len(panel)} symbols)"))

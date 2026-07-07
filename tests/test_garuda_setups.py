@@ -97,6 +97,16 @@ def test_compare_trend_ma_covers_each_length():
     assert all(s and s["trades"] > 0 for s in res.values())
 
 
+def test_compare_momentum_returns_the_variants():
+    from garuda.setups import compare_momentum
+    panel = {f"S{i}": _uptrend_with_dips(seed=i) for i in range(6)}
+    res = compare_momentum(panel, cost=0.0)
+    assert any("52-week-high" in k for k in res)
+    assert any("Stacked MAs" in k for k in res)
+    assert any("Donchian" in k or "55-day" in k for k in res)
+    assert all(s is None or s["trades"] >= 0 for s in res.values())
+
+
 def test_compare_dip_depth_sweeps_thresholds():
     from garuda.setups import compare_dip_depth
     panel = {f"S{i}": _uptrend_with_dips(seed=i) for i in range(6)}
