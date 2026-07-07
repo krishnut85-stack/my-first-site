@@ -54,6 +54,9 @@ class Profile:
     mom_min: float = 0.25       # leaders only: min return over mom_days to buy (0.25 = +25%)
     max_units: int = 1          # scalein only: how many times to average down
     stop: float = 0.0           # scalein only: catastrophe stop (fraction below avg entry)
+    hard_stop: float = 0.0      # all equity books: hard stop-loss (fraction below ENTRY);
+                                # 0 = off. Cuts a loser fast, before the trailing stop
+                                # (which needs a peak first) ever triggers.
     capital: float = 1_000_000.0    # Rs 10 lakh
     alloc_pct: float = 0.02         # ~2% per name -> up to ~50 names (no hard cap)
     proven_win: float = 0.0         # validated backtest win rate (%) — shown until live trades close

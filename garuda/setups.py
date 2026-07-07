@@ -449,6 +449,75 @@ def format_scalein(res: dict, source: str) -> str:
     return "\n".join(lines)
 
 
+def compare_stoploss(panel: dict, cost=None,
+                     stops=(0.0, 0.05, 0.08, 0.10, 0.12, 0.15, 0.20)) -> dict:
+    """Does a HARD stop-loss (a fixed % below the ENTRY price) help each live book,
+    and at what level? Sweeps stop levels on each strategy's EXACT live config so we
+    set the stop from data, not a guess.
+
+    Read it like this: a stop HELPS a strategy if it lifts avg%/trade (or PF) and
+    shrinks the worst trade WITHOUT gutting the win rate. Mean-reversion (RSI-2 dip)
+    usually gets WORSE with a tight stop (it sells the bottom before the bounce);
+    trend books (strength/leaders) usually get BETTER (cut losers, ride winners)."""
+    cost = config.CROSS_COST_PER_SIDE if cost is None else cost
+    dip = {sl: [] for sl in stops}
+    stg = {sl: [] for sl in stops}
+    ldr = {sl: [] for sl in stops}
+    for closes in panel.values():
+        if len(closes) < 260:
+            continue
+        r2, r14, s200 = rsi(closes, 2), rsi(closes, 14), sma(closes, 200)
+        stg_entry = lambda i, _r=r14, _s=s200, _c=closes: (
+            _r[i] is not None and 55 <= _r[i] <= 70 and _s[i] is not None and _c[i] > _s[i])
+        ldr_entry = lambda i, _c=closes, _s=s200: (
+            i >= 63 and _s[i] is not None and _c[i] > _s[i]
+            and _c[i - 63] > 0 and _c[i] / _c[i - 63] - 1 > 0.25)
+        never = lambda j, i: False
+        for sl in stops:
+            # 1) RSI-2 dip — the Small/Micro LIVE config (entry <10 uptrend, exit RSI>85/30d)
+            dip[sl].extend(_simulate(closes, r2, s200, 10.0, 85.0, 200, 30, cost, sl, 0.0, True))
+            # 2) STRENGTH swing — RSI-14 55-70 + 200SMA, 12% trail, + the hard stop
+            stg[sl].extend(_run_strategy(closes, stg_entry, never, 90, cost,
+                                         start=200, trail=0.12, stop=sl))
+            # 3) MOMENTUM leaders — 3-mo >25% + 200SMA, 20% trail, + the hard stop
+            ldr[sl].extend(_run_strategy(closes, ldr_entry, never, 180, cost,
+                                         start=200, trail=0.20, stop=sl))
+    rows = lambda d: {sl: _stats(r) for sl, r in d.items()}
+    return {"RSI-2 dip · Small/Micro (no stop today)": rows(dip),
+            "Strength swing (12% trail today)": rows(stg),
+            "Momentum leaders (20% trail today)": rows(ldr)}
+
+
+def format_stoploss(res: dict, source: str) -> str:
+    lines = ["=" * 84,
+             f"  {config.BOT_NAME} · HARD STOP-LOSS SWEEP   (a fixed % below entry — does it help?)",
+             f"  Data: {source}   ·   costs both sides   ·   'none' = the current live behaviour",
+             "=" * 84]
+    for strat, sweep in res.items():
+        # best = highest total edge among rows that keep a positive avg%/trade
+        valid = [(sl, s) for sl, s in sweep.items() if s]
+        best = max(valid, key=lambda kv: kv[1]["total"])[0] if valid else None
+        lines += [f"\n  {strat}",
+                  f"  {'stop':>6}{'win%':>7}{'avg%/trade':>12}{'PF':>7}{'worst':>9}"
+                  f"{'total%':>10}{'trades':>8}",
+                  "  " + "-" * 80]
+        for sl in sorted(sweep):
+            s = sweep[sl]
+            tag = "none" if sl == 0 else f"{sl*100:.0f}%"
+            if not s:
+                lines.append(f"  {tag:>6}{'— no trades —':>28}")
+                continue
+            mark = "  <- best" if sl == best else ("   (live)" if sl == 0 else "")
+            lines.append(f"  {tag:>6}{s['win']:>6.0f}%{s['avg']:>+11.2f}%{(s['pf'] or 0):>7.2f}"
+                         f"{s['worst']:>+8.0f}%{s['total']:>+9.0f}%{s['trades']:>8}{mark}")
+    lines += ["\n" + "=" * 84,
+              "  HOW TO READ: pick the stop with the highest total% that KEEPS avg%/trade positive",
+              "  and a healthy win%. If 'none' wins, that book is better WITHOUT a hard stop.",
+              "  Mean-reversion often prefers none/wide; trend books often prefer a tighter stop.",
+              "=" * 84]
+    return "\n".join(lines)
+
+
 def compare_momentum(panel: dict, cost=None) -> dict:
     """'Catch the stocks going UP' — momentum variants that buy active strength /
     new highs and exit ONLY on a trailing stop (let winners run). Different from
@@ -790,7 +859,8 @@ def _stats(rets):
             "pf": (sum(wins) / gl) if gl > 0 else None,
             "avg_win": (statistics.mean(wins) * 100) if wins else 0.0,
             "avg_loss": (statistics.mean([x for x in rets if x <= 0]) * 100)
-                        if len(wins) < len(rets) else 0.0}
+                        if len(wins) < len(rets) else 0.0,
+            "worst": min(rets) * 100, "total": sum(rets) * 100}
 
 
 def compare_intraday(ohlc_panel: dict, entry_rsi=5.0, exit_rsi=85.0, max_hold=30):
@@ -1004,6 +1074,9 @@ def main() -> None:
         return
     if "--scalein" in args:
         print(format_scalein(compare_scalein(panel), f"{path} ({len(panel)} symbols)"))
+        return
+    if "--stoploss" in args:
+        print(format_stoploss(compare_stoploss(panel), f"{path} ({len(panel)} symbols)"))
         return
     if "--dipdepth" in args:
         print(format_dip_depth(compare_dip_depth(panel), f"{path} ({len(panel)} symbols)"))

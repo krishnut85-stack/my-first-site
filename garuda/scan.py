@@ -46,6 +46,13 @@ def _price_of(series, portfolio, live_prices):
     return price_of
 
 
+def _hard_stopped(profile, h, px):
+    """True if a hard stop-loss (fraction below ENTRY) is hit. Cuts a loser fast,
+    before the peak-based trailing stop can trigger. 0 = off."""
+    hs = getattr(profile, "hard_stop", 0.0)
+    return bool(hs and h.get("entry_price") and px <= h["entry_price"] * (1 - hs))
+
+
 def _tick_hold(h, today):
     """Advance a holding's bars_held once per new scan-date (restart-safe)."""
     if h.get("last_date") != today:
@@ -79,11 +86,14 @@ def _run_rsi2(profile, series, portfolio, live_prices=None):
             continue
         _tick_hold(h, today)
         cur = (r_cache.get(sym) or [None])[-1]
+        px = price_of(sym)
         recovered = cur is not None and cur > profile.exit_rsi
-        if recovered or h.get("bars_held", 0) >= profile.max_hold:
-            reason = "RSI recovered" if recovered else f"{profile.max_hold}-day hold"
-            pnl = portfolio.sell(sym, price_of(sym), reason=reason)
-            sells.append({"symbol": sym, "price": round(price_of(sym), 2),
+        stopped = _hard_stopped(profile, h, px)
+        if stopped or recovered or h.get("bars_held", 0) >= profile.max_hold:
+            reason = (f"{profile.hard_stop:.0%} stop-loss" if stopped
+                      else "RSI recovered" if recovered else f"{profile.max_hold}-day hold")
+            pnl = portfolio.sell(sym, px, reason=reason)
+            sells.append({"symbol": sym, "price": round(px, 2),
                           "pnl": round(pnl, 2), "reason": reason})
 
     # --- 2. entries: most-oversold first, sized by cash (no count cap) --------
@@ -137,10 +147,12 @@ def _run_momentum(profile, series, portfolio, live_prices=None):
         px = price_of(sym)
         peak = max(h.get("peak", h["entry_price"]), px)
         h["peak"] = peak
-        stopped = profile.trail and px <= peak * (1 - profile.trail)
+        hstop = _hard_stopped(profile, h, px)
+        stopped = hstop or (profile.trail and px <= peak * (1 - profile.trail))
         if stopped or h.get("bars_held", 0) >= profile.max_hold:
-            reason = f"{profile.trail:.0%} trailing stop" if stopped \
-                else f"{profile.max_hold}-day hold"
+            reason = (f"{profile.hard_stop:.0%} stop-loss" if hstop
+                      else f"{profile.trail:.0%} trailing stop" if stopped
+                      else f"{profile.max_hold}-day hold")
             pnl = portfolio.sell(sym, px, reason=reason)
             sold_today.add(sym)
             sells.append({"symbol": sym, "price": round(px, 2),
@@ -199,10 +211,12 @@ def _run_strength(profile, series, portfolio, live_prices=None):
         px = price_of(sym)
         peak = max(h.get("peak", h["entry_price"]), px)
         h["peak"] = peak
-        stopped = profile.trail and px <= peak * (1 - profile.trail)
+        hstop = _hard_stopped(profile, h, px)
+        stopped = hstop or (profile.trail and px <= peak * (1 - profile.trail))
         if stopped or h.get("bars_held", 0) >= profile.max_hold:
-            reason = f"{profile.trail:.0%} trailing stop" if stopped \
-                else f"{profile.max_hold}-day hold"
+            reason = (f"{profile.hard_stop:.0%} stop-loss" if hstop
+                      else f"{profile.trail:.0%} trailing stop" if stopped
+                      else f"{profile.max_hold}-day hold")
             pnl = portfolio.sell(sym, px, reason=reason)
             sold_today.add(sym)
             sells.append({"symbol": sym, "price": round(px, 2),
@@ -340,10 +354,12 @@ def _run_leaders(profile, series, portfolio, live_prices=None):
         px = price_of(sym)
         peak = max(h.get("peak", h["entry_price"]), px)
         h["peak"] = peak
-        stopped = profile.trail and px <= peak * (1 - profile.trail)
+        hstop = _hard_stopped(profile, h, px)
+        stopped = hstop or (profile.trail and px <= peak * (1 - profile.trail))
         if stopped or h.get("bars_held", 0) >= profile.max_hold:
-            reason = f"{profile.trail:.0%} trailing stop" if stopped \
-                else f"{profile.max_hold}-day hold"
+            reason = (f"{profile.hard_stop:.0%} stop-loss" if hstop
+                      else f"{profile.trail:.0%} trailing stop" if stopped
+                      else f"{profile.max_hold}-day hold")
             pnl = portfolio.sell(sym, px, reason=reason)
             sold_today.add(sym)
             sells.append({"symbol": sym, "price": round(px, 2),

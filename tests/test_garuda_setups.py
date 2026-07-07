@@ -137,6 +137,32 @@ def test_compare_dip_depth_sweeps_thresholds():
     assert res["RSI-2 < 20  (uptrend)"]["trades"] >= res["RSI-2 < 5  (uptrend)"]["trades"]
 
 
+def test_compare_stoploss_sweeps_each_book():
+    from garuda.setups import compare_stoploss
+    panel = {f"S{i}": _uptrend_with_dips(seed=i, days=520) for i in range(12)}
+    res = compare_stoploss(panel, cost=0.0, stops=(0.0, 0.08, 0.15))
+    assert set(res) == {"RSI-2 dip · Small/Micro (no stop today)",
+                        "Strength swing (12% trail today)",
+                        "Momentum leaders (20% trail today)"}
+    dip = res["RSI-2 dip · Small/Micro (no stop today)"]
+    assert set(dip) == {0.0, 0.08, 0.15}                 # one row per stop level
+    for s in dip.values():
+        if s:
+            assert "worst" in s and "total" in s          # stats carry worst-trade + total edge
+            assert s["worst"] <= 0                         # worst trade is a loss (or flat)
+
+
+def test_hard_stop_helper_respects_entry():
+    from garuda.scan import _hard_stopped
+    from garuda.strategy import Profile
+    off = Profile("t", "T", "", "", hard_stop=0.0)
+    on = Profile("t", "T", "", "", hard_stop=0.10)
+    h = {"entry_price": 100.0}
+    assert _hard_stopped(off, h, 80.0) is False            # stop off -> never fires
+    assert _hard_stopped(on, h, 95.0) is False             # -5% -> above the 10% floor
+    assert _hard_stopped(on, h, 89.0) is True              # -11% -> stop hit
+
+
 def test_totp_rfc6238_vectors():
     """Guard the hand-rolled TOTP used for the automatic Kite login."""
     import base64
