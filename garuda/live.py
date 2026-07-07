@@ -34,6 +34,10 @@ def _options_path():
     return config.DATA_DIR / "garuda_options_book.json"
 
 
+def _day_base_path():
+    return config.DATA_DIR / "garuda_day_base.json"
+
+
 class GarudaLive:
     def __init__(self, csv_dir="."):
         self.csv_dir = Path(csv_dir)
@@ -51,8 +55,10 @@ class GarudaLive:
         self.last_scan_date = None    # IST date of the last executed scan (once/session)
         self.intraday = []            # today's live combined-equity samples (P&L curve)
         self.intraday_day = None
-        self.day_base = {}            # per-book equity at the start of today (for DAY P&L)
-        self.day_base_date = None
+        # per-book equity at the start of today (for DAY P&L) — persisted to disk
+        # so a mid-session server restart keeps today's baseline instead of
+        # re-zeroing DAY P&L and losing the morning's move.
+        self.day_base_date, self.day_base = self._load_day_base()
         # Every symbol's dated daily closes from the local CSVs — the guaranteed
         # chart source when Kite's historical API isn't available for a name.
         from .cross import _load_long
@@ -81,6 +87,26 @@ class GarudaLive:
             self.rsi14_by_sym[sym] = round(r14[-1], 1) if r14 and r14[-1] is not None else None
         # optional market caps (₹ crore) from marketcap.csv (symbol,marketcap)
         self.mcap_by_sym = self._load_mcap()
+
+    def _load_day_base(self):
+        import json
+        p = _day_base_path()
+        if p.exists():
+            try:
+                d = json.loads(p.read_text())
+                return d.get("date"), d.get("base", {})
+            except Exception:  # noqa: BLE001
+                pass
+        return None, {}
+
+    def _save_day_base(self):
+        import json
+        try:
+            _day_base_path().parent.mkdir(parents=True, exist_ok=True)
+            _day_base_path().write_text(json.dumps(
+                {"date": self.day_base_date, "base": self.day_base}))
+        except Exception:  # noqa: BLE001
+            pass
 
     def _load_mcap(self):
         import csv as _csv
@@ -215,6 +241,8 @@ class GarudaLive:
         (resets each new day). Only samples while the market is open."""
         if not is_market_open():
             return
+        if not self.prices:            # feed still warming up (e.g. just after a
+            return                     # restart) -> skip the bad all-at-entry sample
         today = _today()
         if self.intraday_day != today:
             self.intraday_day = today
@@ -283,9 +311,11 @@ class GarudaLive:
         profs = []
         mkt_open = is_market_open()
         today = _today()
+        base_changed = False
         if self.day_base_date != today:      # new trading day -> re-baseline DAY P&L
             self.day_base_date = today
             self.day_base = {}
+            base_changed = True
         for k, prof in PROFILES.items():
             pf = self.portfolios[k]
             positions = []
@@ -339,8 +369,10 @@ class GarudaLive:
             # DAY P&L = equity now minus this book's equity at the START of today
             # (snapshotted on the first build of each trading day). Resets cleanly
             # every day; immune to stale previous-close data when the market's shut.
-            base = self.day_base.setdefault(k, round(equity, 0))
-            day_pnl = equity - base
+            if k not in self.day_base:
+                self.day_base[k] = round(equity, 0)
+                base_changed = True
+            day_pnl = equity - self.day_base[k]
             win, pfac = _live_stats(pf)
             win_kind = "live"
             if win is None:                    # no closed live trades yet
@@ -393,7 +425,10 @@ class GarudaLive:
         # --- the 7th book: weekly Iron Condor on the Nifty --------------------
         nifty = (self.index.get("NIFTY 50") or {}).get("ltp") or 0.0
         ost = self.options.state(nifty)
-        obase = self.day_base.setdefault("options", round(ost["equity"], 0))
+        if "options" not in self.day_base:
+            self.day_base["options"] = round(ost["equity"], 0)
+            base_changed = True
+        obase = self.day_base["options"]
         options = {**ost, "key": "options", "name": config.BOT_NAME + "-OPT",
                    "strategy": "options", "label": OPTIONS_LABEL, "rules": OPTIONS_RULES,
                    "capital": self.options.starting_capital,
@@ -405,6 +440,8 @@ class GarudaLive:
         totals["day_pnl"] = round(totals["day_pnl"] + options["day_pnl"], 0)
         totals["pnl_pct"] = round((totals["equity"] / totals["capital"] - 1) * 100, 2) \
             if totals["capital"] else 0.0
+        if base_changed:                     # persist today's baseline across restarts
+            self._save_day_base()
         from .market import HOLIDAYS
         return {"live": self.feed.live, "profiles": profs, "totals": totals,
                 "options": options, "index": self.index,

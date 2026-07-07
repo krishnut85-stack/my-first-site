@@ -184,6 +184,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 <script>
 const TOKEN=new URLSearchParams(location.search).get('token')||'';
 const prev={};let DATA=null,curSym=null,FILTER='all',SORT={key:'sym',dir:1},HOLI=new Set();
+let PNLC=null,PNLV={f0:0,f1:1};   // portfolio-P&L curve + its visible fraction window (zoom/pan)
 function setSort(k){if(SORT.key===k)SORT.dir=-SORT.dir;else{SORT.key=k;SORT.dir=(k==='sym'?1:-1);}render(DATA);}
 function sortArrow(k){return SORT.key===k?(SORT.dir>0?' ▲':' ▼'):'';}
 function fmtCr(v){if(v==null)return '—';if(v>=1e5)return (v/1e5).toFixed(2)+'L Cr';if(v>=1e3)return (v/1e3).toFixed(1)+'K Cr';return Math.round(v)+' Cr';}
@@ -316,28 +317,53 @@ function liveTick(){
 }
 function drawPnl(curve){
  const c=document.getElementById('pnlchart');
+ PNLC=curve;                                 // stash full curve for zoom/pan redraws
  if(!curve||curve.length<2){c.innerHTML='<div class=cempty>P&L curve builds as the daily scans run</div>';document.getElementById('pnlnow').textContent='';return;}
- const n=curve.length;
+ pnlBind(c);                                 // wire scroll-zoom / drag-pan / dbl-reset once
+ const N=curve.length;
+ // clamp the visible fraction window to a valid index span (min 2 points)
+ let a=Math.floor(PNLV.f0*(N-1)), b=Math.ceil(PNLV.f1*(N-1));
+ a=Math.max(0,Math.min(a,N-2)); b=Math.max(a+1,Math.min(b,N-1));
+ const view=curve.slice(a,b+1), n=view.length, zoomed=(a>0||b<N-1);
  // pad the range a little so a tiny move isn't a dead-flat line
- let hi=Math.max(...curve),lo=Math.min(...curve);
+ let hi=Math.max(...view),lo=Math.min(...view);
  const mid=(hi+lo)/2,half=Math.max((hi-lo)/2,mid*0.002||1);hi=mid+half;lo=mid-half;
  const rng=(hi-lo)||1,W=640,H=180,padL=64,padB=20,padT=10;
  const plotW=W-padL-8,plotH=H-padT-padB;
- const up=curve[n-1]>=curve[0],col=up?'#22d37a':'#ff5d5d';
- const X=i=>padL+i/(n-1)*plotW, Y=v=>padT+(hi-v)/rng*plotH;
+ const up=view[n-1]>=view[0],col=up?'#22d37a':'#ff5d5d';
+ const X=i=>padL+(n<2?0:i/(n-1)*plotW), Y=v=>padT+(hi-v)/rng*plotH;
  let grid='';
  for(let k=0;k<=4;k++){const v=lo+rng*k/4,y=Y(v);
   grid+=`<line x1="${padL}" y1="${y}" x2="${W-8}" y2="${y}" stroke="#1c2521"/>`;
   grid+=`<text x="${padL-6}" y="${y+3}" fill="#8a958f" font-size="10" text-anchor="end">${money(v)}</text>`;}
- let pts='';for(let i=0;i<n;i++)pts+=`${X(i)},${Y(curve[i])} `;
- const area=`M${X(0)},${padT+plotH} L`+curve.map((v,i)=>`${X(i)},${Y(v)}`).join(' L')+` L${X(n-1)},${padT+plotH} Z`;
- const xlab=`<text x="${padL}" y="${H-5}" fill="#8a958f" font-size="10">start</text>`+
-   `<text x="${(padL+W-8)/2}" y="${H-5}" fill="#8a958f" font-size="10" text-anchor="middle">${n} samples</text>`+
-   `<text x="${W-8}" y="${H-5}" fill="#8a958f" font-size="10" text-anchor="end">now</text>`;
+ let pts='';for(let i=0;i<n;i++)pts+=`${X(i)},${Y(view[i])} `;
+ const area=`M${X(0)},${padT+plotH} L`+view.map((v,i)=>`${X(i)},${Y(v)}`).join(' L')+` L${X(n-1)},${padT+plotH} Z`;
+ const lft=zoomed?`sample ${a+1}`:'start', rgt=zoomed?`sample ${b+1}`:'now';
+ const mlab=zoomed?`${n} of ${N} · scroll=zoom · drag=pan · dbl-click=reset`:`${N} samples · scroll=zoom`;
+ const xlab=`<text x="${padL}" y="${H-5}" fill="#8a958f" font-size="10">${lft}</text>`+
+   `<text x="${(padL+W-8)/2}" y="${H-5}" fill="#8a958f" font-size="10" text-anchor="middle">${mlab}</text>`+
+   `<text x="${W-8}" y="${H-5}" fill="#8a958f" font-size="10" text-anchor="end">${rgt}</text>`;
  setSVG(c,W,H,`${grid}<path d="${area}" fill="${col}" fill-opacity="0.12"/>`+
   `<polyline fill="none" stroke="${col}" stroke-width="2" points="${pts}"/>`+
-  `<circle cx="${X(n-1)}" cy="${Y(curve[n-1])}" r="3" fill="${col}"/>${xlab}`);
- document.getElementById('pnlnow').textContent=money(curve[n-1]);
+  `<circle cx="${X(n-1)}" cy="${Y(view[n-1])}" r="3" fill="${col}"/>${xlab}`);
+ document.getElementById('pnlnow').textContent=money(curve[N-1]);
+}
+function pnlBind(c){
+ if(c.dataset.zbound)return; c.dataset.zbound='1';
+ const redraw=()=>{if(PNLC)drawPnl(PNLC);};
+ const clamp=(f0,f1)=>{if(f0<0){f1-=f0;f0=0;} if(f1>1){f0-=(f1-1);f1=1;} return {f0:Math.max(0,f0),f1:Math.min(1,f1)};};
+ c.addEventListener('wheel',e=>{e.preventDefault();
+  const w=c.clientWidth||640, fx=PNLV.f0+(e.offsetX/w)*(PNLV.f1-PNLV.f0);   // fraction under cursor
+  const span=PNLV.f1-PNLV.f0, k=e.deltaY<0?0.82:1/0.82;                     // wheel up = zoom in
+  const ns=Math.min(1,Math.max(0.03,span*k));                              // 3%..100% of the curve
+  PNLV=clamp(fx-(fx-PNLV.f0)*(ns/span), fx-(fx-PNLV.f0)*(ns/span)+ns); redraw();},{passive:false});
+ c.addEventListener('mousedown',e=>{e.preventDefault();
+  const sx=e.clientX,s0=PNLV.f0,s1=PNLV.f1,w=c.clientWidth||640;
+  const mv=ev=>{const d=(ev.clientX-sx)/w*(s1-s0); PNLV=clamp(s0-d,s1-d); redraw();};
+  const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);};
+  document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);});
+ c.addEventListener('dblclick',e=>{e.preventDefault();PNLV={f0:0,f1:1};redraw();});
+ c.style.cursor='ew-resize';
 }
 // which book to view a symbol THROUGH: prefer the active tab (a stock can sit in
 // several books), else the first book it's in. Keeps the chart/legend/quote all

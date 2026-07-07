@@ -67,6 +67,25 @@ def test_day_pnl_resets_each_day_via_equity_baseline(tmp_path, monkeypatch):
     assert sc3["day_pnl"] == 0                     # re-baselined -> resets, even at the same price
 
 
+def test_day_pnl_survives_a_restart(tmp_path, monkeypatch):
+    from garuda.live import _pf_path
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    live = GarudaLive(csv_dir=str(tmp_path))
+    pf = live.portfolios["smallcap"]
+    pf.buy("KEI", 10, 100.0, entry_len=250)
+    pf.save(_pf_path("smallcap"))                  # holdings persist, as the scan saves them
+    live.prices["KEI"] = 100.0
+    live.build_state()                             # baseline snapshotted + persisted to disk
+    live.prices["KEI"] = 105.0
+    sc = next(p for p in live.build_state()["profiles"] if p["key"] == "smallcap")
+    assert sc["day_pnl"] == 50
+    # a mid-session restart must NOT wipe today's DAY P&L back to zero
+    live2 = GarudaLive(csv_dir=str(tmp_path))      # fresh process reloads the baseline
+    live2.prices["KEI"] = 105.0
+    sc2 = next(p for p in live2.build_state()["profiles"] if p["key"] == "smallcap")
+    assert sc2["day_pnl"] == 50                    # baseline survived the restart
+
+
 def test_state_exposes_options_book(tmp_path, monkeypatch):
     from datetime import date
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
