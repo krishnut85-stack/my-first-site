@@ -30,6 +30,24 @@ def _pf_path(key):
     return config.DATA_DIR / f"garuda_{key}_portfolio.json"
 
 
+def _stop_price(prof, h):
+    """The binding stop price for a held share — the HIGHEST (closest) of the
+    book's floors: a hard stop / catastrophe stop below entry, and the trailing
+    stop below the running peak. Whichever is nearest to price triggers the sell."""
+    floors = []
+    hs = getattr(prof, "hard_stop", 0.0)
+    trail = getattr(prof, "trail", 0.0)
+    cat = getattr(prof, "stop", 0.0)              # scale-in catastrophe stop
+    ep = h.get("entry_price")
+    if hs and ep:
+        floors.append(ep * (1 - hs))
+    if cat and ep:
+        floors.append(ep * (1 - cat))
+    if trail and h.get("peak"):
+        floors.append(h["peak"] * (1 - trail))
+    return max(floors) if floors else None
+
+
 def _options_path():
     return config.DATA_DIR / "garuda_options_book.json"
 
@@ -376,12 +394,15 @@ class GarudaLive:
                 ltp = self.price_of(s, h["entry_price"])
                 chg = (ltp - h["entry_price"]) / h["entry_price"] * 100 if h["entry_price"] else 0
                 pnl = (ltp - h["entry_price"]) * h["qty"]     # position total (since entry)
+                sp = _stop_price(prof, h)
                 positions.append({"sym": s, "qty": h["qty"],
                                   "entry": round(h["entry_price"], 2), "ltp": round(ltp, 2),
                                   "chg": round(chg, 2), "pnl": round(pnl, 0),
                                   "rsi2": h.get("rsi2_entry"), "mom": h.get("mom"),
                                   "rsi14": h.get("rsi14"),
-                                  "peak": round(h["peak"], 2) if h.get("peak") else None})
+                                  "peak": round(h["peak"], 2) if h.get("peak") else None,
+                                  "stop_px": round(sp, 2) if sp else None,
+                                  "stop_pct": round((ltp / sp - 1) * 100, 1) if sp and ltp else None})
             positions.sort(key=lambda x: x["pnl"], reverse=True)
             # market-watch: every universe stock with a live LTP + day change
             watch = []

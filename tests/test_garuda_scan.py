@@ -25,6 +25,7 @@ def test_profiles_use_proven_settings():
         assert p.entry_rsi == 10 and p.exit_rsi == 85 and p.max_hold == 30
         assert p.strategy == "rsi2"
         assert p.use_trend is True          # the uptrend filter is now ON (the showdown winner)
+        assert p.hard_stop == 0.15          # wide catastrophe stop (validated on the sweep)
         assert p.label and p.capital == 1_000_000
     n50 = PROFILES["next50"]
     assert n50.strategy == "momentum"       # Next 50 runs breakout + trailing stop
@@ -84,6 +85,21 @@ def test_scan_exits_on_max_hold():
         h["last_date"] = "2000-01-01"
     r = run_scan(prof, series, pf)                  # today's scan bumps it over -> exit
     assert r["sells"], "a maxed-out hold should be sold"
+
+
+def test_rsi2_book_fires_the_hard_stop_loss():
+    prof = PROFILES["smallcap"]                     # now carries a 15% hard stop
+    pf = LivePortfolio(prof.capital)
+    # open a position via a normal oversold-in-uptrend entry
+    up = _reverting(seed=42)
+    run_scan(prof, {"AAA": up}, pf, live_prices={"AAA": up[-1]})
+    if "AAA" not in pf.holdings:                     # force a holding if the scan didn't buy
+        pf.buy("AAA", 10, 100.0, entry_len=len(up))
+    entry = pf.holdings["AAA"]["entry_price"]
+    # price down 16% from entry -> past the 15% catastrophe stop -> must sell
+    r = run_scan(prof, {"AAA": up}, pf, live_prices={"AAA": round(entry * 0.84, 2)})
+    assert r["sells"] and "stop-loss" in r["sells"][0]["reason"]
+    assert "AAA" not in pf.holdings
 
 
 def _rising(days=60, start=100.0, step=1.0):

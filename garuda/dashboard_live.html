@@ -410,8 +410,15 @@ function updateQuote(sym){
  el.innerHTML=`<b>${x.ltp.toFixed(2)}</b> <span class="${cc(x.chg)}">${pct(x.chg)}</span> <span class=muted>· ${rlab} ${rval==null?'—':rval}</span>`;
  const lmc=w.mcap==null?null:w.mcap*(1+(w.chg||0)/100);
  const tech=`<div class=tech>1D <b class="${cc(w.chg)}">${w.chg==null?'—':pct(w.chg)}</b> · 1W <b class="${cc(w.chg_w)}">${w.chg_w==null?'—':pct(w.chg_w)}</b> · 1M <b class="${cc(w.chg_m)}">${w.chg_m==null?'—':pct(w.chg_m)}</b> · 52W H <b>${w.hi52==null?'—':w.hi52}</b> L <b>${w.lo52==null?'—':w.lo52}</b> · Mcap <b>${fmtCr(lmc)}</b></div>`;
+ const stopLine=x.stop_px
+  ? `<br>Stop-loss <b class=r>₹${x.stop_px.toFixed(2)}</b>`
+    +(x.stop_pct!=null?` <span class=muted>· ${x.stop_pct>0?'▼ '+x.stop_pct+'% to stop':'⚠ at / below stop'}</span>`:'')
+  : `<br><span class=muted>no hard stop on this book (rides the exit rule)</span>`;
  sg.innerHTML=(f.held
-  ? `<h4>${LABEL[f.p.key]} · position</h4>Holding <b>${x.qty}</b> @ ₹${x.entry.toFixed(2)} · P&L <b class="${cc(x.pnl)}">${(x.pnl>=0?'+':'')+money(x.pnl)}</b>`
+  ? `<h4>${LABEL[f.p.key]} · position</h4>`
+    +`Entry <b>₹${x.entry.toFixed(2)}</b> · ${x.qty} sh · P&L <b class="${cc(x.pnl)}">${(x.pnl>=0?'+':'')+money(x.pnl)}</b>`
+    +stopLine
+    +(f.p.rules?`<div class=rules style="margin-top:5px">${f.p.rules}</div>`:'')
   : `<span class=muted>${LABEL[f.p.key]||''} · live price · not held</span>`)+tech;
 }
 function previewSym(){const s=(document.getElementById('csearch').value||'').trim().toUpperCase();if(s)loadChart(s);}

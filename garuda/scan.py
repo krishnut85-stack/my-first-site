@@ -79,7 +79,7 @@ def _run_rsi2(profile, series, portfolio, live_prices=None):
     today = _today()
 
     # --- 1. exits -------------------------------------------------------------
-    sells = []
+    sells, sold_today = [], set()
     for sym, h in list(portfolio.holdings.items()):
         c = series.get(sym)
         if not c:
@@ -93,13 +93,16 @@ def _run_rsi2(profile, series, portfolio, live_prices=None):
             reason = (f"{profile.hard_stop:.0%} stop-loss" if stopped
                       else "RSI recovered" if recovered else f"{profile.max_hold}-day hold")
             pnl = portfolio.sell(sym, px, reason=reason)
+            sold_today.add(sym)
             sells.append({"symbol": sym, "price": round(px, 2),
                           "pnl": round(pnl, 2), "reason": reason})
 
     # --- 2. entries: most-oversold first, sized by cash (no count cap) --------
+    # skip anything sold this scan — a stopped-out name must NOT be re-bought on
+    # the same bar (it's still oversold), which would defeat the stop-loss.
     candidates = []
     for sym, c in series.items():
-        if sym in portfolio.holdings or len(c) < profile.max_hold + 5:
+        if sym in portfolio.holdings or sym in sold_today or len(c) < profile.max_hold + 5:
             continue
         rr = r_cache.get(sym)
         cur = (rr or [None])[-1]
