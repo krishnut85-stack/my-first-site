@@ -9,6 +9,7 @@ from http.server import ThreadingHTTPServer
 from garuda import config
 from garuda import server as srv
 from garuda.live import GarudaLive
+from garuda.strategy import PROFILES
 
 
 def test_build_state_offline(tmp_path, monkeypatch):
@@ -16,7 +17,7 @@ def test_build_state_offline(tmp_path, monkeypatch):
     live = GarudaLive(csv_dir=str(tmp_path))          # no Kite -> offline feed
     live.portfolios["smallcap"].buy("KEI", 10, 100.0, entry_len=250)
     st = live.build_state()
-    assert len(st["profiles"]) == 6   # + next50 + strength + leaders + scalein
+    assert len(st["profiles"]) == len(PROFILES)   # every equity book renders
     sc = next(p for p in st["profiles"] if p["key"] == "smallcap")
     assert sc["name"] == "Garuda-SC"
     assert sc["positions"] and sc["positions"][0]["sym"] == "KEI"
@@ -96,7 +97,7 @@ def test_state_exposes_options_book(tmp_path, monkeypatch):
     o = st["options"]
     assert o["key"] == "options" and o["strategy"] == "options"
     assert o["capital"] == 1_000_000 and o["win_kind"] == "backtest"
-    assert st["totals"]["capital"] == 7_000_000        # 6 x 1M equity + 1M options
+    assert st["totals"]["capital"] == (len(PROFILES) + 1) * 1_000_000  # equity books + options
     assert o["strikes"] is None                        # nothing open while offline
     # feed the Nifty and step the weekly cycle -> a condor opens at +/-2.5%
     live.index = {"NIFTY 50": {"ltp": 24000.0, "pc": 23950.0, "chg": 0.2}}

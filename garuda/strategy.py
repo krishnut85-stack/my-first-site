@@ -149,4 +149,22 @@ PROFILES = {
               "Sell the averaged position on RSI-2 > 50, a 60-day hold, or a 25% stop",
         entry_rsi=10.0, exit_rsi=50.0, trend_ma=200, max_hold=60, max_units=4, stop=0.25,
         proven_win=73.0, proven_ret=1.19, proven_pf=3.39),
+    # 8th book — 52-WEEK HIGH, the first LAB-DISCOVERED book. DOUBLE-validated:
+    # the curated walk-forward LAB promoted it (OOS +1.93%/trade, PF 1.32) AND
+    # the reverse grid search (1056 combos, TRAIN/SELECT/TEST windows)
+    # independently rediscovered the same rule as its #1 finisher — on the
+    # untouched TEST window: +1.92%/trade, PF 1.31, 1461 trades, 42% win. The
+    # anomaly: investors anchor to old highs and under-react as they're
+    # reclaimed, so the breakout drifts. Low win rate + wide patient exit =
+    # the winners pay for the losers. PAPER.
+    "hi52": Profile(
+        "hi52", "Garuda-52H",
+        "",                                  # shares strength's top-1500 universe
+        "strength_daily.csv",                # reuse strength's daily bars — no extra fetch
+        strategy="hi52", label="52-week high · 2% band cross + 15% trail",
+        rules="Buy the cross into 2% of the 52-week high (fresh entry only, no "
+              "re-entry while it sits in the band) · Sell on a 15% trailing stop "
+              "or a 120-day hold",
+        trail=0.15, max_hold=120,
+        proven_win=42.0, proven_ret=1.92, proven_pf=1.31),
 }

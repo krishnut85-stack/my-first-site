@@ -47,8 +47,9 @@ curl -s -A "$UA" "https://archives.nseindia.com/content/indices/ind_niftynext50l
 [ -f next50_list.csv ]   && python3 -m garuda.fetch_daily --symbols-file next50_list.csv   --out next50_daily.csv         --fresh
 # 4th book — STRENGTH swing on the top ~1500 liquid NSE names. strength_list.csv
 # is built once (top-1500 by market cap); here we just refresh its daily bars in
-# parallel (~1500 names take a few minutes, not half an hour).
-[ -f strength_list.csv ] && python3 -m garuda.fetch_daily --symbols-file strength_list.csv --out strength_daily.csv       --fresh --workers 5
+# parallel (~1500 names take a few minutes, not half an hour). 600 days (not
+# the 400 default) so the 52-WEEK-HIGH book's 252-bar high always has margin.
+[ -f strength_list.csv ] && python3 -m garuda.fetch_daily --symbols-file strength_list.csv --out strength_daily.csv       --fresh --workers 5 --days 600
 
 # 2b. market caps from Yahoo (best-effort; the dashboard shows what it gets)
 python3 -m garuda.fetch_marketcap --symbols-file smallcap_list.csv micro.csv next50_list.csv strength_list.csv --out marketcap.csv || \

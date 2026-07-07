@@ -32,6 +32,8 @@ def run_scan(profile, series: dict, portfolio: LivePortfolio, live_prices=None):
         return _run_leaders(profile, series, portfolio, live_prices)
     if strat == "scalein":
         return _run_scalein(profile, series, portfolio, live_prices)
+    if strat == "hi52":
+        return _run_hi52(profile, series, portfolio, live_prices)
     return _run_rsi2(profile, series, portfolio, live_prices)
 
 
@@ -189,6 +191,68 @@ def _run_momentum(profile, series, portfolio, live_prices=None):
             portfolio.holdings[sym]["mom"] = round((strength - 1) * 100, 1)
             buys.append({"symbol": sym, "price": round(price, 2), "qty": qty,
                          "mom": round((strength - 1) * 100, 1)})
+
+    return _result(profile, portfolio, buys, sells, price_of)
+
+
+def _run_hi52(profile, series, portfolio, live_prices=None):
+    """The LAB-DISCOVERED 52-week-high book (double-validated: curated LAB OOS
+    +1.93%/trade AND reverse-search TEST +1.92%/trade). Buys only the fresh
+    CROSS into 2% of the 252-day high — no re-entry while a name just sits in
+    the band — and rides it on a 15% trailing stop / 120-day hold."""
+    price_of = _price_of(series, portfolio, live_prices)
+    today = _today()
+
+    # --- 1. exits: trailing stop off the running peak, or max hold ------------
+    sells, sold_today = [], set()
+    for sym, h in list(portfolio.holdings.items()):
+        c = series.get(sym)
+        if not c:
+            continue
+        _tick_hold(h, today)
+        px = price_of(sym)
+        peak = max(h.get("peak", h["entry_price"]), px)
+        h["peak"] = peak
+        stopped = profile.trail and px <= peak * (1 - profile.trail)
+        if stopped or h.get("bars_held", 0) >= profile.max_hold:
+            reason = (f"{profile.trail:.0%} trailing stop" if stopped
+                      else f"{profile.max_hold}-day hold")
+            pnl = portfolio.sell(sym, px, reason=reason)
+            sold_today.add(sym)
+            sells.append({"symbol": sym, "price": round(px, 2),
+                          "pnl": round(pnl, 2), "reason": reason})
+
+    # --- 2. entries: the fresh cross into 2% of the 52-week high --------------
+    # yesterday's close must have been OUTSIDE the band (that's the cross —
+    # matching the backtests, which entered once per reclaim, not daily).
+    candidates = []
+    for sym, c in series.items():
+        if sym in portfolio.holdings or sym in sold_today or len(c) < 253:
+            continue
+        price = price_of(sym)
+        hi = max(c[-252:])                   # 52-week high as of the last daily bar
+        if price <= 0 or hi <= 0:
+            continue
+        near = price >= 0.98 * hi
+        was_near = c[-1] >= 0.98 * hi
+        if not near or was_near:
+            continue
+        mom = price / c[-63] - 1.0 if c[-63] > 0 else 0.0
+        candidates.append((mom, sym, price, c))
+    candidates.sort(reverse=True)            # strongest 3-month momentum first
+
+    per_name = profile.capital * profile.alloc_pct
+    buys = []
+    for mom, sym, price, c in candidates:
+        budget = min(per_name, portfolio.cash)
+        qty = int(budget // price)
+        if qty <= 0:
+            continue
+        if portfolio.buy(sym, qty, price, entry_len=len(c)):
+            portfolio.holdings[sym]["peak"] = price
+            portfolio.holdings[sym]["mom"] = round(mom * 100, 1)
+            buys.append({"symbol": sym, "price": round(price, 2), "qty": qty,
+                         "mom": round(mom * 100, 1)})
 
     return _result(profile, portfolio, buys, sells, price_of)
 

@@ -300,8 +300,21 @@ def run_discover(dated_series, cost=LAB_COST_PER_SIDE, top=10, log=print):
         if tr["trades"] < MIN_TRAIN_TRADES or tr["avg"] is None or tr["avg"] <= 0:
             continue
         scored.append((tr, cmb))
-    scored.sort(key=lambda x: -x[0]["avg"])
-    log(f"[discover] {len(combos)} combos mined · {len(scored)} profitable on TRAIN")
+    # collapse redundant variants: a trend/extra filter that never binds near a
+    # setup (e.g. "above 200-DMA" on a 52-week-high entry) produces the exact
+    # same trades — identical TRAIN stats. Keep only the SIMPLEST wording so the
+    # shortlist isn't four copies of one strategy.
+    best = {}
+    for tr, cmb in scored:
+        sig = (cmb["exit"], cmb["setup"], tr["trades"], tr["avg"], tr["pf"], tr["win"])
+        cx = (cmb["trend"] != "any") + (cmb["extra"] != "any")
+        if sig not in best or cx < best[sig][0]:
+            best[sig] = (cx, tr, cmb)
+    deduped = len(scored) - len(best)
+    scored = sorted(((tr, cmb) for _, tr, cmb in best.values()),
+                    key=lambda x: -x[0]["avg"])
+    log(f"[discover] {len(combos)} combos mined · {len(scored) + deduped} profitable "
+        f"on TRAIN · {deduped} redundant variants collapsed")
 
     # 4. shortlist must ALSO be profitable on SELECT (absorbs selection bias)
     finalists = []
