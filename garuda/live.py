@@ -60,6 +60,22 @@ def _equity_log_path():
     return config.DATA_DIR / "garuda_equity_log.json"
 
 
+def _lab_state(cache={}):
+    """The latest Strategy LAB run (walk-forward results JSON) for the LAB tab.
+    Reloaded only when the file changes; None until a lab run exists."""
+    from .lab import results_path
+    p = results_path()
+    try:
+        mtime = p.stat().st_mtime
+    except OSError:
+        return None
+    if cache.get("mtime") != mtime:
+        from .lab import load_results
+        cache["mtime"] = mtime
+        cache["data"] = load_results(p)
+    return cache.get("data")
+
+
 class GarudaLive:
     def __init__(self, csv_dir="."):
         self.csv_dir = Path(csv_dir)
@@ -554,7 +570,7 @@ class GarudaLive:
             self._save_day_base()
         from .market import HOLIDAYS
         return {"live": self.feed.live, "profiles": profs, "totals": totals,
-                "options": options, "index": self.index,
+                "options": options, "lab": _lab_state(), "index": self.index,
                 "market_open": is_market_open(), "market_status": market_status(),
                 "holidays": sorted(HOLIDAYS),
                 "last_scan": self.last_scan_date, "today": _today()}

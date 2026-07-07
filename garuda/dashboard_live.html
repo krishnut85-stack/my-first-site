@@ -137,6 +137,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
         <span class=wtab data-f=leaders onclick="setFilter('leaders',this)">LEADERS</span>
         <span class=wtab data-f=scalein onclick="setFilter('scalein',this)">SCALE-IN</span>
         <span class=wtab data-f=options onclick="setFilter('options',this)">OPTIONS</span>
+        <span class=wtab data-f=lab onclick="setFilter('lab',this)">LAB</span>
         <input class=wsearch id=search placeholder="search…" oninput="render(DATA)">
       </div>
       <div class=listwrap id=list></div>
@@ -492,6 +493,31 @@ function optionsPanel(o){
    <div class=note>${o.rules}<br>WIN% is data — the Nifty expired inside ±2.5% in <b>${o.win}%</b> of backtested weeks. The ₹ credit/P&L uses a modelled premium (~30% of the wing) until the live option chain is wired in: treat the rupees as indicative, the win rate as real.</div>
  </div>`;
 }
+function labPanel(l){
+ // walk-forward edge discovery: candidates judged on data they never saw
+ const oosPct=l?Math.round(l.oos_frac*100):30;
+ let h=`<div class=condor>
+   <div class=chd><div><b>STRATEGY LAB · walk-forward edge discovery</b></div><span class="stat ${l?'in':'flat'}">${l?(l.generated||'RUN DONE'):'NO RUN YET'}</span></div>
+   <div class=note>The LAB hunts for a NEW edge the honest way: every candidate idea is backtested on the older ${100-oosPct}% of history (<b>PAST</b> — the data the idea gets to see) and then judged on the newest ${oosPct}% it has <b>never seen</b> (<b>UNSEEN</b>), after full delivery costs both sides. Only an idea profitable in BOTH earns <b class=g>PROMOTED</b>. Profitable on the past but losing on unseen data is <b class=r>OVERFIT</b> — the trap that quietly eats most retail backtests, and the reason "it worked when I tested it" so rarely survives live.</div>`;
+ if(!l){h+=`<div class=note>No LAB run found yet. On the droplet:<br><b>python3 -m garuda.lab --csv strength_daily.csv</b><br>The leaderboard appears here automatically on the next refresh.</div></div>`;return h;}
+ h+=`<div class=grid>
+   <div class=cell><div class=l>UNIVERSE</div><div class=v>${l.universe} stocks</div></div>
+   <div class=cell><div class=l>SPLIT DATE</div><div class=v style=font-size:13px>${l.split_date}</div></div>
+   <div class=cell><div class=l>UNSEEN SHARE</div><div class=v>${oosPct}%</div></div>
+   <div class=cell><div class=l>COST / SIDE</div><div class=v>${(l.cost_per_side*100).toFixed(2)}%</div></div>
+ </div>`;
+ const vb=v=>({PROMOTED:'in',OVERFIT:'out',REJECTED:'out'}[v]||'flat');
+ const av=(x)=>x==null?'<td class=muted>—</td>':`<td class="${x>0?'g':'r'}">${(x>=0?'+':'')+x.toFixed(2)}%</td>`;
+ h+=`<table class=pltbl style=margin-top:10px><tr><th style=text-align:left>CANDIDATE</th><th>PAST n</th><th>win</th><th>avg</th><th>PF</th><th>UNSEEN n</th><th>win</th><th>avg</th><th>PF</th><th>VERDICT</th></tr>`;
+ (l.results||[]).forEach(r=>{const a=r.is,b=r.oos;
+  h+=`<tr title="${r.rules}"><td style=text-align:left><b>${r.name}</b><span class=sub>${r.hypothesis}</span></td>
+   <td>${a.trades}</td><td>${a.win==null?'—':a.win+'%'}</td>${av(a.avg)}<td>${a.pf==null?'—':a.pf}</td>
+   <td>${b.trades}</td><td>${b.win==null?'—':b.win+'%'}</td>${av(b.avg)}<td>${b.pf==null?'—':b.pf}</td>
+   <td><span class="stat ${vb(r.verdict)}">${r.verdict}</span></td></tr>`;});
+ h+=`</table><div class=note>Hover a row for the exact entry/exit rules. avg = per-trade return after costs · PF = profit factor. A <b class=g>PROMOTED</b> idea is a candidate for a new paper book — <i>validated, never guaranteed</i>. WEAK = real but marginal edge · THIN = too few trades to claim anything. Data: ${l.source||'—'} · generated ${l.generated||'—'}.</div>
+ </div>`;
+ return h;
+}
 function render(d){
  if(!d)return;DATA=d;
  if(d.holidays)HOLI=new Set(d.holidays);   // NSE holiday list -> the clock blinks CLOSED on them
@@ -539,6 +565,7 @@ function render(d){
  const q=(document.getElementById('search').value||'').trim().toUpperCase();
  const list=document.getElementById('list');let html='';
  if(FILTER==='options'&&d.options){ html=optionsPanel(d.options); }        // condor panel
+ else if(FILTER==='lab'){ html=labPanel(d.lab); }                          // strategy LAB leaderboard
  else if(FILTER==='all'){ html=allPortfolio(d,q); }                        // one combined table
  else d.profiles.forEach(p=>{                                              // a single book's watch
   if(FILTER!==p.key)return;

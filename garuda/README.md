@@ -38,6 +38,26 @@ column, or one price per line) and point `--csv` at it. The verdict is blunt:
 tell you whether this model has a genuine edge. If it doesn't, that is a finding,
 not a failure — and far cheaper to learn here than with real money.
 
+## Strategy LAB — discovering the NEXT edge (walk-forward)
+
+There is no secret strategy nobody knows; the edge is in the **process**. The
+LAB (`garuda/lab.py`) tests a library of genuinely different candidate ideas
+(calendar effects, panic reversals, volatility squeezes, leader pullbacks,
+52-week-high drift…) with fixed rules — no parameter sweeping — and judges each
+one **walk-forward**: backtested on the older ~70% of history, then validated on
+the newest ~30% it has *never seen*, after full delivery costs both sides.
+
+```bash
+python3 -m garuda.lab --csv strength_daily.csv    # run on the top-1500 universe
+```
+
+Verdicts: **PROMOTED** (profitable in BOTH periods → candidate for a new paper
+book) · **OVERFIT** (made money on the past, lost on unseen data — the trap that
+eats most retail backtests) · **WEAK** / **THIN** (marginal / too few trades).
+Results are written to `data/garuda_lab_results.json` and rendered live on the
+dashboard's **LAB** tab. A PROMOTED verdict means *survived honest validation*,
+never *guaranteed money*.
+
 ## Status
 
 Paper / research only. **No live-order path in this package.** Execution is worth
