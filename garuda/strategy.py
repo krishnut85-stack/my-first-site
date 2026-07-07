@@ -69,26 +69,28 @@ PROFILES = {
         "smallcap", "Garuda-SC",
         "https://archives.nseindia.com/content/indices/ind_niftysmallcap250list.csv",
         "niftysmallcap250_daily.csv",
-        strategy="rsi2", label="RSI-2 < 10 dip · uptrend · 15% stop",
+        strategy="rsi2", label="RSI-2 < 10 dip · uptrend · 20% stop",
         rules="Buy RSI-2 < 10 in an uptrend (> 200-DMA) · Sell RSI-2 > 85, 30-day hold, "
-              "or a 15% catastrophe stop-loss",
+              "or a 20% catastrophe stop-loss",
         use_trend=True,
         entry_rsi=10.0,   # dip-depth test: <10 gives ~same edge as <5, more trades
-        # stop-loss sweep on 1,499 NSE names: a wide 15% catastrophe stop keeps
-        # +3730% vs +3809% total (66% win, PF 1.79) but caps the worst trade from
-        # -45% to -28% — nearly-free insurance. Tighter stops (5-8%) hurt the edge.
-        hard_stop=0.15,
+        # stop-loss sweep on the ACTUAL niftysmallcap250 universe: 20% is identical
+        # to no-stop (+671% total, 67% win, worst -16%) — it never triggers on these
+        # quality names, so it costs nothing, but it leaves a hard floor for a tail
+        # disaster (the broader NSE set had -45% names a crash/fraud could produce).
+        # A tighter 15% stop was a small drag (+665%) for no worst-case gain.
+        hard_stop=0.20,
         proven_win=66.0, proven_ret=0.94, proven_pf=1.85),
     "microcap": Profile(
         "microcap", "Garuda-MC",
         "https://nsearchives.nseindia.com/content/indices/ind_niftymicrocap250_list.csv",
         "microcap_daily.csv",
-        strategy="rsi2", label="RSI-2 < 10 dip · uptrend · 15% stop",
+        strategy="rsi2", label="RSI-2 < 10 dip · uptrend · 20% stop",
         rules="Buy RSI-2 < 10 in an uptrend (> 200-DMA) · Sell RSI-2 > 85, 30-day hold, "
-              "or a 15% catastrophe stop-loss",
+              "or a 20% catastrophe stop-loss",
         use_trend=True,
         entry_rsi=10.0,   # dip-depth test: <10 marginally beat <5 (+1.34% PF 2.14)
-        hard_stop=0.15,   # same wide catastrophe stop as smallcap (validated on the sweep)
+        hard_stop=0.20,   # same free catastrophe floor as smallcap (validated on the sweep)
         proven_win=70.0, proven_ret=1.34, proven_pf=2.14),
     "next50": Profile(
         "next50", "Garuda-N50",
