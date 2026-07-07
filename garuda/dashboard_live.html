@@ -15,6 +15,7 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .paper{background:var(--amb);color:#111;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:800}
 .mkt{font-weight:800;padding:2px 8px;border-radius:4px;font-size:11px;animation:blink 1.5s infinite}
 .mkt.open{color:var(--grn);border:1px solid #204d3a;background:#0e2a20}.mkt.closed{color:var(--red);border:1px solid #4d2020;background:#2a1416}
+.mkt.preopen{color:var(--amb);border:1px solid #4d3a20;background:#2a2214}
 @keyframes blink{50%{opacity:.4}}.ist{color:var(--acc)}.loc{color:var(--mut)}
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0}
 .stile{background:var(--card);padding:11px 14px}.stile .l{color:var(--mut);font-size:10px}.stile .v{font-size:19px;font-weight:800;margin-top:3px}
@@ -167,7 +168,8 @@ function clocks(){
  let st,cls='closed';
  if(wknd)st='● CLOSED · WEEKEND';
  else if(holi)st='● CLOSED · NSE HOLIDAY';
- else if(mins<555)st='● CLOSED · PRE-OPEN';
+ else if(mins>=540&&mins<555){st='● PRE-OPEN · opens 09:15';cls='preopen';}   // 09:00-09:15 auction
+ else if(mins<555)st='● CLOSED';
  else if(mins<=930){st='● LIVE';cls='open';}
  else st='● CLOSED';
  const m=document.getElementById('mkt');m.textContent=st;m.className='mkt '+cls;
