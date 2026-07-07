@@ -103,6 +103,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
         <span class=wtab data-f=microcap onclick="setFilter('microcap',this)">MICRO CAP</span>
         <span class=wtab data-f=next50 onclick="setFilter('next50',this)">NEXT 50</span>
         <span class=wtab data-f=strength onclick="setFilter('strength',this)">STRENGTH</span>
+        <span class=wtab data-f=leaders onclick="setFilter('leaders',this)">LEADERS</span>
         <input class=wsearch id=search placeholder="search…" oninput="render(DATA)">
       </div>
       <div class=listwrap id=list></div>
@@ -154,8 +155,8 @@ const prev={};let DATA=null,curSym=null,FILTER='all',SORT={key:'sym',dir:1},HOLI
 function setSort(k){if(SORT.key===k)SORT.dir=-SORT.dir;else{SORT.key=k;SORT.dir=(k==='sym'?1:-1);}render(DATA);}
 function sortArrow(k){return SORT.key===k?(SORT.dir>0?' ▲':' ▼'):'';}
 function fmtCr(v){if(v==null)return '—';if(v>=1e5)return (v/1e5).toFixed(2)+'L Cr';if(v>=1e3)return (v/1e3).toFixed(1)+'K Cr';return Math.round(v)+' Cr';}
-const LABEL={smallcap:'SMALL CAP',microcap:'MICRO CAP',next50:'NEXT 50',strength:'STRENGTH'};
-const TAG={smallcap:'SC',microcap:'MC',next50:'N50',strength:'STR'};
+const LABEL={smallcap:'SMALL CAP',microcap:'MICRO CAP',next50:'NEXT 50',strength:'STRENGTH',leaders:'LEADERS'};
+const TAG={smallcap:'SC',microcap:'MC',next50:'N50',strength:'STR',leaders:'LDR'};
 function money(v){return "₹"+Math.round(v).toLocaleString('en-IN');}
 function pct(v){return(v==null?'—':(v>=0?"+":"")+(+v).toFixed(2)+"%");}
 function setFilter(f,el){FILTER=f;document.querySelectorAll('.wtab').forEach(t=>t.classList.remove('on'));el.classList.add('on');render(DATA);}
@@ -227,11 +228,14 @@ function setRsiMode(strat){   // 'strength' (RSI-14 55-70) | 'momentum' (breakou
   if(zb){zb.style.top='33%';zb.style.bottom='auto';zb.style.height='13%';zb.textContent='STRENGTH ZONE · RSI-14 55-70';}
   if(sub)sub.textContent='· daily candles + RSI-14';
   if(lg)lg.innerHTML=base+'<b style=color:#f5b23e>yellow = RSI-14</b>: buy the <b class=g>55-70</b> strength band in an uptrend · exit on a 12% trailing stop · scroll=zoom, drag=pan';
- }else if(strat==='momentum'){
+ }else if(strat==='momentum'||strat==='leaders'){
   if(zs)zs.style.display='none';
-  if(zb)zb.style.display='none';                 // momentum has no RSI zone — it trades breakouts
+  if(zb)zb.style.display='none';                 // momentum/leaders have no RSI zone — they trade trend
   if(sub)sub.textContent='· daily candles + RSI-2 (reference)';
-  if(lg)lg.innerHTML=base+'<b style=color:#f5b23e>yellow = RSI-2</b> (reference only) · this book buys <b class=g>20-day breakouts</b> and exits on a <b class=r>15% trailing stop</b> · scroll=zoom, drag=pan';
+  const desc=strat==='leaders'
+    ? 'this book buys <b class=g>3-month momentum leaders</b> and exits on a <b class=r>20% trailing stop</b>'
+    : 'this book buys <b class=g>20-day breakouts</b> and exits on a <b class=r>15% trailing stop</b>';
+  if(lg)lg.innerHTML=base+'<b style=color:#f5b23e>yellow = RSI-2</b> (reference only) · '+desc+' · scroll=zoom, drag=pan';
  }else{
   rsiLines.push(rsiSeries.createPriceLine({price:85,color:'#ff5d5d',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'SELL 85'}));
   rsiLines.push(rsiSeries.createPriceLine({price:10,color:'#22d37a',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'BUY 10'}));

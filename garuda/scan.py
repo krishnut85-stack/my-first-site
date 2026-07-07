@@ -28,6 +28,8 @@ def run_scan(profile, series: dict, portfolio: LivePortfolio, live_prices=None):
         return _run_momentum(profile, series, portfolio, live_prices)
     if strat == "strength":
         return _run_strength(profile, series, portfolio, live_prices)
+    if strat == "leaders":
+        return _run_leaders(profile, series, portfolio, live_prices)
     return _run_rsi2(profile, series, portfolio, live_prices)
 
 
@@ -232,5 +234,65 @@ def _run_strength(profile, series, portfolio, live_prices=None):
             portfolio.holdings[sym]["rsi14"] = round(cur, 1)
             buys.append({"symbol": sym, "price": round(price, 2), "qty": qty,
                          "rsi14": round(cur, 1)})
+
+    return _result(profile, portfolio, buys, sells, price_of)
+
+
+def _run_leaders(profile, series, portfolio, live_prices=None):
+    """MOMENTUM LEADERS (catcher winner: +7.80%/trade, PF 3.37). Buy the stocks
+    that are actually GOING UP — up > mom_min over mom_days AND above the trend
+    SMA — strongest momentum first, and let them run on a wide trailing stop."""
+    price_of = _price_of(series, portfolio, live_prices)
+    today = _today()
+    ma = max(2, profile.trend_ma)
+    look = max(2, profile.mom_days)
+    s_cache = {s: sma(c, ma) for s, c in series.items() if len(c) >= ma}
+
+    # --- 1. exits: trailing stop off the running peak, or max hold ------------
+    sells, sold_today = [], set()
+    for sym, h in list(portfolio.holdings.items()):
+        c = series.get(sym)
+        if not c:
+            continue
+        _tick_hold(h, today)
+        px = price_of(sym)
+        peak = max(h.get("peak", h["entry_price"]), px)
+        h["peak"] = peak
+        stopped = profile.trail and px <= peak * (1 - profile.trail)
+        if stopped or h.get("bars_held", 0) >= profile.max_hold:
+            reason = f"{profile.trail:.0%} trailing stop" if stopped \
+                else f"{profile.max_hold}-day hold"
+            pnl = portfolio.sell(sym, px, reason=reason)
+            sold_today.add(sym)
+            sells.append({"symbol": sym, "price": round(px, 2),
+                          "pnl": round(pnl, 2), "reason": reason})
+
+    # --- 2. entries: strong momentum in an uptrend, strongest first -----------
+    candidates = []
+    for sym, c in series.items():
+        if sym in portfolio.holdings or sym in sold_today or len(c) < max(ma, look) + 1:
+            continue
+        s200 = (s_cache.get(sym) or [None])[-1]
+        price = price_of(sym)
+        if s200 is None or price <= 0 or c[-look] <= 0:
+            continue
+        mom = price / c[-look] - 1.0                  # return over the momentum window
+        if not (price > s200 and mom > profile.mom_min):
+            continue
+        candidates.append((mom, sym, price, c))
+    candidates.sort(reverse=True)                     # strongest momentum gets cash first
+
+    per_name = profile.capital * profile.alloc_pct
+    buys = []
+    for mom, sym, price, c in candidates:
+        budget = min(per_name, portfolio.cash)
+        qty = int(budget // price)
+        if qty <= 0:
+            continue
+        if portfolio.buy(sym, qty, price, entry_len=len(c)):
+            portfolio.holdings[sym]["peak"] = price
+            portfolio.holdings[sym]["mom"] = round(mom * 100, 1)
+            buys.append({"symbol": sym, "price": round(price, 2), "qty": qty,
+                         "mom": round(mom * 100, 1)})
 
     return _result(profile, portfolio, buys, sells, price_of)

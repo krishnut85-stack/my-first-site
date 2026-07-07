@@ -34,6 +34,11 @@ def test_profiles_use_proven_settings():
     assert st.strategy == "strength"
     assert st.rsi_lo == 55 and st.rsi_hi == 70 and st.trend_ma == 200
     assert st.trail == 0.12 and st.max_hold == 90 and st.label
+    ld = PROFILES["leaders"]                # 5th book: momentum leaders
+    assert ld.strategy == "leaders"
+    assert ld.mom_days == 63 and ld.mom_min == 0.25 and ld.trend_ma == 200
+    assert ld.trail == 0.20 and ld.max_hold == 180 and ld.label
+    assert ld.daily_csv == "strength_daily.csv"   # shares the strength universe
 
 
 def test_portfolio_buy_sell_cash():
@@ -131,6 +136,32 @@ def test_strength_skips_downtrend_and_overbought():
     # a long steady DECLINE: price below its 200-day SMA -> never buy (no strength)
     down = {"DN": _rising(320, start=420.0, step=-1.0)}
     r = run_scan(prof, down, pf, live_prices={"DN": 95.0})
+    assert not r["buys"] and not pf.holdings
+
+
+def test_leaders_buys_strong_momentum_and_trails_out():
+    prof = PROFILES["leaders"]
+    pf = LivePortfolio(prof.capital)
+    c = [100.0]
+    for _ in range(320):
+        c.append(round(c[-1] * 1.006, 3))            # ~+0.6%/day: >25% over 63d, above 200-DMA
+    series = {"AAA": c}
+    r = run_scan(prof, series, pf)                    # no live price -> uses last close
+    assert r["buys"] and "AAA" in pf.holdings
+    peak = pf.holdings["AAA"]["peak"]
+    assert pf.holdings["AAA"].get("mom")
+    # give back >20% off the peak -> trailing-stop exit
+    r2 = run_scan(prof, series, pf, live_prices={"AAA": round(peak * 0.79, 2)})
+    assert r2["sells"] and "trailing stop" in r2["sells"][0]["reason"]
+    assert "AAA" not in pf.holdings
+
+
+def test_leaders_skips_weak_and_downtrend():
+    prof = PROFILES["leaders"]
+    pf = LivePortfolio(prof.capital)
+    # flat/weak: no 25% momentum and below its own average -> never buy
+    flat = {"FL": [100.0 + (i % 3) for i in range(320)]}
+    r = run_scan(prof, flat, pf, live_prices={"FL": 101.0})
     assert not r["buys"] and not pf.holdings
 
 

@@ -49,7 +49,9 @@ class Profile:
     trail: float = 0.15         # momentum/strength: trailing-stop fraction off the peak
     rsi_lo: float = 55.0        # strength only: RSI-14 entry band (buy strong-not-overbought)
     rsi_hi: float = 70.0
-    trend_ma: int = 200         # strength only: uptrend SMA length
+    trend_ma: int = 200         # strength/leaders: uptrend SMA length
+    mom_days: int = 63          # leaders only: momentum lookback (63 = ~3 months)
+    mom_min: float = 0.25       # leaders only: min return over mom_days to buy (0.25 = +25%)
     capital: float = 1_000_000.0    # Rs 10 lakh
     alloc_pct: float = 0.02         # ~2% per name -> up to ~50 names (no hard cap)
     proven_win: float = 0.0         # validated backtest win rate (%) — shown until live trades close
@@ -102,4 +104,20 @@ PROFILES = {
               "trailing stop or 90-day hold",
         rsi_lo=55.0, rsi_hi=70.0, trend_ma=200, trail=0.12, max_hold=90,
         proven_win=55.0, proven_ret=5.94, proven_pf=2.95),
+    # 5th book — MOMENTUM LEADERS. The momentum-catcher showdown on 3,697 liquid
+    # NSE stocks crowned it the best engine yet: +7.80%/trade, PF 3.37 (1035
+    # trades). Buys the stocks that are actually GOING UP (up >25% over ~3 months
+    # and still above their 200-DMA) and lets them run on a WIDE 20% trailing
+    # stop. Shares the strength universe (top ~1,500 NSE) — no extra data fetch.
+    # NOTE: trend-following, so +7.80% partly reflects a bull regime; expect
+    # thinner returns and whipsaw in choppy/bear markets. PAPER.
+    "leaders": Profile(
+        "leaders", "Garuda-LDR",
+        "",                                  # shares strength's top-1500 universe
+        "strength_daily.csv",                # reuse strength's daily bars — no extra fetch
+        strategy="leaders", label="Momentum leaders · 3-mo >25% + 20% trail",
+        rules="Buy stocks up >25% over ~3 months and above their 200-DMA (the leaders) · "
+              "Sell on a 20% trailing stop or 180-day hold",
+        trend_ma=200, mom_days=63, mom_min=0.25, trail=0.20, max_hold=180,
+        proven_win=58.0, proven_ret=7.80, proven_pf=3.37),
 }
