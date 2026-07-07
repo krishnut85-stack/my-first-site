@@ -242,19 +242,32 @@ def main(argv=None):
     ap.add_argument("--nifty", default="nifty_daily.csv",
                     help="optional Nifty daily CSV for the index benchmark")
     ap.add_argument("--capital", type=float, default=CAPITAL)
+    ap.add_argument("--exits", default=f"{TRAIL}/{MAX_HOLD}",
+                    help="comma-separated trail/hold exits to race, e.g. "
+                         "'0.15/120,0.20/120,0.25/180' (default: the books' exit)")
     a = ap.parse_args(argv)
     p = Path(a.csv)
     if not p.exists():
         sys.exit(f"{a.csv} not found — run scripts/run_lab.sh first")
+    exits = []
+    for spec in a.exits.split(","):
+        t, h = spec.strip().split("/")
+        exits.append((float(t), int(h)))
     dated = {s: sorted(dv.items()) for s, dv in _load_long(p).items()}
-    print(f"[portfolio] {len(dated)} symbols · simulating HI52, CRASH, 50/50, benchmark ...")
+    print(f"[portfolio] {len(dated)} symbols · exits {a.exits} · simulating "
+          f"HI52, CRASH, 50/50, benchmark ...")
     rows = []
-    hi = simulate(dated, [signals_hi52], capital=a.capital)
-    rows.append(("HI52 (52-week high)", hi, metrics(hi["curve"], a.capital)))
-    cr = simulate(dated, [signals_crash], capital=a.capital)
-    rows.append(("CRASH (-8% bounce)", cr, metrics(cr["curve"], a.capital)))
-    both = simulate(dated, [signals_hi52, signals_crash], capital=a.capital)
-    rows.append(("50/50 (both books)", both, metrics(both["curve"], a.capital)))
+    for trail, hold in exits:
+        tag = f" · {trail*100:.0f}%/{hold}d" if len(exits) > 1 else ""
+        hi = simulate(dated, [signals_hi52], capital=a.capital, trail=trail,
+                      max_hold=hold)
+        rows.append((f"HI52{tag}", hi, metrics(hi["curve"], a.capital)))
+        cr = simulate(dated, [signals_crash], capital=a.capital, trail=trail,
+                      max_hold=hold)
+        rows.append((f"CRASH{tag}", cr, metrics(cr["curve"], a.capital)))
+        both = simulate(dated, [signals_hi52, signals_crash], capital=a.capital,
+                        trail=trail, max_hold=hold)
+        rows.append((f"50/50{tag}", both, metrics(both["curve"], a.capital)))
     npath = Path(a.nifty)
     if npath.exists():
         nser = sorted(next(iter(_load_long(npath).values())).items())
