@@ -1,0 +1,545 @@
+"""Stock-level smart scoring from a Trendlyne *stock* export.
+
+This lets Mayura use MUCH more of your Trendlyne data. Until now the bot ranked
+INDUSTRIES and mapped each to a fixed list of representative stocks. If you drop
+a per-stock Trendlyne screener export in as the universe file (any CSV with a
+symbol + Industry column), Mayura will instead rank the ACTUAL stocks inside each
+top industry by a per-stock smart score built from whatever Trendlyne columns
+are present:
+
+  • DVM Scores        — Durability / Valuation / Momentum  (Trendlyne's flagship)
+  • Checklist Score   — Trendlyne's overall stock-quality checklist
+  • Technicals        — RSI, MFI, delivery volume %, multi-timeframe returns
+  • Valuation         — PE, Price/Book  (cheaper scores higher)
+
+Every column is optional. Missing ones are skipped and the surviving weights
+re-normalised, so a lean export still works and a rich one is used in full.
+Nothing here predicts the future — it only ranks the data you exported.
+"""
+
+from typing import Optional
+
+from . import config
+from .smart import _blend, _high, _low
+
+# Canonical field -> the Trendlyne header names we accept for it (lower-cased,
+# whitespace-collapsed). Add aliases freely; matching is forgiving.
+_ALIASES: dict[str, tuple[str, ...]] = {
+    "durability": ("durability", "durability score", "durability score (d)"),
+    "valuation": ("valuation", "valuation score", "valuation score (v)"),
+    "momentum": ("momentum", "momentum score", "momentum score (m)"),
+    "checklist": ("trendlyne checklist score", "checklist score", "stock score",
+                  "trendlyne score", "checklist"),
+    "pe": ("pe ttm", "pe", "pe ratio", "p/e", "price to earnings"),
+    "pbv": ("price to book ttm", "price to book", "pb", "pbv", "p/b",
+            "price to book value"),
+    "rsi": ("rsi", "day rsi", "rsi(14)", "rsi 14"),
+    "mfi": ("mfi", "mfi(14)", "mfi 14", "money flow index"),
+    "delivery": ("delivery volume %", "delivery %", "deliverable %",
+                 "delivery percentage", "delivery volume percentage",
+                 "delivery qty %"),
+    "day_change": ("day change %", "day change%", "1day change %", "change %",
+                   "change%"),
+    "week_change": ("week change %", "1week change %", "weekly change %"),
+    "month_change": ("month change %", "1month change %", "monthly change %"),
+    "qtr_change": ("qtr change %", "quarter change %", "3month change %",
+                   "3m change %", "quarterly change %"),
+    "year_change": ("1yr change %", "year change %", "1year change %",
+                    "12month change %", "yearly change %"),
+}
+
+
+def _norm(s: str) -> str:
+    return " ".join((s or "").lower().split())
+
+
+def resolve_columns(fieldnames) -> dict[str, str]:
+    """Map each canonical field to the actual CSV header present (if any)."""
+    have = {_norm(c): c for c in (fieldnames or [])}
+    out: dict[str, str] = {}
+    for field, aliases in _ALIASES.items():
+        for a in aliases:
+            if a in have:
+                out[field] = have[a]
+                break
+    return out
+
+
+def has_signals(colmap: dict[str, str]) -> bool:
+    """True if the CSV carries ANY column we can score a stock on."""
+    return bool(colmap)
+
+
+def _num(value) -> Optional[float]:
+    if value is None:
+        return None
+    value = str(value).replace(",", "").replace("%", "").strip()
+    if value in ("", "-", "na", "nan", "none"):
+        return None
+    try:
+        return float(value)
+    except ValueError:
+        return None
+
+
+def _get(row, colmap, field) -> Optional[float]:
+    col = colmap.get(field)
+    return _num(row.get(col)) if col else None
+
+
+# --- Breakout watchlist (direct stock list, no Industry column needed) ------
+# Aliases for a Trendlyne "early-breakout" stock export (the columns the Easy
+# Mode screener produces). Used by load_breakout_watchlist below.
+_BREAKOUT_ALIASES: dict[str, tuple[str, ...]] = {
+    "symbol": ("nse code", "nsecode", "symbol", "ticker", "tradingsymbol"),
+    "name": ("stock", "stock name", "company", "name"),
+    "dist52": ("% distance from 52w high", "distance from 52w high",
+               "% distance from 52 week high", "away from 52w high",
+               "% away from 52 week high"),
+    "sma50": ("day sma50", "sma50", "day sma 50", "sma 50"),
+    "sma200": ("day sma200", "sma200", "day sma 200", "sma 200"),
+    "deliv_month": ("delivery% vol avg month", "delivery % vol avg month",
+                    "delivery% volume avg month"),
+    "deliv_6m": ("delivery% vol avg 6m", "delivery % vol avg 6m",
+                 "delivery% volume avg 6m"),
+    "rs_qtr": ("returns vs nifty500 quarter%", "return vs nifty500 quarter%",
+               "returns vs nifty500 quarter", "returns vs nifty 500 quarter%"),
+    "rs_ind_week": ("returns vs industry week%", "return vs industry week%"),
+    "rsi": ("day rsi", "rsi"),
+    # extra columns (quality / accumulation profiles). EXACT Trendlyne masterlist
+    # names are listed first so direct exports parse without manual fixes.
+    "durability": ("trendlyne durability score", "durability", "durability score",
+                   "durability score (d)"),
+    "valuation": ("trendlyne valuation score", "valuation", "valuation score",
+                  "valuation score (v)"),
+    "momentum": ("trendlyne momentum score", "normalized momentum score",
+                 "momentum", "momentum score", "momentum score (m)"),
+    "checklist": ("tl checklist positive score", "trendlyne checklist score",
+                  "checklist score", "stock score", "trendlyne score", "checklist"),
+    "pe": ("pe ttm price to earnings", "pe ttm", "pe", "pe ratio", "p/e"),
+    "pbv": ("price to book ttm", "price to book", "pb", "pbv", "p/b"),
+    "mfi": ("day mfi", "mfi", "mfi(14)", "money flow index"),
+    "volume": ("volume", "day volume", "traded value", "turnover"),
+    "fii": ("fii holding change qoq %", "fii holding change%", "fii holding change",
+            "change in fii holding%", "fii change%", "fii holding qoq%"),
+}
+# Append exact masterlist names to existing keys.
+_BREAKOUT_ALIASES["dist52"] += ("% distance from 52week high",
+                                "discount to 52week high %")
+_BREAKOUT_ALIASES["deliv_month"] += ("delivery% volume avg month",)
+_BREAKOUT_ALIASES["deliv_6m"] += ("delivery% volume avg 6month",)
+_BREAKOUT_ALIASES["rs_qtr"] += ("nifty500 quarter change %",)
+_BREAKOUT_ALIASES["pbv"] += ("pbv adjusted",)
+# Delivery can be exported as VOLUME (not %) — accept both; the month/6M ratio
+# detects accumulation either way.
+_BREAKOUT_ALIASES["deliv_month"] += ("delivery volume avg month",
+                                     "delivery vol avg month", "delivery vol. avg month")
+_BREAKOUT_ALIASES["deliv_6m"] += ("delivery volume avg 6month",
+                                  "delivery vol avg 6month", "delivery vol. avg 6m",
+                                  "delivery vol avg 6m")
+
+_ETF_HINTS = ("ETF", "GSEC", "BENCHMARK", "LIQUIDBEES", "GILT")
+
+
+def _resolve(fieldnames, aliases) -> dict[str, str]:
+    have = {_norm(c): c for c in (fieldnames or [])}
+    out = {}
+    for field, names in aliases.items():
+        for a in names:
+            if a in have:
+                out[field] = have[a]
+                break
+    return out
+
+
+def breakout_score(row, cm: dict[str, str]) -> Optional[float]:
+    """0–100 breakout score for one stock from the Trendlyne screener columns.
+
+    Two models (config.BREAKOUT_EARLY_STAGE):
+      • EARLY-STAGE (default): reward a FRESH golden cross (SMA50 just above
+        SMA200) and DEMOTE already-extended/parabolic trends — catch the move
+        as it begins, not after a 3-6x run.
+      • Continuation: the older 'buy strength near the 52-week high' model.
+    Uses whatever columns are present (graceful degrade)."""
+    def g(f):
+        c = cm.get(f)
+        return _num(row.get(c)) if c else None
+
+    dist = g("dist52")          # % below the 52-week high; smaller = closer
+    sma50, sma200 = g("sma50"), g("sma200")
+    # SMA50-over-SMA200 gap, in PERCENT. ~0% = a brand-new cross; large = mature.
+    gap = ((sma50 - sma200) / sma200 * 100) if (sma50 and sma200 and sma200 > 0) else None
+    dm, d6 = g("deliv_month"), g("deliv_6m")
+    spike = (dm / d6) if (dm and d6 and d6 > 0) else None   # accumulation ratio
+    rsq = g("rs_qtr")           # relative strength vs Nifty500 (quarter)
+    rsi = g("rsi")
+
+    if not config.BREAKOUT_EARLY_STAGE:
+        # Continuation model — buys stocks already running near their highs.
+        return _blend([
+            (_low(dist, 0, 25), 0.35),
+            (_high(rsq, 0, 80), 0.30),
+            (_high(spike, 1.0, 2.5), 0.20),
+            (_high(gap, 0, 50), 0.10),
+            (_high(rsi, 45, 70), 0.05),
+        ])
+
+    # EARLY-STAGE model.
+    # 1) Fresh-cross sweet spot: 100 while SMA50 is 0..FRESH_CROSS_MAX_PCT above
+    #    SMA200 (just crossed), fading as the trend matures, 0 if no cross yet.
+    fresh = config.FRESH_CROSS_MAX_PCT
+    if gap is None:
+        cross = None
+    elif gap < 0:
+        cross = 0.0                                   # SMA50 below SMA200: no cross
+    elif gap <= fresh:
+        cross = 100.0                                 # ⭐ brand-new golden cross
+    else:
+        cross = max(0.0, 100.0 - (gap - fresh) * 2.0)  # mature/extended -> lower
+    # 2) Position vs 52-week high: room to run is good; AT the high = late.
+    if dist is None:
+        pos = None
+    elif dist < 5:
+        pos = 50.0                                    # right at the top: late-ish
+    elif dist <= 45:
+        pos = 100.0                                   # healthy room above the base
+    else:
+        pos = max(0.0, 100.0 - (dist - 45) * 2.0)     # too deep below high
+    return _blend([
+        (cross, 0.45),                    # ⭐ FRESH golden cross = early entry
+        (_high(spike, 1.0, 2.5), 0.20),   # delivery accumulation starting
+        (_high(rsq, 0, 40), 0.20),        # some relative strength (modest)
+        (pos, 0.10),                      # not already at the very top
+        (_high(rsi, 45, 65), 0.05),       # rising, not yet overbought
+    ])
+
+
+def _extension_factor(sma50, sma200) -> float:
+    """A 0.5–1.0 multiplier that DEMOTES already-run-up stocks, using the
+    SMA50-over-SMA200 gap as a proxy for how extended/mature the trend is.
+    ~1.0 when fresh/near (gap ≤ 20%), falling to 0.5 for very stretched names
+    (gap ≥ 80%). Keeps the ranking off parabolic stocks, matching the buy-time
+    extension guard."""
+    if not (sma50 and sma200 and sma200 > 0):
+        return 1.0
+    gap = (sma50 - sma200) / sma200 * 100.0
+    if gap <= 20:
+        return 1.0
+    if gap >= 80:
+        return 0.5
+    return 1.0 - (gap - 20) / 60.0 * 0.5
+
+
+def quality_score(row, cm: dict[str, str]) -> Optional[float]:
+    """0–100 QUALITY+VALUE score (the Tiruchendur profile): strong, durable,
+    fairly-priced businesses. Uses Trendlyne DVM + checklist + PE/PBV."""
+    def g(f):
+        c = cm.get(f)
+        return _num(row.get(c)) if c else None
+    base = _blend([
+        (_high(g("durability"), 0, 100), 0.30),   # financial strength
+        (_high(g("valuation"), 0, 100), 0.25),     # fair / cheap valuation
+        (_high(g("checklist"), 0, 100), 0.15),     # overall quality checklist
+        (_high(g("momentum"), 0, 100), 0.10),      # some trend
+        (_low(g("pe"), 10, 70), 0.12),             # cheaper PE scores higher
+        (_low(g("pbv"), 1, 12), 0.08),             # cheaper P/B scores higher
+    ])
+    return base * _extension_factor(g("sma50"), g("sma200")) if base is not None else None
+
+
+def accumulation_score(row, cm: dict[str, str]) -> Optional[float]:
+    """0–100 ACCUMULATION score (the Madurai profile): follow the smart money —
+    delivery spikes, money-flow, FII buying and relative strength."""
+    def g(f):
+        c = cm.get(f)
+        return _num(row.get(c)) if c else None
+    dm, d6 = g("deliv_month"), g("deliv_6m")
+    spike = (dm / d6) if (dm and d6 and d6 > 0) else None
+    base = _blend([
+        (_high(spike, 1.0, 2.5), 0.35),            # delivery accumulation spike
+        (_high(g("rs_qtr"), 0, 60), 0.25),         # relative strength vs Nifty500
+        (_high(g("mfi"), 40, 80), 0.15),           # money flow index
+        (_high(g("fii"), 0, 2), 0.15),             # FII holding increase % (if any)
+        (_high(g("rsi"), 45, 70), 0.10),           # momentum, not overbought
+    ])
+    return base * _extension_factor(g("sma50"), g("sma200")) if base is not None else None
+
+
+def technical_score(row, cm: dict[str, str]) -> Optional[float]:
+    """0–100 PURE-TECHNICAL momentum score (the Thiruttani / Thanikesa profile,
+    built for SMALL CAPS). No fundamentals at all — only price, trend, relative
+    strength and volume:
+
+      • must be in an UPTREND (SMA50 > SMA200); below = rejected to ~0
+      • rewards proximity to the 52-week high (George & Hwang momentum anchor)
+      • rewards relative strength vs the index and healthy (not overbought) RSI
+      • rewards delivery/volume confirmation and money-flow
+
+    The small-cap UNIVERSE is set by the Trendlyne screen you export (filter
+    Market Cap = Small Cap); this scorer just ranks whatever stocks are in it.
+    The _extension_factor still demotes already-parabolic names so we ride
+    momentum without chasing a stock that has already gone vertical."""
+    def g(f):
+        c = cm.get(f)
+        return _num(row.get(c)) if c else None
+
+    dist = g("dist52")              # % below 52-week high; smaller = nearer high
+    sma50, sma200 = g("sma50"), g("sma200")
+    gap = ((sma50 - sma200) / sma200 * 100) if (sma50 and sma200 and sma200 > 0) else None
+    rsq = g("rs_qtr")              # relative strength vs Nifty500 (quarter)
+    rsi = g("rsi")
+    mfi = g("mfi")
+    dm, d6 = g("deliv_month"), g("deliv_6m")
+    spike = (dm / d6) if (dm and d6 and d6 > 0) else None
+
+    # Uptrend gate: no golden cross => not a momentum candidate.
+    fresh = config.FRESH_CROSS_MAX_PCT
+    if gap is None:
+        trend = None
+    elif gap < 0:
+        trend = 0.0                                   # SMA50 below SMA200 -> reject
+    elif gap <= fresh:
+        trend = 100.0                                 # fresh, clean uptrend
+    else:
+        trend = max(40.0, 100.0 - (gap - fresh) * 1.5)  # mature but still trending
+    # 52-week-high proximity: nearer the high = stronger momentum.
+    prox = _low(dist, 0, 40) if dist is not None else None
+
+    base = _blend([
+        (trend, 0.30),                     # established / fresh uptrend
+        (prox, 0.25),                      # near the 52-week high (momentum)
+        (_high(rsq, 0, 50), 0.20),         # relative strength vs the index
+        (_high(rsi, 50, 70), 0.10),        # momentum, not yet overbought
+        (_high(spike, 1.0, 2.5), 0.10),    # volume/delivery confirmation
+        (_high(mfi, 45, 80), 0.05),        # money flow
+    ])
+    return base * _extension_factor(sma50, sma200) if base is not None else None
+
+
+# Strategy profile -> scoring function. Each Mayura temple uses one.
+SCORERS = {
+    "breakout": breakout_score,        # 🌄 Palani
+    "quality": quality_score,          # 🌊 Tiruchendur
+    "accumulation": accumulation_score,  # 🛕 Madurai
+    "technical": technical_score,      # 🕊️ Thiruttani (small-cap momentum)
+}
+
+
+def load_watchlist(path, profile: str = "breakout") -> list[dict]:
+    """Load a flat Trendlyne stock export as a best-first list of dicts:
+    {"symbol", "score", "sma50", "sma200", "dist52"}, scored by the chosen
+    `profile` (breakout | quality | accumulation). `sma50` is the breakout level
+    (failed-breakout exit). Skips no-symbol rows and ETFs/GSec funds. Returns []
+    if the file has no usable signals for that profile."""
+    import csv
+    scorer = SCORERS.get(profile, breakout_score)
+    try:
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            cm = _resolve(reader.fieldnames, _BREAKOUT_ALIASES)
+            # A Trendlyne export can carry TWO symbol columns ("NSE code" filled
+            # + "NSE Code" sometimes empty). Gather ALL of them and per row use
+            # the first non-empty, so no stock is dropped.
+            sym_aliases = set(_BREAKOUT_ALIASES["symbol"])
+            sym_cols = [c for c in (reader.fieldnames or [])
+                        if _norm(c) in sym_aliases]
+            if not sym_cols:
+                return []
+
+            def col(r, f):
+                c = cm.get(f)
+                return _num(r.get(c)) if c else None
+
+            out: list[dict] = []
+            seen = set()
+            for r in reader:
+                sym = ""
+                for sc in sym_cols:
+                    v = (r.get(sc) or "").strip()
+                    if v:
+                        sym = v.upper()
+                        break
+                nm = (r.get(cm.get("name", "")) or "").upper()
+                if not sym or sym in seen:
+                    continue
+                if any(h in nm or h in sym for h in _ETF_HINTS):
+                    continue   # skip bond ETFs / GSec funds that slip in
+                sc = scorer(r, cm)
+                if sc is None:
+                    continue
+                seen.add(sym)
+                out.append({
+                    "symbol": sym, "score": round(sc, 1),
+                    "sma50": col(r, "sma50"), "sma200": col(r, "sma200"),
+                    "dist52": col(r, "dist52"),
+                })
+    except OSError:
+        return []
+    out.sort(key=lambda d: d["score"], reverse=True)
+    return out
+
+
+def load_symbols(path) -> list[dict]:
+    """Just the symbols (and name) from a flat export — for OHLC strategies that
+    compute their score from live price bars, not CSV columns. The CSV only needs
+    a symbol column (e.g. 'NSE Code'); it's a stable candidate universe, not a
+    daily screen. Skips ETFs/GSec funds and de-dupes. Returns [{symbol}]."""
+    import csv
+    try:
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            cm = _resolve(reader.fieldnames, _BREAKOUT_ALIASES)
+            sym_aliases = set(_BREAKOUT_ALIASES["symbol"])
+            sym_cols = [c for c in (reader.fieldnames or [])
+                        if _norm(c) in sym_aliases]
+            if not sym_cols:
+                return []
+            out, seen = [], set()
+            for r in reader:
+                sym = ""
+                for sc in sym_cols:
+                    v = (r.get(sc) or "").strip()
+                    if v:
+                        sym = v.upper()
+                        break
+                nm = (r.get(cm.get("name", "")) or "").upper()
+                if not sym or sym in seen:
+                    continue
+                if any(h in nm or h in sym for h in _ETF_HINTS):
+                    continue
+                seen.add(sym)
+                out.append({"symbol": sym})
+    except OSError:
+        return []
+    return out
+
+
+def load_valuations(path) -> dict[str, dict]:
+    """For Thanikesa's valuation guard: map symbol -> {valuation, pe, pbv} if the
+    pool CSV carries those Trendlyne columns. Empty dict if none present (guard
+    then stays off — a bare NSE-symbol list is fine)."""
+    import csv
+    out: dict[str, dict] = {}
+    try:
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            cm = _resolve(reader.fieldnames, _BREAKOUT_ALIASES)
+            if not any(k in cm for k in ("valuation", "pe", "pbv")):
+                return {}
+            sym_aliases = set(_BREAKOUT_ALIASES["symbol"])
+            sym_cols = [c for c in (reader.fieldnames or [])
+                        if _norm(c) in sym_aliases]
+            for r in reader:
+                sym = ""
+                for sc in sym_cols:
+                    v = (r.get(sc) or "").strip()
+                    if v:
+                        sym = v.upper()
+                        break
+                if not sym:
+                    continue
+                out[sym] = {
+                    "valuation": _num(r.get(cm.get("valuation", ""))),
+                    "pe": _num(r.get(cm.get("pe", ""))),
+                    "pbv": _num(r.get(cm.get("pbv", ""))),
+                }
+    except OSError:
+        return {}
+    return out
+
+
+def load_fundamental_factors(path) -> list[dict]:
+    """For Solaimalai: read VALUE / QUALITY / TREND factors per stock from a
+    Trendlyne export, ready for cross-sectional z-scoring. Returns
+    [{symbol, factors:{value,quality,trend}, valuation, sma50, sma200, dist52}].
+    Each factor is 0..100, higher = better (value = cheaper). [] if unusable."""
+    import csv
+    out: list[dict] = []
+    try:
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            cm = _resolve(reader.fieldnames, _BREAKOUT_ALIASES)
+            sym_aliases = set(_BREAKOUT_ALIASES["symbol"])
+            sym_cols = [c for c in (reader.fieldnames or [])
+                        if _norm(c) in sym_aliases]
+            if not sym_cols:
+                return []
+
+            def col(r, fld):
+                c = cm.get(fld)
+                return _num(r.get(c)) if c else None
+
+            seen = set()
+            for r in reader:
+                sym = ""
+                for sc in sym_cols:
+                    v = (r.get(sc) or "").strip()
+                    if v:
+                        sym = v.upper()
+                        break
+                nm = (r.get(cm.get("name", "")) or "").upper()
+                if not sym or sym in seen:
+                    continue
+                if any(h in nm or h in sym for h in _ETF_HINTS):
+                    continue
+                val_score = col(r, "valuation")
+                value = _blend([
+                    (_high(val_score, 0, 100), 0.5),   # Trendlyne valuation (cheap=high)
+                    (_low(col(r, "pe"), 10, 70), 0.25),  # lower PE = higher
+                    (_low(col(r, "pbv"), 1, 12), 0.25),  # lower P/B = higher
+                ])
+                quality = _blend([
+                    (_high(col(r, "durability"), 0, 100), 0.6),
+                    (_high(col(r, "checklist"), 0, 100), 0.4),
+                ])
+                trend = _high(col(r, "momentum"), 0, 100)
+                if value is None and quality is None and trend is None:
+                    continue
+                seen.add(sym)
+                out.append({"symbol": sym,
+                            "factors": {"value": value, "quality": quality,
+                                        "trend": trend},
+                            "valuation": val_score,
+                            "sma50": col(r, "sma50"), "sma200": col(r, "sma200"),
+                            "dist52": col(r, "dist52")})
+    except OSError:
+        return []
+    return out
+
+
+def load_breakout_watchlist(path) -> list[dict]:
+    """Back-compat: the breakout profile (Palani)."""
+    return load_watchlist(path, "breakout")
+
+
+def score_row(row, colmap: dict[str, str]) -> Optional[float]:
+    """A 0–100 smart score for one stock row, from whatever columns exist.
+
+    Returns None if the row has no usable signal (caller then falls back to a
+    liquidity sort / insertion order)."""
+    # DVM pillars are already 0–100 in Trendlyne; clamp to be safe.
+    dvm = _blend([
+        (_high(_get(row, colmap, "durability"), 0, 100), config.SMART_WEIGHTS["durability"]),
+        (_high(_get(row, colmap, "valuation"), 0, 100), config.SMART_WEIGHTS["valuation"]),
+        (_high(_get(row, colmap, "momentum"), 0, 100), config.SMART_WEIGHTS["momentum"]),
+    ])
+    checklist = _high(_get(row, colmap, "checklist"), 0, 100)
+    technical = _blend([
+        (_high(_get(row, colmap, "rsi"), 30, 70), 0.25),
+        (_high(_get(row, colmap, "mfi"), 30, 70), 0.15),
+        (_high(_get(row, colmap, "delivery"), 20, 70), 0.20),   # real accumulation
+        (_high(_get(row, colmap, "week_change"), -5, 10), 0.10),
+        (_high(_get(row, colmap, "month_change"), -10, 20), 0.15),
+        (_high(_get(row, colmap, "qtr_change"), -10, 40), 0.15),
+    ])
+    valuation = _blend([
+        (_low(_get(row, colmap, "pe"), 10, 70), 0.5),           # cheaper = higher
+        (_low(_get(row, colmap, "pbv"), 1, 12), 0.5),
+    ])
+    # Blend the pillars that are present. DVM (Trendlyne's own composite) leads.
+    return _blend([
+        (dvm, 0.55),
+        (checklist, 0.20),
+        (technical, 0.15),
+        (valuation, 0.10),
+    ])

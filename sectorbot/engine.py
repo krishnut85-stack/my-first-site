@@ -20,6 +20,19 @@ from .portfolio import Portfolio
 from .risk import PositionState, decide_exit
 
 
+def _holding_days(entry_date) -> int:
+    """Calendar days a position has been held, from its entry_date (YYYY-MM-DD)."""
+    if not entry_date:
+        return 0
+    try:
+        from datetime import date, datetime
+        from .data_loader import IST
+        y, m, d = (int(x) for x in str(entry_date).split("-"))
+        return (datetime.now(IST).date() - date(y, m, d)).days
+    except Exception:  # noqa: BLE001
+        return 0
+
+
 def _safe_price(ds, symbol):
     try:
         p = ds.last_price(symbol)
@@ -39,7 +52,16 @@ def _safe_atr(ds, symbol):
         return 0.0
 
 
-def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
+def run_paper_session(verbose: bool = True, csv_path=None,
+                      ranked_symbols=None, levels=None, ext_levels=None) -> dict:
+    """Run one paper session.
+
+    If `ranked_symbols` is given (best-first), Mayura trades THAT list directly
+    (e.g. a Trendlyne breakout watchlist) instead of ranking industries → stocks.
+    `levels` is an optional {symbol: breakout_level} map (e.g. entry SMA50) used
+    for the failed-breakout exit. `ext_levels` is {symbol: SMA200} used by the
+    extension guard to skip already-parabolic names. All risk rules, the regime
+    filter and sizing still apply identically."""
     ds = get_datasource()
     real_data = not isinstance(ds, PaperDataSource)
 
@@ -59,13 +81,27 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
 
     pf = Portfolio.load()
 
+    # MARKET-HOLIDAY GUARD: if the exchange didn't trade today (holiday/weekend),
+    # prices are stale — running exits/buys would be bogus. Leave everything
+    # untouched. (Fail-open: only skips when we're SURE the market was closed.)
+    if (config.SKIP_MARKET_HOLIDAYS and real_data
+            and hasattr(ds, "market_traded_today") and not ds.market_traded_today()):
+        msg = ("market closed today (holiday/weekend) — no trading, holdings "
+               "left unchanged")
+        if verbose:
+            print(f"\n  {msg}\n")
+        return {"market_closed": True, "aborted": False, "message": msg,
+                "real_data": real_data, "portfolio": pf,
+                "exits": [], "entries": []}
+
     # Today's ranked symbols (best first) and the buffer "keep" band.
-    picks = build_watchlist(csv_path)
-    ranked_symbols = []
-    for pick in picks:
-        for sym in pick.symbols:
-            if sym not in ranked_symbols:
-                ranked_symbols.append(sym)
+    if ranked_symbols is None:
+        picks = build_watchlist(csv_path)
+        ranked_symbols = []
+        for pick in picks:
+            for sym in pick.symbols:
+                if sym not in ranked_symbols:
+                    ranked_symbols.append(sym)
     keep_band = set(ranked_symbols[: config.SELL_RANK_BUFFER])  # e.g. top 15
 
     # --- 1. manage existing positions -------------------------------------
@@ -88,7 +124,27 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
                 pnl = pf.sell(sym, ltp, reason=f"stop-loss {change:+.1%}")
                 exits.append((sym, ltp, "stop-loss", pnl))
         else:
-            # low-churn: SL / TP / trailing / ATR
+            # low-churn: FAILED-BREAKOUT / TIME STOP / SL / TP / trailing / ATR
+            # Failed-breakout exit: price fell back below the breakout level
+            # (the SMA50 captured at entry) -> the breakout failed, get out.
+            if config.USE_FAILED_BREAKOUT_EXIT:
+                lvl = h.get("breakout_level")
+                held = _holding_days(h.get("entry_date"))
+                # grace: give a fresh breakout time before calling it failed
+                if lvl and ltp < lvl and held >= config.BREAKOUT_GRACE_DAYS:
+                    pnl = pf.sell(sym, ltp, reason=f"failed breakout (<SMA50 {lvl:.0f})")
+                    exits.append((sym, ltp, "failed breakout", pnl))
+                    continue
+            # Time stop ("dead money"): held too long without progress -> exit
+            # and free the capital. A running stock (gain above the threshold)
+            # is left to the trailing stop, so winners are never time-stopped.
+            if config.MAX_HOLDING_DAYS:
+                gain = (ltp - h["avg_price"]) / h["avg_price"]
+                days = _holding_days(h.get("entry_date"))
+                if days >= config.MAX_HOLDING_DAYS and gain < config.TIME_STOP_MIN_GAIN_PCT:
+                    pnl = pf.sell(sym, ltp, reason=f"time stop ({days}d, {gain:+.1%})")
+                    exits.append((sym, ltp, "time stop", pnl))
+                    continue
             state = PositionState(sym, h["avg_price"], h["qty"],
                                   atr=h.get("atr", 0.0),
                                   peak_price=h.get("peak_price", h["avg_price"]))
@@ -104,26 +160,41 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
     # the single biggest protection against momentum-crash drawdowns.
     from .regime import market_in_uptrend
     uptrend = market_in_uptrend(ds)
-    regime_blocked = config.USE_REGIME_FILTER and not uptrend
+    downtrend = config.USE_REGIME_FILTER and not uptrend
+    # Smart-middle: in a downtrend, instead of sitting in 100% cash, optionally
+    # buy only the strongest few leaders at a reduced size.
+    reduced = downtrend and config.REGIME_DOWNTREND_MODE == "reduced"
+    regime_blocked = downtrend and not reduced
 
+    max_positions = (config.REGIME_DOWNTREND_MAX_POSITIONS if reduced
+                     else config.MAX_POSITIONS)
+    size_factor = config.REGIME_DOWNTREND_SIZE_FACTOR if reduced else 1.0
     per_name_budget = min(config.PAPER_CAPITAL * config.MAX_ALLOCATION_PER_NAME,
-                          config.PAPER_CAPITAL / max(config.MAX_POSITIONS, 1))
+                          config.PAPER_CAPITAL / max(config.MAX_POSITIONS, 1)) * size_factor
     entries = []
+    skipped_extended = []
     if not regime_blocked:
         for sym in ranked_symbols:
-            if config.REBALANCE and len(pf.holdings) >= config.MAX_POSITIONS:
+            if len(pf.holdings) >= max_positions:
                 break  # already hold the target number of names
             if sym in pf.holdings:
                 continue
             ltp = _safe_price(ds, sym)
             if ltp is None:
                 continue
+            # EXTENSION GUARD: never chase a stock already far above its 200-DMA.
+            if config.MAX_EXTENSION_ABOVE_SMA200 and ext_levels:
+                ref = ext_levels.get(sym)
+                if ref and ref > 0 and ltp > ref * (1 + config.MAX_EXTENSION_ABOVE_SMA200):
+                    skipped_extended.append((sym, round(ltp, 2), ltp / ref - 1))
+                    continue  # already parabolic — skip
             budget = min(per_name_budget, pf.cash)
             qty = int(budget // ltp)
             if qty <= 0:
                 continue
             a = _safe_atr(ds, sym)
-            if pf.buy(sym, qty, ltp, atr=a, reason="entry"):
+            lvl = (levels or {}).get(sym)
+            if pf.buy(sym, qty, ltp, atr=a, reason="entry", breakout_level=lvl):
                 entries.append((sym, ltp, qty))
 
     # --- 3. record + save -------------------------------------------------
@@ -159,6 +230,8 @@ def run_paper_session(verbose: bool = True, csv_path=None) -> dict:
         "total_pnl_pct": (equity - pf.starting_capital) / pf.starting_capital * 100,
         "exits": exits, "entries": entries, "price_of": price_of,
         "regime_uptrend": uptrend, "regime_blocked": regime_blocked,
+        "regime_reduced": reduced, "max_positions": max_positions,
+        "skipped_extended": skipped_extended,
         "data_date": data_info["date"], "data_stale": data_info["stale"],
         "scorecard": compute_scorecard(pf),
     }

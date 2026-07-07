@@ -46,9 +46,26 @@ class Industry:
     rev_growth: float
     breadth: float
     pe: Optional[float]
+    # --- richer Trendlyne columns (used by the smart DVM score) ------------
+    # All optional so older/leaner CSVs still load; missing ones are skipped.
+    week_change: float = 0.0
+    month_change: float = 0.0
+    year3_change: float = 0.0
+    year5_change: float = 0.0
+    peg: Optional[float] = None          # PE to Growth TTM (valuation)
+    pbv: Optional[float] = None          # Price to Book TTM (valuation)
+    net_profit_growth: float = 0.0       # Net Profit growth Qtr YoY%
+    roa: float = 0.0                     # ROA Annual (durability)
+    div_yield: float = 0.0               # Dividend yield (valuation tilt)
+    # --- computed scores ---------------------------------------------------
     score: float = 0.0
     fundamental_score: float = 0.0   # score before the breadth blend
     sector_breadth_score: float = 0.0  # 0-100 breadth of this industry's sector
+    # DVM (Durability / Valuation / Momentum) — Trendlyne-style, 0-100 each
+    durability: Optional[float] = None
+    valuation: Optional[float] = None
+    momentum: Optional[float] = None
+    smart_score: Optional[float] = None
 
 
 def load_industries(csv_path=None) -> list[Industry]:
@@ -74,6 +91,15 @@ def load_industries(csv_path=None) -> list[Industry]:
                     rev_growth=_num(row.get("Revenue growth Qtr YoY%")) or 0.0,
                     breadth=_num(row.get("Advances/ Declines Ratio")) or 0.0,
                     pe=_num(row.get("PE TTM")),
+                    week_change=_num(row.get("Week Change %")) or 0.0,
+                    month_change=_num(row.get("Month Change %")) or 0.0,
+                    year3_change=_num(row.get("3Yr Change %")) or 0.0,
+                    year5_change=_num(row.get("5Yr Change %")) or 0.0,
+                    peg=_num(row.get("PE to Growth TTM")),
+                    pbv=_num(row.get("Price to Book TTM")),
+                    net_profit_growth=_num(row.get("Net Profit growth Qtr YoY%")) or 0.0,
+                    roa=_num(row.get("ROA Annual")) or 0.0,
+                    div_yield=_num(row.get("Dividend yield")) or 0.0,
                 )
             )
     return out
@@ -106,6 +132,15 @@ def score_industries(industries: list[Industry], breadth=None) -> list[Industry]
                 normalize_sector(ind.sector)
             )
         ind.sector_breadth_score = b["score"] if b else 0.0
+        # SMART path: a Trendlyne-style DVM score using every useful column.
+        # Computed after sector_breadth_score so the momentum pillar can use it.
+        if config.USE_SMART_SCORE:
+            from .smart import compute_dvm
+            smart = compute_dvm(ind)
+            if smart is not None:
+                ind.score = smart
+                continue
+            # else fall through to the legacy score (CSV too lean for DVM)
         if config.USE_BREADTH_BLEND and b:
             ind.score = (
                 fund * config.BLEND_FUNDAMENTAL_WEIGHT

@@ -50,14 +50,14 @@ class Portfolio:
         }, indent=2))
 
     # --- operations (simulated) -------------------------------------------
-    def buy(self, symbol, qty, price, atr=0.0, reason=""):
+    def buy(self, symbol, qty, price, atr=0.0, reason="", breakout_level=None):
         cost = qty * price
         if qty <= 0 or cost > self.cash:
             return False
         self.cash -= cost
         self.holdings[symbol] = {
             "qty": qty, "avg_price": price, "entry_date": _today(),
-            "peak_price": price, "atr": atr,
+            "peak_price": price, "atr": atr, "breakout_level": breakout_level,
         }
         self.trades.append({"date": _today(), "side": "BUY", "symbol": symbol,
                             "qty": qty, "price": round(price, 2), "reason": reason})

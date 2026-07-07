@@ -1,0 +1,19 @@
+# Never commit secrets or runtime/data for the GIR bot
+.env
+*.env
+__pycache__/
+*.pyc
+*.log
+*.db
+*.sqlite*
+*.json
+*.csv
+*.txt
+*.bak
+kite_token*
+*token*
+*_hwm*
+data/
+snapshots/
+venv/
+.venv/
