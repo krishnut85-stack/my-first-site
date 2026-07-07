@@ -138,6 +138,134 @@ def _load_closes(path):
     return next(iter(series.values())) if series else []
 
 
+def _next_thursday(d):
+    """NSE Nifty weekly expiry is Thursday. Next Thursday strictly after d."""
+    ahead = (3 - d.weekday()) % 7 or 7
+    return d + timedelta(days=ahead)
+
+
+class OptionsBook:
+    """PAPER weekly Iron Condor on an index. Opens a condor at +/-dist strikes,
+    holds to Thursday expiry, settles P&L, rolls into the next week. Sizes each
+    week to risk `alloc_pct` of capital (max loss = one week's risk). Persistent.
+
+    P&L uses the same transparent credit model as the backtest — to be replaced
+    with real option premiums once the live option chain is wired in."""
+
+    def __init__(self, capital=1_000_000.0, dist=0.025, wing=0.01, credit_frac=0.30,
+                 alloc_pct=0.02, index="NIFTY 50", realized=0.0, condor=None,
+                 history=None, trades=None):
+        self.capital = capital
+        self.starting_capital = capital
+        self.dist = dist
+        self.wing = wing
+        self.credit_frac = credit_frac
+        self.alloc_pct = alloc_pct
+        self.index = index
+        self.realized = realized
+        self.condor = condor          # {strikes, credit_frac_spot, entry_spot, entry_date, expiry, risk}
+        self.history = history or []   # [{date, equity}]
+        self.trades = trades or []
+
+    @classmethod
+    def load(cls, path, **kw):
+        import json
+        from pathlib import Path
+        p = Path(path)
+        if p.exists():
+            d = json.loads(p.read_text())
+            d.update(kw)               # allow config (dist/wing/...) to override saved
+            return cls(**d)
+        return cls(**kw)
+
+    def save(self, path):
+        import json
+        from pathlib import Path
+        Path(path).parent.mkdir(parents=True, exist_ok=True)
+        Path(path).write_text(json.dumps({
+            "capital": self.starting_capital, "dist": self.dist, "wing": self.wing,
+            "credit_frac": self.credit_frac, "alloc_pct": self.alloc_pct,
+            "index": self.index, "realized": self.realized, "condor": self.condor,
+            "history": self.history[-800:], "trades": self.trades[-500:],
+        }, indent=2))
+
+    @property
+    def _max_loss_frac(self):
+        return self.wing - self.credit_frac * self.wing      # e.g. 1% - 0.3% = 0.7% of spot
+
+    def _net_frac(self, spot_now):
+        """This week's Iron Condor payoff as a fraction of spot, if it settled at
+        spot_now (credit modelled)."""
+        c = self.condor
+        credit = c["credit_frac_spot"]
+        sc, sp = c["strikes"]["sc"], c["strikes"]["sp"]
+        w = self.wing * c["entry_spot"]
+        if spot_now >= sc:
+            net = credit * c["entry_spot"] - min(spot_now - sc, w)
+        elif spot_now <= sp:
+            net = credit * c["entry_spot"] - min(sp - spot_now, w)
+        else:
+            net = credit * c["entry_spot"]
+        return net / c["entry_spot"]
+
+    def _pnl_rupees(self, net_frac):
+        return net_frac / self._max_loss_frac * (self.starting_capital * self.alloc_pct)
+
+    def _open(self, spot, today):
+        cf_spot = self.credit_frac * self.wing
+        self.condor = {
+            "strikes": {"sp": round(spot * (1 - self.dist), 1), "lp": round(spot * (1 - self.dist - self.wing), 1),
+                        "sc": round(spot * (1 + self.dist), 1), "lc": round(spot * (1 + self.dist + self.wing), 1)},
+            "credit_frac_spot": cf_spot, "entry_spot": spot,
+            "entry_date": today.isoformat(), "expiry": _next_thursday(today).isoformat(),
+            "risk": round(self.starting_capital * self.alloc_pct, 0),
+        }
+        self.trades.append({"date": today.isoformat(), "side": "OPEN", "spot": round(spot, 1),
+                            "expiry": self.condor["expiry"]})
+
+    def _settle(self, spot, today):
+        pnl = self._pnl_rupees(self._net_frac(spot))
+        self.realized += pnl
+        self.trades.append({"date": today.isoformat(), "side": "SETTLE",
+                            "spot": round(spot, 1), "pnl": round(pnl, 0)})
+        self.condor = None
+
+    def step(self, spot, today, market_open):
+        """Advance the weekly cycle: settle at/after expiry, (re)open when flat."""
+        if not market_open or not spot or spot <= 0:
+            return
+        if self.condor and today.isoformat() >= self.condor["expiry"]:
+            self._settle(spot, today)
+        if self.condor is None:
+            self._open(spot, today)
+
+    def state(self, spot):
+        """Dashboard view: current condor + live mark + equity."""
+        unreal = self._pnl_rupees(self._net_frac(spot)) if (self.condor and spot > 0) else 0.0
+        equity = self.starting_capital + self.realized + unreal
+        c = self.condor
+        in_range = bool(c and spot and c["strikes"]["sp"] < spot < c["strikes"]["sc"])
+        from datetime import date as _d
+        dte = None
+        if c:
+            y, m, dd = (int(x) for x in c["expiry"].split("-"))
+            dte = (_d(y, m, dd) - _d.today()).days
+        return {
+            "index": self.index, "spot": round(spot, 1) if spot else None,
+            "strikes": c["strikes"] if c else None, "expiry": c["expiry"] if c else None,
+            "dte": dte, "in_range": in_range,
+            "credit_rs": round(self._credit_frac_to_rs(), 0) if c else None,
+            "max_loss_rs": round(self.starting_capital * self.alloc_pct, 0) if c else None,
+            "unrealized": round(unreal, 0), "realized": round(self.realized, 0),
+            "equity": round(equity, 0),
+            "pnl_pct": round((equity / self.starting_capital - 1) * 100, 2),
+        }
+
+    def _credit_frac_to_rs(self):
+        # reward at a full win = (credit / max_loss) * risk
+        return (self.credit_frac * self.wing) / self._max_loss_frac * (self.starting_capital * self.alloc_pct)
+
+
 def main():
     args = sys.argv[1:]
     if "--fetch" in args:

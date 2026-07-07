@@ -11,14 +11,27 @@ from . import config
 from .cross import load_series
 from .feed import KiteFeed
 from .market import is_market_open, market_status
+from .options import OptionsBook
 from .portfolio import LivePortfolio, _today
 from .scan import run_scan
 from .setups import rsi, sma
 from .strategy import PROFILES
 
+# The 7th "book" is a weekly Iron Condor on the Nifty — index option selling,
+# not a stock scanner, so it lives outside PROFILES and renders in its own tab.
+OPTIONS_LABEL = "Iron Condor · Nifty weekly · ±2.5% · defined-risk"
+OPTIONS_RULES = ("Sell ±2.5% call & put spreads (1% wings) on the Nifty every week; "
+                 "win if the index expires between the short strikes. Loss is capped "
+                 "at one week's risk (2% of book) — no blow-ups.")
+OPTIONS_WIN = 89.0        # backtested: Nifty stayed inside ±2.5% ~89% of weeks
+
 
 def _pf_path(key):
     return config.DATA_DIR / f"garuda_{key}_portfolio.json"
+
+
+def _options_path():
+    return config.DATA_DIR / "garuda_options_book.json"
 
 
 class GarudaLive:
@@ -27,6 +40,9 @@ class GarudaLive:
         self.feed = KiteFeed()
         self.portfolios = {k: LivePortfolio.load(_pf_path(k), p.capital)
                            for k, p in PROFILES.items()}
+        self.options = OptionsBook.load(_options_path(), capital=1_000_000.0,
+                                        dist=0.025, wing=0.01, credit_frac=0.30,
+                                        alloc_pct=0.02, index="NIFTY 50")
         self.prices = {}      # symbol -> live ltp
         self.index = {}       # NSE index name -> {ltp, pc, chg} (Nifty 50, Bank Nifty)
         self.day_ohlc = {}    # symbol -> {o,h,l,pc,ltp} today (for the live candle)
@@ -151,6 +167,12 @@ class GarudaLive:
             self.last_signals[k] = {"buys": [b["symbol"] for b in res["buys"]],
                                     "sells": [s["symbol"] for s in res["sells"]]}
             results[k] = res
+        # advance the weekly Iron Condor: settle at expiry, roll into next week
+        nifty = (self.index.get("NIFTY 50") or {}).get("ltp") or 0.0
+        from datetime import date as _date
+        self.options.step(nifty, _date.today(), is_market_open())
+        self.options.save(_options_path())
+        results["options"] = {"status": f"condor stepped @ nifty {nifty or '—'}"}
         self.last_scan_date = _today()
         return results
 
@@ -364,11 +386,28 @@ class GarudaLive:
                 idx = i - (m - len(h))            # align each history to the right end
                 total += h[idx]["equity"] if idx >= 0 else pf.starting_capital
             daily.append(round(total, 0))
-        # daily track record + today's live intraday samples + the current tip
+        # daily track record + today's live intraday samples + the current tip.
+        # The curve tracks the six EQUITY books (the weekly options book keeps its
+        # own tile) so its history and tip stay consistent.
         totals["curve"] = daily + self.intraday + [totals["equity"]]
+        # --- the 7th book: weekly Iron Condor on the Nifty --------------------
+        nifty = (self.index.get("NIFTY 50") or {}).get("ltp") or 0.0
+        ost = self.options.state(nifty)
+        obase = self.day_base.setdefault("options", round(ost["equity"], 0))
+        options = {**ost, "key": "options", "name": config.BOT_NAME + "-OPT",
+                   "strategy": "options", "label": OPTIONS_LABEL, "rules": OPTIONS_RULES,
+                   "capital": self.options.starting_capital,
+                   "day_pnl": round(ost["equity"] - obase, 0),
+                   "win": OPTIONS_WIN, "win_kind": "backtest"}
+        # fold options into the grand-total P&L the dashboard tiles show
+        totals["equity"] = round(totals["equity"] + ost["equity"], 0)
+        totals["capital"] = round(totals["capital"] + options["capital"], 0)
+        totals["day_pnl"] = round(totals["day_pnl"] + options["day_pnl"], 0)
+        totals["pnl_pct"] = round((totals["equity"] / totals["capital"] - 1) * 100, 2) \
+            if totals["capital"] else 0.0
         from .market import HOLIDAYS
         return {"live": self.feed.live, "profiles": profs, "totals": totals,
-                "index": self.index,
+                "options": options, "index": self.index,
                 "market_open": is_market_open(), "market_status": market_status(),
                 "holidays": sorted(HOLIDAYS),
                 "last_scan": self.last_scan_date, "today": _today()}

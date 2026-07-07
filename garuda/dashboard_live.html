@@ -28,6 +28,27 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .pltbl .g{color:var(--grn)}.pltbl .r{color:var(--red)}
 .stile{background:var(--card);padding:11px 14px}.stile .l{color:var(--mut);font-size:10px}.stile .v{font-size:19px;font-weight:800;margin-top:3px}
 .g{color:var(--grn)}.r{color:var(--red)}.a{color:var(--amb)}.muted{color:var(--mut)}
+/* ---- OPTIONS (Iron Condor) panel ---- */
+.condor{padding:16px}
+.condor .chd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.condor .chd b{font-size:15px}.condor .chd .sp{font-size:20px;font-weight:800}
+.condor .stat{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.06em;padding:2px 9px;border-radius:5px}
+.condor .stat.in{background:rgba(43,196,132,.15);color:var(--grn);border:1px solid rgba(43,196,132,.4)}
+.condor .stat.out{background:rgba(240,90,90,.15);color:var(--red);border:1px solid rgba(240,90,90,.4)}
+.condor .stat.flat{background:var(--card);color:var(--mut);border:1px solid var(--line)}
+.condor .bar{position:relative;height:44px;margin:16px 0 6px;border-radius:8px;
+  background:linear-gradient(90deg,rgba(240,90,90,.18) 0%,rgba(240,90,90,.18) 14%,rgba(43,196,132,.14) 14%,rgba(43,196,132,.14) 86%,rgba(240,90,90,.18) 86%,rgba(240,90,90,.18) 100%);
+  border:1px solid var(--line)}
+.condor .bar .k{position:absolute;top:0;bottom:0;width:2px;background:var(--mut)}
+.condor .bar .k.short{background:var(--amb);width:2px}
+.condor .bar .k.spot{background:#fff;width:2px;box-shadow:0 0 6px rgba(255,255,255,.6)}
+.condor .bar .lbl{position:absolute;top:-15px;transform:translateX(-50%);font-size:9px;color:var(--mut);white-space:nowrap}
+.condor .bar .lbl.spot{top:auto;bottom:-16px;color:#fff;font-weight:700}
+.condor .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:22px}
+.condor .cell{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 11px}
+.condor .cell .l{color:var(--mut);font-size:9px;letter-spacing:.05em}
+.condor .cell .v{font-size:16px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
+.condor .note{color:var(--mut);font-size:10px;margin-top:14px;line-height:1.5}
 
 /* ---- Zerodha-style split: LEFT live list · RIGHT two charts ---- */
 .main{display:grid;grid-template-columns:minmax(330px,0.85fr) 1.35fr;gap:14px;margin-top:12px;align-items:start}
@@ -114,6 +135,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
         <span class=wtab data-f=strength onclick="setFilter('strength',this)">STRENGTH</span>
         <span class=wtab data-f=leaders onclick="setFilter('leaders',this)">LEADERS</span>
         <span class=wtab data-f=scalein onclick="setFilter('scalein',this)">SCALE-IN</span>
+        <span class=wtab data-f=options onclick="setFilter('options',this)">OPTIONS</span>
         <input class=wsearch id=search placeholder="search…" oninput="render(DATA)">
       </div>
       <div class=listwrap id=list></div>
@@ -352,11 +374,48 @@ async function loadChart(sym,book){curSym=sym;curBook=book||null;document.getEle
  catch(e){document.getElementById('chart').innerHTML='<div class=cempty style=color:#ff5d5d>DIAG: '+(e&&e.message||e)+'</div>';document.getElementById('rsi').innerHTML='';}}
 
 const STRATNAME={rsi2:'RSI-2 dip',momentum:'Momentum',strength:'Strength',leaders:'Leaders',scalein:'Scale-in',options:'Options'};
+function optionsPanel(o){
+ // the weekly Iron Condor has no stock watchlist — draw its range + P&L instead
+ const s=o.strikes;
+ if(!s)return `<div class=condor>
+   <div class=chd><div><b>${o.label}</b></div><span class="stat flat">FLAT</span></div>
+   <div class=note>No condor open yet — a fresh weekly Iron Condor opens on the next scan while the market is open (Nifty ±2.5% strikes, Thursday expiry).</div>
+   <div class=grid>
+     <div class=cell><div class=l>EQUITY</div><div class=v>${money(o.equity)}</div></div>
+     <div class=cell><div class=l>REALIZED</div><div class="v ${o.realized>=0?'g':'r'}">${(o.realized>=0?'+':'')+money(o.realized)}</div></div>
+     <div class=cell><div class=l>BACKTEST WIN</div><div class="v a">${o.win}%</div></div>
+   </div></div>`;
+ const lo=s.lp,hi=s.lc,span=(hi-lo)||1,pos=x=>Math.max(0,Math.min(100,(x-lo)/span*100));
+ const inr=o.in_range,fmt=v=>v==null?'—':v.toLocaleString('en-IN');
+ const spotMark=o.spot==null?'':`<div class="k spot" style="left:${pos(o.spot)}%"></div><div class="lbl spot" style="left:${pos(o.spot)}%">NIFTY ${fmt(o.spot)}</div>`;
+ return `<div class=condor>
+   <div class=chd><div><b>${o.label}</b></div><span class="stat ${inr?'in':'out'}">${inr?'IN RANGE':'BREACHED'}</span></div>
+   <div class=bar>
+     <div class=k style="left:${pos(s.lp)}%"></div><div class=lbl style="left:${pos(s.lp)}%">LP ${fmt(s.lp)}</div>
+     <div class="k short" style="left:${pos(s.sp)}%"></div><div class=lbl style="left:${pos(s.sp)}%">SP ${fmt(s.sp)}</div>
+     <div class="k short" style="left:${pos(s.sc)}%"></div><div class=lbl style="left:${pos(s.sc)}%">SC ${fmt(s.sc)}</div>
+     <div class=k style="left:${pos(s.lc)}%"></div><div class=lbl style="left:${pos(s.lc)}%">LC ${fmt(s.lc)}</div>
+     ${spotMark}
+   </div>
+   <div class=grid>
+     <div class=cell><div class=l>DAYS TO EXPIRY</div><div class=v>${o.dte==null?'—':o.dte+'d'}</div></div>
+     <div class=cell><div class=l>EXPIRY</div><div class=v style=font-size:13px>${o.expiry||'—'}</div></div>
+     <div class=cell><div class=l>MAX PROFIT · credit</div><div class="v g">+${money(o.credit_rs)}</div></div>
+     <div class=cell><div class=l>MAX LOSS · risk</div><div class="v r">-${money(o.max_loss_rs)}</div></div>
+     <div class=cell><div class=l>UNREALIZED</div><div class="v ${o.unrealized>=0?'g':'r'}">${(o.unrealized>=0?'+':'')+money(o.unrealized)}</div></div>
+     <div class=cell><div class=l>REALIZED</div><div class="v ${o.realized>=0?'g':'r'}">${(o.realized>=0?'+':'')+money(o.realized)}</div></div>
+     <div class=cell><div class=l>EQUITY</div><div class=v>${money(o.equity)}</div></div>
+     <div class=cell><div class=l>P&L</div><div class="v ${o.pnl_pct>=0?'g':'r'}">${pct(o.pnl_pct)}</div></div>
+   </div>
+   <div class=note>${o.rules}<br>WIN% is data — the Nifty expired inside ±2.5% in <b>${o.win}%</b> of backtested weeks. The ₹ credit/P&L uses a modelled premium (~30% of the wing) until the live option chain is wired in: treat the rupees as indicative, the win rate as real.</div>
+ </div>`;
+}
 function render(d){
  if(!d)return;DATA=d;
  if(d.holidays)HOLI=new Set(d.holidays);   // NSE holiday list -> the clock blinks CLOSED on them
  // tagline is DERIVED from the live books, so it never goes stale as tabs are added
- const fams=[...new Set((d.profiles||[]).map(p=>STRATNAME[p.strategy]||p.strategy))];
+ const fams=[...new Set([...(d.profiles||[]).map(p=>STRATNAME[p.strategy]||p.strategy),
+   d.options?STRATNAME[d.options.strategy]:null].filter(Boolean))];
  if(fams.length)document.getElementById('tag').textContent=fams.join(' · ')+' · Zerodha Kite · PAPER';
  // live index reading (Nifty 50 / Bank Nifty) in the header
  const idx=d.index||{};
@@ -383,6 +442,11 @@ function render(d){
   plrows+=`<tr><td>${LABEL[p.key]||p.name}<span class=sub>${p.positions.length} pos</span></td>`+
    `<td>${money(p.equity)}</td><td class="${plr(pl)}">${plsign(pl)}</td>`+
    `<td class="${plr(p.pnl_pct)}">${pct(p.pnl_pct)}</td></tr>`;});
+ if(d.options){const o=d.options,pl=o.equity-o.capital;
+  const sub=o.strikes?(o.in_range?'in range · '+(o.dte==null?'':o.dte+'d'):'breached'):'flat';
+  plrows+=`<tr><td>OPTIONS<span class=sub>${sub}</span></td>`+
+   `<td>${money(o.equity)}</td><td class="${plr(pl)}">${plsign(pl)}</td>`+
+   `<td class="${plr(o.pnl_pct)}">${pct(o.pnl_pct)}</td></tr>`;}
  const tpl=t.equity-t.capital;
  plrows+=`<tr class=pltot><td>TOTAL</td><td>${money(t.equity)}</td>`+
   `<td class="${plr(tpl)}">${plsign(tpl)}</td><td class="${plr(t.pnl_pct)}">${pct(t.pnl_pct)}</td></tr>`;
@@ -427,6 +491,7 @@ function render(d){
     <td class="${x.pnl==null?'muted':(x.pnl>=0?'g':'r')}">${x.pnl==null?'—':(x.pnl>=0?'+':'')+money(x.pnl)}</td></tr>`;});
   html+=`</table>`;
  });
+ if(FILTER==='options'&&d.options)html=optionsPanel(d.options);   // condor panel, not a stock table
  list.innerHTML=html||'<div class=muted style=padding:20px;text-align:center>loading…</div>';
  document.getElementById('upd').textContent='updated '+new Date().toLocaleTimeString('en-GB',{hour12:false});
  // default the chart to the first visible stock; keep the live quote fresh

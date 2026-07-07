@@ -67,6 +67,26 @@ def test_day_pnl_resets_each_day_via_equity_baseline(tmp_path, monkeypatch):
     assert sc3["day_pnl"] == 0                     # re-baselined -> resets, even at the same price
 
 
+def test_state_exposes_options_book(tmp_path, monkeypatch):
+    from datetime import date
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    live = GarudaLive(csv_dir=str(tmp_path))
+    # offline: no condor open yet, but the options book is always exposed and
+    # folded into the grand-total capital (six equity books + the options book)
+    st = live.build_state()
+    o = st["options"]
+    assert o["key"] == "options" and o["strategy"] == "options"
+    assert o["capital"] == 1_000_000 and o["win_kind"] == "backtest"
+    assert st["totals"]["capital"] == 7_000_000        # 6 x 1M equity + 1M options
+    assert o["strikes"] is None                        # nothing open while offline
+    # feed the Nifty and step the weekly cycle -> a condor opens at +/-2.5%
+    live.index = {"NIFTY 50": {"ltp": 24000.0, "pc": 23950.0, "chg": 0.2}}
+    live.options.step(24000.0, date(2026, 1, 1), market_open=True)
+    o2 = live.build_state()["options"]
+    assert o2["strikes"] and o2["strikes"]["sp"] < 24000 < o2["strikes"]["sc"]
+    assert o2["in_range"] is True and o2["max_loss_rs"] == 20000
+
+
 def test_state_exposes_index_reading(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
     live = GarudaLive(csv_dir=str(tmp_path))
