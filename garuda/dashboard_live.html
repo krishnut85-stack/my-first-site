@@ -500,7 +500,7 @@ function labPanel(l){
  let h=`<div class=condor>
    <div class=chd><div><b>STRATEGY LAB · walk-forward edge discovery</b></div><span class="stat ${l?'in':'flat'}">${l?(l.generated||'RUN DONE'):'NO RUN YET'}</span></div>
    <div class=note>The LAB hunts for a NEW edge the honest way: every candidate idea is backtested on the older ${100-oosPct}% of history (<b>PAST</b> — the data the idea gets to see) and then judged on the newest ${oosPct}% it has <b>never seen</b> (<b>UNSEEN</b>), after full delivery costs both sides. Only an idea profitable in BOTH earns <b class=g>PROMOTED</b>. Profitable on the past but losing on unseen data is <b class=r>OVERFIT</b> — the trap that quietly eats most retail backtests, and the reason "it worked when I tested it" so rarely survives live.</div>`;
- if(!l){h+=`<div class=note>No LAB run found yet. On the droplet:<br><b>python3 -m garuda.lab --csv strength_daily.csv</b><br>The leaderboard appears here automatically on the next refresh.</div></div>`;return h+discoverPanel(DATA&&DATA.lab_discover);}
+ if(!l){h+=`<div class=note>No LAB run found yet. On the droplet:<br><b>python3 -m garuda.lab --csv strength_daily.csv</b><br>The leaderboard appears here automatically on the next refresh.</div></div>`;return h+discoverPanel(DATA&&DATA.lab_discover)+moversPanel(DATA&&DATA.lab_movers);}
  h+=`<div class=grid>
    <div class=cell><div class=l>UNIVERSE</div><div class=v>${l.universe} stocks</div></div>
    <div class=cell><div class=l>SPLIT DATE</div><div class=v style=font-size:13px>${l.split_date}</div></div>
@@ -517,7 +517,33 @@ function labPanel(l){
    <td><span class="stat ${vb(r.verdict)}">${r.verdict}</span></td></tr>`;});
  h+=`</table><div class=note>Hover a row for the exact entry/exit rules. avg = per-trade return after costs · PF = profit factor. A <b class=g>PROMOTED</b> idea is a candidate for a new paper book — <i>validated, never guaranteed</i>. WEAK = real but marginal edge · THIN = too few trades to claim anything. Data: ${l.source||'—'} · generated ${l.generated||'—'}.</div>
  </div>`;
- h+=discoverPanel(DATA&&DATA.lab_discover);
+ h+=discoverPanel(DATA&&DATA.lab_discover)+moversPanel(DATA&&DATA.lab_movers);
+ return h;
+}
+function moversPanel(x){
+ // big-move precursors: what makes a +10% pop MORE LIKELY — and who matches today
+ let h=`<div class=condor style=margin-top:10px>
+   <div class=chd><div><b>MOVERS RADAR · big-move precursors</b></div><span class="stat ${x?'in':'flat'}">${x?(x.generated||'RUN DONE'):'NO RUN YET'}</span></div>
+   <div class=note>The gainers list shows +10-20% movers AFTER they moved — buying those is chasing. The honest version of "be there before": which conditions, visible at today's close, make a <b>+${x?Math.round(x.pop*100):10}% pop within ${x?x.horizon:5} days</b> measurably more likely than a random day? LIFT = the probability multiplier, and it must hold on TRAIN, SELECT and untouched TEST. Big one-day movers are mostly news — expect honest tilts, not crystal balls.</div>`;
+ if(!x){h+=`<div class=note>Run it on the droplet after the deep-history fetch:<br><b>python3 -m garuda.lab_movers --csv strength_history.csv</b></div></div>`;return h;}
+ const bl=x.baseline&&x.baseline.test?x.baseline.test.hit:null;
+ h+=`<table class=pltbl style=margin-top:10px><tr><th style=text-align:left>PRECURSOR</th><th>TEST n</th><th>hit%</th><th>LIFT</th><th>avg/trade</th><th>tr-lift</th><th>sel-lift</th><th>VERDICT</th></tr>`;
+ (x.results||[]).forEach(r=>{const t=r.test,L=r.lift;
+  const lf=v=>v==null?'—':v.toFixed(2)+'x';
+  h+=`<tr><td style=text-align:left><b>${r.label}</b></td>
+   <td>${t.n}</td><td>${t.hit==null?'—':t.hit+'%'}</td><td class="${(L.test||0)>=1.25?'g':'muted'}"><b>${lf(L.test)}</b></td>
+   <td class="${t.avg==null?'muted':(t.avg>0?'g':'r')}">${t.avg==null?'—':(t.avg>=0?'+':'')+t.avg.toFixed(2)+'%'}</td>
+   <td>${lf(L.train)}</td><td>${lf(L.select)}</td>
+   <td><span class="stat ${r.verdict==='VALIDATED'?'in':(r.verdict==='THIN'?'flat':'out')}">${r.verdict}</span></td></tr>`;});
+ h+=`</table><div class=note>Baseline (TEST): a random day pops ${bl==null?'—':bl+'%'} of the time. LIFT 2.00x = twice as likely.</div>`;
+ const val=(x.results||[]).filter(r=>r.verdict==='VALIDATED');
+ if(val.length){
+  h+=`<div class=chd style=margin-top:6px><div><b>ON THE RADAR TODAY</b> — matching a validated precursor at the last close</div></div>`;
+  val.forEach(r=>{const syms=(x.today||{})[r.key]||[];
+   h+=`<div class=note><b>${r.label}</b> (${r.lift.test}x): ${syms.length?syms.slice(0,40).map(s=>`<a href="#" onclick="loadChart('${s}');return false" style="color:var(--acc)">${s}</a>`).join(' · ')+(syms.length>40?` · +${syms.length-40} more`:''):'<span class=muted>no stock matches today</span>'}</div>`;});
+  h+=`<div class=note class=muted>Radar refreshes once per trading day from the daily bars. A match is a probability tilt, not a prediction — position sizes must respect that.</div>`;
+ }
+ h+=`</div>`;
  return h;
 }
 function discoverPanel(x){

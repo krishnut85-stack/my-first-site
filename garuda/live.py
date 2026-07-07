@@ -85,6 +85,12 @@ def _discover_state(cache={}):
     return _json_state(results_path(), load_results, cache)
 
 
+def _movers_state(cache={}):
+    """The latest LAB MOVERS run (big-move precursor study) for the LAB tab."""
+    from .lab_movers import load_results, results_path
+    return _json_state(results_path(), load_results, cache)
+
+
 class GarudaLive:
     def __init__(self, csv_dir="."):
         self.csv_dir = Path(csv_dir)
@@ -137,6 +143,7 @@ class GarudaLive:
             self.rsi14_by_sym[sym] = round(r14[-1], 1) if r14 and r14[-1] is not None else None
         # optional market caps (₹ crore) from marketcap.csv (symbol,marketcap)
         self.mcap_by_sym = self._load_mcap()
+        self._movers_cache = {}    # daily MOVERS radar (recomputed once per day)
 
     def _load_day_base(self):
         import json
@@ -416,6 +423,24 @@ class GarudaLive:
             "markers": markers,
         }
 
+    def movers_radar(self):
+        """The MOVERS results + TODAY's matches: which stocks sit on a VALIDATED
+        big-move precursor right now. The whole-universe scan is heavy-ish, so
+        it's recomputed only when the results file or the trading day changes."""
+        res = _movers_state()
+        if not res:
+            return None
+        validated = [r for r in res.get("results", []) if r["verdict"] == "VALIDATED"]
+        key = (res.get("generated"), _today())
+        if self._movers_cache.get("key") != key:
+            from .lab_movers import scan_today
+            today = scan_today(self.series_by_sym, validated) if validated else {}
+            self._movers_cache = {"key": key, "today": today}
+            n = sum(len(v) for v in today.values())
+            print(f"[garuda] movers radar: {len(validated)} validated precursors, "
+                  f"{n} stocks matching today", flush=True)
+        return {**res, "today": self._movers_cache["today"]}
+
     # --- state for the dashboard -------------------------------------------
     def price_of(self, sym, fallback=0.0):
         return self.prices.get(sym) or fallback
@@ -580,7 +605,8 @@ class GarudaLive:
         from .market import HOLIDAYS
         return {"live": self.feed.live, "profiles": profs, "totals": totals,
                 "options": options, "lab": _lab_state(),
-                "lab_discover": _discover_state(), "index": self.index,
+                "lab_discover": _discover_state(),
+                "lab_movers": self.movers_radar(), "index": self.index,
                 "market_open": is_market_open(), "market_status": market_status(),
                 "holidays": sorted(HOLIDAYS),
                 "last_scan": self.last_scan_date, "today": _today()}
