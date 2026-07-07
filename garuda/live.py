@@ -60,20 +60,29 @@ def _equity_log_path():
     return config.DATA_DIR / "garuda_equity_log.json"
 
 
-def _lab_state(cache={}):
-    """The latest Strategy LAB run (walk-forward results JSON) for the LAB tab.
-    Reloaded only when the file changes; None until a lab run exists."""
-    from .lab import results_path
-    p = results_path()
+def _json_state(path, loader, cache):
+    """Load a results JSON for the dashboard, re-reading only when the file
+    changes; None until a run exists."""
     try:
-        mtime = p.stat().st_mtime
+        mtime = path.stat().st_mtime
     except OSError:
         return None
     if cache.get("mtime") != mtime:
-        from .lab import load_results
         cache["mtime"] = mtime
-        cache["data"] = load_results(p)
+        cache["data"] = loader(path)
     return cache.get("data")
+
+
+def _lab_state(cache={}):
+    """The latest curated Strategy LAB run (walk-forward) for the LAB tab."""
+    from .lab import load_results, results_path
+    return _json_state(results_path(), load_results, cache)
+
+
+def _discover_state(cache={}):
+    """The latest LAB DISCOVER run (reverse strategy search) for the LAB tab."""
+    from .lab_discover import load_results, results_path
+    return _json_state(results_path(), load_results, cache)
 
 
 class GarudaLive:
@@ -570,7 +579,8 @@ class GarudaLive:
             self._save_day_base()
         from .market import HOLIDAYS
         return {"live": self.feed.live, "profiles": profs, "totals": totals,
-                "options": options, "lab": _lab_state(), "index": self.index,
+                "options": options, "lab": _lab_state(),
+                "lab_discover": _discover_state(), "index": self.index,
                 "market_open": is_market_open(), "market_status": market_status(),
                 "holidays": sorted(HOLIDAYS),
                 "last_scan": self.last_scan_date, "today": _today()}

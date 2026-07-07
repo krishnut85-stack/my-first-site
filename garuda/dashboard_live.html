@@ -499,7 +499,7 @@ function labPanel(l){
  let h=`<div class=condor>
    <div class=chd><div><b>STRATEGY LAB · walk-forward edge discovery</b></div><span class="stat ${l?'in':'flat'}">${l?(l.generated||'RUN DONE'):'NO RUN YET'}</span></div>
    <div class=note>The LAB hunts for a NEW edge the honest way: every candidate idea is backtested on the older ${100-oosPct}% of history (<b>PAST</b> — the data the idea gets to see) and then judged on the newest ${oosPct}% it has <b>never seen</b> (<b>UNSEEN</b>), after full delivery costs both sides. Only an idea profitable in BOTH earns <b class=g>PROMOTED</b>. Profitable on the past but losing on unseen data is <b class=r>OVERFIT</b> — the trap that quietly eats most retail backtests, and the reason "it worked when I tested it" so rarely survives live.</div>`;
- if(!l){h+=`<div class=note>No LAB run found yet. On the droplet:<br><b>python3 -m garuda.lab --csv strength_daily.csv</b><br>The leaderboard appears here automatically on the next refresh.</div></div>`;return h;}
+ if(!l){h+=`<div class=note>No LAB run found yet. On the droplet:<br><b>python3 -m garuda.lab --csv strength_daily.csv</b><br>The leaderboard appears here automatically on the next refresh.</div></div>`;return h+discoverPanel(DATA&&DATA.lab_discover);}
  h+=`<div class=grid>
    <div class=cell><div class=l>UNIVERSE</div><div class=v>${l.universe} stocks</div></div>
    <div class=cell><div class=l>SPLIT DATE</div><div class=v style=font-size:13px>${l.split_date}</div></div>
@@ -515,6 +515,26 @@ function labPanel(l){
    <td>${b.trades}</td><td>${b.win==null?'—':b.win+'%'}</td>${av(b.avg)}<td>${b.pf==null?'—':b.pf}</td>
    <td><span class="stat ${vb(r.verdict)}">${r.verdict}</span></td></tr>`;});
  h+=`</table><div class=note>Hover a row for the exact entry/exit rules. avg = per-trade return after costs · PF = profit factor. A <b class=g>PROMOTED</b> idea is a candidate for a new paper book — <i>validated, never guaranteed</i>. WEAK = real but marginal edge · THIN = too few trades to claim anything. Data: ${l.source||'—'} · generated ${l.generated||'—'}.</div>
+ </div>`;
+ h+=discoverPanel(DATA&&DATA.lab_discover);
+ return h;
+}
+function discoverPanel(x){
+ // reverse strategy search: the machine mined the whole rule grid backwards
+ let h=`<div class=condor style=margin-top:10px>
+   <div class=chd><div><b>DISCOVERED · reverse strategy search</b></div><span class="stat ${x?'in':'flat'}">${x?(x.generated||'RUN DONE'):'NO RUN YET'}</span></div>
+   <div class=note>DISCOVER works backwards from the data: it tests <b>every combination</b> of trend filter × entry setup × extra control × exit rule${x?` (<b>${x.combos_tested}</b> combos on ${x.universe} stocks)`:''}, mines the oldest 50% (<b>TRAIN</b>), keeps only combos also profitable on the middle 20% (<b>SELECT</b> — this soaks up best-of-many luck), and judges the finalists <b>once</b> on the newest 30% (<b>TEST</b>) that no part of the search ever touched.</div>`;
+ if(!x){h+=`<div class=note>Run it on the droplet after the deep-history fetch:<br><b>python3 -m garuda.lab_discover --csv strength_history.csv</b> (~5-10 min)</div></div>`;return h;}
+ if(!(x.results||[]).length){h+=`<div class=note>No combo survived TRAIN + SELECT with enough trades — the grid found no robust edge on this data. That's a finding, not a failure.</div></div>`;return h;}
+ const f=(v,s)=>v==null?'—':s.replace('%v',(v>=0&&s.includes('+')?'+':'')+(+v).toFixed(2));
+ h+=`<table class=pltbl style=margin-top:10px><tr><th style=text-align:left>#&nbsp;DISCOVERED RULE</th><th>TRAIN n</th><th>avg</th><th>PF</th><th>SELECT avg</th><th>TEST n</th><th>win</th><th>avg</th><th>PF</th><th>VERDICT</th></tr>`;
+ (x.results||[]).forEach((r,i)=>{const a=r.train,b=r.select,c=r.test;
+  const av=(v)=>v==null?'<td class=muted>—</td>':`<td class="${v>0?'g':'r'}">${(v>=0?'+':'')+v.toFixed(2)}%</td>`;
+  h+=`<tr><td style=text-align:left><b>#${i+1}</b> ${r.rules}</td>
+   <td>${a.trades}</td>${av(a.avg)}<td>${a.pf==null?'—':a.pf}</td>${av(b.avg)}
+   <td>${c.trades}</td><td>${c.win==null?'—':c.win+'%'}</td>${av(c.avg)}<td>${c.pf==null?'—':c.pf}</td>
+   <td><span class="stat ${r.verdict==='VALIDATED'?'in':'out'}">${r.verdict}</span></td></tr>`;});
+ h+=`</table><div class=note><b class=g>VALIDATED</b> = profitable after costs in all three windows including untouched TEST — a machine-found edge that survived. <b class=r>FAILED</b> = mined brilliantly, died on unseen data (expected for most of a big grid). TRAIN &lt; ${x.split_train_end} ≤ SELECT &lt; ${x.split_select_end} ≤ TEST · ${x.train_profitable} of ${x.combos_tested} combos were profitable on TRAIN alone — the three-window gauntlet is what separates luck from edge.</div>
  </div>`;
  return h;
 }
