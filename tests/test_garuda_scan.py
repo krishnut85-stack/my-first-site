@@ -39,6 +39,10 @@ def test_profiles_use_proven_settings():
     assert ld.mom_days == 63 and ld.mom_min == 0.25 and ld.trend_ma == 200
     assert ld.trail == 0.20 and ld.max_hold == 180 and ld.label
     assert ld.daily_csv == "strength_daily.csv"   # shares the strength universe
+    scl = PROFILES["scalein"]               # 6th book: scale-in (average-down)
+    assert scl.strategy == "scalein"
+    assert scl.entry_rsi == 10 and scl.exit_rsi == 50 and scl.max_units == 4
+    assert scl.max_hold == 60 and scl.stop == 0.25 and scl.label
 
 
 def test_portfolio_buy_sell_cash():
@@ -163,6 +167,28 @@ def test_leaders_skips_weak_and_downtrend():
     flat = {"FL": [100.0 + (i % 3) for i in range(320)]}
     r = run_scan(prof, flat, pf, live_prices={"FL": 101.0})
     assert not r["buys"] and not pf.holdings
+
+
+def test_scalein_averages_down_then_exits_on_recovery():
+    prof = PROFILES["scalein"]
+    pf = LivePortfolio(prof.capital)
+    # a long uptrend base (above 200-DMA) that ends with a sharp multi-day drop
+    # so RSI-2 is deeply oversold and keeps falling -> scale-in adds units.
+    base = [100.0 + i * 0.5 for i in range(260)]          # 100 -> 229.5, clearly above 200-DMA
+    drop = [225.0, 215.0, 205.0, 196.0]                   # 4 down days -> RSI-2 near 0
+    series = {"AAA": base + drop}
+    r1 = run_scan(prof, series, pf)                        # first unit
+    assert r1["buys"] and pf.holdings["AAA"]["units"] == 1
+    entry1 = pf.holdings["AAA"]["entry_price"]
+    # another lower down-day -> should ADD a unit and blend the entry lower
+    series["AAA"] = series["AAA"] + [188.0]
+    run_scan(prof, series, pf)
+    assert pf.holdings["AAA"]["units"] == 2
+    assert pf.holdings["AAA"]["entry_price"] < entry1     # averaged down
+    # a big bounce -> RSI-2 recovers above 50 -> sell the whole averaged position
+    series["AAA"] = series["AAA"] + [230.0, 235.0]
+    r3 = run_scan(prof, series, pf)
+    assert r3["sells"] and "AAA" not in pf.holdings
 
 
 def test_scan_exits_on_hold_and_records_equity():

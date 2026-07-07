@@ -30,6 +30,8 @@ def run_scan(profile, series: dict, portfolio: LivePortfolio, live_prices=None):
         return _run_strength(profile, series, portfolio, live_prices)
     if strat == "leaders":
         return _run_leaders(profile, series, portfolio, live_prices)
+    if strat == "scalein":
+        return _run_scalein(profile, series, portfolio, live_prices)
     return _run_rsi2(profile, series, portfolio, live_prices)
 
 
@@ -236,6 +238,86 @@ def _run_strength(profile, series, portfolio, live_prices=None):
                          "rsi14": round(cur, 1)})
 
     return _result(profile, portfolio, buys, sells, price_of)
+
+
+def _run_scalein(profile, series, portfolio, live_prices=None):
+    """SCALE-IN (Connors-TPS): buy the RSI-2 dip in an uptrend and AVERAGE DOWN up
+    to max_units as it keeps falling, so a small bounce exits most trades green.
+    Exit the whole averaged position on RSI-2 recovery, a max-hold, or a
+    catastrophe stop. High win rate (~73%), capped tail."""
+    price_of = _price_of(series, portfolio, live_prices)
+    r_cache = {s: rsi(c, 2) for s, c in series.items() if len(c) > 2}
+    today = _today()
+    ma = max(2, profile.trend_ma)
+    max_units = max(1, getattr(profile, "max_units", 1))
+
+    # --- 1. exits: RSI recovered, max hold, or catastrophe stop --------------
+    sells, sold_today = [], set()
+    for sym, h in list(portfolio.holdings.items()):
+        c = series.get(sym)
+        if not c:
+            continue
+        _tick_hold(h, today)
+        cur = (r_cache.get(sym) or [None])[-1]
+        px = price_of(sym)
+        recovered = cur is not None and cur > profile.exit_rsi
+        stopped = profile.stop and h["entry_price"] and px <= h["entry_price"] * (1 - profile.stop)
+        if recovered or stopped or h.get("bars_held", 0) >= profile.max_hold:
+            reason = ("RSI recovered" if recovered
+                      else f"{profile.stop:.0%} stop" if stopped
+                      else f"{profile.max_hold}-day hold")
+            pnl = portfolio.sell(sym, px, reason=reason)
+            sold_today.add(sym)
+            sells.append({"symbol": sym, "price": round(px, 2),
+                          "pnl": round(pnl, 2), "reason": reason})
+
+    per_unit = profile.capital * profile.alloc_pct
+
+    # --- 2. scale-in adds: still oversold, lower than the last add, room left --
+    adds = []
+    for sym, h in list(portfolio.holdings.items()):
+        if sym in sold_today:
+            continue
+        c = series.get(sym)
+        if not c:
+            continue
+        cur = (r_cache.get(sym) or [None])[-1]
+        price = price_of(sym)
+        if (cur is not None and cur < profile.entry_rsi and price > 0
+                and h.get("units", 1) < max_units
+                and price < h.get("last_add", h["entry_price"])):
+            qty = int(min(per_unit, portfolio.cash) // price)
+            if qty > 0 and portfolio.scale_in(sym, qty, price, entry_len=len(c)):
+                adds.append({"symbol": sym, "price": round(price, 2), "qty": qty,
+                             "unit": h.get("units")})
+
+    # --- 3. new entries: most-oversold uptrend dips first --------------------
+    candidates = []
+    for sym, c in series.items():
+        if sym in portfolio.holdings or sym in sold_today or len(c) < ma + 5:
+            continue
+        cur = (r_cache.get(sym) or [None])[-1]
+        if cur is None or cur >= profile.entry_rsi:
+            continue
+        s = sma(c, ma)
+        if not (s[-1] is not None and c[-1] > s[-1]):
+            continue
+        candidates.append((cur, sym, price_of(sym), c))
+    candidates.sort()
+
+    buys = []
+    for cur, sym, price, c in candidates:
+        if price <= 0:
+            continue
+        qty = int(min(per_unit, portfolio.cash) // price)
+        if qty <= 0:
+            continue
+        if portfolio.scale_in(sym, qty, price, entry_len=len(c)):
+            portfolio.holdings[sym]["rsi2_entry"] = round(cur, 1)
+            buys.append({"symbol": sym, "price": round(price, 2), "qty": qty,
+                         "rsi2": round(cur, 1)})
+
+    return _result(profile, portfolio, buys + adds, sells, price_of)
 
 
 def _run_leaders(profile, series, portfolio, live_prices=None):

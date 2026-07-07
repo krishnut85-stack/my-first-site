@@ -16,7 +16,7 @@ def test_build_state_offline(tmp_path, monkeypatch):
     live = GarudaLive(csv_dir=str(tmp_path))          # no Kite -> offline feed
     live.portfolios["smallcap"].buy("KEI", 10, 100.0, entry_len=250)
     st = live.build_state()
-    assert len(st["profiles"]) == 5   # smallcap + microcap + next50 + strength + leaders
+    assert len(st["profiles"]) == 6   # + next50 + strength + leaders + scalein
     sc = next(p for p in st["profiles"] if p["key"] == "smallcap")
     assert sc["name"] == "Garuda-SC"
     assert sc["positions"] and sc["positions"][0]["sym"] == "KEI"

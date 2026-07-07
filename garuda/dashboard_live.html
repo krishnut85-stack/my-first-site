@@ -93,7 +93,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 </style></head><body><div class=wrap>
 <div class=top>
   <div><div class=brand><b>GARUDA</b> <span class=q>⚡ QUANT</span></div>
-    <div class=tag>RSI-2 dip · Momentum · Strength · Zerodha Kite · PAPER</div>
+    <div class=tag id=tag>Zerodha Kite · PAPER</div>
     <div class=idxbox id=idxbox></div></div>
   <div class=clocks><span class=paper>PAPER</span> <span class=mkt id=mkt>—</span><br>
     <span class=ist id=ist>IST —</span><br><span class=loc id=loc>Local —</span></div>
@@ -113,6 +113,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
         <span class=wtab data-f=next50 onclick="setFilter('next50',this)">NEXT 50</span>
         <span class=wtab data-f=strength onclick="setFilter('strength',this)">STRENGTH</span>
         <span class=wtab data-f=leaders onclick="setFilter('leaders',this)">LEADERS</span>
+        <span class=wtab data-f=scalein onclick="setFilter('scalein',this)">SCALE-IN</span>
         <input class=wsearch id=search placeholder="search…" oninput="render(DATA)">
       </div>
       <div class=listwrap id=list></div>
@@ -164,8 +165,8 @@ const prev={};let DATA=null,curSym=null,FILTER='all',SORT={key:'sym',dir:1},HOLI
 function setSort(k){if(SORT.key===k)SORT.dir=-SORT.dir;else{SORT.key=k;SORT.dir=(k==='sym'?1:-1);}render(DATA);}
 function sortArrow(k){return SORT.key===k?(SORT.dir>0?' ▲':' ▼'):'';}
 function fmtCr(v){if(v==null)return '—';if(v>=1e5)return (v/1e5).toFixed(2)+'L Cr';if(v>=1e3)return (v/1e3).toFixed(1)+'K Cr';return Math.round(v)+' Cr';}
-const LABEL={smallcap:'SMALL CAP',microcap:'MICRO CAP',next50:'NEXT 50',strength:'STRENGTH',leaders:'LEADERS'};
-const TAG={smallcap:'SC',microcap:'MC',next50:'N50',strength:'STR',leaders:'LDR'};
+const LABEL={smallcap:'SMALL CAP',microcap:'MICRO CAP',next50:'NEXT 50',strength:'STRENGTH',leaders:'LEADERS',scalein:'SCALE-IN'};
+const TAG={smallcap:'SC',microcap:'MC',next50:'N50',strength:'STR',leaders:'LDR',scalein:'SCL'};
 function money(v){return "₹"+Math.round(v).toLocaleString('en-IN');}
 function pct(v){return(v==null?'—':(v>=0?"+":"")+(+v).toFixed(2)+"%");}
 function setFilter(f,el){FILTER=f;document.querySelectorAll('.wtab').forEach(t=>t.classList.remove('on'));el.classList.add('on');render(DATA);}
@@ -350,9 +351,13 @@ async function loadChart(sym,book){curSym=sym;curBook=book||null;document.getEle
   const j=await r.json();drawChart(j,sym);}
  catch(e){document.getElementById('chart').innerHTML='<div class=cempty style=color:#ff5d5d>DIAG: '+(e&&e.message||e)+'</div>';document.getElementById('rsi').innerHTML='';}}
 
+const STRATNAME={rsi2:'RSI-2 dip',momentum:'Momentum',strength:'Strength',leaders:'Leaders',scalein:'Scale-in',options:'Options'};
 function render(d){
  if(!d)return;DATA=d;
  if(d.holidays)HOLI=new Set(d.holidays);   // NSE holiday list -> the clock blinks CLOSED on them
+ // tagline is DERIVED from the live books, so it never goes stale as tabs are added
+ const fams=[...new Set((d.profiles||[]).map(p=>STRATNAME[p.strategy]||p.strategy))];
+ if(fams.length)document.getElementById('tag').textContent=fams.join(' · ')+' · Zerodha Kite · PAPER';
  // live index reading (Nifty 50 / Bank Nifty) in the header
  const idx=d.index||{};
  const pill=(nm,q)=>!q?'':`<span class=idx><b>${nm}</b><span class=v>${q.ltp.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}</span> <span class="${q.chg>=0?'g':'r'}">${q.chg>=0?'▲':'▼'} ${Math.abs(q.chg).toFixed(2)}%</span></span>`;

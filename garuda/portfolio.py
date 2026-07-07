@@ -55,6 +55,30 @@ class LivePortfolio:
                             "qty": qty, "price": round(price, 2)})
         return True
 
+    def scale_in(self, symbol, qty, price, entry_len, date=None):
+        """Buy OR average into a holding (for the scale-in book): first unit opens
+        the position; later units blend the entry price and bump the unit count."""
+        cost = qty * price
+        if qty <= 0 or cost > self.cash:
+            return False
+        date = date or _today()
+        self.cash -= cost
+        h = self.holdings.get(symbol)
+        if h:                                          # average in
+            tot = h["qty"] + qty
+            h["entry_price"] = (h["entry_price"] * h["qty"] + price * qty) / tot
+            h["qty"] = tot
+            h["units"] = h.get("units", 1) + 1
+            h["last_add"] = price
+        else:                                          # first unit
+            self.holdings[symbol] = {"qty": qty, "entry_price": price,
+                                     "entry_date": date, "entry_len": entry_len,
+                                     "bars_held": 0, "last_date": date,
+                                     "units": 1, "last_add": price}
+        self.trades.append({"date": date, "side": "BUY", "symbol": symbol,
+                            "qty": qty, "price": round(price, 2)})
+        return True
+
     def sell(self, symbol, price, reason="", date=None):
         h = self.holdings.get(symbol)
         if not h:

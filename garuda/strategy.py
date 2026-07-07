@@ -52,6 +52,8 @@ class Profile:
     trend_ma: int = 200         # strength/leaders: uptrend SMA length
     mom_days: int = 63          # leaders only: momentum lookback (63 = ~3 months)
     mom_min: float = 0.25       # leaders only: min return over mom_days to buy (0.25 = +25%)
+    max_units: int = 1          # scalein only: how many times to average down
+    stop: float = 0.0           # scalein only: catastrophe stop (fraction below avg entry)
     capital: float = 1_000_000.0    # Rs 10 lakh
     alloc_pct: float = 0.02         # ~2% per name -> up to ~50 names (no hard cap)
     proven_win: float = 0.0         # validated backtest win rate (%) — shown until live trades close
@@ -120,4 +122,19 @@ PROFILES = {
               "Sell on a 20% trailing stop or 180-day hold",
         trend_ma=200, mom_days=63, mom_min=0.25, trail=0.20, max_hold=180,
         proven_win=58.0, proven_ret=7.80, proven_pf=3.37),
+    # 6th book — SCALE-IN (Connors-TPS average-down), the HIGH-WIN-RATE engine.
+    # On 3,697 liquid NSE stocks: 73% win, +1.19%/trade, PF 3.39 (4 units). Buys
+    # the RSI-2 dip in an uptrend and AVERAGES DOWN up to 4 units as it falls, so
+    # a small bounce exits most trades green (RSI-2 > 50). Capped at 4 units +
+    # a 60-day time stop + a 25% catastrophe stop so one falling knife can't
+    # wreck it. Shares the strength universe (top ~1,500 NSE). PAPER.
+    "scalein": Profile(
+        "scalein", "Garuda-SCL",
+        "",                                  # shares strength's top-1500 universe
+        "strength_daily.csv",                # reuse strength's daily bars — no extra fetch
+        strategy="scalein", label="Scale-in · RSI-2 dip, average-down (high win%)",
+        rules="Buy RSI-2 < 10 in an uptrend and average down up to 4× as it falls · "
+              "Sell the averaged position on RSI-2 > 50, a 60-day hold, or a 25% stop",
+        entry_rsi=10.0, exit_rsi=50.0, trend_ma=200, max_hold=60, max_units=4, stop=0.25,
+        proven_win=73.0, proven_ret=1.19, proven_pf=3.39),
 }
