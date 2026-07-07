@@ -240,7 +240,10 @@ class GarudaLive:
                 self.day_ohlc[sym] = {"o": ohlc.get("open"), "h": ohlc.get("high"),
                                       "l": ohlc.get("low"), "pc": ohlc.get("close"),
                                       "ltp": ltp}
-        return self.feed.start_stream(sorted(self.all_symbols()), on_update)
+        # stream the universe AND every held symbol — a position must always get
+        # live ticks even if its universe CSV didn't load (else it freezes at entry)
+        return self.feed.start_stream(sorted(self.all_symbols() | self.held_symbols()),
+                                      on_update)
 
     # --- daily scan ---------------------------------------------------------
     def scan(self, force=False):
@@ -300,6 +303,20 @@ class GarudaLive:
                 self.day_ohlc[s] = d
         else:                                  # no quote access -> plain LTP
             self.prices.update(self.feed.ltp(syms))
+        if full:
+            self._log_price_coverage(len(syms), len(q or {}))
+
+    def _log_price_coverage(self, requested, priced):
+        """Log how many of EACH book's held symbols have a live price, so a frozen
+        book (all positions stuck at entry) is obvious in garuda.log."""
+        parts = []
+        for k, pf in self.portfolios.items():
+            held = list(pf.holdings)
+            got = sum(1 for s in held if self.prices.get(s))
+            parts.append(f"{k} {got}/{len(held)}")
+        nifty = "NIFTY 50" in (self.index or {})
+        print(f"[prices] {requested} req, {priced} quoted · held live: "
+              f"{' '.join(parts)} · index={'ok' if nifty else 'MISSING'}", flush=True)
 
     def live_equity(self):
         """Current combined equity across both paper books at live prices."""
