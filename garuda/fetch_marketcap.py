@@ -104,14 +104,34 @@ def main():
                 rows.append((s, round(m[s], 2)))
         print(f"[mcap] {min(i + 50, len(syms))}/{len(syms)} ({len(rows)} with data)", flush=True)
         time.sleep(1.0)
-    with open(out, "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f)
-        w.writerow(["symbol", "marketcap"])
-        w.writerows(rows)
-    print(f"[mcap] wrote {len(rows)} market caps -> {out}", flush=True)
-    if not rows:
-        print("[mcap] got nothing — Yahoo may be blocking this IP too; "
-              "market cap will show — on the dashboard.", flush=True)
+    # never clobber a good file with a bad day: if Yahoo blocked us (or gave
+    # far less than we already have), KEEP the existing marketcap.csv.
+    from pathlib import Path
+    existing = 0
+    p_out = Path(out)
+    if p_out.exists():
+        try:
+            existing = max(0, sum(1 for _ in open(p_out, encoding="utf-8")) - 1)
+        except OSError:
+            existing = 0
+    if rows and len(rows) >= existing * 0.5:
+        with open(out, "w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(["symbol", "marketcap"])
+            w.writerows(rows)
+        print(f"[mcap] wrote {len(rows)} market caps -> {out}", flush=True)
+    elif existing:
+        print(f"[mcap] fetch got {len(rows)} (existing file has {existing}) — "
+              f"KEEPING the old {out}; Yahoo likely blocked this IP today.",
+              flush=True)
+    else:
+        with open(out, "w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(["symbol", "marketcap"])
+            w.writerows(rows)
+        print(f"[mcap] wrote {len(rows)} market caps -> {out}"
+              + (" — Yahoo may be blocking this IP; market cap will show — "
+                 "on the dashboard." if not rows else ""), flush=True)
 
 
 if __name__ == "__main__":
