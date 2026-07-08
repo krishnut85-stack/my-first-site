@@ -43,6 +43,9 @@ def test_swami_tab_state(tmp_path, monkeypatch):
     assert s["unrealized"] == 5000
     # newest-first trade log carries the actual news headline
     assert "MENA order" in s["trades"][0]["reason"]
+    # its own equity curve: saved history + today's live tip
+    assert s["curve"][0] == {"t": "2026-07-01", "v": 500000}
+    assert s["curve"][-1]["v"] == s["equity"]
     # swaminatha's names join the live-pricing set
     assert "TRANSRAIL" in g.held_symbols()
     # and the guest book rides into the dashboard state

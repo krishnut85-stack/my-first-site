@@ -324,13 +324,19 @@ class GarudaLive:
         capital = d.get("starting_capital", 0.0) or 1.0
         equity = cash + sum(p["ltp"] * p["qty"] for p in positions)
         trades = list(d.get("trades") or [])[-12:][::-1]     # newest first
+        # its own equity curve: the saved daily track record + today's live tip
+        curve = [{"t": h.get("date", ""), "v": round(h.get("equity", 0.0), 0)}
+                 for h in (d.get("history") or [])[-240:] if h.get("equity")]
+        tip = round(equity, 0)
+        if not curve or curve[-1]["v"] != tip:
+            curve = curve + [{"t": today.isoformat(), "v": tip}]
         return {
             "capital": round(capital, 0), "cash": round(cash, 0),
             "equity": round(equity, 0),
             "pnl_pct": round((equity / capital - 1) * 100, 2),
             "realized": round(d.get("realized_pnl", 0.0), 0),
             "unrealized": round(sum(p["pnl"] for p in positions), 0),
-            "positions": positions, "trades": trades,
+            "positions": positions, "trades": trades, "curve": curve,
             "source": str(_swaminatha_file() or ""),
         }
 

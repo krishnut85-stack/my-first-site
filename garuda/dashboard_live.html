@@ -537,6 +537,19 @@ function swamiPanel(s){
    <div class=cell><div class=l>UNREALIZED</div><div class="v ${s.unrealized>=0?'g':'r'}">${(s.unrealized>=0?'+':'')+money(s.unrealized)}</div></div>
    <div class=cell><div class=l>POSITIONS</div><div class=v>${s.positions.length}</div></div>
  </div>`;
+ // Swaminatha's OWN equity curve (its saved track record + the live tip)
+ const cv=s.curve||[];
+ if(cv.length>1){
+  const vs=cv.map(p=>p.v),lo=Math.min(...vs),hi=Math.max(...vs),span=(hi-lo)||1;
+  const W=600,H=90,pts=cv.map((p,i)=>`${(i/(cv.length-1)*W).toFixed(1)},${(H-8-(p.v-lo)/span*(H-16)).toFixed(1)}`).join(' ');
+  const up=vs[vs.length-1]>=vs[0],col=up?'#26a69a':'#ef5350';
+  h+=`<div class=chd style=margin-top:6px><div><b>SWAMINATHA P&L CURVE</b> — ${cv[0].t} → ${cv[cv.length-1].t}</div><div class="${up?'g':'r'}" style=font-weight:700>${money(vs[vs.length-1])}</div></div>
+  <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;display:block" preserveAspectRatio="none">
+    <polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2"/>
+    <line x1="0" x2="${W}" y1="${(H-8-(s.capital-lo)/span*(H-16)).toFixed(1)}" y2="${(H-8-(s.capital-lo)/span*(H-16)).toFixed(1)}" stroke="#555" stroke-dasharray="4 4" stroke-width="1"/>
+  </svg>
+  <div class=note style=margin-top:0>dashed line = starting capital ${money(s.capital)} · above it Swaminatha is net profitable</div>`;
+ }
  h+=`<table class=pltbl style=margin-top:10px><tr><th style=text-align:left>NEWS PICK</th><th>QTY</th><th>ENTRY</th><th>LTP</th><th>CHG</th><th>P&L</th><th>HELD</th></tr>`;
  if(!s.positions.length)h+=`<tr><td colspan=7 class=muted style=text-align:center>no open news positions — Swaminatha buys only when Gemini confirms a material catalyst</td></tr>`;
  s.positions.forEach(x=>{h+=`<tr class=prow onclick="loadChart('${x.sym}')" style=cursor:pointer>
