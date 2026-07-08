@@ -91,6 +91,26 @@ def _movers_state(cache={}):
     return _json_state(results_path(), load_results, cache)
 
 
+def _swaminatha_file():
+    """Locate Swaminatha's paper portfolio (Mayura's news-driven face). It lives
+    wherever Mayura runs — same checkout, a sibling checkout, or wherever
+    SWAMINATHA_PORTFOLIO points. First existing path wins."""
+    import os
+    cands = []
+    env = os.environ.get("SWAMINATHA_PORTFOLIO", "")
+    if env:
+        cands.append(Path(env))
+    for base in (Path.cwd(), config.BASE_DIR.parent,
+                 Path.home() / "my-first-site",
+                 Path("/home/globalbot/my-first-site"),
+                 Path("/home/globalbot/mayura")):
+        cands.append(Path(base) / "mayura_data" / "swaminatha" / "portfolio.json")
+    for p in cands:
+        if p.exists():
+            return p
+    return None
+
+
 class GarudaLive:
     def __init__(self, csv_dir="."):
         self.csv_dir = Path(csv_dir)
@@ -144,6 +164,7 @@ class GarudaLive:
         # optional market caps (₹ crore) from marketcap.csv (symbol,marketcap)
         self.mcap_by_sym = self._load_mcap()
         self._movers_cache = {}    # daily MOVERS radar (recomputed once per day)
+        self._swami_cache = {}     # Swaminatha (Mayura news face) guest-tab state
 
     def _load_day_base(self):
         import json
@@ -250,7 +271,68 @@ class GarudaLive:
         out = set()
         for pf in self.portfolios.values():
             out.update(pf.holdings)
+        # + Swaminatha's holdings, so the guest tab prices at live LTP too
+        out.update(self._swami_raw().get("holdings", {}))
         return out
+
+    def _swami_raw(self, cache={}):
+        """Swaminatha's raw portfolio JSON (mtime-cached; {} when absent)."""
+        import json as _json
+        p = _swaminatha_file()
+        if not p:
+            return {}
+        try:
+            mtime = p.stat().st_mtime
+            if cache.get("key") != (str(p), mtime):
+                cache["key"] = (str(p), mtime)
+                cache["data"] = _json.loads(p.read_text())
+                print(f"[garuda] swaminatha state loaded from {p}", flush=True)
+            return cache.get("data") or {}
+        except (OSError, ValueError):
+            return {}
+
+    def swaminatha_state(self):
+        """Mayura's news face rendered as a read-only Garuda tab: its own paper
+        portfolio, priced live with Garuda's feed. None until the file exists."""
+        d = self._swami_raw()
+        if not d:
+            return None
+        from datetime import date as _d
+        today = _d.today()
+        positions = []
+        for sym, h in (d.get("holdings") or {}).items():
+            entry = h.get("avg_price") or 0.0
+            ltp = self.price_of(sym, entry)
+            qty = h.get("qty", 0)
+            days = None
+            ed = h.get("entry_date")
+            if ed:
+                try:
+                    y, m, dd = (int(x) for x in ed.split("-"))
+                    days = (today - _d(y, m, dd)).days
+                except ValueError:
+                    pass
+            positions.append({
+                "sym": sym, "qty": qty, "entry": round(entry, 2),
+                "ltp": round(ltp, 2),
+                "chg": round((ltp / entry - 1) * 100, 2) if entry else 0.0,
+                "pnl": round((ltp - entry) * qty, 0),
+                "date": ed, "days": days,
+            })
+        positions.sort(key=lambda x: x["pnl"], reverse=True)
+        cash = d.get("cash", 0.0)
+        capital = d.get("starting_capital", 0.0) or 1.0
+        equity = cash + sum(p["ltp"] * p["qty"] for p in positions)
+        trades = list(d.get("trades") or [])[-12:][::-1]     # newest first
+        return {
+            "capital": round(capital, 0), "cash": round(cash, 0),
+            "equity": round(equity, 0),
+            "pnl_pct": round((equity / capital - 1) * 100, 2),
+            "realized": round(d.get("realized_pnl", 0.0), 0),
+            "unrealized": round(sum(p["pnl"] for p in positions), 0),
+            "positions": positions, "trades": trades,
+            "source": str(_swaminatha_file() or ""),
+        }
 
     def all_symbols(self):
         out = set()
@@ -606,7 +688,8 @@ class GarudaLive:
         return {"live": self.feed.live, "profiles": profs, "totals": totals,
                 "options": options, "lab": _lab_state(),
                 "lab_discover": _discover_state(),
-                "lab_movers": self.movers_radar(), "index": self.index,
+                "lab_movers": self.movers_radar(),
+                "swaminatha": self.swaminatha_state(), "index": self.index,
                 "market_open": is_market_open(), "market_status": market_status(),
                 "holidays": sorted(HOLIDAYS),
                 "last_scan": self.last_scan_date, "today": _today()}

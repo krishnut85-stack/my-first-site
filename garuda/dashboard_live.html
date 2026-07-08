@@ -139,6 +139,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
         <span class=wtab data-f=hi52 onclick="setFilter('hi52',this)">52-W HIGH</span>
         <span class=wtab data-f=crash onclick="setFilter('crash',this)">CRASH</span>
         <span class=wtab data-f=options onclick="setFilter('options',this)">OPTIONS</span>
+        <span class=wtab data-f=swami onclick="setFilter('swami',this)">SWAMINATHA</span>
         <span class=wtab data-f=lab onclick="setFilter('lab',this)">LAB</span>
         <input class=wsearch id=search placeholder="search…" oninput="render(DATA)">
       </div>
@@ -521,6 +522,37 @@ function labPanel(l){
  h+=discoverPanel(DATA&&DATA.lab_discover)+moversPanel(DATA&&DATA.lab_movers);
  return h;
 }
+function swamiPanel(s){
+ // Mayura's news-driven face (Swaminatha) as a read-only guest tab: its own
+ // paper book, priced live by Garuda's feed. Garuda never trades this book.
+ let h=`<div class=condor>
+   <div class=chd><div><b>📜 SWAMINATHA · news-driven — Gemini reads the filing</b></div><span class="stat ${s?'in':'flat'}">${s?'LIVE MIRROR':'NOT FOUND'}</span></div>
+   <div class=note>Mayura's news face: it scans NSE corporate announcements every 30 minutes, lets Gemini read the full filing and judge whether it is a genuine MATERIAL bullish catalyst (big order wins, approvals, buybacks), and only then paper-buys — with a tight -8% stop (news can reverse fast). This tab is a <b>read-only mirror</b> of Swaminatha's own paper book, priced live by Garuda's feed; Garuda never trades it and it is not counted in Garuda's totals.</div>`;
+ if(!s){h+=`<div class=note>Swaminatha's portfolio file was not found on this server. Garuda looks for <b>mayura_data/swaminatha/portfolio.json</b> in the usual places — if Mayura runs from a different folder, set <b>SWAMINATHA_PORTFOLIO=/path/to/portfolio.json</b> in the environment before starting the Garuda server.</div></div>`;return h;}
+ h+=`<div class=grid>
+   <div class=cell><div class=l>EQUITY</div><div class=v>${money(s.equity)}</div></div>
+   <div class=cell><div class=l>P&L</div><div class="v ${s.pnl_pct>=0?'g':'r'}">${pct(s.pnl_pct)}</div></div>
+   <div class=cell><div class=l>CASH</div><div class=v>${money(s.cash)}</div></div>
+   <div class=cell><div class=l>REALIZED</div><div class="v ${s.realized>=0?'g':'r'}">${(s.realized>=0?'+':'')+money(s.realized)}</div></div>
+   <div class=cell><div class=l>UNREALIZED</div><div class="v ${s.unrealized>=0?'g':'r'}">${(s.unrealized>=0?'+':'')+money(s.unrealized)}</div></div>
+   <div class=cell><div class=l>POSITIONS</div><div class=v>${s.positions.length}</div></div>
+ </div>`;
+ h+=`<table class=pltbl style=margin-top:10px><tr><th style=text-align:left>NEWS PICK</th><th>QTY</th><th>ENTRY</th><th>LTP</th><th>CHG</th><th>P&L</th><th>HELD</th></tr>`;
+ if(!s.positions.length)h+=`<tr><td colspan=7 class=muted style=text-align:center>no open news positions — Swaminatha buys only when Gemini confirms a material catalyst</td></tr>`;
+ s.positions.forEach(x=>{h+=`<tr class=prow onclick="loadChart('${x.sym}')" style=cursor:pointer>
+  <td style=text-align:left><b>${x.sym}</b></td><td>${x.qty}</td><td>${x.entry.toFixed(2)}</td><td>${x.ltp.toFixed(2)}</td>
+  <td class="${x.chg>=0?'g':'r'}">${pct(x.chg)}</td>
+  <td class="${x.pnl>=0?'g':'r'}">${(x.pnl>=0?'+':'')+money(x.pnl)}</td>
+  <td>${x.days==null?'—':x.days+'d'}</td></tr>`;});
+ h+=`</table>`;
+ if((s.trades||[]).length){
+  h+=`<div class=chd style=margin-top:6px><div><b>RECENT NEWS TRADES</b> — the reason is the actual filing Gemini read</div></div>`;
+  s.trades.forEach(t=>{const buy=t.side==='BUY';
+   h+=`<div class=note><b class="${buy?'g':'r'}">${t.side}</b> <b>${t.symbol}</b> ×${t.qty} @ ${t.price}${t.pnl!=null?` · P&L <b class="${t.pnl>=0?'g':'r'}">${(t.pnl>=0?'+':'')+money(t.pnl)}</b>`:''} <span class=muted>· ${t.date}</span>${t.reason?`<br><span class=muted>${String(t.reason).slice(0,180)}</span>`:''}</div>`;});
+ }
+ h+=`</div>`;
+ return h;
+}
 function moversPanel(x){
  // big-move precursors: what makes a +10% pop MORE LIKELY — and who matches today
  let h=`<div class=condor style=margin-top:10px>
@@ -613,6 +645,7 @@ function render(d){
  const q=(document.getElementById('search').value||'').trim().toUpperCase();
  const list=document.getElementById('list');let html='';
  if(FILTER==='options'&&d.options){ html=optionsPanel(d.options); }        // condor panel
+ else if(FILTER==='swami'){ html=swamiPanel(d.swaminatha); }               // Mayura news face (guest)
  else if(FILTER==='lab'){ html=labPanel(d.lab); }                          // strategy LAB leaderboard
  else if(FILTER==='all'){ html=allPortfolio(d,q); }                        // one combined table
  else d.profiles.forEach(p=>{                                              // a single book's watch
