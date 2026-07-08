@@ -53,8 +53,8 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 
 /* ---- Zerodha-style split: LEFT live list · RIGHT two charts ---- */
 .main{display:grid;gap:14px;margin-top:12px;align-items:start}
-.main.toprow{grid-template-columns:minmax(360px,.68fr) 1.32fr}
-.main.chartrow{grid-template-columns:1.3fr 1fr}
+.main.toprow{grid-template-columns:1fr 1fr}
+.main.chartrow{grid-template-columns:1fr 1fr}
 @media(max-width:900px){.main.toprow,.main.chartrow{grid-template-columns:1fr}}
 .col{display:flex;flex-direction:column;gap:14px}
 
@@ -71,7 +71,7 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .idx{font-size:13px;color:var(--mut);white-space:nowrap}.idx b{color:var(--txt);font-weight:700;margin-right:6px;letter-spacing:.03em}
 .idx .v{color:var(--txt);font-weight:600}
 .bstat{font-size:10px;color:var(--mut)}.bstat b{font-size:12px}
-.listwrap{max-height:62vh;overflow-y:auto;overflow-x:auto}
+.listwrap{max-height:46vh;overflow-y:auto;overflow-x:auto}
 .wl{min-width:560px}
 .sorth{cursor:pointer;user-select:none}.sorth:hover{color:var(--acc)}
 table{width:100%;border-collapse:collapse;font-size:12px}
