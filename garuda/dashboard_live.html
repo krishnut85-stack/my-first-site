@@ -7,7 +7,9 @@
 *{box-sizing:border-box}
 body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#0d1420,#07090d);color:var(--txt);
 font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-.wrap{max-width:min(97vw,2200px);margin:0 auto;padding:12px}
+.wrap{max-width:97vw;margin:0 auto;padding:12px}
+/* readability on 4K office monitors: gently scale the whole app up */
+@media(min-width:2600px){body{zoom:1.35}}
 .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;border-bottom:1px solid var(--line);padding-bottom:10px;flex-wrap:wrap}
 .brand{font-size:22px;font-weight:800;letter-spacing:1.5px}.brand b{color:var(--acc)}.brand .q{color:var(--amb)}
 .tag{color:var(--mut);font-size:11px;margin-top:2px}
@@ -52,10 +54,23 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .allnote{color:var(--mut);font-size:11px;padding:9px 12px;border-bottom:1px solid var(--line);background:#0f141c}
 
 /* ---- Zerodha-style split: LEFT live list · RIGHT two charts ---- */
-.main{display:grid;gap:14px;margin-top:12px;align-items:start}
-.main.toprow{grid-template-columns:1fr 1fr}
-.main.chartrow{grid-template-columns:1fr 1fr}
-@media(max-width:900px){.main.toprow,.main.chartrow{grid-template-columns:1fr}}
+/* the desk: one grid, four panels, arranged by screen size */
+.desk{display:grid;gap:14px;margin-top:12px;align-items:start;
+  grid-template-columns:1fr 1fr;
+  grid-template-areas:"pl watch" "candles curve"}
+#pltable{grid-area:pl}
+.watch{grid-area:watch}
+.candlecard{grid-area:candles}
+.curvecard{grid-area:curve}
+/* big monitors: 3-column terminal — [P&L + equity curve] [watch] [chart] */
+@media(min-width:1750px){
+  .desk{grid-template-columns:.85fr 1.2fr 1.25fr;
+    grid-template-areas:"pl watch candles" "curve watch candles"}
+  .listwrap{max-height:66vh}
+  #chart{height:430px}#rsi{height:150px}
+}
+@media(max-width:900px){.desk{grid-template-columns:1fr;
+  grid-template-areas:"pl" "watch" "candles" "curve"}}
 .col{display:flex;flex-direction:column;gap:14px}
 
 .watch{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
@@ -125,8 +140,9 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 
 <div class=summary id=summary></div>
 
-<!-- TOP ROW: compact strategy P&L (left) + the book tabs / watch-list (right) -->
-<div class="main toprow">
+<!-- THE DESK: P&L table, watch-list, trading chart, equity curve — one grid,
+     arranged 2x2 on laptops and as a 3-column terminal on big monitors -->
+<div class=desk>
   <div id=pltable></div>
   <div class=watch>
       <div class=wtabs>
@@ -147,11 +163,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
       </div>
       <div class=listwrap id=list></div>
   </div>
-</div>
-
-<!-- CHART ROW: trading chart + portfolio P&L side by side -->
-<div class="main chartrow">
-    <div class=chartcard>
+    <div class="chartcard candlecard">
       <div class=chead>
         <div><b id=csym>—</b> <span class=muted id=csub>· daily candles + RSI-2</span></div>
         <div class=cpreview>
@@ -170,7 +182,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
       <div class=leg id=leg><span style=color:#3aa0ff>MA20</span> · <span style=color:#c586ff>MA50</span> · volume bars · <b style=color:#f5b23e>yellow = RSI-2</b>: dips to <b class=g>BUY 10</b> = oversold (we buy) · spikes to <b class=r>SELL 85</b> = overbought (we sell) · scroll=zoom, drag=pan</div>
       <div class=sig id=sig></div>
     </div>
-    <div class=chartcard>
+    <div class="chartcard curvecard">
       <div class=chead><div><b>PORTFOLIO P&L</b> <span class=muted>· combined equity curve (paper)</span></div><div id=pnlnow class=muted></div></div>
       <div class=chartwrap><div class=pnlchart id=pnlchart></div></div>
     </div>
