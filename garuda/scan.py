@@ -36,6 +36,8 @@ def run_scan(profile, series: dict, portfolio: LivePortfolio, live_prices=None):
         return _run_hi52(profile, series, portfolio, live_prices)
     if strat == "crash":
         return _run_crash(profile, series, portfolio, live_prices)
+    if strat == "tom":
+        return _run_tom(profile, series, portfolio, live_prices)
     return _run_rsi2(profile, series, portfolio, live_prices)
 
 
@@ -255,6 +257,116 @@ def _run_hi52(profile, series, portfolio, live_prices=None):
             portfolio.holdings[sym]["mom"] = round(mom * 100, 1)
             buys.append({"symbol": sym, "price": round(price, 2), "qty": qty,
                          "mom": round(mom * 100, 1)})
+
+    return _result(profile, portfolio, buys, sells, price_of)
+
+
+def _tom_phase(d, holidays=None):
+    """SANKRANTI's calendar: 'BUY' on the 3rd-to-last trading day of the month,
+    'SELL' from the 3rd trading day of the new month onward, else None.
+    Trading day = weekday not in `holidays` (ISO date strings)."""
+    from datetime import timedelta
+    hol = holidays if holidays is not None else set()
+
+    def is_td(x):
+        return x.weekday() < 5 and x.isoformat() not in hol
+
+    if not is_td(d):
+        return None
+    rem, x = 0, d
+    while x.month == d.month:                # trading days left, incl. today
+        if is_td(x):
+            rem += 1
+        x += timedelta(days=1)
+    if rem == 3:
+        return "BUY"
+    el, x = 0, d.replace(day=1)              # trading days elapsed, incl. today
+    while x <= d:
+        if is_td(x):
+            el += 1
+        x += timedelta(days=1)
+    # sell window = 3rd trading day of the NEW month (with a few days' grace if
+    # a scan was missed). Bounded so late-month days never trigger it — else
+    # positions bought 3 days before month-end would exit the very next days.
+    return "SELL" if 3 <= el <= 7 else None
+
+
+def _mcap_ranks():
+    """{symbol: marketcap} from marketcap.csv if present (for ranking the
+    largest names first); {} when unavailable."""
+    import csv as _csv
+    from pathlib import Path
+    from . import config
+    for base in (Path.cwd(), config.BASE_DIR, config.BASE_DIR.parent):
+        p = Path(base) / "marketcap.csv"
+        if not p.exists():
+            continue
+        out = {}
+        try:
+            with open(p, newline="", encoding="utf-8") as f:
+                for row in _csv.DictReader(f):
+                    s = row.get("symbol") or row.get("Symbol")
+                    m = row.get("marketcap") or row.get("mcap")
+                    if s and m:
+                        try:
+                            out[s.strip()] = float(str(m).replace(",", ""))
+                        except ValueError:
+                            pass
+            return out
+        except OSError:
+            return {}
+    return {}
+
+
+def _run_tom(profile, series, portfolio, live_prices=None):
+    """SANKRANTI — the turn-of-month book (LAB-PROMOTED: +0.41%/trade, PF 1.23
+    across 28,166 unseen trades). Buys the largest ~50 names 3 trading days
+    before month-end, sells them all at the close of the new month's 3rd
+    trading day, and sits in cash the rest of the month."""
+    from datetime import date as _date
+    from .market import HOLIDAYS
+    price_of = _price_of(series, portfolio, live_prices)
+    today = _today()
+    phase = _tom_phase(_date.today(), HOLIDAYS)
+
+    # --- 1. exits: the whole book exits together on the sell day --------------
+    sells, sold_today = [], set()
+    for sym, h in list(portfolio.holdings.items()):
+        _tick_hold(h, today)
+        px = price_of(sym)
+        is_new = h.get("entry_date") == today
+        timed_out = h.get("bars_held", 0) >= profile.max_hold
+        if px > 0 and not is_new and (phase == "SELL" or timed_out):
+            reason = "month-turn exit" if phase == "SELL" else \
+                f"{profile.max_hold}-day safety stop"
+            pnl = portfolio.sell(sym, px, reason=reason)
+            sold_today.add(sym)
+            sells.append({"symbol": sym, "price": round(px, 2),
+                          "pnl": round(pnl, 2), "reason": reason})
+
+    # --- 2. entries: only on the buy day, largest names first -----------------
+    buys = []
+    if phase == "BUY":
+        mcap = _mcap_ranks()
+        candidates = []
+        for sym, c in series.items():
+            if sym in portfolio.holdings or sym in sold_today or len(c) < 70:
+                continue
+            price = price_of(sym)
+            if price <= 0:
+                continue
+            # rank by market cap when known; else by 3-month momentum
+            rank = mcap.get(sym) or (price / c[-63] - 1.0 if c[-63] > 0 else 0.0)
+            candidates.append((rank, sym, price, c))
+        candidates.sort(reverse=True)
+        per_name = profile.capital * profile.alloc_pct
+        for rank, sym, price, c in candidates:
+            budget = min(per_name, portfolio.cash)
+            qty = int(budget // price)
+            if qty <= 0:
+                continue
+            if portfolio.buy(sym, qty, price, entry_len=len(c)):
+                buys.append({"symbol": sym, "price": round(price, 2), "qty": qty})
 
     return _result(profile, portfolio, buys, sells, price_of)
 

@@ -185,4 +185,22 @@ PROFILES = {
               "(panic, not death) · Sell on a 25% trailing stop or a 180-day hold",
         trail=0.25, max_hold=180,
         proven_win=46.0, proven_ret=2.25, proven_pf=0.0),
+    # 10th book — SANKRANTI (turn-of-month), the fleet's calendar edge. The
+    # curated LAB PROMOTED it on the biggest sample of anything we tested:
+    # 28,166 unseen trades, +0.41%/trade after costs, PF 1.23. The anomaly:
+    # month-end/-start institutional inflows + India's salary-day SIP wave.
+    # It earned the 10th seat when SARATHI (the breadth regime gate) FAILED its
+    # pre-declared exam — worse worst-year and CAGR than the ungated blend.
+    # In the market only ~6 trading days a month, cash the rest: deliberately
+    # uncorrelated with the price-driven books. PAPER.
+    "tom": Profile(
+        "tom", "Garuda-SNK",
+        "",                                  # shares strength's top-1500 universe
+        "strength_daily.csv",                # reuse strength's daily bars — no extra fetch
+        strategy="tom", label="Sankranti · turn-of-month inflow wave",
+        rules="Buy the ~50 largest names 3 trading days before month-end · Sell at "
+              "the close of the 3rd trading day of the new month (the SIP/"
+              "institutional inflow wave) · in cash the rest of the month",
+        max_hold=8,                          # safety net if a sell day is ever missed
+        proven_win=50.0, proven_ret=0.41, proven_pf=1.23),
 }
