@@ -100,7 +100,8 @@ def _swaminatha_file():
     env = os.environ.get("SWAMINATHA_PORTFOLIO", "")
     if env:
         cands.append(Path(env))
-    for base in (Path.cwd(), config.BASE_DIR.parent,
+    for base in (Path("/root/sectorbot"),         # where Mayura actually runs
+                 Path.cwd(), config.BASE_DIR.parent,
                  Path.home() / "my-first-site",
                  Path("/home/globalbot/my-first-site"),
                  Path("/home/globalbot/mayura")):
