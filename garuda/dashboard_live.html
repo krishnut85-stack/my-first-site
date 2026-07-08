@@ -52,8 +52,10 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .allnote{color:var(--mut);font-size:11px;padding:9px 12px;border-bottom:1px solid var(--line);background:#0f141c}
 
 /* ---- Zerodha-style split: LEFT live list · RIGHT two charts ---- */
-.main{display:grid;grid-template-columns:minmax(330px,0.85fr) 1.35fr;gap:14px;margin-top:12px;align-items:start}
-@media(max-width:900px){.main{grid-template-columns:1fr}}
+.main{display:grid;gap:14px;margin-top:12px;align-items:start}
+.main.toprow{grid-template-columns:minmax(360px,.68fr) 1.32fr}
+.main.chartrow{grid-template-columns:1.3fr 1fr}
+@media(max-width:900px){.main.toprow,.main.chartrow{grid-template-columns:1fr}}
 .col{display:flex;flex-direction:column;gap:14px}
 
 .watch{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
@@ -122,12 +124,11 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 </div>
 
 <div class=summary id=summary></div>
-<div id=pltable></div>
 
-<div class=main>
-  <!-- LEFT: live share list, grouped by bot, updating from Kite -->
-  <div class=col>
-    <div class=watch>
+<!-- TOP ROW: compact strategy P&L (left) + the book tabs / watch-list (right) -->
+<div class="main toprow">
+  <div id=pltable></div>
+  <div class=watch>
       <div class=wtabs>
         <span class="wtab on" data-f=all onclick="setFilter('all',this)">ALL</span>
         <span class=wtab data-f=smallcap onclick="setFilter('smallcap',this)">SMALL CAP</span>
@@ -145,11 +146,11 @@ table{width:100%;border-collapse:collapse;font-size:12px}
         <input class=wsearch id=search placeholder="search…" oninput="render(DATA)">
       </div>
       <div class=listwrap id=list></div>
-    </div>
   </div>
+</div>
 
-  <!-- RIGHT: two stacked charts (top = live candles+RSI, bottom = portfolio P&L) -->
-  <div class=col>
+<!-- CHART ROW: trading chart + portfolio P&L side by side -->
+<div class="main chartrow">
     <div class=chartcard>
       <div class=chead>
         <div><b id=csym>—</b> <span class=muted id=csub>· daily candles + RSI-2</span></div>
@@ -173,7 +174,6 @@ table{width:100%;border-collapse:collapse;font-size:12px}
       <div class=chead><div><b>PORTFOLIO P&L</b> <span class=muted>· combined equity curve (paper)</span></div><div id=pnlnow class=muted></div></div>
       <div class=chartwrap><div class=pnlchart id=pnlchart></div></div>
     </div>
-  </div>
 </div>
 <div class=foot id=foot>Garuda · paper on live Kite prices · served from your droplet · <span id=upd></span></div>
 </div>
