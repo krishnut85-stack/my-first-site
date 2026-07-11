@@ -199,9 +199,12 @@ PROFILES = {
         "strength_daily.csv",                # reuse strength's daily bars — no extra fetch
         strategy="chakra", label="Chakra · monthly top-20 momentum rotation",
         rules="On the first trading day of each month, rotate the whole book "
-              "into the top-20 six-month momentum leaders above their 200-DMA, "
+              "into the top-20 nine-month momentum leaders above their 200-DMA, "
               "equal weight · always invested · untouched until the next turn "
               "of the wheel",
-        mom_days=126, trend_ma=200, max_units=20, alloc_pct=0.05,
+        # lookback 126d -> 189d after the deterministic CHAKRA EXAM: TRAIN
+        # picked top-20 x 189d and it HELD on untouched TEST (+19.3%, DD 22.6%);
+        # full-period +37.8% vs +35.9%, in a smooth (robust) grid neighbourhood.
+        mom_days=189, trend_ma=200, max_units=20, alloc_pct=0.05,
         proven_win=0.0, proven_ret=0.0, proven_pf=0.0),   # rotation has no per-trade
 }                                                         # stats — live record only

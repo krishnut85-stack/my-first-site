@@ -16,7 +16,7 @@ def _runner(mult, days=260):
 def test_chakra_profile():
     p = PROFILES["chakra"]
     assert p.strategy == "chakra"
-    assert p.mom_days == 126 and p.trend_ma == 200 and p.max_units == 20
+    assert p.mom_days == 189 and p.trend_ma == 200 and p.max_units == 20
     assert p.daily_csv == "strength_daily.csv"
     assert p.capital == 1_000_000
     assert "rotate" in p.rules
