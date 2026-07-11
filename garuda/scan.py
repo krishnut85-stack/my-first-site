@@ -298,9 +298,12 @@ def _run_chakra(profile, series, portfolio, live_prices=None):
     rotated = any((h.get("entry_date") or "")[:7] == month
                   for h in portfolio.holdings.values())
     in_window = _chakra_window(_date.today(), HOLIDAYS)
+    # a brand-new book doesn't wait for the next month-start: it takes its
+    # first spin immediately, then follows the monthly windows forever
+    bootstrap = not portfolio.holdings and not portfolio.trades
 
     sells, buys = [], []
-    if in_window and not rotated:
+    if (in_window or bootstrap) and not rotated:
         # rank the universe: 6-month momentum, must be above the 200-DMA
         look = max(21, profile.mom_days)
         ma = max(2, profile.trend_ma)

@@ -71,3 +71,23 @@ def test_chakra_rotates_into_top_momentum(monkeypatch):
     res4 = _run_chakra(p, faded, pf)
     assert any(s["symbol"] == "S29" for s in res4["sells"])
     assert any(b["symbol"] == "S09" for b in res4["buys"])  # next-best steps in
+
+
+def test_chakra_bootstrap_first_spin_midmonth(monkeypatch):
+    """A brand-new empty book rotates immediately, even mid-month."""
+    p = PROFILES["chakra"]
+    series = {f"S{i:02d}": _runner(1.2 + i * 0.05) for i in range(25)}
+    pf = LivePortfolio(p.capital)
+
+    class FakeDate(date):
+        @classmethod
+        def today(cls):
+            return date(2025, 10, 15)                  # mid-month
+
+    import datetime as _dt
+    monkeypatch.setattr(_dt, "date", FakeDate)
+    res = _run_chakra(p, series, pf)
+    assert len(res["buys"]) == 20                      # first spin happens now
+    # and it does NOT re-spin the next mid-month day
+    res2 = _run_chakra(p, series, pf)
+    assert res2["buys"] == [] and res2["sells"] == []
