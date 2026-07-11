@@ -185,22 +185,23 @@ PROFILES = {
               "(panic, not death) · Sell on a 25% trailing stop or a 180-day hold",
         trail=0.25, max_hold=180,
         proven_win=46.0, proven_ret=2.25, proven_pf=0.0),
-    # 10th book — SANKRANTI (turn-of-month), the fleet's calendar edge. The
-    # curated LAB PROMOTED it on the biggest sample of anything we tested:
-    # 28,166 unseen trades, +0.41%/trade after costs, PF 1.23. The anomaly:
-    # month-end/-start institutional inflows + India's salary-day SIP wave.
-    # It earned the 10th seat when SARATHI (the breadth regime gate) FAILED its
-    # pre-declared exam — worse worst-year and CAGR than the ungated blend.
-    # In the market only ~6 trading days a month, cash the rest: deliberately
-    # uncorrelated with the price-driven books. PAPER.
-    "tom": Profile(
-        "tom", "Garuda-SNK",
+    # 10th book — CHAKRA (monthly momentum rotation), winner of the seat-10
+    # TOURNAMENT. On the untouched TEST window (the hostile Nov-2024..Jul-2026
+    # stretch) it made +24.5% CAGR with a 23.2% drawdown while the champion
+    # crash book went FLAT (-0.5%, 30.2% DD) — and its full-period run was
+    # Rs 10L -> Rs 52.8L (+35.9% CAGR). The engine: relentless monthly rotation
+    # into the top-20 momentum leaders (6-month return) above their 200-DMA,
+    # equal weight, always invested — and implicitly defensive: in a broad bear,
+    # few names sit above their 200-DMA, so the wheel holds more cash. PAPER.
+    "chakra": Profile(
+        "chakra", "Garuda-CHK",
         "",                                  # shares strength's top-1500 universe
         "strength_daily.csv",                # reuse strength's daily bars — no extra fetch
-        strategy="tom", label="Sankranti · turn-of-month inflow wave",
-        rules="Buy the ~50 largest names 3 trading days before month-end · Sell at "
-              "the close of the 3rd trading day of the new month (the SIP/"
-              "institutional inflow wave) · in cash the rest of the month",
-        max_hold=8,                          # safety net if a sell day is ever missed
-        proven_win=50.0, proven_ret=0.41, proven_pf=1.23),
-}
+        strategy="chakra", label="Chakra · monthly top-20 momentum rotation",
+        rules="On the first trading day of each month, rotate the whole book "
+              "into the top-20 six-month momentum leaders above their 200-DMA, "
+              "equal weight · always invested · untouched until the next turn "
+              "of the wheel",
+        mom_days=126, trend_ma=200, max_units=20, alloc_pct=0.05,
+        proven_win=0.0, proven_ret=0.0, proven_pf=0.0),   # rotation has no per-trade
+}                                                         # stats — live record only

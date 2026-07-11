@@ -605,8 +605,9 @@ class GarudaLive:
             day_pnl = equity - self.day_base[k]
             win, pfac = _live_stats(pf)
             win_kind = "live"
-            if win is None:                    # no closed live trades yet
-                win, win_kind = prof.proven_win, "backtest"
+            if win is None and prof.proven_win:    # no closed live trades yet;
+                win, win_kind = prof.proven_win, "backtest"   # 0 = no backtest
+                                                   # figure (e.g. CHAKRA) -> '—'
             green = sum(1 for x in positions if x["pnl"] > 0)
             win_open = round(green / len(positions) * 100) if positions else None
             chart_sym = positions[0]["sym"] if positions else None

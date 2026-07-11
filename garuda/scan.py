@@ -36,8 +36,8 @@ def run_scan(profile, series: dict, portfolio: LivePortfolio, live_prices=None):
         return _run_hi52(profile, series, portfolio, live_prices)
     if strat == "crash":
         return _run_crash(profile, series, portfolio, live_prices)
-    if strat == "tom":
-        return _run_tom(profile, series, portfolio, live_prices)
+    if strat == "chakra":
+        return _run_chakra(profile, series, portfolio, live_prices)
     return _run_rsi2(profile, series, portfolio, live_prices)
 
 
@@ -261,9 +261,9 @@ def _run_hi52(profile, series, portfolio, live_prices=None):
     return _result(profile, portfolio, buys, sells, price_of)
 
 
-def _tom_phase(d, holidays=None):
-    """SANKRANTI's calendar: 'BUY' on the 3rd-to-last trading day of the month,
-    'SELL' from the 3rd trading day of the new month onward, else None.
+def _chakra_window(d, holidays=None):
+    """CHAKRA's rebalance window: the first 3 trading days of the month (3-day
+    grace so a missed scan day can't skip a whole month's rotation).
     Trading day = weekday not in `holidays` (ISO date strings)."""
     from datetime import timedelta
     hol = holidays if holidays is not None else set()
@@ -272,103 +272,78 @@ def _tom_phase(d, holidays=None):
         return x.weekday() < 5 and x.isoformat() not in hol
 
     if not is_td(d):
-        return None
-    rem, x = 0, d
-    while x.month == d.month:                # trading days left, incl. today
-        if is_td(x):
-            rem += 1
-        x += timedelta(days=1)
-    if rem == 3:
-        return "BUY"
+        return False
     el, x = 0, d.replace(day=1)              # trading days elapsed, incl. today
     while x <= d:
         if is_td(x):
             el += 1
         x += timedelta(days=1)
-    # sell window = 3rd trading day of the NEW month (with a few days' grace if
-    # a scan was missed). Bounded so late-month days never trigger it — else
-    # positions bought 3 days before month-end would exit the very next days.
-    return "SELL" if 3 <= el <= 7 else None
+    return el <= 3
 
 
-def _mcap_ranks():
-    """{symbol: marketcap} from marketcap.csv if present (for ranking the
-    largest names first); {} when unavailable."""
-    import csv as _csv
-    from pathlib import Path
-    from . import config
-    for base in (Path.cwd(), config.BASE_DIR, config.BASE_DIR.parent):
-        p = Path(base) / "marketcap.csv"
-        if not p.exists():
-            continue
-        out = {}
-        try:
-            with open(p, newline="", encoding="utf-8") as f:
-                for row in _csv.DictReader(f):
-                    s = row.get("symbol") or row.get("Symbol")
-                    m = row.get("marketcap") or row.get("mcap")
-                    if s and m:
-                        try:
-                            out[s.strip()] = float(str(m).replace(",", ""))
-                        except ValueError:
-                            pass
-            return out
-        except OSError:
-            return {}
-    return {}
-
-
-def _run_tom(profile, series, portfolio, live_prices=None):
-    """SANKRANTI — the turn-of-month book (LAB-PROMOTED: +0.41%/trade, PF 1.23
-    across 28,166 unseen trades). Buys the largest ~50 names 3 trading days
-    before month-end, sells them all at the close of the new month's 3rd
-    trading day, and sits in cash the rest of the month."""
+def _run_chakra(profile, series, portfolio, live_prices=None):
+    """CHAKRA — the tournament winner (TEST window +24.5% CAGR / 23.2% DD while
+    the crash champion went flat). On the first trading day of each month the
+    whole book rotates into the top-`max_units` six-month momentum leaders
+    above their 200-DMA, equal weight; nothing happens the rest of the month.
+    Implicitly defensive: in a broad bear few names clear the 200-DMA filter,
+    so the wheel holds more cash."""
     from datetime import date as _date
     from .market import HOLIDAYS
     price_of = _price_of(series, portfolio, live_prices)
     today = _today()
-    phase = _tom_phase(_date.today(), HOLIDAYS)
+    month = today[:7]
 
-    # --- 1. exits: the whole book exits together on the sell day --------------
-    sells, sold_today = [], set()
-    for sym, h in list(portfolio.holdings.items()):
-        _tick_hold(h, today)
-        px = price_of(sym)
-        is_new = h.get("entry_date") == today
-        timed_out = h.get("bars_held", 0) >= profile.max_hold
-        if px > 0 and not is_new and (phase == "SELL" or timed_out):
-            reason = "month-turn exit" if phase == "SELL" else \
-                f"{profile.max_hold}-day safety stop"
-            pnl = portfolio.sell(sym, px, reason=reason)
-            sold_today.add(sym)
-            sells.append({"symbol": sym, "price": round(px, 2),
-                          "pnl": round(pnl, 2), "reason": reason})
+    # already rotated this month? (any holding entered this month)
+    rotated = any((h.get("entry_date") or "")[:7] == month
+                  for h in portfolio.holdings.values())
+    in_window = _chakra_window(_date.today(), HOLIDAYS)
 
-    # --- 2. entries: only on the buy day, largest names first -----------------
-    buys = []
-    if phase == "BUY":
-        mcap = _mcap_ranks()
-        candidates = []
+    sells, buys = [], []
+    if in_window and not rotated:
+        # rank the universe: 6-month momentum, must be above the 200-DMA
+        look = max(21, profile.mom_days)
+        ma = max(2, profile.trend_ma)
+        ranked = []
         for sym, c in series.items():
-            if sym in portfolio.holdings or sym in sold_today or len(c) < 70:
+            if len(c) < max(look, ma) + 5:
                 continue
             price = price_of(sym)
-            if price <= 0:
+            if price <= 0 or c[-look] <= 0:
                 continue
-            # rank by market cap when known; else by 3-month momentum
-            rank = mcap.get(sym) or (price / c[-63] - 1.0 if c[-63] > 0 else 0.0)
-            candidates.append((rank, sym, price, c))
-        candidates.sort(reverse=True)
-        per_name = profile.capital * profile.alloc_pct
-        for rank, sym, price, c in candidates:
-            budget = min(per_name, portfolio.cash)
-            qty = int(budget // price)
+            s = sma(c, ma)
+            if s[-1] is None or price <= s[-1]:
+                continue
+            ranked.append((price / c[-look] - 1.0, sym, price))
+        ranked.sort(reverse=True)
+        target = {sym for _mom, sym, _px in ranked[:profile.max_units]}
+        # 1. rotate OUT everything that fell off the leaders list
+        for sym, h in list(portfolio.holdings.items()):
+            _tick_hold(h, today)
+            px = price_of(sym)
+            if sym not in target and px > 0:
+                pnl = portfolio.sell(sym, px, reason="monthly rotation")
+                sells.append({"symbol": sym, "price": round(px, 2),
+                              "pnl": round(pnl, 2), "reason": "monthly rotation"})
+        # 2. rotate IN the new leaders, equal-weight slices of current equity
+        equity = portfolio.equity(price_of)
+        per_name = equity / profile.max_units if profile.max_units else 0.0
+        for mom, sym, price in ranked[:profile.max_units]:
+            if sym in portfolio.holdings:
+                continue
+            qty = int(min(per_name, portfolio.cash) // price)
             if qty <= 0:
                 continue
-            if portfolio.buy(sym, qty, price, entry_len=len(c)):
-                buys.append({"symbol": sym, "price": round(price, 2), "qty": qty})
+            if portfolio.buy(sym, qty, price, entry_len=len(series[sym])):
+                portfolio.holdings[sym]["mom"] = round(mom * 100, 1)
+                buys.append({"symbol": sym, "price": round(price, 2), "qty": qty,
+                             "mom": round(mom * 100, 1)})
+    else:
+        for h in portfolio.holdings.values():     # quiet day: just age the holds
+            _tick_hold(h, today)
 
     return _result(profile, portfolio, buys, sells, price_of)
+
 
 
 def _run_crash(profile, series, portfolio, live_prices=None):

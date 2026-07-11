@@ -155,7 +155,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
         <span class=wtab data-f=scalein onclick="setFilter('scalein',this)">SCALE-IN</span>
         <span class=wtab data-f=hi52 onclick="setFilter('hi52',this)">52-W HIGH</span>
         <span class=wtab data-f=crash onclick="setFilter('crash',this)">CRASH</span>
-        <span class=wtab data-f=tom onclick="setFilter('tom',this)">SANKRANTI</span>
+        <span class=wtab data-f=chakra onclick="setFilter('chakra',this)">CHAKRA</span>
         <span class=wtab data-f=options onclick="setFilter('options',this)">OPTIONS</span>
         <span class=wtab data-f=swami onclick="setFilter('swami',this)">SWAMINATHA</span>
         <span class=wtab data-f=lab onclick="setFilter('lab',this)">LAB</span>
@@ -206,8 +206,8 @@ let PNLC=null,PNLV={f0:0,f1:1},PNLH=null;   // P&L curve + visible fraction wind
 function setSort(k){if(SORT.key===k)SORT.dir=-SORT.dir;else{SORT.key=k;SORT.dir=(k==='sym'?1:-1);}render(DATA);}
 function sortArrow(k){return SORT.key===k?(SORT.dir>0?' ▲':' ▼'):'';}
 function fmtCr(v){if(v==null)return '—';if(v>=1e5)return (v/1e5).toFixed(2)+'L Cr';if(v>=1e3)return (v/1e3).toFixed(1)+'K Cr';return Math.round(v)+' Cr';}
-const LABEL={smallcap:'SMALL CAP',microcap:'MICRO CAP',next50:'NEXT 50',strength:'STRENGTH',leaders:'LEADERS',scalein:'SCALE-IN',hi52:'52-W HIGH',crash:'CRASH',tom:'SANKRANTI'};
-const TAG={smallcap:'SC',microcap:'MC',next50:'N50',strength:'STR',leaders:'LDR',scalein:'SCL',hi52:'52H',crash:'CRS',tom:'SNK'};
+const LABEL={smallcap:'SMALL CAP',microcap:'MICRO CAP',next50:'NEXT 50',strength:'STRENGTH',leaders:'LEADERS',scalein:'SCALE-IN',hi52:'52-W HIGH',crash:'CRASH',chakra:'CHAKRA'};
+const TAG={smallcap:'SC',microcap:'MC',next50:'N50',strength:'STR',leaders:'LDR',scalein:'SCL',hi52:'52H',crash:'CRS',chakra:'CHK'};
 function money(v){return "₹"+Math.round(v).toLocaleString('en-IN');}
 function pct(v){return(v==null?'—':(v>=0?"+":"")+(+v).toFixed(2)+"%");}
 function setFilter(f,el){FILTER=f;document.querySelectorAll('.wtab').forEach(t=>t.classList.remove('on'));el.classList.add('on');render(DATA);}
@@ -445,7 +445,7 @@ async function loadChart(sym,book){curSym=sym;curBook=book||null;document.getEle
   const j=await r.json();drawChart(j,sym);}
  catch(e){document.getElementById('chart').innerHTML='<div class=cempty style=color:#ff5d5d>DIAG: '+(e&&e.message||e)+'</div>';document.getElementById('rsi').innerHTML='';}}
 
-const STRATNAME={rsi2:'RSI-2 dip',momentum:'Momentum',strength:'Strength',leaders:'Leaders',scalein:'Scale-in',hi52:'52w High',crash:'Crash bounce',tom:'Turn-of-month',options:'Options'};
+const STRATNAME={rsi2:'RSI-2 dip',momentum:'Momentum',strength:'Strength',leaders:'Leaders',scalein:'Scale-in',hi52:'52w High',crash:'Crash bounce',chakra:'Momentum rotation',options:'Options'};
 function allPortfolio(d,q){
  // ALL = the whole portfolio in ONE table: every held position across all books,
  // book-tagged, so no single book (e.g. Small Cap's 54) buries the others.
