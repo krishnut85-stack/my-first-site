@@ -241,7 +241,9 @@ def book_chakra(prep, capital, cost, top=20, mom=126):
                         cash += held.pop(sym) * px * (1 - cost)
             equity = cash + sum(q * last.get(s, 0) for s, q in held.items())
             per = equity / top if top else 0
-            for sym in target:
+            # buy in MOMENTUM order (strongest first) — deterministic; a set
+            # here made fills depend on hash order and results wobble ±3% CAGR
+            for _m, sym in ranked[:top]:
                 if sym in held:
                     continue
                 px = prep[sym]["px"].get(d)
