@@ -183,7 +183,16 @@ table{width:100%;border-collapse:collapse;font-size:12px}
       <div class=sig id=sig></div>
     </div>
     <div class="chartcard curvecard">
-      <div class=chead><div><b>PORTFOLIO P&L</b> <span class=muted>· combined equity curve (paper)</span></div><div id=pnlnow class=muted></div></div>
+      <div class=chead><div><b>PORTFOLIO P&L</b> <span class=muted>· paper</span></div>
+        <div class=cpreview id=pnltfrow>
+          <button class=cbtn data-tf="5" onclick="setPnlTf('5')">5m</button>
+          <button class=cbtn data-tf="15" onclick="setPnlTf('15')" style="border-color:var(--acc);color:var(--acc)">15m</button>
+          <button class=cbtn data-tf="30" onclick="setPnlTf('30')">30m</button>
+          <button class=cbtn data-tf="60" onclick="setPnlTf('60')">60m</button>
+          <button class=cbtn data-tf="D" onclick="setPnlTf('D')">1D</button>
+          <button class=cbtn data-tf="LINE" onclick="setPnlTf('LINE')">LINE</button>
+        </div>
+        <div id=pnlnow class=muted></div></div>
       <div class=chartwrap><div class=pnlchart id=pnlchart></div></div>
     </div>
 </div>
@@ -202,7 +211,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 <script>
 const TOKEN=new URLSearchParams(location.search).get('token')||'';
 const prev={};let DATA=null,curSym=null,FILTER='all',SORT={key:'sym',dir:1},HOLI=new Set();
-let PNLC=null,PNLV={f0:0,f1:1},PNLH=null,PNLBASE=null;   // P&L curve + zoom window + hover index + capital baseline
+let PNLC=null,PNLV={f0:0,f1:1},PNLH=null,PNLBASE=null,PNLTF='15';   // P&L curve + zoom window + hover + baseline + timeframe
 function setSort(k){if(SORT.key===k)SORT.dir=-SORT.dir;else{SORT.key=k;SORT.dir=(k==='sym'?1:-1);}render(DATA);}
 function sortArrow(k){return SORT.key===k?(SORT.dir>0?' ▲':' ▼'):'';}
 function fmtCr(v){if(v==null)return '—';if(v>=1e5)return (v/1e5).toFixed(2)+'L Cr';if(v>=1e3)return (v/1e3).toFixed(1)+'K Cr';return Math.round(v)+' Cr';}
@@ -333,10 +342,64 @@ function liveTick(){
   high:Math.max(x.h==null?x.ltp:x.h,x.ltp),low:Math.min(x.l==null?x.ltp:x.l,x.ltp),close:x.ltp});
   const rv=x[curRsiField];if(rsiSeries&&rv!=null)rsiSeries.update({time:DATA.today,value:rv});}catch(e){}
 }
+function setPnlTf(tf){PNLTF=tf;PNLH=null;
+ document.querySelectorAll('#pnltfrow .cbtn').forEach(b=>{const on=b.dataset.tf===tf;
+  b.style.borderColor=on?'var(--acc)':'';b.style.color=on?'var(--acc)':'';});
+ if(PNLC)drawPnl(PNLC);}
+function drawPnlCandles(curve){
+ // bucket the ~1/min equity samples into PNLTF-minute (or daily) OHLC candles:
+ // fleet equity up in the bucket = GREEN candle, down = RED — like the stock chart
+ const c=document.getElementById('pnlchart');
+ pnlBind(c);
+ const tf=PNLTF, buckets=new Map();
+ for(const p of curve){
+  if(!p||typeof p!=='object'||typeof p.v!=='number')continue;
+  const t=String(p.t||'');let key,label;
+  if(tf==='D'){const m=t.match(/^(\d{4}-\d{2}-\d{2})/);if(!m)continue;key=m[1];label=m[1];}
+  else{const m=t.match(/^(\d{4}-\d{2}-\d{2}) (\d{2}):(\d{2})$/);if(!m)continue;
+   const step=+tf,slot=Math.floor(((+m[2])*60+(+m[3]))/step)*step;
+   key=m[1]+'#'+slot;
+   label=m[1].slice(5)+' '+String(Math.floor(slot/60)).padStart(2,'0')+':'+String(slot%60).padStart(2,'0');}
+  const b=buckets.get(key);
+  if(!b)buckets.set(key,{o:p.v,h:p.v,l:p.v,c:p.v,label});
+  else{b.h=Math.max(b.h,p.v);b.l=Math.min(b.l,p.v);b.c=p.v;}
+ }
+ let cds=[...buckets.values()];
+ if(cds.length>72)cds=cds.slice(-72);                       // newest 72 candles fit the panel
+ if(cds.length<2){c.innerHTML='<div class=cempty>candles build from live samples while the market is open — switch to LINE for full history</div>';document.getElementById('pnlnow').textContent='';return;}
+ const W=640,H=180,padL=64,padB=22,padT=12,plotW=W-padL-8,plotH=H-padT-padB;
+ let hi=Math.max(...cds.map(k=>k.h)),lo=Math.min(...cds.map(k=>k.l));
+ const mid=(hi+lo)/2,half=Math.max((hi-lo)/2,mid*0.0005||1);hi=mid+half;lo=mid-half;
+ const rng=hi-lo,Y=v=>padT+(hi-v)/rng*plotH,n=cds.length,slot=plotW/n,bw=Math.max(2,slot*0.62);
+ let grid='';
+ for(let k=0;k<=4;k++){const v=lo+rng*k/4,y=Y(v);
+  grid+=`<line x1="${padL}" y1="${y}" x2="${W-8}" y2="${y}" stroke="#1c2521"/>`+
+   `<text x="${padL-6}" y="${y+3}" fill="#8a958f" font-size="10" text-anchor="end">${money(v)}</text>`;}
+ let body='';
+ cds.forEach((k,i)=>{const cx=padL+slot*(i+0.5),up=k.c>=k.o,col=up?'#26a69a':'#ef5350';
+  const yO=Y(k.o),yC=Y(k.c),top=Math.min(yO,yC),hgt=Math.max(1,Math.abs(yO-yC));
+  body+=`<line x1="${cx}" y1="${Y(k.h)}" x2="${cx}" y2="${Y(k.l)}" stroke="${col}"/>`+
+   `<rect x="${cx-bw/2}" y="${top}" width="${bw}" height="${hgt}" fill="${col}"/>`;});
+ const xlab=`<text x="${padL}" y="${H-5}" fill="#8a958f" font-size="10">${cds[0].label}</text>`+
+  `<text x="${(padL+W-8)/2}" y="${H-5}" fill="#8a958f" font-size="10" text-anchor="middle">${n} × ${tf==='D'?'1-day':tf+'-min'} candles · fleet equity</text>`+
+  `<text x="${W-8}" y="${H-5}" fill="#8a958f" font-size="10" text-anchor="end">${cds[n-1].label}</text>`;
+ let cross='';
+ if(PNLH!=null&&PNLH>=0&&PNLH<n){const k=cds[PNLH],cx=padL+slot*(PNLH+0.5);
+  const d=k.c-k.o,box=`${k.label} · ${money(k.c)} (${(d>=0?'+':'')+money(d).replace('₹','₹')})`;
+  const bwd=Math.max(120,box.length*6.1),bx=Math.min(Math.max(cx-bwd/2,padL),W-8-bwd);
+  cross=`<line x1="${cx}" y1="${padT}" x2="${cx}" y2="${padT+plotH}" stroke="#5a6b62" stroke-dasharray="3 3"/>`+
+   `<rect x="${bx}" y="0" width="${bwd}" height="15" rx="3" fill="#0b0f14" stroke="#2a3630"/>`+
+   `<text x="${bx+bwd/2}" y="11" fill="#e8efe9" font-size="10" text-anchor="middle">${box}</text>`;}
+ setSVG(c,W,H,grid+body+xlab+cross);
+ c._geo={mode:'candle',n,padL,plotW,W,slot};
+ const last=cds[n-1],dd=last.c-cds[0].o;
+ document.getElementById('pnlnow').innerHTML=`${money(last.c)} <b class="${dd>=0?'g':'r'}">${(dd>=0?'+':'')+money(dd)}</b>`;
+}
 function drawPnl(curve){
  const c=document.getElementById('pnlchart');
  PNLC=curve;                                 // stash full curve for zoom/pan/hover redraws
  if(!curve||curve.length<2){c.innerHTML='<div class=cempty>P&L curve builds as the scans run</div>';document.getElementById('pnlnow').textContent='';return;}
+ if(PNLTF!=='LINE')return drawPnlCandles(curve);
  pnlBind(c);                                 // wire scroll-zoom / drag-pan / hover once
  const val=p=>(p&&typeof p==='object')?p.v:p, lab=p=>(p&&typeof p==='object')?p.t:'';
  const N=curve.length;
@@ -404,19 +467,27 @@ function pnlBind(c){
   if(s&&s.getScreenCTM){try{const m=s.getScreenCTM();if(m)
    return new DOMPoint(e.clientX,e.clientY).matrixTransform(m.inverse()).x;}catch(_){}}
   const r=c.getBoundingClientRect();return (e.clientX-r.left)*(640/(r.width||640));};
- c.addEventListener('wheel',e=>{e.preventDefault();
+ c.addEventListener('wheel',e=>{
+  if((c._geo||{}).mode==='candle')return;                                   // candles: no zoom
+  e.preventDefault();
   const g=c._geo||{padL:64,plotW:568}, fxp=Math.max(0,Math.min(1,(svgX(e)-g.padL)/g.plotW));
   const fx=PNLV.f0+fxp*(PNLV.f1-PNLV.f0);                                   // curve fraction under cursor
   const span=PNLV.f1-PNLV.f0, k=e.deltaY<0?0.82:1/0.82;                     // wheel up = zoom in
   const ns=Math.min(1,Math.max(0.03,span*k));                              // 3%..100% of the curve
   PNLV=clamp(fx-(fx-PNLV.f0)*(ns/span), fx-(fx-PNLV.f0)*(ns/span)+ns); redraw();},{passive:false});
- c.addEventListener('mousedown',e=>{e.preventDefault();PNLH=null;
+ c.addEventListener('mousedown',e=>{
+  if((c._geo||{}).mode==='candle')return;                                   // candles: no pan
+  e.preventDefault();PNLH=null;
   const sx=e.clientX,s0=PNLV.f0,s1=PNLV.f1,w=c.getBoundingClientRect().width||640;  // rect: zoom-consistent with clientX
   const mv=ev=>{const d=(ev.clientX-sx)/w*(s1-s0); PNLV=clamp(s0-d,s1-d); redraw();};
   const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);};
   document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);});
  c.addEventListener('mousemove',e=>{if(e.buttons)return;                   // dragging = pan, not hover
   const g=c._geo;if(!g)return;
+  if(g.mode==='candle'){                                                   // hover = nearest candle
+   const idx=Math.floor((svgX(e)-g.padL)/g.slot);
+   if(idx<0||idx>=g.n){if(PNLH!=null){PNLH=null;redraw();}return;}
+   if(idx!==PNLH){PNLH=idx;redraw();}return;}
   const fx=(svgX(e)-g.padL)/g.plotW;
   if(fx<-0.02||fx>1.02){if(PNLH!=null){PNLH=null;redraw();}return;}
   const full=g.a+Math.round(Math.max(0,Math.min(1,fx))*(g.n-1));
