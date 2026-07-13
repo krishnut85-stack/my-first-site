@@ -8,8 +8,9 @@
 body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#0d1420,#07090d);color:var(--txt);
 font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .wrap{max-width:97vw;margin:0 auto;padding:12px}
-/* readability on 4K office monitors: gently scale the whole app up */
-@media(min-width:2600px){body{zoom:1.35}}
+/* NOTE: no CSS zoom here — it desynchronizes canvas-chart cursors (hover was
+   landing ~35% off). For bigger text on 4K, use browser zoom (Ctrl +), which
+   chart libraries handle correctly. */
 .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;border-bottom:1px solid var(--line);padding-bottom:10px;flex-wrap:wrap}
 .brand{font-size:22px;font-weight:800;letter-spacing:1.5px}.brand b{color:var(--acc)}.brand .q{color:var(--amb)}
 .tag{color:var(--mut);font-size:11px;margin-top:2px}
@@ -190,6 +191,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
           <button class=cbtn data-tf="30" onclick="setPnlTf('30')">30m</button>
           <button class=cbtn data-tf="60" onclick="setPnlTf('60')">60m</button>
           <button class=cbtn data-tf="D" onclick="setPnlTf('D')">1D</button>
+          <button class=cbtn data-tf="2D" onclick="setPnlTf('2D')">2D</button>
           <button class=cbtn data-tf="LINE" onclick="setPnlTf('LINE')">LINE</button>
         </div>
         <div id=pnlnow class=muted></div></div>
@@ -355,7 +357,7 @@ function drawPnlCandles(curve){
  for(const p of curve){
   if(!p||typeof p!=='object'||typeof p.v!=='number')continue;
   const t=String(p.t||'');let key,label;
-  if(tf==='D'){const m=t.match(/^(\d{4}-\d{2}-\d{2})/);if(!m)continue;key=m[1];label=m[1];}
+  if(tf==='D'||tf==='2D'){const m=t.match(/^(\d{4}-\d{2}-\d{2})/);if(!m)continue;key=m[1];label=m[1];}
   else{const m=t.match(/^(\d{4}-\d{2}-\d{2}) (\d{2}):(\d{2})$/);if(!m)continue;
    const step=+tf,slot=Math.floor(((+m[2])*60+(+m[3]))/step)*step;
    key=m[1]+'#'+slot;
@@ -365,6 +367,10 @@ function drawPnlCandles(curve){
   else{b.h=Math.max(b.h,p.v);b.l=Math.min(b.l,p.v);b.c=p.v;}
  }
  let cds=[...buckets.values()];
+ if(tf==='2D'){                                             // merge day-pairs, newest pair complete
+  const m2=[];for(let i=cds.length-1;i>=0;i-=2){const b=cds[i],a=cds[i-1];
+   m2.unshift(a?{o:a.o,c:b.c,h:Math.max(a.h,b.h),l:Math.min(a.l,b.l),label:a.label+' +2d'}:b);}
+  cds=m2;}
  if(cds.length>72)cds=cds.slice(-72);                       // newest 72 candles fit the panel
  if(cds.length<2){c.innerHTML='<div class=cempty>candles build from live samples while the market is open — switch to LINE for full history</div>';document.getElementById('pnlnow').textContent='';return;}
  const W=640,H=180,padL=64,padB=22,padT=12,plotW=W-padL-8,plotH=H-padT-padB;
@@ -381,7 +387,7 @@ function drawPnlCandles(curve){
   body+=`<line x1="${cx}" y1="${Y(k.h)}" x2="${cx}" y2="${Y(k.l)}" stroke="${col}"/>`+
    `<rect x="${cx-bw/2}" y="${top}" width="${bw}" height="${hgt}" fill="${col}"/>`;});
  const xlab=`<text x="${padL}" y="${H-5}" fill="#8a958f" font-size="10">${cds[0].label}</text>`+
-  `<text x="${(padL+W-8)/2}" y="${H-5}" fill="#8a958f" font-size="10" text-anchor="middle">${n} × ${tf==='D'?'1-day':tf+'-min'} candles · fleet equity</text>`+
+  `<text x="${(padL+W-8)/2}" y="${H-5}" fill="#8a958f" font-size="10" text-anchor="middle">${n} × ${tf==='D'?'1-day':tf==='2D'?'2-day':tf+'-min'} candles · fleet equity</text>`+
   `<text x="${W-8}" y="${H-5}" fill="#8a958f" font-size="10" text-anchor="end">${cds[n-1].label}</text>`;
  let cross='';
  if(PNLH!=null&&PNLH>=0&&PNLH<n){const k=cds[PNLH],cx=padL+slot*(PNLH+0.5);
