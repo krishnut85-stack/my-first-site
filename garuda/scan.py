@@ -93,10 +93,19 @@ def _run_rsi2(profile, series, portfolio, live_prices=None):
         _tick_hold(h, today)
         cur = (r_cache.get(sym) or [None])[-1]
         px = price_of(sym)
-        recovered = cur is not None and cur > profile.exit_rsi
+        # exit_rsi >= 100 disables the RSI-recovery exit (DIP-EXAM retune:
+        # the smallcap book rides a trailing stop instead of selling relief)
+        recovered = (profile.exit_rsi < 100 and cur is not None
+                     and cur > profile.exit_rsi)
+        trailed = False
+        if profile.trail:
+            peak = max(h.get("peak", h["entry_price"]), px)
+            h["peak"] = peak
+            trailed = px <= peak * (1 - profile.trail)
         stopped = _hard_stopped(profile, h, px)
-        if stopped or recovered or h.get("bars_held", 0) >= profile.max_hold:
+        if stopped or trailed or recovered or h.get("bars_held", 0) >= profile.max_hold:
             reason = (f"{profile.hard_stop:.0%} stop-loss" if stopped
+                      else f"{profile.trail:.0%} trailing stop" if trailed
                       else "RSI recovered" if recovered else f"{profile.max_hold}-day hold")
             pnl = portfolio.sell(sym, px, reason=reason)
             sold_today.add(sym)
