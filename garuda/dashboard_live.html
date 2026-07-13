@@ -8,16 +8,19 @@
 body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#0d1420,#07090d);color:var(--txt);
 font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .wrap{max-width:97vw;margin:0 auto;padding:12px 12px 92px}
-/* news roll: headlines rise slowly bottom-to-top; hover pauses; click opens */
+/* news roll: rises bottom-to-top; hover pauses; wheel + ▲▼ scroll; click opens */
 .ticker{position:fixed;left:0;right:0;bottom:0;background:#0b0f14;border-top:1px solid var(--line);
-  overflow:hidden;height:72px;font-size:12px;z-index:40;padding:0 14px}
-.ticker .trail{display:block;animation:tickup 150s linear infinite;will-change:transform}
-.ticker:hover .trail{animation-play-state:paused}
+  height:76px;font-size:12px;z-index:40;padding:2px 56px 2px 14px}
+.tickwrap{height:100%;overflow:hidden}
 .ticker .titem{display:block;height:24px;line-height:24px;overflow:hidden;
   text-overflow:ellipsis;white-space:nowrap;color:var(--txt);text-decoration:none}
 .ticker .titem:hover{color:var(--acc);text-decoration:underline}
 .ticker .tsrc{color:var(--acc);font-weight:700;margin-right:8px}
-@keyframes tickup{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+.ticker .tage{color:#67736c;margin-left:8px;font-size:10px}
+.tbtns{position:absolute;right:10px;top:8px;display:flex;flex-direction:column;gap:6px}
+.tbtns button{background:var(--card);border:1px solid var(--line);border-radius:6px;
+  color:var(--mut);cursor:pointer;font-size:11px;padding:4px 9px}
+.tbtns button:hover{border-color:var(--acc);color:var(--acc)}
 /* NOTE: no CSS zoom here — it desynchronizes canvas-chart cursors (hover was
    landing ~35% off). For bigger text on 4K, use browser zoom (Ctrl +), which
    chart libraries handle correctly. */
@@ -209,7 +212,10 @@ table{width:100%;border-collapse:collapse;font-size:12px}
     </div>
 </div>
 <div class=foot id=foot>Garuda · paper on live Kite prices · served from your droplet · <span id=upd></span></div>
-<div class=ticker id=ticker style=display:none><div class=trail id=trail></div></div>
+<div class=ticker id=ticker style=display:none>
+  <div class=tickwrap id=tickwrap><div id=trail></div></div>
+  <div class=tbtns><button onclick="tickJump(-1)" title="scroll up">▲</button><button onclick="tickJump(1)" title="scroll down">▼</button></div>
+</div>
 </div>
 <script>/* TradingView Lightweight Charts v4.2.0 (Apache-2.0) */
 /*!
@@ -354,6 +360,25 @@ function liveTick(){
  try{candleSeries.update({time:DATA.today,open:x.o,
   high:Math.max(x.h==null?x.ltp:x.h,x.ltp),low:Math.min(x.l==null?x.ltp:x.l,x.ltp),close:x.ltp});
   const rv=x[curRsiField];if(rsiSeries&&rv!=null)rsiSeries.update({time:DATA.today,value:rv});}catch(e){}
+}
+// --- news roll engine: auto-rises ~1 headline / 2s; hover pauses; wheel + ▲▼ scroll ---
+let TICKPAUSE=0;
+function tickJump(dir){const w=document.getElementById('tickwrap');
+ w.scrollTop+=dir*72;TICKPAUSE=Date.now()+4000;}
+function tickerStart(){
+ if(window._tickInt)return;
+ const w=document.getElementById('tickwrap');
+ w.addEventListener('mouseenter',()=>{TICKPAUSE=Date.now()+36e5;});   // pause while reading
+ w.addEventListener('mouseleave',()=>{TICKPAUSE=0;});
+ w.addEventListener('wheel',e=>{e.preventDefault();w.scrollTop+=e.deltaY*0.4;TICKPAUSE=Date.now()+3000;},{passive:false});
+ window._tickInt=setInterval(()=>{
+  const tr=document.getElementById('trail'),half=tr.scrollHeight/2;
+  if(half<=0)return;
+  if(w.scrollTop>=half)w.scrollTop-=half;                             // seamless loop
+  if(w.scrollTop<0)w.scrollTop+=half;
+  if(Date.now()<TICKPAUSE)return;
+  w.scrollTop+=0.5;
+ },40);
 }
 function setPnlTf(tf){PNLTF=tf;PNLH=null;
  document.querySelectorAll('#pnltfrow .cbtn').forEach(b=>{const on=b.dataset.tf===tf;
@@ -753,17 +778,15 @@ function render(d){
  PNLBASE=t.capital||null;                    // green above starting capital, red below
  // prefer the timestamped grand-total curve; fall back to the plain number curve
  drawPnl(t.curve_ts||((t.curve||[]).map((v,i)=>({t:'sample '+(i+1),v}))));
- // bottom news roll — rebuild only when headlines CHANGE (else the roll resets).
- // Items scroll bottom-to-top slowly (~6s per headline); click opens the story.
+ // bottom news roll — JS-driven so wheel/buttons work; rebuild only on change
  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
  const news=d.news||[], nsig=news.map(n=>n.title).join('|');
  if(news.length&&nsig!==window._newsSig){window._newsSig=nsig;
   document.getElementById('ticker').style.display='block';
   const rows=news.map(n=>
-   `<a class=titem href="${esc(n.link||('https://www.google.com/search?q='+encodeURIComponent(n.title)))}" target=_blank rel=noopener><span class=tsrc>${esc(n.src)}</span>${esc(n.title)}</a>`).join('');
-  const tr=document.getElementById('trail');
-  tr.innerHTML=rows+rows;                                  // doubled = seamless loop
-  tr.style.animationDuration=Math.max(60,news.length*6)+'s';}
+   `<a class=titem href="${esc(n.link||('https://www.google.com/search?q='+encodeURIComponent(n.title)))}" target=_blank rel=noopener><span class=tsrc>${esc(n.src)}</span>${esc(n.title)}${n.age?`<span class=tage>· ${esc(n.age)} ago</span>`:''}</a>`).join('');
+  document.getElementById('trail').innerHTML=rows+rows;    // doubled = seamless loop
+  tickerStart();}
  let wsum=0,wn=0,psum=0,pn=0,anyLive=false;
  d.profiles.forEach(p=>{
    if(p.win!=null&&p.positions.length){wsum+=p.win*p.positions.length;wn+=p.positions.length;}
