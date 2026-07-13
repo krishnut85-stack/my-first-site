@@ -3,8 +3,8 @@
 from garuda.news import NewsTicker, parse_rss
 
 RSS = b"""<?xml version="1.0"?><rss><channel>
-<item><title>Nifty ends flat as IT drags</title></item>
-<item><title>Smallcap index up 1.2%</title></item>
+<item><title>Nifty ends flat as IT drags</title><link>https://x.in/a1</link></item>
+<item><title>Smallcap index up 1.2%</title><link>https://x.in/a2</link></item>
 <item><title></title></item>
 </channel></rss>"""
 
@@ -14,6 +14,7 @@ def test_parse_rss():
     assert [i["title"] for i in items] == ["Nifty ends flat as IT drags",
                                            "Smallcap index up 1.2%"]
     assert all(i["src"] == "ET" for i in items)
+    assert items[0]["link"] == "https://x.in/a1"
     assert parse_rss(b"not xml at all", "X") == []
 
 
@@ -27,6 +28,7 @@ def test_ticker_merges_swami_filings_without_network():
     items = t.items(trades)
     assert items[0]["src"].startswith("📜 SWAMINATHA BUY LUPIN")
     assert "USFDA" in items[0]["title"]
+    assert items[0]["link"].startswith("https://www.google.com/search?q=")
     assert items[1]["title"] == "Nifty ends flat as IT drags"
     # SELLs never enter the ticker
     assert not any("SELL" in i["src"] for i in items)

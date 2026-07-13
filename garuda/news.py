@@ -30,13 +30,15 @@ def parse_rss(xml_bytes, src, limit=12):
     for item in root.iter():
         if item.tag.split("}")[-1] != "item" and item.tag.split("}")[-1] != "entry":
             continue
-        title = ""
+        title, link = "", ""
         for ch in item:
-            if ch.tag.split("}")[-1] == "title":
+            tag = ch.tag.split("}")[-1]
+            if tag == "title" and not title:
                 title = (ch.text or "").strip()
-                break
+            elif tag == "link" and not link:
+                link = (ch.text or ch.get("href") or "").strip()
         if title:
-            out.append({"src": src, "title": title[:180]})
+            out.append({"src": src, "title": title[:180], "link": link[:400]})
         if len(out) >= limit:
             break
     return out
@@ -80,9 +82,13 @@ class NewsTicker:
             if fresh:
                 self._items = fresh
         out = list(self._items)
-        # Swaminatha's filings lead the ticker — the news the fleet actually acted on
+        # Swaminatha's filings lead the ticker — the news the fleet actually acted
+        # on; clicking one searches the filing (no canonical NSE URL in the log)
+        from urllib.parse import quote_plus
         for t in (swami_trades or [])[:5]:
             if t.get("side") == "BUY" and t.get("reason"):
+                q = quote_plus(f"{t.get('symbol', '')} {str(t['reason'])[:80]}")
                 out.insert(0, {"src": "📜 SWAMINATHA BUY " + str(t.get("symbol", "")),
-                               "title": str(t["reason"])[:180]})
+                               "title": str(t["reason"])[:180],
+                               "link": "https://www.google.com/search?q=" + q})
         return out[:MAX_ITEMS]
