@@ -122,14 +122,19 @@ def fetch_daily(symbols=None, days=400, out="daily.csv", exchange="NSE",
         data = _hist_retry(kite, tok, frm, today)
         if not data:
             return None
-        return [([s, d["date"].date().isoformat(), d["open"], d["high"], d["low"], d["close"]]
-                 if ohlc else [s, d["date"].date().isoformat(), d["close"]]) for d in data]
+        # volume rides along free (Kite sends it with every candle) — it is the
+        # key to the O'Neil/Minervini accumulation playbook; loaders that only
+        # want `close` ignore the extra column.
+        return [([s, d["date"].date().isoformat(), d["open"], d["high"], d["low"],
+                  d["close"], d.get("volume", "")]
+                 if ohlc else [s, d["date"].date().isoformat(), d["close"],
+                               d.get("volume", "")]) for d in data]
 
     with open(out, mode, newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         if mode == "w":
-            w.writerow(["symbol", "date", "open", "high", "low", "close"]
-                       if ohlc else ["symbol", "date", "close"])
+            w.writerow(["symbol", "date", "open", "high", "low", "close", "volume"]
+                       if ohlc else ["symbol", "date", "close", "volume"])
 
         def _handle(s):
             rows = _rows_for(s)              # network call happens OUTSIDE the lock
