@@ -139,6 +139,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
         <span class=wtab data-f=hi52 onclick="setFilter('hi52',this)">52-W HIGH</span>
         <span class=wtab data-f=crash onclick="setFilter('crash',this)">CRASH</span>
         <span class=wtab data-f=options onclick="setFilter('options',this)">OPTIONS</span>
+        <span class=wtab data-f=swaminatha onclick="setFilter('swaminatha',this)">SWAMINATHA</span>
         <span class=wtab data-f=lab onclick="setFilter('lab',this)">LAB</span>
         <input class=wsearch id=search placeholder="search…" oninput="render(DATA)">
       </div>
@@ -192,7 +193,7 @@ let PNLC=null,PNLV={f0:0,f1:1},PNLH=null;   // P&L curve + visible fraction wind
 function setSort(k){if(SORT.key===k)SORT.dir=-SORT.dir;else{SORT.key=k;SORT.dir=(k==='sym'?1:-1);}render(DATA);}
 function sortArrow(k){return SORT.key===k?(SORT.dir>0?' ▲':' ▼'):'';}
 function fmtCr(v){if(v==null)return '—';if(v>=1e5)return (v/1e5).toFixed(2)+'L Cr';if(v>=1e3)return (v/1e3).toFixed(1)+'K Cr';return Math.round(v)+' Cr';}
-const LABEL={smallcap:'SMALL CAP',microcap:'MICRO CAP',next50:'NEXT 50',strength:'STRENGTH',leaders:'LEADERS',scalein:'SCALE-IN',hi52:'52-W HIGH',crash:'CRASH'};
+const LABEL={smallcap:'SMALL CAP',microcap:'MICRO CAP',next50:'NEXT 50',strength:'STRENGTH',leaders:'LEADERS',scalein:'SCALE-IN',hi52:'52-W HIGH',crash:'CRASH',swaminatha:'SWAMINATHA'};
 const TAG={smallcap:'SC',microcap:'MC',next50:'N50',strength:'STR',leaders:'LDR',scalein:'SCL',hi52:'52H',crash:'CRS'};
 function money(v){return "₹"+Math.round(v).toLocaleString('en-IN');}
 function pct(v){return(v==null?'—':(v>=0?"+":"")+(+v).toFixed(2)+"%");}
@@ -431,7 +432,7 @@ async function loadChart(sym,book){curSym=sym;curBook=book||null;document.getEle
   const j=await r.json();drawChart(j,sym);}
  catch(e){document.getElementById('chart').innerHTML='<div class=cempty style=color:#ff5d5d>DIAG: '+(e&&e.message||e)+'</div>';document.getElementById('rsi').innerHTML='';}}
 
-const STRATNAME={rsi2:'RSI-2 dip',momentum:'Momentum',strength:'Strength',leaders:'Leaders',scalein:'Scale-in',hi52:'52w High',crash:'Crash bounce',options:'Options'};
+const STRATNAME={rsi2:'RSI-2 dip',momentum:'Momentum',strength:'Strength',leaders:'Leaders',scalein:'Scale-in',hi52:'52w High',crash:'Crash bounce',options:'Options',swaminatha:'News (Gemini)'};
 function allPortfolio(d,q){
  // ALL = the whole portfolio in ONE table: every held position across all books,
  // book-tagged, so no single book (e.g. Small Cap's 54) buries the others.
@@ -494,6 +495,55 @@ function optionsPanel(o){
    </div>
    <div class=note>${o.rules}<br>WIN% is data — the Nifty expired inside ±2.5% in <b>${o.win}%</b> of backtested weeks. The ₹ credit/P&L uses a modelled premium (~30% of the wing) until the live option chain is wired in: treat the rupees as indicative, the win rate as real.</div>
  </div>`;
+}
+function swaminathaPanel(s){
+ // the news-driven book has a stock watchlist of its OWN (whatever Gemini bought
+ // from live filings), plus a funnel-status header and a recent-news log.
+ if(!s)return `<div class=condor><div class=note>News book not available.</div></div>`;
+ const cc=v=>v==null?'muted':(v>=0?'g':'r');
+ const pl=s.equity-s.capital;
+ const badge=s.gemini_ok?'<span class="stat in">NEWS LIVE</span>'
+   :'<span class="stat flat">NEWS OFF · needs GEMINI_API_KEY</span>';
+ let h=`<div class=condor>
+   <div class=chd><div><b>${s.label}</b></div>${badge}</div>
+   <div class=grid>
+     <div class=cell><div class=l>EQUITY</div><div class=v>${money(s.equity)}</div></div>
+     <div class=cell><div class=l>P&L</div><div class="v ${pl>=0?'g':'r'}">${(pl>=0?'+':'')+money(pl)}</div></div>
+     <div class=cell><div class=l>P&L %</div><div class="v ${s.pnl_pct>=0?'g':'r'}">${pct(s.pnl_pct)}</div></div>
+     <div class=cell><div class=l>REALIZED</div><div class="v ${s.realized>=0?'g':'r'}">${(s.realized>=0?'+':'')+money(s.realized)}</div></div>
+     <div class=cell><div class=l>POSITIONS</div><div class=v>${s.n}</div></div>
+     <div class=cell><div class=l>CASH</div><div class=v>${money(s.cash)}</div></div>
+     <div class=cell><div class=l>GEMINI TODAY</div><div class=v>${s.gemini_today}/${s.gemini_cap}</div></div>
+   </div>`;
+ if(s.positions&&s.positions.length){
+  h+=`<table class=pltbl style=margin-top:14px><tr>
+    <th style=text-align:left>STOCK</th><th>ENTRY</th><th>LTP</th><th>CHG</th>
+    <th>P&amp;L</th><th>CONF</th><th>DAYS</th><th>STOP</th></tr>`;
+  s.positions.forEach(p=>{
+   h+=`<tr title="${(p.event||'').replace(/"/g,'&quot;')}"><td style=text-align:left><b>${p.sym}</b>`+
+     `${p.event?`<span class=sub>${p.event}</span>`:''}</td>`+
+     `<td>${p.entry.toFixed(2)}</td><td>${p.ltp.toFixed(2)}</td>`+
+     `<td class="${cc(p.chg)}">${pct(p.chg)}</td>`+
+     `<td class="${cc(p.pnl)}">${(p.pnl>=0?'+':'')+money(p.pnl)}</td>`+
+     `<td>${p.conf==null?'—':p.conf+'%'}</td><td>${p.days}d</td>`+
+     `<td class="${p.stop_pct!=null&&p.stop_pct<3?'a':'muted'}">${p.stop_px==null?'—':p.stop_px.toFixed(2)}</td></tr>`;});
+  h+=`</table>`;
+ } else {
+  h+=`<div class=note style=margin-top:14px>No open positions. Swaminatha only buys when a live NSE/BSE filing clears the whole funnel — a big, fresh, liquid catalyst that Gemini reads and judges MATERIAL and bullish on a financially-sound company. Most days that is nobody.</div>`;
+ }
+ // recent Gemini-approved buys (news log)
+ if(s.news_log&&s.news_log.length){
+  h+=`<div class=note style=margin-top:12px><b>Recent news buys</b><br>`+
+    s.news_log.map(n=>`<span class=muted>${n.date}</span> · <b>${n.symbol}</b> `+
+      `<span class=a>${n.conf==null?'':n.conf+'%'}</span> · ${(n.event||'').replace(/</g,'&lt;')}`).join('<br>')+
+    `</div>`;
+ }
+ h+=`<div class=note style=margin-top:12px>${s.rules}<br>`+
+   (s.gemini_ok
+     ? 'Gemini is the LAST, most-filtered step — a keyword + ₹-value floor keeps calls to a handful of big, fresh catalysts a day, and a hard daily cap ceilings the cost.'
+     : '⚠️ <b>News reading is OFF</b> — set <b>GEMINI_API_KEY</b> (and a live Kite token) in the droplet\'s .env to let Swaminatha read filings and paper-buy material catalysts.')+
+   ' PAPER only — no real order is ever placed.</div></div>';
+ return h;
 }
 function labPanel(l){
  // walk-forward edge discovery: candidates judged on data they never saw
@@ -571,7 +621,8 @@ function render(d){
  if(d.holidays)HOLI=new Set(d.holidays);   // NSE holiday list -> the clock blinks CLOSED on them
  // tagline is DERIVED from the live books, so it never goes stale as tabs are added
  const fams=[...new Set([...(d.profiles||[]).map(p=>STRATNAME[p.strategy]||p.strategy),
-   d.options?STRATNAME[d.options.strategy]:null].filter(Boolean))];
+   d.options?STRATNAME[d.options.strategy]:null,
+   d.swaminatha?STRATNAME[d.swaminatha.strategy]:null].filter(Boolean))];
  if(fams.length)document.getElementById('tag').textContent=fams.join(' · ')+' · Zerodha Kite · PAPER';
  // live index reading (Nifty 50 / Bank Nifty) in the header
  const idx=d.index||{};
@@ -605,6 +656,11 @@ function render(d){
   plrows+=`<tr><td>OPTIONS<span class=sub>${sub}</span></td>`+
    `<td>${money(o.equity)}</td><td class="${plr(pl)}">${plsign(pl)}</td>`+
    `<td class="${plr(o.pnl_pct)}">${pct(o.pnl_pct)}</td></tr>`;}
+ if(d.swaminatha){const s=d.swaminatha,pl=s.equity-s.capital;
+  const sub=s.gemini_ok?`${s.n} pos`:'news off';
+  plrows+=`<tr><td>SWAMINATHA<span class=sub>${sub}</span></td>`+
+   `<td>${money(s.equity)}</td><td class="${plr(pl)}">${plsign(pl)}</td>`+
+   `<td class="${plr(s.pnl_pct)}">${pct(s.pnl_pct)}</td></tr>`;}
  const tpl=t.equity-t.capital;
  plrows+=`<tr class=pltot><td>TOTAL</td><td>${money(t.equity)}</td>`+
   `<td class="${plr(tpl)}">${plsign(tpl)}</td><td class="${plr(t.pnl_pct)}">${pct(t.pnl_pct)}</td></tr>`;
@@ -613,6 +669,7 @@ function render(d){
  const q=(document.getElementById('search').value||'').trim().toUpperCase();
  const list=document.getElementById('list');let html='';
  if(FILTER==='options'&&d.options){ html=optionsPanel(d.options); }        // condor panel
+ else if(FILTER==='swaminatha'){ html=swaminathaPanel(d.swaminatha); }     // news-driven book
  else if(FILTER==='lab'){ html=labPanel(d.lab); }                          // strategy LAB leaderboard
  else if(FILTER==='all'){ html=allPortfolio(d,q); }                        // one combined table
  else d.profiles.forEach(p=>{                                              // a single book's watch

@@ -17,4 +17,8 @@ rama_dashboard.html
 
 # Garuda live runtime
 garuda/data/garuda_*_portfolio.json
+garuda/data/garuda_*_book.json
+garuda/data/garuda_day_base.json
+garuda/data/garuda_equity_log.json
+garuda/data/seen_news.json
 garuda_server.log

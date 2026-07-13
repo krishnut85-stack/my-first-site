@@ -16,6 +16,8 @@ from .portfolio import LivePortfolio, _today
 from .scan import run_scan
 from .setups import rsi, sma
 from .strategy import PROFILES
+from .swaminatha import SwaminathaBook
+from .swaminatha import LABEL as SWAMI_LABEL, RULES as SWAMI_RULES
 
 # The 7th "book" is a weekly Iron Condor on the Nifty — index option selling,
 # not a stock scanner, so it lives outside PROFILES and renders in its own tab.
@@ -50,6 +52,10 @@ def _stop_price(prof, h):
 
 def _options_path():
     return config.DATA_DIR / "garuda_options_book.json"
+
+
+def _swaminatha_path():
+    return config.DATA_DIR / "garuda_swaminatha_book.json"
 
 
 def _day_base_path():
@@ -100,6 +106,15 @@ class GarudaLive:
         self.options = OptionsBook.load(_options_path(), capital=1_000_000.0,
                                         dist=0.025, wing=0.01, credit_frac=0.30,
                                         alloc_pct=0.02, index="NIFTY 50")
+        # The 8th book: Swaminatha — news-driven (Gemini reads NSE filings). Like
+        # the options book it lives outside PROFILES and renders in its own tab.
+        self.swaminatha = SwaminathaBook.load(
+            _swaminatha_path(), capital=config.SWAMINATHA_CAPITAL,
+            alloc_pct=config.SWAMINATHA_ALLOC_PCT,
+            max_positions=config.SWAMINATHA_MAX_POSITIONS,
+            stop=config.SWAMINATHA_STOP, trail_arm=config.SWAMINATHA_TRAIL_ARM,
+            trail_give=config.SWAMINATHA_TRAIL_GIVE,
+            hold_days=config.SWAMINATHA_HOLD_DAYS)
         self.prices = {}      # symbol -> live ltp
         self.index = {}       # NSE index name -> {ltp, pc, chg} (Nifty 50, Bank Nifty)
         self.day_ohlc = {}    # symbol -> {o,h,l,pc,ltp} today (for the live candle)
@@ -194,6 +209,7 @@ class GarudaLive:
         eq = self.live_equity()                       # 6 equity books
         nifty = (self.index.get("NIFTY 50") or {}).get("ltp") or 0.0
         eq += self.options.state(nifty)["equity"]     # + the weekly condor book
+        eq += self.swaminatha.state(self.price_of)["equity"]   # + the news book
         return eq
 
     def record_equity(self):
@@ -250,6 +266,9 @@ class GarudaLive:
         out = set()
         for pf in self.portfolios.values():
             out.update(pf.holdings)
+        # the news book's names live outside the profile universes, so add them
+        # here or they'd never be streamed/priced and would freeze at entry.
+        out.update(self.swaminatha.holdings)
         return out
 
     def all_symbols(self):
@@ -304,6 +323,12 @@ class GarudaLive:
         self.options.step(nifty, _date.today(), is_market_open())
         self.options.save(_options_path())
         results["options"] = {"status": f"condor stepped @ nifty {nifty or '—'}"}
+        # advance the news book: exit held names, then buy fresh Gemini-approved
+        # catalysts. Prices its own market-wide symbols via the Kite feed.
+        results["swaminatha"] = self.swaminatha.step(self.feed, _today(),
+                                                     is_market_open())
+        self.swaminatha.record_close(self.feed, _today())
+        self.swaminatha.save(_swaminatha_path())
         self.last_scan_date = _today()
         return results
 
@@ -581,6 +606,22 @@ class GarudaLive:
         totals["day_pnl"] = round(totals["day_pnl"] + options["day_pnl"], 0)
         totals["pnl_pct"] = round((totals["equity"] / totals["capital"] - 1) * 100, 2) \
             if totals["capital"] else 0.0
+        # --- the 8th book: Swaminatha (news-driven, Gemini) -------------------
+        sst = self.swaminatha.state(self.price_of)
+        if "swaminatha" not in self.day_base:
+            self.day_base["swaminatha"] = round(sst["equity"], 0)
+            base_changed = True
+        sbase = self.day_base["swaminatha"]
+        swaminatha = {**sst, "key": "swaminatha", "name": config.BOT_NAME + "-NEWS",
+                      "strategy": "swaminatha", "label": SWAMI_LABEL, "rules": SWAMI_RULES,
+                      "capital": self.swaminatha.starting_capital,
+                      "day_pnl": round(sst["equity"] - sbase, 0)}
+        totals["equity"] = round(totals["equity"] + sst["equity"], 0)
+        totals["capital"] = round(totals["capital"] + swaminatha["capital"], 0)
+        totals["day_pnl"] = round(totals["day_pnl"] + swaminatha["day_pnl"], 0)
+        totals["positions"] += sst["n"]
+        totals["pnl_pct"] = round((totals["equity"] / totals["capital"] - 1) * 100, 2) \
+            if totals["capital"] else 0.0
         # timestamped grand-total curve for the P&L graph (persistent memory).
         # Prefer the recorded live log; otherwise seed from the daily backtest
         # track record (real dates at the 15:30 close, options flat at capital) so
@@ -590,9 +631,11 @@ class GarudaLive:
         else:
             longest = max(histories, key=len, default=[])
             dates = [h.get("date", "") for h in longest]
-            opt_cap = self.options.starting_capital
+            # the two standalone books (options + news) sit flat at their capital
+            # in the seed so the curve joins the live tip without a step.
+            flat_cap = self.options.starting_capital + self.swaminatha.starting_capital
             curve_ts = [{"t": (dates[i] + " 15:30") if i < len(dates) and dates[i]
-                         else "pt%d" % (i + 1), "v": round(v + opt_cap, 0)}
+                         else "pt%d" % (i + 1), "v": round(v + flat_cap, 0)}
                         for i, v in enumerate(daily)]
         tip_t = self._ist_now().strftime("%Y-%m-%d %H:%M")
         if not curve_ts or curve_ts[-1]["t"] != tip_t:
@@ -604,7 +647,7 @@ class GarudaLive:
             self._save_day_base()
         from .market import HOLIDAYS
         return {"live": self.feed.live, "profiles": profs, "totals": totals,
-                "options": options, "lab": _lab_state(),
+                "options": options, "swaminatha": swaminatha, "lab": _lab_state(),
                 "lab_discover": _discover_state(),
                 "lab_movers": self.movers_radar(), "index": self.index,
                 "market_open": is_market_open(), "market_status": market_status(),

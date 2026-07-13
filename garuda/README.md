@@ -58,6 +58,41 @@ Results are written to `data/garuda_lab_results.json` and rendered live on the
 dashboard's **LAB** tab. A PROMOTED verdict means *survived honest validation*,
 never *guaranteed money*.
 
+## Swaminatha — the news-driven book (its own tab) 📜
+
+Ported from Mayura's "Guru" face, **Swaminatha** is Garuda's 8th paper book and
+renders in its **own dashboard tab** (next to OPTIONS). It reacts to *events*, not
+price patterns: it scans market-wide NSE/BSE corporate announcements, and lets
+**Gemini read the full filing** to judge whether it is a genuine, **MATERIAL
+bullish catalyst on a financially-sound company** before placing a (paper) buy.
+
+Cost is controlled by a funnel where Gemini is the **last, most-filtered** step:
+
+```
+fetch market-wide announcements
+  → keyword pre-filter (free)        # order wins, approvals, buybacks, mergers…
+  → dedupe (seen)                    # judge each filing once, never every poll
+  → ₹-value floor (free regex)       # drop small orders below NEWS_MIN_ORDER_CR
+  → safety gate (real, not a penny)  # price ≥ NEWS_MIN_PRICE via the Kite feed
+  → 🤖 Gemini reads the full text    # material? sound? priced in?  (daily-capped)
+  → BUY  (material + sound + confidence ≥ NEWS_MIN_CONFIDENCE)
+```
+
+Exits are event-driven and **tight** (news reverses fast): −8% hard stop, a
+trailing lock that arms after +10% then gives 10% back from the peak, and a
+15-day time exit. The book persists to `data/garuda_swaminatha_book.json` and is
+folded into the grand-total P&L like every other book.
+
+```bash
+export GEMINI_API_KEY=...                 # from Google AI Studio (one time)
+python3 -m garuda.swaminatha --news       # dry-run the funnel (needs a Kite token too)
+```
+
+Config lives in `config.py` (`SWAMINATHA_*`, `NEWS_*`, `GEMINI_*`). It **degrades
+safely**: with no `GEMINI_API_KEY` it never buys (no confident read = no trade)
+and the tab shows a clear *"NEWS OFF"* badge; with no Kite feed it still renders
+(holdings marked at their entry price). **Paper only** — no real order is placed.
+
 ## Status
 
 Paper / research only. **No live-order path in this package.** Execution is worth
