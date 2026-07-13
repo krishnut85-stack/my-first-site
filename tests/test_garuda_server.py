@@ -48,7 +48,7 @@ def test_win_rate_shows_backtest_until_live_trades(tmp_path, monkeypatch):
     sc = next(p for p in live.build_state()["profiles"] if p["key"] == "smallcap")
     # no closed trades yet -> headline win rate is the validated backtest figure,
     # with the live "green now" ratio exposed separately.
-    assert sc["win"] == 66 and sc["win_kind"] == "backtest"
+    assert sc["win"] == 52 and sc["win_kind"] == "backtest"   # DIP RACE figure
     assert sc["win_open"] == 50                    # 1 of 2 positions green right now
 
 

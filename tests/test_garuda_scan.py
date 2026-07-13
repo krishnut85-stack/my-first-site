@@ -22,11 +22,14 @@ def _reverting(days=400, seed=1):
 def test_profiles_use_proven_settings():
     sc, mc = PROFILES["smallcap"], PROFILES["microcap"]
     for p in (sc, mc):
-        assert p.entry_rsi == 10 and p.exit_rsi == 85 and p.max_hold == 30
-        assert p.strategy == "rsi2"
+        assert p.entry_rsi == 10 and p.strategy == "rsi2"
         assert p.use_trend is True          # the uptrend filter is now ON (the showdown winner)
-        assert p.hard_stop == 0.20          # free catastrophe floor (validated on the sweep)
         assert p.label and p.capital == 1_000_000
+    # microcap: the original quick-exit contract (no deep data to retest it)
+    assert mc.exit_rsi == 85 and mc.max_hold == 30 and mc.hard_stop == 0.20
+    # smallcap: DIP EXAM + DIP RACE retune — patient trail, RSI exit disabled
+    assert sc.exit_rsi >= 100 and sc.trail == 0.25 and sc.max_hold == 180
+    assert sc.hard_stop == 0.0
     n50 = PROFILES["next50"]
     assert n50.strategy == "momentum"       # Next 50 runs breakout + trailing stop
     assert n50.breakout == 20 and n50.trail == 0.15 and n50.max_hold == 120
@@ -88,7 +91,7 @@ def test_scan_exits_on_max_hold():
 
 
 def test_rsi2_book_fires_the_hard_stop_loss():
-    prof = PROFILES["smallcap"]                     # now carries a 15% hard stop
+    prof = PROFILES["microcap"]                     # keeps the 20% hard stop
     pf = LivePortfolio(prof.capital)
     # open a position via a normal oversold-in-uptrend entry
     up = _reverting(seed=42)

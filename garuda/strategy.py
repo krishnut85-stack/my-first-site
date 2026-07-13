@@ -69,18 +69,22 @@ PROFILES = {
         "smallcap", "Garuda-SC",
         "https://archives.nseindia.com/content/indices/ind_niftysmallcap250list.csv",
         "niftysmallcap250_daily.csv",
-        strategy="rsi2", label="RSI-2 < 10 dip · uptrend · 20% stop",
-        rules="Buy RSI-2 < 10 in an uptrend (> 200-DMA) · Sell RSI-2 > 85, 30-day hold, "
-              "or a 20% catastrophe stop-loss",
+        strategy="rsi2", label="RSI-2 < 10 dip · uptrend · 25% trail (patient)",
+        rules="Buy RSI-2 < 10 in an uptrend (> 200-DMA) · Ride the recovery on a "
+              "25% trailing stop or a 180-day hold — retuned by the DIP EXAM + "
+              "DIP RACE: quick RSI exits went negative on unseen data; the "
+              "patient exit made 2.5x the rupees with a smaller drawdown",
         use_trend=True,
-        entry_rsi=10.0,   # dip-depth test: <10 gives ~same edge as <5, more trades
-        # stop-loss sweep on the ACTUAL niftysmallcap250 universe: 20% is identical
-        # to no-stop (+671% total, 67% win, worst -16%) — it never triggers on these
-        # quality names, so it costs nothing, but it leaves a hard floor for a tail
-        # disaster (the broader NSE set had -45% names a crash/fraud could produce).
-        # A tighter 15% stop was a small drag (+665%) for no worst-case gain.
-        hard_stop=0.20,
-        proven_win=66.0, proven_ret=0.94, proven_pf=1.85),
+        entry_rsi=10.0,   # entries unchanged — the validated dip trigger
+        exit_rsi=100.0,   # >=100 disables the RSI-recovery exit (winners ride)
+        trail=0.25,       # the real exit: 25% off the running peak, checked daily
+        max_hold=180,     # safety ceiling; the trail evicts laggards long before
+        hard_stop=0.0,    # the trail from entry IS the disaster floor (exam-faithful)
+        # DIP RACE on the smallcap-250, 5.5y portfolio-level: Rs 10L -> Rs 27.2L
+        # (+20.3% CAGR, DD 24.5%) vs the old quick exit's Rs 15.1L (+8.0%, DD
+        # 28.5%, TEST window -10.1%/yr). Even after skipping MORE signals for
+        # tied-up cash, patience out-earned recycling. Win rate ~52% by design.
+        proven_win=52.0, proven_ret=1.25, proven_pf=1.14),
     "microcap": Profile(
         "microcap", "Garuda-MC",
         "https://nsearchives.nseindia.com/content/indices/ind_niftymicrocap250_list.csv",

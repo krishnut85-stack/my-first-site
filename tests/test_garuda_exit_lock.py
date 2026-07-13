@@ -10,11 +10,14 @@ from garuda.strategy import PROFILES
 
 
 def test_dip_books_exits():
-    for k in ("smallcap", "microcap"):
-        p = PROFILES[k]
-        assert p.exit_rsi == 85          # sell the relief
-        assert p.max_hold == 30          # 30-day time stop
-        assert p.hard_stop == 0.20       # validated catastrophe floor
+    mc = PROFILES["microcap"]            # original quick-exit contract
+    assert mc.exit_rsi == 85             # sell the relief
+    assert mc.max_hold == 30             # 30-day time stop
+    assert mc.hard_stop == 0.20          # validated catastrophe floor
+    sc = PROFILES["smallcap"]            # DIP EXAM + DIP RACE retune (patient)
+    assert sc.exit_rsi >= 100            # RSI-recovery exit disabled
+    assert sc.trail == 0.25 and sc.max_hold == 180
+    assert sc.hard_stop == 0.0           # the trail is the disaster floor
 
 
 def test_trend_books_exits():
