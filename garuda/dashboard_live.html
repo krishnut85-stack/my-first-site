@@ -7,7 +7,16 @@
 *{box-sizing:border-box}
 body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#0d1420,#07090d);color:var(--txt);
 font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-.wrap{max-width:97vw;margin:0 auto;padding:12px}
+.wrap{max-width:97vw;margin:0 auto;padding:12px 12px 34px}
+/* BBC-style bottom news ticker: market headlines + Swaminatha's filings */
+.ticker{position:fixed;left:0;right:0;bottom:0;background:#0b0f14;border-top:1px solid var(--line);
+  overflow:hidden;white-space:nowrap;padding:6px 0;font-size:12px;z-index:40}
+.ticker .trail{display:inline-block;white-space:nowrap;padding-left:100vw;
+  animation:tickmove 90s linear infinite;will-change:transform}
+.ticker:hover .trail{animation-play-state:paused}
+.ticker .tsrc{color:var(--acc);font-weight:700}
+.ticker .tsep{color:#3a4640;margin:0 14px}
+@keyframes tickmove{from{transform:translateX(0)}to{transform:translateX(-100%)}}
 /* NOTE: no CSS zoom here — it desynchronizes canvas-chart cursors (hover was
    landing ~35% off). For bigger text on 4K, use browser zoom (Ctrl +), which
    chart libraries handle correctly. */
@@ -199,6 +208,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
     </div>
 </div>
 <div class=foot id=foot>Garuda · paper on live Kite prices · served from your droplet · <span id=upd></span></div>
+<div class=ticker id=ticker style=display:none><div class=trail id=trail></div></div>
 </div>
 <script>/* TradingView Lightweight Charts v4.2.0 (Apache-2.0) */
 /*!
@@ -737,6 +747,13 @@ function render(d){
  PNLBASE=t.capital||null;                    // green above starting capital, red below
  // prefer the timestamped grand-total curve; fall back to the plain number curve
  drawPnl(t.curve_ts||((t.curve||[]).map((v,i)=>({t:'sample '+(i+1),v}))));
+ // bottom news ticker — rebuild only when headlines CHANGE (else the crawl resets)
+ const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+ const news=d.news||[], nsig=news.map(n=>n.title).join('|');
+ if(news.length&&nsig!==window._newsSig){window._newsSig=nsig;
+  document.getElementById('ticker').style.display='block';
+  document.getElementById('trail').innerHTML=news.map(n=>
+   `<span class=tsrc>${esc(n.src)}</span> ${esc(n.title)}<span class=tsep>◆</span>`).join('');}
  let wsum=0,wn=0,psum=0,pn=0,anyLive=false;
  d.profiles.forEach(p=>{
    if(p.win!=null&&p.positions.length){wsum+=p.win*p.positions.length;wn+=p.positions.length;}
@@ -747,7 +764,7 @@ function render(d){
  document.getElementById('summary').innerHTML=
   `<div class=stile><div class=l>COMBINED EQUITY (PAPER)</div><div class=v>${money(t.equity)}</div></div>
    <div class=stile><div class=l>TOTAL P&L</div><div class="v ${t.pnl_pct>=0?'g':'r'}">${pct(t.pnl_pct)}</div></div>
-   <div class=stile><div class=l>DAY P&L</div><div class="v ${t.day_pnl>=0?'g':'r'}">${(t.day_pnl>=0?'+':'')+money(t.day_pnl)}</div></div>
+   <div class=stile><div class=l>DAY P&L</div><div class="v ${t.day_pnl>=0?'g':'r'}">${(t.day_pnl>=0?'+':'')+money(t.day_pnl)} <span style=font-size:12px>${(t.day_pnl>=0?'+':'')+(t.equity-t.day_pnl>0?(t.day_pnl/(t.equity-t.day_pnl)*100).toFixed(2):'0.00')}%</span></div></div>
    <div class=stile><div class=l>WIN RATE ${anyLive?'(live)':'(validated)'}</div><div class="v a">${combWin==null?'—':combWin+'%'}</div></div>
    <div class=stile><div class=l>OPEN POSITIONS</div><div class=v>${t.positions}</div></div>`;
  // per-strategy P&L breakdown: money made/lost by each book, green up / red down

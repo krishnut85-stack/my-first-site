@@ -166,6 +166,8 @@ class GarudaLive:
         self.mcap_by_sym = self._load_mcap()
         self._movers_cache = {}    # daily MOVERS radar (recomputed once per day)
         self._swami_cache = {}     # Swaminatha (Mayura news face) guest-tab state
+        from .news import NewsTicker
+        self.news = NewsTicker()   # bottom-ticker headlines (rate-limited fetch)
 
     def _load_day_base(self):
         import json
@@ -697,7 +699,10 @@ class GarudaLive:
                 "options": options, "lab": _lab_state(),
                 "lab_discover": _discover_state(),
                 "lab_movers": self.movers_radar(),
-                "swaminatha": self.swaminatha_state(), "index": self.index,
+                "swaminatha": self.swaminatha_state(),
+                "news": self.news.items((self._swami_raw() or {}).get("trades",
+                                                                      [])[::-1]),
+                "index": self.index,
                 "market_open": is_market_open(), "market_status": market_status(),
                 "holidays": sorted(HOLIDAYS),
                 "last_scan": self.last_scan_date, "today": _today()}
