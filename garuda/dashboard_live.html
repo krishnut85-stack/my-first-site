@@ -409,8 +409,11 @@ function drawPnlCandles(curve){
    `<text x="${bx+bwd/2}" y="11" fill="#e8efe9" font-size="10" text-anchor="middle">${box}</text>`;}
  setSVG(c,W,H,grid+body+xlab+cross);
  c._geo={mode:'candle',n,padL,plotW,W,slot};
- const last=cds[n-1],dd=last.c-cds[0].o;
- document.getElementById('pnlnow').innerHTML=`${money(last.c)} <b class="${dd>=0?'g':'r'}">${(dd>=0?'+':'')+money(dd)}</b>`;
+ // header delta = TOTAL P&L vs starting capital (matches the scoreboard),
+ // never the change since the first visible candle (that read as fake profit)
+ const last=cds[n-1],base=(PNLBASE!=null&&isFinite(PNLBASE))?PNLBASE:cds[0].o;
+ const dd=last.c-base;
+ document.getElementById('pnlnow').innerHTML=`${money(last.c)} <b class="${dd>=0?'g':'r'}">${(dd>=0?'+':'')+money(dd)} total</b>`;
 }
 function drawPnl(curve){
  const c=document.getElementById('pnlchart');
@@ -472,7 +475,9 @@ function drawPnl(curve){
    `<polyline fill="none" stroke="#ff5d5d" stroke-width="2" points="${pts}"/></g>`+
   `<circle cx="${X(n-1)}" cy="${Y(vals[n-1])}" r="3" fill="${col}"/>${xlab}${cross}`);
  c._geo={a,b,n,padL,plotW,W};                // geometry for hover hit-testing
- document.getElementById('pnlnow').textContent=money(val(curve[N-1]));
+ {const lv=val(curve[N-1]),bd=(baseV!=null)?lv-baseV:null;   // total P&L vs capital
+  document.getElementById('pnlnow').innerHTML=money(lv)+(bd==null?'':
+   ` <b class="${bd>=0?'g':'r'}">${(bd>=0?'+':'')+money(bd)} total</b>`);}
 }
 function pnlBind(c){
  if(c.dataset.zbound)return; c.dataset.zbound='1';
