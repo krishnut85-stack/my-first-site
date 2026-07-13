@@ -787,18 +787,18 @@ function render(d){
    `<a class=titem href="${esc(n.link||('https://www.google.com/search?q='+encodeURIComponent(n.title)))}" target=_blank rel=noopener><span class=tsrc>${esc(n.src)}</span>${esc(n.title)}${n.age?`<span class=tage>· ${esc(n.age)} ago</span>`:''}</a>`).join('');
   document.getElementById('trail').innerHTML=rows+rows;    // doubled = seamless loop
   tickerStart();}
- let wsum=0,wn=0,psum=0,pn=0,anyLive=false;
- d.profiles.forEach(p=>{
-   if(p.win!=null&&p.positions.length){wsum+=p.win*p.positions.length;wn+=p.positions.length;}
-   if(p.proven_win!=null){psum+=p.proven_win;pn++;}
-   if(p.win_kind==='live')anyLive=true;});
- // live positions-weighted win rate if we have trades; else the validated average
- const combWin=wn?Math.round(wsum/wn):(pn?Math.round(psum/pn):null);
+ let psum=0,pn=0;
+ d.profiles.forEach(p=>{if(p.proven_win){psum+=p.proven_win;pn++;}});
+ // the server computes the TRUE live win rate (total wins / total closed
+ // trades, all books + settled option weeks); validated average only until
+ // 5 real trades have closed
+ const anyLive=t.win!=null;
+ const combWin=anyLive?t.win:(pn?Math.round(psum/pn):null);
  document.getElementById('summary').innerHTML=
   `<div class=stile><div class=l>COMBINED EQUITY (PAPER)</div><div class=v>${money(t.equity)}</div></div>
    <div class=stile><div class=l>TOTAL P&L</div><div class="v ${t.pnl_pct>=0?'g':'r'}">${pct(t.pnl_pct)}</div></div>
    <div class=stile><div class=l>DAY P&L</div><div class="v ${t.day_pnl>=0?'g':'r'}">${(t.day_pnl>=0?'+':'')+money(t.day_pnl)} <span style=font-size:12px>${(t.day_pnl>=0?'+':'')+(t.equity-t.day_pnl>0?(t.day_pnl/(t.equity-t.day_pnl)*100).toFixed(2):'0.00')}%</span></div></div>
-   <div class=stile><div class=l>WIN RATE ${anyLive?'(live)':'(validated)'}</div><div class="v a">${combWin==null?'—':combWin+'%'}</div></div>
+   <div class=stile><div class=l>WIN RATE ${anyLive?`(live · ${t.win_n} closed)`:'(validated)'}</div><div class="v a">${combWin==null?'—':combWin+'%'}</div></div>
    <div class=stile><div class=l>OPEN POSITIONS</div><div class=v>${t.positions}</div></div>`;
  // per-strategy P&L breakdown: money made/lost by each book, green up / red down
  const plr=v=>v>=0?'g':'r', plsign=v=>(v>=0?'+':'')+money(v);

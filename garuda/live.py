@@ -605,7 +605,7 @@ class GarudaLive:
                 self.day_base[k] = round(equity, 0)
                 base_changed = True
             day_pnl = equity - self.day_base[k]
-            win, pfac = _live_stats(pf)
+            win, pfac, win_n = _live_stats(pf)
             win_kind = "live"
             if win is None and prof.proven_win:    # no closed live trades yet;
                 win, win_kind = prof.proven_win, "backtest"   # 0 = no backtest
@@ -623,6 +623,7 @@ class GarudaLive:
                 "pnl_pct": round((equity / pf.starting_capital - 1) * 100, 2),
                 "day_pnl": round(day_pnl, 0), "positions": positions,
                 "win": win, "win_kind": win_kind, "win_open": win_open,
+                "win_n": win_n,
                 "proven_win": prof.proven_win, "proven_ret": prof.proven_ret,
                 "proven_pf": prof.proven_pf,
                 "universe": self.universe.get(k, []), "watch": watch,
@@ -636,6 +637,19 @@ class GarudaLive:
             "day_pnl": round(sum(p["day_pnl"] for p in profs), 0),
             "positions": sum(len(p["positions"]) for p in profs),
         }
+        # the TRUE combined live win rate: total wins / total closed trades
+        # across every book (+ settled option weeks) — each book weighted by
+        # its real sample size, never by open-position counts, never mixing
+        # backtest figures into a number labeled "live".
+        lw = lc = 0
+        for pf in self.portfolios.values():
+            w, c = _wins_closed(pf.trades)
+            lw += w
+            lc += c
+        ow, oc = _wins_closed(self.options.trades, sides=("SETTLE",))
+        lw, lc = lw + ow, lc + oc
+        totals["win"] = round(lw / lc * 100) if lc >= 5 else None
+        totals["win_n"] = lc
         totals["pnl_pct"] = round((totals["equity"] / totals["capital"] - 1) * 100, 2) \
             if totals["capital"] else 0.0
         # combined equity curve (P&L chart) — sum the books RIGHT-aligned (all
@@ -708,10 +722,21 @@ class GarudaLive:
                 "last_scan": self.last_scan_date, "today": _today()}
 
 
+def _wins_closed(trades, sides=("SELL",)):
+    """(wins, closed) over a trade log — the raw material for every win rate."""
+    closed = [t for t in trades
+              if t.get("side") in sides and isinstance(t.get("pnl"), (int, float))]
+    return sum(1 for t in closed if t["pnl"] > 0), len(closed)
+
+
 def _live_stats(pf):
+    """(win%, profit factor, closed-count) from CLOSED trades only. win%/PF are
+    None below 5 closed trades (too thin to headline); the count always returns
+    so the combined rate can weight every book by its true sample size."""
     closed = [t for t in pf.trades if t.get("side") == "SELL" and "pnl" in t]
     if len(closed) < 5:
-        return (None, None)
+        return (None, None, len(closed))
     wins = [t["pnl"] for t in closed if t["pnl"] > 0]
     gl = -sum(t["pnl"] for t in closed if t["pnl"] <= 0)
-    return (round(len(wins) / len(closed) * 100), round(sum(wins) / gl, 2) if gl > 0 else None)
+    return (round(len(wins) / len(closed) * 100),
+            round(sum(wins) / gl, 2) if gl > 0 else None, len(closed))
