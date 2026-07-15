@@ -9,18 +9,18 @@ on the same dates. Selection strictly precedes measurement.
 
 The panel (fixed a priori — no peeking, no tuning after results):
 
-    QUALITY40   NP>0 both yrs · NP growth>40% · Rev growth>10% · ROCE>15
+    QUALITY40   NP>0 both yrs · NP growth>40% · Rev growth>10%
                 (the bar the first history test calibrated)
     ACCEL       profit growth ACCELERATING: this year's growth beats last
                 year's, both >20% — O'Neil's 'A' (earnings acceleration)
     QMOM        QUALITY40 and in the top 30% of 189-bar price momentum at
                 formation — the literature's quality+momentum marriage
-    MARGINX     operating margin rising two years in a row + Rev growth>10%
-                — operating leverage turning, profits follow
+    QROCE15     QUALITY40 + ROCE>15 — the export carries ROCE for one year
+                only, so this runs in that cohort alone (for interest)
     TURNAROUND  loss last year, profit this year, revenue growing — the
                 classic special situation (low win rate, big winners?)
-    STEADY15    NP growth>15% in EACH of the last 3 years + ROCE>20 —
-                boring consistency (fewer names, steadier?)
+    STEADY15    NP growth>15% in EACH of the last 3 years — boring
+                consistency (fewer names, steadier?)
 
 Current-only fields (D/E, Piotroski, DVM scores, holdings) are deliberately
 EXCLUDED from the rules: applying today's value to past years is lookahead.
@@ -75,7 +75,7 @@ def _field_of(header):
         f = "rev"
     else:
         return None
-    m = re.search(r"(\d)yrago", h)
+    m = re.search(r"(\d)yr?ago", h)   # Trendlyne writes both "1Yr Ago" and "1Y Ago"
     return (f, int(m.group(1))) if m else (f, 0)
 
 
@@ -128,11 +128,12 @@ def _g(new, old):
 
 
 def s_quality40(v):
+    # ROCE deliberately absent: the export carries ROCE for one year only, and
+    # a rule that silently weakens in the years lacking data is not one rule
     g_np, g_rev = _g(v("np", 0), v("np", 1)), _g(v("rev", 0), v("rev", 1))
-    roce = v("roce", 0)
-    if None in (g_np, g_rev, roce) or v("np", 0) is None:
+    if None in (g_np, g_rev) or v("np", 0) is None:
         return None
-    return v("np", 0) > 0 and g_np > 0.40 and g_rev > 0.10 and roce > 15.0
+    return v("np", 0) > 0 and g_np > 0.40 and g_rev > 0.10
 
 
 def s_accel(v):
@@ -142,12 +143,14 @@ def s_accel(v):
     return g0 > 0.20 and g1 > 0.20 and g0 > g1
 
 
-def s_marginx(v):
-    o0, o1, o2 = v("opm", 0), v("opm", 1), v("opm", 2)
-    g_rev = _g(v("rev", 0), v("rev", 1))
-    if None in (o0, o1, o2, g_rev):
+def s_qroce(v):
+    """QUALITY40 plus ROCE > 15 — runs only in cohorts where the export
+    carries ROCE for that year (currently one), printed for interest."""
+    base = s_quality40(v)
+    roce = v("roce", 0)
+    if base is None or roce is None:
         return None
-    return o0 > o1 > o2 and g_rev > 0.10
+    return base and roce > 15.0
 
 
 def s_turnaround(v):
@@ -160,17 +163,16 @@ def s_turnaround(v):
 
 def s_steady15(v):
     gs = [_g(v("np", j), v("np", j + 1)) for j in range(3)]
-    roce = v("roce", 0)
-    if any(g is None for g in gs) or roce is None:
+    if any(g is None for g in gs):
         return None
-    return all(g > 0.15 for g in gs) and roce > 20.0
+    return all(g > 0.15 for g in gs)
 
 
 SCREENS = [
     ("QUALITY40", s_quality40, False),
     ("ACCEL", s_accel, False),
     ("QMOM", s_quality40, True),          # quality AND momentum gate
-    ("MARGINX", s_marginx, False),
+    ("QROCE15", s_qroce, False),
     ("TURNAROUND", s_turnaround, False),
     ("STEADY15", s_steady15, False),
 ]

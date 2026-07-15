@@ -4,7 +4,7 @@ from datetime import date, timedelta
 
 from garuda.lab_screens import (SCREENS, _field_of, format_exam, load_wide,
                                 momentum_pct, next_return, run_exam,
-                                s_accel, s_marginx, s_quality40, s_steady15,
+                                s_accel, s_qroce, s_quality40, s_steady15,
                                 s_turnaround)
 
 
@@ -23,31 +23,35 @@ def test_field_of_header_mapping():
     assert _field_of("Net Profit Ann  YoY Growth %") is None    # growth
     assert _field_of("Net Profit Qtr 1Yr Ago") is None          # quarterly
     assert _field_of("ROE Annual 5Yr Avg %") is None            # average
+    # the real export writes "1Y Ago" (no 'r') and trailing-space headers
+    assert _field_of("Net Profit Ann  1Y Ago") == ("np", 1)
+    assert _field_of("Rev  Ann  4Y ago") == ("rev", 4)
+    assert _field_of("Total Rev  Ann ") == ("rev", 0)
+    assert _field_of("Net Profit Ann ") == ("np", 0)
+    assert _field_of("ROCE Ann  1Y Ago %") == ("roce", 1)
+    assert _field_of("OPM Ann  1Y ago %") == ("opm", 1)
 
 
 def test_screen_rules():
-    q = {("np", 0): 150, ("np", 1): 100, ("rev", 0): 1200, ("rev", 1): 1000,
-         ("roce", 0): 20.0}
+    q = {("np", 0): 150, ("np", 1): 100, ("rev", 0): 1200, ("rev", 1): 1000}
     assert s_quality40(_v(q)) is True
     assert s_quality40(_v({**q, ("np", 0): 130})) is False      # +30% < 40%
-    assert s_quality40(_v({**q, ("roce", 0): None})) is None    # missing data
+    assert s_quality40(_v({**q, ("rev", 1): None})) is None     # missing data
+
+    assert s_qroce(_v({**q, ("roce", 0): 20.0})) is True
+    assert s_qroce(_v({**q, ("roce", 0): 10.0})) is False       # ROCE too low
+    assert s_qroce(_v(q)) is None                               # no ROCE data
 
     a = {("np", 0): 200, ("np", 1): 130, ("np", 2): 100}        # 54% > 30%
     assert s_accel(_v(a)) is True
     assert s_accel(_v({("np", 0): 150, ("np", 1): 130,
                        ("np", 2): 100})) is False               # 15% not >20%
 
-    m = {("opm", 0): 18.0, ("opm", 1): 15.0, ("opm", 2): 12.0,
-         ("rev", 0): 1200, ("rev", 1): 1000}
-    assert s_marginx(_v(m)) is True
-    assert s_marginx(_v({**m, ("opm", 1): 19.0})) is False      # not rising
-
     t = {("np", 0): 50, ("np", 1): -20, ("rev", 0): 1100, ("rev", 1): 1000}
     assert s_turnaround(_v(t)) is True
     assert s_turnaround(_v({**t, ("np", 1): 10})) is False      # no loss before
 
-    s = {("np", 0): 160, ("np", 1): 135, ("np", 2): 116, ("np", 3): 100,
-         ("roce", 0): 25.0}
+    s = {("np", 0): 160, ("np", 1): 135, ("np", 2): 116, ("np", 3): 100}
     assert s_steady15(_v(s)) is True
     assert s_steady15(_v({**s, ("np", 2): 130})) is False       # a flat year
 
