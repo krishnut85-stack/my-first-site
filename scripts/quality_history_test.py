@@ -33,6 +33,7 @@ from pathlib import Path
 
 LAG_DAYS = 90          # fiscal year end -> formation (annual report is public)
 HOLD_DAYS = 365        # measure the next 12 months
+MIN_COHORT = 10        # fewer selections than this = lottery ticket, ignored
 MIN_NP_GROWTH = 0.20
 MIN_REV_GROWTH = 0.10
 MAX_DE = 1.0
@@ -135,21 +136,28 @@ def format_report(rows):
              "-" * w]
     fm = lambda v: "—" if v is None else f"{v * 100:+.1f}%"  # noqa: E731
     for r in rows:
+        thin = r["n_sel"] < MIN_COHORT
         lines.append(f"  {r['year']:<6}{r['n_sel']:>9}{r['n_uni']:>6}"
                      f"{fm(r['sel']):>14}{fm(r['uni']):>10}{fm(r['spread']):>9}"
                      + (f"{r['sel_win']:>9.0f}%" if r['sel_win'] is not None
-                        else f"{'—':>10}"))
-    spreads = [r["spread"] for r in rows if r["spread"] is not None]
+                        else f"{'—':>10}")
+                     + (f"  TOO THIN (n<{MIN_COHORT}) — ignored" if thin else ""))
+    # a 1-stock cohort is a lottery ticket, not evidence — it must never be
+    # allowed to carry the headline average
+    spreads = [r["spread"] for r in rows
+               if r["spread"] is not None and r["n_sel"] >= MIN_COHORT]
     lines.append("-" * w)
     if spreads:
         pos = sum(1 for s in spreads if s > 0)
-        lines.append(f"  Screen beat its own universe in {pos}/{len(spreads)} "
-                     f"years · average spread {sum(spreads) / len(spreads) * 100:+.1f}%"
-                     " per year")
-        lines.append("  A rule that helps must win MOST years with a positive "
-                     "average spread — one good year is luck.")
+        lines.append(f"  Over the {len(spreads)} usable year(s) (>= "
+                     f"{MIN_COHORT} selections): screen beat its universe in "
+                     f"{pos}/{len(spreads)} · average spread "
+                     f"{sum(spreads) / len(spreads) * 100:+.1f}%/yr")
+        lines.append("  A rule that helps must win MOST usable years with a "
+                     "positive average spread — one good year is luck.")
     else:
-        lines.append("  Not enough measurable cohorts — nothing to conclude.")
+        lines.append("  No cohort reached "
+                     f"{MIN_COHORT} selections — nothing to conclude.")
     lines += ["  The spread is quality-vs-peers on identical dates, so "
               "survivorship hits BOTH legs; the spread",
               "  is the honest part, the absolute returns are not.",

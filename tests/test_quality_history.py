@@ -59,6 +59,21 @@ def test_form_cohorts_selects_and_benchmarks():
     assert rows[0]["spread"] > 0
     txt = qh.format_report(rows)
     assert "UPPER BOUND" in txt and "spread" in txt
+    # a 1-stock cohort must be flagged and excluded from the headline average
+    assert "TOO THIN" in txt and "nothing to conclude" in txt
+
+
+def test_thin_cohorts_never_carry_the_average():
+    rows = [{"year": "2023", "n_sel": 1, "n_uni": 9, "sel": 2.688,
+             "uni": 0.572, "spread": 2.115, "sel_win": 100.0},
+            {"year": "2024", "n_sel": 123, "n_uni": 438, "sel": 0.098,
+             "uni": 0.094, "spread": 0.004, "sel_win": 54.0},
+            {"year": "2025", "n_sel": 132, "n_uni": 460, "sel": 0.103,
+             "uni": 0.066, "spread": 0.036, "sel_win": 48.0}]
+    txt = qh.format_report(rows)
+    assert "2 usable year(s)" in txt
+    assert "+2.0%/yr" in txt            # (0.4 + 3.6) / 2, not the +71.9% mirage
+    assert "71.9" not in txt
 
 
 def test_selftest_runs_clean(capsys):
