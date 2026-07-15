@@ -61,6 +61,9 @@ def test_form_cohorts_selects_and_benchmarks():
     assert "UPPER BOUND" in txt and "spread" in txt
     # a 1-stock cohort must be flagged and excluded from the headline average
     assert "TOO THIN" in txt and "nothing to conclude" in txt
+    # the header must state the threshold that was actually tested
+    assert "NP growth>20%" in txt
+    assert "NP growth>60%" in qh.format_report(rows, min_np=0.60)
 
 
 def test_thin_cohorts_never_carry_the_average():

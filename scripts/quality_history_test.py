@@ -121,13 +121,13 @@ def summarize(cohorts):
     return rows
 
 
-def format_report(rows):
+def format_report(rows, min_np=MIN_NP_GROWTH, min_rev=MIN_REV_GROWTH):
     w = 96
     lines = ["=" * w,
              "  QUALITY HISTORY TEST — the screen rule applied in PREVIOUS "
              "years, next-12-month returns",
-             "  Rule: NP>0 both yrs · NP growth>20% · Rev growth>10% · D/E<1 · "
-             "formed 90d after FY end",
+             f"  Rule: NP>0 both yrs · NP growth>{min_np * 100:.0f}% · Rev "
+             f"growth>{min_rev * 100:.0f}% · D/E<1 · formed 90d after FY end",
              "  *** SURVIVOR UNIVERSE + RESTATED FINANCIALS: UPPER BOUND, "
              "INDICATIVE ONLY ***",
              "=" * w,
@@ -344,7 +344,8 @@ def main():
                                       min_rev=_norm_thr(a.min_rev_growth)))
         results.append((thr, rows))
         blocks.append(f"\n### NP growth > {thr * 100:.0f}% ###\n"
-                      + format_report(rows))
+                      + format_report(rows, min_np=thr,
+                                      min_rev=_norm_thr(a.min_rev_growth)))
     txt = "\n".join(blocks)
     if len(thrs) > 1:
         txt += "\n\n" + format_sweep(results)
