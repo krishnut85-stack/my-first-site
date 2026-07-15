@@ -36,6 +36,7 @@ Updated: 2026-07-15
 | Quality overlay as entry filter | +2%/yr (smallcaps), +4.8%/yr at the 40% bar | needs its own gauntlet before touching the dip books |
 | TURNAROUND screen (loss→profit) | 3/3 years, +4.7%/yr, 83% win, ~17 names | thin cohorts; candidate for a small satellite study |
 | ACCEL screen (profit growth accelerating) | 3/3 years, +9.4%/yr | strongest untried upgrade: the QUARTERLY version (queue #1) |
+| LOWVOL — low-volatility anomaly | EDGES exam 2026-07-15: calm top-20 beat wild top-20 on TEST (+3.8% vs −7.1%, DD 18% vs 44%) — anomaly REAL in our waters | momentum still earns more (TEST +5.2%, full +32%); shelved as a defensive-sleeve idea for bad regimes, not a book |
 
 ## ❌ HONESTLY FALSIFIED (checked and killed by data — never re-argued from memory)
 
@@ -57,14 +58,8 @@ Updated: 2026-07-15
 | STEADY15 consistency screen | 1/2 years, +1.2%/yr — noise |
 | Rebalanced multi-book blends beating CHAKRA solo | combo study: best blend matched, none beat |
 | Buying the morning's top gainers / movers | MOVERS lift study weak + user's own observation |
+| LEADLAG — buy siblings after the industry giant ignites | EDGES exam 2026-07-15: spread NEGATIVE in TRAIN (−0.15) and SELECT (−0.15), positive only in TEST (+1.02) — one window is a regime hint, not an edge; revisit only if it repeats |
 | Buying Instagram/finfluencer tips | not testable AND structurally last-in-line — treated as exit liquidity, not entry signal |
-
-## 🔬 EXAMS BUILT, AWAITING THEIR RUN (on the droplet now)
-
-| Strategy | Exam | Command |
-|----------|------|---------|
-| LOWVOL — low-volatility anomaly (boring beats wild) | lab_edges | `python3 -m garuda.lab_edges --csv strength_history.csv --lists smallcap_list.csv micro.csv next50_list.csv --mcap marketcap.csv` |
-| LEADLAG — industry giant ignites → buy the siblings | lab_edges | same command (both print together) |
 
 ## 📋 THE QUEUE — ideas identified, not yet checked (in order)
 

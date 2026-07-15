@@ -284,14 +284,27 @@ def format_edges(rot, rot_start, ll):
                          f"{sig['avg'] - base['avg']:>+9.2f}")
         else:
             lines.append(f"  {wname:<10}{'too thin — nothing to conclude':>40}")
-    ts, tb = _stats(ll["test"]["sig"]), _stats(ll["test"]["base"])
-    if ts and tb:
-        lines.append("  LEADLAG verdict: "
-                     + ("siblings DO drift after the giant moves — a real "
-                        "spillover edge on unseen data"
-                        if ts["avg"] > tb["avg"] and ts["n"] >= 30
-                        else "no exploitable spillover after costs — the "
-                             "siblings reprice too fast (or too randomly)"))
+    # an edge must show up in MOST windows — a single positive window (even
+    # TEST) is a regime story, not a validated effect
+    pos = 0
+    for wname in ("train", "select", "test"):
+        s, b = _stats(ll[wname]["sig"]), _stats(ll[wname]["base"])
+        if s and b and s["avg"] > b["avg"]:
+            pos += 1
+    ts = _stats(ll["test"]["sig"])
+    if ts:
+        if pos >= 2:
+            lines.append("  LEADLAG verdict: siblings DO drift after the "
+                         "giant moves — consistent across windows, a real "
+                         "spillover edge")
+        elif pos == 1:
+            lines.append("  LEADLAG verdict: edge in ONE window only — a "
+                         "regime hint, NOT a validated effect; revisit if it "
+                         "repeats, build nothing on it")
+        else:
+            lines.append("  LEADLAG verdict: no exploitable spillover after "
+                         "costs — the siblings reprice too fast (or too "
+                         "randomly)")
     lines += ["  Spread = signal minus the siblings' own unconditional drift "
               "— survivorship cancels across the two.",
               "=" * w]

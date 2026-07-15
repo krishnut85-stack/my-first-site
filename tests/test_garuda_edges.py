@@ -80,6 +80,22 @@ def test_leadlag_finds_spillover():
     assert sum(sig) / len(sig) > 0                      # siblings drifted up
 
 
+def test_leadlag_verdict_needs_most_windows():
+    # positive spread in TEST alone must print the regime-hint wording,
+    # never the validated-edge wording (the 2026-07-15 droplet run's case)
+    from garuda.lab_edges import format_edges as fe
+    rot = {n: {"test": None, "full": None}
+           for n in ("LOWVOL", "HIGHVOL", "MOMENTUM")}
+    ll = {"train": {"sig": [-0.01] * 40, "base": [0.01] * 40},
+          "select": {"sig": [-0.01] * 40, "base": [0.01] * 40},
+          "test": {"sig": [0.02] * 40, "base": [0.001] * 40}}
+    txt = fe(rot, "2024-01-01", ll)
+    assert "regime hint" in txt and "build nothing" in txt
+    ll2 = {w: {"sig": [0.02] * 40, "base": [0.001] * 40}
+           for w in ("train", "select", "test")}
+    assert "consistent across windows" in fe(rot, "2024-01-01", ll2)
+
+
 def test_load_industries_and_stats(tmp_path):
     p = tmp_path / "list.csv"
     p.write_text('"Company Name","Industry","Symbol","Series","ISIN Code"\n'
