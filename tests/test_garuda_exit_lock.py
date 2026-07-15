@@ -48,6 +48,13 @@ def test_chakra_exits_by_rotation_only():
                                          # change is forced to re-look here
 
 
+def test_qmom_exits_by_annual_rotation_only():
+    p = PROFILES["qmom"]                 # SCREEN LAB winner — forward paper trial
+    assert p.mom_days == 189             # the backtested momentum horizon
+    assert p.hard_stop == 0.0            # no stop: 12-month hold, as backtested
+    assert "July" in p.rules             # the July turn IS the exit
+
+
 def test_options_book_risk_settings():
     g = GarudaLive(csv_dir="/nonexistent")
     ob = g.options
@@ -59,10 +66,10 @@ def test_options_book_risk_settings():
 
 def test_every_equity_book_has_a_stop_path():
     """No book may hold a loser forever: each needs a trail, a hard stop, an
-    RSI/time exit, or (chakra) the monthly rotation itself."""
+    RSI/time exit, or (chakra/qmom) the rotation itself."""
     for k, p in PROFILES.items():
         has_exit = (p.trail > 0 or p.hard_stop > 0 or p.stop > 0
-                    or p.exit_rsi < 100 or p.strategy == "chakra")
+                    or p.exit_rsi < 100 or p.strategy in ("chakra", "qmom"))
         assert has_exit, f"{k} has no exit path!"
-        if p.strategy != "chakra":
+        if p.strategy not in ("chakra", "qmom"):
             assert p.max_hold > 0, f"{k} has no time stop!"

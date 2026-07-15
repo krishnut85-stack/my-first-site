@@ -211,4 +211,31 @@ PROFILES = {
         # full-period +37.8% vs +35.9%, in a smooth (robust) grid neighbourhood.
         mom_days=189, trend_ma=200, max_units=20, alloc_pct=0.05,
         proven_win=0.0, proven_ret=0.0, proven_pf=0.0),   # rotation has no per-trade
-}                                                         # stats — live record only
+                                                          # stats — live record only
+    # 11th book — QMOM (annual quality + momentum rotation), winner of the
+    # SCREEN LAB panel: six analyst screens judged identically on 5 years of
+    # Trendlyne annual-report history, formation strictly after each report was
+    # public, next-12-month spread vs same-date peers. QMOM beat its peers in
+    # ALL FOUR usable years (+4.8/+34.7/+11.7/+26.9%, avg +19.5%/yr, ~52 names,
+    # 76% of picks positive) — including the 2024/2025 chop that hurt the pure
+    # momentum books. Survivor-flattered numbers; the honest expectation is
+    # roughly half the spread. THIS BOOK IS THE FORWARD PAPER TRIAL: exactly
+    # the backtested mechanics, judged by live markets with zero bias. The
+    # engine reads fundamentals from scripts/screen_wide.csv (the Trendlyne
+    # wide export) — refresh that file before each July turn. PAPER.
+    "qmom": Profile(
+        "qmom", "Garuda-QM",
+        "",                                  # shares strength's top-1500 universe
+        "strength_daily.csv",                # reuse strength's daily bars — no extra fetch
+        strategy="qmom", label="QMOM · annual quality + momentum rotation",
+        rules="Every July (first trading days), rotate the whole book into "
+              "stocks passing the quality screen — latest annual report: net "
+              "profit up >40%, revenue up >10%, profitable both years — AND "
+              "sitting in the top 30% of 9-month momentum · equal weight · held "
+              "until the next July turn — the rotation IS the exit, exactly as "
+              "backtested (4/4 years, avg spread +19.5%/yr, survivor-flattered)",
+        mom_days=189, max_hold=366,          # informational — rotation is the exit
+        # proven_win = share of picks positive over the next 12m across the four
+        # backtest cohorts; ret/pf stay 0 (rotation books keep a live record)
+        proven_win=76.0, proven_ret=0.0, proven_pf=0.0),
+}

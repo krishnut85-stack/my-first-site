@@ -38,6 +38,8 @@ def run_scan(profile, series: dict, portfolio: LivePortfolio, live_prices=None):
         return _run_crash(profile, series, portfolio, live_prices)
     if strat == "chakra":
         return _run_chakra(profile, series, portfolio, live_prices)
+    if strat == "qmom":
+        return _run_qmom(profile, series, portfolio, live_prices)
     return _run_rsi2(profile, series, portfolio, live_prices)
 
 
@@ -356,6 +358,110 @@ def _run_chakra(profile, series, portfolio, live_prices=None):
 
     return _result(profile, portfolio, buys, sells, price_of)
 
+
+
+def _qmom_window(d, holidays=None):
+    """QMOM's annual turn: the first 3 trading days of JULY — 90 days after the
+    March fiscal year-end, so the annual reports the screen reads are public."""
+    return d.month == 7 and _chakra_window(d, holidays)
+
+
+def _load_qmom_fundamentals(cache={}):
+    """{symbol: {(field, k): value}} from the Trendlyne wide export
+    (scripts/screen_wide.csv, override with QMOM_SCREEN). mtime-cached;
+    missing file -> {} and the book simply holds what it has."""
+    import os
+    from pathlib import Path
+    from . import config
+    from .lab_screens import load_wide
+    env = os.environ.get("QMOM_SCREEN", "")
+    p = Path(env) if env else (config.BASE_DIR / "scripts" / "screen_wide.csv")
+    try:
+        mtime = p.stat().st_mtime
+    except OSError:
+        return {}
+    if cache.get("mtime") != mtime:
+        cache["mtime"] = mtime
+        cache["data"] = load_wide(p)[0]
+    return cache.get("data") or {}
+
+
+def _run_qmom(profile, series, portfolio, live_prices=None, fundamentals=None):
+    """QMOM — the SCREEN LAB winner (4/4 years vs same-date peers, avg spread
+    +19.5%/yr survivor-flattered), run live as its own forward paper trial.
+    Once a year, in the first trading days of July, the whole book rotates
+    into the stocks that pass the quality screen (latest annual report: net
+    profit up >40%, revenue up >10%, profitable both years) AND sit in the
+    top 30% of `mom_days`-bar momentum across the price universe. Equal
+    weight, then untouched until the next July — the rotation IS the exit,
+    exactly as backtested. No fundamentals file -> no rotation, hold as-is."""
+    from bisect import bisect_left
+    from datetime import date as _date
+    from .lab_screens import MOM_TOP_PCT, s_quality40
+    from .market import HOLIDAYS
+    price_of = _price_of(series, portfolio, live_prices)
+    today = _today()
+    month = today[:7]
+
+    rotated = any((h.get("entry_date") or "")[:7] == month
+                  for h in portfolio.holdings.values())
+    in_window = _qmom_window(_date.today(), HOLIDAYS)
+    # a brand-new book takes its first spin immediately (whatever the month),
+    # then follows the July windows forever
+    bootstrap = not portfolio.holdings and not portfolio.trades
+
+    sells, buys = [], []
+    fund = fundamentals if fundamentals is not None else _load_qmom_fundamentals()
+    if (in_window or bootstrap) and not rotated and fund:
+        look = max(21, profile.mom_days)
+        moms = {}
+        for sym, c in series.items():
+            if len(c) < look + 5 or c[-look] <= 0:
+                continue
+            px = price_of(sym)
+            if px > 0:
+                moms[sym] = px / c[-look] - 1.0
+        ordered = sorted(moms.values())
+        n = len(ordered)
+        picks = []
+        for sym, vals in fund.items():
+            if sym not in moms:
+                continue
+            v = lambda f, j: vals.get((f, j))  # noqa: E731,B023 — used immediately
+            if s_quality40(v) is not True:
+                continue
+            if bisect_left(ordered, moms[sym]) / n * 100 < MOM_TOP_PCT:
+                continue
+            picks.append((moms[sym], sym))
+        picks.sort(reverse=True)
+        target = {sym for _m, sym in picks}
+        # 1. rotate OUT everything that no longer qualifies
+        for sym, h in list(portfolio.holdings.items()):
+            _tick_hold(h, today)
+            px = price_of(sym)
+            if sym not in target and px > 0:
+                pnl = portfolio.sell(sym, px, reason="annual rotation")
+                sells.append({"symbol": sym, "price": round(px, 2),
+                              "pnl": round(pnl, 2), "reason": "annual rotation"})
+        # 2. rotate IN the new list, equal-weight slices of current equity
+        equity = portfolio.equity(price_of)
+        per_name = equity / len(picks) if picks else 0.0
+        for mom, sym in picks:
+            if sym in portfolio.holdings:
+                continue
+            px = price_of(sym)
+            qty = int(min(per_name, portfolio.cash) // px)
+            if qty <= 0:
+                continue
+            if portfolio.buy(sym, qty, px, entry_len=len(series[sym])):
+                portfolio.holdings[sym]["mom"] = round(mom * 100, 1)
+                buys.append({"symbol": sym, "price": round(px, 2), "qty": qty,
+                             "mom": round(mom * 100, 1)})
+    else:
+        for h in portfolio.holdings.values():     # quiet day: just age the holds
+            _tick_hold(h, today)
+
+    return _result(profile, portfolio, buys, sells, price_of)
 
 
 def _run_crash(profile, series, portfolio, live_prices=None):
