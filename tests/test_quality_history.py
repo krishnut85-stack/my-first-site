@@ -79,3 +79,22 @@ def test_thin_cohorts_never_carry_the_average():
 def test_selftest_runs_clean(capsys):
     qh.selftest()
     assert "SELFTEST OK" in capsys.readouterr().out
+
+
+def test_norm_thr_accepts_percent_or_fraction():
+    assert qh._norm_thr(40) == 0.40
+    assert qh._norm_thr(0.40) == 0.40
+    assert qh._norm_thr(100) == 1.00
+
+
+def test_format_sweep_compares_thresholds():
+    rows_ok = [{"year": "2024", "n_sel": 120, "n_uni": 400, "sel": 0.10,
+                "uni": 0.08, "spread": 0.02, "sel_win": 52.0},
+               {"year": "2025", "n_sel": 110, "n_uni": 420, "sel": 0.09,
+                "uni": 0.05, "spread": 0.04, "sel_win": 50.0}]
+    rows_thin = [{"year": "2024", "n_sel": 3, "n_uni": 400, "sel": 0.50,
+                  "uni": 0.08, "spread": 0.42, "sel_win": 67.0}]
+    txt = qh.format_sweep([(0.20, rows_ok), (1.00, rows_thin)])
+    assert "20%" in txt and "100%" in txt
+    assert "+3.0%" in txt                  # (2 + 4) / 2 across usable years
+    assert "too thin" in txt               # the 100% bar collapsed to n=3

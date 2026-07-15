@@ -278,12 +278,49 @@ def selftest():
     print("\nSELFTEST OK (synthetic — machinery only)")
 
 
+def _norm_thr(v):
+    """Accept 40 (percent) or 0.40 (fraction) on the CLI — both mean 40%."""
+    return v / 100.0 if v > 1.0 else v
+
+
+def format_sweep(results):
+    """results: [(thr_fraction, rows)] -> one comparison line per threshold."""
+    w = 96
+    lines = ["=" * w,
+             "  THRESHOLD SWEEP — same rule, rising profit-growth bar "
+             "(usable years only, n >= " f"{MIN_COHORT})",
+             f"  {'NP growth >':<14}{'usable yrs':>11}{'beat univ':>11}"
+             f"{'avg spread':>12}{'avg selected/yr':>17}",
+             "-" * w]
+    for thr, rows in results:
+        use = [r for r in rows if r["spread"] is not None
+               and r["n_sel"] >= MIN_COHORT]
+        if use:
+            avg_sp = sum(r["spread"] for r in use) / len(use)
+            avg_n = sum(r["n_sel"] for r in use) / len(use)
+            pos = sum(1 for r in use if r["spread"] > 0)
+            lines.append(f"  {thr * 100:>10.0f}%  {len(use):>11}"
+                         f"{f'{pos}/{len(use)}':>11}{avg_sp * 100:>+11.1f}%"
+                         f"{avg_n:>17.0f}")
+        else:
+            lines.append(f"  {thr * 100:>10.0f}%  {'—':>11}{'—':>11}"
+                         f"{'too thin':>12}{'—':>17}")
+    lines += ["  Read ACROSS: if the spread rises with the bar, demanding more "
+              "growth pays; if it collapses into",
+              "  'too thin', the bar is selecting lottery tickets. The sweet "
+              "spot is a spread that holds with n >= "
+              f"{MIN_COHORT}.", "=" * w]
+    return "\n".join(lines)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--universe", nargs="+", default=["smallcap_list.csv"])
     ap.add_argument("--start", default="2019-01-01")
-    ap.add_argument("--min-np-growth", type=float, default=MIN_NP_GROWTH)
-    ap.add_argument("--min-rev-growth", type=float, default=MIN_REV_GROWTH)
+    ap.add_argument("--min-np-growth", type=float, nargs="+",
+                    default=[MIN_NP_GROWTH * 100],
+                    help="one or more profit-growth bars, e.g. 20 40 60 100")
+    ap.add_argument("--min-rev-growth", type=float, default=MIN_REV_GROWTH * 100)
     ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args()
     if a.selftest:
@@ -291,15 +328,26 @@ def main():
         return
     syms = load_universe(a.universe)
     print(f"Universe: {len(syms)} symbols")
-    fund = fetch_fundamentals(syms)
+    # cache per universe: reusing the smallcap cache for a top-1500 run would
+    # silently test the WRONG universe
+    stem = "_".join(sorted(Path(u).stem for u in a.universe))[:60]
+    fund = fetch_fundamentals(syms, cache=f"bt_out/fund_cache_{stem}.json")
     print(f"Fundamentals: {len(fund)} symbols with >=2 annual reports")
     if len(fund) < 30:
         sys.exit("too few fundamentals — Yahoo coverage is thin here")
     prices = fetch_prices(list(fund), start=a.start)
     print(f"Prices: {len(prices)} symbols")
-    rows = summarize(form_cohorts(fund, prices, min_np=a.min_np_growth,
-                                  min_rev=a.min_rev_growth))
-    txt = format_report(rows)
+    thrs = sorted({_norm_thr(t) for t in a.min_np_growth})
+    results, blocks = [], []
+    for thr in thrs:
+        rows = summarize(form_cohorts(fund, prices, min_np=thr,
+                                      min_rev=_norm_thr(a.min_rev_growth)))
+        results.append((thr, rows))
+        blocks.append(f"\n### NP growth > {thr * 100:.0f}% ###\n"
+                      + format_report(rows))
+    txt = "\n".join(blocks)
+    if len(thrs) > 1:
+        txt += "\n\n" + format_sweep(results)
     os.makedirs("bt_out", exist_ok=True)
     Path("bt_out/report_quality_history.txt").write_text(txt + "\n")
     print(txt)
