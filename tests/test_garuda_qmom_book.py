@@ -113,6 +113,17 @@ def test_qmom_no_fundamentals_holds_quietly(monkeypatch):
     assert "S00" in pf.holdings
 
 
+def test_fundamentals_found_from_repo_root(monkeypatch):
+    """Regression: BASE_DIR is the garuda/ package, but the screen file lives
+    at <repo>/scripts/screen_wide.csv — the loader must find it (this exact
+    miss left the live book holding nothing on 2026-07-15)."""
+    from garuda.scan import _load_qmom_fundamentals
+    monkeypatch.delenv("QMOM_SCREEN", raising=False)
+    fund = _load_qmom_fundamentals(cache={})
+    assert fund, "scripts/screen_wide.csv not found from the package path"
+    assert "RELIANCE" in fund and ("np", 0) in fund["RELIANCE"]
+
+
 def test_run_scan_dispatches_qmom(monkeypatch):
     p = PROFILES["qmom"]
     monkeypatch.setenv("QMOM_SCREEN", "/nonexistent.csv")

@@ -375,7 +375,14 @@ def _load_qmom_fundamentals(cache={}):
     from . import config
     from .lab_screens import load_wide
     env = os.environ.get("QMOM_SCREEN", "")
-    p = Path(env) if env else (config.BASE_DIR / "scripts" / "screen_wide.csv")
+    # BASE_DIR is the garuda/ package; the repo root (its parent) is where
+    # scripts/ lives. CWD last — the server is started from the checkout.
+    cands = ([Path(env)] if env else
+             [config.BASE_DIR.parent / "scripts" / "screen_wide.csv",
+              Path("scripts/screen_wide.csv")])
+    p = next((c for c in cands if c.exists()), None)
+    if p is None:
+        return {}
     try:
         mtime = p.stat().st_mtime
     except OSError:
