@@ -139,8 +139,11 @@ class KiteFeed:
                               "ltp": float(d["last_price"])}
         return out
 
-    def index_quote(self, names=("NIFTY 50", "NIFTY BANK")) -> dict:
-        """{name: {ltp, pc, chg}} for NSE indices (Nifty 50, Bank Nifty). Uses
+    def index_quote(self, names=("NIFTY 50", "NIFTY BANK",
+                                 "NIFTY SMLCAP 250")) -> dict:
+        """{name: {ltp, pc, chg}} for NSE indices. The Smallcap 250 is the
+        fleet's honest benchmark — 450+ of its positions swim in that sea, so
+        the header must show its tide, not just the Nifty 50's. Uses
         kite.ohlc('NSE:NIFTY 50'); pc is the previous close, chg the day %.
         Empty if unavailable — the header just hides the reading then."""
         if not self.kite or not names:
