@@ -59,16 +59,14 @@ Updated: 2026-07-15
 | Rebalanced multi-book blends beating CHAKRA solo | combo study: best blend matched, none beat |
 | Buying the morning's top gainers / movers | MOVERS lift study weak + user's own observation |
 | LEADLAG — buy siblings after the industry giant ignites | EDGES exam 2026-07-15: spread NEGATIVE in TRAIN (−0.15) and SELECT (−0.15), positive only in TEST (+1.02) — one window is a regime hint, not an edge; revisit only if it repeats |
+| LARGECAP rotation (relative momentum in the top-100) | LARGECAP exam 2026-07-17: TRAIN's pick (top-5×126d, TRAIN +51.8%) scored −1.0% on TEST — FAILED; stable cells only +2–7% TEST vs live CHAKRA's +19.3%, with no drawdown advantage (17–30%). The giants' momentum is real but too weak to earn a seat; the fleet's small/mid tilt is EARNED, not accidental |
 | Buying Instagram/finfluencer tips | not testable AND structurally last-in-line — treated as exit liquidity, not entry signal |
 
 ## 📋 THE QUEUE — ideas identified, not yet checked (in order)
 
 1. **Quarterly earnings hunt** (ACCEL every quarter, hold 3 months) — needs the
    `qtr_wide1-6.csv` Trendlyne export (Net Profit Qtr + 1–7 Qtr Ago, Revenue Qtr + history).
-2. **LARGECAP rotation** — relative momentum inside the top-100 giants
-   (LEADERS held one large cap on 2026-07-17; elephants rarely sprint 25%).
-   Exam BUILT: `python3 -m garuda.lab_largecap --csv strength_history.csv --mcap marketcap.csv --top-universe 100`
-3. **Weekly vs monthly CHAKRA cadence exam** — data already on droplet; build next.
+2. **Weekly vs monthly CHAKRA cadence exam** — data already on droplet; build next.
 3. **NSE announcements EVENT radar** (order wins / expansions, same-day) — needs the
    feed probe: `curl -s -A "Mozilla/5.0" "https://nsearchives.nseindia.com/content/RSS/Online_announcements.xml" | head -40`
 4. **Volume-confirmed breakout** — needs volume history (yfinance guest script).
