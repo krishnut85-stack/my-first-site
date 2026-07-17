@@ -65,7 +65,10 @@ Updated: 2026-07-15
 
 1. **Quarterly earnings hunt** (ACCEL every quarter, hold 3 months) — needs the
    `qtr_wide1-6.csv` Trendlyne export (Net Profit Qtr + 1–7 Qtr Ago, Revenue Qtr + history).
-2. **Weekly vs monthly CHAKRA cadence exam** — data already on droplet; build next.
+2. **LARGECAP rotation** — relative momentum inside the top-100 giants
+   (LEADERS held one large cap on 2026-07-17; elephants rarely sprint 25%).
+   Exam BUILT: `python3 -m garuda.lab_largecap --csv strength_history.csv --mcap marketcap.csv --top-universe 100`
+3. **Weekly vs monthly CHAKRA cadence exam** — data already on droplet; build next.
 3. **NSE announcements EVENT radar** (order wins / expansions, same-day) — needs the
    feed probe: `curl -s -A "Mozilla/5.0" "https://nsearchives.nseindia.com/content/RSS/Online_announcements.xml" | head -40`
 4. **Volume-confirmed breakout** — needs volume history (yfinance guest script).
