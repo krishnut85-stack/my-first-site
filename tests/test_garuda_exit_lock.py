@@ -55,6 +55,12 @@ def test_qmom_exits_by_annual_rotation_only():
     assert "July" in p.rules             # the July turn IS the exit
 
 
+def test_captain_exits_by_list_edits_only():
+    p = PROFILES["captain"]              # the discretionary seat
+    assert p.hard_stop == 0.0            # no stops by design —
+    assert "exits" in p.rules            # the captain's edits are the exits
+
+
 def test_options_book_risk_settings():
     g = GarudaLive(csv_dir="/nonexistent")
     ob = g.options
@@ -67,9 +73,10 @@ def test_options_book_risk_settings():
 def test_every_equity_book_has_a_stop_path():
     """No book may hold a loser forever: each needs a trail, a hard stop, an
     RSI/time exit, or (chakra/qmom) the rotation itself."""
+    rotation = ("chakra", "qmom", "captain")   # the rotation IS the exit
     for k, p in PROFILES.items():
         has_exit = (p.trail > 0 or p.hard_stop > 0 or p.stop > 0
-                    or p.exit_rsi < 100 or p.strategy in ("chakra", "qmom"))
+                    or p.exit_rsi < 100 or p.strategy in rotation)
         assert has_exit, f"{k} has no exit path!"
-        if p.strategy not in ("chakra", "qmom"):
+        if p.strategy not in rotation:
             assert p.max_hold > 0, f"{k} has no time stop!"

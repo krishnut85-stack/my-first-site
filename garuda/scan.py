@@ -40,6 +40,8 @@ def run_scan(profile, series: dict, portfolio: LivePortfolio, live_prices=None):
         return _run_chakra(profile, series, portfolio, live_prices)
     if strat == "qmom":
         return _run_qmom(profile, series, portfolio, live_prices)
+    if strat == "captain":
+        return _run_captain(profile, series, portfolio, live_prices)
     return _run_rsi2(profile, series, portfolio, live_prices)
 
 
@@ -468,6 +470,67 @@ def _run_qmom(profile, series, portfolio, live_prices=None, fundamentals=None):
         for h in portfolio.holdings.values():     # quiet day: just age the holds
             _tick_hold(h, today)
 
+    return _result(profile, portfolio, buys, sells, price_of)
+
+
+def _load_captain_picks():
+    """The captain's list: captain_picks.csv at the repo root (override with
+    CAPTAIN_PICKS). One NSE symbol per line, or a CSV with a Symbol column;
+    blank lines and #comments ignored. Missing/empty -> [] (hold quietly)."""
+    import os
+    from pathlib import Path
+    from . import config
+    env = os.environ.get("CAPTAIN_PICKS", "")
+    cands = ([Path(env)] if env else
+             [config.BASE_DIR.parent / "captain_picks.csv",
+              Path("captain_picks.csv")])
+    p = next((c for c in cands if c.exists()), None)
+    if p is None:
+        return []
+    out = []
+    for line in p.read_text(encoding="utf-8-sig").splitlines():
+        s = line.split(",")[0].strip().upper()
+        if not s or s.startswith("#") or s in ("SYMBOL", "NSE CODE"):
+            continue
+        if s not in out:
+            out.append(s)
+    return out
+
+
+def _run_captain(profile, series, portfolio, live_prices=None, picks=None):
+    """CAPTAIN — the discretionary seat. Holds exactly the picks list, equal
+    weight. When the list changes (quarterly by intent) the book rotates to
+    match: sells what left, buys what joined. No stops by design — the
+    captain's edits are the exits. Empty/missing list -> hold quietly."""
+    price_of = _price_of(series, portfolio, live_prices)
+    today = _today()
+    want = picks if picks is not None else _load_captain_picks()
+    # only picks we can actually price are actionable
+    target = [s for s in want if price_of(s) > 0]
+    sells, buys = [], []
+    if target and set(portfolio.holdings) != set(target):
+        for sym, h in list(portfolio.holdings.items()):
+            _tick_hold(h, today)
+            px = price_of(sym)
+            if sym not in target and px > 0:
+                pnl = portfolio.sell(sym, px, reason="captain rebalance")
+                sells.append({"symbol": sym, "price": round(px, 2),
+                              "pnl": round(pnl, 2),
+                              "reason": "captain rebalance"})
+        equity = portfolio.equity(price_of)
+        per_name = equity / len(target)
+        for sym in target:
+            if sym in portfolio.holdings:
+                continue
+            px = price_of(sym)
+            qty = int(min(per_name, portfolio.cash) // px)
+            if qty <= 0:
+                continue
+            if portfolio.buy(sym, qty, px, entry_len=len(series.get(sym, []))):
+                buys.append({"symbol": sym, "price": round(px, 2), "qty": qty})
+    else:
+        for h in portfolio.holdings.values():     # list unchanged: age the holds
+            _tick_hold(h, today)
     return _result(profile, portfolio, buys, sells, price_of)
 
 

@@ -238,4 +238,25 @@ PROFILES = {
         # proven_win = share of picks positive over the next 12m across the four
         # backtest cohorts; ret/pf stay 0 (rotation books keep a live record)
         proven_win=76.0, proven_ret=0.0, proven_pf=0.0),
+    # 12th book — CAPTAIN, the discretionary seat. The user picks the stocks
+    # (typically from the ALL-GREEN screen), the fleet executes and tracks
+    # them exactly like any other book: equal weight, paper, full audit
+    # trail. The picks live in captain_picks.csv at the repo root; whenever
+    # that file's list changes (the intended cadence is QUARTERLY), the book
+    # rotates to match it — sells what left the list, buys what joined. No
+    # stops by design: the captain's edits ARE the exits. This book carries
+    # no backtest claim — it exists to measure the captain's own judgment
+    # against the quant books, honestly, on the same dashboard. PAPER.
+    "captain": Profile(
+        "captain", "Garuda-CPT",
+        "",                                  # shares strength's top-1500 universe
+        "strength_daily.csv",                # reuse strength's daily bars — no extra fetch
+        strategy="captain", label="Captain's picks · quarterly rebalance",
+        rules="The captain names the stocks (captain_picks.csv); the book "
+              "holds exactly that list, equal weight · when the list changes "
+              "(quarterly by intent) it sells what left and buys what joined "
+              "· no stops — the captain's edits are the exits · measured "
+              "against the quant books on the same scoreboard",
+        max_hold=366,                        # informational — the list is the exit
+        proven_win=0.0, proven_ret=0.0, proven_pf=0.0),   # live record only
 }
