@@ -81,3 +81,14 @@ def test_book_profit_percent_and_win_open():
     # totals profit % consistent with summed equities over summed capitals
     t = st["totals"]
     assert abs(t["pnl_pct"] - (t["equity"] / t["capital"] - 1) * 100) < 0.01
+
+
+def test_size_categories():
+    """LARGE top-100, MID to 250, SMALL to 500, MICRO beyond — the buckets the
+    dashboard uses to answer 'how many large caps does this book hold?'."""
+    from garuda.live import _size_cat
+    assert _size_cat(1) == "L" and _size_cat(100) == "L"
+    assert _size_cat(101) == "M" and _size_cat(250) == "M"
+    assert _size_cat(251) == "S" and _size_cat(500) == "S"
+    assert _size_cat(501) == "µ" and _size_cat(1500) == "µ"
+    assert _size_cat(None) is None

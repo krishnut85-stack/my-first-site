@@ -60,6 +60,20 @@ def _equity_log_path():
     return config.DATA_DIR / "garuda_equity_log.json"
 
 
+def _size_cat(rank):
+    """SEBI-style size bucket from the whole-exchange mcap rank:
+    LARGE (top 100) · MID (101-250) · SMALL (251-500) · MICRO (501+)."""
+    if not rank:
+        return None
+    if rank <= 100:
+        return "L"
+    if rank <= 250:
+        return "M"
+    if rank <= 500:
+        return "S"
+    return "µ"
+
+
 def _json_state(path, loader, cache):
     """Load a results JSON for the dashboard, re-reading only when the file
     changes; None until a run exists."""
@@ -164,6 +178,10 @@ class GarudaLive:
             self.rsi14_by_sym[sym] = round(r14[-1], 1) if r14 and r14[-1] is not None else None
         # optional market caps (₹ crore) from marketcap.csv (symbol,marketcap)
         self.mcap_by_sym = self._load_mcap()
+        # whole-exchange size rank (1 = biggest) + SEBI-style category:
+        # 1-100 LARGE · 101-250 MID · 251-500 SMALL · 501+ MICRO
+        self.mcap_rank = {s: i + 1 for i, (s, _m) in enumerate(
+            sorted(self.mcap_by_sym.items(), key=lambda kv: -kv[1]))}
         self._movers_cache = {}    # daily MOVERS radar (recomputed once per day)
         self._swami_cache = {}     # Swaminatha (Mayura news face) guest-tab state
         from .news import NewsTicker
@@ -592,6 +610,8 @@ class GarudaLive:
                     "hi52": round(max(win), 2) if win else None,
                     "lo52": round(min(win), 2) if win else None,
                     "mcap": self.mcap_by_sym.get(sym),
+                    "rank": self.mcap_rank.get(sym),
+                    "cat": _size_cat(self.mcap_rank.get(sym)),
                     "rsi2": rsi2, "rsi14": rsi14, "held": bool(h),
                     "qty": h["qty"] if h else None,
                     "pnl": round((ltp - h["entry_price"]) * h["qty"], 0) if h else None,
@@ -612,6 +632,12 @@ class GarudaLive:
                                                    # figure (e.g. CHAKRA) -> '—'
             green = sum(1 for x in positions if x["pnl"] > 0)
             win_open = round(green / len(positions) * 100) if positions else None
+            # holdings by size category — answers "how many LARGE caps does
+            # this book actually hold?" right on the card
+            cats = {}
+            for sym in pf.holdings:
+                c = _size_cat(self.mcap_rank.get(sym)) or "?"
+                cats[c] = cats.get(c, 0) + 1
             chart_sym = positions[0]["sym"] if positions else None
             best = positions[0] if positions else None
             worst = positions[-1] if positions else None
@@ -623,7 +649,7 @@ class GarudaLive:
                 "pnl_pct": round((equity / pf.starting_capital - 1) * 100, 2),
                 "day_pnl": round(day_pnl, 0), "positions": positions,
                 "win": win, "win_kind": win_kind, "win_open": win_open,
-                "win_n": win_n,
+                "win_n": win_n, "cats": cats,
                 "proven_win": prof.proven_win, "proven_ret": prof.proven_ret,
                 "proven_pf": prof.proven_pf,
                 "universe": self.universe.get(k, []), "watch": watch,

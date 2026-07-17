@@ -238,6 +238,7 @@ function fmtCr(v){if(v==null)return '—';if(v>=1e5)return (v/1e5).toFixed(2)+'L
 const LABEL={smallcap:'SMALL CAP',microcap:'MICRO CAP',next50:'NEXT 50',strength:'STRENGTH',leaders:'LEADERS',scalein:'SCALE-IN',hi52:'52-W HIGH',crash:'CRASH',chakra:'CHAKRA',qmom:'QMOM'};
 const TAG={smallcap:'SC',microcap:'MC',next50:'N50',strength:'STR',leaders:'LDR',scalein:'SCL',hi52:'52H',crash:'CRS',chakra:'CHK',qmom:'QM'};
 function money(v){return "₹"+Math.round(v).toLocaleString('en-IN');}
+function catStr(c){if(!c)return '';const o=['L','M','S','µ'].filter(k=>c[k]).map(k=>`${c[k]}<b class=a>${k}</b>`).join(' ');return o?` · ${o}`:'';}
 function pct(v){return(v==null?'—':(v>=0?"+":"")+(+v).toFixed(2)+"%");}
 function setFilter(f,el){FILTER=f;document.querySelectorAll('.wtab').forEach(t=>t.classList.remove('on'));el.classList.add('on');render(DATA);}
 function clocks(){
@@ -835,7 +836,7 @@ function render(d){
   const rules=p.rules?`<div class=rules>${p.rules}</div>`:'';
   html+=`<div class=bothdr>
     <div class=nm>${p.name} <span class=d>· ${p.desc}</span> ${strat}</div>
-    <div class=bstat>${money(p.equity)} · <b class="${p.pnl_pct>=0?'g':'r'}">${pct(p.pnl_pct)}</b> · WIN <b class=a>${win}</b>${green}${pf} · ${p.positions.length} pos</div>
+    <div class=bstat>${money(p.equity)} · <b class="${p.pnl_pct>=0?'g':'r'}">${pct(p.pnl_pct)}</b> · WIN <b class=a>${win}</b>${green}${pf} · ${p.positions.length} pos${catStr(p.cats)}</div>
   </div>${rules}`;
   // the STRENGTH book signals on RSI-14 (55-70 band); the dip books on RSI-2
   const rk=p.key==='strength'?'rsi14':'rsi2', rlabel=p.key==='strength'?'RSI-14':'RSI-2';
@@ -857,7 +858,7 @@ function render(d){
     <td class=a>${x[rk]==null?'—':x[rk]}</td>
     <td class="${cls}">${x.ltp.toFixed(2)}</td>
     ${pcell(x.chg)}${pcell(x.chg_w)}${pcell(x.chg_m)}
-    <td class=muted>${fmtCr(x.mcap==null?null:x.mcap*(1+(x.chg||0)/100))}</td>
+    <td class=muted>${x.cat?`<b class=a>${x.cat}</b><span class=sub>#${x.rank}</span> `:''}${fmtCr(x.mcap==null?null:x.mcap*(1+(x.chg||0)/100))}</td>
     <td class="${x.pnl==null?'muted':(x.pnl>=0?'g':'r')}">${x.pnl==null?'—':(x.pnl>=0?'+':'')+money(x.pnl)}</td></tr>`;});
   html+=`</table>`;
  });
