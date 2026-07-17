@@ -29,7 +29,7 @@ def test_qmom_profile():
     assert p.capital == 1_000_000
     assert p.mom_days == 189
     assert "quality" in p.rules.lower() and "July" in p.rules
-    assert len(PROFILES) == 10                           # the 11th seat is taken
+    assert len(PROFILES) == 11        # qmom seat 11, captain seat 12 (+options)
 
 
 def test_qmom_window_first_three_july_trading_days():
