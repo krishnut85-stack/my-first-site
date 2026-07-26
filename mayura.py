@@ -71,9 +71,10 @@ REPO_ROOT = Path(__file__).resolve().parent
 MAYURA_DATA = REPO_ROOT / "mayura_data"
 
 # In a market DOWNTREND (NIFTY below its 200-DMA): "reduced" = smart middle —
-# still buy, but only the strongest few leaders at smaller size. Shared by all.
+# still buy, at smaller size. All 8 slots may fill; the half-size factor is
+# what keeps overall exposure down in a downtrend. Shared by all.
 MAYURA_DOWNTREND_MODE          = "reduced"
-MAYURA_DOWNTREND_MAX_POSITIONS = 3
+MAYURA_DOWNTREND_MAX_POSITIONS = 8
 MAYURA_DOWNTREND_SIZE_FACTOR   = 0.5
 # Give a fresh breakout this many days before the failed-breakout exit can fire
 # (avoids same-day whipsaws; market holidays are skipped entirely anyway).
