@@ -37,6 +37,8 @@ USAGE
     python mayura.py rules [strategy]  # that strategy's exit rules
     python mayura.py data [strategy]   # which Trendlyne columns it detected
     python mayura.py filings swaminatha # dry-run the filings reader (no trades)
+    python mayura.py heal [strategy]   # self-healing backtest: tune exit rules
+    python mayura.py lessons [strategy] # what it learned from failed trades
     python mayura.py health            # one-shot status of ALL faces (global)
     python mayura.py doctor            # WHERE alerts go + P&L/win-loss per face (global)
     python mayura.py check             # Kite token + Telegram + Gemini wired? (global)
@@ -79,6 +81,20 @@ MAYURA_DOWNTREND_SIZE_FACTOR   = 0.5
 # Give a fresh breakout this many days before the failed-breakout exit can fire
 # (avoids same-day whipsaws; market holidays are skipped entirely anyway).
 MAYURA_BREAKOUT_GRACE_DAYS     = 3
+
+# --- SELF-HEALING: post-mortem + backtest (sectorbot/postmortem.py) ---------
+# The moment a trade closes at a loss, Mayura asks "WHY did this fail?" using
+# the actual price bars, logs the lesson to mayura_data/<face>/lessons.jsonl,
+# and re-backtests recent closed trades against NEARBY exit settings. A clearly
+# better setting (within hard safety bounds) is saved to tuning.json and
+# applied on the next run. `python mayura.py heal [face]` runs it on demand;
+# `lessons [face]` shows what has been learned. Delete tuning.json (or set
+# AUTO_APPLY False) to return a face to its hand-written rules.
+MAYURA_HEAL_ENABLED     = True
+MAYURA_HEAL_AUTO_APPLY  = True   # apply tuning.json on load (always bounded)
+MAYURA_HEAL_MIN_TRADES  = 8      # refuse to tune on fewer closed trades
+MAYURA_HEAL_LOOKBACK    = 30     # backtest over the last N closed trades
+MAYURA_HEAL_MIN_IMPROVE = 1.0    # %-points/trade a candidate must win by
 
 # --- The three temple-deity strategies (tweak freely) -----------------------
 # Names are the form of Muruga at each temple. Each "exits" block tunes how that
@@ -209,8 +225,18 @@ def _use_strategy(key: str) -> None:
     config.PORTFOLIO_REPORT_TXT = REPO_ROOT / f"mayura_{key}_report.txt"
     config.PORTFOLIO_REPORT_HTML = REPO_ROOT / f"mayura_{key}_report.html"
     config.DASHBOARD_HTML = REPO_ROOT / f"mayura_{key}_dashboard.html"
-    # exit rules (EXIT-RULE mode so the trailing stop runs)
-    e = s["exits"]
+    # exit rules (EXIT-RULE mode so the trailing stop runs). SELF-HEALING:
+    # tuned overrides learned by `heal` overlay the hand-written numbers —
+    # always clamped inside postmortem.BOUNDS, so the healer can only nudge,
+    # never disable, a protection. Delete <folder>/tuning.json to reset.
+    e = dict(s["exits"])
+    if MAYURA_HEAL_ENABLED and MAYURA_HEAL_AUTO_APPLY:
+        from sectorbot.postmortem import load_tuning
+        tuned = load_tuning(folder)
+        if tuned:
+            e.update(tuned)
+            CURRENT["tuned"] = tuned
+    CURRENT["exits_active"] = e
     config.REBALANCE = False
     config.STOP_LOSS_PCT = e["stop"]
     config.USE_TRAILING_STOP = True
@@ -256,7 +282,8 @@ def _assert_paper_only() -> None:
 # Telegram summary — Mayura-branded, phone-friendly
 # --------------------------------------------------------------------------
 def _mayura_telegram(result: dict, filings_summary: dict | None = None,
-                     news_buys: list | None = None) -> str:
+                     news_buys: list | None = None,
+                     lessons: list | None = None) -> str:
     real = result["real_data"]
     tag = "REAL Kite prices" if real else "SYNTHETIC prices — NOT real"
     exits = result["exits"]
@@ -318,6 +345,11 @@ def _mayura_telegram(result: dict, filings_summary: dict | None = None,
         for s, ltp, reason, pnl in exits[:12]:
             lines.append(f"  🔴 SELL {s} @ {ltp:.2f} [{reason}] "
                          f"P&amp;L {pnl:+,.0f}")
+    if lessons:
+        lines.append(f"🩺 <b>Post-mortem</b> (lesson logged):")
+        for les in lessons[:6]:
+            lines.append(f"  🩺 {les['symbol']} ({les['pnl_pct']:+.1f}%): "
+                         f"{les['diagnosis'][:140]}")
     lines.append("")
     lines.append("<i>Paper only — not investment advice.</i>")
     return "\n".join(lines)
@@ -862,12 +894,115 @@ def cmd_run() -> None:
         return
 
     _print_mayura(result)
+
+    # SELF-HEALING step 1 — the moment a trade fails, ask WHY, and log it.
+    lessons = []
+    if MAYURA_HEAL_ENABLED and result["exits"]:
+        from sectorbot.postmortem import post_mortem
+        lessons = post_mortem(result["datasource"], result["portfolio"],
+                              result["exits"],
+                              CURRENT.get("exits_active", CURRENT["exits"]))
+        for les in lessons:
+            print(f"  🩺 Post-mortem {les['symbol']} ({les['pnl_pct']:+.1f}%): "
+                  f"{les['diagnosis']}")
+            if les["suggestion"]:
+                print(f"     → {les['suggestion']}")
+        if lessons:
+            print(f"  🩺 {len(lessons)} lesson(s) logged to "
+                  f"{config.DATA_DIR / 'lessons.jsonl'}")
+
     txt, _ = write_portfolio_report(result)
     print(f"  Report written: {txt}")
-    delivered = send_telegram(_mayura_telegram(result, filings_summary, news_buys),
+    delivered = send_telegram(_mayura_telegram(result, filings_summary, news_buys,
+                                               lessons),
                               message_thread_id=topic)
     print(f"  Telegram: {'sent 🙏' if delivered else 'dry-run (set the two env vars)'}")
+
+    # SELF-HEALING step 2 — a trade just LOST money: re-backtest recent trades
+    # against nearby exit rules and (bounded) adjust if something clearly wins.
+    if MAYURA_HEAL_ENABLED and any(l["pnl"] <= 0 for l in lessons):
+        _heal_now(announce=True)
     print(f"\n  {PEACOCK} May Lord Muruga guide steady gains. Paper only.\n")
+
+
+def _heal_now(announce: bool = False) -> dict:
+    """SELF-HEALING BACKTEST for the active face: replay recent closed trades
+    under nearby exit settings; save + apply a clearly better one (bounded).
+    Prints the verdict; Telegrams it when `announce` and something changed."""
+    from sectorbot.datasource import get_datasource
+    from sectorbot.portfolio import Portfolio
+    from sectorbot.postmortem import heal, save_tuning
+    from sectorbot.telegram import send_telegram
+
+    base = CURRENT.get("exits_active", CURRENT["exits"])
+    print(f"\n  🧬 Self-healing backtest ({CURRENT['name']}) — replaying the "
+          f"last {MAYURA_HEAL_LOOKBACK} closed trades vs nearby exit rules…")
+    report = heal(get_datasource(), Portfolio.load(), base,
+                  min_trades=MAYURA_HEAL_MIN_TRADES,
+                  lookback=MAYURA_HEAL_LOOKBACK,
+                  min_improve=MAYURA_HEAL_MIN_IMPROVE,
+                  fetch_delay=config.OHLC_FETCH_DELAY)
+    print(f"  🧬 {report['message']}")
+    changes = report.get("changes") or {}
+    if changes:
+        pretty = ", ".join(
+            f"{k} {base.get(k)}→{v}" for k, v in sorted(changes.items()))
+        if MAYURA_HEAL_AUTO_APPLY:
+            save_tuning(changes, report)
+            print(f"  🧬 APPLIED (from next run, bounded): {pretty}")
+            print(f"     Saved to {config.DATA_DIR / 'tuning.json'} — delete "
+                  "that file to undo.")
+        else:
+            print(f"  🧬 RECOMMENDED (auto-apply is off): {pretty}")
+        if announce:
+            b, w = report["base"], report["best"]
+            verb = "adjusted" if MAYURA_HEAL_AUTO_APPLY else "recommends"
+            send_telegram(
+                f"🧬 <b>Mayura self-healing · {CURRENT['emoji']} "
+                f"{CURRENT['name']}</b>\n"
+                f"Replayed {report['n']} closed trades after today's loss.\n"
+                f"Current rules: {b['avg']:+.2f}%/trade (win {b['win_rate']:.0f}%)\n"
+                f"Better nearby: {w['avg']:+.2f}%/trade (win {w['win_rate']:.0f}%)\n"
+                f"→ {verb}: {pretty}\n"
+                f"<i>Bounded, paper only — delete tuning.json to undo.</i>",
+                message_thread_id=_topic_id())
+    return report
+
+
+def cmd_heal() -> None:
+    """Run the self-healing backtest on demand (per face)."""
+    _banner("SELF-HEALING BACKTEST")
+    if not MAYURA_HEAL_ENABLED:
+        print("\n  Self-healing is disabled (MAYURA_HEAL_ENABLED=False).\n")
+        return
+    tuned = CURRENT.get("tuned")
+    if tuned:
+        print(f"  Already-active tuned overrides: {tuned}")
+    _heal_now(announce=True)
+    print()
+
+
+def cmd_lessons() -> None:
+    """Show what this face has LEARNED from its failed trades (lessons.jsonl)."""
+    _banner("TRADE LESSONS")
+    from sectorbot.postmortem import read_lessons
+    lessons = read_lessons(last=15)
+    if not lessons:
+        print(f"\n  No lessons yet for {CURRENT['name']} — a lesson is written "
+              "the moment a trade closes at a loss (or gives back a big gain).\n"
+              f"  File: {config.DATA_DIR / 'lessons.jsonl'}\n")
+        return
+    print(f"\n  Last {len(lessons)} lesson(s) — newest last:\n")
+    for les in lessons:
+        print(f"  {les.get('exit_date','?')}  {les.get('symbol','?'):12} "
+              f"{les.get('pnl_pct', 0):+6.1f}%  [{les.get('reason','')}]")
+        print(f"      why : {les.get('diagnosis','')}")
+        if les.get("suggestion"):
+            print(f"      fix : {les['suggestion']}")
+    tuned = CURRENT.get("tuned")
+    if tuned:
+        print(f"\n  🧬 Tuned overrides currently active: {tuned}")
+    print(f"\n  Full log: {config.DATA_DIR / 'lessons.jsonl'} · Paper only. 🦚\n")
 
 
 def cmd_rank() -> None:
@@ -1530,6 +1665,11 @@ def cmd_rules() -> None:
 
   Edit each strategy's numbers in mayura.py (STRATEGIES → exits). Paper only. 🦚
 """)
+    tuned = CURRENT.get("tuned")
+    if tuned:
+        print(f"  🧬 SELF-HEALED overrides active (from `heal`, bounded): {tuned}")
+        print(f"     Delete {config.DATA_DIR / 'tuning.json'} to restore the "
+              "hand-written numbers.\n")
 
 
 # Commands that run once for the WHOLE bot (not per strategy).
@@ -1541,6 +1681,7 @@ PER_STRATEGY_COMMANDS = {
     "run": cmd_run, "rank": cmd_rank, "status": cmd_status,
     "scorecard": cmd_scorecard, "data": cmd_data, "rules": cmd_rules,
     "universe": cmd_universe, "filings": cmd_filings, "report": cmd_report,
+    "heal": cmd_heal, "lessons": cmd_lessons,
 }
 
 

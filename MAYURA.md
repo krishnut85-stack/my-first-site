@@ -16,7 +16,18 @@ python mayura.py status     # your saved track record
 python mayura.py scorecard  # honest verdict: beating the Nifty index?
 python mayura.py check      # is Kite + Telegram wired up?
 python mayura.py universe   # which stocks can Mayura actually trade?
+python mayura.py lessons    # 🩺 what each face LEARNED from its failed trades
+python mayura.py heal       # 🧬 self-healing backtest: tune exit rules (bounded)
 ```
+
+**Self-healing 🧬:** the moment a trade closes at a loss, Mayura immediately
+asks *"why did this trade fail?"* against the actual price bars (gap shock?
+gave back its gains? never worked? chased too high?), logs the lesson to
+`mayura_data/<face>/lessons.jsonl`, and re-backtests the face's recent closed
+trades against nearby exit settings. If a setting is clearly better it is
+saved to `mayura_data/<face>/tuning.json` and applied on the next run —
+always clamped inside hard safety bounds (a stop-loss and time stop always
+remain). Delete `tuning.json` to restore the hand-written rules.
 
 ---
 
