@@ -61,7 +61,7 @@ export KITE_TOKEN_FILE="${KITE_TOKEN_FILE:-/home/globalbot/data/kite_token.json}
 ARG1="${1:-}"
 ARG2="${2:-}"
 case "$ARG1" in
-  run|report|rank|status|scorecard|data|rules|universe|filings|health|check|regime|telegram-setup|heal|lessons)
+  run|report|rank|status|scorecard|data|rules|universe|filings|health|check|regime|telegram-setup|heal|lessons|weather)
     CMD="$ARG1"; FACE="$ARG2" ;;          # explicit command (+ optional face)
   "")
     CMD="run"; FACE="" ;;                  # no args -> run all faces

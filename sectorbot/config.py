@@ -237,6 +237,14 @@ REGIME_DOWNTREND_MODE = "block"
 REGIME_DOWNTREND_MAX_POSITIONS = 3    # in reduced mode, hold at most this many
 REGIME_DOWNTREND_SIZE_FACTOR = 0.5    # …each at this fraction of normal size
 
+# --- Market Weather 👁 (pre-open risk dial; sectorbot/weather.py) ------------
+# Set per run by the launcher (Mayura) from the day's saved weather verdict.
+# Defaults are NEUTRAL so plain sectorbot (and any run without a fresh verdict)
+# behaves exactly as before. Scales/blocks NEW ENTRIES ONLY — exits always run.
+WEATHER_SIZE_FACTOR = 1.0     # multiply each new position's budget (0.5 on a DOWN day)
+WEATHER_BLOCK_NEW = False     # True on a STRONG DOWN morning: no new buys today
+WEATHER_INFO = ""             # human line for reports/Telegram ("" = no verdict)
+
 # --- Honest scorecard / finish line ----------------------------------------
 # The whole point of paper trading is to answer ONE question: is this strategy
 # genuinely worth it — i.e. does it beat just buying a Nifty index fund, after

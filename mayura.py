@@ -43,6 +43,8 @@ USAGE
     python mayura.py doctor            # WHERE alerts go + P&L/win-loss per face (global)
     python mayura.py check             # Kite token + Telegram + Gemini wired? (global)
     python mayura.py regime            # NIFTY vs its 200-DMA (global)
+    python mayura.py weather           # 👁 pre-open oracle: GIFT Nifty + news + VIX
+                                       #    → today's risk dial for BOTH bots
 
 Each strategy reads its OWN screen from mayura_data/<strategy>/universe.csv and
 keeps its OWN portfolio there. Build a different Trendlyne screen per strategy
@@ -95,6 +97,15 @@ MAYURA_HEAL_AUTO_APPLY  = True   # apply tuning.json on load (always bounded)
 MAYURA_HEAL_MIN_TRADES  = 8      # refuse to tune on fewer closed trades
 MAYURA_HEAL_LOOKBACK    = 30     # backtest over the last N closed trades
 MAYURA_HEAL_MIN_IMPROVE = 1.0    # %-points/trade a candidate must win by
+
+# --- MARKET WEATHER 👁 (sectorbot/weather.py) --------------------------------
+# The outside observer: a pre-open oracle (Gemini reads GIFT Nifty + global
+# cues + news; Kite gives India VIX + Nifty momentum) that sets today's risk
+# dial for BOTH bots. DOWN morning → new buys at half size; STRONG DOWN → no
+# new buys at all. Exits ALWAYS run. Fail-open: no fresh verdict = NEUTRAL.
+# Fetch it pre-market via cron: `mayura_cron.sh weather` (~9:10 IST).
+MAYURA_WEATHER_ENABLED  = True
+MAYURA_WEATHER_MAX_AGE_H = 20.0  # ignore a verdict older than this (stale)
 
 # --- The three temple-deity strategies (tweak freely) -----------------------
 # Names are the form of Muruga at each temple. Each "exits" block tunes how that
@@ -329,6 +340,10 @@ def _mayura_telegram(result: dict, filings_summary: dict | None = None,
                      f"{config.REGIME_DOWNTREND_SIZE_FACTOR:.0%} size")
     elif result.get("regime_blocked"):
         lines.append("🛑 Market downtrend — Mayura holds cash, no new buys")
+    if result.get("weather_info"):
+        lines.append(f"👁 {result['weather_info'][:160]}")
+        if result.get("weather_blocked"):
+            lines.append("  → no new buys today (weather); exits still ran")
     sc = result.get("scorecard")
     if sc:
         edge = (f" (edge {sc['edge_vs_index_pct']:+.1f}% vs Nifty)"
@@ -817,6 +832,52 @@ def _filings_gate(ranked: list) -> dict:
     return summary
 
 
+def _apply_weather() -> dict:
+    """Load today's Market Weather verdict and set the engine's risk dial.
+    Neutral (full size, nothing blocked) when disabled, absent or stale."""
+    from sectorbot.weather import dial, load_weather
+    d = dial(load_weather() if MAYURA_WEATHER_ENABLED else None,
+             max_age_h=MAYURA_WEATHER_MAX_AGE_H)
+    config.WEATHER_SIZE_FACTOR = d["size"]
+    config.WEATHER_BLOCK_NEW = d["block_new"]
+    config.WEATHER_INFO = d["info"]
+    if d["info"]:
+        print(f"  👁 Weather    : {d['info']}")
+        if d["block_new"]:
+            print("                 → STRONG DOWN morning: no new buys today "
+                  "(exits still run)")
+        elif d["size"] < 1.0:
+            print(f"                 → new buys at {d['size']:.0%} size today")
+    return d
+
+
+def cmd_weather() -> None:
+    """THE OUTSIDE OBSERVER: fetch today's pre-open market weather (Gemini
+    reads GIFT Nifty + global cues + news; Kite adds India VIX + momentum),
+    save the verdict for both bots, and Telegram it. Cron: ~9:10 IST."""
+    _banner("MARKET WEATHER 👁 (pre-open oracle)")
+    from sectorbot.datasource import get_datasource
+    from sectorbot.telegram import send_telegram
+    from sectorbot.weather import fetch_and_save, weather_file
+    from sectorbot import gemini
+    print(f"\n  Asking Gemini for the pre-open brief (GIFT Nifty, global cues, "
+          f"news){' — key missing, hard data only' if not gemini.configured() else ''}…")
+    w = fetch_and_save(get_datasource())
+    print(f"\n  Verdict : {w['label']} ({w['score']:+d})")
+    for r in w["reasons"]:
+        print(f"    · {r}")
+    act = ("🛑 NO new buys today (exits still run)" if not w["allow_new"]
+           else f"new buys at {w['size_factor']:.0%} size" if w["size_factor"] < 1
+           else "trade normally (full size)")
+    print(f"  Action  : {act}")
+    print(f"  Saved   : {weather_file()}  (Mayura AND Garuda read this)\n")
+    icon = {2: "🟢🟢", 1: "🟢", 0: "⚪", -1: "🟠", -2: "🔴"}[w["score"]]
+    send_telegram(
+        f"👁 <b>Market Weather · {date.today().isoformat()}</b>\n"
+        f"{icon} <b>{w['label']}</b> — " + "; ".join(w["reasons"][:3]) + "\n"
+        f"→ {act}\n<i>Risk dial for Mayura & Garuda. Paper only.</i>")
+
+
 def cmd_run() -> None:
     """The main event: one paper-trading session + a Telegram ping."""
     _banner("DAILY RUN")
@@ -826,6 +887,10 @@ def cmd_run() -> None:
     from sectorbot.engine import run_paper_session
     from sectorbot.notify import write_portfolio_report
     from sectorbot.telegram import send_telegram
+
+    # MARKET WEATHER 👁: apply today's pre-open verdict (fetched by the cron's
+    # `weather` run) as this session's risk dial. Neutral when absent/stale.
+    _apply_weather()
 
     is_news = CURRENT.get("compute") == "news"
     wl = _watchlist()
@@ -1675,7 +1740,7 @@ def cmd_rules() -> None:
 # Commands that run once for the WHOLE bot (not per strategy).
 GLOBAL_COMMANDS = {"check": cmd_check, "regime": cmd_regime,
                    "telegram-setup": cmd_telegram_setup, "health": cmd_health,
-                   "doctor": cmd_doctor}
+                   "doctor": cmd_doctor, "weather": cmd_weather}
 # Commands that run PER strategy (loop all three unless one is named).
 PER_STRATEGY_COMMANDS = {
     "run": cmd_run, "rank": cmd_rank, "status": cmd_status,

@@ -169,11 +169,16 @@ def run_paper_session(verbose: bool = True, csv_path=None,
     max_positions = (config.REGIME_DOWNTREND_MAX_POSITIONS if reduced
                      else config.MAX_POSITIONS)
     size_factor = config.REGIME_DOWNTREND_SIZE_FACTOR if reduced else 1.0
+    # MARKET WEATHER 👁: today's pre-open risk dial (set by the launcher from
+    # the oracle's verdict). Scales new-entry size on a DOWN morning, blocks
+    # new entries entirely on STRONG DOWN. Exits above already ran regardless.
+    size_factor *= max(config.WEATHER_SIZE_FACTOR, 0.0)
+    weather_blocked = bool(config.WEATHER_BLOCK_NEW)
     per_name_budget = min(config.PAPER_CAPITAL * config.MAX_ALLOCATION_PER_NAME,
                           config.PAPER_CAPITAL / max(config.MAX_POSITIONS, 1)) * size_factor
     entries = []
     skipped_extended = []
-    if not regime_blocked:
+    if not regime_blocked and not weather_blocked:
         for sym in ranked_symbols:
             if len(pf.holdings) >= max_positions:
                 break  # already hold the target number of names
@@ -231,6 +236,7 @@ def run_paper_session(verbose: bool = True, csv_path=None,
         "exits": exits, "entries": entries, "price_of": price_of,
         "regime_uptrend": uptrend, "regime_blocked": regime_blocked,
         "regime_reduced": reduced, "max_positions": max_positions,
+        "weather_info": config.WEATHER_INFO, "weather_blocked": weather_blocked,
         "skipped_extended": skipped_extended,
         "data_date": data_info["date"], "data_stale": data_info["stale"],
         "scorecard": compute_scorecard(pf),

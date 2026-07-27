@@ -20,6 +20,7 @@ chmod +x "$SH"
 # Swaminatha (news) is intraday + a Sunday preview. The EOD report (read-only
 # P&L per face → each topic) fires once after the 15:30 IST close (10:10 UTC).
 NEW="$(cat <<CRON
+40 3 * * 1-5 $SH weather    >> $LOG 2>&1
 50 3 * * 1-5 $SH dandapani  >> $LOG 2>&1
 55 3 * * 1-5 $SH senthil    >> $LOG 2>&1
 0 4 * * 1-5 $SH subramanya >> $LOG 2>&1
@@ -37,4 +38,4 @@ CRON
 echo "✅ Mayura cron installed (no nano used). Mayura's scheduled faces:"
 crontab -l | grep 'mayura_cron.sh'
 echo
-echo "🦚 5 faces decide on settled close + buy at the open (9:20–9:45 IST); Swaminatha polls news every 30 min, Mon–Fri; EOD report + P&L per face at 15:40 IST."
+echo "🦚 Weather oracle 9:10 IST → 5 faces decide on settled close + buy at the open (9:20–9:45 IST); Swaminatha polls news every 30 min, Mon–Fri; EOD report + P&L per face at 15:40 IST."
