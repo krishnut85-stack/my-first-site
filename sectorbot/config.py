@@ -312,11 +312,14 @@ GEMINI_USE_SEARCH = True          # Google Search grounding for materiality cont
 NEWS_DAYS_BACK = int(os.environ.get("NEWS_DAYS_BACK", "2"))      # announcement look-back
 NEWS_MAX_GEMINI_CALLS = int(os.environ.get("NEWS_MAX_GEMINI_CALLS", "40"))  # per-POLL safety cap
 NEWS_MAX_GEMINI_CALLS_DAILY = int(os.environ.get("NEWS_MAX_GEMINI_CALLS_DAILY", "30"))  # HARD daily ceiling
-NEWS_MIN_CONFIDENCE = float(os.environ.get("NEWS_MIN_CONFIDENCE", "0.6"))   # Gemini conviction
+# Loosened (user request, 2026-07): 0.6→0.5 so Swaminatha fills more of its 8
+# slots. Re-tighten via .env (NEWS_MIN_CONFIDENCE=0.6) if quality drops.
+NEWS_MIN_CONFIDENCE = float(os.environ.get("NEWS_MIN_CONFIDENCE", "0.5"))   # Gemini conviction
 # Cheap pre-Gemini gate: for ORDER/CONTRACT news with a stated value, require it
 # be at least this many ₹ crore (small orders are skipped WITHOUT a Gemini call).
 # Approvals/buybacks/mergers (no order value) bypass this and go to Gemini.
-NEWS_MIN_ORDER_CR = float(os.environ.get("NEWS_MIN_ORDER_CR", "100"))
+# Loosened (user request, 2026-07): 100→50 ₹cr, same reason as above.
+NEWS_MIN_ORDER_CR = float(os.environ.get("NEWS_MIN_ORDER_CR", "50"))
 # Basic safety checks before ANY news-driven buy (market-wide can surface junk):
 NEWS_MIN_PRICE = float(os.environ.get("NEWS_MIN_PRICE", "20"))             # no penny stocks
 NEWS_MIN_TURNOVER_CR = float(os.environ.get("NEWS_MIN_TURNOVER_CR", "1.0"))  # avg daily ₹cr (liquidity)
