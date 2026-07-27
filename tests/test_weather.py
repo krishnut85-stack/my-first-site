@@ -109,6 +109,44 @@ def test_fetch_and_save_with_injected_gemini(tmp_path, monkeypatch):
     assert json.loads((tmp_path / "w.json").read_text())["label"] == "DOWN"
 
 
+# --- defensive mode (tightened trailing stops on hostile mornings) ----------
+def test_combine_sets_trail_factor_by_score():
+    up = weather.combine({"direction": 1, "reason": "green"}, {})
+    down = weather.combine({"direction": -1, "reason": "soft"}, {})
+    strong = weather.combine({"direction": -2, "reason": "selloff"}, {})
+    assert up["trail_factor"] == 1.0
+    assert down["trail_factor"] == 0.75
+    assert strong["trail_factor"] == 0.5
+
+
+def test_dial_passes_trail_factor_and_clamps():
+    w = weather.combine({"direction": -2, "reason": "selloff"}, {})
+    assert weather.dial(w)["trail"] == 0.5
+    w["trail_factor"] = 0.01                      # corrupt file can't zero the trail
+    assert weather.dial(w)["trail"] == 0.25
+    assert weather.dial(None)["trail"] == 1.0     # fail-open
+
+
+def test_defensive_trail_fires_earlier(monkeypatch):
+    from sectorbot.risk import PositionState, decide_exit
+    monkeypatch.setattr(config, "USE_TRAILING_STOP", True)
+    monkeypatch.setattr(config, "TRAILING_ACTIVATE_PCT", 0.10)
+    monkeypatch.setattr(config, "TRAILING_SL_PCT", 0.10)
+    monkeypatch.setattr(config, "STOP_LOSS_PCT", 0.50)     # keep other rules quiet
+    monkeypatch.setattr(config, "USE_ATR_STOP", False)
+
+    def state():
+        return PositionState("X", entry_price=100.0, qty=1, peak_price=120.0)
+
+    # peak 120, price 113: a 5.8% dip off the peak — inside a normal 10% give
+    monkeypatch.setattr(config, "WEATHER_TRAIL_FACTOR", 1.0)
+    assert decide_exit(state(), 113.0)[0] is False
+    # STRONG DOWN morning: give tightens to 5% → the same dip books the winner
+    monkeypatch.setattr(config, "WEATHER_TRAIL_FACTOR", 0.5)
+    fired, reason = decide_exit(state(), 113.0)
+    assert fired and "defensive" in reason
+
+
 # --- engine gating ----------------------------------------------------------
 def test_engine_respects_weather_block(tmp_path, monkeypatch):
     from sectorbot.engine import run_paper_session

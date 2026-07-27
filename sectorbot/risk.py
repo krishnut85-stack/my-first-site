@@ -47,14 +47,19 @@ def decide_exit(state: PositionState, ltp: float) -> tuple[bool, str]:
     if change >= config.TAKE_PROFIT_PCT:
         return True, f"take-profit {change:+.1%}"
 
-    # 3. trailing stop (arms only after enough profit -> locks gains)
+    # 3. trailing stop (arms only after enough profit -> locks gains).
+    # DEFENSIVE MODE: on a hostile morning (Market Weather DOWN/STRONG DOWN)
+    # the give tightens for the day — winners surrender less of their peak
+    # before booking. Still price-driven: a stock holding firm is untouched.
     if config.USE_TRAILING_STOP:
         peak_gain = (state.peak_price - entry) / entry
         if peak_gain >= config.TRAILING_ACTIVATE_PCT:
+            give = config.TRAILING_SL_PCT * getattr(config, "WEATHER_TRAIL_FACTOR", 1.0)
             drop_from_peak = (state.peak_price - ltp) / state.peak_price
-            if drop_from_peak >= config.TRAILING_SL_PCT:
+            if drop_from_peak >= give:
                 locked = (ltp - entry) / entry
-                return True, f"trailing-stop (locked {locked:+.1%})"
+                tag = " · defensive" if give < config.TRAILING_SL_PCT else ""
+                return True, f"trailing-stop (locked {locked:+.1%}{tag})"
 
     # 4. ATR stop
     if config.USE_ATR_STOP and state.atr > 0:

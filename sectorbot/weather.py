@@ -152,6 +152,12 @@ def combine(gem, hard):
         "score": score, "label": LABELS[score],
         "size_factor": 1.0 if score >= 0 else (0.5 if score == -1 else 0.0),
         "allow_new": score > -2,
+        # DEFENSIVE MODE: on hostile mornings, held winners keep their stops
+        # but the trailing stop tightens for the day — give back less of the
+        # peak before booking. Still price-driven: a holding that shrugs off
+        # the storm is never touched. DOWN = 75% of normal give, STRONG DOWN
+        # = 50% (e.g. a 10% trail behaves like 5% that day).
+        "trail_factor": 1.0 if score >= 0 else (0.75 if score == -1 else 0.5),
         "reasons": reasons,
         "gemini": gem, "hard": hard or {},
     }
@@ -179,8 +185,8 @@ def load_weather() -> dict | None:
 def dial(w: dict | None, max_age_h: float = 20.0) -> dict:
     """The safe dial for the engines: {size, block_new, label, score, info}.
     Missing/stale/foreign-day weather -> NEUTRAL (fail-open, never freezes)."""
-    neutral = {"size": 1.0, "block_new": False, "label": "NEUTRAL",
-               "score": 0, "info": ""}
+    neutral = {"size": 1.0, "block_new": False, "trail": 1.0,
+               "label": "NEUTRAL", "score": 0, "info": ""}
     if not w:
         return neutral
     try:
@@ -191,6 +197,7 @@ def dial(w: dict | None, max_age_h: float = 20.0) -> dict:
         info = f"{w['label']} ({w['score']:+d}) — " + "; ".join(w.get("reasons", [])[:3])
         return {"size": float(w.get("size_factor", 1.0)),
                 "block_new": not w.get("allow_new", True),
+                "trail": max(min(float(w.get("trail_factor", 1.0)), 1.0), 0.25),
                 "label": w["label"], "score": int(w["score"]),
                 "info": info[:300]}
     except (KeyError, TypeError, ValueError):

@@ -243,6 +243,8 @@ REGIME_DOWNTREND_SIZE_FACTOR = 0.5    # …each at this fraction of normal size
 # behaves exactly as before. Scales/blocks NEW ENTRIES ONLY — exits always run.
 WEATHER_SIZE_FACTOR = 1.0     # multiply each new position's budget (0.5 on a DOWN day)
 WEATHER_BLOCK_NEW = False     # True on a STRONG DOWN morning: no new buys today
+WEATHER_TRAIL_FACTOR = 1.0    # DEFENSIVE MODE: tighten the trailing stop's give
+                              # on hostile mornings (0.75 DOWN / 0.5 STRONG DOWN)
 WEATHER_INFO = ""             # human line for reports/Telegram ("" = no verdict)
 
 # --- Honest scorecard / finish line ----------------------------------------

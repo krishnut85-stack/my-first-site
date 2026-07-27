@@ -840,6 +840,7 @@ def _apply_weather() -> dict:
              max_age_h=MAYURA_WEATHER_MAX_AGE_H)
     config.WEATHER_SIZE_FACTOR = d["size"]
     config.WEATHER_BLOCK_NEW = d["block_new"]
+    config.WEATHER_TRAIL_FACTOR = d.get("trail", 1.0)
     config.WEATHER_INFO = d["info"]
     if d["info"]:
         print(f"  👁 Weather    : {d['info']}")
@@ -848,6 +849,9 @@ def _apply_weather() -> dict:
                   "(exits still run)")
         elif d["size"] < 1.0:
             print(f"                 → new buys at {d['size']:.0%} size today")
+        if d.get("trail", 1.0) < 1.0:
+            print(f"                 → defensive: trailing stops tightened to "
+                  f"{d['trail']:.0%} of normal give today (winners give back less)")
     return d
 
 
@@ -869,6 +873,9 @@ def cmd_weather() -> None:
     act = ("🛑 NO new buys today (exits still run)" if not w["allow_new"]
            else f"new buys at {w['size_factor']:.0%} size" if w["size_factor"] < 1
            else "trade normally (full size)")
+    if w.get("trail_factor", 1.0) < 1.0:
+        act += (f" · 🛡️ defensive: trailing stops tightened to "
+                f"{w['trail_factor']:.0%} give")
     print(f"  Action  : {act}")
     print(f"  Saved   : {weather_file()}  (Mayura AND Garuda read this)\n")
     icon = {2: "🟢🟢", 1: "🟢", 0: "⚪", -1: "🟠", -2: "🔴"}[w["score"]]
