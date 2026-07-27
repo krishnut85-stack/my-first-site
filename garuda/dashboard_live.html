@@ -835,10 +835,14 @@ function render(d){
   const strat=p.label?`<span class=strat title="${p.rules||''}">${p.label}</span>`:'';
   const pf=p.proven_pf?` · PF <b class=a>${p.proven_pf.toFixed(2)}</b>`:'';
   const rules=p.rules?`<div class=rules>${p.rules}</div>`:'';
+  // 🩺 post-mortem: what this book LEARNED from its recent failed trades
+  const lessons=(p.lessons&&p.lessons.length)?`<div class=rules style="border-left:2px solid #f5b23e">`+
+    p.lessons.map(l=>`🩺 <b>${l.sym}</b> <span class="${l.pnl_pct>=0?'g':'r'}">${pct(l.pnl_pct)}</span> <span class=muted>[${l.reason||''} · ${l.date||''}]</span> ${l.why||''}`).join('<br>')+
+    `</div>`:'';
   html+=`<div class=bothdr>
     <div class=nm>${p.name} <span class=d>· ${p.desc}</span> ${strat}</div>
     <div class=bstat>${money(p.equity)} · <b class="${p.pnl_pct>=0?'g':'r'}">${pct(p.pnl_pct)}</b> · WIN <b class=a>${win}</b>${green}${pf} · ${p.positions.length} pos${catStr(p.cats)}</div>
-  </div>${rules}`;
+  </div>${rules}${lessons}`;
   // the STRENGTH book signals on RSI-14 (55-70 band); the dip books on RSI-2
   const rk=p.key==='strength'?'rsi14':'rsi2', rlabel=p.key==='strength'?'RSI-14':'RSI-2';
   // 'rsi' is a LOGICAL sort key so each table sorts by ITS OWN rsi field (rk), never a hidden one

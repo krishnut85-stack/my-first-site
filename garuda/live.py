@@ -186,6 +186,26 @@ class GarudaLive:
         self._swami_cache = {}     # Swaminatha (Mayura news face) guest-tab state
         from .news import NewsTicker
         self.news = NewsTicker()   # bottom-ticker headlines (rate-limited fetch)
+        self._lessons_cache = {}   # book -> {mtime, data} (post-mortem lessons)
+
+    def _lessons_for(self, key, last=5):
+        """Latest post-mortem lessons for a book (mtime-cached — build_state
+        runs every ~2s and must not re-read 11 files each tick)."""
+        from .postmortem import lessons_path, read_lessons
+        try:
+            mtime = lessons_path(key).stat().st_mtime
+        except OSError:
+            return []
+        c = self._lessons_cache.get(key)
+        if not c or c.get("mtime") != mtime:
+            self._lessons_cache[key] = c = {
+                "mtime": mtime,
+                "data": [{"sym": l.get("symbol"), "date": l.get("exit_date"),
+                          "pnl_pct": l.get("pnl_pct"),
+                          "reason": l.get("reason"),
+                          "why": l.get("diagnosis")}
+                         for l in read_lessons(key, last)[::-1]]}
+        return c["data"]
 
     def _load_day_base(self):
         import json
@@ -406,6 +426,14 @@ class GarudaLive:
             self.portfolios[k].save(_pf_path(k))
             self.last_signals[k] = {"buys": [b["symbol"] for b in res["buys"]],
                                     "sells": [s["symbol"] for s in res["sells"]]}
+            # POST-MORTEM: the moment a trade closes at a loss (or gives back a
+            # big peak), diagnose WHY from its actual price path and log the
+            # lesson — data/garuda_<book>_lessons.jsonl, shown on the book card.
+            if res["sells"]:
+                from .postmortem import post_mortem
+                res["lessons"] = post_mortem(k, res["sells"],
+                                             self.portfolios[k].trades,
+                                             self.dated_by_sym)
             results[k] = res
         # advance the weekly Iron Condor: settle at expiry, roll into next week
         nifty = (self.index.get("NIFTY 50") or {}).get("ltp") or 0.0
@@ -656,6 +684,7 @@ class GarudaLive:
                 "pf": pfac, "cash": round(pf.cash, 0),
                 "buys": self.last_signals[k]["buys"], "sells": self.last_signals[k]["sells"],
                 "chart_sym": chart_sym, "chart": self.charts.get(chart_sym),
+                "lessons": self._lessons_for(k),
             })
         totals = {
             "equity": round(sum(p["equity"] for p in profs), 0),
