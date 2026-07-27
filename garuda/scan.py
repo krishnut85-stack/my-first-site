@@ -19,6 +19,17 @@ ONLY — it updates the paper portfolio; it never places a real order.
 from .portfolio import LivePortfolio, _today
 from .setups import rsi, sma
 
+# MARKET WEATHER 👁 — today's pre-open risk dial, set each scan by live.py from
+# garuda/weather.py. Scales NEW entries in the SIGNAL books only (size 0 on a
+# STRONG DOWN morning means zero quantity everywhere → no new buys). Exits are
+# never touched, and the rotation books (chakra/qmom/captain) ignore it by
+# design — a daily dial has no business inside a monthly/annual wheel.
+WEATHER = {"size": 1.0}
+
+
+def _weather_size() -> float:
+    return max(float(WEATHER.get("size", 1.0)), 0.0)
+
 
 def run_scan(profile, series: dict, portfolio: LivePortfolio, live_prices=None):
     """Dispatch to the profile's engine. series: {symbol: [closes]} (latest last).
@@ -134,7 +145,7 @@ def _run_rsi2(profile, series, portfolio, live_prices=None):
         candidates.append((cur, sym, price_of(sym)))
     candidates.sort()   # ascending RSI-2 -> most oversold first
 
-    per_name = profile.capital * profile.alloc_pct
+    per_name = profile.capital * profile.alloc_pct * _weather_size()
     buys = []
     for cur, sym, price in candidates:
         if price <= 0:
@@ -196,7 +207,7 @@ def _run_momentum(profile, series, portfolio, live_prices=None):
         candidates.append((strength, sym, price, c))
     candidates.sort(reverse=True)                # strongest breakout gets cash first
 
-    per_name = profile.capital * profile.alloc_pct
+    per_name = profile.capital * profile.alloc_pct * _weather_size()
     buys = []
     for strength, sym, price, c in candidates:
         budget = min(per_name, portfolio.cash)
@@ -258,7 +269,7 @@ def _run_hi52(profile, series, portfolio, live_prices=None):
         candidates.append((mom, sym, price, c))
     candidates.sort(reverse=True)            # strongest 3-month momentum first
 
-    per_name = profile.capital * profile.alloc_pct
+    per_name = profile.capital * profile.alloc_pct * _weather_size()
     buys = []
     for mom, sym, price, c in candidates:
         budget = min(per_name, portfolio.cash)
@@ -578,7 +589,7 @@ def _run_crash(profile, series, portfolio, live_prices=None):
         candidates.append((wk, sym, price, c))
     candidates.sort()                             # most negative = deepest panic first
 
-    per_name = profile.capital * profile.alloc_pct
+    per_name = profile.capital * profile.alloc_pct * _weather_size()
     buys = []
     for wk, sym, price, c in candidates:
         budget = min(per_name, portfolio.cash)
@@ -642,7 +653,7 @@ def _run_strength(profile, series, portfolio, live_prices=None):
         candidates.append((cur, sym, price, c))
     candidates.sort(reverse=True)                # strongest RSI (within band) first
 
-    per_name = profile.capital * profile.alloc_pct
+    per_name = profile.capital * profile.alloc_pct * _weather_size()
     buys = []
     for cur, sym, price, c in candidates:
         budget = min(per_name, portfolio.cash)
@@ -689,7 +700,7 @@ def _run_scalein(profile, series, portfolio, live_prices=None):
             sells.append({"symbol": sym, "price": round(px, 2),
                           "pnl": round(pnl, 2), "reason": reason})
 
-    per_unit = profile.capital * profile.alloc_pct
+    per_unit = profile.capital * profile.alloc_pct * _weather_size()
 
     # --- 2. scale-in adds: still oversold, lower than the last add, room left --
     adds = []
@@ -784,7 +795,7 @@ def _run_leaders(profile, series, portfolio, live_prices=None):
         candidates.append((mom, sym, price, c))
     candidates.sort(reverse=True)                     # strongest momentum gets cash first
 
-    per_name = profile.capital * profile.alloc_pct
+    per_name = profile.capital * profile.alloc_pct * _weather_size()
     buys = []
     for mom, sym, price, c in candidates:
         budget = min(per_name, portfolio.cash)

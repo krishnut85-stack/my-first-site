@@ -187,6 +187,7 @@ class GarudaLive:
         from .news import NewsTicker
         self.news = NewsTicker()   # bottom-ticker headlines (rate-limited fetch)
         self._lessons_cache = {}   # book -> {mtime, data} (post-mortem lessons)
+        self.weather = None        # today's 👁 dial (set by scan; None pre-scan)
 
     def _lessons_for(self, key, last=5):
         """Latest post-mortem lessons for a book (mtime-cached — build_state
@@ -416,6 +417,15 @@ class GarudaLive:
             return {k: {"status": f"no trades — market {market_status().lower()}"}
                     for k in PROFILES}
         self.refresh_prices()          # fill entries/exits at the live price
+        # MARKET WEATHER 👁: apply today's pre-open verdict (written by the
+        # shared oracle) as the signal books' entry dial. NEUTRAL when absent.
+        from . import scan as scan_mod
+        from .weather import dial, load_weather
+        self.weather = dial(load_weather())
+        scan_mod.WEATHER["size"] = self.weather["size"]
+        if self.weather["info"]:
+            print(f"[garuda] 👁 weather: {self.weather['info']} → signal-book "
+                  f"entries at {self.weather['size']:.0%} size", flush=True)
         results = {}
         for k, prof in PROFILES.items():
             series = self._series(prof)
@@ -772,6 +782,7 @@ class GarudaLive:
                 "news": self.news.items((self._swami_raw() or {}).get("trades",
                                                                       [])[::-1]),
                 "index": self.index,
+                "weather": self.weather,
                 "market_open": is_market_open(), "market_status": market_status(),
                 "holidays": sorted(HOLIDAYS),
                 "last_scan": self.last_scan_date, "today": _today()}
