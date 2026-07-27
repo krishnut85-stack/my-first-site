@@ -25,6 +25,7 @@ def _verdict(score, size, allow_new=True, when=None, day=None):
 def _reset_dial():
     yield
     scan_mod.WEATHER["size"] = 1.0
+    scan_mod.WEATHER["trail"] = 1.0
 
 
 # --- the dial --------------------------------------------------------------
@@ -88,6 +89,50 @@ def test_scan_halves_position_size_on_down_day():
     q_full = pf_full.holdings["DIPSTK"]["qty"]
     q_half = pf_half.holdings["DIPSTK"]["qty"]
     assert 0 < q_half <= q_full * 0.5 + 1
+
+
+def test_dial_trail_factor_from_file_and_derived():
+    w = _verdict(-2, 0.0, allow_new=False)
+    w["trail_factor"] = 0.5
+    assert weather.dial(w)["trail"] == 0.5
+    del w["trail_factor"]                     # older oracle file: derive by score
+    assert weather.dial(w)["trail"] == 0.5
+    assert weather.dial(_verdict(0, 1.0))["trail"] == 1.0
+    assert weather.dial(None)["trail"] == 1.0
+
+
+def _held_winner_series():
+    """A held stock well above entry, peaked, now dipping ~8% off the peak —
+    inside a normal 15% trail, outside a defensive 7.5% one."""
+    c = [100.0 + i * 0.2 for i in range(240)]
+    c += [c[-1] * 1.10, c[-1] * 1.01]         # peak, then a ~8.2% pullback
+    return {"WINNER": c}
+
+
+def test_defensive_trail_books_winner_earlier():
+    from garuda.strategy import Profile
+    prof = Profile("t", "T", "", "x_daily.csv", strategy="momentum",
+                   breakout=20, trail=0.15, max_hold=120)
+    series = _held_winner_series()
+
+    def fresh_pf():
+        pf = LivePortfolio(1_000_000.0)
+        pf.holdings["WINNER"] = {"qty": 10, "entry_price": 100.0,
+                                 "entry_date": "2026-07-01", "entry_len": 200,
+                                 "bars_held": 5, "last_date": "2026-07-20",
+                                 "peak": series["WINNER"][-2]}
+        return pf
+
+    # normal day: a ~7% dip is inside the 15% trail — still held
+    pf = fresh_pf()
+    scan_mod.run_scan(prof, series, pf)
+    assert "WINNER" in pf.holdings
+    # STRONG DOWN morning: give tightens to 7.5% — the winner is booked
+    scan_mod.WEATHER["trail"] = 0.5
+    pf = fresh_pf()
+    res = scan_mod.run_scan(prof, series, pf)
+    assert "WINNER" not in pf.holdings
+    assert any(s["symbol"] == "WINNER" and s["pnl"] > 0 for s in res["sells"])
 
 
 def test_rotation_books_ignore_the_dial():

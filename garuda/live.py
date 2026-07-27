@@ -423,9 +423,14 @@ class GarudaLive:
         from .weather import dial, load_weather
         self.weather = dial(load_weather())
         scan_mod.WEATHER["size"] = self.weather["size"]
+        scan_mod.WEATHER["trail"] = self.weather["trail"]
         if self.weather["info"]:
+            note = f"entries at {self.weather['size']:.0%} size"
+            if self.weather["trail"] < 1.0:
+                note += (f" · defensive trails "
+                         f"({self.weather['trail']:.0%} give)")
             print(f"[garuda] 👁 weather: {self.weather['info']} → signal-book "
-                  f"entries at {self.weather['size']:.0%} size", flush=True)
+                  f"{note}", flush=True)
         results = {}
         for k, prof in PROFILES.items():
             series = self._series(prof)

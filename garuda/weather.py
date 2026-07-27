@@ -42,8 +42,8 @@ def dial(w: dict | None, max_age_h: float = 20.0) -> dict:
     """{size, block_new, label, score, info} — NEUTRAL unless the verdict is
     from today and fresh. `size` alone is enough to gate entries: 0 size means
     zero quantity on every would-be buy."""
-    neutral = {"size": 1.0, "block_new": False, "label": "NEUTRAL",
-               "score": 0, "info": ""}
+    neutral = {"size": 1.0, "block_new": False, "trail": 1.0,
+               "label": "NEUTRAL", "score": 0, "info": ""}
     if not w:
         return neutral
     try:
@@ -53,10 +53,17 @@ def dial(w: dict | None, max_age_h: float = 20.0) -> dict:
             return neutral
         info = (f"{w['label']} ({w['score']:+d}) — "
                 + "; ".join(w.get("reasons", [])[:3]))
+        score = int(w.get("score", 0))
+        # DEFENSIVE MODE trail factor: prefer the oracle's own number; derive
+        # from the score when an older verdict file predates the field.
+        tf = w.get("trail_factor")
+        if tf is None:
+            tf = 1.0 if score >= 0 else (0.75 if score == -1 else 0.5)
         return {"size": max(float(w.get("size_factor", 1.0)), 0.0),
                 "block_new": not w.get("allow_new", True),
+                "trail": min(max(float(tf), 0.25), 1.0),
                 "label": str(w.get("label", "NEUTRAL")),
-                "score": int(w.get("score", 0)),
+                "score": score,
                 "info": info[:300]}
     except (KeyError, TypeError, ValueError):
         return neutral
@@ -78,6 +85,8 @@ def main() -> None:
         act = ("NO new entries today" if d["block_new"] or d["size"] == 0
                else f"entries at {d['size']:.0%} size" if d["size"] < 1
                else "trading normally")
+        if d["trail"] < 1.0:
+            act += f" · 🛡️ defensive: trails tightened to {d['trail']:.0%} give"
         print(f"  Dial    : {act} (signal books; rotations untouched)\n")
     else:
         print("  Dial    : STALE/other-day verdict → NEUTRAL (full size)\n")
