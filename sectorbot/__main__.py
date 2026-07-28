@@ -11,6 +11,7 @@
   python -m sectorbot scorecard               # honest verdict: working? beating index?
   python -m sectorbot universe-check          # audit stock coverage + live tickers
   python -m sectorbot token-check             # verify Kite token + real data (safe)
+  python -m sectorbot oversold                # F&O stocks with RSI < 30 (oversold)
 
 Daily workflow: upload today's CSV into sectorbot/data/ via Termius (any name
 ending in .csv). The bot auto-uses the newest file -- no flags needed.
@@ -217,6 +218,27 @@ def cmd_token_check() -> None:
         print(f"❌ Kite check failed: {exc}")
 
 
+def cmd_oversold() -> None:
+    """List NSE F&O stocks in the oversold zone (RSI14 < 30). Kite data when
+    configured, free Yahoo fallback otherwise. Read-only — no orders.
+
+      --source auto|kite|yahoo    (default auto)
+      --threshold N               (default 30)
+    """
+    from .oversold import format_screen, run_screen
+    source = "auto"
+    if "--source" in sys.argv:
+        i = sys.argv.index("--source")
+        if i + 1 < len(sys.argv):
+            source = sys.argv[i + 1]
+    threshold = 30.0
+    if "--threshold" in sys.argv:
+        i = sys.argv.index("--threshold")
+        if i + 1 < len(sys.argv):
+            threshold = float(sys.argv[i + 1])
+    print(format_screen(run_screen(source=source, threshold=threshold)))
+
+
 def main() -> None:
     cmds = {
         "rank": cmd_rank,
@@ -230,6 +252,7 @@ def main() -> None:
         "scorecard": cmd_scorecard,
         "universe-check": cmd_universe_check,
         "token-check": cmd_token_check,
+        "oversold": cmd_oversold,
     }
     choice = sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else "sim"
     if choice not in cmds:

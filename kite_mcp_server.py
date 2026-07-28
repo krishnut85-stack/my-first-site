@@ -224,6 +224,17 @@ def check_universe() -> dict:
 
 
 @mcp.tool()
+def oversold_fo_stocks(threshold: float = 30.0, source: str = "auto") -> dict:
+    """List NSE F&O stocks in the oversold zone (Wilder RSI14 below
+    `threshold`, default 30), most-oversold first, plus an 'approaching
+    oversold' band. `source`: 'auto' (Kite when configured, else Yahoo),
+    'kite', or 'yahoo'. Read-only screen — describes past price action,
+    never places orders."""
+    from sectorbot.oversold import run_screen
+    return run_screen(source=source, threshold=threshold, verbose=False)
+
+
+@mcp.tool()
 def send_telegram_alert(message: str) -> dict:
     """Send a free-text alert to your configured Telegram chat. Safe no-op
     (console dry-run) if TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID aren't set."""
