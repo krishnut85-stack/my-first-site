@@ -65,6 +65,42 @@ def test_picks_loader_formats(tmp_path, monkeypatch):
     assert _load_captain_picks() == []
 
 
+def test_picks_loader_exact_qty_column(tmp_path, monkeypatch):
+    f = tmp_path / "picks.csv"
+    f.write_text("RRKABEL,100\nTCS, watch this one\nINFY\n")
+    monkeypatch.setenv("CAPTAIN_PICKS", str(f))
+    syms, qtys = _load_captain_picks(with_qty=True)
+    assert syms == ["RRKABEL", "TCS", "INFY"]
+    assert qtys == {"RRKABEL": 100}          # notes are not quantities
+
+
+def test_captain_buys_exact_share_count():
+    p = PROFILES["captain"]
+    series = {"RRKABEL": _flat(1400.0)}
+    pf = LivePortfolio(p.capital)
+    res = _run_captain(p, series, pf, picks=["RRKABEL"],
+                       qtys={"RRKABEL": 100})
+    assert pf.holdings["RRKABEL"]["qty"] == 100       # exactly, not equal-weight
+    assert res["buys"][0]["qty"] == 100
+    # idempotent: same list next scan -> no churn
+    res2 = _run_captain(p, series, pf, picks=["RRKABEL"],
+                        qtys={"RRKABEL": 100})
+    assert res2["buys"] == [] and res2["sells"] == []
+
+
+def test_captain_mixes_exact_and_equal_weight():
+    p = PROFILES["captain"]
+    series = {"FIXED": _flat(1000.0), "AAA": _flat(100.0), "BBB": _flat(200.0)}
+    pf = LivePortfolio(p.capital)
+    _run_captain(p, series, pf, picks=["FIXED", "AAA", "BBB"],
+                 qtys={"FIXED": 100})
+    assert pf.holdings["FIXED"]["qty"] == 100          # the captain's number
+    # the two flex picks split the REMAINING 9L equally (~4.5L each)
+    va = pf.holdings["AAA"]["qty"] * 100.0
+    vb = pf.holdings["BBB"]["qty"] * 200.0
+    assert abs(va - vb) < 250 and 4_000_00 < va < 5_000_00
+
+
 def test_run_scan_dispatches_captain(monkeypatch):
     monkeypatch.setenv("CAPTAIN_PICKS", "/nonexistent.csv")
     res = run_scan(PROFILES["captain"], {"AAA": _flat()},

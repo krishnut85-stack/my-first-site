@@ -493,10 +493,14 @@ def _run_qmom(profile, series, portfolio, live_prices=None, fundamentals=None):
     return _result(profile, portfolio, buys, sells, price_of)
 
 
-def _load_captain_picks():
+def _load_captain_picks(with_qty=False):
     """The captain's list: captain_picks.csv at the repo root (override with
     CAPTAIN_PICKS). One NSE symbol per line, or a CSV with a Symbol column;
-    blank lines and #comments ignored. Missing/empty -> [] (hold quietly)."""
+    blank lines and #comments ignored. Missing/empty -> [] (hold quietly).
+
+    A NUMERIC second column is an EXACT share count for that pick
+    ("RRKABEL,100" = buy exactly 100 shares); any other second column is a
+    note and ignored. with_qty=True also returns the {symbol: qty} map."""
     import os
     from pathlib import Path
     from . import config
@@ -506,25 +510,36 @@ def _load_captain_picks():
               Path("captain_picks.csv")])
     p = next((c for c in cands if c.exists()), None)
     if p is None:
-        return []
-    out = []
+        return ([], {}) if with_qty else []
+    out, qtys = [], {}
     for line in p.read_text(encoding="utf-8-sig").splitlines():
-        s = line.split(",")[0].strip().upper()
+        parts = line.split(",")
+        s = parts[0].strip().upper()
         if not s or s.startswith("#") or s in ("SYMBOL", "NSE CODE"):
             continue
         if s not in out:
             out.append(s)
-    return out
+        if len(parts) > 1:
+            q = parts[1].strip()
+            if q.isdigit() and int(q) > 0:
+                qtys[s] = int(q)
+    return (out, qtys) if with_qty else out
 
 
-def _run_captain(profile, series, portfolio, live_prices=None, picks=None):
-    """CAPTAIN — the discretionary seat. Holds exactly the picks list, equal
-    weight. When the list changes (quarterly by intent) the book rotates to
-    match: sells what left, buys what joined. No stops by design — the
+def _run_captain(profile, series, portfolio, live_prices=None, picks=None,
+                 qtys=None):
+    """CAPTAIN — the discretionary seat. Holds exactly the picks list. A pick
+    with an explicit share count ("RRKABEL,100") is bought at EXACTLY that
+    quantity (cash-capped); the remaining picks split the remaining equity
+    equal weight. When the list changes (quarterly by intent) the book rotates
+    to match: sells what left, buys what joined. No stops by design — the
     captain's edits are the exits. Empty/missing list -> hold quietly."""
     price_of = _price_of(series, portfolio, live_prices)
     today = _today()
-    want = picks if picks is not None else _load_captain_picks()
+    if picks is not None:
+        want, want_qty = picks, (qtys or {})
+    else:
+        want, want_qty = _load_captain_picks(with_qty=True)
     # only picks we can actually price are actionable
     target = [s for s in want if price_of(s) > 0]
     sells, buys = [], []
@@ -538,12 +553,17 @@ def _run_captain(profile, series, portfolio, live_prices=None, picks=None):
                               "pnl": round(pnl, 2),
                               "reason": "captain rebalance"})
         equity = portfolio.equity(price_of)
-        per_name = equity / len(target)
+        fixed = {s: int(want_qty[s]) for s in target if want_qty.get(s)}
+        flex = [s for s in target if s not in fixed]
+        # value the exact-qty picks at today's price; flex picks split the rest
+        fixed_value = sum(price_of(s) * q for s, q in fixed.items())
+        per_name = max(equity - fixed_value, 0.0) / len(flex) if flex else 0.0
         for sym in target:
             if sym in portfolio.holdings:
                 continue
             px = price_of(sym)
-            qty = int(min(per_name, portfolio.cash) // px)
+            qty = (min(fixed[sym], int(portfolio.cash // px)) if sym in fixed
+                   else int(min(per_name, portfolio.cash) // px))
             if qty <= 0:
                 continue
             if portfolio.buy(sym, qty, px, entry_len=len(series.get(sym, []))):
