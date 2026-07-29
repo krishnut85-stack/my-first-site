@@ -417,6 +417,21 @@ class GarudaLive:
             return {k: {"status": f"no trades — market {market_status().lower()}"}
                     for k in PROFILES}
         self.refresh_prices()          # fill entries/exits at the live price
+        # CAPTAIN picks may sit OUTSIDE the universe CSVs (e.g. a new listing
+        # like AEQUS) — fetch their live LTP explicitly so a valid NSE symbol
+        # is never skipped as unpriceable. Fail-open: unknowns stay skipped.
+        try:
+            from .scan import _load_captain_picks
+            picks, _q = _load_captain_picks(with_qty=True)
+            missing = [s for s in picks if not self.prices.get(s)]
+            if missing:
+                got = {s: p for s, p in self.feed.ltp(missing).items() if p}
+                self.prices.update(got)
+                if got:
+                    print(f"[garuda] captain picks priced via LTP: "
+                          f"{', '.join(got)}", flush=True)
+        except Exception:  # noqa: BLE001
+            pass
         # MARKET WEATHER 👁: apply today's pre-open verdict (written by the
         # shared oracle) as the signal books' entry dial. NEUTRAL when absent.
         from . import scan as scan_mod
