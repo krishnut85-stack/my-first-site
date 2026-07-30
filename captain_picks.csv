@@ -1,0 +1,9 @@
+# CAPTAIN'S PICKS — the discretionary book (Garuda-CPT, paper only)
+# One NSE symbol per line. When this list changes, the book rotates to
+# match it at the next market-open scan: sells what left, buys what
+# joined, equal weight. Intended cadence: QUARTERLY.
+# The captain sends the list in chat; this file is the record.
+#
+# (empty list = the book holds whatever it has, quietly)
+RRKABEL,100
+AEQUS,500

@@ -1,0 +1,215 @@
+"""Fetch DAILY bars for the WHOLE stock universe (or a basket) into one CSV.
+
+Run ON THE DROPLET. Writes long format `symbol,date,close` (works for any number
+of stocks — no alignment needed), then feed it to the setup / cross backtests:
+
+    python3 -m garuda.fetch_daily --all                 # every NSE stock (~2000)
+    python3 -m garuda.fetch_daily --all --exchange BSE  # every BSE stock (~5000)
+    python3 -m garuda.setups --csv daily.csv            # RSI-2 bounce on ALL of them
+
+Or a custom list:  --symbols "RELIANCE,INFY,TCS"
+Credentials are read from the env (KITE_API_KEY + KITE_ACCESS_TOKEN/KITE_TOKEN_FILE).
+
+Note: pulling ~2000-5000 stocks is one Kite call each, so it takes several
+minutes and prints progress. Many are thinly traded — the backtest reports on
+whatever trades trigger; you decide what's liquid enough to act on.
+"""
+
+import csv
+import os
+import sys
+import time
+
+from .fetch_bars import _resolve_token
+
+# a quick default basket if you don't pass --all / --symbols
+DEFAULT_BASKET = ["RELIANCE", "HDFCBANK", "ICICIBANK", "INFY", "TCS", "ITC",
+                  "LT", "SBIN", "BHARTIARTL", "KOTAKBANK"]
+
+
+def _kite():
+    try:
+        from kiteconnect import KiteConnect  # type: ignore
+    except ImportError:
+        raise SystemExit("kiteconnect not installed — run: pip3 install kiteconnect")
+    api_key = os.environ.get("KITE_API_KEY", "")
+    if not api_key:
+        raise SystemExit("KITE_API_KEY not set (source /home/globalbot/.env first)")
+    token = _resolve_token()
+    if not token:
+        raise SystemExit("No Kite access token (KITE_ACCESS_TOKEN or KITE_TOKEN_FILE)")
+    k = KiteConnect(api_key=api_key)
+    k.set_access_token(token)
+    return k
+
+
+def _universe(kite, exchange: str) -> dict:
+    """{tradingsymbol: instrument_token} of EQ stocks. exchange 'BOTH' = the
+    whole market: NSE + BSE unioned (NSE token preferred for shared names)."""
+    exchanges = ["NSE", "BSE"] if exchange == "BOTH" else [exchange]
+    tokens: dict = {}
+    for ex in exchanges:
+        for i in kite.instruments(ex):
+            if i.get("instrument_type") == "EQ":
+                tokens.setdefault(i["tradingsymbol"], i["instrument_token"])
+    return tokens
+
+
+def _done_symbols(out) -> set:
+    """Symbols already present in a partial CSV (for --resume)."""
+    done = set()
+    if os.path.exists(out):
+        try:
+            with open(out, newline="", encoding="utf-8") as f:
+                r = csv.reader(f)
+                next(r, None)                 # header
+                for row in r:
+                    if row:
+                        done.add(row[0])
+        except Exception:  # noqa: BLE001
+            pass
+    return done
+
+
+def _hist_retry(kite, tok, frm, to):
+    """Historical fetch with backoff on rate-limit; None if it truly fails."""
+    for attempt in range(4):
+        try:
+            return kite.historical_data(tok, frm, to, "day")
+        except Exception as exc:  # noqa: BLE001
+            m = str(exc).lower()
+            if any(k in m for k in ("too many", "throttl", "rate", "429")):
+                time.sleep(0.6 * (attempt + 1))
+                continue
+            return None
+    return None
+
+
+def fetch_daily(symbols=None, days=400, out="daily.csv", exchange="NSE",
+                all_stocks=False, limit=0, resume=True, sleep=0.2, ohlc=False,
+                workers=1) -> str:
+    kite = _kite()
+    tokens = _universe(kite, exchange)
+
+    if all_stocks:
+        symbols = sorted(tokens)
+    symbols = symbols or DEFAULT_BASKET
+    if limit:
+        symbols = symbols[:limit]
+
+    done = _done_symbols(out) if resume else set()
+    todo = [s for s in symbols if s not in done]
+    mode = "a" if done else "w"
+    if done:
+        print(f"Resuming {out}: {len(done)} already fetched, {len(todo)} to go.")
+    workers = max(1, workers)
+    eta = len(todo) // (36 * workers) + 1     # ~36 stocks/min per worker (API latency-bound)
+    print(f"Fetching {len(todo)} {exchange} stocks x {days}d with {workers} worker(s) "
+          f"(~{eta} min)...", flush=True)
+
+    from datetime import date, timedelta
+    import threading
+    from concurrent.futures import ThreadPoolExecutor
+    frm = date.today() - timedelta(days=days)
+    today = date.today()
+    lock = threading.Lock()
+    ctr = {"written": len(done), "n": 0}
+
+    def _rows_for(s):
+        tok = tokens.get(s)
+        if not tok:
+            return None
+        data = _hist_retry(kite, tok, frm, today)
+        if not data:
+            return None
+        # volume rides along free (Kite sends it with every candle) — it is the
+        # key to the O'Neil/Minervini accumulation playbook; loaders that only
+        # want `close` ignore the extra column.
+        return [([s, d["date"].date().isoformat(), d["open"], d["high"], d["low"],
+                  d["close"], d.get("volume", "")]
+                 if ohlc else [s, d["date"].date().isoformat(), d["close"],
+                               d.get("volume", "")]) for d in data]
+
+    with open(out, mode, newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        if mode == "w":
+            w.writerow(["symbol", "date", "open", "high", "low", "close", "volume"]
+                       if ohlc else ["symbol", "date", "close", "volume"])
+
+        def _handle(s):
+            rows = _rows_for(s)              # network call happens OUTSIDE the lock
+            with lock:                       # only the write is serialised
+                ctr["n"] += 1
+                if rows:
+                    w.writerows(rows)
+                    f.flush()                # survive a kill: never lose buffered rows
+                    ctr["written"] += 1
+                if ctr["n"] % 100 == 0:
+                    print(f"  {ctr['n']}/{len(todo)} done, {ctr['written']} "
+                          f"with data...", flush=True)
+
+        if workers > 1:                      # parallel fetch — ~workers x faster
+            with ThreadPoolExecutor(max_workers=workers) as ex:
+                list(ex.map(_handle, todo))
+        else:                                # sequential (paced by --sleep)
+            for s in todo:
+                _handle(s)
+                time.sleep(sleep)
+
+    print(f"Wrote {ctr['written']} stocks total -> {out}")
+    print(f"Now run: python3 -m garuda.setups --csv {out}")
+    return out
+
+
+def _read_symbols_file(path) -> list:
+    """Read symbols from a file: an NSE constituent CSV (has a 'Symbol' column)
+    or a plain one-symbol-per-line list."""
+    with open(path, newline="", encoding="utf-8") as f:
+        rows = list(csv.reader(f))
+    if not rows:
+        return []
+    header = [c.strip().lower() for c in rows[0]]
+    if "symbol" in header:
+        idx = header.index("symbol")
+        return [r[idx].strip().upper() for r in rows[1:] if len(r) > idx and r[idx].strip()]
+    return [r[0].strip().upper() for r in rows if r and r[0].strip()]
+
+
+def main() -> None:
+    args = sys.argv[1:]
+
+    def _opt(flag, cast, default):
+        return cast(args[args.index(flag) + 1]) if flag in args else default
+
+    symbols = None
+    sfile = _opt("--symbols-file", str, "")
+    if sfile:
+        symbols = _read_symbols_file(sfile)
+        print(f"Loaded {len(symbols)} symbols from {sfile}")
+        if not symbols:
+            raise SystemExit(f"0 symbols read from {sfile} — the download probably "
+                             f"failed (404/HTML). Check it:  head -3 {sfile}")
+    else:
+        syms_arg = _opt("--symbols", str, "")
+        symbols = [s.strip().upper() for s in syms_arg.split(",") if s.strip()] or None
+    # default: `--all` alone pulls the WHOLE market (NSE + BSE ~5000+); pass an
+    # explicit --exchange NSE / BSE to restrict.
+    exchange = _opt("--exchange", str, "").upper()
+    if not exchange:
+        exchange = "BOTH" if ("--all" in args) else "NSE"
+    fetch_daily(
+        symbols=symbols,
+        days=_opt("--days", int, 400),
+        out=_opt("--out", str, "daily.csv"),
+        exchange=exchange,
+        all_stocks=("--all" in args),
+        limit=_opt("--limit", int, 0),
+        resume=("--fresh" not in args),   # resume a partial file by default
+        sleep=_opt("--sleep", float, 0.2),
+        ohlc=("--ohlc" in args),           # write open/high/low/close (for intraday tests)
+        workers=_opt("--workers", int, 1), # >1 = parallel fetch (~workers x faster)
+    )
+
+
+if __name__ == "__main__":
+    main()

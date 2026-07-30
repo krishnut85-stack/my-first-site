@@ -4,3 +4,21 @@ __pycache__/
 sectorbot/data/portfolio.json
 portfolio_report.txt
 portfolio_report.html
+# Rama runtime files (its own portfolio, dropped live data, reports) — the
+# catalysts.sample.csv template is committed, but a live catalysts.csv is not.
+rama/data/portfolio.json
+rama/data/catalysts.csv
+rama/data/order_log.jsonl
+rama/data/parliament_log.jsonl
+rama/KILL_SWITCH
+rama_portfolio_report.txt
+rama_portfolio_report.html
+rama_dashboard.html
+
+# Garuda live runtime
+garuda/data/garuda_*_portfolio.json
+garuda_server.log
+# Garuda runtime state (paper portfolios, equity logs, LAB results) — lives on
+# the droplet only; committing it would clobber the live books on next pull.
+garuda/data/
+.pytest_cache/

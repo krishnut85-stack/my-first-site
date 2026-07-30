@@ -1,0 +1,173 @@
+"""Tests for the RSI-2 oversold-bounce setup (the honest high-win-rate route)."""
+
+import random
+
+from garuda.setups import rsi, sma, oversold_bounce_trades, backtest
+
+
+def test_rsi_and_sma_basics():
+    up = [i for i in range(1, 30)]          # strictly increasing
+    r = rsi(up, 2)
+    assert r[-1] == 100.0                    # only gains -> RSI 100
+    s = sma([1, 2, 3, 4, 5], 3)
+    assert s[2] == 2.0 and s[4] == 4.0
+
+
+def _uptrend_with_dips(days=700, seed=4):
+    """Long-term uptrend + strongly mean-reverting short-term noise, so RSI-2
+    dips tend to bounce — the exact condition the setup is built for."""
+    rng = random.Random(seed)
+    price, prev = 100.0, 0.0
+    closes = [price]
+    for _ in range(days):
+        noise = -0.6 * prev + rng.gauss(0.0, 0.015)
+        r = 0.0005 + noise                   # drift up + reverting shock
+        price = max(1.0, price * (1.0 + r))
+        closes.append(round(price, 3))
+        prev = noise
+    return closes
+
+
+def test_oversold_bounce_has_edge_on_reverting_uptrend():
+    closes = _uptrend_with_dips()
+    trades = oversold_bounce_trades(closes, cost_per_side=0.0)
+    assert len(trades) > 10
+    win_rate = sum(1 for x in trades if x > 0) / len(trades) * 100
+    avg = sum(trades) / len(trades)
+    assert win_rate > 60          # a genuine reversion edge shows a high win rate
+    assert avg > 0                # and positive expectancy before costs
+
+
+def test_handles_zero_price_rows_without_crashing():
+    # some illiquid microcaps carry 0.0 closes — must not ZeroDivision
+    closes = _uptrend_with_dips()
+    closes[300] = 0.0
+    closes[301] = 0.0
+    trades = oversold_bounce_trades(closes, cost_per_side=0.0)  # no exception
+    assert all(isinstance(x, float) for x in trades)
+
+
+def test_downtrend_triggers_nothing():
+    # strictly declining -> never above SMA-200 -> the trend filter blocks entry
+    down = [1000.0 * (0.999 ** i) for i in range(400)]
+    assert oversold_bounce_trades(down) == []
+
+
+def test_stop_loss_caps_worst_trade():
+    closes = _uptrend_with_dips()
+    no_stop = oversold_bounce_trades(closes, cost_per_side=0.0)
+    with_stop = oversold_bounce_trades(closes, cost_per_side=0.0, stop_loss=0.03)
+    # a 3% stop means no realised trade should be far below -3% (minus a little slip)
+    assert min(with_stop) >= min(no_stop) - 1e-9
+    assert min(with_stop) > -0.10           # worst loss is contained
+
+
+def test_oos_window_counts_fewer_trades():
+    closes = _uptrend_with_dips()
+    full = oversold_bounce_trades(closes, cost_per_side=0.0)
+    recent = oversold_bounce_trades(closes, cost_per_side=0.0, oos=0.3)  # last 30%
+    assert 0 < len(recent) < len(full)     # only trades entering in the window count
+
+
+def test_no_trend_filter_allows_more_trades():
+    closes = _uptrend_with_dips()
+    strict = oversold_bounce_trades(closes, cost_per_side=0.0, use_trend=True)
+    loose = oversold_bounce_trades(closes, cost_per_side=0.0, use_trend=False)
+    assert len(loose) >= len(strict)         # dropping the filter = more entries
+
+
+def test_backtest_aggregates_and_flags_costs():
+    panel = {"A": _uptrend_with_dips(seed=1), "B": _uptrend_with_dips(seed=2)}
+    free = backtest(panel, cost_per_side=0.0)
+    dear = backtest(panel, cost_per_side=0.05)     # absurd costs
+    assert free["trades"] > 0
+    assert dear["avg_return_pct"] < free["avg_return_pct"]
+    assert "win_rate_pct" in free
+
+
+def test_compare_trend_ma_covers_each_length():
+    from garuda.setups import compare_trend_ma
+    panel = {f"S{i}": _uptrend_with_dips(seed=i) for i in range(6)}
+    res = compare_trend_ma(panel, cost=0.0, mas=(0, 50, 200))
+    assert set(res) == {"no filter (plain RSI-2)", "50-day SMA filter", "200-day SMA filter"}
+    # the unfiltered variant must take at least as many trades as any filtered one
+    unf = res["no filter (plain RSI-2)"]["trades"]
+    assert unf >= res["50-day SMA filter"]["trades"]
+    assert unf >= res["200-day SMA filter"]["trades"]
+    assert all(s and s["trades"] > 0 for s in res.values())
+
+
+def test_scalein_raises_win_rate_over_single_entry():
+    from garuda.setups import compare_scalein
+    panel = {f"S{i}": _uptrend_with_dips(seed=i) for i in range(8)}
+    res = compare_scalein(panel, cost=0.0)
+    single = res["single entry (no scale-in)"]
+    scaled = res["scale-in up to 4 units"]
+    assert single and scaled
+    # averaging down should lift the win rate vs a single entry on reverting data
+    assert scaled["win"] >= single["win"]
+
+
+def test_compare_winrate_ranks_shallow_exits():
+    from garuda.setups import compare_winrate
+    panel = {f"S{i}": _uptrend_with_dips(seed=i) for i in range(6)}
+    res = compare_winrate(panel, cost=0.0)
+    assert any("first up-close" in k for k in res)
+    assert any("target" in k for k in res)
+    # every shallow-exit variant should trigger some trades on reverting-uptrend data
+    assert all(s and s["trades"] > 0 for s in res.values())
+
+
+def test_compare_momentum_returns_the_variants():
+    from garuda.setups import compare_momentum
+    panel = {f"S{i}": _uptrend_with_dips(seed=i) for i in range(6)}
+    res = compare_momentum(panel, cost=0.0)
+    assert any("52-week-high" in k for k in res)
+    assert any("Stacked MAs" in k for k in res)
+    assert any("Donchian" in k or "55-day" in k for k in res)
+    assert all(s is None or s["trades"] >= 0 for s in res.values())
+
+
+def test_compare_dip_depth_sweeps_thresholds():
+    from garuda.setups import compare_dip_depth
+    panel = {f"S{i}": _uptrend_with_dips(seed=i) for i in range(6)}
+    res = compare_dip_depth(panel, cost=0.0, thresholds=(5, 20), ma=200)
+    assert set(res) == {"RSI-2 < 5  (uptrend)", "RSI-2 < 20  (uptrend)"}
+    # a shallower threshold (<20) must trigger at least as many entries as <5
+    assert res["RSI-2 < 20  (uptrend)"]["trades"] >= res["RSI-2 < 5  (uptrend)"]["trades"]
+
+
+def test_compare_stoploss_sweeps_each_book():
+    from garuda.setups import compare_stoploss
+    panel = {f"S{i}": _uptrend_with_dips(seed=i, days=520) for i in range(12)}
+    res = compare_stoploss(panel, cost=0.0, stops=(0.0, 0.08, 0.15))
+    assert set(res) == {"RSI-2 dip · Small/Micro (no stop today)",
+                        "Strength swing (12% trail today)",
+                        "Momentum leaders (20% trail today)"}
+    dip = res["RSI-2 dip · Small/Micro (no stop today)"]
+    assert set(dip) == {0.0, 0.08, 0.15}                 # one row per stop level
+    for s in dip.values():
+        if s:
+            assert "worst" in s and "total" in s          # stats carry worst-trade + total edge
+            assert s["worst"] <= 0                         # worst trade is a loss (or flat)
+
+
+def test_hard_stop_helper_respects_entry():
+    from garuda.scan import _hard_stopped
+    from garuda.strategy import Profile
+    off = Profile("t", "T", "", "", hard_stop=0.0)
+    on = Profile("t", "T", "", "", hard_stop=0.10)
+    h = {"entry_price": 100.0}
+    assert _hard_stopped(off, h, 80.0) is False            # stop off -> never fires
+    assert _hard_stopped(on, h, 95.0) is False             # -5% -> above the 10% floor
+    assert _hard_stopped(on, h, 89.0) is True              # -11% -> stop hit
+
+
+def test_totp_rfc6238_vectors():
+    """Guard the hand-rolled TOTP used for the automatic Kite login."""
+    import base64
+    from garuda.kite_login import totp
+    sec = base64.b32encode(b"12345678901234567890").decode()
+    assert totp(sec, 59) == "287082"
+    assert totp(sec, 1111111109) == "081804"
+    assert totp(sec, 1234567890) == "005924"
