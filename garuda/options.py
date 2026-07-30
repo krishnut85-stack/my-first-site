@@ -154,7 +154,7 @@ class OptionsBook:
 
     def __init__(self, capital=1_000_000.0, dist=0.025, wing=0.01, credit_frac=0.30,
                  alloc_pct=0.02, index="NIFTY 50", realized=0.0, condor=None,
-                 history=None, trades=None):
+                 history=None, trades=None, bank_at=50_000.0):
         self.capital = capital
         self.starting_capital = capital
         self.dist = dist
@@ -166,6 +166,11 @@ class OptionsBook:
         self.condor = condor          # {strikes, credit_frac_spot, entry_spot, entry_date, expiry, risk}
         self.history = history or []   # [{date, equity}]
         self.trades = trades or []
+        # PROFIT BANKING (user rule): each time total P&L crosses another
+        # `bank_at` milestone (50k, 100k, 150k…) with the open condor in
+        # profit, BUY IT BACK early and bank — don't ride expiry-day risk for
+        # rupees already earned. 0 disables.
+        self.bank_at = bank_at
 
     @classmethod
     def load(cls, path, **kw):
@@ -230,12 +235,41 @@ class OptionsBook:
                             "spot": round(spot, 1), "pnl": round(pnl, 0)})
         self.condor = None
 
+    def _elapsed_frac(self, today):
+        """Fraction of the condor's week already elapsed (for the linear-theta
+        buyback model: mid-week you have only EARNED part of the credit)."""
+        try:
+            from datetime import date as _d
+            y, m, d = (int(x) for x in self.condor["entry_date"].split("-"))
+            ey, em, ed = (int(x) for x in self.condor["expiry"].split("-"))
+            total = max((_d(ey, em, ed) - _d(y, m, d)).days, 1)
+            return min(max((today - _d(y, m, d)).days / total, 0.0), 1.0)
+        except (KeyError, TypeError, ValueError):
+            return 0.0
+
+    def _bank_early(self, spot, today):
+        """PROFIT BANKING: buy the open condor back NOW. Earned P&L is modelled
+        with linear theta (elapsed fraction of the credit) — you can't bank
+        premium that time hasn't paid yet."""
+        pnl = self._pnl_rupees(self._net_frac(spot)) * self._elapsed_frac(today)
+        self.realized += pnl
+        self.trades.append({"date": today.isoformat(), "side": "SETTLE",
+                            "spot": round(spot, 1), "pnl": round(pnl, 0),
+                            "reason": f"banked early at ₹{self.bank_at:,.0f} milestone"})
+        self.condor = None
+
     def step(self, spot, today, market_open):
-        """Advance the weekly cycle: settle at/after expiry, (re)open when flat."""
+        """Advance the weekly cycle: settle at/after expiry, (re)open when flat.
+        PROFIT BANKING: when total P&L crosses another `bank_at` milestone with
+        the open condor in profit, buy it back early instead of riding expiry."""
         if not market_open or not spot or spot <= 0:
             return
         if self.condor and today.isoformat() >= self.condor["expiry"]:
             self._settle(spot, today)
+        if self.condor and self.bank_at:
+            unreal = self._pnl_rupees(self._net_frac(spot)) * self._elapsed_frac(today)
+            if unreal > 0 and (self.realized + unreal) // self.bank_at > self.realized // self.bank_at:
+                self._bank_early(spot, today)
         if self.condor is None:
             self._open(spot, today)
 

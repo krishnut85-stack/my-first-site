@@ -1,0 +1,58 @@
+# F&O STOCK UNIVERSE for the stock-options condor book (Garuda, PAPER only).
+# One NSE symbol per line, '#' = comment. ORDER MATTERS: the book opens
+# monthly condors from the TOP of this list (up to its max concurrent names),
+# so put the names you most want condors on first.
+#
+# This starter set is ~50 of the most liquid F&O large caps. To run the FULL
+# F&O universe (~218 names), paste NSE's official F&O stock list here —
+# nseindia.com → Market Data → Securities available in F&O — one per line.
+RELIANCE
+HDFCBANK
+ICICIBANK
+TCS
+INFY
+SBIN
+BHARTIARTL
+ITC
+LT
+KOTAKBANK
+AXISBANK
+HINDUNILVR
+BAJFINANCE
+MARUTI
+M&M
+SUNPHARMA
+TITAN
+ULTRACEMCO
+NTPC
+POWERGRID
+ONGC
+TATAMOTORS
+TATASTEEL
+JSWSTEEL
+ADANIENT
+ADANIPORTS
+COALINDIA
+HCLTECH
+WIPRO
+TECHM
+ASIANPAINT
+NESTLEIND
+GRASIM
+HINDALCO
+DRREDDY
+CIPLA
+DIVISLAB
+APOLLOHOSP
+BAJAJFINSV
+BRITANNIA
+EICHERMOT
+HEROMOTOCO
+INDUSINDBK
+TATAPOWER
+DLF
+VEDL
+AMBUJACEM
+AUROPHARMA
+LUPIN
+PIDILITIND

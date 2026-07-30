@@ -615,6 +615,31 @@ function allPortfolio(d,q){
  h+=`</table>`;
  return h;
 }
+function stockOptPanel(so){
+ // STOCK OPTIONS: monthly iron condors on the F&O list (fno_stocks.txt)
+ if(!so)return '';
+ const rows=(so.positions||[]).map(p=>`<tr>
+   <td class=sym style=text-align:left>${p.sym}</td>
+   <td>${p.spot==null?'—':p.spot.toLocaleString('en-IN')}</td>
+   <td class=muted>${p.sp.toLocaleString('en-IN')} – ${p.sc.toLocaleString('en-IN')}</td>
+   <td><span class="stat ${p.in_range?'in':'out'}" style=font-size:9px>${p.in_range?'IN':'OUT'}</span></td>
+   <td>${p.dte==null?'—':p.dte+'d'}</td>
+   <td class="${p.mark>=0?'g':'r'}">${(p.mark>=0?'+':'')+money(p.mark)}</td></tr>`).join('');
+ const wl=so.win_pct==null?'—':so.win_pct+'% <span class=muted>(' +so.settled+' settled)</span>';
+ return `<div class=condor style=margin-top:10px>
+   <div class=chd><div><b>STOCK CONDORS · monthly · F&O stocks · ±${so.dist_pct}% strikes</b></div>
+     <span class=muted>${so.n}/${so.max_names} open · ₹${(so.risk_per_name||0).toLocaleString('en-IN')} risk/name</span></div>
+   <div class=grid>
+     <div class=cell><div class=l>EQUITY</div><div class=v>${money(so.equity)} <span class="${so.pnl_pct>=0?'g':'r'}" style=font-size:11px>${pct(so.pnl_pct)}</span></div></div>
+     <div class=cell><div class=l>UNREALIZED</div><div class="v ${so.unrealized>=0?'g':'r'}">${(so.unrealized>=0?'+':'')+money(so.unrealized)}</div></div>
+     <div class=cell><div class=l>REALIZED</div><div class="v ${so.realized>=0?'g':'r'}">${(so.realized>=0?'+':'')+money(so.realized)}</div></div>
+     <div class=cell><div class=l>WIN RATE</div><div class="v a">${wl}</div></div>
+   </div>
+   ${rows?`<table class=wl><tr><th style=text-align:left>STOCK</th><th>SPOT</th><th>SHORT STRIKES</th><th>RANGE</th><th>DTE</th><th>MARK</th></tr>${rows}</table>`:
+   `<div class=note>No stock condors open yet — up to ${so.max_names} open on the next market-open scan, from the top of fno_stocks.txt.</div>`}
+   <div class=note>Monthly cycle (last-Thursday expiry), defined risk, sells ±${so.dist_pct}% call+put spreads per stock. Credit is MODELLED (~30% of wing) like the index condor — win/loss geometry is real, rupees indicative. Real stock options are physically settled: a live account must exit before expiry. Edit fno_stocks.txt to change the universe (paste NSE's full 218-name F&O list for the whole universe). PAPER only.</div>
+ </div>`;
+}
 function optionsPanel(o){
  // the weekly Iron Condor has no stock watchlist — draw its range + P&L instead
  const s=o.strikes;
@@ -825,7 +850,7 @@ function render(d){
   `<table class=pltbl><tr><th>STRATEGY</th><th>EQUITY</th><th>P&amp;L</th><th>P&amp;L %</th></tr>${plrows}</table>`;
  const q=(document.getElementById('search').value||'').trim().toUpperCase();
  const list=document.getElementById('list');let html='';
- if(FILTER==='options'&&d.options){ html=optionsPanel(d.options); }        // condor panel
+ if(FILTER==='options'&&d.options){ html=optionsPanel(d.options)+stockOptPanel(d.stock_options); } // condors: index + stocks
  else if(FILTER==='swami'){ html=swamiPanel(d.swaminatha); }               // Mayura news face (guest)
  else if(FILTER==='lab'){ html=labPanel(d.lab); }                          // strategy LAB leaderboard
  else if(FILTER==='all'){ html=allPortfolio(d,q); }                        // one combined table

@@ -97,7 +97,7 @@ def test_state_exposes_options_book(tmp_path, monkeypatch):
     o = st["options"]
     assert o["key"] == "options" and o["strategy"] == "options"
     assert o["capital"] == 1_000_000 and o["win_kind"] == "backtest"
-    assert st["totals"]["capital"] == (len(PROFILES) + 1) * 1_000_000  # equity books + options
+    assert st["totals"]["capital"] == (len(PROFILES) + 2) * 1_000_000  # equity + index options + stock options
     assert o["strikes"] is None                        # nothing open while offline
     # feed the Nifty and step the weekly cycle -> a condor opens at +/-2.5%
     live.index = {"NIFTY 50": {"ltp": 24000.0, "pc": 23950.0, "chg": 0.2}}

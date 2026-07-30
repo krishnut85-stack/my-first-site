@@ -52,6 +52,10 @@ def _options_path():
     return config.DATA_DIR / "garuda_options_book.json"
 
 
+def _stock_options_path():
+    return config.DATA_DIR / "garuda_stock_options_book.json"
+
+
 def _day_base_path():
     return config.DATA_DIR / "garuda_day_base.json"
 
@@ -135,6 +139,9 @@ class GarudaLive:
         self.options = OptionsBook.load(_options_path(), capital=1_000_000.0,
                                         dist=0.025, wing=0.01, credit_frac=0.30,
                                         alloc_pct=0.02, index="NIFTY 50")
+        # STOCK OPTIONS: monthly iron condors on the F&O list (fno_stocks.txt)
+        from .stock_options import StockCondorBook
+        self.stock_options = StockCondorBook.load(_stock_options_path())
         self.prices = {}      # symbol -> live ltp
         self.index = {}       # NSE index name -> {ltp, pc, chg} (Nifty 50, Bank Nifty)
         self.day_ohlc = {}    # symbol -> {o,h,l,pc,ltp} today (for the live candle)
@@ -471,6 +478,22 @@ class GarudaLive:
         self.options.step(nifty, _date.today(), is_market_open())
         self.options.save(_options_path())
         results["options"] = {"status": f"condor stepped @ nifty {nifty or '—'}"}
+        # advance the monthly STOCK condors: price the F&O universe explicitly
+        # (many names sit outside the equity books' CSVs), settle/open, save.
+        from .stock_options import load_fno_universe
+        fno = load_fno_universe()
+        missing = [s for s in fno if not self.prices.get(s)]
+        if missing:
+            try:
+                self.prices.update({s: p for s, p in
+                                    self.feed.ltp(missing).items() if p})
+            except Exception:  # noqa: BLE001
+                pass
+        self.stock_options.step(self.prices, _date.today(), is_market_open(),
+                                universe=fno)
+        self.stock_options.save(_stock_options_path())
+        results["stock_options"] = {
+            "status": f"{len(self.stock_options.positions)} stock condors open"}
         self.last_scan_date = _today()
         return results
 
@@ -770,6 +793,16 @@ class GarudaLive:
         totals["equity"] = round(totals["equity"] + ost["equity"], 0)
         totals["capital"] = round(totals["capital"] + options["capital"], 0)
         totals["day_pnl"] = round(totals["day_pnl"] + options["day_pnl"], 0)
+        # --- the STOCK-OPTIONS book: monthly condors on F&O stocks ------------
+        sost = self.stock_options.state(self.prices)
+        if "stockopt" not in self.day_base:
+            self.day_base["stockopt"] = round(sost["equity"], 0)
+            base_changed = True
+        stock_options = {**sost, "capital": self.stock_options.starting_capital,
+                         "day_pnl": round(sost["equity"] - self.day_base["stockopt"], 0)}
+        totals["equity"] = round(totals["equity"] + sost["equity"], 0)
+        totals["capital"] = round(totals["capital"] + stock_options["capital"], 0)
+        totals["day_pnl"] = round(totals["day_pnl"] + stock_options["day_pnl"], 0)
         totals["pnl_pct"] = round((totals["equity"] / totals["capital"] - 1) * 100, 2) \
             if totals["capital"] else 0.0
         # timestamped grand-total curve for the P&L graph (persistent memory).
@@ -795,7 +828,8 @@ class GarudaLive:
             self._save_day_base()
         from .market import HOLIDAYS
         return {"live": self.feed.live, "profiles": profs, "totals": totals,
-                "options": options, "lab": _lab_state(),
+                "options": options, "stock_options": stock_options,
+                "lab": _lab_state(),
                 "lab_discover": _discover_state(),
                 "lab_movers": self.movers_radar(),
                 "swaminatha": self.swaminatha_state(),
