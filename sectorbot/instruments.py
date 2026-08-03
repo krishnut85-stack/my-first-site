@@ -69,40 +69,66 @@ def _num(value) -> Optional[float]:
         return None
 
 
+# Per-stock smart scores from the last stock-level universe load, so reports
+# (and the engine) can show WHY a stock ranks where it does. {symbol: 0-100}.
+_stock_scores: dict[str, float] = {}
+_has_stock_signals: bool = False
+
+
 def _load_grouped_csv(path) -> Optional[dict[str, list[str]]]:
     """Build industry -> [symbols] from any CSV with a symbol + Industry column.
 
-    Sorts each industry's names by a liquidity column if one is present.
-    Returns None if the file lacks the required columns.
+    Ranking inside each industry, best first:
+      1. by a per-stock SMART score, if the export carries DVM / checklist /
+         technical columns (Mayura's stock brain — see stocks.py); else
+      2. by a liquidity column (Market Cap / Volume / ...), if present; else
+      3. by the order they appear in the file.
+    Returns None if the file lacks the required symbol + Industry columns.
     """
+    from . import stocks
+    global _stock_scores, _has_stock_signals
     try:
         with open(path, newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f)
-            cols = {(c or "").lower().strip(): c for c in (reader.fieldnames or [])}
+            fieldnames = reader.fieldnames or []
+            cols = {(c or "").lower().strip(): c for c in fieldnames}
             sym_col = next((cols[c] for c in _SYMBOL_COLS if c in cols), None)
             ind_col = next((cols[c] for c in _INDUSTRY_COLS if c in cols), None)
             liq_col = next((cols[c] for c in _LIQUIDITY_COLS if c in cols), None)
             if not sym_col or not ind_col:
                 return None
+            signal_cols = stocks.resolve_columns(fieldnames)
             rows = []
+            scores: dict[str, float] = {}
             for r in reader:
                 sym = (r.get(sym_col) or "").strip().upper()
                 ind = (r.get(ind_col) or "").strip()
-                if sym and ind:
-                    rows.append((ind, sym, _num(r.get(liq_col)) if liq_col else None))
+                if not (sym and ind):
+                    continue
+                liq = _num(r.get(liq_col)) if liq_col else None
+                sc = stocks.score_row(r, signal_cols) if signal_cols else None
+                if sc is not None:
+                    scores[sym] = round(sc, 1)
+                rows.append((ind, sym, liq, sc))
     except OSError:
         return None
 
-    grouped: dict[str, list[tuple[str, Optional[float]]]] = {}
-    for ind, sym, liq in rows:
-        grouped.setdefault(ind, []).append((sym, liq))
+    _stock_scores = scores
+    _has_stock_signals = bool(scores)
+
+    grouped: dict[str, list[tuple[str, Optional[float], Optional[float]]]] = {}
+    for ind, sym, liq, sc in rows:
+        grouped.setdefault(ind, []).append((sym, liq, sc))
 
     out: dict[str, list[str]] = {}
     for ind, lst in grouped.items():
-        if any(liq is not None for _, liq in lst):
+        if any(sc is not None for _, _, sc in lst):
+            # smart score first (None sinks to the bottom)
+            lst.sort(key=lambda t: (t[2] is not None, t[2] or 0.0), reverse=True)
+        elif any(liq is not None for _, liq, _ in lst):
             lst.sort(key=lambda t: (t[1] is not None, t[1] or 0.0), reverse=True)
         seen, syms = set(), []
-        for sym, _ in lst:
+        for sym, _liq, _sc in lst:
             if sym not in seen:
                 seen.add(sym)
                 syms.append(sym)
@@ -110,17 +136,42 @@ def _load_grouped_csv(path) -> Optional[dict[str, list[str]]]:
     return out or None
 
 
+def stock_score(symbol: str) -> Optional[float]:
+    """The per-stock smart score (0-100) from the loaded stock universe, if any."""
+    _universe()  # ensure loaded
+    return _stock_scores.get(symbol.strip().upper())
+
+
+def has_stock_signals() -> bool:
+    """True when the active universe came from a stock export with DVM/technical
+    columns (so picks are ranked by real per-stock data, not a static list)."""
+    _universe()
+    return _has_stock_signals
+
+
 def _build_universe() -> dict[str, list[str]]:
-    global _source
-    for path, label in ((config.UNIVERSE_CSV, "universe.csv"),
-                        (config.INDUSTRY_SYMBOLS_CSV, "industry_symbols.csv")):
-        if path.exists():
-            loaded = _load_grouped_csv(path)
-            if loaded:
-                _source = label
-                return loaded
+    """Merge the sources so a PARTIAL stock export never shrinks coverage.
+
+    Lowest -> highest priority: in-code map, then industry_symbols.csv, then the
+    stock-level universe.csv. Each layer overrides an industry the layer below
+    also has, but industries only in a lower layer are KEPT. So you can drop a
+    Trendlyne stock export covering just a few industries and the rest still
+    trade off the shipped map."""
+    global _source, _stock_scores, _has_stock_signals
+    _stock_scores, _has_stock_signals = {}, False
+    merged: dict[str, list[str]] = {k: list(v) for k, v in INDUSTRY_SYMBOLS.items()}
     _source = "in-code map"
-    return INDUSTRY_SYMBOLS
+    if config.INDUSTRY_SYMBOLS_CSV.exists():
+        loaded = _load_grouped_csv(config.INDUSTRY_SYMBOLS_CSV)
+        if loaded:
+            merged.update(loaded)
+            _source = "industry_symbols.csv"
+    if config.UNIVERSE_CSV.exists():
+        loaded = _load_grouped_csv(config.UNIVERSE_CSV)  # sets _stock_scores
+        if loaded:
+            merged.update(loaded)
+            _source = "universe.csv"
+    return merged
 
 
 def _universe() -> dict[str, list[str]]:

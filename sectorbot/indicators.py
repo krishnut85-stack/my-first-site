@@ -12,6 +12,8 @@ class Bar:
     high: float
     low: float
     close: float
+    volume: float = 0.0   # optional; used by VCP volume-dry-up. 0 = unknown.
+    date: str = ""        # optional 'YYYY-MM-DD'; lets us drop today's partial bar.
 
 
 def true_range(bar: Bar, prev_close: float) -> float:

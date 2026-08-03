@@ -59,7 +59,10 @@ def test_breadth_file_not_used_as_main(tmp_path, monkeypatch):
     assert resolve_breadth_csv().name == "2026-06-22.csv"
 
 
-def test_blend_changes_scores(tmp_path):
+def test_blend_changes_scores(tmp_path, monkeypatch):
+    # This test exercises the legacy fundamental+breadth formula directly, so
+    # pin the smart DVM brain off (it has its own tests in test_smart.py).
+    monkeypatch.setattr(config, "USE_SMART_SCORE", False)
     p = tmp_path / "breadth.csv"
     p.write_text(BREADTH_CSV)
     breadth = load_breadth(p)
@@ -107,6 +110,7 @@ def test_industry_breadth_preferred_over_sector(tmp_path, monkeypatch):
 
 
 def test_blend_respects_toggle(monkeypatch, tmp_path):
+    monkeypatch.setattr(config, "USE_SMART_SCORE", False)  # test legacy formula
     p = tmp_path / "breadth.csv"
     p.write_text(BREADTH_CSV)
     breadth = load_breadth(p)
