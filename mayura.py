@@ -1136,6 +1136,78 @@ def cmd_doctor() -> None:
           "positions at live price.\n  All paper money — nothing real was traded. 🦚\n")
 
 
+def cmd_statusfile() -> None:
+    """Write mayura_status.json at the repo root: every face's paper P&L plus
+    each holding's trailing-stop state (peak, armed?, exact exit price). Pushed
+    to GitHub by scripts/push_mayura_status.sh so a remote session (Claude on
+    the web, your phone) can read performance without SSH. Paper numbers only —
+    never a token or key."""
+    import json
+    from datetime import datetime
+    from sectorbot.portfolio import Portfolio
+    from sectorbot.datasource import PaperDataSource, get_datasource
+    from sectorbot.data_loader import IST
+
+    ds = get_datasource()
+    real = not isinstance(ds, PaperDataSource)
+    faces = {}
+    tot_equity = tot_start = 0.0
+    for key in STRATEGY_ORDER:
+        _use_strategy(key)
+        e = CURRENT["exits"]
+        pf = Portfolio.load()
+        syms = list(pf.holdings)
+        prices = ds.last_prices(syms) if syms else {}
+        holdings = []
+        for sym, h in pf.holdings.items():
+            entry = h["avg_price"]
+            ltp = prices.get(sym) or entry
+            peak = max(h.get("peak_price") or entry, ltp)
+            armed = entry > 0 and (peak - entry) / entry >= e["trail_arm"]
+            trail_exit = round(peak * (1 - e["trail_give"]), 2) if armed else None
+            holdings.append({
+                "symbol": sym, "qty": h["qty"],
+                "entry": round(entry, 2), "ltp": round(ltp, 2),
+                "pnl_pct": round((ltp - entry) / entry * 100, 2) if entry else 0.0,
+                "entry_date": h.get("entry_date"),
+                "peak": round(peak, 2),
+                "hard_stop": round(entry * (1 - e["stop"]), 2),
+                "trail_armed": armed,
+                "trail_exit": trail_exit,
+                "locked_pct": (round((trail_exit - entry) / entry * 100, 2)
+                               if armed and entry else None),
+            })
+        equity = pf.cash + sum(x["qty"] * x["ltp"] for x in holdings)
+        tot_equity += equity
+        tot_start += pf.starting_capital
+        faces[key] = {
+            "name": CURRENT["name"], "emoji": CURRENT["emoji"],
+            "equity": round(equity, 2), "cash": round(pf.cash, 2),
+            "return_pct": (round((equity - pf.starting_capital)
+                                 / pf.starting_capital * 100, 2)
+                           if pf.starting_capital else 0.0),
+            "realized": round(pf.realized_pnl, 2),
+            "unrealized": round(sum((x["ltp"] - x["entry"]) * x["qty"]
+                                    for x in holdings), 2),
+            "open_positions": len(holdings),
+            "holdings": sorted(holdings, key=lambda x: -x["pnl_pct"]),
+        }
+    out = {
+        "generated_ist": datetime.now(IST).isoformat(timespec="minutes"),
+        "real_kite_data": real,
+        "paper_only": True,
+        "total_equity": round(tot_equity, 2),
+        "total_return_pct": (round((tot_equity - tot_start) / tot_start * 100, 2)
+                             if tot_start else 0.0),
+        "faces": faces,
+    }
+    path = REPO_ROOT / "mayura_status.json"
+    path.write_text(json.dumps(out, indent=1))
+    print(f"{PEACOCK} status written: {path.name} "
+          f"({'REAL' if real else 'SYNTHETIC'} prices, "
+          f"total {out['total_return_pct']:+.2f}%)")
+
+
 def cmd_check() -> None:
     """Verify the APIs Mayura needs: Kite (prices), Telegram (alerts), Gemini
     (Swaminatha news). Prints progress before each step so it never looks stuck."""
@@ -1534,7 +1606,7 @@ def cmd_rules() -> None:
 # Commands that run once for the WHOLE bot (not per strategy).
 GLOBAL_COMMANDS = {"check": cmd_check, "regime": cmd_regime,
                    "telegram-setup": cmd_telegram_setup, "health": cmd_health,
-                   "doctor": cmd_doctor}
+                   "doctor": cmd_doctor, "statusfile": cmd_statusfile}
 # Commands that run PER strategy (loop all three unless one is named).
 PER_STRATEGY_COMMANDS = {
     "run": cmd_run, "rank": cmd_rank, "status": cmd_status,

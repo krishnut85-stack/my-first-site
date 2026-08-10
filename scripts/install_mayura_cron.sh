@@ -28,11 +28,13 @@ NEW="$(cat <<CRON
 */30 4-10 * * 1-5 $SH swaminatha >> $LOG 2>&1
 0 5 * * 0 $SH swaminatha >> $LOG 2>&1
 10 10 * * 1-5 $SH report >> $LOG 2>&1
+25 10 * * 1-5 $REPO/scripts/push_mayura_status.sh >> $LOG 2>&1
 CRON
 )"
+chmod +x "$REPO/scripts/push_mayura_status.sh"
 
 # Keep every existing cron line EXCEPT old Mayura ones, then append the new set.
-{ crontab -l 2>/dev/null | grep -v 'mayura_cron.sh' || true; echo "$NEW"; } | crontab -
+{ crontab -l 2>/dev/null | grep -v -e 'mayura_cron.sh' -e 'push_mayura_status.sh' || true; echo "$NEW"; } | crontab -
 
 echo "✅ Mayura cron installed (no nano used). Mayura's scheduled faces:"
 crontab -l | grep 'mayura_cron.sh'

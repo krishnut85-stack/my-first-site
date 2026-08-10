@@ -16,6 +16,10 @@ python mayura.py status     # your saved track record
 python mayura.py scorecard  # honest verdict: beating the Nifty index?
 python mayura.py check      # is Kite + Telegram wired up?
 python mayura.py universe   # which stocks can Mayura actually trade?
+python mayura.py statusfile # 📊 write mayura_status.json (P&L + trailing-stop
+                            #    state per holding) — pushed daily to GitHub by
+                            #    scripts/push_mayura_status.sh so remote
+                            #    sessions can check performance without SSH
 ```
 
 ---
