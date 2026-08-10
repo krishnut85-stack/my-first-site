@@ -16,6 +16,12 @@ python mayura.py status     # your saved track record
 python mayura.py scorecard  # honest verdict: beating the Nifty index?
 python mayura.py check      # is Kite + Telegram wired up?
 python mayura.py universe   # which stocks can Mayura actually trade?
+python mayura.py analyze    # 🩺 weekly self-review per face: what's working,
+                            #    WHY trades close, verdict + suggestions
+                            #    (MAYURA_AUTO_PAUSE=1 benches a SICK face's
+                            #    new buys; resume with `unpause <face>`)
+python mayura.py pause      # ⏸ manually stop a face's NEW buys (exits still run)
+python mayura.py unpause    # ▶️ let it buy again
 python mayura.py statusfile # 📊 write mayura_status.json (P&L + trailing-stop
                             #    state per holding) — pushed daily to GitHub by
                             #    scripts/push_mayura_status.sh so remote

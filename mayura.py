@@ -812,6 +812,13 @@ def cmd_run() -> None:
     levels = {d["symbol"]: d["sma50"] for d in wl if d.get("sma50")}
     ext_levels = {d["symbol"]: d["sma200"] for d in wl if d.get("sma200")}
     news_buys = [(d["symbol"], d.get("event", "")) for d in wl] if is_news else None
+    paused = _pause_file().exists()
+    if paused:
+        # Self-review (or manual `pause`) benched this face: manage the existing
+        # holdings normally — every exit rule still runs — but open NOTHING new.
+        print(f"  ⏸ {CURRENT['name']} is PAUSED — exits only, no new buys "
+              f"(resume: python mayura.py unpause {CURRENT['key']}).")
+        ranked, levels, ext_levels, news_buys = [], {}, {}, None
     label = ("material-bullish news buys" if is_news
              else f"stocks ({CURRENT['profile']} score)")
     print(f"  Watchlist   : 🎯 {len(ranked)} {label}; top: {', '.join(ranked[:5])}")
@@ -863,8 +870,11 @@ def cmd_run() -> None:
     _print_mayura(result)
     txt, _ = write_portfolio_report(result)
     print(f"  Report written: {txt}")
-    delivered = send_telegram(_mayura_telegram(result, filings_summary, news_buys),
-                              message_thread_id=topic)
+    msg = _mayura_telegram(result, filings_summary, news_buys)
+    if paused:
+        msg += (f"\n⏸ <i>New buys paused (self-review) — resume with "
+                f"<code>python mayura.py unpause {CURRENT['key']}</code></i>")
+    delivered = send_telegram(msg, message_thread_id=topic)
     print(f"  Telegram: {'sent 🙏' if delivered else 'dry-run (set the two env vars)'}")
     print(f"\n  {PEACOCK} May Lord Muruga guide steady gains. Paper only.\n")
 
@@ -1134,6 +1144,176 @@ def cmd_doctor() -> None:
     print(f"\n  Reading this: each face has its OWN Topic (a different number = a "
           "different room).\n  Win/Loss counts CLOSED trades only. Unreal = open "
           "positions at live price.\n  All paper money — nothing real was traded. 🦚\n")
+
+
+# --- Self-review (the GIR elon_analyzer idea, ported to Mayura) -------------
+# Buckets for the engine's sell reasons, so `analyze` can say WHY trades close.
+_EXIT_BUCKETS = [
+    ("stop-loss", "hard stop"),
+    ("trailing-stop", "trailing stop"),
+    ("take-profit", "take profit"),
+    ("ATR-stop", "ATR stop"),
+    ("failed breakout", "failed breakout"),
+    ("time stop", "time stop"),
+    ("rotated out", "rotation"),
+]
+
+
+def _pause_file() -> Path:
+    """Marker file: while present, this face manages exits but opens NO new
+    buys. Written by `analyze` (only when MAYURA_AUTO_PAUSE=1) or `pause`."""
+    return config.DATA_DIR / "paused.json"
+
+
+def _analyze_face(days: int) -> dict:
+    """Closed-trade stats + exit-reason breakdown + drawdown for the CURRENT
+    face over the last `days` calendar days. Pure computation, no I/O."""
+    from datetime import timedelta
+    from sectorbot.portfolio import Portfolio
+    pf = Portfolio.load()
+    cutoff = (date.today() - timedelta(days=days)).isoformat()
+    sells = [t for t in pf.trades
+             if t.get("side") == "SELL" and t.get("date", "") >= cutoff]
+    wins = [t for t in sells if (t.get("pnl") or 0) > 0]
+    losses = [t for t in sells if (t.get("pnl") or 0) <= 0]
+    gross_win = sum(t.get("pnl") or 0 for t in wins)
+    gross_loss = -sum(t.get("pnl") or 0 for t in losses)
+    profit_factor = (gross_win / gross_loss if gross_loss > 0
+                     else (float("inf") if gross_win > 0 else 0.0))
+    reasons = {}
+    for t in sells:
+        r = t.get("reason") or ""
+        label = next((lab for pre, lab in _EXIT_BUCKETS if pre in r), "other")
+        b = reasons.setdefault(label, {"n": 0, "pnl": 0.0})
+        b["n"] += 1
+        b["pnl"] += t.get("pnl") or 0
+    peak = drawdown = 0.0
+    for p in pf.history:
+        if p.get("date", "") < cutoff:
+            continue
+        eq = p.get("equity") or 0.0
+        peak = max(peak, eq)
+        if peak:
+            drawdown = max(drawdown, (peak - eq) / peak)
+    best = max(sells, key=lambda t: t.get("pnl") or 0, default=None)
+    worst = min(sells, key=lambda t: t.get("pnl") or 0, default=None)
+    return {
+        "days": days, "sells": len(sells),
+        "wins": len(wins), "losses": len(losses),
+        "win_rate": len(wins) / len(sells) if sells else 0.0,
+        "avg_win": gross_win / len(wins) if wins else 0.0,
+        "avg_loss": gross_loss / len(losses) if losses else 0.0,
+        "profit_factor": profit_factor,
+        "expectancy": (gross_win - gross_loss) / len(sells) if sells else 0.0,
+        "net": gross_win - gross_loss,
+        "reasons": reasons, "drawdown": drawdown,
+        "best": best, "worst": worst,
+    }
+
+
+def _face_verdict(a: dict) -> tuple:
+    """(verdict, [suggestions]) — honest, rule-based, like elon_analyzer.
+    HEALTHY / WATCH / SICK. SICK is the auto-pause trigger."""
+    tips = []
+    n = a["sells"]
+    if n < 5:
+        return "TOO EARLY", [f"only {n} closed trades in {a['days']}d — no "
+                             "verdict yet; keep collecting the track record"]
+    hard = a["reasons"].get("hard stop", {"n": 0})["n"]
+    time_n = a["reasons"].get("time stop", {"n": 0})["n"]
+    if hard / n > 0.5 and a["win_rate"] < 0.40:
+        tips.append("most exits are HARD STOPS and the win rate is low — "
+                    "entries are chasing; tighten the entry filter (higher "
+                    "score cut-off / lower max_ext) rather than widening the stop")
+    if time_n / n > 0.3:
+        tips.append("many TIME-STOP exits (dead money) — the screen CSV may be "
+                    "stale; upload a fresh Trendlyne export")
+    if a["avg_loss"] > 0 and a["avg_win"] / a["avg_loss"] < 1.0 and a["win_rate"] < 0.5:
+        tips.append("average loss exceeds average win with a sub-50% hit rate — "
+                    "the trailing stop may be giving back too much; consider a "
+                    "smaller trail_give for this face")
+    if a["drawdown"] > 0.10:
+        tips.append(f"equity drawdown {a['drawdown']:.0%} — size down or pause "
+                    "until the regime improves")
+    if a["profit_factor"] < 1.0 and n >= 10:
+        tips.append("profit factor < 1.0 over a real sample — this face is "
+                    "LOSING money; pause new buys and review its screen/rules")
+        return "SICK", tips
+    if a["profit_factor"] < 1.2 or a["drawdown"] > 0.10:
+        return "WATCH", tips or ["edge is thin — no action yet, re-check next week"]
+    return "HEALTHY", tips or ["real edge over the window — leave it alone"]
+
+
+def cmd_analyze() -> None:
+    """Weekly self-review for each face (GIR's elon_analyzer, ported): what is
+    working, what is NOT, why trades are closing, and what to change — with an
+    honest verdict. If MAYURA_AUTO_PAUSE=1, a SICK face stops opening NEW buys
+    (exits always keep running) until `python mayura.py unpause <face>`."""
+    import json
+    from sectorbot.telegram import send_telegram
+    _banner("SELF-REVIEW")
+    days = int(os.environ.get("MAYURA_ANALYZE_DAYS", "90"))
+    a = _analyze_face(days)
+    verdict, tips = _face_verdict(a)
+    auto_pause = os.environ.get("MAYURA_AUTO_PAUSE", "") in ("1", "true", "yes")
+    icon = {"HEALTHY": "✅", "WATCH": "⚠️", "SICK": "🚨", "TOO EARLY": "⏳"}[verdict]
+    lines = [f"{PEACOCK} <b>Mayura · {CURRENT['emoji']} {CURRENT['name']} · "
+             f"self-review ({days}d)</b>",
+             f"{icon} <b>{verdict}</b> — {a['sells']} closed trades, "
+             f"net ₹{a['net']:+,.0f}"]
+    if a["sells"]:
+        pf_txt = ("∞" if a["profit_factor"] == float("inf")
+                  else f"{a['profit_factor']:.2f}")
+        lines.append(f"Win rate {a['win_rate']:.0%} · profit factor {pf_txt} · "
+                     f"expectancy ₹{a['expectancy']:+,.0f}/trade · "
+                     f"avg win ₹{a['avg_win']:,.0f} vs avg loss ₹{a['avg_loss']:,.0f}")
+        why = " · ".join(f"{lab} ×{b['n']} (₹{b['pnl']:+,.0f})"
+                         for lab, b in sorted(a["reasons"].items(),
+                                              key=lambda kv: -kv[1]["n"]))
+        lines.append(f"Why trades closed: {why}")
+        if a["drawdown"]:
+            lines.append(f"Max drawdown: {a['drawdown']:.1%}")
+        if a["best"] and (a["best"].get("pnl") or 0) > 0:
+            lines.append(f"Best {a['best']['symbol']} ₹{a['best']['pnl']:+,.0f} · "
+                         f"worst {a['worst']['symbol']} ₹{a['worst']['pnl']:+,.0f}")
+    for t in tips:
+        lines.append(f"💡 {t}")
+    if verdict == "SICK" and auto_pause and not _pause_file().exists():
+        _pause_file().write_text(json.dumps(
+            {"date": date.today().isoformat(), "by": "self-review",
+             "profit_factor": round(a["profit_factor"], 3)}))
+        lines.append(f"⏸ <b>AUTO-PAUSED</b>: no new buys until "
+                     f"<code>python mayura.py unpause {CURRENT['key']}</code> "
+                     "(exits keep running)")
+    elif _pause_file().exists():
+        lines.append(f"⏸ currently paused — resume with "
+                     f"<code>python mayura.py unpause {CURRENT['key']}</code>")
+    lines.append("<i>Paper only — not investment advice.</i>")
+    for ln in lines:
+        print("  " + ln.replace("<b>", "").replace("</b>", "")
+                       .replace("<i>", "").replace("</i>", "")
+                       .replace("<code>", "").replace("</code>", ""))
+    send_telegram("\n".join(lines), message_thread_id=_topic_id())
+    print()
+
+
+def cmd_pause() -> None:
+    """Manually stop this face from opening NEW buys (exits keep running)."""
+    import json
+    _pause_file().write_text(json.dumps(
+        {"date": date.today().isoformat(), "by": "manual"}))
+    print(f"  ⏸ {CURRENT['name']} paused — exits still run, no new buys. "
+          f"Resume: python mayura.py unpause {CURRENT['key']}")
+
+
+def cmd_unpause() -> None:
+    """Let this face open new buys again."""
+    f = _pause_file()
+    if f.exists():
+        f.unlink()
+        print(f"  ▶️ {CURRENT['name']} resumed — new buys allowed again.")
+    else:
+        print(f"  {CURRENT['name']} was not paused.")
 
 
 def cmd_statusfile() -> None:
@@ -1612,6 +1792,7 @@ PER_STRATEGY_COMMANDS = {
     "run": cmd_run, "rank": cmd_rank, "status": cmd_status,
     "scorecard": cmd_scorecard, "data": cmd_data, "rules": cmd_rules,
     "universe": cmd_universe, "filings": cmd_filings, "report": cmd_report,
+    "analyze": cmd_analyze, "pause": cmd_pause, "unpause": cmd_unpause,
 }
 
 

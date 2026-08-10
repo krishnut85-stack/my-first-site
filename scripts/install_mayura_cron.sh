@@ -29,6 +29,7 @@ NEW="$(cat <<CRON
 0 5 * * 0 $SH swaminatha >> $LOG 2>&1
 10 10 * * 1-5 $SH report >> $LOG 2>&1
 25 10 * * 1-5 $REPO/scripts/push_mayura_status.sh >> $LOG 2>&1
+0 11 * * 5 $SH analyze >> $LOG 2>&1
 CRON
 )"
 chmod +x "$REPO/scripts/push_mayura_status.sh"
