@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 # Find session-timing assumptions that CAS (live 2026-08-03) invalidated.
 #
-#   bash scripts/cas_audit.sh /path/to/garuda
+#   bash scripts/cas_audit.sh /path/to/garuda      # a tree, or a single file
 #
 # Reports only; changes nothing. Run it on the droplet against any bot's source
 # tree and paste the output back into the chat - it is enough to write the patch.
 set -uo pipefail
 
 ROOT="${1:-.}"
-[ -d "$ROOT" ] || { echo "no such directory: $ROOT" >&2; exit 2; }
+[ -e "$ROOT" ] || { echo "no such file or directory: $ROOT" >&2; exit 2; }
 
-RG=(grep -rInE --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=__pycache__
+RG=(grep -rHInE --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=__pycache__
     --exclude-dir=.venv --exclude-dir=archive --exclude-dir=downloads --exclude='*.bak*' --exclude='*backup*')
 
 hits=0

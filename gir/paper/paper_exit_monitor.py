@@ -46,8 +46,11 @@ FNO_SL_PCT        = 0.25   # premium drop %
 FNO_MAX_HOLD_DAYS = 7
 
 POLL_SECONDS = 60
-EOD_BUMP_HOUR_UTC = 10     # ~15:30 IST = 10:00 UTC; bump at 10:05
-EOD_BUMP_MIN_UTC  = 5
+# EOD bump at 10:11 UTC = 15:41 IST — after the Closing Auction Session
+# publishes the closing price (15:35 IST) and derivatives shut (15:40 IST).
+# Was 10:05 UTC / 15:35 IST, which read prices that were not yet final.
+EOD_BUMP_HOUR_UTC = 10
+EOD_BUMP_MIN_UTC  = 11
 
 LOG_FILE = "/home/globalbot/paper/exit_monitor.log"
 
@@ -81,13 +84,18 @@ def utc_now() -> datetime:
 
 
 def is_market_hours_utc(now: datetime = None) -> bool:
-    """NSE: Mon-Fri, 09:15-15:30 IST = 03:45-10:00 UTC."""
+    """NSE: Mon-Fri, 09:15-15:40 IST = 03:45-10:10 UTC.
+
+    This monitor exits both equity and F&O positions, and since CAS the
+    derivatives segment trades ten minutes past the cash close — so the window
+    runs to 15:40 IST rather than the old 15:30.
+    """
     if now is None:
         now = utc_now()
     if now.weekday() >= 5:  # Sat=5, Sun=6
         return False
     t = now.hour * 60 + now.minute
-    return (3 * 60 + 45) <= t <= (10 * 60 + 0)
+    return (3 * 60 + 45) <= t < (10 * 60 + 10)
 
 
 def kite_login() -> KiteConnect:
@@ -377,7 +385,8 @@ def main():
         try:
             now = utc_now()
 
-            # Once-per-day EOD bump (only after 10:05 UTC, once per date)
+            # Once-per-day EOD bump (only after 10:11 UTC = 15:41 IST, once per
+            # date — after the auction close and the derivatives close)
             if (now.hour > EOD_BUMP_HOUR_UTC or
                 (now.hour == EOD_BUMP_HOUR_UTC and now.minute >= EOD_BUMP_MIN_UTC)):
                 if last_eod_date != now.date():

@@ -18,6 +18,10 @@ try:
 except Exception: pass
 # __GIR_TG_TOPIC_ROUTING_END__
 import os, sys, json, time, sqlite3, datetime, traceback
+from pathlib import Path as _Path
+# Shared NSE session clock (lives one directory up, beside gir.py).
+sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+import market_session as mkt
 from math import log, sqrt, exp, erf
 BASE="/home/globalbot"; FDIR=f"{BASE}/falcon"; DB=f"{FDIR}/falcon.db"
 IST=datetime.timezone(datetime.timedelta(hours=5,minutes=30))
@@ -138,7 +142,9 @@ def universe(kite):
     return pick,spot
 def main():
     t=now()
-    if t.weekday()>4 or not (t.replace(hour=9,minute=15)<=t<=t.replace(hour=15,minute=31)):
+    # FALCON trades NFO options, so it follows the derivatives session —
+    # 09:15-15:40 since CAS, not the old cash 15:30.
+    if not mkt.is_derivatives_open(t):
         logln("outside market hours"); return
     c=db(); kite=get_kite()
     pick,spot=universe(kite)
@@ -195,8 +201,10 @@ def main():
             pnl=(ltp-entry)*qty
             c.execute("UPDATE tickets SET status='CLOSED',exit_px=?,exit_ts=?,exit_reason=? WHERE id=?",(ltp,ts,reason,tid))
             tg(f"🦅 PAPER EXIT {sym} {entry}→{ltp} P&L Rs.{pnl:.0f} ({(ltp/entry-1)*100:.0f}%) [{reason}]")
-    # EOD summary
-    if t.hour==15 and t.minute>=25:
+    # EOD summary — after the closing auction publishes the close at 15:35,
+    # while the derivatives session (to 15:40) still lets this run get past the
+    # gate above. Was 15:25, i.e. mid-auction, before any close existed.
+    if t.hour==15 and t.minute>=36:
         n,f_=c.execute("SELECT COUNT(*),SUM(fired) FROM signals WHERE d=?",(d,)).fetchone()
         bl=c.execute("SELECT SUM(p_oi),SUM(p_iv),SUM(p_prem),SUM(p_cost),SUM(p_raven),SUM(p_regime) FROM signals WHERE d=?",(d,)).fetchone()
         tg(f"EOD {d}: scans={n} fired={f_ or 0}\nGate passes — OI:{bl[0]} IV:{bl[1]} prem:{bl[2]} cost:{bl[3]} RAVEN:{bl[4]} regime:{bl[5]}\n(lowest number = bottleneck)")

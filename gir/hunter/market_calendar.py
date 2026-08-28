@@ -9,10 +9,12 @@ Critical safety helper for Hunter executor:
     with a human-readable reason
 
 NSE timings (all IST):
-  - Regular session:   09:15 - 15:30
+  - Regular session:   09:15 - 15:30 cash (F&O stocks stop at 15:15 and settle
+                       in the Closing Auction Session, which publishes the close
+                       at 15:35), 09:15 - 15:40 equity derivatives
   - Pre-open call:     09:00 - 09:15
+  - Closing auction:   15:15 - 15:35 (CAS, live since 2026-08-03)
   - AMO accept window: 15:45 (T) - 09:00 (T+1)  (per Zerodha docs)
-  - Closing call:      15:40 - 16:00 (separate)
 
 Holiday list maintained inline. Update yearly via NSE official calendar.
 
@@ -66,12 +68,14 @@ NSE_HOLIDAYS: set[date] = set() | NSE_HOLIDAYS_2026
 #   - Mon-Thu evening: 15:45 to 23:59 (for next morning)
 #   - Mon-Fri overnight 00:00 to 09:08 (for that morning)
 #   - Friday 15:45 onwards through Monday 09:08 — wraps the weekend
-#   - Excludes the live session (09:08 - 15:30) when regular orders apply
+#   - Excludes the live session (09:08 - 15:40) when regular orders apply
 
 AMO_EVENING_OPEN  = time(15, 45)
 AMO_MORNING_CLOSE = time(9, 8)
 SESSION_OPEN      = time(9, 15)
-SESSION_CLOSE     = time(15, 30)
+# The last minute anything trades: equity derivatives run to 15:40 since CAS.
+# AMO must not be treated as open while any segment is still live.
+SESSION_CLOSE     = time(15, 40)
 
 
 # ============================================================================
@@ -108,7 +112,7 @@ def is_amo_window_open(now: datetime | None = None) -> tuple[bool, str]:
     Returns (is_open, reason).
 
     AMO is open when:
-      - We are NOT inside the live session (09:15 - 15:30 on a trading day)
+      - We are NOT inside the live session (09:15 - 15:40 on a trading day)
       - The NEXT trading day exists (always true except massive holiday clusters)
     """
     n = now if now is not None else now_ist()

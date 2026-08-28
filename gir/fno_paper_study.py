@@ -11,7 +11,9 @@ Design (decided with user 2026-06-17):
   - Direction: BULLISH -> buy CE,  BEARISH -> buy PE  (long option)
   - Expiry   : nearest expiry with DTE >= FNO_MIN_DTE (15)
   - Size     : 1 lot (lot_size from kite.instruments())
-  - Exit     : +30% target / -50% stop on premium, hard square-off 15:20 IST
+  - Exit     : +30% target / -50% stop on premium, hard square-off by 15:15 IST
+               (the underlying's cash market enters the closing auction then,
+               so an option priced after it has no live spot behind it)
   - Tag      : FNO_PAPER_STUDY  (V222-immune; separate from gir_fno ledger)
   - Min score: OI_SIGNAL_MIN_SCORE = 65 (matches gir.py)
 
@@ -30,6 +32,11 @@ import json
 import sqlite3
 import logging
 from datetime import datetime, timedelta
+
+# Shared NSE session clock — since CAS (2026-08-03) derivatives trade to 15:40
+# while their underlying cash market freezes at 15:15. Deploy market_session.py
+# alongside this file.
+import market_session as mkt
 
 try:
     from zoneinfo import ZoneInfo
@@ -64,7 +71,7 @@ MAX_DAILY_LOSS = float(os.environ.get("FNO_MAX_DAILY_LOSS", "15000"))
 # squared off together at a loss before the daily cap could trip. Bounding the
 # count stops the batch flood. 0 = unlimited.
 MAX_POSITIONS = int(os.environ.get("FNO_MAX_POSITIONS", "0"))
-# SMART HOLD: instead of blindly squaring off at 15:20, use LIVE Kite data to
+# SMART HOLD: instead of blindly squaring off at the clock, use LIVE Kite data to
 # decide hold-vs-sell. Hold a winner overnight only if the move still has legs
 # (option rising above its day VWAP + underlying closing our way). Off by default.
 SMART_HOLD = os.environ.get("FNO_SMART_HOLD", "0").strip() == "1"
@@ -78,8 +85,8 @@ try:
 except Exception:
     SQUARE_OFF = (15, 0)
 SQUAREOFF_REASON = f"SQUARE_OFF_{SQUARE_OFF[0]:02d}{SQUARE_OFF[1]:02d}"
-MARKET_OPEN = (9, 15)           # 09:15 IST
-MARKET_CLOSE = (15, 30)         # 15:30 IST
+# Session boundaries live in market_session.py — since CAS they differ per
+# segment (cash 15:15/15:30, derivatives 15:40), so there is no single close.
 POLL_SECONDS = 30               # signal poll + position monitor cadence
 
 # --- LIVERMORE MODE (FNO_LIVERMORE=1) ---------------------------------------
@@ -334,22 +341,29 @@ def _ist_now():
 
 
 def _market_open_now():
-    """True only Mon-Fri between 09:15 and 15:30 IST. Prevents trading and
-    exit-checks on stale/frozen quotes outside market hours."""
-    now = _ist_now()
-    if now.weekday() >= 5:          # 5=Sat, 6=Sun
-        return False
-    hm = (now.hour, now.minute)
-    return MARKET_OPEN <= hm <= MARKET_CLOSE
+    """True while the equity derivatives segment trades — 09:15 to 15:40 IST.
+
+    This book holds options, and since CAS derivatives run ten minutes past the
+    cash close, so gating on the old 15:30 blinded the exit monitor for the last
+    stretch of the day. Prevents trading and exit-checks on stale/frozen quotes
+    outside those hours.
+    """
+    return mkt.is_derivatives_open(_ist_now())
 
 
 def _in_squareoff_window():
-    """True between 15:20 and 15:30 IST - square off while quotes are still live."""
+    """True from the square-off time until the underlying's cash market freezes.
+
+    Since CAS that freeze is 15:15 for an F&O name, so the old 15:20-15:30
+    window sat entirely inside the closing auction — squaring off there means
+    exiting an option whose underlying has no live order book behind it. The
+    window now ends at 15:15 while quotes are genuinely live.
+    """
     now = _ist_now()
-    if now.weekday() >= 5:
+    if not mkt.is_trading_day(now):
         return False
-    hm = (now.hour, now.minute)
-    return SQUARE_OFF <= hm <= MARKET_CLOSE
+    end = (mkt.CAS_OPEN_MIN if mkt.cas_in_effect(now) else mkt.CLOSE_MIN)
+    return SQUARE_OFF <= (now.hour, now.minute) and (now.hour * 60 + now.minute) < end
 
 
 def _today_realised_pnl():
@@ -668,9 +682,10 @@ def manage_open_positions(kite, get_open, record_exit):
         log.error(f"get_open_paper_trades failed: {e}")
         return 0
 
-    # square-off only inside the live 15:20-15:30 window (quotes still real).
-    # After 15:30 the monitor does not run at all (see main loop), so no
-    # position is ever closed on a stale/frozen quote.
+    # square-off only while the underlying's cash market is genuinely live,
+    # i.e. up to 15:15 since CAS (see _in_squareoff_window). Past that the
+    # underlying is in the closing auction, so no position is ever closed on a
+    # quote with no order book behind it.
     squareoff = _in_squareoff_window()
 
     # collect our open positions (with underlying + entry time for smart-hold)
@@ -1064,7 +1079,7 @@ def main():
                 # outside market hours: do nothing (no stale-quote exits, no
                 # entries). Log once every ~10 min so the log isn't silent.
                 if time.time() - last_closed_msg > 600:
-                    log.info("market closed - idle (no trading/exits outside 09:15-15:30 IST Mon-Fri)")
+                    log.info("market closed - idle (no trading/exits outside the 09:15-15:40 IST derivatives session, Mon-Fri)")
                     last_closed_msg = time.time()
                 time.sleep(POLL_SECONDS)
                 continue

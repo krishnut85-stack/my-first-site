@@ -116,6 +116,13 @@ from datetime import datetime, timedelta, date, timezone
 from collections import defaultdict
 from pathlib import Path
 
+# The NSE session clock. Since CAS (2026-08-03) the day ends in stages —
+# F&O stocks leave continuous trading at 15:15 and settle by auction, the
+# close is published at 15:35, derivatives run to 15:40 — so the timings
+# live in one module instead of being spelled out at each call site.
+# Deploy market_session.py alongside gir.py.
+import market_session as mkt
+
 import requests
 import pyotp
 
@@ -659,14 +666,21 @@ def is_trading_day(d=None):
     return True
 
 
-def is_market_hours():
-    """Check if NSE market is currently open (9:15 to 15:30 IST)."""
+def is_market_hours(sym=None):
+    """Is continuous cash trading running right now?
+
+    Pass a symbol for the precise answer: since CAS an F&O ("Category I")
+    name stops trading at 15:15, everything else at 15:30. Without one this
+    answers the looser "is any cash security still trading?".
+    """
     if not is_trading_day():
         return False
-    n = now_ist()
-    market_open = n.replace(hour=9, minute=15, second=0, microsecond=0)
-    market_close = n.replace(hour=15, minute=30, second=0, microsecond=0)
-    return market_open <= n <= market_close
+    return mkt.is_market_open(mkt.now_ist(), sym)
+
+
+def is_derivatives_hours():
+    """Is the equity derivatives segment trading? Runs to 15:40 since CAS."""
+    return is_trading_day() and mkt.is_derivatives_open(mkt.now_ist())
 
 
 def is_amo_window():
@@ -4459,7 +4473,8 @@ class AMOEngine:
 class EODReporter:
     """
     Generates end-of-day summary for Telegram.
-    Runs at 15:35 on trading days.
+    Runs at 15:43 on trading days — after the closing auction publishes at
+    15:35 and the derivatives segment shuts at 15:40.
     """
 
     @staticmethod
@@ -9188,8 +9203,8 @@ class EquityModule:
             except Exception as _stale_err:
                 log.error(f"[PATCH_V28_STALE_WINDOW] failed: {_stale_err}")
 
-        # EOD report at 15:35
-        if n.hour == 15 and n.minute == 35 and is_trading_day():
+        # Equity EOD report at 15:43 (was 15:35 — before the auction close)
+        if n.hour == 15 and n.minute == 43 and is_trading_day():
             report = EODReporter.generate_equity_report(self)
             self.telegram.send(report, force=True)
 
@@ -10499,7 +10514,7 @@ class FnoModule:
     # holding an FNO_MAX_POS slot hostage.
     # ============================================================
     def _fno_amo_stale_cancel_window(self):
-        """V211_FIX4: extended 09:20-09:30 -> 09:20-15:30. Idempotency marker
+        """V211_FIX4: extended 09:20-09:30 -> 09:20-15:40. Idempotency marker
         still ensures we only act once per day, but window now catches AMOs that
         missed the narrow morning slot (restart, network)."""
         try:
@@ -10511,8 +10526,8 @@ class FnoModule:
                 log.error("[V77_FIX9] zoneinfo unavailable - refusing AMO stale window check")
                 return False
             hm = now.hour * 60 + now.minute
-            # 09:20 = 560, 15:30 = 930
-            return 560 <= hm <= 930
+            # 09:20 = 560, 15:40 = 940 (the derivatives close since CAS; was 930)
+            return 560 <= hm < 940
         except Exception:
             return False
 
@@ -13615,8 +13630,10 @@ class FnoModule:
                 except Exception as _e:
                     log.error(f"[PATCH_V5_OI] hourly snapshot failed: {_e}")
 
-        # PATCH_V9_AMO_ARCH: EOD OI snapshot at 15:25 IST (once per trading day)
-        if self._oi_engine and n.hour == 15 and n.minute == 25 and is_trading_day():
+        # PATCH_V9_AMO_ARCH: EOD OI snapshot at 15:41 IST (once per trading day).
+        # Was 15:25 — which since CAS is mid-auction, before any closing price
+        # exists and while derivatives still trade.
+        if self._oi_engine and n.hour == 15 and n.minute == 41 and is_trading_day():
             if getattr(self, "_last_eod_snapshot_day", None) != today_ist():
                 self._last_eod_snapshot_day = today_ist()
                 try:
@@ -13650,8 +13667,8 @@ class FnoModule:
         if n.hour in (9, 10, 11, 13, 14, 15) and n.minute == 30:
             self._fno_gtt_audit()
 
-        # EOD report at 15:36
-        if n.hour == 15 and n.minute == 36 and is_trading_day():
+        # F&O EOD report at 15:44 (was 15:36 — before the close was final)
+        if n.hour == 15 and n.minute == 44 and is_trading_day():
             report = EODReporter.generate_fno_report(self)
             self.telegram.send(report, force=True)
 
@@ -14346,8 +14363,9 @@ def main():
             if n.hour == 8 and n.minute == 0 and is_trading_day():
                 KiteSession.login()
 
-            # M1: IV snapshot at 15:26 on trading days (after OI engine at 15:25)
-            if n.hour == 15 and n.minute == 26 and is_trading_day():
+            # M1: IV snapshot at 15:42 on trading days (after the OI engine at
+            # 15:41). Was 15:26, which priced options off a mid-auction spot.
+            if n.hour == 15 and n.minute == 42 and is_trading_day():
                 try:
                     if fno_ok:
                         _kite = KiteSession.kite()
@@ -14361,8 +14379,9 @@ def main():
                 except Exception as _e:
                     log.error(f"[M1] IV snapshot hook failed: {_e}")
 
-            # M11: Daily summary at 15:35 on trading days
-            if n.hour == 15 and n.minute == 35 and is_trading_day():
+            # M11: Daily summary at 15:45 on trading days (was 15:35, which
+            # landed while the auction was still publishing and F&O still traded)
+            if n.hour == 15 and n.minute == 45 and is_trading_day():
                 try:
                     c = health.counters
                     _eq_pos = len(equity.positions) if eq_ok else "N/A"

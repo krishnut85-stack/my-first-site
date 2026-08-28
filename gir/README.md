@@ -16,6 +16,7 @@ posts to the **GIR Alerts** Telegram group. Main entry point: **`gir.py`**.
 | 🔥 Phoenix / equity floor | `gir_eq_floor.py`, `gir.py` |
 | 🎯 Hunter | `hunter/` |
 | 📝 Paper engine | `paper/` |
+| 🕐 Session clock | `market_session.py` (shared by all of the above) |
 
 Older versions, patches and one-off scripts are kept at the top level and in
 `archive/`, `old_python_backup/`, `old_griffin_backup/` as a historical backup.
@@ -33,3 +34,11 @@ Lives at **`/home/globalbot/`** (e.g. `/home/globalbot/gir.py`,
 (`raven.service`). This GitHub copy is **source only** — data/portfolios/tokens
 stay on the droplet. Deploy a fix with: edit here → `git pull` on the droplet →
 copy the file to its live path → restart the relevant service.
+
+> ⏰ **`market_session.py` must sit at `/home/globalbot/market_session.py`.**
+> Every strategy imports it for the NSE session clock — since the Closing
+> Auction Session went live (2026-08-03) the day ends in stages: F&O stocks
+> leave continuous trading at 15:15 and settle by auction, the closing price is
+> published at 15:35, and derivatives run to 15:40. The files in `raven/`,
+> `falcon/` and `hunter/` find it one directory up, so copy it before (or with)
+> any strategy file that imports it — they will not start without it.

@@ -122,3 +122,19 @@ def test_scan_withholds_auction_names_from_fills(tmp_path, monkeypatch):
     monkeypatch.setattr("garuda.live.in_cas_window", lambda *a: True)
     monkeypatch.setattr("garuda.live.is_cas_symbol", lambda s: s == CAS_SYM)
     assert live._fillable_prices() == {PLAIN: 90.0}
+
+
+def test_cas_universe_derives_from_the_instrument_dump():
+    """Category I = F&O underlyings that are also NSE cash securities."""
+    nfo = [{"name": "RELIANCE", "tradingsymbol": "RELIANCE26SEPFUT"},
+           {"name": "RELIANCE", "tradingsymbol": "RELIANCE26SEP1400CE"},
+           {"name": "TCS", "tradingsymbol": "TCS26SEPFUT"},
+           {"name": "NIFTY", "tradingsymbol": "NIFTY26SEP24300CE"},
+           {"name": "BANKNIFTY", "tradingsymbol": "BANKNIFTY26SEPFUT"},
+           {"name": "DELISTED", "tradingsymbol": "DELISTED26SEPFUT"}]
+    nse = [{"tradingsymbol": "RELIANCE"}, {"tradingsymbol": "TCS"},
+           {"tradingsymbol": "IRFC"}]
+    got = mkt.cas_universe_from_instruments(nfo, nse)
+    assert got == ["RELIANCE", "TCS"]          # deduped and sorted
+    assert "NIFTY" not in got                  # an index is not a cash security
+    assert "IRFC" not in got                   # cash-only name, still 15:30

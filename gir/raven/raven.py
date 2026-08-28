@@ -34,7 +34,7 @@ MODES:
   python3 raven.py --probe       # dump raw NSE feed + parsed fields (validate before trading)
   python3 raven.py --intraday    # main scan loop (default)
   python3 raven.py --preopen     # 08:45 sweep of overnight filings -> gap watchlist
-  python3 raven.py --eod         # 15:35 sweep
+  python3 raven.py --eod         # 15:41 sweep (after the auction close)
   python3 raven.py --manage      # exit manager (run on a fast timer)
   python3 raven.py --status      # print ledger + open positions
 
@@ -64,7 +64,12 @@ import json
 import time
 import argparse
 import datetime as dt
+import sys
 from pathlib import Path
+
+# Shared NSE session clock (lives one directory up, beside gir.py).
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import market_session as mkt  # noqa: E402
 
 # ----------------------------------------------------------------------------- #
 #  CONFIG  — every threshold lives here. Tune, don't hunt through the code.      #
@@ -931,14 +936,13 @@ def probe():
 # ----------------------------------------------------------------------------- #
 
 def _market_is_open():
-    """NSE cash session gate (Mon-Fri 09:15-15:30 IST). Pauses the intraday loop
-    off-hours so RAVEN stops polling Kite overnight (the 'quote failed' spam +
-    watchdog false alarms)."""
-    _IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
-    _n = dt.datetime.now(_IST)
-    if _n.weekday() >= 5:
-        return False
-    return dt.time(9, 15) <= _n.time() <= dt.time(15, 30)
+    """NSE cash session gate. Pauses the intraday loop off-hours so RAVEN stops
+    polling Kite overnight (the 'quote failed' spam + watchdog false alarms).
+
+    RAVEN reacts to filings on cash equities, so this tracks continuous cash
+    trading: since CAS that ends at 15:15 for an F&O name and 15:30 for the
+    rest — the loose 15:30 answer, since RAVEN scans the whole tape."""
+    return mkt.is_market_open(mkt.now_ist())
 
 
 def main():
@@ -946,7 +950,7 @@ def main():
     ap.add_argument("--probe",    action="store_true", help="dump raw NSE feed + parse")
     ap.add_argument("--intraday", action="store_true", help="main scan loop (default)")
     ap.add_argument("--preopen",  action="store_true", help="08:45 overnight-filing sweep")
-    ap.add_argument("--eod",      action="store_true", help="15:35 sweep")
+    ap.add_argument("--eod",      action="store_true", help="15:41 sweep")
     ap.add_argument("--manage",   action="store_true", help="exit manager (run on timer)")
     ap.add_argument("--status",   action="store_true", help="print ledger + positions")
     args = ap.parse_args()

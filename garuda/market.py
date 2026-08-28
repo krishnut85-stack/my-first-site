@@ -297,3 +297,32 @@ def market_status(dt=None) -> str:
     if mins < DERIVATIVES_CLOSE_MIN:
         return "F&O ONLY"
     return "CLOSED"
+
+
+# Index derivatives settle on an index value, not a cash security, so their
+# underlyings are never Category I themselves.
+INDEX_ROOTS = {"NIFTY", "BANKNIFTY", "FINNIFTY", "MIDCPNIFTY", "NIFTYNXT50",
+               "SENSEX", "BANKEX", "SENSEX50"}
+
+
+def cas_universe_from_instruments(nfo_instruments, nse_instruments):
+    """Derive the Category I list from a broker's instrument dump.
+
+    Category I is defined as "carries F&O contracts", so the F&O underlyings
+    *are* the list. Pass Kite's ``instruments("NFO")`` and ``instruments("NSE")``
+    dumps (lists of dicts). A name is kept only when it also exists as an NSE
+    cash symbol, which drops the index derivatives without needing to enumerate
+    every index.
+
+    Pure and side-effect free so it can be tested without a broker session; see
+    scripts/refresh_cas_stocks.py for the wrapper that writes the file.
+    """
+    cash = {str(i.get("tradingsymbol", "")).strip().upper()
+            for i in nse_instruments}
+    cash.discard("")
+    out = set()
+    for i in nfo_instruments:
+        name = str(i.get("name", "")).strip().upper()
+        if name and name not in INDEX_ROOTS and name in cash:
+            out.add(name)
+    return sorted(out)
