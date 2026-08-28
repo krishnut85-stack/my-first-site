@@ -125,7 +125,9 @@ def test_pnl_curve_is_timestamped_and_matches_grand_total(tmp_path, monkeypatch)
 
 def test_equity_log_persists_across_restart(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
-    monkeypatch.setattr("garuda.live.is_market_open", lambda *a: True)
+    # the equity curve samples whenever anything trades — cash, the closing
+    # auction, or the F&O tail — so force that gate, not the cash-only one
+    monkeypatch.setattr("garuda.live.is_session_live", lambda *a: True)
     live = GarudaLive(csv_dir=str(tmp_path))
     live.prices["KEI"] = 100.0                     # feed warmed up
     live.record_equity()

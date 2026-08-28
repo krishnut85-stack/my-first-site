@@ -32,6 +32,7 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .mkt{font-weight:800;padding:2px 8px;border-radius:4px;font-size:11px;animation:blink 1.5s infinite}
 .mkt.open{color:var(--grn);border:1px solid #204d3a;background:#0e2a20}.mkt.closed{color:var(--red);border:1px solid #4d2020;background:#2a1416}
 .mkt.preopen{color:var(--amb);border:1px solid #4d3a20;background:#2a2214}
+.mkt.auction{color:var(--amb);border:1px solid #4d4020;background:#2a2414}
 @keyframes blink{50%{opacity:.4}}.ist{color:var(--acc)}.loc{color:var(--mut)}
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0}
 .pltbl{width:100%;border-collapse:collapse;font-size:12px;margin:0 0 12px;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
@@ -246,14 +247,22 @@ function clocks(){
  const p=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kolkata',weekday:'short',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).formatToParts(new Date()).map(x=>[x.type,x.value]));
  const iso=`${p.year}-${p.month}-${p.day}`;
  const mins=+p.hour*60+ +p.minute,wknd=['Sat','Sun'].includes(p.weekday),holi=HOLI.has(iso);
- // blink LIVE (green) only during the 09:15-15:30 session on a real trading day;
- // otherwise blink CLOSED (red) with the reason — weekend / NSE holiday / off-hours.
+ // Since CAS (2026-08-03) the day ends in stages, so the badge names the stage:
+ // F&O stocks leave continuous trading at 15:15 and settle in an auction that
+ // publishes the close at 15:35, everything else trades on to 15:30, and equity
+ // derivatives run to 15:40. Mirrors market.market_status() on the server.
+ const CASH_OPEN=mins<930?' · CASH OPEN':'';
  let st,cls='closed';
  if(wknd)st='● CLOSED · WEEKEND';
  else if(holi)st='● CLOSED · NSE HOLIDAY';
  else if(mins>=540&&mins<555){st='● PRE-OPEN · opens 09:15';cls='preopen';}   // 09:00-09:15 auction
  else if(mins<555)st='● CLOSED';
- else if(mins<=930){st='● LIVE';cls='open';}
+ else if(mins<915){st='● LIVE';cls='open';}                                   // 09:15-15:15
+ else if(mins<920){st='● AUCTION · OPENING'+CASH_OPEN;cls='auction';}         // 15:15-15:20
+ else if(mins<925){st='● AUCTION · ORDER ENTRY'+CASH_OPEN;cls='auction';}     // 15:20-15:25
+ else if(mins<930){st='● AUCTION · LIMIT ONLY'+CASH_OPEN;cls='auction';}      // 15:25-15:30
+ else if(mins<935){st='● AUCTION · MATCHING';cls='auction';}                  // 15:30-15:35
+ else if(mins<940){st='● F&O ONLY';cls='auction';}                            // 15:35-15:40
  else st='● CLOSED';
  const m=document.getElementById('mkt');m.textContent=st;m.className='mkt '+cls;
  document.getElementById('ist').textContent=`IST ${p.weekday} ${p.hour}:${p.minute}:${p.second}`;

@@ -10,7 +10,8 @@ from pathlib import Path
 from . import config
 from .cross import load_series
 from .feed import KiteFeed
-from .market import is_market_open, market_status
+from .market import (in_cas_window, is_cas_symbol, is_derivatives_open,
+                     is_market_open, is_session_live, market_status)
 from .options import OptionsBook
 from .portfolio import LivePortfolio, _today
 from .scan import run_scan
@@ -268,8 +269,10 @@ class GarudaLive:
 
     def record_equity(self):
         """Append a timestamped grand-total equity sample so the P&L graph keeps a
-        real, persistent multi-day record. Sampled ~1/min while the market is open."""
-        if not is_market_open() or not self.prices:
+        real, persistent multi-day record. Sampled ~1/min while anything trades —
+        including the closing auction and the F&O tail to 15:40, so the curve
+        does not flatline for the last 25 minutes of the day."""
+        if not is_session_live() or not self.prices:
             return
         t = self._ist_now().strftime("%Y-%m-%d %H:%M")
         v = round(self.grand_equity(), 0)
@@ -418,8 +421,11 @@ class GarudaLive:
     def scan(self, force=False):
         """Book the day's exits + entries. PAPER, but timed like live trading:
         it only transacts while the market is open, and fills at the live price
-        — never on a weekend/holiday or outside 09:15-15:30 IST. Pass force=True
-        to override (e.g. a manual backfill)."""
+        — never on a weekend/holiday, and never outside the session. Since CAS
+        that session is two-tiered: Category I (F&O) names stop trading at 15:15
+        and their quotes turn indicative, so they are withheld from the fill
+        prices for the rest of the day while Category II names trade on to
+        15:30. Pass force=True to override (e.g. a manual backfill)."""
         if not force and not is_market_open():
             return {k: {"status": f"no trades — market {market_status().lower()}"}
                     for k in PROFILES}
@@ -459,7 +465,8 @@ class GarudaLive:
             if not series:
                 results[k] = {"error": f"{prof.daily_csv} not found in {self.csv_dir}"}
                 continue
-            res = run_scan(prof, series, self.portfolios[k], live_prices=self.prices)
+            res = run_scan(prof, series, self.portfolios[k],
+                           live_prices=self._fillable_prices())
             self.portfolios[k].save(_pf_path(k))
             self.last_signals[k] = {"buys": [b["symbol"] for b in res["buys"]],
                                     "sells": [s["symbol"] for s in res["sells"]]}
@@ -475,7 +482,7 @@ class GarudaLive:
         # advance the weekly Iron Condor: settle at expiry, roll into next week
         nifty = (self.index.get("NIFTY 50") or {}).get("ltp") or 0.0
         from datetime import date as _date
-        self.options.step(nifty, _date.today(), is_market_open())
+        self.options.step(nifty, _date.today(), is_derivatives_open())
         self.options.save(_options_path())
         results["options"] = {"status": f"condor stepped @ nifty {nifty or '—'}"}
         # advance the monthly STOCK condors: price the F&O universe explicitly
@@ -489,7 +496,7 @@ class GarudaLive:
                                     self.feed.ltp(missing).items() if p})
             except Exception:  # noqa: BLE001
                 pass
-        self.stock_options.step(self.prices, _date.today(), is_market_open(),
+        self.stock_options.step(self.prices, _date.today(), is_derivatives_open(),
                                 universe=fno)
         self.stock_options.save(_stock_options_path())
         results["stock_options"] = {
@@ -547,8 +554,8 @@ class GarudaLive:
 
     def snapshot_equity(self):
         """Append a live combined-equity sample for today's intraday P&L curve
-        (resets each new day). Only samples while the market is open."""
-        if not is_market_open():
+        (resets each new day). Samples while anything trades, auction included."""
+        if not is_session_live():
             return
         if not self.prices:            # feed still warming up (e.g. just after a
             return                     # restart) -> skip the bad all-at-entry sample
@@ -634,6 +641,18 @@ class GarudaLive:
     # --- state for the dashboard -------------------------------------------
     def price_of(self, sym, fallback=0.0):
         return self.prices.get(sym) or fallback
+
+    def _fillable_prices(self):
+        """Prices the scan may actually fill against.
+
+        Once a Category I name enters the closing auction its quote is
+        indicative — there is no live order book behind it — so drop those names
+        and let the scan skip them the same way it skips any unpriceable symbol.
+        Outside the auction this is just ``self.prices``.
+        """
+        if not in_cas_window():
+            return self.prices
+        return {s: p for s, p in self.prices.items() if not is_cas_symbol(s)}
 
     def build_state(self):
         profs = []
@@ -838,6 +857,8 @@ class GarudaLive:
                 "index": self.index,
                 "weather": self.weather,
                 "market_open": is_market_open(), "market_status": market_status(),
+                "in_auction": in_cas_window(),
+                "derivatives_open": is_derivatives_open(),
                 "holidays": sorted(HOLIDAYS),
                 "last_scan": self.last_scan_date, "today": _today()}
 
