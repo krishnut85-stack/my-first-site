@@ -67,6 +67,23 @@ cd $LIVE && python3 macro_cycle.py
 That prints the three signals, what each one votes for, the phase GIR is
 actually trading, and whether the file has gone stale.
 
+Run it from `/home/globalbot`, where the files live:
+
+```bash
+cd /home/globalbot && python3 macro_cycle.py
+```
+
+`GIR is trading: UNKNOWN` until the first 08:05 check on a trading day —
+that is when the bot first writes the phase file. To activate a reading
+immediately instead of waiting:
+
+```bash
+cd /home/globalbot && python3 macro_cycle.py apply
+```
+
+That does exactly what the 08:05 hook does. No restart needed — the running
+bot re-reads the file on its next scored symbol.
+
 **How to update it:**
 
 ```bash

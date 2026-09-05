@@ -249,3 +249,17 @@ def test_phase_path_finds_the_bots_data_dir_first(mc, tmp_path, monkeypatch):
     (tmp_path / "data").mkdir()
     mc.save_phase(mc.EXPANSION, tmp_path / "data" / "macro_phase.json", "3/3", TODAY)
     assert mc.load_phase(mc.phase_path()) == mc.EXPANSION
+
+
+def test_cli_apply_persists_what_the_0805_hook_would(mc, tmp_path, monkeypatch):
+    """`apply` must write the same phase file gir.py writes each morning."""
+    (tmp_path / "macro_signals.json").write_text(json.dumps(
+        {"as_of": date.today().isoformat(), "repo_direction": "holding_after_cuts",
+         "gsec_10y_slope_3m_bps": -8, "credit_growth_yoy_trend": "accelerating"}))
+    monkeypatch.setattr(mc, "_bases", lambda: [tmp_path])
+    assert mc.load_phase(mc.phase_path()) == mc.UNKNOWN
+    assert mc._cli(["apply"]) == 0
+    assert mc.load_phase(mc.phase_path()) == mc.EXPANSION      # data/ created too
+    assert (tmp_path / "data" / "macro_phase.json").exists()
+    assert mc._cli(["apply"]) == 0                              # idempotent
+    assert mc.load_phase(mc.phase_path()) == mc.EXPANSION

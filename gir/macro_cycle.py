@@ -168,6 +168,7 @@ def save_phase(phase, path, reason="", today=None):
     Silent on failure — losing the file costs one held phase, never a crash.
     """
     try:
+        Path(path).parent.mkdir(parents=True, exist_ok=True)
         Path(path).write_text(json.dumps(
             {"phase": phase, "reason": reason,
              "at": (today or date.today()).isoformat()}, indent=2))
@@ -358,6 +359,7 @@ def describe(phase, when=None):
 #   python3 macro_cycle.py              what phase are we in, and is it stale?
 #   python3 macro_cycle.py where        where each of the three numbers comes from
 #   python3 macro_cycle.py set hold -8 up       write this month's reading
+#   python3 macro_cycle.py apply       act on it now, without waiting for 08:05
 #
 # Three words, three values — typeable from a phone over SSH.
 
@@ -435,6 +437,21 @@ def _cli(argv):
         return 0
 
     path = signals_path()
+
+    if argv and argv[0] == "apply":
+        # Exactly what gir.py does at 08:05 on a trading day. Useful to
+        # activate a fresh reading now instead of waiting for the next
+        # session — the running bot picks the file up on its next scored
+        # symbol, no restart needed.
+        held = load_phase(phase_path())
+        phase, why = advance(held, read_signals(path))
+        if phase == held:
+            print("phase unchanged: %s\n%s\n" % (held, why))
+        else:
+            save_phase(phase, phase_path(), why)
+            print("phase written to %s: %s -> %s\n%s\n"
+                  % (phase_path(), held, phase, why))
+        argv = []
 
     if argv and argv[0] == "set":
         try:
