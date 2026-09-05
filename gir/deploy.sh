@@ -159,19 +159,54 @@ fi
 # runs rather than assuming a path.
 find_garuda() {
   local pid d c
-  if [ -n "${GARUDA:-}" ]; then [ -f "$GARUDA/garuda/server.py" ] && { echo "$GARUDA"; return; }; fi
-  for pid in $(pgrep -f "garuda" 2>/dev/null || true); do
+  # An explicit GARUDA must be right — fail loudly rather than silently
+  # searching elsewhere and "updating" the wrong tree.
+  if [ -n "${GARUDA:-}" ]; then
+    if [ -f "$GARUDA/garuda/server.py" ]; then echo "$GARUDA"; return; fi
+    echo "GARUDA=$GARUDA has no garuda/server.py" >&2; return 1
+  fi
+  # Match the server module, not the bare word: `pgrep -f garuda` also matches
+  # this very script when it is run from a path containing "garuda", and then
+  # the repo clone gets mistaken for the install.
+  for pid in $(pgrep -f "garuda[._]server" 2>/dev/null || true); do
+    [ "$pid" = "$$" ] && continue
     d="$(readlink -f "/proc/$pid/cwd" 2>/dev/null || true)"
-    [ -n "$d" ] && [ -f "$d/garuda/server.py" ] && { echo "$d"; return; }
+    [ -n "$d" ] && [ "$d" != "$REPO" ] && [ -f "$d/garuda/server.py" ] \
+      && { echo "$d"; return; }
   done
-  for c in /home/globalbot /root /opt "$HOME"; do
+  for c in /home/globalbot /home/globalbot/my-first-site /root /opt "$HOME"; do
+    [ "$c" = "$REPO" ] && continue
     [ -f "$c/garuda/server.py" ] && { echo "$c"; return; }
   done
   return 1
 }
 
 if GARUDA_ROOT="$(find_garuda)"; then
-  say "Garuda found at $GARUDA_ROOT — updating its package"
+  say "Garuda found at $GARUDA_ROOT"
+
+  # Garuda often runs from its OWN clone of this repo (a second checkout, e.g.
+  # /home/globalbot/my-first-site). Copying files into a clone leaves it dirty
+  # and confusing, so update it the way it was made: with git.
+  if [ -d "$GARUDA_ROOT/.git" ] \
+     && git -C "$GARUDA_ROOT" remote -v 2>/dev/null | grep -q "my-first-site"; then
+    dirty="$(git -C "$GARUDA_ROOT" status --porcelain 2>/dev/null | grep -v '^?? ' | head -5 || true)"
+    if [ -n "$dirty" ]; then
+      echo "  It is a clone of this repo, but has UNCOMMITTED changes:"
+      echo "$dirty" | sed 's/^/    /'
+      echo "  Refusing to touch it — commit or stash them, then re-run."
+      skipped="$skipped garuda"
+    else
+      echo "  It is a clone of this repo — updating it with git, not by copying"
+      run git -C "$GARUDA_ROOT" fetch origin "$BRANCH"
+      run git -C "$GARUDA_ROOT" checkout "$BRANCH"
+      run git -C "$GARUDA_ROOT" pull --ff-only origin "$BRANCH"
+      [ "$DRY" = 0 ] && git -C "$GARUDA_ROOT" log --oneline -1 | sed 's/^/  now at /'
+      GARUDA_BY_GIT=1
+    fi
+  fi
+
+  if [ -z "${GARUDA_BY_GIT:-}" ] && [ -z "$(echo "$skipped" | grep -o garuda || true)" ]; then
+  say "updating the Garuda package by copy"
   GBACKUP="$GARUDA_ROOT/garuda_backup_pre_deploy_$STAMP"
   run mkdir -p "$GBACKUP"
   for f in "$REPO"/garuda/*.py "$REPO"/garuda/*.html; do
@@ -180,7 +215,9 @@ if GARUDA_ROOT="$(find_garuda)"; then
     run cp "$f" "$GARUDA_ROOT/garuda/"
   done
   echo "  copied $(ls -1 "$REPO"/garuda/*.py "$REPO"/garuda/*.html | wc -l) files (data/ untouched)"
-  if [ "$DRY" = 0 ]; then
+  fi
+
+  if [ "$DRY" = 0 ] && [ -z "$(echo "$skipped" | grep -o garuda || true)" ]; then
     if ( cd "$GARUDA_ROOT" && python3 -c "
 import garuda.macro as m, garuda.market, garuda.live
 st = m.state()
@@ -190,9 +227,14 @@ print('  garuda imports; macro reads phase =', st['phase'], '/ suggested', st['s
         && echo "  CYCLE tab present in the served HTML" \
         || echo "  WARNING: CYCLE tab missing from the copied HTML"
     else
-      echo "  VERIFY FAILED — restoring Garuda from $GBACKUP"
-      cp "$GBACKUP"/* "$GARUDA_ROOT/garuda/" 2>/dev/null || true
-      echo "  restored; Garuda not restarted."
+      echo "  VERIFY FAILED"
+      if [ -z "${GARUDA_BY_GIT:-}" ] && [ -d "${GBACKUP:-/nonexistent}" ]; then
+        cp "$GBACKUP"/* "$GARUDA_ROOT/garuda/" 2>/dev/null || true
+        echo "  restored from $GBACKUP; Garuda not restarted."
+      else
+        echo "  it was updated by git — roll back with:"
+        echo "    git -C $GARUDA_ROOT checkout -"
+      fi
       exit 1
     fi
   fi
