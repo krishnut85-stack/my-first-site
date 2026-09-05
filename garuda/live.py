@@ -859,11 +859,28 @@ class GarudaLive:
                 "weather": self.weather,
                 # the rate-cycle phase GIR is trading, for the CYCLE tab
                 "macro": macro.state(),
+                # measured sector behaviour by month (python3 -m garuda.cycle_study)
+                "cycle_study": _cycle_study(),
                 "market_open": is_market_open(), "market_status": market_status(),
                 "in_auction": in_cas_window(),
                 "derivatives_open": is_derivatives_open(),
                 "holidays": sorted(HOLIDAYS),
                 "last_scan": self.last_scan_date, "today": _today()}
+
+
+def _cycle_study():
+    """The measured month-by-month sector study, if it has been run.
+
+    None until `python3 -m garuda.cycle_study` has been run on a box with
+    Kite — the tab then says so rather than showing an empty chart.
+    """
+    try:
+        from .cycle_study import STUDY_FILE
+        if STUDY_FILE.exists():
+            return json.loads(STUDY_FILE.read_text())
+    except Exception:  # noqa: BLE001
+        pass
+    return None
 
 
 def _wins_closed(trades, sides=("SELL",)):

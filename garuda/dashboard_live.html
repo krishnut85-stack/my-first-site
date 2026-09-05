@@ -109,6 +109,15 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .calbar{height:18px;border-radius:3px}
 .calm{font-size:10px;color:var(--mut);margin-top:4px}
 .calv{font-size:9px;color:var(--mut)}
+/* measured-history heatmap: colour is the pattern, numbers live in the table */
+.hmwrap{overflow-x:auto;margin-top:8px;-webkit-overflow-scrolling:touch}
+.hmtbl{border-collapse:separate;border-spacing:2px;font-size:10px;min-width:100%}
+.hmtbl th{color:var(--mut);font-weight:600;font-size:9px;padding:0 2px}
+.hmtbl th.hmnow{color:var(--acc)}
+.hmcell{width:18px;height:16px;border-radius:3px;padding:0}
+.hmcell.hmnow{outline:1px solid var(--acc);outline-offset:-1px}
+.hmsec{color:var(--txt);font-size:10px;text-align:left;padding-right:6px;white-space:nowrap}
+.hmbest{color:var(--mut);font-size:9px;white-space:nowrap;padding-left:6px}
 .wsearch{flex:1;min-width:90px;background:#0b1017;border:1px solid var(--line);border-radius:6px;color:var(--txt);padding:4px 9px;font:inherit;font-size:12px}
 .bothdr{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;background:linear-gradient(90deg,#111a26,#0f141c);border-top:1px solid var(--line);flex-wrap:wrap}
 .bothdr .nm{font-weight:800;font-size:13px}.bothdr .nm .d{color:var(--mut);font-weight:400;font-size:10px}
@@ -857,6 +866,76 @@ function cycleTrack(m){
  </div>`;
 }
 
+// ---- measured history: what each sector actually did, month by month ------
+// Colour is the PATTERN; every fact is also written out, because a 16x12 grid
+// of coloured cells is unreadable on a phone and unreadable to a colour-blind
+// reader. The ranking table below carries the numbers.
+function heatCol(v){
+ if(v==null)return 'var(--line)';
+ const a=Math.min(Math.abs(v)/3,1);                 // ±3% excess saturates
+ return v>=0?`rgba(34,211,122,${0.15+a*0.75})`:`rgba(255,93,93,${0.15+a*0.75})`;
+}
+
+function studyPanel(cs,month){
+ if(!cs)return `<div class=note style=margin-top:12px>
+   <b>MEASURED HISTORY — not run yet.</b> The section above is the textbook
+   relationship between rates and sectors. To replace it with what the Indian
+   market actually did, run on the droplet:<br>
+   <b>cd /home/globalbot/my-first-site && python3 -m garuda.cycle_study</b><br>
+   It pulls daily history for all 16 NSE sector indices and measures each
+   sector's average excess return over the Nifty, month by month.</div>`;
+
+ const cov=cs.coverage||{}, thin=cs.min_sample||5;
+ let h=`<div class=note style=margin-top:14px>
+   <b>MEASURED — ${cov.years||0} calendar years (${cov.first_year||'?'}–${cov.last_year||'?'}),
+   ${cov.observations||0} sector-months.</b> Each number is a sector's average
+   <b>excess</b> return over the ${cs.benchmark}: a sector up 2% in a month the
+   market rose 3% lagged, it did not lead. <span class=sub>n = how many of that
+   month went into the average; under ${thin} is thin.</span></div>`;
+
+ // 1. THIS MONTH — the actionable answer, as text
+ const rank=(cs.ranked||{})[String(month)]||[];
+ if(rank.length){
+  h+=`<table class=pltbl style=margin-top:10px>
+    <tr><th style=text-align:left>${MONFULL[month-1].toUpperCase()} — MEASURED ORDER</th>
+    <th>AVG EXCESS</th><th>YEARS</th></tr>`;
+  rank.forEach((r,i)=>{
+   const cls=r.excess>0?'g':'r';
+   h+=`<tr><td style=text-align:left>${i+1}. <b>${r.sector}</b>${r.n<thin?' <span class=sub>thin</span>':''}</td>
+     <td class=${cls}>${r.excess>0?'+':''}${r.excess.toFixed(2)}%</td>
+     <td class=muted>${r.n}</td></tr>`;
+  });
+  h+=`</table>`;
+ }
+
+ // 2. the shape of the year, per sector — colour as pattern, numbers on hover
+ h+=`<div class=note style=margin-top:10px><b>THE SHAPE OF THE YEAR.</b>
+   Each row is one sector across Jan–Dec; greener = it beat the Nifty in that
+   month more strongly, redder = it lagged. Tap a cell for the number.</div>
+  <div class=hmwrap><table class=hmtbl><tr><th></th>${
+   cs.months.map((m,i)=>`<th class="${i+1===month?'hmnow':''}">${m[0]}</th>`).join('')}<th>BEST</th></tr>`;
+ cs.sectors.forEach(s=>{
+  const row=cs.table[s]; let best=null,bestm=null,worst=null,worstm=null;
+  for(let m=1;m<=12;m++){const v=row[String(m)].excess.mean;
+   if(v==null)continue;
+   if(best==null||v>best){best=v;bestm=m;} if(worst==null||v<worst){worst=v;worstm=m;}}
+  h+=`<tr><td class=hmsec>${s}</td>`;
+  for(let m=1;m<=12;m++){
+   const c=row[String(m)].excess, v=c.mean;
+   h+=`<td class="hmcell${m===month?' hmnow':''}" style="background:${heatCol(v)}"
+     title="${s} · ${MONFULL[m-1]} — ${v==null?'no data':(v>0?'+':'')+v.toFixed(2)+'% vs '+cs.benchmark+', beat it '+c.hit+'% of '+c.n+' years'}"></td>`;
+  }
+  h+=`<td class=hmbest>${bestm?MONFULL[bestm-1].slice(0,3):'—'}
+    <span class=sub>${bestm?(best>0?'+':'')+best.toFixed(1)+'%':''}</span></td></tr>`;
+ });
+ h+=`</table></div>
+  <div class=note style=margin-top:6px><b>Read it as tendency, not schedule.</b>
+  A month is one observation a year, so even ${cov.years||0} years is ${cov.years||0}
+  samples per cell. Use it to size a position the macro phase already chose —
+  not as a reason to buy on its own.</div>`;
+ return h;
+}
+
 function cyclePanel(m){
  if(!m)return `<div class=condor><div class=chd><div><b>MACRO CYCLE</b></div></div>
    <div class=note>No macro state yet.</div></div>`;
@@ -937,6 +1016,7 @@ function cyclePanel(m){
    by exactly 1.0 — deliberately doing nothing.</div>
   <div class=calstrip>${cal}</div>
   <div class=note style=margin-top:6px>${MONFULL[m.month-1]}: ${escH((m.calendar.find(c=>c.m===m.month)||{}).note||'')}</div>
+  ${studyPanel(DATA&&DATA.cycle_study,m.month)}
  </div>`;
  return h;
 }
