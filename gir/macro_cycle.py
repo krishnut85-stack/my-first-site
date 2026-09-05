@@ -351,3 +351,133 @@ def describe(phase, when=None):
     lead = ", ".join(sorted(PHASE_SECTORS[phase]))
     return (f"macro phase {phase} — leading: {lead} | "
             f"{d:%b}: {calendar_note(d)} (sizing only)")
+
+
+# ------------------------------------------------------------------ CLI ----
+#
+#   python3 macro_cycle.py              what phase are we in, and is it stale?
+#   python3 macro_cycle.py where        where each of the three numbers comes from
+#   python3 macro_cycle.py set hold -8 up       write this month's reading
+#
+# Three words, three values — typeable from a phone over SSH.
+
+SOURCES = [
+    ("repo direction",
+     "RBI MPC statement — rbi.org.in > Press Releases (or any broker app's "
+     "rate page). Every ~2 months.",
+     "cut | hold | hike      (hold = holding after cuts)"),
+    ("10-year G-sec, 3-month slope",
+     "ccilindia.com, or NSE's 10-year benchmark yield. Today's yield minus "
+     "the yield three months ago.",
+     "the change in BASIS POINTS, e.g. -8 for 8 bps lower"),
+    ("bank credit growth YoY",
+     "RBI Weekly Statistical Supplement — rbi.org.in > Statistics > WSS, "
+     "'Scheduled Commercial Banks — Bank Credit' YoY %.",
+     "up | down | flat       (up = accelerating vs last month)"),
+]
+
+_REPO_WORDS = {"cut": "cutting", "cutting": "cutting",
+               "hold": "holding_after_cuts", "holding": "holding_after_cuts",
+               "hike": "hiking", "hiking": "hiking"}
+_CREDIT_WORDS = {"up": "accelerating", "accelerating": "accelerating",
+                 "down": "decelerating", "decelerating": "decelerating",
+                 "flat": "flat"}
+
+
+def parse_set(argv):
+    """Turn ['hold', '-8', 'up'] into a signals dict. ValueError on junk."""
+    if len(argv) != 3:
+        raise ValueError("need exactly three values: "
+                         "<cut|hold|hike> <bps> <up|down|flat>")
+    repo, bps, credit = argv
+    if repo.lower() not in _REPO_WORDS:
+        raise ValueError("repo must be cut, hold or hike - got %r" % repo)
+    if credit.lower() not in _CREDIT_WORDS:
+        raise ValueError("credit must be up, down or flat - got %r" % credit)
+    try:
+        slope = int(round(float(bps)))
+    except (TypeError, ValueError):
+        raise ValueError("G-sec slope must be a number in bps - got %r" % bps)
+    return {"repo_direction": _REPO_WORDS[repo.lower()],
+            "gsec_10y_slope_3m_bps": slope,
+            "credit_growth_yoy_trend": _CREDIT_WORDS[credit.lower()]}
+
+
+def signals_path():
+    """The macro_signals.json this bot will actually read."""
+    for base in _bases():
+        p = Path(base) / "macro_signals.json"
+        if p.exists():
+            return p
+    return Path(_bases()[0]) / "macro_signals.json"
+
+
+def phase_path():
+    """Where the running bot persists its phase.
+
+    gir.py writes it under its DATA_DIR (``/home/globalbot/data``), so look
+    there first — reading the wrong path would make the CLI report UNKNOWN
+    forever while the bot was happily trading a phase.
+    """
+    for base in _bases():
+        for p in (Path(base) / "data" / "macro_phase.json",
+                  Path(base) / "macro_phase.json"):
+            if p.exists():
+                return p
+    return Path(_bases()[0]) / "data" / "macro_phase.json"
+
+
+def _cli(argv):
+    if argv and argv[0] == "where":
+        for name, where, fmt in SOURCES:
+            print("\n%s\n  from : %s\n  type : %s" % (name, where, fmt))
+        print("\nthen:  python3 macro_cycle.py set <repo> <bps> <credit>")
+        return 0
+
+    path = signals_path()
+
+    if argv and argv[0] == "set":
+        try:
+            new = parse_set(argv[1:])
+        except ValueError as e:
+            print("error: %s\n\nexample:  python3 macro_cycle.py set hold -8 up" % e)
+            return 2
+        data = read_signals(path)
+        data.update(new)
+        # The free-text note described the OLD reading; leaving it beside fresh
+        # numbers is worse than having no note at all.
+        data.pop("note", None)
+        data["as_of"] = date.today().isoformat()
+        path.write_text(json.dumps(data, indent=2) + "\n")
+        print("wrote %s\n" % path)
+
+    signals = read_signals(path)
+    if not signals:
+        print("no signals file at %s\nrun:  python3 macro_cycle.py where" % path)
+        return 1
+
+    _counts, votes = tally(signals)
+    age = signals_age_days(signals)
+    held = load_phase(phase_path())
+    phase, why = advance(held, signals)
+
+    aged = "undated" if age is None else "%dd old" % age
+    stale = ", STALE - refresh it" if is_stale(signals) else ""
+    print("as of   : %s  (%s%s)" % (signals.get("as_of", "-"), aged, stale))
+    print("repo    : %-20s -> %s" % (signals.get("repo_direction", "-"),
+                                     votes["repo"] or "-"))
+    print("gsec 3m : %-20s -> %s" % ("%s bps" % signals.get("gsec_10y_slope_3m_bps", "-"),
+                                     votes["gsec"] or "-"))
+    print("credit  : %-20s -> %s" % (signals.get("credit_growth_yoy_trend", "-"),
+                                     votes["credit"] or "-"))
+    print("\nGIR is trading : %s" % held)
+    print("signals say    : %s   (%s)" % (phase, why))
+    if phase != held:
+        print("\n-> GIR picks this up at its own 08:05 check. Nothing to do by hand.")
+    print("\n%s" % describe(phase))
+    return 0
+
+
+if __name__ == "__main__":
+    import sys
+    raise SystemExit(_cli(sys.argv[1:]))

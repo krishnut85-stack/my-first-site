@@ -29,6 +29,13 @@ Older versions, patches and one-off scripts are kept at the top level and in
   from every file before upload.
 - `.gitignore` blocks `.env`, tokens, logs, databases and CSV/JSON data.
 
+## Day-to-day operation
+
+**[RUNBOOK.md](RUNBOOK.md)** has the exact commands: deploying this branch,
+the monthly macro check (where each of the three numbers comes from and how to
+enter it), refreshing the CAS stock list after an F&O review, and the health
+checks worth running.
+
 ## Runs on the droplet
 Lives at **`/home/globalbot/`** (e.g. `/home/globalbot/gir.py`,
 `/home/globalbot/raven/raven.py`). Raven runs as a systemd service

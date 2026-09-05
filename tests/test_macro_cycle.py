@@ -190,3 +190,62 @@ def test_phase_persists_and_cache_follows_the_file(mc, tmp_path):
 
 def test_save_phase_never_raises_on_a_bad_path(mc, tmp_path):
     mc.save_phase(mc.EASING, tmp_path / "no" / "such" / "dir" / "p.json", "x", TODAY)
+
+
+# ----------------------------------------------------------------- CLI ----
+
+@pytest.mark.parametrize("words,expected", [
+    (["hold", "-8", "up"],
+     ("holding_after_cuts", -8, "accelerating")),
+    (["cut", "-40", "flat"], ("cutting", -40, "flat")),
+    (["hike", "40", "down"], ("hiking", 40, "decelerating")),
+    (["HOLD", "0", "UP"], ("holding_after_cuts", 0, "accelerating")),
+    (["hold", "-7.6", "up"], ("holding_after_cuts", -8, "accelerating")),
+])
+def test_cli_parses_phone_shorthand(mc, words, expected):
+    got = mc.parse_set(words)
+    assert (got["repo_direction"], got["gsec_10y_slope_3m_bps"],
+            got["credit_growth_yoy_trend"]) == expected
+
+
+@pytest.mark.parametrize("words", [
+    [], ["hold"], ["hold", "-8"], ["hold", "-8", "up", "extra"],
+    ["banana", "-8", "up"], ["hold", "sideways", "up"], ["hold", "-8", "maybe"],
+])
+def test_cli_rejects_junk_rather_than_guessing(mc, words):
+    with pytest.raises(ValueError):
+        mc.parse_set(words)
+
+
+def test_cli_set_refreshes_the_date_and_drops_the_stale_note(mc, tmp_path,
+                                                             monkeypatch):
+    p = tmp_path / "macro_signals.json"
+    p.write_text(json.dumps({"as_of": "2026-01-01", "note": "old conditions",
+                             "repo_direction": "cutting",
+                             "gsec_10y_slope_3m_bps": -40,
+                             "credit_growth_yoy_trend": "flat"}))
+    monkeypatch.setattr(mc, "_bases", lambda: [tmp_path])
+    assert mc._cli(["set", "hike", "40", "down"]) == 0
+    written = json.loads(p.read_text())
+    assert written["repo_direction"] == "hiking"
+    assert written["as_of"] == date.today().isoformat()
+    assert "note" not in written
+
+
+def test_cli_status_survives_a_missing_file(mc, tmp_path, monkeypatch):
+    monkeypatch.setattr(mc, "_bases", lambda: [tmp_path])
+    assert mc._cli([]) == 1          # tells you what to run, does not crash
+
+
+def test_cli_where_always_works(mc):
+    assert mc._cli(["where"]) == 0
+    assert len(mc.SOURCES) == 3
+
+
+def test_phase_path_finds_the_bots_data_dir_first(mc, tmp_path, monkeypatch):
+    """gir.py persists the phase under DATA_DIR — the CLI must read that one."""
+    monkeypatch.setattr(mc, "_bases", lambda: [tmp_path])
+    assert mc.phase_path() == tmp_path / "data" / "macro_phase.json"   # default
+    (tmp_path / "data").mkdir()
+    mc.save_phase(mc.EXPANSION, tmp_path / "data" / "macro_phase.json", "3/3", TODAY)
+    assert mc.load_phase(mc.phase_path()) == mc.EXPANSION
