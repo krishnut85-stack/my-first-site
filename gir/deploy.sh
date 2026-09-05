@@ -12,6 +12,7 @@
 # services only once the new code has been proven to import.
 #
 # Overridable:  REPO=/path/to/clone  LIVE=/home/globalbot  BRANCH=...
+#               GARUDA=/path/whose/garuda/server.py runs the dashboard
 set -euo pipefail
 
 BRANCH="${BRANCH:-claude/garuda-integration-edja30}"
@@ -149,6 +150,69 @@ if command -v systemctl >/dev/null 2>&1; then
 else
   echo "  (no systemctl here — skipping restarts)"
   skipped=" globaleye raven"
+fi
+
+# --- 6. Garuda (the dashboard) -----------------------------------------------
+# Garuda is a separate install from GIR's flat tree, and its server reads
+# dashboard_live.html fresh on every request — so a stale tab means the FILE
+# was never updated, not that the browser cached it. Find where it actually
+# runs rather than assuming a path.
+find_garuda() {
+  local pid d c
+  if [ -n "${GARUDA:-}" ]; then [ -f "$GARUDA/garuda/server.py" ] && { echo "$GARUDA"; return; }; fi
+  for pid in $(pgrep -f "garuda" 2>/dev/null || true); do
+    d="$(readlink -f "/proc/$pid/cwd" 2>/dev/null || true)"
+    [ -n "$d" ] && [ -f "$d/garuda/server.py" ] && { echo "$d"; return; }
+  done
+  for c in /home/globalbot /root /opt "$HOME"; do
+    [ -f "$c/garuda/server.py" ] && { echo "$c"; return; }
+  done
+  return 1
+}
+
+if GARUDA_ROOT="$(find_garuda)"; then
+  say "Garuda found at $GARUDA_ROOT — updating its package"
+  GBACKUP="$GARUDA_ROOT/garuda_backup_pre_deploy_$STAMP"
+  run mkdir -p "$GBACKUP"
+  for f in "$REPO"/garuda/*.py "$REPO"/garuda/*.html; do
+    base="$(basename "$f")"
+    [ -f "$GARUDA_ROOT/garuda/$base" ] && run cp -p "$GARUDA_ROOT/garuda/$base" "$GBACKUP/"
+    run cp "$f" "$GARUDA_ROOT/garuda/"
+  done
+  echo "  copied $(ls -1 "$REPO"/garuda/*.py "$REPO"/garuda/*.html | wc -l) files (data/ untouched)"
+  if [ "$DRY" = 0 ]; then
+    if ( cd "$GARUDA_ROOT" && python3 -c "
+import garuda.macro as m, garuda.market, garuda.live
+st = m.state()
+print('  garuda imports; macro reads phase =', st['phase'], '/ suggested', st['suggested'])
+" ); then
+      grep -q "data-f=cycle" "$GARUDA_ROOT/garuda/dashboard_live.html" \
+        && echo "  CYCLE tab present in the served HTML" \
+        || echo "  WARNING: CYCLE tab missing from the copied HTML"
+    else
+      echo "  VERIFY FAILED — restoring Garuda from $GBACKUP"
+      cp "$GBACKUP"/* "$GARUDA_ROOT/garuda/" 2>/dev/null || true
+      echo "  restored; Garuda not restarted."
+      exit 1
+    fi
+  fi
+  gsvc="$(systemctl list-units --type=service --all 2>/dev/null \
+          | grep -oE '^[^ ]*garuda[^ ]*\.service' | head -1 || true)"
+  if [ -n "$gsvc" ]; then
+    say "restarting $gsvc"
+    sudo systemctl restart "$gsvc" && sleep 3 && systemctl is-active "$gsvc" \
+      && restarted="$restarted ${gsvc%.service}"
+  else
+    echo "  No garuda systemd unit found. Restart it however you run it —"
+    echo "  the dashboard needs a restart for /data to include the macro block"
+    echo "  (the HTML itself is re-read per request)."
+    skipped="$skipped garuda"
+  fi
+else
+  echo
+  echo "  Garuda install not found. If the CYCLE tab is missing, set GARUDA to"
+  echo "  the directory that CONTAINS garuda/server.py and re-run:"
+  echo "    GARUDA=/path/to/app bash gir/deploy.sh"
 fi
 
 say "done"
