@@ -1,0 +1,14 @@
+{
+  "as_of": "2026-09-05",
+  "repo_rate_pct": 5.25,
+  "repo_direction": "holding_after_cuts",
+  "gsec_10y_slope_3m_bps": -8,
+  "credit_growth_yoy_trend": "accelerating",
+  "note": "RBI has held at 5.25% for four consecutive meetings with a neutral stance after 125 bps of cuts through 2025 (last cut Dec 2025). FY27 CPI projected 5.0%, GDP 6.7%. Late easing moving into expansion; the next move is likelier a hike than a cut.",
+  "sources": {
+    "repo_direction": "RBI MPC statement, Aug 2026",
+    "gsec_10y_slope_3m_bps": "CCIL / NSE 10-year benchmark, 3-month change",
+    "credit_growth_yoy_trend": "RBI Weekly Statistical Supplement, scheduled bank credit YoY"
+  },
+  "refresh": "Monthly, and after every MPC meeting. gsec_10y_slope_3m_bps is the change in the 10-year yield over the trailing three months, in basis points."
+}

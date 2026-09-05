@@ -17,6 +17,7 @@ posts to the **GIR Alerts** Telegram group. Main entry point: **`gir.py`**.
 | 🎯 Hunter | `hunter/` |
 | 📝 Paper engine | `paper/` |
 | 🕐 Session clock | `market_session.py` (shared by all of the above) |
+| 🧭 Macro cycle | `macro_cycle.py` + `macro_signals.json` |
 
 Older versions, patches and one-off scripts are kept at the top level and in
 `archive/`, `old_python_backup/`, `old_griffin_backup/` as a historical backup.
@@ -42,3 +43,10 @@ copy the file to its live path → restart the relevant service.
 > published at 15:35, and derivatives run to 15:40. The files in `raven/`,
 > `falcon/` and `hunter/` find it one directory up, so copy it before (or with)
 > any strategy file that imports it — they will not start without it.
+>
+> 🧭 **`macro_cycle.py` and `macro_signals.json` go beside `gir.py` too.**
+> `macro_signals.json` holds the three inputs to the rate-cycle state machine —
+> repo direction, the 10-year G-sec 3-month slope, and bank credit growth —
+> and needs refreshing **monthly, and after every MPC meeting**. Past 45 days
+> the signals stop being able to change the phase and GIR logs a reminder
+> instead of trading on a stale read.

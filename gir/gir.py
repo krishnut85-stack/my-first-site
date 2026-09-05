@@ -123,6 +123,11 @@ from pathlib import Path
 # Deploy market_session.py alongside gir.py.
 import market_session as mkt
 
+# The macro rate cycle: a state machine over the repo direction, the 10-year
+# G-sec slope and bank credit growth, rotating only when two of the three
+# agree. Its calendar overlay may scale a position but never open one.
+import macro_cycle
+
 import requests
 import pyotp
 
@@ -338,6 +343,11 @@ GAP_SCORE_BOOST = 10            # Score boost for aligned signals
 SECTOR_ROTATION_REFRESH_MIN = 15    # Refresh sector ranking every 15 minutes
 SECTOR_ROTATION_TOP_BOOST = 10      # Score boost for stocks in top-3 sectors
 SECTOR_ROTATION_BOTTOM_BLOCK = True # Block entries for stocks in bottom-2 sectors
+# Macro-cycle tilt (macro_cycle.py). Deliberately smaller than the momentum
+# ranking above: the rate cycle says which sectors have the tailwind, today's
+# tape still decides. A tilt, never a veto.
+MACRO_TILT_POINTS = 4
+MACRO_PHASE_FILE = DATA_DIR / "macro_phase.json"
 SECTOR_INDICES_MAP = {
     "BANKING": "NSE:NIFTY BANK",
     "IT": "NSE:NIFTY IT",
@@ -6330,11 +6340,20 @@ class ExpertPanel:
         try:
             bias, _sec, _pct = self.sector_rotation.get_sector_bias(symbol)
             if bias is None:
-                return 10
-            if direction == "BULLISH":
-                return {"TOP": 20, "MIDDLE": 10, "BOTTOM": 0}.get(bias, 10)
+                base = 10
+            elif direction == "BULLISH":
+                base = {"TOP": 20, "MIDDLE": 10, "BOTTOM": 0}.get(bias, 10)
             else:
-                return {"BOTTOM": 20, "MIDDLE": 10, "TOP": 0}.get(bias, 10)
+                base = {"BOTTOM": 20, "MIDDLE": 10, "TOP": 0}.get(bias, 10)
+            # Macro cycle tilt: nudge toward the sectors the current rate phase
+            # favours. Only on the long side — the phase map says which sectors
+            # lead, which is not a claim about what shorts well. Clamped to the
+            # panel's 0-20 range so the momentum ranking keeps its weight.
+            if direction == "BULLISH":
+                tilt = macro_cycle.sector_tilt(get_sector(symbol),
+                                               macro_cycle.load_phase(MACRO_PHASE_FILE))
+                base = max(0, min(20, base + tilt * MACRO_TILT_POINTS))
+            return base
         except Exception:
             return 10
     def score_history(self, symbol):
@@ -7470,7 +7489,7 @@ class EquityModule:
 
         return True, "OK"
 
-    def _calc_qty(self, price, sl_price, score=60):
+    def _calc_qty(self, price, sl_price, score=60, symbol=None):
         """Calculate quantity using risk-per-trade rule.
         V28 C10: Edge-weighted — higher score = bigger bet.
                  multiplier = score / 60  (score 60 = 1x baseline)
@@ -7512,6 +7531,21 @@ class EquityModule:
         except Exception as _pe:
             log.debug(f"[V28 P2] drawdown check failed: {_pe}, using full size")
         effective_risk_pct = effective_risk_pct * _drawdown_mult
+
+        # CALENDAR OVERLAY (macro_cycle layer 2): seasonality may only scale a
+        # position something else already chose — it can never open one. Returns
+        # exactly 1.0 for every month/sector pair the evidence does not support,
+        # so a bad seasonal guess costs a small sizing error, not a wrong trade.
+        # Re-clamped to the 3% hard risk cap: the multiplier must not lift risk
+        # above the ceiling enforced above.
+        try:
+            _season_mult = (macro_cycle.size_multiplier(get_sector(symbol), today_ist())
+                            if symbol else 1.0)
+        except Exception:
+            _season_mult = 1.0
+        if _season_mult != 1.0:
+            log.info(f"[MACRO L2] {symbol} seasonal sizing x{_season_mult:.2f}")
+        effective_risk_pct = min(effective_risk_pct * _season_mult, 0.03)
 
         risk_amount = self.available * effective_risk_pct
         qty = int(risk_amount / risk_per_share)
@@ -8066,7 +8100,7 @@ class EquityModule:
             target = round(price + EQ_T2_ATR_MULT * atr, 2)
 
             # ── Position sizing ──
-            qty = self._calc_qty(price, sl_price, score=score)  # V28 C10: edge-weighted
+            qty = self._calc_qty(price, sl_price, score=score, symbol=symbol)  # V28 C10: edge-weighted
             if qty <= 0:
                 log.info(f"Equity: {symbol} qty=0, insufficient capital")
                 return False
@@ -9360,7 +9394,8 @@ class EquityModule:
 
                 # Simple qty: 2% risk, edge-weighted (V28 C10)
                 sl_price = _snap_sl_tick_up(price * (1 - EQ_INITIAL_SL_PCT), symbol=sym, exchange="NSE")
-                qty = self._calc_qty(price, sl_price, score=cand.get("score", 60))
+                qty = self._calc_qty(price, sl_price, score=cand.get("score", 60),
+                                     symbol=cand.get("symbol"))
                 if qty <= 0:
                     continue
 
@@ -14362,6 +14397,23 @@ def main():
             # Kite re-login at 08:00 on trading days
             if n.hour == 8 and n.minute == 0 and is_trading_day():
                 KiteSession.login()
+
+            # MACRO CYCLE: re-read the three signals once a day, before the
+            # open. Rotation needs two of the three to agree, so this usually
+            # logs "holding" — that is the point.
+            if n.hour == 8 and n.minute == 5 and is_trading_day():
+                try:
+                    _prev = macro_cycle.load_phase(MACRO_PHASE_FILE)
+                    _phase, _why = macro_cycle.current_phase(_prev, today=today_ist())
+                    log.info(f"[MACRO L1] {_why}")
+                    if _phase != _prev:
+                        macro_cycle.save_phase(_phase, MACRO_PHASE_FILE, _why,
+                                               today_ist())
+                        self.telegram.send(
+                            f"🔄 {macro_cycle.describe(_phase, today_ist())}\n{_why}",
+                            force=True)
+                except Exception as _me:
+                    log.error(f"[MACRO L1] refresh failed: {_me}")
 
             # M1: IV snapshot at 15:42 on trading days (after the OI engine at
             # 15:41). Was 15:26, which priced options off a mid-auction spot.

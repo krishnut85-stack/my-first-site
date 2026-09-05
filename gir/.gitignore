@@ -17,3 +17,9 @@ data/
 snapshots/
 venv/
 .venv/
+
+# ...but the macro-cycle inputs are configuration, not runtime data: three
+# public numbers (repo direction, 10-year G-sec slope, bank credit growth)
+# that seed the state machine and are worth versioning so the phase GIR
+# traded on is auditable. No secrets, by construction.
+!macro_signals.json
