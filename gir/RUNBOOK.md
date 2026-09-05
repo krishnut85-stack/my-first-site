@@ -10,36 +10,40 @@ LIVE=/home/globalbot          # where GIR actually runs
 
 ---
 
-## 1. Deploy the current branch (do this once)
+## 1. Deploy (first time)
+
+You need the repo on the droplet — there is no clone there yet:
 
 ```bash
-cd $REPO
-git fetch origin
-git checkout claude/garuda-integration-edja30
-git pull
-
-# the two shared modules must sit beside gir.py, or it will not start
-cp gir/market_session.py  $LIVE/
-cp gir/macro_cycle.py     $LIVE/
-cp gir/macro_signals.json $LIVE/
-
-# the strategy files that changed
-cp gir/gir.py                    $LIVE/
-cp gir/fno_paper_study.py        $LIVE/
-cp gir/raven/raven.py            $LIVE/raven/
-cp gir/falcon/falcon.py          $LIVE/falcon/
-cp gir/hunter/market_calendar.py $LIVE/hunter/
-cp gir/paper/paper_exit_monitor.py $LIVE/paper/
-
-# check it imports before restarting anything
-cd $LIVE && python3 -c "import market_session, macro_cycle; print('imports OK')"
-python3 -m py_compile gir.py && echo "gir.py compiles"
-
-sudo systemctl restart globaleye && sleep 3 && systemctl is-active globaleye
-sudo systemctl restart raven     && sleep 3 && systemctl is-active raven
+git clone https://github.com/krishnut85-stack/my-first-site ~/my-first-site
+cd ~/my-first-site && git checkout claude/garuda-integration-edja30
+bash gir/deploy.sh
 ```
 
-Rollback is `git checkout main` on the repo, re-copy, restart.
+After that, every future deploy is just:
+
+```bash
+cd ~/my-first-site && bash gir/deploy.sh
+```
+
+`deploy.sh` is all-or-nothing on purpose. It checks every source file exists
+**before** touching `/home/globalbot`, backs up what it replaces, copies, then
+proves the result imports and compiles — and if that fails it restores the
+backup and stops **without restarting anything**. Services are restarted only
+once the new code has been shown to work. It prints a one-line rollback command
+at the end.
+
+Look before you leap:
+
+```bash
+bash gir/deploy.sh --dry-run
+```
+
+If your clone lives somewhere else, or GIR does, override either:
+
+```bash
+REPO=/path/to/clone LIVE=/home/globalbot bash gir/deploy.sh
+```
 
 ---
 
