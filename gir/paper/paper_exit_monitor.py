@@ -32,6 +32,10 @@ import paper_trader as pt
 import notify
 
 import requests
+
+# kite_session.py sits beside gir.py, one directory up from paper/.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import kite_session  # noqa: E402
 import pyotp
 from kiteconnect import KiteConnect
 
@@ -99,7 +103,13 @@ def is_market_hours_utc(now: datetime = None) -> bool:
 
 
 def kite_login() -> KiteConnect:
-    """Fresh TOTP login. Verbatim port of gir.py login flow, minus saved-token reuse."""
+    """Fresh TOTP login — the LAST resort, never the first move.
+
+    Zerodha allows one active access token per API key, so calling this while
+    globaleye holds a session silently kills that session. Reach it only
+    through kite_session.get_kite(), which tries the saved token first and
+    takes a lock before letting anyone log in.
+    """
     if not (KITE_API_KEY and KITE_API_SECRET and KITE_TOTP_SECRET
             and ZERODHA_USER_ID and ZERODHA_PASSWORD):
         raise RuntimeError("Missing one or more Kite/Zerodha env vars")
@@ -161,13 +171,10 @@ def kite_login() -> KiteConnect:
 
 
 def _reload_token_from_file():
-    """Reload access token from kite_token.json (gir.py keeps it fresh)."""
-    import json
+    """Reload the access token from the shared file (whoever refreshed it)."""
     try:
-        with open("/home/globalbot/data/kite_token.json") as f:
-            tok = json.load(f)
-        return tok.get("access_token")
-    except Exception as e:
+        return kite_session.load_token()
+    except Exception as e:  # noqa: BLE001
         log.warning("token file reload failed: %s", e)
         return None
 
@@ -368,7 +375,12 @@ def main():
              FNO_SL_PCT, FNO_MAX_HOLD_DAYS, POLL_SECONDS)
 
     try:
-        kite = kite_login()
+        # Reuse the live token; log in fresh only if it is genuinely dead.
+        # Calling kite_login() directly here used to mint a new token on every
+        # start of this monitor, which invalidated globaleye's session and left
+        # every lane eating 403s with nothing in the log to point at.
+        kite = kite_session.get_kite(login_fn=kite_login, api_key=KITE_API_KEY,
+                                     log=log)
     except Exception as e:
         log.exception("Login failed at startup: %s", e)
         pt.record_event(module="paper_exit_monitor", event_type="LOGIN_FAIL", error=e)

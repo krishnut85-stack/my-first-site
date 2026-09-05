@@ -52,6 +52,7 @@ run git -C "$REPO" pull --ff-only origin "$BRANCH"
 # --- 2. what goes where ------------------------------------------------------
 # "<source under $REPO>  <destination dir under $LIVE>"
 FILES="
+gir/kite_session.py              .
 gir/market_session.py            .
 gir/macro_cycle.py               .
 gir/macro_signals.json           .
@@ -132,7 +133,8 @@ for f in gir.py fno_paper_study.py raven/raven.py falcon/falcon.py \
   echo "  compiles: $f"
 done
 ( cd "$LIVE" && python3 -c "
-import market_session as m, macro_cycle as c
+import market_session as m, macro_cycle as c, kite_session as ks
+print('  kite token owner: reads', ks.token_path())
 print('  session clock says:', m.market_status())
 print('  macro signals  say:', c.advance(c.UNKNOWN, c.read_signals())[0])
 n = len(m.CAS_STOCKS)

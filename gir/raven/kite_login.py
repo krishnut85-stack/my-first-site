@@ -24,9 +24,13 @@ import time
 import datetime as dt
 from pathlib import Path
 
-# --- VERIFY this against gir.py's KITE_TOKEN_FILE (grep output) ---
+# Must match gir.py's KITE_TOKEN_FILE exactly (DATA_DIR/kite_token.json).
+# It used to default to /home/globalbot/kite_token.json — one directory too
+# high. With KITE_TOKEN_FILE unset, RAVEN then found no token, logged in
+# fresh, and invalidated globaleye's session; gir.py logged in fresh in turn,
+# invalidating RAVEN's. Zerodha allows exactly one live token per API key.
 KITE_TOKEN_FILE = Path(os.environ.get(
-    "KITE_TOKEN_FILE", "/home/globalbot/kite_token.json"))
+    "KITE_TOKEN_FILE", "/home/globalbot/data/kite_token.json"))
 
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
 
