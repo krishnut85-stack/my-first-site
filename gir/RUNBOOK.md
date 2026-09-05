@@ -128,6 +128,18 @@ journalctl -u globaleye --since today | grep 'MACRO L2'
 cd $REPO && bash scripts/cas_audit.sh $LIVE
 ```
 
+**Did the running bot actually pick up the deploy?** A copied file does
+nothing until the service restarts — so check the process is younger than the
+files it loaded:
+
+```bash
+systemctl show -p ActiveEnterTimestamp --value globaleye   # when it restarted
+stat -c '%y %n' /home/globalbot/gir.py                     # when the file landed
+```
+
+The service timestamp must be the later of the two. `deploy.sh` prints both
+sides of this itself and shouts if a service did not come back.
+
 **What "healthy" looks like:** `MACRO L1` appears once a morning and usually
 says `holding`; `MACRO L2` appears rarely, because eleven months of the year
 it multiplies by exactly 1.0; and after 15:35 the session clock reads

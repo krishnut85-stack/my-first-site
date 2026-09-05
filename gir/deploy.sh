@@ -122,19 +122,39 @@ print('  macro signals  say:', c.advance(c.UNKNOWN, c.read_signals())[0])
 " ) || rollback
 
 # --- 5. restart ---------------------------------------------------------------
+restarted=""
+skipped=""
 if command -v systemctl >/dev/null 2>&1; then
   for svc in globaleye raven; do
-    if systemctl list-unit-files 2>/dev/null | grep -q "^$svc.service"; then
-      say "restarting $svc"
-      sudo systemctl restart "$svc"; sleep 3
-      systemctl is-active "$svc" || echo "  WARNING: $svc did not come back — check: journalctl -u $svc -n 50"
+    # ALWAYS attempt the restart. An earlier version gated this on
+    # `systemctl list-unit-files | grep ^$svc.service`, which did not list
+    # globaleye — the main bot — so a successful deploy silently left it
+    # running the old code. A failed restart is loud; a skipped one is not,
+    # and for a trading bot the silent case is the dangerous one.
+    state="$(systemctl show -p LoadState --value "$svc" 2>/dev/null || true)"
+    say "restarting $svc  (LoadState=${state:-unknown})"
+    if sudo systemctl restart "$svc" 2>&1; then
+      sleep 3
+      if systemctl is-active "$svc"; then
+        restarted="$restarted $svc"
+      else
+        echo "  WARNING: $svc did not come back — journalctl -u $svc -n 50"
+        skipped="$skipped $svc"
+      fi
     else
-      echo "  (no $svc.service on this box — skipped)"
+      echo "  WARNING: could not restart $svc — systemctl status $svc"
+      skipped="$skipped $svc"
     fi
   done
 else
   echo "  (no systemctl here — skipping restarts)"
+  skipped=" globaleye raven"
 fi
 
 say "done"
+echo "restarted:${restarted:- none}"
+for svc in $restarted; do
+  echo "  $svc up since $(systemctl show -p ActiveEnterTimestamp --value "$svc" 2>/dev/null)"
+done
+[ -n "$skipped" ] && echo "NOT RUNNING NEW CODE:${skipped} — these still hold the old code in memory"
 echo "rollback:  cp -r $BACKUP/. $LIVE/ && sudo systemctl restart globaleye"
