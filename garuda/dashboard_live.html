@@ -92,6 +92,23 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .wtabs{display:flex;gap:6px;padding:10px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap;align-items:center}
 .wtab{cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:3px 12px;font-size:12px;color:var(--mut)}
 .wtab.on{border-color:var(--acc);color:var(--acc);font-weight:700}
+/* CYCLE tab: phase track + calendar strip */
+.cycwrap{margin:14px 0 2px}
+.cycsvg{width:100%;height:38px;display:block}
+.cyclabs{display:flex;gap:4px;margin-top:6px}
+.cyclab{flex:1;text-align:center;font-size:11px;color:var(--mut);letter-spacing:.5px}
+.cyclab.on{color:var(--txt);font-weight:700}
+.cyclab::before{content:'';display:inline-block;width:8px;height:8px;border-radius:2px;
+  background:var(--c);margin-right:5px;vertical-align:middle}
+.cycdot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;
+  vertical-align:middle}
+.cycrow{background:#111a24}
+.calstrip{display:flex;gap:2px;margin-top:8px}
+.calcell{flex:1;text-align:center;padding:4px 1px;border-radius:4px;border:1px solid transparent}
+.calcell.now{border-color:var(--acc)}
+.calbar{height:18px;border-radius:3px}
+.calm{font-size:10px;color:var(--mut);margin-top:4px}
+.calv{font-size:9px;color:var(--mut)}
 .wsearch{flex:1;min-width:90px;background:#0b1017;border:1px solid var(--line);border-radius:6px;color:var(--txt);padding:4px 9px;font:inherit;font-size:12px}
 .bothdr{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;background:linear-gradient(90deg,#111a26,#0f141c);border-top:1px solid var(--line);flex-wrap:wrap}
 .bothdr .nm{font-weight:800;font-size:13px}.bothdr .nm .d{color:var(--mut);font-weight:400;font-size:10px}
@@ -176,6 +193,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
         <span class=wtab data-f=options onclick="setFilter('options',this)">OPTIONS</span>
         <span class=wtab data-f=swami onclick="setFilter('swami',this)">SWAMINATHA</span>
         <span class=wtab data-f=lab onclick="setFilter('lab',this)">LAB</span>
+        <span class=wtab data-f=cycle onclick="setFilter('cycle',this)">CYCLE</span>
         <input class=wsearch id=search placeholder="search…" oninput="render(DATA)">
       </div>
       <div class=listwrap id=list></div>
@@ -240,6 +258,8 @@ function fmtCr(v){if(v==null)return '—';if(v>=1e5)return (v/1e5).toFixed(2)+'L
 const LABEL={smallcap:'SMALL CAP',microcap:'MICRO CAP',next50:'NEXT 50',strength:'STRENGTH',leaders:'LEADERS',scalein:'SCALE-IN',hi52:'52-W HIGH',crash:'CRASH',chakra:'CHAKRA',qmom:'QMOM',captain:'CAPTAIN'};
 const TAG={smallcap:'SC',microcap:'MC',next50:'N50',strength:'STR',leaders:'LDR',scalein:'SCL',hi52:'52H',crash:'CRS',chakra:'CHK',qmom:'QM',captain:'CPT'};
 function money(v){return "₹"+Math.round(v).toLocaleString('en-IN');}
+function escH(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function catStr(c){if(!c)return '';const o=['L','M','S','µ'].filter(k=>c[k]).map(k=>`${c[k]}<b class=a>${k}</b>`).join(' ');return o?` · ${o}`:'';}
 function pct(v){return(v==null?'—':(v>=0?"+":"")+(+v).toFixed(2)+"%");}
 function setFilter(f,el){FILTER=f;document.querySelectorAll('.wtab').forEach(t=>t.classList.remove('on'));el.classList.add('on');render(DATA);}
@@ -800,6 +820,127 @@ function discoverPanel(x){
  </div>`;
  return h;
 }
+// ---- CYCLE tab: the rate cycle, and what leads in each phase --------------
+// Phase hues are teal / gold / indigo — validated for colour-vision deficiency
+// against this dashboard's card surface (worst adjacent pair ΔE 10.1 protan,
+// 18.7 normal). Every phase is also directly labelled, so colour is never the
+// only thing carrying identity.
+const PHCOL={EASING:'#23967a',EXPANSION:'#c08420',SLOWDOWN:'#5b7fd6'};
+const PHNAME={EASING:'EASING',EXPANSION:'EXPANSION',SLOWDOWN:'SLOWDOWN'};
+const MON=['J','F','M','A','M','J','J','A','S','O','N','D'];
+const MONFULL=['January','February','March','April','May','June','July',
+               'August','September','October','November','December'];
+// the stored values are enums; show them as English
+const SIGWORD={holding_after_cuts:'holding, after cuts',holding:'holding',
+  cutting:'cutting',hiking:'hiking',accelerating:'accelerating',
+  decelerating:'decelerating',flat:'flat'};
+
+function cycleTrack(m){
+ // Three segments in cycle order. The live phase is solid and carries a marker;
+ // the others stay labelled but recede, so "where are we" reads at a glance.
+ const live=m.phase!=='UNKNOWN'?m.phase:null, aim=m.suggested;
+ const W=100,H=13,gap=1.4,seg=(W-gap*2)/3;   // 2px-equivalent gaps between fills
+ let bars='',marks='';
+ m.order.forEach((p,i)=>{
+  const x=i*(seg+gap), on=(live?p===live:p===aim);
+  bars+=`<rect x="${x}" y="0" width="${seg}" height="${H}" rx="1.6"
+     fill="${PHCOL[p]}" opacity="${on?1:.34}"><title>${p} — ${escH(m.stories[p]||'')}</title></rect>`;
+  if(on)marks+=`<path d="M${x+seg/2-2.2} -2.4 L${x+seg/2+2.2} -2.4 L${x+seg/2} 0.6 Z" fill="var(--txt)"/>`;
+ });
+ const labels=m.order.map((p,i)=>{
+  const on=(live?p===live:p===aim);
+  return `<span class="cyclab${on?' on':''}" style="--c:${PHCOL[p]}">${PHNAME[p]}</span>`;
+ }).join('');
+ return `<div class=cycwrap>
+   <svg viewBox="-1 -5 102 19" preserveAspectRatio="none" class=cycsvg>${bars}${marks}</svg>
+   <div class=cyclabs>${labels}</div>
+ </div>`;
+}
+
+function cyclePanel(m){
+ if(!m)return `<div class=condor><div class=chd><div><b>MACRO CYCLE</b></div></div>
+   <div class=note>No macro state yet.</div></div>`;
+ const live=m.phase!=='UNKNOWN', shown=live?m.phase:m.suggested;
+ const agree=m.counts?(m.counts[m.suggested]||0):0;
+ let h=`<div class=condor>
+  <div class=chd><div><b>MACRO CYCLE · which sectors have the tailwind</b></div>
+   <span class="stat ${live?'in':'flat'}">${live?'LIVE · '+m.phase:'NOT SET YET'}</span></div>
+  <div class=note>The cost of money drives which businesses earn more, and that
+   repeats — so this is the <b>high-confidence</b> layer. Three numbers decide the
+   phase, and it only rotates when <b>two of the three agree</b>; one signal
+   flipping is noise. Below that, the calendar can only shade position
+   <i>size</i> — it never picks a sector. <b>Not investment advice; paper only.</b></div>`;
+
+ // hero: the phase, in words, with what it means
+ h+=`<div class=grid>
+   <div class=cell><div class=l>${live?'GIR IS TRADING':'SIGNALS POINT TO'}</div>
+     <div class=v style="color:${PHCOL[shown]||'var(--txt)'}">${shown}</div></div>
+   <div class=cell><div class=l>SIGNALS AGREEING</div><div class=v>${agree}/3</div></div>
+   <div class=cell><div class=l>READING AS OF</div>
+     <div class=v style=font-size:13px>${m.as_of||'—'}${m.age_days!=null?` <span class=sub>${m.age_days===0?'today':m.age_days+'d ago'}</span>`:''}</div></div>
+   <div class=cell><div class=l>THIS MONTH</div><div class=v style=font-size:13px>${MONFULL[m.month-1]}</div></div>
+ </div>`;
+ if(m.stale)h+=`<div class=note style="border-color:var(--red)"><b class=r>STALE.</b>
+   The reading is older than 45 days, so it can no longer change the phase — GIR
+   keeps trading the last known one. On the droplet:
+   <b>cd /home/globalbot && python3 macro_cycle.py</b></div>`;
+ if(!live)h+=`<div class=note><b class=a>Not applied yet.</b> GIR writes the phase
+   at its 08:05 check on the next trading day. To act on this reading now:
+   <b>cd /home/globalbot && python3 macro_cycle.py apply</b></div>`;
+
+ h+=cycleTrack(m);
+ h+=`<div class=note style=margin-top:2px>${escH(m.story||m.stories[shown]||'')}
+   <span class=sub>${escH(m.why||'')}</span></div>`;
+
+ // the actual answer: where to be, per phase
+ h+=`<table class=pltbl style=margin-top:10px>
+   <tr><th style=text-align:left>PHASE</th><th style=text-align:left>LEADS — where to look</th>
+   <th style=text-align:left>TAILWIND PASSED</th></tr>`;
+ m.order.forEach(p=>{
+  const on=p===shown;
+  h+=`<tr${on?' class=cycrow':''} title="${escH(m.stories[p]||'')}">
+   <td style=text-align:left><span class=cycdot style="background:${PHCOL[p]}"></span>
+     <b style="${on?`color:${PHCOL[p]}`:''}">${p}</b>${on?' <span class=sub>you are here</span>':''}</td>
+   <td style=text-align:left>${(m.sectors[p]||[]).join(' · ')}</td>
+   <td style="text-align:left;color:var(--mut)">${(m.avoid[p]||[]).join(' · ')}</td></tr>`;
+ });
+ h+=`</table>`;
+
+ // the three inputs, and what each one votes for
+ h+=`<table class=pltbl style=margin-top:10px>
+   <tr><th style=text-align:left>SIGNAL</th><th style=text-align:left>READING</th>
+   <th style=text-align:left>VOTES FOR</th></tr>`;
+ const SIGNAME={repo:'RBI repo direction',gsec:'10-yr G-sec, 3-month slope',
+                credit:'Bank credit growth YoY'};
+ ['repo','gsec','credit'].forEach(k=>{
+  const s=(m.signals||{})[k]||{};
+  const v=s.vote;
+  const shownVal=s.value==null?'—':escH(String(SIGWORD[s.value]||s.value));
+  h+=`<tr title="${escH(s.source||'')}"><td style=text-align:left>${SIGNAME[k]}</td>
+   <td style=text-align:left><b>${shownVal}${k==='gsec'&&s.value!=null?' bps':''}</b></td>
+   <td style=text-align:left>${v?`<span class=cycdot style="background:${PHCOL[v]}"></span><b style="color:${PHCOL[v]}">${v}</b>`:'<span class=muted>—</span>'}</td></tr>`;
+ });
+ h+=`</table>`;
+
+ // layer 2 — sizing only, and mostly flat on purpose
+ const cal=(m.calendar||[]).map(c=>{
+  const up=c.mult>1, dn=c.mult<1, col=up?'#23967a':dn?'#c08420':'var(--line)';
+  return `<div class="calcell${c.m===m.month?' now':''}" title="${MONFULL[c.m-1]} — ${escH(c.note)}${c.mult!==1?` · ×${c.mult} (${c.who})`:' · no sizing change'}">
+    <div class=calbar style="background:${col};opacity:${c.mult===1?.5:1}"></div>
+    <div class=calm>${MON[c.m-1]}</div>
+    <div class=calv>${c.mult===1?'—':'×'+c.mult}</div></div>`;
+ }).join('');
+ h+=`<div class=note style=margin-top:12px><b>CALENDAR — sizing only, never a reason to buy.</b>
+   Ten samples per month over a decade is not evidence, so only the two patterns with a real
+   cash-flow story move the number: <b class=a>March</b> (tax-loss selling, every sector, ×0.85)
+   and <b class=g>autos in Oct–Nov</b> (festive despatches, ×1.15). Every other month multiplies
+   by exactly 1.0 — deliberately doing nothing.</div>
+  <div class=calstrip>${cal}</div>
+  <div class=note style=margin-top:6px>${MONFULL[m.month-1]}: ${escH((m.calendar.find(c=>c.m===m.month)||{}).note||'')}</div>
+ </div>`;
+ return h;
+}
+
 function render(d){
  if(!d)return;DATA=d;
  if(d.holidays)HOLI=new Set(d.holidays);   // NSE holiday list -> the clock blinks CLOSED on them
@@ -862,6 +1003,7 @@ function render(d){
  if(FILTER==='options'&&d.options){ html=optionsPanel(d.options)+stockOptPanel(d.stock_options); } // condors: index + stocks
  else if(FILTER==='swami'){ html=swamiPanel(d.swaminatha); }               // Mayura news face (guest)
  else if(FILTER==='lab'){ html=labPanel(d.lab); }                          // strategy LAB leaderboard
+ else if(FILTER==='cycle'){ html=cyclePanel(d.macro); }                    // rate cycle -> which sectors lead
  else if(FILTER==='all'){ html=allPortfolio(d,q); }                        // one combined table
  else d.profiles.forEach(p=>{                                              // a single book's watch
   if(FILTER!==p.key)return;

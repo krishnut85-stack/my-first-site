@@ -10,6 +10,7 @@ from pathlib import Path
 from . import config
 from .cross import load_series
 from .feed import KiteFeed
+from . import macro
 from .market import (in_cas_window, is_cas_symbol, is_derivatives_open,
                      is_market_open, is_session_live, market_status)
 from .options import OptionsBook
@@ -856,6 +857,8 @@ class GarudaLive:
                                                                       [])[::-1]),
                 "index": self.index,
                 "weather": self.weather,
+                # the rate-cycle phase GIR is trading, for the CYCLE tab
+                "macro": macro.state(),
                 "market_open": is_market_open(), "market_status": market_status(),
                 "in_auction": in_cas_window(),
                 "derivatives_open": is_derivatives_open(),
