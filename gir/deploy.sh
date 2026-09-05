@@ -61,6 +61,14 @@ gir/raven/raven.py               raven
 gir/falcon/falcon.py             falcon
 gir/hunter/market_calendar.py    hunter
 gir/paper/paper_exit_monitor.py  paper
+fno_stocks.txt                   .
+"
+
+# Copied when present, skipped without complaint. cas_stocks.txt is generated
+# by scripts/refresh_cas_stocks.py from Kite and is not in the repo.
+OPTIONAL="
+cas_stocks.txt                   .
+nse_holidays.txt                 .
 "
 
 say "checking every source file exists before touching anything"
@@ -89,6 +97,13 @@ while read -r src dst; do
 done <<< "$FILES"
 
 say "copying into $LIVE"
+while read -r src dst; do
+  [ -z "$src" ] && continue
+  [ -f "$REPO/$src" ] || continue
+  target="$(echo "$LIVE/${dst#.}" | tr -s /)"
+  run cp "$REPO/$src" "$target/"
+  echo "  $src -> $target  (optional)"
+done <<< "$OPTIONAL"
 while read -r src dst; do
   [ -z "$src" ] && continue
   target="$(echo "$LIVE/${dst#.}" | tr -s /)"
@@ -120,6 +135,12 @@ done
 import market_session as m, macro_cycle as c
 print('  session clock says:', m.market_status())
 print('  macro signals  say:', c.advance(c.UNKNOWN, c.read_signals())[0])
+n = len(m.CAS_STOCKS)
+print('  CAS (auction-close) stocks loaded:', n)
+if not n:
+    print('  WARNING: no cas_stocks.txt/fno_stocks.txt found — every stock is')
+    print('           treated as closing at 15:30, so the 15:15 auction cutoff')
+    print('           is NOT being applied. Run scripts/refresh_cas_stocks.py')
 " ) || rollback
 
 # --- 5. restart ---------------------------------------------------------------
