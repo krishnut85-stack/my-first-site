@@ -93,11 +93,14 @@ def test_compare_scores_every_rule_on_both_halves():
     ind = {"I1": {m: 1.0 for m in months}, "I2": {m: 0.5 for m in months}}
     mem = {"I1": ["A", "B"], "I2": ["C", "D"]}
     rows, past, unseen = sp.compare(ind, stock_rets, mem, months, 6, 6, 1)
-    assert [(r["mode"], r["n"]) for r in rows] == [
-        ("all", 0),
-        ("leaders", 2), ("leaders", 3), ("leaders", 0.5), ("leaders", 0.34),
-        ("laggards", 2), ("laggards", 3), ("laggards", 0.5),
-        ("laggards", 0.34)]
+    assert [(r["mode"], r["n"], r["floor"]) for r in rows] == [
+        ("all", 0, 1),
+        ("leaders", 2, 1), ("leaders", 3, 1),
+        ("leaders", 0.5, 1), ("leaders", 0.5, 3),
+        ("leaders", 0.34, 1), ("leaders", 0.34, 3),
+        ("laggards", 2, 1), ("laggards", 3, 1),
+        ("laggards", 0.5, 1), ("laggards", 0.5, 3),
+        ("laggards", 0.34, 1), ("laggards", 0.34, 3)]
     assert past and unseen and not set(past) & set(unseen)
 
 
@@ -120,3 +123,25 @@ def test_a_fraction_never_rounds_an_industry_down_to_nothing(cache):
     rets = {s: {m: 1.0 for m in months} for s in ("A", "B")}
     assert len(sp.pick_stocks(rets, ["A", "B"], 30, months, 6,
                               "leaders", 0.1)) == 1
+
+
+def test_a_floor_stops_a_fraction_reducing_a_small_industry_to_one_name(cache):
+    """Where the fraction rows' extra drawdown comes from: 34% of a 2-member
+    industry is one stock carrying a fifth of the book."""
+    months = _months(40)
+    rets = {s: {m: float(i) for m in months}
+            for i, s in enumerate(["A", "B", "C", "D"])}
+    two, four = ["A", "B"], ["A", "B", "C", "D"]
+    assert len(sp.pick_stocks(rets, two, 30, months, 6, "leaders", 0.34)) == 1
+    assert len(sp.pick_stocks(rets, two, 30, months, 6,
+                              "leaders", 0.34, floor=3)) == 2   # all it has
+    assert len(sp.pick_stocks(rets, four, 30, months, 6,
+                              "leaders", 0.34, floor=3)) == 3
+
+
+def test_the_floor_never_forces_a_bigger_basket_than_the_fraction_asks_for():
+    months = _months(40)
+    rets = {f"S{i}": {m: float(i) for m in months} for i in range(20)}
+    mem = list(rets)
+    assert len(sp.pick_stocks(rets, mem, 30, months, 6,
+                              "leaders", 0.5, floor=3)) == 10

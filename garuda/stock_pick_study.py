@@ -48,6 +48,13 @@ PICKS = (2, 3, 0.5, 0.34)
 #: Selection rules tested inside each winning industry.
 MODES = ("all", "leaders", "laggards")
 
+#: Never hold fewer than this many names from an industry, however small the
+#: fraction works out. Most industries here have 2-5 priced members, so a bare
+#: fraction reduces them to a single stock — and a single stock standing in for
+#: a fifth of the book is where the extra drawdown in the fraction rows comes
+#: from. The floor separates "drop the weak half" from "concentrate".
+FLOORS = (1, 3)
+
 
 def stock_monthly_returns(symbols, max_move=MAX_DAILY_MOVE,
                           min_days=MIN_DAYS_IN_MONTH):
@@ -83,7 +90,7 @@ def stock_monthly_returns(symbols, max_move=MAX_DAILY_MOVE,
     return out
 
 
-def pick_stocks(stock_rets, members, i, months, lookback, mode, n):
+def pick_stocks(stock_rets, members, i, months, lookback, mode, n, floor=1):
     """The stocks to hold from one industry this rebalance.
 
     `all` is what the live book does today. `leaders` backs the names already
@@ -100,6 +107,7 @@ def pick_stocks(stock_rets, members, i, months, lookback, mode, n):
     if mode == "all":
         return [s for s, _ in have]
     want = max(1, round(len(have) * n)) if 0 < n < 1 else int(n)
+    want = max(want, min(floor, len(have)))
     if len(have) <= want:
         return [s for s, _ in have]
     have.sort(key=lambda x: x[1])
@@ -108,7 +116,7 @@ def pick_stocks(stock_rets, members, i, months, lookback, mode, n):
 
 
 def backtest_stocks(ind_rets, stock_rets, members_by_ind, months, lookback,
-                    hold, k, mode, n, cost_bps=COST_BPS):
+                    hold, k, mode, n, cost_bps=COST_BPS, floor=1):
     """Monthly returns of: top-k industries by momentum, then `mode` inside each.
 
     Equal weight across every stock held, so an industry that contributes six
@@ -129,7 +137,7 @@ def backtest_stocks(ind_rets, stock_rets, members_by_ind, months, lookback,
             picks = []
             for ind, _ in scored[-k:]:
                 picks += pick_stocks(stock_rets, members_by_ind.get(ind, []),
-                                     i, months, lookback, mode, n)
+                                     i, months, lookback, mode, n, floor)
             if not picks:
                 continue
             turnover = 1.0 if not held else \
@@ -148,19 +156,21 @@ def backtest_stocks(ind_rets, stock_rets, members_by_ind, months, lookback,
 
 
 def compare(ind_rets, stock_rets, members_by_ind, months, lookback, hold, k,
-            cost_bps=COST_BPS, modes=MODES, picks=PICKS):
+            cost_bps=COST_BPS, modes=MODES, picks=PICKS, floors=FLOORS):
     """Every within-industry rule, scored on PAST and on the UNSEEN years."""
     past, unseen = split_months(months)
     rows = []
     for mode in modes:
         for n in ([0] if mode == "all" else list(picks)):
-            a = stats(backtest_stocks(ind_rets, stock_rets, members_by_ind,
-                                      past, lookback, hold, k, mode, n,
-                                      cost_bps))
-            b = stats(backtest_stocks(ind_rets, stock_rets, members_by_ind,
-                                      unseen, lookback, hold, k, mode, n,
-                                      cost_bps))
-            rows.append({"mode": mode, "n": n, "past": a, "unseen": b})
+            for floor in ([1] if mode == "all" or n >= 1 else list(floors)):
+                a = stats(backtest_stocks(ind_rets, stock_rets, members_by_ind,
+                                          past, lookback, hold, k, mode, n,
+                                          cost_bps, floor))
+                b = stats(backtest_stocks(ind_rets, stock_rets, members_by_ind,
+                                          unseen, lookback, hold, k, mode, n,
+                                          cost_bps, floor))
+                rows.append({"mode": mode, "n": n, "floor": floor,
+                             "past": a, "unseen": b})
     return rows, past, unseen
 
 
@@ -228,6 +238,8 @@ def main(argv=None):
             name = "all of them"
         elif 0 < r["n"] < 1:
             name = f"top {r['n'] * 100:.0f}% {r['mode']}"
+            if r.get("floor", 1) > 1:
+                name += f" min{r['floor']}"
         else:
             name = f"top {int(r['n'])} {r['mode']}"
         print(f"  {name:<20}{_pc(r['unseen']['cagr']):>10}"
