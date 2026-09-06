@@ -236,7 +236,12 @@ def stats(series):
     return {"months": len(series),
             "cagr": round(cagr, 2) if cagr is not None else None,
             "total": round(lvl - 100, 1),
-            "maxdd": round(dd, 1),
+            # Two decimals, not one: a market-wide trough puts every basket
+            # in the same neighbourhood, and at one decimal -25.86 and -25.93
+            # both print as -25.9 — which reads as "these are the same number"
+            # when they are not. The extra digit is what separates a shared
+            # bad month from a shared bug.
+            "maxdd": round(dd, 2),
             # The month the trough landed in. Two rules sharing a maxdd to one
             # decimal is either a market-wide month that no basket could dodge
             # or a sign the baskets are the same; the date separates the two.
