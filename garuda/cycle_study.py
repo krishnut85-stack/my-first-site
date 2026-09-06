@@ -657,9 +657,10 @@ def main(argv=None):
     STUDY_FILE.write_text(json.dumps(study, indent=1))
     print(f"\nwrote {STUDY_FILE}")
     label = "sector indices" if indices_mode else "industries"
+    unit = "sector-months" if indices_mode else "industry-months"
     print(f"  {len(study['sectors'])} {label} · {cov['years']} calendar years "
           f"({cov['first_year']}-{cov['last_year']}) · "
-          f"{cov['observations']} sector-months")
+          f"{cov['observations']} {unit}")
     if cov["years"] and cov["years"] < 10:
         print("  NOTE: that is the history Kite served, not the history asked "
               "for. Monthly cells will be thin.")
