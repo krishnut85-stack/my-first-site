@@ -331,6 +331,8 @@ class GarudaLive:
             out.update(pf.holdings)
         # + Swaminatha's holdings, so the guest tab prices at live LTP too
         out.update(self._swami_raw().get("holdings", {}))
+        # + the rotation book: its portfolio is not in self.portfolios
+        out.update(self.rotation.pf.holdings)
         return out
 
     def _swami_raw(self, cache={}):
@@ -402,6 +404,24 @@ class GarudaLive:
         out = set()
         for syms in self.universe.values():
             out.update(syms)
+        out |= self.rotation_symbols()
+        return out
+
+    def rotation_symbols(self):
+        """Every symbol the rotation book needs a price for.
+
+        Two halves, and the second is the one that bites. What it HOLDS must
+        be priced or its P&L reads flat. But what it is ABOUT to buy must be
+        priced too: rebalance() drops any target it cannot price, so on the
+        first rebalance — when it holds nothing — an unpriced target list means
+        it buys nothing at all and reports success. The rotation universe is
+        picked by industry, not by market cap, so most of these names are in no
+        other book (PNGJL, SKYGOLD, THANGAMAYL are in none of the eleven).
+        """
+        out = set(self.rotation.pf.holdings)
+        study = _rotation_study() or {}
+        for p in ((study.get("today") or {}).get("picks") or []):
+            out.update(s for s in (p.get("members") or []) if s)
         return out
 
     @property

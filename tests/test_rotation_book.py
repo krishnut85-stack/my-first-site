@@ -161,3 +161,32 @@ def test_rebalancing_records_the_rule_change_and_reranks_on_the_new_hold():
     assert b.hold_m == 3
     assert b.next_rerank() == "2026-12"          # not 2027-03
     assert any("rule changed" in n["note"] for n in b.notes)
+
+
+def test_the_rotation_books_targets_get_priced_before_it_can_buy_them(
+        tmp_path, monkeypatch):
+    """rebalance() drops any target it cannot price. On the first rebalance the
+    book holds nothing, so if the targets are not in the priced set it buys
+    nothing and reports success."""
+    from garuda import config
+    from garuda.live import GarudaLive
+    import garuda.live as live_mod
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    monkeypatch.setattr(live_mod, "_rotation_study", lambda: {
+        "today": {"as_of": "2026-09", "rule": {"lookback": 6, "hold": 6, "k": 5},
+                  "picks": [{"industry": "Gems & Jewellery",
+                             "members": ["PNGJL", "SKYGOLD", "THANGAMAYL"]}]}})
+    live = GarudaLive(csv_dir=str(tmp_path))
+    syms = live.all_symbols()
+    for s in ("PNGJL", "SKYGOLD", "THANGAMAYL"):
+        assert s in syms, f"{s} would never be quoted, so never bought"
+
+
+def test_rotation_holdings_are_priced_though_its_portfolio_is_separate(
+        tmp_path, monkeypatch):
+    from garuda import config
+    from garuda.live import GarudaLive
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    live = GarudaLive(csv_dir=str(tmp_path))
+    live.rotation.pf.buy("KALYANKJIL", 5, 100.0, entry_len=0)
+    assert "KALYANKJIL" in live.held_symbols()
