@@ -589,15 +589,21 @@ def main(argv=None):
             du = (r["unseen"]["cagr"] or 0) - (fbase["unseen"]["cagr"] or 0)
             dp = (r["past"]["cagr"] or 0) - (fbase["past"]["cagr"] or 0)
             dd = (r["unseen"]["maxdd"] or 0) - (fbase["unseen"]["maxdd"] or 0)
+            # A defensive check earns its place on risk, not only on return,
+            # so the drawdown is read BEFORE calling anything a failure. The
+            # first version of this said "no safer" about a row whose own
+            # maxDD column showed 6.6 points shallower, because it only
+            # reached the drawdown branch when the return was nearly intact.
             if du > 0 and dp > 0:
                 print(f"      -> beats fixed hold in BOTH halves "
                       f"({_pc(du)} unseen, {_pc(dp)} past)")
-            elif dd > 0 and du > -2.0:
-                # A defensive check earns its place on risk, not only return:
-                # a shallower drawdown for a little less return is a real
-                # trade, and worth naming rather than scoring as a loss.
-                print(f"      -> {_pc(dd)} shallower drawdown for "
-                      f"{_pc(du)} return. A risk trade, not a free win.")
+            elif dd > 0.5:
+                cost = -du
+                verdict = ("worth it" if cost < dd else
+                           f"{cost / dd:.1f} points of return per point of "
+                           f"drawdown saved — a poor trade")
+                print(f"      -> SAFER: {_pc(dd)} shallower drawdown, "
+                      f"costing {_pc(du)} of return. {verdict}.")
             elif du <= 0 and dp <= 0:
                 print(f"      -> worse in both halves, and no safer.")
             else:
