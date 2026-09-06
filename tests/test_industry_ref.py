@@ -67,3 +67,53 @@ def test_agreement_detects_two_series_measuring_the_same_thing():
               "theirs": random.uniform(-50, 50), "gap": 0.0} for i in range(40)]
     assert abs(ir.agreement(noise)["corr"]) < 0.5     # unrelated series
     assert ir.agreement([])["corr"] is None
+
+
+BREADTH = ('﻿"S.No","NAME","NO. OF STOCKS","MARKET CAP","MOMENTUM SCORE",'
+           '"RSI > 50","MFI > 50","LTP > SMA20","LTP > SMA50","LTP > SMA200",'
+           '"SMA50 > SMA200","DAY GAINERS%","WEEK GAINERS%"\n'
+           '"1","Iron & Steel Products","88","5,11,783.33","44.31","23.5%",'
+           '"58.8%","23.5%","30.7%","44.3%","29.4%","52.9%","23.5%"\n'
+           '"2","Microfinance Institutions","5","1,234.00","61.00","80%",'
+           '"80%","60%","80%","80%","60%","40%","60%"\n')
+
+
+@pytest.fixture
+def breadth(tmp_path):
+    p = tmp_path / "breadth.csv"
+    p.write_text(BREADTH, encoding="utf-8")
+    return ir.load_breadth(p)
+
+
+def test_breadth_reads_counts_and_percentages(breadth):
+    b = breadth["Iron & Steel Products"]
+    assert b["stocks"] == 88
+    assert b["mcap_cr"] == pytest.approx(511783.33)   # Indian grouping
+    assert b["above_sma200"] == pytest.approx(44.3)   # the "%" is stripped
+    assert b["above_sma50"] == pytest.approx(30.7)
+    assert b["momentum"] == pytest.approx(44.31)
+
+
+def test_a_missing_breadth_file_reads_as_empty(tmp_path):
+    assert ir.load_breadth(tmp_path / "nope.csv") == {}
+
+
+def test_a_rise_carried_by_a_minority_is_flagged_narrow(breadth):
+    picks = [{"industry": "Iron & Steel Products", "trailing": 56.8,
+              "members": ["APLAPOLLO", "SURYAROSNI", "USHAMART", "WELCORP"]},
+             {"industry": "Microfinance Institutions", "trailing": 12.0,
+              "members": ["A", "B"]}]
+    rows = {r["industry"]: r for r in ir.breadth_for_picks(picks, breadth)}
+    narrow = rows["Iron & Steel Products"]
+    assert narrow["narrow"] is True            # 44.3% < NARROW_SMA200
+    assert narrow["stocks"] == 88 and narrow["in_universe"] == 4
+    assert narrow["coverage_pct"] == pytest.approx(4.5)   # we hold 4 of 88
+    assert rows["Microfinance Institutions"]["narrow"] is False
+
+
+def test_an_industry_absent_from_the_export_says_so_rather_than_guessing(breadth):
+    rows = ir.breadth_for_picks(
+        [{"industry": "Nonesuch", "trailing": 1.0, "members": ["X"]}], breadth)
+    assert rows[0]["breadth"] is None
+    assert "not in the breadth export" in rows[0]["note"]
+    assert rows[0]["held"] == 1

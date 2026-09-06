@@ -56,6 +56,70 @@ def load_reference(path):
     return out
 
 
+#: Their breadth columns -> ours. Percentages of the industry's stocks.
+BREADTH_COLUMNS = {"RSI > 50": "rsi50", "MFI > 50": "mfi50",
+                   "LTP > SMA20": "above_sma20", "LTP > SMA50": "above_sma50",
+                   "LTP > SMA200": "above_sma200",
+                   "SMA50 > SMA200": "sma50_gt_200"}
+
+#: Below this share of constituents above their 200-day average, an industry's
+#: rise came from a minority of its stocks. That matters because the rotation
+#: book buys the WHOLE industry equally weighted: if a +55% quarter was three
+#: names out of eighty, an equal-weight basket does not capture it.
+NARROW_SMA200 = 50.0
+
+
+def load_breadth(path):
+    """{industry: {stocks, mcap, momentum, above_sma200, ...}} from the
+    equi-weighted market-breadth export."""
+    out = {}
+    p = Path(path)
+    if not p.exists():
+        return out
+    with p.open(encoding="utf-8-sig", newline="") as f:
+        for row in csv.DictReader(f):
+            name = (row.get("NAME") or row.get("Name") or "").strip()
+            if not name:
+                continue
+            rec = {"stocks": int(_num(row.get("NO. OF STOCKS")) or 0),
+                   "mcap_cr": _num(row.get("MARKET CAP")),
+                   "momentum": _num(row.get("MOMENTUM SCORE"))}
+            for col, key in BREADTH_COLUMNS.items():
+                rec[key] = _num(row.get(col))
+            out[name] = rec
+    return out
+
+
+def breadth_for_picks(picks, breadth):
+    """Attach breadth to each pick and say whether its strength is broad.
+
+    A pick whose industry rose on a minority of its constituents is a warning
+    for an equal-weight book specifically: it will hold the laggards too.
+    """
+    out = []
+    for p in picks:
+        name = p.get("industry")
+        b = breadth.get(name)
+        row = {"industry": name, "trailing": p.get("trailing"),
+               "held": len(p.get("members") or [])}
+        if not b:
+            row.update({"breadth": None, "note": "not in the breadth export"})
+            out.append(row)
+            continue
+        above = b.get("above_sma200")
+        row.update({
+            "stocks": b["stocks"], "in_universe": len(p.get("members") or []),
+            "momentum_score": b.get("momentum"),
+            "above_sma200": above, "above_sma50": b.get("above_sma50"),
+            "sma50_gt_200": b.get("sma50_gt_200"),
+            "narrow": above is not None and above < NARROW_SMA200,
+            "coverage_pct": round(len(p.get("members") or [])
+                                  / b["stocks"] * 100, 1) if b["stocks"] else None,
+        })
+        out.append(row)
+    return out
+
+
 def coverage(reference, measured, meta=None):
     """What the study can see, and what it cannot.
 
@@ -126,6 +190,51 @@ def agreement(pairs):
             "worst": pairs[0] if pairs else None}
 
 
+def report_breadth(path):
+    """How broad the rotation book's current picks actually are.
+
+    The book buys a whole industry equally weighted, so a rise carried by a
+    handful of its constituents is not a rise the book can capture. This prints
+    what share of each pick's stocks are above their 200-day average, and names
+    the industries where that share is highest.
+    """
+    breadth = load_breadth(path)
+    if not breadth:
+        print(f"no industries read from {path}")
+        return 1
+    total = sum(b["stocks"] for b in breadth.values())
+    print(f"breadth: {len(breadth)} industries, {total} listed stocks")
+
+    from .rotation_study import STUDY_FILE as ROT_FILE
+    import json
+    picks = []
+    if ROT_FILE.exists():
+        picks = ((json.loads(ROT_FILE.read_text()).get("today") or {})
+                 .get("picks") or [])
+    if picks:
+        print("\nBREADTH OF THE CURRENT PICKS  "
+              f"(narrow = under {NARROW_SMA200:.0f}% above their 200-day)")
+        for r in breadth_for_picks(picks, breadth):
+            if r.get("breadth", 0) is None:
+                print(f"  {r['industry']:<34} {r['note']}")
+                continue
+            flag = "NARROW" if r["narrow"] else "broad "
+            print(f"  {r['industry']:<34} {flag}  "
+                  f"{r['above_sma200'] or 0:>5.1f}% > SMA200   "
+                  f"holding {r['in_universe']:>3} of {r['stocks']:>3} listed "
+                  f"({r['coverage_pct']}%)")
+    else:
+        print("\nno rotation_study.json picks yet — run rotation_study first")
+
+    broad = sorted((b for b in breadth.items() if b[1]["stocks"] >= 5),
+                   key=lambda kv: -(kv[1].get("above_sma200") or 0))
+    print("\nBroadest industries right now (most constituents in uptrend):")
+    for name, b in broad[:10]:
+        print(f"  {b.get('above_sma200') or 0:>5.1f}% > SMA200   "
+              f"{b['stocks']:>3} stocks   {name}")
+    return 0
+
+
 def main(argv=None):
     import sys
     argv = list(sys.argv[1:] if argv is None else argv)
@@ -133,12 +242,20 @@ def main(argv=None):
     def opt(flag, cast=str, default=None):
         return cast(argv[argv.index(flag) + 1]) if flag in argv else default
 
-    ref_path = opt("--reference") or (argv[0] if argv else None)
-    if not ref_path:
+    ref_path = opt("--reference") or (argv[0] if argv and not argv[0].startswith("-")
+                                      else None)
+    breadth_path = opt("--breadth")
+    if not ref_path and not breadth_path:
         print("usage: python3 -m garuda.industry_ref --reference <trendlyne.csv> "
-              "[--window 6m]")
+              "[--window 6m]\n"
+              "       python3 -m garuda.industry_ref --breadth <breadth.csv>")
         return 2
     window = opt("--window", str, "6m")
+
+    if breadth_path:
+        rc = report_breadth(breadth_path)
+        if not ref_path:
+            return rc
     reference = load_reference(ref_path)
     if not reference:
         print(f"no industries read from {ref_path}")
