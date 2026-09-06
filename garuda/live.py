@@ -11,6 +11,7 @@ from . import config
 from .cross import load_series
 from .feed import KiteFeed
 from . import macro
+from .rotation import RotationBook
 from .market import (in_cas_window, is_cas_symbol, is_derivatives_open,
                      is_market_open, is_session_live, market_status)
 from .options import OptionsBook
@@ -155,6 +156,9 @@ class GarudaLive:
         # per-book equity at the start of today (for DAY P&L) — persisted to disk
         # so a mid-session server restart keeps today's baseline instead of
         # re-zeroing DAY P&L and losing the morning's move.
+        # ROTATION: the tested industry-momentum rule, running forward on live
+        # prices. Its own 10L book, counted like every other.
+        self.rotation = RotationBook.load(_rotation_path())
         self.day_base_date, self.day_base = self._load_day_base()
         # persistent, timestamped grand-total equity samples (the P&L graph's
         # memory: [{t: 'YYYY-MM-DD HH:MM', v: equity}]) — survives restarts/days.
@@ -500,6 +504,18 @@ class GarudaLive:
         self.stock_options.step(self.prices, _date.today(), is_derivatives_open(),
                                 universe=fno)
         self.stock_options.save(_stock_options_path())
+        # ROTATION: rebalances only when its six months are up; otherwise this
+        # is deliberately a no-op.
+        try:
+            note = self.rotation.step(self.prices, _today(), is_market_open(),
+                                      _rotation_study())
+            if note:
+                print(f"[garuda] rotation: {note}", flush=True)
+            self.rotation.save(_rotation_path())
+            results["rotation"] = {"status": note or
+                                   f"holding until {self.rotation.next_rerank()}"}
+        except Exception as _re:  # noqa: BLE001
+            print(f"[garuda] rotation step failed: {_re}", flush=True)
         results["stock_options"] = {
             "status": f"{len(self.stock_options.positions)} stock condors open"}
         self.last_scan_date = _today()
@@ -759,6 +775,34 @@ class GarudaLive:
                 "chart_sym": chart_sym, "chart": self.charts.get(chart_sym),
                 "lessons": self._lessons_for(k),
             })
+        # ROTATION sits in the same table as the signal books: same capital,
+        # same equity maths, so the totals and the combined curve include it
+        # without special-casing.
+        try:
+            rs_state = self.rotation.state(lambda s: self.prices.get(s))
+            rot_day_base = self.day_base.get("rotation")
+            if rot_day_base is None:
+                self.day_base["rotation"] = round(rs_state["equity"], 0)
+                rot_day_base = self.day_base["rotation"]
+                base_changed = True
+            profs.append({
+                "key": "rotation", "name": "ROTATION",
+                "desc": "industry momentum", "strategy": "rotation",
+                "label": "ROT", "rules": rs_state["rule"],
+                "capital": rs_state["capital"], "equity": rs_state["equity"],
+                "pnl_pct": rs_state["pnl_pct"],
+                "day_pnl": round(rs_state["equity"] - rot_day_base, 0),
+                "positions": rs_state["positions"],
+                "cash": rs_state["cash"], "rotation": rs_state,
+                "win": None, "win_kind": None, "win_open": None, "win_n": 0,
+                "cats": {}, "proven_win": None, "proven_ret": None,
+                "proven_pf": None, "universe": [], "watch": [],
+                "pf": None, "buys": [], "sells": [],
+                "chart_sym": None, "chart": None, "lessons": [],
+                "best": None, "worst": None,
+            })
+        except Exception:  # noqa: BLE001
+            pass
         totals = {
             "equity": round(sum(p["equity"] for p in profs), 0),
             "capital": round(sum(p["capital"] for p in profs), 0),
@@ -875,6 +919,21 @@ class GarudaLive:
                 "derivatives_open": is_derivatives_open(),
                 "holidays": sorted(HOLIDAYS),
                 "last_scan": self.last_scan_date, "today": _today()}
+
+
+def _rotation_path():
+    return config.DATA_DIR / "garuda_rotation.json"
+
+
+def _rotation_study():
+    """The backtest's current picks. None until rotation_study has been run."""
+    try:
+        from .rotation_study import STUDY_FILE
+        if STUDY_FILE.exists():
+            return json.loads(STUDY_FILE.read_text())
+    except Exception:  # noqa: BLE001
+        pass
+    return None
 
 
 def _cycle_study():
