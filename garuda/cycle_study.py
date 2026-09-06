@@ -529,20 +529,33 @@ def gather_industries(kite, universe, years=20, offline=False, log=print,
     log(f"  stocks: {fetched} fetched, {cached} from cache "
         f"({topped} topped up), {missing} missing")
 
-    data, meta, diag = {}, {}, {}
+    data, meta, diag, thin = {}, {}, {}, []
     for ind, g in sorted(groups.items()):
         series = industry_series(g["members"], stocks, diag=diag)
+        have = sum(1 for s in g["members"] if s in stocks)
         if series:
             data[ind] = series
-            have = sum(1 for s in g["members"] if s in stocks)
             meta[ind] = {"sector": g["sector"], "members": len(g["members"]),
                          "with_data": have}
+        else:
+            thin.append((ind, len(g["members"]), have))
     kept, dropped = diag.get("kept", 0), diag.get("dropped", 0)
     if dropped:
         pct = dropped / max(1, kept + dropped) * 100
         log(f"  discarded {dropped} single-day moves over "
             f"{int(MAX_DAILY_MOVE * 100)}% ({pct:.2f}% of all days) — splits, "
             f"bonuses and bad prints")
+    if thin:
+        # Finer industries mean fewer members each; an "industry" of two
+        # companies is those two companies, so it is dropped rather than
+        # dressed up as a sector average. Name them — a missing industry
+        # should be a stated fact, not a silent absence.
+        log(f"  {len(thin)} industries too thin to average "
+            f"(under {MIN_MEMBERS} stocks with history on any day):")
+        for name, members, have in sorted(thin, key=lambda x: -x[2])[:12]:
+            log(f"      {name} — {have}/{members} stocks priced")
+        if len(thin) > 12:
+            log(f"      ... and {len(thin) - 12} more")
     log(f"  built {len(data)} industry series")
     return data, meta
 

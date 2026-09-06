@@ -345,3 +345,20 @@ def test_an_explicit_universe_is_not_merged_with_the_broad_lists(tmp_path):
     files = cs.find_universe_files(extra=fine, csv_dir=coarse)
     assert all("trendlyne" in f.name for f in files)
     assert cs.load_universe(files)["HINDALCO"][0] == "Aluminium"
+
+
+def test_industries_too_thin_to_average_are_reported_not_hidden(tmp_path,
+                                                                monkeypatch):
+    """A two-company 'industry' is those two companies — say so, don't drop quietly."""
+    monkeypatch.setattr(cs, "STOCK_DIR", tmp_path / "stock_history")
+    for sym, up in (("A1", 1.0), ("A2", 2.0), ("A3", 3.0), ("B1", 5.0)):
+        cs.save_stock(sym, [{"t": "2024-01-01", "c": 100.0},
+                            {"t": "2024-01-02", "c": 100.0 + up}])
+    universe = {"A1": ("Fat", ""), "A2": ("Fat", ""), "A3": ("Fat", ""),
+                "B1": ("Thin", "")}
+    said = []
+    data, _meta = cs.gather_industries(None, universe, offline=True,
+                                       log=said.append)
+    assert "Fat" in data and "Thin" not in data
+    joined = " ".join(said)
+    assert "too thin" in joined and "Thin" in joined
