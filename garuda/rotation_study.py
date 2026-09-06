@@ -134,19 +134,28 @@ def ranked(rets, months, i, lookback, direction):
 
 
 def backtest(rets, months, lookback, hold, k, direction, cost_bps=COST_BPS,
-             guard=0):
+             guard=0, floor=None, floor_win=3, floor_to="cash"):
     """Monthly portfolio returns for one rule. [] if history is too short.
 
     Holds are re-picked every `hold` months; in between the book is left alone,
     which is what "wait for the next one" actually means in practice.
 
-    `guard` adds a monthly health check between those re-picks: an industry
-    that has fallen out of the top `guard * k` by the rule's own ranking is
-    sold and replaced by the best-ranked industry not already held. guard=0
-    disables it entirely, which is the fixed-hold rule. This is not a free
-    improvement — every swap pays the same costs a rebalance pays, and an
-    industry that dips out of the cutoff and straight back in pays twice for
-    nothing.
+    Two different monthly checks can run between rebalances, and they are not
+    the same question:
+
+    `guard` — RELATIVE. Sell anything that has fallen out of the top
+    `guard * k` by the rule's own ranking, replacing it with the best industry
+    not held. This asks "is it still beating its peers?", which sells a healthy
+    industry because two others ran harder, and holds a collapsing one as long
+    as everything else is collapsing too.
+
+    `floor` — ABSOLUTE. Sell anything whose OWN trailing return over
+    `floor_win` months has fallen below `floor` (0.0 = "it is going down").
+    This asks "has something gone wrong with THIS industry?" and does not care
+    what the others are doing. `floor_to` decides where the money goes:
+    "cash" leaves the slot empty and earning nothing until the next scheduled
+    re-rank — genuinely defensive — while "best" buys the top-ranked industry
+    not held, staying fully invested.
     """
     out, held, since = [], [], 0
     for i in range(len(months) - 1):
@@ -157,27 +166,43 @@ def backtest(rets, months, lookback, hold, k, direction, cost_bps=COST_BPS,
             if len(order) < k:
                 continue
             picks = order[:k]
-            turnover = 1.0 if not held else \
-                len(set(picks) - set(held)) / float(k)
+            prev = [h for h in held if h]
+            turnover = 1.0 if not prev else \
+                (len(set(picks) - set(prev)) + (k - len(prev))) / float(k)
             cost = turnover * cost_bps / 100.0
             held, since = picks, 0
-        elif guard:
-            # Still alive? Anything outside the top guard*k is not.
+        elif guard or floor is not None:
             order = ranked(rets, months, i, lookback, direction)
-            alive = set(order[:guard * k])
-            keep = [h for h in held if h in alive]
-            dropped = len(held) - len(keep)
+            keep = list(held)
+            if guard:
+                alive = set(order[:guard * k])
+                keep = [h if (h and h in alive) else None for h in keep]
+            if floor is not None:
+                def _ok(h, _i=i):
+                    if not h:
+                        return False
+                    t = trailing(rets, h, _i, months, floor_win)
+                    return t is not None and t >= floor
+                keep = [h if _ok(h) else None for h in keep]
+            dropped = sum(1 for a, b in zip(held, keep) if a and not b)
             if dropped:
-                spare = [a for a in order if a not in keep][:dropped]
-                held = keep + spare
                 cost = dropped / float(k) * cost_bps / 100.0
+                if floor_to == "best" or (guard and floor is None):
+                    spare = [a for a in order if a not in set(keep)]
+                    keep = [h or (spare.pop(0) if spare else None) for h in keep]
+                held = keep
             else:
                 cost = 0.0
         else:
             cost = 0.0
         since += 1
         nxt = months[i + 1]
-        got = [rets[p][nxt] for p in held if nxt in rets.get(p, {})]
+        # An empty slot is cash: it earns nothing, and it still counts as a
+        # slot. Averaging only the filled ones would quietly rebase the book
+        # onto whatever survived and hide the cost of sitting out.
+        got = [(rets[p][nxt] if p and nxt in rets.get(p, {}) else 0.0)
+               for p in held] if any(h is None for h in held) else \
+            [rets[p][nxt] for p in held if nxt in rets.get(p, {})]
         if not got:
             continue
         out.append((nxt, statistics.fmean(got) - cost))
@@ -369,6 +394,33 @@ def guard_comparison(rets, past, unseen, rule, cost_bps=COST_BPS,
     return out
 
 
+def floor_comparison(rets, past, unseen, rule, cost_bps=COST_BPS,
+                     variants=((3, "cash"), (3, "best"),
+                               (6, "cash"), (6, "best"))):
+    """The same rule with an ABSOLUTE monthly safety check: sell any held
+    industry whose own trailing return has turned negative.
+
+    Unlike the relative guard this does not care how the other industries are
+    doing, which is the point — it is there for the month something goes wrong
+    with an industry, not for the month it merely lags.
+    """
+    out = [{"win": None, "to": None,
+            "past": stats(backtest(rets, past, rule["lookback"], rule["hold"],
+                                   rule["k"], rule["direction"], cost_bps)),
+            "unseen": stats(backtest(rets, unseen, rule["lookback"],
+                                     rule["hold"], rule["k"],
+                                     rule["direction"], cost_bps))}]
+    for win, to in variants:
+        a = stats(backtest(rets, past, rule["lookback"], rule["hold"],
+                           rule["k"], rule["direction"], cost_bps,
+                           floor=0.0, floor_win=win, floor_to=to))
+        b = stats(backtest(rets, unseen, rule["lookback"], rule["hold"],
+                           rule["k"], rule["direction"], cost_bps,
+                           floor=0.0, floor_win=win, floor_to=to))
+        out.append({"win": win, "to": to, "past": a, "unseen": b})
+    return out
+
+
 def main(argv=None):
     import sys
     argv = list(sys.argv[1:] if argv is None else argv)
@@ -517,6 +569,39 @@ def main(argv=None):
                 else:
                     print(f"      -> helps one half, hurts the other. Not "
                           f"evidence; that is noise.")
+
+        print(f"\nSAFETY CHECK — mid-hold, sell any industry whose OWN")
+        print(f"  trailing return has turned negative (peers ignored):")
+        print(f"  {'check':<16}{'UNSEEN':>10}{'vs bm':>9}{'PAST':>10}"
+              f"{'vs bm':>9}{'maxDD':>9}")
+        fbase = None
+        for r in floor_comparison(rets, past, unseen, pick_rule, cost):
+            eu = (r["unseen"]["cagr"] or 0) - (bench_unseen["cagr"] or 0)
+            ep = (r["past"]["cagr"] or 0) - (bench_past["cagr"] or 0)
+            name = "off (fixed)" if r["win"] is None \
+                else f"{r['win']}m -> {r['to']}"
+            print(f"  {name:<16}{_pc(r['unseen']['cagr']):>10}{_pc(eu):>9}"
+                  f"{_pc(r['past']['cagr']):>10}{_pc(ep):>9}"
+                  f"{_pc(r['unseen']['maxdd']):>9}")
+            if r["win"] is None:
+                fbase = r
+                continue
+            du = (r["unseen"]["cagr"] or 0) - (fbase["unseen"]["cagr"] or 0)
+            dp = (r["past"]["cagr"] or 0) - (fbase["past"]["cagr"] or 0)
+            dd = (r["unseen"]["maxdd"] or 0) - (fbase["unseen"]["maxdd"] or 0)
+            if du > 0 and dp > 0:
+                print(f"      -> beats fixed hold in BOTH halves "
+                      f"({_pc(du)} unseen, {_pc(dp)} past)")
+            elif dd > 0 and du > -2.0:
+                # A defensive check earns its place on risk, not only return:
+                # a shallower drawdown for a little less return is a real
+                # trade, and worth naming rather than scoring as a loss.
+                print(f"      -> {_pc(dd)} shallower drawdown for "
+                      f"{_pc(du)} return. A risk trade, not a free win.")
+            elif du <= 0 and dp <= 0:
+                print(f"      -> worse in both halves, and no safer.")
+            else:
+                print(f"      -> helps one half, hurts the other. Noise.")
 
         picks = current_picks(rets, months, pick_rule["lookback"],
                               pick_rule["k"], pick_rule["direction"])

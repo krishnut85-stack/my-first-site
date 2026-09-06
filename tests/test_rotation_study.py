@@ -261,11 +261,11 @@ def _trending(n=140):
     import random
     random.seed(11)
     months = [f"{2010 + i // 12:04d}-{i % 12 + 1:02d}" for i in range(n)]
-    rets = {"WINNER": {m: 0.03 for m in months},
-            "DIES": {m: (0.05 if i < n // 2 else -0.05)
+    rets = {"WINNER": {m: 3.0 for m in months},
+            "DIES": {m: (5.0 if i < n // 2 else -5.0)
                      for i, m in enumerate(months)}}
     for j in range(8):
-        rets[f"FILL{j}"] = {m: random.uniform(-0.02, 0.02) for m in months}
+        rets[f"FILL{j}"] = {m: random.uniform(-2.0, 2.0) for m in months}
     return rets, months
 
 
@@ -280,8 +280,8 @@ def test_the_guard_sells_an_industry_that_stops_being_alive():
     """DIES leads, gets picked, then collapses. A fixed hold rides it down to
     the next re-rank; the guard drops it the month it leaves the top ranks."""
     months = [f"{2010 + i // 12:04d}-{i % 12 + 1:02d}" for i in range(24)]
-    rets = {"DIES": {m: (0.10 if i < 6 else -0.20) for i, m in enumerate(months)},
-            "WINNER": {m: 0.01 for m in months},
+    rets = {"DIES": {m: (10.0 if i < 6 else -20.0) for i, m in enumerate(months)},
+            "WINNER": {m: 1.0 for m in months},
             "FLAT": {m: 0.0 for m in months}}
     fixed = rs.stats(rs.backtest(rets, months, 1, 6, 1, "momentum"))
     guarded = rs.stats(rs.backtest(rets, months, 1, 6, 1, "momentum", guard=2))
@@ -317,3 +317,55 @@ def test_hold_and_guard_comparisons_cover_every_setting_asked_for():
     gc = rs.guard_comparison(rets, past, unseen, rule)
     assert [r["guard"] for r in gc] == [0, 2, 3]
     assert all("past" in r and "unseen" in r for r in hc + gc)
+
+
+def _collapse():
+    """Every industry falls together — the case a RELATIVE check cannot see."""
+    months = [f"{2010 + i // 12:04d}-{i % 12 + 1:02d}" for i in range(36)]
+    rets = {}
+    for j in range(6):
+        rets[f"IND{j}"] = {m: (4.0 if i < 12 else -6.0)
+                           for i, m in enumerate(months)}
+    return rets, months
+
+
+def test_a_relative_check_is_blind_to_everything_falling_together():
+    """The whole point of the user's question: when every industry drops, no
+    holding ever leaves the top ranks, so the relative guard never fires."""
+    rets, months = _collapse()
+    fixed = rs.stats(rs.backtest(rets, months, 3, 6, 2, "momentum"))
+    guarded = rs.stats(rs.backtest(rets, months, 3, 6, 2, "momentum", guard=2))
+    assert guarded["cagr"] == fixed["cagr"]          # it changed nothing at all
+
+
+def test_an_absolute_floor_goes_to_cash_when_the_industry_itself_turns_down():
+    rets, months = _collapse()
+    fixed = rs.stats(rs.backtest(rets, months, 3, 6, 2, "momentum"))
+    floored = rs.stats(rs.backtest(rets, months, 3, 6, 2, "momentum",
+                                   floor=0.0, floor_win=3, floor_to="cash"))
+    assert floored["cagr"] > fixed["cagr"]
+    assert floored["maxdd"] > fixed["maxdd"]         # a shallower drawdown
+
+
+def test_an_empty_slot_earns_nothing_rather_than_being_averaged_away():
+    """Cash must dilute the book. Averaging only the surviving industries
+    would rebase onto them and hide the cost of sitting out."""
+    months = [f"{2010 + i // 12:04d}-{i % 12 + 1:02d}" for i in range(30)]
+    rets = {"UP": {m: 2.0 for m in months},
+            "DOWN": {m: (5.0 if i < 8 else -3.0) for i, m in enumerate(months)},
+            "MID": {m: 0.1 for m in months}}
+    r = rs.backtest(rets, months, 3, 12, 2, "momentum",
+                    floor=0.0, floor_win=3, floor_to="cash")
+    # once DOWN is sold to cash the book earns about half of UP's 2%, not 2%
+    tail = [v for _, v in r[-4:]]
+    assert all(0.5 < v < 1.5 for v in tail), tail
+
+
+def test_floor_comparison_reports_the_baseline_plus_every_variant():
+    rets, months = _collapse()
+    past, unseen = rs.split_months(months)
+    rule = {"lookback": 3, "hold": 6, "k": 2, "direction": "momentum"}
+    rows = rs.floor_comparison(rets, past, unseen, rule)
+    assert rows[0]["win"] is None                    # fixed hold, for contrast
+    assert [(r["win"], r["to"]) for r in rows[1:]] == \
+        [(3, "cash"), (3, "best"), (6, "cash"), (6, "best")]
