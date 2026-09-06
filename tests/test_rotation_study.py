@@ -183,3 +183,39 @@ def test_an_impossible_benchmark_is_flagged_not_reported(capsys, tmp_path,
     rets = rs.monthly_returns_by_industry(d)
     bench = rs.stats(rs.equal_weight_all(rets, rs.all_months(rets)))
     assert bench["cagr"] > rs.IMPLAUSIBLE_CAGR
+
+
+def test_current_picks_are_the_rule_speaking_not_a_fresh_opinion():
+    """Today's holdings must come from the same window the rule was tested on."""
+    n = 60
+    d = market({"HOT": [3.0] * n, "WARM": [1.0] * n, "COOL": [0.0] * n,
+                "COLD": [-2.0] * n})
+    rets = rs.monthly_returns_by_industry(d)
+    months = rs.all_months(rets)
+    picks = rs.current_picks(rets, months, 6, 2, "momentum")
+    assert [p["industry"] for p in picks] == ["HOT", "WARM"]   # best first
+    assert picks[0]["trailing"] > picks[1]["trailing"]
+    con = rs.current_picks(rets, months, 6, 2, "contrarian")
+    assert [p["industry"] for p in con] == ["COLD", "COOL"]
+
+
+def test_current_picks_need_enough_history():
+    d = market({"A": [1.0] * 3, "B": [2.0] * 3})
+    rets = rs.monthly_returns_by_industry(d)
+    assert rs.current_picks(rets, rs.all_months(rets), 12, 2) == []
+
+
+def test_consistency_ranks_by_the_weaker_half():
+    rows = [
+        {"direction": "momentum", "lookback": 6, "hold": 6, "k": 5,
+         "excess_past": 10.3, "excess_unseen": 10.9, "verdict": "BEATS"},
+        {"direction": "momentum", "lookback": 3, "hold": 3, "k": 5,
+         "excess_past": 12.6, "excess_unseen": 5.4, "verdict": "BEATS"},
+        {"direction": "momentum", "lookback": 1, "hold": 1, "k": 5,
+         "excess_past": -4.0, "excess_unseen": 30.0, "verdict": "LUCKY?"},
+    ]
+    out = rs.consistency(rows)
+    assert len(out) == 2                        # the LUCKY? row is excluded
+    assert out[0]["lookback"] == 6              # 10.3 beats 5.4 as a worst half
+    assert out[0]["weaker"] == pytest.approx(10.3)
+    assert out[0]["gap"] == pytest.approx(0.6)

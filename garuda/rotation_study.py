@@ -236,6 +236,44 @@ def verdict(past, unseen, bench_past=None, bench_unseen=None):
     return "LAGS"
 
 
+def current_picks(rets, months, lookback, k, direction="momentum"):
+    """What the rule would hold RIGHT NOW, and each pick's trailing return.
+
+    The bridge from a backtest to a decision. Ranked on the same trailing
+    window the rule was tested with, using the latest month in the data — so
+    it is the rule speaking, not a fresh opinion.
+    """
+    i = len(months) - 1
+    if i < lookback:
+        return []
+    scored = [(ind, trailing(rets, ind, i, months, lookback)) for ind in rets]
+    scored = [(a, b) for a, b in scored if b is not None]
+    if len(scored) < k:
+        return []
+    scored.sort(key=lambda x: x[1])
+    picked = scored[:k] if direction == "contrarian" else scored[-k:][::-1]
+    return [{"industry": a, "trailing": round(b, 2)} for a, b in picked]
+
+
+def consistency(rows):
+    """Rules whose PAST and UNSEEN excess agree — the ones worth believing.
+
+    A single winner surrounded by losers is noise. A rule that earned a
+    similar excess in both halves, with neighbours that also worked, is the
+    shape a real effect makes. Sorted by the WEAKER of the two halves, so a
+    rule cannot buy its place with one good era.
+    """
+    out = []
+    for r in rows:
+        a, b = r.get("excess_past"), r.get("excess_unseen")
+        if a is None or b is None or r["verdict"] != "BEATS":
+            continue
+        out.append({**r, "weaker": round(min(a, b), 2),
+                    "gap": round(abs(a - b), 2)})
+    out.sort(key=lambda r: -r["weaker"])
+    return out
+
+
 # ------------------------------------------------------------------ CLI ----
 
 def _load_industry_series(csv_dir=None, universe_arg=None, log=print):
@@ -333,6 +371,35 @@ def main(argv=None):
     print("That comparison is the answer to 'buy the faller or ride the "
           "leader', and it\nrests on 48 rules rather than one lucky pick.")
 
+    # The rules to believe are the consistent ones, not the top row.
+    steady = consistency(rows)
+    if steady:
+        print("\nMOST CONSISTENT — ranked by the WEAKER half, so one good era "
+              "cannot carry a rule:")
+        for r in steady[:5]:
+            print(f"  {r['direction']:<11} look {r['lookback']:>2}m "
+                  f"hold {r['hold']}m top{r['k']}   "
+                  f"past {_pc(r['excess_past'])}  unseen {_pc(r['excess_unseen'])}"
+                  f"   worst half {_pc(r['weaker'])}")
+        pick_rule = steady[0]
+        picks = current_picks(rets, months, pick_rule["lookback"],
+                              pick_rule["k"], pick_rule["direction"])
+        if picks:
+            print(f"\nWhat that rule would hold TODAY "
+                  f"(as of {months[-1]}), ranked by its {pick_rule['lookback']}m "
+                  f"return:")
+            for i, p in enumerate(picks, 1):
+                print(f"  {i}. {p['industry']:<38} {p['trailing']:+.1f}%")
+            print("  Held for "
+                  f"{pick_rule['hold']} months before re-ranking.")
+        rows_out = {"rule": {k: pick_rule[k] for k in
+                             ("direction", "lookback", "hold", "k")},
+                    "picks": picks, "as_of": months[-1]}
+    else:
+        print("\nNo rule beat the benchmark in both halves. That is a result: "
+              "on this\ndata, industry rotation did not pay after costs.")
+        rows_out = {"rule": None, "picks": [], "as_of": months[-1]}
+
     STUDY_FILE.parent.mkdir(parents=True, exist_ok=True)
     STUDY_FILE.write_text(json.dumps({
         "generated": datetime.now().strftime("%Y-%m-%d %H:%M"),
@@ -343,6 +410,8 @@ def main(argv=None):
         "benchmark": {"all": bench_all, "past": bench_past,
                       "unseen": bench_unseen},
         "rules": rows,
+        "consistent": consistency(rows)[:5],
+        "today": rows_out,
     }, indent=1))
     print(f"\nwrote {STUDY_FILE}")
     return 0
