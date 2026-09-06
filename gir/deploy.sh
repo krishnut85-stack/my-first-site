@@ -15,6 +15,12 @@
 #               GARUDA=/path/whose/garuda/server.py runs the dashboard
 set -euo pipefail
 
+# Nothing in here reads stdin, but sudo/systemctl/git will happily consume
+# whatever you typed while it was running — so a command queued mid-deploy
+# vanishes instead of executing. Detach stdin so type-ahead survives to the
+# prompt. (Everything runs as root here, so sudo never needs to prompt.)
+exec < /dev/null
+
 BRANCH="${BRANCH:-claude/garuda-integration-edja30}"
 LIVE="${LIVE:-/home/globalbot}"
 CLONE_URL="${CLONE_URL:-https://github.com/krishnut85-stack/my-first-site}"
