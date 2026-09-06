@@ -232,3 +232,9 @@ def test_both_the_raw_return_and_the_excess_are_available_to_print():
     assert r["unseen"]["cagr"] is not None      # what the money did
     assert r["excess_unseen"] is not None       # what the skill did
     assert r["past"]["cagr"] is not None and r["excess_past"] is not None
+
+
+def test_next_rerank_date_is_stated():
+    assert rs._add_months("2026-09", 6) == "2027-03"
+    assert rs._add_months("2026-12", 1) == "2027-01"
+    assert rs._add_months("2026-01", 12) == "2027-01"

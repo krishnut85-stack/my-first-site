@@ -277,17 +277,19 @@ def consistency(rows):
 # ------------------------------------------------------------------ CLI ----
 
 def _load_industry_series(csv_dir=None, universe_arg=None, log=print):
+    """(industry series, {industry: [symbols]}) — the second half turns a
+    pick like "Iron & Steel Products" into something you can actually buy."""
     from .cycle_study import (by_industry, find_universe_files,
                               gather_industries, load_universe)
     files = find_universe_files(universe_arg, csv_dir)
     universe = load_universe(files)
     if not universe:
         log("no universe found — run cycle_study --scan first")
-        return {}
-    log(f"universe: {len(universe)} stocks · "
-        f"{len(by_industry(universe))} industries")
+        return {}, {}
+    groups = by_industry(universe)
+    log(f"universe: {len(universe)} stocks · {len(groups)} industries")
     data, _meta = gather_industries(None, universe, offline=True, log=log)
-    return data
+    return data, {k: v["members"] for k, v in groups.items()}
 
 
 def main(argv=None):
@@ -298,7 +300,7 @@ def main(argv=None):
         return cast(argv[argv.index(flag) + 1]) if flag in argv else default
 
     cost = opt("--cost-bps", int, COST_BPS)
-    data = _load_industry_series(opt("--csv-dir"), opt("--universe"))
+    data, members = _load_industry_series(opt("--csv-dir"), opt("--universe"))
     if not data:
         return 1
     rets = monthly_returns_by_industry(data)
@@ -404,8 +406,15 @@ def main(argv=None):
                   f"return:")
             for i, p in enumerate(picks, 1):
                 print(f"  {i}. {p['industry']:<38} {p['trailing']:+.1f}%")
-            print("  Held for "
-                  f"{pick_rule['hold']} months before re-ranking.")
+                syms = members.get(p["industry"], [])
+                if syms:
+                    print(f"     {', '.join(syms)}")
+                p["members"] = syms
+            print(f"  Held for {pick_rule['hold']} months before re-ranking "
+                  f"— next re-rank around "
+                  f"{_add_months(months[-1], pick_rule['hold'])}.")
+            print("  Equal weight across the five, and across the stocks "
+                  "inside each.")
         rows_out = {"rule": {k: pick_rule[k] for k in
                              ("direction", "lookback", "hold", "k")},
                     "picks": picks, "as_of": months[-1]}
@@ -429,6 +438,13 @@ def main(argv=None):
     }, indent=1))
     print(f"\nwrote {STUDY_FILE}")
     return 0
+
+
+def _add_months(ym, n):
+    y, m = int(ym[:4]), int(ym[5:7])
+    m += n
+    y, m = y + (m - 1) // 12, (m - 1) % 12 + 1
+    return f"{y:04d}-{m:02d}"
 
 
 def _pc(v):
