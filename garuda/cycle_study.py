@@ -1,10 +1,17 @@
-"""What each sector index has actually done, month by month, over real history.
+"""What each INDUSTRY has actually done, month by month, over real history.
 
 The CYCLE tab's phase map is *theory* — the textbook link between rates and
 sectors. This module is the opposite: it measures. It pulls daily history for
 every NSE sector index and answers, with numbers and sample counts:
 
-    in month M, how has sector S behaved, and how often?
+    in month M, how has industry I behaved, and how often?
+
+Industries, not the sixteen broad sector indices. "Cement", "Auto Ancillaries",
+"Sugar", "Hotels" are industries; NIFTY AUTO is an index covering many of them
+at once. The taxonomy comes from your own Trendlyne universe export (NSE Code
+-> Industry), and each industry's series is built equal-weight from its
+constituent stocks — so an industry with one huge company and nine small ones
+is not simply that company.
 
 That is the "which industry rises in which period" question, answered from the
 tape rather than from a chart in a book.
@@ -23,10 +30,16 @@ Three rules it holds itself to
 
 Running it (on the droplet, where Kite lives)::
 
-    python3 -m garuda.cycle_study                 # fetch + compute
-    python3 -m garuda.cycle_study --years 20      # ask for more history
-    python3 -m garuda.cycle_study --offline       # recompute from the cache
-    python3 -m garuda.cycle_study --from-csv DIR  # no Kite at all
+    python3 -m garuda.cycle_study                  # every industry
+    python3 -m garuda.cycle_study --universe FILE  # a specific export
+    python3 -m garuda.cycle_study --limit 200      # a quick first pass
+    python3 -m garuda.cycle_study --offline        # recompute from the cache
+    python3 -m garuda.cycle_study --indices        # the 16 broad indices instead
+
+The first full run fetches daily history for every stock in the universe and
+is slow — Kite rate-limits historical calls, so budget roughly a second per
+three stocks. Everything is cached per stock, so a re-run costs nothing and
+you can stop and resume it.
 
 It never places an order: it takes the read-only Kite handle, whose order
 methods do not exist. Prices are cached per index under
@@ -264,7 +277,182 @@ def gather(kite=None, years=20, offline=False, from_csv=None, log=print):
     return data
 
 
-def build(data):
+# ------------------------------------------------- industries, not indices ----
+#
+# The taxonomy comes from a Trendlyne universe export — the same file Mayura
+# eats — which carries "NSE Code" and "Industry" per stock. An industry series
+# is built EQUAL-WEIGHT from its constituents' daily returns, so a 40-stock
+# industry is not just its largest company.
+
+UNIVERSE_COLUMNS = ("NSE Code", "NSE code", "nse_code", "Symbol", "SYMBOL")
+INDUSTRY_COLUMNS = ("Industry", "INDUSTRY", "industry")
+SECTOR_COLUMNS = ("Sector", "SECTOR", "sector")
+
+STOCK_DIR = config.DATA_DIR / "stock_history"
+
+#: An industry day needs at least this many constituents to count. Below it the
+#: "industry" is one or two companies and the average means little.
+MIN_MEMBERS = 3
+
+
+def _pick(row, names):
+    for n in names:
+        if row.get(n):
+            return str(row[n]).strip()
+    return ""
+
+
+def load_universe(paths):
+    """{symbol: (industry, sector)} merged from one or more universe CSVs."""
+    out = {}
+    for path in paths:
+        p = Path(path)
+        if not p.exists():
+            continue
+        try:
+            with p.open(encoding="utf-8-sig") as f:
+                for row in csv.DictReader(f):
+                    sym = _pick(row, UNIVERSE_COLUMNS).upper()
+                    ind = _pick(row, INDUSTRY_COLUMNS)
+                    sec = _pick(row, SECTOR_COLUMNS)
+                    if sym and ind:
+                        out[sym] = (ind, sec)
+        except Exception:  # noqa: BLE001
+            continue
+    return out
+
+
+def find_universe_files(extra=None):
+    """Every plausible universe export, newest-looking last."""
+    roots = [Path(extra)] if extra else []
+    base = config.BASE_DIR.parent
+    roots += [base / "mayura_data", base, config.DATA_DIR]
+    found = []
+    for r in roots:
+        if r.is_file():
+            found.append(r)
+        elif r.is_dir():
+            found += sorted(r.glob("*.csv")) + sorted(r.glob("*/*.csv"))
+    return found
+
+
+def by_industry(universe):
+    """{industry: {"sector": s, "members": [symbols]}}"""
+    out = {}
+    for sym, (ind, sec) in universe.items():
+        d = out.setdefault(ind, {"sector": sec, "members": []})
+        d["members"].append(sym)
+        if sec and not d["sector"]:
+            d["sector"] = sec
+    for d in out.values():
+        d["members"].sort()
+    return out
+
+
+def _stock_cache(symbol):
+    safe = "".join(c for c in symbol if c.isalnum() or c in "-_&")
+    return STOCK_DIR / f"{safe}.csv"
+
+
+def load_stock(symbol):
+    p = _stock_cache(symbol)
+    if not p.exists():
+        return []
+    try:
+        with p.open() as f:
+            return [{"t": r["t"], "c": float(r["c"])}
+                    for r in csv.DictReader(f) if r.get("c")]
+    except Exception:  # noqa: BLE001
+        return []
+
+
+def save_stock(symbol, candles):
+    STOCK_DIR.mkdir(parents=True, exist_ok=True)
+    with _stock_cache(symbol).open("w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=["t", "c"])
+        w.writeheader()
+        for row in candles:
+            w.writerow({"t": row["t"], "c": row["c"]})
+
+
+def industry_series(members, stocks):
+    """One equal-weight index series [{t, c}] for a set of constituents.
+
+    Each day is the MEAN of its members' daily percentage moves, compounded
+    into a series starting at 100. Averaging returns rather than prices means a
+    2,000-rupee stock does not outvote a 20-rupee one, and a member that only
+    lists halfway through history simply joins the average from then on.
+    """
+    per_day = {}
+    for sym in members:
+        rows = stocks.get(sym) or []
+        prev = None
+        for row in rows:
+            c = row["c"]
+            if prev and prev > 0:
+                per_day.setdefault(row["t"], []).append((c - prev) / prev)
+            prev = c
+    out, level = [], 100.0
+    for t in sorted(per_day):
+        moves = per_day[t]
+        if len(moves) < MIN_MEMBERS:
+            continue
+        level *= (1 + sum(moves) / len(moves))
+        out.append({"t": t, "c": round(level, 4)})
+    return out
+
+
+def gather_industries(kite, universe, years=20, offline=False, log=print,
+                      pause=0.35, limit=None):
+    """Fetch what each industry's constituents did, and fold them into series."""
+    import time
+    groups = by_industry(universe)
+    symbols = sorted({s for g in groups.values() for s in g["members"]})
+    if limit:
+        symbols = symbols[:limit]
+    log(f"  {len(groups)} industries · {len(symbols)} stocks")
+
+    tokens = {}
+    if kite and not offline:
+        try:
+            tokens = {i["tradingsymbol"]: i["instrument_token"]
+                      for i in kite.instruments("NSE")}
+        except Exception as e:  # noqa: BLE001
+            log(f"  instrument dump failed ({e}) — cache only")
+
+    stocks, fetched, cached, missing = {}, 0, 0, 0
+    for i, sym in enumerate(symbols, 1):
+        rows = load_stock(sym)
+        if rows:
+            cached += 1
+        elif kite and tokens.get(sym) and not offline:
+            rows = fetch_index(kite, tokens[sym], years=years)
+            if rows:
+                save_stock(sym, rows)
+                fetched += 1
+            time.sleep(pause)          # Kite historical is rate-limited
+        if rows:
+            stocks[sym] = rows
+        else:
+            missing += 1
+        if i % 100 == 0:
+            log(f"    {i}/{len(symbols)} · {fetched} fetched, {cached} cached, "
+                f"{missing} missing")
+    log(f"  stocks: {fetched} fetched, {cached} from cache, {missing} missing")
+
+    data, meta = {}, {}
+    for ind, g in sorted(groups.items()):
+        series = industry_series(g["members"], stocks)
+        if series:
+            data[ind] = series
+            have = sum(1 for s in g["members"] if s in stocks)
+            meta[ind] = {"sector": g["sector"], "members": len(g["members"]),
+                         "with_data": have}
+    log(f"  built {len(data)} industry series")
+    return data, meta
+
+
+def build(data, meta=None):
     """The whole study, as the JSON the dashboard renders."""
     bench = monthly_returns(data.get("_BENCH", []))
     rets = {k: monthly_returns(v) for k, v in data.items() if k != "_BENCH"}
@@ -275,6 +463,7 @@ def build(data):
         "coverage": coverage(rets),
         "min_sample": MIN_SAMPLE,
         "months": MONTHS,
+        "meta": meta or {},
         "sectors": sorted(tables),
         "table": {s: {str(m): t[m] for m in range(1, 13)}
                   for s, t in tables.items()},
@@ -292,13 +481,16 @@ def main(argv=None):
     years = opt("--years", int, 20)
     offline = "--offline" in argv
     from_csv = opt("--from-csv")
+    universe_arg = opt("--universe")
+    limit = opt("--limit", int)
+    indices_mode = "--indices" in argv      # the old 16-index study, if wanted
 
     kite = None
     if not offline and not from_csv:
         try:
             from .feed import KiteFeed
             feed = KiteFeed()
-            if feed.live():
+            if feed.live:          # a property, not a method
                 # Read-only: this study must never be able to place an order.
                 try:
                     sys.path.insert(0, "/home/globalbot")
@@ -313,18 +505,52 @@ def main(argv=None):
             print(f"Kite unavailable ({e}) — using the cache", flush=True)
             offline = True
 
-    print("gathering sector history", flush=True)
-    data = gather(kite, years=years, offline=offline, from_csv=from_csv)
-    if not data:
+    meta = {}
+    if indices_mode:
+        print("gathering sector-INDEX history", flush=True)
+        data = gather(kite, years=years, offline=offline, from_csv=from_csv)
+    else:
+        files = find_universe_files(universe_arg)
+        universe = load_universe(files)
+        if not universe:
+            print("no universe CSV with 'NSE Code' + 'Industry' columns found.\n"
+                  "Point at one:  --universe /path/to/export.csv\n"
+                  "(a Trendlyne stock export — the same kind Mayura eats)",
+                  flush=True)
+            return 1
+        print(f"universe: {len(universe)} stocks from "
+              f"{len([f for f in files if f.exists()])} file(s)", flush=True)
+        print("gathering INDUSTRY history", flush=True)
+        data, meta = gather_industries(kite, universe, years=years,
+                                       offline=offline, limit=limit)
+        # the benchmark is still the index — an industry is judged against the market
+        bench = []
+        if kite and not offline:
+            try:
+                toks = {i["tradingsymbol"]: i["instrument_token"]
+                        for i in kite.instruments("NSE")}
+                if toks.get(BENCHMARK):
+                    bench = fetch_index(kite, toks[BENCHMARK], years=years)
+                    if bench:
+                        save_cached(BENCHMARK, bench)
+            except Exception:  # noqa: BLE001
+                pass
+        data["_BENCH"] = bench or load_cached(BENCHMARK)
+        if not data.get("_BENCH"):
+            print(f"  WARNING: no {BENCHMARK} history — excess cannot be "
+                  f"computed, only raw returns", flush=True)
+
+    if not data or set(data) <= {"_BENCH"}:
         print("no history at all — nothing to study", flush=True)
         return 1
 
-    study = build(data)
+    study = build(data, meta)
     cov = study["coverage"]
     STUDY_FILE.parent.mkdir(parents=True, exist_ok=True)
     STUDY_FILE.write_text(json.dumps(study, indent=1))
     print(f"\nwrote {STUDY_FILE}")
-    print(f"  {len(study['sectors'])} sectors · {cov['years']} calendar years "
+    label = "sector indices" if indices_mode else "industries"
+    print(f"  {len(study['sectors'])} {label} · {cov['years']} calendar years "
           f"({cov['first_year']}-{cov['last_year']}) · "
           f"{cov['observations']} sector-months")
     if cov["years"] and cov["years"] < 10:

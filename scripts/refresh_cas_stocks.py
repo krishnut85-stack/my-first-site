@@ -44,7 +44,7 @@ def main() -> int:
         out = Path(args[args.index("--out") + 1])
 
     feed = KiteFeed()
-    if not feed.live():
+    if not feed.live:          # a property, not a method
         print("no Kite session — set KITE_API_KEY and KITE_TOKEN_FILE, "
               "then run this on the droplet", file=sys.stderr)
         return 2

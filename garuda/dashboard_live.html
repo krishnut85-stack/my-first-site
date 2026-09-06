@@ -887,34 +887,50 @@ function studyPanel(cs,month){
 
  const cov=cs.coverage||{}, thin=cs.min_sample||5;
  let h=`<div class=note style=margin-top:14px>
-   <b>MEASURED — ${cov.years||0} calendar years (${cov.first_year||'?'}–${cov.last_year||'?'}),
-   ${cov.observations||0} sector-months.</b> Each number is a sector's average
-   <b>excess</b> return over the ${cs.benchmark}: a sector up 2% in a month the
-   market rose 3% lagged, it did not lead. <span class=sub>n = how many of that
-   month went into the average; under ${thin} is thin.</span></div>`;
+   <b>MEASURED — ${cs.sectors.length} industries, ${cov.years||0} calendar years
+   (${cov.first_year||'?'}–${cov.last_year||'?'}), ${cov.observations||0}
+   industry-months.</b> Industries, not the broad indices: each one is built
+   equal-weight from its constituent stocks. Each number is its average
+   <b>excess</b> return over the ${cs.benchmark} — an industry up 2% in a month
+   the market rose 3% lagged, it did not lead. <span class=sub>n = how many of
+   that month went into the average; under ${thin} is thin.</span></div>`;
 
  // 1. THIS MONTH — the actionable answer, as text
  const rank=(cs.ranked||{})[String(month)]||[];
  if(rank.length){
-  h+=`<table class=pltbl style=margin-top:10px>
-    <tr><th style=text-align:left>${MONFULL[month-1].toUpperCase()} — MEASURED ORDER</th>
-    <th>AVG EXCESS</th><th>YEARS</th></tr>`;
-  rank.forEach((r,i)=>{
-   const cls=r.excess>0?'g':'r';
-   h+=`<tr><td style=text-align:left>${i+1}. <b>${r.sector}</b>${r.n<thin?' <span class=sub>thin</span>':''}</td>
+  // 126 industries is a wall — show the ends, which is where the answer is
+  const TOP=12, top=rank.slice(0,TOP), bot=rank.slice(-TOP).filter(r=>!top.includes(r));
+  const met=cs.meta||{};
+  const row=(r,i,n)=>{
+   const cls=r.excess>0?'g':'r', m=met[r.sector]||{};
+   return `<tr title="${escH(m.sector||'')}${m.members?' · '+m.with_data+'/'+m.members+' stocks with history':''}">
+     <td style=text-align:left>${n}. <b>${escH(r.sector)}</b>${r.n<thin?' <span class=sub>thin</span>':''}
+       <span class=sub>${escH(m.sector||'')}</span></td>
      <td class=${cls}>${r.excess>0?'+':''}${r.excess.toFixed(2)}%</td>
-     <td class=muted>${r.n}</td></tr>`;
-  });
+     <td class=muted>${r.n}</td></tr>`;};
+  h+=`<table class=pltbl style=margin-top:10px>
+    <tr><th style=text-align:left>${MONFULL[month-1].toUpperCase()} — BEST INDUSTRIES</th>
+    <th>AVG EXCESS</th><th>YEARS</th></tr>`;
+  top.forEach((r,i)=>{h+=row(r,i,i+1);});
+  if(bot.length){
+   h+=`<tr><td colspan=3 class=muted style="text-align:left;padding-top:10px">
+     ⋯ ${Math.max(0,rank.length-top.length-bot.length)} more between ⋯</td></tr>
+    <tr><th style=text-align:left>WORST</th><th></th><th></th></tr>`;
+   bot.forEach((r,i)=>{h+=row(r,i,rank.length-bot.length+i+1);});
+  }
   h+=`</table>`;
+  window._cycRows=top.concat(bot).map(r=>r.sector);
  }
 
  // 2. the shape of the year, per sector — colour as pattern, numbers on hover
  h+=`<div class=note style=margin-top:10px><b>THE SHAPE OF THE YEAR.</b>
-   Each row is one sector across Jan–Dec; greener = it beat the Nifty in that
-   month more strongly, redder = it lagged. Tap a cell for the number.</div>
+   Each row is one industry across Jan–Dec; greener = it beat the Nifty in that
+   month more strongly, redder = it lagged. Tap a cell for the number. Only the
+   industries listed above are drawn.</div>
   <div class=hmwrap><table class=hmtbl><tr><th></th>${
    cs.months.map((m,i)=>`<th class="${i+1===month?'hmnow':''}">${m[0]}</th>`).join('')}<th>BEST</th></tr>`;
- cs.sectors.forEach(s=>{
+ (window._cycRows||cs.sectors.slice(0,24)).forEach(s=>{
+  if(!cs.table[s])return;
   const row=cs.table[s]; let best=null,bestm=null,worst=null,worstm=null;
   for(let m=1;m<=12;m++){const v=row[String(m)].excess.mean;
    if(v==null)continue;

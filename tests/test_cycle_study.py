@@ -117,3 +117,80 @@ def test_sector_names_match_the_rest_of_the_system():
     for phase in macro.PHASES:
         assert macro.PHASE_SECTORS[phase] <= known
         assert macro.PHASE_AVOID[phase] <= known
+
+
+# ------------------------------------------- industries, not indices ----
+
+def test_universe_csv_maps_stocks_to_industries(tmp_path):
+    p = tmp_path / "u.csv"
+    p.write_text("NSE Code,Stock Name,Industry,Sector\n"
+                 "ACC,ACC Ltd,Cement,Construction Materials\n"
+                 "ULTRACEMCO,UltraTech,Cement,Construction Materials\n"
+                 "TITAN,Titan,Gems & Jewellery,Consumer Discretionary\n")
+    u = cs.load_universe([p])
+    assert u["ACC"] == ("Cement", "Construction Materials")
+    g = cs.by_industry(u)
+    assert g["Cement"]["members"] == ["ACC", "ULTRACEMCO"]
+    assert g["Cement"]["sector"] == "Construction Materials"
+
+
+def test_universe_accepts_a_plain_symbol_column(tmp_path):
+    p = tmp_path / "u.csv"
+    p.write_text("SYMBOL,Industry\nDLF,Realty\n")
+    assert cs.load_universe([p])["DLF"][0] == "Realty"
+
+
+def test_missing_or_unreadable_universe_files_are_skipped(tmp_path):
+    assert cs.load_universe([tmp_path / "nope.csv"]) == {}
+    bad = tmp_path / "bad.csv"
+    bad.write_text("\x00 not a csv")
+    cs.load_universe([bad])            # must not raise
+
+
+def test_industry_is_equal_weight_on_returns_not_prices():
+    """A 2000-rupee stock must not outvote a 20-rupee one."""
+    stocks = {
+        "BIG": [{"t": "2024-01-01", "c": 2000}, {"t": "2024-01-02", "c": 2020}],   # +1%
+        "MID": [{"t": "2024-01-01", "c": 200}, {"t": "2024-01-02", "c": 220}],     # +10%
+        "SMALL": [{"t": "2024-01-01", "c": 20}, {"t": "2024-01-02", "c": 24}],     # +20%
+    }
+    s = cs.industry_series(["BIG", "MID", "SMALL"], stocks)
+    # mean of +1, +10, +20 = +10.33%, NOT the price-weighted +1.1%
+    assert s[-1]["c"] == pytest.approx(100 * 1.10333, abs=0.01)
+
+
+def test_a_thin_day_is_dropped_rather_than_averaged():
+    """Two companies is not an industry — MIN_MEMBERS guards the average."""
+    stocks = {
+        "A": [{"t": "2024-01-01", "c": 100}, {"t": "2024-01-02", "c": 110},
+              {"t": "2024-01-03", "c": 121}],
+        "B": [{"t": "2024-01-01", "c": 100}, {"t": "2024-01-02", "c": 110}],
+        "C": [{"t": "2024-01-01", "c": 100}, {"t": "2024-01-02", "c": 110}],
+    }
+    s = cs.industry_series(["A", "B", "C"], stocks)
+    assert [r["t"] for r in s] == ["2024-01-02"]      # the 3rd has only A
+
+
+def test_a_late_listing_joins_the_average_from_its_own_start():
+    stocks = {
+        "OLD1": [{"t": f"2024-01-0{d}", "c": 100 + d} for d in range(1, 6)],
+        "OLD2": [{"t": f"2024-01-0{d}", "c": 200 + d} for d in range(1, 6)],
+        "OLD3": [{"t": f"2024-01-0{d}", "c": 300 + d} for d in range(1, 6)],
+        "NEW": [{"t": f"2024-01-0{d}", "c": 50 + d} for d in range(4, 6)],
+    }
+    s = cs.industry_series(["OLD1", "OLD2", "OLD3", "NEW"], stocks)
+    assert len(s) == 4          # days 2..5; NEW only contributes from day 5
+
+
+def test_an_industry_with_no_data_is_absent_not_zero():
+    assert cs.industry_series(["GHOST"], {}) == []
+
+
+def test_build_carries_industry_metadata_through():
+    bench = series(1.0)
+    data = {"_BENCH": bench, "Cement": series(1.0, extra={2: 3.0})}
+    meta = {"Cement": {"sector": "Construction Materials", "members": 12,
+                       "with_data": 11}}
+    study = cs.build(data, meta)
+    assert study["meta"]["Cement"]["sector"] == "Construction Materials"
+    assert study["ranked"]["2"][0]["sector"] == "Cement"
