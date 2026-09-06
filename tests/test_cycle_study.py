@@ -282,3 +282,52 @@ def test_a_real_move_inside_the_band_is_kept():
                         {"t": "2020-01-02", "c": 118.0}] for i in range(4)}
     s = cs.industry_series(list(stocks), stocks)
     assert s[0]["c"] == pytest.approx(118.0)     # +18% is a real day
+
+
+# ------------------------------------------- what is running right now ----
+
+def rising(step, n=300):
+    out, lvl = [], 100.0
+    for i in range(n):
+        lvl *= (1 + step / 100)
+        out.append({"t": f"2026-{i % 12 + 1:02d}-{i % 28 + 1:02d}",
+                    "c": round(lvl, 6)})
+    return out
+
+
+def test_trailing_now_measures_to_the_latest_close():
+    s = [{"t": f"2026-01-{i:02d}", "c": 100.0} for i in range(1, 30)]
+    s.append({"t": "2026-02-01", "c": 121.0})
+    got = cs.trailing_now(s, {"21d": 21})
+    assert got["21d"] == pytest.approx(21.0)
+
+
+def test_a_window_longer_than_the_history_says_none_not_zero():
+    s = [{"t": "2026-01-01", "c": 100.0}, {"t": "2026-01-02", "c": 110.0}]
+    assert cs.trailing_now(s, {"12m": 252})["12m"] is None
+
+
+def test_the_fastest_riser_ranks_first_on_the_quarter():
+    """The aluminium case: a big quarter must surface at the top."""
+    data = {"Aluminium": rising(0.8), "Cement": rising(0.2),
+            "Sugar": rising(-0.1), "_BENCH": rising(0.15)}
+    rows = cs.momentum_now(data, {"Aluminium": {"sector": "Metals",
+                                                "members": 9}})
+    assert [r["industry"] for r in rows] == ["Aluminium", "Cement", "Sugar"]
+    assert "_BENCH" not in [r["industry"] for r in rows]
+    assert rows[0]["3m"] > 50 and rows[0]["sector"] == "Metals"
+    assert rows[0]["as_of"] == data["Aluminium"][-1]["t"]
+
+
+def test_industries_without_enough_history_still_rank_last_not_first():
+    data = {"Old": rising(0.5), "New": rising(5.0, n=10)}
+    rows = cs.momentum_now(data)
+    assert rows[0]["industry"] == "Old"      # New has no 3m figure yet
+    assert rows[-1]["3m"] is None
+
+
+def test_build_carries_the_now_ranking():
+    data = {"_BENCH": series(1.0), "Metals": series(1.0, extra={5: 4.0})}
+    study = cs.build(data)
+    assert "now" in study and "now_windows" in study
+    assert study["now"][0]["industry"] == "Metals"

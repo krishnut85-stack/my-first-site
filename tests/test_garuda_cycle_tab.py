@@ -75,3 +75,13 @@ def test_dashboard_warns_when_the_feed_is_down(tmp_path):
     assert "KITE FEED DOWN" in html
     # the warning must key off the state's feed block, not a guess
     assert "d.feed" in html and "fd.priced" in html
+
+
+def test_dashboard_shows_what_is_running_now():
+    html = DASH.read_text()
+    assert "function nowPanel" in html
+    assert "RUNNING NOW" in html
+    # the "in phase" marker must follow the state machine, not a second copy
+    assert "PHASE_LEADS" in html
+    # and it must say plainly that a past quarter is not a forecast
+    assert "VERDICT column before treating" in html

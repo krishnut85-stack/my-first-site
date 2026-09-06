@@ -839,6 +839,9 @@ function discoverPanel(x){
 // 18.7 normal). Every phase is also directly labelled, so colour is never the
 // only thing carrying identity.
 const PHCOL={EASING:'#23967a',EXPANSION:'#c08420',SLOWDOWN:'#5b7fd6'};
+// filled from the macro state each render, so the "in phase" marker follows
+// whatever the state machine says rather than a second hardcoded copy
+const PHASE_LEADS={};
 const PHNAME={EASING:'EASING',EXPANSION:'EXPANSION',SLOWDOWN:'SLOWDOWN'};
 const MON=['J','F','M','A','M','J','J','A','S','O','N','D'];
 const MONFULL=['January','February','March','April','May','June','July',
@@ -878,6 +881,44 @@ function heatCol(v){
  if(v==null)return 'var(--line)';
  const a=Math.min(Math.abs(v)/3,1);                 // ±3% excess saturates
  return v>=0?`rgba(34,211,122,${0.15+a*0.75})`:`rgba(255,93,93,${0.15+a*0.75})`;
+}
+
+// ---- what is running RIGHT NOW ------------------------------------------
+// The phase map says which sectors ought to lead. This says which ones
+// actually are. Ranked by the last quarter, because that is the horizon the
+// backtest actually measures.
+function nowPanel(cs,phase){
+ const rows=(cs&&cs.now)||[]; if(!rows.length)return '';
+ const W=cs.now_windows||['1m','3m','6m','12m'];
+ const TOP=15, top=rows.slice(0,TOP), bot=rows.slice(-5).filter(r=>!top.includes(r));
+ const cell=v=>v==null?'<td class=muted>—</td>'
+   :`<td class="${v>=0?'g':'r'}">${v>=0?'+':''}${v.toFixed(1)}%</td>`;
+ const line=(r,n)=>{
+  const tilt=phase&&PHASE_LEADS[phase]&&PHASE_LEADS[phase].has(r.industry.toUpperCase());
+  return `<tr title="${escH(r.sector||'')}${r.members?' · '+r.members+' stocks':''}">
+    <td style=text-align:left>${n}. <b>${escH(r.industry)}</b>
+      ${tilt?'<span class=sub style="color:var(--acc)">in phase</span>':''}
+      <span class=sub>${escH(r.sector||'')}</span></td>
+    ${W.map(w=>cell(r[w])).join('')}</tr>`;};
+ let h=`<div class=note style=margin-top:14px><b>RUNNING NOW — ranked by the last
+   quarter.</b> As of ${escH(rows[0].as_of||'—')}. This is the half the phase map
+   cannot give you: the cycle says which sectors <i>ought</i> to lead, this says
+   which ones actually are. <span class=sub>Re-run cycle_study to refresh —
+   it tops up only the missing days.</span></div>
+  <table class=pltbl style=margin-top:8px>
+   <tr><th style=text-align:left>INDUSTRY</th>${W.map(w=>`<th>${w.toUpperCase()}</th>`).join('')}</tr>`;
+ top.forEach((r,i)=>{h+=line(r,i+1);});
+ if(bot.length){
+  h+=`<tr><td colspan=${W.length+1} class=muted style="text-align:left;padding-top:10px">
+    ⋯ ${Math.max(0,rows.length-top.length-bot.length)} more ⋯</td></tr>`;
+  bot.forEach((r,i)=>{h+=line(r,rows.length-bot.length+i+1);});
+ }
+ h+=`</table>
+  <div class=note style=margin-top:6px>A quarter of +60% is a move that already
+  happened. Whether the <i>next</i> quarter pays is the question the rotation
+  backtest answers — read its VERDICT column before treating this ranking as a
+  buy list.</div>`;
+ return h;
 }
 
 function studyPanel(cs,month){
@@ -1036,6 +1077,9 @@ function cyclePanel(m){
    by exactly 1.0 — deliberately doing nothing.</div>
   <div class=calstrip>${cal}</div>
   <div class=note style=margin-top:6px>${MONFULL[m.month-1]}: ${escH((m.calendar.find(c=>c.m===m.month)||{}).note||'')}</div>
+  ${(m.order||[]).forEach(p=>{PHASE_LEADS[p]=new Set((m.sectors[p]||[])
+       .map(x=>String(x).toUpperCase()));}),''
+   + nowPanel(DATA&&DATA.cycle_study, m.phase!=='UNKNOWN'?m.phase:m.suggested)}
   ${studyPanel(DATA&&DATA.cycle_study,m.month)}
  </div>`;
  return h;

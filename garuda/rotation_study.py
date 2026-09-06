@@ -180,8 +180,14 @@ def split_months(months, past_fraction=PAST_FRACTION):
 
 
 def run_grid(rets, months, cost_bps=COST_BPS):
-    """Every rule, scored on PAST and again on the UNSEEN years that follow."""
+    """Every rule, scored on PAST and again on the UNSEEN years that follow.
+
+    Each is judged against the benchmark for the SAME half, so a rule is never
+    credited for a bull market the benchmark also enjoyed.
+    """
     past, unseen = split_months(months)
+    bench_past = stats(equal_weight_all(rets, past))
+    bench_unseen = stats(equal_weight_all(rets, unseen))
     rows = []
     for direction in DIRECTIONS:
         for lookback in LOOKBACKS:
@@ -194,20 +200,40 @@ def run_grid(rets, months, cost_bps=COST_BPS):
                     rows.append({
                         "direction": direction, "lookback": lookback,
                         "hold": hold, "k": k, "past": a, "unseen": b,
-                        "verdict": verdict(a, b),
+                        "excess_past": _ex(a, bench_past),
+                        "excess_unseen": _ex(b, bench_unseen),
+                        "verdict": verdict(a, b, bench_past, bench_unseen),
                     })
     return rows, past, unseen
 
 
-def verdict(past, unseen):
-    """Only a rule that pays in BOTH halves earns anything but a warning."""
+def _ex(s, bench):
+    """CAGR minus the benchmark's, in percentage points."""
+    if s.get("cagr") is None or (bench or {}).get("cagr") is None:
+        return None
+    return round(s["cagr"] - bench["cagr"], 2)
+
+
+def verdict(past, unseen, bench_past=None, bench_unseen=None):
+    """Did it BEAT holding every industry — in both halves?
+
+    "Made money" is not a result. Over 2020-2026 an equal-weight basket of
+    Indian industries compounded above 30% a year, so any subset of it also
+    made money; scoring against zero marks all 48 rules as winners and tells
+    you nothing. The bar is the benchmark, after costs.
+    """
     if past["cagr"] is None or unseen["cagr"] is None:
         return "NO DATA"
-    if past["cagr"] > 0 and unseen["cagr"] > 0:
-        return "HOLDS UP"
-    if past["cagr"] > 0 >= unseen["cagr"]:
+    bp = 0.0 if bench_past is None else (bench_past.get("cagr") or 0.0)
+    bu = 0.0 if bench_unseen is None else (bench_unseen.get("cagr") or 0.0)
+    beat_past, beat_unseen = past["cagr"] > bp, unseen["cagr"] > bu
+    if beat_past and beat_unseen:
+        return "BEATS"
+    if beat_past and not beat_unseen:
         return "OVERFIT"
-    return "REJECTED"
+    if not beat_past and beat_unseen:
+        return "LUCKY?"
+    return "LAGS"
 
 
 # ------------------------------------------------------------------ CLI ----
@@ -274,23 +300,38 @@ def main(argv=None):
         print("")
 
     rows, _p, _u = run_grid(rets, months, cost)
-    rows.sort(key=lambda r: (r["unseen"]["cagr"] is None,
-                             -(r["unseen"]["cagr"] or -999)))
-    print(f"{'RULE':<34}{'PAST':>9}{'UNSEEN':>9}{'UNSEEN dd':>11}  VERDICT")
+    rows.sort(key=lambda r: (r["excess_unseen"] is None,
+                             -(r["excess_unseen"] or -999)))
+    print("vs BENCHMARK = the excess over holding every industry. That is the "
+          "only column\nthat decides anything: a rule that made 25% while the "
+          "benchmark made 34% lost.\n")
+    print(f"{'RULE':<34}{'PAST vs bm':>11}{'UNSEEN vs bm':>13}"
+          f"{'UNSEEN dd':>11}  VERDICT")
     for r in rows:
         name = (f"{r['direction']:<11} look {r['lookback']:>2}m "
                 f"hold {r['hold']}m top{r['k']}")
-        print(f"{name:<34}{_pc(r['past']['cagr']):>9}"
-              f"{_pc(r['unseen']['cagr']):>9}"
+        print(f"{name:<34}{_pc(r['excess_past']):>11}"
+              f"{_pc(r['excess_unseen']):>13}"
               f"{_pc(r['unseen']['maxdd']):>11}  {r['verdict']}")
 
     best = rows[0]
-    print(f"\nBest on unseen years: {best['direction']} "
+    beats = sum(1 for r in rows if r["verdict"] == "BEATS")
+    print(f"\n{beats} of {len(rows)} rules beat the benchmark in BOTH halves.")
+    print(f"Best on unseen years: {best['direction']} "
           f"look {best['lookback']}m hold {best['hold']}m top{best['k']} — "
           f"{_pc(best['unseen']['cagr'])} vs benchmark "
-          f"{_pc(bench_unseen['cagr'])}")
-    print("Read the VERDICT column, not this line: one winner out of "
-          f"{len(rows)} tries is what chance looks like.")
+          f"{_pc(bench_unseen['cagr'])} "
+          f"({_pc(best['excess_unseen'])} excess)")
+    con = [r for r in rows if r["direction"] == "contrarian"]
+    mom = [r for r in rows if r["direction"] == "momentum"]
+
+    def _avg(rs):
+        v = [r["excess_unseen"] for r in rs if r["excess_unseen"] is not None]
+        return round(sum(v) / len(v), 2) if v else None
+    print(f"\nAverage excess on unseen years — momentum {_pc(_avg(mom))}, "
+          f"contrarian {_pc(_avg(con))}")
+    print("That comparison is the answer to 'buy the faller or ride the "
+          "leader', and it\nrests on 48 rules rather than one lucky pick.")
 
     STUDY_FILE.parent.mkdir(parents=True, exist_ok=True)
     STUDY_FILE.write_text(json.dumps({

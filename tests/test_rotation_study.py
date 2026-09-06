@@ -115,11 +115,34 @@ def test_hold_period_keeps_the_book_still():
 
 # -------------------------------------------------------- honest scoring ----
 
-def test_a_rule_that_only_worked_on_the_past_is_called_overfit():
-    good, bad = {"cagr": 12.0}, {"cagr": -3.0}
-    assert rs.verdict(good, bad) == "OVERFIT"
-    assert rs.verdict(good, {"cagr": 5.0}) == "HOLDS UP"
-    assert rs.verdict(bad, bad) == "REJECTED"
+def test_making_money_is_not_the_bar_beating_the_benchmark_is():
+    """2020-2026 the benchmark itself did ~34% a year; +25% was a LOSS."""
+    bench_past, bench_unseen = {"cagr": 16.8}, {"cagr": 33.89}
+    assert rs.verdict({"cagr": 20.0}, {"cagr": 25.0},
+                      bench_past, bench_unseen) == "OVERFIT"
+    assert rs.verdict({"cagr": 30.0}, {"cagr": 45.0},
+                      bench_past, bench_unseen) == "BEATS"
+    assert rs.verdict({"cagr": 5.0}, {"cagr": 20.0},
+                      bench_past, bench_unseen) == "LAGS"
+    assert rs.verdict({"cagr": 5.0}, {"cagr": 40.0},
+                      bench_past, bench_unseen) == "LUCKY?"
+
+
+def test_excess_is_measured_against_the_same_half():
+    """A rule is never credited for a bull run the benchmark also enjoyed."""
+    assert rs._ex({"cagr": 45.0}, {"cagr": 33.89}) == pytest.approx(11.11)
+    assert rs._ex({"cagr": 25.0}, {"cagr": 33.89}) == pytest.approx(-8.89)
+    assert rs._ex({"cagr": None}, {"cagr": 10.0}) is None
+
+
+def test_the_grid_carries_excess_for_both_halves():
+    n = 150
+    d = market({c: [(i % 3 - 1) * 2.0 for i in range(n)] for c in "ABCDEF"})
+    rets = rs.monthly_returns_by_industry(d)
+    rows, _p, _u = rs.run_grid(rets, rs.all_months(rets))
+    assert all("excess_past" in r and "excess_unseen" in r for r in rows)
+    assert all(r["verdict"] in {"BEATS", "OVERFIT", "LAGS", "LUCKY?", "NO DATA"}
+               for r in rows)
 
 
 def test_the_split_never_lets_the_unseen_years_leak_into_the_past():

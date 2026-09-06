@@ -210,7 +210,7 @@ def save_cached(name, candles):
     return p
 
 
-def fetch_index(kite, token, years=20, chunk_days=1500):
+def fetch_index(kite, token, years=20, chunk_days=1500, since=None):
     """Daily closes as far back as Kite will serve, walking backwards.
 
     Kite caps a daily-candle request at a few thousand days, so this asks in
@@ -219,6 +219,8 @@ def fetch_index(kite, token, years=20, chunk_days=1500):
     """
     out, end = [], date.today()
     start_limit = end - timedelta(days=int(years * 365.25))
+    if since:                      # top up only: everything before is cached
+        start_limit = max(start_limit, since - timedelta(days=3))
     while end > start_limit:
         start = max(start_limit, end - timedelta(days=chunk_days))
         try:
@@ -486,10 +488,25 @@ def gather_industries(kite, universe, years=20, offline=False, log=print,
         except Exception as e:  # noqa: BLE001
             log(f"  instrument dump failed ({e}) — cache only")
 
-    stocks, fetched, cached, missing = {}, 0, 0, 0
+    stocks, fetched, cached, missing, topped = {}, 0, 0, 0, 0
     for i, sym in enumerate(symbols, 1):
         rows = load_stock(sym)
-        if rows:
+        if rows and kite and tokens.get(sym) and not offline:
+            # Top up the tail rather than refetching two decades. A daily
+            # refresh then costs one small call per stock instead of five big
+            # ones, which is what makes "what is moving now" affordable.
+            last = date.fromisoformat(rows[-1]["t"])
+            if last < date.today() - timedelta(days=1):
+                tail = fetch_index(kite, tokens[sym], years=years, since=last)
+                if tail:
+                    seen = {r["t"] for r in rows}
+                    rows += [r for r in tail if r["t"] not in seen]
+                    rows.sort(key=lambda r: r["t"])
+                    save_stock(sym, rows)
+                    topped += 1
+                time.sleep(pause)
+            cached += 1
+        elif rows:
             cached += 1
         elif kite and tokens.get(sym) and not offline:
             rows = fetch_index(kite, tokens[sym], years=years)
@@ -504,7 +521,8 @@ def gather_industries(kite, universe, years=20, offline=False, log=print,
         if i % 100 == 0:
             log(f"    {i}/{len(symbols)} · {fetched} fetched, {cached} cached, "
                 f"{missing} missing")
-    log(f"  stocks: {fetched} fetched, {cached} from cache, {missing} missing")
+    log(f"  stocks: {fetched} fetched, {cached} from cache "
+        f"({topped} topped up), {missing} missing")
 
     data, meta, diag = {}, {}, {}
     for ind, g in sorted(groups.items()):
@@ -524,6 +542,48 @@ def gather_industries(kite, universe, years=20, offline=False, log=print,
     return data, meta
 
 
+#: Windows for the "what is running right now" ranking, in trading days.
+NOW_WINDOWS = {"1m": 21, "3m": 63, "6m": 126, "12m": 252}
+
+
+def trailing_now(series, windows=None):
+    """{'1m': pct, ...} — how far this industry has run, to its latest close.
+
+    Trading-day counts, not calendar months, so a window means the same number
+    of observations for every industry regardless of holidays.
+    """
+    out = {}
+    if not series:
+        return out
+    last = series[-1]["c"]
+    for name, n in (windows or NOW_WINDOWS).items():
+        if len(series) > n and series[-1 - n]["c"]:
+            base = series[-1 - n]["c"]
+            out[name] = round((last - base) / base * 100.0, 2)
+        else:
+            out[name] = None
+    return out
+
+
+def momentum_now(series_by_industry, meta=None, windows=None):
+    """Every industry ranked by its last quarter — the 'what is hot' view.
+
+    This is the half the phase map cannot give you: the cycle says which
+    sectors ought to lead, this says which ones actually are, today.
+    """
+    rows = []
+    for ind, series in series_by_industry.items():
+        if ind == "_BENCH" or not series:
+            continue
+        t = trailing_now(series, windows)
+        rows.append({"industry": ind, "as_of": series[-1]["t"],
+                     "sector": (meta or {}).get(ind, {}).get("sector", ""),
+                     "members": (meta or {}).get(ind, {}).get("members"),
+                     **t})
+    rows.sort(key=lambda r: (r.get("3m") is None, -(r.get("3m") or -1e9)))
+    return rows
+
+
 def build(data, meta=None):
     """The whole study, as the JSON the dashboard renders."""
     bench = monthly_returns(data.get("_BENCH", []))
@@ -540,6 +600,8 @@ def build(data, meta=None):
         "table": {s: {str(m): t[m] for m in range(1, 13)}
                   for s, t in tables.items()},
         "ranked": {str(m): v for m, v in rank_by_month(tables).items()},
+        "now": momentum_now(data, meta),
+        "now_windows": list(NOW_WINDOWS),
     }
 
 
