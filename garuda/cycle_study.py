@@ -339,6 +339,11 @@ def find_universe_files(extra=None, csv_dir=None):
     if csv_dir:
         roots.append(Path(csv_dir))
     roots += [base / "mayura_data", base, config.DATA_DIR, Path.cwd()]
+    # The per-stock and per-index price caches are CSVs sitting under DATA_DIR.
+    # They carry no industry column, so they are only ever opened and discarded
+    # — but there are hundreds of them and they multiply on every run, which is
+    # why the candidate count climbs each time. Skip them by directory.
+    skip = {STOCK_DIR.resolve(), HISTORY_DIR.resolve()}
     found, seen = [], set()
     for r in roots:
         if r.is_file():
@@ -349,9 +354,10 @@ def find_universe_files(extra=None, csv_dir=None):
             continue
         for f in cand:
             rp = f.resolve()
-            if rp not in seen:
-                seen.add(rp)
-                found.append(f)
+            if rp.parent in skip or rp in seen:
+                continue
+            seen.add(rp)
+            found.append(f)
     return found
 
 

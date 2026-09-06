@@ -235,3 +235,16 @@ def test_discovery_looks_in_the_dashboards_csv_dir(tmp_path):
     files = cs.find_universe_files(csv_dir=tmp_path)
     assert any(f.name == "ind_nifty50list.csv" for f in files)
     assert cs.load_universe(files)["INFY"][0] == "IT"
+
+
+def test_discovery_ignores_its_own_price_cache(tmp_path, monkeypatch):
+    """The cache is hundreds of CSVs with no industry column — never scan it."""
+    monkeypatch.setattr(cs, "STOCK_DIR", tmp_path / "stock_history")
+    monkeypatch.setattr(cs, "HISTORY_DIR", tmp_path / "sector_history")
+    (tmp_path / "stock_history").mkdir()
+    (tmp_path / "stock_history" / "INFY.csv").write_text("t,c\n2024-01-01,100\n")
+    (tmp_path / "ind_nifty50list.csv").write_text("Symbol,Industry\nINFY,IT\n")
+    files = cs.find_universe_files(csv_dir=tmp_path)
+    names = [f.name for f in files]
+    assert "ind_nifty50list.csv" in names
+    assert "INFY.csv" not in names
