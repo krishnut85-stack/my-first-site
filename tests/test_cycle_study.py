@@ -248,3 +248,37 @@ def test_discovery_ignores_its_own_price_cache(tmp_path, monkeypatch):
     names = [f.name for f in files]
     assert "ind_nifty50list.csv" in names
     assert "INFY.csv" not in names
+
+
+def test_one_bad_print_cannot_move_a_whole_industry():
+    """A stock printing 50 -> 5000 -> 50 must not lift its industry 900%."""
+    stocks = {f"OK{i}": [{"t": f"2020-01-{d:02d}", "c": 100.0}
+                         for d in range(1, 6)] for i in range(10)}
+    stocks["BAD"] = [{"t": "2020-01-01", "c": 50.0}, {"t": "2020-01-02", "c": 50.0},
+                     {"t": "2020-01-03", "c": 5000.0},
+                     {"t": "2020-01-04", "c": 50.0}, {"t": "2020-01-05", "c": 50.0}]
+    diag = {}
+    s = cs.industry_series(list(stocks), stocks, diag=diag)
+    assert all(r["c"] == pytest.approx(100.0) for r in s)
+    assert diag["dropped"] == 2          # the spike and its mirror
+
+
+def test_a_split_lets_the_stock_rejoin_at_its_new_price():
+    """A 1:10 split is not a -90% return; the shareholder lost nothing."""
+    stocks = {f"OK{i}": [{"t": f"2020-01-{d:02d}", "c": 100.0}
+                         for d in range(1, 5)] for i in range(3)}
+    stocks["SPLIT"] = [{"t": "2020-01-01", "c": 1000.0},
+                       {"t": "2020-01-02", "c": 100.0},    # 1:10
+                       {"t": "2020-01-03", "c": 105.0},    # +5%, real
+                       {"t": "2020-01-04", "c": 105.0}]
+    s = cs.industry_series(list(stocks), stocks)
+    lvls = [r["c"] for r in s]
+    assert lvls[0] == pytest.approx(100.0)       # split day contributes nothing
+    assert lvls[1] > lvls[0]                     # the real +5% still counts
+
+
+def test_a_real_move_inside_the_band_is_kept():
+    stocks = {f"S{i}": [{"t": "2020-01-01", "c": 100.0},
+                        {"t": "2020-01-02", "c": 118.0}] for i in range(4)}
+    s = cs.industry_series(list(stocks), stocks)
+    assert s[0]["c"] == pytest.approx(118.0)     # +18% is a real day

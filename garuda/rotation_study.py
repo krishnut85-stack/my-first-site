@@ -51,6 +51,12 @@ DIRECTIONS = ("contrarian", "momentum")
 #: while choosing.
 PAST_FRACTION = 0.70
 
+#: A broad Indian equity benchmark compounds in the low-to-mid teens over
+#: decades. If the measured benchmark clears this, the INPUT is wrong — not the
+#: strategy — and every rule scored against it is meaningless. Announce that
+#: loudly instead of printing a table someone might trade on.
+IMPLAUSIBLE_CAGR = 35.0
+
 
 # ------------------------------------------------------------ the maths ----
 
@@ -71,9 +77,17 @@ def monthly_returns_by_industry(series_by_industry):
         keys = sorted(closes)
         rets = {}
         for i in range(1, len(keys)):
-            a, b = closes[keys[i - 1]][1], closes[keys[i]][1]
+            prev_k, k = keys[i - 1], keys[i]
+            # Consecutive months only. A gap is missing data, not a return —
+            # booking Jan-to-April as one month's move inflates everything
+            # downstream, and cycle_study already refuses to do it.
+            gap = ((int(k[:4]) - int(prev_k[:4])) * 12
+                   + (int(k[5:7]) - int(prev_k[5:7])))
+            if gap != 1:
+                continue
+            a, b = closes[prev_k][1], closes[k][1]
             if a:
-                rets[keys[i]] = (b - a) / a * 100.0
+                rets[k] = (b - a) / a * 100.0
         if rets:
             out[ind] = rets
     return out
@@ -242,6 +256,22 @@ def main(argv=None):
     print(f"  whole period  CAGR {bench_all['cagr']}%  maxDD {bench_all['maxdd']}%")
     print(f"  past          CAGR {bench_past['cagr']}%")
     print(f"  unseen        CAGR {bench_unseen['cagr']}%\n")
+
+    if (bench_all["cagr"] or 0) > IMPLAUSIBLE_CAGR:
+        print("=" * 62)
+        print(f"STOP. A benchmark CAGR of {bench_all['cagr']}% is not real.")
+        print("Holding every industry cannot compound at that rate; a broad")
+        print("Indian equity index does low-to-mid teens over decades. The")
+        print("price data feeding this is wrong — most likely unadjusted")
+        print("splits or bad prints inflating the industry series.")
+        print("")
+        print("Re-run the study that builds them, which now discards")
+        print("implausible single-day moves:")
+        print("  python3 -m garuda.cycle_study --offline "
+              "--csv-dir <your csv dir>")
+        print("Then run this again. Do NOT read the table below.")
+        print("=" * 62)
+        print("")
 
     rows, _p, _u = run_grid(rets, months, cost)
     rows.sort(key=lambda r: (r["unseen"]["cagr"] is None,

@@ -296,6 +296,19 @@ STOCK_DIR = config.DATA_DIR / "stock_history"
 #: "industry" is one or two companies and the average means little.
 MIN_MEMBERS = 3
 
+#: Largest one-day move accepted from a single stock. NSE price bands cap most
+#: stocks at 20% a day, so anything beyond this is a corporate action (a split
+#: or bonus shows as a huge negative jump; unadjusted history shows the
+#: reverse) or a bad print — not a return anyone could have earned.
+#:
+#: This matters more than it looks. The industry series averages its members'
+#: daily returns, so ONE bad tick moves the whole industry: a stock printing
+#: 50 -> 5000 -> 50 among eleven others lifts the industry ~900% in a day and
+#: never gives it back, because +9900% followed by -99% does not round-trip.
+#: Left unguarded, twenty-one years of splits ratchet an index to an absurd
+#: return — which is exactly what produced a 75%-a-year "benchmark".
+MAX_DAILY_MOVE = 0.25
+
 
 def _pick(row, names):
     for n in names:
@@ -415,23 +428,36 @@ def save_stock(symbol, candles):
             w.writerow({"t": row["t"], "c": row["c"]})
 
 
-def industry_series(members, stocks):
+def industry_series(members, stocks, max_move=MAX_DAILY_MOVE, diag=None):
     """One equal-weight index series [{t, c}] for a set of constituents.
 
     Each day is the MEAN of its members' daily percentage moves, compounded
     into a series starting at 100. Averaging returns rather than prices means a
     2,000-rupee stock does not outvote a 20-rupee one, and a member that only
     lists halfway through history simply joins the average from then on.
+
+    Moves larger than ``max_move`` are discarded rather than averaged in — see
+    MAX_DAILY_MOVE. The stock rejoins the average the next day from its new
+    price, which is the correct handling for a split: the level changed, the
+    shareholder's wealth did not. Pass ``diag`` (a dict) to receive counts.
     """
-    per_day = {}
+    per_day, kept, dropped = {}, 0, 0
     for sym in members:
         rows = stocks.get(sym) or []
         prev = None
         for row in rows:
             c = row["c"]
             if prev and prev > 0:
-                per_day.setdefault(row["t"], []).append((c - prev) / prev)
+                r = (c - prev) / prev
+                if abs(r) <= max_move:
+                    per_day.setdefault(row["t"], []).append(r)
+                    kept += 1
+                else:
+                    dropped += 1
             prev = c
+    if diag is not None:
+        diag["kept"] = diag.get("kept", 0) + kept
+        diag["dropped"] = diag.get("dropped", 0) + dropped
     out, level = [], 100.0
     for t in sorted(per_day):
         moves = per_day[t]
@@ -480,14 +506,20 @@ def gather_industries(kite, universe, years=20, offline=False, log=print,
                 f"{missing} missing")
     log(f"  stocks: {fetched} fetched, {cached} from cache, {missing} missing")
 
-    data, meta = {}, {}
+    data, meta, diag = {}, {}, {}
     for ind, g in sorted(groups.items()):
-        series = industry_series(g["members"], stocks)
+        series = industry_series(g["members"], stocks, diag=diag)
         if series:
             data[ind] = series
             have = sum(1 for s in g["members"] if s in stocks)
             meta[ind] = {"sector": g["sector"], "members": len(g["members"]),
                          "with_data": have}
+    kept, dropped = diag.get("kept", 0), diag.get("dropped", 0)
+    if dropped:
+        pct = dropped / max(1, kept + dropped) * 100
+        log(f"  discarded {dropped} single-day moves over "
+            f"{int(MAX_DAILY_MOVE * 100)}% ({pct:.2f}% of all days) — splits, "
+            f"bonuses and bad prints")
     log(f"  built {len(data)} industry series")
     return data, meta
 

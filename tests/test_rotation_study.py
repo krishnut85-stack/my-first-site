@@ -141,3 +141,22 @@ def test_the_grid_scores_every_rule_on_both_halves():
                          * len(rs.HOLDS) * len(rs.KS))
     assert all("past" in r and "unseen" in r and "verdict" in r for r in rows)
     assert past[-1] < unseen[0]
+
+
+def test_a_gap_between_months_is_not_a_return():
+    """Jan then April is missing data; booking it as one month inflates all."""
+    d = {"A": [{"t": "2020-01-28", "c": 100.0}, {"t": "2020-04-28", "c": 200.0},
+               {"t": "2020-05-28", "c": 210.0}]}
+    r = rs.monthly_returns_by_industry(d)["A"]
+    assert "2020-04" not in r                  # the 100% jump is discarded
+    assert r["2020-05"] == pytest.approx(5.0)  # the real month survives
+
+
+def test_an_impossible_benchmark_is_flagged_not_reported(capsys, tmp_path,
+                                                         monkeypatch):
+    """A 75%-a-year 'benchmark' means the input is broken, not that we won."""
+    n = 120
+    d = market({c: [12.0] * n for c in "ABCDEF"})     # 12% a MONTH
+    rets = rs.monthly_returns_by_industry(d)
+    bench = rs.stats(rs.equal_weight_all(rets, rs.all_months(rets)))
+    assert bench["cagr"] > rs.IMPLAUSIBLE_CAGR
