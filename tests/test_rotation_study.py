@@ -238,3 +238,19 @@ def test_next_rerank_date_is_stated():
     assert rs._add_months("2026-09", 6) == "2027-03"
     assert rs._add_months("2026-12", 1) == "2027-01"
     assert rs._add_months("2026-01", 12) == "2027-01"
+
+
+def test_a_pick_with_little_history_is_flagged():
+    """A 20-year test says nothing about an industry that listed last year."""
+    n = 120
+    d = market({"OLD": [1.0] * n, "STEADY": [0.8] * n, "SLOW": [0.2] * n})
+    d["NEWLY_LISTED"] = series_from([9.0] * 8, start="2019-05")   # 8 months
+    rets = rs.monthly_returns_by_industry(d)
+    months = rs.all_months(rets)
+    picks = rs.current_picks(rets, months, 6, 2, "momentum")
+    by = {p["industry"]: p for p in picks}
+    assert "NEWLY_LISTED" in by
+    assert by["NEWLY_LISTED"]["thin_history"] is True
+    assert by["NEWLY_LISTED"]["history_months"] < rs.THIN_HISTORY_MONTHS
+    assert all(not p["thin_history"] for p in picks
+               if p["industry"] != "NEWLY_LISTED")

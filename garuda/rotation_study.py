@@ -51,6 +51,13 @@ DIRECTIONS = ("contrarian", "momentum")
 #: while choosing.
 PAST_FRACTION = 0.70
 
+#: Months of history below which a pick is not covered by the backtest.
+#: A rule validated over twenty years says nothing about an industry whose
+#: constituents listed last year — its "6-month momentum" is the post-IPO
+#: drift of a handful of new stocks, which is a different phenomenon wearing
+#: the same name.
+THIN_HISTORY_MONTHS = 60
+
 #: A broad Indian equity benchmark compounds in the low-to-mid teens over
 #: decades. If the measured benchmark clears this, the INPUT is wrong — not the
 #: strategy — and every rule scored against it is meaningless. Announce that
@@ -252,7 +259,13 @@ def current_picks(rets, months, lookback, k, direction="momentum"):
         return []
     scored.sort(key=lambda x: x[1])
     picked = scored[:k] if direction == "contrarian" else scored[-k:][::-1]
-    return [{"industry": a, "trailing": round(b, 2)} for a, b in picked]
+    out = []
+    for a, b in picked:
+        hist = len(rets.get(a, {}))
+        out.append({"industry": a, "trailing": round(b, 2),
+                    "history_months": hist,
+                    "thin_history": hist < THIN_HISTORY_MONTHS})
+    return out
 
 
 def consistency(rows):
@@ -405,11 +418,23 @@ def main(argv=None):
                   f"(as of {months[-1]}), ranked by its {pick_rule['lookback']}m "
                   f"return:")
             for i, p in enumerate(picks, 1):
-                print(f"  {i}. {p['industry']:<38} {p['trailing']:+.1f}%")
+                warn = ("   << only %d months of history"
+                        % p["history_months"]) if p["thin_history"] else ""
+                print(f"  {i}. {p['industry']:<38} {p['trailing']:+.1f}%{warn}")
                 syms = members.get(p["industry"], [])
                 if syms:
                     print(f"     {', '.join(syms)}")
                 p["members"] = syms
+            thin = [p for p in picks if p["thin_history"]]
+            if thin:
+                print(f"\n  CAUTION — {len(thin)} of these industries has less "
+                      f"than {THIN_HISTORY_MONTHS} months of history:")
+                for p in thin:
+                    print(f"    {p['industry']} ({p['history_months']} months)")
+                print("  The 20-year test does not cover them. Their momentum")
+                print("  is the drift of recently listed stocks, which is a")
+                print("  different thing wearing the same name. Consider")
+                print("  skipping them and holding the rest.")
             print(f"  Held for {pick_rule['hold']} months before re-ranking "
                   f"— next re-rank around "
                   f"{_add_months(months[-1], pick_rule['hold'])}.")
