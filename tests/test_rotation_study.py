@@ -254,3 +254,66 @@ def test_a_pick_with_little_history_is_flagged():
     assert by["NEWLY_LISTED"]["history_months"] < rs.THIN_HISTORY_MONTHS
     assert all(not p["thin_history"] for p in picks
                if p["industry"] != "NEWLY_LISTED")
+
+
+def _trending(n=140):
+    """One industry that keeps winning, one that dies mid-hold, plus filler."""
+    import random
+    random.seed(11)
+    months = [f"{2010 + i // 12:04d}-{i % 12 + 1:02d}" for i in range(n)]
+    rets = {"WINNER": {m: 0.03 for m in months},
+            "DIES": {m: (0.05 if i < n // 2 else -0.05)
+                     for i, m in enumerate(months)}}
+    for j in range(8):
+        rets[f"FILL{j}"] = {m: random.uniform(-0.02, 0.02) for m in months}
+    return rets, months
+
+
+def test_the_guard_is_off_by_default_and_changes_nothing():
+    rets, months = _trending()
+    a = rs.backtest(rets, months, 6, 6, 3, "momentum")
+    b = rs.backtest(rets, months, 6, 6, 3, "momentum", guard=0)
+    assert a == b
+
+
+def test_the_guard_sells_an_industry_that_stops_being_alive():
+    """DIES leads, gets picked, then collapses. A fixed hold rides it down to
+    the next re-rank; the guard drops it the month it leaves the top ranks."""
+    months = [f"{2010 + i // 12:04d}-{i % 12 + 1:02d}" for i in range(24)]
+    rets = {"DIES": {m: (0.10 if i < 6 else -0.20) for i, m in enumerate(months)},
+            "WINNER": {m: 0.01 for m in months},
+            "FLAT": {m: 0.0 for m in months}}
+    fixed = rs.stats(rs.backtest(rets, months, 1, 6, 1, "momentum"))
+    guarded = rs.stats(rs.backtest(rets, months, 1, 6, 1, "momentum", guard=2))
+    assert guarded["cagr"] > fixed["cagr"]
+
+
+def test_the_guard_can_lose_to_whipsaw_and_the_study_must_show_that():
+    """Not a free improvement. Among industries that wander, holdings fall out
+    of the cutoff and back in, and every swap pays the full rebalance cost.
+    A study that could only ever report an improvement would be worthless."""
+    rets, months = _trending()
+    fixed = rs.stats(rs.backtest(rets, months, 6, 6, 2, "momentum"))
+    guarded = rs.stats(rs.backtest(rets, months, 6, 6, 2, "momentum", guard=2))
+    assert guarded["cagr"] < fixed["cagr"]
+
+
+def test_ranked_orders_by_the_rules_own_definition_of_best():
+    rets, months = _trending()
+    i = len(months) - 2
+    mom = rs.ranked(rets, months, i, 6, "momentum")
+    con = rs.ranked(rets, months, i, 6, "contrarian")
+    assert mom[0] == "WINNER"        # biggest gain first
+    assert con[0] == "DIES"          # biggest fall first
+    assert set(mom) == set(con)
+
+
+def test_hold_and_guard_comparisons_cover_every_setting_asked_for():
+    rets, months = _trending()
+    past, unseen = rs.split_months(months)
+    rule = {"lookback": 6, "hold": 6, "k": 3, "direction": "momentum"}
+    hc = rs.hold_comparison(rets, past, unseen, rule)
+    assert [r["hold"] for r in hc] == list(rs.HOLDS)
+    gc = rs.guard_comparison(rets, past, unseen, rule)
+    assert [r["guard"] for r in gc] == [0, 2, 3]
+    assert all("past" in r and "unseen" in r for r in hc + gc)

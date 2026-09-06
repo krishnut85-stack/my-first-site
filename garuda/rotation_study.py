@@ -118,29 +118,61 @@ def trailing(rets, ind, upto_idx, months, lookback):
     return (acc - 1) * 100.0
 
 
-def backtest(rets, months, lookback, hold, k, direction, cost_bps=COST_BPS):
+def ranked(rets, months, i, lookback, direction):
+    """Industries best-first BY THIS RULE'S OWN definition of best.
+
+    For momentum that is the biggest trailing gain; for contrarian the biggest
+    fall. Having one ordering both the picker and the monthly guard agree on is
+    what stops them disagreeing about which industry is "doing well".
+    """
+    scored = [(ind, trailing(rets, ind, i, months, lookback)) for ind in rets]
+    scored = [(a, b) for a, b in scored if b is not None]
+    scored.sort(key=lambda x: x[1])
+    if direction != "contrarian":
+        scored.reverse()
+    return [a for a, _ in scored]
+
+
+def backtest(rets, months, lookback, hold, k, direction, cost_bps=COST_BPS,
+             guard=0):
     """Monthly portfolio returns for one rule. [] if history is too short.
 
     Holds are re-picked every `hold` months; in between the book is left alone,
     which is what "wait for the next one" actually means in practice.
+
+    `guard` adds a monthly health check between those re-picks: an industry
+    that has fallen out of the top `guard * k` by the rule's own ranking is
+    sold and replaced by the best-ranked industry not already held. guard=0
+    disables it entirely, which is the fixed-hold rule. This is not a free
+    improvement — every swap pays the same costs a rebalance pays, and an
+    industry that dips out of the cutoff and straight back in pays twice for
+    nothing.
     """
     out, held, since = [], [], 0
     for i in range(len(months) - 1):
         if i < lookback:
             continue
         if not held or since >= hold:
-            scored = [(ind, trailing(rets, ind, i, months, lookback))
-                      for ind in rets]
-            scored = [(a, b) for a, b in scored if b is not None]
-            if len(scored) < k:
+            order = ranked(rets, months, i, lookback, direction)
+            if len(order) < k:
                 continue
-            scored.sort(key=lambda x: x[1])
-            picks = [a for a, _ in (scored[:k] if direction == "contrarian"
-                                    else scored[-k:])]
+            picks = order[:k]
             turnover = 1.0 if not held else \
                 len(set(picks) - set(held)) / float(k)
             cost = turnover * cost_bps / 100.0
             held, since = picks, 0
+        elif guard:
+            # Still alive? Anything outside the top guard*k is not.
+            order = ranked(rets, months, i, lookback, direction)
+            alive = set(order[:guard * k])
+            keep = [h for h in held if h in alive]
+            dropped = len(held) - len(keep)
+            if dropped:
+                spare = [a for a in order if a not in keep][:dropped]
+                held = keep + spare
+                cost = dropped / float(k) * cost_bps / 100.0
+            else:
+                cost = 0.0
         else:
             cost = 0.0
         since += 1
@@ -305,6 +337,38 @@ def _load_industry_series(csv_dir=None, universe_arg=None, log=print):
     return data, {k: v["members"] for k, v in groups.items()}
 
 
+def hold_comparison(rets, past, unseen, rule, cost_bps=COST_BPS, holds=HOLDS):
+    """The same picking rule at each hold length. Answers "why not rotate more
+    often?" from this data rather than from an opinion."""
+    out = []
+    for h in holds:
+        a = stats(backtest(rets, past, rule["lookback"], h, rule["k"],
+                           rule["direction"], cost_bps))
+        b = stats(backtest(rets, unseen, rule["lookback"], h, rule["k"],
+                           rule["direction"], cost_bps))
+        out.append({"hold": h, "past": a, "unseen": b})
+    return out
+
+
+def guard_comparison(rets, past, unseen, rule, cost_bps=COST_BPS,
+                     guards=(0, 2, 3)):
+    """The same rule with and without a monthly "is this industry still alive?"
+    check. guard=n sells anything that has fallen out of the top n*k mid-hold.
+
+    Whether it pays is an empirical question: cutting a dying industry early
+    helps, and paying costs to swap out an industry that dips and recovers
+    hurts. Only both halves of the split can say which dominates.
+    """
+    out = []
+    for g in guards:
+        a = stats(backtest(rets, past, rule["lookback"], rule["hold"],
+                           rule["k"], rule["direction"], cost_bps, guard=g))
+        b = stats(backtest(rets, unseen, rule["lookback"], rule["hold"],
+                           rule["k"], rule["direction"], cost_bps, guard=g))
+        out.append({"guard": g, "past": a, "unseen": b})
+    return out
+
+
 def main(argv=None):
     import sys
     argv = list(sys.argv[1:] if argv is None else argv)
@@ -411,6 +475,49 @@ def main(argv=None):
         print(f"  this rule       -> Rs {cap * r_rule:>13,.0f}")
         print(f"  hold everything -> Rs {cap * r_bm:>13,.0f}")
         print(f"  the edge earned    Rs {cap * (r_rule - r_bm):>13,.0f}")
+        # --- why this hold length, and would a monthly check beat it? --------
+        print(f"\nHOW LONG TO HOLD — same picker "
+              f"({pick_rule['direction']}, look {pick_rule['lookback']}m, "
+              f"top{pick_rule['k']}), different patience:")
+        print(f"  {'hold':<8}{'UNSEEN':>10}{'vs bm':>9}{'PAST':>10}"
+              f"{'vs bm':>9}{'maxDD':>9}")
+        for r in hold_comparison(rets, past, unseen, pick_rule, cost):
+            eu = (r["unseen"]["cagr"] or 0) - (bench_unseen["cagr"] or 0)
+            ep = (r["past"]["cagr"] or 0) - (bench_past["cagr"] or 0)
+            print(f"  {str(r['hold']) + 'm':<8}{_pc(r['unseen']['cagr']):>10}"
+                  f"{_pc(eu):>9}{_pc(r['past']['cagr']):>10}{_pc(ep):>9}"
+                  f"{_pc(r['unseen']['maxdd']):>9}")
+        print("  Shorter holds re-rank sooner but pay costs more often; the")
+        print("  study picked the hold above on BOTH halves, not on one.")
+
+        print(f"\nMONTHLY HEALTH CHECK — mid-hold, sell any industry that has")
+        print(f"  fallen out of the top N and replace it with the best one free:")
+        print(f"  {'check':<12}{'UNSEEN':>10}{'vs bm':>9}{'PAST':>10}"
+              f"{'vs bm':>9}{'maxDD':>9}")
+        base = None
+        for r in guard_comparison(rets, past, unseen, pick_rule, cost):
+            eu = (r["unseen"]["cagr"] or 0) - (bench_unseen["cagr"] or 0)
+            ep = (r["past"]["cagr"] or 0) - (bench_past["cagr"] or 0)
+            name = "off (fixed)" if not r["guard"] \
+                else f"top {r['guard'] * pick_rule['k']}"
+            print(f"  {name:<12}{_pc(r['unseen']['cagr']):>10}{_pc(eu):>9}"
+                  f"{_pc(r['past']['cagr']):>10}{_pc(ep):>9}"
+                  f"{_pc(r['unseen']['maxdd']):>9}")
+            if not r["guard"]:
+                base = r
+            elif base:
+                du = (r["unseen"]["cagr"] or 0) - (base["unseen"]["cagr"] or 0)
+                dp = (r["past"]["cagr"] or 0) - (base["past"]["cagr"] or 0)
+                if du > 0 and dp > 0:
+                    print(f"      -> beats fixed hold in BOTH halves "
+                          f"({_pc(du)} unseen, {_pc(dp)} past)")
+                elif du <= 0 and dp <= 0:
+                    print(f"      -> worse in both halves. The check costs more "
+                          f"than the dying industries cost.")
+                else:
+                    print(f"      -> helps one half, hurts the other. Not "
+                          f"evidence; that is noise.")
+
         picks = current_picks(rets, months, pick_rule["lookback"],
                               pick_rule["k"], pick_rule["direction"])
         if picks:
