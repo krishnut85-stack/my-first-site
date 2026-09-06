@@ -213,3 +213,25 @@ def test_a_missing_kite_session_names_the_missing_piece(monkeypatch, tmp_path):
     empty.write_text('{"date": "2026-01-01"}')
     monkeypatch.setenv("KITE_TOKEN_FILE", str(empty))
     assert "no access_token" in " ".join(cs.why_no_kite())
+
+
+def test_scan_reports_what_each_file_yields(tmp_path):
+    """Answer 'will this find my stocks?' offline, before any Kite call."""
+    good = tmp_path / "constituents.csv"
+    good.write_text("Company Name,Industry,Symbol,Series\n"
+                    "ACC Ltd,Cement,ACC,EQ\n"
+                    "UltraTech,Cement,ULTRACEMCO,EQ\n"
+                    "Titan,Consumer Durables,TITAN,EQ\n")
+    prices = tmp_path / "strength_daily.csv"
+    prices.write_text("date,close\n2024-01-01,100\n")     # no industry column
+    rows = cs.scan_universe([good, prices])
+    assert len(rows) == 1                      # the price file is ignored
+    assert rows[0][1] == 3 and rows[0][2] == 2
+
+
+def test_discovery_looks_in_the_dashboards_csv_dir(tmp_path):
+    """The NSE constituent lists live wherever --csv-dir points, not in the repo."""
+    (tmp_path / "ind_nifty50list.csv").write_text("Symbol,Industry\nINFY,IT\n")
+    files = cs.find_universe_files(csv_dir=tmp_path)
+    assert any(f.name == "ind_nifty50list.csv" for f in files)
+    assert cs.load_universe(files)["INFY"][0] == "IT"

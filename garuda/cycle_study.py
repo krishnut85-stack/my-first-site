@@ -35,6 +35,8 @@ Running it (on the droplet, where Kite lives)::
     python3 -m garuda.cycle_study --limit 200      # a quick first pass
     python3 -m garuda.cycle_study --offline        # recompute from the cache
     python3 -m garuda.cycle_study --indices        # the 16 broad indices instead
+    python3 -m garuda.cycle_study --scan           # what universe files exist?
+                                                   #   (offline, no Kite, instant)
 
 The first full run fetches daily history for every stock in the universe and
 is slow — Kite rate-limits historical calls, so budget roughly a second per
@@ -322,18 +324,50 @@ def load_universe(paths):
     return out
 
 
-def find_universe_files(extra=None):
-    """Every plausible universe export, newest-looking last."""
-    roots = [Path(extra)] if extra else []
+def find_universe_files(extra=None, csv_dir=None):
+    """Every CSV that might carry a symbol->industry mapping.
+
+    Casts wide on purpose: the NSE constituent lists Garuda already uses
+    (Symbol + Industry) live wherever the dashboard's --csv-dir points, the
+    Trendlyne exports live under mayura_data/, and neither is committed. Files
+    that turn out to carry no industry column are simply ignored.
+    """
     base = config.BASE_DIR.parent
-    roots += [base / "mayura_data", base, config.DATA_DIR]
-    found = []
+    roots = []
+    if extra:
+        roots.append(Path(extra))
+    if csv_dir:
+        roots.append(Path(csv_dir))
+    roots += [base / "mayura_data", base, config.DATA_DIR, Path.cwd()]
+    found, seen = [], set()
     for r in roots:
         if r.is_file():
-            found.append(r)
+            cand = [r]
         elif r.is_dir():
-            found += sorted(r.glob("*.csv")) + sorted(r.glob("*/*.csv"))
+            cand = sorted(r.glob("*.csv")) + sorted(r.glob("*/*.csv"))
+        else:
+            continue
+        for f in cand:
+            rp = f.resolve()
+            if rp not in seen:
+                seen.add(rp)
+                found.append(f)
     return found
+
+
+def scan_universe(files):
+    """[(file, symbols, industries)] — what each candidate actually yields.
+
+    Offline and instant: answers "will this find my stocks?" without a single
+    Kite call, which is the question worth settling before a long fetch.
+    """
+    out = []
+    for f in files:
+        u = load_universe([f])
+        if u:
+            out.append((f, len(u), len({i for i, _ in u.values()})))
+    out.sort(key=lambda r: r[1], reverse=True)
+    return out
 
 
 def by_industry(universe):
@@ -519,8 +553,32 @@ def main(argv=None):
     offline = "--offline" in argv
     from_csv = opt("--from-csv")
     universe_arg = opt("--universe")
+    csv_dir = opt("--csv-dir")
+    scan_only = "--scan" in argv
     limit = opt("--limit", int)
     indices_mode = "--indices" in argv      # the old 16-index study, if wanted
+
+    if scan_only:
+        files = find_universe_files(universe_arg, csv_dir)
+        rows = scan_universe(files)
+        print(f"looked at {len(files)} CSVs; {len(rows)} carry a "
+              f"symbol+industry mapping\n")
+        for f, n, ni in rows[:25]:
+            print(f"  {n:>5} stocks  {ni:>4} industries   {f}")
+        u = load_universe([f for f, _n, _i in rows])
+        g = by_industry(u)
+        big = sorted(g.items(), key=lambda kv: -len(kv[1]["members"]))[:10]
+        print(f"\nmerged: {len(u)} stocks across {len(g)} industries")
+        if big:
+            print("largest industries:")
+            for name, d in big:
+                print(f"  {len(d['members']):>4}  {name}")
+        if not u:
+            print("\nNothing found. Point at the file yourself:\n"
+                  "  python3 -m garuda.cycle_study --scan --universe /path/to.csv\n"
+                  "It needs a column named Symbol or NSE Code, and one named "
+                  "Industry.")
+        return 0 if u else 1
 
     kite = None
     if not offline and not from_csv:
@@ -553,7 +611,7 @@ def main(argv=None):
         print("gathering sector-INDEX history", flush=True)
         data = gather(kite, years=years, offline=offline, from_csv=from_csv)
     else:
-        files = find_universe_files(universe_arg)
+        files = find_universe_files(universe_arg, csv_dir)
         universe = load_universe(files)
         if not universe:
             print("no universe CSV with 'NSE Code' + 'Industry' columns found.\n"
