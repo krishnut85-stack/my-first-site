@@ -35,8 +35,15 @@ MIN_DAYS_IN_MONTH = 15
 #: the industry study's thin-history guard, one level down.
 MIN_MONTHS = 24
 
-#: How many stocks to take from each industry, when taking a subset.
-PICKS = (2, 3)
+#: How many stocks to take from each industry. A whole number is a fixed
+#: count; a fraction below 1 is a share of whatever the industry has.
+#:
+#: The distinction decides whether a result survives better data. With today's
+#: ~5 members per industry, "top 2" means "drop the worst half". When the
+#: stock-level export lifts Iron & Steel from 4 members to 88, "top 2" would
+#: silently become "hold 2 of 88" — a far more aggressive bet that was never
+#: tested. A fraction means the same thing at both universe sizes.
+PICKS = (2, 3, 0.5, 0.34)
 
 #: Selection rules tested inside each winning industry.
 MODES = ("all", "leaders", "laggards")
@@ -90,10 +97,14 @@ def pick_stocks(stock_rets, members, i, months, lookback, mode, n):
             have.append((s, t))
     if not have:
         return []
-    if mode == "all" or len(have) <= n:
+    if mode == "all":
+        return [s for s, _ in have]
+    want = max(1, round(len(have) * n)) if 0 < n < 1 else int(n)
+    if len(have) <= want:
         return [s for s, _ in have]
     have.sort(key=lambda x: x[1])
-    return [s for s, _ in (have[:n] if mode == "laggards" else have[-n:])]
+    return [s for s, _ in (have[:want] if mode == "laggards"
+                           else have[-want:])]
 
 
 def backtest_stocks(ind_rets, stock_rets, members_by_ind, months, lookback,
@@ -213,8 +224,12 @@ def main(argv=None):
     print(f"PAST {past[0]}..{past[-1]}   UNSEEN {unseen[0]}..{unseen[-1]}")
     print(f"\n  {'rule':<20}{'UNSEEN':>10}{'PAST':>10}{'maxDD':>10}")
     for r in rows:
-        name = "all of them" if r["mode"] == "all" \
-            else f"top {r['n']} {r['mode']}"
+        if r["mode"] == "all":
+            name = "all of them"
+        elif 0 < r["n"] < 1:
+            name = f"top {r['n'] * 100:.0f}% {r['mode']}"
+        else:
+            name = f"top {int(r['n'])} {r['mode']}"
         print(f"  {name:<20}{_pc(r['unseen']['cagr']):>10}"
               f"{_pc(r['past']['cagr']):>10}{_pc(r['unseen']['maxdd']):>10}")
         if base is None or r is base:

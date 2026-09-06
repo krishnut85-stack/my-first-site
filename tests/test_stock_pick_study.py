@@ -94,6 +94,29 @@ def test_compare_scores_every_rule_on_both_halves():
     mem = {"I1": ["A", "B"], "I2": ["C", "D"]}
     rows, past, unseen = sp.compare(ind, stock_rets, mem, months, 6, 6, 1)
     assert [(r["mode"], r["n"]) for r in rows] == [
-        ("all", 0), ("leaders", 2), ("leaders", 3),
-        ("laggards", 2), ("laggards", 3)]
+        ("all", 0),
+        ("leaders", 2), ("leaders", 3), ("leaders", 0.5), ("leaders", 0.34),
+        ("laggards", 2), ("laggards", 3), ("laggards", 0.5),
+        ("laggards", 0.34)]
     assert past and unseen and not set(past) & set(unseen)
+
+
+def test_a_fraction_scales_with_the_industry_but_a_count_does_not(cache):
+    """The reason the study reports both. When Iron & Steel goes from 4 members
+    to 88, "top 2" becomes a completely different bet; "top half" does not."""
+    months = _months(40)
+    small = [f"S{i}" for i in range(4)]
+    big = [f"B{i}" for i in range(88)]
+    rets = {s: {m: float(i) for m in months}
+            for i, s in enumerate(small + big)}
+    assert len(sp.pick_stocks(rets, small, 30, months, 6, "leaders", 2)) == 2
+    assert len(sp.pick_stocks(rets, big, 30, months, 6, "leaders", 2)) == 2
+    assert len(sp.pick_stocks(rets, small, 30, months, 6, "leaders", 0.5)) == 2
+    assert len(sp.pick_stocks(rets, big, 30, months, 6, "leaders", 0.5)) == 44
+
+
+def test_a_fraction_never_rounds_an_industry_down_to_nothing(cache):
+    months = _months(40)
+    rets = {s: {m: 1.0 for m in months} for s in ("A", "B")}
+    assert len(sp.pick_stocks(rets, ["A", "B"], 30, months, 6,
+                              "leaders", 0.1)) == 1
