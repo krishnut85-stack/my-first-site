@@ -85,3 +85,24 @@ def test_dashboard_shows_what_is_running_now():
     assert "PHASE_LEADS" in html
     # and it must say plainly that a past quarter is not a forecast
     assert "VERDICT column before treating" in html
+
+
+def test_the_rotation_book_has_its_own_tab():
+    html = DASH.read_text()
+    assert "data-f=rotation" in html
+    assert ">ROTATION<" in html
+    # it must sit after CYCLE, the tab added before it
+    assert html.index("data-f=cycle") < html.index("data-f=rotation")
+
+
+def test_the_rotation_tab_names_what_it_holds_and_when_it_rerankss():
+    html = DASH.read_text()
+    assert "function rotationNote(" in html
+    assert "p.key==='rotation'?rotationNote(p.rotation)" in html
+    assert "skipped for thin history" in html
+
+
+def test_rotation_is_labelled_in_the_combined_views():
+    html = DASH.read_text()
+    assert "rotation:'ROTATION'" in html      # LABEL, for the P&L breakdown
+    assert "rotation:'ROT'" in html           # TAG, for the ALL table

@@ -785,6 +785,35 @@ class GarudaLive:
                 self.day_base["rotation"] = round(rs_state["equity"], 0)
                 rot_day_base = self.day_base["rotation"]
                 base_changed = True
+            # The book's holdings as watch rows, so ROTATION appears in its own
+            # tab and inside ALL like every other book. Both tables read `watch`,
+            # never `positions`, so shipping an empty one hid the book entirely.
+            rot_watch = []
+            for pos in rs_state["positions"]:
+                sym = pos["sym"]
+                closes = self.series_by_sym.get(sym) or []
+                o = self.day_ohlc.get(sym, {})
+                prev_close = o.get("pc") or (closes[-1] if closes else 0.0)
+                ltp = pos["ltp"]
+
+                def _rb(n, _cl=closes, _ltp=ltp):
+                    return round((_ltp - _cl[-n]) / _cl[-n] * 100, 2) \
+                        if len(_cl) >= n and _cl[-n] > 0 else None
+                # 1D is the DAY change against the previous close — the same
+                # thing this column means in every other book. pos["chg"] is the
+                # move since entry, which belongs in P&L, not here.
+                rot_watch.append({
+                    "sym": sym, "ltp": ltp,
+                    "chg": round((ltp - prev_close) / prev_close * 100, 2)
+                    if prev_close else None,
+                    "chg_w": _rb(5), "chg_m": _rb(21),
+                    "mcap": self.mcap_by_sym.get(sym),
+                    "rank": self.mcap_rank.get(sym),
+                    "cat": _size_cat(self.mcap_rank.get(sym)),
+                    "rsi2": self.rsi_by_sym.get(sym),
+                    "rsi14": self.rsi14_by_sym.get(sym),
+                    "held": True, "qty": pos["qty"], "pnl": pos["pnl"],
+                })
             profs.append({
                 "key": "rotation", "name": "ROTATION",
                 "desc": "industry momentum", "strategy": "rotation",
@@ -796,7 +825,7 @@ class GarudaLive:
                 "cash": rs_state["cash"], "rotation": rs_state,
                 "win": None, "win_kind": None, "win_open": None, "win_n": 0,
                 "cats": {}, "proven_win": None, "proven_ret": None,
-                "proven_pf": None, "universe": [], "watch": [],
+                "proven_pf": None, "universe": [], "watch": rot_watch,
                 "pf": None, "buys": [], "sells": [],
                 "chart_sym": None, "chart": None, "lessons": [],
                 "best": None, "worst": None,

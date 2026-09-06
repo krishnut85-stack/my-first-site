@@ -207,6 +207,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
         <span class=wtab data-f=swami onclick="setFilter('swami',this)">SWAMINATHA</span>
         <span class=wtab data-f=lab onclick="setFilter('lab',this)">LAB</span>
         <span class=wtab data-f=cycle onclick="setFilter('cycle',this)">CYCLE</span>
+        <span class=wtab data-f=rotation onclick="setFilter('rotation',this)">ROTATION</span>
         <input class=wsearch id=search placeholder="search…" oninput="render(DATA)">
       </div>
       <div class=listwrap id=list></div>
@@ -268,8 +269,8 @@ let PNLC=null,PNLV={f0:0,f1:1},PNLH=null,PNLBASE=null,PNLTF='15';   // P&L curve
 function setSort(k){if(SORT.key===k)SORT.dir=-SORT.dir;else{SORT.key=k;SORT.dir=(k==='sym'?1:-1);}render(DATA);}
 function sortArrow(k){return SORT.key===k?(SORT.dir>0?' ▲':' ▼'):'';}
 function fmtCr(v){if(v==null)return '—';if(v>=1e5)return (v/1e5).toFixed(2)+'L Cr';if(v>=1e3)return (v/1e3).toFixed(1)+'K Cr';return Math.round(v)+' Cr';}
-const LABEL={smallcap:'SMALL CAP',microcap:'MICRO CAP',next50:'NEXT 50',strength:'STRENGTH',leaders:'LEADERS',scalein:'SCALE-IN',hi52:'52-W HIGH',crash:'CRASH',chakra:'CHAKRA',qmom:'QMOM',captain:'CAPTAIN'};
-const TAG={smallcap:'SC',microcap:'MC',next50:'N50',strength:'STR',leaders:'LDR',scalein:'SCL',hi52:'52H',crash:'CRS',chakra:'CHK',qmom:'QM',captain:'CPT'};
+const LABEL={smallcap:'SMALL CAP',microcap:'MICRO CAP',next50:'NEXT 50',strength:'STRENGTH',leaders:'LEADERS',scalein:'SCALE-IN',hi52:'52-W HIGH',crash:'CRASH',chakra:'CHAKRA',qmom:'QMOM',captain:'CAPTAIN',rotation:'ROTATION'};
+const TAG={smallcap:'SC',microcap:'MC',next50:'N50',strength:'STR',leaders:'LDR',scalein:'SCL',hi52:'52H',crash:'CRS',chakra:'CHK',qmom:'QM',captain:'CPT',rotation:'ROT'};
 function money(v){return "₹"+Math.round(v).toLocaleString('en-IN');}
 function escH(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
   .replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -630,6 +631,15 @@ async function loadChart(sym,book){curSym=sym;curBook=book||null;document.getEle
  catch(e){document.getElementById('chart').innerHTML='<div class=cempty style=color:#ff5d5d>DIAG: '+(e&&e.message||e)+'</div>';document.getElementById('rsi').innerHTML='';}}
 
 const STRATNAME={rsi2:'RSI-2 dip',momentum:'Momentum',strength:'Strength',leaders:'Leaders',scalein:'Scale-in',hi52:'52w High',crash:'Crash bounce',chakra:'Momentum rotation',qmom:'Quality+momentum rotation',captain:"Captain's picks",options:'Options'};
+function rotationNote(r){
+ if(!r)return '';
+ const inds=(r.industries||[]).map(i=>`<b class=a>${escH(i)}</b>`).join(' · ')||'<span class=muted>nothing yet</span>';
+ const skip=(r.skipped||[]).map(s=>`${escH(s.industry)} <span class=muted>(${s.months}m)</span>`).join(', ');
+ const nxt=r.next_rerank?`re-ranks <b>${escH(r.next_rerank)}</b>`:'not opened yet';
+ const note=(r.notes&&r.notes.length)?escH(r.notes[r.notes.length-1].note):'';
+ return `<div class=rules>Holding ${inds}<br>${nxt} · study as of <b>${escH(r.study_as_of||'—')}</b>`
+  +(skip?`<br><span class=r>skipped for thin history:</span> ${skip}`:'')
+  +(note?`<br><span class=muted>${note}</span>`:'')+`</div>`;}
 function allPortfolio(d,q){
  // ALL = the whole portfolio in ONE table: every held position across all books,
  // book-tagged, so no single book (e.g. Small Cap's 54) buries the others.
@@ -1175,7 +1185,7 @@ function render(d){
   html+=`<div class=bothdr>
     <div class=nm>${p.name} <span class=d>· ${p.desc}</span> ${strat}</div>
     <div class=bstat>${money(p.equity)} · <b class="${p.pnl_pct>=0?'g':'r'}">${pct(p.pnl_pct)}</b> · WIN <b class=a>${win}</b>${green}${pf} · ${p.positions.length} pos${catStr(p.cats)}</div>
-  </div>${rules}${lessons}`;
+  </div>${rules}${p.key==='rotation'?rotationNote(p.rotation):''}${lessons}`;
   // the STRENGTH book signals on RSI-14 (55-70 band); the dip books on RSI-2
   const rk=p.key==='strength'?'rsi14':'rsi2', rlabel=p.key==='strength'?'RSI-14':'RSI-2';
   // 'rsi' is a LOGICAL sort key so each table sorts by ITS OWN rsi field (rk), never a hidden one
