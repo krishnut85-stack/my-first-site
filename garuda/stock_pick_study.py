@@ -116,7 +116,8 @@ def pick_stocks(stock_rets, members, i, months, lookback, mode, n, floor=1):
 
 
 def backtest_stocks(ind_rets, stock_rets, members_by_ind, months, lookback,
-                    hold, k, mode, n, cost_bps=COST_BPS, floor=1):
+                    hold, k, mode, n, cost_bps=COST_BPS, floor=1,
+                    diag=None):
     """Monthly returns of: top-k industries by momentum, then `mode` inside each.
 
     Equal weight across every stock held, so an industry that contributes six
@@ -124,6 +125,7 @@ def backtest_stocks(ind_rets, stock_rets, members_by_ind, months, lookback,
     what the live book does, and the thing being measured has to match it.
     """
     out, held, since = [], [], 0
+    sizes = []
     for i in range(len(months) - 1):
         if i < lookback:
             continue
@@ -144,6 +146,7 @@ def backtest_stocks(ind_rets, stock_rets, members_by_ind, months, lookback,
                 len(set(picks) - set(held)) / float(len(picks))
             cost = turnover * cost_bps / 100.0
             held, since = picks, 0
+            sizes.append(len(picks))
         else:
             cost = 0.0
         since += 1
@@ -152,6 +155,14 @@ def backtest_stocks(ind_rets, stock_rets, members_by_ind, months, lookback,
         if not got:
             continue
         out.append((nxt, statistics.fmean(got) - cost))
+    if diag is not None and sizes:
+        # How many names the rule actually held, averaged over rebalances.
+        # Two rules can print different names and hold the same basket: with
+        # ~5 members an industry, "top 3", "top 50% min3" and "top 34% min3"
+        # all come out as "hold 3", and nothing but this number says so. It
+        # goes in a diag dict, never in the return series — a basket size
+        # appended there would be read as a month's return.
+        diag["names"] = round(statistics.fmean(sizes), 1)
     return out
 
 
@@ -163,14 +174,16 @@ def compare(ind_rets, stock_rets, members_by_ind, months, lookback, hold, k,
     for mode in modes:
         for n in ([0] if mode == "all" else list(picks)):
             for floor in ([1] if mode == "all" or n >= 1 else list(floors)):
+                diag = {}
                 a = stats(backtest_stocks(ind_rets, stock_rets, members_by_ind,
                                           past, lookback, hold, k, mode, n,
                                           cost_bps, floor))
                 b = stats(backtest_stocks(ind_rets, stock_rets, members_by_ind,
                                           unseen, lookback, hold, k, mode, n,
-                                          cost_bps, floor))
+                                          cost_bps, floor, diag))
                 rows.append({"mode": mode, "n": n, "floor": floor,
-                             "past": a, "unseen": b})
+                             "names": diag.get("names"), "past": a,
+                             "unseen": b})
     return rows, past, unseen
 
 
@@ -232,7 +245,8 @@ def main(argv=None):
     print(f"\nWHICH STOCKS INSIDE THE WINNING INDUSTRIES "
           f"(top{k} by {lookback}m, held {hold}m)")
     print(f"PAST {past[0]}..{past[-1]}   UNSEEN {unseen[0]}..{unseen[-1]}")
-    print(f"\n  {'rule':<20}{'UNSEEN':>10}{'PAST':>10}{'maxDD':>10}")
+    print(f"\n  {'rule':<22}{'UNSEEN':>10}{'PAST':>10}{'maxDD':>10}"
+          f"{'trough':>9}{'names':>7}")
     for r in rows:
         if r["mode"] == "all":
             name = "all of them"
@@ -242,8 +256,10 @@ def main(argv=None):
                 name += f" min{r['floor']}"
         else:
             name = f"top {int(r['n'])} {r['mode']}"
-        print(f"  {name:<20}{_pc(r['unseen']['cagr']):>10}"
-              f"{_pc(r['past']['cagr']):>10}{_pc(r['unseen']['maxdd']):>10}")
+        print(f"  {name:<22}{_pc(r['unseen']['cagr']):>10}"
+              f"{_pc(r['past']['cagr']):>10}{_pc(r['unseen']['maxdd']):>10}"
+              f"{(r['unseen'].get('maxdd_at') or '—'):>9}"
+              f"{(r['names'] if r['names'] is not None else '—'):>7}")
         if base is None or r is base:
             continue
         du = (r["unseen"]["cagr"] or 0) - (base["unseen"]["cagr"] or 0)

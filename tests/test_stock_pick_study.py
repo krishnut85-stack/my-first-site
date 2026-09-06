@@ -145,3 +145,34 @@ def test_the_floor_never_forces_a_bigger_basket_than_the_fraction_asks_for():
     mem = list(rets)
     assert len(sp.pick_stocks(rets, mem, 30, months, 6,
                               "leaders", 0.5, floor=3)) == 10
+
+
+def test_the_basket_size_never_leaks_into_the_returns_series():
+    """It is reported through diag. Appended to the series it would be read as
+    a month's return — a 3-name basket becoming a +3% month."""
+    months = _months(60)
+    rets = {s: {m: 1.0 for m in months} for s in ("A", "B", "C")}
+    ind = {"I": {m: 1.0 for m in months}}
+    mem = {"I": ["A", "B", "C"]}
+    diag = {}
+    out = sp.backtest_stocks(ind, rets, mem, months, 6, 6, 1, "leaders", 2,
+                             diag=diag)
+    assert diag["names"] == 2.0
+    assert all(m in months for m, _ in out)          # every entry is a month
+    assert all(abs(v) < 5 for _m, v in out)
+
+
+def test_two_rules_that_hold_the_same_basket_say_so():
+    """With ~5 members an industry, 'top 3', 'top 50% min3' and 'top 34% min3'
+    are the same rule wearing three names."""
+    months = _months(60)
+    mem5 = [f"S{i}" for i in range(5)]
+    rets = {s: {m: float(i) for m in months} for i, s in enumerate(mem5)}
+    ind = {"I": {m: 1.0 for m in months}}
+    got = []
+    for n, floor in ((3, 1), (0.5, 3), (0.34, 3)):
+        d = {}
+        sp.backtest_stocks(ind, rets, {"I": mem5}, months, 6, 6, 1,
+                           "leaders", n, floor=floor, diag=d)
+        got.append(d["names"])
+    assert got == [3.0, 3.0, 3.0]

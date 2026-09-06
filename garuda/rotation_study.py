@@ -224,17 +224,23 @@ def stats(series):
     if not series:
         return {"months": 0, "cagr": None, "total": None, "maxdd": None,
                 "hit": None}
-    lvl, peak, dd = 100.0, 100.0, 0.0
-    for _m, r in series:
+    lvl, peak, dd, dd_at = 100.0, 100.0, 0.0, None
+    for m, r in series:
         lvl *= (1 + r / 100.0)
         peak = max(peak, lvl)
-        dd = min(dd, (lvl / peak - 1) * 100.0)
+        this = (lvl / peak - 1) * 100.0
+        if this < dd:
+            dd, dd_at = this, m
     years = len(series) / 12.0
     cagr = ((lvl / 100.0) ** (1 / years) - 1) * 100 if years >= 1 else None
     return {"months": len(series),
             "cagr": round(cagr, 2) if cagr is not None else None,
             "total": round(lvl - 100, 1),
             "maxdd": round(dd, 1),
+            # The month the trough landed in. Two rules sharing a maxdd to one
+            # decimal is either a market-wide month that no basket could dodge
+            # or a sign the baskets are the same; the date separates the two.
+            "maxdd_at": dd_at,
             "hit": round(sum(1 for _m, r in series if r > 0) / len(series) * 100)}
 
 
