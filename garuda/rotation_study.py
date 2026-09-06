@@ -343,14 +343,18 @@ def main(argv=None):
     print("vs BENCHMARK = the excess over holding every industry. That is the "
           "only column\nthat decides anything: a rule that made 25% while the "
           "benchmark made 34% lost.\n")
-    print(f"{'RULE':<34}{'PAST vs bm':>11}{'UNSEEN vs bm':>13}"
-          f"{'UNSEEN dd':>11}  VERDICT")
+    # Both columns, always. The raw CAGR is what the money does; the excess is
+    # what the skill did. Showing only one of them hides something either way.
+    print(f"{'RULE':<32}{'UNSEEN CAGR':>12}{'vs bm':>9}"
+          f"{'PAST CAGR':>11}{'vs bm':>9}{'dd':>9}  VERDICT")
     for r in rows:
         name = (f"{r['direction']:<11} look {r['lookback']:>2}m "
                 f"hold {r['hold']}m top{r['k']}")
-        print(f"{name:<34}{_pc(r['excess_past']):>11}"
-              f"{_pc(r['excess_unseen']):>13}"
-              f"{_pc(r['unseen']['maxdd']):>11}  {r['verdict']}")
+        print(f"{name:<32}{_pc(r['unseen']['cagr']):>12}"
+              f"{_pc(r['excess_unseen']):>9}"
+              f"{_pc(r['past']['cagr']):>11}"
+              f"{_pc(r['excess_past']):>9}"
+              f"{_pc(r['unseen']['maxdd']):>9}  {r['verdict']}")
 
     best = rows[0]
     beats = sum(1 for r in rows if r["verdict"] == "BEATS")
@@ -379,9 +383,19 @@ def main(argv=None):
         for r in steady[:5]:
             print(f"  {r['direction']:<11} look {r['lookback']:>2}m "
                   f"hold {r['hold']}m top{r['k']}   "
-                  f"past {_pc(r['excess_past'])}  unseen {_pc(r['excess_unseen'])}"
-                  f"   worst half {_pc(r['weaker'])}")
+                  f"returns {_pc(r['unseen']['cagr'])}/yr unseen "
+                  f"({_pc(r['excess_unseen'])} vs benchmark), "
+                  f"{_pc(r['past']['cagr'])}/yr past "
+                  f"({_pc(r['excess_past'])})")
         pick_rule = steady[0]
+        cap, yrs = 1_000_000, len(unseen) / 12.0
+        r_rule = (1 + (pick_rule["unseen"]["cagr"] or 0) / 100) ** yrs
+        r_bm = (1 + (bench_unseen["cagr"] or 0) / 100) ** yrs
+        print(f"\nWhat that is worth: Rs 10,00,000 over the "
+              f"{yrs:.0f} unseen years")
+        print(f"  this rule       -> Rs {cap * r_rule:>13,.0f}")
+        print(f"  hold everything -> Rs {cap * r_bm:>13,.0f}")
+        print(f"  the edge earned    Rs {cap * (r_rule - r_bm):>13,.0f}")
         picks = current_picks(rets, months, pick_rule["lookback"],
                               pick_rule["k"], pick_rule["direction"])
         if picks:

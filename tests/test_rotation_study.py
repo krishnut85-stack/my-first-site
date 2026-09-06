@@ -219,3 +219,16 @@ def test_consistency_ranks_by_the_weaker_half():
     assert out[0]["lookback"] == 6              # 10.3 beats 5.4 as a worst half
     assert out[0]["weaker"] == pytest.approx(10.3)
     assert out[0]["gap"] == pytest.approx(0.6)
+
+
+def test_both_the_raw_return_and_the_excess_are_available_to_print():
+    """Showing only one of them hides something. Keep both in the row."""
+    n = 150
+    d = market({c: [(i % 3 - 1) * 2.0 + (0.5 if c == "A" else 0)
+                    for i in range(n)] for c in "ABCDEF"})
+    rets = rs.monthly_returns_by_industry(d)
+    rows, _p, _u = rs.run_grid(rets, rs.all_months(rets))
+    r = rows[0]
+    assert r["unseen"]["cagr"] is not None      # what the money did
+    assert r["excess_unseen"] is not None       # what the skill did
+    assert r["past"]["cagr"] is not None and r["excess_past"] is not None
