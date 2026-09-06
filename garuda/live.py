@@ -13,7 +13,8 @@ from .feed import KiteFeed
 from . import macro
 from .rotation import RotationBook
 from .market import (in_cas_window, is_cas_symbol, is_derivatives_open,
-                     is_market_open, is_session_live, market_status)
+                     is_market_open, is_session_live, is_trading_day,
+                     market_status)
 from .options import OptionsBook
 from .portfolio import LivePortfolio, _today
 from .scan import run_scan
@@ -676,7 +677,21 @@ class GarudaLive:
         mkt_open = is_market_open()
         today = _today()
         base_changed = False
-        if self.day_base_date != today:      # new trading day -> re-baseline DAY P&L
+        # DAY P&L is measured from the first build of a TRADING day. Two guards,
+        # both learned the hard way:
+        #
+        #  * Only re-baseline on a trading day. A Sunday is not a new day for
+        #    P&L — prices are frozen at Friday's close, so re-anchoring there
+        #    turns the weekend's quote-coverage drift into a "loss" that nobody
+        #    traded. Over a weekend the book keeps Friday's baseline, which is
+        #    what a broker shows.
+        #  * Never anchor when nothing is priced. With no quotes at all,
+        #    holdings fall back to their ENTRY price; baselining that and then
+        #    reconnecting prints the whole book's unrealised P&L as one day's
+        #    loss. The test is `self.prices`, not the feed handle — a book
+        #    priced from CSVs with no Kite session is still validly priced.
+        feed_ok = bool(self.prices)
+        if self.day_base_date != today and is_trading_day() and feed_ok:
             self.day_base_date = today
             self.day_base = {}
             base_changed = True
@@ -738,10 +753,13 @@ class GarudaLive:
             # DAY P&L = equity now minus this book's equity at the START of today
             # (snapshotted on the first build of each trading day). Resets cleanly
             # every day; immune to stale previous-close data when the market's shut.
-            if k not in self.day_base:
+            if k not in self.day_base and feed_ok:
                 self.day_base[k] = round(equity, 0)
                 base_changed = True
-            day_pnl = equity - self.day_base[k]
+            # No baseline means no feed, so nothing has been measured moving:
+            # report zero, not the gap between live equity and entry-priced
+            # equity. The red feed banner is what tells the user why.
+            day_pnl = (equity - self.day_base[k]) if k in self.day_base else 0.0
             win, pfac, win_n = _live_stats(pf)
             win_kind = "live"
             if win is None and prof.proven_win:    # no closed live trades yet;
@@ -781,7 +799,7 @@ class GarudaLive:
         try:
             rs_state = self.rotation.state(lambda s: self.prices.get(s))
             rot_day_base = self.day_base.get("rotation")
-            if rot_day_base is None:
+            if rot_day_base is None and feed_ok:
                 self.day_base["rotation"] = round(rs_state["equity"], 0)
                 rot_day_base = self.day_base["rotation"]
                 base_changed = True
@@ -820,7 +838,8 @@ class GarudaLive:
                 "label": "ROT", "rules": rs_state["rule"],
                 "capital": rs_state["capital"], "equity": rs_state["equity"],
                 "pnl_pct": rs_state["pnl_pct"],
-                "day_pnl": round(rs_state["equity"] - rot_day_base, 0),
+                "day_pnl": round(rs_state["equity"] - rot_day_base, 0)
+                if rot_day_base is not None else 0.0,
                 "positions": rs_state["positions"],
                 "cash": rs_state["cash"], "rotation": rs_state,
                 "win": None, "win_kind": None, "win_open": None, "win_n": 0,

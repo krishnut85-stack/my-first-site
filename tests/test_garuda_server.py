@@ -67,8 +67,41 @@ def test_day_pnl_resets_each_day_via_equity_baseline(tmp_path, monkeypatch):
     sc2 = next(p for p in live.build_state()["profiles"] if p["key"] == "smallcap")
     assert sc2["day_pnl"] == 50
     live.day_base_date = "2000-01-01"              # simulate a new trading day
+    monkeypatch.setattr("garuda.live.is_trading_day", lambda *a, **k: True)
     sc3 = next(p for p in live.build_state()["profiles"] if p["key"] == "smallcap")
     assert sc3["day_pnl"] == 0                     # re-baselined -> resets, even at the same price
+
+
+def test_a_closed_day_does_not_re_baseline_day_pnl(tmp_path, monkeypatch):
+    """A Sunday is not a new day for P&L: prices are frozen at Friday's close,
+    so re-anchoring there turns quote drift into a loss nobody traded."""
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    live = GarudaLive(csv_dir=str(tmp_path))
+    live.portfolios["smallcap"].buy("KEI", 10, 100.0, entry_len=250)
+    live.prices["KEI"] = 100.0
+    monkeypatch.setattr("garuda.live.is_trading_day", lambda *a, **k: True)
+    live.build_state()                             # Friday's baseline
+    live.prices["KEI"] = 105.0
+    live.day_base_date = "2000-01-01"              # the calendar rolls over...
+    monkeypatch.setattr("garuda.live.is_trading_day", lambda *a, **k: False)
+    sc = next(p for p in live.build_state()["profiles"] if p["key"] == "smallcap")
+    assert sc["day_pnl"] == 50                     # ...but the baseline stays put
+
+
+def test_an_unpriced_book_reports_no_day_move_rather_than_a_phantom_loss(
+        tmp_path, monkeypatch):
+    """With no quotes, holdings fall back to entry price. Baselining that and
+    then reconnecting printed the book's whole unrealised P&L as a day loss."""
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    monkeypatch.setattr("garuda.live.is_trading_day", lambda *a, **k: True)
+    live = GarudaLive(csv_dir=str(tmp_path))
+    live.portfolios["smallcap"].buy("KEI", 10, 100.0, entry_len=250)
+    sc = next(p for p in live.build_state()["profiles"] if p["key"] == "smallcap")
+    assert sc["day_pnl"] == 0                      # nothing priced -> nothing measured
+    assert "smallcap" not in live.day_base         # and no baseline was anchored
+    live.prices["KEI"] = 105.0                     # the feed comes back
+    sc = next(p for p in live.build_state()["profiles"] if p["key"] == "smallcap")
+    assert sc["day_pnl"] == 0                      # baselines NOW, at the live price
 
 
 def test_day_pnl_survives_a_restart(tmp_path, monkeypatch):
