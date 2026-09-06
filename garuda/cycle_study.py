@@ -471,6 +471,43 @@ def build(data, meta=None):
     }
 
 
+def why_no_kite():
+    """Name the missing piece, rather than shrugging "no live Kite session".
+
+    Three things have to line up, and the failure looks identical from the
+    outside whichever one is absent — which is how a run ends up reporting "no
+    data" for every symbol and telling you nothing about why.
+    """
+    import os
+    problems = []
+    try:
+        import kiteconnect  # noqa: F401
+    except Exception:  # noqa: BLE001
+        problems.append("the kiteconnect package is not importable "
+                        "(pip install kiteconnect)")
+    if not os.environ.get("KITE_API_KEY", "").strip():
+        problems.append("KITE_API_KEY is not set in the environment")
+    tok_env = os.environ.get("KITE_ACCESS_TOKEN", "").strip()
+    tok_file = os.environ.get("KITE_TOKEN_FILE", "").strip()
+    if not tok_env:
+        if not tok_file:
+            problems.append("neither KITE_ACCESS_TOKEN nor KITE_TOKEN_FILE is set")
+        elif not Path(tok_file).exists():
+            problems.append(f"KITE_TOKEN_FILE points at {tok_file}, "
+                            "which does not exist")
+        else:
+            try:
+                d = json.loads(Path(tok_file).read_text())
+                if not (isinstance(d, dict) and d.get("access_token")):
+                    problems.append(f"{tok_file} has no access_token in it")
+            except Exception:  # noqa: BLE001
+                problems.append(f"{tok_file} is unreadable")
+    if not problems:
+        return ["the token is present but Kite rejected it — it may have "
+                "expired (they die ~07:00 IST)"]
+    return problems
+
+
 def main(argv=None):
     import sys
     argv = list(sys.argv[1:] if argv is None else argv)
@@ -499,7 +536,13 @@ def main(argv=None):
                 except Exception:  # noqa: BLE001
                     kite = feed.kite
             else:
-                print("no live Kite session — using the cache", flush=True)
+                print("no live Kite session:", flush=True)
+                for p in why_no_kite():
+                    print(f"  - {p}", flush=True)
+                print("\nMost likely you have not loaded the environment. Run:\n"
+                      "  set -a && source /home/globalbot/.env && set +a\n"
+                      "then try again. Falling back to the cache for now.",
+                      flush=True)
                 offline = True
         except Exception as e:  # noqa: BLE001
             print(f"Kite unavailable ({e}) — using the cache", flush=True)

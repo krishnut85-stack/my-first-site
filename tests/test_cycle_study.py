@@ -194,3 +194,22 @@ def test_build_carries_industry_metadata_through():
     study = cs.build(data, meta)
     assert study["meta"]["Cement"]["sector"] == "Construction Materials"
     assert study["ranked"]["2"][0]["sector"] == "Cement"
+
+
+def test_a_missing_kite_session_names_the_missing_piece(monkeypatch, tmp_path):
+    """'no live session' is useless; say which of the three things is absent."""
+    for var in ("KITE_API_KEY", "KITE_ACCESS_TOKEN", "KITE_TOKEN_FILE"):
+        monkeypatch.delenv(var, raising=False)
+    said = " ".join(cs.why_no_kite())
+    assert "KITE_API_KEY" in said and "KITE_TOKEN_FILE" in said
+
+    monkeypatch.setenv("KITE_API_KEY", "abc")
+    monkeypatch.setenv("KITE_TOKEN_FILE", str(tmp_path / "gone.json"))
+    said = " ".join(cs.why_no_kite())
+    assert "does not exist" in said
+    assert "KITE_API_KEY is not set" not in said      # that one is satisfied now
+
+    empty = tmp_path / "tok.json"
+    empty.write_text('{"date": "2026-01-01"}')
+    monkeypatch.setenv("KITE_TOKEN_FILE", str(empty))
+    assert "no access_token" in " ".join(cs.why_no_kite())
