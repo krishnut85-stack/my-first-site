@@ -862,6 +862,15 @@ class GarudaLive:
                 # measured sector behaviour by month (python3 -m garuda.cycle_study)
                 "cycle_study": _cycle_study(),
                 "market_open": is_market_open(), "market_status": market_status(),
+                # Feed health. Without it a dead Kite session is invisible:
+                # every holding falls back to its ENTRY price, unrealised P&L
+                # silently becomes zero, and the day P&L shows a large phantom
+                # loss against a baseline captured while prices were live.
+                "feed": {"live": bool(self.feed.live),
+                         "streaming": bool(self.feed.streaming),
+                         "held": len(self.held_symbols()),
+                         "priced": sum(1 for s in self.held_symbols()
+                                       if self.prices.get(s))},
                 "in_auction": in_cas_window(),
                 "derivatives_open": is_derivatives_open(),
                 "holidays": sorted(HOLIDAYS),

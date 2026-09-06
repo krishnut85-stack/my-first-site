@@ -33,6 +33,9 @@ font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .mkt.open{color:var(--grn);border:1px solid #204d3a;background:#0e2a20}.mkt.closed{color:var(--red);border:1px solid #4d2020;background:#2a1416}
 .mkt.preopen{color:var(--amb);border:1px solid #4d3a20;background:#2a2214}
 .mkt.auction{color:var(--amb);border:1px solid #4d4020;background:#2a2414}
+.feedwarn{background:#2a1416;border:1px solid var(--red);color:var(--red);
+  border-radius:8px;padding:10px 12px;margin:10px 0;font-size:12px;font-weight:700}
+.feedwarn span{display:block;color:var(--txt);font-weight:400;margin-top:4px}
 @keyframes blink{50%{opacity:.4}}.ist{color:var(--acc)}.loc{color:var(--mut)}
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0}
 .pltbl{width:100%;border-collapse:collapse;font-size:12px;margin:0 0 12px;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
@@ -186,6 +189,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 <div class=desk>
   <div id=pltable></div>
   <div class=watch>
+      <div class=feedwarn id=feedwarn style=display:none></div>
       <div class=wtabs>
         <span class="wtab on" data-f=all onclick="setFilter('all',this)">ALL</span>
         <span class=wtab data-f=smallcap onclick="setFilter('smallcap',this)">SMALL CAP</span>
@@ -1051,6 +1055,16 @@ function render(d){
  const wx=d.weather, wc=wx&&wx.info?{2:'g',1:'g',0:'',[-1]:'a',[-2]:'r'}[wx.score]||'':'';
  const wchip=wx&&wx.info?`<span class=idx title="${wx.info}">👁 <b class="${wc}">${wx.label}</b>${wx.size<1?` <span class=r>${wx.size===0?'no new buys':Math.round(wx.size*100)+'% size'}</span>`:''}${wx.trail<1?` <span class=a>🛡️${Math.round(wx.trail*100)}% trail</span>`:''}</span>`:'';
  document.getElementById('idxbox').innerHTML=pill('NIFTY 50',idx['NIFTY 50'])+pill('BANK NIFTY',idx['NIFTY BANK'])+pill('SMALLCAP 250 ★',idx['NIFTY SMLCAP 250'])+wchip;
+ // A dead feed prices every holding at its ENTRY, so unrealised P&L reads as
+ // zero and the day P&L shows a phantom loss. Say so, loudly, above the money.
+ const fd=d.feed||{}, feedbad=fd.live===false||(fd.held>0&&fd.priced===0);
+ const fw=document.getElementById('feedwarn');
+ if(fw){fw.style.display=feedbad?'block':'none';
+  if(feedbad)fw.innerHTML=`⚠ KITE FEED DOWN — these numbers are not live.
+   <span>${fd.held||0} held positions, ${fd.priced||0} with a live price. Holdings are
+   priced at their ENTRY, so unrealised P&L reads as zero and DAY P&L is a phantom
+   loss against a baseline taken while prices were live. Restart Garuda with the
+   environment loaded:<br><b>set -a &amp;&amp; source /home/globalbot/.env &amp;&amp; set +a</b></span>`;}
  const t=d.totals||{equity:0,pnl_pct:0,day_pnl:0,positions:0};
  PNLBASE=t.capital||null;                    // green above starting capital, red below
  // prefer the timestamped grand-total curve; fall back to the plain number curve

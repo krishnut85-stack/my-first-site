@@ -56,3 +56,22 @@ def test_phase_sectors_are_named_the_way_the_index_map_names_them():
     for phase in macro.PHASES:
         assert macro.PHASE_SECTORS[phase] <= known
         assert not (macro.PHASE_SECTORS[phase] & macro.PHASE_AVOID[phase])
+
+
+def test_state_reports_feed_health(tmp_path, monkeypatch):
+    """A dead Kite feed must be visible in the state, not inferred from money."""
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    live = GarudaLive(csv_dir=str(tmp_path))
+    fd = live.build_state()["feed"]
+    assert set(fd) == {"live", "streaming", "held", "priced"}
+    assert fd["live"] is False              # offline in tests
+    assert isinstance(fd["held"], int) and isinstance(fd["priced"], int)
+    assert fd["priced"] <= fd["held"]
+
+
+def test_dashboard_warns_when_the_feed_is_down(tmp_path):
+    html = DASH.read_text()
+    assert "feedwarn" in html
+    assert "KITE FEED DOWN" in html
+    # the warning must key off the state's feed block, not a guess
+    assert "d.feed" in html and "fd.priced" in html
