@@ -331,3 +331,17 @@ def test_build_carries_the_now_ranking():
     study = cs.build(data)
     assert "now" in study and "now_windows" in study
     assert study["now"][0]["industry"] == "Metals"
+
+
+def test_an_explicit_universe_is_not_merged_with_the_broad_lists(tmp_path):
+    """--universe means use THAT. Otherwise a coarse label overwrites a fine one."""
+    fine = tmp_path / "fine"
+    fine.mkdir()
+    (fine / "trendlyne.csv").write_text("NSE Code,Industry\nHINDALCO,Aluminium\n")
+    coarse = tmp_path / "broad"
+    coarse.mkdir()
+    (coarse / "ind_nifty500list.csv").write_text(
+        "Symbol,Industry\nHINDALCO,Metals & Mining\n")
+    files = cs.find_universe_files(extra=fine, csv_dir=coarse)
+    assert all("trendlyne" in f.name for f in files)
+    assert cs.load_universe(files)["HINDALCO"][0] == "Aluminium"

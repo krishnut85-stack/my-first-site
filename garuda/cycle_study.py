@@ -348,12 +348,17 @@ def find_universe_files(extra=None, csv_dir=None):
     that turn out to carry no industry column are simply ignored.
     """
     base = config.BASE_DIR.parent
-    roots = []
     if extra:
-        roots.append(Path(extra))
-    if csv_dir:
-        roots.append(Path(csv_dir))
-    roots += [base / "mayura_data", base, config.DATA_DIR, Path.cwd()]
+        # An explicit --universe means USE THAT, not "that as well". Merging it
+        # with the NSE constituent lists would let a broad label like
+        # "Metals & Mining" overwrite the fine one ("Aluminium") for the same
+        # symbol, silently collapsing exactly the depth being asked for.
+        roots = [Path(extra)]
+    else:
+        roots = []
+        if csv_dir:
+            roots.append(Path(csv_dir))
+        roots += [base / "mayura_data", base, config.DATA_DIR, Path.cwd()]
     # The per-stock and per-index price caches are CSVs sitting under DATA_DIR.
     # They carry no industry column, so they are only ever opened and discarded
     # — but there are hundreds of them and they multiply on every run, which is
