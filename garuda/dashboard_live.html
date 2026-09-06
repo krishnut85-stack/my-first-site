@@ -1196,7 +1196,11 @@ function render(d){
     return (av-bv)*SORT.dir;});
   const th=(k,label)=>`<th class="sorth${k==='sym'?' sym':''}" onclick="setSort('${k}')">${label}${sortArrow(k)}</th>`;
   html+=`<table class=wl><tr>${th('sym','SYMBOL')}${th('qty','QTY')}${th('rsi',rlabel)}${th('ltp','LTP')}${th('chg','1D')}${th('chg_w','1W')}${th('chg_m','1M')}${th('mcap','MCAP')}${th('pnl','P&L')}</tr>`;
-  if(!watch.length)html+=`<tr><td colspan=9 class=muted style=text-align:center>${q?'no match in '+p.name:'loading live prices…'}</td></tr>`;
+  // "loading" is only true while prices are on their way. A book that holds
+  // nothing and watches nothing is not loading — it is empty, and saying so
+  // stops an idle book looking like a broken feed.
+  const empty=!p.positions.length&&!(p.watch||[]).length;
+  if(!watch.length)html+=`<tr><td colspan=9 class=muted style=text-align:center>${q?'no match in '+p.name:(empty?'nothing held yet':'loading live prices…')}</td></tr>`;
   const pcell=v=>`<td class="${v==null?'muted':(v>=0?'g':'r')}">${v==null?'—':pct(v)}</td>`;
   watch.forEach(x=>{const key=p.key+x.sym,pv=prev[key],cls=pv==null?'':(x.ltp>pv?'flash-up':(x.ltp<pv?'flash-dn':''));prev[key]=x.ltp;
    const sel=x.sym===curSym?' sel':'',hl=x.held?' held':'';

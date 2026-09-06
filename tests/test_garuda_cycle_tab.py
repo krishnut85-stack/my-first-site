@@ -106,3 +106,9 @@ def test_rotation_is_labelled_in_the_combined_views():
     html = DASH.read_text()
     assert "rotation:'ROTATION'" in html      # LABEL, for the P&L breakdown
     assert "rotation:'ROT'" in html           # TAG, for the ALL table
+
+
+def test_an_empty_book_says_so_instead_of_loading_forever():
+    html = DASH.read_text()
+    assert "nothing held yet" in html
+    assert "const empty=!p.positions.length" in html
