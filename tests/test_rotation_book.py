@@ -124,3 +124,40 @@ def test_equity_tracks_prices_moving():
     up = b.equity(lambda s: (PRICES.get(s) or 0) * 1.10)
     assert up > flat
     assert flat == pytest.approx(1_000_000.0, abs=2_000)   # minus rounding cash
+
+
+def test_the_book_takes_its_rule_from_the_study_not_from_a_constant():
+    """A 3-month rule's picks held for 6 months is neither rule."""
+    b = RotationBook(capital=100_000.0)
+    assert (b.lookback_m, b.hold_m, b.top_k) == (6, 6, 5)
+    study = {"today": {"rule": {"direction": "momentum", "lookback": 3,
+                                "hold": 3, "k": 3},
+                       "as_of": "2026-09",
+                       "picks": [{"industry": "IT", "members": ["A"]}]}}
+    note = b.adopt_rule(study)
+    assert (b.lookback_m, b.hold_m, b.top_k) == (3, 3, 3)
+    assert "hold 6m" in note and "hold 3m" in note
+
+
+def test_adopting_the_same_rule_twice_is_silent():
+    b = RotationBook(capital=100_000.0)
+    study = {"today": {"rule": {"lookback": 6, "hold": 6, "k": 5}}}
+    assert b.adopt_rule(study) is None
+
+
+def test_a_study_without_a_rule_leaves_the_book_alone():
+    b = RotationBook(capital=100_000.0)
+    assert b.adopt_rule({"today": {"picks": []}}) is None
+    assert b.adopt_rule(None) is None
+    assert (b.lookback_m, b.hold_m, b.top_k) == (6, 6, 5)
+
+
+def test_rebalancing_records_the_rule_change_and_reranks_on_the_new_hold():
+    b = RotationBook(capital=100_000.0)
+    study = {"today": {"rule": {"lookback": 3, "hold": 3, "k": 3},
+                       "as_of": "2026-09",
+                       "picks": [{"industry": "IT", "members": ["AAA", "BBB"]}]}}
+    b.rebalance({"AAA": 100.0, "BBB": 50.0}, study, today="2026-09-07")
+    assert b.hold_m == 3
+    assert b.next_rerank() == "2026-12"          # not 2027-03
+    assert any("rule changed" in n["note"] for n in b.notes)

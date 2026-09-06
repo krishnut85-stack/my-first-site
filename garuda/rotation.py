@@ -134,9 +134,35 @@ class RotationBook:
             members[name] = syms
         return keep, members, skipped
 
+    def adopt_rule(self, study):
+        """Take the rule from the study rather than assuming one.
+
+        The study picks whichever lookback/hold/K survived both halves, and
+        that choice moves when the data does. A book that holds a 3-month
+        rule's picks for 6 months is running neither rule — so the hold period
+        comes from the file that produced the picks, not from a constant here.
+        Returns a note when the rule changed, else None.
+        """
+        rule = ((study or {}).get("today") or {}).get("rule") or {}
+        if not rule:
+            return None
+        before = (self.lookback_m, self.hold_m, self.top_k)
+        self.lookback_m = int(rule.get("lookback") or self.lookback_m)
+        self.hold_m = int(rule.get("hold") or self.hold_m)
+        self.top_k = int(rule.get("k") or self.top_k)
+        after = (self.lookback_m, self.hold_m, self.top_k)
+        if before == after:
+            return None
+        return (f"rule changed: look {before[0]}m hold {before[1]}m "
+                f"top{before[2]} -> look {after[0]}m hold {after[1]}m "
+                f"top{after[2]}")
+
     def rebalance(self, prices, study, today=None):
         """Sell everything, buy the study's picks equally weighted. Returns a note."""
         today = today or _today()
+        changed = self.adopt_rule(study)
+        if changed:
+            self.notes.append({"date": today, "note": changed})
         keep, members, skipped = self.targets(study)
         if not keep:
             note = "no usable picks in the study — holding"
