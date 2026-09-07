@@ -5,6 +5,7 @@ PAPER ONLY. It updates the paper portfolios and prices them at live LTP; it
 never places a real order.
 """
 
+import json
 from pathlib import Path
 
 from . import config
@@ -993,15 +994,32 @@ def _rotation_path():
     return config.DATA_DIR / "garuda_rotation.json"
 
 
+def _read_study(study_file, what):
+    """A study file, or None with the reason SAID OUT LOUD.
+
+    These two loaders swallowed every exception. `json` was imported inside
+    methods but never at module scope, so both raised NameError on every call
+    and returned None — and "None" is indistinguishable from "not run yet".
+    The rotation book therefore reported "no usable picks in the study" on the
+    morning it was meant to open, with a valid study file sitting on disk.
+
+    A missing file is still a quiet None: that genuinely means "not run yet".
+    Anything else is a fault and gets printed.
+    """
+    if not study_file.exists():
+        return None
+    try:
+        return json.loads(study_file.read_text())
+    except Exception as exc:  # noqa: BLE001
+        print(f"[garuda] {what} at {study_file} exists but could not be read: "
+              f"{type(exc).__name__}: {exc}", flush=True)
+        return None
+
+
 def _rotation_study():
     """The backtest's current picks. None until rotation_study has been run."""
-    try:
-        from .rotation_study import STUDY_FILE
-        if STUDY_FILE.exists():
-            return json.loads(STUDY_FILE.read_text())
-    except Exception:  # noqa: BLE001
-        pass
-    return None
+    from .rotation_study import STUDY_FILE
+    return _read_study(STUDY_FILE, "rotation study")
 
 
 def _cycle_study():
@@ -1010,13 +1028,8 @@ def _cycle_study():
     None until `python3 -m garuda.cycle_study` has been run on a box with
     Kite — the tab then says so rather than showing an empty chart.
     """
-    try:
-        from .cycle_study import STUDY_FILE
-        if STUDY_FILE.exists():
-            return json.loads(STUDY_FILE.read_text())
-    except Exception:  # noqa: BLE001
-        pass
-    return None
+    from .cycle_study import STUDY_FILE
+    return _read_study(STUDY_FILE, "cycle study")
 
 
 def _wins_closed(trades, sides=("SELL",)):

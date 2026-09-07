@@ -240,3 +240,37 @@ def test_server_token_gate():
         assert b"GARUDA" in r2.read()
     finally:
         httpd.shutdown()
+
+
+def test_the_study_readers_actually_read(tmp_path, monkeypatch):
+    """json was imported inside methods but never at module scope, so both
+    module-level readers raised NameError on every call and the bare except
+    turned that into None — indistinguishable from 'not run yet'."""
+    import json as _json
+    from garuda import live as live_mod
+    monkeypatch.setattr(config, "DATA_DIR", tmp_path)
+    (tmp_path / "rotation_study.json").write_text(_json.dumps(
+        {"today": {"as_of": "2026-09", "picks": [{"industry": "X",
+                                                  "members": ["AAA"]}]}}))
+    monkeypatch.setattr("garuda.rotation_study.STUDY_FILE",
+                        tmp_path / "rotation_study.json")
+    s = live_mod._rotation_study()
+    assert s is not None
+    assert s["today"]["picks"][0]["industry"] == "X"
+
+
+def test_an_unreadable_study_says_why_instead_of_reading_as_not_run(
+        tmp_path, capsys):
+    from garuda import live as live_mod
+    bad = tmp_path / "broken.json"
+    bad.write_text("{not json at all")
+    assert live_mod._read_study(bad, "rotation study") is None
+    out = capsys.readouterr().out
+    assert "could not be read" in out and "rotation study" in out
+
+
+def test_a_missing_study_stays_quiet_because_that_means_not_run_yet(
+        tmp_path, capsys):
+    from garuda import live as live_mod
+    assert live_mod._read_study(tmp_path / "nope.json", "cycle study") is None
+    assert capsys.readouterr().out == ""
