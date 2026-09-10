@@ -70,3 +70,18 @@ def test_the_verdict_needs_both_halves():
     assert ts.verdict({"excess_past": 5, "excess_unseen": -1}) == "OVERFIT"
     assert ts.verdict({"excess_past": -1, "excess_unseen": 5}) == "LUCKY?"
     assert ts.verdict({"excess_past": -1, "excess_unseen": -1}) == "LAGS"
+
+
+def test_the_plausibility_guard_judges_the_whole_period_not_one_bull_half():
+    """A six-year half can legitimately compound at 38% — Indian small caps did
+    from 2020. Applying a twenty-year threshold to one half rejects good data."""
+    import garuda.rotation_study as rs
+    months = _months(240)
+    # 12%/yr for fourteen years, then 38%/yr for six: whole period ~19%
+    rets = {f"I{j}": {m: (0.95 if i < 168 else 2.73)
+                      for i, m in enumerate(months)} for j in range(5)}
+    whole = rs.stats(rs.equal_weight_all(rets, months))
+    _past, unseen = rs.split_months(months)
+    half = rs.stats(rs.equal_weight_all(rets, unseen))
+    assert half["cagr"] > ts.IMPLAUSIBLE_CAGR      # the half looks implausible
+    assert whole["cagr"] < ts.IMPLAUSIBLE_CAGR     # the period it came from does not

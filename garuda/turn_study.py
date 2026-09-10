@@ -178,10 +178,19 @@ def main(argv=None):
     print(f"\n{len(rets)} industries · {len(months)} months "
           f"({months[0]} to {months[-1]})")
     print(f"PAST {past[0]}..{past[-1]}   UNSEEN {unseen[0]}..{unseen[-1]}")
+    bench_all = stats(equal_weight_all(rets, months))
     print(f"\nBENCHMARK — hold every industry, always:")
-    print(f"  past {_pc(bp['cagr'])}/yr    unseen {_pc(bu['cagr'])}/yr")
-    if (bu["cagr"] or 0) > IMPLAUSIBLE_CAGR:
-        print("\nSTOP — the benchmark is implausible; the price data is wrong.")
+    print(f"  whole period {_pc(bench_all['cagr'])}/yr    "
+          f"past {_pc(bp['cagr'])}/yr    unseen {_pc(bu['cagr'])}/yr")
+    # The plausibility guard belongs on the WHOLE period, as rotation_study
+    # applies it. A six-year half can legitimately compound at 38% — Indian
+    # small and mid caps did from 2020 — and testing a twenty-year threshold
+    # against one bull half rejects sound data. It is broad equity compounding
+    # at 35%/yr over two decades that cannot be real.
+    if (bench_all["cagr"] or 0) > IMPLAUSIBLE_CAGR:
+        print(f"\nSTOP — a whole-period benchmark of {bench_all['cagr']}%/yr "
+              f"is not real.\nThe price data feeding this is wrong; re-run "
+              f"cycle_study before reading anything below.")
         return 1
 
     # The rule momentum found, for contrast. Same data, same split, same costs.
