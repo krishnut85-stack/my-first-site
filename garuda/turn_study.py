@@ -41,7 +41,11 @@ PEAK_WIN = 12
 #: How long a turn has to have been running to count as started.
 THRUSTS = (1, 3, 6)
 
-HOLDS = (3, 6)
+#: A bottoming industry is a longer thesis than a running one: capacity gets
+#: cut, inventory clears, margins recover. That takes years, not quarters. Six
+#: months may simply be the wrong horizon for the idea, so the grid runs out to
+#: two years — if the turn pays at all, this is where it would show.
+HOLDS = (3, 6, 12, 24)
 KS = (3, 5)
 
 
