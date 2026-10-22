@@ -1,8 +1,0 @@
-4	./.env
-11	./config.json
-9	./engine2.py
-4	./engine2.py.bak20261001
-6	./gapdown.txt
-4	./sub/flow.py
-8192	./trades.db
-data folder size: 8.0K	/tmp/claude-0/-home-user-my-first-site/6dc0ed36-0497-52b5-b373-23c6e1bd0bc1/scratchpad/t/src/data
