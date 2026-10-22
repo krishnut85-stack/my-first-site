@@ -1,0 +1,41 @@
+GAP-DOWN BUY TEST — 1324 shares · 2024-10-14 to 2026-10-19 · liquid (≥₹2 cr/day) · costs 0.20% · entry 09:20/09:30, exit 15:15
+
+1) ENTRY × EXIT (gap ≤ −4%)
+   A 09:20 close · hold                             559  win  50%  avg +0.64%  median +0.05%  worst 5% -4.2%
+   A 09:20 close · stop                             559  win  44%  avg +0.64%  median -0.20%  worst 5% -4.0%
+   A 09:20 close · fill                             559  win  47%  avg +0.63%  median -0.20%  worst 5% -3.7%
+   B 09:20 close, green 1st candle · hold           322  win  61%  avg +1.00%  median +0.83%  worst 5% -4.0%
+   B 09:20 close, green 1st candle · stop           322  win  56%  avg +0.77%  median +0.67%  worst 5% -4.2%
+   B 09:20 close, green 1st candle · fill           322  win  61%  avg +0.73%  median +0.88%  worst 5% -4.2%
+   C 09:30 close, selling paused · hold             423  win  52%  avg +0.27%  median +0.10%  worst 5% -3.8%
+   C 09:30 close, selling paused · stop             423  win  47%  avg +0.03%  median -0.20%  worst 5% -4.2%
+   C 09:30 close, selling paused · fill             423  win  52%  avg +0.00%  median +0.09%  worst 5% -4.2%
+
+2) GAP SIZE (entry A, exit stop)
+   −3 to −4%                                        362  win  39%  avg +0.03%  median -0.56%  worst 5% -2.9%
+   −4 to −6%                                        372  win  38%  avg +0.37%  median -0.20%  worst 5% -3.4%
+   −6 to −10%                                       130  win  55%  avg +1.05%  median +0.56%  worst 5% -3.4%
+   ≤ −10%                                            57  win  61%  avg +1.43%  median +1.23%  worst 5% -4.2%
+
+3) CONTEXT (gap ≤ −4%, entry A, exit stop)
+   Nifty also gapped down ≤ −0.7% (market-wide)     252  win  61%  avg +1.26%  median +0.87%  worst 5% -2.1%
+   Nifty did NOT gap down (share-specific)          307  win  30%  avg +0.13%  median -0.20%  worst 5% -4.2%
+   share already fell ≥5% in the 5 days before      156  win  39%  avg +0.89%  median -0.20%  worst 5% -4.2%
+   share was flat/up in the 5 days before           403  win  46%  avg +0.54%  median -0.20%  worst 5% -2.9%
+   first 5-min volume ≥ 5x normal (heavy news-type selling)   186  win  46%  avg +0.47%  median -0.20%  worst 5% -4.2%
+   first 5-min volume < 5x normal                   373  win  43%  avg +0.72%  median -0.20%  worst 5% -2.7%
+
+4) STABILITY BY HALF-YEAR (gap ≤ −4%, entry A, exit stop)
+   2024 H2                                           15  win  40%  avg +0.20%  median -0.20%  worst 5% -4.2%
+   2025 H1                                          191  win  63%  avg +1.38%  median +1.23%  worst 5% -2.8%
+   2025 H2                                           51  win  27%  avg +0.08%  median -0.20%  worst 5% -3.1%
+   2026 H1                                          187  win  38%  avg +0.45%  median -0.20%  worst 5% -3.4%
+   2026 H2                                          117  win  30%  avg +0.01%  median -0.20%  worst 5% -4.2%
+   last 20 sessions                                  67  win  28%  avg +0.11%  median -0.20%  worst 5% -4.2%
+
+5) DAILY DESK (each day: up to 3 deepest qualifying gaps ≤ −4%, entry A, exit stop, equal size)
+   filters: share-specific gap (Nifty not gapping down), first-5-min volume < 5x
+   132 trading days with a trade (of 498) · green days 29% · avg day +0.18% · sum +23.7% · worst day -4.2% · deepest drawdown -13.8%
+   per ₹1 lakh per trade: avg day ₹+179, total ₹+23661
+
+Note: only shares in today's universe are tested (survivorship bias flatters gap-down buying a little).

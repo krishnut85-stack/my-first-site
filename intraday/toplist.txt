@@ -1,0 +1,54 @@
+TOP-GAINERS LIST TEST — 1324 liquid shares · 2024-10-14 to 2026-10-19 · buy top 10 of the live list, stop 2%, trail, exit 15:15, costs 0.20%
+
+1) BUY THE TOP 10 AT EACH TIME
+   top 10 at 09:20                                   2706  win  34%  avg -0.34%  kept going ≥+3%: 11%  faded ≤−2%: 22%
+      … last 20 sessions                              200  win  27%  avg -0.62%  kept going ≥+3%: 14%  faded ≤−2%: 29%
+   top 10 at 09:30                                   3158  win  36%  avg -0.28%  kept going ≥+3%: 10%  faded ≤−2%: 20%
+      … last 20 sessions                              200  win  30%  avg -0.47%  kept going ≥+3%: 12%  faded ≤−2%: 32%
+   top 10 at 10:00                                   3616  win  37%  avg -0.26%  kept going ≥+3%:  8%  faded ≤−2%: 17%
+      … last 20 sessions                              200  win  38%  avg -0.12%  kept going ≥+3%: 16%  faded ≤−2%: 32%
+   top 10 at 11:00                                   3919  win  38%  avg -0.16%  kept going ≥+3%:  6%  faded ≤−2%: 11%
+      … last 20 sessions                              200  win  36%  avg -0.13%  kept going ≥+3%: 16%  faded ≤−2%: 24%
+
+2) WHAT SEPARATES THE ONES THAT KEPT GOING — top 10 at 09:30
+   up 2–5% at that time                              2620  win  36%  avg -0.28%  kept going ≥+3%:  9%  faded ≤−2%: 18%
+   up 5–10%                                           474  win  37%  avg -0.24%  kept going ≥+3%: 16%  faded ≤−2%: 26%
+   up ≥10%                                             64  win  30%  avg -0.61%  kept going ≥+3%: 19%  faded ≤−2%: 31%
+   above its open AND above VWAP                     2545  win  38%  avg -0.28%  kept going ≥+3%: 10%  faded ≤−2%: 19%
+   below its open (gap fading)                        314  win  23%  avg -0.41%  kept going ≥+3%:  8%  faded ≤−2%: 19%
+   did NOT gap up (rose after the open)              1680  win  38%  avg -0.29%  kept going ≥+3%: 10%  faded ≤−2%: 20%
+   gapped up ≥3%                                      569  win  28%  avg -0.45%  kept going ≥+3%:  9%  faded ≤−2%: 20%
+   volume so far ≥5x normal                          1055  win  36%  avg -0.26%  kept going ≥+3%: 14%  faded ≤−2%: 24%
+   volume so far <2x normal                          1018  win  34%  avg -0.40%  kept going ≥+3%:  8%  faded ≤−2%: 18%
+   Nifty green (>+0.3%)                              1030  win  38%  avg -0.26%  kept going ≥+3%:  9%  faded ≤−2%: 16%
+   Nifty red (<−0.3%)                                 514  win  37%  avg -0.20%  kept going ≥+3%: 13%  faded ≤−2%: 22%
+   already up ≥10% in the 5 days before               423  win  27%  avg -0.46%  kept going ≥+3%: 10%  faded ≤−2%: 23%
+   down in the 5 days before                         1377  win  37%  avg -0.25%  kept going ≥+3%: 10%  faded ≤−2%: 19%
+   F&O share                                         1082  win  43%  avg -0.12%  kept going ≥+3%:  8%  faded ≤−2%: 14%
+   non-F&O share                                     2076  win  32%  avg -0.37%  kept going ≥+3%: 11%  faded ≤−2%: 23%
+   price < ₹100                                       290  win  37%  avg -0.15%  kept going ≥+3%: 13%  faded ≤−2%: 21%
+   price ≥ ₹500                                      1750  win  36%  avg -0.30%  kept going ≥+3%:  9%  faded ≤−2%: 20%
+   COMBO: rose after open, above VWAP, vol ≥3x        647  win  38%  avg -0.21%  kept going ≥+3%: 12%  faded ≤−2%: 22%
+      … COMBO last 20 sessions                         53  win  32%  avg -0.62%  kept going ≥+3%:  9%  faded ≤−2%: 36%
+
+2) WHAT SEPARATES THE ONES THAT KEPT GOING — top 10 at 10:00
+   up 2–5% at that time                              2819  win  36%  avg -0.31%  kept going ≥+3%:  6%  faded ≤−2%: 15%
+   up 5–10%                                           695  win  38%  avg -0.05%  kept going ≥+3%: 14%  faded ≤−2%: 20%
+   up ≥10%                                            102  win  33%  avg -0.31%  kept going ≥+3%: 22%  faded ≤−2%: 27%
+   above its open AND above VWAP                     2903  win  38%  avg -0.25%  kept going ≥+3%:  8%  faded ≤−2%: 16%
+   below its open (gap fading)                        257  win  19%  avg -0.45%  kept going ≥+3%:  5%  faded ≤−2%: 14%
+   did NOT gap up (rose after the open)              2176  win  39%  avg -0.24%  kept going ≥+3%:  9%  faded ≤−2%: 17%
+   gapped up ≥3%                                      512  win  28%  avg -0.35%  kept going ≥+3%:  7%  faded ≤−2%: 16%
+   volume so far ≥5x normal                          1152  win  37%  avg -0.21%  kept going ≥+3%: 11%  faded ≤−2%: 20%
+   volume so far <2x normal                          1160  win  33%  avg -0.42%  kept going ≥+3%:  5%  faded ≤−2%: 17%
+   Nifty green (>+0.3%)                              1171  win  38%  avg -0.17%  kept going ≥+3%:  8%  faded ≤−2%: 13%
+   Nifty red (<−0.3%)                                 675  win  35%  avg -0.30%  kept going ≥+3%: 10%  faded ≤−2%: 18%
+   already up ≥10% in the 5 days before               449  win  29%  avg -0.38%  kept going ≥+3%: 10%  faded ≤−2%: 20%
+   down in the 5 days before                         1582  win  36%  avg -0.29%  kept going ≥+3%:  8%  faded ≤−2%: 17%
+   F&O share                                         1267  win  42%  avg -0.21%  kept going ≥+3%:  5%  faded ≤−2%: 11%
+   non-F&O share                                     2349  win  34%  avg -0.29%  kept going ≥+3%:  9%  faded ≤−2%: 20%
+   price < ₹100                                       338  win  36%  avg -0.23%  kept going ≥+3%: 10%  faded ≤−2%: 18%
+   price ≥ ₹500                                      1996  win  37%  avg -0.30%  kept going ≥+3%:  6%  faded ≤−2%: 16%
+   COMBO: rose after open, above VWAP, vol ≥3x        819  win  39%  avg -0.15%  kept going ≥+3%: 11%  faded ≤−2%: 17%
+      … COMBO last 20 sessions                         78  win  46%  avg +0.34%  kept going ≥+3%: 22%  faded ≤−2%: 29%
+

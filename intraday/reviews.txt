@@ -1,0 +1,10 @@
+🧾 REVIEW 2026-10-21 — 7 trades · 2 wins 5 losses · net −₹10,362.00
+Avg win ₹2,524.33 · avg loss ₹3,082.13 · payoff 0.8
+By entry type: FULL 1/1 wins +₹3,963.44 · BLAST 0/1 wins −₹1,519.58 · HALF 1/2 wins −₹1,933.55 · SIP 0/3 wins −₹10,872.31
+By entry hour: 09:00 1/4 −₹9,787.10 · 10:00 1/3 −₹574.90
+By exit: stop hit ×4 −₹14,205.23 · 15:15 square-off ×3 +₹3,843.23
+Worst: TRANSRAILL ₹-4,910.12 (09:21 stop hit), LTTS ₹-4,756.76 (09:21 stop hit), SSRETAIL ₹-3,018.76 (10:01 stop hit)
+Best: INDIACEM +₹3,963.44 (10:33), MPHASIS +₹1,085.21 (09:36)
+TIGHTEN: 3 of 3 entries before 09:30 lost → raise min score before 09:30 to 85 or start at 09:30 | 4 of 7 exits were stop hits → confirm window 25→40 s, or require buyers ≥60% at entry | SIP: 0 of 3 won today → half size for SIP tomorrow | tape was weak for 172 minutes and the day lost → keep weak-tape mode; consider no new buys when under 25% of shares up
+KEEP: nothing stood out
+

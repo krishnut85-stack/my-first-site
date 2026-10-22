@@ -1,0 +1,35 @@
+GAPSTATS — 1324 shares, 138150 share-days, 2024-10-14 to 2026-10-19 (498 Nifty days)
+returns are to 15:15, net of 0.10% costs where a trade is simulated
+
+1) GAPS — does the gap fade?   (fade = 15:15 below the open)
+   gap               days   fade % avg open→15:15 avg vs prev close
+   ≥ +4%             1708      52%       -1.11%         +5.31%
+   +2 to +4%         4182      63%       -0.82%         +1.86%
+   +1 to +2%        12120      63%       -0.50%         +0.87%
+   −1 to +1%       107851      43%       -0.16%         -0.07%
+   −2 to −1%         7085      55%       +0.32%         -1.06%
+   −4 to −2%         2686      62%       +0.87%         -1.85%
+   ≤ −4%             1191      62%       +2.29%         -4.74%
+   (for gap-downs, 'fade' = recovered: 15:15 above the open)
+   gap-ups ≥2% that did NOT fill in the first 30 min: 4356 days, fade 51%, avg open→15:15 -0.13%
+
+2) OPENING 5-MIN BREAKOUT (09:20 entry, stop at 5-min low)
+   all share-days                                78239  win  35%  avg -0.14R  (-0.13% per trade)
+   stocks in play only (5-min vol ≥2x, green)     7712  win  39%  avg -0.03R  (-0.05% per trade)
+     … and Nifty gapped up ≥0.5%                   733  win  41%  avg -0.05R  (-0.05% per trade)
+     … Nifty gap-up AND below its open at 09:30    398  win  38%  avg -0.06R  (-0.03% per trade)
+     … Nifty gap-up AND above its open at 09:30    335  win  44%  avg -0.03R  (-0.07% per trade)
+     … Nifty flat open (−0.3..+0.3%)              4829  win  39%  avg -0.03R  (-0.05% per trade)
+     … Nifty gapped down ≤−0.5%                    621  win  43%  avg +0.04R  (+0.07% per trade)
+     … share itself gapped ≥3%                     170  win  51%  avg +0.17R  (+0.21% per trade)
+     … share gap 0..3%                            4649  win  38%  avg -0.03R  (-0.05% per trade)
+
+3) 30-MIN RANGE BREAKOUT (entry from 09:45)
+   all share-days                                55436  win  39%  avg -0.08R  (-0.10% per trade)
+   stocks in play only                            4100  win  41%  avg -0.04R  (-0.06% per trade)
+     … Nifty above its open at 09:30              1951  win  43%  avg -0.01R  (-0.01% per trade)
+     … Nifty below its open at 09:30              2149  win  40%  avg -0.05R  (-0.10% per trade)
+
+4) RELATIVE STRENGTH ON RED MORNINGS (share ≥+1% & above VWAP at 10:00 while Nifty ≤−0.3%)
+   3304 share-days · up by 15:15 38% · avg 10:00→15:15 -0.28% · median -0.40%
+   … when Nifty kept falling (closed ≤−0.5%): 2260 · up 35% · avg -0.43%

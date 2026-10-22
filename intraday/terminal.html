@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GIR Intraday Terminal</title>
+<style>
+:root{
+  --bg:#07090c; --panel:#0d1117; --line:#1c2430; --dim:#5d6b7c; --txt:#c9d4e0; --hi:#f2f6fa;
+  --amber:#ffb000; --up:#21d07a; --dn:#ff4d5e; --blue:#4da3ff; --news:#c792ea;
+  --mono:"JetBrains Mono","SFMono-Regular",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--txt);font:12px/1.4 var(--mono)}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:8px 12px;border-bottom:1px solid var(--line);background:#0a0d12;position:sticky;top:0;z-index:5}
+.brand{color:var(--amber);font-weight:700;letter-spacing:.08em}
+.k{color:var(--dim);font-size:10px;text-transform:uppercase;letter-spacing:.08em;display:block}
+.v{color:var(--hi);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+.big{font-size:22px}
+.up{color:var(--up)} .dn{color:var(--dn)} .am{color:var(--amber)} .bl{color:var(--blue)}
+.breadth{width:180px;height:8px;background:#222;border-radius:2px;overflow:hidden;display:flex;margin-top:4px}
+.breadth i{display:block;height:100%}
+.grid{display:grid;grid-template-columns:330px 1fr 380px;gap:1px;background:var(--line);min-height:calc(100vh - 92px)}
+.col{background:var(--bg);display:flex;flex-direction:column;gap:1px;min-width:0}
+.panel{background:var(--panel);padding:8px 10px;min-width:0}
+.ph{display:flex;justify-content:space-between;align-items:baseline;color:var(--amber);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.ph small{color:var(--dim);letter-spacing:0;text-transform:none}
+.agents{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ag{border:1px solid var(--line);padding:6px;border-radius:3px;min-width:0}
+.ag b{color:var(--hi);font-size:11px}
+.ag .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--dim);margin-right:5px}
+.ag.live .dot{background:var(--up);box-shadow:0 0 6px var(--up)}
+.ag.idle .dot{background:var(--amber);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+.closed{color:var(--amber)}
+.ag p{margin:3px 0 0;color:var(--dim);font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ag .role{color:#3f4b59;font-size:9px}
+.feed{flex:1;overflow:auto;max-height:calc(100vh - 330px)}
+.ev{padding:3px 0;border-bottom:1px dotted #161d27;font-size:11px}
+.ev .t{color:var(--dim)} .ev .a{display:inline-block;width:62px;font-weight:700}
+.a-SCOUT{color:#5ad1e6}.a-NEWS{color:var(--news)}.a-CHARTS{color:var(--blue)}.a-FLOW{color:var(--amber)}.a-RISK{color:#ff8c42}.a-MANAGER{color:var(--hi)}.a-CONFIRM{color:#9ad0ff}.a-JUDGE{color:#ffd166}.a-REVIEW{color:#c3f0ca}
+.fbar{display:flex;gap:4px;margin-bottom:6px;flex-wrap:wrap}
+.fbar button{background:#121923;border:1px solid var(--line);color:var(--dim);font:10px var(--mono);padding:2px 7px;border-radius:2px;cursor:pointer;letter-spacing:.06em}
+.fbar button.on{color:var(--hi);border-color:var(--amber)}
+.card,.blast .row{cursor:pointer} .card:hover{border-color:var(--amber)} .blast .row:hover{background:#121923}
+.tabs{display:flex;gap:4px;margin:6px 0}
+.tabs button{background:#121923;border:1px solid var(--line);color:var(--dim);font:11px var(--mono);padding:3px 10px;border-radius:2px;cursor:pointer}
+.tabs button.on{color:var(--hi);border-color:var(--amber)}
+#tv{width:100%;height:480px;border:0;display:none;background:#000}
+.zb{display:flex;gap:4px;align-items:center}
+.zb button{background:#121923;border:1px solid var(--line);color:var(--dim);font:10px var(--mono);padding:1px 6px;border-radius:2px;cursor:pointer}
+.zb button.on{color:var(--hi);border-color:var(--amber)}
+.ev.buy .m{color:var(--up)} .ev.win .m{color:var(--up)} .ev.loss .m{color:var(--dn)} .ev.warn .m{color:#ff8c42}
+canvas{width:100%;display:block;touch-action:pan-y}
+.cw{position:relative}
+.tip{position:absolute;pointer-events:none;background:#121923;border:1px solid #2a3542;border-radius:3px;padding:5px 7px;font-size:10px;color:var(--txt);white-space:nowrap;z-index:4;display:none;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.tip b{color:var(--hi)} .tip .h{color:var(--amber);font-weight:700;margin-bottom:2px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+.card{border:1px solid var(--line);border-left:3px solid var(--dim);padding:6px;border-radius:3px;min-width:0}
+.card.u{border-left-color:var(--up)} .card.d{border-left-color:var(--dn)}
+.card .s{color:var(--hi);font-weight:700;display:flex;justify-content:space-between}
+.card .bu{font-size:9px;letter-spacing:.06em}
+.card .l{color:var(--dim);font-size:10px}
+.sc{display:inline-block;min-width:26px;text-align:center;border-radius:2px;font-size:10px;padding:0 3px;background:#1a2230;color:var(--hi)}
+.blast .row{display:grid;grid-template-columns:22px 1fr auto;gap:6px;padding:4px 0;border-bottom:1px dotted #161d27}
+.blast .why{grid-column:2/4;color:var(--dim);font-size:10px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+td,th{padding:3px 4px;text-align:right;border-bottom:1px dotted #161d27;white-space:nowrap}
+th{color:var(--dim);font-weight:400;font-size:10px;text-transform:uppercase}
+td:first-child,th:first-child{text-align:left}
+.sect{display:grid;grid-template-columns:1fr 60px 50px;gap:4px;align-items:center;font-size:11px;padding:2px 0}
+.bar{height:6px;background:#1a2230;position:relative}
+.bar i{position:absolute;top:0;height:100%}
+.ticker{background:#0a0d12;border-top:1px solid var(--line);white-space:nowrap;overflow:hidden;padding:6px 0;position:sticky;bottom:0}
+.ticker span{display:inline-block;padding-left:100%;animation:tk 300s linear infinite}
+.ticker:hover span,.ticker.paused span{animation-play-state:paused}
+.ticker em{color:var(--news);font-style:normal;margin:0 6px}
+@keyframes tk{to{transform:translateX(-100%)}}
+.muted{color:var(--dim)}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px}
+.slot{border:1px solid var(--line);border-radius:3px;padding:5px 6px;cursor:pointer;background:#0b0f15;transition:border-color .2s}
+.slot:hover{border-color:var(--amber)} .slot.new{animation:pop .6s ease-out}
+@keyframes pop{0%{transform:scale(.96);border-color:var(--up)}100%{transform:scale(1)}}
+.slot .hd{display:flex;justify-content:space-between;font-size:11px;color:var(--hi);font-weight:700}
+.slot .sub{font-size:9px;color:var(--dim);display:flex;justify-content:space-between}
+.slot canvas{height:84px}
+.slot.empty{border-style:dashed;color:#2b3542;display:flex;align-items:center;justify-content:center;font-size:10px;letter-spacing:.1em;min-height:118px;cursor:default}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:20;display:none;align-items:center;justify-content:center;padding:10px}
+#modal .box{background:var(--panel);border:1px solid #2a3542;border-radius:4px;width:min(1100px,100%);max-height:96vh;overflow:auto;padding:10px 12px}
+#modal .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+#modal .hd b{color:var(--amber);font-size:16px}
+#modal .x{cursor:pointer;color:var(--dim);font-size:18px;padding:0 6px} #modal .x:hover{color:var(--hi)}
+#modal canvas{height:340px}
+.kv{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;margin:6px 0}
+.kv span{color:var(--dim)} .kv b{color:var(--hi)}
+.tape{font-size:10px;color:var(--dim);display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:2px 10px;max-height:90px;overflow:auto;margin-top:6px}
+.tape b{color:var(--txt)} .tape .u{color:var(--up)} .tape .d{color:var(--dn)}
+#tr tbody tr{cursor:pointer} #tr tbody tr:hover td{background:#121923}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:6px 12px;background:#0a0d12;border-bottom:1px solid var(--line)}
+.chip{border:1px solid var(--line);border-radius:3px;padding:2px 8px;font-size:10px;letter-spacing:.06em;color:var(--txt)}
+.chip b{color:var(--hi)} .chip.up{border-color:rgba(33,208,122,.5);color:var(--up)} .chip.dn{border-color:rgba(255,77,94,.5);color:var(--dn)} .chip.am{border-color:rgba(255,176,0,.5);color:var(--amber)}
+.stg{display:inline-block;font-size:9px;letter-spacing:.08em;padding:1px 5px;border-radius:2px;border:1px solid var(--line);color:var(--dim);margin-left:4px;vertical-align:middle}
+.stg.s4{color:#07090c;background:var(--up);border-color:var(--up);font-weight:700} .stg.s3{color:var(--up);border-color:var(--up)} .stg.s2{color:var(--amber);border-color:var(--amber)} .stg.s1{color:#5ad1e6;border-color:#5ad1e6}
+.held{color:#ff8c42;font-size:10px} .buyz{color:var(--up);font-size:10px;font-weight:700}
+.pipe{display:flex;gap:4px;font-size:9px;letter-spacing:.06em;color:var(--dim);margin:0 0 6px}
+.pipe span{flex:1;text-align:center;border:1px solid var(--line);border-radius:2px;padding:2px 0}
+.pipe span b{color:var(--hi);display:block;font-size:12px}
+.sect{grid-template-columns:1fr 60px 50px 100px}
+.sect .bu{font-size:9px;letter-spacing:.04em;color:var(--dim);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stale{color:var(--dn)}
+@media (max-width:1100px){
+  .grid{grid-template-columns:1fr}
+  .feed{max-height:340px}
+  .c-left{order:3}.c-mid{order:2}.c-right{order:1}
+}
+</style>
+</head>
+<body>
+<div class="top">
+  <div><span class="brand">GIR ▸ INTRADAY</span><span class="k" id="clock">—</span></div>
+  <div><span class="k" id="plk">Day P&amp;L (paper)</span><span class="v big" id="pl">—</span></div>
+  <div><span class="k">Since start (paper)</span><span class="v big" id="cum">—</span><span class="k" id="cumsub"></span></div>
+  <div><span class="k">Realised / open</span><span class="v" id="plsplit">—</span></div>
+  <div><span class="k">Trades</span><span class="v" id="ntr">—</span></div>
+  <div><span class="k">Nifty</span><span class="v" id="nifty">—</span></div>
+  <div><span class="k">Breadth: bullish / bearish / flat</span><span class="v" id="br">—</span><div class="breadth" id="brbar"></div></div>
+  <div><span class="k">F&amp;O breadth</span><span class="v" id="fobr">—</span></div>
+  <div><span class="k">Feed</span><span class="v" id="feed" style="font-size:11px">—</span></div>
+</div>
+
+<div class="chips" id="chips"><span class="chip muted">context fills from 09:15</span></div>
+<div class="grid">
+  <div class="col c-left">
+    <div class="panel"><div class="ph">Agents <small>who is doing what</small></div><div class="agents" id="agents"></div></div>
+    <div class="panel feed"><div class="ph">Live desk feed <small id="evn"></small><small id="evsub"></small></div>
+      <div class="fbar" id="fbar"><button data-f="key" class="on">KEY</button><button data-f="all">ALL</button><button data-f="trades">TRADES</button><button data-f="signals">SIGNALS</button><button data-f="news">NEWS</button><button data-f="risk">RISK · JUDGE</button></div>
+      <div id="events"></div></div>
+  </div>
+
+  <div class="col c-mid">
+    <div class="panel"><div class="ph">Money flow — every share since 09:15 <span class="zb"><small id="flowsub"></small> <button data-z="all" class="on">ALL</button><button data-z="120">2 H</button><button data-z="60">60 M</button><button data-z="30">30 M</button></span></div><div class="cw"><canvas id="flow" height="320"></canvas><div class="tip" id="flowtip"></div></div></div>
+    <div class="panel"><div class="ph">Positions · 10 slots <small id="slotsub">tap a share for its live chart</small></div><div class="slots" id="slots"></div></div>
+    <div class="panel"><div class="ph">Flow up · top 12 <small>score = blast</small></div><div class="cards" id="upc"></div></div>
+    <div class="panel"><div class="ph">Flow down · top 12 <small>score = crash · watch only</small></div><div class="cards" id="dnc"></div></div>
+  </div>
+
+  <div class="col c-right">
+    <div class="panel"><div class="ph">Today's P&amp;L <small id="plsub"></small></div><div class="cw"><canvas id="plc" height="170"></canvas><div class="tip" id="pltip"></div></div></div>
+    <div class="panel"><div class="ph">My trades <small id="trsub"></small></div><table id="tr"><thead><tr><th>Share</th><th>Type</th><th>In</th><th>Entry</th><th>Now/Exit</th><th>P&amp;L</th></tr></thead><tbody></tbody></table></div>
+    <div class="panel blast"><div class="ph">🚀 Blast radar <small>likely to explode up</small></div><div class="pipe" id="pipe"></div><div id="blast"></div></div>
+    <div class="panel blast"><div class="ph">⚠ Crash watch <small>likely to fall</small></div><div id="crash"></div></div>
+    <div class="panel blast"><div class="ph">🧲 Accumulating <small>flat price · rising volume · buyers</small></div><div id="accum"></div></div>
+    <div class="panel"><div class="ph">Sectors <small>money in / out</small></div><div id="sect"></div></div>
+    <div class="panel"><div class="ph">Since start <small id="histsub"></small></div><canvas id="hist" height="110"></canvas></div>
+  </div>
+</div>
+<div class="ticker"><span id="tick">waiting for news…</span></div>
+<div id="modal" onclick="if(event.target===this)closeModal()"><div class="box">
+  <div class="hd"><div><b id="m_sym">—</b> <span id="m_kind" class="muted"></span></div><div><span id="m_pl" class="v"></span> <span class="x" onclick="closeModal()">✕</span></div></div>
+  <div class="kv" id="m_kv"></div>
+  <div class="tabs"><button id="tab_ours" class="on" onclick="setTab('ours')">DESK CHART</button><button id="tab_tv" onclick="setTab('tv')">TRADINGVIEW</button></div>
+  <div class="cw" id="ours"><canvas id="m_cv" height="340"></canvas><div class="tip" id="m_tip"></div></div>
+  <iframe id="tv" allowfullscreen></iframe>
+  <div class="tape" id="m_tape"></div>
+</div></div>
+
+<script>
+const why=c=>(c.why||[]).filter(w=>!(c.bu&&w.startsWith(c.bu)));
+const K = new URLSearchParams(location.search).get("k") || "";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const rs = n => n == null ? "—" : (n < 0 ? "−₹" : "₹") + Math.abs(Math.round(n)).toLocaleString("en-IN");
+const pc = n => n == null ? "—" : (n > 0 ? "+" : "") + n.toFixed(2) + "%";
+const cls = n => n > 0 ? "up" : n < 0 ? "dn" : "";
+const C = getComputedStyle(document.documentElement);
+const col = v => C.getPropertyValue(v).trim();
+
+const T0=9*60+15, T1=15*60+30, TMIN=t=>{ const [h,m]=t.split(":").map(Number); return h*60+m-T0; };
+const tLab=mins=>{ const h=Math.floor((T0+mins)/60), m=Math.round(T0+mins)%60; return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0"); };
+const HOURS=[["09:15",0],["10:00",45],["11:00",105],["12:00",165],["13:00",225],["14:00",285],["15:00",345]];
+const niceStep=r=>{ const p=Math.pow(10,Math.floor(Math.log10(r/4||1))); for (const m of [1,2,2.5,5,10]) if (r/(m*p)<=5) return m*p; return 10*p; };
+let hov={flow:null, pl:null};
+function fit(cv){ const r = cv.getBoundingClientRect(), d = window.devicePixelRatio || 1;
+  if (!cv.dataset.h) cv.dataset.h = cv.getAttribute("height"); const h = +cv.dataset.h; cv.style.height = h + "px";
+  cv.width = Math.max(10, r.width * d); cv.height = h * d; const x = cv.getContext("2d"); x.setTransform(d,0,0,d,0,0); return [x, r.width, h]; }
+
+function drawFlow(st){
+  const [x, W, H] = fit($("flow")); x.clearRect(0,0,W,H);
+  const paths = st.paths || []; if (!paths.length){ $("flowtip").style.display="none"; return drawIdle(x, W, H, st); }
+  let lo=-1, hi=1; for (const p of paths) for (const v of p.p) if (v!=null){ lo=Math.min(lo,v); hi=Math.max(hi,v); }
+  lo=Math.max(lo,-8); hi=Math.min(hi,8);
+  const pad=34, R=W-60;
+  const bar=Math.min(st.bar??75,75), z0=zoomMin?Math.max(0,bar-Math.ceil(zoomMin/5)):0, z1=zoomMin?Math.min(75,bar+1):75, n=z1-z0+1;
+  const X=i=>pad+(R-pad)*(i-z0)/(n-1), Y=v=>8+(H-26)*(hi-Math.max(lo,Math.min(hi,v)))/(hi-lo);
+  if (zoomMin){ lo=-1; hi=1; for (const p of paths) for (let i=z0;i<p.p.length;i++){ const v=p.p[i]; if(v!=null){ lo=Math.min(lo,v); hi=Math.max(hi,v);} } lo=Math.max(lo,-8); hi=Math.min(hi,8); }
+  const allp = st.nifty_path ? paths.concat([{s:"NIFTY 50", p:st.nifty_path, nifty:true}]) : paths;
+  const px = (p,i) => i===p.p.length-1 ? X(Math.min(st.bar+0.999,75)) : X(i);
+  // hover: nearest line at the cursor
+  let pick=null, hi_i=null;
+  const h=hov.flow;
+  if (h){ const fi=z0+(h.x-pad)/(R-pad)*(n-1); hi_i=Math.max(z0,Math.min(st.bar,Math.round(fi)));
+    const vy=(hi-(h.y-8)/(H-26)*(hi-lo)); let best=1e9;
+    for (const p of allp){ const i=Math.min(hi_i,p.p.length-1); const v=p.p[i]; if(v==null) continue; const d=Math.abs(v-vy); if(d<best){best=d; pick=p;} }
+    if (best > (hi-lo)*0.08) pick=null; }
+  x.strokeStyle=col("--line"); x.lineWidth=1; x.fillStyle=col("--dim"); x.font="10px monospace";
+  if (zoomMin){ for (let t=Math.ceil(z0/3)*3; t<=z1; t+=3){ x.beginPath(); x.moveTo(X(t),8); x.lineTo(X(t),H-18); x.stroke(); x.fillText(tLab(t*5), X(t)-14, H-4); } }
+  else for (const [lab,m] of HOURS){ const t=m/5; x.beginPath(); x.moveTo(X(t),8); x.lineTo(X(t),H-18); x.stroke(); x.fillText(lab, X(t)-14, H-4); }
+  for (const g of [-6,-4,-2,0,2,4,6]) if (g>lo && g<hi){ x.beginPath(); x.moveTo(pad,Y(g)); x.lineTo(R,Y(g)); x.strokeStyle=g==0?"#3a4656":col("--line"); x.stroke(); x.fillText((g>0?"+":"")+g+"%", 2, Y(g)+3); }
+  for (const p of paths){ if (p===pick) continue; const last=p.p[p.p.length-1]; x.strokeStyle=last>=0?(pick?"rgba(33,208,122,.14)":"rgba(33,208,122,.35)"):(pick?"rgba(255,77,94,.14)":"rgba(255,77,94,.35)"); x.lineWidth=1; x.beginPath();
+    let started=false; p.p.forEach((v,i)=>{ if(v==null||i<z0) return; const xi=px(p,i); if(!started){x.moveTo(xi,Y(v)); started=true;} else x.lineTo(xi,Y(v)); }); x.stroke(); }
+  if (st.nifty_path && pick?.nifty!==true){ x.strokeStyle=pick?"rgba(77,163,255,.4)":col("--blue"); x.lineWidth=2.2; x.beginPath(); let s=false;
+    st.nifty_path.forEach((v,i)=>{ if(v==null||i<z0) return; const xi=i===st.nifty_path.length-1?X(Math.min(st.bar+0.999,75)):X(i); if(!s){x.moveTo(xi,Y(v)); s=true;} else x.lineTo(xi,Y(v)); }); x.stroke(); }
+  if (pick){ x.strokeStyle=pick.nifty?col("--blue"):col("--hi"); x.lineWidth=2.4; x.beginPath(); let s=false;
+    pick.p.forEach((v,i)=>{ if(v==null||i<z0) return; const xi=px(pick,i); if(!s){x.moveTo(xi,Y(v)); s=true;} else x.lineTo(xi,Y(v)); }); x.stroke();
+    const i=Math.min(hi_i,pick.p.length-1), v=pick.p[i]; if (v!=null){ x.fillStyle=col("--amber"); x.beginPath(); x.arc(px(pick,i),Y(v),3.5,0,7); x.fill(); }
+    x.strokeStyle="rgba(255,176,0,.5)"; x.lineWidth=1; x.beginPath(); x.moveTo(X(hi_i),8); x.lineTo(X(hi_i),H-18); x.stroke();
+    const card=(st.up||[]).concat(st.down||[]).concat(st.blast||[]).find(c=>c.s===pick.s);
+    const tip=$("flowtip"); tip.style.display="block";
+    tip.innerHTML=`<div class="h">${esc(pick.s)}</div><b class="${cls(v)}">${pc(v)}</b> at ${tLab(hi_i*5)} · day ${pc(pick.p[pick.p.length-1])}`
+      +(card?`<br>${esc(card.bu||(card.fo?"OI neutral":"cash"))}${card.oi!=null?` · OI ${card.oi>0?"+":""}${card.oi}%`:""}${card.rv!=null?` · vol ${card.rv}x`:""} · score ${card.sc}<br>₹${card.px} · S ${card.s1} · R ${card.r1}${card.sec?` · ${esc(card.sec)}`:""}`:"");
+    tip.style.left=Math.min(h.x+12, W-tip.offsetWidth-4)+"px"; tip.style.top=Math.max(0,h.y-tip.offsetHeight-8)+"px";
+  } else if (h){ x.strokeStyle="rgba(255,176,0,.35)"; x.lineWidth=1; x.beginPath(); x.moveTo(X(hi_i),8); x.lineTo(X(hi_i),H-18); x.stroke();
+    x.fillStyle=col("--amber"); x.fillText(tLab(hi_i*5), X(hi_i)-14, 18); $("flowtip").style.display="none"; }
+  else $("flowtip").style.display="none";
+  // gather: every line's last point sweeps into the BULLISH or BEARISH node
+  const b=st.breadth||[0,0,0,0]; const nx=W-14, nyU=H*0.3, nyD=H*0.7, xe=X(Math.min(st.bar+0.999,75));
+  for (const p of paths){ const last=p.p[p.p.length-1]; if(last==null) continue; const y0=Y(last), ny=last>=0?nyU:nyD;
+    x.strokeStyle=last>=0?"rgba(33,208,122,.18)":"rgba(255,77,94,.18)"; x.lineWidth=1; x.beginPath(); x.moveTo(xe,y0); x.bezierCurveTo(xe+(nx-xe)*0.5,y0, xe+(nx-xe)*0.5,ny, nx,ny); x.stroke(); }
+  x.fillStyle=col("--up"); x.beginPath(); x.arc(nx,nyU,5,0,7); x.fill();
+  x.fillStyle=col("--dn"); x.beginPath(); x.arc(nx,nyD,5,0,7); x.fill();
+  x.font="bold 12px monospace"; x.textAlign="right";
+  x.fillStyle=col("--up"); x.fillText("BULLISH "+b[0], nx-9, nyU-8);
+  x.fillStyle=col("--dn"); x.fillText("BEARISH "+b[1], nx-9, nyD+16);
+  x.fillStyle=col("--dim"); x.font="10px monospace"; x.fillText("flat "+b[2], nx-9, H/2+3); x.textAlign="left";
+}
+
+let idleT = 0;
+function drawIdle(x, W, H, st){
+  // market closed: slow sweeping scan + resting heartbeat, so the desk looks alive while it waits
+  idleT += 0.004; const pad=34, R=W-60;
+  x.strokeStyle=col("--line"); x.lineWidth=1; x.fillStyle=col("--dim"); x.font="10px monospace";
+  [["09:15",0],["10:00",9],["11:00",21],["12:00",33],["13:00",45],["14:00",57],["15:00",69]].forEach(([lab,t])=>{ const xi=pad+(R-pad)*t/75;
+    x.beginPath(); x.moveTo(xi,8); x.lineTo(xi,H-18); x.stroke(); x.fillText(lab, xi-14, H-4); });
+  for (const g of [-4,-2,0,2,4]){ const y=8+(H-26)*(4-g)/8; x.beginPath(); x.moveTo(pad,y); x.lineTo(R,y); x.strokeStyle=g==0?"#3a4656":col("--line"); x.stroke(); x.fillText((g>0?"+":"")+g+"%", 2, y+3); }
+  const sx = pad + ((idleT % 1) * (R-pad));
+  const gr = x.createLinearGradient(sx-90,0,sx,0); gr.addColorStop(0,"rgba(255,176,0,0)"); gr.addColorStop(1,"rgba(255,176,0,.22)");
+  x.fillStyle=gr; x.fillRect(Math.max(pad,sx-90),8,Math.min(90,sx-pad),H-26); x.strokeStyle="rgba(255,176,0,.6)"; x.beginPath(); x.moveTo(sx,8); x.lineTo(sx,H-18); x.stroke();
+  x.strokeStyle="rgba(77,163,255,.55)"; x.lineWidth=1.5; x.beginPath();
+  for (let i=0;i<=R-pad;i+=2){ const ph=(i/(R-pad))*Math.PI*6 - idleT*40; const k=((ph%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
+    const v=Math.sin(ph)*Math.exp(-Math.pow(k-Math.PI,2)*1.4)*0.35; const y=8+(H-26)*(4-v)/8; i?x.lineTo(pad+i,y):x.moveTo(pad+i,y); } x.stroke();
+  x.fillStyle=col("--amber"); x.font="bold 13px monospace"; x.textAlign="center";
+  x.fillText(st.closed ? "MARKET CLOSED" : "WAITING FOR 09:15", (R+pad)/2, H/2-14);
+  x.fillStyle=col("--dim"); x.font="11px monospace";
+  x.fillText(st.closed ? "flow lines start at the next open · "+countdown(st) : "flow lines start with the first candle", (R+pad)/2, H/2+6);
+  x.textAlign="left";
+}
+function countdown(st){ if(!st.next_open) return ""; let s=Math.max(0,(new Date(st.next_open)-Date.now())/1000);
+  const d=Math.floor(s/86400); s-=d*86400; const h=Math.floor(s/3600); s-=h*3600; const m=Math.floor(s/60); const sec=Math.floor(s-m*60);
+  return "opens in "+(d?d+"d ":"")+h+"h "+String(m).padStart(2,"0")+"m "+String(sec).padStart(2,"0")+"s"; }
+const istNow=()=>new Date(Date.now()+330*60000).toISOString().slice(11,19);
+const openDay=st=>{ if(!st.next_open) return ""; return ["SUN","MON","TUE","WED","THU","FRI","SAT"][new Date(new Date(st.next_open).getTime()+330*60000).getUTCDay()]; };
+const clockClosed=st=>`${istNow()} IST <span class="closed">· market closed · ${openDay(st)} 09:15 IST · ${countdown(st)}</span>`;
+
+function drawPL(curve, st){
+  const [x, W, H] = fit($("plc")); x.clearRect(0,0,W,H); const tip=$("pltip");
+  const pad=52, R=W-10, top=8, bot=H-18;
+  const X=m=>pad+(R-pad)*Math.max(0,Math.min(T1-T0,m))/(T1-T0);
+  const pts=(curve||[]).map(c=>[TMIN(c[0]),c[1]]).filter(c=>isFinite(c[0]));
+  const step = st && st.closed && !(st.paths||[]).length;   // replay from exits only -> step line
+  let lo=Math.min(0,...pts.map(p=>p[1])), hi=Math.max(0,...pts.map(p=>p[1])); if(hi===lo){hi=lo+500;} const r=hi-lo; lo-=r*0.08; hi+=r*0.08;
+  const Y=a=>top+(bot-top)*(hi-a)/(hi-lo);
+  x.strokeStyle=col("--line"); x.lineWidth=1; x.fillStyle=col("--dim"); x.font="10px monospace";
+  for (const [lab,m] of HOURS){ x.beginPath(); x.moveTo(X(m),top); x.lineTo(X(m),bot); x.stroke(); x.fillText(lab, X(m)-14, H-4); }
+  const stp=niceStep(hi-lo); for (let g=Math.ceil(lo/stp)*stp; g<=hi; g+=stp){ x.beginPath(); x.moveTo(pad,Y(g)); x.lineTo(R,Y(g)); x.strokeStyle=g===0?"#3a4656":col("--line"); x.stroke(); x.fillStyle=g===0?col("--txt"):col("--dim"); x.fillText(rs(g), 0, Y(g)+3); }
+  if (!pts.length){ x.fillStyle=col("--dim"); x.fillText(st&&st.closed?"no trades in the last session":"P&L curve starts with the first trade", pad+8, top+14); tip.style.display="none"; return; }
+  const last=pts[pts.length-1][1], up=last>=0;
+  const line=()=>{ x.beginPath(); pts.forEach((p,i)=>{ if(!i) x.moveTo(X(p[0]),Y(p[1])); else { if(step) x.lineTo(X(p[0]),Y(pts[i-1][1])); x.lineTo(X(p[0]),Y(p[1])); } }); };
+  line(); x.lineTo(X(pts[pts.length-1][0]),Y(0)); x.lineTo(X(pts[0][0]),Y(0)); x.closePath(); x.fillStyle=up?"rgba(33,208,122,.14)":"rgba(255,77,94,.14)"; x.fill();
+  line(); x.strokeStyle=up?col("--up"):col("--dn"); x.lineWidth=2; x.stroke();
+  const valAt=m=>{ let v=pts[0][1]; for (const p of pts){ if (p[0]<=m) v=p[1]; else break; } return v; };
+  // trade markers: ▲ buy, ● exit
+  const tr=(st&&st.trades)||[];
+  for (const t of tr){ const m=TMIN(t.t); if(!isFinite(m)) continue; x.fillStyle=col("--amber"); x.beginPath(); x.moveTo(X(m),Y(valAt(m))+9); x.lineTo(X(m)-4,Y(valAt(m))+16); x.lineTo(X(m)+4,Y(valAt(m))+16); x.closePath(); x.fill();
+    if (t.xt){ const mx=TMIN(t.xt); x.fillStyle=t.pl>=0?col("--up"):col("--dn"); x.beginPath(); x.arc(X(mx),Y(valAt(mx)),3,0,7); x.fill(); } }
+  // hover crosshair
+  const h=hov.pl;
+  if (h && h.x>=pad && h.x<=R){ const m=(h.x-pad)/(R-pad)*(T1-T0), v=valAt(m);
+    x.strokeStyle="rgba(255,176,0,.5)"; x.lineWidth=1; x.setLineDash([3,3]); x.beginPath(); x.moveTo(X(m),top); x.lineTo(X(m),bot); x.moveTo(pad,Y(v)); x.lineTo(R,Y(v)); x.stroke(); x.setLineDash([]);
+    x.fillStyle=col("--amber"); x.beginPath(); x.arc(X(m),Y(v),4,0,7); x.fill();
+    const open=tr.filter(t=>TMIN(t.t)<=m && (!t.xt || TMIN(t.xt)>m)), done=tr.filter(t=>t.xt && TMIN(t.xt)<=m);
+    const near=tr.filter(t=>Math.abs(TMIN(t.t)-m)<6 || (t.xt && Math.abs(TMIN(t.xt)-m)<6)).slice(0,3)
+      .map(t=>Math.abs(TMIN(t.t)-m)<6?`▲ ${esc(t.s)} buy ${t.t} @ ${t.e}`:`● ${esc(t.s)} exit ${t.xt} ${rs(t.pl)} · ${esc(t.r||"")}`).join("<br>");
+    tip.style.display="block"; tip.innerHTML=`<div class="h">${tLab(m)}</div>P&amp;L <b class="${cls(v)}">${rs(v)}</b><br>${open.length} open · ${done.length} closed`+(near?"<br>"+near:"");
+    tip.style.left=Math.min(h.x+12, W-tip.offsetWidth-4)+"px"; tip.style.top=Math.max(0,Math.min(h.y-tip.offsetHeight-8, H-tip.offsetHeight))+"px";
+  } else tip.style.display="none";
+}
+
+function drawHist(h){
+  const [x, W, H] = fit($("hist")); x.clearRect(0,0,W,H);
+  if (!h.length){ x.fillStyle=col("--dim"); x.fillText("no closed days yet", 8, 20); return; }
+  const lo=Math.min(0,...h.map(d=>d.net)), hi=Math.max(0,...h.map(d=>d.net)), Y=a=>6+(H-24)*(hi-a)/((hi-lo)||1);
+  const bw=Math.max(4,Math.min(28,(W-20)/h.length-3));
+  h.forEach((d,i)=>{ const xx=10+i*(bw+3); x.fillStyle=d.net>=0?col("--up"):col("--dn"); x.fillRect(xx,Math.min(Y(d.net),Y(0)),bw,Math.abs(Y(d.net)-Y(0))||1); });
+  const t=h[h.length-1]; $("histsub").textContent = h.length+" days · total "+rs(t.cum)+" · "+h.reduce((a,d)=>a+d.n,0)+" trades";
+  $("cum").textContent=rs(t.cum); $("cum").className="v big "+cls(t.cum); $("cumsub").textContent=h.length+" days · "+h.reduce((a,d)=>a+d.n,0)+" trades · "+h.filter(d=>d.net>0).length+" green days";
+  $("histsub").className = t.cum>=0?"up":"dn";
+}
+
+const STG={"ENTRY READY":4,"CONFIRMED":3,"BUILDING":2,"EARLY":1,"ACCUMULATING":1,"WATCH":0,"QUIET":0};
+let BSE=new Set();
+const stg=c=>c.stage?`<span class="stg s${STG[c.stage]??0}">${esc(c.stage)}</span>`:"";
+function chips(st){
+  const x=st.ctx; if(!x){ return; }
+  const f=x.fiidii||{}; const L=[];
+  L.push(`<span class="chip ${x.india==="BULLISH"?"up":x.india==="BEARISH"?"dn":"am"}">INDIA <b>${esc(x.india)}</b> · Nifty ${pc(x.nifty)} · ${x.bull_pct}% of shares up</span>`);
+  if (x.vix!=null) L.push(`<span class="chip ${x.vix>=18?"dn":x.vix<=13?"up":""}">VIX <b>${x.vix}</b></span>`);
+  if (f.fii!=null) L.push(`<span class="chip ${f.fii>=0?"up":"dn"}">FII <b>${f.fii>=0?"+":""}${f.fii.toLocaleString("en-IN")} cr</b></span>`);
+  if (f.dii!=null) L.push(`<span class="chip ${f.dii>=0?"up":"dn"}">DII <b>${f.dii>=0?"+":""}${f.dii.toLocaleString("en-IN")} cr</b></span>`);
+  if (f.fii!=null||f.dii!=null) L.push(`<span class="chip muted">prev session ${esc(f.date||"")}</span>`);
+  if (st.fo_breadth){ const [u,d,t]=st.fo_breadth; L.push(`<span class="chip">F&amp;O <b class="up">${u}</b> up / <b class="dn">${d}</b> down of ${t}</span>`); }
+  const p=st.pnl||{}; L.push(`<span class="chip">DESK <b>${p.open??0}</b>/10 slots open · <b>${p.n??0}</b>/10 trades used</span>`);
+  if (x.tape) L.push(`<span class="chip ${x.tape==="weak"?"dn":x.tape==="strong"?"up":""}">MODE <b>${esc(x.tape.toUpperCase())}</b> · min score ${x.min_score} · blast ${x.blast_min} · size ×${x.size_x}</span>`);
+  $("chips").innerHTML=L.join("");
+}
+function pipe(st){
+  const all=(st.up||[]).concat(st.blast||[]).concat(st.accum||[]); const seen={}; const cnt={"ACCUMULATING":0,"WATCH":0,"EARLY":0,"BUILDING":0,"CONFIRMED":0,"ENTRY READY":0};
+  for (const c of all){ if(seen[c.s]||!c.stage||!(c.stage in cnt)) continue; seen[c.s]=1; cnt[c.stage]++; }
+  $("pipe").innerHTML=Object.keys(cnt).map(k=>`<span class="${cnt[k]?"":"muted"}">${k==="ACCUMULATING"?"ACCUM":k}<b>${cnt[k]}</b></span>`).join("<span style='border:0;flex:0;padding:0'>→</span>");
+}
+// ---------- position charts (1-minute candles from the tick feed)
+function drawCandles(cv, d, big, tipEl, h){
+  const [x, W, H] = fit(cv); x.clearRect(0,0,W,H);
+  const o=d.o||[], hi=d.h||[], lo=d.l||[], c=d.c||[]; const n=o.length;
+  const padL=big?54:34, padR=big?70:46, top=big?10:6, bot=big?20:14;
+  if (!n){ x.fillStyle=col("--dim"); x.font="10px monospace"; x.fillText("waiting for ticks…", padL, top+14); return; }
+  const first=Math.max(0, (d.e_min??0)-(big?30:12)), last=Math.max(n, (d.x_min??n)+1);
+  let vlo=Infinity, vhi=-Infinity; for (let i=first;i<n;i++){ if(lo[i]!=null){ vlo=Math.min(vlo,lo[i]); vhi=Math.max(vhi,hi[i]); } }
+  for (const v of [d.e, d.st, d.best, d.x]) if (v!=null){ vlo=Math.min(vlo,v); vhi=Math.max(vhi,v); }
+  if (!isFinite(vlo)){ vlo=d.e*0.99; vhi=d.e*1.01; } const r=(vhi-vlo)||d.e*0.01; vlo-=r*0.08; vhi+=r*0.08;
+  const span=Math.max(last-first, 20), X=i=>padL+(W-padL-padR)*(i-first+0.5)/span, Y=v=>top+(H-top-bot)*(vhi-v)/(vhi-vlo);
+  const cw=Math.max(1.5, Math.min(9, (W-padL-padR)/span*0.7));
+  x.strokeStyle=col("--line"); x.lineWidth=1; x.fillStyle=col("--dim"); x.font="9px monospace";
+  const stp=niceStep(vhi-vlo); for (let g=Math.ceil(vlo/stp)*stp; g<=vhi; g+=stp){ x.beginPath(); x.moveTo(padL,Y(g)); x.lineTo(W-padR,Y(g)); x.stroke(); x.fillText(g.toFixed(stp<1?2:stp<10?1:0), 2, Y(g)+3); }
+  for (let m=Math.ceil(first/30)*30; m<=first+span; m+=30){ x.beginPath(); x.moveTo(X(m),top); x.lineTo(X(m),H-bot); x.stroke(); if(big||m%60===0) x.fillText(tLab(m), X(m)-13, H-4); }
+  for (let i=first;i<n;i++){ if(o[i]==null) continue; const up=c[i]>=o[i]; x.strokeStyle=x.fillStyle=up?col("--up"):col("--dn");
+    x.beginPath(); x.moveTo(X(i),Y(hi[i])); x.lineTo(X(i),Y(lo[i])); x.stroke();
+    const y1=Y(Math.max(o[i],c[i])), y2=Y(Math.min(o[i],c[i])); x.fillRect(X(i)-cw/2, y1, cw, Math.max(1,y2-y1)); }
+  const line=(v,color,lab,dash)=>{ if(v==null) return; x.setLineDash(dash||[]); x.strokeStyle=color; x.lineWidth=1.2; x.beginPath(); x.moveTo(padL,Y(v)); x.lineTo(W-padR,Y(v)); x.stroke(); x.setLineDash([]);
+    x.fillStyle=color; x.font=(big?"10px":"9px")+" monospace"; x.fillText(lab+" "+v, W-padR+3, Y(v)+3); };
+  line(d.e, col("--amber"), "IN", [4,3]); line(d.st, col("--dn"), "STOP"); if (big && d.open && d.best>d.e) line(d.best, "rgba(33,208,122,.6)", "HIGH", [2,3]);
+  if (d.x!=null) line(d.x, d.pl>=0?col("--up"):col("--dn"), "OUT", [4,3]);
+  if (d.e_min!=null && d.e_min>=first){ x.fillStyle=col("--amber"); x.beginPath(); x.moveTo(X(d.e_min),Y(d.e)+8); x.lineTo(X(d.e_min)-4,Y(d.e)+15); x.lineTo(X(d.e_min)+4,Y(d.e)+15); x.closePath(); x.fill(); }
+  if (d.x_min!=null){ x.fillStyle=d.pl>=0?col("--up"):col("--dn"); x.beginPath(); x.arc(X(d.x_min),Y(d.x),3.5,0,7); x.fill(); }
+  if (d.open && d.px!=null){ x.fillStyle=col("--hi"); x.font="bold 10px monospace"; x.fillText("▶ "+d.px, W-padR+3, Y(d.px)+3); }
+  if (big && h && tipEl){ const i=Math.round(first+(h.x-padL)/(W-padL-padR)*span-0.5); if (i>=first && i<n && o[i]!=null){
+    x.strokeStyle="rgba(255,176,0,.5)"; x.setLineDash([3,3]); x.beginPath(); x.moveTo(X(i),top); x.lineTo(X(i),H-bot); x.stroke(); x.setLineDash([]);
+    tipEl.style.display="block"; tipEl.innerHTML=`<div class="h">${tLab(i)}</div>O ${o[i]} H ${hi[i]} L ${lo[i]} C <b>${c[i]}</b><br>vs entry <b class="${cls(c[i]-d.e)}">${pc((c[i]/d.e-1)*100)}</b>`;
+    tipEl.style.left=Math.min(h.x+12, W-tipEl.offsetWidth-4)+"px"; tipEl.style.top=Math.max(0,h.y-tipEl.offsetHeight-8)+"px"; } else tipEl.style.display="none"; }
+  else if (tipEl) tipEl.style.display="none";
+}
+let slotSeen = {};
+function slots(st){
+  const pos=(st.pos||[]).filter(d=>d.open); const el=$("slots");
+  const want=pos.map(d=>d.s); const have=[...el.querySelectorAll(".slot[data-s]")].map(e=>e.dataset.s);
+  for (const e of [...el.querySelectorAll(".slot[data-s]")]) if (!want.includes(e.dataset.s)) e.remove();     // sold → slot closes
+  for (const e of [...el.querySelectorAll(".slot.empty")]) e.remove();
+  for (const d of pos){ let e=el.querySelector(`.slot[data-s="${d.s}"]`);
+    if (!e){ e=document.createElement("div"); e.className="slot"+(slotSeen[d.s]?"":" new"); slotSeen[d.s]=1; e.dataset.s=d.s; e.onclick=()=>openModal(d.s);
+      e.innerHTML=`<div class="hd"><span></span><span class="pl"></span></div><div class="sub"><span class="a"></span><span class="b"></span></div><canvas height="84"></canvas>`; el.appendChild(e); }
+    e.querySelector(".hd span").textContent=d.s; const pl=e.querySelector(".pl"); pl.textContent=rs(d.pl)+(d.pl_pct!=null?" ("+pc(d.pl_pct)+")":""); pl.className="pl "+cls(d.pl);
+    e.querySelector(".a").textContent=`${d.k} · in ${d.t} @ ${d.e}`; e.querySelector(".b").textContent=`stop ${d.st} · now ${d.px??"—"}`;
+    drawCandles(e.querySelector("canvas"), d, false); }
+  for (let i=pos.length;i<10;i++){ const e=document.createElement("div"); e.className="slot empty"; e.textContent="SLOT "+(i+1)+" · open"; el.appendChild(e); }
+  $("slotsub").textContent=`${pos.length} of 10 slots in use · tap a share for its live chart`;
+}
+let modalSym=null, mhov=null, tab="ours", tvSym=null;
+function tvUrl(s){ const ex=BSE.has(s)?"BSE":"NSE"; return "https://s.tradingview.com/widgetembed/?symbol="+encodeURIComponent(ex+":"+s.replace(/-.*$/,""))+"&interval=5&hidesidetoolbar=0&symboledit=1&saveimage=0&toolbarbg=0d1117&theme=dark&style=1&timezone=Asia%2FKolkata&withdateranges=1&locale=en"; }
+function setTab(t){ tab=t; $("tab_ours").className=t==="ours"?"on":""; $("tab_tv").className=t==="tv"?"on":"";
+  $("ours").style.display=t==="ours"?"block":"none"; $("tv").style.display=t==="tv"?"block":"none";
+  if (t==="tv" && modalSym && tvSym!==modalSym){ tvSym=modalSym; $("tv").src=tvUrl(modalSym); } }
+function openModal(s, prefer){ modalSym=s; $("modal").style.display="flex"; const has=last&&(last.pos||[]).some(p=>p.s===s);
+  setTab(prefer||(has?"ours":"tv")); if(last) modal(last); }
+function closeModal(){ modalSym=null; $("modal").style.display="none"; $("tv").src="about:blank"; tvSym=null; }
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
+function modal(st){
+  if (!modalSym) return; const d=(st.pos||[]).find(p=>p.s===modalSym);
+  if (!d){ $("m_sym").textContent=modalSym; $("m_kind").textContent="not a position today"; $("m_pl").textContent=""; $("m_tape").innerHTML="";
+    const c=(st.up||[]).concat(st.down||[]).concat(st.blast||[]).concat(st.crash||[]).find(x=>x.s===modalSym);
+    $("m_kv").innerHTML=c?`<div><span>day</span> <b class="${cls(c.chg)}">${pc(c.chg)}</b></div><div><span>score</span> <b>${c.sc}</b> ${esc(c.stage||"")}</div><div><span>build-up</span> <b>${esc(c.bu||(c.fo?"OI neutral":"cash"))}</b></div><div><span>S / R</span> <b>${c.s1} / ${c.r1}</b></div>${c.held?`<div><span>held back</span> <b class="held">${esc(c.held)}</b></div>`:""}<div style="flex-basis:100%">${esc((c.why||[]).join(" · "))}</div>`:"no desk data for this share"; return; }
+  $("m_sym").textContent=d.s; $("m_kind").textContent=(d.open?"OPEN · ":"CLOSED · ")+d.k+" · "+d.q+" shares";
+  const pl=$("m_pl"); pl.textContent=rs(d.pl)+(d.pl_pct!=null?" · "+pc(d.pl_pct):""); pl.className="v big "+cls(d.pl);
+  $("m_kv").innerHTML=`<div><span>entry</span> <b>${d.e}</b> at ${d.t}</div><div><span>stop</span> <b class="dn">${d.st}</b>${d.mode==="SIP"?" <span>(moves to entry at +2R, then trails)</span>":""}</div>`
+    +(d.open?`<div><span>now</span> <b>${d.px??"—"}</b></div><div><span>high since entry</span> <b class="up">${d.best}</b></div><div><span>risk left</span> <b>${rs((d.st-(d.px??d.e))*d.q)}</b></div>`
+            :`<div><span>exit</span> <b>${d.x??"—"}</b> at ${d.xt??"—"}</div><div><span>reason</span> <b>${esc(d.r||"")}</b></div>`);
+  drawCandles($("m_cv"), d, true, $("m_tip"), mhov);
+  const tp=(d.ticks||[]).slice().reverse(); $("m_tape").innerHTML=tp.map((t,i)=>{ const prev=tp[i+1]; const k=prev?(t[1]>prev[1]?"u":t[1]<prev[1]?"d":""):""; return `<div>${tLab(t[0]/60)}:${String(Math.round(t[0]%60)).padStart(2,"0")} <b class="${k}">${t[1]}</b> ${t[2]?"× "+t[2]:""}</div>`; }).join("") || '<span class="muted">tick tape starts when the share is held</span>';
+}
+function card(c, side){
+  const d=side>0?"u":"d";
+  return `<div class="card ${d}" onclick="openModal('${esc(c.s)}')"><div class="s"><span>${esc(c.s)}${c.bse?'<span class="stg">BSE</span>':""}${side>0?stg(c):""}</span><span class="${cls(c.chg)}">${pc(c.chg)}</span></div>
+    <div><span class="sc">${c.sc}</span> <span class="bu ${c.bu.includes("LONG BUILD")||c.bu.includes("COVER")?"up":c.bu?"dn":"muted"}">${esc(c.bu||(c.fo?"OI neutral":"cash"))}</span></div>
+    <div class="l">₹${c.px??"—"}${c.oi!=null?` · OI ${c.oi>0?"+":""}${c.oi}%`:""}${c.rv!=null?` · vol ${c.rv}x`:""}</div>
+    <div class="l">S ${c.s1??"—"} · R ${c.r1??"—"}${c.rr!=null?` · R:R 1:${c.rr}`:""}</div>
+    <div class="l" title="${esc(why(c).join(" · "))}">${esc(why(c).slice(0,2).join(" · "))}</div>${side>0&&c.stage&&STG[c.stage]>=2?(c.held?`<div class="held">held: ${esc(c.held)}</div>`:`<div class="buyz">▲ BUY ZONE</div>`):""}</div>`;
+}
+
+function render(st){
+  if (!st || !st.ts){ $("clock").textContent="waiting for the engine…"; return; }
+  const age=(Date.now()-new Date(st.ts.replace(" ","T")+"+05:30"))/1000;
+  $("clock").innerHTML = st.closed ? clockClosed(st)
+    : esc(st.ts.slice(11))+" IST"+(age>30?` <span class="stale">· last update ${Math.round(age/60)} min ago</span>`:"");
+  const sess = st.closed && st.day ? "last session "+st.day : "";
+  $("plsub").textContent = sess; $("trsub").textContent = sess; $("evsub").textContent = sess;
+  const p=st.pnl||{}; $("pl").textContent=rs(p.total); $("pl").className="v big "+cls(p.total);
+  $("plk").textContent = st.closed ? "Last session P&L · "+(st.day||"") : "Day P&L (paper)";
+  $("plsplit").innerHTML=`<span class="${cls(p.real)}">${rs(p.real)}</span> / <span class="${cls(p.unreal)}">${rs(p.unreal)}</span>`;
+  $("ntr").innerHTML=`${p.n??0} <span class="muted">(${p.wins??0}W ${p.losses??0}L ${p.open??0} open)</span>`;
+  if (!st.closed) $("plsub").textContent = p.used ? "on "+rs(p.used)+" deployed" : "";
+  if (st.nifty!=null){ $("nifty").textContent=pc(st.nifty); $("nifty").className="v "+cls(st.nifty); }
+  if (st.breadth){ const [u,d,f,t]=st.breadth; $("br").innerHTML=`<span class="up">${u}</span> / <span class="dn">${d}</span> / <span class="muted">${f}</span>`;
+    $("brbar").innerHTML=`<i style="width:${100*u/t}%;background:var(--up)"></i><i style="width:${100*f/t}%;background:#3a4656"></i><i style="width:${100*d/t}%;background:var(--dn)"></i>`;
+    $("flowsub").textContent=t+" shares · blue = Nifty"; }
+  if (st.fo_breadth){ const [u,d,t]=st.fo_breadth; $("fobr").innerHTML=`<span class="up">${u}</span> / <span class="dn">${d}</span> <span class="muted">of ${t}</span>`; }
+  $("feed").textContent=st.feed||"—"; $("feed").className="v "+(st.closed?"closed":"");
+  $("agents").innerHTML=(st.agents||[]).map(a=>{ const live=!st.closed && a.t && (Date.now()-new Date(st.ts.slice(0,11)+a.t+"+05:30"))<180000;
+    return `<div class="ag ${live?"live":st.closed?"idle":""}"><b><span class="dot"></span><span class="a-${esc(a.name)}">${esc(a.name)}</span></b> <span class="muted">${esc(a.t||"")}</span>
+      <div class="role">${esc(a.role)}</div><p title="${esc(a.m)}">${esc(a.m)}</p></div>`; }).join("");
+  const evAll=(st.events||[]).slice().reverse();
+  const F={all:e=>true, trades:e=>e.a==="MANAGER"||e.k==="buy"||e.k==="win"||e.k==="loss", signals:e=>e.a==="FLOW"||e.a==="CHARTS"||e.a==="SCOUT"||e.a==="CONFIRM",
+    news:e=>e.a==="NEWS", risk:e=>e.a==="RISK"||e.a==="JUDGE"||e.a==="REVIEW"||e.k==="warn",
+    key:e=>!(e.a==="CHARTS"&&/ticked through/.test(e.m)) && !(e.a==="FLOW"&&/enters top-3/.test(e.m)) && !(e.a==="CHARTS"&&/candle:/.test(e.m)) && !(e.a==="CONFIRM"&&/holding for/.test(e.m))};
+  const ev=evAll.filter(F[feedMode]||F.key); $("evn").textContent=ev.length+" of "+evAll.length;
+  $("events").innerHTML=ev.map(e=>`<div class="ev ${esc(e.k)}"><span class="t">${esc(e.t)}</span> <span class="a a-${esc(e.a)}">${esc(e.a)}</span> <span class="m">${esc(e.m)}</span></div>`).join("");
+  chips(st); pipe(st); drawFlow(st); drawPL(st.curve, st); slots(st); modal(st);
+  const idle = st.closed ? '<span class="muted">market closed · fills from 09:15 on the next trading day</span>' : '<span class="muted">starts at 09:15</span>';
+  $("upc").innerHTML=(st.up||[]).map(c=>card(c,1)).join("") || idle;
+  $("dnc").innerHTML=(st.down||[]).map(c=>card(c,-1)).join("") || idle;
+  const tb=$("tr").querySelector("tbody");
+  tb.innerHTML=(st.trades||[]).slice().reverse().map(t=>`<tr onclick="openModal('${esc(t.s)}')"><td>${esc(t.s)}${t.open?' <span class="am">●</span>':""}</td><td class="muted">${esc(t.k)}</td><td class="muted">${esc(t.t)}</td>
+    <td>${t.e}</td><td>${t.open?(t.p??"—"):(t.x??"—")}</td><td class="${cls(t.pl)}" title="${esc(t.r||"open · stop "+t.st)}">${rs(t.pl)}</td></tr>`).join("") || '<tr><td colspan="6" class="muted">${st.closed?"no trades in the last session":"no trades yet today"}</td></tr>';
+  const brow=(c,i,side)=>`<div class="row" onclick="openModal('${esc(c.s)}')"><span class="muted">${i+1}</span><span><b>${esc(c.s)}</b> <span class="${cls(c.chg)}">${pc(c.chg)}</span> ${side>0?stg(c):""} <span class="muted">${esc(c.bu)}</span></span><span class="sc">${c.sc}</span>
+    <span class="why">${esc(why(c).join(" · "))}${side>0?(c.held?`<br><span class="held">held back: ${esc(c.held)}</span>`:`<br><span class="buyz">▲ BUY ZONE — next tick through the trigger buys</span>`):""}</span></div>`;
+  $("blast").innerHTML=(st.blast||[]).map((c,i)=>brow(c,i,1)).join("") || (st.closed?'<span class="muted">radar scans every 3 s from 09:15</span>':'<span class="muted">nothing building yet</span>');
+  $("crash").innerHTML=(st.crash||[]).map((c,i)=>brow(c,i,-1)).join("") || (st.closed?'<span class="muted">—</span>':'<span class="muted">nothing yet</span>');
+  $("accum").innerHTML=(st.accum||[]).map((c,i)=>brow(c,i,1)).join("") || '<span class="muted">none right now</span>';
+  if (st.bse) BSE=new Set(st.bse);
+  const ss=st.sectors||[]; const mx=Math.max(1,...ss.map(s=>Math.abs(s[1])));
+  $("sect").innerHTML=ss.map(s=>`<div class="sect"><span>${esc(s[0])}</span><div class="bar"><i style="${s[1]>=0?"left:50%":"right:50%"};width:${50*Math.abs(s[1])/mx}%;background:${s[1]>=0?"var(--up)":"var(--dn)"}"></i></div><span class="${cls(s[1])}" style="text-align:right">${pc(s[1])}</span><span class="bu ${(s[3]||"").includes("LONG BUILD")||(s[3]||"").includes("COVER")?"up":s[3]?"dn":""}">${esc(s[3]||"")}</span></div>`).join("") || '<span class="muted">—</span>';
+  const nw=st.news||[];
+  if (st.closed){ const tk=`<em>MARKET CLOSED</em> next session ${openDay(st)} 09:15 IST   ▪   <em>LAST SESSION</em> ${esc(st.day||"—")} · ${p.n||0} trades · ${p.wins||0}W ${p.losses||0}L · net <b class="${cls(p.total)}">${rs(p.total)}</b>   ▪   <em>SINCE START</em> ${esc($("histsub").textContent||"—")}   ▪   <em>DESK</em> 6 agents standing by · share list and news reader refresh overnight`; if ($("tick").innerHTML!==tk) $("tick").innerHTML=tk; }
+  else if (nw.length) $("tick").innerHTML=nw.map(n=>`<em>${esc(n.t)}</em>${n.s.length?"<b>"+esc(n.s.join(", "))+"</b> · ":""}${esc(n.h)}`).join("   ▪   ");
+}
+
+let last=null, feedMode="key", zoomMin=0;
+document.querySelectorAll("#fbar button").forEach(b=>b.onclick=()=>{ feedMode=b.dataset.f; document.querySelectorAll("#fbar button").forEach(x=>x.className=x===b?"on":""); if(last) render(last); });
+document.querySelectorAll(".zb button").forEach(b=>b.onclick=()=>{ zoomMin=b.dataset.z==="all"?0:+b.dataset.z; document.querySelectorAll(".zb button").forEach(x=>x.className=x===b?"on":""); if(last) drawFlow(last); });
+$("tick").parentElement.addEventListener("touchstart",function(){ this.classList.toggle("paused"); },{passive:true});
+async function poll(){ try{ const r=await fetch("state?k="+encodeURIComponent(K),{cache:"no-store"}); if(r.ok){ last=await r.json(); render(last);} }catch(e){}
+  setTimeout(poll,1000); }
+async function hist(){ try{ const r=await fetch("history?k="+encodeURIComponent(K),{cache:"no-store"}); if(r.ok) drawHist(await r.json()); }catch(e){} setTimeout(hist,60000); }
+window.addEventListener("resize",()=>last&&render(last));
+function wire(id, key, fn){ const cv=$(id); const pos=e=>{ const r=cv.getBoundingClientRect(); const t=e.touches?e.touches[0]:e; return {x:t.clientX-r.left, y:t.clientY-r.top}; };
+  const on=e=>{ hov[key]=pos(e); if(last) fn(last); }; const off=()=>{ hov[key]=null; if(last) fn(last); };
+  cv.addEventListener("mousemove",on); cv.addEventListener("mouseleave",off);
+  cv.addEventListener("touchstart",e=>{on(e);},{passive:true}); cv.addEventListener("touchmove",e=>{on(e);},{passive:true}); cv.addEventListener("touchend",()=>setTimeout(off,2500)); }
+wire("flow","flow",st=>drawFlow(st)); wire("plc","pl",st=>drawPL(st.curve,st));
+(function(){ const cv=$("m_cv"); const pos=e=>{ const r=cv.getBoundingClientRect(); const t=e.touches?e.touches[0]:e; return {x:t.clientX-r.left, y:t.clientY-r.top}; };
+  cv.addEventListener("mousemove",e=>{ mhov=pos(e); if(last) modal(last); }); cv.addEventListener("mouseleave",()=>{ mhov=null; if(last) modal(last); });
+  cv.addEventListener("touchstart",e=>{ mhov=pos(e); if(last) modal(last); },{passive:true}); cv.addEventListener("touchmove",e=>{ mhov=pos(e); if(last) modal(last); },{passive:true}); })();
+setInterval(()=>{ if(last&&last.closed) $("clock").innerHTML=clockClosed(last); },1000);
+(function anim(){ if(last&&!(last.paths||[]).length&&!document.hidden) drawFlow(last); setTimeout(()=>requestAnimationFrame(anim),50); })();
+poll(); hist();
+</script>
+</body>
+</html>

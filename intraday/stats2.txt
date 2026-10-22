@@ -1,0 +1,56 @@
+STATS2 — 1324 shares · 2024-10-14 to 2026-10-19 (498 sessions) · costs 0.10% · desk exits (stop, 2R trail, 15:15)
+strategy                                                   trades   win   avg R    avg % | last 5 sessions
+S1 09:20 breakout, stocks in play                            7559   41%  +0.00R   -0.01% | 295 tr +0.03R
+   Nifty flat open                                           6208   41%  -0.00R   -0.02% | 295 tr +0.03R
+   Nifty gap-down                                             645   46%  +0.04R   +0.03% |   -
+   Nifty gap-up faded by 09:30                                363   38%  -0.06R   -0.10% |   -
+   Nifty gap-up held                                          343   47%  +0.06R   +0.11% |   -
+   WITH overnight +news                                        17   65%  +0.22R   +0.45% |   8 tr +0.54R
+   no news                                                   7542   41%  +0.00R   -0.01% | 287 tr +0.02R
+S10 15-min range breakout, stocks in play                    5447   43%  -0.01R   -0.02% | 203 tr +0.01R
+   no news                                                   5433   42%  -0.01R   -0.02% | 196 tr -0.00R
+S11 gap-and-go: break prev-day high                           499   34%  -0.08R   -0.22% |  11 tr -0.14R
+   no news                                                    499   34%  -0.08R   -0.22% |  11 tr -0.14R
+S12 opening drive → first pullback (ABCD)                   11042   30%  -0.14R   -0.08% | 422 tr -0.19R
+   no news                                                  11031   30%  -0.13R   -0.08% | 416 tr -0.17R
+S13 Raschke Holy Grail (20-EMA pullback)                     6584   35%  -0.04R   -0.01% | 248 tr +0.00R
+   Nifty flat open                                           5338   35%  -0.04R   -0.02% | 248 tr +0.00R
+   Nifty gap-down                                             283   36%  -0.03R   +0.06% |   -
+   Nifty gap-up faded by 09:30                                558   37%  -0.05R   -0.02% |   -
+   Nifty gap-up held                                          405   35%  -0.12R   +0.00% |   -
+S2 +news gap-up, buy 09:20 close                                9   89%  +1.26R   +1.90% |   6 tr +1.58R
+S3 gap-down reversal → prev close                            2885   41%  -0.03R   -0.17% |  75 tr -0.20R
+   Nifty flat open                                           1650   37%  -0.11R   -0.31% |  75 tr -0.20R
+   Nifty gap-down                                            1141   48%  +0.08R   +0.06% |   -
+   Nifty gap-up faded by 09:30                                 58   31%  -0.06R   -0.43% |   -
+   Nifty gap-up held                                           36   36%  +0.34R   -0.32% |   -
+   gap -2..-4%                                               2272   41%  -0.06R   -0.19% |  61 tr -0.11R
+   gap ≤-4%                                                   613   42%  +0.07R   -0.08% |  14 tr -0.55R
+   no −news                                                  2885   41%  -0.03R   -0.17% |  75 tr -0.20R
+S3b gap-down reversal → trail                                2885   39%  -0.02R   -0.14% |  75 tr -0.21R
+   gap -2..-4%                                               2272   39%  -0.05R   -0.16% |  61 tr -0.20R
+   gap ≤-4%                                                   613   42%  +0.08R   -0.06% |  14 tr -0.26R
+   no −news                                                  2885   39%  -0.02R   -0.14% |  75 tr -0.21R
+S4 gap-down VWAP reclaim                                     2424   41%  -0.07R   -0.18% |  63 tr -0.20R
+   no −news                                                  2424   41%  -0.07R   -0.18% |  63 tr -0.20R
+S5 late day-high break (11-14h, 2x vol)                     23776   32%  -0.29R   -0.27% | 1174 tr -0.32R
+   Nifty flat open                                          20107   32%  -0.30R   -0.28% | 1174 tr -0.32R
+   Nifty gap-down                                            1923   34%  -0.27R   -0.28% |   -
+   Nifty gap-up faded by 09:30                               1204   33%  -0.26R   -0.27% |   -
+   Nifty gap-up held                                          542   34%  -0.27R   -0.15% |   -
+S6 VWAP pullback in uptrend                                 12721   34%  -0.17R   -0.15% | 570 tr -0.12R
+   Nifty flat open                                          10438   33%  -0.18R   -0.17% | 570 tr -0.12R
+   Nifty gap-down                                             536   32%  -0.23R   -0.23% |   -
+   Nifty gap-up faded by 09:30                               1003   39%  -0.01R   -0.02% |   -
+   Nifty gap-up held                                          744   39%  -0.10R   -0.11% |   -
+S7 intraday flush & bounce                                  11797   33%  -0.19R   -0.15% | 766 tr -0.31R
+   Nifty flat open                                           9556   33%  -0.19R   -0.15% | 766 tr -0.31R
+   Nifty gap-down                                            1593   38%  -0.07R   -0.02% |   -
+   Nifty gap-up faded by 09:30                                569   19%  -0.56R   -0.50% |   -
+   Nifty gap-up held                                           79   44%  +0.09R   +0.38% |   -
+S8 +news intraday, above VWAP at 12:00                         40   42%  -0.04R   -0.03% |  24 tr -0.01R
+S9 Crabel NR7 + 15-min range breakout                        7881   40%  -0.07R   -0.06% | 456 tr -0.10R
+   Nifty flat open                                           6596   39%  -0.09R   -0.09% | 456 tr -0.10R
+   Nifty gap-down                                             702   45%  +0.04R   +0.11% |   -
+   Nifty gap-up faded by 09:30                                338   45%  +0.06R   +0.16% |   -
+   Nifty gap-up held                                          245   43%  -0.06R   -0.09% |   -
