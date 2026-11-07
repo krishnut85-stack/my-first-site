@@ -1,8 +1,10 @@
 #!/bin/bash
-# PATCH 81 - THE PUSH STREAM (on top of patch 80). /events from the page server (Server-Sent Events):
+# PATCH 81 (v2) - THE PUSH STREAM (on top of patch 80). /events from the page server (Server-Sent Events):
 #   · 'now' the same second a line reaches Box Picks · 'idx' every ~3 s · 'secs' when the desk writes a new picture
 #   · home.html listens and renders the same panels with the same code (no change to the look); the tape and the news
 #     stay on the page's own poll (gzip) - 15 s while the stream is up, 5 s when it is not (the fallback)
+#   · v2: the home picture is built by ONE refresher thread every ~3 s and served from memory - on this server a build
+#     takes 1.5-3 s, and v1 made the stream (and every /home answer) wait for it; now nothing waits for it
 #   · the browser reconnects by itself; the server ends a stream after an hour so a dead phone is dropped
 #   Edits dashserve.py home.html in place (exact anchors). Installs p81test.py. Restarts gir-dash.
 D=/home/globalbot/intraday; TS=$(date +%m%d%H%M); W=/tmp/g81; mkdir -p $W
@@ -61,7 +63,7 @@ def now_rows_(today):
 def home(fresh=False):
     """the home page in one call: the index strip, NOW (every line that went to Box Picks today, newest first), the sectors
     (the desk's ranking), the F&O tape (every share: price, desk meter, one line of what its OI says) and the news run"""
-    if not fresh and time.time() - _HOME["t"] < 3 and _HOME["v"]:
+    if not fresh and time.time() - _HOME["t"] < 12 and _HOME["v"]:
         return _HOME["v"]''')
 E("dashserve.py", '''    now_rows = []
     try:
@@ -100,9 +102,10 @@ E("dashserve.py", '''    def do_GET(self):
                 if rid != last.get("rid"):
                     last["rid"] = rid
                     emit("now", {"now": now_rows_(dt.datetime.now(IST).strftime("%Y-%m-%d"))})
-                d = home()
-                emit("idx", {k: d.get(k) for k in ("t", "day", "closed", "idx", "ticks_s", "ban")})
-                emit("secs", {"sectors": d.get("sectors"), "desk_t": d.get("desk_t"), "desk_src": d.get("desk_src")})
+                d = _HOME["v"] or {}                            # the shared picture (home_refresher), never built here
+                if d:
+                    emit("idx", dict({k: d.get(k) for k in ("t", "day", "closed", "idx", "ticks_s", "ban")}, built_ms=_HOME.get("ms")))
+                    emit("secs", {"sectors": d.get("sectors"), "desk_t": d.get("desk_t"), "desk_src": d.get("desk_src")})
                 if time.time() - ping > 15:
                     ping = time.time(); self.wfile.write(b": ping\\n\\n"); self.wfile.flush()
                 time.sleep(0.5)
@@ -121,6 +124,24 @@ E("dashserve.py", '''        try:
             return self.events()
         try:
             if u.path == "/":                         # the home page: ONE screen (home.html); the rest behind "more"''')
+
+E("dashserve.py", '''def live_state():''', '''def home_refresher():
+    """ONE thread for the whole server: rebuilds the home picture every ~3 s (longer when a build is slow), so every
+    /home answer and every push is served from memory at once - the build never sits in a request or a stream"""
+    while True:
+        t0 = time.time()
+        try:
+            home(fresh=True)
+        except Exception as ex:
+            print("home refresh:", str(ex)[:80])
+        took = time.time() - t0
+        _HOME["ms"] = int(took * 1000)
+        time.sleep(max(3.0, 2 * took))
+
+
+def live_state():''')
+E("dashserve.py", '''    ThreadingHTTPServer(("0.0.0.0", port), H).serve_forever()''', '''    threading.Thread(target=home_refresher, daemon=True).start()
+    ThreadingHTTPServer(("0.0.0.0", port), H).serve_forever()''')
 
 # ============================================================ home.html
 E("home.html", '''async function loop(){ try{ const r=await fetch("home?k="+encodeURIComponent(K),{cache:"no-store"}); if(r.ok){ D=await r.json();
@@ -183,6 +204,11 @@ def check(name, good):
 RID = {"v": 7}
 dashserve.alerts_rowid = lambda: RID["v"]
 dashserve.now_rows_ = lambda today: [{"t": "10:0%d" % (RID["v"] % 10), "kind": "🎯", "s": "GLENMARK", "side": "CE", "head": "🎯 BOX PICK test %d" % RID["v"], "lines": []}]
+threading.Thread(target=dashserve.home_refresher, daemon=True).start()
+t0 = time.time()
+while not dashserve._HOME.get("v") and time.time() - t0 < 60:
+    time.sleep(0.2)
+print("  (the home picture builds in %s ms on this server; the refresher keeps it fresh every %.0f s)" % (dashserve._HOME.get("ms"), max(3.0, 2 * (dashserve._HOME.get("ms") or 0) / 1000.0)))
 srv = ThreadingHTTPServer(("127.0.0.1", 0), dashserve.H)
 port = srv.server_address[1]
 threading.Thread(target=srv.serve_forever, daemon=True).start()
@@ -212,7 +238,7 @@ print("2. the stream opens")
 s, r = get("/events?k=" + TOKEN, 2.5)
 check("200 and text/event-stream", " 200 " in r.split("\r\n")[0] and "text/event-stream" in r)
 check("'now' arrives at once with the NOW list", "event: now\n" in r and "BOX PICK test 7" in r)
-check("'idx' arrives at once", "event: idx\n" in r)
+check("'idx' arrives at once, from the shared picture", "event: idx\n" in r and "built_ms" in r)
 
 print("3. a new line is pushed")
 RID["v"] = 8
@@ -223,7 +249,7 @@ while time.time() - t0 < 2.0 and "BOX PICK test 8" not in buf:
         buf += s.recv(65536).decode("utf-8", "replace")
     except Exception:
         pass
-check("the new NOW line is on the stream within %d ms" % int((time.time() - t0) * 1000), "BOX PICK test 8" in buf and time.time() - t0 < 1.5)
+check("the new NOW line is on the stream within %d ms (not behind the home build)" % int((time.time() - t0) * 1000), "BOX PICK test 8" in buf and time.time() - t0 < 1.5)
 s.close()
 
 print("4. the poll still answers")
@@ -248,13 +274,14 @@ python3 $W/p81_patch.py $D || { rm -f $D/p81test.py; echo "the anchors did not m
 cd $D && python3 -m py_compile dashserve.py p81test.py || back
 cd /home/globalbot && set -a && source .env && set +a && cd $D
 echo "--- 2. the stream test (a second copy of the page server on a free local port, read-only):"
-timeout 60 python3 p81test.py 2>&1 | grep "OK  \|FAIL\|STREAM TEST\|Traceback\|Error" | head -20
-timeout 60 python3 p81test.py >/dev/null 2>&1 || { echo "the stream test failed"; back; }
-systemctl restart gir-dash && sleep 4
+timeout 120 python3 p81test.py 2>&1 | grep "OK  \|FAIL\|STREAM TEST\|Traceback\|Error\|builds in" | head -20
+timeout 120 python3 p81test.py >/dev/null 2>&1 || { echo "the stream test failed"; back; }
+systemctl restart gir-dash && sleep 10
 K=$(cat $D/dash_token.txt)
 curl -s --max-time 10 "http://127.0.0.1:8090/?k=$K" | grep -q "new EventSource(" || { echo "home.html is not the new one"; back; }
-curl -s -N --max-time 4 "http://127.0.0.1:8090/events?k=$K" 2>/dev/null | head -c 2000 | grep -q "event: idx" || { echo "/events did not stream"; back; }
-curl -s --max-time 20 "http://127.0.0.1:8090/home?k=$K" | python3 -c "
+curl -s -N --max-time 8 "http://127.0.0.1:8090/events?k=$K" 2>/dev/null | head -c 4000 | grep -q "event: idx" || { echo "/events did not stream"; back; }
+T0=$(date +%s%N); curl -s --max-time 20 "http://127.0.0.1:8090/home?k=$K" | python3 -c "
 import json, sys; d = json.load(sys.stdin); print('    home data: NOW %d · sectors %d · tape %d · news %d' % (len(d['now']), len(d['sectors']), len(d['tape']), len(d['news'])))" || { echo "/home did not answer"; back; }
+echo "    /home answered in $(( ($(date +%s%N) - T0) / 1000000 )) ms (served from memory)"
 echo "page: $(systemctl is-active gir-dash)"
-echo "PATCH 81 APPLIED - reload the home page (pull down to refresh on the phone): NOW now arrives the same second, no refresh timer."
+echo "PATCH 81 APPLIED - reload the home page (pull down to refresh on the phone): NOW arrives the same second, no refresh timer."
