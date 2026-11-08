@@ -116,7 +116,9 @@ def chain(sym, day=None):
     con = sqlite3.connect("file:%s?mode=ro" % os.path.join(BASE, "chains.db"), uri=True, timeout=3)
     try:
         tabs = set(r[0] for r in con.execute("select name from sqlite_master where type='table'"))
-        tb = "chain15" if "chain15" in tabs else "chain"
+        tb = "chain15" if "chain15" in tabs else "chain" if "chain" in tabs else None
+        if not tb:
+            return None
         day = day or con.execute("select max(d) from %s where sym=?" % tb, (sym,)).fetchone()[0]
         if not day:
             return None
@@ -153,7 +155,10 @@ def read(sym, ivp=None, data=None):
     if c and time.time() - c[0] < 60 and data is None:
         out = dict(c[1])
     else:
-        ch = data or chain(sym)
+        try:
+            ch = data or chain(sym)
+        except Exception:
+            ch = None
         if not ch:
             return None
         day, exp, spot, cur, prev = ch
