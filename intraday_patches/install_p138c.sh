@@ -3,12 +3,12 @@
 #   9 Nov 07:13 / 07:22: the reader wrote "weekly recap ... ALREADY KNOWN" on JIOFIN and SUNPHARMA, yet they went out CRITICAL and the
 #   EARLY board showed BUY PE. Now: an ALREADY KNOWN story is not sent (critical or not); on the EARLY board a news line marked
 #   ALREADY KNOWN, or one the news gate holds (recap / round-up / old results / not F&O), is no signal - today's lines drop off at once.
-#   newsalert.py, dashserve.py (exact anchors), p119test.py (its test checks the board only).
+#   newsalert.py, dashserve.py (exact anchors), p119test.py, p132ctest.py (their tests check the board only).
 #   Restarts gir-dash, gir-newsroom, gir-exchange (the engine is not touched).
 D=/home/globalbot/intraday; TS=$(date +%m%d%H%M); W=/tmp/g138c; mkdir -p $W
 grep -q "patch 138b" $D/newsfresh.py 2>/dev/null || { echo "patch 138b is not installed yet - paste patch 138b first"; exit 1; }
 grep -q "patch 138c" $D/newsalert.py && { echo "patch 138c is already installed"; exit 1; }
-F="newsalert.py dashserve.py p119test.py"
+F="newsalert.py dashserve.py p119test.py p132ctest.py"
 for f in $F; do cp $D/$f $D/$f.bak$TS; done
 back() { for f in $F; do cp $D/$f.bak$TS $D/$f; done; rm -f $D/p138ctest.py; systemctl restart gir-dash gir-newsroom gir-exchange; echo "ERROR - old files back, nothing changed"; exit 1; }
 cat > $W/p138c_patch.py <<'PY_PATCH'
@@ -31,6 +31,12 @@ EDITS = {
     "p119test.py": [
         ("""import dashserve, engine2, alertword""", """import dashserve, engine2, alertword
 import newsfresh; newsfresh.stale_kind = lambda *a, **k: None      # patch 138c: its own test checks the board, not the news gate"""),
+    ],
+    "p132ctest.py": [
+        ("""import dashserve
+IST = dashserve.IST""", """import dashserve
+IST = dashserve.IST
+import newsfresh; newsfresh.stale_kind = lambda *a, **k: None      # patch 138c: its own test checks the F&O filter, not the news gate"""),
     ],
     "dashserve.py": [
         ('''    h = head or ""
