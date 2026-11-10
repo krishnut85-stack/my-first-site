@@ -52,7 +52,7 @@ def fetch(url, get=None):
     if get is not None:
         return get(url)
     import requests
-    r = requests.get(url, headers=UA, timeout=20, allow_redirects=True)
+    r = requests.get(url, headers=UA, timeout=10, allow_redirects=True)
     LAST[url] = "HTTP %s · %d bytes" % (r.status_code, len(r.content))
     if r.status_code != 200:
         return None
@@ -577,15 +577,15 @@ if timeout 120 python3 p163test.py > /tmp/p163test.log 2>&1 && timeout 180 pytho
   for f in shockwatch.py p161test.py; do cp $D/$f.bak163 $D/$f 2>/dev/null; done; rm -f $D/regwatch.py; exit 1; fi
 echo "== 3. which regulator pages answer from the server (nothing sent)"
 cd /home/globalbot && set -a && source .env; set +a; cd $D
-timeout 300 python3 regwatch.py probe 2>&1 | sed 's/^/   /'
-timeout 300 python3 regwatch.py > /dev/null 2>&1
+timeout 400 python3 regwatch.py probe 2>&1 | sed 's/^/   /'
+timeout 400 python3 regwatch.py > /dev/null 2>&1
 echo "   (what is on the pages now is remembered - only new orders / notices are said from now on)"
 cat > $U/gir-regwatch.service <<'UNIT'
 [Unit]
 Description=GIR REGULATOR WATCH (IRDAI / SEBI / RBI / CCI / USFDA / TRAI / ED pages)
 [Service]
 Type=oneshot
-TimeoutStartSec=110
+TimeoutStartSec=170
 ExecStart=/bin/bash -c 'cd /home/globalbot && set -a && source .env && set +a && cd /home/globalbot/intraday && python3 regwatch.py --send >> data/regwatch.log 2>&1'
 UNIT
 cat > $U/gir-regwatch.timer <<'UNIT'
