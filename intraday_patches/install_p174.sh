@@ -1,5 +1,5 @@
 #!/bin/bash
-# PATCH 174 - MY F&O (tab 9) becomes your P&L calculator: set your capital once; each trade with its stop and target; the open trades'
+# PATCH 174 (+175) - MY P&L on the main screen under the index boxes (laptop) · MY F&O (tab 9) becomes your P&L calculator: set your capital once; each trade with its stop and target; the open trades'
 #   price and P&L now (Kite every minute in the session); 🛑 YOUR STOP / 💼 YOUR TARGET ring GIR Trade now; the risk at your stop as
 #   % of capital while you type (warns above 2%); capital now, return %, best / worst day, biggest fall, month by month - all net of
 #   charges. gir-dash restarts (the page shows 502 for 1-3 minutes) - run it outside market hours.
@@ -369,9 +369,64 @@ def main():
 
 sys.exit(main())
 PY_PATCH
+cat > $W/p175_patch.py <<'PY_P175'
+#!/usr/bin/env python3
+"""p175_patch.py - PATCH 175: MY P&L on the main screen (laptop) - a card under the NIFTY / SENSEX / BANKNIFTY / VIX boxes: capital now,
+return %, today's P&L (closed + open now), each open trade's price and P&L; refreshed every 30 s; tap = the full 9 MY F&O.
+dashserve.py: GET /myfo (the ledger with capital, light). Usage: python3 p175_patch.py /home/globalbot/intraday"""
+import sys, os
+D = sys.argv[1] if len(sys.argv) > 1 else "/home/globalbot/intraday"
+CSS = """
+/* patch 175: MY P&L under the index boxes (laptop) */
+#pnlcard{display:none}
+body.topchart #idxleft{flex:0 0 400px;display:flex;flex-direction:column;gap:6px;min-width:0;height:310px}
+body.topchart #idxleft #idx{width:auto;flex:none}
+body.topchart #pnlcard{display:block;flex:1;min-height:0;overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:6px 10px;cursor:pointer;font:500 12px/1.45 var(--mono)}
+body.topchart #pnlcard:hover{border-color:var(--amber)}
+#pnlcard .ph{display:flex;justify-content:space-between;font:700 11px/1.3 var(--ui);letter-spacing:.12em;color:var(--dim)}#pnlcard .ph a{color:var(--amber)}
+#pnlcard .pb{font:600 17px/1.3 var(--mono);color:var(--hi)}#pnlcard .pl{display:flex;justify-content:space-between;gap:8px;white-space:nowrap;overflow:hidden}
+</style>"""
+JS = """
+/* patch 175: MY P&L card beside the index boxes (laptop) */
+function pnlRs(v){ if(v==null||!isFinite(v)) return "—"; return (v>0?"+":v<0?"−":"")+"₹"+Math.abs(Math.round(v)).toLocaleString("en-IN"); }
+function pnlDraw(L){ const el=$("pnlcard"); if(!el||!L) return; const S=L.sum||{}, C=L.capital||{}, op=(L.rows||[]).filter(r=>r.net==null);
+  const today=(S.today||0)+(S.unreal||0), c_=v=>v>0?"pu":v<0?"pd":"";
+  el.innerHTML=`<div class="ph"><span>MY P&amp;L${C.set?" · capital ₹"+Math.round(C.capital).toLocaleString("en-IN"):""}</span><a>open ›</a></div>`
+   +(C.set?`<div class="pb">₹${Math.round(C.now).toLocaleString("en-IN")} <small class="${c_(C.ret)}">${C.ret>=0?"+":""}${C.ret}%</small></div>`:`<div class="dim">set your capital in 9 MY F&amp;O to see the %</div>`)
+   +`<div class="pl"><span>TODAY <b class="${c_(today)}">${pnlRs(today)}</b></span><span>OPEN <b class="${c_(S.unreal)}">${pnlRs(S.unreal||0)}</b></span><span>TOTAL <b class="${c_(S.total)}">${pnlRs(S.total)}</b></span></div>`
+   +(op.length?op.slice(0,3).map(r=>`<div class="pl"><span>${esc(r.sym)} ${r.strike} ${esc(r.kind)}</span><span>${r.now!=null?"₹"+r.now:"—"} <b class="${c_(r.unreal)}">${r.unreal_pct!=null?(r.unreal_pct>=0?"+":"")+r.unreal_pct+"%":""}</b> <b class="${c_(r.unreal)}">${pnlRs(r.unreal)}</b></span></div>`).join("")+(op.length>3?`<div class="dim">+${op.length-3} more open</div>`:""):`<div class="dim">no open trade · tap to add one</div>`); }
+async function pnlPull(){ if(!document.body.classList.contains("topchart")) return; try{ const v=await getJ("myfo?k="+encodeURIComponent(K)); if(v) pnlDraw(v); }catch(e){} }
+function leftCol(){ const wide=document.body.classList.contains("topchart"), row=$("idxrow"), idx=$("idx"); if(!row||!idx) return;
+  let lc=$("idxleft"), pc=$("pnlcard"); if(!lc){ lc=document.createElement("div"); lc.id="idxleft"; } if(!pc){ pc=document.createElement("div"); pc.id="pnlcard"; pc.title="tap: 9 MY F&O"; pc.onclick=()=>setView("myfo"); }
+  if(wide){ if(lc.parentNode!==row) row.insertBefore(lc,row.firstChild); if(idx.parentNode!==lc){ lc.appendChild(idx); lc.appendChild(pc); pnlPull(); } }
+  else if(idx.parentNode===lc){ row.insertBefore(idx,lc); lc.remove(); } }
+{ const tc2_=topChart; topChart=function(){ tc2_(); leftCol(); }; }
+setInterval(pnlPull,30000);
+"""
+A_JS = 'window.addEventListener("load",()=>setTimeout(topChart,50));'
+R_OLD = '            if u.path == "/home":'
+R_NEW = ('            if u.path == "/myfo":                     # patch 175: the MY P&L card beside the index boxes\n'
+         '                return self.send(200, json.dumps(ledger_state(), ensure_ascii=False, default=str), "application/json; charset=utf-8")\n'
+         + R_OLD)
+h = os.path.join(D, "home.html"); t = open(h, encoding="utf-8").read()
+p = os.path.join(D, "dashserve.py"); s = open(p, encoding="utf-8").read()
+msg = []
+if "patch 175" not in t:
+    if "patch 172" not in t or t.count(A_JS) != 1:
+        print("patch 172 is not in home.html - install it first"); sys.exit(1)
+    t = t.replace("</style>", CSS, 1).replace(A_JS, A_JS + JS, 1)
+    open(h, "w", encoding="utf-8").write(t); msg.append("home.html: the MY P&L card")
+if "patch 175" not in s:
+    if s.count(R_OLD) != 1:
+        print("ANCHOR x%d in dashserve.py" % s.count(R_OLD)); sys.exit(1)
+    s = s.replace(R_OLD, R_NEW, 1)
+    open(p, "w", encoding="utf-8").write(s); msg.append("dashserve.py: /myfo")
+print(" · ".join(msg) or "patch 175 is already in")
+PY_P175
 back() { cp $D/home.html.bak$TS $D/home.html; cp $D/dashserve.py.bak$TS $D/dashserve.py; }
 echo "== 1. the page and the calculator"
 R=$(python3 $W/p174_patch.py $D) || { echo "   $R - nothing changed"; back; exit 1; }; echo "   $R"
+R=$(python3 $W/p175_patch.py $D) || { echo "   $R - nothing changed"; back; exit 1; }; echo "   $R"
 cd $D && python3 -m py_compile dashserve.py myfo.py || { back; echo "   does not compile - old files back"; exit 1; }
 echo "== 2. the tests (your own trades are not touched - a copy of the ledger is made first)"
 for t in p174test.py p172test.py p164test.py p146btest.py; do [ -f $t ] || continue
@@ -402,4 +457,4 @@ OK=0; for i in $(seq 1 48); do c=$(curl -s -o /dev/null -w "%{http_code}" --max-
 if [ $OK = 1 ]; then echo "   ✅ the page is back"; else echo "   ❌ the page did not come back - old files back"; back; systemctl restart gir-dash; journalctl -u gir-dash -n 8 --no-pager | cut -c1-180 | sed 's/^/     /'; exit 1; fi
 rm -rf $W
 echo
-echo "PATCH 174 APPLIED. On girtrader.com press Ctrl + Shift + R, open 9 MY F&O, type your capital (250000) and SET."
+echo "PATCH 174 + 175 APPLIED. On girtrader.com press Ctrl + Shift + R: MY P&L sits under the index boxes. Tap it, type your capital (250000) and SET."
