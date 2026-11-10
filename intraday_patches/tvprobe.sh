@@ -35,8 +35,11 @@ cat > $T/stt.py <<'PY'
 import sys, time
 from faster_whisper import WhisperModel
 wav, lang, size = sys.argv[1], sys.argv[2], sys.argv[3]
+import wave, numpy as np
+w = wave.open(wav)                                   # read the 16 kHz mono recording directly (newer PyAV broke faster-whisper's file reader)
+audio = np.frombuffer(w.readframes(w.getnframes()), np.int16).astype(np.float32) / 32768.0
 t0 = time.time(); m = WhisperModel(size, device="cpu", compute_type="int8"); t1 = time.time()
-segs, info = m.transcribe(wav, language=lang, task="translate" if lang == "hi" else "transcribe", vad_filter=True, beam_size=1)
+segs, info = m.transcribe(audio, language=lang, task="translate" if lang == "hi" else "transcribe", vad_filter=True, beam_size=1)
 txt = " ".join(s.text.strip() for s in segs); t2 = time.time()
 print("   model %s loaded in %.0f s · 60 s of TV read in %.0f s -> %s" % (size, t1 - t0, t2 - t1, "KEEPS UP LIVE" if t2 - t1 < 40 else "TOO SLOW for live"))
 print("   text: " + txt[:700])
@@ -46,7 +49,7 @@ for x in "${LIVE[@]}"; do
   n=${x%%|*}; r=${x#*|}; lang=${r%%|*}; s=${r#*|}
   [ $lang = en ] && [ $done_en = 1 ] && continue; [ $lang = hi ] && [ $done_hi = 1 ] && continue
   echo "-- $n"
-  timeout 90 nice -n 19 ffmpeg -nostdin -loglevel error -y -i "$s" -t 60 -vn -ac 1 -ar 16000 $T/a.wav || { echo "   could not record"; continue; }
+  timeout 90 nice -n 19 ffmpeg -nostdin -loglevel error -y -i "$s" -t 60 -vn -ac 1 -ar 16000 -c:a pcm_s16le $T/a.wav || { echo "   could not record"; continue; }
   for size in base small; do nice -n 19 $V/bin/python $T/stt.py $T/a.wav $lang $size 2>$T/stt_err.txt || { echo "   model $size failed:"; grep -v -i "warn" $T/stt_err.txt | tail -4 | cut -c1-200 | sed 's/^/      /'; }; done
   [ $lang = en ] && done_en=1; [ $lang = hi ] && done_hi=1
 done
