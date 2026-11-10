@@ -249,7 +249,7 @@ fi
 systemctl daemon-reload && systemctl enable --now gir-brief.timer >/dev/null 2>&1
 systemctl restart gir-livecheck.timer 2>/dev/null
 echo "   ☀️ brief:      next $(systemctl show gir-brief.timer -p NextElapseUSecRealtime --value 2>/dev/null)"
-echo "   live OI check: next $(systemctl show gir-livecheck.timer -p NextElapseUSecRealtime --value 2>/dev/null)   (must be 09:25 IST = 03:55 UTC)"
+echo "   live OI check: next $(systemctl show gir-livecheck.timer -p NextElapseUSecRealtime --value 2>/dev/null)   (server time is UTC - IST is 5:30 later)"
 echo "== 4. how it would look now (not sent)"
 cd /home/globalbot && set -a && source .env; set +a; cd $D
 timeout 60 python3 morningbrief.py 2>&1 | head -40 | sed 's/^/   /'
