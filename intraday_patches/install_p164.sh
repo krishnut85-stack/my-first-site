@@ -120,7 +120,7 @@ print("P164 TEST " + ("PASSED" if ok else "FAILED"))
 sys.exit(0 if ok else 1)
 PY_TEST
 echo "== 1. the patch"
-python3 $W/p164_patch.py $D | sed 's/^/   /' || { echo "   nothing was changed"; exit 1; }
+R=$(python3 $W/p164_patch.py $D) || { echo "   $R - nothing was changed"; exit 1; }; echo "   $R"
 cd $D && python3 -m py_compile dashserve.py || { cp $D/dashserve.py.bak$TS $D/dashserve.py; echo "   does not compile - old file back"; exit 1; }
 echo "== 2. the tests"
 if timeout 120 python3 p164test.py > /tmp/p164test.log 2>&1; then echo "   p164test.py passed (6 checks)"; else
