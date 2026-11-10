@@ -13,14 +13,21 @@ echo "== 2. the tools"
 command -v ffmpeg >/dev/null || { apt-get update -qq && apt-get install -y -qq ffmpeg >/dev/null; }
 command -v ffmpeg >/dev/null && echo "   ffmpeg ok" || { echo "   ffmpeg could not be installed"; exit 1; }
 [ -x $V/bin/python ] || python3 -m venv $V || { echo "   python venv missing: apt-get install -y python3-venv, then run again"; exit 1; }
-$V/bin/pip install -q --upgrade pip yt-dlp faster-whisper >/dev/null 2>&1 && echo "   yt-dlp + faster-whisper ok (in $V)" || { echo "   pip install failed"; exit 1; }
-C=""; [ -f $V/cookies.txt ] && { C="--cookies $V/cookies.txt"; echo "   using the YouTube cookies in $V/cookies.txt"; }
+$V/bin/pip install -q --upgrade pip "yt-dlp[default]" faster-whisper >/dev/null 2>&1 && echo "   yt-dlp $($V/bin/yt-dlp --version) + faster-whisper ok (in $V)" || { echo "   pip install failed"; exit 1; }
+# YouTube now needs a JavaScript engine to unlock its streams ("No video formats found" without one) - Deno, kept inside the tool folder
+[ -x $V/bin/deno ] || $V/bin/pip install -q --upgrade deno >/dev/null 2>&1
+export PATH=$V/bin:$PATH
+J=""
+if [ -x $V/bin/deno ]; then J="--js-runtimes deno:$V/bin/deno"; echo "   JavaScript engine: deno $($V/bin/deno --version 2>/dev/null | head -1 | awk '{print $2}')"
+elif command -v node >/dev/null; then J="--js-runtimes node"; echo "   JavaScript engine: node $(node --version)"
+else echo "   no JavaScript engine (deno could not be installed) - YouTube may refuse"; fi
+C="$J"; [ -f $V/cookies.txt ] && { C="$C --cookies $V/cookies.txt"; echo "   using the YouTube cookies in $V/cookies.txt"; }
 echo "== 3. which channels are live on YouTube"
 LIVE=()
 for c in "CNBC-TV18|https://www.youtube.com/@cnbc-tv18/live|en" "CNBC-TV18 (id)|https://www.youtube.com/channel/UCmRbHAgG2k2vDUvb3xsEunQ/live|en" "ET NOW|https://www.youtube.com/@ETNOWlive/live|en" "ET NOW (2)|https://www.youtube.com/@etnow/live|en" "ZEE BUSINESS|https://www.youtube.com/@ZeeBusiness/live|hi" "CNBC AWAAZ|https://www.youtube.com/@CNBCAwaaz/live|hi" "SANSAD TV|https://www.youtube.com/@SansadTV/live|hi"; do
   n=${c%%|*}; r=${c#*|}; u=${r%|*}; lang=${r##*|}
   s=$(timeout 60 $V/bin/yt-dlp $C -q --no-warnings -f "bestaudio/best" -g "$u" 2>$T/err.txt | head -1)
-  if [ -n "$s" ]; then echo "   LIVE   $n"; LIVE+=("$n|$lang|$s"); else echo "   no     $n  ($(head -c 150 $T/err.txt | tr '\n' ' '))"; fi
+  if [ -n "$s" ]; then echo "   LIVE   $n"; LIVE+=("$n|$lang|$s"); else echo "   no     $n  ($(grep -v '^WARNING' $T/err.txt | head -c 220 | tr '\n' ' '))"; fi
 done
 [ ${#LIVE[@]} -gt 0 ] || { echo "no channel could be read from the droplet - if the errors say 'Sign in to confirm you're not a bot', YouTube blocks server addresses: send me this output"; exit 1; }
 echo "== 4. 60 s of TV -> text (English channel: as spoken · Hindi channel: translated to English)"
