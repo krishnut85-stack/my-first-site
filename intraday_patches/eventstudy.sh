@@ -96,7 +96,7 @@ def study(syms, DAY, M5, NIFX, G, events):
         for g in groups:
             P = []
             for s in G[g]:
-                x = (M5.get(s) or {}).get(k); pc = pcm[s].get(k)
+                x = (M5.get(s) or {}).get(k); pc = (pcm.get(s) or {}).get(k)
                 if x is None or not pc:
                     continue
                 c = x[3].astype(np.float64)
