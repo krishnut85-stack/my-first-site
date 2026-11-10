@@ -1,11 +1,13 @@
 #!/bin/bash
-# THE SHOCK DAYS + ⚠️ SHOCK WATCH (patch 161) - Rama, 10 Nov: "check the past 3-4 years when F&O shares hit upper / lower circuit and why
-#   (Policybazaar fell for an IRDAI issue) - and alert me when the same kind of thing is brewing".
-#   1. circuits.py  every F&O share's 8%+ day in 3 years (F&O shares have no fixed circuit - NSE's band starts at 10%), the reason for each
+# THE SHOCK DAYS + ⚠️ SHOCK WATCH (patch 161, 161b: from Nov 2022 so 2023 is complete · UP and DOWN alike · year by year) - Rama, 10 Nov:
+#   "check the past 3-4 years when F&O shares hit upper / lower circuit and why (Policybazaar fell for an IRDAI issue) - and alert me when
+#   the same kind of thing is brewing".
+#   1. circuits.py  every F&O share's 8%+ day UP and DOWN, 2022-11 to today (F&O shares have no fixed circuit - NSE's band starts at 10%), the reason for each
 #                   (the share's NSE filings, results days, NIFTY, Google News of those days), what showed before, what came after.
 #                   Runs in the background (~1 hour), then sends the report to the ⚙️ System topic.
-#   2. shockwatch.py  every 5 minutes: regulator / governance / boss-quits news on an F&O share -> ⚠️ SHOCK WATCH in GIR Box Picks (rings),
-#                   with that share's own past shocks. No GIR restart. Safe any time.
+#   2. shockwatch.py  every 5 minutes, both ways: ▼ regulator / governance / boss-quits / lower-circuit news, ▲ approvals, open offers,
+#                   buybacks, Rs 1,000 cr+ orders, upper-circuit news on an F&O share -> ⚠️ SHOCK WATCH in GIR Box Picks (rings), with that
+#                   share's own past shocks. Smaller ▲ news -> 📰 News topic (quiet). No GIR restart. Safe any time.
 set -u
 D=/home/globalbot/intraday; U=/etc/systemd/system
 [ -f $D/study3y.py ] || { echo "study3y.py missing - run study3y.sh first"; exit 1; }
@@ -16,8 +18,10 @@ cat > $D/circuits.py <<'PY_CIRC'
 """circuits.py - patch 161: THE SHOCK DAYS (Rama, 10 Nov: "check the past 3-4 years when F&O shares hit upper and lower circuit, and the
 reason - Policybazaar fell for an IRDAI issue - and alert me when the same kind of thing is brewing").
 F&O shares have no fixed circuit: NSE's dynamic price band starts at 10% and is widened when hit. So a SHOCK DAY here is a day the
-share closed 8%+ up / down on the previous close, or traded 10%+ away from it (the band's first step) - 3 years of data/h3.
-  python3 circuits.py find               the shock days (instant, from the candles)
+share closed 8%+ up / down on the previous close, or traded 10%+ away from it (the band's first step) - UP and DOWN, every year from
+Nov 2022 (data/h3 holds 3 years; 'extend' adds the year before so 2023 is complete).
+  python3 circuits.py extend             the daily candles + NSE futures OI back to 1 Nov 2022 (Kite + NSE files; ~20 min, once)
+  python3 circuits.py find               the shock days, year by year, up and down (instant, from the candles)
   python3 circuits.py reasons            each shock's reason: the share's own NSE filings (D-30..D, read with GIR's exchange reader),
                                          its results days, NIFTY that day, Google News headlines of those days. Cached in
                                          data/h3/shock_reasons.json, resumable, the biggest shocks first, pauses in market hours.
@@ -198,6 +202,8 @@ def find(syms, DAY, F=None):
                 side = 1
             elif mv <= -CLOSE_BIG or (lo <= -TOUCH and mv < 0):
                 side = -1
+            if side < 0 and mv <= -30 and abs(S.pct(o, pc) - mv) < 3:
+                side = 0                                       # opened at the new price and stayed: a split / bonus / demerger, not a shock
             sg = signs_at(D, ks, i, s, F)
             tot[0] += 1; tot[1] += side < 0; tot[2] += side > 0
             for x in sg:
@@ -296,7 +302,13 @@ def decide(sh, filings, news, result_day):
 
 def market_hours():
     n = dt.datetime.now(IST)
-    return n.weekday() < 5 and dt.time(9, 0) <= n.time() <= dt.time(15, 35)
+    if n.weekday() >= 5 or not (dt.time(9, 0) <= n.time() <= dt.time(15, 35)):
+        return False
+    try:
+        import holidays
+        return not holidays.holiday(n.date())                  # an NSE holiday (10 Nov 2026) is not a market day
+    except Exception:
+        return True
 
 
 def reasons(shocks, syms, DAY, getj=None, get=None, pause=0.6, log=print, stop=market_hours):
@@ -337,7 +349,9 @@ def reasons(shocks, syms, DAY, getj=None, get=None, pause=0.6, log=print, stop=m
         cut = dt.datetime.combine(d0 - dt.timedelta(days=4), dt.time(15, 30), IST).timestamp()
         warn = [(dt.datetime.fromtimestamp(f[0], IST).strftime("%Y-%m-%d"), f[1], f[3][:140]) for f in fl
                 if f[0] < cut and (f[1] in ("REG", "MGMT") or reason_of(f[3]) == "GOVERNANCE") and f[2] <= 0]
-        C["%s:%s" % (s, sh["d"])] = {"reason": r, "line": line[:240], "src": src, "warn": warn[:4], "news": [t for t, _ in nw[:4]]}
+        lead = [(dt.datetime.fromtimestamp(f[0], IST).strftime("%Y-%m-%d"), f[1], f[3][:140]) for f in fl
+                if f[0] < cut and f[1] in ("ORDER", "REG", "BOARD", "RATING", "SALES") and f[2] > 0]
+        C["%s:%s" % (s, sh["d"])] = {"reason": r, "line": line[:240], "src": src, "warn": warn[:4], "lead": lead[:4], "news": [t for t, _ in nw[:4]]}
         if n % 20 == 0:
             log("  %d/%d %s %s %+.1f%% -> %s %s" % (n + 1, len(todo), s, sh["d"], sh["mv"], r, line[:70]))
             os.makedirs(S.H3, exist_ok=True)
@@ -351,14 +365,27 @@ def reasons(shocks, syms, DAY, getj=None, get=None, pause=0.6, log=print, stop=m
 # ---------------------------------------------------------------- 3. the report
 def report(shocks, base, tot, C):
     for x in shocks:
-        x.update(C.get("%s:%s" % (x["sym"], x["d"])) or {"reason": "NOT READ", "line": "", "src": "", "warn": [], "news": []})
+        x.update(C.get("%s:%s" % (x["sym"], x["d"])) or {"reason": "NOT READ", "line": "", "src": "", "warn": [], "lead": [], "news": []})
     up = [x for x in shocks if x["side"] > 0]; dn = [x for x in shocks if x["side"] < 0]
     days = sorted({x["d"] for x in shocks})
-    L = ["🧱 SHOCK DAYS · F&O shares · 3 years%s" % ((" (%s to %s)" % (days[0], days[-1])) if days else ""),
+    L = ["🧱 SHOCK DAYS · F&O shares%s · ▲ up and ▼ down" % ((" · %s to %s" % (days[0], days[-1])) if days else ""),
          "F&O shares have no fixed circuit (NSE's band starts at 10%% and is widened). A shock = closed %.0f%%+ or traded %.0f%%+ from the previous close."
          % (CLOSE_BIG, TOUCH),
          "%d shocks: ▲ %d up · ▼ %d down · %d share-days in all (a shock on %.2f%% of days)" % (len(shocks), len(up), len(dn), tot[0],
                                                                                               100 * len(shocks) / tot[0] if tot[0] else 0)]
+    L += ["", "YEAR BY YEAR (▲ up shocks / ▼ down shocks · the year's biggest each way)"]
+    for y in sorted({x["d"][:4] for x in shocks}):
+        U = [x for x in up if x["d"][:4] == y]; Dn = [x for x in dn if x["d"][:4] == y]
+        bu = max(U, key=lambda x: x["mv"]) if U else None; bd = min(Dn, key=lambda x: x["mv"]) if Dn else None
+        L.append("  %s  ▲ %4d  ▼ %4d · biggest ▲ %s · biggest ▼ %s%s" % (y, len(U), len(Dn), ("%s %+.0f%% %s" % (bu["sym"], bu["mv"], bu["d"][5:])) if bu else "-",
+                 ("%s %+.0f%% %s" % (bd["sym"], bd["mv"], bd["d"][5:])) if bd else "-", "  (from %s)" % min(x["d"] for x in shocks if x["d"][:4] == y) if y == days[0][:4] else ""))
+    crowd = {}
+    for x in shocks:
+        crowd.setdefault((x["d"], x["side"]), []).append(x)
+    crowd = sorted(((k, X) for k, X in crowd.items() if len(X) >= 15), key=lambda kv: -len(kv[1]))
+    if crowd:
+        L += ["", "MARKET-WIDE DAYS (15+ F&O shares shocked together - the market, not the company)"]
+        L += ["  %s %s %3d shares · NIFTY %s" % (k[0], "▲" if k[1] > 0 else "▼", len(X), ("%+.1f%%" % X[0]["nifty"]) if X[0]["nifty"] is not None else "-") for k, X in crowd[:8]]
     read = sum(1 for x in shocks if x["reason"] != "NOT READ")
     if read < len(shocks):
         L.append("reasons read so far: %d of %d (the biggest first) - run 'python3 circuits.py reasons' again to finish" % (read, len(shocks)))
@@ -376,16 +403,17 @@ def report(shocks, base, tot, C):
                                                                                          S.share(same, len(nx))))
         gap = sum(1 for x in G if abs(x["gap"]) >= 5 and x["gap"] * x["side"] > 0)
         L.append("  opened with a 5%%+ gap (news came overnight): %s · built up during the day: %s" % (S.share(gap, len(G)), S.share(len(G) - gap, len(G))))
-    for nm, G in (("▼ THE 15 BIGGEST FALLS", sorted(dn, key=lambda x: x["mv"])[:15]), ("▲ THE 10 BIGGEST RISES", sorted(up, key=lambda x: -x["mv"])[:10])):
+    for nm, G in (("▼ THE 15 BIGGEST FALLS", sorted(dn, key=lambda x: x["mv"])[:15]), ("▲ THE 15 BIGGEST RISES", sorted(up, key=lambda x: -x["mv"])[:15])):
         if G:
             L += ["", nm]
             L += ["  %s %-11s %+6.1f%% %-10s %s" % (x["d"], x["sym"], x["mv"], x["reason"], x["line"][:90]) for x in G]
-    rep = {}
-    for x in dn:
+    for side_nm, G in (("▼ SHARES THAT FELL HARD AGAIN AND AGAIN (3+ down shocks)", dn), ("▲ SHARES THAT JUMPED AGAIN AND AGAIN (3+ up shocks)", up)):
+      rep = {}
+      for x in G:
         rep.setdefault(x["sym"], []).append(x)
-    rep = sorted(((s, X) for s, X in rep.items() if len(X) >= 3), key=lambda kv: -len(kv[1]))
-    if rep:
-        L += ["", "▼ SHARES THAT FELL HARD AGAIN AND AGAIN (3+ down shocks)"]
+      rep = sorted(((s, X) for s, X in rep.items() if len(X) >= 3), key=lambda kv: -len(kv[1]))
+      if rep:
+        L += ["", side_nm]
         for s, X in rep[:15]:
             rs = {}
             for x in X:
@@ -406,7 +434,14 @@ def report(shocks, base, tot, C):
         for x in sorted(wd, key=lambda x: x["mv"])[:8]:
             w = x["warn"][0]
             L.append("  %s %s %+.1f%% <- %s %s: %s" % (x["d"], x["sym"], x["mv"], w[0], w[1], w[2][:80]))
-    J = {"built": str(dt.date.today()), "close_big": CLOSE_BIG, "touch": TOUCH, "by_sym": {}, "by_reason": {}}
+    ld = [x for x in up if x.get("lead")]
+    if read:
+        L += ["", "▲ GOOD NEWS FILED FIRST (an order / approval / board decision 4-30 days before the jump): %d of %d read jumps"
+              % (len(ld), sum(1 for x in up if x["reason"] != "NOT READ"))]
+        for x in sorted(ld, key=lambda x: -x["mv"])[:8]:
+            w = x["lead"][0]
+            L.append("  %s %s %+.1f%% <- %s %s: %s" % (x["d"], x["sym"], x["mv"], w[0], w[1], w[2][:80]))
+    J = {"built": str(dt.date.today()), "from": days[0] if days else "", "close_big": CLOSE_BIG, "touch": TOUCH, "by_sym": {}, "by_reason": {}}
     for x in shocks:
         J["by_sym"].setdefault(x["sym"], []).append({k: x[k] for k in ("d", "side", "mv", "next", "n5", "reason", "line")})
         b = J["by_reason"].setdefault("%s:%d" % (x["reason"], x["side"]), {"n": 0, "mv": 0.0, "next": []})
@@ -416,6 +451,131 @@ def report(shocks, base, tot, C):
     for b in J["by_reason"].values():
         b["mv"] = round(b["mv"] / b["n"], 2); b["next"] = round(S.avg(b["next"]), 2)
     return L, J
+
+
+def extend(syms, since="2022-11-01", log=print):
+    """the year before data/h3's 3 years: daily candles from Kite and the NSE futures file, merged in (resumable)"""
+    import numpy as np, hist3y as Hh
+    s0 = dt.date.fromisoformat(since)
+    try:
+        k = Hh.kite(); tok = Hh.tokens(k)
+    except Exception as ex:
+        log("Kite not reachable (%s) - the candles stay at 3 years" % str(ex)[:80]); tok = None
+    n_new = 0
+    for i, s in enumerate((Hh.INDICES + syms) if tok else []):
+        p = os.path.join(S.H3, "day", Hh.fname(s) + ".npz")
+        if not os.path.exists(p) or not tok.get(s):
+            continue
+        a = np.load(p)
+        first = dt.datetime.fromtimestamp(float(a["ts"].min()), IST).date()
+        if first <= s0 + dt.timedelta(days=10):
+            continue
+        try:
+            rows = Hh.candles(k, tok[s], s0, first - dt.timedelta(days=1), "day", 1900)
+        except Exception as ex:
+            log("  %s: %s" % (s, str(ex)[:80])); continue
+        old = [{"date": dt.datetime.fromtimestamp(float(t), IST), "open": o, "high": h, "low": l, "close": c, "volume": v}
+               for t, o, h, l, c, v in zip(a["ts"], a["o"], a["h"], a["l"], a["c"], a["v"])]
+        Hh.save_npz(p, rows + old)
+        n_new += 1
+        if i % 25 == 0:
+            log("  candles %d/%d %s: +%d days (from %s)" % (i + 1, len(Hh.INDICES) + len(syms), s, len(rows), since))
+    log("candles from Kite: %d shares/indices taken back to %s" % (n_new, since))
+    extend_nse(syms, s0, log)
+    c = Hh.fo_db()
+    done = {r[0] for r in c.execute("select d from done where status in ('ok', 'holiday')")}
+    first = c.execute("select min(d) from fut").fetchone()[0] or str(dt.date.today())
+    d, n = s0, 0
+    while str(d) < first:
+        if d.weekday() < 5 and str(d) not in done:
+            try:
+                v = Hh.fo_one(d)
+                if isinstance(v, str):
+                    c.execute("insert or replace into done values(?,?)", (str(d), v))
+                else:
+                    c.executemany("insert or replace into fut values(?,?,?,?,?,?,?,?,?,?,?)", [(str(d), x) + tuple(y) for x, y in v.items()])
+                    c.execute("insert or replace into done values(?,?)", (str(d), "ok"))
+                c.commit(); n += 1
+            except Exception as ex:
+                log("  nse fo %s: %s" % (d, str(ex)[:60]))
+            time.sleep(0.8)
+        d += dt.timedelta(days=1)
+    c.close()
+    log("NSE futures files: %d more days (back to %s)" % (n, since))
+    return 0
+
+
+NSE_CM = "https://nsearchives.nseindia.com/content/historical/EQUITIES/%d/%s/cm%02d%s%dbhav.csv.zip"
+NSE_IDX = "https://nsearchives.nseindia.com/content/indices/ind_close_all_%s.csv"
+
+
+def extend_nse(syms, s0, log=print, get=None):
+    """the shares (and NIFTY 50) Kite did not take back: NSE's own daily files (the equity bhavcopy, the index closes). A later split /
+    bonus makes the old prices a different scale - joined by the ratio at the seam."""
+    import io, zipfile, numpy as np, hist3y as Hh
+    need = {}
+    for s in syms + ["NIFTY 50"]:
+        p = os.path.join(S.H3, "day", Hh.fname(s) + ".npz")
+        if os.path.exists(p):
+            first = dt.datetime.fromtimestamp(float(np.load(p)["ts"].min()), IST).date()
+            if first > s0 + dt.timedelta(days=10):
+                need[s] = first
+    if not need:
+        return 0
+    log("NSE daily files for %d shares/indices Kite did not take back..." % len(need))
+    end = max(need.values())
+    rows = {s: [] for s in need}
+    d = s0
+    def fetch(url):
+        if get:
+            return get(url)
+        import requests
+        r = requests.get(url, headers=UA, timeout=30)
+        return r.content if r.status_code == 200 else None
+    while d < end:
+        if d.weekday() < 5:
+            mon = Hh.MON[d.month - 1]
+            try:
+                z = fetch(NSE_CM % (d.year, mon, d.day, mon, d.year))
+                if z:
+                    txt = zipfile.ZipFile(io.BytesIO(z)).read(zipfile.ZipFile(io.BytesIO(z)).namelist()[0]).decode("utf-8", "ignore")
+                    hdr = None
+                    for line in txt.splitlines():
+                        c = [x.strip() for x in line.split(",")]
+                        if hdr is None:
+                            hdr = {k: j for j, k in enumerate(c)}; continue
+                        sy = c[hdr["SYMBOL"]] if "SYMBOL" in hdr else ""
+                        if sy in rows and c[hdr.get("SERIES", 1)] == "EQ" and d < need[sy]:
+                            rows[sy].append({"date": dt.datetime.combine(d, dt.time(0, 0), IST), "open": float(c[hdr["OPEN"]]), "high": float(c[hdr["HIGH"]]),
+                                             "low": float(c[hdr["LOW"]]), "close": float(c[hdr["CLOSE"]]), "volume": float(c[hdr.get("TOTTRDQTY", 8)])})
+                if "NIFTY 50" in rows and d < need["NIFTY 50"]:
+                    t = fetch(NSE_IDX % d.strftime("%d%m%Y"))
+                    for line in (t.decode("utf-8", "ignore") if isinstance(t, bytes) else (t or "")).splitlines():
+                        c = [x.strip() for x in line.split(",")]
+                        if c and c[0].upper() == "NIFTY 50" and len(c) > 5:
+                            rows["NIFTY 50"].append({"date": dt.datetime.combine(d, dt.time(0, 0), IST), "open": float(c[2]), "high": float(c[3]),
+                                                     "low": float(c[4]), "close": float(c[5]), "volume": 0})
+            except Exception as ex:
+                log("  nse day %s: %s" % (d, str(ex)[:60]))
+            time.sleep(0.4)
+        d += dt.timedelta(days=1)
+    n = 0
+    for s, R in rows.items():
+        if not R:
+            continue
+        p = os.path.join(S.H3, "day", Hh.fname(s) + ".npz")
+        a = np.load(p)
+        i0 = int(np.argmin(a["ts"]))
+        ratio = float(a["o"][i0]) / R[-1]["close"] if R[-1]["close"] else 1.0
+        if abs(ratio - 1) > 0.25:                              # a split / bonus since: put the old prices on today's scale
+            for r in R:
+                for k in ("open", "high", "low", "close"):
+                    r[k] *= ratio
+        old = [{"date": dt.datetime.fromtimestamp(float(t), IST), "open": o, "high": h, "low": l, "close": c, "volume": v}
+               for t, o, h, l, c, v in zip(a["ts"], a["o"], a["h"], a["l"], a["c"], a["v"])]
+        Hh.save_npz(p, R + old); n += 1
+    log("NSE daily files: %d shares/indices taken back to %s" % (n, s0))
+    return n
 
 
 def load():
@@ -428,10 +588,16 @@ def main(argv):
     cmd = argv[1] if len(argv) > 1 else "report"
     syms, DAY = load()
     shocks, base, tot = find(syms, DAY, futmap())
+    if cmd == "extend":
+        return extend(syms)
     if cmd == "find":
-        for x in sorted(shocks, key=lambda x: x["mv"])[:40]:
-            print("%s %-12s %+6.1f%%  gap %+5.1f%%  NIFTY %s" % (x["d"], x["sym"], x["mv"], x["gap"], x["nifty"]))
-        print("... %d shocks (▲ %d · ▼ %d) in %d share-days" % (len(shocks), sum(1 for x in shocks if x["side"] > 0), sum(1 for x in shocks if x["side"] < 0), tot[0]))
+        print("%d shocks (▲ %d up · ▼ %d down) in %d share-days, %s to %s" % (len(shocks), sum(1 for x in shocks if x["side"] > 0), sum(1 for x in shocks if x["side"] < 0),
+              tot[0], min(x["d"] for x in shocks) if shocks else "-", max(x["d"] for x in shocks) if shocks else "-"))
+        for y in sorted({x["d"][:4] for x in shocks}):
+            U = [x for x in shocks if x["d"][:4] == y and x["side"] > 0]; Dn = [x for x in shocks if x["d"][:4] == y and x["side"] < 0]
+            print("  %s  ▲ %4d up  ▼ %4d down" % (y, len(U), len(Dn)))
+        print("the 5 biggest ▲:  " + " · ".join("%s %s %+.0f%%" % (x["d"], x["sym"], x["mv"]) for x in sorted([x for x in shocks if x["side"] > 0], key=lambda x: -x["mv"])[:5]) or "-")
+        print("the 5 biggest ▼:  " + " · ".join("%s %s %+.0f%%" % (x["d"], x["sym"], x["mv"]) for x in sorted([x for x in shocks if x["side"] < 0], key=lambda x: x["mv"])[:5]) or "-")
         return 0
     if cmd in ("reasons", "all"):
         reasons(shocks, syms, DAY, log=lambda m: print(dt.datetime.now(IST).strftime("%H:%M:%S"), m, flush=True))
@@ -459,11 +625,14 @@ cat > $D/shockwatch.py <<'PY_SW'
 #!/usr/bin/env python3
 """shockwatch.py - patch 161: ⚠️ SHOCK WATCH (Rama, 10 Nov: "if the same kind of thing is brewing, alert me and I will keep a watch on
 that share"). Every 5 minutes, day and night, it looks for the kinds of news that sent F&O shares 8-20% in a day in the last 3 years
-(circuits.py): a regulator acting (RBI / SEBI / IRDAI / USFDA / CCI / ED / tax), a governance problem (fraud, auditor quits, short
-seller, accounting), a top boss leaving.
+(circuits.py), BOTH WAYS:
+  ▼ a regulator acting (RBI / SEBI / IRDAI / USFDA / CCI / ED / tax), a governance problem (fraud, auditor quits, short seller,
+    accounting), a top boss leaving, a "lower circuit" story
+  ▲ a regulator approval (USFDA approval / clean EIR), an open offer / buyback / stake buy, an order of Rs 1,000 crore+, an "upper circuit" story
   * the share's own NSE filings, already read by GIR's EXCHANGE DIRECT (filings.db) - a REG / MGMT filing against the company
   * Google News: a set of searches for those words in the last hour, kept only when the headline names an F&O company
-Each one is said ONCE, to GIR Box Picks (it rings), with that share's own past shocks and what such news did to F&O shares in 3 years.
+Each one is said ONCE with that share's own past shocks and what such news did to F&O shares: ⚠️ in GIR Box Picks (rings);
+the smaller ▲ ones (an order under Rs 1,000 crore, a deal story) as 📰 in the News topic (quiet).
 The first run only remembers what is there (no flood).
   python3 shockwatch.py probe      what it would say now (nothing sent, nothing remembered)
   python3 shockwatch.py --send     one pass (the timer runs this every 5 minutes)"""
@@ -480,8 +649,10 @@ HIST = os.path.join(BASE, "data", "h3", "circuits.json")
 QUERIES = ["RBI imposes", "RBI bars", "RBI restrictions bank", "SEBI order", "SEBI bans", "SEBI show cause", "IRDAI", "USFDA warning letter",
            "import alert USFDA", "Form 483", "OAI USFDA", "CCI penalty", "ED raid company", "income tax search company", "GST demand notice",
            "auditor resigns", "forensic audit", "short seller report", "fraud shares", "accounting lapses", "CEO resigns shares", "shares crash regulator",
-           "lower circuit", "upper circuit"]
+           "lower circuit", "upper circuit", "bags order worth crore", "wins order worth crore", "USFDA approval", "EIR USFDA",
+           "open offer shares", "buyback shares", "acquire stake", "shares zoom order"]
 KEEP = ("REGULATOR", "GOVERNANCE", "MGMT")
+KEEP_UP = ("REGULATOR", "ORDER", "DEAL", "POLICY")
 PER_RUN = 8                                   # searches per pass: all of them every 15 minutes (Google is not asked too often)
 
 
@@ -559,20 +730,36 @@ def history_lines(H, sym, reason, side):
     L = []
     mine = (H.get("by_sym") or {}).get(sym) or []
     if mine:
-        L.append("%s's own shocks in 3 years: %d · %s" % (sym, len(mine), " · ".join("%s %+.0f%% %s" % (x["d"], x["mv"], x["reason"]) for x in mine[-3:])))
+        L.append("%s's own shocks since %s: %d · %s" % (sym, (H.get("from") or "")[:4], len(mine), " · ".join("%s %+.0f%% %s" % (x["d"], x["mv"], x["reason"]) for x in mine[-3:])))
     else:
-        L.append("%s: no 8%%+ shock in 3 years" % sym)
+        L.append("%s: no 8%%+ shock since %s" % (sym, (H.get("from") or "")[:4]))
     b = (H.get("by_reason") or {}).get("%s:%d" % (reason, -1 if side < 0 else 1))
     if b and b.get("n"):
-        L.append("%s news behind %d F&O shocks %s in 3 years · avg %+.1f%% that day, %+.1f%% the next" % (reason, b["n"], "▼" if side < 0 else "▲", b["mv"], b["next"]))
+        L.append("%s news behind %d F&O shocks %s since %s · avg %+.1f%% that day, %+.1f%% the next" % (reason, b["n"], "▼" if side < 0 else "▲", (H.get("from") or "")[:4], b["mv"], b["next"]))
     return L
+
+
+def rings(x):
+    """▼ always rings; ▲ rings for an approval, an open offer / buyback, an upper-circuit story, an order of Rs 1,000 crore+"""
+    if x["side"] < 0 or x.get("circ") or x["reason"] == "REGULATOR":
+        return True
+    if x["reason"] == "DEAL" and re.search(r"open offer|buy-?back|acquire|stake", x["head"], re.I):
+        return True
+    if x["reason"] == "ORDER":
+        try:
+            import exchange
+            return exchange.amount_cr(x["head"]) >= 1000
+        except Exception:
+            m = re.search(r"(?:rs\.?|₹|inr)\s*([\d,]+)\s*(?:cr|crore)", x["head"], re.I)
+            return bool(m and float(m.group(1).replace(",", "")) >= 1000)
+    return False
 
 
 def line(x, H, now):
     arrow = "▼" if x["side"] < 0 else "▲"
     hint = ("bearish news: PE side only if the price confirms (breaks the first 15-min low); no fresh CE" if x["side"] < 0
             else "bullish news: CE side only if the price confirms (holds above the first 15-min high)")
-    return "\n".join(["⚠️ SHOCK WATCH · %s · %s %s · %s %s" % (x["sym"], arrow, x["reason"], x["src"], now.strftime("%H:%M")), x["head"][:260]]
+    return "\n".join(["%s SHOCK WATCH · %s · %s %s · %s %s" % ("⚠️" if rings(x) else "📰", x["sym"], arrow, x["reason"], x["src"], now.strftime("%H:%M")), x["head"][:260]]
                      + history_lines(H, x["sym"], x["reason"], x["side"]) + ["watch: " + hint] + ([x["link"]] if x.get("link") else []))
 
 
@@ -600,17 +787,15 @@ def run(send=None, get=None, now=None, probe=False, fo=None):
         except Exception:
             continue
         for t, l in items[:15]:
-            r = C.reason_of(t)
-            if r not in KEEP and not re.search(r"(?:upper|lower) circuit", t, re.I):
+            circ = re.search(r"(upper|lower) circuit", t, re.I)
+            r, sd = C.reason_of(t), C.side_of(t)
+            if circ:
+                sd = -1 if circ.group(1).lower() == "lower" else 1
+            if not circ and not ((sd < 0 and r in KEEP) or (sd > 0 and r in KEEP_UP)):
                 continue
-            sd = C.side_of(t)
-            if re.search(r"lower circuit", t, re.I):
-                sd = -1
-            elif re.search(r"upper circuit", t, re.I):
-                sd = 1
             for s in match(t)[:2]:
-                found.append({"key": "N:%s:%s" % (s, re.sub(r"\W+", "", t.lower())[:80]), "sym": s, "reason": r or "MOVE", "side": sd or -1,
-                              "head": t, "src": "news", "link": l})
+                found.append({"key": "N:%s:%s" % (s, re.sub(r"\W+", "", t.lower())[:80]), "sym": s, "reason": r or "MOVE", "side": sd,
+                              "head": t, "src": "news", "link": l, "circ": bool(circ)})
     out, report = [], []
     for x in found:
         k = x["key"]
@@ -693,6 +878,9 @@ def getj(path):
                  "an_dt": D40.strftime("%d-%b-%Y") + " 08:10:00"},
                 {"symbol": "PBFINTECH", "desc": "Action(s) taken or orders passed", "attchmntText": "IRDAI inspection observations and show cause notice received",
                  "an_dt": (D40 - dt.timedelta(days=20)).strftime("%d-%b-%Y") + " 18:00:00"}]
+    if "TCS" in path:
+        return [{"symbol": "TCS", "desc": "Bagging/Receiving of orders/contracts", "attchmntText": "TCS has secured an order worth Rs 2,000 crore from a European bank",
+                 "an_dt": (dt.date.fromisoformat(days[45]) - dt.timedelta(days=10)).strftime("%d-%b-%Y") + " 17:00:00"}]
     return []
 def get(url):
     if "EQUITY_L" in url:
@@ -711,8 +899,36 @@ L, J = C.report(shocks, base, tot, Cx)
 txt = "\n".join(L)
 print(txt)
 check("report: the falls by reason, the biggest falls, the warning filed first", "REGULATOR" in txt and "THE 15 BIGGEST FALLS" in txt and "A WARNING FILED FIRST" in txt)
+check("report: UP as well - the rises by reason, the 15 biggest rises, the order filed 10 days before TCS's jump", "▲ UP SHOCKS" in txt and "THE 15 BIGGEST RISES" in txt
+      and "GOOD NEWS FILED FIRST" in txt and "TCS +9.0% <-" in txt)
+check("report: year by year, up and down", "YEAR BY YEAR" in txt and "2025  ▲    1  ▼    1" in txt)
 check("circuits.json: per share and per reason", J["by_sym"]["PBFINTECH"][0]["reason"] == "REGULATOR" and J["by_reason"]["REGULATOR:-1"]["n"] == 1)
 json.dump(J, open(W.HIST, "w"))
+
+# a 1:1 bonus (opens at half the price and stays) is not a crash
+DB = {"BONUS": series({30: -0.5}), "NIFTY 50": DAY["NIFTY 50"]}
+DB["BONUS"][days[30]] = (DB["BONUS"][days[30]][3],) + DB["BONUS"][days[30]][1:]          # it opened at the new price
+check("a bonus / split day (opened -50% and stayed) is not counted as a shock", C.find(["BONUS"], DB, {})[0] == [])
+
+# the year before from NSE's own daily files (Kite not there): TESTSYM's old prices were half (a 1:1 bonus since) -> joined at the seam
+import io, zipfile, numpy as np, hist3y as Hh
+os.makedirs(os.path.join(T, "day"), exist_ok=True)
+t0 = [dt.datetime(2023, 1, 23 + i, tzinfo=C.IST).timestamp() for i in range(5)]
+np.savez(os.path.join(T, "day", "TESTSYM.npz"), ts=np.array(t0), o=np.full(5, 200.0), h=np.full(5, 202.0), l=np.full(5, 198.0), c=np.full(5, 200.0), v=np.full(5, 1e5))
+np.savez(os.path.join(T, "day", "NIFTY_50.npz"), ts=np.array(t0), o=np.full(5, 18000.0), h=np.full(5, 18100.0), l=np.full(5, 17900.0), c=np.full(5, 18000.0), v=np.zeros(5))
+def get3(url):
+    if "bhav.csv.zip" in url:
+        b = io.BytesIO(); z = zipfile.ZipFile(b, "w")
+        z.writestr("x.csv", "SYMBOL,SERIES,OPEN,HIGH,LOW,CLOSE,LAST,PREVCLOSE,TOTTRDQTY\nTESTSYM,EQ,100,101,99,100,100,100,50000\nOTHER,EQ,5,5,5,5,5,5,1\n"); z.close()
+        return b.getvalue()
+    if "ind_close_all" in url:
+        return b"Index Name,Index Date,Open Index Value,High Index Value,Low Index Value,Closing Index Value\nNifty 50,x,17900,18050,17850,18000\n"
+    return None
+C.extend_nse(["TESTSYM"], dt.date(2023, 1, 2), log=lambda m: None, get=get3)
+a = np.load(os.path.join(T, "day", "TESTSYM.npz")); nf = np.load(os.path.join(T, "day", "NIFTY_50.npz"))
+check("NSE files: TESTSYM taken back to 2 Jan 2023 (15 more days), the old prices put on today's scale (x2)",
+      len(a["ts"]) == 20 and abs(float(a["c"][0]) - 200) < 1 and dt.datetime.fromtimestamp(float(a["ts"].min()), C.IST).date() == dt.date(2023, 1, 2))
+check("NSE files: NIFTY 50 taken back too", len(nf["ts"]) == 20)
 
 # ---- SHOCK WATCH
 feed = {"q": []}
@@ -725,18 +941,24 @@ def get2(url):
 SENT = []
 W.run(SENT.append, get2, fo=syms)
 check("the first run only remembers (nothing sent)", SENT == [])
-feed["q"] = ["IRDAI issues show cause notice to Policybazaar over violations", "IRDAI releases annual report", "Infosys wins large deal in Europe"]
-out = W.run(SENT.append, get2, fo=syms, now=dt.datetime(2026, 11, 11, 10, 5, tzinfo=W.IST))
-for x in out:
+feed["q"] = ["IRDAI issues show cause notice to Policybazaar over violations", "IRDAI releases annual report", "Infosys wins large deal in Europe",
+             "Cochin Shipyard bags Rs 2,500 crore order from Indian Navy"]
+allout = W.run(SENT.append, get2, fo=syms + ["COCHINSHIP"], now=dt.datetime(2026, 11, 11, 10, 5, tzinfo=W.IST))
+for x in allout:
     print(x, "\n")
-check("one alert: PBFINTECH ▼ REGULATOR (the plain report and the Infosys deal are not regulator news)", len(out) == 1 and "PBFINTECH · ▼ REGULATOR" in out[0])
-check("it carries PBFINTECH's own past shock and the 3-year REGULATOR record", "own shocks in 3 years: 1" in out[0] and "REGULATOR news behind 1 F&O shocks" in out[0])
-check("a second pass: nothing again", W.run(None, get2, fo=syms) == [])
+out = [x for x in allout if "PBFINTECH" in x]
+up_big = [x for x in allout if "COCHINSHIP" in x]; up_small = [x for x in allout if "INFY" in x]
+check("▲ a Rs 2,500 crore order -> ⚠️ SHOCK WATCH COCHINSHIP ▲ ORDER (rings)", len(up_big) == 1 and up_big[0].startswith("⚠️ SHOCK WATCH · COCHINSHIP · ▲ ORDER"))
+check("▲ a deal story with no size -> 📰 SHOCK WATCH INFY (quiet, News topic)", len(up_small) == 1 and up_small[0].startswith("📰 SHOCK WATCH · INFY · ▲"))
+check("▼ PBFINTECH REGULATOR (the plain IRDAI report is not news)", len(out) == 1 and "PBFINTECH · ▼ REGULATOR" in out[0] and len(allout) == 3)
+check("it carries PBFINTECH's own past shock and the 3-year REGULATOR record", "own shocks since 2025: 1" in out[0] and "REGULATOR news behind 1 F&O shocks ▼ since 2025" in out[0])
+check("a second pass: nothing again", W.run(None, get2, fo=syms + ["COCHINSHIP"]) == [])
 m = W.matcher({"SBIN": ["SBI", "State Bank of India"], "HAL": ["HAL"]})
 check("names: 'SBI' and 'HAL' only as words in capitals ('Halol', 'hal' are not HAL)", m("RBI fines SBI Rs 2 crore") == ["SBIN"] and m("plant at Halol shut") == [] and m("HAL bags order") == ["HAL"])
 try:
     import alertword, tglanes
-    check("⚠️ SHOCK WATCH rings in GIR Box Picks", tglanes.lane(out[0]) == "critical" and alertword.tier(out[0]) != "read")
+    check("⚠️ SHOCK WATCH rings in GIR Box Picks (▼ and the big ▲)", all(tglanes.lane(x) == "critical" and alertword.tier(x) != "read" for x in out + up_big))
+    check("📰 SHOCK WATCH goes quiet to the News topic", tglanes.topic(up_small[0]) == "news" and alertword.tier(up_small[0]) == "read")
 except Exception as ex:
     check("routing check (%s)" % ex, False)
 shutil.rmtree(T)
@@ -744,24 +966,29 @@ print("P161 SHOCK DAYS TEST " + ("PASSED" if ok else "FAILED"))
 sys.exit(0 if ok else 1)
 PY_TEST
 cat > /tmp/p161_aw.py <<'PY_AW'
-import sys, re
+import sys
 p = sys.argv[1]
 s = open(p).read()
-if "SHOCK WATCH" in s:
-    print("alertword: already has SHOCK WATCH"); sys.exit(0)
-a = '    if H2.startswith("⚡ ENTER NOW"):'
-if a not in s:
-    print("alertword: anchor not found"); sys.exit(1)
-s = s.replace(a, '    if "SHOCK WATCH" in H2:                                    # patch 161: regulator / governance trouble on an F&O share - rings\n        return "move"\n' + a, 1)
+NEW = '    if "SHOCK WATCH" in H2:                                    # patch 161: ⚠️ rings (trouble / a big jump on an F&O share), 📰 is quiet\n        return "move" if H2.startswith("⚠️") else "read"\n'
+OLD = '    if "SHOCK WATCH" in H2:                                    # patch 161: regulator / governance trouble on an F&O share - rings\n        return "move"\n'
+if NEW in s:
+    print("alertword: SHOCK WATCH already set"); sys.exit(0)
+if OLD in s:
+    s = s.replace(OLD, NEW)
+else:
+    a = '    if H2.startswith("⚡ ENTER NOW"):'
+    if a not in s:
+        print("alertword: anchor not found"); sys.exit(1)
+    s = s.replace(a, NEW + a, 1)
 open(p, "w").write(s)
-print("alertword: SHOCK WATCH rings")
+print("alertword: ⚠️ SHOCK WATCH rings, 📰 SHOCK WATCH quiet")
 PY_AW
 echo "   circuits.py · shockwatch.py · p161test.py written"
 echo "== 2. the test (made-up data, nothing sent)"
 cd $D && python3 -m py_compile circuits.py shockwatch.py p161test.py || { echo "   does not compile - nothing set"; exit 1; }
 B=$D/alertword.py.bak$(date +%m%d%H%M%S); cp $D/alertword.py $B
 AW=$(python3 /tmp/p161_aw.py $D/alertword.py) || { echo "   $AW - alertword not changed, nothing set"; exit 1; }; echo "   $AW"
-if timeout 180 python3 p161test.py > /tmp/p161test.log 2>&1; then echo "   p161test.py passed (15 checks)"; else
+if timeout 180 python3 p161test.py > /tmp/p161test.log 2>&1; then echo "   p161test.py passed (23 checks)"; else
   echo "   TEST FAILED - undone:"; grep -E "FAIL|Error|error" /tmp/p161test.log | head -8 | sed 's/^/     /'
   cp $B $D/alertword.py; rm -f $D/circuits.py $D/shockwatch.py; exit 1; fi
 echo "== 3. the sources, on a real case (IndusInd Bank fell ~27% on 11 Mar 2025)"
@@ -782,8 +1009,8 @@ try:
 except Exception as ex:
     print("Google News: not reachable (%s)" % str(ex)[:80])
 PY
-echo "== 4. the shock days in the candles"
-timeout 600 nice -n 10 python3 circuits.py find 2>&1 | tail -12 | sed 's/^/   /'
+echo "== 4. the shock days in the candles now (before the year is added) - up and down, year by year"
+timeout 600 nice -n 10 python3 circuits.py find 2>&1 | tail -10 | sed 's/^/   /'
 echo "== 5. SHOCK WATCH: what it sees now (the first pass only remembers - nothing is sent today)"
 timeout 150 python3 shockwatch.py probe 2>&1 | head -12 | sed 's/^/   /'
 timeout 150 python3 shockwatch.py > /dev/null 2>&1
@@ -804,10 +1031,10 @@ OnCalendar=*-*-* *:0/5:30
 WantedBy=timers.target
 UNIT
 systemctl daemon-reload && systemctl enable --now gir-shockwatch.timer >/dev/null 2>&1 && echo "   ⚠️ SHOCK WATCH on: every 5 minutes, day and night -> GIR Box Picks"
-echo "== 6. the reasons for every shock day - started in the background"
+echo "== 6. in the background: the year before (Nov 2022 - Nov 2023, Kite or NSE's own files), then the reason for every shock day"
 systemctl stop gir-shocks 2>/dev/null; systemctl reset-failed gir-shocks 2>/dev/null
-systemd-run --unit=gir-shocks --nice=10 /bin/bash -c "cd /home/globalbot && set -a && source .env && set +a && cd $D && python3 circuits.py all >> data/h3/shocks.log 2>&1" >/dev/null 2>&1 \
-  && echo "   running (about 1 hour; it pauses in market hours). The report comes to the ⚙️ System topic when done." \
+systemd-run --unit=gir-shocks --nice=10 /bin/bash -c "cd /home/globalbot && set -a && source .env && set +a && cd $D && python3 circuits.py extend >> data/h3/shocks.log 2>&1; python3 circuits.py all >> data/h3/shocks.log 2>&1" >/dev/null 2>&1 \
+  && echo "   running (1-2 hours; it pauses in market hours, not on holidays). The report comes to the ⚙️ System topic when done." \
   && echo "   progress: tail -f $D/data/h3/shocks.log" || echo "   could not start - run: cd $D && python3 circuits.py all"
 echo
-echo "PATCH 161 APPLIED. Send Claude a screenshot of sections 3 to 6."
+echo "PATCH 161b APPLIED. Send Claude a screenshot of sections 3 to 6."
