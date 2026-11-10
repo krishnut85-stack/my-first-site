@@ -47,7 +47,7 @@ for x in "${LIVE[@]}"; do
   [ $lang = en ] && [ $done_en = 1 ] && continue; [ $lang = hi ] && [ $done_hi = 1 ] && continue
   echo "-- $n"
   timeout 90 nice -n 19 ffmpeg -nostdin -loglevel error -y -i "$s" -t 60 -vn -ac 1 -ar 16000 $T/a.wav || { echo "   could not record"; continue; }
-  for size in base small; do nice -n 19 $V/bin/python $T/stt.py $T/a.wav $lang $size 2>/dev/null || echo "   model $size failed"; done
+  for size in base small; do nice -n 19 $V/bin/python $T/stt.py $T/a.wav $lang $size 2>$T/stt_err.txt || { echo "   model $size failed:"; grep -v -i "warn" $T/stt_err.txt | tail -4 | cut -c1-200 | sed 's/^/      /'; }; done
   [ $lang = en ] && done_en=1; [ $lang = hi ] && done_hi=1
 done
 rm -f $T/a.wav
