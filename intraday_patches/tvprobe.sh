@@ -38,6 +38,8 @@ wav, lang, size = sys.argv[1], sys.argv[2], sys.argv[3]
 import wave, numpy as np
 w = wave.open(wav)                                   # read the 16 kHz mono recording directly (newer PyAV broke faster-whisper's file reader)
 audio = np.frombuffer(w.readframes(w.getnframes()), np.int16).astype(np.float32) / 32768.0
+lv = float(np.sqrt(np.mean(audio ** 2))) if len(audio) else 0.0
+print("   audio %.0f s · loudness %.3f%s" % (len(audio) / 16000.0, lv, "  <- SILENT (the channel was not speaking)" if lv < 0.005 else ""))
 t0 = time.time(); m = WhisperModel(size, device="cpu", compute_type="int8"); t1 = time.time()
 segs, info = m.transcribe(audio, language=lang, task="translate" if lang == "hi" else "transcribe", vad_filter=True, beam_size=1)
 txt = " ".join(s.text.strip() for s in segs); t2 = time.time()
