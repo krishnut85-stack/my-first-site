@@ -87,8 +87,7 @@ rep('''nW,ASND,FOC,ALANE,LC,ALLDAY,aNight()]); if(!force&&ck===drawAlerts.ck) re
     "ALERTS box: redrawn when a quiet alert comes")
 
 # 4 · the look
-CSS = '''
-/* patch 207: SECTORS short bars in columns · IMPORTANT one row a share · the ALERTS box tidy */
+CSS = '''/* patch 207: SECTORS short bars in columns · IMPORTANT one row a share · the ALERTS box tidy */
 #mk-don .sbc{columns:240px auto;column-gap:22px;padding:0 2px}
 #mk-don .sbc .sb{break-inside:avoid;grid-template-columns:minmax(0,1fr) 46px 52px;gap:6px;padding:2px 2px;font-size:11.5px}
 #mk-don .sbc .tr{height:7px;background:var(--panel2);border-radius:2px;overflow:hidden}#mk-don .sbc .tr::before{display:none}
@@ -114,8 +113,15 @@ body.vmk.topchart #idxside #abar:not(.lane) .dg{display:block;order:4;flex:1 1 1
 #abar .dgr:hover{background:#14202e}#abar .dgr .t{color:var(--dim);font-family:var(--mono)}#abar .dgr b{color:var(--hi)}#abar .dgr em{font-style:normal;color:var(--amber);font-size:9.5px}
 #abar .dgr .w{color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #abar .dgr:not(:has(em)){grid-template-columns:36px auto 12px minmax(0,1fr)}
-</style><link rel="preconnect"'''
-rep('''</style><link rel="preconnect"''', CSS, "the look")
+'''
+if "patch 207: SECTORS short bars" in s:
+    print("  home.html: the look - already in")
+else:                                                        # the CSS goes in before the page's last </style> in its head (any page)
+    hd = s.find("</head>"); i = s.rfind("</style>", 0, hd if hd > 0 else len(s))
+    if i < 0:
+        ERR.append("no </style> in the page")
+    else:
+        s = s[:i] + CSS + "\n" + s[i:]; print("  home.html: the look")
 
 if ERR:
     print("❌ " + " · ".join(ERR)); sys.exit(1)
