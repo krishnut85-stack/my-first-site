@@ -208,7 +208,7 @@ cat > $D/patch_169.py <<'PATCH_169_PY'
 import sys, os
 D = sys.argv[1] if len(sys.argv) > 1 else "/home/globalbot/intraday"
 E = {"alertword.py": ('    if H2.startswith("⚡ ENTER NOW"):', '    if "MORNING BRIEF" in H2:                                  # patch 169: the 08:30 brief rings\n        return "move"\n    if H2.startswith("⚡ ENTER NOW"):'),
-     "tglanes.py": ('CRIT_RE = re.compile(r"CRITICAL|', 'CRIT_RE = re.compile(r"MORNING BRIEF|CRITICAL|')}
+     "tglanes.py": ('CRIT_RE = re.compile(r"', 'CRIT_RE = re.compile(r"MORNING BRIEF|')}   # patch 169b: whatever the list starts with now
 for fn, (a, b) in E.items():
     p = os.path.join(D, fn); s = open(p, encoding="utf-8").read()
     if "MORNING BRIEF" in s:
