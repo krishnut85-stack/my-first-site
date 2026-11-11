@@ -30,12 +30,15 @@ new3 = '''    { let tw=el.querySelector(":scope>.mvtw"), bw=el.querySelector(":s
       if(bw._h!==body){ bw._h=body; bw.innerHTML=body; } } }'''
 old4 = '''<select onchange="wsSec(this.value)" title="a sector = its shares only">'''
 new4 = '''<select onchange="this.blur();wsSec(this.value)" title="a sector = its shares only">'''
-if "patch 191b" in s:
-    print("already in"); sys.exit(0)
-for o in (old, old2, old3, old4):
+done = 0
+for o, n in ((old, new), (old2, new2), (old3, new3), (old4, new4)):
+    if n in s:
+        continue                                            # this fix is already in (an earlier 191b)
     if s.count(o) != 1:
         print("anchor not found: " + o[:60]); sys.exit(1)
-s = s.replace(old, new).replace(old2, new2).replace(old3, new3).replace(old4, new4)
+    s = s.replace(o, n); done += 1
+if not done:
+    print("already in"); sys.exit(0)
 open(p, "w", encoding="utf-8").write(s); print("home.html: the search box closes when the share's tab opens · the ALL SECTORS list stays open")
 PY_PATCH
 python3 $W/p191b_patch.py $D || { cp $D/home.html.bak$TS $D/home.html; echo "❌ old page back"; exit 1; }
