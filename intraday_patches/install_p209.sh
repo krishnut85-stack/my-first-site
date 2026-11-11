@@ -4,6 +4,8 @@
 #   - 🚨 CRITICAL · SECTOR JUMP: 3+ shares of one group (sector / theme / fertiliser, sugar, defence-PSU, PSU banks, rail ...) move 1.5%+
 #     together in 15 min, beating the market -> rings at once, with the reason or "the reason follows", and the group's F&O shares
 #   - 🚨 CRITICAL · THE REASON: from the move, Google News (last hour) + the business wires every 60 s for 30 min -> the headline
+#   - ⚠ THE MONEY CAME FIRST: when the shares ran before the story was published (someone knew) - the early money often sells into
+#     the news (COROMANDEL: +9% then 5.5%): book part at the spike, trail the stop, do not chase
 #   - an F&O share alone 2.5%+ in 15 min / 3%+ on the day: hunted too (rings when 3%+, else quiet); the reason joins its 🔎 why line
 #   - POLICY LANE every 60 s: Cabinet / subsidy / duty / PLI / MSP / ban headlines -> the shares they touch, with their move now;
 #     a Cabinet decision or ₹5,000 cr+ rings (🚨 CRITICAL · POLICY), the rest goes quiet to the digest
@@ -165,6 +167,7 @@ class Hunter(object):
         self.day = None
         self.last_policy = 0.0
         self.wcache = (0.0, [])
+        self.day_mv, self.last_h, self.done = {}, None, {}
         self.state = {"reasons": {}, "day": None}
 
     # -- plumbing
@@ -314,8 +317,10 @@ class Hunter(object):
     def start(self, name, side, syms, now_t, kind, ring):
         if name in self.hunts or (kind == "one" and sum(1 for x in self.hunts.values() if x["kind"] == "one") >= MAX_ONE):
             return None
-        h = {"name": name, "side": side, "syms": syms, "t0": now_t, "next": now_t, "kind": kind, "ring": ring}
+        h = {"name": name, "side": side, "syms": syms, "t0": now_t, "next": now_t, "kind": kind, "ring": ring,
+             "mv0": {s: self.day_mv.get(s) for s in syms if self.day_mv.get(s) is not None}}
         self.hunts[name] = h
+        self.last_h = h
         return self.step(h, now_t, first=True)
 
     def step(self, h, now_t, first=False):
@@ -327,6 +332,7 @@ class Hunter(object):
             self.seen.add(self.key(hit[1]))
             self.hunts.pop(h["name"], None)
             self.remember(h, hit)
+            self.done[h["name"]] = h
             return hit
         if now_t - h["t0"] > HUNT_S:
             self.hunts.pop(h["name"], None)
@@ -385,6 +391,7 @@ class Hunter(object):
             day_mv = {s: v[1] for s, v in (j.get("q") or {}).items() if v and len(v) > 1 and v[1] is not None}
         except Exception:
             pass
+        self.day_mv = day_mv
         # 1 sector jumps
         for g, side, hit in self.jumps(mv, med) if mv else []:
             k = ("jump", g, side)
@@ -446,8 +453,15 @@ class Hunter(object):
         head = ("🚨 CRITICAL · THE REASON %s %s · %s" if ring else "📰 THE REASON %s %s · %s") % (ar, name.upper(), self.hm(now_t))
         mv = " · ".join("%s %+.1f%%" % (s, day_mv[s]) for s in syms[:6] if s in day_mv)
         lag = (now_t - hit[0]) / 60 if hit[0] else None
-        return "\n".join([head, self.reason_text(hit), ("today: " + mv) if mv else "",
-                          "found %s%s" % (self.hm(now_t), (" · %d min after it was published" % lag) if lag is not None and lag >= 0 else "")]).replace("\n\n", "\n")
+        h = self.done.get(name) or {}
+        first = ""
+        m0 = [v * side for v in (h.get("mv0") or {}).values() if v is not None]
+        if h and hit[0] and hit[0] >= h["t0"] - 120 and m0 and max(m0) >= 1.5:
+            # patch 209 (Rama: "before the news was officially published someone leaked it - that is why it went to 9% and settled at 5.5%")
+            first = ("⚠ THE MONEY CAME FIRST: the shares were already %s%.1f%% (best) before this was published - someone knew. "
+                     "News after a run is often sold into by the early money: book part at the spike, trail the stop, do not chase") % ("+" if side > 0 else "-", max(m0))
+        return "\n".join(x for x in [head, self.reason_text(hit), ("today: " + mv) if mv else "", first,
+                                      "found %s%s" % (self.hm(now_t), (" · %d min after it was published" % lag) if lag is not None and lag >= 0 else "")] if x)
 
 
 def run():
@@ -596,6 +610,13 @@ rea = [(t, m) for t, m in sent if "THE REASON" in m and "FERTILISER" in m]
 chk("then 🚨 CRITICAL · THE REASON ▲ FERTILISER when the story appears (within a minute)", rea and "CRITICAL · THE REASON ▲ FERTILISER" in rea[0][1] and rea[0][0] <= "14:18:30", rea)
 chk("… with the published time and how late it was found", rea and "published 14:17" in rea[0][1] and "found" in rea[0][1], rea)
 chk("… said once", len(rea) == 1, rea)
+chk("… with ⚠ THE MONEY CAME FIRST (the shares ran before the news was published - book part at the spike)", rea and "THE MONEY CAME FIRST" in rea[0][1] and "book part" in rea[0][1], rea)
+print("2b · the news first, the shares after: no 'money came first' warning")
+JUMPS.clear(); JUMPS.update({"COROMANDEL": 3.4, "CHAMBLFERT": 2.6, "DEEPAKFERT": 4.2, "RCF": 4.8, "GNFC": 2.2, "FACT": 5.1})
+EARLY = (D0 - dt.timedelta(minutes=20), "Govt may hike fertiliser subsidy for rabi, say sources", "Mint")
+sent, h = replay([EARLY])
+allm = "\n".join(m for t, m in sent)
+chk("a story out 20 min BEFORE the jump: the reason comes in the jump itself, no 'money came first'", "SECTOR JUMP" in allm and "hike fertiliser subsidy" in allm and "MONEY CAME FIRST" not in allm, [m for t, m in sent])
 print("3 · a market-wide rally is not a sector jump")
 JUMPS.clear(); JUMPS.update({s: 2.0 for s in BASEPX})
 sent, h = replay([])
