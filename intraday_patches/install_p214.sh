@@ -29,9 +29,9 @@ D = sys.argv[1] if len(sys.argv) > 1 else "/home/globalbot/intraday"
 ERR = []
 
 
-def rep(f, old, new, tag):
+def rep(f, old, new, tag, marker=None):
     p = os.path.join(D, f); s = open(p, encoding="utf-8").read()
-    if new in s:
+    if new in s or (marker and marker in s):                    # marker: a later patch (215 / 216) adds inside this block - still "in"
         print("  %s: %s - already in" % (f, tag)); return
     if s.count(old) != 1:
         ERR.append("%s: anchor '%s' found %d times" % (f, tag, s.count(old))); return
@@ -102,7 +102,7 @@ function ppStrip(){ const c=FCK&&FCK.s===FOC?FCK:null; const P=c&&c.push&&c.push
     ${P.kline?`<span class="k ${kc}">${esc(P.kline)}</span>`:`<span class="k dim">no clear push yet</span>`}
     <a onclick="PPO=!PPO;MKH('ppStrip').innerHTML=ppStrip()">${PPO?"fold ▴":"all 12 ▾"}</a>
     ${PPO?`<div class="ppl">${up.concat(dn,nt).map(x=>`<div><b class="${x.side>0?"pu":x.side<0?"pd":""}">${x.side>0?"▲":x.side<0?"▼":"·"} ${esc(x.k)}</b> ${esc(x.t)}</div>`).join("")}${P.rows.filter(x=>!x.on).length?`<div class="dim">quiet: ${P.rows.filter(x=>!x.on).map(x=>esc(x.k)).join(" · ")}</div>`:""}</div>`:""}</div>`; }
-function shareInfo(){''', "the strip and the movers' counts")
+function shareInfo(){''', "the strip and the movers' counts", marker="let PP={}, PPO=false;")
 rep("home.html", '''<small>WHO IS PUSHING · ${PW.n_on} of 12 seen${PW.kline?"":" · no clear push"}</small>''',
     '''<small>${PW.dir==="DOWN"?"WHO IS PULLING IT DOWN":"WHO IS PUSHING IT UP"} · ▲ ${PW.rows.filter(x=>x.on&&x.side>0).length} up · ▼ ${PW.rows.filter(x=>x.on&&x.side<0).length} down · ${PW.n_on} of 12 seen${PW.kline?"":" · no clear push"}</small>''',
     "the board says pushing up / pulling down")
@@ -116,7 +116,7 @@ rep("home.html", '''/* patch 211: alert rows that are links look the same */''',
 .pps>b{font:700 11px var(--ui);letter-spacing:.08em;color:var(--hi)}.pps .k{flex:1 1 100%;font-weight:600}.pps a{cursor:pointer;color:var(--amber);margin-left:auto}
 .pps .ppl{flex:1 1 100%;font-size:11.5px;line-height:1.5}.pps .ppl b{display:inline-block;min-width:100px;font-size:10.5px}
 i.ppb{font-style:normal;cursor:help;font-size:10px;margin-left:4px;white-space:nowrap}
-/* patch 211: alert rows that are links look the same */''', "the look")
+/* patch 211: alert rows that are links look the same */''', "the look", marker="/* patch 214: the push / pull strip */")
 if ERR:
     print("❌ " + " · ".join(ERR)); sys.exit(1)
 print("patch 214 in")
