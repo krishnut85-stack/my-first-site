@@ -158,7 +158,7 @@ print("DATAPATTNS +4.06%% (defence sector +1.0%%) · old: ▲ %d %s ▼ %d %s ·
 print("                                       new: ▲ %d %s ▼ %d %s · %s" % (len(un), sorted(un), len(dn), sorted(dn), pn["kind"]))
 chk("old reproduces the screen: FII ▲ and DII ▼ from the market's figure, ⚪ TIDE ONLY", "FII" in uo and "DII" in do_ and po["kind"] == "TIDE ONLY", (uo, do_, po["kind"]))
 chk("new: FII / DII off - DATAPATTNS has no FII / DII deal of its own", "FII" not in un and "DII" not in dn and not dn, (un, dn))
-chk("new: ▲ 5 pushing up = WRITERS · FUTURES · COMPANY · TIDE · ALGOS", un == {"WRITERS", "FUTURES", "COMPANY", "TIDE", "ALGOS"}, un)
+chk("new: ▲ pushing up = FUTURES · COMPANY · TIDE (+ WRITERS / ALGOS before patch 233)", {"FUTURES", "COMPANY", "TIDE"} <= un <= {"WRITERS", "FUTURES", "COMPANY", "TIDE", "ALGOS"}, un)
 chk("new: +4.06% vs its sector +1.0% is 🔵 OWN MOVE, not ⚪ TIDE ONLY", pn["kind"] == "OWN MOVE" and "🔵" in pn["kline"] and "+1.0%" in pn["kline"], pn["kline"])
 tr = next(r for r in pn["rows"] if r["k"] == "TIDE")
 chk("new: the market's FII / DII figure is a note on TIDE (all shares - not this one's)", "FII bought ₹2,500 cr" in tr["t"] and "not this one's" in tr["t"], tr["t"])
