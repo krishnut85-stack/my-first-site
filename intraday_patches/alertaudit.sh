@@ -83,5 +83,23 @@ for a in A:
     print("   %s %-11s %s %+5.1f%% in 15m · %+5.1f%% in 60m · best %+4.1f%% worst %+4.1f%% %s  %s" % (a["t"][:5], a["s"], a["sd"], m15 or 0, m60 or 0, best, worst,
                                                                                  "✅" if right else "❌", head(a["tx"])[:50]))
 print("   P1 right after 60 min: %d of %d" % (ok, n))
+t0 = getattr(alertword, "_tier0", None)                      # patch 225: the calls THE VOTE turned down to P2 - were they wrong?
+if t0:
+    ok2 = n2 = 0
+    print("=== the P1 calls THE VOTE turned down to P2 (patch 225): were they wrong?")
+    for a in A:
+        if a["tr"] == "act" or t0(a["tx"]) != "act" or a["sd"] not in ("CE", "PE") or not a["s"]:
+            continue
+        C = (ch.get(a["s"]) or {}).get("c") or []
+        i = (mins(a["t"]) - 555) // 5
+        if not (0 <= i < len(C)) or not C[i]:
+            continue
+        d = 1 if a["sd"] == "CE" else -1
+        j = min(len(C) - 1, i + 12)
+        m60 = ((C[j] / C[i] - 1) * 100 * d) if C[j] else None
+        n2 += 1; right = m60 is not None and m60 > 0.3; ok2 += right
+        vl = next((x.strip() for x in a["tx"].split("\n") if "⚖ VOTE" in x), "")
+        print("   %s %-11s %s %+5.1f%% in 60m %s  %s" % (a["t"][:5], a["s"], a["sd"], m60 or 0, "would have been right" if right else "✔ the vote was right", vl[:60]))
+    print("   voted down: %d calls · %d would have been right · %d the vote saved you from" % (n2, ok2, n2 - ok2))
 PY
 echo "=== done - nothing was changed"
