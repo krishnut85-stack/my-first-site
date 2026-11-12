@@ -21,8 +21,7 @@ sound) and the page, with a line "🔕 no ring - why".
                (near / at the band / band widened) · GIR's own
                alarms (feed / socket / service down, AI credit) · market-wide alerts (no share)
   1 one ring a share every 15 min - later alerts on that share in the 15 min come without sound
-  2 YOUR RULE rings when it agrees with a GIR alert on the share (same side, within 15 min), or when it is the first of your rules on the
-    share in 30 min
+  2 YOUR RULE rings only when it agrees with a GIR alert on the share (same side, within 15 min) - patch 229
   3 the contradiction guard - the other way on a share within 30 min of a ring: no sound, unless a 5-min candle confirms the turn (closed its
     way, 0.5%+ from the price at that ring) -> it rings with "⚠ REVERSAL - at HH:MM you got ▲"
 The rings are kept in data/ringgov.db (every GIR process shares it)."""
@@ -136,9 +135,7 @@ def gate(text, tr, now=None, px=None, candles=None):
             last_yr = next((r for r in R if r[4] and t - r[0] <= YR_S), None)
             if agree:
                 return ring(text.rstrip("\n") + "\n✔ agrees with GIR's %s at %s" % (agree[2], _hm(agree[0])))
-            if not last_yr:
-                return ring(text)
-            return _quiet(text, "your rules already rang on %s at %s (one ring in 30 min unless it agrees with a GIR alert)" % (sym, _hm(last_yr[0])))
+            return _quiet(text, "your rule - it rings when it agrees with a GIR alert on %s (none the same way in the last 15 min)" % sym)   # patch 229
         # 1 one ring a share every 15 min
         last = next((r for r in R if t - r[0] <= SHARE_S), None)
         if last:
@@ -220,14 +217,14 @@ t1, s1 = g("🟢 GO · SWIGGY ▲ CE · 10:00\nBUY: 300 CE ₹8", at(10, 0), 300
 chk("P1 calls ring every time (SWIGGY 10:00 and 10:02)", not s1 and not s2)
 t, s = g("📄 MARKET NEWS · MARKET · The Times of India 04:32", at(10, 5))
 chk("a market-wide alert (no share) rings as before", not s)
-print("3 · YOUR RULE rings when it agrees, else once in 30 min")
+print("3 · YOUR RULE rings only when it agrees with a GIR alert (patch 229)")
 y1 = g('📒 YOUR RULE "roof breaking - writers running" · SBILIFE ₹1805.3 +2.2% · 10:00\n→ CE', at(10, 0), 1805.3)
 y2 = g('📒 YOUR RULE "big money buying futures" · SBILIFE ₹1808 +2.4% · 10:10\n→ CE', at(10, 10), 1808)
 p2 = g("🚨 CRITICAL · PUSH STARTED ▲ SBILIFE · 10:16", at(10, 16), 1812)
 y3 = g('📒 YOUR RULE "roof breaking - writers running" · SBILIFE ₹1815 +2.8% · 10:20\n→ CE', at(10, 20), 1815)
-chk("the first YOUR RULE on SBILIFE rings", not y1[1], y1)
-chk("the second 10 min later (nothing new from GIR): silent", y2[1] and "your rules already rang on SBILIFE at 10:00" in y2[0], y2)
-chk("... a GIR alert on SBILIFE at 10:16 (16 min after the last ring) rings", not p2[1], p2)
+chk("a YOUR RULE on SBILIFE with no GIR alert there: silent (patch 229 - it rings only when it agrees)", y1[1] and "it rings when it agrees with a GIR alert on SBILIFE" in y1[0], y1)
+chk("the second 10 min later: silent too", y2[1], y2)
+chk("... GIR's own alert on SBILIFE at 10:16 rings (nothing rang there before)", not p2[1], p2)
 p3 = g("🧩 LONG BUILD-UP ▲ SBILIFE ₹1816 +2.9% · 10:21\n▶ WATCH CE 1820", at(10, 21), 1816)
 G_ = G._db(); G_.execute("insert into rings values (?, 'SBILIFE', 1, '🧩', 1816, 0)", (at(10, 21).timestamp(),)); G_.commit(); G_.close()   # a GIR alert on SBILIFE rang (e.g. P2 critical)
 y4 = g('📒 YOUR RULE "big money buying futures" · SBILIFE ₹1818 +3.0% · 10:24\n→ CE', at(10, 24), 1818)
