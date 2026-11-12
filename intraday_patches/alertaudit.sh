@@ -21,10 +21,11 @@ kind = lambda tx: (head(tx).split() or ["?"])[0]
 A = []
 for t, s, sd, tx in rows:
     tr = alertword.tier(tx)
-    A.append({"t": t, "s": s, "sd": sd, "tx": tx, "tr": tr, "ring": tr != "read", "k": kind(tx),
+    A.append({"t": t, "s": s, "sd": sd, "tx": tx, "tr": tr, "ring": tr != "read" and "🔕 no ring" not in tx, "k": kind(tx),   # patch 228: 🔕 = held by the ring rules
               "tn": bool(tglanes and tglanes.trade_now(tx)), "crit": "CRITICAL" in head(tx)})
 R = [a for a in A if a["ring"]]
 print("=== %s · %d alerts · %d RANG your phone · %d quiet (page + digest)" % (day, len(A), len(R), len(A) - len(R)))
+print("   held by the ring rules (🔕, sent without sound): %d" % sum(1 for a in A if "🔕 no ring" in a["tx"]))
 print("   by level: P1 act %d · P2 move %d · know %d · quiet %d" % tuple(sum(1 for a in A if a["tr"] == x) for x in ("act", "move", "know", "read")))
 mk = [a for a in R if "09:15" <= a["t"] < "15:30"]
 print("   rang in market hours: %d = one every %.1f min" % (len(mk), 375 / max(1, len(mk))))
