@@ -79,8 +79,11 @@ tp = os.path.join(D, "p215test.py")                                  # GIR's own
 if os.path.exists(tp):
     ts = open(tp, encoding="utf-8").read()
     t2 = ts.replace('"news 11-12 07:05: LIC makes the cut', '"news (found by the hunt, 07:05): LIC makes the cut')
+    if "newsalert.py" not in t2:                                     # the test's made-up news must not meet the server's real name matcher
+        t2 = t2.replace('open(os.path.join(T, "newsroom.py"), "w")',
+                        'open(os.path.join(T, "newsalert.py"), "w").write("def about_it(sym, h, src=\\"\\", name=\\"\\"):\\n    return True\\n")   # patch 234: a stand-in\nopen(os.path.join(T, "newsroom.py"), "w")', 1)
     if t2 != ts:
-        open(tp, "w", encoding="utf-8").write(t2); print("  p215test.py: its LICI news line has no fixed date (patch 234 reads the age)")
+        open(tp, "w", encoding="utf-8").write(t2); print("  p215test.py: no fixed news date · its own stand-in name matcher (patch 234)")
 
 print("patch 234 in")
 PY_PATCH
@@ -145,7 +148,14 @@ python3 $W/p234_patch.py $D || back
 cd $D && python3 -m py_compile pushwho.py || back
 echo "=== test: COMPANY news (DATAPATTNS 12 Nov) + the server's real name matcher"
 python3 $W/p234test.py $D || back
-if [ -f $D/p215test.py ]; then python3 $D/p215test.py $D 2>&1 | tail -1; python3 $D/p215test.py $D >/dev/null 2>&1 || back; fi
+if [ -f $D/p215test.py ]; then python3 $D/p215test.py $D 2>&1 | grep -E "❌|passed"; python3 $D/p215test.py $D >/dev/null 2>&1 || back; fi
+echo "=== for information: how the real name matcher reads an index-inclusion headline"
+cd $D && python3 -c "
+import sys; sys.path.insert(0, '/home/globalbot/intraday')
+import newsalert as N
+for s, h in (('LICI', 'LIC makes the cut in the MSCI Global Standard Index'), ('POLICYBZR', 'IRDAI insurance overhaul pushes PB Fintech to non-insurance services')):
+    print('   %-10s %-70s -> %s' % (s, h[:70], N.about_it(s, h)))
+" 2>&1 | head -4
 echo "=== this server's 218 shares: COMPANY now (before: shown on 135)"
 cd $D && timeout 300 python3 - <<'PY'
 import sys, json, collections
