@@ -1,27 +1,28 @@
 #!/bin/bash
 # PATCH 215 - PUSH / PULL STARTED (Rama, 12 Nov: "first we need an alert immediately if someone is trying to pull or push, then I select the
-#   share and I see the list" · "only F&O stocks, not any other" · "test them for shares going up and coming down - both are important").
-#   - 🚨 PUSH STARTED ▲ / 🚨 PULL STARTED ▼ (every 15 s, F&O shares only): a share moving 0.7%+ in 15 min (or crossing 2%) with 3+ forces behind
-#     it - at least one of them money (futures, option writers, FII, DII, promoter, index funds) - and at most one against. One line a force,
-#     ▲ / ▼ counted, the kind (🟢 can last / 🟠 fast). Once a share a side; again when 2+ more forces join. Max 25 rings a day.
+#   share and I see the list" · "only F&O stocks, not any other" · "test them with sample data and simulate them - up and down").
+#   - 🚨 PUSH STARTED ▲ / 🚨 PULL STARTED ▼ (every 15 s, F&O shares only): a share moving 0.7%+ in 15 min (or crossing 2%) with 3+ forces
+#     behind it including money (futures, option writers, FII, DII, promoter, index funds) - or 2 money forces - and at most one against.
+#     One line a force, ▲ / ▼ counted, the kind (🟢 can last / 🟠 fast). Once a share a side; again when 2+ more forces join. Max 25 rings a day.
 #   - F&O MOVERS → 🧲 PUSH · PULL: the F&O shares being pushed up / pulled down, the most forces first, ▲ UP / ▼ DOWN pick a side, tap = the
 #     share's screen with the full list at the top
-#   - SECTOR JUMP names only F&O shares (others counted as "N more shares of the group (not F&O)") and needs an F&O share moving 1%+
-#   Tested: 28 checks (up and down: new money, forced out, tide, index exclusion, promoter pledge, regulator, F&O only, no false alarms).
-#   Restarts only the news hunt; the page needs no restart - safe any time. Needs patch 214.
+#   - SECTOR JUMP names only F&O shares (others counted) and needs an F&O share moving 1%+
+#   - PROFIT BOOKING / SHORT COVERING (patch 213): a flat top / bottom counts as fresh until it turns (HDFCBANK in the simulation)
+#   Tested here and again on the server: 30 push / pull checks, 11 profit-booking checks, 18 news-hunt checks, and ONE FULL SIMULATED DAY
+#   (09:15-15:30, 9 shares up and down, 16 checks). Restarts only the news hunt; the page needs no restart - safe any time. Needs patch 214.
 set -u
 D=/home/globalbot/intraday; TS=$(date +%m%d%H%M%S); W=$(mktemp -d)
 grep -q "patch 214" $D/home.html && [ -f $D/pbook.py ] || { echo "patches 213 and 214 first"; exit 1; }
-for f in newshunt.py home.html; do cp $D/$f $D/$f.bak$TS; done
-back(){ for f in newshunt.py home.html; do cp $D/$f.bak$TS $D/$f; done; rm -f $D/pushalert.py; systemctl restart gir-newshunt; echo "❌ old files back - nothing changed"; exit 1; }
+for f in newshunt.py home.html pbook.py; do cp $D/$f $D/$f.bak$TS; done
+back(){ for f in newshunt.py home.html pbook.py; do cp $D/$f.bak$TS $D/$f; done; rm -f $D/pushalert.py; systemctl restart gir-newshunt; echo "❌ old files back - nothing changed"; exit 1; }
 cat > $D/pushalert.py <<'PY_PA'
 #!/usr/bin/env python3
 """pushalert.py - patch 215: PUSH / PULL STARTED - the moment someone starts pushing a share up or pulling it down (Rama, 12 Nov: "first we
 need an alert immediately if someone is trying to pull or push, then I select the share and I see the list"). Runs inside the news hunt
 (every 15 s, the live prices) - F&O shares only:
   THE SCREEN  an F&O share moving 0.7%+ in 15 min (beating the market by 0.5%+), or crossing 2% on the day for the first time
-  THE CHECK   who is behind it (pushwho - the 12 pushers): 3+ forces on the move's side, at least one of them MONEY (futures, option writers,
-              FII, DII, promoter, index funds), and at most one force against
+  THE CHECK   who is behind it (pushwho - the 12 pushers): 3+ forces on the move's side with at least one of them MONEY (futures, option
+              writers, FII, DII, promoter, index funds) - or 2 money forces - and at most one force against
   -> 🚨 PUSH STARTED ▲ SYM / 🚨 PULL STARTED ▼ SYM: the move in 15 min · ▲ who pushes up · ▼ who pulls down · the kind of push (🟢 new money
      can last · 🟠 forced out is fast) - tap it: the share's screen, the full list at the top
   once a share a side a day; again only when 2+ more forces join (it got stronger); at most 25 a day ring, the rest are quiet lines"""
@@ -40,8 +41,9 @@ def judge(p):
     if not d:
         return None
     mine, them = (up, dn) if d > 0 else (dn, up)
-    if len(mine) < MIN_F or len(them) > MAX_AGAINST or not any(r["k"] in MONEY for r in mine):
-        return None
+    money = sum(1 for r in mine if r["k"] in MONEY)
+    if len(them) > MAX_AGAINST or not money or (len(mine) < MIN_F and money < 2):
+        return None                                                # 3+ forces with money behind them, or 2 money forces (patch 215: HDFCBANK)
     return d, up, dn
 
 
@@ -119,6 +121,160 @@ def tick(now, mv15, day_mv, med=0.0, fo=None, read=None):
         out.append(t)
     return out
 PY_PA
+cat > $D/pbook.py <<'PY_PB'
+#!/usr/bin/env python3
+"""pbook.py - patch 213: PROFIT BOOKING - AT THE MOMENT IT STARTS (Rama, 12 Nov: "give me a profit booking alert - the moment the profit
+booking started, not after; then it is of no use" · COROMANDEL 11 Nov: +9% on the subsidy news, the early money sold into it, +5.5% at the close).
+Runs inside the news hunt (every 15 s, the live prices). For every F&O share that ran 2.5%+ today (1.5%+ when GIR told you to act on it):
+  THE START   the price turns down from a FRESH high (made or touched within the last 10 min - a flat top counts until it turns): 8% of the day's move given back (at least 0.5%) when the
+              money proves it (futures OI falling / a volume burst), 12% with only a roof forming - the first leg of a give-back, not its end
+  THE PROOF   at least one of: the futures OI falling since the high (longs booking) · this 5 minutes' volume 1.5x+ the day's normal
+              (real selling, not a pause) · call writers building a roof just above (the desk) · or the give-back already 20%+ of the move
+  -> 🚨 PROFIT BOOKING ▼ SYM (🚨 CRITICAL when GIR told you to act on it, or the move was 4%+): was / now / how much given back in how many
+     minutes · who is selling · what to do with a CE (book part, the stop that keeps half the move)
+  the mirror for a fall: 🚨 SHORT COVERING ▲ SYM - the fall being bought back (book part of a PE)
+  once a share a side; again only after a NEW high (low) 0.3% beyond the one it was said at, and 30 min apart"""
+import os, re, json, time, sqlite3, datetime as dt
+
+BASE = os.path.dirname(os.path.abspath(__file__))
+IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
+RUN, RUN_ACT, EARLY, START, START_MIN, STRONG, FRESH_S, GAP_S = 2.5, 1.5, 0.08, 0.12, 0.5, 0.20, 600, 1800
+ST = {"day": None, "s": {}}
+_F = {}
+
+
+def _json(name, ttl):
+    t, v = _F.get(name, (0.0, None))
+    if v is not None and time.time() - t < ttl:
+        return v
+    try:
+        v = json.load(open(os.path.join(BASE, name)))
+    except Exception:
+        v = {}
+    _F[name] = (time.time(), v)
+    return v
+
+
+def fut_oi(sym):
+    """the futures OI % change today (the engine's live reading), None when not known"""
+    f = next((x for x in _json("dash_state.json", 10).get("fo_paths") or [] if x.get("s") == sym), None)
+    return f.get("oi") if f else None
+
+
+def vol_x(sym):
+    """this 5-min candle's volume vs the day's earlier candles (1.0 = normal), and the day's VWAP"""
+    c = (_json("charts.json", 20) or {}).get(sym) or {}
+    v = [x for x in (c.get("v") or []) if x]
+    vw = c.get("vw")
+    if len(v) < 4:
+        return None, vw if isinstance(vw, (int, float)) else None
+    base = sorted(v[:-1])[len(v[:-1]) // 2] or 1
+    return v[-1] / base, (vw if isinstance(vw, (int, float)) else None)
+
+
+def roof_forming(sym, side):
+    wl = ((((_json(os.path.join("data", "desk.json"), 20).get("shares") or {}).get(sym) or {}).get("lines") or {}).get("walls") or "")
+    m = re.search(r"%s forming at ([\d.]+)" % ("roof" if side > 0 else "floor"), wl)
+    return m.group(1) if m else None
+
+
+def acted(day):
+    """the shares GIR told you to act on today (GO, ENTER NOW, BOX PICK, TRIAL ENTRY, 🟠 OI)"""
+    t, v = _F.get("_acted", (0.0, None))
+    if v is not None and time.time() - t < 60:
+        return v
+    v = set()
+    try:
+        c = sqlite3.connect("file:%s?mode=ro" % os.path.join(BASE, "tomorrow.db"), uri=True, timeout=3)
+        for s, tx in c.execute("select sym, text from alerts where day=?", (day,)):
+            if s and re.search(r"🟢 GO|ENTER NOW|BOX PICK|TRIAL ENTRY|🟠 OI|OPENING CALL", tx or ""):
+                v.add(s)
+        c.close()
+    except Exception:
+        pass
+    _F["_acted"] = (time.time(), v)
+    return v
+
+
+def inr(x):
+    return "{:,.1f}".format(x) if x < 1000 else "{:,.0f}".format(x)
+
+
+def tick(now, ltp, chg, fo=None, act=None):
+    """now (IST datetime) · ltp {sym: price} · chg {sym: day %} -> [alert texts]"""
+    day = str(now.date())
+    if ST["day"] != day:
+        ST.update({"day": day, "s": {}})
+    hm = now.strftime("%H:%M")
+    if not ("09:20" <= hm <= "15:25"):
+        return []
+    t = now.timestamp()
+    act = act if act is not None else acted(day)
+    out = []
+    for s, px in ltp.items():
+        c = chg.get(s)
+        if c is None or not px or (fo and s not in fo):
+            continue
+        pc = px / (1 + c / 100.0)
+        if s not in ST["s"]:                                       # first sight (a restart mid-day): the day's high / low so far, as old
+            ch_ = (_json("charts.json", 20) or {}).get(s) or {}
+            hs, ls = [x for x in (ch_.get("h") or []) if x], [x for x in (ch_.get("l") or []) if x]
+            ST["s"][s] = {"hi": max([px] + hs), "t_hi": t - (FRESH_S + 1 if hs and max(hs) > px else 0), "oi_hi": None,
+                          "lo": min([px] + ls), "t_lo": t - (FRESH_S + 1 if ls and min(ls) < px else 0), "oi_lo": None, "said": {}}
+        st = ST["s"][s]
+        for side in (1, -1):
+            k_, tk = ("hi", "t_hi") if side > 0 else ("lo", "t_lo")
+            if (px > st[k_]) if side > 0 else (px < st[k_]):
+                st[k_], st[tk], st["oi_" + k_] = px, t, fut_oi(s)
+            elif abs(px / st[k_] - 1) * 100 <= 0.15:
+                st[tk] = t                                         # still at the high (low): a flat top / bottom is fresh until it turns
+            ext = st[k_]
+            move = (ext / pc - 1) * 100 * side                     # the day's move at its best, its way
+            need = RUN_ACT if s in act else RUN
+            if move < need:
+                continue
+            said = st["said"].get(side)
+            if said and ((ext <= said["at"] * 1.003) if side > 0 else (ext >= said["at"] * 0.997)):
+                continue                                           # said already - again only after a new extreme 0.3% beyond
+            if said and t - said["t"] < GAP_S:
+                continue
+            back = (ext - px) / ext * 100 * side                   # how far it came back from the extreme, %
+            frac = back / move if move else 0
+            if back < max(START_MIN, EARLY * move) or t - st[tk] > FRESH_S:
+                continue                                           # not started yet - or the extreme is stale (a slow drift, not booking)
+            proof, hard = [], False
+            o0, o1 = st["oi_" + k_], fut_oi(s)
+            if o0 is not None and o1 is not None and o1 < o0 - 0.3:
+                proof.append("futures OI falling %+.1f%% → %+.1f%% (%s booking)" % (o0, o1, "longs" if side > 0 else "shorts")); hard = True
+            vx, vw = vol_x(s)
+            if vx and vx >= 1.5:
+                proof.append("volume %.1fx normal this 5 min (real %s)" % (vx, "selling" if side > 0 else "buying")); hard = True
+            rf = roof_forming(s, side)
+            if rf:
+                proof.append("%s writers building a %s at %s" % ("call" if side > 0 else "put", "roof" if side > 0 else "floor", rf))
+            if frac >= STRONG:
+                proof.append("already %.0f%% of the move given back" % (100 * frac))
+            if not proof or (not hard and back < max(START_MIN, START * move)):
+                continue                                           # the money proof (OI / volume) lets it ring at 8% given back, else 12%
+            st["said"][side] = {"at": ext, "t": t}
+            mins = max(1, int(round((t - st[tk]) / 60)))
+            keep = pc * (1 + side * move / 200.0)                   # the stop that keeps half the move
+            crit = s in act or move >= 4
+            if side > 0:
+                head = "🚨 %sPROFIT BOOKING ▼ %s · %s" % ("CRITICAL · " if crit else "", s, hm)
+                what = "holding a CE: book part NOW, keep the rest with a stop at ₹%s (keeps half the move)%s · not a PE by itself" % (
+                    inr(keep), (" · the day's VWAP ₹%s" % inr(vw)) if vw else "")
+            else:
+                head = "🚨 %sSHORT COVERING ▲ %s · %s" % ("CRITICAL · " if crit else "", s, hm)
+                what = "holding a PE: book part NOW, keep the rest with a stop at ₹%s (keeps half the fall)%s · not a CE by itself" % (
+                    inr(keep), (" · the day's VWAP ₹%s" % inr(vw)) if vw else "")
+            out.append("\n".join([head,
+                                  "was %+.1f%% (₹%s) %d min ago · now %+.1f%% (₹%s) · %.0f%% of the %s given back" % (
+                                      move * side, inr(ext), mins, c, inr(px), 100 * frac, "rise" if side > 0 else "fall"),
+                                  "who: " + " · ".join(proof),
+                                  what]))
+    return out
+PY_PB
 cat > $D/p215test.py <<'PY_T'
 #!/usr/bin/env python3
 """p215test.py - patch 215's own test: WHO IS PUSHING UP / PULLING DOWN and PUSH / PULL STARTED, simulated for shares going UP and coming
@@ -244,10 +400,264 @@ chk("2 forces only: no alert", A.judge(mk("UP", ["FUTURES", "TIDE"], [])) is Non
 chk("3 forces but no money (company · tide · algos): no alert", A.judge(mk("UP", ["COMPANY", "TIDE", "ALGOS"], [])) is None)
 chk("3 up but 2 against: no alert (a fight, not a push)", A.judge(mk("UP", ["FUTURES", "FII", "TIDE"], ["REGULATOR", "DII"])) is None)
 chk("3 down with money: a pull", (A.judge(mk("DOWN", [], ["FUTURES", "TIDE", "ALGOS"])) or [0])[0] == -1)
+chk("2 MONEY forces down (longs leaving + floor writers running): a pull", (A.judge(mk("DOWN", [], ["FUTURES", "WRITERS"])) or [0])[0] == -1)
+chk("1 money + 1 other: no alert", A.judge(mk("UP", ["FUTURES", "COMPANY"], [])) is None)
 shutil.rmtree(T, ignore_errors=True)
 print("PUSH / PULL test: %d of %d passed" % (sum(OK), len(OK)))
 sys.exit(0 if all(OK) else 1)
 PY_T
+cat > $D/p213test.py <<'PY_T3'
+#!/usr/bin/env python3
+"""p213test.py - patch 213's own test: PROFIT BOOKING replayed (made-up prices like COROMANDEL on 11 Nov) - nothing sent. python3 p213test.py DIR"""
+import os, sys, json, shutil, tempfile, datetime as dt
+SRC = os.path.abspath(sys.argv[1] if len(sys.argv) > 1 else ".")
+T = tempfile.mkdtemp(); os.makedirs(os.path.join(T, "data")); shutil.copy(os.path.join(SRC, "pbook.py"), T)
+sys.path.insert(0, T)
+import pbook as P
+P.BASE = T
+IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
+D0 = dt.datetime(2026, 11, 11, 14, 0, tzinfo=IST)
+OK = []
+def chk(n, c, g=""):
+    OK.append(bool(c)); print("  %s %s%s" % ("✅" if c else "❌", n, "" if c else "   got: %s" % str(g)[:500]))
+def run(path, oi_path=None, act=(), vol=None, minutes=40):
+    """path(m) -> day % at minute m after 14:00 ; oi_path(m) -> futures OI %"""
+    P.ST.update({"day": None, "s": {}}); P._F.clear()
+    out = []
+    for i in range(0, minutes * 4 + 1):
+        now = D0 + dt.timedelta(seconds=15 * i); m = i / 4.0
+        c = path(m); px = 1880 * (1 + c / 100)
+        json.dump({"fo_paths": [{"s": "COROMANDEL", "oi": oi_path(m) if oi_path else 6.0}]}, open(os.path.join(T, "dash_state.json"), "w"))
+        json.dump({"COROMANDEL": {"v": vol(m) if vol else [100] * 20, "vw": 1985.0}}, open(os.path.join(T, "charts.json"), "w"))
+        P._F.clear()
+        for msg in P.tick(now, {"COROMANDEL": px}, {"COROMANDEL": c}, act=set(act)):
+            out.append((now.strftime("%H:%M:%S"), c, msg))
+    return out
+# 1 · COROMANDEL: +5% at 14:00 -> +9% at 14:24 -> the early money sells: +7.5% by 14:32, futures OI falling from 14:25
+up = lambda m: 5 + 4 * min(m, 24) / 24 if m <= 24 else 9 - 1.5 * min(m - 24, 8) / 8
+oi = lambda m: 6.0 if m <= 25 else 6.0 - 0.15 * (m - 25)
+o = run(up, oi, act=["COROMANDEL"])
+chk("COROMANDEL: 🚨 CRITICAL · PROFIT BOOKING ▼ (GIR said act on it)", o and o[0][2].startswith("🚨 CRITICAL · PROFIT BOOKING ▼ COROMANDEL"), o)
+chk("… at the START: within 5 min of the +9% high, while it is still +8.2% or higher", o and o[0][0] <= "14:29:00" and o[0][1] >= 8.2, o[:1])
+chk("… says who is selling: futures OI falling (longs booking)", o and "futures OI falling" in o[0][2] and "longs booking" in o[0][2], o[:1])
+chk("… and what to do: book part of the CE, the stop that keeps half the move", o and "book part NOW" in o[0][2] and "stop at ₹" in o[0][2], o[:1])
+chk("… said once (not every 15 s)", len(o) == 1, [x[0] for x in o])
+# 2 · a pause without proof (OI steady, normal volume, a small dip) -> nothing
+pause = lambda m: 5 + 4 * min(m, 24) / 24 if m <= 24 else 9 - 0.9 * min(m - 24, 3) / 3
+o = run(pause)
+chk("a 0.9% pause off the high, OI steady, normal volume: no alert (not booking yet)", o == [], o)
+# 3 · no proof from OI but a volume burst -> alert
+o = run(up, None, vol=lambda m: [100] * 19 + ([260] if m > 25 else [100]))
+chk("the same give-back with 2.6x volume (OI unknown): alert, proof = volume", o and "volume 2.6x" in o[0][2], o)
+# 4 · a slow drift hours after the high (stale) -> nothing
+slow = lambda m: 9 - 2.0 * m / 40
+o = run(slow, lambda m: 6.0 - 0.05 * m)
+chk("a slow drift from an old high: no alert (that is not the start)", o == [], o)
+# 5 · a share up only 1.8% that GIR did not call: not watched
+small = lambda m: 1.0 + 0.8 * min(m, 20) / 20 if m <= 20 else 1.8 - 0.6 * (m - 20) / 10
+o = run(small, lambda m: 6.0 - 0.1 * m)
+chk("a 1.8% mover GIR did not call: not watched", o == [], o)
+# 5b · a flat top for 12 min, then the booking: the top is still fresh (it was touched until it turned)
+flat = lambda m: 5 + 4 * min(m, 12) / 12 if m <= 24 else 9 - 1.5 * min(m - 24, 8) / 8
+o = run(flat, lambda m: 6.0 if m <= 25 else 6.0 - 0.15 * (m - 25))
+chk("a flat top (14:12-14:24) then the booking: alert (the top was touched until it turned)", o and "PROFIT BOOKING" in o[0][2] and o[0][0] <= "14:29:00", o)
+# 6 · the mirror: a fall being bought back (short covering)
+down = lambda m: -4 - 3 * min(m, 20) / 20 if m <= 20 else -7 + 1.6 * min(m - 20, 8) / 8
+o = run(down, lambda m: 5.0 if m <= 21 else 5.0 - 0.2 * (m - 21))
+chk("the mirror: -7% then bought back -> 🚨 CRITICAL · SHORT COVERING ▲ (book part of a PE)", o and "SHORT COVERING ▲ COROMANDEL" in o[0][2] and "holding a PE" in o[0][2], o)
+shutil.rmtree(T, ignore_errors=True)
+print("PROFIT BOOKING test: %d of %d passed" % (sum(OK), len(OK)))
+sys.exit(0 if all(OK) else 1)
+PY_T3
+cat > $D/simday.py <<'PY_SIM'
+#!/usr/bin/env python3
+"""simday.py - ONE SIMULATED TRADING DAY through the real news hunt (newshunt.py + pbook.py + pushalert.py + pushwho.py, as on the server):
+09:15-15:30, a tick every 15 s, made-up prices / futures OI / news for 9 shares, every alert caught with its time, then checked.
+  python3 simday.py DIR      (DIR = newshunt.py, pbook.py, pushalert.py, pushwho.py, macro.py)"""
+import os, sys, json, html, shutil, sqlite3, tempfile, datetime as dt
+from email.utils import format_datetime
+SRC = os.path.abspath(sys.argv[1] if len(sys.argv) > 1 else ".")
+T = tempfile.mkdtemp(); os.makedirs(os.path.join(T, "data"))
+for f in ("newshunt.py", "pbook.py", "pushalert.py", "pushwho.py", "macro.py"):
+    shutil.copy(os.path.join(SRC, f), T)
+IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
+D0 = dt.datetime(2026, 11, 12, 9, 15, tzinfo=IST)
+FO = ["LICI", "PNB", "HDFCBANK", "COROMANDEL", "CHAMBLFERT", "ITC", "INFY", "SBIN", "AXISBANK", "ICICIBANK", "KOTAKBANK", "TCS", "WIPRO", "HCLTECH"]
+PC = {"LICI": 900, "PNB": 108, "HDFCBANK": 1700, "COROMANDEL": 1880, "CHAMBLFERT": 520, "ITC": 410, "INFY": 1500, "SBIN": 1000, "AXISBANK": 1150,
+      "ICICIBANK": 1300, "KOTAKBANK": 2000, "TCS": 3100, "WIPRO": 250, "HCLTECH": 1600, "DEEPAKFERT": 1400, "RCF": 160, "GNFC": 560, "FACT": 900}
+
+
+def lin(m, pts):
+    """piecewise-linear path: pts = [(minute, value)]"""
+    if m <= pts[0][0]:
+        return pts[0][1]
+    for (a, x), (b, y) in zip(pts, pts[1:]):
+        if a <= m <= b:
+            return x + (y - x) * (m - a) / (b - a)
+    return pts[-1][1]
+
+
+# minutes after 09:15 -> day % ; the stories of the day
+P = {"LICI": [(0, 0.2), (15, 0.5), (30, 2.0), (45, 2.9), (375, 3.0)],                       # 09:30-10:00 pushed up (MSCI, FII, longs)
+     "PNB": [(0, -0.2), (105, -0.4), (115, -1.4), (135, -3.4), (375, -3.3)],                   # 11:00-11:30 pulled down (RBI penalty, shorts)
+     "HDFCBANK": [(0, 0.1), (60, -0.3), (90, -3.1), (100, -3.1), (106, -2.5), (130, -1.9), (375, -2.0)],   # falls, then the fall is bought back
+     "COROMANDEL": [(0, 1.0), (175, 1.2), (193, 4.0), (249, 9.0), (265, 7.4), (375, 5.9)],     # 12:10 jump on the subsidy, 13:24 top, booked
+     "CHAMBLFERT": [(0, 0.3), (175, 0.4), (193, 2.8), (375, 3.0)],
+     "DEEPAKFERT": [(0, 0.5), (175, 0.6), (193, 4.6), (375, 6.0)], "RCF": [(0, 0.2), (175, 0.3), (193, 4.1), (375, 5.3)],
+     "GNFC": [(0, 0.1), (175, 0.2), (193, 2.4), (375, 1.5)], "FACT": [(0, 0.0), (175, 0.1), (193, 3.9), (375, 4.0)],
+     "ITC": [(0, 0.1), (375, 0.4)], "INFY": [(0, -0.2), (200, -1.4), (375, -1.5)],
+     "SBIN": [(0, 0.3), (375, 0.5)], "AXISBANK": [(0, 0.1), (375, 0.0)], "ICICIBANK": [(0, 0.2), (375, 0.3)], "KOTAKBANK": [(0, -0.1), (375, 0.1)],
+     "TCS": [(0, 0.0), (375, -0.2)], "WIPRO": [(0, 0.1), (375, 0.0)], "HCLTECH": [(0, 0.2), (375, 0.1)]}
+# the futures (bu, ₹ cr, OI %) through the day
+def fut(s, m):
+    if s == "LICI":
+        return ("LONG BUILD-UP", 30 + 4 * max(0, m - 15), 1.0 + 0.15 * max(0, min(m, 60) - 15)) if m >= 20 else ("", 0, 0.5)
+    if s == "PNB":
+        return ("SHORT BUILD-UP", 10 + 2.5 * max(0, m - 105), 0.5 + 0.3 * max(0, min(m, 140) - 105)) if m >= 108 else ("", 0, 0.2)
+    if s == "HDFCBANK":
+        if m < 62:
+            return ("", 0, 0.2)
+        if m <= 100:
+            return ("LONG UNWINDING", 40 + 6 * (m - 62), 0.2 - 0.08 * (m - 62))                # longs leaving on the fall
+        return ("SHORT BUILD-UP" if m <= 101 else "LONG UNWINDING", 260, -2.9 - 0.15 * min(m - 100, 20))   # then shorts cover: OI keeps falling
+    if s == "COROMANDEL":
+        if m < 178:
+            return ("", 0, 0.5)
+        oi = 0.5 + 0.12 * (min(m, 249) - 178)                                                 # longs building to the top
+        if m > 250:
+            oi -= 0.12 * (m - 250)                                                            # the early money leaving
+        return ("LONG BUILD-UP", 20 + 2 * (min(m, 249) - 178), oi)
+    return ("", 0, 0.0)
+
+
+NEWS = [(D0 + dt.timedelta(minutes=10), "LIC makes the cut in MSCI India index; passive inflows seen", "CNBC TV18"),
+        (D0 + dt.timedelta(minutes=104), "RBI imposes Rs 120 crore penalty on Punjab National Bank", "Economic Times"),
+        (D0 + dt.timedelta(minutes=196), "Cabinet approves Rs 62,370 crore subsidy on P&K fertilisers for rabi season", "Business Today")]
+open(os.path.join(T, "sectors.py"), "w").write('''
+def load():
+    return {"banks": "PNB HDFCBANK SBIN AXISBANK ICICIBANK KOTAKBANK".split(), "chemicals": "COROMANDEL CHAMBLFERT".split(),
+            "insurance": "LICI".split(), "fmcg": "ITC".split(), "it": "INFY TCS WIPRO HCLTECH".split()}
+def themes():
+    return {}
+''')
+open(os.path.join(T, "newsroom.py"), "w").write('''
+import json, os, time
+N = {"LICI": "Life Insurance Corporation of India", "PNB": "Punjab National Bank", "HDFCBANK": "HDFC Bank", "COROMANDEL": "Coromandel International",
+     "CHAMBLFERT": "Chambal Fertilisers and Chemicals", "ITC": "ITC Ltd", "INFY": "Infosys", "SBIN": "State Bank of India", "AXISBANK": "Axis Bank",
+     "ICICIBANK": "ICICI Bank", "KOTAKBANK": "Kotak Mahindra Bank", "TCS": "Tata Consultancy Services", "WIPRO": "Wipro", "HCLTECH": "HCL Technologies"}
+def fo_names():
+    return [(s, n, 1) for s, n in N.items()]
+def items_for(sym, hours, x):
+    now = json.load(open(os.path.join(os.path.dirname(__file__), "simnow.json")))["t"]
+    return [{"t": "08:30", "h": "LIC makes the cut in MSCI India index; passive inflows seen"}] if sym == "LICI" and now > 0 else []
+''')
+open(os.path.join(T, "whymove.py"), "w").write('''
+import json, os
+B = os.path.dirname(__file__)
+def explain(sym, now=None):
+    q = json.load(open(os.path.join(B, "quotes_live.json")))["q"]
+    t = json.load(open(os.path.join(B, "simnow.json")))["m"]
+    R = []
+    if sym == "PNB" and t >= 104:
+        R.append({"k": "filing", "t": "reg filing (Thu 11:00): RBI imposes Rs 120 crore penalty", "w": 4, "side": -1})
+    if sym == "COROMANDEL" and t >= 196:
+        R.append({"k": "news", "t": "news: Cabinet approves Rs 62,370 crore fertiliser subsidy", "w": 5, "side": 1})
+    if sym in ("HDFCBANK", "PNB") and q.get("PNB", [0, 0])[1] < -1:
+        R.append({"k": "sector", "t": "the banks sector is down - it moves with its sector", "w": 2, "side": -1})
+    return {"s": sym, "chg": (q.get(sym) or [None, None])[1], "reasons": R}
+''')
+open(os.path.join(T, "instflow.py"), "w").write('''
+def summary():
+    return {"w": {"5": {"fii_buy": [{"s": "LICI", "cr": 210.0, "who": "VANGUARD"}], "fii_sell": [{"s": "PNB", "cr": -95.0, "who": "MORGAN STANLEY"}],
+                        "dii_buy": [], "dii_sell": []}}, "deliv": {"day": "2026-11-11", "acc": [{"s": "LICI", "x": 2.1, "extra": 80.0}], "dist": [{"s": "PNB", "x": 1.9, "extra": 45.0}]}}
+''')
+json.dump({"ban": [], "shares": {"LICI": {"lines": {"walls": "calls 930 was BOUGHT (OI 1.0 L → 2.2 L, premium up) — a bet on UP, not a roof"}},
+                                 "PNB": {"lines": {"walls": "puts 104 was BOUGHT (OI 2.1 L → 4.0 L, premium up) — a bet on DOWN, not a floor"}},
+                                 "HDFCBANK": {"lines": {"walls": "floor at 1660 BREAKING: price through it, OI 9.0 L → 6.2 L (writers buying back), premium up"}},
+                                 "COROMANDEL": {"lines": {"walls": "calls 2000 was BOUGHT (OI 1.2 L → 2.6 L, premium up) — a bet on UP, not a roof"}}}},
+          open(os.path.join(T, "data", "desk.json"), "w"))
+c = sqlite3.connect(os.path.join(T, "tomorrow.db"))
+c.execute("create table alerts(day text, t text, kind text, sym text, side text, text text)")
+c.execute("insert into alerts values ('2026-11-12', '12:20', '🟢', 'COROMANDEL', 'CE', '🟢 GO · COROMANDEL ▲ CE · 12:20')")   # GIR told you to act on it
+c.commit(); c.close()
+c = sqlite3.connect(os.path.join(T, "filings.db"))
+c.execute("create table filings(id integer primary key autoincrement, key text unique, exch text, sym text, name text, t_exch int, t_seen int, kind text, side int, subject text, detail text, link text, verdict text, nums text, pushed int default 0)")
+c.commit(); c.close()
+sys.path.insert(0, T); os.chdir(T)
+import newshunt as N, pbook as PB, pushwho as PW
+
+
+def rss(now):
+    x = "".join("<item><title>%s - %s</title><link>http://x/%d</link><pubDate>%s</pubDate></item>" % (html.escape(h), src, i, format_datetime(t))
+                for i, (t, h, src) in enumerate(NEWS) if t <= now)
+    return "<rss><channel>%s</channel></rss>" % x
+
+
+clock = {"t": D0}
+sent = []
+h = N.Hunter(fetch=lambda url: rss(clock["t"]) if "news.google" in url else "<rss><channel></channel></rss>",
+             send=lambda m: sent.append((clock["t"].strftime("%H:%M:%S"), m)), now_f=lambda: clock["t"],
+             quotes_f=lambda: {s: PC[s] * (1 + lin((clock["t"] - D0).total_seconds() / 60, P[s]) / 100) for s in P}, wires=False)
+h.last_policy = 9e18                                                       # the policy lane is tested elsewhere (patch 209)
+for i in range(0, 375 * 4 + 1):
+    clock["t"] = now = D0 + dt.timedelta(seconds=15 * i)
+    m = i / 4.0
+    q = {s: [PC[s] * (1 + lin(m, P[s]) / 100), round(lin(m, P[s]), 3)] for s in P}
+    json.dump({"t": now.timestamp(), "q": q}, open("quotes_live.json", "w"))
+    json.dump({"t": now.timestamp(), "m": m}, open("simnow.json", "w"))
+    fps = []
+    for s in FO:
+        bu, cr, oi = fut(s, m)
+        fps.append({"s": s, "chg": q[s][1], "bu": bu, "cr": cr, "oi": round(oi, 2), "rv": 1.2})
+    json.dump({"day": "2026-11-12", "fo_paths": fps, "ctx": {}}, open("dash_state.json", "w"))
+    PW._F.clear(); PW._C.clear(); PB._F.clear()                         # the files change every tick (the real caches last 10-30 s)
+    h.tick(now)
+
+# ---------------------------------------------------------------- the checks
+OK = []
+
+
+def chk(name, cond, got=""):
+    OK.append(bool(cond)); print("  %s %s%s" % ("✅" if cond else "❌", name, "" if cond else "   got: %s" % str(got)[:400]))
+
+
+heads = [(t, x.split("\n")[0]) for t, x in sent]
+print("THE DAY'S ALERTS (%d):" % len(sent))
+for t, hd in heads:
+    print("   %s  %s" % (t, hd))
+first = lambda rx: next(((t, x) for t, x in sent if rx in x.split("\n")[0]), (None, ""))
+print("\nCHECKS")
+t, x = first("PUSH STARTED ▲ LICI")
+chk("LICI pushed up 09:30-10:00: 🚨 PUSH STARTED ▲ LICI, by 09:50 (while it runs, not after)", t and t <= "09:50:00", heads)
+chk("… lists ▲ who pushes up (FUTURES · FII · INDEX ...) and 🟢 NEW MONEY", "▲ FUTURES: long build-up" in x and "▲ FII:" in x and "▲ INDEX:" in x and "🟢 ▲ NEW MONEY" in x, x)
+t, x = first("PULL STARTED ▼ PNB")
+chk("PNB pulled down 11:00-11:30: 🚨 PULL STARTED ▼ PNB, by 11:20", t and "11:00:00" <= t <= "11:20:00", heads)
+chk("… lists ▼ who pulls down (FUTURES short build-up · FII sold · REGULATOR RBI penalty) and 🟢 NEW MONEY ▼", "▼ FUTURES: short build-up" in x and "▼ FII:" in x and "▼ REGULATOR:" in x and "▼ NEW MONEY" in x, x)
+t, x = first("PULL STARTED ▼ HDFCBANK")
+chk("HDFCBANK falls 10:15-10:45: 🚨 PULL STARTED ▼ HDFCBANK by 10:45, 🟠 FORCED OUT (2 money forces: longs leaving, the floor breaking)", t and t <= "10:45:00" and "FORCED OUT" in x and "▼ FUTURES: long unwinding" in x and "▼ WRITERS: put writers buying back" in x, (t, x))
+t, x = first("SHORT COVERING ▲ HDFCBANK")
+chk("… then the fall is bought back from 10:55: 🚨 SHORT COVERING ▲ HDFCBANK by 11:05 (book part of a PE)", t and "10:55:00" <= t <= "11:05:00" and "holding a PE" in x, (t, x))
+t, x = first("PUSH STARTED ▲ COROMANDEL")
+chk("COROMANDEL: 🚨 PUSH STARTED ▲ by 12:25 (longs + calls bought - before the news)", t and t <= "12:25:00", (t, x[:200]))
+t, x = first("SECTOR JUMP ▲")
+chk("12:10 the fertiliser shares jump: 🚨 SECTOR JUMP ▲ by 12:25", t and t <= "12:25:00", heads)
+chk("… names F&O shares only (COROMANDEL, CHAMBLFERT) - DEEPAKFERT / RCF / FACT only counted", x and "COROMANDEL" in x and "CHAMBLFERT" in x and not any(s in x for s in ("DEEPAKFERT", "RCF", "FACT", "GNFC")) and "not F&O" in x, x)
+t, x = first("THE REASON ▲")
+chk("the Cabinet subsidy (out 12:31): 🚨 THE REASON within 2 min, with ⚠ THE MONEY CAME FIRST", t and "12:31:00" <= t <= "12:33:00" and "MONEY CAME FIRST" in x, (t, x[:300]))
+t, x = first("PROFIT BOOKING ▼ COROMANDEL")
+chk("COROMANDEL tops +9% at 13:24, the early money sells (slowly, 0.1%/min): 🚨 CRITICAL · PROFIT BOOKING ▼ by 13:33, still above +8%", t and "13:24:00" < t <= "13:33:00" and x.startswith("🚨 CRITICAL") and "now +8." in x, (t, x[:300]))
+chk("… who is selling: futures OI falling (longs booking)", "futures OI falling" in x, x)
+names = " ".join(hd for t, hd in heads)
+chk("never a non-F&O share in an alert head (DEEPAKFERT · RCF · FACT · GNFC)", not any(s in names for s in ("DEEPAKFERT", "RCF", "FACT", "GNFC")), heads)
+chk("quiet shares stay quiet: no alert on ITC, INFY (a slow drift, nothing behind it), SBIN, TCS, WIPRO", not any(s in names for s in ("ITC", "INFY", "SBIN", "TCS", "WIPRO", "HCLTECH", "AXISBANK", "ICICIBANK", "KOTAKBANK")), heads)
+from collections import Counter
+dup = [k for k, n in Counter(hd.split(" · ")[0] + hd.split(" · ")[1] if " · " in hd else hd for t, hd in heads).items() if n > 1]
+chk("no alert said twice (each kind, each share, each side, once)", not [k for k, n in Counter(hd.rsplit(" · ", 1)[0] for t, hd in heads).items() if n > 1], heads)
+chk("nothing before 09:20 or after 15:25", all("09:20:00" <= t <= "15:25:59" for t, hd in heads), heads)
+shutil.rmtree(T, ignore_errors=True)
+print("SIMULATED DAY: %d of %d checks passed" % (sum(OK), len(OK)))
+sys.exit(0 if all(OK) else 1)
+PY_SIM
 cat > $W/p215b_patch.py <<'PY_B'
 #!/usr/bin/env python3
 """p215b_patch.py - PATCH 215b: the news hunt - SECTOR JUMP names F&O shares only (Rama: "only F&O stocks, not any other") and needs an F&O
@@ -348,15 +758,18 @@ if ERR:
 open(p, "w", encoding="utf-8").write(s)
 print("home.html: patch 215c in")
 PY_C
-cd $D && python3 -m py_compile pushalert.py || back
-echo "=== the test: shares going up and coming down (made-up files - nothing sent)"
-timeout 60 python3 p215test.py $D > /tmp/p215test.out 2>&1; R=$?; cat /tmp/p215test.out; [ $R = 0 ] || back
-echo "=== the news hunt"
+cd $D && python3 -m py_compile pushalert.py pbook.py || back
+echo "=== 1 · push / pull: shares going up and coming down (made-up files - nothing sent)"
+timeout 60 python3 p215test.py $D > /tmp/p215a.out 2>&1; R=$?; grep -E "^[0-9]|❌|passed" /tmp/p215a.out; [ $R = 0 ] || { cat /tmp/p215a.out | tail -20; back; }
+echo "=== 2 · profit booking / short covering"
+timeout 60 python3 p213test.py $D > /tmp/p215b.out 2>&1; R=$?; grep -E "❌|passed" /tmp/p215b.out; [ $R = 0 ] || back
+echo "=== 3 · the news hunt"
 python3 $W/p215b_patch.py $D || back
 python3 -m py_compile newshunt.py || back
-timeout 120 python3 p209test.py $D > /tmp/p215b.out 2>&1 || { grep -E "❌|passed|Error" /tmp/p215b.out; back; }
-grep passed /tmp/p215b.out
-echo "=== the page"
+timeout 120 python3 p209test.py $D > /tmp/p215c.out 2>&1; R=$?; grep -E "❌|passed|Error" /tmp/p215c.out; [ $R = 0 ] || back
+echo "=== 4 · ONE FULL SIMULATED DAY through the real news hunt (09:15-15:30, a tick every 15 s - nothing sent)"
+timeout 600 python3 simday.py $D > /tmp/p215d.out 2>&1; R=$?; grep -vE "^2026-" /tmp/p215d.out | sed -n '/THE DAY/,$p'; [ $R = 0 ] || back
+echo "=== 5 · the page"
 python3 $W/p215c_patch.py $D || back
 if command -v node >/dev/null 2>&1; then
   python3 - $D/home.html $W/page.js <<'PY_JS'
@@ -370,4 +783,4 @@ fi
 systemctl restart gir-newshunt && sleep 3 && echo "  gir-newshunt: $(systemctl is-active gir-newshunt)"
 echo "✅ patch 215 done - Ctrl + Shift + R on GIR (the phone: reload)."
 echo "   from 09:20: 🚨 PUSH STARTED ▲ / PULL STARTED ▼ · MARKET → F&O MOVERS → 🧲 PUSH · PULL = the list"
-echo "   undo: for f in newshunt.py home.html; do cp $D/\$f.bak$TS $D/\$f; done; rm -f $D/pushalert.py; systemctl restart gir-newshunt"
+echo "   undo: for f in newshunt.py home.html pbook.py; do cp $D/\$f.bak$TS $D/\$f; done; rm -f $D/pushalert.py; systemctl restart gir-newshunt"
