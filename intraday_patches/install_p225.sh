@@ -139,6 +139,9 @@ def vote(text, now=None):
         opening = "09:15" <= hm < "09:25"
         need = NEED_OPEN if opening else NEED
         marks = " · ".join("%s %s" % (k, "✓" if ok else "✗" if ok is False else "?") for k, ok, _ in res)
+        if "RESULTS REACTION" in h2:                            # patch 223: a results reaction is a P1 on its own proof - shown, never turned down
+            L = text.split("\n")
+            return "\n".join(L[:1] + ["⚖ VOTE %d/6 ✔ P1 (a results reaction - the filing, the price and the volume are its proof) · %s" % (yes, marks)] + L[1:])
         if len(known) < 4 and not (opening and ST["open_n"] >= OPEN_CAP):
             line = "⚖ VOTE n/a - only %d of 6 checks readable now, stays P1 · %s" % (len(known), marks)
             if opening:

@@ -14,6 +14,18 @@ D=/home/globalbot/intraday; TS=$(date +%m%d%H%M%S); W=$(mktemp -d)
 H=$(TZ=Asia/Kolkata date +%H%M); MKT=0
 if [ "$H" -ge 0900 ] && [ "$H" -le 1535 ]; then MKT=1; [ "${1:-}" != "now" ] && { echo "market hours - add: now (restarts only the page server), or run it after 15:35"; exit 1; }; fi
 [ -f $D/pushwho.py ] && [ -f $D/pushalert.py ] && grep -q "patch 214" $D/home.html || { echo "patches 208 / 214 / 215 first"; exit 1; }
+if grep -q "patch 219" $D/pushwho.py && grep -q "patch 219" $D/home.html; then   # already in (a re-run): no old code left to compare - restart only
+  echo "  patch 219 is already in - nothing to change"
+  systemctl restart gir-dash && sleep 8 && echo "  gir-dash: $(systemctl is-active gir-dash)"
+  if [ "$MKT" = "0" ]; then
+    for s in gir-intraday gir-exchange gir-desk gir-newsroom gir-tvwatch gir-newshunt; do systemctl restart $s 2>/dev/null; done
+    sleep 8; for s in gir-intraday gir-exchange gir-desk gir-newsroom gir-tvwatch gir-newshunt; do echo "  $s: $(systemctl is-active $s)"; done
+    echo "✅ patch 219: the senders now use the new push reading too"
+  else
+    echo "✅ patch 219 on the page - run this again after 15:35 for the senders"
+  fi
+  exit 0
+fi
 for f in pushwho.py pushalert.py home.html; do cp $D/$f $D/$f.bak$TS; done
 back(){ for f in pushwho.py pushalert.py home.html; do cp $D/$f.bak$TS $D/$f; done; systemctl restart gir-dash; echo "❌ old files back - nothing changed"; exit 1; }
 cat > $W/p219_patch.py <<'PY_PATCH'
