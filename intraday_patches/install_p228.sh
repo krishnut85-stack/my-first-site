@@ -109,7 +109,7 @@ def gate(text, tr, now=None, px=None, candles=None):
     now = now or dt.datetime.now(IST)
     t = now.timestamp()
     h, sym, d = target(text)
-    yr = "YOUR RULE" in h
+    yr = "YOUR RULE" in h or "📜 PATTERN" in h                  # patch 230: GIR's pattern alerts (renamed from YOUR RULE)
     kind = (h.split() or ["?"])[0]
     c = _db()
     try:
@@ -135,7 +135,7 @@ def gate(text, tr, now=None, px=None, candles=None):
             last_yr = next((r for r in R if r[4] and t - r[0] <= YR_S), None)
             if agree:
                 return ring(text.rstrip("\n") + "\n✔ agrees with GIR's %s at %s" % (agree[2], _hm(agree[0])))
-            return _quiet(text, "your rule - it rings when it agrees with a GIR alert on %s (none the same way in the last 15 min)" % sym)   # patch 229
+            return _quiet(text, "a pattern alert - it rings when a GIR alert on %s agrees (none the same way in the last 15 min)" % sym)   # patch 229
         # 1 one ring a share every 15 min
         last = next((r for r in R if t - r[0] <= SHARE_S), None)
         if last:
@@ -222,7 +222,7 @@ y1 = g('📒 YOUR RULE "roof breaking - writers running" · SBILIFE ₹1805.3 +2
 y2 = g('📒 YOUR RULE "big money buying futures" · SBILIFE ₹1808 +2.4% · 10:10\n→ CE', at(10, 10), 1808)
 p2 = g("🚨 CRITICAL · PUSH STARTED ▲ SBILIFE · 10:16", at(10, 16), 1812)
 y3 = g('📒 YOUR RULE "roof breaking - writers running" · SBILIFE ₹1815 +2.8% · 10:20\n→ CE', at(10, 20), 1815)
-chk("a YOUR RULE on SBILIFE with no GIR alert there: silent (patch 229 - it rings only when it agrees)", y1[1] and "it rings when it agrees with a GIR alert on SBILIFE" in y1[0], y1)
+chk("a YOUR RULE on SBILIFE with no GIR alert there: silent (patch 229 - it rings only when it agrees)", y1[1] and ("it rings when it agrees with a GIR alert on SBILIFE" in y1[0] or "it rings when a GIR alert on SBILIFE agrees" in y1[0]), y1)
 chk("the second 10 min later: silent too", y2[1], y2)
 chk("... GIR's own alert on SBILIFE at 10:16 rings (nothing rang there before)", not p2[1], p2)
 p3 = g("🧩 LONG BUILD-UP ▲ SBILIFE ₹1816 +2.9% · 10:21\n▶ WATCH CE 1820", at(10, 21), 1816)

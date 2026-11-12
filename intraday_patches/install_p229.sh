@@ -23,7 +23,7 @@ OLD = '''            if not last_yr:
                 return ring(text)
             return _quiet(text, "your rules already rang on %s at %s (one ring in 30 min unless it agrees with a GIR alert)" % (sym, _hm(last_yr[0])))'''
 NEW = '''            return _quiet(text, "your rule - it rings when it agrees with a GIR alert on %s (none the same way in the last 15 min)" % sym)   # patch 229'''
-if NEW in s:
+if NEW in s or "# patch 229" in s:
     print("  ringgov.py: YOUR RULE rings only when it agrees - already in")
 elif s.count(OLD) == 1:
     s = s.replace(OLD, NEW).replace('''  2 YOUR RULE rings when it agrees with a GIR alert on the share (same side, within 15 min), or when it is the first of your rules on the
@@ -69,7 +69,7 @@ y1 = g('📒 YOUR RULE "roof breaking - writers running" · SBILIFE ₹1805.3 +2
 y2 = g('📒 YOUR RULE "big money buying futures" · SBILIFE ₹1808 +2.4% · 10:10\n→ CE', at(10, 10), 1808)
 p2 = g("🚨 CRITICAL · PUSH STARTED ▲ SBILIFE · 10:16", at(10, 16), 1812)
 y3 = g('📒 YOUR RULE "roof breaking - writers running" · SBILIFE ₹1815 +2.8% · 10:20\n→ CE', at(10, 20), 1815)
-chk("a YOUR RULE on SBILIFE with no GIR alert there: silent (patch 229 - it rings only when it agrees)", y1[1] and "it rings when it agrees with a GIR alert on SBILIFE" in y1[0], y1)
+chk("a YOUR RULE on SBILIFE with no GIR alert there: silent (patch 229 - it rings only when it agrees)", y1[1] and ("it rings when it agrees with a GIR alert on SBILIFE" in y1[0] or "it rings when a GIR alert on SBILIFE agrees" in y1[0]), y1)
 chk("the second 10 min later: silent too", y2[1], y2)
 chk("... GIR's own alert on SBILIFE at 10:16 rings (nothing rang there before)", not p2[1], p2)
 p3 = g("🧩 LONG BUILD-UP ▲ SBILIFE ₹1816 +2.9% · 10:21\n▶ WATCH CE 1820", at(10, 21), 1816)
