@@ -5,12 +5,55 @@
 #     when the share moved 2%+ that day; TV snippets never; at most 40 shares (results first, then the strongest, the latest)
 #   · a change beyond ±300% is left out of the file as "not comparable (contract roll)" - the AI is not misled
 #   · run by hand (python3 eventbrain.py SYM) it reads the API key from GIR's .env into its own process (the service already had it)
-#   Tested: 8 noise cases + the earlier 22 + 12. Restarts only the special force (gir-eventwatch) - safe any time.
+#   · POLICYBZR's peers are the insurers (the sector map files it under consumer); the event is the headline, not GIR's own note
+#   · the government watch labelled English IRDAI headlines "(Hindi - GIR read: )" - patch 226's mistake, fixed (real Hindi keeps it)
+#   Tested: 11 + 1 new cases + the earlier 22 + 12. Restarts only the special force (gir-eventwatch); the govt watch is a timer - safe any time.
 set -u
 D=/home/globalbot/intraday; W=$(mktemp -d); mkdir -p $W/src; TS=$(date +%m%d%H%M%S)
 [ -f $D/eventwatch.py ] && [ -f $D/eventbrain.py ] || { echo "patch 236 first"; exit 1; }
-for f in eventwatch.py eventbrain.py; do cp $D/$f $D/$f.bak$TS; done
-back(){ for f in eventwatch.py eventbrain.py; do cp $D/$f.bak$TS $D/$f; done; systemctl restart gir-eventwatch; echo "❌ old files back - nothing changed"; exit 1; }
+for f in eventwatch.py eventbrain.py govwatch.py; do cp $D/$f $D/$f.bak$TS; done
+back(){ for f in eventwatch.py eventbrain.py govwatch.py; do cp $D/$f.bak$TS $D/$f; done; systemctl restart gir-eventwatch; echo "❌ old files back - nothing changed"; exit 1; }
+cat > $W/p237gov.py <<'PY_GOV'
+#!/usr/bin/env python3
+"""p237gov.py - patch 237: govwatch labelled English IRDAI headlines "(Hindi - GIR read: )" - patch 226 prefixed "irdai insurance" to what GIR
+reads, and the Hindi label was added whenever the read text differed from the title. Now only a Hindi title gets it. Usage: python3 p237gov.py DIR"""
+import sys, os
+D = sys.argv[1] if len(sys.argv) > 1 else "/home/globalbot/intraday"
+p = os.path.join(D, "govwatch.py"); s = open(p, encoding="utf-8").read()
+old = '''            if j and read is not title:
+                title = "%s  (Hindi - GIR read: %s)" % (title, hi_en(title))'''
+new = '''            if j and hindi(title):                              # patch 237: only a Hindi title gets the label (not an IRDAI line)
+                title = "%s  (Hindi - GIR read: %s)" % (title, hi_en(title))'''
+if new in s:
+    print("  govwatch.py: the Hindi label only on Hindi titles - already in")
+elif s.count(old) == 1:
+    open(p, "w", encoding="utf-8").write(s.replace(old, new)); print("  govwatch.py: the Hindi label only on Hindi titles")
+else:
+    print("❌ govwatch.py: anchor not found"); sys.exit(1)
+PY_GOV
+cat > $W/p237govtest.py <<'PY_GT'
+#!/usr/bin/env python3
+"""p237govtest.py - govwatch's Hindi label (made-up feeds, nothing sent).  python3 p237govtest.py DIR"""
+import os, sys, json, shutil, tempfile, datetime as dt
+D = os.path.abspath(sys.argv[1]); T = tempfile.mkdtemp(); os.makedirs(os.path.join(T, "data"))
+shutil.copy(os.path.join(D, "govwatch.py"), T)
+open(os.path.join(T, "sectors.py"), "w").write("def load():\n    return {'insurance': ['LICI'], 'fertiliser': ['COROMANDEL']}\n")
+sys.path.insert(0, T); os.chdir(T)
+import govwatch as G
+rss = lambda items: "<rss><channel>" + "".join("<item><title>%s</title><link>%s</link></item>" % (t, l) for t, l in items) + "</channel></rss>"
+F = {"news.google": rss([("IRDAI may implement insurance commission caps as early as January - BusinessLine", "g1")]),
+     "pib": rss([("मंत्रिमंडल ने उर्वरक सब्सिडी को मंजूरी दी 37,000 करोड़", "p1")])}
+get = lambda u: F["news.google"] if "news.google" in u else F["pib"] if "pib.gov" in u else rss([])
+json.dump({"seen": [], "first": False, "srcs": ["PIB", "RBI", "SEBI", "IRDAI"]}, open(G.SEEN, "w"))
+out = G.run(get=get, now=dt.datetime(2026, 11, 13, 10, 0, tzinfo=dt.timezone(dt.timedelta(hours=5, minutes=30))))
+ir = next((x for x in out if "commission caps" in x), ""); pb = next((x for x in out if "PIB" in x.split("\n")[0]), "")
+ok = ("Hindi" not in ir and ir) and ("(Hindi - GIR read: cabinet" in pb)
+print("  %s an English IRDAI headline has no Hindi label · a Hindi PIB headline keeps it" % ("✅" if ok else "❌"))
+if not ok:
+    print("   got:", ir.split("\n")[:2], pb.split("\n")[:2])
+print("GOVT WATCH test: %d of 1 passed" % (1 if ok else 0))
+sys.exit(0 if ok else 1)
+PY_GT
 cat > $W/src/eventwatch.py <<'PY_EW'
 #!/usr/bin/env python3
 """eventwatch.py - patch 235: 👁 EVENT WATCH - two agents for the shares around a big event (Rama, 13 Nov: "an agent only for the results shares,
@@ -113,7 +156,7 @@ def events_list(now, fo):
         L = [x for x in (tx or "").split("\n") if x.strip()]
         if not L or not EV_RX.search(L[0]) or "EVENT WATCH" in L[0]:
             continue
-        body = [x for x in L[1:] if not re.match(r"(🔴|🟠|📌|🔔|⚠ NOT|⚙️|🔎|⚖|🔕|touches:|F&O shares to watch|https?://)", x.strip())]
+        body = [x for x in L[1:] if not re.match(r"(🔴|🟠|📌|🔔|⚠ NOT|⚙️|🔎|⚖|🔕|touches:|F&O shares to watch|https?://|no audited news|the money is|why:|who:|share |price )", x.strip(), re.I)]   # patch 237: GIR's own notes are not the event
         why = re.sub(r"\s+", " ", body[0] if body else L[0])[:90]
         if re.search(r"\bon air\b|^📺|TV WATCH", why + " " + L[0], re.I):
             continue                                            # patch 237: a TV snippet is not an event
@@ -270,7 +313,7 @@ def text(sym, w, sigs, now, D=None):
     o = (D or {}).get("options, every strike")
     if o:
         L.append("options: call OI %s today / %s in 5 days · put OI %s / %s · PCR %s%s" % tuple(
-            [("%+.0f%%" % o[k]) if isinstance(o.get(k), (int, float)) else "n/a" for k in ("call OI today %", "call OI 5 days %", "put OI today %", "put OI 5 days %")] + [o.get("PCR"),
+            [(("%+.1f%%" if abs(o[k]) < 1 else "%+.0f%%") % o[k]) if isinstance(o.get(k), (int, float)) else "n/a" for k in ("call OI today %", "call OI 5 days %", "put OI today %", "put OI 5 days %")] + [o.get("PCR"),
              (" · " + o["biggest additions today"][0]) if o.get("biggest additions today") else ""]))
     if D:
         try:
@@ -431,6 +474,7 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, BASE)
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
 LEAK_MIN, QUIET_OI, QUIET_PX, AI_TTL = 50, 15.0, 2.0, 1800
+INSURERS = ["POLICYBZR", "LICI", "SBILIFE", "HDFCLIFE", "ICICIPRULI", "ICICIGI", "STARHEALTH", "NIACL", "GICRE"]
 _AI = {}
 _F = {}
 
@@ -586,10 +630,14 @@ def results_ctx(sym, w):
 def peers(sym):
     try:
         import sectors
-        sec = next((n for n, s in sectors.load().items() if sym in s), None)
-        if not sec:
-            return []
-        grp = [x for x in sectors.load()[sec] if x != sym]
+        M = sectors.load()
+        if sym in INSURERS:                                     # patch 237: PB Fintech's peers are the insurers (the sector map files it under consumer)
+            grp = [x for x in INSURERS if x != sym]
+        else:
+            secs = sorted((len(s), n) for n, s in M.items() if sym in s)   # the smallest group it belongs to = its closest peers
+            if not secs:
+                return []
+            grp = [x for x in M[secs[0][1]] if x != sym]
         c = _ro("filings.db")
         rows = c.execute("select sym, max(t_exch), verdict from filings where kind='RESULTS' and t_exch>? and sym in (%s) group by sym" % ",".join("?" * len(grp)),
                          [time.time() - 10 * 86400] + grp).fetchall()
@@ -917,7 +965,7 @@ for f in ("eventwatch.py", "eventbrain.py"):
     shutil.copy(os.path.join(SRC, f), T)
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30)); NOW = dt.datetime(2026, 11, 13, 10, 0, tzinfo=IST)
 D1 = "2026-11-12"
-FO = ["PNB", "PRESTIGE", "BANKINDIA", "POLICYBZR", "LICI", "BHEL", "ITC", "AUROPHARMA"] + ["X%02d" % i for i in range(50)]
+FO = ["PNB", "PRESTIGE", "BANKINDIA", "POLICYBZR", "LICI", "BHEL", "ITC", "AUROPHARMA", "COROMANDEL"] + ["X%02d" % i for i in range(50)]
 c = sqlite3.connect(os.path.join(T, "chains.db")); c.execute("create table fo_list(sym text, lot int)"); c.executemany("insert into fo_list values (?, 1)", [(s,) for s in FO])
 c.execute("create table results_cal(sym text, d text)"); c.commit(); c.close()
 c = sqlite3.connect(os.path.join(T, "filings.db")); c.execute("create table filings(sym text, t_exch real, verdict text, kind text)"); c.commit(); c.close()
@@ -961,6 +1009,21 @@ F = B.options("COROMANDEL")
 chk("COROMANDEL's +801% / +1,221% (the contract roll) are left out as 'not comparable'; today's -27% / -28% stay", F["call OI 5 days %"] == "not comparable (contract roll)" and F["put OI 5 days %"] == "not comparable (contract roll)" and F["call OI today %"] == -27.2, F)
 t = E.text("COROMANDEL", {"agent": "RESULTS", "phase": "after", "date": D1, "days": 1, "why": "results"}, [("FUTURES", 1, "x", 1)], NOW, {"options, every strike": F})
 chk("the alert prints 'n/a' for them (no crash)", "call OI -27% today / n/a in 5 days" in t, t)
+open("sectors.py", "w").write("def load():\n    return {'consumer': ['POLICYBZR', 'KALYANKJIL', 'NYKAA', 'PAGEIND', 'TITAN', 'VOLTAS'], 'fertiliser': ['COROMANDEL', 'PIIND'], 'agri': ['COROMANDEL', 'PIIND', 'UPL', 'SOLARINDS', 'X01']}\n")
+import sqlite3 as _s
+c = _s.connect("filings.db"); c.execute("insert into filings values ('LICI', ?, 'BEAT', 'RESULTS')", (NOW.timestamp() - 86400,))
+c.execute("insert into filings values ('PAGEIND', ?, 'IN LINE', 'RESULTS')", (NOW.timestamp() - 86400,)); c.execute("insert into filings values ('PIIND', ?, 'BEAT', 'RESULTS')", (NOW.timestamp() - 86400,)); c.commit(); c.close()
+p = B.peers("POLICYBZR")
+chk("POLICYBZR's peers are the insurers (LICI), not consumer shares (PAGEIND)", any("LICI" in x for x in p) and not any("PAGEIND" in x for x in p), p)
+p = B.peers("COROMANDEL")
+chk("COROMANDEL's peers come from its smallest group (fertiliser: PIIND)", any("PIIND" in x for x in p), p)
+c = _s.connect("tomorrow.db")
+c.execute("insert into alerts values ('2026-11-12', '13:05:00', '', 'COROMANDEL', '', ?)", ("🚨 CRITICAL · THE REASON ▲ COROMANDEL · 13:05\nno audited news yet — the money is the only reason, size small\nCabinet nod for fertiliser subsidy seen soon - ET",))
+c.commit(); c.close()
+o = _s.connect(os.path.join("data", "oistudy.db")); o.execute("insert into day values ('2026-11-11', 'COROMANDEL', 1890.0, 1e6)"); o.execute("insert into day values ('2026-11-12', 'COROMANDEL', 1994.0, 1e6)"); o.commit(); o.close()
+E.MAX_WATCH = 100
+w_ = E.watch_list(NOW).get("COROMANDEL") or {}
+chk("the event is the headline, not GIR's own note ('no audited news yet ...')", "Cabinet nod" in (w_.get("why") or "") and "audited" not in (w_.get("why") or ""), w_)
 print("SPECIAL FORCE NOISE test: %d of %d passed" % (sum(OK), len(OK)))
 sys.exit(0 if all(OK) else 1)
 PY_T3
@@ -970,6 +1033,10 @@ python3 $W/p235test.py $W/src $D 2>&1 | grep -E "❌|passed" || true
 python3 $W/p236test.py $W/src 2>&1 | grep -E "❌|passed" || true
 python3 $W/p237test.py $W/src >/dev/null 2>&1 && python3 $W/p235test.py $W/src $D >/dev/null 2>&1 && python3 $W/p236test.py $W/src >/dev/null 2>&1 || { echo "❌ a test failed - nothing changed"; exit 1; }
 cp $W/src/eventwatch.py $W/src/eventbrain.py $D/ && cd $D && python3 -m py_compile eventwatch.py eventbrain.py || back
+echo "=== the government watch: the Hindi label only on Hindi headlines"
+python3 $W/p237gov.py $D || back
+cd $D && python3 -m py_compile govwatch.py || back
+python3 $W/p237govtest.py $D || back
 systemctl restart gir-eventwatch; sleep 5; echo "  gir-eventwatch: $(systemctl is-active gir-eventwatch)"
 [ "$(systemctl is-active gir-eventwatch)" = "active" ] || back
 echo "=== who the special force watches now"
