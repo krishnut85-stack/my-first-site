@@ -110,6 +110,7 @@ Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always
 2. A separate Telegram channel "GIR Results Agent" for its own phone tone (he creates it, adds the bot); a third tone on the page.
 
 **To investigate / fix:**
+- **FIRST (with the next line): MISSED alerts** - NAVINFLUOR 13 Nov ~13:55: high ₹10,165 then down to ₹10,062 (VWAP 10,035), a ▼ mark on the chart, but NO reversal alert reached Rama. Check `bash /tmp/resultline.sh NAVINFLUOR`: was it detected and held (🔕 ring rules / P1 vote / once-a-day rule), detected late, or never detected?
 - **FIRST: most alerts arrive late** (Rama, 13 Nov 14:00 - ANGELONE 5 min, and most others). Measure with `bash /tmp/lagaudit.sh` (signal time in the alert vs the second Telegram accepted it; by kind, by hour; Telegram 429 waits). Suspects: the 5-min candle-close rule, Telegram's per-group rate limit + tgq's 429 waits (100+ critical lines to Box Picks), NSE's OI update gap, the ring governor.
 - The F&O checklist said "RESULTS: none soon" for ABB on its results day (13 Nov) - must say RESULTS TODAY and fail the check.
 - ABB desk "confirmation reading due 12:38" still showing at 12:42 (desk restarted 11:46 with everything) - the confirmation must resolve or say not confirmed.
