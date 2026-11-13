@@ -126,6 +126,7 @@ Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always
 - F&O MONEY (and BIG MONEY · LINKED): each share shows WHEN its money came in - the time the build-up started today and the time of the last big change (e.g. "since 10:42 · last +₹20 cr at 13:31"), so a morning build-up is not mistaken for a fresh one.
 - IDEA in F&O MONEY: LONG UNWINDING ₹5,370 cr with futures OI -71.1% (13 Nov 13:53) - not believable for one day; check the OI baseline (a contract / lot change, or a bad reading) and keep such outliers out of the lists.
 - ANGELONE 13 Nov: the long build-up was visible at 13:50 but the alert came 13:55 (5 min late). Find where the 5 min go: the 5-min candle close rule, NSE's OI update gap, the ring governor's hold / 15-min rule, or the send queue (bash /tmp/resultline.sh ANGELONE). Target: the alert within ~1 min of the reading.
+- F&O TAPE: a one-line legend under its title - "price flash = the last tick (green up / red down, not a signal) · DESK blocks = the desk's call −2…+2 (left red = bearish, right green = bullish) · ✓ = confirmed by the 5-min candle · tap = the share".
 - Weekend: one planned reboot Saturday after 09:30 ("System restart required" after the 13 Nov libc update).
 
 ## 5. Open items (in order)
