@@ -99,6 +99,7 @@ what the recent patches did, and what is still open.
 | 252 | MACRO needs real rate words · F&O MONEY leaves out a 40%+ OI day (IDEA -71%) · daily RSI adds today, 120 days · F&O TAPE legend |
 | 253 | News faster: shares moving 1.5%+ (top 15) and results today/tomorrow searched every 3 min; a story found 15+ min late is labelled |
 | 254 | The ban % on NSE's Future Equivalent OI (the file's 2nd OI column; BDL showed 155%, really 58.7%); last 90 days re-read |
+| 255 | BIG MONEY · LINKED sorts by any column (tap = high→low, again = low→high) · F&O MONEY rows show 'since HH:MM · last HH:MM' (GIR's first / latest alert of that build-up) |
 | 239 | News filed under the right share: everyday-word symbols (AMBER, OIL, IDEA, ETERNAL, TRENT, TITAN …) need the full name or "SYM shares / Q2 / results"; false phrases refused (AMBER Alert, oil prices, BSE Sensex, MCX gold prices, Olympics, Trent Boult); searched headlines stored only when about the company; 4-day clean-up (undo: `p239clean.py DIR --undo`) |
 
 Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always-ring alerts held.
