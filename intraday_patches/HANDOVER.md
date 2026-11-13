@@ -15,7 +15,7 @@ what the recent patches did, and what is still open.
 - **Not GIR's:** the `gir-crypto-*` services (a separate project, left off) and `gir-telegram-cmd` (off, unused for 3+ days).
 - **Telegram channels:** GIR TRADE NOW (P1 calls and exits, ambulance sound), GIR Box Picks (critical, nee-naw sound),
   the GIR group topics, and a System channel (audits).
-- **AI reader:** Anthropic API. GIR's own daily cap: `data/llm_budget.json` = $5/day.
+- **AI reader:** Anthropic API. GIR's own daily cap: `data/llm_budget.json` = $10/day (raised 13 Nov).
   The API credit currently comes from a promotional grant that expires at the end of November; a reminder is set in the original
   chat for 28 Nov 19:00 IST to check whether a December grant appears.
 
@@ -52,7 +52,7 @@ what the recent patches did, and what is still open.
 - **Every evening review starts with a regulator & policy watch** (IRDAI / SEBI / RBI drafts or final rules pending for F&O shares,
   what each could do, expected dates) — he asked for this on 13 Nov.
 
-## 4. What the recent patches did (207–234)
+## 4. What the recent patches did (207–239)
 
 | Patch | What |
 |---|---|
@@ -82,6 +82,9 @@ what the recent patches did, and what is still open.
 | 232 | FII/DII from every named deal (not the top 12); 5 days = push, 30 days = context; delivery labelled "FII or DII — not named" |
 | 233 | WRITERS pushes only on a change (a wall forming is context); ALGOS neutral. Writers pushing 214 → 28, ALGOS 209 → 0 |
 | 234 | COMPANY only for news naming the company, from the last 18 h. COMPANY pushing 129 → 77 |
+| 236 / 237 | The "special force": `gir-eventwatch` (eventwatch.py + eventbrain.py) watches results shares a week before / after; strong events or a 2% move; AI read; max 40 shares; insurers as peers. Eye-power alerts (nee-naw), not buy calls |
+| 238 | Share window: tab name (⌂ GIR HOME / SYM ₹px), RSI pane kept in the box + daily RSI tag, sticky name/price, OI marks explained on hover, one refresh chain |
+| 239 | News filed under the right share: everyday-word symbols (AMBER, OIL, IDEA, ETERNAL, TRENT, TITAN …) need the full name or "SYM shares / Q2 / results"; false phrases refused (AMBER Alert, oil prices, BSE Sensex, MCX gold prices, Olympics, Trent Boult); searched headlines stored only when about the company; 4-day clean-up (undo: `p239clean.py DIR --undo`) |
 
 Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always-ring alerts held.
 
@@ -91,7 +94,7 @@ Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always
    Judge: rings per day, P1 right %, what the vote turned down, PUSH/PULL STARTED right % (was 52 of 134 = 39% on the old reading).
    If PUSH/PULL STARTED stays under 50% → propose making it silent (Rama's call).
 2. **News reader marks index-inclusion news as foreign:** `newsalert.about_it("LICI", "LIC makes the cut in the MSCI Global Standard Index")`
-   returns `"foreign"`. Fix the foreign filter (newshunt FOREIGN_RX / about_it) so MSCI / index inclusion of an Indian share is Indian.
+   returns `"foreign"` (so does "IndiGo cancels 200 flights …" — a short name with no India word). Fix the foreign filter (newshunt FOREIGN_RX / about_it) so MSCI / index inclusion of an Indian share is Indian.
 3. **Build the automatic evening self-check** (after 15:45, to Telegram System): every "results just filed" got numbers within 5 min;
    every P1 got its exits; news lag; contradictions; results verdicts the price disagreed with; rings and right %.
 4. **Step 2 of the ring governor** (Rama to decide after the audit): a daily cap on non-trade 🚨 critical lines.
