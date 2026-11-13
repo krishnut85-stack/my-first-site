@@ -63,10 +63,10 @@ RB = r"\b(rbi|reserve bank|repo|mpc|monetary policy|interest rates?|rate hikes?|
 THEMES = [   # (key, name, regex - all must match, down groups, up groups, what it means)
     ("RATE_UP", "RATE-HIKE FEARS", [RB + r".*\b(hikes?|hiking|raise[sd]?|tighten\w*|hawkish|higher)\b|\b(hikes?|raise[sd]?)\b.*" + RB,
                                     r"\b(rbi|reserve bank|repo|india|indian|mpc|inflation|cpi|wpi)\b"],
-     ["NBFC & FINANCE", "BANKS", "REALTY", "AUTO"], [], "higher interest rates make loans dearer - lenders, home and car buying feel it first"),
+     ["NBFC & FINANCE", "BANKS", "REALTY", "AUTO"], [], "NBFCs are hit hardest (they borrow at market rates); banks usually dip too (bond losses, slower loans) though their margins can gain later; home and car buying slow"),
     ("RATE_UP", "RATE-HIKE FEARS", [r"\b(inflation|cpi|wpi|food prices?)\b", r"\b(ris\w+|jumps?|spikes?|surges?|high\w*|upside risks?|accelerat\w+|soars?|climbs?)\b",
                                     r"\b(india|indian|rbi|retail|food|cpi|wpi|monsoons?|el nino)\b"],
-     ["NBFC & FINANCE", "BANKS", "REALTY", "AUTO"], [], "rising inflation makes an RBI rate hike more likely - lenders, home and car buying feel it first"),
+     ["NBFC & FINANCE", "BANKS", "REALTY", "AUTO"], [], "rising inflation makes an RBI rate hike more likely - NBFCs are hit hardest (they borrow at market rates); banks usually dip too, though their margins can gain later"),
     ("RATE_DOWN", "RATE-CUT HOPES", [RB + r".*\b(cuts?|cutting|lower\w*|eas\w+|dovish|reduce[sd]?)\b|\b(rate cuts?)\b"],
      [], ["NBFC & FINANCE", "BANKS", "REALTY", "AUTO"], "cheaper loans help lenders, home and car buying first"),
     ("FED_UP", "US FED HAWKISH", [r"\b(fed|federal reserve|fomc|powell|us yields?|treasury yields?)\b", r"\b(hikes?|hawkish|higher for longer|ris\w+|surg\w+|jumps?|climbs?)\b"],
