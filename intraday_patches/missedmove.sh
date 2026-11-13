@@ -1,7 +1,7 @@
 #!/bin/bash
 # missedmove.sh - READ ONLY. DID GIR MISS A MOVE? (Rama, 13 Nov: "I don't want to miss any critical act for PE or CE").
 #   Every F&O share that moved 2%+ from yesterday's close during the session (5-min candles): when it crossed 2%, how far it went, where it closed -
-#   and whether GIR RANG a call its way (CE side up / PE side down) from 30 min before to 15 min after the cross:
+#   and whether GIR RANG a call its way (as it was sent that day - its ring tag, not today's rules) (CE side up / PE side down) from 30 min before to 15 min after the cross:
 #     ✅ rang in time (by the cross + 5 min) · 🕒 rang late (5-15 min after) · 🔕 only silent alerts · ❌ nothing at all
 #   The last trading session only (the engine's charts.json). Changes nothing, sends nothing.   bash missedmove.sh [MIN%]   (default 2)
 D=/home/globalbot/intraday; MIN=${1:-2}
@@ -25,6 +25,12 @@ def side(tx):
     h = (tx or "").split("\n")[0]
     up = "▲" in h or bool(re.search(r"\bCE\b", h)); dn = "▼" in h or bool(re.search(r"\bPE\b", h))
     return 1 if up and not dn else -1 if dn and not up else 0
+def rang_then(tx):
+    """did it RING that day? GIR keeps every alert as it was sent: a ringing one carries its tag, a held one "🔕 no ring" (not today's rules)"""
+    tx = tx or ""
+    if "🔕 no ring" in tx:
+        return False
+    return any(k in tx for k in ("🔴 TRADE ALERT", "🟠 SOMETHING IS HAPPENING", "📌 F&O"))
 A = collections.defaultdict(list)
 for t, tx in rows:
     h = (tx or "").split("\n")[0]
@@ -46,7 +52,7 @@ for sym, cc in ch.items():
         far = max(x for x in X if x is not None)
         last = next((x for x in reversed(C) if x), None)
         close = (last / pc - 1) * 100 if last else 0
-        rang = [(m, t_, tx) for m, t_, tx in A.get(sym, []) if T - 30 <= m <= T + 15 and side(tx) == d and tier(tx) != "read" and "🔕 no ring" not in tx]
+        rang = [(m, t_, tx) for m, t_, tx in A.get(sym, []) if T - 30 <= m <= T + 15 and side(tx) == d and rang_then(tx)]
         quiet = [(m, t_, tx) for m, t_, tx in A.get(sym, []) if T - 30 <= m <= T + 15 and side(tx) == d]
         if rang and min(m for m, _, _ in rang) <= T + 5:
             k = "✅ rang in time"
