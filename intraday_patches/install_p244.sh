@@ -1,9 +1,9 @@
 #!/bin/bash
 # PATCH 244 - WHO IS PUSHING: earlier evidence against today's price is not a push (Rama, 13 Nov 10:00: PETRONET -2.5% said "▲ pushing up: DII ·
-#   ▼ pulling down: none"; AMBER +5.1% said "▼ pulling down: COMPANY"). Evidence from before today's session (named FII / DII deals of 5 days and
+#   ▼ pulling down: none"; MUTHOOTFIN -2.5% "pushing up: DII, BROKERS"; AMBER +5.1% "▼ pulling down: COMPANY"). Evidence from before today's session (named FII / DII deals of 5 days and
 #   yesterday's delivery, promoter filings, index news, company news, broker notes) stays on the line, but when today's price has gone 0.7%+ the
 #   other way it is not counted: "but today the price is -2.5% the other way - not counted as a push today". Live evidence (futures, writers,
-#   the tide, the ban) unchanged. Tested: 6 cases (the old code fails the PETRONET and AMBER ones) + GIR's push/pull test.
+#   the tide, the ban) unchanged. Tested: 7 cases (the old code fails PETRONET, MUTHOOTFIN and AMBER) + GIR's push/pull test.
 #   Restarts the page server and the news hunt (push/pull alerts) - after 15:35 (or add: now).
 set -u
 D=/home/globalbot/intraday; TS=$(date +%m%d%H%M%S); W=$(mktemp -d)
@@ -50,16 +50,16 @@ shutil.copy(os.path.join(D, "pushwho.py"), T)
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30)); NOW = dt.datetime(2026, 11, 13, 10, 0, tzinfo=IST)
 R = {"AMBER": [{"k": "results", "t": "results 11-12 18:40: Amber Enterprises Q2 profit falls 12%", "side": -1}],
      "TATA1": [{"k": "results", "t": "results 11-13 09:40: Tata One Q2 profit up 30%", "side": 1}],
-     "PETRONET": [], "SMALL": []}
-CHG = {"AMBER": 5.14, "PETRONET": -2.49, "TATA1": 3.0, "SMALL": -0.4}
+     "PETRONET": [], "SMALL": [], "MUTHOOTFIN": [{"k": "broker", "t": "broker 11-13 08:10: Motilal Oswal BUY Muthoot Finance, target Rs 3,400", "side": 1}]}
+CHG = {"MUTHOOTFIN": -2.49, "AMBER": 5.14, "PETRONET": -2.49, "TATA1": 3.0, "SMALL": -0.4}
 open(os.path.join(T, "whymove.py"), "w").write("R = %r\nC = %r\ndef explain(sym, now=None):\n    return {'s': sym, 'chg': C.get(sym), 'reasons': R.get(sym, [])}\n" % (R, CHG))
 open(os.path.join(T, "newsalert.py"), "w").write("def about_it(sym, h, src='', name=''):\n    return True\n")
-json.dump({"fo_paths": [{"s": "AMBER", "chg": 5.14, "bu": "SHORT COVERING", "cr": 22, "oi": -3.1}, {"s": "PETRONET", "chg": -2.49}, {"s": "TATA1", "chg": 3.0}, {"s": "SMALL", "chg": -0.4}]},
+json.dump({"fo_paths": [{"s": "AMBER", "chg": 5.14, "bu": "SHORT COVERING", "cr": 22, "oi": -3.1}, {"s": "PETRONET", "chg": -2.49}, {"s": "TATA1", "chg": 3.0}, {"s": "SMALL", "chg": -0.4}, {"s": "MUTHOOTFIN", "chg": -2.49}]},
           open(os.path.join(T, "dash_state.json"), "w"))
 json.dump({"shares": {}}, open(os.path.join(T, "data", "desk.json"), "w"))
 sys.path.insert(0, T); os.chdir(T)
 import pushwho as W
-W._F["_inst"] = (9e18, {"w": {"5": {"dii_all": {"PETRONET": {"cr": 85.0, "who": "an Indian fund"}, "SMALL": {"cr": 20.0}}, "fii_all": {}}, "30": {}}})
+W._F["_inst"] = (9e18, {"w": {"5": {"dii_all": {"PETRONET": {"cr": 85.0, "who": "an Indian fund"}, "SMALL": {"cr": 20.0}, "MUTHOOTFIN": {"cr": 40.0}}, "fii_all": {}}, "30": {}}})
 OK = []
 def chk(n, c, got=""):
     OK.append(bool(c)); print("  %s %s%s" % ("✅" if c else "❌", n, "" if c else "   got: %s" % str(got)[:300]))
@@ -74,6 +74,8 @@ r = rows("TATA1")
 chk("TATA1 +3%: good results the same way - still pushing up", r["COMPANY"]["side"] == 1 and "not counted" not in r["COMPANY"]["t"], r["COMPANY"])
 r = rows("SMALL")
 chk("SMALL -0.4% (under 0.7%): DII buying still counts (too small a move to call it against)", r["DII"]["side"] == 1, r["DII"])
+r = rows("MUTHOOTFIN")
+chk("MUTHOOTFIN -2.5%: DII buying and the broker's BUY shown, neither counted as pushing up", r["DII"]["side"] == 0 and r["BROKERS"]["side"] == 0 and "not counted" in r["BROKERS"]["t"] and not any(x["side"] > 0 for x in r.values()), [(k, x["side"], x["t"][-60:]) for k, x in r.items() if x["on"]])
 print("PUSH vs TODAY'S PRICE test: %d of %d passed" % (sum(OK), len(OK)))
 sys.exit(0 if all(OK) else 1)
 PY_TEST
