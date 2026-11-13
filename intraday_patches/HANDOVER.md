@@ -118,6 +118,7 @@ Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always
 - IndiGo / LIC (MSCI) headlines marked 🌐 foreign (the older foreign rule).
 - Rama's GVT&D 4400 CE trade (-₹49.5k) - review if he wants.
 - Daily RSI on the share's top line (patch 238 rsiTag): PHOENIXLTD showed daily 74 vs Kite 69.76 (13 Nov 12:54) - likely yesterday's close, not today's live candle; use the live price as today's close.
+- HINDALCO 13 Nov ~12:50: SHORT BUILD-UP alert, then a quick bounce, then down again - check the alert's timing vs the price (bash /tmp/resultline.sh HINDALCO); if build-up alerts often fire at the bottom of a move, add a timing rule (ring after a failed bounce under VWAP).
 - Weekend: one planned reboot Saturday after 09:30 ("System restart required" after the 13 Nov libc update).
 
 ## 5. Open items (in order)
