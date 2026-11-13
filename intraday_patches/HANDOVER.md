@@ -98,6 +98,7 @@ what the recent patches did, and what is still open.
 | 251 | Phone: the round ⌂ button removed (it hid the % column) |
 | 252 | MACRO needs real rate words · F&O MONEY leaves out a 40%+ OI day (IDEA -71%) · daily RSI adds today, 120 days · F&O TAPE legend |
 | 253 | News faster: shares moving 1.5%+ (top 15) and results today/tomorrow searched every 3 min; a story found 15+ min late is labelled |
+| 254 | The ban % on NSE's Future Equivalent OI (the file's 2nd OI column; BDL showed 155%, really 58.7%); last 90 days re-read |
 | 239 | News filed under the right share: everyday-word symbols (AMBER, OIL, IDEA, ETERNAL, TRENT, TITAN …) need the full name or "SYM shares / Q2 / results"; false phrases refused (AMBER Alert, oil prices, BSE Sensex, MCX gold prices, Olympics, Trent Boult); searched headlines stored only when about the company; 4-day clean-up (undo: `p239clean.py DIR --undo`) |
 
 Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always-ring alerts held.
@@ -110,6 +111,8 @@ Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always
 **Then review (regulator watch first):** alertaudit.sh + pushaudit.sh outputs · Rama's screenshots of wrong alarms · the P1 vote · PUSH/PULL STARTED accuracy.
 
 **Decided 13 Nov evening:** ring rules 1-4 approved -> patch 249. Daily loss limit (on-screen reminder): Rama will give the amount.
+
+**missedmove 13 Nov:** 95 moves of 2%+ · rang in time 26 · late 2 · only silent 48 · nothing 19. The 'nothing' are mostly 09:15 gap opens (NBFCs / banks on rate-hike fears, OMCs on crude) - covered from now by the 08:30 MACRO + pre-open prices; ~6 of 19 kept going after 2%. 'Only silent' = RUNNING / WHY / FIRST MOVE (silent by design; FIRST MOVE 30% right).
 
 **Measured 13 Nov (lagaudit / alertaudit):** trading alerts leave within ~25-60 s of GIR seeing them; the late ones are NEWS (company news median 25 min - the one-share-at-a-time search round ~22 min; small sites indexed late) -> fix the news speed. P1 right 3 of 13 (all CE on a falling day; the vote stopped 17 of 19 rightly) - replay 'NIFTY must agree' over past days before changing. The special force rang its cap (30 a day / 4 a share): with patch 249 a results share is silent after that - review.
 
