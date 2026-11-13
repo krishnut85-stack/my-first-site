@@ -31,7 +31,7 @@ what the recent patches did, and what is still open.
   back on any failure**. A re-run says "already in".
 - Installers that restart senders refuse **09:00–15:35 IST** unless given `now`. Page-only patches are safe any time.
 - Before giving a patch: test it locally on copies of the server files (scratchpad), dry-run the installer twice.
-- **Read-only tools** in `intraday_patches/` (change nothing): `lagaudit.sh` (how late each alert was: signal time vs sent, by kind / hour, Telegram 429 waits), `alertaudit.sh` (a day's rings, repeats, contradictions, P1 right/wrong,
+- **Read-only tools** in `intraday_patches/` (change nothing): `missedmove.sh` (every 2%+ move and whether GIR rang its way in time), `fmaudit.sh` (FIRST MOVE right or wrong), `lagaudit.sh` (how late each alert was: signal time vs sent, by kind / hour, Telegram 429 waits), `alertaudit.sh` (a day's rings, repeats, contradictions, P1 right/wrong,
   calls the vote turned down), `pushaudit.sh` (who-is-pushing measured), `livecheck.sh` (services, memory, live files),
   `resultline.sh SYM` (one share's day: filing → alerts → price), `resultsnight.sh` (after-hours results with numbers + tomorrow's
   results), `circuitcheck.sh`, `whylate.sh`, `storycheck.sh`, `tvbench.sh`.
@@ -95,6 +95,9 @@ what the recent patches did, and what is still open.
 | 248 | The share window's top line: its sector and the sector's move today, the same numbers as SECTORS |
 | 249 | THE NEW RING RULES (Rama approved 1-4, 13 Nov): ⚡ FIRST MOVE 5x+ volume rings (Box Picks), PUSH/PULL STARTED silent (7 of 27) · a PROFIT BOOKING / SHORT COVERING against a P1 within 2 h always rings · 09:15-09:30 only P1 / results / regulator ring, the same P1 line twice in 10 min rings once · results-window shares: only the 👁 EVENT WATCH, P1 and results lines ring |
 | 250 | Rama chose A: ⚡ FIRST MOVE silent again (fmaudit 13 Nov: right 30% after 60 min, 66 rings). PUSH/PULL STARTED stays silent; 249 rules 2-4 stay. Trade calls untouched |
+| 251 | Phone: the round ⌂ button removed (it hid the % column) |
+| 252 | MACRO needs real rate words · F&O MONEY leaves out a 40%+ OI day (IDEA -71%) · daily RSI adds today, 120 days · F&O TAPE legend |
+| 253 | News faster: shares moving 1.5%+ (top 15) and results today/tomorrow searched every 3 min; a story found 15+ min late is labelled |
 | 239 | News filed under the right share: everyday-word symbols (AMBER, OIL, IDEA, ETERNAL, TRENT, TITAN …) need the full name or "SYM shares / Q2 / results"; false phrases refused (AMBER Alert, oil prices, BSE Sensex, MCX gold prices, Olympics, Trent Boult); searched headlines stored only when about the company; 4-day clean-up (undo: `p239clean.py DIR --undo`) |
 
 Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always-ring alerts held.
