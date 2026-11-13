@@ -52,7 +52,7 @@ what the recent patches did, and what is still open.
 - **Every evening review starts with a regulator & policy watch** (IRDAI / SEBI / RBI drafts or final rules pending for F&O shares,
   what each could do, expected dates) — he asked for this on 13 Nov.
 
-## 4. What the recent patches did (207–239)
+## 4. What the recent patches did (207–248)
 
 | Patch | What |
 |---|---|
@@ -84,9 +84,40 @@ what the recent patches did, and what is still open.
 | 234 | COMPANY only for news naming the company, from the last 18 h. COMPANY pushing 129 → 77 |
 | 236 / 237 | The "special force": `gir-eventwatch` (eventwatch.py + eventbrain.py) watches results shares a week before / after; strong events or a 2% move; AI read; max 40 shares; insurers as peers. Eye-power alerts (nee-naw), not buy calls |
 | 238 | Share window: tab name (⌂ GIR HOME / SYM ₹px), RSI pane kept in the box + daily RSI tag, sticky name/price, OI marks explained on hover, one refresh chain |
+| 240 | Self-check opens the OI BUILD-UP tab on a narrow window (it read the price chart and said FAIL) |
+| 241 | SECTORS = the F&O shares' average (as ROTATION; NSE index on hover only where it is the group); ROTATION fits its box |
+| 242 | 📅 THE WEEK at 08:30 after the brief: last 5 sessions · today · next 7 days · plain reminders |
+| 243 | Pre-open 09:08-09:15: every F&O share shows NSE's pre-open price (live tick wins) |
+| 244 | Who is pushing: earlier evidence (deals, delivery, news, filings, broker notes) against today's price (0.7%+) is shown, not counted |
+| 245 | The push dot shows for every reading (OWN MOVE with nobody named was blank) |
+| 246 | Ubuntu updates Saturdays 09:00 IST only, never auto-restart services (13 Nov 11:46 libc update restarted all GIR); prices flow during a mid-day catch-up; 🚨 LIVE FEED DOWN / 🔌 SOCKET BACK |
+| 247 | 🏦 MACRO WARNING: rates / Fed / crude / rupee / tariffs -> the sectors that move first; 08:30 + live when prices confirm; scored at the close |
+| 248 | The share window's top line: its sector and the sector's move today, the same numbers as SECTORS |
 | 239 | News filed under the right share: everyday-word symbols (AMBER, OIL, IDEA, ETERNAL, TRENT, TITAN …) need the full name or "SYM shares / Q2 / results"; false phrases refused (AMBER Alert, oil prices, BSE Sensex, MCX gold prices, Olympics, Trent Boult); searched headlines stored only when about the company; 4-day clean-up (undo: `p239clean.py DIR --undo`) |
 
 Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always-ring alerts held.
+
+## 5a. 13 Nov evening - the batch and the list (after 15:35)
+
+**Run in this order:** 246 (no surprise restarts + LIVE FEED DOWN) · 242 (📅 THE WEEK at 08:30) · 243 (all shares in the pre-open) ·
+244 (earlier evidence against today's price is not a push) · 247 (🏦 MACRO WARNING). Already installed today: 239, 240, 241, 245. Ready, page only: 248 (the share's sector on its top line).
+
+**Then review (regulator watch first):** alertaudit.sh + pushaudit.sh outputs · Rama's screenshots of wrong alarms · the P1 vote · PUSH/PULL STARTED accuracy.
+
+**Decisions waiting for Rama:**
+1. Results-window shares speak with ONE voice (the special force, 📑 RESULTS tag, "the number decides"): GIR's generic early alerts (PUSH / PULL STARTED,
+   writers) on those shares go silent 🔕 - his call (muting rule).
+2. A separate Telegram channel "GIR Results Agent" for its own phone tone (he creates it, adds the bot); a third tone on the page.
+
+**To investigate / fix:**
+- The F&O checklist said "RESULTS: none soon" for ABB on its results day (13 Nov) - must say RESULTS TODAY and fail the check.
+- ABB desk "confirmation reading due 12:38" still showing at 12:42 (desk restarted 11:46 with everything) - the confirmation must resolve or say not confirmed.
+- Why the special force (eventwatch) did not flag ABB before GIR's PUSH STARTED (12:36).
+- GVT&D: GIR said OWN MOVE while the chain showed call writers covering 4200/4300 and put writers building 4400 - the writers' reader missed it.
+- "IN SIMPLE WORDS - its whole sector is -0.7%" (whymove) must use the same sector figure as SECTORS / the new sector tag.
+- IndiGo / LIC (MSCI) headlines marked 🌐 foreign (the older foreign rule).
+- Rama's GVT&D 4400 CE trade (-₹49.5k) - review if he wants.
+- Weekend: one planned reboot Saturday after 09:30 ("System restart required" after the 13 Nov libc update).
 
 ## 5. Open items (in order)
 
