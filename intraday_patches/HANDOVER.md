@@ -121,6 +121,8 @@ Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always
 - HINDALCO 13 Nov ~12:50: SHORT BUILD-UP alert, then a quick bounce, then down again - check the alert's timing vs the price (bash /tmp/resultline.sh HINDALCO); if build-up alerts often fire at the bottom of a move, add a timing rule (ring after a failed bounce under VWAP).
 - POWERINDIA 13 Nov 13:15: an "ACT ▲ CE" mark on the chart at VWAP while the desk said NEUTRAL 0 and the checklist CE MIXED 4/7 - find which rule places ACT marks and make it agree with the desk / checklist (or say why it differs).
 - Every list on the page needs sort controls (▲ / ▼, tap a column header = high→low, tap again = low→high): BIG MONEY · LINKED (price %, fresh ₹, fut OI %, delivery ×, score), and the same for every other list that lacks it (alert board, IMPORTANT, OI SCENARIOS, ROTATION rows, RESULTS, PICKS, F&O TAPE...). F&O MOVERS / F&O MONEY / SECTORS already have it.
+- F&O MONEY (and BIG MONEY · LINKED): each share shows WHEN its money came in - the time the build-up started today and the time of the last big change (e.g. "since 10:42 · last +₹20 cr at 13:31"), so a morning build-up is not mistaken for a fresh one.
+- IDEA in F&O MONEY: LONG UNWINDING ₹5,370 cr with futures OI -71.1% (13 Nov 13:53) - not believable for one day; check the OI baseline (a contract / lot change, or a bad reading) and keep such outliers out of the lists.
 - Weekend: one planned reboot Saturday after 09:30 ("System restart required" after the 13 Nov libc update).
 
 ## 5. Open items (in order)
