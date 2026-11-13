@@ -123,6 +123,7 @@ Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always
 - Every list on the page needs sort controls (▲ / ▼, tap a column header = high→low, tap again = low→high): BIG MONEY · LINKED (price %, fresh ₹, fut OI %, delivery ×, score), and the same for every other list that lacks it (alert board, IMPORTANT, OI SCENARIOS, ROTATION rows, RESULTS, PICKS, F&O TAPE...). F&O MOVERS / F&O MONEY / SECTORS already have it.
 - F&O MONEY (and BIG MONEY · LINKED): each share shows WHEN its money came in - the time the build-up started today and the time of the last big change (e.g. "since 10:42 · last +₹20 cr at 13:31"), so a morning build-up is not mistaken for a fresh one.
 - IDEA in F&O MONEY: LONG UNWINDING ₹5,370 cr with futures OI -71.1% (13 Nov 13:53) - not believable for one day; check the OI baseline (a contract / lot change, or a bad reading) and keep such outliers out of the lists.
+- ANGELONE 13 Nov: the long build-up was visible at 13:50 but the alert came 13:55 (5 min late). Find where the 5 min go: the 5-min candle close rule, NSE's OI update gap, the ring governor's hold / 15-min rule, or the send queue (bash /tmp/resultline.sh ANGELONE). Target: the alert within ~1 min of the reading.
 - Weekend: one planned reboot Saturday after 09:30 ("System restart required" after the 13 Nov libc update).
 
 ## 5. Open items (in order)
