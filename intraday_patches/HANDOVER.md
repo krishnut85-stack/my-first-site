@@ -94,6 +94,7 @@ what the recent patches did, and what is still open.
 | 247 | 🏦 MACRO WARNING: rates / Fed / crude / rupee / tariffs -> the sectors that move first; 08:30 + live when prices confirm; scored at the close |
 | 248 | The share window's top line: its sector and the sector's move today, the same numbers as SECTORS |
 | 249 | THE NEW RING RULES (Rama approved 1-4, 13 Nov): ⚡ FIRST MOVE 5x+ volume rings (Box Picks), PUSH/PULL STARTED silent (7 of 27) · a PROFIT BOOKING / SHORT COVERING against a P1 within 2 h always rings · 09:15-09:30 only P1 / results / regulator ring, the same P1 line twice in 10 min rings once · results-window shares: only the 👁 EVENT WATCH, P1 and results lines ring |
+| 250 | Rama chose A: ⚡ FIRST MOVE silent again (fmaudit 13 Nov: right 30% after 60 min, 66 rings). PUSH/PULL STARTED stays silent; 249 rules 2-4 stay. Trade calls untouched |
 | 239 | News filed under the right share: everyday-word symbols (AMBER, OIL, IDEA, ETERNAL, TRENT, TITAN …) need the full name or "SYM shares / Q2 / results"; false phrases refused (AMBER Alert, oil prices, BSE Sensex, MCX gold prices, Olympics, Trent Boult); searched headlines stored only when about the company; 4-day clean-up (undo: `p239clean.py DIR --undo`) |
 
 Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always-ring alerts held.
@@ -115,6 +116,7 @@ Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always
 2. A separate Telegram channel "GIR Results Agent" for its own phone tone (he creates it, adds the bot); a third tone on the page.
 
 **To investigate / fix:**
+- **Missed-move check (Rama: "I don't want to miss any critical CE / PE"):** a read-only evening list of every F&O share that moved 2%+ with NO ringing CE / PE call from GIR - so a missed move is seen, not guessed.
 - **FIRST (with the next line): MISSED alerts** - NAVINFLUOR 13 Nov ~13:55: high ₹10,165 then down to ₹10,062 (VWAP 10,035), a ▼ mark on the chart, but NO reversal alert reached Rama. Check `bash /tmp/resultline.sh NAVINFLUOR`: was it detected and held (🔕 ring rules / P1 vote / once-a-day rule), detected late, or never detected?
 - **FIRST: most alerts arrive late** (Rama, 13 Nov 14:00 - ANGELONE 5 min, and most others). Measure with `bash /tmp/lagaudit.sh` (signal time in the alert vs the second Telegram accepted it; by kind, by hour; Telegram 429 waits). Suspects: the 5-min candle-close rule, Telegram's per-group rate limit + tgq's 429 waits (100+ critical lines to Box Picks), NSE's OI update gap, the ring governor.
 - The F&O checklist said "RESULTS: none soon" for ABB on its results day (13 Nov) - must say RESULTS TODAY and fail the check.
