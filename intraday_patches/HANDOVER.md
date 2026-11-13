@@ -52,7 +52,7 @@ what the recent patches did, and what is still open.
 - **Every evening review starts with a regulator & policy watch** (IRDAI / SEBI / RBI drafts or final rules pending for F&O shares,
   what each could do, expected dates) — he asked for this on 13 Nov.
 
-## 4. What the recent patches did (207–248)
+## 4. What the recent patches did (207–249)
 
 | Patch | What |
 |---|---|
@@ -93,6 +93,7 @@ what the recent patches did, and what is still open.
 | 246 | Ubuntu updates Saturdays 09:00 IST only, never auto-restart services (13 Nov 11:46 libc update restarted all GIR); prices flow during a mid-day catch-up; 🚨 LIVE FEED DOWN / 🔌 SOCKET BACK |
 | 247 | 🏦 MACRO WARNING: rates / Fed / crude / rupee / tariffs -> the sectors that move first; 08:30 + live when prices confirm; scored at the close |
 | 248 | The share window's top line: its sector and the sector's move today, the same numbers as SECTORS |
+| 249 | THE NEW RING RULES (Rama approved 1-4, 13 Nov): ⚡ FIRST MOVE 5x+ volume rings (Box Picks), PUSH/PULL STARTED silent (7 of 27) · a PROFIT BOOKING / SHORT COVERING against a P1 within 2 h always rings · 09:15-09:30 only P1 / results / regulator ring, the same P1 line twice in 10 min rings once · results-window shares: only the 👁 EVENT WATCH, P1 and results lines ring |
 | 239 | News filed under the right share: everyday-word symbols (AMBER, OIL, IDEA, ETERNAL, TRENT, TITAN …) need the full name or "SYM shares / Q2 / results"; false phrases refused (AMBER Alert, oil prices, BSE Sensex, MCX gold prices, Olympics, Trent Boult); searched headlines stored only when about the company; 4-day clean-up (undo: `p239clean.py DIR --undo`) |
 
 Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always-ring alerts held.
@@ -104,7 +105,11 @@ Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always
 
 **Then review (regulator watch first):** alertaudit.sh + pushaudit.sh outputs · Rama's screenshots of wrong alarms · the P1 vote · PUSH/PULL STARTED accuracy.
 
-**Decisions waiting for Rama:**
+**Decided 13 Nov evening:** ring rules 1-4 approved -> patch 249. Daily loss limit (on-screen reminder): Rama will give the amount.
+
+**Measured 13 Nov (lagaudit / alertaudit):** trading alerts leave within ~25-60 s of GIR seeing them; the late ones are NEWS (company news median 25 min - the one-share-at-a-time search round ~22 min; small sites indexed late) -> fix the news speed. P1 right 3 of 13 (all CE on a falling day; the vote stopped 17 of 19 rightly) - replay 'NIFTY must agree' over past days before changing. The special force rang its cap (30 a day / 4 a share): with patch 249 a results share is silent after that - review.
+
+**Decisions waiting for Rama (old list):**
 1. Results-window shares speak with ONE voice (the special force, 📑 RESULTS tag, "the number decides"): GIR's generic early alerts (PUSH / PULL STARTED,
    writers) on those shares go silent 🔕 - his call (muting rule).
 2. A separate Telegram channel "GIR Results Agent" for its own phone tone (he creates it, adds the bot); a third tone on the page.
