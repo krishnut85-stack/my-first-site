@@ -310,6 +310,7 @@ chk("... the LinkedIn post is not shown", "LinkedIn" not in txt and "commission 
 print("\n" + txt + "\n")
 import govwatch as G
 G.fo_map = lambda: {}
+G.BASE = T; G.SEEN = os.path.join(T, "data", "govwatch.json")         # only this test's own files
 rfc = lambda x: x.strftime("%a, %d %b %Y %H:%M:%S +0530")
 POL = [u for s, u in G.SOURCES if s == "POLICY"][0]
 FEED = {}

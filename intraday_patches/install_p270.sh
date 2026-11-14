@@ -134,7 +134,7 @@ def run(send=None, get=None, now=None, probe=False):
         title, link = (L[1] if len(L) > 1 else ""), L[-1]
         if "news.google" in link:                                    # a news site's report (not the regulator's own page): one a story in 6 h
             k = "%s" % (NC.story_key("MARKET", "", title),)
-            if t - float(st.get(k, 0)) < 6 * 3600:
+            if 0 <= t - float(st.get(k, 0)) < 6 * 3600:               # a time in the future (a clock / a test) never holds a report back
                 continue
             st[k] = t
         keep.append(x)
@@ -210,6 +210,8 @@ chk("... the PFC round-up is gone; EICHERMOT's results stay", "31 stocks" not in
 print("\n" + txt + "\n")
 import govwatch as G
 G.fo_map = lambda: {}
+G.BASE = T; G.SEEN = os.path.join(T, "data", "govwatch.json")         # only this test's own files
+print("  (test folder %s · govwatch from %s)" % (T, G.__file__))
 rfc = lambda x: x.strftime("%a, %d %b %Y %H:%M:%S +0530")
 GN = [u for s, u in G.SOURCES if "IRDAI+when" in u][0]
 FEED = {}
@@ -223,7 +225,9 @@ FEED[GN] = rss([(irdai[1], "https://news.google.com/b", rfc(N + dt.timedelta(hou
 r2 = G.run(get=get, now=N + dt.timedelta(hours=2))
 FEED[GN] = rss([(irdai[0], "https://news.google.com/c", rfc(N + dt.timedelta(hours=7)))])
 r3 = G.run(get=get, now=N + dt.timedelta(hours=7))
-chk("Telegram: IRDAI news reports - the first one sent, the next within 6 h not, a new one after 6 h sent", len(r1) == 1 and r2 == [] and len(r3) == 1, (r1, r2, r3))
+chk("Telegram: IRDAI news reports - the first one sent, the next within 6 h not, a new one after 6 h sent", len(r1) == 1 and r2 == [] and len(r3) == 1,
+    (r1, r2, r3, "story file:", open(os.path.join(T, "data", "govwatch_story.json")).read()[:200] if os.path.exists(os.path.join(T, "data", "govwatch_story.json")) else "none",
+     "seen:", open(G.SEEN).read()[:300]))
 PR = "https://irdai.gov.in/press-releases"
 FEED[PR] = "<html><a href=\"/document-detail?documentId=9\">IRDAI notifies the final commission regulations for insurers</a></html>"
 r4 = G.run(get=get, now=N + dt.timedelta(hours=7, minutes=5))
