@@ -102,8 +102,10 @@ def score(a):
     s = a["s"]
     f = lambda k: ((C[min(len(C) - 1, j + k)] / e - 1) * 100 * s) if j + k < len(C) else None
     r30, r60 = f(6), f(12)
-    if r60 is None:
+    if r60 is None or r60 != r60:                                     # no candle 60 min later (or a missing one): not scored
         return None
+    if r30 is not None and r30 != r30:
+        r30 = None
     tp = (Hh[:j + 1] + L[:j + 1] + C[:j + 1]) / 3; vv = np.nan_to_num(V[:j + 1])
     vw = float((tp * vv).sum() / vv.sum()) if vv.sum() > 0 else None
     prev = np.nonzero(day0 < dd)[0]
