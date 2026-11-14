@@ -18,15 +18,25 @@ for f in sorted(glob.glob(D + "/2026-*.txt")):
 days = sorted({e["day"] for e in P})
 if not days:
     print("no PROFILE lines in %s" % D); sys.exit(0)
-import core
+import core, time
 k = core.get_kite()
+def hd(*a):
+    """Zerodha allows ~3 data requests a second: wait and retry on 'Too many requests' (another download may be running)"""
+    for n in range(8):
+        try:
+            r = k.historical_data(*a); time.sleep(0.4); return r
+        except Exception as ex:
+            if "too many" in str(ex).lower() or "rate" in str(ex).lower():
+                time.sleep(2 + n); continue
+            raise
+    return []
 d0 = dt.date.fromisoformat(days[0]) - dt.timedelta(days=12)
-dc = {r["date"].date(): float(r["close"]) for r in k.historical_data(256265, d0, dt.date.fromisoformat(days[-1]), "day")}
+dc = {r["date"].date(): float(r["close"]) for r in hd(256265, d0, dt.date.fromisoformat(days[-1]), "day")}
 dl = sorted(dc)
 M = {}
 for d in days:
     dd = dt.date.fromisoformat(d)
-    R = [r for r in k.historical_data(256265, dt.datetime(dd.year, dd.month, dd.day, 9, 15), dt.datetime(dd.year, dd.month, dd.day, 10, 0), "minute")
+    R = [r for r in hd(256265, dt.datetime(dd.year, dd.month, dd.day, 9, 15), dt.datetime(dd.year, dd.month, dd.day, 10, 0), "minute")
          if r["date"].astimezone(IST).date() == dd]
     prev = [x for x in dl if x < dd]
     if not R or not prev:
