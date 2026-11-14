@@ -196,8 +196,14 @@ def split_day(R):
             base.setdefault(dl.hour * 60 + dl.minute, []).append(float(r.get("volume") or 0))
     prior = [r for r in R if r["date"].astimezone(IST).date() < dd]
     PC_[0] = float(prior[-1]["close"]) if prior else None
+    dc = {}
+    for r in prior:
+        dc[r["date"].astimezone(IST).date()] = float(r["close"])                  # the last close of each earlier day (day-2 test)
+    DC_[0] = sorted(dc.items())
     return today, base
 PC_ = [None]
+DC_ = [None]
+DCL = {}            # sym -> [(date, close)] of the days before
 PCL = {}            # sym -> the day before's close (the futures)
 def vol_info(today, base):
     v = np.array([float(r.get("volume") or 0) for r in today], float)
@@ -213,6 +219,8 @@ for n, s in enumerate(syms + [x for x in ("NIFTY", "BANKNIFTY") if x in FUT and 
     R, B = split_day(R)
     if PC_[0]:
         PCL[s] = PC_[0]
+    if DC_[0]:
+        DCL[s] = DC_[0]
     if len(R) >= 30:
         arr = (np.array([r["date"].timestamp() + 60 for r in R], float), np.array([r["close"] for r in R], float), np.array([r.get("oi") or 0 for r in R], float))
         if s in ("NIFTY", "BANKNIFTY"):
@@ -379,7 +387,7 @@ for d, lab in ((0, "every F&O share"), (1, "▲ CE side"), (-1, "▼ PE side")):
     orow([e for e in E if e.get("rv") is not None and e["rv"] < 1.0], "   ... RVOL under 1x (not in play)")
 print("  READ: average R above 0 = it pays. Taking 1R = your risk per trade (e.g. ₹10,000), +0.20R a trade over 20 trades = +4R = ₹40,000.")
 
-if "ib" in sys.argv[2:]:
+if "ib" in sys.argv[2:] and "strat" not in sys.argv[2:]:
     sys.exit(0)                                                          # python3 fastreplay.py DAY ib - only the initial balance (fast)
 
 # ---------------- 3b · MONEY FIRST, THEN THE PRICE (Rama, 14 Nov: "when the futures money is betting for a rise or a fall, how fast does the share react") ----------------
@@ -835,6 +843,116 @@ if G:
     print("  GRASIM that day: " + " · ".join("%s %s%g%% %s (held %+.1f%%, OI %s, %s VWAP)" % (HM(e["t"]), "▲" if e["d"] > 0 else "▼", e["L"], e["res"], e["hold"],
           ("%+.0f%%" % e["doi"]) if e["doi"] is not None else "-", "right side of" if e["vwap"] else "wrong side of") for e in G))
 print("  READ: the lines with the most KEPT GOING and the fewest TURNED BACK are when Rama's momentum entry works - and what was missing when it did not.")
+
+# ---------------- 3h · THE EXIT TEST (Rama, 14 Nov: "go, add the exit, day 2 and 30 day tests") ----------------
+# The same entries as 3e - a share crossing +3% / -3% on the day - each played out with every exit rule. % on the share, average per trade.
+# High / low of each minute are used for the stops and targets; a minute that touches both counts as the stop (the worse case).
+def play(s, i, d, rule):
+    ts, C, OI = MIN[s]; H, L = MHL[s]; p0 = float(C[i])
+    kend = max(i, min(len(C) - 1, int(np.searchsorted(ts, d0 + 6 * 3600 + 5 * 60, side="right") - 1)))
+    mv = lambda x: (x / p0 - 1) * 100 * d
+    stop = rule.get("stop", 2.0); tgt = rule.get("tgt"); trail = rule.get("trail"); half = rule.get("half")
+    tmax = rule.get("tmax"); tend = rule.get("tend")
+    best, booked, st = 0.0, None, -stop
+    for j in range(i + 1, kend + 1):
+        hi_, lo_ = (mv(float(H[j])), mv(float(L[j]))) if d > 0 else (mv(float(L[j])), mv(float(H[j])))
+        if lo_ <= st:
+            r = st
+            return r if booked is None else 0.5 * booked + 0.5 * r
+        best = max(best, hi_)
+        if half and booked is None and hi_ >= half:
+            booked = half; st = max(st, 0.0)
+        if tgt and hi_ >= tgt:
+            return tgt if booked is None else 0.5 * booked + 0.5 * tgt
+        if trail and best >= trail:
+            st = max(st, best - trail)
+        if (tmax and ts[j] - ts[i] >= tmax * 60) or (tend and HM(ts[j]) >= tend):
+            r = mv(float(C[j]))
+            return r if booked is None else 0.5 * booked + 0.5 * r
+    r = mv(float(C[kend]))
+    return r if booked is None else 0.5 * booked + 0.5 * r
+RULES = [("hold to 15:20 (stop 2%)", {}),
+         ("stop 2% · target 2%", {"tgt": 2.0}),
+         ("stop 2% · target 3%", {"tgt": 3.0}),
+         ("stop 2% · BOOK HALF +2%, trail the rest 1%", {"half": 2.0, "trail": 1.0}),
+         ("stop 2% · trail 1% from the best", {"trail": 1.0}),
+         ("stop 2% · trail 1.5% from the best", {"trail": 1.5}),
+         ("stop 1.5% · trail 1% from the best", {"stop": 1.5, "trail": 1.0}),
+         ("stop 2% · out after 30 min", {"tmax": 30}),
+         ("stop 2% · out after 45 min", {"tmax": 45}),
+         ("stop 2% · out at 10:30", {"tend": "10:30"}),
+         ("stop 2% · out at 11:00", {"tend": "11:00"}),
+         ("stop 2% · BOOK HALF +2%, the rest out at 11:00", {"half": 2.0, "tend": "11:00"})]
+ENT = []
+for s, (ts, C, OI) in MIN.items():
+    pc = PCL.get(s)
+    if not pc or s not in MHL:
+        continue
+    for d in (1, -1):
+        idx = np.nonzero((C / pc - 1) * 100 * d >= 3.0)[0]
+        if len(idx) and "09:17" <= HM(ts[int(idx[0])]) <= "15:00":
+            ENT.append((s, int(idx[0]), d, HM(ts[int(idx[0])]) < "10:00"))
+print("\n=== 3h · THE EXIT TEST - entries: a share crossing +3%% / -3%% on the day (%d; before 10:00: %d) · each exit rule, %% on the share a trade · %s" % (
+    len(ENT), sum(1 for e in ENT if e[3]), day))
+for grp, sel in (("BEFORE 10:00", lambda e: e[3]), ("AFTER 10:00", lambda e: not e[3])):
+    E = [e for e in ENT if sel(e)]
+    for nm, rule in RULES:
+        R_ = [play(s_, i_, d_, rule) for s_, i_, d_, _ in E]
+        if R_:
+            print("  %-12s %-44s %4d · WON %3d%% · avg %+.2f%% on the share" % (grp, nm, len(R_), round(100 * sum(1 for x in R_ if x > 0) / len(R_)), sum(R_) / len(R_)))
+print("  READ: the rule with the highest average is the exit GIR should give on the 🚀 card. On an at-the-money option, +0.5% on the share is roughly +5-8% on the premium.")
+
+# ---------------- 3i · RESULTS DAY 2 - do yesterday's big movers keep going this morning? ----------------
+def day2():
+    try:
+        c = ro("chains.db"); rc = {}
+        for sym, d_ in c.execute("select sym, d from results_cal"):
+            rc.setdefault(sym, set()).add(d_)
+        c.close()
+    except Exception:
+        rc = {}
+    EV = []
+    for s, (ts, C, OI) in MIN.items():
+        L_ = DCL.get(s) or []
+        if len(L_) < 2 or s not in MHL:
+            continue
+        (d1, c1), (d2, c2) = L_[-1], L_[-2]
+        ych = (c1 / c2 - 1) * 100
+        if abs(ych) < 5.0:
+            continue
+        d = 1 if ych > 0 else -1
+        k = np.nonzero(ts <= d0 + 300 + 1)[0]
+        if len(k) < 3:
+            continue
+        k5 = int(k[-1]); gap = (float(C[0]) / c1 - 1) * 100 * d; at920 = (float(C[k5]) / c1 - 1) * 100 * d
+        p_ = d2 - dt.timedelta(days=1)
+        res = bool(rc.get(s, set()) & {str(d1), str(d2), str(p_)})
+        EV.append({"s": s, "d": d, "ych": ych, "gap": gap, "hold": at920 > 0, "res": res,
+                   "r22": play(s, k5, d, {"tgt": 2.0}), "r15": play(s, k5, d, {}), "rh": play(s, k5, d, {"half": 2.0, "trail": 1.0})})
+    return EV
+D2 = day2()
+print("\n=== 3i · RESULTS DAY 2 - shares that moved 5%%+ YESTERDAY (%d): entered at 09:20 today the same way · %s" % (len(D2), day))
+def d2row(L, name):
+    if not L:
+        print("  %-48s none" % name); return
+    a = [e["r22"] for e in L]
+    print("  %-48s %4d · WON %3d%% · avg %+.2f%% on the share (stop 2 / target 2) · held to 15:20 %+.2f%% · book half + trail %+.2f%%" % (
+        name, len(L), round(100 * sum(1 for x in a if x > 0) / len(L)), sum(a) / len(L), sum(e["r15"] for e in L) / len(L), sum(e["rh"] for e in L) / len(L)))
+for d, lab in ((1, "▲ yesterday UP 5%+ -> CE today"), (-1, "▼ yesterday DOWN 5%+ -> PE today")):
+    E = [e for e in D2 if e["d"] == d]
+    d2row(E, lab)
+    d2row([e for e in E if e["res"]], "   ... it was RESULTS")
+    d2row([e for e in E if e["hold"]], "   ... still beyond yesterday's close at 09:20 (held)")
+    d2row([e for e in E if not e["hold"]], "   ... back through yesterday's close at 09:20")
+    d2row([e for e in E if e["gap"] >= 1.0], "   ... gapped its way 1%+ today")
+    d2row([e for e in E if e["gap"] <= -1.0], "   ... gapped AGAINST 1%+ today")
+    d2row([e for e in E if abs(e["ych"]) >= 8.0], "   ... yesterday 8%+")
+if D2:
+    print("  " + " · ".join("%s %s%+.0f%%→%s" % (e["s"], "", e["ych"], ("%+.1f" % e["r22"])) for e in sorted(D2, key=lambda e: -abs(e["ych"]))[:20]))
+print("  READ: a positive average = the day-2 trade pays. Results drift is a known pattern; this is whether it holds on Indian F&O shares.")
+if "strat" in sys.argv[2:]:
+    sys.exit(0)                                                          # python3 fastreplay.py DAY strat - every study, without the slow 🌪 card replay
+
 
 # ---------------- 4 · the wind, minute by minute, with windwatch's own rules ----------------
 SEC = WW.sectors_of(); OF = {}
