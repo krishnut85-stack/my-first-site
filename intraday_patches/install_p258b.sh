@@ -68,7 +68,7 @@ def filed_since(start, now, fo):
         L = [x for x in (tx or "").split("\n") if x.strip()]
         if not L or "RESULTS" not in L[0] or "RESULTS REACTION" in L[0] or "EVENT WATCH" in L[0]:
             continue
-        if L[0].startswith("📰") or re.search(r"\bNEWS\b", L[0].split("·")[0]):    # a story about results is not a filing (GRASIM "profit triples")
+        if not re.search(r"\b(?:NSE|BSE)\s+\d\d:\d\d|just filed|XBRL", " ".join(L[:3])):   # a filing has the exchange's time; a story about results has a website (GRASIM "profit triples")
             continue
         m = re.search(r"([▲▼])?\s*\b([A-Z][A-Z0-9&\-]{1,19})\s+·\s+RESULTS\b", L[0]) or re.search(r"RESULTS\s+[▲▼]?\s*([A-Z][A-Z0-9&\-]{1,19})\b", L[0])
         sym = (m.group(2) if m and m.lastindex == 2 else m.group(1)) if m else None
