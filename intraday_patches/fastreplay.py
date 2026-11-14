@@ -321,6 +321,64 @@ for d, lab in ((1, "▲ UP"), (-1, "▼ DOWN")):
             irow([e for e in E if e["early"] and e["vol"] and (e["sect"] if d > 0 else e["money"])], "   ... before 10:00 + VOLUME + " + ("SECTOR (the CE rule)" if d > 0 else "NEW money (the PE rule)"))
 print("  READ: compare with 3e (a share already 3%% up before 10:00: kept going 2%% more 33%%, turned back 11%%). Rows with high KEPT GOING and low BACK INSIDE win.")
 
+# ---------------- 3g · STOCKS IN PLAY - THE 5-MINUTE OPENING RANGE BREAKOUT (Setup A: the research-backed day-trading rule, tested on India) ----------------
+# 09:20: rank every F&O share by its first-5-minute volume vs its own normal first 5 minutes (RVOL). The first 5 minutes' direction picks the side
+# (up candle -> only CE, down -> only PE). Entry: the first close beyond the 5-minute high (low). Stop: the other side of the 5-minute range = 1R.
+# Exit: the stop, or 15:20. Measured in R (risk units) and %: does it pay, and does it pay MORE on the stocks in play (top 20 by RVOL)?
+def orb_study():
+    EV = []
+    for s, (ts, C, OI) in MIN.items():
+        if s not in MHL or s not in VOLD:
+            continue
+        H, L = MHL[s]; vv, nb, vw = VOLD[s]
+        k = np.nonzero(ts <= d0 + 300 + 1)[0]
+        if len(k) < 4:
+            continue
+        k5 = int(k[-1]); hi, lo = float(np.max(H[:k5 + 1])), float(np.min(L[:k5 + 1]))
+        o_, c5 = float(C[0]), float(C[k5])
+        b_ = nb[:k5 + 1]
+        rv = float(vv[:k5 + 1].sum() / b_.sum()) if (np.isfinite(b_).all() and b_.sum() > 0) else None
+        d = 1 if c5 > o_ * 1.0005 else -1 if c5 < o_ * 0.9995 else 0
+        if not d or hi <= lo:
+            continue
+        edge, stop = (hi, lo) if d > 0 else (lo, hi)
+        idx = [i for i in range(k5 + 1, len(C)) if (C[i] > edge if d > 0 else C[i] < edge) and HM(ts[i]) <= "11:00"]
+        if not idx:
+            EV.append({"s": s, "d": d, "rv": rv, "trade": False}); continue
+        i = idx[0]; e = float(C[i]); R_ = abs(e - stop)
+        if R_ <= 0 or R_ / e > 0.04:
+            continue
+        out, two = None, False
+        kend = int(np.searchsorted(ts, d0 + 6 * 3600 + 5 * 60, side="right") - 1)
+        for j in range(i + 1, max(i + 1, kend + 1)):
+            if (L[j] <= stop if d > 0 else H[j] >= stop):
+                out = -1.0; break
+            if not two and ((H[j] - e) * d >= 2 * R_ if d > 0 else (e - L[j]) >= 2 * R_):
+                two = True
+        if out is None:
+            out = (float(C[max(i, min(len(C) - 1, kend))]) - e) * d / R_
+        EV.append({"s": s, "d": d, "rv": rv, "trade": True, "r": out, "pct": out * R_ / e * 100, "two": two, "t": ts[i]})
+    return EV
+ORBE = orb_study()
+print("\n=== 3g · STOCKS IN PLAY - the 5-minute opening range breakout, the first 5 minutes pick the side, stop = the other side (1R), out at 15:20 · %s" % day)
+def orow(L, name):
+    T_ = [e for e in L if e.get("trade")]
+    if not T_:
+        print("  %-46s none" % name); return
+    w = sum(1 for e in T_ if e["r"] > 0)
+    print("  %-46s %4d · WON %3d%% · 2R reached %3d%% · average %+.2fR (%+.2f%% on the share) · total %+.1fR" % (
+        name, len(T_), round(100 * w / len(T_)), round(100 * sum(1 for e in T_ if e["two"]) / len(T_)), sum(e["r"] for e in T_) / len(T_),
+        sum(e["pct"] for e in T_) / len(T_), sum(e["r"] for e in T_)))
+ranked = sorted([e for e in ORBE if e.get("rv")], key=lambda e: -e["rv"])
+top = {id(e) for e in ranked[:20] if e["rv"] >= 1.0}
+for d, lab in ((0, "every F&O share"), (1, "▲ CE side"), (-1, "▼ PE side")):
+    E = [e for e in ORBE if (not d or e["d"] == d)]
+    orow(E, lab)
+    orow([e for e in E if id(e) in top], "   ... the STOCKS IN PLAY (top 20 by RVOL, 1x+)")
+    orow([e for e in E if e.get("rv") and e["rv"] >= 3.0], "   ... RVOL 3x+")
+    orow([e for e in E if e.get("rv") is not None and e["rv"] < 1.0], "   ... RVOL under 1x (not in play)")
+print("  READ: average R above 0 = it pays. Taking 1R = your risk per trade (e.g. ₹10,000), +0.20R a trade over 20 trades = +4R = ₹40,000.")
+
 if "ib" in sys.argv[2:]:
     sys.exit(0)                                                          # python3 fastreplay.py DAY ib - only the initial balance (fast)
 
