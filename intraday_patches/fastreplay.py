@@ -991,23 +991,51 @@ _sec = WW.sectors_of(); _of = {}
 for _k, _v in _sec.items():
     for _x in _v:
         _of.setdefault(_x, _k)
+def feat(s, i, d):
+    """what was there at the entry (Rama, 14 Nov: "check those shares - why some went up and some went down, on what basis") -> flags string
+    R results today / last evening · S its sector with it today · N NIFTY with it today · V volume 2x its normal so far · M new futures money (OI +2%
+    since the open) · W on its side of VWAP · G gapped its way 1%+ · E before 10:00 · X the 3 together (S + M + V)"""
+    ts, C, OI = MIN[s]; i = max(0, min(int(i), len(C) - 1)); t = ts[i]; p = float(C[i])
+    f = {"R": s in RES}
+    peers = []
+    for x in (_sec.get(_of.get(s)) or []):
+        if x != s and x in MIN and PCL.get(x):
+            jx = int(np.searchsorted(MIN[x][0], t, side="right") - 1)
+            if jx >= 0:
+                peers.append((float(MIN[x][1][jx]) / PCL[x] - 1) * 100 * d)
+    f["S"] = bool(peers) and sum(1 for x in peers if x > 0.5) * 2 >= len(peers)
+    NI = IDX.get("NIFTY"); f["N"] = False
+    if NI is not None and PCL.get("NIFTY"):
+        jn = int(np.searchsorted(NI[0], t, side="right") - 1)
+        f["N"] = jn >= 0 and (float(NI[1][jn]) / PCL["NIFTY"] - 1) * 100 * d > 0.2
+    vv, nb, vw = VOLD.get(s, (None, None, None)); f["V"] = False; f["W"] = False
+    if vv is not None:
+        b_ = nb[:i + 1]
+        f["V"] = bool(np.isfinite(b_).sum() > 5 and np.nansum(b_) > 0 and vv[:i + 1].sum() / np.nansum(b_) >= 2.0)
+        f["W"] = (p - float(vw[i])) * d > 0
+    o0 = next((x for x in OI if x), 0)
+    f["M"] = bool(o0 and OI[i] and (OI[i] / o0 - 1) * 100 >= 2.0)
+    pc = PCL.get(s); f["G"] = bool(pc and (float(C[0]) / pc - 1) * 100 * d >= 1.0)
+    f["E"] = HM(t) < "10:00"; f["X"] = f["S"] and f["M"] and f["V"]
+    return "".join(k for k in "RSNVMWGEX" if f[k]) or "-"
 PRO = []
 for s_, i_, d_, early in ENT:                                            # +3% momentum, and its opposite (the fade)
-    PRO.append((s_, "MOMENTUM " + ("before 10" if early else "after 10"), d_, play(s_, i_, d_, {"tgt": 2.0})))
-    PRO.append((s_, "FADE the 3% " + ("before 10" if early else "after 10"), -d_, play(s_, i_, -d_, {"tgt": 2.0})))
+    PRO.append((s_, "MOMENTUM " + ("before 10" if early else "after 10"), d_, play(s_, i_, d_, {"tgt": 2.0}), feat(s_, i_, d_)))
+    PRO.append((s_, "FADE the 3% " + ("before 10" if early else "after 10"), -d_, play(s_, i_, -d_, {"tgt": 2.0}), feat(s_, i_, -d_)))
 for e in IBE:
     if e["m"] == 15:
         ts_, C_, OI_ = MIN[e["s"]]
         i_ = int(np.searchsorted(ts_, e["t"]))
-        PRO.append((e["s"], "BREAK of the first 15 min", e["d"], play(e["s"], i_, e["d"], {"tgt": 2.0})))
+        PRO.append((e["s"], "BREAK of the first 15 min", e["d"], play(e["s"], i_, e["d"], {"tgt": 2.0}), feat(e["s"], i_, e["d"])))
 for e in ORBE:
     if e.get("trade"):
-        PRO.append((e["s"], "OPENING 5-min BREAK" + (" (in play)" if e.get("rv") and e["rv"] >= 2.0 else ""), e["d"], e["pct"]))
+        PRO.append((e["s"], "OPENING 5-min BREAK" + (" (in play)" if e.get("rv") and e["rv"] >= 2.0 else ""), e["d"], e["pct"],
+                    feat(e["s"], int(np.searchsorted(MIN[e["s"]][0], e["t"])), e["d"])))
 for e in D2:
-    PRO.append((e["s"], "RESULTS DAY 2", e["d"], e["r22"]))
+    PRO.append((e["s"], "RESULTS DAY 2", e["d"], e["r22"], feat(e["s"], 5, e["d"])))
 print("\n=== 3j · THE SHARE PROFILE - %s · the market: %s · %d trades (every setup, every share) - stratpool.py adds the days up" % (day, REG, len(PRO)))
-for s_, st_, d_, r_ in PRO:
-    print("PROFILE|%s|%s|%s|%s|%s|%s|%.3f" % (day, REG, s_, _of.get(s_, "-"), st_, "CE" if d_ > 0 else "PE", r_))
+for s_, st_, d_, r_, fl_ in PRO:
+    print("PROFILE|%s|%s|%s|%s|%s|%s|%.3f|%s" % (day, REG, s_, _of.get(s_, "-"), st_, "CE" if d_ > 0 else "PE", r_, fl_))
 
 # ---------------- 3k · ALL AGREE, THE OPTION WRITERS TOO (Rama, 14 Nov: "HINDALCO - strong resistance at the call side and someone betting the
 # stock will fall, so it fell - there has to be a strong signal"). The +3% / -3% entries of 3e, each with the option chain GIR read before the

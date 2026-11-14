@@ -71,8 +71,8 @@ for f in FILES:
     for ln in open(f, encoding="utf-8"):
         if ln.startswith("PROFILE|"):
             x = ln.rstrip("\n").split("|")
-            if len(x) == 8:
-                P.append({"day": x[1], "reg": x[2], "s": x[3], "sec": x[4], "set": x[5], "side": x[6], "r": float(x[7])})
+            if len(x) >= 8:
+                P.append({"day": x[1], "reg": x[2], "s": x[3], "sec": x[4], "set": x[5], "side": x[6], "r": float(x[7]), "f": x[8] if len(x) > 8 else ""})
 if P:
     def agg(L):
         return len(L), 100 * sum(1 for e in L if e["r"] > 0) / len(L), sum(e["r"] for e in L) / len(L)
@@ -114,3 +114,33 @@ if P:
             rows.sort(reverse=True)
             print("  %-22s best: %-40s %3d · %+.2f%% · won %3.0f%%   worst: %s %+.2f%%" % (sec[:22], rows[0][3], rows[0][1], rows[0][0], rows[0][2], rows[-1][3], rows[-1][0]))
     print("\nREAD: a share's 'best' needs to hold on NEW days before trusting it - 30 days give each share only a few trades. Sector rows are steadier.")
+
+# ---------------- WINNERS vs LOSERS (Rama, 14 Nov: "in every test some went up and some went down - check those shares, why, on what basis") ----------------
+FN = {"R": "results today / last evening", "S": "its sector with it today", "N": "NIFTY with it today", "V": "volume 2x its normal so far",
+      "M": "new futures money (OI +2% since the open)", "W": "on its side of VWAP", "G": "gapped its way 1%+", "E": "before 10:00",
+      "X": "THE 3 TOGETHER (sector + money + volume)"}
+if P and any(e["f"] for e in P):
+    print("\n=== WINNERS vs LOSERS - for each setup, what was there when it WON vs when it LOST (how often, and how much more often)")
+    for st in sets:
+        for side in ("CE", "PE"):
+            L = [e for e in P if e["set"] == st and e["side"] == side and e["f"]]
+            Wn = [e for e in L if e["r"] > 0.3]; Ls = [e for e in L if e["r"] < -0.3]
+            if len(Wn) < 5 or len(Ls) < 5:
+                continue
+            rows = []
+            for k, nm in FN.items():
+                a = sum(1 for e in Wn if k in e["f"]) / len(Wn); b = sum(1 for e in Ls if k in e["f"]) / len(Ls)
+                rows.append(((a + 0.02) / (b + 0.02), a, b, nm))
+            rows.sort(reverse=True)
+            print("  %s %s - %d won · %d lost:" % (st, side, len(Wn), len(Ls)))
+            for lift, a, b, nm in rows:
+                tag = "  ◀ helps" if lift >= 1.5 and a >= 0.15 else ("  ◀ hurts" if lift <= 0.67 and b >= 0.15 else "")
+                print("     %-46s won %3.0f%% · lost %3.0f%% · %.1fx%s" % (nm, 100 * a, 100 * b, lift, tag))
+    print("\n=== THE SHARES THAT WON MOST and LOST MOST (every setup) - day · market · what was there")
+    srt = sorted([e for e in P if e["f"]], key=lambda e: -e["r"])
+    lab = lambda e: " ".join(FN[k].split(" (")[0].split(" today")[0] for k in e["f"] if k in FN and k != "X") or "nothing"
+    for e in srt[:15]:
+        print("  WON  %+5.1f%%  %s %-11s %-32s %s · %s" % (e["r"], e["day"][5:], e["s"], e["set"] + " " + e["side"], e["reg"], lab(e)))
+    for e in srt[-15:]:
+        print("  LOST %+5.1f%%  %s %-11s %-32s %s · %s" % (e["r"], e["day"][5:], e["s"], e["set"] + " " + e["side"], e["reg"], lab(e)))
+    print("READ: '◀ helps' = seen far more when it won - the rule to add · '◀ hurts' = seen more when it lost - the rule to avoid.")
