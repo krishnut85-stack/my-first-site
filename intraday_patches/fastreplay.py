@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""fastreplay.py - READ ONLY. (+ MONEY FIRST: when the futures money starts betting, how fast the share follows) FRIDAY AGAIN, WITH PATCHES 275-278 (Rama, 14 Nov: "recheck one more time with the Friday data after updating the code -
+"""fastreplay.py - READ ONLY. (+ MONEY FIRST: how fast the share follows the futures money · WHAT MAKES A SHARE MOVE: which of the 3 together) FRIDAY AGAIN, WITH PATCHES 275-278 (Rama, 14 Nov: "recheck one more time with the Friday data after updating the code -
 how fast are we getting the futures, options and OI data"). Zerodha keeps every F&O contract's MINUTE candles with OPEN INTEREST: this fetches the
 day's futures (218 shares) and, for every 🌪 card, the 6 strikes nearest the price (CE + PE), then runs the SAME rules as windwatch.py on them:
 the wind (price 3 min · futures OI 3 min · sector), 🌪 BIG MOVER, the writers, and each card to its 🎯 / 🚪. Against the day's 47 real moves and what
@@ -224,6 +224,74 @@ if fast:
     print("  ... and the SLOWEST: " + " · ".join("%s %.0f" % (s, m) for m, s, n in fast[-8:]))
 print("  READ: if the price usually follows in N minutes, GIR's 3-s watch has those N minutes to tell you before the share moves.")
 
+# ---------------- 3c · WHAT MAKES A SHARE MOVE (Rama, 14 Nov: "almost all the shares will have a principle to move up and down - we need to find out") ----------------
+def what_moves():
+    """every START: an F&O share's price 0.5%+ in 3 min (once a share-side in 30 min, 09:18-15:00). At that minute: was NEW futures money coming its
+    way (OI +0.5% in 3 min) · was the money only forced out (OI -0.5%: covering / unwinding) · was its SECTOR moving its way (half its peers or more,
+    0.2%+) · was the whole MARKET (55%+ of all F&O shares). Then 30 min: a REAL MOVE = 1% further its way before 0.5% back · FAILED = 0.5% back first."""
+    sec = WW.sectors_of(); of = {}
+    for kk, v in sec.items():
+        for x in v:
+            of.setdefault(x, kk)
+    T_ = sorted({t for v in MIN.values() for t in v[0]})
+    P3 = {}
+    for t in T_:
+        r = {}
+        for s, (ts, C, OI) in MIN.items():
+            i = np.searchsorted(ts, t, side="right") - 1
+            if i >= 3 and ts[i] >= t - 90 and C[i - 3]:
+                r[s] = (i, float((C[i] / C[i - 3] - 1) * 100), float((OI[i] / OI[i - 3] - 1) * 100) if OI[i] and OI[i - 3] else None)
+        P3[t] = r
+    EV, last = [], {}
+    for t in T_:
+        hm = HM(t)
+        if hm < "09:18" or hm > "15:00":
+            continue
+        r = P3[t]
+        mu = sum(1 for v in r.values() if v[1] > 0.1); md = sum(1 for v in r.values() if v[1] < -0.1); mn = len(r)
+        for s, (i, px3, oi3) in r.items():
+            d = 1 if px3 >= 0.5 else -1 if px3 <= -0.5 else 0
+            if not d or t - last.get((s, d), -1e9) < 1800:
+                continue
+            last[(s, d)] = t
+            ts, C, OI = MIN[s]
+            money = oi3 is not None and oi3 >= 0.5
+            forced = oi3 is not None and oi3 <= -0.5
+            peers = [r[p][1] for p in (sec.get(of.get(s)) or []) if p != s and p in r]
+            sect = bool(peers) and sum(1 for x in peers if x * d > 0.2) * 2 >= len(peers)
+            mkt = (mu if d > 0 else md) >= 0.55 * mn
+            p0 = float(C[i]); res, tm = "nothing", None
+            for j in range(i + 1, min(len(C), i + 31)):
+                mv = (float(C[j]) / p0 - 1) * 100 * d
+                if mv >= 1.0:
+                    res, tm = "real", (ts[j] - ts[i]) / 60; break
+                if mv <= -0.5:
+                    res = "failed"; break
+            EV.append({"s": s, "d": d, "money": money, "forced": forced, "sect": sect, "mkt": mkt, "res": res, "tm": tm})
+    return EV
+WM = what_moves()
+print("\n=== 3b · WHAT MAKES A SHARE MOVE - every start (price 0.5%%+ in 3 min) on %s: %d · which of the 3 were there, and how often it became a REAL move" % (day, len(WM)))
+print("  REAL = 1% further its way within 30 min before 0.5% back · FAILED = 0.5% back first")
+def row(L, name):
+    if not L:
+        print("  %-52s none" % name); return
+    r = [e for e in L if e["res"] == "real"]; f = [e for e in L if e["res"] == "failed"]
+    tm = [e["tm"] for e in r]
+    print("  %-52s %4d starts · REAL %3d%% · FAILED %3d%%%s" % (name, len(L), round(100 * len(r) / len(L)), round(100 * len(f) / len(L)),
+          (" · the real ones got +1%% in a median %.0f min" % med(tm)) if tm else ""))
+row(WM, "the price alone (every start)")
+row([e for e in WM if not e["money"] and not e["forced"]], "price, but the futures money NOT moving")
+row([e for e in WM if e["forced"]], "price + money only forced OUT (covering / unwinding)")
+row([e for e in WM if e["money"]], "price + NEW futures money")
+row([e for e in WM if e["sect"]], "price + its SECTOR")
+row([e for e in WM if e["money"] and e["sect"]], "price + NEW money + SECTOR  = THE 3 TOGETHER")
+row([e for e in WM if e["money"] and e["sect"] and e["mkt"]], "THE 3 + the whole MARKET")
+row([e for e in WM if e["money"] and not e["sect"]], "price + NEW money, sector NOT with it")
+row([e for e in WM if e["sect"] and not e["money"]], "price + sector, NO new money")
+row([e for e in WM if e["money"] and e["sect"] and e["d"] > 0], "  THE 3 TOGETHER ▲ (rise)")
+row([e for e in WM if e["money"] and e["sect"] and e["d"] < 0], "  THE 3 TOGETHER ▼ (fall)")
+print("  READ: the line with the highest REAL and the lowest FAILED is the principle; GIR rings only on that.")
+
 # ---------------- 4 · the wind, minute by minute, with windwatch's own rules ----------------
 SEC = WW.sectors_of(); OF = {}
 for kk, v in SEC.items():
@@ -350,7 +418,9 @@ for n_, (mode, pxm) in enumerate((("strict", 0.8), ("loose", 0.8), ("strict", 0.
         len(sent), len(held), sum(1 for x in res if x > 0), sum(1 for x in res if x < 0), sum(1 for p in sent if p.get("half")), (sum(res) / len(res)) if res else 0))
     why = {}
     for p in sent:
-        w_ = (p.get("why") or "open at the close").split(":")[0].split(" - ")[0]
+        y_ = p.get("why") or ""
+        w_ = "closed 15:10" if y_.startswith("15:10") else "the stop" if y_.startswith("the stop") else "money left" if "money is leaving" in y_ else \
+             "big mover the other way" if "other way" in y_ else "open"
         why[w_] = why.get(w_, 0) + 1
     print("  how they ended: " + " · ".join("%s %d" % (kk, v) for kk, v in sorted(why.items(), key=lambda x: -x[1])))
     if full:
