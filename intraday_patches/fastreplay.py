@@ -554,12 +554,14 @@ def steady():
                            "e1": play(s, i, d, {"stop": 1.0, "trail": 0.75}), "e2": play(s, i, d, {"stop": 1.5, "trail": 1.0}),
                            "e3": play(s, i, d, {"stop": 1.0, "trail": 1.5}), "e4": play(s, i, d, {"stop": 1.0}), "e5": vwap_exit(s, i, d),
                            "e6": play(s, i, d, {"stop": 1.0, "half": 1.0, "trail": 0.75}),
-                           "e7": play(s, i, d, {"stop": 99.0, "trail": 1.0, "trail_from_start": True}), "e8": play(s, i, d, {"stop": 99.0})})
+                           "e7": play(s, i, d, {"stop": 99.0, "trail": 1.0, "trail_from_start": True}), "e8": play(s, i, d, {"stop": 99.0}),
+                           "e9": play(s, i, d, {"stop": 99.0, "trail": 0.5, "trail_from_start": True}), "e0": play(s, i, d, {"stop": 99.0, "trail": 0.75, "trail_from_start": True})})
                 break
     return EV
 STE = steady()
 EXN = [("e1", "stop 1% · trail 0.75% from the best"), ("e2", "stop 1.5% · trail 1% from the best"), ("e3", "stop 1% · trail 1.5% from the best"),
-       ("e4", "stop 1% · hold to 15:20"), ("e5", "stop 1.5% · out when it crosses VWAP"), ("e6", "stop 1% · book half +1%, trail the rest 0.75%"), ("e7", "no stop · out 1% off the best"), ("e8", "no stop · hold to 15:15")]
+       ("e4", "stop 1% · hold to 15:20"), ("e5", "stop 1.5% · out when it crosses VWAP"), ("e6", "stop 1% · book half +1%, trail the rest 0.75%"), ("e7", "no stop · out 1% off the best"), ("e8", "no stop · hold to 15:15"),
+       ("e9", "no stop · out 0.5% off the best"), ("e0", "no stop · out 0.75% off the best")]
 print("\n=== 3n · 🧲 STEADY MOVE - 1%%+ from the open, the day's futures build-up its way (+1%%), on its side of VWAP 15 min · %s · %d trades · after costs %.2f%%" % (day, len(STE), 0.20))
 def strow(L, name):
     if not L:
@@ -579,7 +581,7 @@ for d, lab in ((1, "▲ CE"), (-1, "▼ PE")):
     strow([e for e in E if e["hm"] < "11:00"], "   ... entered before 11:00")
     strow([e for e in E if "11:00" <= e["hm"] < "13:00"], "   ... entered 11:00-13:00")
     strow([e for e in E if e["hm"] >= "13:00"], "   ... entered after 13:00")
-print("  exits: 1 = stop 1%/trail 0.75 · 2 = stop 1.5%/trail 1 · 3 = stop 1%/trail 1.5 · 4 = stop 1%/hold to 15:20 · 5 = out at the VWAP cross · 6 = half at +1%, trail 0.75 · 7 = no stop, out 1% off the best · 8 = no stop, hold to 15:15")
+print("  exits: 1 = stop 1%/trail 0.75 · 2 = stop 1.5%/trail 1 · 3 = stop 1%/trail 1.5 · 4 = stop 1%/hold to 15:20 · 5 = out at the VWAP cross · 6 = half at +1%, trail 0.75 · 7 = no stop, out 1% off the best · 8 = no stop, hold to 15:15 · 9 = no stop, out 0.5% off the best · 0 = no stop, out 0.75% off the best")
 print("  READ: on an at-the-money option about 10x the share's %: +0.30% on the share ≈ +3% on the premium a trade.")
 for e in STE:
     print("PROFILE|%s|%s|%s|%s|%s|%s|%.3f|%s" % (day, REG if "REG" in globals() else "-", e["s"], "-", "STEADY MOVE", "CE" if e["d"] > 0 else "PE", e["e2"],
@@ -589,7 +591,8 @@ for e in STE:
 # and fast burst, whichever way you like, so we have results for different settings"). Each setting: the first entry a share-side per setting
 # (steady) or once a share-side in 30 min (burst), 09:20-14:30, every exit; lines GRID|... are added up over the days by stratpool.py.
 GX = [("t", {"stop": 2.0, "tgt": 2.0}), ("a", {"stop": 1.0, "trail": 0.75}), ("b", {"stop": 1.5, "trail": 1.0}), ("h", {"stop": 1.0, "half": 1.0, "trail": 0.75}),
-      ("n", {"stop": 99.0, "trail": 1.0, "trail_from_start": True}), ("x", {"stop": 99.0})]           # n, x: no fixed stop (Rama watches the trade himself)
+      ("n", {"stop": 99.0, "trail": 1.0, "trail_from_start": True}), ("x", {"stop": 99.0}),
+      ("p", {"stop": 99.0, "trail": 0.5, "trail_from_start": True}), ("q", {"stop": 99.0, "trail": 0.75, "trail_from_start": True})]   # out 0.5% / 0.75% off the best           # n, x: no fixed stop (Rama watches the trade himself)
 def grid():
     out = []
     for s, (ts, C, OI) in MIN.items():
@@ -644,7 +647,7 @@ for kind, d, nm, rs, early in GRD:
         for j, r in enumerate(rs):
             a[1 + j] += r - 0.20
             a[1 + len(GX) + j] += 1 if r - 0.20 > 0 else 0
-print("\n=== 3o · THE SETTINGS GRID - %s · %d entries · exits: t stop2/target2 · a stop1/trail0.75 · b stop1.5/trail1 · h half+1%%/trail0.75 · n no stop, out 1%% off the best · x no stop, hold to 15:15 · after costs" % (day, len(GRD)))
+print("\n=== 3o · THE SETTINGS GRID - %s · %d entries · exits: t stop2/target2 · a stop1/trail0.75 · b stop1.5/trail1 · h half+1%%/trail0.75 · n no stop, out 1%% off the best · x no stop, hold to 15:15 · p no stop, out 0.5%% off the best · q no stop, out 0.75%% off the best · after costs" % (day, len(GRD)))
 for k, a in sorted(agg.items()):
     print("GRID|%s|%s|%s|%s|%s|%d|%s|%s" % (day, k[0], k[1], k[2], k[3], a[0], ",".join("%.3f" % x for x in a[1:1 + len(GX)]), ",".join(str(x) for x in a[1 + len(GX):])))
 

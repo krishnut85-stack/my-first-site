@@ -237,7 +237,7 @@ for f in FILES:
         for e_, v in ex.items():
             a[1][e_] = a[1].get(e_, 0.0) + n * v
 if SA:
-    print("\n=== 🧲 STEADY MOVE - all days, avg % on the share a trade AFTER costs, by exit (1 stop1/trail0.75 · 2 stop1.5/trail1 · 3 stop1/trail1.5 · 4 stop1/hold 15:20 · 5 VWAP cross · 6 half+1%, trail0.75 · 7 no stop, 1% off the best · 8 no stop, hold 15:15)")
+    print("\n=== 🧲 STEADY MOVE - all days, avg % on the share a trade AFTER costs, by exit (1 stop1/trail0.75 · 2 stop1.5/trail1 · 3 stop1/trail1.5 · 4 stop1/hold 15:20 · 5 VWAP cross · 6 half+1%, trail0.75 · 7 no stop, 1% off the best · 8 no stop, hold 15:15 · 9 no stop, 0.5% off the best · 0 no stop, 0.75% off the best)")
     for k in SO:
         n, ex = SA[k]
         best = max(ex, key=lambda e_: ex[e_]) if ex else None
@@ -259,7 +259,7 @@ for f in FILES:
             for j in range(len(su)):
                 a[1][j] += su[j]; a[2][j] += wi[j]
 if GA:
-    EXL = ["t stop2/target2", "a stop1/trail0.75", "b stop1.5/trail1", "h half+1%/trail0.75", "n no stop, out 1% off the best", "x no stop, hold to 15:15"]
+    EXL = ["t stop2/target2", "a stop1/trail0.75", "b stop1.5/trail1", "h half+1%/trail0.75", "n no stop, out 1% off the best", "x no stop, hold to 15:15", "p no stop, out 0.5% off the best", "q no stop, out 0.75% off the best"]
     print("\n=== THE SETTINGS GRID - all days, after costs (avg % on the share a trade · won) - the best exit for each setting; ≈10x on an at-the-money premium")
     for kind in ("STEADY", "BURST"):
         for side in ("CE", "PE"):
