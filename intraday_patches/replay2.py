@@ -9,7 +9,8 @@ BASE = "/home/globalbot/intraday"
 sys.path.insert(0, BASE)
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
 day = sys.argv[1] if len(sys.argv) > 1 else "2026-11-13"
-SYMS = [s.upper() for s in sys.argv[2:]] or ["POLICYBZR", "HINDALCO"]
+SWEEP = "sweep" in [a.lower() for a in sys.argv[2:]]
+SYMS = [s.upper() for s in sys.argv[2:] if s.lower() != "sweep"] or ["POLICYBZR", "HINDALCO"]
 dd = dt.date.fromisoformat(day)
 import core
 k = core.get_kite()
@@ -131,6 +132,34 @@ for s in SYMS:
     old1 = A[0][0][:5] if A and A[0][0] != "-" else "99"
     if mv:
         print("  → the share started moving at %s · GIR's first alert then: %s · the first new-rule signal: %s" % (mv["hm"], old1 if old1 != "99" else "none", new1 if new1 != "99" else "none"))
+    if SWEEP:
+        hi = max(r["chg"] * d for r in R)
+        print("  SETTINGS TEST - the 🌪 BIG MOVER rule with other numbers (a burst in 3 min + new futures money: the last 3 min OR the day's build-up)")
+        print("  %-62s %-6s %-9s %-14s %s" % ("setting", "alert", "price", "move left", "alerts that day (noise)"))
+        for pb in (0.5, 0.8, 1.0):
+            for o3m in (0.3, 0.5):
+                for odm in (0.5, 1.0, 1.5, 2.0, None):
+                    def rule(r, pb=pb, o3m=o3m, odm=odm):
+                        sec_ok = (r["su"] if d > 0 else r["sd"]) * 2 >= max(1, len(peers))
+                        money = r["o3"] >= o3m or (odm is not None and r["od"] >= odm and r["chg"] * d >= 0.3)
+                        sc = (abs(r["p3"]) >= 0.6) + bool(money) + bool(sec_ok)
+                        return r["p3"] * d >= pb and money and sc >= 2
+                    hits, last = [], -999
+                    for i, r in enumerate(R):
+                        if r["hm"] >= "09:16" and r["hm"] <= "15:00" and rule(r) and i - last >= 30:
+                            hits.append(r); last = i
+                    nm = "burst %.1f%% in 3 min · money: OI +%.1f%% in 3 min%s" % (pb, o3m, (" OR the day's build-up +%.1f%%" % odm) if odm else " only (the old way)")
+                    star = " ◀ patch 287" if (pb == 0.8 and o3m == 0.5 and odm == 1.0) else (" ◀ the old rule" if (pb == 0.8 and o3m == 0.5 and odm is None) else "")
+                    if hits:
+                        f = hits[0]
+                        print("  %-62s %-6s %+6.2f%%  %+6.2f%% left   %d%s" % (nm, f["hm"], f["chg"], hi - f["chg"] * d, len(hits), star))
+                    else:
+                        print("  %-62s %-6s %-9s %-14s %d%s" % (nm, "none", "-", "-", 0, star))
+        print("  ⏳ MONEY LOADING with other numbers (futures OI up in 15 min while the price is still flat - the head start):")
+        for o15m in (0.3, 0.5, 0.8):
+            for flat in (0.3, 0.5):
+                f = first(lambda r, o15m=o15m, flat=flat: r["o15"] >= o15m and abs(r["p15"]) < flat, "09:30")
+                print("   OI +%.1f%% in 15 min · price within %.1f%%   -> %s" % (o15m, flat, ("%s at %+.2f%% (the jump began %s)" % (f["hm"], f["chg"], mv["hm"] if mv else "-")) if f else "none"))
     print("  MINUTE BY MINUTE around the start (price · fut OI since open · OI last 3 min · sector up/down · NIFTY):")
     st = (mv or R[0])["hm"]; i0 = max(0, T.index(st) - 10)
     for r in R[i0:i0 + 25]:
