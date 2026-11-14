@@ -145,23 +145,45 @@ for r in NFO:
         OPT.setdefault(nm, []).append((ex, float(r["strike"]), r["instrument_type"], r["instrument_token"]))
 syms = sorted(s for s in (fo or FUT) if s in FUT)
 print("\n=== 2 · fetching %s's minute candles + OI from Zerodha: %d futures (about %d s) ..." % (day, len(syms), len(syms) * 0.4), flush=True)
-def hist(tok):
+def hist(tok, back=0):
     for a in range(3):
         try:
-            return k.historical_data(tok, D0.replace(tzinfo=None), D0.replace(hour=15, minute=30, tzinfo=None), "minute", oi=True)
+            return k.historical_data(tok, (D0 - dt.timedelta(days=back)).replace(tzinfo=None), D0.replace(hour=15, minute=30, tzinfo=None), "minute", oi=True)
         except Exception as ex:
             if "Too many" in str(ex) or "rate" in str(ex).lower():
                 time.sleep(1.5); continue
             return []
     return []
 MIN = {}            # sym -> (ts[], close[], oi[])
-for n, s in enumerate(syms):
-    R = hist(FUT[s][0]); time.sleep(0.34)
+VOLD = {}           # sym -> (volume[], the normal volume for that minute of the day[], VWAP[])  - the last 8 days give the normal
+def split_day(R):
+    today = [r for r in R if r["date"].astimezone(IST).date() == dd]
+    base = {}
+    for r in R:
+        dl = r["date"].astimezone(IST)
+        if dl.date() < dd:
+            base.setdefault(dl.hour * 60 + dl.minute, []).append(float(r.get("volume") or 0))
+    return today, base
+def vol_info(today, base):
+    v = np.array([float(r.get("volume") or 0) for r in today], float)
+    nb = np.array([(sorted(base[m])[len(base[m]) // 2] if len(base.get(m) or []) >= 2 else np.nan)
+                   for m in ((r["date"].astimezone(IST).hour * 60 + r["date"].astimezone(IST).minute) for r in today)], float)
+    tp = np.array([(float(r.get("high") or r["close"]) + float(r.get("low") or r["close"]) + float(r["close"])) / 3 for r in today], float)
+    cv = np.cumsum(v); vw = np.where(cv > 0, np.cumsum(tp * v) / np.maximum(cv, 1), tp)
+    return v, nb, vw
+IDX = {}
+for n, s in enumerate(syms + [x for x in ("NIFTY", "BANKNIFTY") if x in FUT and x not in syms]):
+    R = hist(FUT[s][0], back=8); time.sleep(0.34)
+    R, B = split_day(R)
     if len(R) >= 30:
-        MIN[s] = (np.array([r["date"].timestamp() + 60 for r in R], float), np.array([r["close"] for r in R], float), np.array([r.get("oi") or 0 for r in R], float))
+        arr = (np.array([r["date"].timestamp() + 60 for r in R], float), np.array([r["close"] for r in R], float), np.array([r.get("oi") or 0 for r in R], float))
+        if s in ("NIFTY", "BANKNIFTY"):
+            IDX[s] = arr                                                   # the index tide - not a share
+        else:
+            MIN[s] = arr; VOLD[s] = vol_info(R, B)
     if n % 50 == 49:
         print("  %d of %d" % (n + 1, len(syms)), flush=True)
-print("  futures with minute data: %d" % len(MIN))
+print("  futures with minute data: %d · volume normal from the 8 days before: %d · index: %s" % (len(MIN), sum(1 for v in VOLD.values() if np.isfinite(v[1]).sum() > 100), " ".join(IDX) or "-"))
 
 # ---------------- 3b · MONEY FIRST, THEN THE PRICE (Rama, 14 Nov: "when the futures money is betting for a rise or a fall, how fast does the share react") ----------------
 def money_first():
@@ -226,40 +248,48 @@ print("  READ: if the price usually follows in N minutes, GIR's 3-s watch has th
 
 # ---------------- 3c · WHAT MAKES A SHARE MOVE (Rama, 14 Nov: "almost all the shares will have a principle to move up and down - we need to find out") ----------------
 def what_moves():
-    """every START: an F&O share's price 0.5%+ in 3 min (once a share-side in 30 min, 09:18-15:00). At that minute: was NEW futures money coming its
-    way (OI +0.5% in 3 min) · was the money only forced out (OI -0.5%: covering / unwinding) · was its SECTOR moving its way (half its peers or more,
-    0.2%+) · was the whole MARKET (55%+ of all F&O shares). Then 30 min: a REAL MOVE = 1% further its way before 0.5% back · FAILED = 0.5% back first."""
+    """every START: an F&O share's price 0.5%+ in 3 min (once a share-side in 30 min, 09:18-15:00). At that minute:
+    MONEY  NEW futures money its way (OI +0.5% in 3 min) · FORCED  money only forced out (OI -0.5%: covering / unwinding)
+    SECTOR half its peers or more 0.2%+ its way · MARKET 55%+ of all F&O shares its way
+    VOLUME the last 3 min traded 2x+ the share's NORMAL for that time of day (the 8 days before) - the big hands
+    VWAP   the price on its side of the day's average price (above for a rise, below for a fall) - where institutions buy / sell
+    NIFTY  NIFTY futures 0.1%+ its way in the same 3 min - the index tide
+    Then 30 min: REAL = 1% further its way before 0.5% back · FAILED = 0.5% back first."""
     sec = WW.sectors_of(); of = {}
     for kk, v in sec.items():
         for x in v:
             of.setdefault(x, kk)
     T_ = sorted({t for v in MIN.values() for t in v[0]})
-    P3 = {}
-    for t in T_:
-        r = {}
-        for s, (ts, C, OI) in MIN.items():
-            i = np.searchsorted(ts, t, side="right") - 1
-            if i >= 3 and ts[i] >= t - 90 and C[i - 3]:
-                r[s] = (i, float((C[i] / C[i - 3] - 1) * 100), float((OI[i] / OI[i - 3] - 1) * 100) if OI[i] and OI[i - 3] else None)
-        P3[t] = r
+    NI = IDX.get("NIFTY")
     EV, last = [], {}
     for t in T_:
         hm = HM(t)
         if hm < "09:18" or hm > "15:00":
             continue
-        r = P3[t]
+        r = {}
+        for s, (ts, C, OI) in MIN.items():
+            i = np.searchsorted(ts, t, side="right") - 1
+            if i >= 3 and ts[i] >= t - 90 and C[i - 3]:
+                r[s] = (i, float((C[i] / C[i - 3] - 1) * 100), float((OI[i] / OI[i - 3] - 1) * 100) if OI[i] and OI[i - 3] else None)
         mu = sum(1 for v in r.values() if v[1] > 0.1); md = sum(1 for v in r.values() if v[1] < -0.1); mn = len(r)
+        n3 = None
+        if NI is not None:
+            ni = np.searchsorted(NI[0], t, side="right") - 1
+            if ni >= 3 and NI[1][ni - 3]:
+                n3 = float((NI[1][ni] / NI[1][ni - 3] - 1) * 100)
         for s, (i, px3, oi3) in r.items():
             d = 1 if px3 >= 0.5 else -1 if px3 <= -0.5 else 0
             if not d or t - last.get((s, d), -1e9) < 1800:
                 continue
             last[(s, d)] = t
             ts, C, OI = MIN[s]
-            money = oi3 is not None and oi3 >= 0.5
-            forced = oi3 is not None and oi3 <= -0.5
+            vv, nb, vw = VOLD.get(s, (None, None, None))
+            rv = None
+            if vv is not None and i >= 2:
+                b_ = nb[i - 2:i + 1]
+                if np.isfinite(b_).all() and b_.sum() > 0:
+                    rv = float(vv[i - 2:i + 1].sum() / b_.sum())
             peers = [r[p][1] for p in (sec.get(of.get(s)) or []) if p != s and p in r]
-            sect = bool(peers) and sum(1 for x in peers if x * d > 0.2) * 2 >= len(peers)
-            mkt = (mu if d > 0 else md) >= 0.55 * mn
             p0 = float(C[i]); res, tm = "nothing", None
             for j in range(i + 1, min(len(C), i + 31)):
                 mv = (float(C[j]) / p0 - 1) * 100 * d
@@ -267,11 +297,17 @@ def what_moves():
                     res, tm = "real", (ts[j] - ts[i]) / 60; break
                 if mv <= -0.5:
                     res = "failed"; break
-            EV.append({"s": s, "d": d, "money": money, "forced": forced, "sect": sect, "mkt": mkt, "res": res, "tm": tm})
+            EV.append({"s": s, "d": d, "res": res, "tm": tm, "rv": rv,
+                       "money": oi3 is not None and oi3 >= 0.5, "forced": oi3 is not None and oi3 <= -0.5,
+                       "sect": bool(peers) and sum(1 for x in peers if x * d > 0.2) * 2 >= len(peers),
+                       "mkt": (mu if d > 0 else md) >= 0.55 * mn,
+                       "vol": rv is not None and rv >= 2.0,
+                       "vwap": vw is not None and (float(C[i]) - float(vw[i])) * d > 0,
+                       "nifty": n3 is not None and n3 * d >= 0.1})
     return EV
 WM = what_moves()
-print("\n=== 3b · WHAT MAKES A SHARE MOVE - every start (price 0.5%%+ in 3 min) on %s: %d · which of the 3 were there, and how often it became a REAL move" % (day, len(WM)))
-print("  REAL = 1% further its way within 30 min before 0.5% back · FAILED = 0.5% back first")
+print("\n=== 3b · WHAT MAKES A SHARE MOVE - every start (price 0.5%%+ in 3 min) on %s: %d · which forces were there, and how often it became a REAL move" % (day, len(WM)))
+print("  REAL = 1% further its way within 30 min before 0.5% back · FAILED = 0.5% back first · VOLUME = 2x+ its normal for that minute (8 days before)")
 def row(L, name):
     if not L:
         print("  %-52s none" % name); return
@@ -286,16 +322,91 @@ def row(L, name):
     print("  %-52s %4d starts · REAL %3d%% · FAILED %3d%%%s" % (name, len(L), round(100 * len(r) / len(L)), round(100 * len(f) / len(L)),
           (" · the real ones got +1%% in a median %.0f min" % med(tm)) if tm else ""))
     print("  %-52s %s · %s" % ("", side(1), side(-1)))
+F = lambda *ks: [e for e in WM if all(e[k] for k in ks)]
 row(WM, "the price alone (every start)")
 row([e for e in WM if not e["money"] and not e["forced"]], "price, but the futures money NOT moving")
 row([e for e in WM if e["forced"]], "price + money only forced OUT (covering / unwinding)")
-row([e for e in WM if e["money"]], "price + NEW futures money")
-row([e for e in WM if e["sect"]], "price + its SECTOR")
-row([e for e in WM if e["money"] and e["sect"]], "price + NEW money + SECTOR  = THE 3 TOGETHER")
-row([e for e in WM if e["money"] and e["sect"] and e["mkt"]], "THE 3 + the whole MARKET")
-row([e for e in WM if e["money"] and not e["sect"]], "price + NEW money, sector NOT with it")
-row([e for e in WM if e["sect"] and not e["money"]], "price + sector, NO new money")
-print("  READ: F&O works both ways - the line with the highest REAL and the lowest FAILED, for the rise (CE) and for the fall (PE), is the principle.")
+row(F("money"), "price + NEW futures money")
+row(F("sect"), "price + its SECTOR")
+row(F("vol"), "price + VOLUME surge (the big hands)")
+row(F("vwap"), "price + on its side of VWAP")
+row(F("nifty"), "price + NIFTY with it")
+row(F("money", "sect"), "THE 3: price + NEW money + SECTOR")
+row(F("money", "sect", "vol"), "THE 3 + VOLUME")
+row(F("money", "vol"), "price + NEW money + VOLUME")
+row([e for e in WM if e["vol"] and not e["money"]], "price + VOLUME, NO new futures money (cash buying)")
+row(F("money", "sect", "vol", "vwap"), "THE 3 + VOLUME + VWAP")
+row(F("money", "sect", "vol", "vwap", "nifty"), "ALL: THE 3 + VOLUME + VWAP + NIFTY")
+row(F("money", "sect", "mkt"), "THE 3 + the whole MARKET")
+# the best combinations, found from the data (each side on its own, 12+ starts)
+import itertools
+KS = ("money", "sect", "vol", "vwap", "nifty", "mkt")
+NM = {"money": "new money", "sect": "sector", "vol": "volume", "vwap": "VWAP", "nifty": "NIFTY", "mkt": "market"}
+for d, lab in ((1, "▲ RISE (CE)"), (-1, "▼ FALL (PE)")):
+    S_ = [e for e in WM if e["d"] == d]
+    base = (sum(1 for e in S_ if e["res"] == "real") / len(S_)) if S_ else 0
+    best = []
+    for n_ in range(1, 5):
+        for combo in itertools.combinations(KS, n_):
+            L_ = [e for e in S_ if all(e[k] for k in combo)]
+            if len(L_) < 12:
+                continue
+            re_ = sum(1 for e in L_ if e["res"] == "real") / len(L_); fa = sum(1 for e in L_ if e["res"] == "failed") / len(L_)
+            best.append((re_ - fa, re_, fa, len(L_), combo))
+    best.sort(key=lambda x: -x[0])
+    print("  THE BEST TOGETHER for a %s (price alone: REAL %d%% of %d starts):" % (lab, round(100 * base), len(S_)))
+    for sc, re_, fa, n_, combo in best[:6]:
+        print("     price + %-40s %4d starts · REAL %3d%% · FAILED %3d%%" % (" + ".join(NM[k] for k in combo), n_, round(100 * re_), round(100 * fa)))
+print("  READ: F&O works both ways - the combination with the highest REAL and the lowest FAILED, for the rise (CE) and for the fall (PE), is the principle.")
+
+# ---------------- 3c · HIDDEN ORDERS: heavy volume, price stuck (Rama, 14 Nov: "we have to find a way to find the news and hidden orders") ----------------
+def hidden():
+    """a big hidden buyer / seller soaks up the other side at one level: the last 3 min traded 3x+ the normal but the price moved under 0.2%.
+    Then 30 min: did it break out 1%+ (which way first)? Against the same shares at ANY moment (every 15 min) as the yardstick."""
+    H, B = [], []
+    for s, (ts, C, OI) in MIN.items():
+        vv, nb, vw = VOLD.get(s, (None, None, None))
+        if vv is None:
+            continue
+        last = -1e9
+        for i in range(3, len(C) - 1):
+            hm = HM(ts[i])
+            if hm < "09:20" or hm > "15:00":
+                continue
+            def out(i0):
+                p0 = float(C[i0])
+                for j in range(i0 + 1, min(len(C), i0 + 31)):
+                    mv = (float(C[j]) / p0 - 1) * 100
+                    if abs(mv) >= 1.0:
+                        return 1 if mv > 0 else -1
+                return 0
+            if i % 15 == 0:
+                B.append(out(i))
+            b_ = nb[i - 2:i + 1]
+            if not np.isfinite(b_).all() or b_.sum() <= 0 or ts[i] - last < 1800:
+                continue
+            rv = float(vv[i - 2:i + 1].sum() / b_.sum()); px3 = float((C[i] / C[i - 3] - 1) * 100)
+            if rv >= 3.0 and abs(px3) < 0.2:
+                last = ts[i]
+                oi3 = float((OI[i] / OI[i - 3] - 1) * 100) if OI[i] and OI[i - 3] else 0.0
+                H.append({"s": s, "t": ts[i], "o": out(i), "rv": rv, "oi3": oi3, "side": 1 if float(C[i]) >= float(vw[i]) else -1})
+    return H, B
+HD, BS = hidden()
+print("\n=== 3c · HIDDEN ORDERS? - the last 3 min traded 3x+ the normal, but the price stuck (moved under 0.2%%): %d times on %s" % (len(HD), day))
+def brk(L):
+    if not L:
+        return "none"
+    u = sum(1 for x in L if (x["o"] if isinstance(x, dict) else x) > 0); d_ = sum(1 for x in L if (x["o"] if isinstance(x, dict) else x) < 0)
+    return "%d · broke out 1%%+ within 30 min: %d%% (up %d · down %d)" % (len(L), round(100 * (u + d_) / len(L)), u, d_)
+print("  heavy volume, price stuck          " + brk(HD))
+print("  any moment (the yardstick)         " + brk(BS))
+print("  ... price ABOVE VWAP when stuck    " + brk([x for x in HD if x["side"] > 0]))
+print("  ... price BELOW VWAP when stuck    " + brk([x for x in HD if x["side"] < 0]))
+print("  ... futures OI rising (+0.3%+)      " + brk([x for x in HD if x["oi3"] >= 0.3]))
+print("  ... futures OI falling (-0.3%)      " + brk([x for x in HD if x["oi3"] <= -0.3]))
+if HD:
+    print("  where: " + " · ".join("%s %s%s" % (HM(x["t"]), x["s"], {1: "↑", -1: "↓", 0: "·"}[x["o"]]) for x in sorted(HD, key=lambda x: x["t"])[:25]))
+print("  READ: if 'heavy volume, price stuck' breaks out far more often than 'any moment', GIR can watch for it live (the engine has the volume every second).")
 
 # ---------------- 4 · the wind, minute by minute, with windwatch's own rules ----------------
 SEC = WW.sectors_of(); OF = {}
