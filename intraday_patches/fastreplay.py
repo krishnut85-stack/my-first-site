@@ -982,6 +982,76 @@ for e in D2:
 print("\n=== 3j · THE SHARE PROFILE - %s · the market: %s · %d trades (every setup, every share) - stratpool.py adds the days up" % (day, REG, len(PRO)))
 for s_, st_, d_, r_ in PRO:
     print("PROFILE|%s|%s|%s|%s|%s|%s|%.3f" % (day, REG, s_, _of.get(s_, "-"), st_, "CE" if d_ > 0 else "PE", r_))
+
+# ---------------- 3k · ALL AGREE, THE OPTION WRITERS TOO (Rama, 14 Nov: "HINDALCO - strong resistance at the call side and someone betting the
+# stock will fall, so it fell - there has to be a strong signal"). The +3% / -3% entries of 3e, each with the option chain GIR read before the
+# entry (chains.db, the nearest expiry, change vs the day before's last reading): did the WRITERS back it (CE: put OI added below > call OI
+# added above · PE: the other way) - and how much ROOM to the biggest wall in its way (CE: the call wall above · PE: the put wall below)?
+def chain_load():
+    out, prev = {}, {}
+    try:
+        c = ro("chains.db")
+        pd_ = c.execute("select max(d) from chain where d < ?", (day,)).fetchone()[0]
+        for sym, t, ex, k, kd, oi, sp in c.execute("select sym, t, exp, strike, kind, oi, spot from chain where d=? and exp >= ?", (day, day)):
+            t = str(t); t = t[:8] if len(t) >= 8 else t[:5] + ":00"
+            out.setdefault(sym, {}).setdefault(t, []).append((str(ex), float(k), kd, float(oi or 0), float(sp or 0)))
+        if pd_:
+            last = {}
+            for sym, t, ex, k, kd, oi in c.execute("select sym, t, exp, strike, kind, oi from chain where d=? and exp >= ?", (pd_, day)):
+                t = str(t)
+                if t >= last.get(sym, ""):
+                    if t > last.get(sym, ""):
+                        prev[sym] = {}
+                    last[sym] = t
+                    prev[sym][(str(ex), float(k), kd)] = float(oi or 0)
+        c.close()
+    except Exception as ex:
+        print("(chains.db: %s)" % str(ex)[:80])
+    return out, prev
+CHN, CHP = chain_load()
+def writers_at(s, t, px, d):
+    R = CHN.get(s) or {}
+    hm_ = dt.datetime.fromtimestamp(t, IST).strftime("%H:%M:%S")
+    ts_ = [x for x in R if x <= hm_]
+    if not ts_:
+        return None
+    rows = R[max(ts_)]
+    ex = min(r[0] for r in rows)
+    rows = [r for r in rows if r[0] == ex]
+    P = CHP.get(s) or {}
+    ca = sum(r[3] - P.get((r[0], r[1], r[2]), r[3]) for r in rows if r[2] == "CE" and px < r[1] <= px * 1.06)
+    pa = sum(r[3] - P.get((r[0], r[1], r[2]), r[3]) for r in rows if r[2] == "PE" and px * 0.94 <= r[1] < px)
+    calls = [r for r in rows if r[2] == "CE" and r[1] > px]; puts = [r for r in rows if r[2] == "PE" and r[1] < px]
+    if not calls or not puts:
+        return None
+    cw = max(calls, key=lambda r: r[3])[1]; pw = max(puts, key=lambda r: r[3])[1]
+    agree = (pa > ca and pa > 0) if d > 0 else (ca > pa and ca > 0)
+    against = (ca > pa and ca > 0) if d > 0 else (pa > ca and pa > 0)
+    room = (cw / px - 1) * 100 if d > 0 else (1 - pw / px) * 100
+    return {"agree": agree, "against": against, "room": room}
+AGR = []
+for e in MO:
+    if e["L"] != 3.0:
+        continue
+    ts_, C_, OI_ = MIN[e["s"]]
+    i_ = int(np.searchsorted(ts_, e["t"]))
+    w_ = writers_at(e["s"], e["t"], float(C_[min(i_, len(C_) - 1)]), e["d"])
+    if w_:
+        AGR.append(dict(e, **w_))
+print("\n=== 3k · ALL AGREE, THE OPTION WRITERS TOO - the +3%% / -3%% entries with the option chain read before them (%d of %d had a reading) · %s" % (
+    len(AGR), sum(1 for e in MO if e["L"] == 3.0), day))
+for d, lab in ((1, "▲ UP 3%"), (-1, "▼ DOWN 3%")):
+    E = [e for e in AGR if e["d"] == d]
+    mrow(E, "%s - every share with a chain reading" % lab)
+    if E:
+        mrow([e for e in E if e["agree"]], "   ... the WRITERS back it")
+        mrow([e for e in E if e["against"]], "   ... the WRITERS against it")
+        mrow([e for e in E if e["room"] >= 2.0], "   ... ROOM 2%+ to the biggest wall in its way")
+        mrow([e for e in E if e["room"] < 1.0], "   ... a WALL within 1% (in the way)")
+        mrow([e for e in E if e["agree"] and e["room"] >= 2.0], "   ... writers back it + ROOM 2%+")
+        mrow([e for e in E if e["agree"] and (e["sect"] if d > 0 else e["money"])], "   ... writers back it + " + ("its SECTOR (the CE rule)" if d > 0 else "NEW money (the PE rule)"))
+        mrow([e for e in E if e["agree"] and e["room"] >= 2.0 and e["early"] and (e["sect"] if d > 0 else e["money"])], "   ... ALL AGREE: writers + room + before 10 + " + ("sector" if d > 0 else "new money"))
+print("  READ: if 'ALL AGREE' keeps going far more often than every share, GIR's strongest card needs the writers and the room too.")
 if "strat" in sys.argv[2:]:
     sys.exit(0)                                                          # python3 fastreplay.py DAY strat - every study, without the slow 🌪 card replay
 
