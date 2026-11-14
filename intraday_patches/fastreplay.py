@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""fastreplay.py - READ ONLY. FRIDAY AGAIN, WITH PATCHES 275-278 (Rama, 14 Nov: "recheck one more time with the Friday data after updating the code -
+"""fastreplay.py - READ ONLY. (+ MONEY FIRST: when the futures money starts betting, how fast the share follows) FRIDAY AGAIN, WITH PATCHES 275-278 (Rama, 14 Nov: "recheck one more time with the Friday data after updating the code -
 how fast are we getting the futures, options and OI data"). Zerodha keeps every F&O contract's MINUTE candles with OPEN INTEREST: this fetches the
 day's futures (218 shares) and, for every 🌪 card, the 6 strikes nearest the price (CE + PE), then runs the SAME rules as windwatch.py on them:
 the wind (price 3 min · futures OI 3 min · sector), 🌪 BIG MOVER, the writers, and each card to its 🎯 / 🚪. Against the day's 47 real moves and what
@@ -163,6 +163,67 @@ for n, s in enumerate(syms):
         print("  %d of %d" % (n + 1, len(syms)), flush=True)
 print("  futures with minute data: %d" % len(MIN))
 
+# ---------------- 3b · MONEY FIRST, THEN THE PRICE (Rama, 14 Nov: "when the futures money is betting for a rise or a fall, how fast does the share react") ----------------
+def money_first():
+    """every time the futures OI jumps 0.5%+ in 3 min while the price has only begun to lean (0.1-0.5%): new money betting on a rise (price
+    leaning up = early long build-up) or a fall (leaning down = early short build-up). Then, minute by minute for 30 min: when the price went
+    0.5% / 1% further its way, or 0.5% the other way first. Once a share-side in 30 min, not after 15:00."""
+    EV = []
+    for s, (ts, C, OI) in MIN.items():
+        last = {1: -1e9, -1: -1e9}
+        n = len(C)
+        for i in range(3, n - 1):
+            if not OI[i - 3] or not C[i - 3]:
+                continue
+            oi3 = float((OI[i] / OI[i - 3] - 1) * 100); px3 = float((C[i] / C[i - 3] - 1) * 100)
+            if oi3 < 0.5:
+                continue
+            d = 1 if 0.1 <= px3 < 0.5 else -1 if -0.5 < px3 <= -0.1 else 0
+            if not d or ts[i] - last[d] < 1800 or HM(ts[i]) > "15:00":
+                continue
+            last[d] = ts[i]
+            p0 = float(C[i]); t05 = t10 = bad = None; best = 0.0
+            for j in range(i + 1, min(n, i + 31)):
+                mv = (float(C[j]) / p0 - 1) * 100 * d
+                best = max(best, mv)
+                if t05 is None and mv >= 0.5:
+                    t05 = (ts[j] - ts[i]) / 60
+                if t10 is None and mv >= 1.0:
+                    t10 = (ts[j] - ts[i]) / 60
+                if bad is None and mv <= -0.5:
+                    bad = (ts[j] - ts[i]) / 60
+            fol = t05 is not None and (bad is None or t05 < bad)
+            EV.append({"s": s, "d": d, "t": ts[i], "oi3": oi3, "px3": px3, "t05": t05, "t10": t10, "bad": bad, "fol": fol, "best": best})
+    return EV
+EV = money_first()
+print("\n=== 3 · MONEY FIRST, THEN THE PRICE - when the futures money starts betting, how fast does the share follow? (%s, %d shares)" % (day, len(MIN)))
+print("  a 'bet' = futures OI +0.5% or more in 3 min while the price has only begun to lean its way (0.1-0.5%) · then 30 min watched")
+def summ(L, name):
+    if not L:
+        print("  %-44s none" % name); return
+    f = [e for e in L if e["fol"]]; b = [e for e in L if e["bad"] is not None and not e["fol"]]
+    t5 = [e["t05"] for e in f]; t1 = [e["t10"] for e in L if e["t10"] is not None and e["fol"]]
+    print("  %-44s %3d bets · the price FOLLOWED %d (%d%%) · went the OTHER way first %d (%d%%) · nothing much %d" % (
+        name, len(L), len(f), round(100 * len(f) / len(L)), len(b), round(100 * len(b) / len(L)), len(L) - len(f) - len(b)))
+    if t5:
+        print("  %-44s when it followed: +0.5%% more after a median %.0f min (fastest quarter %.0f min) · +1%% after %s min · best in 30 min: median %+.1f%%" % (
+            "", med(t5), sorted(t5)[max(0, len(t5) // 4 - 1)], ("%.0f" % med(t1)) if t1 else "-", med([e["best"] for e in f])))
+summ([e for e in EV if e["d"] > 0], "▲ betting on a RISE (early long build-up)")
+summ([e for e in EV if e["d"] < 0], "▼ betting on a FALL (early short build-up)")
+for lo, hi, nm in ((0.5, 1.0, "small money (OI +0.5-1% in 3 min)"), (1.0, 2.0, "big money (OI +1-2%)"), (2.0, 99, "very big money (OI +2%+)")):
+    summ([e for e in EV if lo <= e["oi3"] < hi], nm)
+for a, b_, nm in (("09:15", "10:00", "at the open (09:15-10:00)"), ("10:00", "13:00", "midday (10:00-13:00)"), ("13:00", "15:01", "afternoon (13:00-15:00)")):
+    summ([e for e in EV if a <= HM(e["t"]) < b_], nm)
+PS = {}
+for e in EV:
+    if e["fol"]:
+        PS.setdefault(e["s"], []).append(e["t05"])
+fast = sorted(((med(v), s, len(v)) for s, v in PS.items()), key=lambda x: x[0])
+if fast:
+    print("  the shares that react FASTEST (median min to +0.5% after the money): " + " · ".join("%s %.0f" % (s, m) for m, s, n in fast[:10]))
+    print("  ... and the SLOWEST: " + " · ".join("%s %.0f" % (s, m) for m, s, n in fast[-8:]))
+print("  READ: if the price usually follows in N minutes, GIR's 3-s watch has those N minutes to tell you before the share moves.")
+
 # ---------------- 4 · the wind, minute by minute, with windwatch's own rules ----------------
 SEC = WW.sectors_of(); OF = {}
 for kk, v in SEC.items():
@@ -262,7 +323,7 @@ OLD = {}
 for n_, (mode, pxm) in enumerate((("strict", 0.8), ("loose", 0.8), ("strict", 0.5), ("loose", 0.5))):
     full = n_ == 0
     cards = run(mode, pxm)
-    print("\n=== %d · 🌪 %s%% in 3 min · order book counted as %s (%s)%s · %d cards%s" % (3 + n_, pxm, "NO" if mode == "strict" else "YES", "the rule now" if pxm == 0.8 else "an idea - not live",
+    print("\n=== %d · 🌪 %s%% in 3 min · order book counted as %s (%s)%s · %d cards%s" % (4 + n_, pxm, "NO" if mode == "strict" else "YES", "the rule now" if pxm == 0.8 else "an idea - not live",
           "" if mode == "strict" else " - the best case", len(cards), " - checking the writers for each (6 strikes × CE/PE, about %d s) ..." % (len(cards) * 12 * 0.35) if full else ""), flush=True)
     for p in cards:
         p["wr"] = writers(p["s"], p["ts"], p["entry"], p["dir"]) if full else None
