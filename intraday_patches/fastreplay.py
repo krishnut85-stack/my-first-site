@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""fastreplay.py - READ ONLY. (+ MONEY FIRST: how fast the share follows the futures money · WHAT MAKES A SHARE MOVE: which of the 3 together) FRIDAY AGAIN, WITH PATCHES 275-278 (Rama, 14 Nov: "recheck one more time with the Friday data after updating the code -
+"""fastreplay.py - READ ONLY. (+ MONEY FIRST: how fast the share follows the futures money · WHAT MAKES A SHARE MOVE: which of the 3 together · BACKWARDS: what was there before the real moves, news + hidden orders) FRIDAY AGAIN, WITH PATCHES 275-278 (Rama, 14 Nov: "recheck one more time with the Friday data after updating the code -
 how fast are we getting the futures, options and OI data"). Zerodha keeps every F&O contract's MINUTE candles with OPEN INTEREST: this fetches the
 day's futures (218 shares) and, for every 🌪 card, the 6 strikes nearest the price (CE + PE), then runs the SAME rules as windwatch.py on them:
 the wind (price 3 min · futures OI 3 min · sector), 🌪 BIG MOVER, the writers, and each card to its 🎯 / 🚪. Against the day's 47 real moves and what
@@ -32,7 +32,7 @@ if sys.argv[1:2] == ["days"]:
     kind = lambda chg, rg: "▼ FALLING" if chg <= -0.6 else "▲ RISING" if chg >= 0.6 else "↕ CHOPPY" if rg >= 1.1 else "→ FLAT"
     for d_, chg, rg, c in rows[-40:]:
         print("  %s %s  %+.2f%%  range %.2f%%  %-10s%s" % (d_, d_.strftime("%a"), chg, rg, kind(chg, rg), "  (thin futures data)" if d_ < old else ""))
-    ok = [x for x in rows if x[0] >= old]
+    ok = [x for x in rows if x[0] >= old and x[0].weekday() < 5]          # weekdays only - a special session (Muhurat) is not a normal day
     pick = []
     for nm, key, rev in (("▼ FALLING", lambda x: x[1], False), ("▲ RISING", lambda x: x[1], True), ("↕ CHOPPY", lambda x: x[2] - abs(x[1]), True), ("→ FLAT", lambda x: abs(x[1]) + x[2], False)):
         L = sorted([x for x in ok if kind(x[1], x[2]) == nm], key=key, reverse=rev)[:2]
@@ -42,7 +42,7 @@ if sys.argv[1:2] == ["days"]:
         print("  %-10s %s  NIFTY %+.2f%% · range %.2f%%" % (nm, x[0], x[1], x[2]))
     ds = " ".join(str(x[0]) for _, x in sorted(pick, key=lambda y: y[1][0]))
     print("\n=== THE COMMAND - replay these %d days (about 5 min each):" % len(pick))
-    print('( set -a; . /home/globalbot/.env; set +a; for d in %s; do echo "##### $d"; python3 %s $d | grep -E "^=== 3[bc]|starts ·|rise \\(CE\\)|BEST TOGETHER|broke out|where:"; done )' % (ds, os.path.abspath(__file__)))
+    print('( set -a; . /home/globalbot/.env; set +a; for d in %s; do echo "##### $d"; python3 %s $d | grep -E "^=== 3[bcd]|BEST TOGETHER|OPPOSITE|follow |broke out|moves:|news \\+|%% · "; done )' % (ds, os.path.abspath(__file__)))
     sys.exit(0)
 day = sys.argv[1] if len(sys.argv) > 1 else ""
 if not day:
@@ -389,6 +389,17 @@ for d, lab in ((1, "▲ RISE (CE)"), (-1, "▼ FALL (PE)")):
     for sc, re_, fa, n_, combo in best[:6]:
         print("     price + %-40s %4d starts · REAL %3d%% · FAILED %3d%%" % (" + ".join(NM[k] for k in combo), n_, round(100 * re_), round(100 * fa)))
 print("  READ: F&O works both ways - the combination with the highest REAL and the lowest FAILED, for the rise (CE) and for the fall (PE), is the principle.")
+def edge(L):
+    """FOLLOW the start: +1% at REAL, -0.5% at FAILED · the OPPOSITE: +0.5% at FAILED, -1% at REAL (else ~0) -> average per trade, on the share"""
+    if not L:
+        return "-"
+    r = sum(1 for e in L if e["res"] == "real") / len(L); f = sum(1 for e in L if e["res"] == "failed") / len(L)
+    return "follow %+.2f%% · opposite %+.2f%% a trade" % (r * 1.0 - f * 0.5, f * 0.5 - r * 1.0)
+print("  THE OPPOSITE TRADE (Rama: 'most of the time it turns opposite'): follow = target 1% / stop 0.5% · opposite = target 0.5% / stop 1%")
+for nm, L in (("every start", WM), ("▲ every rise start", [e for e in WM if e["d"] > 0]), ("▼ every fall start", [e for e in WM if e["d"] < 0]),
+              ("▼ fall start, the market RISING (55%+ up)", [e for e in WM if e["d"] < 0 and not e["mkt"]]), ("▲ rise start + sector + market", [e for e in WM if e["d"] > 0 and e["sect"] and e["mkt"]]),
+              ("▼ fall start + NEW money", [e for e in WM if e["d"] < 0 and e["money"]])):
+    print("     %-44s %4d · %s" % (nm, len(L), edge(L)))
 
 # ---------------- 3c · HIDDEN ORDERS: heavy volume, price stuck (Rama, 14 Nov: "we have to find a way to find the news and hidden orders") ----------------
 def hidden():
@@ -438,6 +449,113 @@ print("  ... futures OI falling (-0.3%)      " + brk([x for x in HD if x["oi3"] 
 if HD:
     print("  where: " + " · ".join("%s %s%s" % (HM(x["t"]), x["s"], {1: "↑", -1: "↓", 0: "·"}[x["o"]]) for x in sorted(HD, key=lambda x: x["t"])[:25]))
 print("  READ: if 'heavy volume, price stuck' breaks out far more often than 'any moment', GIR can watch for it live (the engine has the volume every second).")
+
+# ---------------- 3d · BACKWARDS: WHAT WAS THERE BEFORE THE REAL MOVES (Rama, 14 Nov: "work the other way around - when a stock moved up, on what
+# conditions, and when it moved down, on what conditions - did you include the news and the hidden buyers") ----------------
+def news_times():
+    """every share's news (news.db items: t_pub) and exchange filings (filings.db: t_exch, not routine) of the day -> {sym: [epoch]}"""
+    out, src = {}, []
+    lo, hi = d0 - 3 * 3600, d0 + 7 * 3600
+    for dbf, q in (("news.db", "select sym, t_pub from items where t_pub between ? and ?"),
+                   ("filings.db", "select sym, t_exch from filings where t_exch between ? and ? and kind not in ('ROUTINE','MEETING','OTHER')")):
+        try:
+            c = ro(dbf); n_ = 0
+            for sym, t in c.execute(q, (lo, hi)):
+                if sym and t:
+                    out.setdefault(sym, []).append(float(t)); n_ += 1
+            c.close(); src.append("%s %d" % (dbf, n_))
+        except Exception as ex:
+            src.append("%s: %s" % (dbf, str(ex)[:40]))
+    return out, " · ".join(src)
+NEWS, NSRC = news_times()
+def backwards():
+    """the REAL moves from Zerodha's minutes: 1.5%+ within 45 min from where it began (once a share-side an hour, 09:15-14:45). For each, what
+    was there in the 15 min BEFORE it began and in its first 5 min - against the same shares at ordinary moments (every 15 min)."""
+    sec = WW.sectors_of(); of = {}
+    for kk, v in sec.items():
+        for x in v:
+            of.setdefault(x, kk)
+    NI = IDX.get("NIFTY")
+    def chg(arr, i0, i1):
+        ts, C = arr[0], arr[1]
+        return float((C[i1] / C[i0] - 1) * 100) if 0 <= i0 < len(C) and 0 <= i1 < len(C) and C[i0] else None
+    def at(ts, t):
+        return int(np.searchsorted(ts, t, side="right") - 1)
+    def facts(s, i, d):
+        ts, C, OI = MIN[s]; t = ts[i]
+        vv, nb, vw = VOLD.get(s, (None, None, None))
+        f = {}
+        oib = float((OI[i] / OI[max(0, i - 15)] - 1) * 100) if OI[i] and OI[max(0, i - 15)] else None
+        oiw = float((OI[min(len(C) - 1, i + 5)] / OI[i] - 1) * 100) if OI[i] and OI[min(len(C) - 1, i + 5)] else None
+        f["money BEFORE the price (OI +0.5% in the 15 min before)"] = oib is not None and oib >= 0.5
+        f["NEW money in the first 5 min (OI +0.5%)"] = oiw is not None and oiw >= 0.5
+        f["money forced out in the first 5 min (OI -0.5%)"] = oiw is not None and oiw <= -0.5
+        p = [chg(MIN[x], at(MIN[x][0], t - 900), at(MIN[x][0], t)) for x in (sec.get(of.get(s)) or []) if x != s and x in MIN]
+        p = [x for x in p if x is not None]
+        f["its SECTOR already moving its way (15 min before)"] = bool(p) and sum(1 for x in p if x * d > 0.3) * 2 >= len(p)
+        pw = [chg(MIN[x], at(MIN[x][0], t), at(MIN[x][0], t + 300)) for x in (sec.get(of.get(s)) or []) if x != s and x in MIN]
+        pw = [x for x in pw if x is not None]
+        f["its SECTOR moving with it (first 5 min)"] = bool(pw) and sum(1 for x in pw if x * d > 0.2) * 2 >= len(pw)
+        if NI is not None:
+            nb_ = chg(NI, at(NI[0], t - 900), at(NI[0], t)); nw = chg(NI, at(NI[0], t), at(NI[0], t + 300))
+            f["NIFTY already moving its way (15 min before)"] = nb_ is not None and nb_ * d >= 0.15
+            f["NIFTY moving with it (first 5 min)"] = nw is not None and nw * d >= 0.1
+        if vv is not None:
+            hid = False
+            for j in range(max(3, i - 20), i + 1):
+                b_ = nb[j - 2:j + 1]
+                if np.isfinite(b_).all() and b_.sum() > 0 and vv[j - 2:j + 1].sum() / b_.sum() >= 3.0 and abs(float(C[j] / C[j - 3] - 1)) < 0.002:
+                    hid = True; break
+            f["HIDDEN order before (3x volume, price stuck, 20 min before)"] = hid
+            j = min(len(C) - 1, i + 3); b_ = nb[j - 2:j + 1]
+            f["VOLUME surge in the first 3 min (2x the normal)"] = bool(np.isfinite(b_).all() and b_.sum() > 0 and vv[j - 2:j + 1].sum() / b_.sum() >= 2.0)
+            f["started on the WRONG side of VWAP (a turn back)"] = (float(C[i]) - float(vw[i])) * d < 0
+        f["NEWS / a filing in the hour before"] = any(t - 3600 <= x <= t + 120 for x in NEWS.get(s, []))
+        f["in the first 15 min of the day"] = HM(t) < "09:31"
+        return f
+    MV, RD = [], []
+    for s, (ts, C, OI) in MIN.items():
+        last = {1: -1e9, -1: -1e9}
+        n = len(C)
+        for i in range(15, n - 1):
+            if HM(ts[i]) > "14:45":
+                break
+            if i % 15 == 0:
+                RD.append(facts(s, i, 1 if (i // 15) % 2 else -1) | {"_d": 1 if (i // 15) % 2 else -1})
+            w = C[i:min(n, i + 46)]
+            for d in (1, -1):
+                if ts[i] - last[d] < 3600:
+                    continue
+                mv = (float(np.max(w)) / float(C[i]) - 1) * 100 if d > 0 else (1 - float(np.min(w)) / float(C[i])) * 100
+                if mv < 1.5:
+                    continue
+                if i >= 1 and ((C[i - 1] < C[i]) if d > 0 else (C[i - 1] > C[i])):
+                    continue                                                  # not the low (high) it began from
+                if (float(C[min(n - 1, i + 3)]) / float(C[i]) - 1) * 100 * d < 0.2:
+                    continue                                                  # it has to begin NOW (within 3 min), not after a long flat stretch
+                k_ = int(np.argmax(w) if d > 0 else np.argmin(w))
+                if k_ < 3:
+                    continue
+                last[d] = ts[i]
+                MV.append(facts(s, i, d) | {"_d": d, "_s": s, "_t": ts[i], "_mv": mv})
+    return MV, RD
+MVS, RND = backwards()
+print("\n=== 3d · BACKWARDS - every REAL move on %s (1.5%%+ within 45 min): ▲ %d up · ▼ %d down · what was there BEFORE / at the start, vs ordinary moments" % (
+    day, sum(1 for m in MVS if m["_d"] > 0), sum(1 for m in MVS if m["_d"] < 0)))
+print("  news + filings read: %s" % NSRC)
+keys = [k for k in (MVS[0] if MVS else {}) if not k.startswith("_")]
+for d, lab in ((1, "▲ UP moves (CE)"), (-1, "▼ DOWN moves (PE)")):
+    L = [m for m in MVS if m["_d"] == d]; R_ = [r for r in RND if r["_d"] == d]
+    if not L or not R_:
+        print("  %s: none" % lab); continue
+    print("  %s - %d moves:                                         in the moves · ordinary moments · how much more often" % (lab, len(L)))
+    rows = []
+    for k_ in keys:
+        a = sum(1 for m in L if m.get(k_)) / len(L); b = sum(1 for r in R_ if r.get(k_)) / len(R_)
+        rows.append((a / b if b > 0 else (9.9 if a > 0 else 0), a, b, k_))
+    for lift, a, b, k_ in sorted(rows, key=lambda x: -x[0]):
+        print("     %-62s %4d%% · %4d%% · %s" % (k_, round(100 * a), round(100 * b), ("%.1fx" % lift) if b > 0 else ("new" if a > 0 else "-")))
+print("  READ: the lines at the top (seen far more often before real moves than at ordinary moments) are the fingerprint of a real move.")
 
 # ---------------- 4 · the wind, minute by minute, with windwatch's own rules ----------------
 SEC = WW.sectors_of(); OF = {}
