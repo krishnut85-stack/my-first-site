@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""fastreplay.py - READ ONLY. (+ MONEY FIRST: how fast the share follows the futures money · WHAT MAKES A SHARE MOVE: which of the 3 together · BACKWARDS: what was there before the real moves, news + hidden orders) FRIDAY AGAIN, WITH PATCHES 275-278 (Rama, 14 Nov: "recheck one more time with the Friday data after updating the code -
+"""fastreplay.py - READ ONLY. (+ MONEY FIRST: how fast the share follows the futures money · WHAT MAKES A SHARE MOVE: which of the 3 together · BACKWARDS: what was there before the real moves, news + hidden orders · MOMENTUM: Rama's way, after 3/5/8%) FRIDAY AGAIN, WITH PATCHES 275-278 (Rama, 14 Nov: "recheck one more time with the Friday data after updating the code -
 how fast are we getting the futures, options and OI data"). Zerodha keeps every F&O contract's MINUTE candles with OPEN INTEREST: this fetches the
 day's futures (218 shares) and, for every 🌪 card, the 6 strikes nearest the price (CE + PE), then runs the SAME rules as windwatch.py on them:
 the wind (price 3 min · futures OI 3 min · sector), 🌪 BIG MOVER, the writers, and each card to its 🎯 / 🚪. Against the day's 47 real moves and what
@@ -194,7 +194,11 @@ def split_day(R):
         dl = r["date"].astimezone(IST)
         if dl.date() < dd:
             base.setdefault(dl.hour * 60 + dl.minute, []).append(float(r.get("volume") or 0))
+    prior = [r for r in R if r["date"].astimezone(IST).date() < dd]
+    PC_[0] = float(prior[-1]["close"]) if prior else None
     return today, base
+PC_ = [None]
+PCL = {}            # sym -> the day before's close (the futures)
 def vol_info(today, base):
     v = np.array([float(r.get("volume") or 0) for r in today], float)
     nb = np.array([(sorted(base[m])[len(base[m]) // 2] if len(base.get(m) or []) >= 2 else np.nan)
@@ -206,6 +210,8 @@ IDX = {}
 for n, s in enumerate(syms + [x for x in ("NIFTY", "BANKNIFTY") if x in FUT and x not in syms]):
     R = hist(FUT[s][0], back=8); time.sleep(0.34)
     R, B = split_day(R)
+    if PC_[0]:
+        PCL[s] = PC_[0]
     if len(R) >= 30:
         arr = (np.array([r["date"].timestamp() + 60 for r in R], float), np.array([r["close"] for r in R], float), np.array([r.get("oi") or 0 for r in R], float))
         if s in ("NIFTY", "BANKNIFTY"):
@@ -556,6 +562,117 @@ for d, lab in ((1, "▲ UP moves (CE)"), (-1, "▼ DOWN moves (PE)")):
     for lift, a, b, k_ in sorted(rows, key=lambda x: -x[0]):
         print("     %-62s %4d%% · %4d%% · %s" % (k_, round(100 * a), round(100 * b), ("%.1fx" % lift) if b > 0 else ("new" if a > 0 else "-")))
 print("  READ: the lines at the top (seen far more often before real moves than at ordinary moments) are the fingerprint of a real move.")
+
+# ---------------- 3e · MOMENTUM - RAMA'S OWN WAY (14 Nov: "most of the money I made by momentum: the stock goes up 10%, then I invest, make money
+# and exit; the same way 20% lower circuit - the only mistake I made is GRASIM") ----------------
+def results_days():
+    """the shares with results on the day or the evening before (chains.db results_cal) - the quarterly-results momentum"""
+    out = set()
+    try:
+        c = ro("chains.db")
+        prev = (D0 - dt.timedelta(days=4)).date()
+        for sym, d_ in c.execute("select sym, d from results_cal where d between ? and ?", (str(prev), day)):
+            out.add(sym)
+        c.close()
+    except Exception:
+        pass
+    return out
+RES = results_days()
+def momentum():
+    """every share that crossed +3/+5/+8% (or -3/-5/-8%) vs the day before's close: entry at that minute. Then: KEPT GOING = 2% more its way
+    before 2% back · TURNED BACK = 2% back first · and held to 15:20. At the crossing: results? · futures OI for the day (new money its way) ·
+    volume for the day vs its normal · above / below VWAP · its sector · NIFTY · the time."""
+    sec = WW.sectors_of(); of = {}
+    for kk, v in sec.items():
+        for x in v:
+            of.setdefault(x, kk)
+    NI = IDX.get("NIFTY")
+    EVM = []
+    for s, (ts, C, OI) in MIN.items():
+        pc = PCL.get(s)
+        if not pc:
+            continue
+        vv, nb, vw = VOLD.get(s, (None, None, None))
+        for L in (3.0, 5.0, 8.0):
+            for d in (1, -1):
+                ch = (C / pc - 1) * 100 * d
+                idx = np.nonzero(ch >= L)[0]
+                if not len(idx):
+                    continue
+                i = int(idx[0]); t = ts[i]
+                if HM(t) > "15:00":
+                    continue
+                p0 = float(C[i]); res = "neither"; tmin = None
+                for j in range(i + 1, len(C)):
+                    mv = (float(C[j]) / p0 - 1) * 100 * d
+                    if mv >= 2.0:
+                        res, tmin = "kept going", (ts[j] - t) / 60; break
+                    if mv <= -2.0:
+                        res, tmin = "turned back", (ts[j] - t) / 60; break
+                k_ = int(np.searchsorted(ts, ts[0] - 60 + (6 * 3600 + 5 * 60), side="right") - 1)          # ~15:20
+                k_ = max(i, min(len(C) - 1, k_))
+                hold = (float(C[k_]) / p0 - 1) * 100 * d
+                best = (float(np.max(C[i:]) if d > 0 else np.min(C[i:])) / p0 - 1) * 100 * d
+                doi = float((OI[i] / OI[0] - 1) * 100) if OI[0] and OI[i] else None
+                vr = None
+                if vv is not None:
+                    b_ = nb[:i + 1]
+                    if np.isfinite(b_).sum() > 10 and np.nansum(b_) > 0:
+                        vr = float(vv[:i + 1].sum() / np.nansum(b_))
+                peers = []
+                for x in (sec.get(of.get(s)) or []):
+                    if x != s and x in MIN and PCL.get(x):
+                        jx = int(np.searchsorted(MIN[x][0], t, side="right") - 1)
+                        if jx >= 0:
+                            peers.append((float(MIN[x][1][jx]) / PCL[x] - 1) * 100)
+                ni = None
+                if NI is not None:
+                    jn = int(np.searchsorted(NI[0], t, side="right") - 1)
+                    if jn >= 0 and NI[1][0]:
+                        ni = (float(NI[1][jn]) / float(NI[1][0]) - 1) * 100
+                EVM.append({"s": s, "d": d, "L": L, "t": t, "res": res, "tmin": tmin, "hold": hold, "best": best,
+                            "results": s in RES, "money": doi is not None and doi >= 3.0, "forced": doi is not None and doi <= -3.0, "doi": doi,
+                            "vol": vr is not None and vr >= 2.0, "vr": vr, "vwap": vw is not None and (p0 - float(vw[i])) * d > 0,
+                            "sect": bool(peers) and sum(1 for x in peers if x * d > 0.5) * 2 >= len(peers),
+                            "nifty": ni is not None and ni * d > 0.2, "early": HM(t) < "10:00"})
+    return EVM
+MO = momentum()
+print("\n=== 3e · MOMENTUM - Rama's own way: a share already UP / DOWN 3%%, 5%%, 8%% on the day - enter there: did it KEEP GOING (2%% more) or TURN BACK (2%%)? %s" % day)
+print("  results that day / the evening before: %d shares (%s)" % (len(RES), " ".join(sorted(RES))[:120] or "-"))
+def mrow(L, name):
+    if not L:
+        print("  %-46s none" % name); return
+    kg = sum(1 for e in L if e["res"] == "kept going"); tb = sum(1 for e in L if e["res"] == "turned back")
+    print("  %-46s %3d · KEPT GOING %3d%% · TURNED BACK %3d%% · held to 15:20: average %+.1f%% · best after entry: median %+.1f%%" % (
+        name, len(L), round(100 * kg / len(L)), round(100 * tb / len(L)), sum(e["hold"] for e in L) / len(L), med([e["best"] for e in L])))
+for d, lab in ((1, "▲ UP"), (-1, "▼ DOWN")):
+    for L in (3.0, 5.0, 8.0):
+        E = [e for e in MO if e["d"] == d and e["L"] == L]
+        mrow(E, "%s %g%% - every share" % (lab, L))
+        if L == 3.0 and E:
+            mrow([e for e in E if e["results"]], "   ... with RESULTS")
+            mrow([e for e in E if not e["results"]], "   ... no results")
+            mrow([e for e in E if e["money"]], "   ... NEW futures money for the day (OI +3%)")
+            mrow([e for e in E if e["forced"]], "   ... money forced out (OI -3%)")
+            mrow([e for e in E if e["vol"]], "   ... VOLUME 2x its normal so far")
+            mrow([e for e in E if e["vwap"]], "   ... on its side of VWAP")
+            mrow([e for e in E if not e["vwap"]], "   ... on the WRONG side of VWAP")
+            mrow([e for e in E if e["sect"]], "   ... its SECTOR with it")
+            mrow([e for e in E if e["nifty"]], "   ... NIFTY with it")
+            mrow([e for e in E if e["early"]], "   ... before 10:00")
+            mrow([e for e in E if not e["early"]], "   ... after 10:00")
+            mrow([e for e in E if e["money"] and e["vwap"]], "   ... NEW money + VWAP")
+            mrow([e for e in E if e["results"] and e["money"]], "   ... RESULTS + NEW money")
+print("  every share (at the highest level it reached):")
+for e in sorted([e for e in MO if e["L"] == max(x["L"] for x in MO if x["s"] == e["s"] and x["d"] == e["d"])], key=lambda x: x["t"])[:40]:
+    print("     %s %-11s %s%g%% %s · %-11s held %+.1f%% · OI %s · vol %s · %s VWAP%s%s" % (HM(e["t"]), e["s"], "▲" if e["d"] > 0 else "▼", e["L"], "R" if e["results"] else " ",
+          e["res"], e["hold"], ("%+.0f%%" % e["doi"]) if e["doi"] is not None else "-", ("%.1fx" % e["vr"]) if e["vr"] else "-",
+          "right side of" if e["vwap"] else "WRONG side of", " · sector ✓" if e["sect"] else "", "   ◀ GRASIM" if e["s"] == "GRASIM" else ""))
+G = [e for e in MO if e["s"] == "GRASIM"]
+if G:
+    print("  GRASIM that day: " + " · ".join("%s %s%g%% %s (held %+.1f%%, OI %s, %s VWAP)" % (HM(e["t"]), "▲" if e["d"] > 0 else "▼", e["L"], e["res"], e["hold"],
+          ("%+.0f%%" % e["doi"]) if e["doi"] is not None else "-", "right side of" if e["vwap"] else "wrong side of") for e in G))
+print("  READ: the lines with the most KEPT GOING and the fewest TURNED BACK are when Rama's momentum entry works - and what was missing when it did not.")
 
 # ---------------- 4 · the wind, minute by minute, with windwatch's own rules ----------------
 SEC = WW.sectors_of(); OF = {}
