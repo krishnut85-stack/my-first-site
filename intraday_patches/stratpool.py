@@ -6,6 +6,7 @@ D = sys.argv[1] if len(sys.argv) > 1 else "/root/strat"
 FILES = sorted(glob.glob(D + "/2026-*.txt"))
 PAT = {
  "3e": (r"\s+(.+?)\s+(\d+) · KEPT GOING\s+(\d+)% · TURNED BACK\s+(\d+)% · held to 15:20: average ([+-][\d.]+)%", ("KEPT GOING", "TURNED BACK", "held to 15:20")),
+ "3l": (r"\s+(.+?)\s+(\d+) · KEPT GOING\s+(\d+)% · TURNED BACK\s+(\d+)% · held to 15:20: average ([+-][\d.]+)%", ("KEPT GOING", "TURNED BACK", "held to 15:20")),
  "3k": (r"\s+(.+?)\s+(\d+) · KEPT GOING\s+(\d+)% · TURNED BACK\s+(\d+)% · held to 15:20: average ([+-][\d.]+)%", ("KEPT GOING", "TURNED BACK", "held to 15:20")),
  "3f": (r"\s+(.+?)\s+(\d+) · KEPT GOING\s+(\d+)% · BACK INSIDE\s+(\d+)% · held to 15:20 ([+-][\d.]+)%", ("KEPT GOING", "BACK INSIDE", "held to 15:20")),
  "3g": (r"\s+(.+?)\s+(\d+) · WON\s+(\d+)% · 2R reached\s+(\d+)% · average ([+-][\d.]+)R", ("WON", "2R reached", "average R")),
@@ -15,6 +16,7 @@ PAT = {
 TITLE = {"3e": "🚀 MOMENTUM - a share already 3% / 5% / 8% on the day (Rama's way)", "3f": "THE INITIAL BALANCE - the break of the first 15 / 30 / 60 min",
          "3g": "STOCKS IN PLAY - the 5-minute opening range breakout (1R = your risk)", "3h": "THE EXIT TEST - the same +3% entries, every exit rule",
          "3i": "RESULTS DAY 2 - yesterday's 5%+ movers, entered at 09:20",
+         "3l": "THE SECOND RUN + THE 5-POINT CHECK (long build-up · VWAP · second run · news · option writers)",
          "3k": "ALL AGREE, THE OPTION WRITERS TOO - the +3% entries with the writers and the room to the wall"}
 A, ORD = {}, {}
 for f in FILES:
@@ -38,14 +40,14 @@ for f in FILES:
             ORD[sec].append(k)
         g = m.groups()
         a[0] += n; a[6].add(f)
-        if sec in ("3e", "3f", "3g", "3k"):
+        if sec in ("3e", "3f", "3g", "3k", "3l"):
             a[1] += n * int(g[2]) / 100; a[2] += n * int(g[3]) / 100; a[3] += n * float(g[4])
         elif sec == "3h":
             a[1] += n * int(g[2]) / 100; a[3] += n * float(g[3])
         else:
             a[1] += n * int(g[2]) / 100; a[3] += n * float(g[3]); a[4] += n * float(g[4]); a[5] += n * float(g[5])
 print("%d days: %s ... %s" % (len(FILES), FILES[0][-14:-4] if FILES else "-", FILES[-1][-14:-4] if FILES else "-"))
-for sec in ("3e", "3k", "3f", "3g", "3h", "3i"):
+for sec in ("3l", "3e", "3k", "3f", "3g", "3h", "3i"):
     if sec not in A:
         continue
     print("\n=== " + TITLE[sec])
@@ -55,7 +57,7 @@ for sec in ("3e", "3k", "3f", "3g", "3h", "3i"):
     for k in rows:
         n, x, y, z, u, v, days = A[sec][k]
         ind = "   " if k[1].startswith("...") else ""
-        if sec in ("3e", "3f", "3k"):
+        if sec in ("3e", "3f", "3k", "3l"):
             print("%s%-50s %5d · %s %3.0f%% · %s %3.0f%% · %s %+.2f%%" % (ind, k[1], n, PAT[sec][1][0], 100 * x / n, PAT[sec][1][1], 100 * y / n, PAT[sec][1][2], z / n))
         elif sec == "3g":
             print("%s%-50s %5d · WON %3.0f%% · 2R %3.0f%% · average %+.2fR · total %+.0fR" % (ind, k[1], n, 100 * x / n, 100 * y / n, z / n, z))
@@ -118,7 +120,7 @@ if P:
 # ---------------- WINNERS vs LOSERS (Rama, 14 Nov: "in every test some went up and some went down - check those shares, why, on what basis") ----------------
 FN = {"R": "results today / last evening", "S": "its sector with it today", "N": "NIFTY with it today", "V": "volume 2x its normal so far",
       "M": "new futures money (long / short build-up)", "C": "money LEAVING (short covering / long unwinding)",
-      "H": "news or a filing in the 2 hours before", "W": "on its side of VWAP", "G": "gapped its way 1%+", "E": "before 10:00",
+      "H": "news or a filing in the 2 hours before", "O": "the option writers back it", "W": "on its side of VWAP", "G": "gapped its way 1%+", "E": "before 10:00",
       "X": "THE 3 TOGETHER (sector + money + volume)"}
 if P and any(e["f"] for e in P):
     print("\n=== WINNERS vs LOSERS - for each setup, what was there when it WON vs when it LOST (how often, and how much more often)")

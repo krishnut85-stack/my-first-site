@@ -1110,6 +1110,84 @@ for d, lab in ((1, "▲ UP 3%"), (-1, "▼ DOWN 3%")):
         mrow([e for e in E if e["agree"] and (e["sect"] if d > 0 else e["money"])], "   ... writers back it + " + ("its SECTOR (the CE rule)" if d > 0 else "NEW money (the PE rule)"))
         mrow([e for e in E if e["agree"] and e["room"] >= 2.0 and e["early"] and (e["sect"] if d > 0 else e["money"])], "   ... ALL AGREE: writers + room + before 10 + " + ("sector" if d > 0 else "new money"))
 print("  READ: if 'ALL AGREE' keeps going far more often than every share, GIR's strongest card needs the writers and the room too.")
+
+# ---------------- 3l · THE SECOND RUN + RAMA'S 5-POINT CHECK (14 Nov: "a simple way - long build-up, above VWAP, second run, news, OI build-up") ----------------
+# FIRST PUSH: the share goes 1.5% from the day's open. SECOND RUN: after that push it pulls back 0.5%+ but STAYS on its side of VWAP, then
+# closes beyond the first push's high (low) - entry there (by 14:30). The 5 points: (1) on its side of VWAP and (2) the second run are the setup
+# itself; (3) long / short build-up - new futures money · (4) news, a filing or results · (5) the option writers back it (CE: put OI added below
+# more than call OI above). Score = 2 + those three. Both ways: CE (up) and PE (down).
+def second_runs():
+    EV, FP = [], []
+    for s, (ts, C, OI) in MIN.items():
+        if s not in MHL or s not in VOLD:
+            continue
+        H, L = MHL[s]; vv, nb, vw = VOLD[s]
+        o = float(C[0]); n = len(C)
+        for d in (1, -1):
+            ext = None; pulled = False
+            for i in range(1, n):
+                if HM(ts[i]) > "14:30":
+                    break
+                px = float(C[i]); hx = float(H[i]) if d > 0 else float(L[i])
+                if ext is None:
+                    if (hx / o - 1) * 100 * d >= 1.5:
+                        ext = hx; FP.append((s, i, d))
+                    continue
+                if not pulled:
+                    if (hx - ext) * d > 0:
+                        ext = hx; continue
+                    if (ext - px) / ext * 100 * d >= 0.5:
+                        pulled = True
+                    continue
+                if (px - float(vw[i])) * d < 0:
+                    break                                                 # the pullback broke VWAP: no second run
+                if (px - ext) * d > 0:
+                    EV.append((s, i, d)); break
+    return EV, FP
+SR, FPU = second_runs()
+def sr_rec(s, i, d, name):
+    ts, C, OI = MIN[s]; p0 = float(C[i]); res = "neither"
+    for j in range(i + 1, len(C)):
+        mv = (float(C[j]) / p0 - 1) * 100 * d
+        if mv >= 2.0:
+            res = "kept going"; break
+        if mv <= -2.0:
+            res = "turned back"; break
+    kend = max(i, min(len(C) - 1, int(np.searchsorted(ts, d0 + 6 * 3600 + 5 * 60, side="right") - 1)))
+    fl = feat(s, i, d)
+    w_ = writers_at(s, ts[i], p0, d)
+    if w_ and w_["agree"]:
+        fl = (fl if fl != "-" else "") + "O"
+    sc = 2 + ("M" in fl) + (("H" in fl) or ("R" in fl)) + ("O" in fl)
+    return {"s": s, "d": d, "set": name, "res": res, "hold": (float(C[kend]) / p0 - 1) * 100 * d, "r": play(s, i, d, {"tgt": 2.0}), "f": fl, "sc": sc,
+            "early": HM(ts[i]) < "10:00", "best": 0.0}
+SRE = [sr_rec(s_, i_, d_, "SECOND RUN") for s_, i_, d_ in SR]
+FPE = [sr_rec(s_, i_, d_, "FIRST PUSH 1.5%") for s_, i_, d_ in FPU]
+print("\n=== 3l · THE SECOND RUN + THE 5-POINT CHECK - %s · second runs %d · first pushes %d" % (day, len(SRE), len(FPE)))
+def lrow(L, name):
+    if not L:
+        print("  %-48s none" % name); return
+    kg = sum(1 for e in L if e["res"] == "kept going"); tb = sum(1 for e in L if e["res"] == "turned back")
+    print("  %-48s %4d · KEPT GOING %3d%% · TURNED BACK %3d%% · held to 15:20: average %+.2f%%" % (name, len(L), round(100 * kg / len(L)), round(100 * tb / len(L)),
+          sum(e["hold"] for e in L) / len(L)))
+for d, lab in ((1, "▲ CE"), (-1, "▼ PE")):
+    E = [e for e in SRE if e["d"] == d]
+    lrow([e for e in FPE if e["d"] == d], "%s FIRST PUSH (1.5%% from the open)" % lab)
+    lrow(E, "%s SECOND RUN - every one" % lab)
+    if E:
+        lrow([e for e in E if "M" in e["f"]], "   ... + new futures money (%s build-up)" % ("long" if d > 0 else "short"))
+        lrow([e for e in E if ("H" in e["f"] or "R" in e["f"])], "   ... + news / a filing / results")
+        lrow([e for e in E if "O" in e["f"]], "   ... + the option writers back it")
+        lrow([e for e in E if "S" in e["f"]], "   ... + its sector with it")
+        lrow([e for e in E if "V" in e["f"]], "   ... + volume 2x its normal")
+        lrow([e for e in E if e["early"]], "   ... before 10:00")
+        lrow([e for e in E if not e["early"]], "   ... after 10:00")
+        for k in (2, 3, 4, 5):
+            lrow([e for e in E if e["sc"] == k], "   ... SCORE %d of 5" % k)
+        lrow([e for e in E if e["sc"] >= 4], "   ... SCORE 4 or 5 of 5 (Rama's check)")
+print("  READ: does the SECOND RUN keep going more than the FIRST PUSH - and does a 4 / 5 score lift it further?")
+for e in SRE + FPE:
+    print("PROFILE|%s|%s|%s|%s|%s|%s|%.3f|%s" % (day, REG, e["s"], _of.get(e["s"], "-"), e["set"], "CE" if e["d"] > 0 else "PE", e["r"], e["f"]))
 if "strat" in sys.argv[2:]:
     sys.exit(0)                                                          # python3 fastreplay.py DAY strat - every study, without the slow 🌪 card replay
 
