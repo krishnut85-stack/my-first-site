@@ -243,3 +243,35 @@ if SA:
         best = max(ex, key=lambda e_: ex[e_]) if ex else None
         print("%s%-48s %5d · %s · best exit %s %+.2f%% (≈%+.0f%% on the premium)" % ("   " if k[1].startswith("...") else "  ", k[1][:48], n,
               " · ".join("%d %+.2f%%" % (e_, ex[e_] / n) for e_ in sorted(ex)), best, ex[best] / n if best else 0, 10 * ex[best] / n if best else 0))
+
+
+# ---------------- THE SETTINGS GRID, all days (fastreplay 3o): every steady / burst setting, both ways, ranked ----------------
+GA = {}
+for f in FILES:
+    for ln in open(f, encoding="utf-8"):
+        if ln.startswith("GRID|"):
+            x = ln.rstrip("\n").split("|")
+            if len(x) != 9:
+                continue
+            k = (x[2], x[3], x[4], x[5]); n = int(x[6]); su = [float(v) for v in x[7].split(",")]; wi = [int(v) for v in x[8].split(",")]
+            a = GA.setdefault(k, [0, [0.0] * len(su), [0] * len(wi)])
+            a[0] += n
+            for j in range(len(su)):
+                a[1][j] += su[j]; a[2][j] += wi[j]
+if GA:
+    EXL = ["t stop2/target2", "a stop1/trail0.75", "b stop1.5/trail1", "h half+1%/trail0.75"]
+    print("\n=== THE SETTINGS GRID - all days, after costs (avg % on the share a trade · won) - the best exit for each setting; ≈10x on an at-the-money premium")
+    for kind in ("STEADY", "BURST"):
+        for side in ("CE", "PE"):
+            for tag in ("all", "early"):
+                rows = []
+                for (k_, s_, nm, t_), (n, su, wi) in GA.items():
+                    if k_ == kind and s_ == side and t_ == tag and n >= 20:
+                        j = max(range(len(su)), key=lambda q: su[q])
+                        rows.append((su[j] / n, n, 100 * wi[j] / n, nm, EXL[j]))
+                if not rows:
+                    continue
+                rows.sort(reverse=True)
+                print("  %s %s%s - best 6 settings of %d (and the worst):" % (kind, side, " · entered before 11:00" if tag == "early" else "", len(rows)))
+                for avg, n, w, nm, ex in rows[:6] + rows[-1:]:
+                    print("     %-56s %5d trades · %+.2f%% (≈%+.0f%% premium) · won %3.0f%% · exit %s" % (nm, n, avg, 10 * avg, w, ex))

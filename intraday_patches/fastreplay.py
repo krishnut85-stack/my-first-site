@@ -584,6 +584,68 @@ for e in STE:
     print("PROFILE|%s|%s|%s|%s|%s|%s|%.3f|%s" % (day, REG if "REG" in globals() else "-", e["s"], "-", "STEADY MOVE", "CE" if e["d"] > 0 else "PE", e["e2"],
                                              ("S" if e["sec"] else "") + ("N" if e["nifty"] else "") + ("M" if e["doi"] >= 2 else "") + ("E" if e["hm"] < "11:00" else "") or "-"))
 
+# ---------------- 3o · THE SETTINGS GRID - steady moves AND fast bursts, every setting, both ways (Rama, 14 Nov: "one test for all - steady move
+# and fast burst, whichever way you like, so we have results for different settings"). Each setting: the first entry a share-side per setting
+# (steady) or once a share-side in 30 min (burst), 09:20-14:30, every exit; lines GRID|... are added up over the days by stratpool.py.
+GX = [("t", {"stop": 2.0, "tgt": 2.0}), ("a", {"stop": 1.0, "trail": 0.75}), ("b", {"stop": 1.5, "trail": 1.0}), ("h", {"stop": 1.0, "half": 1.0, "trail": 0.75})]
+def grid():
+    out = []
+    for s, (ts, C, OI) in MIN.items():
+        if s not in MHL or s not in VOLD or not PCL.get(s):
+            continue
+        vv, nb, vw = VOLD[s]; pc = PCL[s]
+        Cf = np.asarray(C, float); o = Cf[0]
+        o0 = next((x for x in OI if x), 0)
+        OIf = np.asarray(OI, float)
+        doi = np.where((OIf > 0) & (o0 > 0), (OIf / o0 - 1) * 100 if o0 else 0, 0.0)
+        hmv = np.array([HM(x) for x in ts])
+        ok_t = (hmv >= "09:20") & (hmv <= "14:30")
+        n = len(Cf)
+        p3 = np.zeros(n); p3[3:] = (Cf[3:] / Cf[:-3] - 1) * 100
+        o3 = np.zeros(n)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            o3[3:] = np.where((OIf[3:] > 0) & (OIf[:-3] > 0), (OIf[3:] / OIf[:-3] - 1) * 100, 0)
+        for d in (1, -1):
+            mvo = (Cf / o - 1) * 100 * d
+            side = (Cf / pc - 1) * 100 * d > 0
+            above = (Cf - np.asarray(vw, float)) * d > 0
+            run = np.zeros(n, int)
+            for i in range(n):
+                run[i] = (run[i - 1] + 1 if i else 1) if above[i] else 0
+            # steady
+            for L in (0.75, 1.0, 1.5, 2.0):
+                for B in (0.5, 1.0, 2.0):
+                    for V in (0, 15):
+                        m = ok_t & side & (mvo >= L) & (doi >= B) & (run >= V + 1 if V else True)
+                        idx = np.nonzero(m)[0]
+                        if len(idx):
+                            i = int(idx[0])
+                            out.append(("STEADY", d, "move %.2g%% · build-up +%.1f%% · VWAP %s" % (L, B, "15 min" if V else "any"), [play(s, i, d, r) for _, r in GX], HM(ts[i]) < "11:00"))
+            # burst
+            for PB in (0.5, 0.8, 1.0):
+                for O3 in (0.3, 0.5):
+                    for DB in (None, 1.0):
+                        m = ok_t & (p3 * d >= PB) & ((o3 >= O3) | ((doi >= DB) & side if DB else False))
+                        last = -999
+                        for i in np.nonzero(m)[0]:
+                            if i - last >= 30:
+                                last = int(i)
+                                out.append(("BURST", d, "burst %.1f%% in 3 min · OI +%.1f%% in 3 min%s" % (PB, O3, (" or day +%.0f%%" % DB) if DB else ""), [play(s, int(i), d, r) for _, r in GX], HM(ts[i]) < "11:00"))
+    return out
+GRD = grid()
+agg = {}
+for kind, d, nm, rs, early in GRD:
+    for tag in ("all", "early" if early else "late"):
+        k = (kind, "CE" if d > 0 else "PE", nm, tag)
+        a = agg.setdefault(k, [0] + [0.0] * len(GX) + [0] * len(GX))
+        a[0] += 1
+        for j, r in enumerate(rs):
+            a[1 + j] += r - 0.20
+            a[1 + len(GX) + j] += 1 if r - 0.20 > 0 else 0
+print("\n=== 3o · THE SETTINGS GRID - %s · %d entries · exits: t stop2/target2 · a stop1/trail0.75 · b stop1.5/trail1 · h half+1%%/trail0.75 · after costs" % (day, len(GRD)))
+for k, a in sorted(agg.items()):
+    print("GRID|%s|%s|%s|%s|%s|%d|%s|%s" % (day, k[0], k[1], k[2], k[3], a[0], ",".join("%.3f" % x for x in a[1:1 + len(GX)]), ",".join(str(x) for x in a[1 + len(GX):])))
+
 if ("ib" in sys.argv[2:] or "bm" in sys.argv[2:]) and "strat" not in sys.argv[2:]:
     sys.exit(0)                                                          # python3 fastreplay.py DAY bm - only the fast studies (initial balance, stocks in play, 🌪 old vs new)                                                          # python3 fastreplay.py DAY ib - only the initial balance (fast)
 
