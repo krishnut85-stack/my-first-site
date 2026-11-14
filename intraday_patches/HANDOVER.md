@@ -100,6 +100,25 @@ what the recent patches did, and what is still open.
 | 253 | News faster: shares moving 1.5%+ (top 15) and results today/tomorrow searched every 3 min; a story found 15+ min late is labelled |
 | 254 | The ban % on NSE's Future Equivalent OI (the file's 2nd OI column; BDL showed 155%, really 58.7%); last 90 days re-read |
 | 255 | BIG MONEY · LINKED sorts by any column (tap = high→low, again = low→high) · F&O MONEY rows show 'since HH:MM · last HH:MM' (GIR's first / latest alert of that build-up) |
+| 256 | Share screen opens as a single page (`body.solo`, ⌂ GIR bar) |
+| 257 | Share-screen card styling |
+| 258 / 258b | resultsday.py 08:20: the day's F&O results list (filing = exchange time stamp / just filed / XBRL) |
+| 259 | Rings follow callstudy (7-13 Nov): OPENING CALL / GO / ENTER NOW silent; ⚡ SPEED with a side rings; ✅ CONFIRMED MOVE (callfail.py, 09:20-11:00) |
+| 260 | GOVT WATCH never sends old news (IRDAI Google `when:2d`, 48 h age gate, ordered 20k memory, re-listed pages remembered) |
+| 261 | Results filed overnight: RESULTS REACTION at the open (gap held past the first 5-min candle / faded through yesterday's close). 40-day replay: right 7 of 10 |
+| 262 | Results week (7 sessions, 09:15-close): open check days 2-7 (2%+), SWING (3%+, new day extreme, 2x vol); ⚡ SPEED exempt from ring rule 4; event watch 09:15-15:29, 10 days after |
+| 263 | 🛡 POSITION GUARD (posguard.py, timer every minute): reads the account's F&O positions (read only) - wrong side / check this order / flip / far OTM / stop (data/posguard.json) / book half / daily loss limit ₹20,000 / give-back / 09:16 overnight list / 15:00 hold-or-exit |
+| 264 | Results-week SWING days 2-7 shown, not rung (replay: right 8 / wrong 7 of 29) |
+| 265 | 📈 MY P&L in MY F&O (pnlbook.py + gir-pnlwatch): today's P&L every 3 s (line / candles), DAY BY DAY, MY RECORD; /mypnl GET + POST |
+| 266 | MY P&L upload reads Excel (.xlsx) too |
+| 267 | DAY BY DAY candles of the running total from the owner's tradebook (66 days from 7 Apr), statements loaded; the data shipped AES-256 locked, password given in chat only (repo is PUBLIC - never put the owner's data in it) |
+| 268 | GOVT WATCH: 8 more policy topics (textiles, electronics, aviation, real estate, shipping, jewellery, hotels, EV), big-policy headlines never dropped, Google News policy source |
+| 269 | MY F&O all automatic: upload box and typed-in ledger hidden; 💰 ZERODHA strip (margins + holdings, read only); MY RECORD months by trade date |
+| 270 | newsclean.py: morning brief one line a story [+N more reports], unreadable PDF / letterheads hidden, round-ups dropped; GOVT WATCH news-site reports one per regulator-story in 6 h; newsaudit.sh (read only) checks every news list |
+| 271 | 🃏 MOVE CARD + 🎫 TRADE CARD (movecard.py via alertword.dress) on confirmed ringing alerts: who / why / against / tide / measured + strike, ask, lots for risk (₹10,000; `movecard.py risk N`), option stop, targets, time cost; "↳ follow-up" lines |
+| 272 | Indian news first: 16 more Indian feeds (feedprobe-tested, data/feeds_extra.json), trusted outlets lead, social media / blogs never, unknown sites "(small site - check)" |
+| 273 | storydup.py: one story, one Telegram message (tgq.send, opencall.send_tg; exchange.send remembers) - trade calls / cards / stops / POSITION GUARD never held |
+| 274 | Share tab in one view: head next to ⌂ GIR, WHO + WHY side by side, panels fill the screen, details (why / OI battle / desk) behind ▾ |
 | 239 | News filed under the right share: everyday-word symbols (AMBER, OIL, IDEA, ETERNAL, TRENT, TITAN …) need the full name or "SYM shares / Q2 / results"; false phrases refused (AMBER Alert, oil prices, BSE Sensex, MCX gold prices, Olympics, Trent Boult); searched headlines stored only when about the company; 4-day clean-up (undo: `p239clean.py DIR --undo`) |
 
 Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always-ring alerts held.
