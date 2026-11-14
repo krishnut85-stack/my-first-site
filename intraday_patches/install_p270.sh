@@ -323,8 +323,9 @@ PY_AUDIT
 python3 $W/p270_patch.py $D || back
 cd $D && python3 -m py_compile newsclean.py morningbrief.py govwatch.py || back
 echo "=== test"
-python3 $W/p270test.py $D | grep -v "^  [☀▲▼◆🏛 ]\|^$\|^  *[A-Z]* ·\|^the side" || true
-python3 $W/p270test.py $D >/dev/null 2>&1 || back
+python3 $W/p270test.py $D > $W/t270.out 2>&1; RC=$?
+grep "✅\|❌\|passed\|Error\|error" $W/t270.out
+[ $RC -eq 0 ] || { echo "  --- the test's last lines:"; tail -15 $W/t270.out; back; }
 chown --reference=$D $D/newsclean.py $D/newsaudit.sh 2>/dev/null
 systemctl restart gir-dash; sleep 4
 echo "  gir-dash: $(systemctl is-active gir-dash)"

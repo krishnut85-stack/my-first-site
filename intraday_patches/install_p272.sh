@@ -340,7 +340,9 @@ PY_TEST
 python3 $W/p272_patch.py $D || back
 cd $D && python3 -m py_compile newsclean.py morningbrief.py govwatch.py newsroom.py macro.py || back
 echo "=== test"
-python3 $W/p272test.py $D $W | grep "✅\|❌\|passed"; python3 $W/p272test.py $D $W >/dev/null 2>&1 || back
+python3 $W/p272test.py $D $W > $W/t272.out 2>&1; RC=$?
+grep "✅\|❌\|passed\|Error\|error" $W/t272.out
+[ $RC -eq 0 ] || { echo "  --- the test's last lines:"; tail -15 $W/t272.out; back; }
 echo "=== the Indian business sites, tried from this server now"
 mkdir -p $D/data; timeout 200 python3 $W/feedprobe.py $D/data/feeds_extra.json || echo "  (the sites could not be tried now - GIR keeps its 4 sites; run again later)"
 chown --reference=$D $D/newsclean.py $D/data/feeds_extra.json 2>/dev/null
