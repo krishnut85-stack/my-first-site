@@ -13,6 +13,37 @@ import numpy as np
 import windwatch as WW
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
 now = dt.datetime.now(IST)
+if sys.argv[1:2] == ["days"]:
+    # ---- which recent days were which kind of market (NIFTY 50's own daily candles) -> 2 of each kind, ready to replay ----
+    import core
+    try:
+        k = core.get_kite()
+        R = k.historical_data(256265, (now - dt.timedelta(days=75)).replace(tzinfo=None), now.replace(tzinfo=None), "day")
+    except Exception as ex:
+        print("⚠ Zerodha did not answer (%s) - run it with GIR's keys loaded" % str(ex)[:90]); sys.exit(0)
+    rows, prev = [], None
+    for r in R:
+        c = float(r["close"])
+        if prev:
+            rows.append((r["date"].date(), (c / prev - 1) * 100, (float(r["high"]) - float(r["low"])) / prev * 100, c))
+        prev = c
+    old = now.date() - dt.timedelta(days=45)                   # older days: the futures contract that is live today was then a far month (thin)
+    print("=== THE LAST %d MARKET DAYS - NIFTY 50 (close vs the day before · the day's range)" % len(rows))
+    kind = lambda chg, rg: "▼ FALLING" if chg <= -0.6 else "▲ RISING" if chg >= 0.6 else "↕ CHOPPY" if rg >= 1.1 else "→ FLAT"
+    for d_, chg, rg, c in rows[-40:]:
+        print("  %s %s  %+.2f%%  range %.2f%%  %-10s%s" % (d_, d_.strftime("%a"), chg, rg, kind(chg, rg), "  (thin futures data)" if d_ < old else ""))
+    ok = [x for x in rows if x[0] >= old]
+    pick = []
+    for nm, key, rev in (("▼ FALLING", lambda x: x[1], False), ("▲ RISING", lambda x: x[1], True), ("↕ CHOPPY", lambda x: x[2] - abs(x[1]), True), ("→ FLAT", lambda x: abs(x[1]) + x[2], False)):
+        L = sorted([x for x in ok if kind(x[1], x[2]) == nm], key=key, reverse=rev)[:2]
+        pick += [(nm, x) for x in L]
+    print("\n=== 2 OF EACH KIND (the last 45 days, the futures contract live today):")
+    for nm, x in pick:
+        print("  %-10s %s  NIFTY %+.2f%% · range %.2f%%" % (nm, x[0], x[1], x[2]))
+    ds = " ".join(str(x[0]) for _, x in sorted(pick, key=lambda y: y[1][0]))
+    print("\n=== THE COMMAND - replay these %d days (about 5 min each):" % len(pick))
+    print('( set -a; . /home/globalbot/.env; set +a; for d in %s; do echo "##### $d"; python3 %s $d | grep -E "^=== 3[bc]|starts ·|rise \\(CE\\)|BEST TOGETHER|broke out|where:"; done )' % (ds, os.path.abspath(__file__)))
+    sys.exit(0)
 day = sys.argv[1] if len(sys.argv) > 1 else ""
 if not day:
     d = now.date() - dt.timedelta(days=1 if now.strftime("%H:%M") < "15:35" else 0)
