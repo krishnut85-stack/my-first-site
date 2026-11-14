@@ -156,6 +156,11 @@ try:
     except Exception:
         pass
     NFO = k.instruments("NFO")
+    try:
+        EQ = {r["tradingsymbol"]: r["instrument_token"] for r in k.instruments("NSE") if r.get("segment") == "NSE" and r.get("instrument_type") == "EQ"}
+    except Exception:
+        EQ = {}
+    EQ.setdefault("NIFTY", 256265); EQ.setdefault("BANKNIFTY", 260105)                 # the indices themselves (NIFTY 50, NIFTY BANK)
     k.profile()
 except Exception as ex:
     print("\n⚠ Zerodha did not answer (%s)." % str(ex)[:90])
@@ -214,8 +219,28 @@ def vol_info(today, base):
     return v, nb, vw
 IDX = {}
 MHL = {}            # sym -> (high[], low[]) of each minute (patch 283 study: the initial balance)
-for n, s in enumerate(syms + [x for x in ("NIFTY", "BANKNIFTY") if x in FUT and x not in syms]):
-    R = hist(FUT[s][0], back=8); time.sleep(0.34)
+# THE PRICE FROM THE SHARE ITSELF (NSE cash - always traded, years of history); THE FUTURES ONLY FOR THEIR OPEN INTEREST. Zerodha lists only
+# the contracts still trading today, so on a day two months back the futures were a far month, hardly traded - their prices stale (30 Sep:
+# a +1.3% NIFTY day showed 97 shares "down 3%"). Fixed 14 Nov.
+PSRC = {"eq": 0, "fut": 0}
+for n, s in enumerate(syms + [x for x in ("NIFTY", "BANKNIFTY") if (x in FUT or x in EQ) and x not in syms]):
+    tok = EQ.get(s)
+    R = hist(tok, back=8) if tok else []; time.sleep(0.34)
+    src = "eq"
+    if len([r for r in R if r["date"].astimezone(IST).date() == dd]) < 30 and s in FUT:
+        R = hist(FUT[s][0], back=8); time.sleep(0.34); src = "fut"
+    elif s in FUT and s not in ("NIFTY", "BANKNIFTY"):
+        FR = [r for r in hist(FUT[s][0]) if r["date"].astimezone(IST).date() == dd]; time.sleep(0.34)
+        om = {r["date"].timestamp(): (r.get("oi") or 0) for r in FR}
+        lastoi = 0
+        for r in R:
+            if r["date"].astimezone(IST).date() == dd:
+                o_ = om.get(r["date"].timestamp())
+                lastoi = o_ if o_ else lastoi
+                r["oi"] = lastoi
+            else:
+                r["oi"] = 0
+    PSRC[src] += 1
     R, B = split_day(R)
     if PC_[0]:
         PCL[s] = PC_[0]
@@ -230,7 +255,8 @@ for n, s in enumerate(syms + [x for x in ("NIFTY", "BANKNIFTY") if x in FUT and 
             MHL[s] = (np.array([float(r.get("high") or r["close"]) for r in R], float), np.array([float(r.get("low") or r["close"]) for r in R], float))
     if n % 50 == 49:
         print("  %d of %d" % (n + 1, len(syms)), flush=True)
-print("  futures with minute data: %d · volume normal from the 8 days before: %d · index: %s" % (len(MIN), sum(1 for v in VOLD.values() if np.isfinite(v[1]).sum() > 100), " ".join(IDX) or "-"))
+print("  the price from: the share itself (NSE) %d · its futures (no NSE data) %d" % (PSRC["eq"], PSRC["fut"]))
+print("  shares with minute data: %d · volume normal from the 8 days before: %d · index: %s" % (len(MIN), sum(1 for v in VOLD.values() if np.isfinite(v[1]).sum() > 100), " ".join(IDX) or "-"))
 
 # ---------------- 3f · THE INITIAL BALANCE (Rama, 14 Nov: "go, start the initial balance test") ----------------
 # Auction market theory / TPO: the first 15 / 30 / 60 minutes make the day's opening range (the INITIAL BALANCE). A break out of it is the market
