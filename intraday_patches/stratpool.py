@@ -144,3 +144,66 @@ if P and any(e["f"] for e in P):
     for e in srt[-15:]:
         print("  LOST %+5.1f%%  %s %-11s %-32s %s · %s" % (e["r"], e["day"][5:], e["s"], e["set"] + " " + e["side"], e["reg"], lab(e)))
     print("READ: '◀ helps' = seen far more when it won - the rule to add · '◀ hurts' = seen more when it lost - the rule to avoid.")
+
+# ---------------- CHECKS 4 / 5 / 6 (Rama, 14 Nov: "yes add checks 4, 5 and 6") ----------------
+# 4 COSTS: brokerage, STT, exchange fees, GST, stamp + the bid-ask spread + an hour of time decay ≈ 2% of the premium a round trip. An at / 1-in-the-money
+#   option with 11+ days moves about 10x the share in %, so 2% of the premium ≈ 0.20% on the share. Estimates - real premiums are saved from Monday.
+# 5 OLD vs NEW: the first half of the days finds the rules, the second half checks them (a rule that only works where it was found is luck)
+# 6 LOSING STREAKS: the longest run of losses in a row, the worst day, the deepest fall from a high - what your size must survive
+COST, LEV = 0.20, 10.0
+if P:
+    days = sorted({e["day"] for e in P})
+    half = days[len(days) // 2] if days else ""
+    def st_(L):
+        n = len(L); net = [e["r"] - COST for e in L]
+        return n, (100 * sum(1 for x in net if x > 0) / n) if n else 0, (sum(net) / n) if n else 0
+    print("\n=== CHECK 4 · AFTER COSTS (≈ %.2f%% on the share a trade = ~2%% of the premium) · CHECK 5 · OLD %s..%s vs NEW %s..%s" % (
+        COST, days[0][5:] if days else "-", (days[len(days) // 2 - 1][5:] if len(days) > 1 else "-"), half[5:], days[-1][5:] if days else "-"))
+    print("  %-38s %-36s %-36s %-36s" % ("setup", "ALL: trades · won · avg after costs", "OLD days", "NEW days"))
+    ranked = []
+    for st in sets:
+        for side in ("CE", "PE"):
+            L = [e for e in P if e["set"] == st and e["side"] == side]
+            if len(L) < 15:
+                continue
+            o = [e for e in L if e["day"] < half]; nw = [e for e in L if e["day"] >= half]
+            a, b, c = st_(L), st_(o), st_(nw)
+            ranked.append((c[2] if c[0] >= 8 else -9, st + " " + side))
+            f = lambda x: ("%4d · W%3.0f%% · %+.2f%% (%+.0f%% prem)" % (x[0], x[1], x[2], x[2] * LEV)) if x[0] else "-"
+            hold = "  ✅ holds on new days" if (b[0] >= 8 and c[0] >= 8 and b[2] > 0 and c[2] > 0) else ("  ❌ only old days" if (b[2] > 0 and c[0] >= 8 and c[2] <= 0) else "")
+            print("  %-38s %-36s %-36s %-36s%s" % (st + " " + side, f(a), f(b), f(c), hold))
+    # the filters found on the OLD days, checked on the NEW days
+    if any(e["f"] for e in P):
+        print("\n=== CHECK 5b · THE FILTERS ('◀ helps' found on the OLD days) - do they still help on the NEW days?")
+        for st in sets:
+            for side in ("CE", "PE"):
+                L = [e for e in P if e["set"] == st and e["side"] == side and e["f"]]
+                o = [e for e in L if e["day"] < half]; nw = [e for e in L if e["day"] >= half]
+                ow = [e for e in o if e["r"] > 0.3]; ol = [e for e in o if e["r"] < -0.3]
+                if len(ow) < 5 or len(ol) < 5 or len(nw) < 10:
+                    continue
+                helps = [k for k in FN if k != "X" and (sum(1 for e in ow if k in e["f"]) / len(ow) + 0.02) / (sum(1 for e in ol if k in e["f"]) / len(ol) + 0.02) >= 1.5
+                         and sum(1 for e in ow if k in e["f"]) / len(ow) >= 0.15]
+                if not helps:
+                    continue
+                w_ = [e for e in nw if any(k in e["f"] for k in helps)]; wo = [e for e in nw if not any(k in e["f"] for k in helps)]
+                if len(w_) >= 5 and len(wo) >= 5:
+                    a, b = st_(w_), st_(wo)
+                    print("  %-36s filters: %-40s NEW days WITH them %3d · %+.2f%% · W%2.0f%%  |  WITHOUT %3d · %+.2f%%%s" % (
+                        st + " " + side, ", ".join(FN[k].split(" (")[0].split(" today")[0] for k in helps)[:40], a[0], a[2], a[1], b[0], b[2],
+                        "  ✅ the filter works" if a[2] > b[2] and a[2] > 0 else "  ❌ not on new days"))
+    # 6 losing streaks
+    print("\n=== CHECK 6 · LOSING STREAKS (after costs) - the longest run of losses, the worst day, the deepest fall from a high, in % on the share")
+    for _, nm in sorted(ranked, reverse=True)[:10]:
+        st, side = nm.rsplit(" ", 1)
+        L = [e for e in P if e["set"] == st and e["side"] == side]
+        run = mx = 0; cum = peak = dd = 0.0; byday = {}
+        for e in L:
+            x = e["r"] - COST
+            run = run + 1 if x < 0 else 0; mx = max(mx, run)
+            cum += x; peak = max(peak, cum); dd = min(dd, cum - peak)
+            byday[e["day"]] = byday.get(e["day"], 0.0) + x
+        lose_days = sum(1 for v in byday.values() if v < 0)
+        print("  %-38s %4d trades · total %+.1f%% · longest losing run %2d · worst day %+.1f%% · deepest fall %+.1f%% · losing days %d of %d" % (
+            nm, len(L), cum, mx, min(byday.values()), dd, lose_days, len(byday)))
+    print("READ: trade a setup only if it is ✅ on the NEW days after costs, and size it so its deepest fall and longest losing run would not hurt you.")
