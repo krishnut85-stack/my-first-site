@@ -61,3 +61,54 @@ for sec in ("3e", "3f", "3g", "3h", "3i"):
             print("  %-58s %5d · WON %3.0f%% · avg %+.2f%% on the share" % (k[1], n, 100 * x / n, z / n))
         else:
             print("%s%-50s %5d · WON %3.0f%% · stop 2/target 2 %+.2f%% · held %+.2f%% · half+trail %+.2f%%" % (ind, k[1], n, 100 * x / n, z / n, u / n, v / n))
+
+
+# ---------------- THE SHARE PROFILE: which share, which setup, which market ----------------
+P = []
+for f in FILES:
+    for ln in open(f, encoding="utf-8"):
+        if ln.startswith("PROFILE|"):
+            x = ln.rstrip("\n").split("|")
+            if len(x) == 8:
+                P.append({"day": x[1], "reg": x[2], "s": x[3], "sec": x[4], "set": x[5], "side": x[6], "r": float(x[7])})
+if P:
+    def agg(L):
+        return len(L), 100 * sum(1 for e in L if e["r"] > 0) / len(L), sum(e["r"] for e in L) / len(L)
+    print("\n=== EVERY SETUP x THE MARKET KIND (%d trades, %d days) - avg %% on the share a trade (stop 2%% / target 2%%)" % (len(P), len({e['day'] for e in P})))
+    sets = sorted({e["set"] for e in P})
+    regs = ["rising", "falling", "choppy", "flat"]
+    print("  %-34s %s" % ("setup", "".join("%-22s" % r for r in ["ALL DAYS"] + regs)))
+    for st in sets:
+        for side in ("CE", "PE"):
+            cells = []
+            for r in [None] + regs:
+                L = [e for e in P if e["set"] == st and e["side"] == side and (r is None or e["reg"] == r)]
+                cells.append(("%3d · %+.2f%% · W%2.0f%%" % (len(L), agg(L)[2], agg(L)[1])) if len(L) >= 5 else "-")
+            print("  %-34s %s" % (st + " " + side, "".join("%-22s" % c for c in cells)))
+    print("\n=== EACH SHARE'S OWN BEST SETUP (3+ trades of that setup, the average above 0.3%) - the link: which share, which setup")
+    best = []
+    for sym in sorted({e["s"] for e in P}):
+        rows = []
+        for st in sets:
+            for side in ("CE", "PE"):
+                L = [e for e in P if e["s"] == sym and e["set"] == st and e["side"] == side]
+                if len(L) >= 3:
+                    n, w, a = agg(L); rows.append((a, n, w, st + " " + side))
+        if rows:
+            rows.sort(reverse=True)
+            if rows[0][0] >= 0.3:
+                best.append((rows[0], rows[-1], sym, P[[e["s"] for e in P].index(sym)]["sec"]))
+    for (a, n, w, nm), worst, sym, sec in sorted(best, key=lambda x: -x[0][0])[:60]:
+        print("  %-11s %-16s BEST: %-40s %2d trades · avg %+.2f%% · won %3.0f%%   avoid: %s (%+.2f%%)" % (sym, sec[:16], nm, n, a, w, worst[3], worst[0]))
+    print("\n=== EACH SECTOR'S BEST SETUP (10+ trades)")
+    for sec in sorted({e["sec"] for e in P}):
+        rows = []
+        for st in sets:
+            for side in ("CE", "PE"):
+                L = [e for e in P if e["sec"] == sec and e["set"] == st and e["side"] == side]
+                if len(L) >= 10:
+                    n, w, a = agg(L); rows.append((a, n, w, st + " " + side))
+        if rows:
+            rows.sort(reverse=True)
+            print("  %-22s best: %-40s %3d · %+.2f%% · won %3.0f%%   worst: %s %+.2f%%" % (sec[:22], rows[0][3], rows[0][1], rows[0][0], rows[0][2], rows[-1][3], rows[-1][0]))
+    print("\nREAD: a share's 'best' needs to hold on NEW days before trusting it - 30 days give each share only a few trades. Sector rows are steadier.")

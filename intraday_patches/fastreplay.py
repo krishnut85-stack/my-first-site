@@ -950,6 +950,38 @@ for d, lab in ((1, "▲ yesterday UP 5%+ -> CE today"), (-1, "▼ yesterday DOWN
 if D2:
     print("  " + " · ".join("%s %s%+.0f%%→%s" % (e["s"], "", e["ych"], ("%+.1f" % e["r22"])) for e in sorted(D2, key=lambda e: -abs(e["ych"]))[:20]))
 print("  READ: a positive average = the day-2 trade pays. Results drift is a known pattern; this is whether it holds on Indian F&O shares.")
+
+# ---------------- 3j · THE SHARE PROFILE (Rama, 14 Nov: "which strategy moved that particular share, why, in what market condition - find the
+# correct link: which share and which strategy"). One line per trade, every setup, every share - stratpool.py adds the 30 days up per share,
+# per sector and per market kind: each share's own best setup (and the ones to avoid on it).
+def regime():
+    NI = IDX.get("NIFTY"); pc = PCL.get("NIFTY")
+    if NI is None or not pc:
+        return "unknown"
+    ch = (float(NI[1][-1]) / pc - 1) * 100; rg = (float(np.max(NI[1])) - float(np.min(NI[1]))) / pc * 100
+    return "falling" if ch <= -0.6 else "rising" if ch >= 0.6 else "choppy" if rg >= 1.1 else "flat"
+REG = regime()
+_sec = WW.sectors_of(); _of = {}
+for _k, _v in _sec.items():
+    for _x in _v:
+        _of.setdefault(_x, _k)
+PRO = []
+for s_, i_, d_, early in ENT:                                            # +3% momentum, and its opposite (the fade)
+    PRO.append((s_, "MOMENTUM " + ("before 10" if early else "after 10"), d_, play(s_, i_, d_, {"tgt": 2.0})))
+    PRO.append((s_, "FADE the 3% " + ("before 10" if early else "after 10"), -d_, play(s_, i_, -d_, {"tgt": 2.0})))
+for e in IBE:
+    if e["m"] == 15:
+        ts_, C_, OI_ = MIN[e["s"]]
+        i_ = int(np.searchsorted(ts_, e["t"]))
+        PRO.append((e["s"], "BREAK of the first 15 min", e["d"], play(e["s"], i_, e["d"], {"tgt": 2.0})))
+for e in ORBE:
+    if e.get("trade"):
+        PRO.append((e["s"], "OPENING 5-min BREAK" + (" (in play)" if e.get("rv") and e["rv"] >= 2.0 else ""), e["d"], e["pct"]))
+for e in D2:
+    PRO.append((e["s"], "RESULTS DAY 2", e["d"], e["r22"]))
+print("\n=== 3j · THE SHARE PROFILE - %s · the market: %s · %d trades (every setup, every share) - stratpool.py adds the days up" % (day, REG, len(PRO)))
+for s_, st_, d_, r_ in PRO:
+    print("PROFILE|%s|%s|%s|%s|%s|%s|%.3f" % (day, REG, s_, _of.get(s_, "-"), st_, "CE" if d_ > 0 else "PE", r_))
 if "strat" in sys.argv[2:]:
     sys.exit(0)                                                          # python3 fastreplay.py DAY strat - every study, without the slow 🌪 card replay
 
