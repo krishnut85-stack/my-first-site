@@ -994,7 +994,9 @@ for _k, _v in _sec.items():
 def feat(s, i, d):
     """what was there at the entry (Rama, 14 Nov: "check those shares - why some went up and some went down, on what basis") -> flags string
     R results today / last evening · S its sector with it today · N NIFTY with it today · V volume 2x its normal so far · M new futures money (OI +2%
-    since the open) · W on its side of VWAP · G gapped its way 1%+ · E before 10:00 · X the 3 together (S + M + V)"""
+    since the open: long build-up for CE, short build-up for PE) · C money LEAVING (OI -2% since the open: short covering for CE, long unwinding
+    for PE) · H news or an exchange filing in the 2 hours before · W on its side of VWAP · G gapped its way 1%+ · E before 10:00 · X the 3
+    together (S + M + V)"""
     ts, C, OI = MIN[s]; i = max(0, min(int(i), len(C) - 1)); t = ts[i]; p = float(C[i])
     f = {"R": s in RES}
     peers = []
@@ -1015,9 +1017,11 @@ def feat(s, i, d):
         f["W"] = (p - float(vw[i])) * d > 0
     o0 = next((x for x in OI if x), 0)
     f["M"] = bool(o0 and OI[i] and (OI[i] / o0 - 1) * 100 >= 2.0)
+    f["C"] = bool(o0 and OI[i] and (OI[i] / o0 - 1) * 100 <= -2.0)
+    f["H"] = any(t - 7200 <= x <= t + 60 for x in NEWS.get(s, []))
     pc = PCL.get(s); f["G"] = bool(pc and (float(C[0]) / pc - 1) * 100 * d >= 1.0)
     f["E"] = HM(t) < "10:00"; f["X"] = f["S"] and f["M"] and f["V"]
-    return "".join(k for k in "RSNVMWGEX" if f[k]) or "-"
+    return "".join(k for k in "RSNVMCHWGEX" if f[k]) or "-"
 PRO = []
 for s_, i_, d_, early in ENT:                                            # +3% momentum, and its opposite (the fade)
     PRO.append((s_, "MOMENTUM " + ("before 10" if early else "after 10"), d_, play(s_, i_, d_, {"tgt": 2.0}), feat(s_, i_, d_)))

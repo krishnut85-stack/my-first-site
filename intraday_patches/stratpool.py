@@ -117,7 +117,8 @@ if P:
 
 # ---------------- WINNERS vs LOSERS (Rama, 14 Nov: "in every test some went up and some went down - check those shares, why, on what basis") ----------------
 FN = {"R": "results today / last evening", "S": "its sector with it today", "N": "NIFTY with it today", "V": "volume 2x its normal so far",
-      "M": "new futures money (OI +2% since the open)", "W": "on its side of VWAP", "G": "gapped its way 1%+", "E": "before 10:00",
+      "M": "new futures money (long / short build-up)", "C": "money LEAVING (short covering / long unwinding)",
+      "H": "news or a filing in the 2 hours before", "W": "on its side of VWAP", "G": "gapped its way 1%+", "E": "before 10:00",
       "X": "THE 3 TOGETHER (sector + money + volume)"}
 if P and any(e["f"] for e in P):
     print("\n=== WINNERS vs LOSERS - for each setup, what was there when it WON vs when it LOST (how often, and how much more often)")
