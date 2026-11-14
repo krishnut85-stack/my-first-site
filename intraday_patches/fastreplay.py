@@ -500,6 +500,90 @@ for rule in ("old", "new"):
     for e in BMT[rule]:
         print("PROFILE|%s|%s|%s|%s|%s|%s|%.3f|%s" % (day, REG if "REG" in globals() else "-", e["s"], "-", "BIG MOVER " + rule.upper() + " rule", "CE" if e["d"] > 0 else "PE", e["r"], "E" if e["hm"] < "10:00" else "-"))
 
+# ---------------- 3n · 🧲 STEADY MOVE (Rama, 14 Nov: "a falling stock is a fall, even 1, 2, 3 percent I make profit - the OI can build up slowly,
+# the stock movement is the concern - make profit and get out; all your tests were for sudden movement"). Both ways. ENTRY: the first minute
+# (09:30-14:30) the share is 1%+ from its open its way, on the day's side of the day before's close, with the day's futures build-up its way
+# (long for a rise, short for a fall: OI +1% since the open) and on its side of VWAP for the last 15 minutes. Then every exit made for SLOW moves.
+def vwap_exit(s, i, d, stop=1.5):
+    ts, C, OI = MIN[s]; H, L = MHL[s]; vv, nb, vw = VOLD[s]; p0 = float(C[i])
+    kend = max(i, min(len(C) - 1, int(np.searchsorted(ts, d0 + 6 * 3600, side="right") - 1)))       # 15:15
+    for j in range(i + 1, kend + 1):
+        lo = (float(L[j]) / p0 - 1) * 100 * d if d > 0 else (float(H[j]) / p0 - 1) * 100 * d
+        if lo <= -stop:
+            return -stop
+        if (float(C[j]) - float(vw[j])) * d < 0:
+            return (float(C[j]) / p0 - 1) * 100 * d
+    return (float(C[kend]) / p0 - 1) * 100 * d
+def steady():
+    sec = WW.sectors_of(); of = {}
+    for kk, v in sec.items():
+        for x in v:
+            of.setdefault(x, kk)
+    NI = IDX.get("NIFTY")
+    EV = []
+    for s, (ts, C, OI) in MIN.items():
+        if s not in MHL or s not in VOLD or not PCL.get(s):
+            continue
+        vv, nb, vw = VOLD[s]; pc = PCL[s]; o = float(C[0]); o0 = next((x for x in OI if x), 0)
+        for d in (1, -1):
+            for i in range(15, len(C) - 1):
+                hm = HM(ts[i])
+                if hm < "09:30":
+                    continue
+                if hm > "14:30":
+                    break
+                if (float(C[i]) / o - 1) * 100 * d < 1.0 or (float(C[i]) / pc - 1) * 100 * d <= 0:
+                    continue
+                doi = float((OI[i] / o0 - 1) * 100) if (OI[i] and o0) else 0.0
+                if doi < 1.0:
+                    continue
+                if not all((float(C[j]) - float(vw[j])) * d > 0 for j in range(i - 15, i + 1)):
+                    continue
+                peers = []
+                for x in (sec.get(of.get(s)) or []):
+                    if x != s and x in MIN and PCL.get(x):
+                        jx = int(np.searchsorted(MIN[x][0], ts[i], side="right") - 1)
+                        if jx >= 0:
+                            peers.append((float(MIN[x][1][jx]) / PCL[x] - 1) * 100)
+                sok = bool(peers) and sum(1 for x in peers if x * d > 0.3) * 2 >= len(peers)
+                nok = False
+                if NI is not None:
+                    jn = int(np.searchsorted(NI[0], ts[i], side="right") - 1)
+                    nok = jn >= 0 and (float(NI[1][jn]) - float(NI[1][0])) * d > 0
+                EV.append({"s": s, "d": d, "hm": hm, "i": i, "sec": sok, "nifty": nok, "doi": doi, "mv": (float(C[i]) / o - 1) * 100 * d,
+                           "e1": play(s, i, d, {"stop": 1.0, "trail": 0.75}), "e2": play(s, i, d, {"stop": 1.5, "trail": 1.0}),
+                           "e3": play(s, i, d, {"stop": 1.0, "trail": 1.5}), "e4": play(s, i, d, {"stop": 1.0}), "e5": vwap_exit(s, i, d),
+                           "e6": play(s, i, d, {"stop": 1.0, "half": 1.0, "trail": 0.75})})
+                break
+    return EV
+STE = steady()
+EXN = [("e1", "stop 1% · trail 0.75% from the best"), ("e2", "stop 1.5% · trail 1% from the best"), ("e3", "stop 1% · trail 1.5% from the best"),
+       ("e4", "stop 1% · hold to 15:20"), ("e5", "stop 1.5% · out when it crosses VWAP"), ("e6", "stop 1% · book half +1%, trail the rest 0.75%")]
+print("\n=== 3n · 🧲 STEADY MOVE - 1%%+ from the open, the day's futures build-up its way (+1%%), on its side of VWAP 15 min · %s · %d trades · after costs %.2f%%" % (day, len(STE), 0.20))
+def strow(L, name):
+    if not L:
+        print("  %-50s none" % name); return
+    best = max(EXN, key=lambda e: sum(x[e[0]] for x in L))
+    cells = " · ".join("%s %+.2f%%" % (k[1:], sum(x[k] - 0.20 for x in L) / len(L)) for k, _ in EXN)
+    w = sum(1 for x in L if x[best[0]] - 0.20 > 0)
+    print("  %-50s %4d · exits after costs: %s · best: %s (won %d%%)" % (name, len(L), cells, best[0][1:], round(100 * w / len(L))))
+for d, lab in ((1, "▲ CE"), (-1, "▼ PE")):
+    E = [e for e in STE if e["d"] == d]
+    strow(E, "%s every steady move" % lab)
+    strow([e for e in E if e["sec"] and e["nifty"]], "   ... + its sector AND NIFTY the same way")
+    strow([e for e in E if e["sec"]], "   ... + its sector the same way")
+    strow([e for e in E if e["nifty"]], "   ... + NIFTY the same way")
+    strow([e for e in E if not e["nifty"]], "   ... NIFTY the OTHER way")
+    strow([e for e in E if e["doi"] >= 2.0], "   ... a big build-up (OI +2% today)")
+    strow([e for e in E if e["hm"] < "11:00"], "   ... entered before 11:00")
+    strow([e for e in E if "11:00" <= e["hm"] < "13:00"], "   ... entered 11:00-13:00")
+    strow([e for e in E if e["hm"] >= "13:00"], "   ... entered after 13:00")
+print("  exits: 1 = stop 1%/trail 0.75 · 2 = stop 1.5%/trail 1 · 3 = stop 1%/trail 1.5 · 4 = stop 1%/hold to 15:20 · 5 = out at the VWAP cross · 6 = half at +1%, trail 0.75")
+print("  READ: on an at-the-money option about 10x the share's %: +0.30% on the share ≈ +3% on the premium a trade.")
+for e in STE:
+    print("PROFILE|%s|%s|%s|%s|%s|%s|%.3f|%s" % (day, REG if "REG" in globals() else "-", e["s"], "-", "STEADY MOVE", "CE" if e["d"] > 0 else "PE", e["e2"],
+                                             ("S" if e["sec"] else "") + ("N" if e["nifty"] else "") + ("M" if e["doi"] >= 2 else "") + ("E" if e["hm"] < "11:00" else "") or "-"))
+
 if ("ib" in sys.argv[2:] or "bm" in sys.argv[2:]) and "strat" not in sys.argv[2:]:
     sys.exit(0)                                                          # python3 fastreplay.py DAY bm - only the fast studies (initial balance, stocks in play, 🌪 old vs new)                                                          # python3 fastreplay.py DAY ib - only the initial balance (fast)
 

@@ -210,3 +210,36 @@ if P:
         print("  %-38s %4d trades · total %+.1f%% · longest losing run %2d · worst day %+.1f%% · deepest fall %+.1f%% · losing days %d of %d" % (
             nm, len(L), cum, mx, min(byday.values()), dd, lose_days, len(byday)))
     print("READ: trade a setup only if it is ✅ on the NEW days after costs, and size it so its deepest fall and longest losing run would not hurt you.")
+
+# ---------------- 🧲 STEADY MOVE, every exit, all days (fastreplay 3n) ----------------
+SA, SO = {}, []
+for f in FILES:
+    sec_, par = False, ""
+    for ln in open(f, encoding="utf-8"):
+        if ln.startswith("=== 3n"):
+            sec_ = True; continue
+        if sec_ and ln.startswith("=== "):
+            sec_ = False
+        if not sec_:
+            continue
+        m = re.match(r"\s+(.+?)\s+(\d+) · exits after costs: (.+?) · best:", ln)
+        if not m:
+            continue
+        nm = m.group(1).strip(); n = int(m.group(2))
+        if not nm.startswith("..."):
+            par = nm
+        k = (par, nm) if nm.startswith("...") else ("", nm)
+        ex = {int(a): float(b) for a, b in re.findall(r"(\d) ([+-][\d.]+)%", m.group(3))}
+        a = SA.setdefault(k, [0, {}])
+        if k not in SO:
+            SO.append(k)
+        a[0] += n
+        for e_, v in ex.items():
+            a[1][e_] = a[1].get(e_, 0.0) + n * v
+if SA:
+    print("\n=== 🧲 STEADY MOVE - all days, avg % on the share a trade AFTER costs, by exit (1 stop1/trail0.75 · 2 stop1.5/trail1 · 3 stop1/trail1.5 · 4 stop1/hold 15:20 · 5 VWAP cross · 6 half+1%, trail0.75)")
+    for k in SO:
+        n, ex = SA[k]
+        best = max(ex, key=lambda e_: ex[e_]) if ex else None
+        print("%s%-48s %5d · %s · best exit %s %+.2f%% (≈%+.0f%% on the premium)" % ("   " if k[1].startswith("...") else "  ", k[1][:48], n,
+              " · ".join("%d %+.2f%%" % (e_, ex[e_] / n) for e_ in sorted(ex)), best, ex[best] / n if best else 0, 10 * ex[best] / n if best else 0))
