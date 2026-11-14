@@ -277,8 +277,15 @@ def row(L, name):
         print("  %-52s none" % name); return
     r = [e for e in L if e["res"] == "real"]; f = [e for e in L if e["res"] == "failed"]
     tm = [e["tm"] for e in r]
+    def side(d):
+        S_ = [e for e in L if e["d"] == d]
+        if not S_:
+            return "%s -" % ("▲ rise (CE)" if d > 0 else "▼ fall (PE)")
+        return "%s %d: REAL %d%% FAILED %d%%" % ("▲ rise (CE)" if d > 0 else "▼ fall (PE)", len(S_), round(100 * sum(1 for e in S_ if e["res"] == "real") / len(S_)),
+                                                round(100 * sum(1 for e in S_ if e["res"] == "failed") / len(S_)))
     print("  %-52s %4d starts · REAL %3d%% · FAILED %3d%%%s" % (name, len(L), round(100 * len(r) / len(L)), round(100 * len(f) / len(L)),
           (" · the real ones got +1%% in a median %.0f min" % med(tm)) if tm else ""))
+    print("  %-52s %s · %s" % ("", side(1), side(-1)))
 row(WM, "the price alone (every start)")
 row([e for e in WM if not e["money"] and not e["forced"]], "price, but the futures money NOT moving")
 row([e for e in WM if e["forced"]], "price + money only forced OUT (covering / unwinding)")
@@ -288,9 +295,7 @@ row([e for e in WM if e["money"] and e["sect"]], "price + NEW money + SECTOR  = 
 row([e for e in WM if e["money"] and e["sect"] and e["mkt"]], "THE 3 + the whole MARKET")
 row([e for e in WM if e["money"] and not e["sect"]], "price + NEW money, sector NOT with it")
 row([e for e in WM if e["sect"] and not e["money"]], "price + sector, NO new money")
-row([e for e in WM if e["money"] and e["sect"] and e["d"] > 0], "  THE 3 TOGETHER ▲ (rise)")
-row([e for e in WM if e["money"] and e["sect"] and e["d"] < 0], "  THE 3 TOGETHER ▼ (fall)")
-print("  READ: the line with the highest REAL and the lowest FAILED is the principle; GIR rings only on that.")
+print("  READ: F&O works both ways - the line with the highest REAL and the lowest FAILED, for the rise (CE) and for the fall (PE), is the principle.")
 
 # ---------------- 4 · the wind, minute by minute, with windwatch's own rules ----------------
 SEC = WW.sectors_of(); OF = {}
