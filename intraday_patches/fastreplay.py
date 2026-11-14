@@ -207,6 +207,7 @@ def vol_info(today, base):
     cv = np.cumsum(v); vw = np.where(cv > 0, np.cumsum(tp * v) / np.maximum(cv, 1), tp)
     return v, nb, vw
 IDX = {}
+MHL = {}            # sym -> (high[], low[]) of each minute (patch 283 study: the initial balance)
 for n, s in enumerate(syms + [x for x in ("NIFTY", "BANKNIFTY") if x in FUT and x not in syms]):
     R = hist(FUT[s][0], back=8); time.sleep(0.34)
     R, B = split_day(R)
@@ -218,9 +219,110 @@ for n, s in enumerate(syms + [x for x in ("NIFTY", "BANKNIFTY") if x in FUT and 
             IDX[s] = arr                                                   # the index tide - not a share
         else:
             MIN[s] = arr; VOLD[s] = vol_info(R, B)
+            MHL[s] = (np.array([float(r.get("high") or r["close"]) for r in R], float), np.array([float(r.get("low") or r["close"]) for r in R], float))
     if n % 50 == 49:
         print("  %d of %d" % (n + 1, len(syms)), flush=True)
 print("  futures with minute data: %d · volume normal from the 8 days before: %d · index: %s" % (len(MIN), sum(1 for v in VOLD.values() if np.isfinite(v[1]).sum() > 100), " ".join(IDX) or "-"))
+
+# ---------------- 3f · THE INITIAL BALANCE (Rama, 14 Nov: "go, start the initial balance test") ----------------
+# Auction market theory / TPO: the first 15 / 30 / 60 minutes make the day's opening range (the INITIAL BALANCE). A break out of it is the market
+# accepting a new price - the classic momentum entry. For every F&O share, the FIRST minute its close breaks above (below) the range: entry there.
+# KEPT GOING = 1% more its way before it closes BACK INSIDE the range · BACK INSIDE = the break failed · and held to 15:20.
+def ib_study():
+    sec = WW.sectors_of(); of = {}
+    for kk, v in sec.items():
+        for x in v:
+            of.setdefault(x, kk)
+    res_set = set()
+    try:
+        c = ro("chains.db"); p_ = (D0 - dt.timedelta(days=1)).date()
+        while p_.weekday() > 4:
+            p_ -= dt.timedelta(days=1)
+        res_set = {r[0] for r in c.execute("select sym from results_cal where d in (?, ?)", (day, str(p_)))}; c.close()
+    except Exception:
+        pass
+    NI = IDX.get("NIFTY")
+    def ib_of(ts, H, L, mins):
+        k = np.nonzero(ts <= d0 + 60 * mins + 1)[0]
+        return (float(np.max(H[k])), float(np.min(L[k])), int(k[-1])) if len(k) >= max(3, mins // 2) else None
+    nib = {m: (ib_of(NI[0], NI[1], NI[1], m) if NI is not None else None) for m in (15, 30, 60)}
+    EV = []
+    for s, (ts, C, OI) in MIN.items():
+        if s not in MHL:
+            continue
+        H, L = MHL[s]
+        vv, nb, vw = VOLD.get(s, (None, None, None))
+        pc = PCL.get(s)
+        for mins in (15, 30, 60):
+            ib = ib_of(ts, H, L, mins)
+            if not ib:
+                continue
+            hi, lo, k0 = ib
+            width = (hi / lo - 1) * 100 if lo else None
+            for d in (1, -1):
+                idx = [i for i in range(k0 + 1, len(C)) if (C[i] > hi if d > 0 else C[i] < lo)]
+                if not idx:
+                    continue
+                i = idx[0]; t = ts[i]
+                if HM(t) > "14:30":
+                    continue
+                edge = hi if d > 0 else lo; p0 = float(C[i]); res = "neither"
+                for j in range(i + 1, len(C)):
+                    if (float(C[j]) / p0 - 1) * 100 * d >= 1.0:
+                        res = "kept going"; break
+                    if (C[j] <= edge if d > 0 else C[j] >= edge):
+                        res = "back inside"; break
+                k_ = int(np.searchsorted(ts, d0 + 6 * 3600 + 5 * 60, side="right") - 1)
+                k_ = max(i, min(len(C) - 1, k_))
+                hold = (float(C[k_]) / p0 - 1) * 100 * d
+                vr = None
+                if vv is not None and i >= 2:
+                    b_ = nb[i - 2:i + 1]
+                    if np.isfinite(b_).all() and b_.sum() > 0:
+                        vr = float(vv[i - 2:i + 1].sum() / b_.sum())
+                doi = float((OI[i] / OI[0] - 1) * 100) if OI[0] and OI[i] else None
+                nwith = False
+                if NI is not None and nib.get(mins):
+                    jn = int(np.searchsorted(NI[0], t, side="right") - 1)
+                    if jn >= 0:
+                        nwith = (NI[1][jn] > nib[mins][0]) if d > 0 else (NI[1][jn] < nib[mins][1])
+                peers = []
+                for x in (sec.get(of.get(s)) or []):
+                    if x != s and x in MIN and x in MHL:
+                        ibx = ib_of(MIN[x][0], MHL[x][0], MHL[x][1], mins)
+                        jx = int(np.searchsorted(MIN[x][0], t, side="right") - 1)
+                        if ibx and jx >= 0:
+                            peers.append((MIN[x][1][jx] > ibx[0]) if d > 0 else (MIN[x][1][jx] < ibx[1]))
+                gap = ((float(C[0]) / pc - 1) * 100 * d) if pc else None
+                EV.append({"s": s, "d": d, "m": mins, "t": t, "res": res, "hold": hold, "vol": vr is not None and vr >= 2.0,
+                           "money": doi is not None and doi >= 1.0, "nifty": nwith, "sect": bool(peers) and sum(peers) * 2 >= len(peers),
+                           "narrow": width is not None and width < 1.0, "wide": width is not None and width >= 2.0, "early": HM(t) < "10:00",
+                           "results": s in res_set, "gap": gap is not None and gap >= 1.0, "gapx": gap is not None and gap <= -1.0,
+                           "chg": ((p0 / pc - 1) * 100 * d) if pc else None})
+    return EV
+IBE = ib_study()
+print("\n=== 3f · THE INITIAL BALANCE - the first 15 / 30 / 60 min range, then the FIRST break out of it: KEPT GOING 1%% or BACK INSIDE? %s" % day)
+def irow(L, name):
+    if not L:
+        print("  %-48s none" % name); return
+    kg = sum(1 for e in L if e["res"] == "kept going"); bi = sum(1 for e in L if e["res"] == "back inside")
+    print("  %-48s %4d · KEPT GOING %3d%% · BACK INSIDE %3d%% · held to 15:20 %+.2f%%" % (name, len(L), round(100 * kg / len(L)), round(100 * bi / len(L)),
+          sum(e["hold"] for e in L) / len(L)))
+for d, lab in ((1, "▲ UP"), (-1, "▼ DOWN")):
+    for mins in (15, 30, 60):
+        E = [e for e in IBE if e["d"] == d and e["m"] == mins]
+        irow(E, "%s break of the first %d min" % (lab, mins))
+        if mins in (15, 30) and E:
+            for key, nm in (("early", "before 10:00"), ("vol", "VOLUME 2x its normal"), ("money", "NEW futures money (OI +1% since the open)"),
+                            ("sect", "its SECTOR broke out too"), ("nifty", "NIFTY broke out too"), ("narrow", "a NARROW range (under 1%)"),
+                            ("wide", "a WIDE range (2%+)"), ("results", "RESULTS today / last evening"), ("gap", "gapped its way 1%+"), ("gapx", "gapped the OTHER way 1%+")):
+                irow([e for e in E if e[key]], "   ... " + nm)
+            irow([e for e in E if e["early"] and e["vol"]], "   ... before 10:00 + VOLUME")
+            irow([e for e in E if e["early"] and e["vol"] and (e["sect"] if d > 0 else e["money"])], "   ... before 10:00 + VOLUME + " + ("SECTOR (the CE rule)" if d > 0 else "NEW money (the PE rule)"))
+print("  READ: compare with 3e (a share already 3%% up before 10:00: kept going 2%% more 33%%, turned back 11%%). Rows with high KEPT GOING and low BACK INSIDE win.")
+
+if "ib" in sys.argv[2:]:
+    sys.exit(0)                                                          # python3 fastreplay.py DAY ib - only the initial balance (fast)
 
 # ---------------- 3b · MONEY FIRST, THEN THE PRICE (Rama, 14 Nov: "when the futures money is betting for a rise or a fall, how fast does the share react") ----------------
 def money_first():
@@ -570,8 +672,10 @@ def results_days():
     out = set()
     try:
         c = ro("chains.db")
-        prev = (D0 - dt.timedelta(days=4)).date()
-        for sym, d_ in c.execute("select sym, d from results_cal where d between ? and ?", (str(prev), day)):
+        prev = (D0 - dt.timedelta(days=1)).date()                            # today or the EVENING BEFORE (the last weekday) - not the whole week
+        while prev.weekday() > 4:
+            prev -= dt.timedelta(days=1)
+        for sym, d_ in c.execute("select sym, d from results_cal where d in (?, ?)", (str(prev), day)):
             out.add(sym)
         c.close()
     except Exception:
