@@ -18,7 +18,7 @@ try:
     DATA = core.DATA
 except Exception:
     DATA = "data"
-KINDS = [("P1", r"🔴 TRADE ALERT|⚖ VOTE[^\n]*✓ P1"), ("OPENING CALL", r"OPENING CALL"), ("ENTER NOW", r"ENTER NOW"), ("GO", r"^🟢 GO\b"),
+KINDS = [("OPENING CALL", r"OPENING CALL"), ("ENTER NOW", r"ENTER NOW"), ("GO", r"^🟢 GO\b"), ("P1", r"🔴 TRADE ALERT|⚖ VOTE[^\n]*✓ P1"),
          ("BUILD-UP", r"^🧩 (LONG|SHORT) BUILD-UP"), ("OI other", r"^🧩"), ("BREAKING NOW", r"BREAKING NOW"), ("SUDDEN", r"SUDDEN"),
          ("FIRST MOVE", r"FIRST MOVE"), ("RUNNING", r"RUNNING"), ("SPEED", r"SPEED"), ("PUSH/PULL", r"(PUSH|PULL) STARTED"),
          ("TURN (profit booking / short covering)", r"PROFIT BOOKING|SHORT COVERING"), ("PATTERN", r"PATTERN"), ("TRIAL ENTRY", r"TRIAL ENTRY"),
@@ -53,6 +53,20 @@ for day, t, tx in rows:
     seen[key] = ts
     A.append({"day": day, "t": str(t)[:5], "ts": ts, "sym": sym, "k": k, "s": s})
 H = {}
+CH = {}
+try:                                                                  # the last session's candles from the engine's live file (the history adds it later)
+    import json
+    _j = json.load(open("charts.json"))
+    _ld = max(a["day"] for a in A) if A else None
+    if _ld:
+        _t0 = dt.datetime.fromisoformat(_ld + " 09:15").replace(tzinfo=IST).timestamp()
+        for _s, _c in _j.items():
+            n_ = len(_c.get("c") or [])
+            if n_:
+                CH[_s] = {"ts": np.array([_t0 + 300 * k for k in range(n_)], dtype=float),
+                          **{k: np.array([x if x is not None else np.nan for x in (_c.get(k) or [np.nan] * n_)], dtype=float) for k in ("o", "h", "l", "c", "v")}}
+except Exception as _ex:
+    print("   (charts.json not used: %s)" % str(_ex)[:60])
 def bars(sym):
     if sym not in H:
         a = None
@@ -61,6 +75,14 @@ def bars(sym):
                 z = np.load(p); a = {k: np.asarray(z[k], dtype=float) for k in ("ts", "o", "h", "l", "c", "v")}; break
             except Exception:
                 continue
+        x = CH.get(sym)
+        if x is not None:                                             # add the last session if the history does not have it yet
+            if a is None:
+                a = x
+            else:
+                d_have = set(((a["ts"] + 19800) // 86400).astype(int)); d_x = int((x["ts"][0] + 19800) // 86400)
+                if d_x not in d_have:
+                    a = {k: np.concatenate([a[k], x[k]]) for k in ("ts", "o", "h", "l", "c", "v")}
         H[sym] = a
     return H[sym]
 def score(a):
@@ -113,6 +135,8 @@ def line(lab, xs):
 days = sorted(set(a["day"] for a in S))
 print("=== %d alerts with a side, scored on 5-min candles · %d days (%s .. %s) · right = 0.5%%+ its way" % (len(S), len(days), days[0] if days else "-", days[-1] if days else "-"))
 print("    (alerts with no candles - a share without history - left out: %d)" % (len(A) - len(S)))
+_byd = collections.Counter(a["day"] for a in S); _alld = collections.Counter(a["day"] for a in A)
+print("    by day (scored / all): " + " · ".join("%s %d/%d" % (d[5:], _byd.get(d, 0), _alld[d]) for d in sorted(_alld)))
 print("=== 1 · BY KIND")
 for k, _ in KINDS:
     xs = [a for a in S if a["k"] == k]
