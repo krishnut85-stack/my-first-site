@@ -2,6 +2,7 @@
 # PATCH 269 - MY F&O ALL AUTOMATIC (Rama, 14 Nov: "the tabs have the upload CSV - since you read online we don't need them; think as a human" ·
 #   "we have no December trade but GIR shows DEC"). The upload box and the old typed-in ledger (CAPITAL / ADD TRADE) go. A 💰 ZERODHA strip: cash
 #   available, margin in use, holdings value and P&L - read from the account (READ ONLY) every minute in market hours, every 30 min outside.
+#   BARS view: a short note under the chart (it listed all 66 dates).
 #   MY RECORD's months are the months you TRADED (your tradebook) - DEC was the expiry month of a NIFTY December option traded in November.
 #   Tested: 4 cases + 267's 7. Restarts the page server and the P&L reader - after 15:35 on a trading day (or add: now).
 set -u
@@ -430,6 +431,9 @@ E = [("""$("pnx").innerHTML=h||'<div class="empty">upload your statement below</
     $("pnf").innerHTML=F&&(F.avail!=null||F.h_n!=null)?`💰 <b>ZERODHA</b> · cash available <b>${r(F.avail)}</b> · margin in use <b>${r(F.used)}</b>${F.h_n!=null?` · holdings ${F.h_n} shares <b>${r(F.h_val)}</b> (P&amp;L <b class="${pnlC(F.h_pl)}">${r(F.h_pl)}</b> · today <b class="${pnlC(F.h_day)}">${r(F.h_day)}</b>)`:""} <span class="dim">· read ${esc(F.at||"")}</span>`:'💰 <b>ZERODHA</b> · cash, margin and holdings are read from your account every minute in market hours (every 30 min outside) - the first reading is on its way'; }
   if(PNL.tab==="today"){''', "the 💰 ZERODHA strip"),
      ('<div class="hd2">BY EXPIRY MONTH</div>', '<div class="hd2">${F.months_by==="trade"?"BY MONTH - when you traded (your tradebook)":"BY EXPIRY MONTH - the option\'s month, not the month you traded"}</div>', "months by when you traded, not by expiry"),
+     ('pale bars = your statement by expiry month (${H.map(x=>esc(x[2])+" "+pnlR(x[1])).join(" · ")}) · bright bars = each live day from GIR',
+      '${H0.length?"pale bars = your statement by month ("+H0.map(x=>esc(x[2])+" "+pnlR(x[1])).join(" · ")+")":"pale bars = your trading days to "+esc(upto)+" (tradebook)"} · bright bars = each live day from GIR',
+      "BARS: a short note, not all 66 dates"),
      ("</style>", "/* patch 269: MY F&O all automatic - the typed-in ledger is hidden (Zerodha is read instead) */\n#mfl{display:none}\n#mfpnl .pnf{padding:4px 8px;font-size:.85em;border-bottom:1px dashed var(--ln,#2a3346)}\n</style>", "the typed-in ledger hidden")]
 for o, n, tag in E:
     if s.count(o) != 1:
