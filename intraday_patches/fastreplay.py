@@ -413,8 +413,95 @@ for d, lab in ((0, "every F&O share"), (1, "▲ CE side"), (-1, "▼ PE side")):
     orow([e for e in E if e.get("rv") is not None and e["rv"] < 1.0], "   ... RVOL under 1x (not in play)")
 print("  READ: average R above 0 = it pays. Taking 1R = your risk per trade (e.g. ₹10,000), +0.20R a trade over 20 trades = +4R = ₹40,000.")
 
-if "ib" in sys.argv[2:] and "strat" not in sys.argv[2:]:
-    sys.exit(0)                                                          # python3 fastreplay.py DAY ib - only the initial balance (fast)
+def play(s, i, d, rule):
+    ts, C, OI = MIN[s]; H, L = MHL[s]; p0 = float(C[i])
+    kend = max(i, min(len(C) - 1, int(np.searchsorted(ts, d0 + 6 * 3600 + 5 * 60, side="right") - 1)))
+    mv = lambda x: (x / p0 - 1) * 100 * d
+    stop = rule.get("stop", 2.0); tgt = rule.get("tgt"); trail = rule.get("trail"); half = rule.get("half")
+    tmax = rule.get("tmax"); tend = rule.get("tend")
+    best, booked, st = 0.0, None, -stop
+    for j in range(i + 1, kend + 1):
+        hi_, lo_ = (mv(float(H[j])), mv(float(L[j]))) if d > 0 else (mv(float(L[j])), mv(float(H[j])))
+        if lo_ <= st:
+            r = st
+            return r if booked is None else 0.5 * booked + 0.5 * r
+        best = max(best, hi_)
+        if half and booked is None and hi_ >= half:
+            booked = half; st = max(st, 0.0)
+        if tgt and hi_ >= tgt:
+            return tgt if booked is None else 0.5 * booked + 0.5 * tgt
+        if trail and best >= trail:
+            st = max(st, best - trail)
+        if (tmax and ts[j] - ts[i] >= tmax * 60) or (tend and HM(ts[j]) >= tend):
+            r = mv(float(C[j]))
+            return r if booked is None else 0.5 * booked + 0.5 * r
+    r = mv(float(C[kend]))
+    return r if booked is None else 0.5 * booked + 0.5 * r
+# ---------------- 3m · 🌪 BIG MOVER - THE OLD RULE vs THE NEW (patch 287: the day's slow futures build-up counts as new money) ----------------
+# Minute data, both ways. A burst: the price 0.8%+ in 3 min its way. OLD: new futures money in the same 3 min (OI +0.5%) and 2 of 3 (the burst 0.6%+,
+# the money, its sector - the order book is not in the old data). NEW: the same, or the day's build-up its way (OI +1% since the open, the price on
+# that side of the day's open... of the day before's close). Once a share-side in 30 min, 09:16-15:00. Played: stop 2% / target 2%, out by 15:20.
+def bm_test():
+    sec = WW.sectors_of(); of = {}
+    for kk, v in sec.items():
+        for x in v:
+            of.setdefault(x, kk)
+    OUT = {"old": [], "new": []}
+    for s, (ts, C, OI) in MIN.items():
+        if s not in MHL:
+            continue
+        pc = PCL.get(s); o0 = next((x for x in OI if x), 0)
+        last = {"old": {1: -1e9, -1: -1e9}, "new": {1: -1e9, -1: -1e9}}
+        for i in range(3, len(C) - 1):
+            hm = HM(ts[i])
+            if hm < "09:16" or hm > "15:00" or not C[i - 3]:
+                continue
+            p3 = float((C[i] / C[i - 3] - 1) * 100)
+            d = 1 if p3 >= 0.8 else -1 if p3 <= -0.8 else 0
+            if not d:
+                continue
+            o3 = float((OI[i] / OI[i - 3] - 1) * 100) if OI[i] and OI[i - 3] else 0.0
+            od = float((OI[i] / o0 - 1) * 100) if (OI[i] and o0) else 0.0
+            ch = float((C[i] / pc - 1) * 100) if pc else 0.0
+            m3 = o3 >= 0.5
+            mday = od >= 1.0 and ch * d >= 0.3
+            peers = []
+            for x in (sec.get(of.get(s)) or []):
+                if x != s and x in MIN:
+                    jx = int(np.searchsorted(MIN[x][0], ts[i], side="right") - 1)
+                    if jx >= 3 and MIN[x][1][jx - 3]:
+                        peers.append(float((MIN[x][1][jx] / MIN[x][1][jx - 3] - 1) * 100))
+            sok = bool(peers) and sum(1 for x in peers if x * d > 0.2) * 2 >= len(peers)
+            for rule, money in (("old", m3), ("new", m3 or mday)):
+                sc = int(abs(p3) >= 0.6) + int(money) + int(sok)
+                if money and sc >= 2 and ts[i] - last[rule][d] >= 1800:
+                    last[rule][d] = ts[i]
+                    OUT[rule].append({"s": s, "d": d, "hm": hm, "r": play(s, i, d, {"tgt": 2.0}), "slow": (not m3) and mday, "chg": ch})
+    return OUT
+BMT = bm_test()
+print("\n=== 3m · 🌪 BIG MOVER - THE OLD RULE vs THE NEW (the day's slow build-up counts) · %s · after costs %.2f%%" % (day, 0.20))
+def bmrow(L, name):
+    if not L:
+        print("  %-52s none" % name); return
+    net = [e["r"] - 0.20 for e in L]
+    print("  %-52s %4d · WON %3d%% · avg %+.2f%% on the share after costs" % (name, len(L), round(100 * sum(1 for x in net if x > 0) / len(L)), sum(net) / len(L)))
+for d, lab in ((1, "▲ CE"), (-1, "▼ PE")):
+    O_ = [e for e in BMT["old"] if e["d"] == d]; N_ = [e for e in BMT["new"] if e["d"] == d]
+    bmrow(O_, "%s OLD rule (money in the last 3 min)" % lab)
+    bmrow(N_, "%s NEW rule (+ the day's slow build-up)" % lab)
+    bmrow([e for e in N_ if e["slow"]], "   ... the EXTRA ones the new rule adds")
+    bmrow([e for e in N_ if e["hm"] < "10:00"], "   ... NEW rule, before 10:00")
+    bmrow([e for e in N_ if e["hm"] >= "10:00"], "   ... NEW rule, after 10:00")
+old1 = {(e["s"], e["d"]): e["hm"] for e in reversed(BMT["old"])}
+earlier = [(e["s"], e["d"], e["hm"], old1[(e["s"], e["d"])]) for e in BMT["new"] if (e["s"], e["d"]) in old1 and e["hm"] < old1[(e["s"], e["d"])]]
+print("  the new rule rang EARLIER than the old on %d share-sides%s" % (len(earlier), (": " + " · ".join("%s %s %s (old %s)" % (s_, "▲" if d_ > 0 else "▼", a_, b_) for s_, d_, a_, b_ in earlier[:8])) if earlier else ""))
+print("  READ: the new rule is worth it if its EXTRA ones are not worse than the old rule's (after costs).")
+for rule in ("old", "new"):
+    for e in BMT[rule]:
+        print("PROFILE|%s|%s|%s|%s|%s|%s|%.3f|%s" % (day, REG if "REG" in globals() else "-", e["s"], "-", "BIG MOVER " + rule.upper() + " rule", "CE" if e["d"] > 0 else "PE", e["r"], "E" if e["hm"] < "10:00" else "-"))
+
+if ("ib" in sys.argv[2:] or "bm" in sys.argv[2:]) and "strat" not in sys.argv[2:]:
+    sys.exit(0)                                                          # python3 fastreplay.py DAY bm - only the fast studies (initial balance, stocks in play, 🌪 old vs new)                                                          # python3 fastreplay.py DAY ib - only the initial balance (fast)
 
 # ---------------- 3b · MONEY FIRST, THEN THE PRICE (Rama, 14 Nov: "when the futures money is betting for a rise or a fall, how fast does the share react") ----------------
 def money_first():

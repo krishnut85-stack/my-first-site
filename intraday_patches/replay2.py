@@ -105,6 +105,13 @@ for s in SYMS:
         return r["p3"] * d >= 0.8 and r["o3"] >= 0.5 and sc >= 2
     x = first(bigm, "09:16")
     EV.append(("🌪 BIG MOVER (new, rings)", x, "0.8% in 3 min with new futures money and the sector (the order book not in old data: 2 of 3 used)"))
+    def bigm287(r):
+        sec_ok = (r["su"] if d > 0 else r["sd"]) * 2 >= max(1, len(peers))
+        money = r["o3"] >= 0.5 or (r["od"] >= 1.0 and r["chg"] * d >= 0.3)
+        sc = (abs(r["p3"]) >= 0.6) + bool(money) + bool(sec_ok)
+        return r["p3"] * d >= 0.8 and money and sc >= 2
+    x = first(bigm287, "09:16")
+    EV.append(("🌪 BIG MOVER (patch 287 rule)", x, "0.8% in 3 min with new futures money - the last 3 min OR the day's build-up"))
     x = first(lambda r: r["chg"] * d >= 3.0, "09:17")
     EV.append(("🚀 MOMENTUM (new, rings before 10:00)", x, "crosses %s3%% on the day" % ("+" if d > 0 else "-")))
     print("  WHAT HAPPENED, and WHEN THE NEW RULES FIRE:")
