@@ -275,3 +275,43 @@ if GA:
                 print("  %s %s%s - best 6 settings of %d (and the worst):" % (kind, side, " · entered before 11:00" if tag == "early" else "", len(rows)))
                 for avg, n, w, nm, ex in rows[:6] + rows[-1:]:
                     print("     %-56s %5d trades · %+.2f%% (≈%+.0f%% premium) · won %3.0f%% · exit %s" % (nm, n, avg, 10 * avg, w, ex))
+
+
+# ---------------- patch 290: THE PUSH FOR ITS SIZE, all days (fastreplay 3p) - which way of measuring the futures money tells the move best? ----------------
+PU = []
+for f in FILES:
+    for ln in open(f, encoding="utf-8"):
+        if ln.startswith("PUSH|"):
+            x = ln.rstrip("\n").split("|")
+            if len(x) == 11:
+                PU.append({"s": x[2], "T": x[3], "d": int(x[4]), "doi": float(x[5]), "push": float(x[6]), "cr": float(x[7]), "hold": float(x[9]), "res": int(x[10])})
+if PU:
+    print("\n=== THE PUSH FOR ITS SIZE - all days · %d readings (10:00 / 11:00 / 12:00, new futures money, the price 0.3%%+ its way) · on the share, before costs" % len(PU))
+    print("  each way of measuring the money, cut in fifths (smallest -> biggest): the average move its way to 15:15 · 1% more its way before 1% back")
+    for side, nm in ((1, "▲ LONG BUILD-UP (CE)"), (-1, "▼ SHORT BUILD-UP (PE)")):
+        R = [r for r in PU if r["d"] == side]
+        if len(R) < 50:
+            continue
+        print("  %s · %d readings" % (nm, len(R)))
+        for key, lab in (("cr", "₹ crore"), ("doi", "OI %"), ("push", "FOR ITS SIZE")):
+            S_ = sorted(R, key=lambda r: r[key]); n = len(S_); cells = []; avgs = []
+            for q in range(5):
+                part = S_[q * n // 5:(q + 1) * n // 5]
+                a = sum(r["hold"] for r in part) / len(part); kg = 100 * sum(1 for r in part if r["res"] > 0) / len(part); tb = 100 * sum(1 for r in part if r["res"] < 0) / len(part)
+                avgs.append(a); cells.append("%+.2f%% %2.0f/%2.0f" % (a, kg, tb))
+            print("     %-13s %s   biggest - smallest %+.2f%%" % (lab, " | ".join(cells), avgs[-1] - avgs[0]))
+        top = sorted(R, key=lambda r: -r["push"])[:len(R) // 5]
+        cr_top = sorted(R, key=lambda r: -r["cr"])[:len(R) // 5]
+        both = [r for r in top if r in cr_top]
+        print("     the top fifth FOR ITS SIZE but NOT the top fifth in ₹ (small companies, big push): %d · %+.2f%% its way" % (
+            len(top) - len(both), (sum(r["hold"] for r in top if r not in both) / max(1, len(top) - len(both)))))
+        big_rs = [r for r in cr_top if r not in top]
+        print("     the top fifth in ₹ but NOT for its size (big companies, small push): %d · %+.2f%% its way" % (len(big_rs), (sum(r["hold"] for r in big_rs) / max(1, len(big_rs)))))
+    for T in ("10:00", "11:00", "12:00"):
+        R = [r for r in PU if r["T"] == T]
+        if len(R) >= 50:
+            S_ = sorted(R, key=lambda r: r["push"]); n = len(S_)
+            lo, hi = S_[:n // 5], S_[-(n // 5):]
+            print("  at %s: the top fifth for its size %+.2f%% its way (1%% more %.0f%%) · the bottom fifth %+.2f%% (%.0f%%)" % (T, sum(r["hold"] for r in hi) / len(hi),
+                  100 * sum(1 for r in hi if r["res"] > 0) / len(hi), sum(r["hold"] for r in lo) / len(lo), 100 * sum(1 for r in lo if r["res"] > 0) / len(lo)))
+    print("  READ: the way whose 'biggest - smallest' is the largest tells the move best. If FOR ITS SIZE wins, it goes into GIR's rules; if not, it stays a guide on the screen.")

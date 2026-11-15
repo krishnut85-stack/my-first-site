@@ -258,6 +258,51 @@ for n, s in enumerate(syms + [x for x in ("NIFTY", "BANKNIFTY") if (x in FUT or 
 print("  the price from: the share itself (NSE) %d · its futures (no NSE data) %d" % (PSRC["eq"], PSRC["fut"]))
 print("  shares with minute data: %d · volume normal from the 8 days before: %d · index: %s" % (len(MIN), sum(1 for v in VOLD.values() if np.isfinite(v[1]).sum() > 100), " ".join(IDX) or "-"))
 
+# ---------------- 3p · THE PUSH FOR ITS SIZE (patch 290 - Rama, 15 Nov: "₹200 cr pushing Reliance futures is nothing because of its size - the same
+# amount in a small company is a big push. Friday Idea had a huge short build-up and fell only 2-3%"). At 10:00, 11:00 and 12:00, every share with
+# new futures money since the open (OI up) and the price 0.3%+ from its open: the side = the price's side (long build-up ▲ / short build-up ▼).
+# Three ways to say how big the money is: ₹ crore · OI % · THE PUSH FOR ITS SIZE = the new futures shares ÷ the shares a NORMAL WHOLE DAY trades
+# (the 8 days before). What came: the move its way to 15:15, and 1% more its way before 1% back. stratpool.py ranks each in fifths, all days.
+def push_study():
+    out = []
+    for s, (ts, C, OI) in MIN.items():
+        if s not in VOLD:
+            continue
+        vv, nb, vw = VOLD[s]
+        if np.isfinite(nb).sum() < 100:
+            continue
+        nd = float(np.nansum(nb)); oi = np.asarray(OI, float); nz = np.nonzero(oi > 0)[0]
+        if nd <= 0 or not len(nz):
+            continue
+        b = oi[nz[0]]; o = float(C[0])
+        kend = int(np.searchsorted(ts, d0 + 360 * 60, side="right") - 1)
+        for T, mins in (("10:00", 45), ("11:00", 105), ("12:00", 165)):
+            i = int(np.searchsorted(ts, d0 + mins * 60, side="right") - 1)
+            if i <= 5 or i >= kend or oi[i] <= b:
+                continue
+            mv = (float(C[i]) / o - 1) * 100
+            if abs(mv) < 0.3:
+                continue
+            d = 1 if mv > 0 else -1; dS = oi[i] - b; p0 = float(C[i]); res = 0
+            for j in range(i + 1, kend + 1):
+                m_ = (float(C[j]) / p0 - 1) * 100 * d
+                if m_ >= 1.0:
+                    res = 1; break
+                if m_ <= -1.0:
+                    res = -1; break
+            out.append((s, T, d, dS / b * 100, dS / nd, dS * p0 / 1e7, mv, (float(C[kend]) / p0 - 1) * 100 * d, res))
+    return out
+PU = push_study()
+print("\n=== 3p · THE PUSH FOR ITS SIZE - %s · %d readings (10:00 / 11:00 / 12:00 · new futures money · the price 0.3%%+ from its open)" % (day, len(PU)))
+for r_ in sorted(PU, key=lambda x: -x[4])[:5]:
+    print("  biggest for its size: %-11s %s %s ₹%.0f cr = %.2fx a normal day · OI %+.1f%% · then %+.2f%% its way to 15:15" % (r_[0], r_[1], "▲" if r_[2] > 0 else "▼", r_[5], r_[4], r_[3], r_[7]))
+for r_ in sorted(PU, key=lambda x: -x[5])[:3]:
+    print("  biggest in ₹:         %-11s %s %s ₹%.0f cr = %.2fx a normal day · OI %+.1f%% · then %+.2f%% its way to 15:15" % (r_[0], r_[1], "▲" if r_[2] > 0 else "▼", r_[5], r_[4], r_[3], r_[7]))
+for r_ in PU:
+    print("PUSH|%s|%s|%s|%d|%.3f|%.5f|%.1f|%.2f|%.3f|%d" % (day, r_[0], r_[1], r_[2], r_[3], r_[4], r_[5], r_[6], r_[7], r_[8]))
+if "push" in sys.argv[2:]:
+    sys.exit(0)                                                          # python3 fastreplay.py DAY push - only the push for its size (fast)
+
 # ---------------- 3f · THE INITIAL BALANCE (Rama, 14 Nov: "go, start the initial balance test") ----------------
 # Auction market theory / TPO: the first 15 / 30 / 60 minutes make the day's opening range (the INITIAL BALANCE). A break out of it is the market
 # accepting a new price - the classic momentum entry. For every F&O share, the FIRST minute its close breaks above (below) the range: entry there.
