@@ -1,4 +1,4 @@
-# GIR — handover note (as of 13 Nov 2026)
+# GIR — handover note (as of 15 Nov 2026)
 
 Read this first in any new chat about GIR. It says what GIR is, how changes reach the server, Rama's standing rules,
 what the recent patches did, and what is still open.
@@ -166,21 +166,45 @@ Replay of 12 Nov through 228 + 229: rings **325 → 192**, none of the 48 always
 - F&O TAPE: a one-line legend under its title - "price flash = the last tick (green up / red down, not a signal) · DESK blocks = the desk's call −2…+2 (left red = bearish, right green = bullish) · ✓ = confirmed by the 5-min candle · tap = the share".
 - Weekend: one planned reboot Saturday after 09:30 ("System restart required" after the 13 Nov libc update).
 
+## 5b. 14–15 Nov - patches 278–294 and the long backtests
+
+All live in `windwatch.py` (gir-windwatch, every 3 s) unless said; cards go to GIR Bigmovers; installers are self-testing, refuse 09:00–15:35
+on weekdays, and the later ones replace windwatch.py only if its hash is the previous patch's copy.
+
+| Patch | What |
+|---|---|
+| 278 | Options writers every 5 s (pins_live), 🎫 card on every 🌪, the Book follows cards to 🎯 BOOK HALF / 🚪 EXIT, chainlive.db, BIG MONEY table live |
+| 280–282 | THE CHECKLIST (3 that must move together), 🚀 MOMENTUM, volume vs normal (engine2 5th field), ⏳ MONEY LOADING |
+| 283–284 | movecard strike rules / IV vs rv20, Position Guard size / cheap / near-expiry / 15:00 exit warnings, 👁 YOUR VIEW, ⚠ SOLO MOVE |
+| 285–286 | 🎯 THE COCKPIT (cockpit.html, /cockpitdata): NIFTY state, per-share checks, score → TRADE / SMALL / SKIP; 🔄 NIFTY TURNED; ✅ / ❌ TESTED lines |
+| 287 | 🌪 also on the day's slow futures build-up (OI +1% since the open) + a price burst |
+| 288 | 🧲 STEADY MOVE ▼ (steady PE before 11:00 with a +2% short build-up - the 30-day winner); ORDER BOOK on every cockpit box |
+| 289 | 📚 PLAYBOOK: every cockpit box / card says which of the 10 tested setups the share is in, ❌ the loser it is in, or NO + nearest + best in the list |
+| 290 | 📏 PUSH FOR ITS SIZE: new futures shares ÷ a normal day's shares, ranked across all F&O shares; cockpit, cards, BIG MONEY table |
+| 291 | Phone: B BIG MONEY / 2 F&O MONEY / OPTIONS under ⋯ MORE showed nothing since patch 155 - now they show their panel |
+| 292 | ⏱ BUILD-UP TIMELINE on B BIG MONEY: when each share entered its build-up, every change held 3 min, → same way / ↻ turned (data/buildlog.json) |
+| 293 | BIG MONEY lists every F&O share (moneylink's 120-row cut removed) |
+| 294 | 💾 GIR's own minute futures history: every share's futures price / OI / volume / book once a minute, data/oihist/DAY.npz (`windwatch.py oihist`) |
+
+**Backtests (read-only tools in this folder):** fastreplay.py (30 days, minute futures OI from Zerodha's live contracts; modes `strat`, `bm`,
+`push`), stratpool.py (pools the days), regime.py (NIFTY at 09:30), replay2.py (one share, one day). **histstore.py** fetches 3 years of minute
+candles (every F&O share, NSE cash) + NSE's daily futures OI (old bhavcopy before 8 Jul 2024, UDiFF after) into /root/hist once (~2 h the first
+time, minutes after); **longtest.py** runs every study over it from disk in minutes, split by half-year.
+
+**What the tests said:** 30 days - a steady fall before 11:00 with a +2% short build-up was the best (+0.36% a trade after costs); after 13:00,
+CE against a falling NIFTY, results-day-2 PE and closing 0.5% off the best all lost. 3 years (price only, no minute OI exists for expired
+contracts) - price patterns alone are break-even before costs (≈ −0.20% after) in every half-year; the only steady lift was everything
+together (second run CE + NIFTY + sector + in play: won 50% vs 44%, +0.05%); yesterday's futures money (₹, OI % or for its size) did not
+predict the next day. Hence 294: GIR's own minute futures history, to test the futures-money rules properly in a few months.
+
 ## 5. Open items (in order)
 
-1. **13 Nov evening:** Rama runs `bash /tmp/alertaudit.sh` and `bash /tmp/pushaudit.sh` after 15:35. First full day with 217–234 together.
-   Judge: rings per day, P1 right %, what the vote turned down, PUSH/PULL STARTED right % (was 52 of 134 = 39% on the old reading).
-   If PUSH/PULL STARTED stays under 50% → propose making it silent (Rama's call).
-2. **News reader marks index-inclusion news as foreign:** `newsalert.about_it("LICI", "LIC makes the cut in the MSCI Global Standard Index")`
-   returns `"foreign"` (so does "IndiGo cancels 200 flights …" — a short name with no India word). Fix the foreign filter (newshunt FOREIGN_RX / about_it) so MSCI / index inclusion of an Indian share is Indian.
-3. **Build the automatic evening self-check** (after 15:45, to Telegram System): every "results just filed" got numbers within 5 min;
-   every P1 got its exits; news lag; contradictions; results verdicts the price disagreed with; rings and right %.
-4. **Step 2 of the ring governor** (Rama to decide after the audit): a daily cap on non-trade 🚨 critical lines.
-5. **paper_exit_monitor is down** (watchdog fails every 5 min) — ask Rama before looking (standing rule).
-6. **p163test fails** ("IRDAI order on Policybazaar → ⚠️ SHOCK WATCH") in the full audit — read its full failure.
-7. WHY lines / "WHY IT IS MOVING" box may still show unrelated hunt headlines — apply patch 234's rule there if seen.
-8. Optional, discussed: a "watch this share" list (ring on any new build-up for a few chosen shares).
-9. **28 Nov:** check the promotional AI credit renews for December; else a small auto-reload (Rama's decision).
+1. **Check 291–294 are installed** (each prints "already in" on a re-run) and that BIG MONEY shows on the phone.
+2. **Daily after 15:35:** `python3 windwatch.py cards` (how the day's cards ended) and, from 294, `python3 windwatch.py oihist`.
+3. **Optional:** the 30-day minute push-for-its-size test (`fastreplay.py DAY push` over the 30 days, then stratpool) - one downloader at a time.
+4. **In ~3 months:** test the futures-money rules (steady move with the build-up, 🌪, push for its size) on data/oihist.
+5. Older items still open: the evening self-check, the news reader's index-inclusion filter, step 2 of the ring governor (Rama's call),
+   paper_exit_monitor (ask Rama first), p163test, the WHY-line hunt headlines, the 28 Nov AI-credit check.
 
 ## 6. Useful facts
 
