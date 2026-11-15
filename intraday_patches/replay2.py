@@ -3,6 +3,10 @@
 time did the share start moving and when did GIR alert me - and with the new speed, how would GIR tell me before it goes up - POLICYBZR, HINDALCO,
 and was the sector the same way"). From Zerodha's minute data: the share (NSE) price and volume, its futures OI, NIFTY, its sector's shares;
 GIR's real alerts of that day from tomorrow.db; and when the new rules (patches 275-286) would have fired. Changes nothing, sends nothing.
++ (patch 295, Rama 15 Nov: "MANAPPURAM on the 13th - a big 320 CE wall and the futures betting ₹103 cr it will fall, and it fell 3.7% - when did it
+start, how long - and TMPV the same"): the OPTION WALLS minute by minute (the biggest call wall above, the biggest put floor below, how much the
+writers added that day - the current expiry's strikes, from Zerodha), the day's BUILD-UP TIMELINE, when the day turned (its high / low, the VWAP
+break), and when 🧱 PE MONEY / CE MONEY (futures + the wall + VWAP together, patch 295) would have fired - and what came after.
 python3 replay2.py [DAY] [SYM SYM ...]      (default: 2026-11-13 POLICYBZR HINDALCO)"""
 import os, sys, re, time, sqlite3, datetime as dt
 BASE = "/home/globalbot/intraday"
@@ -24,11 +28,13 @@ def hd(*a, **kw):
             print("  (data: %s)" % str(ex)[:80]); return []
     return []
 EQ = {r["tradingsymbol"]: r["instrument_token"] for r in k.instruments("NSE") if r.get("segment") == "NSE" and r.get("instrument_type") == "EQ"}
-FUT = {}
+FUT, OPTS = {}, {}
 for r in k.instruments("NFO"):
     if r.get("instrument_type") == "FUT" and r.get("expiry") and r["expiry"] >= dd:
         if r["name"] not in FUT or r["expiry"] < FUT[r["name"]][1]:
             FUT[r["name"]] = (r["instrument_token"], r["expiry"])
+    elif r.get("instrument_type") in ("CE", "PE") and r.get("expiry") and r["expiry"] >= dd and r.get("name") in SYMS:
+        OPTS.setdefault(r["name"], []).append((r["expiry"], float(r["strike"]), r["instrument_type"], r["instrument_token"]))
 a, b = dt.datetime(dd.year, dd.month, dd.day, 9, 15), dt.datetime(dd.year, dd.month, dd.day, 15, 30)
 def minutes(tok, oi=False):
     R = hd(tok, a, b, "minute", oi=oi)
@@ -123,6 +129,74 @@ for s in SYMS:
                 r["hm"], nm, "{:,.2f}".format(r["px"]), r["chg"], r["od"], r["o15"], r["su"], r["sd"], ("%s %+.2f%%" % na) if na else "-"))
         else:
             print("   --:--  %-38s did not happen (%s)" % (nm, why))
+    # ---- patch 295: VWAP, the option walls, the build-up timeline, the day's turn, 🧱 PE MONEY / CE MONEY ----
+    cv = pv = 0.0
+    for r_, hm in zip(R, T):
+        h_, l_, c_ = float(P[hm].get("high") or r_["px"]), float(P[hm].get("low") or r_["px"]), r_["px"]
+        cv += r_["vol"]; pv += (h_ + l_ + c_) / 3 * r_["vol"]; r_["vw"] = pv / cv if cv else c_
+    run = {1: 0, -1: 0}
+    for r_ in R:
+        for sd_ in (1, -1):
+            run[sd_] = run[sd_] + 1 if (r_["px"] - r_["vw"]) * sd_ > 0 else 0
+        r_["vup"], r_["vdn"] = run[1], run[-1]
+    OC = {}
+    L_ = OPTS.get(s) or []
+    if L_:
+        ex = min(e for e, _, _, _ in L_)
+        for e, K, kd, tok in L_:
+            if e == ex and abs(K / pc - 1) <= 0.08:
+                OC[(K, kd)] = minutes(tok, oi=True)
+    def wall(r_):
+        hm = r_["hm"]; px = r_["px"]; best = {}
+        for (K, kd), M in OC.items():
+            if hm not in M or not M[hm].get("oi"):
+                continue
+            if (kd == "CE" and K > px) or (kd == "PE" and K < px):
+                oi = float(M[hm]["oi"]); f0 = next((float(M[h]["oi"]) for h in sorted(M) if M[h].get("oi")), oi)
+                if kd not in best or oi > best[kd][1]:
+                    best[kd] = (K, oi, (oi / f0 - 1) * 100 if f0 else 0.0)
+        return best.get("CE"), best.get("PE")
+    for r_ in R:
+        r_["R1"], r_["S1"] = wall(r_)
+    print("  THE OPTION WALLS (current expiry, %d strikes read): the biggest CALL wall above = the roof the writers defend · the biggest PUT wall below = the floor" % len(OC))
+    for hm in ("09:20", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "15:25"):
+        r_ = next((x for x in R if x["hm"] >= hm), None)
+        if r_:
+            c_, p_ = r_["R1"], r_["S1"]
+            print("   %s ₹%-9s %+5.2f%% · VWAP %s (%s) · fut OI %+.1f%% · roof %s · floor %s" % (r_["hm"], "{:,.2f}".format(r_["px"]), r_["chg"], "{:,.2f}".format(r_["vw"]),
+                  "above" if r_["px"] > r_["vw"] else "below", r_["od"],
+                  ("%g CE %.1f L (%+.0f%% today) %.1f%% up" % (c_[0], c_[1] / 1e5, c_[2], (c_[0] / r_["px"] - 1) * 100)) if c_ else "-",
+                  ("%g PE %.1f L (%+.0f%% today) %.1f%% down" % (p_[0], p_[1] / 1e5, p_[2], (1 - p_[0] / r_["px"]) * 100)) if p_ else "-"))
+    kind = lambda r_: (None if abs(r_["chg"]) < 0.3 or abs(r_["od"]) < 0.5 else ("LONG BUILD-UP" if r_["od"] > 0 else "SHORT COVERING") if r_["chg"] > 0 else ("SHORT BUILD-UP" if r_["od"] > 0 else "LONG UNWINDING"))
+    tl, cand = [], None
+    for i, r_ in enumerate(R):
+        kd_ = kind(r_)
+        if kd_ is None or (tl and tl[-1][1] == kd_):
+            cand = None if (tl and tl[-1][1] == kd_) else cand; continue
+        if not cand or cand[0] != kd_:
+            cand = (kd_, i); continue
+        if i - cand[1] >= 3:
+            tl.append((R[cand[1]]["hm"], kd_, R[cand[1]]["chg"], R[cand[1]]["od"])); cand = None
+    print("  THE BUILD-UP TIMELINE (held 3 min, written at the time it began): " + (" → ".join("%s %s (%+.1f%%, OI %+.1f%%)" % x for x in tl) if tl else "no clear build-up"))
+    hi_ = max(R, key=lambda x: x["px"]); lo_ = min(R, key=lambda x: x["px"])
+    brk = next((x for x in R if x["hm"] > hi_["hm"] and x["vdn"] >= 1), None)
+    print("  THE DAY'S TURN: high ₹%s at %s · then under VWAP from %s · low ₹%s at %s" % ("{:,.2f}".format(hi_["px"]), hi_["hm"], brk["hm"] if brk else "-", "{:,.2f}".format(lo_["px"]), lo_["hm"]))
+    def money(r_, sd_):
+        na = nifty_at(r_["hm"]); w_ = r_["R1"] if sd_ < 0 else r_["S1"]
+        if not w_ or r_["hm"] < "09:30" or r_["hm"] > "14:30":
+            return False
+        dist = (w_[0] / r_["px"] - 1) * 100 if sd_ < 0 else (1 - w_[0] / r_["px"]) * 100      # how far the roof (PE) / the floor (CE) is
+        return (r_["od"] >= 2.0 and r_["chg"] * sd_ >= 0.5 and (r_["vdn"] if sd_ < 0 else r_["vup"]) >= 5 and 0 < dist <= 3.0 and w_[2] >= 10
+                and not (na and na[0] == ("RISING" if sd_ < 0 else "FALLING")))
+    for sd_, nm in ((-1, "🧱 PE MONEY ▼"), (1, "🧱 CE MONEY ▲")):
+        x = next((r_ for r_ in R if money(r_, sd_)), None)
+        if not x:
+            print("  %s (patch 295): did not fire" % nm); continue
+        aft = [r_ for r_ in R if r_["hm"] >= x["hm"]]
+        best = max((r_["px"] / x["px"] - 1) * 100 * sd_ for r_ in aft); end = (aft[-1]["px"] / x["px"] - 1) * 100 * sd_
+        w_ = x["R1"] if sd_ < 0 else x["S1"]
+        print("  %s (patch 295) WOULD HAVE FIRED at %s · ₹%s (%+.2f%%) · futures OI %+.1f%% since the open · %s VWAP %d min · wall %g %s %.1f L (%+.0f%% today) · then best %+.2f%% its way, %+.2f%% at the close" % (
+            nm, x["hm"], "{:,.2f}".format(x["px"]), x["chg"], x["od"], "under" if sd_ < 0 else "over", x["vdn"] if sd_ < 0 else x["vup"], w_[0], "CE" if sd_ < 0 else "PE", w_[1] / 1e5, w_[2], best, end))
     A = alerts(s)
     print("  WHAT GIR REALLY SENT THAT DAY (the old system, before patches 275-286): %d" % len(A))
     for t, h in A[:14]:
