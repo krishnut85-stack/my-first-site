@@ -1635,7 +1635,7 @@ function box(b){ const a=b.dir>0?"▲":"▼"; const ord=["market","bank","sector
 function lst(L,f){ return (L&&L.length)?L.slice().reverse().map(f).join(" · "):'<span class="dim">none yet</span>'; }
 function paint(d){
   const age=Math.max(0,Math.round(Date.now()/1000-(d.t||0)));
-  document.getElementById("top").innerHTML=`<div class="row"><b>🎯 GIR COCKPIT</b><span class="dim">${esc(d.hm||"")} · updated ${age} s ago${age>60?" ⚠ (market closed, or the watcher is not running)":""}</span></div>
+  document.getElementById("top").innerHTML=`<div class="row"><b>🎯 GIR COCKPIT</b><span class="dim">${esc(d.hm||"")} · ${!d.t?"no data yet today · fills from 09:15 on market days":age>60?"updated "+(age<3600?Math.round(age/60)+" min":Math.round(age/3600)+" h")+" ago ⚠ (market closed, or the watcher is not running)":"updated "+age+" s ago"}</span></div>
    ${idx("NIFTY",d.nifty,(d.nifty&&d.nifty.open)?null:null)}${idx("BANKNIFTY",d.bank,null)}
    <div class="dim">market now: ${d.mk?d.mk[0]:"—"} of ${d.mk?d.mk[2]:"—"} shares rising · sectors now: ${(d.sectors||[]).map(x=>`<span class="${cl(x[1])}">${esc(x[0].replace("NIFTY ",""))} ${pc(x[1])}</span>`).join(" · ")}</div>`;
   document.getElementById("boxes").innerHTML=(d.boxes||[]).length?(d.boxes||[]).map(box).join(""):'<div class="dim" style="padding:10px">no shares to watch yet - add yours: python3 windwatch.py view SYMBOL up|down · GIR adds its own 🚀 / 🌪 shares as they come</div>';
