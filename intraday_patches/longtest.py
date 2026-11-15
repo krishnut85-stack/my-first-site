@@ -217,7 +217,7 @@ def pass2(s):
                 if ppc is not None and 5.0 <= ymv * d <= 20.0:
                     add(9, 5, d); add(10, 5, -d)
             # PUSHD: yesterday's new futures money (NSE) -> today, day level
-            if prev is not None and prev[1] > 0 and abs(ymv) >= 0.5 and len(volh) >= 10:
+            if prev is not None and prev[1] > 0 and 0.5 <= abs(ymv) <= 20 and len(volh) >= 10:              # over 20%: a bonus / split, not a move
                 avg = float(np.mean(volh[-20:]))
                 oi_before = prev[0] - prev[1]
                 if avg > 0 and oi_before > 0:
@@ -248,16 +248,19 @@ def report(T, PD, days):
           ("NIFTY with it at entry", lambda: tg & T_NWITH > 0), ("NIFTY against it", lambda: tg & T_NAG > 0), ("its sector with it", lambda: tg & T_SWITH > 0),
           ("SOLO (its sector against)", lambda: tg & T_SOLO > 0), ("NIFTY AND its sector with it", lambda: (tg & T_NWITH > 0) & (tg & T_SWITH > 0)),
           ("in play (first 5 min 2x volume)", lambda: tg & T_INPLAY > 0), ("yesterday's futures build-up its way (NSE)", lambda: tg & T_YBUILD > 0),
+          ("NIFTY + sector with it + in play", lambda: (tg & T_NWITH > 0) & (tg & T_SWITH > 0) & (tg & T_INPLAY > 0)),
+          ("NIFTY + sector with it + yesterday's build-up", lambda: (tg & T_NWITH > 0) & (tg & T_SWITH > 0) & (tg & T_YBUILD > 0)),
           ("entered before 10:00", lambda: m_ < 45), ("entered 10:00-11:00", lambda: (m_ >= 45) & (m_ < 105)), ("entered 11:00-13:00", lambda: (m_ >= 105) & (m_ < 225)),
           ("entered after 13:00", lambda: m_ >= 225), ("(hindsight) a rising day", lambda: T[:, 5] == 0), ("(hindsight) a falling day", lambda: T[:, 5] == 1),
           ("(hindsight) a choppy day", lambda: T[:, 5] == 2)]
-    rows = []
+    rows, lifts = [], []
     for code, name in enumerate(STUDY):
         for d, side in ((1, "CE"), (-1, "PE")):
             base = (T[:, 0] == code) & (T[:, 1] == d)
             if base.sum() < 30:
                 continue
             P("\n=== %s · %s · %d trades" % (name, side, int(base.sum())))
+            j0 = None
             for lab, f in FL:
                 mk = base & (f() if f else True)
                 n = int(mk.sum())
@@ -274,6 +277,20 @@ def report(T, PD, days):
                     lab, n, av[j], 10 * av[j], w, EXN[j].split(" ")[0], av[5], sig, pos, cnt))
                 if not lab.startswith("(hindsight)"):
                     rows.append((name, side, lab, n, float(av[j]), w, EXN[j], float(av[5]), pos, cnt))
+                if lab == "all":
+                    j0, bw, ba = j, w, float(av[j])                                # the plain setup: its best exit, its success %
+                elif j0 is not None and not lab.startswith("(hindsight)"):
+                    w0 = 100 * (R[mk][:, j0] > 0).mean(); a0 = float(av[j0])       # the same exit, with this filter
+                    pp = [float(R[mk & (hv == p_)][:, j0].mean()) for p_ in periods if (mk & (hv == p_)).sum() >= 15]
+                    lifts.append((name, side, lab, n, w0, bw, a0, ba, sum(1 for x in pp if x > 0), len(pp), EXN[j0].split(" ")[0]))
+    P("\n=== WHAT RAISES THE SUCCESS % - each setup alone vs with one filter (the same exit) · 200+ trades · + in (nearly) every half-year · biggest lift first")
+    up = [x for x in lifts if x[3] >= 200 and x[4] - x[5] >= 3 and x[6] > x[7] and x[6] > 0 and x[9] >= 2 and x[8] >= x[9] - (1 if x[9] >= 4 else 0)]
+    up.sort(key=lambda x: -(x[4] - x[5]))
+    for x in up[:30]:
+        P("  %-40s %s + %-44s won %3.0f%% (alone %3.0f%%, %+.0f points) · %+.2f%% a trade (alone %+.2f%%) · %6d trades · exit %s · half-years %d of %d +" % (
+            x[0], x[1], x[2], x[4], x[5], x[4] - x[5], x[6], x[7], x[3], x[10], x[8], x[9]))
+    if not up:
+        P("  no filter lifted a setup's success % steadily")
     P("\n=== THE LONG-TEST PLAYBOOK - made money after costs in (nearly) every half-year · 200+ trades · best first")
     good = [r for r in rows if r[3] >= 200 and r[4] > 0 and r[9] >= 2 and r[8] >= r[9] - (1 if r[9] >= 4 else 0)]
     good.sort(key=lambda r: -r[4])
