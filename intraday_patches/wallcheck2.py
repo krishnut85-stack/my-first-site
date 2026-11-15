@@ -307,7 +307,8 @@ def item(x, side, kind=None):
             "roof": W_(r_), "floor": W_(f_), "bu": x["bu"], "foi": round(x["foi"], 1), "d5": p_[0] if p_ else None, "rsi": p_[2] if p_ else None,
             "sec": None if x["sc"] is None else round(x["sc"], 1), "dlx": dl.get("x"), "dlbuy": (dl.get("chg", 0) > 0) if dl else None,
             "news": [nw[0], nw[1]] if nw else None, "done": False if kind else (x["pe_done"] if side == "PE" else x["ce_done"]), "kind": kind,
-            "moved": round(x["pe_moved"] if side == "PE" else x["ce_moved"], 1), "typ": x["typ"], "entry": entry, "out": out}
+            "moved": round(x["pe_moved"] if side == "PE" else x["ce_moved"], 1), "typ": x["typ"], "entry": entry, "out": out,
+            "why": [[n, bool(v)] for n, v in (x["pe"] if side == "PE" else x["ce"])], "lo": x["lo"], "hi": x["hi"]}
 
 
 def write_json(path, day, nd, R, good):
