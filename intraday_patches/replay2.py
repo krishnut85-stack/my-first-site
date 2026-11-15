@@ -186,7 +186,7 @@ for s in SYMS:
         if not w_ or r_["hm"] < "09:30" or r_["hm"] > "14:30":
             return False
         dist = (w_[0] / r_["px"] - 1) * 100 if sd_ < 0 else (1 - w_[0] / r_["px"]) * 100      # how far the roof (PE) / the floor (CE) is
-        return (r_["od"] >= 2.0 and r_["chg"] * sd_ >= 0.5 and (r_["vdn"] if sd_ < 0 else r_["vup"]) >= 5 and 0 < dist <= 3.0 and w_[2] >= 10
+        return (r_["od"] >= 1.5 and r_["chg"] * sd_ >= 0.5 and (r_["vdn"] if sd_ < 0 else r_["vup"]) >= 5 and 0 < dist <= 3.0 and w_[2] >= 10
                 and not (na and na[0] == ("RISING" if sd_ < 0 else "FALLING")))
     for sd_, nm in ((-1, "🧱 PE MONEY ▼"), (1, "🧱 CE MONEY ▲")):
         x = next((r_ for r_ in R if money(r_, sd_)), None)
@@ -197,6 +197,45 @@ for s in SYMS:
         w_ = x["R1"] if sd_ < 0 else x["S1"]
         print("  %s (patch 295) WOULD HAVE FIRED at %s · ₹%s (%+.2f%%) · futures OI %+.1f%% since the open · %s VWAP %d min · wall %g %s %.1f L (%+.0f%% today) · then best %+.2f%% its way, %+.2f%% at the close" % (
             nm, x["hm"], "{:,.2f}".format(x["px"]), x["chg"], x["od"], "under" if sd_ < 0 else "over", x["vdn"] if sd_ < 0 else x["vup"], w_[0], "CE" if sd_ < 0 else "PE", w_[1] / 1e5, w_[2], best, end))
+    # patch 298: 👀 WALL WATCH (within 0.5% of the biggest call / put wall within 3%, grown 30%+, futures OI +1%) -> 🧱 REJECTED (back to the
+    # other side of VWAP within 20 min, 0.3%+ off the wall, NIFTY not against it)
+    def wall_any(r_, kd):
+        best = None
+        for (K, k2), M in OC.items():
+            if k2 != kd or r_["hm"] not in M or not M[r_["hm"]].get("oi") or abs(K / r_["px"] - 1) * 100 > 3.0:
+                continue
+            oi = float(M[r_["hm"]]["oi"]); f0 = next((float(M[h]["oi"]) for h in sorted(M) if M[h].get("oi")), oi)
+            if best is None or oi > best[1]:
+                best = (K, oi, (oi / f0 - 1) * 100 if f0 else 0.0)
+        return best
+    for sd_, kd, nm in ((-1, "CE", "▼ PE off a CALL wall"), (1, "PE", "▲ CE off a PUT floor")):
+        wch = rej = None
+        for i, r_ in enumerate(R):
+            if not ("09:20" <= r_["hm"] <= "14:30") or r_["od"] < 1.0:
+                continue
+            w_ = wall_any(r_, kd)
+            if not w_ or w_[2] < 30:
+                continue
+            dist = (w_[0] / r_["px"] - 1) * 100
+            if abs(dist) <= 0.5:
+                if not wch:
+                    wch = (r_, w_)
+                last_near = (r_["hm"], w_[0], i)
+                continue
+            if wch and not rej and last_near[1] == w_[0] and i - last_near[2] <= 20:
+                na = nifty_at(r_["hm"])
+                if (r_["px"] - r_["vw"]) * sd_ > 0 and dist * (-sd_) >= 0.3 and not (na and na[0] == ("RISING" if sd_ < 0 else "FALLING")):
+                    rej = (r_, w_)
+        if wch:
+            r_, w_ = wch
+            print("  👀 WALL WATCH %s (patch 298) at %s · ₹%s · the %g %s wall %.1f L (%+.0f%% today) · futures OI %+.1f%%" % (nm, r_["hm"], "{:,.2f}".format(r_["px"]), w_[0], kd, w_[1] / 1e5, w_[2], r_["od"]))
+        if rej:
+            r_, w_ = rej
+            aft = [x for x in R if x["hm"] >= r_["hm"]]
+            best = max((x["px"] / r_["px"] - 1) * 100 * sd_ for x in aft); end = (aft[-1]["px"] / r_["px"] - 1) * 100 * sd_
+            print("  🧱 REJECTED %s (patch 298) at %s · ₹%s · then best %+.2f%% its way, %+.2f%% at the close" % (nm, r_["hm"], "{:,.2f}".format(r_["px"]), best, end))
+        elif wch:
+            print("  🧱 REJECTED %s (patch 298): no rejection after the watch (it broke through, or did not turn back past VWAP)" % nm)
     A = alerts(s)
     print("  WHAT GIR REALLY SENT THAT DAY (the old system, before patches 275-286): %d" % len(A))
     for t, h in A[:14]:
