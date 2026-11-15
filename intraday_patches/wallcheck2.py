@@ -62,7 +62,7 @@ def chains(rows):
         a = S.setdefault(s, {"spot": None, "ex": None, "opt": {}, "fut": {}})
         ex = r.get("XpryDt") or ""
         if tp in ("STF", "IDF"):
-            a["fut"].setdefault(ex, [0.0, 0.0, num(r.get("ClsPric")), num(r.get("PrvsClsgPric"))])
+            a["fut"].setdefault(ex, [0.0, 0.0, num(r.get("ClsPric")), num(r.get("PrvsClsgPric")), num(r.get("HghPric")), num(r.get("LwPric"))])
             f = a["fut"][ex]; f[0] += num(r.get("OpnIntrst")); f[1] += num(r.get("ChngInOpnIntrst"))
         else:
             if num(r.get("UndrlygPric")):
@@ -76,7 +76,7 @@ def chains(rows):
         if not a["opt"] or not a["spot"]:
             continue
         ex = min(a["opt"]); o = a["opt"][ex]
-        fx = sorted(a["fut"]); f = [sum(a["fut"][e][0] for e in fx), sum(a["fut"][e][1] for e in fx)] + (a["fut"][fx[0]][2:4] if fx else [0, 0])
+        fx = sorted(a["fut"]); f = [sum(a["fut"][e][0] for e in fx), sum(a["fut"][e][1] for e in fx)] + (a["fut"][fx[0]][2:6] if fx else [0, 0, 0, 0])
         out[s] = {"spot": a["spot"], "ex": ex, "ce": o["CE"], "pe": o["PE"], "fut": f}
     return out
 
@@ -159,7 +159,9 @@ def main():
                 return None
             oi, k, ch = w; before = oi - ch
             return {"k": k, "oi": oi, "cr": oi * k / 1e7, "add": (ch / before * 100) if before > 0 else (999.0 if ch > 0 else 0.0), "dist": abs(k / px - 1) * 100}
-        R.append({"s": s, "px": px, "chg": fchg, "roof": wall(roof), "floor": wall(floor), "tot": tot, "bu": bu, "foi": foi, "fcr": f[1] * px / 1e7,
+        hi_, lo_ = f[4], f[5]
+        fell = ((hi_ - f[2]) / hi_ * 100) if hi_ else 0.0; rose = ((f[2] - lo_) / lo_ * 100) if lo_ else 0.0
+        R.append({"s": s, "px": px, "chg": fchg, "fell": fell, "rose": rose, "hi": hi_ * px / f[2] if f[2] else None, "lo": lo_ * px / f[2] if f[2] else None, "roof": wall(roof), "floor": wall(floor), "tot": tot, "bu": bu, "foi": foi, "fcr": f[1] * px / 1e7,
                   "pat": daily(s), "dl": DL.get(s) or {}, "nw": NW.get(s), "sec": of.get(s)})
     if not R:
         print("no F&O shares read from the NSE file"); return
@@ -193,7 +195,10 @@ def main():
               ("trend up", bool(p_ and (p_[0] > 0 and p_[1] > 0))), ("sector up", bool(sc is not None and sc > 0.3)), ("NIFTY 5 days up", bool(nd is not None and nd > 0)),
               ("big hands buying", bool(dl.get("x", 0) >= 1.5 and dl.get("chg", 0) > 0)), ("news ▲", bool(nw and nw[0] > nw[1]))]
         x["pe"], x["ce"] = pe, ce
-        x["pes"], x["ces"] = sum(1 for _, v in pe if v), sum(1 for _, v in ce if v)
+        x["pe_done"] = x["chg"] <= -1.5 or x["fell"] >= 1.5            # patch: the fall already happened that day - don't sell at the low
+        x["ce_done"] = x["chg"] >= 1.5 or x["rose"] >= 1.5
+        x["pes"] = sum(1 for _, v in pe if v) - (1 if x["pe_done"] else 0)
+        x["ces"] = sum(1 for _, v in ce if v) - (1 if x["ce_done"] else 0)
         x["sc"] = sc
     def w(v, kd, up):
         if not v:
@@ -212,16 +217,32 @@ def main():
         if nw:
             t.append("news %s" % ("▲" * min(nw[0], 3) + "▼" * min(nw[1], 3)))
         return " · ".join(t)
+    def plan(x, side):
+        r_, f_ = x["roof"], x["floor"]
+        if side == "PE":
+            t = "      ▼ entry: a bounce to the roof %s that fails (👀 / 🧱 ring) · or a break under the day's low ₹%s · out over %s" % (
+                "%g" % r_["k"] if r_ else "-", "{:,.2f}".format(x["lo"]) if x["lo"] else "-", "%g" % r_["k"] if r_ else "the day's high")
+            if x["pe_done"]:
+                t += "\n      ⚠ ALREADY FELL %.1f%% from the day's high (%+.1f%% on the day) - don't chase at the open" % (x["fell"], x["chg"])
+        else:
+            t = "      ▲ entry: a dip to the floor %s that holds (👀 / 🧱 ring) · or a break over the day's high ₹%s · out under %s" % (
+                "%g" % f_["k"] if f_ else "-", "{:,.2f}".format(x["hi"]) if x["hi"] else "-", "%g" % f_["k"] if f_ else "the day's low")
+            if x["ce_done"]:
+                t += "\n      ⚠ ALREADY ROSE %.1f%% from the day's low (%+.1f%% on the day) - don't chase at the open" % (x["rose"], x["chg"])
+        return t
+
     def line(x, side):
         return "  %-11s ₹%-9s %+.1f%% · %s/10 · %s · %s · %s" % (x["s"], "{:,.2f}".format(x["px"]), x["chg"], x["pes"] if side == "PE" else x["ces"],
                                                          w(x["roof"], "CE", True), w(x["floor"], "PE", False), tags(x))
     sel = [x for x in R if (not only or x["s"] in only)]
     print("=== TOMORROW'S CHECKLIST · NSE's end-of-day F&O file %s · %d F&O shares · every strike · NIFTY 5 days %s" % (day, len(R), ("%+.1f%%" % nd) if nd is not None else "-"))
-    print("    score /10: wall close · wall dense · writers adding · futures · room · trend · sector · NIFTY · delivery · news  (THIN chains left out of 1-2)")
+    print("    score /10: wall close · wall dense · writers adding · futures · room · trend · sector · NIFTY · delivery · news · -1 if the move already happened")
+    print("    (THIN chains left out of 1-2) · a list of LEVELS for tomorrow - the trade is the live entry at those levels, not a buy at the open")
     if only:
         for x in sel:
             print(line(x, "PE").replace(" · %d/10 · " % x["pes"], " · PE %d/10 · CE %d/10 · " % (x["pes"], x["ces"]), 1)); print("      PE: " + " · ".join(("✅ " if v else "· ") + n for n, v in x["pe"]))
             print("      CE: " + " · ".join(("✅ " if v else "· ") + n for n, v in x["ce"]))
+            print(plan(x, "PE")); print(plan(x, "CE"))
             if x["thin"]:
                 print("      ⚠ THIN option chain - the walls mean little, the options hard to trade")
             if x["nw"]:
@@ -231,11 +252,11 @@ def main():
     print("\n1 ▼ PE - the best scores (a dense roof close above, writers adding, new sellers, room below, the trend / sector / NIFTY / news down):")
     for x in sorted(good, key=lambda x: (-x["pes"], x["roof"]["dist"] if x["roof"] else 99))[:12]:
         if x["pes"] >= 5:
-            print(line(x, "PE"))
+            print(line(x, "PE")); print(plan(x, "PE"))
     print("\n2 ▲ CE - the best scores (a dense floor close below, writers adding, new buyers, room above, the trend / sector / NIFTY / news up):")
     for x in sorted(good, key=lambda x: (-x["ces"], x["floor"]["dist"] if x["floor"] else 99))[:12]:
         if x["ces"] >= 5:
-            print(line(x, "CE"))
+            print(line(x, "CE")); print(plan(x, "CE"))
     bo = [x for x in good if x["roof"] and x["roof"]["dist"] <= AT and x["roof"]["add"] <= -ADD and x["bu"] in ("LONG BUILD-UP", "SHORT COVERING")]
     bd = [x for x in good if x["floor"] and x["floor"]["dist"] <= AT and x["floor"]["add"] <= -ADD and x["bu"] in ("SHORT BUILD-UP", "LONG UNWINDING")]
     print("\n3 ▲ BREAKOUT WATCH - at the roof, the roof writers CUTTING, buyers in (the roof may break): %d" % len(bo))
