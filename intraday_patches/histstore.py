@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""histstore.py - READ ONLY for GIR (changes nothing in GIR, sends nothing, orders nothing). THE 2-YEAR DATA STORE for the long backtest
-(Rama, 15 Nov: "why can't we test all we did for at least 2 years - find a way to do it faster").
+"""histstore.py - READ ONLY for GIR (changes nothing in GIR, sends nothing, orders nothing). THE 3-YEAR DATA STORE for the long backtest
+(Rama, 15 Nov: "why can't we test all we did for at least 2 years - find a way to do it faster" · "ok then make 3 years of test").
 
 The old way fetched every day again for every test (30 days = hours). This fetches ONCE and keeps it on disk; longtest.py then runs every
 study over all the days from the disk, in minutes. Re-run it any evening: it fetches only the days that are new.
@@ -8,14 +8,15 @@ study over all the days from the disk, in minutes. Re-run it any evening: it fet
   python3 histstore.py check          disk space, the Zerodha login, how many shares, how long - fetches nothing
   python3 histstore.py nsecheck       one NSE daily futures file: shows its columns (run once, send the output to Claude)
   python3 histstore.py get [DAYS]     the minute candles of every F&O share + NIFTY + BANKNIFTY (NSE cash, the share itself) for DAYS calendar
-                                      days (default 730 = 2 years), then NSE's daily futures OI file for each of those days
+                                      days (default 1095 = 3 years), then NSE's daily futures OI file for each of those days
   python3 histstore.py nse            only the NSE daily futures files (if the minute part is done)
 
 WHAT IS IN IT / WHAT IS NOT: Zerodha keeps years of MINUTE candles for every share (price + volume). Zerodha does NOT keep the futures or options
-of contracts that have EXPIRED - so the futures OI minute by minute exists only for the last few weeks. For the 2 years, the futures money comes
-from NSE's own daily file (the OI at each day's close, every F&O share) - the day's build-up, not minute by minute.
+of contracts that have EXPIRED - so the futures OI minute by minute exists only for the last few weeks. For the 3 years, the futures money comes
+from NSE's own daily file (the OI at each day's close, every F&O share) - the day's build-up, not minute by minute. NSE changed that file's
+layout on 8 July 2024 (the new "UDiFF" file); before it, the old "bhavcopy" - this reads both.
 Zerodha's limit is 3 requests a second: never run this while another backtest is fetching, and run it after 15:35.
-Store: /root/hist (the minute files min/SYM.npz, fo_daily.json, sectors.json). About 2 MB a share, ~0.5 GB in all.
+Store: /root/hist (the minute files min/SYM.npz, fo_daily.json, sectors.json). About 3 MB a share, ~0.8 GB in all.
 Run it with GIR's keys loaded:   ( set -a; . /home/globalbot/.env; set +a; python3 histstore.py get )"""
 import os, sys, json, time, shutil, threading, datetime as dt
 BASE = os.path.dirname(os.path.abspath(__file__)) if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "windwatch.py")) else "/home/globalbot/intraday"
@@ -187,15 +188,24 @@ def get_min(days):
         print("   (run the same command again - it fetches only what is missing)")
 
 
-# ---------------- NSE's daily futures file (UDiFF bhavcopy, from July 2024): every F&O contract's OI at the day's close ----------------
+# ---------------- NSE's daily futures file: every F&O contract's OI at the day's close. From 8 July 2024 the UDiFF file, before it the old bhavcopy ----------------
 NSE_URL = "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_%s_F_0000.csv.zip"
+NSE_OLD = "https://nsearchives.nseindia.com/content/historical/DERIVATIVES/%s/%s/fo%s%s%sbhav.csv.zip"
+NEW_FROM = dt.date(2024, 7, 8)
+
+
+def nse_url(d):
+    if d >= NEW_FROM:
+        return NSE_URL % d.strftime("%Y%m%d")
+    mon = d.strftime("%b").upper()
+    return NSE_OLD % (d.year, mon, d.strftime("%d"), mon, d.year)
 HDR = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36", "Accept": "*/*", "Referer": "https://www.nseindia.com/"}
 
 
 def nse_day(sess, d):
     """-> None (no file: a holiday) or the CSV rows of that day"""
     import io, csv, zipfile
-    r = sess.get(NSE_URL % d.strftime("%Y%m%d"), headers=HDR, timeout=30)
+    r = sess.get(nse_url(d), headers=HDR, timeout=30)
     if r.status_code == 404:
         return None
     r.raise_for_status()
@@ -211,16 +221,30 @@ def col(row, *names):
     return None
 
 
+def exp_date(x):
+    x = (x or "").strip()
+    for f in ("%Y-%m-%d", "%d-%b-%Y", "%d-%b-%y", "%d-%m-%Y"):
+        try:
+            return dt.datetime.strptime(x, f).date()
+        except ValueError:
+            pass
+    return dt.date(2100, 1, 1)
+
+
 def nse_sum(rows):
-    """-> {share: [OI, change in OI, contracts traded, the nearest future's close]} - every futures expiry added up (shares and indices)"""
+    """-> {share: [OI, change in OI, contracts traded, the nearest future's close]} - every futures expiry added up (shares and indices).
+    Both layouts: the new (FinInstrmTp STF / IDF, TckrSymb, OpnIntrst ...) and the old (INSTRUMENT FUTSTK / FUTIDX, SYMBOL, OPEN_INT ...)."""
     out, near = {}, {}
     for r in rows:
-        tp = (col(r, "FinInstrmTp") or "").strip()
+        r = {(k_ or "").strip(): v for k_, v in r.items()}
+        tp = (col(r, "FinInstrmTp", "INSTRUMENT") or "").strip()
+        tp = {"FUTSTK": "STF", "FUTIDX": "IDF"}.get(tp, tp)
         if tp not in ("STF", "IDF"):
             continue
-        s = (col(r, "TckrSymb") or "").strip(); ex = col(r, "XpryDt", "FininstrmActlXpryDt") or ""
+        s = (col(r, "TckrSymb", "SYMBOL") or "").strip(); ex = exp_date(col(r, "XpryDt", "FininstrmActlXpryDt", "EXPIRY_DT"))
         try:
-            oi = float(col(r, "OpnIntrst") or 0); ch = float(col(r, "ChngInOpnIntrst") or 0); vo = float(col(r, "TtlTradgVol") or 0); cl = float(col(r, "ClsPric") or 0)
+            oi = float(col(r, "OpnIntrst", "OPEN_INT") or 0); ch = float(col(r, "ChngInOpnIntrst", "CHG_IN_OI") or 0)
+            vo = float(col(r, "TtlTradgVol", "CONTRACTS") or 0); cl = float(col(r, "ClsPric", "CLOSE") or 0)
         except ValueError:
             continue
         a = out.setdefault(s, [0.0, 0.0, 0.0, 0.0])
@@ -238,7 +262,6 @@ def get_nse():
         print("the NIFTY minute file is not there yet - run:  python3 histstore.py get"); return
     ts = np.load(nf)["ts"]
     days = sorted({dt.datetime.fromtimestamp(int(t), IST).date() for t in ts[::300]} | {dt.datetime.fromtimestamp(int(ts[-1]), IST).date()})
-    days = [d for d in days if d >= dt.date(2024, 7, 8)]                        # NSE's UDiFF file starts 8 July 2024
     path = os.path.join(STORE, "fo_daily.json")
     J = json.load(open(path)) if os.path.exists(path) else {"done": [], "d": {}}
     have = set(J["done"])
@@ -268,7 +291,12 @@ def get_nse():
 
 def nsecheck():
     import requests
-    sess = requests.Session(); d = NOW.date() - dt.timedelta(days=1)
+    for d0 in (NOW.date() - dt.timedelta(days=1), dt.date(2024, 6, 14)):
+        nsecheck1(requests.Session(), d0)
+        print()
+
+
+def nsecheck1(sess, d):
     for _ in range(10):
         while d.weekday() > 4:
             d -= dt.timedelta(days=1)
@@ -281,24 +309,25 @@ def nsecheck():
         d -= dt.timedelta(days=1)
     if not rows:
         print("no NSE file found in the last 10 days"); return
-    print("NSE daily futures file %s: %d rows · columns:" % (d, len(rows)))
+    print("NSE daily futures file %s (%s layout): %d rows · columns:" % (d, "new" if d >= NEW_FROM else "old", len(rows)))
     print("  " + ", ".join(rows[0].keys()))
-    st = [r for r in rows if (col(r, "FinInstrmTp") or "").strip() == "STF"]
+    st = [r for r in rows if (col(r, "FinInstrmTp", "INSTRUMENT") or "").strip() in ("STF", "FUTSTK")]
     print("stock futures rows: %d · e.g.:" % len(st))
-    for r in [x for x in st if (col(x, "TckrSymb") or "").strip() in ("RELIANCE", "IDEA", "SBIN")][:4]:
-        print("  %s %s OI %s change %s lot %s close %s" % (col(r, "TckrSymb"), col(r, "XpryDt"), col(r, "OpnIntrst"), col(r, "ChngInOpnIntrst"), col(r, "NewBrdLotQty"), col(r, "ClsPric")))
+    for r in [x for x in st if (col(x, "TckrSymb", "SYMBOL") or "").strip() in ("RELIANCE", "IDEA", "SBIN")][:4]:
+        print("  %s %s OI %s change %s lot %s close %s" % (col(r, "TckrSymb", "SYMBOL"), col(r, "XpryDt", "EXPIRY_DT"), col(r, "OpnIntrst", "OPEN_INT"),
+              col(r, "ChngInOpnIntrst", "CHG_IN_OI"), col(r, "NewBrdLotQty"), col(r, "ClsPric", "CLOSE")))
     S = nse_sum(rows)
     print("added up: " + " · ".join("%s OI %s" % (s, "{:,.0f}".format(S[s][0])) for s in ("RELIANCE", "IDEA", "SBIN", "NIFTY") if s in S))
 
 
 def check():
-    print("store: %s · free disk %.1f GB (needs about 1 GB)" % (STORE, free_gb()))
+    print("store: %s · free disk %.1f GB (needs about 1 GB for 3 years)" % (STORE, free_gb()))
     try:
         k = kite(); S = fo_list(k)
     except Exception as ex:
         print("Zerodha: %s - run it with GIR's keys loaded, after GIR's morning login on a market day" % str(ex)[:100]); return
-    n = len(S) + 2; req = n * (730 // CHUNK + 1)
-    print("Zerodha: logged in · %d F&O shares + 2 indices · about %d requests for 2 years · about %.0f-%.0f min" % (len(S), n, req, req * GAP / 60 * 1.2, req * 1.0 / 60))
+    n = len(S) + 2; req = n * (1095 // CHUNK + 1)
+    print("Zerodha: logged in · %d F&O shares + 2 indices · about %d requests for 3 years · about %.0f-%.0f min" % (len(S), req, req * GAP / 60 * 1.2, req * 1.0 / 60))
     if os.path.isdir(MIN_DIR):
         print("already in the store: %d minute files" % len(os.listdir(MIN_DIR)))
 
@@ -312,7 +341,7 @@ if __name__ == "__main__":
     elif a[0] == "get":
         if free_gb() < 1.5:
             print("free disk %.1f GB - needs about 1 GB (+ room). Nothing fetched." % free_gb()); sys.exit(1)
-        get_min(int(a[1]) if len(a) > 1 else 730)
+        get_min(int(a[1]) if len(a) > 1 else 1095)
         get_nse()
     elif a[0] == "nse":
         get_nse()

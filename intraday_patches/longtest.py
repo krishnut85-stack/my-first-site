@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""longtest.py - READ ONLY (changes nothing, sends nothing, fetches nothing). THE 2-YEAR BACKTEST from the store histstore.py made
-(Rama, 15 Nov: "why can't we test all we did for at least 2 years - find a way to do it faster").
+"""longtest.py - READ ONLY (changes nothing, sends nothing, fetches nothing). THE 3-YEAR BACKTEST from the store histstore.py made
+(Rama, 15 Nov: "why can't we test all we did for at least 2 years - find a way to do it faster" · "ok then make 3 years of test").
 
-Every study we ran on 30 days, now over every day in the store (2 years), all from the disk, every CPU at once - minutes, not days:
+Every study we ran on 30 days, now over every day in the store (3 years), all from the disk, every CPU at once - minutes, not days:
   ORB    the opening 5-min break (09:20-10:00)            IB15   the break of the first 15 min (09:30-11:00)
   MOM3   already +3% / -3% on the day (Rama's momentum)   FADE3  betting that 3% move turns back
   RUN2   the second run (1.5% push, 0.5% back holding VWAP, a new high / low)
@@ -12,8 +12,8 @@ Every study we ran on 30 days, now over every day in the store (2 years), all fr
 Each trade: entry at the signal minute's close, every exit (stop 2/target 2 · stop 1/trail 0.75 · stop 1.5/trail 1 · half at +1, trail 0.75 ·
 no stop out 1% / 0.75% / 0.5% off the best · hold), out by 15:15, after 0.20% costs. Split by NIFTY at 09:30, NIFTY / the sector with it
 at entry, in play, the time, yesterday's futures build-up, and by HALF-YEAR - a setup is only trusted if it made money in (nearly) every half-year.
-FUTURES: the futures OI minute by minute is not kept for expired contracts (Zerodha), so for 2 years the futures money is NSE's daily file:
-yesterday's build-up (the steady move's "+2% short build-up since the open" itself cannot be tested over 2 years - only on recent weeks).
+FUTURES: the futures OI minute by minute is not kept for expired contracts (Zerodha), so for 3 years the futures money is NSE's daily file:
+yesterday's build-up (the steady move's "+2% short build-up since the open" itself cannot be tested over 3 years - only on recent weeks).
 The shares: today's F&O list (and only the days NSE listed them in F&O, when the NSE file is there).
   python3 longtest.py                 every study, every day in the store  -> the report (also saved in /root/hist/longtest_DATE.txt)
   python3 longtest.py 2025-01-01 2026-06-30   only those dates"""
@@ -239,8 +239,8 @@ def report(T, PD, days):
     R = T[:, 6:14] - COST
     hv = np.array([half(x) for x in T[:, 2]]) if len(T) else np.array([])
     periods = sorted(set(hv.tolist()))
-    P("=== THE 2-YEAR BACKTEST · %s -> %s · %d market days · %d trades · after %.2f%% costs · on the share (≈10x on an at-the-money premium)" % (
-        dday(min(days)), dday(max(days)), len(days), len(T), COST))
+    P("=== THE %.1f-YEAR BACKTEST · %s -> %s · %d market days · %d trades · after %.2f%% costs · on the share (≈10x on an at-the-money premium)" % (
+        len(days) / 248.0, dday(min(days)), dday(max(days)), len(days), len(T), COST))
     P("    half-years: " + " · ".join("%s %d trades" % (p_, int((hv == p_).sum())) for p_ in periods))
     m_ = T[:, 3] if len(T) else np.array([])
     tg = T[:, 4].astype(np.int64) if len(T) else np.array([], np.int64)
@@ -274,7 +274,7 @@ def report(T, PD, days):
                     lab, n, av[j], 10 * av[j], w, EXN[j].split(" ")[0], av[5], sig, pos, cnt))
                 if not lab.startswith("(hindsight)"):
                     rows.append((name, side, lab, n, float(av[j]), w, EXN[j], float(av[5]), pos, cnt))
-    P("\n=== THE 2-YEAR PLAYBOOK - made money after costs in (nearly) every half-year · 200+ trades · best first")
+    P("\n=== THE LONG-TEST PLAYBOOK - made money after costs in (nearly) every half-year · 200+ trades · best first")
     good = [r for r in rows if r[3] >= 200 and r[4] > 0 and r[9] >= 2 and r[8] >= r[9] - (1 if r[9] >= 4 else 0)]
     good.sort(key=lambda r: -r[4])
     for i, r in enumerate(good[:30]):
@@ -303,7 +303,7 @@ def report(T, PD, days):
                 P("     %-13s %s   biggest - smallest %+.2f%%" % (lab, " | ".join(cells), a1[-1] - a1[0]))
         P("  READ: the way whose 'biggest - smallest' is largest tells the next day best. If FOR ITS SIZE wins here AND on the 30-day minute test, it goes into the rules.")
     P("\nREAD: trust a setup only if it is + in (nearly) every half-year - one good stretch is luck. 'best' picks the best of 8 exits (a little flattering);")
-    P("'hold' is the plain hold to 15:15 for comparison. Today's F&O list is used for the whole 2 years (shares that left F&O are missing).")
+    P("'hold' is the plain hold to 15:15 for comparison. Today's F&O list is used for every day (shares that left F&O are missing).")
     return "\n".join(out)
 
 
