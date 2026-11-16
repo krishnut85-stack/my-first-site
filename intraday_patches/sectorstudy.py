@@ -3,10 +3,11 @@
 sector performs - there has to be a reason. Not only the strongest share: find the shares of that sector that have the potential to MOVE the
 sector, and the reason. When, after NIFTY opens, can we say which sector is performing and which is bad?").
 Kite's own 5-minute prices for every share of NSE's Nifty Total Market (~750), the last 60 trading days, in NSE's own sectors, weighted by NSE's
-free-float market cap (the same list and weights as patch 354's seclive.py). For every day and for 09:20 / 09:30 / 09:45 / 10:00 / 10:30:
+market cap (the same list and weights as patch 354's seclive.py). For every day and for 09:30 / 09:45 / 10:00 / 10:30 / 11:00 / 12:00 / 13:00:
   1) THE RANKING   the best and the worst sector at that time: still top 3 / bottom 3 at 15:10? did the sector go FURTHER after that time?
   1b) THE RANK HOLDS?  the No.1, No.2, No.3 best and the No.1, No.2, No.3 worst sector at 09:30 / 09:45 / 10:00: its place at 15:10 (the same, within 1,
                    within 2, No.5 or further) and the furthest it slipped at any hour of the day
+  1c) THE CLIMBERS  the sector that moved up / down the most places in the last 30 minutes - does it keep going?
   2b) THE 2nd AND 3rd  the drivers and all the F&O shares of the 2nd and 3rd best / worst sector, apart from the no.1
   3b) RESISTANCE   a share already past its 20-day high / low with its sector pushing
   2) THE DRIVERS   a share's push on its sector = its weight x its move. The DRIVERS = the F&O shares with the biggest push in the sector's
@@ -28,7 +29,7 @@ D = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, D)
 import seclive as SL
 CACHE = os.path.join(D, "data", "secstudy")
 L = []
-TS = (5, 15, 30, 45, 75)                         # minutes after 09:15: 09:20 09:30 09:45 10:00 10:30
+TS = (15, 30, 45, 75, 105, 165, 225)             # minutes after 09:15: 09:30 09:45 10:00 10:30 11:00 12:00 13:00 (v2: nothing before 09:30)
 END = 355                                        # 15:10
 UPT, DNT = 0.015, 0.010                          # "worked" = +1.5% its way before -1.0% against
 NEWS = re.compile(r"NEWS|RESULT|ORDER|UPGRAD|DOWNGRAD|TARGET|BLOCK|BULK|📰|📄|🚨", re.I)
@@ -159,6 +160,7 @@ def main():
     RANK = {T: {"n": 0, "top3": 0, "bot3": 0, "topgo": [], "botgo": [], "rho": []} for T in TS}
     PICK = {T: {k: [] for k in ("CE DRIVER", "CE STRONGEST", "CE LAGGARD", "CE ALL F&O", "PE DRIVER", "PE STRONGEST", "PE LAGGARD", "PE ALL F&O")} for T in TS}
     WHY = []; REAS = []; CLR = {}
+    CLIMB = {T: {"up": [], "dn": []} for T in (45, 75, 105, 165, 225)}     # 1c: the sector that climbed / fell the most places in the last 30 minutes
     CPS = (15, 30, 45, 105, 165, 225, 285, END + 5)                          # 09:30 09:45 10:00 11:00 12:00 13:00 14:00 15:10 - the sector ranking at each
     HOLD = {tb: {} for tb in (15, 30, 45)}; NSEC = []
     for di in range(1, len(days)):
@@ -194,7 +196,28 @@ def main():
                         if mine <= 3:
                             HOLD[tb].setdefault((pos, mine), []).append({"fin": path[-1], "worst": max(path), "path": path})
         SCD = {}
-        for T in TS:
+
+        def spct(T_):
+            g = {}
+            for s_, (sec_, pc_, b_) in S.items():
+                p_ = px(b_, T_)
+                if p_:
+                    a_ = g.setdefault(sec_, [0.0, 0.0, 0]); a_[0] += (p_ / pc_ - 1) * W[s_]; a_[1] += W[s_]; a_[2] += 1
+            return {k: v[0] / v[1] for k, v in g.items() if v[2] >= 5 and v[1] > 0}
+        fin_ = spct(END + 5)
+        for T in CLIMB:                                                      # 1c
+            a0, a1 = spct(T - 30), spct(T)
+            ks = [k for k in a1 if k in a0 and k in fin_]
+            if len(ks) < 8:
+                continue
+            r0 = {k: i for i, k in enumerate(sorted(ks, key=lambda k: -a0[k]))}; r1 = {k: i for i, k in enumerate(sorted(ks, key=lambda k: -a1[k]))}
+            up = max(ks, key=lambda k: r0[k] - r1[k]); dn = max(ks, key=lambda k: r1[k] - r0[k])
+            for k, side, dr_ in ((up, "up", 1), (dn, "dn", -1)):
+                if (r0[k] - r1[k]) * dr_ >= 4:
+                    fo_ = [((pe[s_] / px(b_, T) - 1) * dr_) for s_, (sec_, pc_, b_) in S.items() if sec_ == k and s_ in FO and pe.get(s_) and px(b_, T)]
+                    CLIMB[T][side].append({"go": (fin_[k] - a1[k]) * dr_, "places": abs(r0[k] - r1[k]), "now": r1[k] + 1, "fo": (sum(fo_) / len(fo_)) if fo_ else None,
+                                           "fow": (sum(1 for v in fo_ if v > 0) / len(fo_)) if fo_ else None})
+        for T in (5,) + TS:
             G = {}
             for s, (sec, pc, b) in S.items():
                 p = px(b, T)
@@ -209,6 +232,8 @@ def main():
             if len(sc) < 8:
                 continue
             at = sorted(sc, key=lambda k: -sc[k][0]); cl = sorted(sc, key=lambda k: -sc[k][1]); SCD[T] = sc
+            if T == 5:
+                continue                                                     # 09:20 is kept only to tell "already there at the open" from "built after the open"
             top, bot = at[0], at[-1]; K = RANK[T]; K["n"] += 1
             K["top3"] += top in cl[:3]; K["bot3"] += bot in cl[-3:]
             K["topgo"].append(sc[top][1] - sc[top][0]); K["botgo"].append(sc[bot][0] - sc[bot][1])
@@ -241,7 +266,7 @@ def main():
                     if N is None:
                         N = news_of(day)
                     PICK[T][side + " " + kind].append({"s": s, "day": day, "rk": rk, "ret": (float(a[-1, 4]) / p - 1) * dr, "hit": hit, "push": c * wt / w / mv if mv else 0, "c": c,
-                        "v_news": has_news(N, s, T), "v_gap": (float(b[0, 1]) / pc - 1) * dr >= 0.005, "v_vwap": (p - vw) * dr > 0, "v_breadth": breadth >= 0.7,
+                        "v_combo": bool(brk_w) and breadth >= 0.7 and (p - vw) * dr > 0, "v_news": has_news(N, s, T), "v_gap": (float(b[0, 1]) / pc - 1) * dr >= 0.005, "v_vwap": (p - vw) * dr > 0, "v_breadth": breadth >= 0.7,
                         "v_nifty": nif * dr > 0, "v_big": s in big3, "v_strong": abs(mv) >= 0.01, "v_pdh": brk_y, "v_20d": brk_w})
                 fo = [r for r in R if r[0] in FO]
                 drv = sorted([r for r in fo if r[1] * dr > 0], key=lambda r: -r[1] * r[3] * dr)[:3]
@@ -266,7 +291,7 @@ def main():
                             "WITH THE MARKET" if nif * dr >= 0.002 else "ON ITS OWN (NIFTY not that way)",
                             "NEW TODAY" if not y else "2nd DAY (the same yesterday)" if sec in (y[0] if dr > 0 else y[1]) else "REBOUND (the opposite yesterday)" if sec in (y[1] if dr > 0 else y[0]) else "NEW TODAY"]
                     REAS.append({"tags": tags, "go": (sc[sec][1] - mv) * dr, "stay": sec in (cl[:3] if dr > 0 else cl[-3:]), "side": side})
-                    WHY.append((day, side, sec, mv, breadth, len(R), sc[sec][1], [(r[0], r[1], r[1] * r[3] / w / mv if mv else 0, r[0] in FO, (N.get(r[0]) or [None])[-1]) for r in allp], tags))
+                    WHY.append((day, side, sec, mv, breadth, len(R), sc[sec][1], [(r[0], r[1], r[1] * r[3] / w / mv if mv else 0, r[0] in FO, ([x_ for x_ in N.get(r[0], []) if x_[0].startswith("eve") or x_[0] <= hm(T)] or [None])[-1]) for r in allp], tags))
             if T == TS[-1]:
                 CLR[d] = (cl[:3], cl[-3:])
     say("")
@@ -294,6 +319,17 @@ def main():
                 say("    %s No.%d → at 15:10: the same place %3.0f%% · within 1 place %3.0f%% · within 2 places %3.0f%% · No.5 or further %3.0f%% · ended No.%.1f on average · the furthest it slipped in the day: No.%.1f on average (No.5+ at some time on %2.0f%% of days) · %d days" % (
                     "BEST " if pos == "top" else "WORST", mine, 100 * sum(1 for v in fin if v == mine) / n, 100 * sum(1 for v in fin if abs(v - mine) <= 1) / n,
                     100 * sum(1 for v in fin if abs(v - mine) <= 2) / n, 100 * sum(1 for v in fin if v >= 5) / n, sum(fin) / n, sum(wo) / n, 100 * sum(1 for v in wo if v >= 5) / n, n))
+    say("")
+    say("1c) THE CLIMBERS - not the sector that is already no.1, but the one that moved UP (or DOWN) the most places in the last 30 minutes (4 places or more):")
+    say("    does it keep going to 15:10? (the sector, and the average of its F&O shares)")
+    for T in sorted(CLIMB):
+        for side, nm in (("up", "CLIMBED the most"), ("dn", "FELL the most   ")):
+            X = CLIMB[T][side]
+            if X:
+                F_ = [x for x in X if x["fo"] is not None]
+                say("    %s · %s · %2d days · %.1f places on average, now no.%.1f %s · the sector went further on %2.0f%% of days (average %+.2f%% more) · its F&O shares: %+.2f%% on average, %2.0f%% of them went on" % (
+                    hm(T), nm, len(X), sum(x["places"] for x in X) / len(X), sum(x["now"] for x in X) / len(X), "from the top" , 100 * sum(1 for x in X if x["go"] > 0) / len(X),
+                    100 * sum(x["go"] for x in X) / len(X), (100 * sum(x["fo"] for x in F_) / len(F_)) if F_ else 0, (100 * sum(x["fow"] for x in F_) / len(F_)) if F_ else 0))
     say("")
     say("2) THE SHARES - from that time to 15:10, on the share (CE = the no.1 best sector's F&O shares, PE = the no.1 worst sector's):")
     for T in TS:
@@ -335,6 +371,10 @@ def main():
         if a or b:
             say("    %s  PAST the 20-day level: %s   NOT past it: %s" % (hm(T), ("%4d picks · %2.0f%% went on · %2.0f%% worked · %+.2f%%" % (a[0], a[1], a[3], a[2])) if a else "none",
                 ("%4d picks · %2.0f%% went on · %2.0f%% worked · %+.2f%%" % (b[0], b[1], b[3], b[2])) if b else "none"))
+    say("    the three together - past its 20-day level + 70%+ of the sector that way + the right side of VWAP (every F&O share of the 1st, 2nd, 3rd best / worst sector):")
+    for T in TS:
+        X = [x for x in PICK[T]["CE ALL F&O"] + PICK[T]["PE ALL F&O"] if x["v_combo"]]
+        say(fmt("%s  all three" % hm(T), X))
     say("")
     say("4) THE REASON - the last days at 09:45: the sector, the shares that moved it (their part of the sector's move), GIR's news on them")
     for day, side, sec, mv, br, n, cl, rows, tags in WHY[-12:]:
