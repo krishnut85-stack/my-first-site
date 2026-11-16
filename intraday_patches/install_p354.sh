@@ -21,7 +21,8 @@ cat > $W/seclive.py <<'PY_SL'
 stocks - only the F&O ones gives me wrong information. Healthcare is no.1 on Trendlyne and 9th in GIR. The rotation is not updating").
   · the shares   every share of NSE's Nifty Total Market (about 750 - about 95% of the market's value), in NSE's OWN sector (data/nse_sectors.json,
                  the same list GIR's page already uses; Financial Services split into banks / nbfc & finance / insurance / capital markets as before)
-  · the weight   each share's FREE-FLOAT MARKET CAP from NSE (fetched once a day - kept in data/seclive_w.json); equal weight only if NSE never answered
+  · the weight   each share's MARKET CAP from NSE's own daily file (mcap<date>.csv in the PR zip of NSE's archives - fetched once a day, kept in
+                 data/seclive_w.json); equal weight only if NSE never answered
   · the price    Kite: every share's last price and yesterday's close in ONE request, every 3 seconds in market hours (every 5 minutes outside)
   · TODAY        a sector's % = the size-weighted average of all its shares' % since yesterday's close (like Trendlyne / NSE's indices)
   · ROTATION     the same, over the last 15 / 30 / 60 minutes - from a per-minute record kept HERE on the server (data/seclive_hist.json), so
@@ -86,8 +87,31 @@ def fo_set():
         return set()
 
 
+def parse_mcap(text):
+    """NSE's mcap<ddmmyyyy>.csv (in the daily PR zip): Trade Date, Symbol, Series, Security Name, Category, Last Trade Date, Face Value,
+    Issue Size, Close Price, Market Cap(Rs.) -> {SYMBOL: market cap}"""
+    import csv, io
+    w = {}
+    rd = csv.reader(io.StringIO(text))
+    head = [h.strip().lower() for h in next(rd, [])]
+    try:
+        si = head.index("symbol"); mi = next(k for k, h in enumerate(head) if h.startswith("market cap"))
+    except Exception:
+        return w
+    for row in rd:
+        try:
+            s = row[si].strip().upper(); v = float(row[mi].strip().replace(",", ""))
+        except Exception:
+            continue
+        if s and v > 0:
+            w[s] = max(v, w.get(s, 0.0))
+    return w
+
+
 def nse_weights():
-    """{SYMBOL: free-float market cap} from NSE's own index page (Nifty Total Market, else Nifty 500) - once a day, kept on disk"""
+    """{SYMBOL: market cap} - NSE's own daily market-cap file (mcap<ddmmyyyy>.csv inside the PR zip in NSE's archives; the newest of the
+    last 8 days - in the morning that is yesterday's close). Fetched once a day, kept in data/seclive_w.json. (patch 354b: NSE's website API
+    answers 403 to this server - the archive does answer.)"""
     try:
         j = json.load(open(WF))
         if j.get("day") == str(now().date()) and len(j.get("w") or {}) > 300:
@@ -95,30 +119,29 @@ def nse_weights():
     except Exception:
         j = None
     try:
-        import requests
-        s = requests.Session(); s.get("https://www.nseindia.com/", headers=UA, timeout=15)
-        for ix in ("NIFTY TOTAL MARKET", "NIFTY 500"):
-            r = s.get("https://www.nseindia.com/api/equity-stockIndices", params={"index": ix}, timeout=20,
-                      headers=dict(UA, Referer="https://www.nseindia.com/market-data/live-equity-market"))
-            if not r.ok:
-                continue
-            w = {}
-            for x in (r.json().get("data") or []):
-                sym, f = str(x.get("symbol") or "").upper(), x.get("ffmc")
+        import requests, io, zipfile
+        s = requests.Session()
+        for i in range(9):
+            x = now().date() - dt.timedelta(days=i)
+            for host in ("nsearchives.nseindia.com", "archives.nseindia.com"):
                 try:
-                    f = float(f)
-                except Exception:
-                    continue
-                if sym and f > 0 and x.get("priority", 0) != 1:
-                    w[sym] = f
-            if len(w) > 300:
-                json.dump({"day": str(now().date()), "src": "NSE " + ix, "w": w}, open(WF + ".tmp", "w")); os.replace(WF + ".tmp", WF)
-                log("weights: %d shares from NSE (%s)" % (len(w), ix))
-                return w, "NSE " + ix
+                    r = s.get("https://%s/archives/equities/bhavcopy/pr/PR%s.zip" % (host, x.strftime("%d%m%y")), headers=dict(UA, Accept="*/*"), timeout=25)
+                    if not (r.ok and r.content[:2] == b"PK"):
+                        continue
+                    z = zipfile.ZipFile(io.BytesIO(r.content))
+                    f = next((n for n in z.namelist() if "mcap" in n.lower()), None)
+                    w = parse_mcap(z.read(f).decode("latin-1")) if f else {}
+                    if len(w) > 300:
+                        src = "NSE market cap %s" % x.strftime("%d %b")
+                        json.dump({"day": str(now().date()), "src": src, "w": w}, open(WF + ".tmp", "w")); os.replace(WF + ".tmp", WF)
+                        log("weights: %d shares - %s (%s)" % (len(w), src, f))
+                        return w, src
+                except Exception as ex:
+                    log("weights: %s %s: %s" % (host, x, str(ex)[:60]))
     except Exception as ex:
-        log("weights: NSE did not answer (%s)" % str(ex)[:80])
+        log("weights: NSE's archive did not answer (%s)" % str(ex)[:80])
     if j and len(j.get("w") or {}) > 300:
-        return j["w"], j.get("src", "NSE") + " (" + str(j.get("day")) + ")"
+        return j["w"], j.get("src", "NSE") + " (kept from " + str(j.get("day")) + ")"
     return {}, "EQUAL (NSE's sizes not available)"
 
 
