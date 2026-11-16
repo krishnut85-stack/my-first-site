@@ -314,6 +314,7 @@ rule) found two picks with a lean:
   B  an F&O share PAST ITS 20-DAY HIGH (CE) / LOW (PE) while its sector is one of the 3 best / worst with 70%+ of its shares that way, the share
      on the right side of VWAP - checked at 10:00 and 10:30            (94 trades, 52% won, +₹39,280, 9 of 13 days green)
   A  PE on the 3 DRIVERS of the WEAKEST sector - checked at 10:30, 11:00, 12:00   (44 trades, 64% won, +₹17,631, 7 of 11 days green)
+  E  CE at 09:45 on a share that fell 2%+ yesterday WITH its theme (355b)   (88 trades, 53% won, +₹97,000 with the card rule, 6 of 10 days green)
 One big day carried B and the market was rising: promising, not proven. So GIR only SHOWS them and keeps score:
   · tick()   called by seclive.py every pass: at each check time (a 4-minute window - a missed time is NOT made up later) the candidates are written
              to data/seccand.json: time, kind, share, CE/PE, the price, the sector and why. A share once a day per kind.
@@ -326,7 +327,10 @@ IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
 OUT = os.path.join(D, "data", "seccand.json")
 LOG = os.path.join(D, "data", "seccand_log.json")
 LVF = os.path.join(D, "data", "seccand_lv.json")
-TRIG = (("10:00", "B"), ("10:30", "AB"), ("11:00", "A"), ("12:00", "A"))
+TRIG = (("09:45", "E"), ("10:00", "B"), ("10:30", "AB"), ("11:00", "A"), ("12:00", "A"))
+# patch 355b: E = BOUNCE - a share that fell 2%+ yesterday WITH its theme (the theme -1%+; the share not far worse than the theme): CE at 09:45.
+#   sectoropt.py, 14 days, real option: 88 trades, 53% won, +₹97,000 with the CARD rule (stop 2.5%, half +1.5%, rest 15:10) - scored that way.
+RULE = {"A": (0.025, 0.035, 120), "B": (0.025, 0.035, 120), "E": (0.025, 0.015, None)}
 WINDOW_MIN = 4
 _lv = {"day": None, "lv": {}, "busy": False}
 
@@ -363,7 +367,7 @@ def levels(kite, FO, day):
         try:
             rows = [r for r in kite.historical_data(tok[s], frm, to, "day") if r["date"].date() < d0][-20:]; time.sleep(0.36)
             if len(rows) >= 10:
-                lv[s] = [max(float(r["high"]) for r in rows), min(float(r["low"]) for r in rows)]
+                lv[s] = [max(float(r["high"]) for r in rows), min(float(r["low"]) for r in rows), float(rows[-1]["close"]), float(rows[-2]["close"])]   # + the last two closes (E)
         except Exception as ex:
             print("seccand levels %s: %s" % (s, str(ex)[:60]), flush=True)
     if len(lv) > 50:
@@ -378,6 +382,30 @@ def _levels_bg(kite, FO, day):
     except Exception as ex:
         print("seccand levels: %s" % str(ex)[:120], flush=True)
     _lv["busy"] = False
+
+
+def themes():
+    try:
+        import themestudy
+        return themestudy.THEMES
+    except Exception:
+        return {}
+
+
+def find_bounce(Q, FO, LV):
+    """E: [(kind, sym, +1, price, theme, theme's fall yesterday, why)]"""
+    out = []
+    for t, (fo, also, why) in themes().items():
+        y = {s: LV[s][2] / LV[s][3] - 1 for s in (fo + " " + also).split() if s in LV and len(LV[s]) >= 4 and LV[s][3]}
+        if len(y) < 2:
+            continue
+        yth = sum(y.values()) / len(y)
+        if yth > -0.01:
+            continue
+        for s in fo.split():
+            if s in y and s in FO and s in Q and y[s] <= -0.02 and y[s] >= 2.0 * yth - 0.01:
+                out.append(("E", s, 1, Q[s][0], t, yth, "fell %.1f%% yesterday with its theme (%s %.1f%%) - a wave, not its own news: the next-morning bounce" % (y[s] * 100, t, yth * 100)))
+    return out
 
 
 def find(kinds, SEC, W, Q, FO, LV, vwap):
@@ -419,7 +447,8 @@ def tick(n, SEC, W, Q, FO, kite):
     try:
         day = str(n.date()); hm = n.strftime("%H:%M")
         if _lv["day"] != day and not _lv["busy"] and hm >= "09:18":
-            _lv["busy"] = True; threading.Thread(target=_levels_bg, args=(kite, set(FO), day), daemon=True).start()
+            also = {s for fo, al, _ in themes().values() for s in al.split()}
+            _lv["busy"] = True; threading.Thread(target=_levels_bg, args=(kite, set(FO) | also, day), daemon=True).start()
         st = state(day); changed = False
         for t, kinds in TRIG:
             if t in st["done"] or hm < t:
@@ -427,10 +456,10 @@ def tick(n, SEC, W, Q, FO, kite):
             late = (n.hour * 60 + n.minute) - (int(t[:2]) * 60 + int(t[3:]))
             if late > WINDOW_MIN:
                 st["done"][t] = "missed (GIR was not watching at %s)" % t; changed = True; continue
-            if "B" in kinds and _lv["day"] != day:
+            if ("B" in kinds or "E" in kinds) and _lv["day"] != day:
                 if late < WINDOW_MIN:
                     continue                                                 # the 20-day levels are still being fetched - try again on the next pass
-                kinds = kinds.replace("B", "")
+                kinds = kinds.replace("B", "").replace("E", "")
             vwap = {}
             if "B" in kinds:
                 import getdata
@@ -441,12 +470,13 @@ def tick(n, SEC, W, Q, FO, kite):
                         if v.get("average_price"):
                             vwap[k.split(":", 1)[1]] = float(v["average_price"])
             have = {(c["kind"], c["s"]) for c in st["cands"]}; new = 0
-            for kind, s, dr, lp, sec, mv, why in find(kinds, SEC, W, Q, FO, _lv["lv"] if _lv["day"] == day else {}, vwap):
+            LV_ = _lv["lv"] if _lv["day"] == day else {}
+            for kind, s, dr, lp, sec, mv, why in find(kinds, SEC, W, Q, FO, LV_, vwap) + (find_bounce(Q, FO, LV_) if "E" in kinds else []):
                 if (kind, s) not in have:
                     have.add((kind, s)); new += 1
                     st["cands"].append({"t": t, "kind": kind, "s": s, "dir": dr, "px": round(lp, 2), "sec": sec, "secchg": round(mv * 100, 2), "why": why})
             st["done"][t] = "%d new" % new; changed = True
-            print("seccand %s: %d new candidates (%s)" % (t, new, kinds or "A only - no levels"), flush=True)
+            print("seccand %s: %d new candidates (%s)" % (t, new, kinds or "no levels yet"), flush=True)
         if changed:
             st["at"] = n.strftime("%H:%M:%S"); _save(st, OUT)
     except Exception as ex:
@@ -460,7 +490,7 @@ def score(day=None):
     st = _load(OUT, {})
     if st.get("day") != day or not st.get("cands"):
         return None
-    K = OR.Kite(day); tot = {"A": [0, 0, 0.0], "B": [0, 0, 0.0]}
+    K = OR.Kite(day); tot = {"A": [0, 0, 0.0], "B": [0, 0, 0.0], "E": [0, 0, 0.0]}
     for c in st["cands"]:
         try:
             if c["s"] not in K.eq:
@@ -476,7 +506,7 @@ def score(day=None):
             if not p0:
                 continue
             x = {"S": sorted((a,) + v for a, v in Sm.items()), "O": OR.ff(O), "m0": m0, "P0": P0, "dir": c["dir"], "lot": k[2], "p0": p0}
-            r = OR.money(x, 0.025, 0.035, 120)
+            r = OR.money(x, *RULE.get(c["kind"], RULE["A"]))
             if r:
                 c["opt"] = {"ts": k[0], "p0": round(p0, 2), "pe": round(r[3], 2), "rs": round(r[0]), "how": r[1], "out": OR.C.hm(r[2]), "lot": k[2]}
                 a = tot[c["kind"]]; a[0] += 1; a[1] += r[0] > 0; a[2] += r[0]
@@ -500,9 +530,9 @@ def after_close(n):
 def view():
     """what the page shows: today's candidates + the running record"""
     st = _load(OUT, {}); lg = _load(LOG, {"days": {}})
-    rec = {"A": [0, 0, 0, 0, 0], "B": [0, 0, 0, 0, 0]}                         # trades, won, ₹, days, green days
+    rec = {"A": [0, 0, 0, 0, 0], "B": [0, 0, 0, 0, 0], "E": [0, 0, 0, 0, 0]}  # trades, won, ₹, days, green days
     for d, v in sorted(lg.get("days", {}).items()):
-        for k in "AB":
+        for k in "ABE":
             a = v.get(k) or [0, 0, 0]
             if a[0]:
                 r = rec[k]; r[0] += a[0]; r[1] += a[1]; r[2] += a[2]; r[3] += 1; r[4] += a[2] > 0
@@ -520,7 +550,7 @@ if __name__ == "__main__":
             print("  %s %s %-11s %s at ₹%s · %s%s" % (c["t"], c["kind"], c["s"], "CE" if c["dir"] > 0 else "PE", c["px"], c["why"][:90], (" · option ₹%s → ₹%s = ₹%s (%s %s)" % (o["p0"], o["pe"], o["rs"], o["how"], o["out"])) if o else ""))
 PY_SC
 cat > $W/home_add.html <<'ADD_355'
-<style>/* patch 355: 🧪 the sector CANDIDATES - a paper test (no sound, no BUY card) - under the 👀 box in TRADE NOW */
+<style>/* patch 355 + 355b: 🧪 the sector CANDIDATES - a paper test (no sound, no BUY card) - under the 👀 box in TRADE NOW */
 #gxcd{margin:0 0 10px;border:1px solid #24405c;border-radius:8px;background:#0b1522;font:12.5px/1.4 -apple-system,"Segoe UI",Roboto,system-ui,sans-serif;color:#e6edf3}
 #gxcd .h{padding:7px 10px;border-bottom:1px solid #1b3048;font:800 12px ui-monospace,Menlo,monospace;letter-spacing:.06em;color:#8fc3ff}
 #gxcd .h small{display:block;font:500 11px -apple-system,sans-serif;letter-spacing:0;color:#a3aebf;margin-top:2px}
@@ -546,16 +576,16 @@ cat > $W/home_add.html <<'ADD_355'
     const today=new Date(Date.now()+19800000).toISOString().slice(0,10), nowm=(()=>{ const n=new Date(Date.now()+19800000); return n.getUTCHours()*60+n.getUTCMinutes(); })();
     const C=V&&V.day===today?(V.cands||[]).slice().sort((a,b)=>String(b.t).localeCompare(String(a.t))):[];
     const px={}; ((typeof TAPE!=="undefined"&&TAPE)||[]).forEach(r=>{ if(r.px) px[r.s]=r.px; });
-    const row=c=>{ const tm=(+c.t.slice(0,2))*60+(+c.t.slice(3)), left=120-(nowm-tm), p=px[c.s], mv=p?(p/c.px-1)*c.dir*100:null, o=c.opt;
+    const row=c=>{ const tm=(+c.t.slice(0,2))*60+(+c.t.slice(3)), left=(c.kind==="E"?(15*60+10-tm):120)-(nowm-tm), p=px[c.s], mv=p?(p/c.px-1)*c.dir*100:null, o=c.opt;
       const st=o?`<span class="${o.rs>=0?"up":"dn"}">${rs(o.rs)}</span> <span class="dim">option ₹${o.p0}→₹${o.pe}</span>`
-        :(mv==null?'<span class="dim">—</span>':`<span class="${mv>=0?"up":"dn"}">${mv>=0?"+":""}${mv.toFixed(1)}%</span> <span class="dim">${left>0&&nowm<=915?Math.floor(left/60)+"h"+String(left%60).padStart(2,"0")+" left":"2h over"}</span>`);
-      return `<div class="r" title="${E(c.why)} · at ₹${E(c.px)}" onclick="try{mkOpen('${E(c.s).replace(/'/g,"")}')}catch(e){}"><span class="t">${E(c.t)}</span><span class="s"><span class="k">${c.kind==="B"?"BREAK":"WEAK"}</span>${E(c.s)} <span class="${c.dir>0?"up":"dn"}">${c.dir>0?"▲ CE":"▼ PE"}</span></span><span class="st">${st}</span></div>`; };
-    const R=(V&&V.record)||{A:[0,0,0,0,0],B:[0,0,0,0,0]};
+        :(mv==null?'<span class="dim">—</span>':`<span class="${mv>=0?"up":"dn"}">${mv>=0?"+":""}${mv.toFixed(1)}%</span> <span class="dim">${left>0&&nowm<=915?Math.floor(left/60)+"h"+String(left%60).padStart(2,"0")+" left":(c.kind==="E"?"15:10 over":"2h over")}</span>`);
+      return `<div class="r" title="${E(c.why)} · at ₹${E(c.px)}" onclick="try{mkOpen('${E(c.s).replace(/'/g,"")}')}catch(e){}"><span class="t">${E(c.t)}</span><span class="s"><span class="k">${({A:"WEAK",B:"BREAK",E:"BOUNCE"})[c.kind]||c.kind}</span>${E(c.s)} <span class="${c.dir>0?"up":"dn"}">${c.dir>0?"▲ CE":"▼ PE"}</span></span><span class="st">${st}</span></div>`; };
+    const R=Object.assign({A:[0,0,0,0,0],B:[0,0,0,0,0],E:[0,0,0,0,0]},(V&&V.record)||{});
     const rec=k=>R[k]&&R[k][0]?`${R[k][0]} trades · ${R[k][1]} won · <b class="${R[k][2]>=0?"up":"dn"}">${rs(R[k][2])}</b> · ${R[k][4]} of ${R[k][3]} days green`:"no day scored yet";
     const done=(V&&V.day===today&&V.done)||{};
-    el.innerHTML=`<div class="h">🧪 CANDIDATES · PAPER TEST<small>not a trade alert - no sound · checked at 10:00, 10:30, 11:00, 12:00 · scored each evening in the real option, 2-hour rule</small></div>`+
-      (C.length?C.map(row).join(""):`<div class="none">${Object.keys(done).length?"checked "+Object.keys(done).sort().join(", ")+" - none so far":"none yet today - the first check is at 10:00"}</div>`)+
-      `<div class="rec">live record · BREAK (past its 20-day level with its sector): ${rec("B")}<br>WEAK (PE on the weakest sector's drivers): ${rec("A")}<br><span class="dim">the 14-day test before going live: BREAK 94 trades, 52% won, +₹39,280 · WEAK 44 trades, 64% won, +₹17,631</span></div>`; }
+    el.innerHTML=`<div class="h">🧪 CANDIDATES · PAPER TEST<small>not a trade alert - no sound · checked at 09:45, 10:00, 10:30, 11:00, 12:00 · scored each evening in the real option</small></div>`+
+      (C.length?C.map(row).join(""):`<div class="none">${Object.keys(done).length?"checked "+Object.keys(done).sort().join(", ")+" - none so far":"none yet today - the first check is at 09:45"}</div>`)+
+      `<div class="rec">live record · BOUNCE (fell 2%+ yesterday with its theme - CE at 09:45, card rule): ${rec("E")}<br>BREAK (past its 20-day level with its sector, 2-hour rule): ${rec("B")}<br>WEAK (PE on the weakest sector's drivers, 2-hour rule): ${rec("A")}<br><span class="dim">the 14-day test before going live: BOUNCE 88 trades, 53% won, +₹97,000 · BREAK 94, 52%, +₹39,280 · WEAK 44, 64%, +₹17,631</span></div>`; }
   async function pull(){ try{ const r=await fetch("seccand?k="+encodeURIComponent(KEY()),{cache:"no-store"}); if(r.ok) V=await r.json(); }catch(e){} draw(); }
   setInterval(()=>{ if(!document.hidden) pull(); },10000); setInterval(()=>{ if(!document.hidden&&V) draw(); },3000); setTimeout(pull,1500); })();
 </script>
