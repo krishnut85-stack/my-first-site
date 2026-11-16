@@ -42,17 +42,34 @@ def fetch_all(kite, syms, ndays):
     tok = {i["tradingsymbol"]: int(i["instrument_token"]) for i in getdata.call(kite.instruments, "NSE") if i.get("instrument_type") == "EQ"}
     tok["NIFTY50"] = 256265
     today = dt.datetime.now(SL.IST).date(); frm = dt.datetime.combine(today - dt.timedelta(days=int(ndays * 1.6) + 5), dt.time(9, 15)); to = dt.datetime.combine(today, dt.time(15, 30))
-    out = {}; got = 0
+    out = {}; got = 0; fails = 0
     for n_, s in enumerate(sorted(set(syms) | {"NIFTY50"})):
         f = os.path.join(CACHE, "%s_%s.npy" % (re.sub(r"[^A-Z0-9]", "_", s), today))
         if os.path.exists(f):
             out[s] = np.load(f); continue
         if s not in tok:
             continue
-        try:
-            rows = getdata.call(kite.historical_data, tok[s], frm, to, "5minute"); time.sleep(0.36)
-        except Exception as ex:
-            print("  %s: %s" % (s, str(ex)[:60]), flush=True); continue
+        rows = []; bad = None; x0 = frm
+        while x0 < to:                                                         # Kite: at most 100 days of 5-minute candles a request -> pieces of 80
+            x1 = min(x0 + dt.timedelta(days=80), to)
+            try:
+                rows.extend(kite.historical_data(tok[s], x0, x1, "5minute")); time.sleep(0.36)
+            except Exception as ex:
+                m = str(ex).lower()
+                if "too many" in m or "timed out" in m or "timeout" in m:      # only a busy line is worth a second try
+                    time.sleep(2.5)
+                    try:
+                        rows.extend(kite.historical_data(tok[s], x0, x1, "5minute")); time.sleep(0.36)
+                    except Exception as ex2:
+                        bad = ex2
+                else:
+                    bad = ex
+            x0 = x1 + dt.timedelta(seconds=1)
+        if bad is not None and not rows:
+            fails += 1; print("  %s: %s" % (s, str(bad)[:60]), flush=True)
+            if fails >= 25 and not got:
+                raise RuntimeError("Kite refused the first 25 shares (%s) - stopped, nothing to study" % str(bad)[:80])
+            continue
         a = np.array([[r["date"].date().toordinal(), r["date"].hour * 60 + r["date"].minute - 555, r["open"], r["high"], r["low"], r["close"], r["volume"]] for r in rows], dtype=np.float64)
         if len(a):
             np.save(f, a); out[s] = a; got += 1
@@ -113,7 +130,10 @@ def main():
     kite = SL.get_kite()
     say("📊 SECTOR STUDY · NSE's sectors, all their shares, Kite 5-minute prices · the last %d trading days" % ndays)
     say("  fetching %d shares from Kite (about 10 minutes the first time) ..." % len(SEC))
-    RAW = fetch_all(kite, list(SEC), ndays)
+    try:
+        RAW = fetch_all(kite, list(SEC), ndays)
+    except Exception as ex:
+        say("  ❌ %s" % ex); return
     P = {s: by_day(a) for s, a in RAW.items()}
     days = sorted(P.get("NIFTY50", {}))[-(ndays + 1):]
     if len(days) < 5:
