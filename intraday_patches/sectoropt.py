@@ -7,6 +7,8 @@ own monthly contract Kite still has:
   B  CE / PE on an F&O share of the 1st-3rd best / worst sector that is PAST ITS 20-DAY HIGH / LOW, with 70%+ of the sector that way and on the
      right side of VWAP, at 10:00 / 10:30
   C  the DRIVER of a "ONE SHARE'S STORY" sector (one F&O share = 40%+ of the no.1 best / worst sector's move), at 09:45 / 10:00 / 10:30
+  D  CE on a share that fell 2%+ yesterday WITH its theme (the theme -1%+), at 09:45 / 10:00 while the theme has NOT turned up yet   (themestudy.py)
+  E  the same share at 09:45 whatever its theme is doing
 A share is taken once a day per kind (its first signal). Three ways of holding, side by side:
   CARD   stop 2.5% on the share · half out at +1.5% · the rest at 15:10            (the BUY card's rule today)
   2-HOUR stop 2.5% · half out at +3.5% · out after 120 minutes if the half-out is not reached · the rest at 15:10   (the option replay's best)
@@ -94,11 +96,46 @@ def picks_of_day(P, SEC, W, FO, days, di):
     return out
 
 
+def picks_bounce(P, FO, days, di):
+    """D: a share that fell 2%+ yesterday WITH its theme (the theme -1%+, the share not far worse) - CE this morning at 09:45 / 10:00 while the theme
+    has NOT turned up yet (themestudy.py: 63% up 2 hours later, +0.36%). D2: the same share whatever the theme does. [(kind, minute, sym, +1, note)]"""
+    import themestudy as TH
+    if di < 2:
+        return []
+    d, dp, dpp = days[di], days[di - 1], days[di - 2]; out = []; seen = set()
+    px = lambda b, T: (float(b[b[:, 0] <= T - 5][-1, 4]) if (b[:, 0] <= T - 5).any() else None)
+    for t, (fo, also, why) in TH.THEMES.items():
+        R = {}
+        for s in (fo + " " + also).split():
+            b, bp, b2 = P.get(s, {}).get(d), P.get(s, {}).get(dp), P.get(s, {}).get(dpp)
+            if b is not None and bp is not None and b2 is not None and len(b) >= 30:
+                R[s] = (float(bp[-1, 4]), b, float(bp[-1, 4]) / float(b2[-1, 4]) - 1)
+        if len(R) < 2:
+            continue
+        yth = sum(v[2] for v in R.values()) / len(R)
+        if yth > -0.01:
+            continue
+        for T in (30, 45):
+            c = {s: (px(b, T) / pc - 1) for s, (pc, b, y) in R.items() if px(b, T)}
+            if len(c) < 2:
+                continue
+            turned = sum(c.values()) / len(c) >= 0.003 and sum(1 for v in c.values() if v > 0) / len(c) >= 0.6
+            for s in fo.split():
+                if s in c and s in FO and R[s][2] <= -0.02 and R[s][2] >= 2.0 * yth - 0.01:
+                    note = "%s fell %.1f%% yesterday, the share %.1f%%" % (t, yth * 100, R[s][2] * 100)
+                    if ("E", s) not in seen and T == 30:
+                        seen.add(("E", s)); out.append(("E", T, s, 1, note))
+                    if not turned and ("D", s) not in seen:
+                        seen.add(("D", s)); out.append(("D", T, s, 1, note + " · the theme not turned yet"))
+    return out
+
+
 def main():
     SEC, _ = SL.universe(); FO = SL.fo_set(); W, wsrc = SL.nse_weights()
     kite = SL.get_kite()
     say("📊 THE SECTOR PICKS IN THE REAL OPTION (Kite minute prices)")
-    RAW = SS.fetch_all(kite, list(SEC), 60)
+    import themestudy as TH
+    RAW = SS.fetch_all(kite, list(set(SEC) | {s for fo, also, _ in TH.THEMES.values() for s in (fo + " " + also).split()}), 60)
     P = {s: SS.by_day(a) for s, a in RAW.items()}
     days = sorted(P.get("NIFTY50", {}))
     if not W:
@@ -109,13 +146,13 @@ def main():
         wsrc = "each share's average traded value"
     K = OR.Kite(str(dt.date.fromordinal(days[0])))
     exps = {r[0] for R_ in K.opt.values() for r in R_}
-    T = {k: [] for k in "ABC"}; used = []
+    T = {k: [] for k in "ABCDE"}; used = []
     for di in range(21, len(days)):
         day = dt.date.fromordinal(days[di]); K.day = day
         if not any(abs((e - OR.near_expiry(day)).days) <= 4 and e >= day for e in exps):
             continue                                                         # that day's own month contract has expired - Kite has none
         used.append(str(day)); n0 = sum(len(v) for v in T.values())
-        for kind, Tm, s, dr, note in picks_of_day(P, SEC, W, FO, days, di):
+        for kind, Tm, s, dr, note in picks_of_day(P, SEC, W, FO, days, di) + picks_bounce(P, FO, days, di):
             if s not in K.eq:
                 continue
             Sm = K.candles(K.eq[s]); m0 = next((m for m in sorted(Sm) if m >= Tm), None)
@@ -140,8 +177,9 @@ def main():
     say("  %d days with Kite option prices: %s … %s · weights: %s" % (len(used), used[0] if used else "-", used[-1] if used else "-", wsrc))
     say("  1 lot each, before charges · CARD = stop 2.5%, half +1.5%, rest 15:10 · 2-HOUR = half +3.5%, out after 120 min if not reached · 2H FLAT = out after 120 min")
     say("")
-    NAME = {"A": "A · PE on the weakest sector's drivers (10:30-12:00)", "B": "B · past the 20-day level + 70% of the sector + VWAP (10:00-10:30)", "C": "C · the driver of a one-share sector (09:45-10:30)"}
-    for kind in "ABC":
+    NAME = {"A": "A · PE on the weakest sector's drivers (10:30-12:00)", "B": "B · past the 20-day level + 70% of the sector + VWAP (10:00-10:30)", "C": "C · the driver of a one-share sector (09:45-10:30)",
+            "D": "D · CE on a share dragged down 2%+ with its theme yesterday, the theme NOT turned yet (09:45-10:00)", "E": "E · the same share at 09:45, whatever its theme is doing"}
+    for kind in "ABCDE":
         X = T[kind]
         say("  %s · %d trades" % (NAME[kind], len(X)))
         for nm, *_ in RULES:
@@ -154,12 +192,12 @@ def main():
                 100 * sum(1 for a in v if a > 0) / len(v), f0(sum(v)), f0(sum(v) / len(v)), sum(1 for a in gd.values() if a > 0), len(gd)))
         for side, lab in ((1, "CE"), (-1, "PE")):
             Y = [x for x in X if x["dir"] == side]
-            if Y and kind != "A":
+            if Y and kind in "BC":
                 v = [x["r"]["2-HOUR"][0] for x in Y]
                 say("        of them %s: %3d trades · %2.0f%% won · ₹%s with the 2-HOUR rule" % (lab, len(Y), 100 * sum(1 for a in v if a > 0) / len(v), f0(sum(v))))
         say("")
     say("  every trade (the 2-HOUR rule), biggest ₹ first:")
-    allx = sorted([(k, x) for k in "ABC" for x in T[k]], key=lambda kx: -kx[1]["r"]["2-HOUR"][0])
+    allx = sorted([(k, x) for k in "ABCDE" for x in T[k]], key=lambda kx: -kx[1]["r"]["2-HOUR"][0])
     for k, x in allx[:25] + ([("…", None)] if len(allx) > 45 else []) + allx[25:][-20:]:
         if x is None:
             say("      …"); continue
