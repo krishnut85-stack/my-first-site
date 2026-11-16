@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""missed.py - READ ONLY. TODAY'S MISSED MONEY (Rama, 16 Nov: "it was a good day - I missed them. Replay the shares it alerted LATE, the ones
+"""missed.py - READ ONLY (v352: a real CE/PE call apart from a news / list mention). TODAY'S MISSED MONEY (Rama, 16 Nov: "it was a good day - I missed them. Replay the shares it alerted LATE, the ones
 it NOTICED but never rang, and the ones it never noticed - if the alarm had come with the right direction, how much could I have made?").
 For every F&O share that moved 2.5%+ today (from the open, either way):
   · the move: its side, size, the 5-min bar it started (0.5% its way)
@@ -93,15 +93,17 @@ def main():
     mv.sort(key=lambda m: -m["size"])
     ev, rang = events(day)
     say("💸 TODAY'S MISSED MONEY · %s · %d F&O shares moved 2.5%%+ · 1 lot, at-the-money option ~ half the rupee move, stop 2.5%%, half at +1.5%%, out 15:10, before charges" % (day, len(mv)))
-    say("  %-11s %-6s %-6s  %-34s %-7s %-16s %10s %10s" % ("SHARE", "MOVE", "START", "GIR NOTICED FIRST (right side)", "RANG", "VERDICT", "₹ AT NOTICE", "₹ AS RANG"))
-    T = {"on": [0, 0, 0], "late": [0, 0, 0], "silent": [0, 0, 0], "never": [0, 0, 0]}
+    say("  %-11s %-6s %-6s  %-34s %-7s %-16s %10s %10s" % ("SHARE", "MOVE", "START", "GIR NOTICED FIRST (right side)", "CE/PE", "VERDICT", "₹ AT NOTICE", "₹ AS CALLED"))
+    T = {"on": [0, 0, 0], "late": [0, 0, 0], "mention": [0, 0, 0], "silent": [0, 0, 0], "never": [0, 0, 0]}
     for m in mv:
         s, dr = m["s"], m["dir"]; rows = P[s][day]["rows"]
         E = sorted([e for e in ev.get(s, []) if e[1] in (dr, 0)])
-        R = sorted([r for r in rang.get(s, []) if r[1] in (dr, 0)])
+        R = sorted([r for r in rang.get(s, []) if r[1] == dr])                 # v352: a real CE / PE call the right way
+        MN = sorted([r for r in rang.get(s, []) if r[1] == 0])                 # a mention without a side (news, results, a list line)
         nt = E[0] if E else None; rt = R[0][0] if R else None
-        if rt and (not nt or rt < nt[0]):
-            nt = (rt, dr, "the alert itself")
+        for x in ([R[0]] if R else []) + ([MN[0]] if MN else []):
+            if not nt or x[0] < nt[0]:
+                nt = (x[0], dr, "a CE/PE call" if x in R else "a news / list mention")
         def money(h):
             if not h:
                 return None
@@ -112,16 +114,18 @@ def main():
             v = "on"
         elif rt:
             v = "late"
+        elif nt and MN:
+            v = "mention"
         elif nt:
             v = "silent"
         else:
             v = "never"
         T[v][0] += 1; T[v][1] += mn or 0; T[v][2] += mr or 0
         say("  %-11s %s%-5s %-6s  %-34s %-7s %-16s %10s %10s" % (s, "▲" if dr > 0 else "▼", "%.1f%%" % (m["size"] * 100), m["start"],
-            ("%s %s" % (nt[0], nt[2]))[:34] if nt else "—", rt or "—", {"on": "ON TIME", "late": "LATE %d min" % M.mins(m["start"], rt) if rt else "", "silent": "NOTICED, NO ALARM", "never": "NEVER NOTICED"}[v],
+            ("%s %s" % (nt[0], nt[2]))[:34] if nt else "—", rt or "—", {"on": "ON TIME", "late": "LATE %d min" % M.mins(m["start"], rt) if rt else "", "mention": "ONLY A MENTION", "silent": "NOTICED, NO ALARM", "never": "NEVER NOTICED"}[v],
             "{:,.0f}".format(mn) if mn is not None else "—", "{:,.0f}".format(mr) if mr is not None else "—"))
     say("")
-    for k, lab in (("on", "rang on time"), ("late", "rang LATE"), ("silent", "NOTICED but never rang"), ("never", "never noticed")):
+    for k, lab in (("on", "CE/PE call on time"), ("late", "CE/PE call LATE"), ("mention", "only mentioned, no CE/PE call"), ("silent", "noticed, nothing rang"), ("never", "never noticed")):
         say("  %-26s %3d shares · had it rung at the first notice: ₹%s · as it really rang: ₹%s" % (lab, T[k][0], "{:,.0f}".format(T[k][1]), "{:,.0f}".format(T[k][2])))
     tot = sum(T[k][1] for k in T)
     say("  ALL: had GIR rung every move it noticed, at the first notice, the right side: about ₹%s (1 lot each, before charges)" % "{:,.0f}".format(tot))

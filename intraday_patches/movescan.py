@@ -130,15 +130,15 @@ def scan(P, SEC, W, NIF, th, day_cap=12, per_bar=2):
     return flags
 
 
-def sim(rest, P0, dr, st=0.0075):
-    """the share's % result of one trade: stop -st; at +1.5% half is booked and the stop goes to the entry; the rest out at 15:10"""
+def sim(rest, P0, dr, st=0.0075, hf=0.015):
+    """the share's % result of one trade: stop -st; at +hf (1.5%) half is booked and the stop goes to the entry; the rest out at 15:10"""
     half = None; stop = -st
     for x in rest:
         lo = ((x["l"] / P0 - 1) if dr > 0 else (1 - x["h"] / P0)); hi = ((x["h"] / P0 - 1) if dr > 0 else (1 - x["l"] / P0))
         if lo <= stop:
             return stop if half is None else (half + stop) / 2
-        if half is None and hi >= 0.015:
-            half, stop = 0.015, 0.0
+        if half is None and hi >= hf:
+            half, stop = hf, 0.0
         if x["hm"] >= "15:10":
             c = (x["c"] / P0 - 1) * dr
             return c if half is None else (half + c) / 2
@@ -189,7 +189,7 @@ def gir_first(day):
         return {}
 
 
-def sector_alerts(P, SECS, W, d, upto="14:30", th=0.006, br=0.7, deeper=0.005):
+def sector_alerts(P, SECS, W, d, upto="14:30", th=0.006, br=0.7, deeper=0.005, picks=3, top_only=False):
     """🔻🔺 a whole SECTOR moving (Rama, 16 Nov: "the shares of a falling sector never got an alert - SAIL, SYRMA"): every 5 min from 09:20, a
     sector of 4+ F&O shares whose size-weighted move from yesterday's close is 0.6%+ with 70%+ of its shares the same way -> its 3 weakest
     (falling, PE) / strongest (rising, CE) shares. Again only if it goes another 0.5% deeper."""
@@ -213,12 +213,14 @@ def sector_alerts(P, SECS, W, d, upto="14:30", th=0.006, br=0.7, deeper=0.005):
                 if mv * dr < th or same < br:
                     continue
                 k = (name, dr)
+                if top_only and any(x[1] == dr and x[0] != name for x in last):   # v352: one sector a side a day - the first, strongest to qualify
+                    continue
                 if k in last and mv * dr < last[k] + deeper:
                     continue
                 last[k] = mv * dr
-                picks = sorted(cur, key=lambda c: -c[1] * dr)[:3]
+                picks_ = sorted(cur, key=lambda c: -c[1] * dr)[:picks]
                 out.append({"hm": hm, "name": name, "dir": dr, "mv": mv, "same": same, "n": len(cur),
-                            "picks": [{"s": s, "rp": x, "px": c, "pnl": sim(P[s][d]["rows"][i + 1:], c, dr, 0.025)} for s, x, c, i in picks]})
+                            "picks": [{"s": s, "rp": x, "px": c, "i": i, "pnl": sim(P[s][d]["rows"][i + 1:], c, dr, 0.025)} for s, x, c, i in picks_]})
     return out
 
 
@@ -264,21 +266,74 @@ def money(P, fl):
     say("  %s · if you had caught 60%% of each of the 10 biggest moves (the most an early alert can give): about ₹%s" % (day, "{:,.0f}".format(pot)))
 
 
-def sector_report(P, SECS, W, days):
+SEC_VARIANTS = [{"th": th, "picks": pk, "top_only": to} for th in (0.006, 0.01) for pk in (2, 3) for to in (False, True)]
+
+
+EXITS = [(st, hf) for st in (0.01, 0.015, 0.025) for hf in (0.015, 0.025)]   # v352b: the stop and the half-out target, tested WITH each entry
+
+
+def sector_eval(P, SECS, W, days, v):
+    """one entry setting, every exit: {(stop, half): result}. Entry = the close of the 5-min bar the alert fires on; out at the stop, half
+    booked at +half and the stop to the entry, the rest out at 15:10; a bar touching both the stop and the target counts as the stop"""
+    LOT = lots(); rs = lambda r, px, s: r * px * (LOT.get(s) or 0) * 0.5
+    acc = {e: {"tot": 0.0, "n": 0, "won": 0, "per": {}} for e in EXITS}
+    for d in days:
+        seen = set()
+        for a in sector_alerts(P, SECS, W, d, th=v["th"], picks=v["picks"], top_only=v["top_only"]):
+            if (a["name"], a["dir"]) in seen:
+                continue
+            seen.add((a["name"], a["dir"]))
+            for p in a["picks"]:
+                rest = P[p["s"]][d]["rows"][p["i"] + 1:]
+                for e in EXITS:
+                    r = sim(rest, p["px"], a["dir"], e[0], e[1]); x = rs(r, p["px"], p["s"]); A = acc[e]
+                    A["tot"] += x; A["n"] += 1; A["won"] += r > 0; A["per"][d] = A["per"].get(d, 0) + x
+    return {e: {"tot": A["tot"], "n": A["n"], "won": A["won"], "green": sum(1 for x in A["per"].values() if x > 0), "days": len(days),
+                "per_day": A["n"] / max(1, len(days))} for e, A in acc.items()}
+
+
+def sector_pick(P, SECS, W, days):
+    say(""); say("🔻🔺 SECTOR ALERTS - entry AND exit tried together on %d days (choose: at most 10 trades a day, then the most green days, then the most ₹)" % len(days))
+    say("  each line = one entry setting with the stop / half-out that worked best for it")
+    best = None
+    for v in SEC_VARIANTS:
+        E = sector_eval(P, SECS, W, days, v)
+        k_ = lambda e: (E[e]["per_day"] <= 10, E[e]["green"], E[e]["tot"]); ex = max(EXITS, key=k_); e = E[ex]
+        say("  sector %.1f%%+ · %d shares · %-24s · stop %.1f%% · half out +%.1f%% → %4.1f trades a day · %d won of %d · %d of %d days green · ₹%s a day" % (
+            v["th"] * 100, v["picks"], "one sector a side a day" if v["top_only"] else "every sector", ex[0] * 100, ex[1] * 100, e["per_day"], e["won"], e["n"],
+            e["green"], e["days"], "{:,.0f}".format(e["tot"] / max(1, e["days"]))))
+        if best is None or k_(ex) > best[0]:
+            best = (k_(ex), v, ex, e)
+    _, v, ex, e = best
+    say("  CHOSEN: sector %.1f%%+, %d shares, %s · stop %.1f%% · half out at +%.1f%% · %d of %d days green, ₹%s a day" % (v["th"] * 100, v["picks"],
+        "one sector a side a day" if v["top_only"] else "every sector", ex[0] * 100, ex[1] * 100, e["green"], e["days"], "{:,.0f}".format(e["tot"] / max(1, e["days"]))))
+    try:
+        json.dump({"sec": v, "exit": {"stop": ex[0], "half": ex[1]}, "at": dt.datetime.now(IST).strftime("%Y-%m-%d %H:%M"), "green": e["green"], "days": e["days"]},
+                  open(os.path.join(D, "data", "headsup_cfg.json"), "w"))
+    except Exception:
+        pass
+    return dict(v, stop=ex[0], half=ex[1])
+
+
+def sector_report(P, SECS, W, days, v=None):
+    v = v or {"th": 0.006, "picks": 3, "top_only": False}
+    st, hf = v.get("stop", 0.025), v.get("half", 0.015)
     LOT = lots(); rs = lambda r, px, s: r * px * (LOT.get(s) or 0) * 0.5
     tot = n = won = 0; per = {}
     for d in days:
-        A = sector_alerts(P, SECS, W, d)
+        A = sector_alerts(P, SECS, W, d, th=v["th"], picks=v["picks"], top_only=v["top_only"])
         seen = set()
         for a in A:
             a["first"] = (a["name"], a["dir"]) not in seen; seen.add((a["name"], a["dir"]))
             if not a["first"]:
                 continue                                                   # a deeper move = an update on the same trade, not a new one
             for p in a["picks"]:
-                v = rs(p["pnl"], p["px"], p["s"]); tot += v; n += 1; won += p["pnl"] > 0; per[d] = per.get(d, 0) + v
+                p["pnl"] = sim(P[p["s"]][d]["rows"][p["i"] + 1:], p["px"], a["dir"], st, hf)
+                x_ = rs(p["pnl"], p["px"], p["s"]); tot += x_; n += 1; won += p["pnl"] > 0; per[d] = per.get(d, 0) + x_
         if d == days[-1]:
             last = A
-    say(""); say("🔻🔺 SECTOR ALERTS replayed (a whole sector 0.6%+ one way, 70%+ of its shares - its 3 weakest / strongest; stop 2.5%, half at +1.5%)")
+    say(""); say("🔻🔺 SECTOR ALERTS replayed with the CHOSEN set (sector %.1f%%+ one way, 70%%+ of its shares - its %d weakest / strongest; stop %.1f%%, half at +%.1f%%)" % (
+        v["th"] * 100, v["picks"], st * 100, hf * 100))
     say("  %d days · %d trades · %d won · %d green days · total ₹%s (₹%s a day)" % (len(days), n, won, sum(1 for v in per.values() if v > 0), "{:,.0f}".format(tot), "{:,.0f}".format(tot / max(1, len(days)))))
     for a in (last if days else []):
         say("  %s %s %s%s %+.1f%% (%d%% of %d same way) → %s" % (a["hm"], "" if a.get("first") else "   ↳ still going:", "🔻" if a["dir"] < 0 else "🔺", a["name"].upper(), a["mv"] * 100, round(a["same"] * 100), a["n"],
@@ -344,7 +399,7 @@ def main():
         if miss:
             say("   big moves NOT flagged: " + " · ".join("%s %s%.1f%% from %s" % (m["s"], "+" if m["dir"] > 0 else "−", m["size"] * 100, m["start"]) for m in sorted(miss, key=lambda m: -m["size"])[:12]))
     money(P, fl)
-    sector_report(P, SECS, W, sorted(fl))
+    sector_report(P, SECS, W, sorted(fl), sector_pick(P, SECS, W, sorted(fl)))
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     open(OUT, "w").write("\n".join(L) + "\n")
     say(""); say("saved data/movescan.txt")
