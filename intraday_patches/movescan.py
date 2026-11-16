@@ -124,14 +124,15 @@ def scan(P, SEC, W, NIF, th, day_cap=12, per_bar=2):
                     if fav >= 0.015:
                         hit = True; mn = (j + 1) * 5; break
                 pnl = sim(P[s][d]["rows"][i + 1:], P0, dr)
-                F.append({"pnl": pnl, "s": s, "hm": hm, "dir": dr, "sc": sc, "px": P0, "volx": volx, "sec": sec, "same": same, "hit": hit, "mins": mn, "mfe": mfe})
+                pn = {k_: sim(P[s][d]["rows"][i + 1:], P0, dr, k_) for k_ in (0.0075, 0.015, 0.025)}
+                F.append({"pnl": pnl, "pn": pn, "s": s, "hm": hm, "dir": dr, "sc": sc, "px": P0, "volx": volx, "sec": sec, "same": same, "hit": hit, "mins": mn, "mfe": mfe})
         flags[d] = F
     return flags
 
 
-def sim(rest, P0, dr):
-    """the share's % result of one trade: stop -0.75%; at +1.5% half is booked and the stop goes to the entry; the rest out at 15:10"""
-    half = None; stop = -0.0075
+def sim(rest, P0, dr, st=0.0075):
+    """the share's % result of one trade: stop -st; at +1.5% half is booked and the stop goes to the entry; the rest out at 15:10"""
+    half = None; stop = -st
     for x in rest:
         lo = ((x["l"] / P0 - 1) if dr > 0 else (1 - x["h"] / P0)); hi = ((x["h"] / P0 - 1) if dr > 0 else (1 - x["l"] / P0))
         if lo <= stop:
@@ -204,6 +205,10 @@ def money(P, fl):
         return
     rs = lambda r, px, s: r * px * (LOT.get(s) or 0) * 0.5
     say(""); say("💰 THE MONEY (1 lot each, an at-the-money option ~ half the share's rupee move, before charges)")
+    for st in (0.0075, 0.015, 0.025):                                      # v4: how wide the stop must be - over all the days
+        tot = sum(rs(f["pn"][st], f["px"], f["s"]) for d in days for f in fl[d]); n = sum(len(fl[d]) for d in days)
+        won = sum(1 for d in days for f in fl[d] if f["pn"][st] > 0); good = sum(1 for d in days if sum(rs(f["pn"][st], f["px"], f["s"]) for f in fl[d]) > 0)
+        say("  stop %.2f%% on the share · %d days · %d trades · %d won · %d green days · total ₹%s (₹%s a day)" % (st * 100, len(days), n, won, good, "{:,.0f}".format(tot), "{:,.0f}".format(tot / max(1, len(days)))))
     for d in days[-3:]:
         F = fl[d]; tot = sum(rs(f["pnl"], f["px"], f["s"]) for f in F); w = sum(1 for f in F if f["pnl"] > 0)
         say("  %s · the scanner: %d trades · %d won · ₹%s" % (d, len(F), w, "{:,.0f}".format(tot)))
@@ -217,10 +222,10 @@ def money(P, fl):
         g = sum(rs((res or 0) / 100.0, e or 0, s) for s, e, res in R); fo = sum(1 for s, _, _ in R if s in LOT)
         say("  %s · GIR's own cards: %d cards (%d of them F&O) · %d won · ₹%s on the F&O ones" % (day, len(R), fo, sum(1 for *_, r in R if (r or 0) > 0),
                                                                                      "{:,.0f}".format(sum(rs((res or 0) / 100.0, e or 0, s) for s, e, res in R if s in LOT))))
-    say("  %s · each scanner trade:" % day)
-    for f in sorted(fl[day], key=lambda f: -rs(f["pnl"], f["px"], f["s"])):
-        say("    %s %-11s %s at ₹%s · lot %s · %+.2f%% on the share · ₹%s" % (f["hm"], f["s"], "CE" if f["dir"] > 0 else "PE", "{:,.2f}".format(f["px"]), LOT.get(f["s"], "?"),
-                                                                       f["pnl"] * 100, "{:,.0f}".format(rs(f["pnl"], f["px"], f["s"]))))
+    say("  %s · each scanner trade (₹ at stop 0.75%% · 1.5%% · 2.5%%):" % day)
+    for f in sorted(fl[day], key=lambda f: -rs(f["pn"][0.015], f["px"], f["s"])):
+        say("    %s %-11s %s at ₹%s · lot %s · ₹%s · ₹%s · ₹%s" % (f["hm"], f["s"], "CE" if f["dir"] > 0 else "PE", "{:,.2f}".format(f["px"]), LOT.get(f["s"], "?"),
+              *["{:,.0f}".format(rs(f["pn"][k_], f["px"], f["s"])) for k_ in (0.0075, 0.015, 0.025)]))
     top = big_moves(P, day)
     pot = sum(rs(m["size"] * 0.6, P[m["s"]][day]["o0"], m["s"]) for m in top)
     say("  %s · if you had caught 60%% of each of the 10 biggest moves (the most an early alert can give): about ₹%s" % (day, "{:,.0f}".format(pot)))
@@ -245,7 +250,7 @@ def main():
                 W = {s: sum((r[2] or 0) * (r[1] or 0) for r in R) for s, R in N.items()}; break
         except Exception:
             pass
-    say("🎯 MOVE SCANNER replay v2 · %s IST · %d F&O shares · %d sectors · size weights %s" % (dt.datetime.now(IST).strftime("%d %b %H:%M"), len(syms), len(SECS), "from NSE's futures file" if W else "equal"))
+    say("🎯 MOVE SCANNER replay v4 · %s IST · %d F&O shares · %d sectors · size weights %s" % (dt.datetime.now(IST).strftime("%d %b %H:%M"), len(syms), len(SECS), "from NSE's futures file" if W else "equal"))
     P = {}
     for i, s in enumerate(syms):
         try:
