@@ -8,6 +8,7 @@ market cap (the same list and weights as patch 354's seclive.py). For every day 
   1b) THE RANK HOLDS?  the No.1, No.2, No.3 best and the No.1, No.2, No.3 worst sector at 09:30 / 09:45 / 10:00: its place at 15:10 (the same, within 1,
                    within 2, No.5 or further) and the furthest it slipped at any hour of the day
   1c) THE CLIMBERS  the sector that moved up / down the most places in the last 30 minutes - does it keep going?
+  2c) HELD 2 HOURS  the same picks measured 2 hours after the entry, beside 15:10
   2b) THE 2nd AND 3rd  the drivers and all the F&O shares of the 2nd and 3rd best / worst sector, apart from the no.1
   3b) RESISTANCE   a share already past its 20-day high / low with its sector pushing
   2) THE DRIVERS   a share's push on its sector = its weight x its move. The DRIVERS = the F&O shares with the biggest push in the sector's
@@ -259,13 +260,14 @@ def main():
                             hit = -1; break
                         if hi >= UPT:
                             hit = 1; break
+                    a2 = a[a[:, 0] <= T + 115]; ret2 = (float(a2[-1, 4]) / p - 1) * dr if len(a2) else 0.0      # v3: where the share is 2 hours after the entry
                     pre = b[b[:, 0] <= T - 5]; vw = float((pre[:, 4] * pre[:, 5]).sum() / max(pre[:, 5].sum(), 1.0))
                     yl, wl = levels(s, di)
                     brk_y = bool(yl) and ((p > yl[0]) if dr > 0 else (p < yl[1])); brk_w = bool(wl) and ((p > wl[0]) if dr > 0 else (p < wl[1]))
                     nonlocal N
                     if N is None:
                         N = news_of(day)
-                    PICK[T][side + " " + kind].append({"s": s, "day": day, "rk": rk, "ret": (float(a[-1, 4]) / p - 1) * dr, "hit": hit, "push": c * wt / w / mv if mv else 0, "c": c,
+                    PICK[T][side + " " + kind].append({"s": s, "day": day, "rk": rk, "ret2": ret2, "ret": (float(a[-1, 4]) / p - 1) * dr, "hit": hit, "push": c * wt / w / mv if mv else 0, "c": c,
                         "v_combo": bool(brk_w) and breadth >= 0.7 and (p - vw) * dr > 0, "v_news": has_news(N, s, T), "v_gap": (float(b[0, 1]) / pc - 1) * dr >= 0.005, "v_vwap": (p - vw) * dr > 0, "v_breadth": breadth >= 0.7,
                         "v_nifty": nif * dr > 0, "v_big": s in big3, "v_strong": abs(mv) >= 0.01, "v_pdh": brk_y, "v_20d": brk_w})
                 fo = [r for r in R if r[0] in FO]
@@ -337,6 +339,18 @@ def main():
         for k in ("CE DRIVER", "CE STRONGEST", "CE LAGGARD", "CE ALL F&O", "PE DRIVER", "PE STRONGEST", "PE LAGGARD", "PE ALL F&O"):
             lab = {"DRIVER": "the DRIVERS (the 3 with the biggest push)", "STRONGEST": "the STRONGEST share (the biggest %)", "LAGGARD": "the LAGGARDS (big, not moved yet)", "ALL F&O": "ALL the sector's F&O shares"}[k[3:]]
             say(fmt(k[:2] + " · " + lab, [x for x in PICK[T][k] if x["rk"] == 1]))
+    say("")
+    say("2c) HELD 2 HOURS, NOT TO 15:10 - the same picks of the no.1 best / worst sector, the share 2 hours after the entry against at 15:10")
+    say("    (the option replay found: a trade not working after about 2 hours should be closed)")
+    for T in TS:
+        say("  %s" % hm(T))
+        for k, lab in (("DRIVER", "the DRIVERS"), ("STRONGEST", "the STRONGEST share"), ("LAGGARD", "the LAGGARDS"), ("ALL F&O", "ALL the sector's F&O shares")):
+            for side in ("CE", "PE"):
+                X = [x for x in PICK[T][side + " " + k] if x["rk"] == 1]
+                if X:
+                    n = len(X)
+                    say("    %s · %-28s %4d picks · after 2 hours: %3.0f%% its way, average %+.2f%% · at 15:10: %3.0f%% its way, average %+.2f%%" % (
+                        side, lab, n, 100 * sum(1 for x in X if x["ret2"] > 0) / n, 100 * sum(x["ret2"] for x in X) / n, 100 * sum(1 for x in X if x["ret"] > 0) / n, 100 * sum(x["ret"] for x in X) / n))
     say("")
     say("2b) THE 2nd AND 3rd SECTOR - is only the no.1 worth it, or the 2nd and 3rd best / worst too? (from that time to 15:10, on the share)")
     for T in TS:
