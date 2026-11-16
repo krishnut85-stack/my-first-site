@@ -189,6 +189,39 @@ def gir_first(day):
         return {}
 
 
+def sector_alerts(P, SECS, W, d, upto="14:30", th=0.006, br=0.7, deeper=0.005):
+    """🔻🔺 a whole SECTOR moving (Rama, 16 Nov: "the shares of a falling sector never got an alert - SAIL, SYRMA"): every 5 min from 09:20, a
+    sector of 4+ F&O shares whose size-weighted move from yesterday's close is 0.6%+ with 70%+ of its shares the same way -> its 3 weakest
+    (falling, PE) / strongest (rising, CE) shares. Again only if it goes another 0.5% deeper."""
+    out, last = [], {}
+    hms = sorted({r["hm"] for s in P if d in P[s] for r in P[s][d]["rows"] if "09:20" <= r["hm"] <= upto})
+    for hm in hms:
+        for g in SECS:
+            name = g.get("name"); syms = [s for s in (g.get("syms") or []) if s in P and d in P[s]]
+            if len(syms) < 4:
+                continue
+            cur = []
+            for s in syms:
+                rows = P[s][d]["rows"]; i = next((j for j, r in enumerate(rows) if r["hm"] == hm), None)
+                if i is not None:
+                    cur.append((s, rows[i]["rp"], rows[i]["c"], i))
+            if len(cur) < 4:
+                continue
+            sw = sum(W.get(s, 1.0) for s, *_ in cur); mv = sum(x * W.get(s, 1.0) for s, x, *_ in cur) / sw if sw else 0.0
+            for dr in (1, -1):
+                same = sum(1 for _, x, *_ in cur if x * dr > 0) / len(cur)
+                if mv * dr < th or same < br:
+                    continue
+                k = (name, dr)
+                if k in last and mv * dr < last[k] + deeper:
+                    continue
+                last[k] = mv * dr
+                picks = sorted(cur, key=lambda c: -c[1] * dr)[:3]
+                out.append({"hm": hm, "name": name, "dir": dr, "mv": mv, "same": same, "n": len(cur),
+                            "picks": [{"s": s, "rp": x, "px": c, "pnl": sim(P[s][d]["rows"][i + 1:], c, dr, 0.025)} for s, x, c, i in picks]})
+    return out
+
+
 def lots():
     try:
         c = sqlite3.connect("file:%s?mode=ro" % os.path.join(D, "chains.db"), uri=True, timeout=5)
@@ -229,6 +262,27 @@ def money(P, fl):
     top = big_moves(P, day)
     pot = sum(rs(m["size"] * 0.6, P[m["s"]][day]["o0"], m["s"]) for m in top)
     say("  %s · if you had caught 60%% of each of the 10 biggest moves (the most an early alert can give): about ₹%s" % (day, "{:,.0f}".format(pot)))
+
+
+def sector_report(P, SECS, W, days):
+    LOT = lots(); rs = lambda r, px, s: r * px * (LOT.get(s) or 0) * 0.5
+    tot = n = won = 0; per = {}
+    for d in days:
+        A = sector_alerts(P, SECS, W, d)
+        seen = set()
+        for a in A:
+            a["first"] = (a["name"], a["dir"]) not in seen; seen.add((a["name"], a["dir"]))
+            if not a["first"]:
+                continue                                                   # a deeper move = an update on the same trade, not a new one
+            for p in a["picks"]:
+                v = rs(p["pnl"], p["px"], p["s"]); tot += v; n += 1; won += p["pnl"] > 0; per[d] = per.get(d, 0) + v
+        if d == days[-1]:
+            last = A
+    say(""); say("🔻🔺 SECTOR ALERTS replayed (a whole sector 0.6%+ one way, 70%+ of its shares - its 3 weakest / strongest; stop 2.5%, half at +1.5%)")
+    say("  %d days · %d trades · %d won · %d green days · total ₹%s (₹%s a day)" % (len(days), n, won, sum(1 for v in per.values() if v > 0), "{:,.0f}".format(tot), "{:,.0f}".format(tot / max(1, len(days)))))
+    for a in (last if days else []):
+        say("  %s %s %s%s %+.1f%% (%d%% of %d same way) → %s" % (a["hm"], "" if a.get("first") else "   ↳ still going:", "🔻" if a["dir"] < 0 else "🔺", a["name"].upper(), a["mv"] * 100, round(a["same"] * 100), a["n"],
+            " · ".join("%s %s %+.1f%% then ₹%s" % (p["s"], "PE" if a["dir"] < 0 else "CE", p["rp"] * 100, "{:,.0f}".format(rs(p["pnl"], p["px"], p["s"]))) for p in a["picks"])))
 
 
 def main():
@@ -290,6 +344,7 @@ def main():
         if miss:
             say("   big moves NOT flagged: " + " · ".join("%s %s%.1f%% from %s" % (m["s"], "+" if m["dir"] > 0 else "−", m["size"] * 100, m["start"]) for m in sorted(miss, key=lambda m: -m["size"])[:12]))
     money(P, fl)
+    sector_report(P, SECS, W, sorted(fl))
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     open(OUT, "w").write("\n".join(L) + "\n")
     say(""); say("saved data/movescan.txt")
