@@ -11,7 +11,7 @@ stocks - only the F&O ones gives me wrong information. Healthcare is no.1 on Tre
                  every screen shows the same numbers, from 09:15, however late the page was opened
   -> data/seclive.json (the page reads it through dashserve /seclive). Orders nothing, sends nothing.
   python3 seclive.py once     one pass now, prints the ranking"""
-import os, sys, json, time, datetime as dt
+import os, re, sys, json, time, datetime as dt
 D = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, D)
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
 OUT = os.path.join(D, "data", "seclive.json")
@@ -43,6 +43,27 @@ def market_open(n):
     return "09:15" <= n.strftime("%H:%M") <= "15:35"
 
 
+# patch 354c: three of NSE's sectors hold two different businesses that move opposite ways (16 Nov: hospitals +2%, pharma -1.2%; electronics makers
+# -3.9% inside capital goods / consumer durables; telecom equipment -3.7% inside telecom) - split the way Trendlyne shows them
+HOSP = set("MAXHEALTH APOLLOHOSP FORTIS NH MEDANTA ASTERDM KIMS RAINBOW LALPATHLAB METROPOLIS VIJAYA THYROCARE JLHL YATHARTH HCG SHALBY AGARWALEYE INDRAMEDCO "
+           "KRSNAA SURAKSHA MEDIASSIST POLYMED".split())
+HOSP_RE = re.compile(r"hospital|healthcare institute|hrudayalaya|medical sciences|medicare|path ?labs|diagnos|health care ltd|healthcare global|life line|eye ?care", re.I)
+EMS = set("KAYNES SYRMA DIXON AMBER PGEL CYIENTDLM AVALON NETWEB DATAPATTNS CENTUM ELIN".split())
+EMS_RE = re.compile(r"electronics manufactur|electronic manufactur|technologies \(india\) .*ems", re.I)
+TEL_SERV = set("BHARTIARTL BHARTIHEXA IDEA INDUSTOWER TATACOMM RAILTEL TTML MTNL".split())
+
+
+def refine(sym, sec, name=""):
+    """NSE's sector -> the finer one where one sector holds two businesses"""
+    if sec == "healthcare":
+        return "hospitals & diagnostics" if (sym in HOSP or HOSP_RE.search(name or "")) else "pharma"
+    if sym in EMS or (sec in ("capital goods", "consumer durables") and EMS_RE.search(name or "")):
+        return "electronics & hardware"
+    if sec == "telecom":
+        return "telecom services" if sym in TEL_SERV else "telecom equipment"
+    return sec
+
+
 def universe():
     """{SYMBOL: GIR page sector} for every share in NSE's list, + {SYMBOL: company name}"""
     import nsesec
@@ -56,7 +77,7 @@ def universe():
     out = {}
     for s in nse:
         if not nsesec.not_a_share(s):
-            out[s] = nsesec.sector_of(s, nse, hand, names)
+            out[s] = refine(s, nsesec.sector_of(s, nse, hand, names), names.get(s, ""))
     return out, names
 
 
@@ -235,6 +256,14 @@ def main():
                 for x in V["sectors"]:
                     print("  %-24s %+6.2f%%  (%3d shares, %2d F&O · %3d up %3d down · equal-weight %+.2f%%)  best %s %+.1f%%  worst %s %+.1f%%" % (
                         x["name"], x["chg"], x["n"], x["fo"], x["up"], x["dn"], x["eqw"], x["top"][0][0], x["top"][0][1], x["bot"][0][0], x["bot"][0][1]))
+                for g in ("hospitals & diagnostics", "electronics & hardware", "telecom services", "telecom equipment"):   # patch 354c: who is in the new groups
+                    m = sorted(s for s, v in SEC.items() if v == g); line = "  = %s (%d):" % (g, len(m))
+                    for s in m:
+                        if len(line) + len(s) > 66:
+                            print(line); line = "     "
+                        line += " " + s + ("*" if s in FO else "")
+                    print(line)
+                print("  (* = F&O)")
                 return
         except Exception as ex:
             log("seclive: %s" % str(ex)[:160])
