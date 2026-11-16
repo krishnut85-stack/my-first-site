@@ -307,7 +307,10 @@ WHO: one sentence on what delivery, deals and positions suggest for this sector.
 EXPOSED: the F&O shares of the sector that have not moved with it (or "none").
 WATCH TOMORROW: one sentence.
 
-Then end with:
+Keep each sector to those five lines. Then end with these two parts:
+
+AFTER THE CLOSE - FOR TOMORROW: go through every reason line and market-wide headline time-stamped after 15:30 today (or marked as tomorrow's event). For each one that could move an F&O share or a sector at tomorrow's open, write one line: the time and headline in a few words → the F&O shares it touches → likely up or down → how sure (strong / moderate / weak) and why. Routine items (small orders, small fines, meetings, ESOPs) are left out. If there is none, write "nothing after the close in the data". This is not yet tested against prices - say so in one closing clause.
+
 THE DAY: three or four sentences - who was moving money across the market today, which sectors show quiet building or selling over the last days, and where the evidence is thin."""
 
 
@@ -317,14 +320,17 @@ def read(F):
     client = anthropic.Anthropic()
     facts = {k: v for k, v in F.items() if k not in ("weights", "sources")}
     msg = [{"role": "user", "content": "The facts for %s at %s IST (JSON):\n\n%s" % (F["day"], F["at"], json.dumps(facts, ensure_ascii=False, default=str))}]
+    def ask(model):                                      # streamed: the answer and its thinking can be long (16 Nov: cut off at 12,000)
+        with client.messages.stream(model=model, max_tokens=30000, system=SYSTEM, messages=msg) as st:
+            return st.get_final_message()
     try:
-        r = client.messages.create(model=MODEL, max_tokens=12000, system=SYSTEM, messages=msg)
+        r = ask(MODEL)
     except anthropic.NotFoundError:                      # this key does not have that model: the one GIR's own reader is set to
         alt = os.environ.get("GIR_LLM_MODEL")
         if not alt or alt == MODEL:
             raise
         say("  (%s is not available on this key - read with %s)" % (MODEL, alt))
-        r = client.messages.create(model=alt, max_tokens=12000, system=SYSTEM, messages=msg)
+        r = ask(alt)
     if r.stop_reason == "refusal":
         return "(the model declined to read this - nothing written)", r
     return "\n".join(b.text for b in r.content if b.type == "text").strip(), r
