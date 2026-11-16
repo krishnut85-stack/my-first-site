@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""missed.py - READ ONLY (v352: a real CE/PE call apart from a news / list mention). TODAY'S MISSED MONEY (Rama, 16 Nov: "it was a good day - I missed them. Replay the shares it alerted LATE, the ones
+"""missed.py - READ ONLY (v352/353: a real CE/PE call apart from a news / list mention or a "WATCH, not a trade yet" / "IN DOUBT" line). TODAY'S MISSED MONEY (Rama, 16 Nov: "it was a good day - I missed them. Replay the shares it alerted LATE, the ones
 it NOTICED but never rang, and the ones it never noticed - if the alarm had come with the right direction, how much could I have made?").
 For every F&O share that moved 2.5%+ today (from the open, either way):
   · the move: its side, size, the 5-min bar it started (0.5% its way)
@@ -18,6 +18,9 @@ L = []
 def say(s=""):
     L.append(s); print(s)
 UP = re.compile(r"^(CE|UP|BUY|LONG|1|\+1|▲|BULL)", re.I); DN = re.compile(r"^(PE|DOWN|SELL|SHORT|-1|▼|BEAR)", re.I)
+
+
+NOTCALL = re.compile(r"not a trade|IN DOUBT|WATCH,|^🔍|^🔎|^📰|^📄", re.I)    # v353: GIR said it, but did not say BUY
 
 
 def side_of(v):
@@ -45,9 +48,19 @@ def events(day):
                 if not h or not s:
                     continue
                 if tb == "alerts":
-                    rang.setdefault(s, []).append((h, side_of(sd)))
+                    continue                                                   # v353: read below, with its text
                 else:
                     ev.setdefault(s, []).append((h, side_of(sd), tb))
+        if "text" in [r[1] for r in c.execute("pragma table_info(alerts)")]:
+            for t, s, sd, tx in c.execute("select t, sym, side, text from alerts where day=?", (day,)):
+                h = hm5(t)
+                if not h or not s:
+                    continue
+                tx = str(tx or "")
+                if NOTCALL.search(tx):                                         # v353: "WATCH, not a trade yet" / "IN DOUBT" / a WHY line - a mention
+                    ev.setdefault(s, []).append((h, side_of(sd), "said but not a trade: " + tx.split("\n")[0][:50])); rang.setdefault(s, []).append((h, 0))
+                else:
+                    rang.setdefault(s, []).append((h, side_of(sd)))
         c.close()
     except Exception as ex:
         say("  (tomorrow.db: %s)" % ex)
