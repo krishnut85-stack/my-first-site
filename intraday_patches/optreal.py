@@ -269,7 +269,7 @@ def main():
         built = {}
 
         def trade(a):
-            key = (a["s"], a["dir"], a["m"])
+            key = (a["s"], a["dir"], a["m"], a["lab"])                         # v4b: the type too - a build-up and an alert on the same minute are 2 trades
             if key in built:
                 return built[key]
             x = None
@@ -342,7 +342,7 @@ def main():
             lab = "%s ₹%d cr+" % (w, T); X = [x for d in (BUL.get(lab) or {}).values() for x in d]
             if X:
                 line(lab, X)
-                pre = sorted(abs(x["pre"]) * 1 for x in X); late = sum(1 for v in pre if v >= 2)
+                pre = sorted(abs(x.get("pre", 0)) for x in X); late = sum(1 for v in pre if v >= 2)
                 say("        the share had already moved %.1f%% (median) when it was identified · %d of %d already 2%%+ · median time %s" % (
                     pre[len(pre) // 2], late, len(X), sorted(x["t"][:5] for x in X)[len(X) // 2]))
     allbu = [x for G in BUL.values() for d in G.values() for x in d]
@@ -351,7 +351,7 @@ def main():
         for lo, hi, nm in ((0, 1, "the share had moved under 1%"), (1, 2, "1-2% already"), (2, 99, "2%+ already - LATE")):
             seen = set(); X = []
             for x in sorted(allbu, key=lambda x: (x["day"], x["t"])):
-                if lo <= abs(x["pre"]) < hi and (x["day"], x["s"]) not in seen:
+                if lo <= abs(x.get("pre", 0)) < hi and (x["day"], x["s"]) not in seen:
                     seen.add((x["day"], x["s"])); X.append(x)
             if X:
                 line(nm, X)
