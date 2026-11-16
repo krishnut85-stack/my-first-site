@@ -17,7 +17,7 @@ holds next to the day's strongest and weakest sectors, and has Claude read it:
 Places no order, sends nothing to Telegram. It fetches NSE's evening files into data/extra.db the same way the evening job (earlystudy) does, and
 sends the collected facts (public market data, GIR's news lines) to Anthropic's API for the reading; nothing else leaves the server.
   cd /home/globalbot && set -a && source .env && set +a && cd intraday && python3 whydesk.py [facts]   ("facts" = collect and print, no AI call)
-  -> prints, saves data/whydesk.txt and data/whydesk.json. Best after 19:00 (NSE publishes delivery ~18:00, positions ~19:00)."""
+  -> prints, saves data/whydesk.txt, data/whydesk.json and one file a day in data/whydesk/ (the record to build on). Best after 19:00 (NSE publishes delivery ~18:00, positions ~19:00)."""
 import os, re, io, csv, sys, json, time, sqlite3, datetime as dt
 D = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, D)
 L, SRC = [], []
@@ -189,6 +189,19 @@ def market_news():
         SRC.append("market-wide news: not read (%s)" % str(ex)[:50]); return []
 
 
+def fpi_flows():
+    """NSDL's fortnightly record of foreign funds' buying by sector (fpisec.py keeps it): the last 4 fortnights, ₹ crore, the newest first"""
+    try:
+        j = json.load(open(os.path.join(D, "data", "fpisec.json")))
+        F = sorted(k for k, v in j["net"].items() if len(v) >= 12)[-4:][::-1]
+        if not F:
+            return None
+        SRC.append("FPI sector flows: to %s" % dm(F[0]))
+        return {"fortnights_ending": F, "net_equity_cr_newest_first": {s: [j["net"][k].get(s) for k in F] for s in j["net"][F[0]]}}
+    except Exception:
+        return None
+
+
 def due(syms, today):
     try:
         c = ro("chains.db")
@@ -246,7 +259,7 @@ def collect():
     build = sorted(((sec, v["build_5d_vs_20d"]) for sec, v in DV.items() if v.get("build_5d_vs_20d")), key=lambda kv: -kv[1])
     return {"day": str(today), "at": n.strftime("%H:%M"), "weights": wsrc, "indices": idx, "all_sectors": [(x["sector"], x["move_pct"]) for x in S], "sectors": pick,
             "market_news": market_news(), "participants": participants(), "deals": deals(allsy, SEC),
-            "delivery_build_5d_vs_20d": build[:6] + build[-4:] if len(build) > 10 else build, "sources": SRC}
+            "delivery_build_5d_vs_20d": build[:6] + build[-4:] if len(build) > 10 else build, "fpi_sector_flows_fortnightly": fpi_flows(), "sources": SRC}
 
 
 def show(F):
@@ -290,7 +303,7 @@ def show(F):
             say("    %s %s: %s%s" % (a["when"], a["source"], a["headline"][:150], (" [%s]" % a["likely"]) if a["likely"] else ""))
 
 
-SYSTEM = """You explain to an Indian F&O options trader why stock-market sectors moved today and who was behind it. You are given facts collected by his own system (GIR): each sector's move (all its NSE shares, weighted by size), the shares pushing it, the company-level reasons the system holds (results, exchange filings, checked news, broker calls, results due), market-wide news headlines, NSE's participant positions (FII, DII, proprietary, client; futures contracts), delivery (the value of shares taken home, against the sector's 10-day normal, and the last 5 days against the 20 before), and bulk/block deals.
+SYSTEM = """You explain to an Indian F&O options trader why stock-market sectors moved today and who was behind it. You are given facts collected by his own system (GIR): each sector's move (all its NSE shares, weighted by size), the shares pushing it, the company-level reasons the system holds (results, exchange filings, checked news, broker calls, results due), market-wide news headlines, NSE's participant positions (FII, DII, proprietary, client; futures contracts), delivery (the value of shares taken home, against the sector's 10-day normal, and the last 5 days against the 20 before), bulk/block deals, and - when present - NSDL's fortnightly record of foreign funds' net buying by sector (it is weeks old: a background lean, never today's cause).
 
 Rules:
 - Today's reasons must come from the facts given. Name the share and the reason line you rely on. If the facts hold no reason for a sector, write "no reason in today's data" - never invent news, numbers, events or names.
@@ -347,7 +360,13 @@ def main():
             u = r.usage; say(""); say("  (read %d tokens, wrote %d%s)" % (u.input_tokens, u.output_tokens, " - CUT OFF at the length limit" if r.stop_reason == "max_tokens" else ""))
         except Exception as ex:
             say("  the reading failed: %s: %s" % (type(ex).__name__, str(ex)[:220])); say("  (the facts above are complete - `python3 whydesk.py facts` skips the reading)")
-    json.dump({"facts": F, "reading": text, "model": MODEL}, open(os.path.join(D, "data", "whydesk.json"), "w"), ensure_ascii=False, default=str)
+    out = {"facts": F, "reading": text, "model": MODEL}
+    json.dump(out, open(os.path.join(D, "data", "whydesk.json"), "w"), ensure_ascii=False, default=str)
+    try:                                                 # one file a day is kept, so the trend can be built from the record later
+        os.makedirs(os.path.join(D, "data", "whydesk"), exist_ok=True)
+        json.dump(out, open(os.path.join(D, "data", "whydesk", "%s.json" % F["day"]), "w"), ensure_ascii=False, default=str)
+    except Exception:
+        pass
     open(os.path.join(D, "data", "whydesk.txt"), "w").write("\n".join(L) + "\n")
     say(""); say("saved data/whydesk.txt")
 
