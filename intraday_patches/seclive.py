@@ -252,6 +252,15 @@ def main():
                 save({"day": day, "h": hist}, HF)
             V = compute(SEC, W, Q, hist, FO, wsrc, n); V["live"] = live
             save(V, OUT)
+            if not once:                                                      # patch 355: the sector candidates (a paper test) - never stops the sectors
+                try:
+                    import seccand
+                    if live:
+                        seccand.tick(n, SEC, W, Q, FO, kite)
+                    else:
+                        seccand.after_close(n)
+                except Exception as ex:
+                    log("seccand: %s" % str(ex)[:120])
             if once:
                 print("SECTORS from %d shares · weights: %s · %s" % (V["shares"], V["weights"], V["at"]))
                 for x in V["sectors"]:
