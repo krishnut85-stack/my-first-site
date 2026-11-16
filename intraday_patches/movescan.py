@@ -51,7 +51,7 @@ def prep(B):
     return out
 
 
-def scan(P, SEC, W, NIF, th, day_cap=15, per_bar=3):
+def scan(P, SEC, W, NIF, th, day_cap=12, per_bar=2):
     """v2 (16 Nov, after the first replay: every flag landed at 09:30, the big gap movers were missed):
     · volume 1.5x its normal at that time is REQUIRED (the 09:30 noise had 0.4-0.9x)
     · momentum REQUIRED: the last 15 minutes 0.3%+ the same way (a move still running, not a stale open)
@@ -74,7 +74,7 @@ def scan(P, SEC, W, NIF, th, day_cap=15, per_bar=3):
                     for r in P[s][pd_]["rows"]:
                         b_.setdefault(r["hm"], []).append(r["cv"])
             BASE[s] = b_
-        hms = sorted({r["hm"] for s in P if d in P[s] for r in P[s][d]["rows"] if "09:30" <= r["hm"] <= "14:30"})
+        hms = sorted({r["hm"] for s in P if d in P[s] for r in P[s][d]["rows"] if "09:20" <= r["hm"] <= "14:30"})   # v3: from 09:20 - the gap movers
         done, F = set(), []
         for hm in hms:
             cand = []
@@ -83,13 +83,13 @@ def scan(P, SEC, W, NIF, th, day_cap=15, per_bar=3):
                     continue
                 day = P[s][d]; rows = day["rows"]
                 i = next((j for j, r in enumerate(rows) if r["hm"] == hm), None)
-                if i is None or i < 3:
+                if i is None or i < 1:
                     continue
                 r = rows[i]; bl = BASE[s].get(hm) or []
                 volx = r["cv"] / (sum(bl) / len(bl)) if bl and sum(bl) > 0 else 1.0
                 if volx < 1.5:
                     continue
-                mom = r["c"] / rows[i - 3]["c"] - 1
+                mom = r["c"] / (rows[i - 3]["c"] if i >= 3 else day["o0"]) - 1
                 peers = [p for p in SEC.get(s, []) if p != s and p in RP]
                 pr = [(RP[p].get(hm), W.get(p, 1.0)) for p in peers if RP[p].get(hm) is not None]
                 sw = sum(w for _, w in pr); sec = sum(x * w for x, w in pr) / sw if sw else 0.0
@@ -103,12 +103,15 @@ def scan(P, SEC, W, NIF, th, day_cap=15, per_bar=3):
                     sc += 2 if volx >= 2.5 else 1
                     sc += 1 if mom * dr >= 0.006 else 0
                     same = sum(1 for x, _ in pr if x * dr > 0) / len(pr) if pr else 0
+                    if pr and same < 0.5 and volx < 4:                     # v3: against its own sector - only a share with its OWN big news volume (4x+) counts
+                        continue
                     sc += 2 if (sec * dr >= 0.004 and same >= 0.65) else 1 if sec * dr >= 0.002 else 0
+                    sc += 1 if volx >= 4 else 0
                     sc += 1 if nif * dr >= 0.002 else 0
                     if sc >= th:
-                        cand.append((sc, volx, s, dr, i, r, sec, same))
-            cand.sort(key=lambda x: (-x[0], -x[1]))
-            for sc, volx, s, dr, i, r, sec, same in cand[:per_bar]:
+                        cand.append((sc, volx, s, dr, i, r, sec, same, abs(r["rp"]) * min(volx, 10)))
+            cand.sort(key=lambda x: (-x[0], -x[8]))                         # v3: the strongest first - score, then move x volume
+            for sc, volx, s, dr, i, r, sec, same, _ in cand[:per_bar]:
                 if len(F) >= day_cap:
                     break
                 done.add(s)
@@ -120,9 +123,26 @@ def scan(P, SEC, W, NIF, th, day_cap=15, per_bar=3):
                         break
                     if fav >= 0.015:
                         hit = True; mn = (j + 1) * 5; break
-                F.append({"s": s, "hm": hm, "dir": dr, "sc": sc, "px": P0, "volx": volx, "sec": sec, "same": same, "hit": hit, "mins": mn, "mfe": mfe})
+                pnl = sim(P[s][d]["rows"][i + 1:], P0, dr)
+                F.append({"pnl": pnl, "s": s, "hm": hm, "dir": dr, "sc": sc, "px": P0, "volx": volx, "sec": sec, "same": same, "hit": hit, "mins": mn, "mfe": mfe})
         flags[d] = F
     return flags
+
+
+def sim(rest, P0, dr):
+    """the share's % result of one trade: stop -0.75%; at +1.5% half is booked and the stop goes to the entry; the rest out at 15:10"""
+    half = None; stop = -0.0075
+    for x in rest:
+        lo = ((x["l"] / P0 - 1) if dr > 0 else (1 - x["h"] / P0)); hi = ((x["h"] / P0 - 1) if dr > 0 else (1 - x["l"] / P0))
+        if lo <= stop:
+            return stop if half is None else (half + stop) / 2
+        if half is None and hi >= 0.015:
+            half, stop = 0.015, 0.0
+        if x["hm"] >= "15:10":
+            c = (x["c"] / P0 - 1) * dr
+            return c if half is None else (half + c) / 2
+    c = (rest[-1]["c"] / P0 - 1) * dr if rest else 0.0
+    return c if half is None else (half + c) / 2
 
 
 def big_moves(P, d):
@@ -138,7 +158,7 @@ def big_moves(P, d):
         start = next((r["hm"] for r in rows if r["ro"] * dr >= 0.005), None)
         half = next((r["hm"] for r in rows if r["ro"] * dr >= size / 2), None)
         out.append({"s": s, "dir": dr, "size": size, "start": start, "half": half})
-    return out
+    return sorted(out, key=lambda m: -m["size"])[:10]                       # v3: the day's 10 biggest movers
 
 
 def mins(a, b):
@@ -166,6 +186,44 @@ def gir_first(day):
         return {s: t[:5] for s, t in R}
     except Exception:
         return {}
+
+
+def lots():
+    try:
+        c = sqlite3.connect("file:%s?mode=ro" % os.path.join(D, "chains.db"), uri=True, timeout=5)
+        R = dict(c.execute("select sym, lot from fo_list").fetchall()); c.close(); return R
+    except Exception:
+        return {}
+
+
+def money(P, fl):
+    """₹ per trade = the share's % move x its price x its lot x 0.5 (an at-the-money option moves about half the share's rupees), 1 lot,
+    before charges. The scanner's flags (its own exit rule) vs GIR's own cards today (tomorrow.db wind_cards)."""
+    LOT = lots(); days = sorted(fl)
+    if not days:
+        return
+    rs = lambda r, px, s: r * px * (LOT.get(s) or 0) * 0.5
+    say(""); say("💰 THE MONEY (1 lot each, an at-the-money option ~ half the share's rupee move, before charges)")
+    for d in days[-3:]:
+        F = fl[d]; tot = sum(rs(f["pnl"], f["px"], f["s"]) for f in F); w = sum(1 for f in F if f["pnl"] > 0)
+        say("  %s · the scanner: %d trades · %d won · ₹%s" % (d, len(F), w, "{:,.0f}".format(tot)))
+    day = days[-1]
+    try:
+        c = sqlite3.connect("file:%s?mode=ro" % os.path.join(D, "tomorrow.db"), uri=True, timeout=5)
+        R = c.execute("select sym, entry, res from wind_cards where day=?", (day,)).fetchall(); c.close()
+    except Exception:
+        R = []
+    if R:
+        g = sum(rs((res or 0) / 100.0, e or 0, s) for s, e, res in R); fo = sum(1 for s, _, _ in R if s in LOT)
+        say("  %s · GIR's own cards: %d cards (%d of them F&O) · %d won · ₹%s on the F&O ones" % (day, len(R), fo, sum(1 for *_, r in R if (r or 0) > 0),
+                                                                                     "{:,.0f}".format(sum(rs((res or 0) / 100.0, e or 0, s) for s, e, res in R if s in LOT))))
+    say("  %s · each scanner trade:" % day)
+    for f in sorted(fl[day], key=lambda f: -rs(f["pnl"], f["px"], f["s"])):
+        say("    %s %-11s %s at ₹%s · lot %s · %+.2f%% on the share · ₹%s" % (f["hm"], f["s"], "CE" if f["dir"] > 0 else "PE", "{:,.2f}".format(f["px"]), LOT.get(f["s"], "?"),
+                                                                       f["pnl"] * 100, "{:,.0f}".format(rs(f["pnl"], f["px"], f["s"]))))
+    top = big_moves(P, day)
+    pot = sum(rs(m["size"] * 0.6, P[m["s"]][day]["o0"], m["s"]) for m in top)
+    say("  %s · if you had caught 60%% of each of the 10 biggest moves (the most an early alert can give): about ₹%s" % (day, "{:,.0f}".format(pot)))
 
 
 def main():
@@ -207,7 +265,7 @@ def main():
     best = None
     for th in (4, 5, 6, 7):
         fl = scan(P, SEC, W, NIF, th); ev = evaluate(P, fl)
-        say("  threshold %d: %4.1f flags a day · hit %3.0f%% (1.5%%+ before -0.75%%) · big moves (2.5%%+) caught before half-way: %d of %d (%3.0f%%) · median %s min after the move started" % (
+        say("  threshold %d: %4.1f flags a day · hit %3.0f%% (1.5%%+ before -0.75%%) · the day's 10 biggest movers caught before half-way: %d of %d (%3.0f%%) · median %s min after the move started" % (
             th, ev["per_day"], ev["hit"] * 100, ev["caught"], ev["big"], ev["cover"] * 100, ev["after_start"]))
         sc = ev["cover"] * (0.5 + ev["hit"]) if ev["per_day"] <= 22 else -1
         if best is None or sc > best[0]:
@@ -226,6 +284,7 @@ def main():
         miss = [m for m in mv if m["s"] not in caught]
         if miss:
             say("   big moves NOT flagged: " + " · ".join("%s %s%.1f%% from %s" % (m["s"], "+" if m["dir"] > 0 else "−", m["size"] * 100, m["start"]) for m in sorted(miss, key=lambda m: -m["size"])[:12]))
+    money(P, fl)
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     open(OUT, "w").write("\n".join(L) + "\n")
     say(""); say("saved data/movescan.txt")
