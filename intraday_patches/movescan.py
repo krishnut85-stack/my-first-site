@@ -51,8 +51,12 @@ def prep(B):
     return out
 
 
-def scan(P, SEC, W, NIF, th, day_cap=20):
-    """P: {sym: {date: day}} · SEC: {sym: [peers]} · W: {sym: weight} · NIF: {date: {hm: rp}} -> {date: [flag]}"""
+def scan(P, SEC, W, NIF, th, day_cap=15, per_bar=3):
+    """v2 (16 Nov, after the first replay: every flag landed at 09:30, the big gap movers were missed):
+    · volume 1.5x its normal at that time is REQUIRED (the 09:30 noise had 0.4-0.9x)
+    · momentum REQUIRED: the last 15 minutes 0.3%+ the same way (a move still running, not a stale open)
+    · strength from YESTERDAY'S CLOSE, no 2.5% cap - a gap mover still counts while it keeps going
+    · every 5 minutes only the best `per_bar` new shares (highest score), at most `day_cap` a day - a ranked list, not first-come"""
     dates = sorted({d for s in P for d in P[s]})
     flags = {}
     for k, d in enumerate(dates):
@@ -60,52 +64,64 @@ def scan(P, SEC, W, NIF, th, day_cap=20):
         if len(prev10) < 5:
             continue
         RP = {s: {r["hm"]: r["rp"] for r in P[s][d]["rows"]} for s in P if d in P[s]}
-        F = []
+        BASE = {}
         for s in P:
             if d not in P[s]:
                 continue
-            day = P[s][d]; base = {}
+            b_ = {}
             for pd_ in prev10:
                 if pd_ in P[s]:
                     for r in P[s][pd_]["rows"]:
-                        base.setdefault(r["hm"], []).append(r["cv"])
-            peers = [p for p in SEC.get(s, []) if p != s and p in RP]
-            for i, r in enumerate(day["rows"]):
-                hm = r["hm"]
-                if hm < "09:30" or hm > "14:30":
+                        b_.setdefault(r["hm"], []).append(r["cv"])
+            BASE[s] = b_
+        hms = sorted({r["hm"] for s in P if d in P[s] for r in P[s][d]["rows"] if "09:30" <= r["hm"] <= "14:30"})
+        done, F = set(), []
+        for hm in hms:
+            cand = []
+            for s in P:
+                if s in done or d not in P[s]:
                     continue
-                bl = base.get(hm) or []
+                day = P[s][d]; rows = day["rows"]
+                i = next((j for j, r in enumerate(rows) if r["hm"] == hm), None)
+                if i is None or i < 3:
+                    continue
+                r = rows[i]; bl = BASE[s].get(hm) or []
                 volx = r["cv"] / (sum(bl) / len(bl)) if bl and sum(bl) > 0 else 1.0
+                if volx < 1.5:
+                    continue
+                mom = r["c"] / rows[i - 3]["c"] - 1
+                peers = [p for p in SEC.get(s, []) if p != s and p in RP]
                 pr = [(RP[p].get(hm), W.get(p, 1.0)) for p in peers if RP[p].get(hm) is not None]
                 sw = sum(w for _, w in pr); sec = sum(x * w for x, w in pr) / sw if sw else 0.0
                 nif = (NIF.get(d) or {}).get(hm, 0.0)
-                best = None
                 for dr in (1, -1):
-                    if not (0.004 <= r["ro"] * dr <= 0.025):
+                    if mom * dr < 0.003 or r["rp"] * dr < 0.005:
                         continue
                     sc = 0
                     sc += 1 if (r["c"] > day["orh"] if dr > 0 else r["c"] < day["orl"]) else 0
                     sc += 1 if (r["c"] - r["vwap"]) * dr > 0 else 0
-                    sc += 1
-                    sc += 2 if volx >= 2.5 else 1 if volx >= 1.5 else 0
+                    sc += 2 if volx >= 2.5 else 1
+                    sc += 1 if mom * dr >= 0.006 else 0
                     same = sum(1 for x, _ in pr if x * dr > 0) / len(pr) if pr else 0
                     sc += 2 if (sec * dr >= 0.004 and same >= 0.65) else 1 if sec * dr >= 0.002 else 0
                     sc += 1 if nif * dr >= 0.002 else 0
-                    if sc >= th and (best is None or sc > best[1]):
-                        best = (dr, sc, volx, sec, same)
-                if best:
-                    rest = day["rows"][i + 1:]; P0 = r["c"]; hit = False; mfe = 0.0; mins = None
-                    for j, x in enumerate(rest):
-                        fav = ((x["h"] / P0 - 1) if best[0] > 0 else (1 - x["l"] / P0)); adv = ((1 - x["l"] / P0) if best[0] > 0 else (x["h"] / P0 - 1))
-                        mfe = max(mfe, fav)
-                        if adv >= 0.0075 and not hit:
-                            break
-                        if fav >= 0.015:
-                            hit = True; mins = (j + 1) * 5; break
-                    F.append({"s": s, "hm": hm, "dir": best[0], "sc": best[1], "px": P0, "volx": best[2], "sec": best[3], "same": best[4], "hit": hit, "mins": mins, "mfe": mfe})
+                    if sc >= th:
+                        cand.append((sc, volx, s, dr, i, r, sec, same))
+            cand.sort(key=lambda x: (-x[0], -x[1]))
+            for sc, volx, s, dr, i, r, sec, same in cand[:per_bar]:
+                if len(F) >= day_cap:
                     break
-        F.sort(key=lambda f: f["hm"])
-        flags[d] = F[:day_cap]
+                done.add(s)
+                rest = P[s][d]["rows"][i + 1:]; P0 = r["c"]; hit = False; mfe = 0.0; mn = None
+                for j, x in enumerate(rest):
+                    fav = ((x["h"] / P0 - 1) if dr > 0 else (1 - x["l"] / P0)); adv = ((1 - x["l"] / P0) if dr > 0 else (x["h"] / P0 - 1))
+                    mfe = max(mfe, fav)
+                    if adv >= 0.0075:
+                        break
+                    if fav >= 0.015:
+                        hit = True; mn = (j + 1) * 5; break
+                F.append({"s": s, "hm": hm, "dir": dr, "sc": sc, "px": P0, "volx": volx, "sec": sec, "same": same, "hit": hit, "mins": mn, "mfe": mfe})
+        flags[d] = F
     return flags
 
 
@@ -171,7 +187,7 @@ def main():
                 W = {s: sum((r[2] or 0) * (r[1] or 0) for r in R) for s, R in N.items()}; break
         except Exception:
             pass
-    say("🎯 MOVE SCANNER replay · %s · %d F&O shares · %d sectors · size weights %s" % (time.strftime("%d %b %H:%M"), len(syms), len(SECS), "from NSE's futures file" if W else "equal"))
+    say("🎯 MOVE SCANNER replay v2 · %s IST · %d F&O shares · %d sectors · size weights %s" % (dt.datetime.now(IST).strftime("%d %b %H:%M"), len(syms), len(SECS), "from NSE's futures file" if W else "equal"))
     P = {}
     for i, s in enumerate(syms):
         try:
@@ -189,7 +205,7 @@ def main():
         pass
     say("  read %d shares' 5-min bars · NIFTY %s" % (len(P), "yes" if NIF else "NOT read (market tide left out)"))
     best = None
-    for th in (5, 6, 7):
+    for th in (4, 5, 6, 7):
         fl = scan(P, SEC, W, NIF, th); ev = evaluate(P, fl)
         say("  threshold %d: %4.1f flags a day · hit %3.0f%% (1.5%%+ before -0.75%%) · big moves (2.5%%+) caught before half-way: %d of %d (%3.0f%%) · median %s min after the move started" % (
             th, ev["per_day"], ev["hit"] * 100, ev["caught"], ev["big"], ev["cover"] * 100, ev["after_start"]))
