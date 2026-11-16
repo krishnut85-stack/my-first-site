@@ -206,7 +206,7 @@ def compute(SEC, W, Q, hist, FO, wsrc, n=None):
             continue
         chg = g["a"] / g["w"] if g["w"] else g["eq"] / g["n"]
         rows = sorted(g["rows"], reverse=True)
-        out.append({"name": sec, "chg": round(chg, 2), "n": g["n"], "up": g["up"], "dn": g["dn"], "fo": sum(1 for _, s in rows if s in FO),
+        out.append({"name": sec, "chg": round(chg, 2), "n": g["n"], "up": g["up"], "dn": g["dn"], "fo": sum(1 for _, s in rows if s in FO), "fos": sorted(s for _, s in rows if s in FO),   # 354e: its F&O shares - a tap on the sector lists them
                     "eqw": round(g["eq"] / g["n"], 2),
                     "rot": {str(k): (round(g["r"][k][0] / g["r"][k][1], 2) if g["r"][k][1] else None) for k in WINS},
                     "rotx": {str(k): {"up": sum(1 for c, _ in g["rr"][k] if c > 0), "dn": sum(1 for c, _ in g["rr"][k] if c < 0), "n": len(g["rr"][k]),

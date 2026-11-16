@@ -215,7 +215,7 @@ def compute(SEC, W, Q, hist, FO, wsrc, n=None):
             continue
         chg = g["a"] / g["w"] if g["w"] else g["eq"] / g["n"]
         rows = sorted(g["rows"], reverse=True)
-        out.append({"name": sec, "chg": round(chg, 2), "n": g["n"], "up": g["up"], "dn": g["dn"], "fo": sum(1 for _, s in rows if s in FO),
+        out.append({"name": sec, "chg": round(chg, 2), "n": g["n"], "up": g["up"], "dn": g["dn"], "fo": sum(1 for _, s in rows if s in FO), "fos": sorted(s for _, s in rows if s in FO),   # 354e: its F&O shares - a tap on the sector lists them
                     "eqw": round(g["eq"] / g["n"], 2),
                     "rot": {str(k): (round(g["r"][k][0] / g["r"][k][1], 2) if g["r"][k][1] else None) for k in WINS},
                     "rotx": {str(k): {"up": sum(1 for c, _ in g["rr"][k] if c > 0), "dn": sum(1 for c, _ in g["rr"][k] if c < 0), "n": len(g["rr"][k]),
@@ -298,10 +298,11 @@ if __name__ == "__main__":
     main()
 PY_SL
 cat > $W/home_add.html <<'ADD_354'
-<style>/* patch 354: SECTORS and ROTATION from ALL the sector's NSE shares, size-weighted, from the server (seclive.py) */
+<style>/* patch 354 + 354e: SECTORS and ROTATION from ALL the sector's NSE shares, size-weighted, from the server (seclive.py) */
 #mk-don .gxl{font:600 11px ui-monospace,Menlo,monospace;color:#8fc3ff;margin-left:8px;white-space:nowrap}
 #mk-don .sb .gxn{font:600 11px ui-monospace,Menlo,monospace;color:#a3aebf;margin-left:6px;white-space:nowrap}
 #mk-don .sb .gxf{font-size:10px;color:#8b97a9;margin-left:4px}
+#mk-don .sb .gxn b{font:600 11px ui-monospace,Menlo,monospace}   /* patch 354e: ▲ up count green, ▼ down count red */
 #mk-rot .gxl{font:600 11px ui-monospace,Menlo,monospace;color:#8fc3ff;margin-left:8px}
 #mk-rot .rg .sh i{font-style:normal;font-size:9px;color:#8b97a9;margin-left:1px}
 </style>
@@ -323,6 +324,13 @@ cat > $W/home_add.html <<'ADD_354'
     try{ const r=await fetch("seclive?k="+encodeURIComponent(KEY()),{cache:"no-store"}); if(r.ok){ const v=await r.json(); if(v&&v.sectors) SL=v; } }catch(e){}
     busy=false; paint(); }
   const has=n=>((typeof SECS!=="undefined"&&SECS)||[]).some(x=>String(x.name)===n);
+  /* patch 354e: GIR's F&O sector list (the F&O MOVERS filter, its dropdown, the phone's sector grid) takes the SAME groups as this box - each sector's
+     F&O shares from the server - so a tap on TELECOM SERVICES / ELECTRONICS & HARDWARE / HOSPITALS lists its F&O shares */
+  function regroup(){ try{ if(!fresh()||typeof SECS==="undefined"||!Array.isArray(SECS)||SECS.__gx) return; if(!SL.sectors.some(x=>(x.fos||[]).length)) return;
+      const by={}; SECS.forEach(x=>{ by[String(x.name)]=x; });
+      const L=SL.sectors.filter(x=>(x.fos||[]).length).map(x=>Object.assign({},by[x.name]||{},{name:x.name,syms:x.fos.slice(),n:x.fos.length,chg:x.chg}));
+      L.sort((a,b)=>a.name.localeCompare(b.name)); if(L.length>=5) SECS=L; }catch(e){} }
+  function rechg(){ try{ if(!fresh()||typeof SECS==="undefined") return; const m={}; SL.sectors.forEach(x=>{ m[x.name]=x.chg; }); (SECS||[]).forEach(x=>{ if(m[x.name]!=null) x.chg=m[x.name]; }); }catch(e){} }
   function paintSec(){ const el=document.getElementById("mk-don"); if(!el||!fresh()) return;
     const so=(typeof SSORT!=="undefined")?SSORT:"dn";
     const R=SL.sectors.slice().sort((a,b)=>so==="az"?a.name.localeCompare(b.name):so==="up"?a.chg-b.chg:b.chg-a.chg);
@@ -331,9 +339,9 @@ cat > $W/home_add.html <<'ADD_354'
     const mv=L=>L.map(t=>t[0]+" "+pc(t[1])+(t[2]?" (F&O)":"")).join(", ");
     el.innerHTML=`<div class="ssb">SORT <a class="${so!=="az"?"on":""}" onclick="ssSet(SSORT==='dn'?'up':'dn')">% ${so==="up"?"▲ LOW→HIGH":"▼ HIGH→LOW"}</a><a class="${so==="az"?"on":""}" onclick="ssSet('az')">A–Z</a>`+
       `<span class="dim"><b class="pu">▲ ${up}</b> · <b class="pd">▼ ${dn}</b> · ${R.length} sectors</span><span class="gxl" title="every share of NSE's Nifty Total Market in NSE's own sector, weighted by ${E(SL.weights)}">ALL ${SL.shares} · WEIGHTED · ${E(SL.at)}</span></div>`+
-      '<div class="sbc">'+R.map(x=>{ const w=Math.max(3,Math.abs(x.chg)/mx*100); const go=has(x.name)?`mkSec('${E(x.name)}')`:"";
-        return `<div class="sb" ${go?`onclick="${go}"`:""} title="${E(x.name.toUpperCase())}: ${pc(x.chg)} - all its ${x.n} NSE shares, size-weighted (a plain average would say ${pc(x.eqw)}) · ${x.up} up, ${x.dn} down · ${x.fo} of them F&O · best: ${E(mv(x.top))} · worst: ${E(mv(x.bot))}">`+
-          `<span>${E(x.name.toUpperCase())} <span class="gxn">${x.up}/${x.n} ▲</span><span class="gxf">${x.fo} F&amp;O</span></span>`+
+      '<div class="sbc">'+R.map(x=>{ const w=Math.max(3,Math.abs(x.chg)/mx*100); const go=(x.fos||[]).length||has(x.name)?`mkSec('${E(x.name)}')`:"";
+        return `<div class="sb" ${go?`onclick="${go}"`:""} title="${E(x.name.toUpperCase())}: ${pc(x.chg)} - all its ${x.n} NSE shares, size-weighted (a plain average would say ${pc(x.eqw)}) · ${x.up} up, ${x.dn} down · ${x.fo} of them F&O${x.fo?"":" (nothing to trade here - information only)"} · best: ${E(mv(x.top))} · worst: ${E(mv(x.bot))}">`+
+          `<span>${E(x.name.toUpperCase())} <span class="gxn"><b class="pu">▲${x.up}</b> <b class="pd">▼${x.dn}</b></span><span class="gxf">· ${x.fo} F&amp;O</span></span>`+
           `<span class="tr"><span class="fl ${x.chg>=0?"u":"d"}" style="width:${w.toFixed(1)}%"></span></span><b class="${x.chg>=0?"pu":"pd"}">${pc(x.chg)}</b></div>`; }).join("")+'</div>';
     const h=document.querySelector("#q-don h3 span"); if(h&&!/ALL its NSE/.test(h.textContent)) h.textContent="% today = ALL its NSE shares, size-weighted · tap = its F&O shares"; }
   function paintRot(){ const el=document.getElementById("mk-rot"); if(!el||!fresh()) return;
@@ -357,8 +365,10 @@ cat > $W/home_add.html <<'ADD_354'
       `<div><h4 class="pd">▼ MONEY GOING OUT ${win?"(last "+win+" min)":"(today)"}</h4>${S.slice(0,8).map(g=>row(g,-1)).join("")||'<small class="dim">none down</small>'}</div></div>`+
       `<div class="ra">every share of NSE's Nifty Total Market (${SL.shares}) in NSE's own sector, weighted by ${E(SL.weights)} · the server keeps the minute-by-minute record, so the laptop, the iPad and the phone show the same</div>`; }
   function paint(){ try{ if(typeof VIEW!=="undefined"&&VIEW!=="market") return; paintSec(); paintRot(); }catch(e){} }
-  if(typeof drawMarket==="function"){ const O=drawMarket; drawMarket=function(){ const r=O.apply(this,arguments); paint(); return r; };
+  if(typeof drawMarket==="function"){ const O=drawMarket; drawMarket=function(){ regroup(); const r=O.apply(this,arguments); rechg(); paint(); return r; };
     Object.keys(O).forEach(k=>{ try{ drawMarket[k]=O[k]; }catch(e){} }); Object.defineProperty(drawMarket,"force",{get(){ return O.force; },set(v){ O.force=v; }}); }
+  if(typeof drawSecs==="function"&&typeof secHTML==="function"){ const O=drawSecs; drawSecs=function(){ regroup(); const r=O.apply(this,arguments);
+      try{ if(fresh()){ rechg(); const g=document.getElementById("secg"); if(g) g.innerHTML=secHTML(SECS); } }catch(e){} return r; }; }
   if(typeof drawRot==="function"){ const O=drawRot; drawRot=function(){ const r=O.apply(this,arguments); try{ paintRot(); }catch(e){} return r; }; }
   setInterval(()=>{ if(!document.hidden&&typeof VIEW!=="undefined"&&VIEW==="market") pull(); },2000);
   setTimeout(pull,800); })();
