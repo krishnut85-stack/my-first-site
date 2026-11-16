@@ -58,16 +58,17 @@ def market_open(n):
 # -3.9% inside capital goods / consumer durables; telecom equipment -3.7% inside telecom) - split the way Trendlyne shows them
 HOSP = set("MAXHEALTH APOLLOHOSP FORTIS NH MEDANTA ASTERDM KIMS RAINBOW LALPATHLAB METROPOLIS VIJAYA THYROCARE JLHL YATHARTH HCG SHALBY AGARWALEYE INDRAMEDCO "
            "KRSNAA SURAKSHA MEDIASSIST POLYMED".split())
-HOSP_RE = re.compile(r"hospital|healthcare institute|hrudayalaya|medical sciences|medicare|path ?labs|diagnos|health care ltd|healthcare global|life line|eye ?care", re.I)
+HOSP_RE = re.compile(r"hospital|healthcare institute|hrudayalaya|medical sciences|path ?labs|diagnos|health care ltd|healthcare global|life line|eye ?care", re.I)
+NOT_HOSP = set("SHILPAMED".split())                                         # 354d: Shilpa Medicare is a pharma company
 EMS = set("KAYNES SYRMA DIXON AMBER PGEL CYIENTDLM AVALON NETWEB DATAPATTNS CENTUM ELIN".split())
 EMS_RE = re.compile(r"electronics manufactur|electronic manufactur|technologies \(india\) .*ems", re.I)
-TEL_SERV = set("BHARTIARTL BHARTIHEXA IDEA INDUSTOWER TATACOMM RAILTEL TTML MTNL".split())
+TEL_SERV = set("BHARTIARTL BHARTIHEXA IDEA INDUSTOWER TATACOMM RAILTEL TTML MTNL ROUTE TANLA".split())   # 354d: Route Mobile / Tanla are services
 
 
 def refine(sym, sec, name=""):
     """NSE's sector -> the finer one where one sector holds two businesses"""
     if sec == "healthcare":
-        return "hospitals & diagnostics" if (sym in HOSP or HOSP_RE.search(name or "")) else "pharma"
+        return "hospitals & diagnostics" if (sym not in NOT_HOSP and (sym in HOSP or HOSP_RE.search(name or ""))) else "pharma"
     if sym in EMS or (sec in ("capital goods", "consumer durables") and EMS_RE.search(name or "")):
         return "electronics & hardware"
     if sec == "telecom":
