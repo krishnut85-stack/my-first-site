@@ -5,6 +5,10 @@ sector, and the reason. When, after NIFTY opens, can we say which sector is perf
 Kite's own 5-minute prices for every share of NSE's Nifty Total Market (~750), the last 60 trading days, in NSE's own sectors, weighted by NSE's
 free-float market cap (the same list and weights as patch 354's seclive.py). For every day and for 09:20 / 09:30 / 09:45 / 10:00 / 10:30:
   1) THE RANKING   the best and the worst sector at that time: still top 3 / bottom 3 at 15:10? did the sector go FURTHER after that time?
+  1b) THE RANK HOLDS?  the No.1, No.2, No.3 best and the No.1, No.2, No.3 worst sector at 09:30 / 09:45 / 10:00: its place at 15:10 (the same, within 1,
+                   within 2, No.5 or further) and the furthest it slipped at any hour of the day
+  2b) THE 2nd AND 3rd  the drivers and all the F&O shares of the 2nd and 3rd best / worst sector, apart from the no.1
+  3b) RESISTANCE   a share already past its 20-day high / low with its sector pushing
   2) THE DRIVERS   a share's push on its sector = its weight x its move. The DRIVERS = the F&O shares with the biggest push in the sector's
                    direction (the shares that are moving the sector). Against: the STRONGEST share (the biggest %), the LAGGARDS (big F&O shares
                    of the sector that have not moved yet) and ALL the sector's F&O shares. From that time to 15:10: went on? +1.5% before -1%?
@@ -146,9 +150,17 @@ def main():
         wsrc = "each share's average traded value (NSE's sizes were not available)"
     say("  %d shares with prices · %d sectors · weights: %s · %d F&O shares" % (len(P) - 1, len(set(SEC.values())), wsrc, len(FO & set(P))))
     px = lambda b, T: (float(b[b[:, 0] <= T - 5][-1, 4]) if (b[:, 0] <= T - 5).any() else None)
+    DHL = {s: {d_: (float(b[:, 2].max()), float(b[:, 3].min())) for d_, b in dd.items()} for s, dd in P.items()}   # each day's high and low - the resistance votes
+
+    def levels(s, di):
+        """yesterday's (high, low) and the (highest high, lowest low) of the 20 days before today"""
+        h = DHL.get(s, {}); y = h.get(days[di - 1]); w = [h[x] for x in days[max(0, di - 20):di] if x in h]
+        return y, ((max(a for a, _ in w), min(b_ for _, b_ in w)) if len(w) >= 10 else None)
     RANK = {T: {"n": 0, "top3": 0, "bot3": 0, "topgo": [], "botgo": [], "rho": []} for T in TS}
     PICK = {T: {k: [] for k in ("CE DRIVER", "CE STRONGEST", "CE LAGGARD", "CE ALL F&O", "PE DRIVER", "PE STRONGEST", "PE LAGGARD", "PE ALL F&O")} for T in TS}
     WHY = []; REAS = []; CLR = {}
+    CPS = (15, 30, 45, 105, 165, 225, 285, END + 5)                          # 09:30 09:45 10:00 11:00 12:00 13:00 14:00 15:10 - the sector ranking at each
+    HOLD = {tb: {} for tb in (15, 30, 45)}; NSEC = []
     for di in range(1, len(days)):
         d, dp = days[di], days[di - 1]; day = str(dt.date.fromordinal(d)); N = None
         nb = P["NIFTY50"].get(d); nbp = P["NIFTY50"].get(dp)
@@ -161,6 +173,26 @@ def main():
                 continue
             S[s] = (sec, float(bp[-1, 4]), b)
         pe = {s: px(b, END + 5) for s, (_, _, b) in S.items()}
+        RK = {}                                                             # 1b: the whole ranking at every checkpoint (size-weighted, every share)
+        for cp in CPS:
+            g = {}
+            for s, (sec, pc, b) in S.items():
+                p = px(b, cp)
+                if p:
+                    a_ = g.setdefault(sec, [0.0, 0.0, 0]); a_[0] += (p / pc - 1) * W[s]; a_[1] += W[s]; a_[2] += 1
+            order = sorted((k for k, v in g.items() if v[2] >= 5 and v[1] > 0), key=lambda k: -g[k][0] / g[k][1])
+            RK[cp] = {k: i + 1 for i, k in enumerate(order)}
+        if len(RK[CPS[-1]]) >= 8:
+            n_ = len(RK[CPS[-1]]); NSEC.append(n_)
+            for tb in HOLD:
+                r0 = RK[tb]
+                for sec, k in r0.items():
+                    later = [RK[cp].get(sec) for cp in CPS if cp > tb]
+                    if None in later or sec not in RK[CPS[-1]]:
+                        continue
+                    for pos, mine, path in (("top", k, later), ("bottom", len(r0) + 1 - k, [n_ + 1 - x for x in later])):   # the same from the bottom
+                        if mine <= 3:
+                            HOLD[tb].setdefault((pos, mine), []).append({"fin": path[-1], "worst": max(path), "path": path})
         SCD = {}
         for T in TS:
             G = {}
@@ -183,7 +215,7 @@ def main():
             ra = {k: i for i, k in enumerate(at)}; rc = {k: i for i, k in enumerate(cl)}; n_ = len(at)
             K["rho"].append(1 - 6 * sum((ra[k] - rc[k]) ** 2 for k in at) / (n_ * (n_ * n_ - 1)))
             pn = px(nb, T); nif = (pn / float(nbp[-1, 4]) - 1) if pn else 0.0
-            for sec, dr, side in ((top, 1, "CE"), (bot, -1, "PE")):
+            for rk, sec, dr, side in [(k_, at[k_ - 1], 1, "CE") for k_ in (1, 2, 3)] + [(k_, at[-k_], -1, "PE") for k_ in (1, 2, 3)]:   # the 1st, 2nd, 3rd best / worst sector
                 R = G[sec]; w = sum(r[3] for r in R); mv = sc[sec][0]
                 if mv * dr <= 0:
                     continue
@@ -203,12 +235,14 @@ def main():
                         if hi >= UPT:
                             hit = 1; break
                     pre = b[b[:, 0] <= T - 5]; vw = float((pre[:, 4] * pre[:, 5]).sum() / max(pre[:, 5].sum(), 1.0))
+                    yl, wl = levels(s, di)
+                    brk_y = bool(yl) and ((p > yl[0]) if dr > 0 else (p < yl[1])); brk_w = bool(wl) and ((p > wl[0]) if dr > 0 else (p < wl[1]))
                     nonlocal N
                     if N is None:
                         N = news_of(day)
-                    PICK[T][side + " " + kind].append({"s": s, "day": day, "ret": (float(a[-1, 4]) / p - 1) * dr, "hit": hit, "push": c * wt / w / mv if mv else 0, "c": c,
+                    PICK[T][side + " " + kind].append({"s": s, "day": day, "rk": rk, "ret": (float(a[-1, 4]) / p - 1) * dr, "hit": hit, "push": c * wt / w / mv if mv else 0, "c": c,
                         "v_news": has_news(N, s, T), "v_gap": (float(b[0, 1]) / pc - 1) * dr >= 0.005, "v_vwap": (p - vw) * dr > 0, "v_breadth": breadth >= 0.7,
-                        "v_nifty": nif * dr > 0, "v_big": s in big3, "v_strong": abs(mv) >= 0.01})
+                        "v_nifty": nif * dr > 0, "v_big": s in big3, "v_strong": abs(mv) >= 0.01, "v_pdh": brk_y, "v_20d": brk_w})
                 fo = [r for r in R if r[0] in FO]
                 drv = sorted([r for r in fo if r[1] * dr > 0], key=lambda r: -r[1] * r[3] * dr)[:3]
                 for r in drv:
@@ -220,7 +254,7 @@ def main():
                     pick(r, "LAGGARD")
                 for r in fo:
                     pick(r, "ALL F&O")
-                if T == 30:
+                if T == 30 and rk == 1:
                     if N is None:
                         N = news_of(day)
                     allp = sorted(R, key=lambda r: -r[1] * r[3] * dr)[:4]
@@ -246,25 +280,61 @@ def main():
             hm(T), K["n"], 100 * K["top3"] / K["n"], 100 * sum(1 for x in tg if x > 0) / len(tg), 100 * sum(tg) / len(tg), 100 * K["bot3"] / K["n"],
             100 * sum(1 for x in bg if x > 0) / len(bg), 100 * sum(bg) / len(bg), 100 * sum(K["rho"]) / len(K["rho"])))
     say("")
-    say("2) THE SHARES - from that time to 15:10, on the share (CE = the best sector's F&O shares, PE = the worst sector's):")
+    say("1b) DOES A SECTOR HOLD ITS RANK? - its place in the ranking of about %d sectors, from that time to 15:10 (checked at 10:00, 11:00, 12:00, 13:00, 14:00, 15:10)" % (
+        round(sum(NSEC) / max(1, len(NSEC)))))
+    say("    (BEST side: No.1 = the strongest sector · WORST side: No.1 = the weakest - counted from the bottom)")
+    for tb in sorted(HOLD):
+        say("  ranked at %s" % hm(tb))
+        for pos in ("top", "bottom"):
+            for mine in (1, 2, 3):
+                X = HOLD[tb].get((pos, mine)) or []
+                if not X:
+                    continue
+                n = len(X); fin = [x["fin"] for x in X]; wo = [x["worst"] for x in X]
+                say("    %s No.%d → at 15:10: the same place %3.0f%% · within 1 place %3.0f%% · within 2 places %3.0f%% · No.5 or further %3.0f%% · ended No.%.1f on average · the furthest it slipped in the day: No.%.1f on average (No.5+ at some time on %2.0f%% of days) · %d days" % (
+                    "BEST " if pos == "top" else "WORST", mine, 100 * sum(1 for v in fin if v == mine) / n, 100 * sum(1 for v in fin if abs(v - mine) <= 1) / n,
+                    100 * sum(1 for v in fin if abs(v - mine) <= 2) / n, 100 * sum(1 for v in fin if v >= 5) / n, sum(fin) / n, sum(wo) / n, 100 * sum(1 for v in wo if v >= 5) / n, n))
+    say("")
+    say("2) THE SHARES - from that time to 15:10, on the share (CE = the no.1 best sector's F&O shares, PE = the no.1 worst sector's):")
     for T in TS:
         say("  %s" % hm(T))
         for k in ("CE DRIVER", "CE STRONGEST", "CE LAGGARD", "CE ALL F&O", "PE DRIVER", "PE STRONGEST", "PE LAGGARD", "PE ALL F&O"):
             lab = {"DRIVER": "the DRIVERS (the 3 with the biggest push)", "STRONGEST": "the STRONGEST share (the biggest %)", "LAGGARD": "the LAGGARDS (big, not moved yet)", "ALL F&O": "ALL the sector's F&O shares"}[k[3:]]
-            say(fmt(k[:2] + " · " + lab, PICK[T][k]))
+            say(fmt(k[:2] + " · " + lab, [x for x in PICK[T][k] if x["rk"] == 1]))
     say("")
-    say("3) THE VOTES - on the DRIVERS (CE and PE together): with the vote / without it")
+    say("2b) THE 2nd AND 3rd SECTOR - is only the no.1 worth it, or the 2nd and 3rd best / worst too? (from that time to 15:10, on the share)")
     for T in TS:
-        X = PICK[T]["CE DRIVER"] + PICK[T]["PE DRIVER"]
+        say("  %s" % hm(T))
+        for side, nm in (("CE", "best"), ("PE", "worst")):
+            for rk in (1, 2, 3):
+                d_, a_ = stat([x for x in PICK[T][side + " DRIVER"] if x["rk"] == rk]), stat([x for x in PICK[T][side + " ALL F&O"] if x["rk"] == rk])
+                if d_ or a_:
+                    say("    %s · the %s %-5s sector   its DRIVERS: %s   ALL its F&O shares: %s" % (side, {1: "1st", 2: "2nd", 3: "3rd"}[rk], nm,
+                        ("%4d picks · %3.0f%% went on · %2.0f%% worked · %+.2f%%" % (d_[0], d_[1], d_[3], d_[2])) if d_ else "none",
+                        ("%4d picks · %3.0f%% went on · %2.0f%% worked · %+.2f%%" % (a_[0], a_[1], a_[3], a_[2])) if a_ else "none"))
+    say("")
+    say("3) THE VOTES - on the DRIVERS of the no.1 best / worst sector (CE and PE together): with the vote / without it")
+    say("   (resistance = the share already beyond yesterday's high / low, or beyond its 20-day high / low, in the trade's direction - with its sector pushing)")
+    for T in TS:
+        X = [x for x in PICK[T]["CE DRIVER"] + PICK[T]["PE DRIVER"] if x["rk"] == 1]
         if not X:
             continue
         say("  %s" % hm(T))
         for v, nm in (("v_news", "news on the share (GIR's list)"), ("v_gap", "gapped 0.5%+ the same way"), ("v_vwap", "the right side of VWAP"), ("v_breadth", "70%+ of the sector the same way"),
-                      ("v_nifty", "NIFTY the same way"), ("v_big", "one of the sector's 3 biggest"), ("v_strong", "the sector already 1%+")):
+                      ("v_nifty", "NIFTY the same way"), ("v_big", "one of the sector's 3 biggest"), ("v_strong", "the sector already 1%+"),
+                      ("v_pdh", "past yesterday's high / low"), ("v_20d", "past its 20-day high / low (resistance)")):
             a, b = stat([x for x in X if x[v]]), stat([x for x in X if not x[v]])
             say("    %-34s WITH: %s   WITHOUT: %s" % (nm, ("%4d picks · %2.0f%% worked · %+.2f%%" % (a[0], a[3], a[2])) if a else "none", ("%4d picks · %2.0f%% worked · %+.2f%%" % (b[0], b[3], b[2])) if b else "none"))
         yes = [x for x in X if sum(1 for v in ("v_gap", "v_vwap", "v_breadth", "v_nifty", "v_big") if x[v]) >= 4]
         say(fmt("4 or 5 of the 5 price votes together", yes))
+    say("")
+    say("3b) THE RESISTANCE BREAK on EVERY F&O share of the best / worst sector (not only the drivers): past its 20-day high / low at that time")
+    for T in TS:
+        X = [x for x in PICK[T]["CE ALL F&O"] + PICK[T]["PE ALL F&O"] if x["rk"] == 1]
+        a, b = stat([x for x in X if x["v_20d"]]), stat([x for x in X if not x["v_20d"]])
+        if a or b:
+            say("    %s  PAST the 20-day level: %s   NOT past it: %s" % (hm(T), ("%4d picks · %2.0f%% went on · %2.0f%% worked · %+.2f%%" % (a[0], a[1], a[3], a[2])) if a else "none",
+                ("%4d picks · %2.0f%% went on · %2.0f%% worked · %+.2f%%" % (b[0], b[1], b[3], b[2])) if b else "none"))
     say("")
     say("4) THE REASON - the last days at 09:45: the sector, the shares that moved it (their part of the sector's move), GIR's news on them")
     for day, side, sec, mv, br, n, cl, rows, tags in WHY[-12:]:
