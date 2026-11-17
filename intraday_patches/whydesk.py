@@ -349,6 +349,43 @@ def read(F):
     return "\n".join(b.text for b in r.content if b.type == "text").strip(), r
 
 
+def view():
+    """for the page (dashserve /whydesk, patch 356): the last evening's reading in its three parts, the sectors read, the footprints, and the
+    foreign funds' sector trend fpisec.py keeps. Local files only."""
+    out = {"day": None, "fpi": None}
+    try:
+        p = os.path.join(D, "data", "whydesk.json"); j = json.load(open(p)); F = j.get("facts") or {}
+        t = re.sub(r"\*\*", "", j.get("reading") or "").strip()
+        ia = t.find("AFTER THE CLOSE"); idy = t.rfind("THE DAY:")
+        cut = [x for x in (ia, idy) if x >= 0]
+        out.update({"day": F.get("day"), "at": F.get("at"), "saved": int(os.path.getmtime(p)), "indices": F.get("indices") or {},
+                    "sectors_text": (t[:min(cut)] if cut else t).strip(), "after": t[ia:idy if idy > ia else len(t)].strip() if ia >= 0 else "",
+                    "theday": t[idy:].strip() if idy >= 0 else "", "who": F.get("participants") or [], "deals": (F.get("deals") or [])[:8],
+                    "sectors": [{"n": x["sector"], "mv": x["move_pct"], "up": x["up"], "dn": x["down"], "x10": (x.get("delivery") or {}).get("x_10d"),
+                                 "push": [[d["sym"], d["move_pct"]] for d in x["pushing"][:3]]} for x in F.get("sectors") or []]})
+    except Exception:
+        pass
+    try:
+        j = json.load(open(os.path.join(D, "data", "fpisec.json")))
+        FN = sorted(k for k, v in j["net"].items() if len(v) >= 12)
+        if FN:
+            rows = []
+            for s_ in j["net"][FN[-1]]:
+                if re.match(r"sovereign|others?$", s_, re.I):
+                    continue
+                v = [j["net"][k].get(s_) for k in FN[::-1]]; sg = 1 if (v[0] or 0) > 0 else -1; n = 0
+                for x in v:
+                    if x is None or x * sg <= 0:
+                        break
+                    n += 1
+                held = next((j["auc"][a].get(s_) for a in sorted(j["auc"], reverse=True) if j["auc"][a].get(s_)), None)
+                rows.append({"s": s_, "held": held, "v": v[:4], "run": sg * n, "tot": round(sum(x for x in v[:6] if x is not None))})
+            out["fpi"] = {"ends": FN[::-1][:4], "rows": sorted(rows, key=lambda r: -(r["tot"] / r["held"] if r["held"] else 0))}
+    except Exception:
+        pass
+    return out
+
+
 def main():
     F = collect(); show(F)
     os.makedirs(os.path.join(D, "data"), exist_ok=True)

@@ -11,6 +11,7 @@ portfolio investors (FPIs) bought or sold in EACH SECTOR and how much they hold.
   4) NOW         the sectors with a run of buying or selling, and their biggest F&O shares
 A result is shown for both halves of the history; "too few" is said when it is. Orders nothing, sends nothing; keeps the reports in data/fpisec.json.
   cd /home/globalbot && set -a && source .env && set +a && cd intraday && python3 fpisec.py [fortnights=48]
+  python3 fpisec.py update     only fetch the reports that are new (the evening timer)
   python3 fpisec.py probe      fetch the newest report and print its raw header rows and first lines (to check the reader against NSDL's layout)
   -> prints, saves data/fpisec.txt"""
 import os, re, sys, json, time, datetime as dt
@@ -260,6 +261,9 @@ def main():
     today = SL.now().date()
     if sys.argv[1:2] == ["probe"]:
         return probe(today)
+    if sys.argv[1:2] == ["update"]:                      # the evening timer (patch 356): only fetch what is new - no prices, no test
+        S, new = update(today, 8); F = sorted(k for k, v in S["net"].items() if len(v) >= 12)
+        print("fpisec: %d new report(s) · %d fortnights kept · the newest ends %s" % (new, len(F), F[-1] if F else "none")); return
     nf = int(sys.argv[1]) if sys.argv[1:] and sys.argv[1].isdigit() else 48
     say("📊 WHO: FOREIGN FUNDS' MONEY BY SECTOR · NSDL's fortnightly report · the last %d fortnights" % nf)
     S, new = update(today, nf)
@@ -334,7 +338,9 @@ def main():
             if v is None or not h:
                 continue
             nx = span(s, b + LAG, b + LAG + HOLD) if b + LAG + HOLD < n else None
-            rows.append({"f": i, "s": s, "flow": v / h, "same": span(s, a, b), "next": nx, "run": run(s, i)})
+            fw = lambda k_: span(s, b + LAG, b + LAG + k_) if b + LAG + k_ < n else None
+            rows.append({"f": i, "s": s, "flow": v / h, "same": span(s, a, b), "next": nx, "run": run(s, i), "before": run(s, i - 1) if i else (0, 0),
+                         "prior": span(s, b - 60, b) if b >= 60 else None, "n20": fw(20), "n40": fw(40)})
     nfp = len({r["f"] for r in rows})
     say("")
     if nfp < 8:
@@ -369,10 +375,42 @@ def main():
             h = len(X) // 2
             say("    sectors %s: %d cases · next period %s against the market · up %d%% · halves %s / %s" % (name, len(X), pc(sum(X) / len(X)), 100 * sum(1 for x in X if x > 0) / len(X), pc(sum(X[:h]) / h), pc(sum(X[h:]) / (len(X) - h))))
     say("    (a fortnight is one case: %d cases is a small sample - read the halves, not the average)" % nfp)
-    finish(secs, T, SEC, FO, W)
+    say("")
+    say("3b) WHAT THEY BUY, AND WHEN IT PAYS (Rama, 17 Nov: \"they are buying IT, which was hit hardest in the last months\") - the buying split by")
+    say("    what the sector had done in the 3 months before · then the next 10 / 20 / 40 trading days against the market, from %d days after the fortnight" % LAG)
+    P = {}
+    for f in sorted({r["f"] for r in rows}):
+        R = sorted((r for r in rows if r["f"] == f and r["prior"] is not None), key=lambda r: r["prior"]); k = len(R) // 3
+        if k >= 2:
+            for r in R[:k]:
+                P[(f, r["s"])] = "fall"
+            for r in R[-k:]:
+                P[(f, r["s"])] = "rise"
+
+    def grp(name, X):
+        X = [r for r in X if r["n20"] is not None]
+        if len(X) < 15:
+            say("    %-46s %3d cases - too few to say" % (name, len(X))); return
+        av = lambda key, Y=X: (lambda v: sum(v) / len(v) if v else float("nan"))([r[key] for r in Y if r[key] is not None])
+        h = len(X) // 2; a, b = av("n20", X[:h]), av("n20", X[h:])
+        ok = a * b > 0 and min(abs(a), abs(b)) >= 0.003
+        say("    %-46s %3d cases │ 10d %s │ 20d %s up %2d%% │ 40d %s │ 20d by half %s / %s %s" % (name, len(X), pc(av("next")), pc(av("n20")), 100 * sum(1 for r in X if r["n20"] > 0) / len(X),
+            pc(av("n40")), pc(a), pc(b), "✔ steady" if ok else "✘ not steady"))
+    bought = [r for r in rows if r["flow"] >= 0.001]; sold = [r for r in rows if r["flow"] <= -0.001]
+    grp("every sector, every fortnight (the yardstick)", rows)
+    grp("BOUGHT after a FALL (its worst third)", [r for r in bought if P.get((r["f"], r["s"])) == "fall"])
+    grp("BOUGHT after a RISE (its best third)", [r for r in bought if P.get((r["f"], r["s"])) == "rise"])
+    grp("SOLD after a FALL", [r for r in sold if P.get((r["f"], r["s"])) == "fall"])
+    grp("SOLD after a RISE", [r for r in sold if P.get((r["f"], r["s"])) == "rise"])
+    grp("not touched (under 0.1%) after a FALL", [r for r in rows if abs(r["flow"]) < 0.001 and P.get((r["f"], r["s"])) == "fall"])
+    grp("THE TURN: first buying after 3+ selling", [r for r in bought if r["before"][0] < 0 and r["before"][1] >= 3])
+    grp("THE TURN: first selling after 3+ buying", [r for r in sold if r["before"][0] > 0 and r["before"][1] >= 3])
+    say("    bought / sold = at least 0.1% of what they hold in that fortnight · fall / rise = the sector's 3 months before, against the other sectors")
+    now3 = {s: float(REL[s][-60:].sum()) for s in REL}
+    finish(secs, T, SEC, FO, W, now3, F[-1], S)
 
 
-def finish(secs=None, T=None, SEC=None, FO=None, W=None):
+def finish(secs=None, T=None, SEC=None, FO=None, W=None, now3=None, last=None, S=None):
     if T and SEC:
         say("")
         say("4) NOW - the sectors with a run of 3 or more fortnights, and their biggest F&O shares")
@@ -385,7 +423,17 @@ def finish(secs=None, T=None, SEC=None, FO=None, W=None):
             say("    %s %-30s %d fortnights in a row · last 3 months %+.0f cr · F&O: %s" % ("▲ BUYING " if sg > 0 else "▼ SELLING", s[:30], n, tot, " ".join(fo) or "none"))
         if not any_:
             say("    none - no sector has 3 fortnights in a row one way")
-        say("    This is where foreign money has been going over weeks. It is a background lean for CE / PE, not a signal for a day's trade.")
+        if now3 and last and S:
+            say("")
+            say("    the newest fortnight (to %s) against each sector's last 3 months (60 trading days to today, against the market):" % dt.date.fromisoformat(last).strftime("%d %b"))
+            order = sorted(now3, key=lambda k: now3[k]); k3 = max(2, len(order) // 3); low, high = set(order[:k3]), set(order[-k3:])
+            for share, s, h, last6, sg, n, tot in sorted(T, key=lambda x: -((x[3][0] or 0) / x[2] if x[2] else 0)):
+                if s not in now3 or last6[0] is None or not h:
+                    continue
+                fl = last6[0] / h
+                tag = ("BOUGHT" if fl >= 0.001 else "SOLD" if fl <= -0.001 else "not touched") + (" after a FALL" if s in low else " after a RISE" if s in high else "")
+                say("      %-34s %+8.0f cr (%s of holding) · its 3 months %s → %s" % (s[:34], last6[0], pc(fl), pc(now3[s]), tag))
+        say("    The states above are scored in 3b - read a state's line there before leaning on it.")
     os.makedirs(os.path.join(D, "data"), exist_ok=True)
     open(os.path.join(D, "data", "fpisec.txt"), "w").write("\n".join(L) + "\n")
     say("saved data/fpisec.txt")
