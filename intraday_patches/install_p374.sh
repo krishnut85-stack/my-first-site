@@ -8,6 +8,8 @@
 #   · the page's ring rule (patch 224) is kept as it is; it now also remembers WHICH alert decided the ring, and the sound follows that alert
 #   · the 👀 box's own chime (patch 351) is dropped - the alert list's ring plays the right sound for the same alert (no double sound)
 #   · 🔊 SOUNDS beside 🔊 P1 / 🔊 CRITICAL: a small panel to hear each sound once and learn them
+#   · ⤢ BIG on the ALERTS box: the list opens large down the right side, every alert in full (no "↳ fo…"); again or Esc puts it back
+#   · a PROFIT BOOKING warning ("book part NOW") plays the BOOK HALF sound, not the nee-naw
 #   · the 👀 box says when the day's 12 heads-up are used ("12 of 12 used by 09:50 - no new shares today; their exits still ring")
 #   Uses the page's own sound switch and volume (ASND / AVOL). Page only - the phone (Telegram) is not changed. Restarts the dashboard.
 set -u
@@ -26,6 +28,10 @@ cat > $W/snd.html <<'SND'
 #gxsnd .r{display:flex;align-items:center;gap:10px;padding:6px 12px;border-bottom:1px solid #12233a}#gxsnd .r button{flex:none;cursor:pointer;background:#13263d;color:#e6edf3;border:1px solid #2b5a8a;border-radius:6px;padding:2px 9px;font:700 12px ui-monospace,Menlo,monospace}
 #gxsnd .r span{color:#c9d4e3}#gxsnd .ft{padding:7px 12px;color:#8b97a9;font-size:11.5px}
 #gxhu .gxcap374{padding:6px 10px;border-top:1px solid #22190a;font-size:11.5px;color:#f0b429}
+#abar.gxbig{position:fixed!important;top:54px;right:10px;width:min(640px,50vw)!important;height:calc(100vh - 66px)!important;max-height:none!important;z-index:8700;overflow:auto!important;background:#0b1320;border:2px solid #f0544f;border-radius:10px;box-shadow:0 12px 44px rgba(0,0,0,.7);font-size:13.5px}
+#abar.gxbig *{white-space:normal!important}#abar.gxbig .dgl,#abar.gxbig .dg{max-height:none!important;height:auto!important}
+#abar .gxbigb{float:right;margin-left:8px;padding:0 8px;border:1px solid #fff6;border-radius:5px;cursor:pointer;font:800 11px ui-monospace,Menlo,monospace;color:#fff;background:#0004}
+@media (max-width:900px){#abar.gxbig{left:5px;right:5px;width:auto!important;top:50px}}
 </style>
 <script>/* patch 374: a different alarm for each kind of alert - through the page's own sound switch and volume (ASND / AVOL, patch 224) */
 (function(){
@@ -47,7 +53,7 @@ cat > $W/snd.html <<'SND'
   window.gxPlay=play;
   /* which sound: from the alert that decided the ring (GXRH, set by the ring rule) */
   function kindOf(h){ h=String(h||"");
-    if(/BOOK HALF|HALF OUT/.test(h)) return "half";
+    if(/BOOK HALF|HALF OUT|PROFIT BOOKING|book part/i.test(h)) return "half";   /* a profit-booking warning = "book part" */
     if(/15:10|TIME EXIT|⏹/.test(h)) return "close";
     if(/❌|🛑|EXIT ALL|STOP HIT|stop - OUT|\bOUT\b.*stop/i.test(h)) return "stop";
     if(/🔺|🔻|SECTOR/.test(h)&&!/🟢|🔴|BUY/.test(h)) return /🔻|DOWN/.test(h)?"secdn":"secup";
@@ -78,7 +84,14 @@ cat > $W/snd.html <<'SND'
     let c=el.querySelector(".gxcap374"); if(M.length<12){ if(c) c.remove(); return; }
     const txt=`today's 12 heads-up were used by ${M[11].t} (the limit the replay was scored with) - no new shares today; their exits still ring · sector alerts go on`;
     if(!c){ c=document.createElement("div"); c.className="gxcap374"; el.appendChild(c); } if(c.textContent!==txt) c.textContent=txt; }
-  new MutationObserver(()=>{ try{ cap(); link(); }catch(e){} }).observe(document.body,{childList:true,subtree:true});
+  /* ⤢ BIG: the ALERTS box (patch 374) - a large, readable list down the right side; again (or Esc) puts it back */
+  let BIG=false; try{ BIG=localStorage.getItem("gir_abar_big")==="1"; }catch(e){}
+  function big(on){ BIG=on; const a=document.getElementById("abar"); if(a) a.classList.toggle("gxbig",on); try{ localStorage.setItem("gir_abar_big",on?"1":"0"); }catch(e){} bigb(); }
+  function bigb(){ const a=document.getElementById("abar"), h=a&&a.querySelector(".al"); if(!h) return; if(a.classList.contains("gxbig")!==BIG) a.classList.toggle("gxbig",BIG);
+    let b=h.querySelector(".gxbigb"); if(!b){ b=document.createElement("span"); b.className="gxbigb"; b.addEventListener("click",e=>{ e.stopPropagation(); e.preventDefault(); big(!BIG); }); h.appendChild(b); }
+    const t=BIG?"✕ SMALL":"⤢ BIG"; if(b.textContent!==t){ b.textContent=t; b.title=BIG?"put the alerts back in their box (Esc)":"open the alerts as a big readable list"; } }
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&BIG) big(false); });
+  new MutationObserver(()=>{ try{ cap(); link(); bigb(); }catch(e){} }).observe(document.body,{childList:true,subtree:true});
   setTimeout(()=>{ link(); pull(); },2500); setInterval(pull,30000);
 })();
 </script>
