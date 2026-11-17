@@ -28,6 +28,7 @@ TRIG = (("09:20", "G"), ("09:45", "ET"), ("10:00", "BT"), ("10:30", "AB"), ("11:
 #   sectoropt.py, 14 days, real option: 88 trades, 53% won, +₹97,000 with the CARD rule (stop 2.5%, half +1.5%, rest 15:10) - scored that way.
 RULE = {"A": (0.025, 0.035, 120), "B": (0.025, 0.035, 120), "E": (0.025, 0.015, None), "T": (0.025, 0.035, 120), "G": (0.04, 0.035, None)}
 WINDOW_MIN = 4
+GAP_S = 0.55             # patch 367: the pause after each history call of the morning levels (was 0.36)
 _lv = {"day": None, "lv": {}, "busy": False}
 
 
@@ -56,17 +57,28 @@ def levels(kite, FO, day):
     import getdata
     tok = {i["tradingsymbol"]: int(i["instrument_token"]) for i in getdata.call(kite.instruments, "NSE") if i.get("instrument_type") == "EQ"}
     d0 = dt.date.fromisoformat(day); frm = dt.datetime.combine(d0 - dt.timedelta(days=45), dt.time(9, 15)); to = dt.datetime.combine(d0 - dt.timedelta(days=1), dt.time(15, 30))
-    lv = {}
-    for s in sorted(FO):
+    lv = {}; st = {"refused": 0, "novol": 0, "failed": 0}
+
+    def hist(*a):                                            # patch 367: Kite allows ~3 history calls a second for the WHOLE account (the engine too):
+        for k in range(3):                                   #   half that speed, and a refusal is waited out and asked again (17 Nov: 2 shares lost at the open)
+            try:
+                r = kite.historical_data(*a); time.sleep(GAP_S); return r
+            except Exception as ex:
+                if "too many" not in str(ex).lower() or k == 2:
+                    raise
+                st["refused"] += 1; time.sleep(3 + 3 * k)
+    for n_, s in enumerate(sorted(FO)):
         if s not in tok:
             continue
+        if n_ == 8 and st["failed"] >= 8:                    # nothing answers (no Kite session yet?) - stop; a later attempt tries again
+            print("seccand levels: Kite is not answering - stopped, will try again", flush=True); return {}
         try:
-            rows = [r for r in kite.historical_data(tok[s], frm, to, "day") if r["date"].date() < d0][-20:]; time.sleep(0.36)
+            rows = [r for r in hist(tok[s], frm, to, "day") if r["date"].date() < d0][-20:]
             if len(rows) >= 10:
                 lv[s] = [max(float(r["high"]) for r in rows), min(float(r["low"]) for r in rows), float(rows[-1]["close"]), float(rows[-2]["close"])]   # + the last two closes (E)
                 lv[s] += [float(rows[-1]["high"]), float(rows[-1]["low"])]                 # patch 361: yesterday's high / low (T)
                 try:                                                                       # patch 361: its normal volume by 09:45 and by 10:00 (the last 10 days, 5-minute candles)
-                    b5 = kite.historical_data(tok[s], dt.datetime.combine(d0 - dt.timedelta(days=16), dt.time(9, 15)), to, "5minute"); time.sleep(0.36)
+                    b5 = hist(tok[s], dt.datetime.combine(d0 - dt.timedelta(days=16), dt.time(9, 15)), to, "5minute")
                     v1, v2 = {}, {}
                     for r in b5:
                         m_ = r["date"].hour * 60 + r["date"].minute
@@ -76,22 +88,38 @@ def levels(kite, FO, day):
                                 v1[r["date"].date()] = v1.get(r["date"].date(), 0) + float(r["volume"])
                     ds_ = sorted(v2)[-10:]
                     lv[s] += [sum(v1.get(d_, 0) for d_ in ds_) / len(ds_), sum(v2[d_] for d_ in ds_) / len(ds_)] if len(ds_) >= 5 else [0.0, 0.0]
+                    st["novol"] += len(ds_) < 5
                 except Exception:
-                    lv[s] += [0.0, 0.0]
+                    lv[s] += [0.0, 0.0]; st["novol"] += 1
         except Exception as ex:
-            print("seccand levels %s: %s" % (s, str(ex)[:60]), flush=True)
+            st["failed"] += 1; print("seccand levels %s: %s" % (s, str(ex)[:60]), flush=True)
     if len(lv) > 50:
         _save({"day": day, "lv": lv}, LVF)
+    print("seccand levels: %d shares read · %d not read · %d without a normal volume (no STRONG3 for them) · Kite refusals waited out: %d" % (len(lv), st["failed"], st["novol"], st["refused"]), flush=True)
     return lv
 
 
 def _levels_bg(kite, FO, day):
     try:
-        _lv["lv"] = levels(kite, FO, day); _lv["day"] = day
-        print("seccand: 20-day levels for %d F&O shares" % len(_lv["lv"]), flush=True)
+        lv_ = levels(kite, FO, day)
+        if len(lv_) > 50:                                    # patch 367: a failed fetch is not "done" - prefetch / tick try again
+            _lv["lv"] = lv_; _lv["day"] = day
+        print("seccand: 20-day levels for %d F&O shares" % len(lv_), flush=True)
     except Exception as ex:
         print("seccand levels: %s" % str(ex)[:120], flush=True)
     _lv["busy"] = False
+
+
+def prefetch(n, FO, kite):
+    """patch 367: seclive.py calls this while the market is closed. Between 08:45 and 09:13 on a market morning the day's levels are fetched in the
+    background - before the open, when the engine is not using Kite's history allowance. Never raises."""
+    try:
+        day = str(n.date()); hm = n.strftime("%H:%M")
+        if n.weekday() < 5 and "08:45" <= hm < "09:13" and _lv["day"] != day and not _lv["busy"]:
+            also = {s for fo, al, _ in themes().values() for s in al.split()}
+            _lv["busy"] = True; threading.Thread(target=_levels_bg, args=(kite, set(FO) | also, day), daemon=True).start()
+    except Exception as ex:
+        print("seccand prefetch: %s" % str(ex)[:120], flush=True)
 
 
 def themes():
@@ -197,7 +225,7 @@ def tick(n, SEC, W, Q, FO, kite):
     """seclive.py calls this every pass in market hours. Never raises."""
     try:
         day = str(n.date()); hm = n.strftime("%H:%M")
-        if _lv["day"] != day and not _lv["busy"] and hm >= "09:18":
+        if _lv["day"] != day and not _lv["busy"] and hm >= "09:22":         # patch 367: normally fetched BEFORE the open (prefetch); only if that did not happen, after the first minutes
             also = {s for fo, al, _ in themes().values() for s in al.split()}
             _lv["busy"] = True; threading.Thread(target=_levels_bg, args=(kite, set(FO) | also, day), daemon=True).start()
         st = state(day); changed = False

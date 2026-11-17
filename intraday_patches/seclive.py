@@ -258,6 +258,7 @@ def main():
                     if live:
                         seccand.tick(n, SEC, W, Q, FO, kite)
                     else:
+                        seccand.prefetch(n, FO, kite)                         # patch 367: the day's levels before the open, not at it
                         seccand.after_close(n)
                 except Exception as ex:
                     log("seccand: %s" % str(ex)[:120])
