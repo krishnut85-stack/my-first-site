@@ -9,6 +9,8 @@
 #     The banner only for runs found by 10:30 (the 17 Nov replay: early runs' F&O shares +0.30% to 15:10, 57% its way; runs 10:35-12:30
 #     turned back, -0.30%, 41%) - later runs show in RUNS TODAY marked "late", with no banner.
 #   · python3 secsurge.py backtest - the same rule replayed on the kept 5-minute days: what the sector and its F&O shares did after each alert.
+#   · 🔻 TURNING OVER / 🔺 TURNING UP (turnstudy.py, 67 days): a leader (+1.5%+, top 3) gives back 1% with 70%+ of its shares falling (PE side),
+#     the weakest (-1.5%, bottom 3) comes back 0.75% (CE side) - from 10:30, a banner to 12:30, later ones listed as "late"; information only.
 #   Needs patch 369. Replaces seclive.py, adds secsurge.py, edits home.html. Restarts the sector reader and the dashboard.
 set -u
 D=/home/globalbot/intraday; R=/root/sectorbot; B=origin/ccr-67e340f1-sko8xd; TS=$(date +%m%d%H%M%S); W=$(mktemp -d)
@@ -44,6 +46,11 @@ cat > $W/surge.html <<'SURGE'
   function shut(key,el){ seen[key]=1; try{ const d=Object.keys(seen); if(d.length>200) d.slice(0,100).forEach(x=>delete seen[x]); localStorage.setItem("gir_surge_seen",JSON.stringify(seen)); }catch(e){} if(el) el.remove(); }
   function open(sec){ try{ mkSec(sec); }catch(e){ try{ if(window.gxSecCard) window.gxSecCard(sec); }catch(_){} } }
   function txt(e){ const up=e.dir>0;
+    if(e.kind==="turn") return `<span><b class="h ${up?"u":"d"}">${up?"🔺":"🔻"} ${H(e.sec.toUpperCase())} ${up?"TURNING UP":"TURNING OVER"}</b> <span class="m">${H(e.t)}</span><br>`+
+      `${up?"was down":"led at"} ${P(e.ext)} (${up?"bottom":"top"} 3 then) · now ${P(e.day)}, ${(+e.back).toFixed(2)}% back · ${e.br}% of its ${e.nn} shares ${up?"rising":"falling"} in 30 min`+
+      (e.one?` · <span class="w">⚠ mostly ${H(e.one[0])}</span>`:"")+
+      ((e.fo||[]).length?`<br>F&amp;O ${up?"rising":"falling"} most: ${(e.fo||[]).map(f=>`<b>${H(f[0])}</b> <span class="${f[1]>=0?"u":"d"}">${P(f[1])}</span>`).join(" · ")} → the ${up?"CE":"PE"} side`:"")+
+      `<br><span class="m">information - in the replay (67 days) a ${up?"weakest sector turning up":"leader rolling over"} before 12:30: its F&amp;O shares went on ${up?"+0.19%":"+0.25%"} its way to 15:10 (${up?"58":"61"}% of the time); not a trade by itself · ▸ open its sector card</span></span>`;
     return `<span><b class="h ${up?"u":"d"}">${up?"🚀":"🔻"} ${H(e.sec.toUpperCase())} ${up?"RUNNING UP":"FALLING FAST"}</b> <span class="m">${H(e.t)}</span><br>`+
       `${P(e.r)} in ${e.win} min (middle sector ${P(e.mid)}) · ${P(e.day)} today, no.${e.rank} of ${e.of} · ${e.br}% of its ${e.nn} shares ${up?"up":"down"}`+
       (e.one?` · <span class="w">⚠ mostly ${H(e.one[0])}</span>`:"")+
@@ -57,7 +64,7 @@ cat > $W/surge.html <<'SURGE'
       el.addEventListener("click",ev=>{ if(ev.target.closest(".x")){ shut(key,el); return; } shut(key,el); open(e.sec); });
       box.prepend(el); while(box.children.length>3) box.lastChild.remove(); });
     const q=document.getElementById("mk-don"); if(q&&q.parentNode){ let r=document.getElementById("gxrt"); if(!r){ r=document.createElement("div"); r.id="gxrt"; q.parentNode.insertBefore(r,q); }
-      r.innerHTML=`<span>RUNS TODAY</span>`+E.slice().reverse().map(e=>`<a class="${e.dir>0?"u":"d"}${e.late?" late":""}" data-s="${H(e.sec)}" title="${H(e.sec)}: ${P(e.r)} in ${e.win} min at ${H(e.t)}${e.late?" · LATE RUN (after 10:30) - in the replay late runs turned back: F&O shares -0.30% to 15:10, only 41% its way":""}">${H(e.t)} ${e.dir>0?"🚀":"🔻"} ${H(e.sec.toUpperCase())}${e.late?" · late":""}</a>`).join("");
+      r.innerHTML=`<span>RUNS TODAY</span>`+E.slice().reverse().map(e=>`<a class="${e.dir>0?"u":"d"}${e.late?" late":""}" data-s="${H(e.sec)}" title="${H(e.sec)}: ${P(e.r)} in ${e.win} min at ${H(e.t)}${e.late?" · LATE RUN (after 10:30) - in the replay late runs turned back: F&O shares -0.30% to 15:10, only 41% its way":""}">${H(e.t)} ${e.kind==="turn"?(e.dir>0?"🔺 TURN ":"🔻 TURN "):(e.dir>0?"🚀":"🔻")} ${H(e.sec.toUpperCase())}${e.late?" · late":""}</a>`).join("");
       r.onclick=ev=>{ const a=ev.target.closest("a[data-s]"); if(a) open(a.dataset.s); }; } }
   async function pull(){ if(document.hidden) return; try{ const r=await fetch("seclive?k="+encodeURIComponent(KEY()),{cache:"no-store"}); if(r.ok){ const v=await r.json(); if(v&&v.sectors) draw(v); } }catch(e){} }
   setTimeout(pull,3000); setInterval(pull,20000);

@@ -13,6 +13,9 @@ half of the days +0.10%, the second +0.38%); runs found 10:35-12:30 TURNED BACK 
 further 0.50% on the day. From 09:30 (30 minutes of record needed) to 15:00. Up = 🚀 RUNNING UP, down = 🔻 FALLING FAST.
 Each alert carries: the sector, the move in the window and on the day, its rank now, how many shares are moving, ⚠ when one company is half or
 more of it (patch 369), and its F&O shares leading the move.
+THE TURN (turnstudy.py, 67 days): a sector that LED the day (+1.5%+ at its high, top 3 then) and has given back 1% with 70%+ of its shares falling
+in 30 min -> 🔻 TURNING OVER (PE side); the WEAKEST (-1.5% at its low, bottom 3) back up 0.75% with 70%+ rising -> 🔺 TURNING UP (CE side).
+From 10:30; a banner only to 12:30 (after that the turn did nothing in the test - kept as "late"). Information, not a trade by itself.
 The test: at 15:10 each alert is scored - did the sector go on its way from the alert to 15:10, against the middle sector? Kept per day in
 data/secsurge/<day>.json, so after a few weeks the numbers say whether an alert is worth acting on. Nothing rings (patch 191's rule: only
 trade calls, critical and regulator alerts ring); the page shows it. Orders nothing, sends nothing.
@@ -25,9 +28,12 @@ D = os.path.dirname(os.path.abspath(__file__))
 SD = os.path.join(D, "data", "secsurge")
 RULE = {"30": (0.80, 0.50)}         # window -> (its move, more than the middle sector), in % - 17 Nov replay: the 15-minute burst was noise
 NO_ONE = True                        # 17 Nov replay: a run carried by one company (patch 369 ⚠) did nothing after (235 alerts, +0.00%)
+TURN = {-1: (1.5, 1.00, 0.70), 1: (1.5, 0.75, 0.70)}   # turnstudy.py 17 Nov (67 days): a leader that gave back 1% (PE) +0.13% steady, before 12:30 +0.19%;
+                                                       # the weakest that came back 0.75% (CE) +0.29% steady - (extreme %, given back %, breadth)
+TURN_BANNER_TO = "12:30"                               # turns after 12:30: -0.06% (PE) - kept as "late", no banner
 BANNER_TO = "10:30"                   # 17 Nov replay (67 days): runs found by 10:30 - F&O shares +0.30% to 15:10, 57% its way; runs 10:35-12:30 TURNED BACK -0.30%, 41%
 BREADTH, MIN_N, AGAIN_MIN, AGAIN_MORE = 0.70, 5, 45, 0.50
-_S = {"day": None, "ev": [], "end": None}
+_S = {"day": None, "ev": [], "end": None, "hl": {}}
 
 
 def _path(day):
@@ -36,10 +42,10 @@ def _path(day):
 
 def _load(day):
     if _S["day"] != day:
-        _S.update({"day": day, "ev": [], "end": None})
+        _S.update({"day": day, "ev": [], "end": None, "hl": {}})
         try:
             j = json.load(open(_path(day)))
-            _S["ev"], _S["end"] = j.get("ev") or [], j.get("end")
+            _S["ev"], _S["end"], _S["hl"] = j.get("ev") or [], j.get("end"), j.get("hl") or {}
         except Exception:
             pass
 
@@ -47,7 +53,7 @@ def _load(day):
 def _save():
     try:
         os.makedirs(SD, exist_ok=True); p = _path(_S["day"])
-        json.dump({"day": _S["day"], "ev": _S["ev"], "end": _S["end"]}, open(p + ".tmp", "w"), ensure_ascii=False); os.replace(p + ".tmp", p)
+        json.dump({"day": _S["day"], "ev": _S["ev"], "end": _S["end"], "hl": _S["hl"]}, open(p + ".tmp", "w"), ensure_ascii=False); os.replace(p + ".tmp", p)
     except Exception:
         pass
 
@@ -86,6 +92,40 @@ def check(V, n):
                 e = {"t": hm, "late": hm > BANNER_TO, "sec": x["name"], "dir": dr, "win": int(w), "r": round(r, 2), "mid": round(md, 2), "day": x["chg"], "mday": round(_med([y["chg"] for y in S]), 2), "rank": rank.get(x["name"]),
                      "of": len(S), "br": round(100 * br), "nn": nn, "one": x.get("one"), "fo": [[f[0], f[1]] for f in fol[:4]], "lead": [[t[0], t[1], t[2]] for t in lead[:3]]}
                 _S["ev"].append(e); new.append(e)
+    if "09:20" <= hm <= "15:00":                                         # THE TURN: a top-3 leader rolling over / a bottom-3 laggard turning up
+        order = sorted(S, key=lambda x: -x["chg"]); rk = {x["name"]: i for i, x in enumerate(order)}; nS = len(order); hl_changed = False
+        for x in S:
+            h = _S["hl"].setdefault(x["name"], {"mx": x["chg"], "mxr": rk[x["name"]], "mn": x["chg"], "mnr": nS - 1 - rk[x["name"]]})
+            if x["chg"] >= h["mx"]:
+                h["mx"], h["mxr"] = x["chg"], rk[x["name"]]; hl_changed = True
+            if x["chg"] <= h["mn"]:
+                h["mn"], h["mnr"] = x["chg"], nS - 1 - rk[x["name"]]; hl_changed = True
+            if hm < "10:30":
+                continue
+            d30 = (x.get("rotx") or {}).get("30") or {}; nn = d30.get("n") or 0
+            for dr in (-1, 1):
+                ext_min, back, brd = TURN[dr]
+                if any(e.get("kind") == "turn" and e["sec"] == x["name"] and e["dir"] == dr for e in _S["ev"]):
+                    continue
+                if dr < 0:
+                    ok = h["mx"] >= ext_min and h["mxr"] <= 2 and x["chg"] <= h["mx"] - back; ext = h["mx"]; br = (d30.get("dn") or 0) / nn if nn else 0
+                else:
+                    ok = h["mn"] <= -ext_min and h["mnr"] <= 2 and x["chg"] >= h["mn"] + back; ext = h["mn"]; br = (d30.get("up") or 0) / nn if nn else 0
+                if not ok or br < brd or nn < MIN_N:
+                    continue
+                lead = [t for t in (d30.get("bot") if dr < 0 else d30.get("top")) or [] if t[1] * dr > 0]
+                fol = sorted([f for f in (x.get("fol") or [])], key=lambda f: f[1] * dr, reverse=True)
+                e = {"t": hm, "kind": "turn", "late": hm > TURN_BANNER_TO, "sec": x["name"], "dir": dr, "win": 30, "r": round(((x.get("rot") or {}).get("30") or 0), 2), "mid": 0.0, "day": x["chg"], "ext": round(ext, 2), "back": round(abs(x["chg"] - ext), 2),
+                     "mday": round(_med([y["chg"] for y in S]), 2), "rank": rk[x["name"]] + 1, "of": nS, "br": round(100 * br), "nn": nn, "one": x.get("one"),
+                     "fo": ([[t[0], t[1]] for t in lead if t[2]][:4] or [[f[0], f[1]] for f in fol[:4]]), "fo_win": bool([t for t in lead if t[2]]),
+                     "lead": [[t[0], t[1], t[2]] for t in lead[:3]]}
+                for z in [z for z in new if z.get("kind") != "turn" and z["sec"] == x["name"] and z["dir"] == dr and z["t"] == hm]:   # the turn says it - not a run too
+                    new.remove(z); _S["ev"].remove(z)
+                _S["ev"].append(e); new.append(e)
+        if hl_changed and not new:
+            _S["_dirty"] = _S.get("_dirty", 0) + 1
+            if _S["_dirty"] >= 12:                                       # the day's highs / lows kept about every minute (a restart keeps them)
+                _S["_dirty"] = 0; _save()
     if hm >= "15:10" and _S["ev"] and not _S["end"]:                      # the score: from the alert to 15:10, against the middle sector
         mdd = _med([x["chg"] for x in S]); ch = {x["name"]: x["chg"] for x in S}
         _S["end"] = {"t": hm, "mid": round(mdd, 2), "chg": {k: round(v, 2) for k, v in ch.items()}}
@@ -102,6 +142,11 @@ def check(V, n):
 
 
 def line(e):
+    if e.get("kind") == "turn":
+        return "%s %s %s %s · %s %+.2f%% (%s 3 then) · now %+.2f%%, %.2f%% back · %d%% of its %d shares %s in 30 min%s" % (
+            e["t"], "🔻" if e["dir"] < 0 else "🔺", e["sec"].upper(), "TURNING OVER" if e["dir"] < 0 else "TURNING UP", "led at" if e["dir"] < 0 else "was down",
+            e["ext"], "top" if e["dir"] < 0 else "bottom", e["day"], e["back"], e["br"], e["nn"], "falling" if e["dir"] < 0 else "rising",
+            (" · F&O %s: " % ("moving most in 30 min" if e.get("fo_win") else "weakest today" if e["dir"] < 0 else "strongest today") + ", ".join("%s %+.1f%%" % (f[0], f[1]) for f in e["fo"])) if e.get("fo") else "")
     return "%s %s %s %s%.2f%% in %d min (middle sector %+.2f%%) · %+.2f%% on the day, no.%s of %s · %d%% of %d shares that way%s%s" % (
         e["t"], "🚀" if e["dir"] > 0 else "🔻", e["sec"].upper(), "+" if e["r"] > 0 else "", e["r"], e["win"], e["mid"], e["day"], e["rank"], e["of"], e["br"], e["nn"],
         (" · ⚠ mostly %s" % e["one"][0]) if e.get("one") else "", (" · F&O: " + ", ".join("%s %+.1f%%" % (f[0], f[1]) for f in e["fo"])) if e.get("fo") else "")
