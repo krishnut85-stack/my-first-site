@@ -4,7 +4,8 @@ macro news. You need to catch these news and observe."). GIR's news desks alread
 GIR's list at 22:59). What was missing: one list BEFORE THE OPEN of what came after yesterday's close, which F&O shares it touches and which way
 - and a record of what those shares then did, so we learn whether such news is all in the opening gap or still pays after the open.
   make    (08:35, before the open) the lines GIR collected since the last close - the market-wide desk (macro.py: Finance Ministry, RBI, SEBI,
-          trade duties, the Fed, crude ...) and the company news GIR sent (alerts) - are read once by Claude (OVERNIGHT_MODEL, else
+          trade duties, the Fed, crude ...) and the company news GIR sent (alerts) - plus (patch 362) the headlines of the Indian business papers
+          and the world's wires and markets (Google News searches) - are read once by Claude (OVERNIGHT_MODEL, else
           claude-haiku-5-5; the key in the server's .env). It may use only those lines and only GIR's F&O shares, and returns for each story:
           time, headline, the F&O shares touched, up / down / unclear, strong / moderate / weak, one clause why. -> data/overnight.json
   score   (15:50) every listed share with a direction: the OPENING GAP its way, open -> 10:00 and open -> 15:10 its way (Kite 5-minute prices)
@@ -27,6 +28,7 @@ Rules:
 - "shares" may contain only symbols from the F&O list given, the ones most directly touched (at most 6). If a story touches a whole sector, list that sector's largest F&O shares. If it touches no F&O share, drop it.
 - "dir": "up", "down" or "unclear". Say "unclear" when the line does not tell - do not guess.
 - "strength": "strong" (a decision with a number that changes profits), "moderate", or "weak".
+- A world headline that names no Indian company (US shares, the Fed, crude, metals, the dollar, the US FDA, visas) may be kept only where the link to an Indian sector is direct and well known - crude to oil marketers, paints and airlines; US technology shares and visas to IT; metal prices to metals; US drug rules to pharma; the dollar to exporters. Give it at most "moderate" and begin its "why" with "read-across:".
 - At most 12 items, the strongest first.
 
 Answer with a JSON array only, no other text. Each item: {"time": "HH:MM", "headline": "...", "shares": ["SYM"], "dir": "...", "strength": "...", "why": "one short clause"}. If nothing qualifies, answer []."""
@@ -50,6 +52,44 @@ def last_close(now):
     while d.weekday() > 4:
         d -= dt.timedelta(days=1)
     return dt.datetime.combine(d, dt.time(15, 30), IST)
+
+
+# patch 362: the newspapers and the world (Rama, 17 Nov: "daily Indian newspapers like Business Standard and The Hindu, and worldwide newspapers?").
+#   GIR's market desk keeps a headline only when it names India - so the Fed, crude, US shares, metal prices never reached the list. For the
+#   morning list these Google News searches are read once (headlines only - the papers' full text is behind their paywalls):
+WORLD = (("Indian papers", '(site:thehindubusinessline.com OR site:business-standard.com OR site:financialexpress.com OR site:thehindu.com) (stocks OR shares OR sector OR tariff OR duty OR policy OR ban OR approval OR results) when:1d'),
+         ("world wires on India", '(site:reuters.com OR site:bloomberg.com OR site:cnbc.com OR site:ft.com OR site:wsj.com) (India OR Indian) (stocks OR market OR economy OR company OR tariff) when:1d'),
+         ("US markets", '("Wall Street" OR Nasdaq OR "S&P 500" OR "Federal Reserve" OR "Treasury yields" OR "US inflation") (falls OR rises OR slumps OR rallies OR record OR cut OR hike OR surges) when:1d'),
+         ("commodities", '(crude OR Brent OR "oil prices" OR copper OR aluminium OR "steel prices" OR "iron ore" OR gold) (jumps OR falls OR surges OR slumps OR record OR plunges) when:1d'),
+         ("trade and tariffs", '(tariff OR "anti-dumping" OR sanctions OR "export ban" OR "import duty") (India OR China OR EU OR "United States") when:1d'),
+         ("pharma and IT abroad", '("US FDA" OR USFDA OR "H-1B" OR "visa fee" OR "drug pricing" OR "Nasdaq tech" OR "AI spending") when:1d'))
+
+
+def world(since):
+    """[(when, source, headline)] from the searches above, published since the last close - any search that fails is skipped"""
+    import requests, xml.etree.ElementTree as ET
+    from email.utils import parsedate_to_datetime
+    from urllib.parse import quote
+    out = []
+    for name, q in WORLD:
+        try:
+            r = requests.get("https://news.google.com/rss/search?q=" + quote(q) + "&hl=en-IN&gl=IN&ceid=IN:en", headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
+            if r.status_code != 200:
+                continue
+            n = 0
+            for it in ET.fromstring(r.content).iter("item"):
+                try:
+                    t = parsedate_to_datetime(it.findtext("pubDate") or "").astimezone(IST)
+                except Exception:
+                    continue
+                h = (it.findtext("title") or "").strip(); src = (it.findtext("source") or "").strip() or name
+                if t >= since and h:
+                    out.append((t, "%s · %s" % (src, name), re.sub(r"\s+-\s+[^-]{2,40}$", "", h))); n += 1
+                    if n >= 22:
+                        break
+        except Exception:
+            pass
+    return out
 
 
 def lines(now):
@@ -84,8 +124,11 @@ def lines(now):
         c.close()
     except Exception:
         pass
+    own = len(out)
+    for t, src, h in world(since):
+        add(t, src, h)
     out.sort(key=lambda x: x[0])
-    return since, out[-140:]
+    return since, out[-230:]
 
 
 def make(now=None):

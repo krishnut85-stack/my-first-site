@@ -16,6 +16,7 @@ Orders nothing, sends nothing; keeps the months in data/mfsec.json.
   cd /home/globalbot && set -a && source .env && set +a && cd intraday && python3 mfsec.py [months=24]
   python3 mfsec.py probe     fetch the newest month and print its first rows (to check the reader against SEBI's page)
   python3 mfsec.py update    only fetch the months that are new
+  python3 mfsec.py newest    which is the newest month SEBI's site has (17 Nov: its index stops at May 2025 - the 2026 pages answer "not found")
   -> prints, saves data/mfsec.txt"""
 import os, re, sys, json, time, datetime as dt
 D = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, D)
@@ -93,15 +94,22 @@ def get(y, m, quiet=True):
     return None, None
 
 
-def load():
+def load(all_=False):
+    """the months kept. For the page (all_=False) an old record is NOT given: SEBI's page stopped in 2025 (probe, 17 Nov) - holdings more than
+    4 months old must not be shown as where the funds are now."""
     try:
-        return json.load(open(STORE))
+        j = json.load(open(STORE))
     except Exception:
         return {"m": {}, "files": {}}
+    if not all_ and j.get("m"):
+        k = max(j["m"]); t = dt.date.today()
+        if (t.year * 12 + t.month) - (int(k[:4]) * 12 + int(k[5:])) > 4:
+            return {"m": {}, "files": j.get("files", {}), "stale": k}
+    return j
 
 
 def update(today, n):
-    S = load(); new = fails = 0
+    S = load(True); new = fails = 0
     for i, (y, m) in enumerate(months(today, n)):
         k = "%04d-%02d" % (y, m)
         st = S["files"].get(k) or ""
@@ -168,6 +176,16 @@ def main():
     today = SL.now().date()
     if sys.argv[1:2] == ["probe"]:
         return probe(today)
+    if sys.argv[1:2] == ["newest"]:                       # which is the newest month SEBI's site has at all (looks back 3 years)
+        found = []
+        for y, m in months(today, 36):
+            html, u = get(y, m)
+            if html and parse(html):
+                found.append("%04d-%02d" % (y, m))
+                if len(found) >= 3:
+                    break
+            time.sleep(0.2)
+        print("SEBI's newest months with the industry table: %s" % (", ".join(found) or "none in the last 3 years")); return
     if sys.argv[1:2] == ["update"]:
         S, new = update(today, 4); print("mfsec: %d new month(s) · %d kept · the newest is %s" % (new, len(S["m"]), max(S["m"]) if S["m"] else "none")); return
     nm = int(sys.argv[1]) if sys.argv[1:] and sys.argv[1].isdigit() else 24
