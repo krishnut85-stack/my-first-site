@@ -29,7 +29,8 @@ Rules:
 - "dir": "up", "down" or "unclear". Say "unclear" when the line does not tell - do not guess.
 - "strength": "strong" (a decision with a number that changes profits), "moderate", or "weak".
 - A world headline that names no Indian company (US shares, the Fed, crude, metals, the dollar, the US FDA, visas) may be kept only where the link to an Indian sector is direct and well known - crude to oil marketers, paints and airlines; US technology shares and visas to IT; metal prices to metals; US drug rules to pharma; the dollar to exporters. Give it at most "moderate" and begin its "why" with "read-across:".
-- At most 12 items, the strongest first.
+- BUDGET talk (pre-budget meetings, what an industry asks for, what economists advise) is an expectation, not a decision: keep it only when it names a sector or a tax that F&O shares depend on, give it "weak" - or "moderate" when a minister or a named official signals it - and begin its "why" with "budget:". A decision already taken is rated like any other news.
+- At most 14 items, the strongest first.
 
 Answer with a JSON array only, no other text. Each item: {"time": "HH:MM", "headline": "...", "shares": ["SYM"], "dir": "...", "strength": "...", "why": "one short clause"}. If nothing qualifies, answer []."""
 
@@ -62,6 +63,8 @@ WORLD = (("Indian papers", '(site:thehindubusinessline.com OR site:business-stan
          ("US markets", '("Wall Street" OR Nasdaq OR "S&P 500" OR "Federal Reserve" OR "Treasury yields" OR "US inflation") (falls OR rises OR slumps OR rallies OR record OR cut OR hike OR surges) when:1d'),
          ("commodities", '(crude OR Brent OR "oil prices" OR copper OR aluminium OR "steel prices" OR "iron ore" OR gold) (jumps OR falls OR surges OR slumps OR record OR plunges) when:1d'),
          ("trade and tariffs", '(tariff OR "anti-dumping" OR sanctions OR "export ban" OR "import duty") (India OR China OR EU OR "United States") when:1d'),
+         # patch 363: the BUDGET watch (Rama, 17 Nov: "from yesterday the budget meeting started") - what each industry asks for and what officials signal
+         ("budget", '("pre-budget" OR "Budget 2027" OR "Union Budget" OR "budget expectations" OR "budget wishlist") (sector OR industry OR seeks OR urges OR demands OR tax OR duty OR STT OR LTCG OR allocation OR incentive) when:1d'),
          ("pharma and IT abroad", '("US FDA" OR USFDA OR "H-1B" OR "visa fee" OR "drug pricing" OR "Nasdaq tech" OR "AI spending") when:1d'))
 
 
@@ -163,7 +166,7 @@ def make(now=None):
         st["items"].append({"time": str(x.get("time") or "")[:11], "headline": str(x.get("headline") or "")[:170], "shares": sh,
                             "dir": x.get("dir") if x.get("dir") in ("up", "down") else "unclear", "strength": x.get("strength") if x.get("strength") in ("strong", "moderate", "weak") else "weak",
                             "why": str(x.get("why") or "")[:140]})
-    st["items"] = st["items"][:12]; st["tokens"] = [r.usage.input_tokens, r.usage.output_tokens]
+    st["items"] = st["items"][:14]; st["tokens"] = [r.usage.input_tokens, r.usage.output_tokens]
     if r.stop_reason == "refusal":
         st["note"] = "the model declined to read"
     _save(st, OUT)
