@@ -4,6 +4,8 @@ to shoot the gun. What can we expect?"). Overnight news shows first as the OPENI
 09:15 is what the share does AFTER the open. Every F&O share, 2 years of Kite's daily prices (and the 5-minute prices kept, for the timing):
   1) THE GAP BY SIZE   a share opening 1-2% / 2-3% / 3-5% / 5%+ away from yesterday's close, up and down: from the open to the close does it
                  CONTINUE (the news trade pays) or come back? How often is the whole gap filled the same day?
+  2b) THE BIG GAPS  3%+ gaps on a market gap day against days the market did not gap, and the share gapping by itself - with the number of
+                 different days behind each line (many cases on few days is one event counted many times)
   2) WHOSE NEWS  a 2%+ gap when the share's whole SECTOR gapped the same way (sector news: a duty, a policy, Nasdaq for IT) · when the whole
                  MARKET gapped · when the share gapped ALONE (its own news: results, an order, an approval)
   3) THE SECTOR  a sector opening 0.7%+ away from the market (all its NSE shares, by size): does the sector go on from the open, against the market?
@@ -28,7 +30,7 @@ def row(name, X, mid, extra=""):
         say("    %-46s %5d cases - too few" % (name, len(X))); return
     c = np.array([x[1] for x in X]); a = np.array([x[1] for x in X if x[0] < mid]); b = np.array([x[1] for x in X if x[0] >= mid])
     ok = len(a) >= 15 and len(b) >= 15 and a.mean() * b.mean() > 0 and abs(c.mean()) >= 0.0015 and min(abs(a.mean()), abs(b.mean())) >= 0.0007
-    say("    %-46s %5d cases │ from the open %s │ continued %2d%% │ gap filled the same day %2d%% │ halves %s / %s %s%s" % (name, len(X), pc(c.mean()), 100 * (c > 0).mean(),
+    say("    %-46s %5d cases %3d days │ from the open %s │ continued %2d%% │ gap filled the same day %2d%% │ halves %s / %s %s%s" % (name, len(X), len({x[0] for x in X}), pc(c.mean()), 100 * (c > 0).mean(),
         100 * np.mean([x[2] for x in X]), pc(a.mean() if len(a) else float("nan")), pc(b.mean() if len(b) else float("nan")), ("✔ CONTINUES" if c.mean() > 0 else "✔ COMES BACK") if ok else "✘ no lean", extra))
 
 
@@ -82,6 +84,16 @@ def main():
         row("gap %s with its SECTOR (sector 0.7%%+ same way)" % nm, [(e[0], e[3], e[4]) for e in B if e[5] == e[5] and e[5] * dr >= 0.007 and abs(e[6]) < 0.007], mid)
         row("gap %s with the whole MARKET (0.7%%+)" % nm, [(e[0], e[3], e[4]) for e in B if e[6] * dr >= 0.007], mid)
         row("gap %s ALONE (its sector under 0.3%%)" % nm, [(e[0], e[3], e[4]) for e in B if e[5] == e[5] and abs(e[5]) < 0.003], mid)
+    say("")
+    say("2b) THE BIG GAPS (3%+) - is the come-back only on the market's bad days, or also when the share gaps by itself?")
+    big3 = [e for e in EV if abs(e[2]) >= 0.03]
+    for dr, nm in ((-1, "DOWN"), (1, "UP")):
+        B = [e for e in big3 if e[2] * dr > 0]
+        row("gap %s 3%%+ on a MARKET gap day (0.7%%+)" % nm, [(e[0], e[3], e[4]) for e in B if e[6] * dr >= 0.007], mid)
+        row("gap %s 3%%+, the market NOT gapping (<0.4%%)" % nm, [(e[0], e[3], e[4]) for e in B if abs(e[6]) < 0.004], mid)
+        row("  of those: ALONE (its sector under 0.3%%)", [(e[0], e[3], e[4]) for e in B if abs(e[6]) < 0.004 and e[5] == e[5] and abs(e[5]) < 0.003], mid)
+        row("  of those: 5%%+", [(e[0], e[3], e[4]) for e in B if abs(e[6]) < 0.004 and abs(e[2]) >= 0.05], mid)
+    say("    'days' = how many different days the cases come from: many cases on few days is one event counted many times")
     say("")
     say("3) THE SECTOR - a sector opening 0.7%+ away from the market: the sector from the open, AGAINST the market")
     for dr, nm in ((1, "sector gap UP against the market"), (-1, "sector gap DOWN against the market")):
