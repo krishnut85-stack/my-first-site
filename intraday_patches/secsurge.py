@@ -6,7 +6,10 @@ Called by seclive.py on every new sector reading (every few seconds, market hour
   · 70%+ of its shares moved that way in those 30 minutes (many shares, not one)
   · it has 5+ shares, and no one company is half or more of its move (patch 369 ⚠)
 (The first rule - 0.60% / 0.40%, or 0.40% / 0.30% in 15 minutes, any sector - gave 13 alerts a day on the 67 kept days, and what came after
-was no better than any F&O share already moving; the 15-minute bursts and the one-company runs were pure noise. "backtest" compares the rules.) The same sector the same way again only after 45 minutes and a
+was no better than any F&O share already moving; the 15-minute bursts and the one-company runs were pure noise. "backtest" compares the rules.)
+THE BANNER only for runs found by 10:30: in the replay those runs' F&O shares went on +0.30% to 15:10 (57% its way - not steady yet: the first
+half of the days +0.10%, the second +0.38%); runs found 10:35-12:30 TURNED BACK (-0.30%, 41% its way, in both halves). Later runs are kept as
+"late" (RUNS TODAY on the page, no banner). The same sector the same way again only after 45 minutes and a
 further 0.50% on the day. From 09:30 (30 minutes of record needed) to 15:00. Up = 🚀 RUNNING UP, down = 🔻 FALLING FAST.
 Each alert carries: the sector, the move in the window and on the day, its rank now, how many shares are moving, ⚠ when one company is half or
 more of it (patch 369), and its F&O shares leading the move.
@@ -22,6 +25,7 @@ D = os.path.dirname(os.path.abspath(__file__))
 SD = os.path.join(D, "data", "secsurge")
 RULE = {"30": (0.80, 0.50)}         # window -> (its move, more than the middle sector), in % - 17 Nov replay: the 15-minute burst was noise
 NO_ONE = True                        # 17 Nov replay: a run carried by one company (patch 369 ⚠) did nothing after (235 alerts, +0.00%)
+BANNER_TO = "10:30"                   # 17 Nov replay (67 days): runs found by 10:30 - F&O shares +0.30% to 15:10, 57% its way; runs 10:35-12:30 TURNED BACK -0.30%, 41%
 BREADTH, MIN_N, AGAIN_MIN, AGAIN_MORE = 0.70, 5, 45, 0.50
 _S = {"day": None, "ev": [], "end": None}
 
@@ -79,7 +83,7 @@ def check(V, n):
                 fol = [f for f in (x.get("fol") or []) if f[1] * dr > 0]
                 fol.sort(key=lambda f: -f[1] * dr)
                 lead = [t for t in (d.get("top") if dr > 0 else d.get("bot")) or [] if t[1] * dr > 0]
-                e = {"t": hm, "sec": x["name"], "dir": dr, "win": int(w), "r": round(r, 2), "mid": round(md, 2), "day": x["chg"], "mday": round(_med([y["chg"] for y in S]), 2), "rank": rank.get(x["name"]),
+                e = {"t": hm, "late": hm > BANNER_TO, "sec": x["name"], "dir": dr, "win": int(w), "r": round(r, 2), "mid": round(md, 2), "day": x["chg"], "mday": round(_med([y["chg"] for y in S]), 2), "rank": rank.get(x["name"]),
                      "of": len(S), "br": round(100 * br), "nn": nn, "one": x.get("one"), "fo": [[f[0], f[1]] for f in fol[:4]], "lead": [[t[0], t[1], t[2]] for t in lead[:3]]}
                 _S["ev"].append(e); new.append(e)
     if hm >= "15:10" and _S["ev"] and not _S["end"]:                      # the score: from the alert to 15:10, against the middle sector
@@ -242,6 +246,7 @@ def backtest():
           ("30 min 1.0% 75%, no ⚠", dict(win={"30": (1.00, 0.60)}, brd=0.75, no_one=True)),
           ("30 min 0.8%, no ⚠, to 12:30", dict(win={"30": (0.80, 0.50)}, brd=0.70, no_one=True, until="12:30")),
           ("30 min, no ⚠, to 10:30", dict(win={"30": (0.60, 0.40)}, brd=0.70, no_one=True, until="10:30")),
+          ("30 min 0.8%, no ⚠, to 10:30 (the banner)", dict(win={"30": (0.80, 0.50)}, brd=0.70, no_one=True, until=BANNER_TO)),
           ("30 min 0.8%, no ⚠, once a day", dict(win={"30": (0.80, 0.50)}, brd=0.70, no_one=True, first=True)),
           ("30 min 0.8%, no ⚠ - 🚀 up only", dict(win={"30": (0.80, 0.50)}, brd=0.70, no_one=True, dr_=1)),
           ("30 min 0.8%, no ⚠ - 🔻 down only", dict(win={"30": (0.80, 0.50)}, brd=0.70, no_one=True, dr_=-1))]
