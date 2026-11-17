@@ -119,7 +119,7 @@ def main():
             nos += 1; continue
         o = outcome(P[s][dd][1], hh * 60 + mm - 555, dr)
         if o:
-            R.append({"d": dd, "k": kind_of(text), "t": t[:5], "mv": o[0], "w": o[1], "s": s})
+            R.append({"d": dd, "k": kind_of(text), "t": t[:5], "mv": o[0], "w": o[1], "s": s, "b": (hh * 60 + mm - 555) // 30})
     if len(R) < 50:
         say("  ❌ only %d alerts could be scored (the rest: no side, or no 5-minute prices for that day) - too few" % len(R)); return
     D_ = sorted({r["d"] for r in R}); mid = D_[len(D_) // 2]
@@ -131,7 +131,7 @@ def main():
         for d, (pc, rows) in dd.items():
             if d not in D_ or pc <= 0:
                 continue
-            for off in range(15, 316, 30):
+            for off in range(15, 346, 5):                         # every 5-minute mark, so each alert meets the yardstick of ITS time of day
                 a = rows[rows[:, 0] <= off - 5]
                 if not len(a):
                     continue
@@ -139,14 +139,22 @@ def main():
                 if abs(mv0) >= 0.005:
                     o = outcome(rows, off, 1 if mv0 > 0 else -1)
                     if o:
-                        Y.append((d, o[0], o[1]))
+                        Y.append((d, o[0], o[1], off // 30))
     av = lambda v: sum(v) / len(v) if v else float("nan")
     y0, y1, y2 = av([x[1] for x in Y]), av([x[1] for x in Y if x[0] < mid]), av([x[1] for x in Y if x[0] >= mid])
+    YB = {}                                                     # the yardstick of the same day and the same half hour
+    for d, mv, w, b in Y:
+        YB.setdefault((d, b), []).append(mv)
+    YB = {k: av(v) for k, v in YB.items() if len(v) >= 5}
+    for r in R:
+        r["e"] = r["mv"] - YB[(r["d"], r["b"])] if (r["d"], r["b"]) in YB else None
+    R = [r for r in R if r["e"] is not None]
     say("  %d alerts scored on %d days (%d skipped: no CE/PE side, or no prices that day) · the halves split at %s" % (len(R), len(D_), nos, dt.date.fromordinal(mid)))
-    say("  YARDSTICK - any F&O share already moving 0.5%%+ that way, every half hour: %d cases · to 15:10 %+.2f%% (halves %+.2f%% / %+.2f%%) · worked %.0f%%" % (
+    say("  YARDSTICK - any F&O share already moving 0.5%%+ that way, every 5 minutes: %d cases · to 15:10 %+.2f%% (halves %+.2f%% / %+.2f%%) · worked %.0f%%" % (
         len(Y), 100 * y0, 100 * y1, 100 * y2, 100 * av([x[2] for x in Y])))
     say("")
-    say("1 EACH ALERT TYPE - what the share did after it, its way · 'worked' = +1.5% before -1% · edge = against the yardstick")
+    say("1 EACH ALERT TYPE - what the share did after it, its way · 'worked' = +1.5% before -1% · edge = against the yardstick OF THE SAME DAY AND HALF HOUR")
+    say("  (so an early alert is not credited for firing when every share moves most - it must beat the shares moving at that same time)")
     say("    %-16s %6s %7s │ %-8s %-7s %-7s │ %s" % ("type", "alerts", "a day", "to 15:10", "its way", "worked", "edge (halves)"))
     G = {}
     for r in R:
@@ -155,9 +163,9 @@ def main():
     for k, X in G.items():
         if len(X) < 15:
             continue
-        e1 = av([r["mv"] for r in X if r["d"] < mid]) - y1; e2 = av([r["mv"] for r in X if r["d"] >= mid]) - y2; e = av([r["mv"] for r in X]) - y0
-        ok = len(X) >= 100 and e1 >= 0.001 and e2 >= 0.001
-        bad = len(X) >= 100 and e1 <= -0.001 and e2 <= -0.001
+        e1 = av([r["e"] for r in X if r["d"] < mid]); e2 = av([r["e"] for r in X if r["d"] >= mid]); e = av([r["e"] for r in X])
+        ok = len(X) >= 100 and e1 == e1 and e2 == e2 and e1 >= 0.001 and e2 >= 0.001
+        bad = len(X) >= 100 and e1 == e1 and e2 == e2 and e1 <= -0.001 and e2 <= -0.001
         rows_out.append((e, "    %-16s %6d %6.1f  │ %+.2f%%  %3.0f%%    %3.0f%%    │ %+.2f%% (%+.2f%% / %+.2f%%) %s" % (
             k[:16], len(X), len(X) / len(D_), 100 * av([r["mv"] for r in X]), 100 * av([1 if r["mv"] > 0 else 0 for r in X]), 100 * av([r["w"] for r in X]),
             100 * e, 100 * e1, 100 * e2, "✔ worth something" if ok else "✘ steadily WORSE than no alert" if bad else "✘ not steady" if len(X) >= 100 else "· too few to judge")))
@@ -175,7 +183,7 @@ def main():
     for nm, lo, hi in (("09:20-10:00", "09:20", "10:00"), ("10:00-11:30", "10:00", "11:30"), ("11:30-13:30", "11:30", "13:30"), ("13:30-15:00", "13:30", "15:00")):
         X = [r for r in R if lo <= r["t"] < hi]
         if X:
-            say("    %-12s %6d alerts │ to 15:10 %+.2f%% · its way %3.0f%% · worked %3.0f%%" % (nm, len(X), 100 * av([r["mv"] for r in X]), 100 * av([1 if r["mv"] > 0 else 0 for r in X]), 100 * av([r["w"] for r in X])))
+            say("    %-12s %6d alerts │ to 15:10 %+.2f%% · its way %3.0f%% · worked %3.0f%% · against shares moving then %+.2f%%" % (nm, len(X), 100 * av([r["mv"] for r in X]), 100 * av([1 if r["mv"] > 0 else 0 for r in X]), 100 * av([r["w"] for r in X]), 100 * av([r["e"] for r in X])))
     try:
         open(os.path.join(D, "data", "alertaudit.txt"), "w").write("\n".join(L) + "\n"); say("  saved: data/alertaudit.txt")
     except Exception as ex:
