@@ -170,10 +170,11 @@ def market_part(now, FO, M=None, cal=None):
         if not bg.get("cases"):
             return (" · not testable (Asia is still trading at 09:15)" if sym in ("^N225", "^HSI", "^KS11", "000001.SS") else
                     " · not tested yet (nightstudy.py)" if not NS else " · too few big nights to test"), "untested"
-        verdict = "ok" if v.get("ok") else "fade" if v.get("fade") else "no"
+        verdict = "ok" if v.get("ok") else "fade" if v.get("fade") else "near" if bg.get("ok") else "no"
         txt = " · tested on %d big nights: the gap went its way %d%% of the time · after the open %+.2f%% beyond the average share %s" % (
             bg["nights"], bg.get("gap_right") or 0, bg.get("a1510") or 0,
-            {"ok": "✔ it paid", "fade": "↺ the shares gave the gap back - do not chase the gap", "no": "✘ not proven - read it for the gap only"}[verdict])
+            {"ok": "✔ it paid", "fade": "↺ after the open the shares went the other way - do not follow this link",
+             "near": "◐ paid after the open on its big nights, not on the smaller ones - not proven", "no": "✘ not proven - read it for the gap only"}[verdict])
         return txt, verdict
     for m in M:
         if not (m.get("ok") and m.get("big")):
