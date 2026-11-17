@@ -214,17 +214,18 @@ def update(today, n):
     S = load(); E = ends(today, n); new = fails = 0
     for i, d in enumerate(E):
         k = str(d)
-        if S["files"].get(k) and (S["files"][k] != "none" or i > 2):
+        st = S["files"].get(k) or ""
+        if st and not st.startswith("none") or st == "none:%s" % today and i > 2:      # kept · or looked for today already (the newest 3: always again)
             continue
         html, u = get(d)
         if not html:
-            S["files"][k] = "none"; fails += 1
+            S["files"][k] = "none:%s" % today; fails += 1
             if fails >= 6 and not new and not S["net"]:
                 say("  ❌ NSDL did not give the last %d reports - run `python3 fpisec.py probe` and send the screen" % fails); break
             continue
         N, A, note = parse(html)
         if not N:
-            S["files"][k] = "none"; say("  %s: fetched, but %s - run `python3 fpisec.py probe`" % (d, note)); continue
+            S["files"][k] = "none:%s" % today; say("  %s: fetched, but %s - run `python3 fpisec.py probe`" % (d, note)); continue
         for kk, v in N.items():
             if len(v) >= len(S["net"].get(kk, {})):
                 S["net"][kk] = v
