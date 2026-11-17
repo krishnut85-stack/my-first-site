@@ -12,9 +12,14 @@ Every check compares the SAME value wherever GIR keeps it - mistakes are found b
     C4 STALE        each feed's age against its promise: live prices 1 min · sectors 1 min · movers 1 min · futures by month 6 min · heads-up 6 min
     C5 OPPOSITE     the same share called CE and PE within 30 minutes (GIR's alert log)
     C6 NEWS SIDE    a headline whose word-reading direction is the opposite of the AI's full-story reading (the 12:42 LAURUSLABS story: -1 vs BULLISH)
+    C8 EVERY SECTION  the file behind each box against its own promise: WHO & WHY (today's after 15:58), OVERNIGHT (08:45), PRE-OPEN (09:12),
+                    CANDIDATES and HEADS-UP (09:25), WHY THEY MOVED (09:50, then every 25 min), market news (2 h), the alert list (30 min),
+                    the option chain (15 min) - a box still showing an old day is named (Rama, 17 Nov: WHO & WHY showed 16 Nov all day)
   AFTER THE CLOSE (--eod, from about 18:30 when NSE publishes it)
     C7 NSE FILE     NSE's own end-of-day file (sec_bhavdata_full): each F&O share's previous close (the base of every "% today" on GIR) and its last
                     price - against what GIR used; the base must agree within 0.05%
+    C9 INDICES      NIFTY / BANKNIFTY on GIR against NSE's index file (ind_close_all) - within 0.05%
+    C10 OPTIONS     each share's put / call OI ratio (nearest expiry) in GIR's last option-chain reading against NSE's F&O file - within 10%
 Writes data/crosscheck.json (the page's ⚠ CHECK) and data/crosscheck.txt; keeps each evening's report in data/crosscheck/<day>.txt.
   python3 crosscheck.py          one live pass, printed
   python3 crosscheck.py --eod    the after-close check against NSE's file"""
@@ -128,6 +133,45 @@ def live(n=None):
             if age > mx * 3:
                 add("⚠", "C4 stale", "-", nm, "last written %d min ago" % (age // 60), "it should refresh every %s" % ("%d s" % mx if mx < 120 else "%d min" % (mx // 60)))
         info["C4"] = "%d feeds" % len(STALE)
+    # C8 EVERY SECTION - the file behind each box against its own promise (in market hours, and the daily ones after their time)
+    hm_ = n.strftime("%H:%M"); wd = n.weekday() < 5; today_ = str(n.date()); n8 = 0
+    SECTIONS = (("WHO & WHY", "data/whydesk.json", "day", "15:58"), ("OVERNIGHT", "data/overnight.json", "day", "08:45"),
+                ("PRE-OPEN", "data/preopen.json", "read_at", "09:12"), ("CANDIDATES", "data/seccand.json", "day", "09:25"),
+                ("WHY THEY MOVED", "data/moverswhy.json", "day", "09:50"), ("HEADS-UP", "data/headsup.json", "day", "09:25"))
+    for nm, rel, key, after in SECTIONS:
+        if not wd or hm_ < after:
+            continue
+        j = _j(os.path.basename(rel)) if rel.startswith("data/") else _j(rel); n8 += 1
+        v = str(j.get(key) or "")
+        if not v:
+            add("⚠", "C8 section", "-", nm, "no file / no day in it", "it should be today's after %s" % after)
+        elif not v.startswith(today_) and not (key == "read_at" and today_ in v):
+            add("⚠", "C8 section", "-", nm, "shows %s" % v[:16], "today's should be there after %s" % after)
+    if wd and "09:30" <= hm_ <= "15:30":
+        LIVE = (("WHY THEY MOVED", "data/moverswhy.json", 25 * 60, "09:50", "15:20"), ("CROSS-CHECK", "data/crosscheck.json", 12 * 60, "09:30", "15:30"),
+                ("MARKET NEWS", "data/macro.json", 120 * 60, "09:30", "15:30"))
+        for nm, rel, mx, a_, b_ in LIVE:
+            p_ = _path(rel)
+            if a_ <= hm_ <= b_ and p_ and rel != "data/crosscheck.json":
+                n8 += 1; age = time.time() - os.path.getmtime(p_)
+                if age > mx:
+                    add("⚠", "C8 section", "-", nm, "last written %d min ago" % (age // 60), "it should be within %d min" % (mx // 60))
+        try:                                                              # the alert list and the option chain - their newest row
+            c8 = sqlite3.connect("file:%s?mode=ro" % _path("tomorrow.db"), uri=True, timeout=10)
+            lt = c8.execute("select max(t) from alerts where day=?", (today_,)).fetchone()[0]; c8.close(); n8 += 1
+            if not lt or (int(hm_[:2]) * 60 + int(hm_[3:5])) - (int(lt[:2]) * 60 + int(lt[3:5])) > 30:
+                add("⚠", "C8 section", "-", "ALERTS list", "newest alert %s" % (lt or "none today"), "nothing written for 30+ min in market hours")
+        except Exception:
+            pass
+        try:
+            pc_ = _path("chains.db")
+            c8 = sqlite3.connect("file:%s?mode=ro" % pc_, uri=True, timeout=10)
+            lt = c8.execute("select max(t) from chain where d=?", (today_,)).fetchone()[0]; c8.close(); n8 += 1
+            if hm_ >= "09:35" and (not lt or (int(hm_[:2]) * 60 + int(hm_[3:5])) - (int(str(lt)[:2]) * 60 + int(str(lt)[3:5])) > 15):
+                add("⚠", "C8 section", "-", "OPTION CHAIN", "newest reading %s" % (lt or "none today"), "it should be within 15 min")
+        except Exception:
+            pass
+    info["C8"] = "%d sections" % n8
     # C5 OPPOSITE CALLS and C6 NEWS SIDE - GIR's alert log
     day = str(n.date())
     try:
@@ -175,14 +219,16 @@ def eod(n=None):
     while d.weekday() > 4:
         d -= dt.timedelta(days=1)
     url = "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_%s.csv" % d.strftime("%d%m%Y")
+    rows = []
     try:
         import requests
         r = requests.get(url, timeout=30, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36", "Referer": "https://www.nseindia.com/"})
         if not r.ok or "SYMBOL" not in r.text[:300]:
-            info["C7"] = "NSE's file for %s not available yet (%s)" % (d, r.status_code); return F, info
-        rows = list(csv.DictReader(io.StringIO(r.text)))
+            info["C7"] = "NSE's file for %s not available yet (%s)" % (d, r.status_code)
+        else:
+            rows = list(csv.DictReader(io.StringIO(r.text)))
     except Exception as ex:
-        info["C7"] = "NSE's file not read: %s" % str(ex)[:60]; return F, info
+        info["C7"] = "NSE's file not read: %s" % str(ex)[:60]
     N = {}
     for x in rows:
         x = {k.strip(): (v or "").strip() for k, v in x.items()}
@@ -204,7 +250,63 @@ def eod(n=None):
         if abs(px / last_ - 1) > 0.003:
             F.append({"lvl": "·", "chk": "C7 NSE file", "s": s, "a": "GIR's last price ₹%.2f" % px, "b": "NSE's last price ₹%.2f (close ₹%.2f)" % (last_, close_),
                       "note": "GIR's feed stopped before the close?"})
-    info["C7"] = "%d F&O shares against NSE's file for %s" % (n7, d)
+    if rows:
+        info["C7"] = "%d F&O shares against NSE's file for %s" % (n7, d)
+    UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36", "Referer": "https://www.nseindia.com/"}
+    # C9 THE INDICES - GIR's close of NIFTY / BANKNIFTY against NSE's own index file
+    try:
+        import requests
+        r = requests.get("https://nsearchives.nseindia.com/content/indices/ind_close_all_%s.csv" % d.strftime("%d%m%Y"), timeout=30, headers=UA)
+        IX = {}
+        if r.ok and "Index Name" in r.text[:300]:
+            for x in csv.DictReader(io.StringIO(r.text)):
+                x = {k.strip(): (v or "").strip() for k, v in x.items()}
+                try:
+                    IX[x["Index Name"].upper()] = float(x["Closing Index Value"])
+                except Exception:
+                    pass
+        gi = (_j("dash_state.json").get("idx") or {}); n9 = 0
+        for g, nm in (("NIFTY", "NIFTY 50"), ("BANKNIFTY", "NIFTY BANK")):
+            v = (gi.get(g) or {}).get("last") if isinstance(gi.get(g), dict) else None
+            if v and nm in IX:
+                n9 += 1
+                if abs(float(v) / IX[nm] - 1) > 0.0005:
+                    F.append({"lvl": "⚠", "chk": "C9 index close", "s": g, "a": "GIR %.2f" % float(v), "b": "NSE's close %.2f" % IX[nm], "note": "%.2f%% apart" % (100 * (float(v) / IX[nm] - 1))})
+        info["C9"] = ("%d indices against NSE's file" % n9) if IX else "NSE's index file for %s not out yet" % d
+    except Exception as ex:
+        info["C9"] = "not read: %s" % str(ex)[:60]
+    # C10 THE OPTION CHAIN - each share's put / call OI ratio (nearest expiry) in GIR's chain against NSE's own F&O file
+    try:
+        import requests, zipfile
+        r = requests.get("https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_%s_F_0000.csv.zip" % d.strftime("%Y%m%d"), timeout=60, headers=UA)
+        NO = {}
+        if r.ok and r.content[:2] == b"PK":
+            z = zipfile.ZipFile(io.BytesIO(r.content)); txt = z.read(z.namelist()[0]).decode("utf-8", "replace")
+            for x in csv.DictReader(io.StringIO(txt)):
+                if x.get("FinInstrmTp") not in ("STO", "IDO") or x.get("OptnTp") not in ("CE", "PE"):
+                    continue
+                k = (x["TckrSymb"], x["XpryDt"]); o = NO.setdefault(k, [0.0, 0.0])
+                o[0 if x["OptnTp"] == "CE" else 1] += float(x.get("OpnIntrst") or 0)
+        n10 = 0
+        if NO:
+            c = sqlite3.connect("file:%s?mode=ro" % _path("chains.db"), uri=True, timeout=20)
+            last = {}
+            for sym, t, exp in c.execute("select sym, max(t), exp from chain where d=? group by sym, exp", (str(d),)):
+                last.setdefault(sym, []).append((exp, t))
+            for sym, L_ in last.items():
+                exp, t = sorted(L_)[0]
+                g_ = dict(c.execute("select kind, sum(oi) from chain where d=? and sym=? and exp=? and t=? group by kind", (str(d), sym, exp, t)).fetchall())
+                ne = NO.get((sym, exp))
+                if not ne or not g_.get("CE") or not ne[0]:
+                    continue
+                n10 += 1; pg, pn = (g_.get("PE") or 0) / g_["CE"], ne[1] / ne[0]
+                if pn and abs(pg / pn - 1) > 0.10:
+                    F.append({"lvl": "⚠", "chk": "C10 option chain", "s": sym, "a": "GIR's PCR %.2f (%s %s)" % (pg, exp, str(t)[:5]), "b": "NSE's file PCR %.2f" % pn,
+                              "note": "the chain GIR shows differs from NSE's by %.0f%%" % (100 * (pg / pn - 1))})
+            c.close()
+        info["C10"] = ("%d shares' option chain against NSE's F&O file" % n10) if NO else "NSE's F&O file for %s not out yet" % d
+    except Exception as ex:
+        info["C10"] = "not read: %s" % str(ex)[:60]
     return F, info
 
 
