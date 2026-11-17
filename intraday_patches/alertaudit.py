@@ -70,18 +70,20 @@ def load_prices(syms):
 
 
 def outcome(rows, off, dr):
-    """from the 5-minute bar before the alert to 15:10: (move its way, worked +1.5% before -1%)"""
+    """from the 5-minute bar before the alert to 15:10: (move its way, worked +1.5% before -1%, the move its way in the 30 minutes BEFORE)"""
     a = rows[rows[:, 0] <= off - 5]; b = rows[(rows[:, 0] > off - 5) & (rows[:, 0] <= 350)]
     if not len(a) or len(b) < 2:
         return None
     px = float(a[-1, 3])
     if px <= 0:
         return None
+    w30 = a[a[:, 0] >= off - 35]                                      # the last 30 minutes before the alert
+    pre = ((px / float(w30[:, 2].min()) - 1) if dr > 0 else (1 - px / float(w30[:, 1].max()))) if len(w30) else 0.0
     fav = (b[:, 1] / px - 1) * dr if dr > 0 else (b[:, 2] / px - 1) * dr
     adv = (b[:, 2] / px - 1) * dr if dr > 0 else (b[:, 1] / px - 1) * dr
     f = np.flatnonzero(fav >= 0.015); s_ = np.flatnonzero(adv <= -0.01)
     worked = 1 if len(f) and (not len(s_) or f[0] < s_[0]) else 0
-    return (float(b[-1, 3]) / px - 1) * dr, worked
+    return (float(b[-1, 3]) / px - 1) * dr, worked, pre
 
 
 def main():
@@ -119,7 +121,7 @@ def main():
             nos += 1; continue
         o = outcome(P[s][dd][1], hh * 60 + mm - 555, dr)
         if o:
-            R.append({"d": dd, "k": kind_of(text), "t": t[:5], "mv": o[0], "w": o[1], "s": s, "b": (hh * 60 + mm - 555) // 30})
+            R.append({"d": dd, "k": kind_of(text), "t": t[:5], "mv": o[0], "w": o[1], "s": s, "b": (hh * 60 + mm - 555) // 30, "dr": dr, "pre": o[2]})
     if len(R) < 50:
         say("  ❌ only %d alerts could be scored (the rest: no side, or no 5-minute prices for that day) - too few" % len(R)); return
     D_ = sorted({r["d"] for r in R}); mid = D_[len(D_) // 2]
@@ -171,6 +173,58 @@ def main():
             100 * e, 100 * e1, 100 * e2, "✔ worth something" if ok else "✘ steadily WORSE than no alert" if bad else "✘ not steady" if len(X) >= 100 else "· too few to judge")))
     for _, ln in sorted(rows_out, key=lambda z: -z[0]):
         say(ln)
+    # 1b THE FIRST ALERT of each share, side and day - the one you would act on - and 1c AGREEMENT of two or more ✔ types
+    OKT = {k for k in G if any(ln.strip().startswith(k[:16]) and "✔" in ln for _, ln in rows_out)}
+    seen = {}; FIRST = []
+    for r in sorted(R, key=lambda r: (r["d"], r["t"])):
+        if (r["d"], r["s"]) not in seen:
+            seen[(r["d"], r["s"])] = r; FIRST.append(r)
+    say("")
+    say("1b ONLY THE FIRST ALERT of each share each day (the one you would act on) - by type, against the shares moving then")
+    G1 = {}
+    for r in FIRST:
+        G1.setdefault(r["k"], []).append(r)
+    for k, X in sorted(G1.items(), key=lambda kv: -av([r["e"] for r in kv[1]])):
+        if len(X) < 20:
+            continue
+        e1, e2 = av([r["e"] for r in X if r["d"] < mid]), av([r["e"] for r in X if r["d"] >= mid])
+        ok = len(X) >= 60 and e1 == e1 and e2 == e2 and e1 >= 0.001 and e2 >= 0.001
+        say("    %-16s %5d first alerts │ to 15:10 %+.2f%% · its way %3.0f%% · worked %3.0f%% │ edge %+.2f%% (%+.2f%% / %+.2f%%) %s" % (
+            k[:16], len(X), 100 * av([r["mv"] for r in X]), 100 * av([1 if r["mv"] > 0 else 0 for r in X]), 100 * av([r["w"] for r in X]),
+            100 * av([r["e"] for r in X]), 100 * e1, 100 * e2, "✔" if ok else "✘" if len(X) >= 60 else "·"))
+    say("")
+    say("1c AGREEMENT - the moment a SECOND different ✔ type flags the same share the same way within 15 minutes (✔ types: %s)" % (", ".join(sorted(OKT)) or "none"))
+    AG = []; last = {}
+    for r in sorted(R, key=lambda r: (r["d"], r["t"])):
+        if r["k"] not in OKT:
+            continue
+        m_ = int(r["t"][:2]) * 60 + int(r["t"][3:5]); key = (r["d"], r["s"], r["dr"])
+        prev = [x for x in last.get(key, []) if m_ - x[0] <= 15 and x[1] != r["k"]]
+        if prev and key not in {(a["d"], a["s"], a["dr"]) for a in AG}:
+            AG.append(r)
+        last.setdefault(key, []).append((m_, r["k"]))
+    for nm, f in (("all agreements", lambda r: True), ("before 10:30", lambda r: r["t"] < "10:30"), ("10:30 or later", lambda r: r["t"] >= "10:30")):
+        X = [r for r in AG if f(r)]
+        if len(X) < 10:
+            say("    %-16s %5d - too few" % (nm, len(X))); continue
+        e1, e2 = av([r["e"] for r in X if r["d"] < mid]), av([r["e"] for r in X if r["d"] >= mid])
+        say("    %-16s %5d (%.1f a day) │ to 15:10 %+.2f%% · its way %3.0f%% · worked %3.0f%% │ edge %+.2f%% (%+.2f%% / %+.2f%%) %s" % (
+            nm, len(X), len(X) / len(D_), 100 * av([r["mv"] for r in X]), 100 * av([1 if r["mv"] > 0 else 0 for r in X]), 100 * av([r["w"] for r in X]),
+            100 * av([r["e"] for r in X]), 100 * e1, 100 * e2, "✔" if len(X) >= 60 and e1 == e1 and e2 == e2 and e1 >= 0.001 and e2 >= 0.001 else "✘" if len(X) >= 60 else "·"))
+    say("")
+    say("1d LATENESS - how much of the move had ALREADY happened in the 30 minutes before the alert (from that half hour's low, its way) - and what came after")
+    say("    %-26s %6s │ %-9s %-7s %-7s │ %s" % ("", "alerts", "to 15:10", "its way", "worked", "against shares moving then"))
+    for nm, f in (("early: under 0.5% done", lambda r: r["pre"] < 0.005), ("0.5% to 1% done", lambda r: 0.005 <= r["pre"] < 0.01),
+                  ("late: 1% to 2% done", lambda r: 0.01 <= r["pre"] < 0.02), ("very late: 2%+ done", lambda r: r["pre"] >= 0.02)):
+        X = [r for r in R if f(r)]
+        if len(X) < 20:
+            say("    %-26s %6d - too few" % (nm, len(X))); continue
+        e1, e2 = av([r["e"] for r in X if r["d"] < mid]), av([r["e"] for r in X if r["d"] >= mid])
+        say("    %-26s %6d │ %+.2f%%    %3.0f%%    %3.0f%%    │ %+.2f%% (halves %+.2f%% / %+.2f%%)" % (nm, len(X), 100 * av([r["mv"] for r in X]),
+            100 * av([1 if r["mv"] > 0 else 0 for r in X]), 100 * av([r["w"] for r in X]), 100 * av([r["e"] for r in X]), 100 * e1, 100 * e2))
+    say("    by type - the share of its alerts that came LATE (1%+ of the move already done):")
+    lt = sorted(((k, len(X), 100 * av([1 if r["pre"] >= 0.01 else 0 for r in X])) for k, X in G.items() if len(X) >= 40), key=lambda z: -z[2])
+    say("    " + " · ".join("%s %d%%" % (k, p_) for k, n_, p_ in lt[:14]))
     say("")
     say("2 THE NOISE - how many alerts one share got in one day (09:20-15:00)")
     n = sorted(per.values())
