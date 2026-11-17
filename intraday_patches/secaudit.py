@@ -102,6 +102,7 @@ def main():
                                                                                     (" · NOT read: " + ", ".join(miss)) if miss else ""))
     if not IX:
         say("  ❌ none of NSE's sector index lists could be read from this server - only the name and NSE-sector checks below")
+    OVR = getattr(N, "OVR", {}) or {}
     mem = {}
     for name, (sec, sy) in IX.items():
         for s in sy:
@@ -119,22 +120,27 @@ def main():
                 ev.append("in %s but GIR says %s" % (n, g)); want |= FIN if not want else set()
         if "Nifty Healthcare" in IX and g == "pharma" and s in IX["Nifty Healthcare"][1] and "Nifty Pharma" in IX and s not in IX["Nifty Pharma"][1] and re.search(r"hospital|diagnos|lab|health", nm, re.I):
             ev.append("in Nifty Healthcare, not in Nifty Pharma - looks like a hospital / lab"); want.add("hospitals & diagnostics")
-        nw = None
-        for rx, sec in NAMES:
-            if re.search(rx, nm, re.I):
-                nw = sec; break
-        if nw and nw != g and not (nw == "banks" and g in ("nbfc & finance",) and re.search(r"small finance|payments", nm, re.I)):
-            if not want or nw in want:
-                ev.append("name says %s" % nw); want.add(nw)
         try:
             base = N.NAME.get(ind, ind.lower()) if ind else ""
         except Exception:
             base = ind.lower()
         fam = {base} | (FIN if ind == "Financial Services" else set()) | (HEALTH if base in ("healthcare",) or ind == "Healthcare" else set()) | \
               ({"telecom services", "telecom equipment"} if base.startswith("telecom") else set()) | ({"electronics & hardware"} if base in ("capital goods", "consumer durables") else set())
+        nw = None
+        for rx, sec in NAMES:
+            if re.search(rx, nm, re.I):
+                nw = sec; break
+        # the name counts only inside NSE's own sector (where GIR splits by name: finance, healthcare) - "Heat Exchanger" is not an exchange
+        if nw and nw != g and nw in fam and not (nw == "banks" and g in ("nbfc & finance",) and re.search(r"small finance|payments", nm, re.I)):
+            if not want or nw in want:
+                ev.append("name says %s" % nw); want.add(nw)
         off_nse = bool(ind) and g not in fam and g != "others"
         bad = bool(want) and g not in want
-        rows.append({"s": s, "fo": s in FO, "name": nm, "nse": ind, "gir": g, "want": sorted(want) if bad else [], "ev": ev, "off_nse": off_nse, "w": W.get(s) or 0})
+        if bad and g == "electronics & hardware" and want <= {"consumer durables", "capital goods"}:
+            bad = False                                                    # GIR splits the electronics makers out on purpose (354c)
+        if s in OVR:
+            bad = off_nse = False; ev = ["set by hand (patch 371): " + OVR[s]]  # checked once, kept on purpose
+        rows.append({"s": s, "fo": s in FO, "name": nm, "nse": ind, "gir": g, "want": sorted(want) if bad else [], "ev": ev, "off_nse": off_nse, "w": W.get(s) or 0, "hand": s in OVR})
     F = [r for r in rows if r["fo"]]; FB = [r for r in F if r["want"]]; FN = [r for r in F if not r["want"] and r["off_nse"]]
     say(""); say("1 F&O SHARES IN THE WRONG SECTOR - the evidence points elsewhere (%d of %d)" % (len(FB), len(F)))
     for r in sorted(FB, key=lambda r: r["gir"]):
@@ -159,6 +165,9 @@ def main():
     for g in sorted(by, key=lambda g: -len(by[g])):
         say("  %-24s %3d │ %s" % (g.upper(), len(by[g]), " ".join(("⚠" if r["want"] else "?" if r["off_nse"] else "") + r["s"] for r in sorted(by[g], key=lambda r: r["s"]))))
     say(""); say("  ⚠ = the evidence says another sector (part 1) · ? = GIR moved it out of NSE's sector (part 2)")
+    H_ = [r for r in rows if r.get("hand")]
+    if H_:
+        say("  set by hand (patch 371, checked against NSE's index lists): " + " · ".join("%s → %s" % (r["s"], r["gir"]) for r in H_))
     try:
         open(os.path.join(D, "data", "secaudit.txt"), "w").write("\n".join(L) + "\n")
         json.dump({"t": time.time(), "idx_read": sorted(IX), "idx_missing": miss, "rows": rows}, open(os.path.join(D, "data", "secaudit.json"), "w"))
