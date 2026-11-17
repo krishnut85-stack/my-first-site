@@ -7,7 +7,7 @@ keep the list ready at 07:00"). GIR read the news through the night, but not the
               Asia (Japan, Hong Kong, Korea, Shanghai) - each with its move since its previous close
   LINKS       each market mapped to the Indian sectors / F&O shares it usually moves, and which way - written out here, one reason each, so it can
               be read and corrected (they are GIR's working assumptions, not tested yet: the 15:50 score of the morning list tests them)
-  calendar()  today: results due (chains.db results_cal), the F&O ban list (NSE's fo_secban file)
+  calendar()  today: results due (chains.db results_cal), the F&O ban list (banwatch.py - NSE's fo_secban.csv, patch 330)
 Read only. overnight.py (the morning list) uses it at 07:00 and 08:35.   python3 morningmkts.py"""
 import os, sys, csv, io, json, time, sqlite3, datetime as dt
 D = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, D)
@@ -100,15 +100,18 @@ def calendar(day):
         c_["results"] = sorted({s for (s,) in con.execute("select sym from results_cal where d=?", (str(day),))}); con.close()
     except Exception:
         pass
-    try:
-        import requests
-        r = requests.get("https://nsearchives.nseindia.com/content/fo/fo_secban_%s.csv" % day.strftime("%d%m%Y"), timeout=15,
-                         headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36", "Referer": "https://www.nseindia.com/"})
-        if r.ok and r.text.strip():
-            rows = [ln.split(",") for ln in r.text.strip().splitlines()[1:]]
-            c_["ban"] = sorted({x[1].strip() for x in rows if len(x) > 1 and x[1].strip()})
+    try:                                                     # GIR's own ban reader (banwatch.py, patch 330): NSE's fo_secban.csv, the date read from the file
+        import banwatch
+        v = banwatch.state(fetch=banwatch._fetch)            # given the fetcher: no cache, no dashserve import from this job
+        if v.get("trade_date") and v["trade_date"] != str(day):
+            c_["ban"] = list(v.get("ban") or [])
+            c_["ban_note"] = "⚠ NSE's ban file is for %s, not today" % v["trade_date"]
+        elif v.get("ok") or v.get("ban"):
+            c_["ban"] = list(v.get("ban") or [])
+            if not v.get("ok"):
+                c_["ban_note"] = "NSE's ban file not read now - the last copy (%s)" % (v.get("read_at") or "?")
         else:
-            c_["ban_note"] = "NSE's ban list for %s not read (%s)" % (day, r.status_code)
+            c_["ban_note"] = "NSE's ban list could not be read (%s)" % (v.get("err") or "?")[:50]
     except Exception as ex:
         c_["ban_note"] = "NSE's ban list not read: %s" % str(ex)[:50]
     return c_
