@@ -2,10 +2,11 @@
 """secsurge.py - patch 372: 🚀 A SECTOR IS RUNNING (Rama, 17 Nov 11:10: "I did not get any alert for the sector that was running fast up" -
 capital markets ran from the open on the capital-gains tax news and came no.3 with no word from GIR).
 Called by seclive.py on every new sector reading (every few seconds, market hours). A sector RUNS when, over the last 30 minutes:
-  · it moved 0.60%+ (all its NSE shares, by size), and 0.40%+ more than the middle sector (so a whole-market jump is not a sector run)
+  · it moved 0.80%+ (all its NSE shares, by size), and 0.50%+ more than the middle sector (so a whole-market jump is not a sector run)
   · 70%+ of its shares moved that way in those 30 minutes (many shares, not one)
-  · it has 5+ shares
-or the same over the last 15 minutes with 0.40% / 0.30% (a sudden burst). The same sector the same way again only after 45 minutes and a
+  · it has 5+ shares, and no one company is half or more of its move (patch 369 ⚠)
+(The first rule - 0.60% / 0.40%, or 0.40% / 0.30% in 15 minutes, any sector - gave 13 alerts a day on the 67 kept days, and what came after
+was no better than any F&O share already moving; the 15-minute bursts and the one-company runs were pure noise. "backtest" compares the rules.) The same sector the same way again only after 45 minutes and a
 further 0.50% on the day. From 09:30 (30 minutes of record needed) to 15:00. Up = 🚀 RUNNING UP, down = 🔻 FALLING FAST.
 Each alert carries: the sector, the move in the window and on the day, its rank now, how many shares are moving, ⚠ when one company is half or
 more of it (patch 369), and its F&O shares leading the move.
@@ -19,7 +20,8 @@ trade calls, critical and regulator alerts ring); the page shows it. Orders noth
 import os, sys, json, glob, datetime as dt
 D = os.path.dirname(os.path.abspath(__file__))
 SD = os.path.join(D, "data", "secsurge")
-RULE = {"30": (0.60, 0.40), "15": (0.40, 0.30)}           # window -> (its move, more than the middle sector), in %
+RULE = {"30": (0.80, 0.50)}         # window -> (its move, more than the middle sector), in % - 17 Nov replay: the 15-minute burst was noise
+NO_ONE = True                        # 17 Nov replay: a run carried by one company (patch 369 ⚠) did nothing after (235 alerts, +0.00%)
 BREADTH, MIN_N, AGAIN_MIN, AGAIN_MORE = 0.70, 5, 45, 0.50
 _S = {"day": None, "ev": [], "end": None}
 
@@ -59,8 +61,8 @@ def check(V, n):
         V["surge"] = _S["ev"][-12:]; return new
     rank = {x["name"]: i + 1 for i, x in enumerate(sorted(S, key=lambda x: -x["chg"]))}
     if "09:30" <= hm <= "15:00":
-        for w in ("30", "15"):
-            R = [x for x in S if (x.get("rot") or {}).get(w) is not None]
+        for w in RULE:
+            R = [x for x in S if (x.get("rot") or {}).get(w) is not None and not (NO_ONE and x.get("one"))]
             if len(R) < 8:
                 continue
             md = _med([x["rot"][w] for x in R]); mv, rel = RULE[w]
@@ -165,9 +167,9 @@ def backtest():
     days = sorted({d for v in P.values() for d in v}); days = [d for d in days if sum(1 for s in P if d in P[s]) >= 200]
     END = 70                                                            # the bar that closes at 15:10
     print("🚀 SECTOR RUN ALERTS - the rule replayed · %d days (%s to %s) · %d shares · sizes: %s" % (len(days), dt.date.fromordinal(days[0]), dt.date.fromordinal(days[-1]), len(P), wsrc))
-    print("  rule: 30 min %.2f%%+ (and %.2f%%+ over the middle sector) or 15 min %.2f%%+ (%.2f%%+), %d%%+ of its shares that way, %d+ shares; again after %d min and %.2f%% more" % (
-        RULE["30"][0], RULE["30"][1], RULE["15"][0], RULE["15"][1], 100 * BREADTH, MIN_N, AGAIN_MIN, AGAIN_MORE))
-    EV = []; base = []
+    print("  the live rule: %s, %d%%+ of its shares that way, %d+ shares%s; again after %d min and %.2f%% more" % (
+        ", ".join("%s min %.2f%%+ (and %.2f%%+ over the middle sector)" % (w, RULE[w][0], RULE[w][1]) for w in RULE), 100 * BREADTH, MIN_N, ", no ⚠ one company" if NO_ONE else "", AGAIN_MIN, AGAIN_MORE))
+    CA = []; base = []
     for d in days:
         G = {}
         for s in P:
@@ -178,7 +180,6 @@ def backtest():
         G = {k: v for k, v in G.items() if len(v) >= MIN_N}
         if len(G) < 10:
             continue
-        last = {}
         for b in range(5, 69):                                          # bar 5 closes at 09:45 ... bar 68 at 15:00
             hm = "%02d:%02d" % divmod(9 * 60 + 15 + 5 * (b + 1), 60)
             rows = {}
@@ -197,22 +198,19 @@ def backtest():
                 R_ = {k: r for k, r in rows.items() if wl in r[1]}
                 if len(R_) < 8:
                     continue
-                md = _med([r[1][wl][0] for r in R_.values()]); mv, rel = RULE[wl]
+                md = _med([r[1][wl][0] for r in R_.values()])
                 for k, r in R_.items():
                     x, up, dn = r[1][wl]; dr = 1 if x > 0 else -1; br = up if dr > 0 else dn
-                    if abs(x) < mv or (x - md) * dr < rel or br < BREADTH:
+                    if abs(x) < 0.40 or (x - md) * dr < 0.30 or br < 0.70:     # looser than every rule tried below
                         continue
-                    lk = last.get((k, dr))
-                    if lk and (b - lk[0] < AGAIN_MIN // 5 or (r[0] - lk[1]) * dr < AGAIN_MORE):
-                        continue
-                    last[(k, dr)] = (b, r[0])
                     fo = [(x_[0], (x_[2][END] / x_[2][b] - 1) * dr * 100) for x_ in G[k] if x_[4] and (x_[2][b] / x_[1] - 1) * dr > 0]
                     one = None
                     tot = sum(x_[3] * (x_[2][b] / x_[1] - 1) for x_ in G[k])
                     if tot and abs(r[0]) >= 0.1:
                         lead = max(G[k], key=lambda x_: x_[3] * (x_[2][b] / x_[1] - 1) * dr)
                         one = bool(lead[3] * (lead[2][b] / lead[1] - 1) / tot >= 0.5)
-                    EV.append({"d": d, "t": hm, "sec": k, "dir": dr, "win": int(wl), "went": r[2] * dr, "rel": (r[2] - mahead) * dr, "fo": fo, "one": one, "dayc": r[0] * dr})
+                    CA.append({"d": d, "b": b, "t": hm, "sec": k, "dir": dr, "win": int(wl), "x": abs(x), "ov": (x - md) * dr, "br": br, "went": r[2] * dr,
+                               "rel": (r[2] - mahead) * dr, "fo": fo, "one": one, "dayc": r[0] * dr})
         for s in P:                                                     # the yardstick: any F&O share already moving that way at a 5-minute mark
             if s in FO and d in P[s]:
                 pc, cl = P[s][d]
@@ -222,12 +220,52 @@ def backtest():
                         if abs(m0) > 0.003:
                             base.append((d, (cl[END] / cl[b] - 1) * (1 if m0 > 0 else -1) * 100))
     mid = days[len(days) // 2]; av = lambda v: sum(v) / len(v) if v else float("nan")
-    print("  %d alerts on %d of %d days (%.1f a day)" % (len(EV), len({e["d"] for e in EV}), len(days), len(EV) / len(days)))
+    b0 = av([x[1] for x in base]); b1 = av([x[1] for x in base if x[0] < mid]); b2 = av([x[1] for x in base if x[0] >= mid])
+
+    def run(win, brd, no_one=False, until="15:00", first=False, dr_=0):
+        out = []; last = {}
+        for e in CA:                                                    # in time order within each day
+            if e["t"] > until or (dr_ and e["dir"] != dr_) or str(e["win"]) not in win or (no_one and e["one"]):
+                continue
+            mv, rel = win[str(e["win"])]
+            if e["x"] < mv or e["ov"] < rel or e["br"] < brd:
+                continue
+            key = (e["d"], e["sec"], e["dir"]); lk = last.get(key)
+            if lk and (first or e["b"] - lk[0] < AGAIN_MIN // 5 or e["dayc"] - lk[1] < AGAIN_MORE):
+                continue
+            last[key] = (e["b"], e["dayc"]); out.append(e)
+        return out
+    V_ = [("first rule (30 or 15 min)", dict(win={"30": (0.60, 0.40), "15": (0.40, 0.30)}, brd=0.70)),
+          ("30 min only", dict(win={"30": (0.60, 0.40)}, brd=0.70)),
+          ("30 min, no ⚠ one company", dict(win={"30": (0.60, 0.40)}, brd=0.70, no_one=True)),
+          ("30 min 0.8%, no ⚠", dict(win={"30": (0.80, 0.50)}, brd=0.70, no_one=True)),
+          ("30 min 1.0% 75%, no ⚠", dict(win={"30": (1.00, 0.60)}, brd=0.75, no_one=True)),
+          ("30 min 0.8%, no ⚠, to 12:30", dict(win={"30": (0.80, 0.50)}, brd=0.70, no_one=True, until="12:30")),
+          ("30 min, no ⚠, to 10:30", dict(win={"30": (0.60, 0.40)}, brd=0.70, no_one=True, until="10:30")),
+          ("30 min 0.8%, no ⚠, once a day", dict(win={"30": (0.80, 0.50)}, brd=0.70, no_one=True, first=True)),
+          ("30 min 0.8%, no ⚠ - 🚀 up only", dict(win={"30": (0.80, 0.50)}, brd=0.70, no_one=True, dr_=1)),
+          ("30 min 0.8%, no ⚠ - 🔻 down only", dict(win={"30": (0.80, 0.50)}, brd=0.70, no_one=True, dr_=-1))]
+    print("  yardstick: ANY F&O share already moving, from a 5-minute mark to 15:10: %+.2f%% (halves %+.2f%% / %+.2f%%)" % (b0, b1, b2))
+    print("")
+    print("  WHICH RULE? - the same days, each rule · 'F&O edge' = its F&O shares (already moving that way) against the yardstick · ✔ = 0.10%+ in both halves, 100+ cases")
+    print("    %-34s %9s │ %-24s │ %s" % ("rule", "a day", "sector went on (its way)", "F&O shares: cases · move · its way · edge (halves)"))
+    for nm, kw in V_:
+        X = run(**kw)
+        if not X:
+            print("    %-34s     0" % nm); continue
+        F_ = [(e["d"], v) for e in X for _, v in e["fo"]]
+        f1, f2 = av([v for d_, v in F_ if d_ < mid]), av([v for d_, v in F_ if d_ >= mid])
+        ok = len(F_) >= 100 and f1 - b1 >= 0.1 and f2 - b2 >= 0.1
+        print("    %-34s %5.1f/day │ %+.2f%% (%2.0f%%)            │ %5d · %+.2f%% · %2.0f%% · %+.2f%% (%+.2f%% / %+.2f%%) %s" % (
+            nm, len(X) / len(days), av([e["went"] for e in X]), 100 * av([1 if e["went"] > 0 else 0 for e in X]), len(F_), av([v for _, v in F_]),
+            100 * av([1 if v > 0 else 0 for _, v in F_]), av([v for _, v in F_]) - b0, f1 - b1, f2 - b2, "✔" if ok else "✘"))
+    EV = run(win=RULE, brd=BREADTH, no_one=NO_ONE)
+    print("")
+    print("  THE LIVE RULE IN DETAIL (%s) · %d alerts on %d of %d days (%.1f a day)" % (", ".join("%s min %.2f%%/+%.2f%%" % (w, RULE[w][0], RULE[w][1]) for w in RULE) + (", no ⚠" if NO_ONE else ""),
+                                                                                   len(EV), len({e["d"] for e in EV}), len(days), len(EV) / len(days)))
     if not EV:
         return
-    b0 = av([x[1] for x in base]); b1 = av([x[1] for x in base if x[0] < mid]); b2 = av([x[1] for x in base if x[0] >= mid])
     print("  how to read: 'sector went on' = the sector's move its way from the alert to 15:10 · 'over middle' = against the middle sector over the same time")
-    print("  'F&O shares' = its F&O shares already moving that way, from the alert to 15:10 · yardstick: ANY F&O share already moving, %+.2f%% (halves %+.2f%% / %+.2f%%)" % (b0, b1, b2))
     print("  ✔ = the F&O shares beat the yardstick by 0.10%+ in both halves of the days, with 100+ share cases")
     for nm, f in (("ALL ALERTS", lambda e: True), ("🚀 RUNNING UP", lambda e: e["dir"] > 0), ("🔻 FALLING FAST", lambda e: e["dir"] < 0),
                   ("30-minute run", lambda e: e["win"] == 30), ("15-minute burst", lambda e: e["win"] == 15),
