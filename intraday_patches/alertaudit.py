@@ -201,7 +201,7 @@ def main():
         m_ = int(r["t"][:2]) * 60 + int(r["t"][3:5]); key = (r["d"], r["s"], r["dr"])
         prev = [x for x in last.get(key, []) if m_ - x[0] <= 15 and x[1] != r["k"]]
         if prev and key not in {(a["d"], a["s"], a["dr"]) for a in AG}:
-            AG.append(r)
+            r = dict(r); r["n"] = 1 + len({x[1] for x in prev}); AG.append(r)
         last.setdefault(key, []).append((m_, r["k"]))
     for nm, f in (("all agreements", lambda r: True), ("before 10:30", lambda r: r["t"] < "10:30"), ("10:30 or later", lambda r: r["t"] >= "10:30")):
         X = [r for r in AG if f(r)]
@@ -211,6 +211,30 @@ def main():
         say("    %-16s %5d (%.1f a day) │ to 15:10 %+.2f%% · its way %3.0f%% · worked %3.0f%% │ edge %+.2f%% (%+.2f%% / %+.2f%%) %s" % (
             nm, len(X), len(X) / len(D_), 100 * av([r["mv"] for r in X]), 100 * av([1 if r["mv"] > 0 else 0 for r in X]), 100 * av([r["w"] for r in X]),
             100 * av([r["e"] for r in X]), 100 * e1, 100 * e2, "✔" if len(X) >= 60 and e1 == e1 and e2 == e2 and e1 >= 0.001 and e2 >= 0.001 else "✘" if len(X) >= 60 else "·"))
+    say("")
+    say("1e GIR DECIDES - which agreed calls to keep, at most a few a day (before 10:30 · the share's first agreement only)")
+    E_ = sorted([r for r in AG if r["t"] < "10:30"], key=lambda r: (r["d"], r["t"]))
+    def line_(nm, X):
+        if len(X) < 10:
+            say("    %-34s %5d - too few" % (nm, len(X))); return
+        e1, e2 = av([r["e"] for r in X if r["d"] < mid]), av([r["e"] for r in X if r["d"] >= mid])
+        ok = len(X) >= 30 and e1 == e1 and e2 == e2 and e1 >= 0.001 and e2 >= 0.001
+        say("    %-34s %5d (%.1f a day) │ to 15:10 %+.2f%% · its way %3.0f%% · worked %3.0f%% │ edge %+.2f%% (%+.2f%% / %+.2f%%) %s" % (
+            nm, len(X), len(X) / len(D_), 100 * av([r["mv"] for r in X]), 100 * av([1 if r["mv"] > 0 else 0 for r in X]), 100 * av([r["w"] for r in X]),
+            100 * av([r["e"] for r in X]), 100 * e1, 100 * e2, "✔" if ok else "✘"))
+    line_("2 types agree", [r for r in E_ if r["n"] == 2])
+    line_("3 or more types agree", [r for r in E_ if r["n"] >= 3])
+    for cap in (3, 5):
+        F_ = []; cnt = {}
+        for r in E_:
+            if cnt.get(r["d"], 0) < cap:
+                F_.append(r); cnt[r["d"]] = cnt.get(r["d"], 0) + 1
+        line_("the first %d of the day" % cap, F_)
+    F_ = []; cnt = {}
+    for r in sorted([r for r in E_ if r["n"] >= 3], key=lambda r: (r["d"], r["t"])):
+        if cnt.get(r["d"], 0) < 3:
+            F_.append(r); cnt[r["d"]] = cnt.get(r["d"], 0) + 1
+    line_("the first 3 of the day with 3+ types", F_)
     say("")
     say("1d LATENESS - how much of the move had ALREADY happened in the 30 minutes before the alert (from that half hour's low, its way) - and what came after")
     say("    %-26s %6s │ %-9s %-7s %-7s │ %s" % ("", "alerts", "to 15:10", "its way", "worked", "against shares moving then"))
