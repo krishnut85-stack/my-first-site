@@ -180,11 +180,11 @@ def compute(SEC, W, Q, hist, FO, wsrc, n=None):
         lp, pc = Q[s]; wt = W.get(s) or (0.0 if W else 1.0)
         if W and not wt:
             wt = 0.0
-        g = G.setdefault(sec, {"a": 0.0, "w": 0.0, "n": 0, "up": 0, "dn": 0, "rows": [], "r": {k: [0.0, 0.0] for k in WINS}, "rr": {k: [] for k in WINS}, "eq": 0.0})
+        g = G.setdefault(sec, {"a": 0.0, "w": 0.0, "n": 0, "up": 0, "dn": 0, "rows": [], "r": {k: [0.0, 0.0] for k in WINS}, "rr": {k: [] for k in WINS}, "eq": 0.0, "cw": []})
         c = (lp / pc - 1) * 100; g["n"] += 1; g["eq"] += c; g["up"] += c > 0; g["dn"] += c < 0
         g["rows"].append((c, s))
         if wt > 0:
-            g["a"] += c * wt; g["w"] += wt
+            g["a"] += c * wt; g["w"] += wt; g["cw"].append((c * wt, s))
         for k in WINS:
             b = base[k]; p0 = b and b["p"].get(s)
             if p0:
@@ -197,8 +197,20 @@ def compute(SEC, W, Q, hist, FO, wsrc, n=None):
             continue
         chg = g["a"] / g["w"] if g["w"] else g["eq"] / g["n"]
         rows = sorted(g["rows"], reverse=True)
+        # patch 369: ONE SHARE - when one share makes half or more of the sector's by-size move. rankstudy.py (66 days, 17 Nov): at 10:00 the
+        # OTHER F&O shares of such a top sector went on -0.29% to 15:10 (38% its way) against -0.06% (44%) for a sector moved by many shares -
+        # worse in both halves of the days. The sector's figure is then mostly that one company, not the sector.
+        one = None
+        if g["cw"] and g["a"] and abs(chg) >= 0.10 and g["w"]:
+            sg = 1 if g["a"] > 0 else -1; lc, ls = max(g["cw"], key=lambda r: r[0] * sg)
+            if lc / g["a"] >= 0.5:
+                one = [ls, round(100 * lc / g["a"]), ls in FO]
+        # patch 369: the sector card - each F&O share of the sector: [share, % today, its size in the sector %, its part of the sector's move %]
+        cw = {x: v for v, x in g["cw"]}
+        fol = [[x, round(c, 2), round(100 * cw[x] / c / g["w"], 1) if x in cw and c and g["w"] else None,
+                round(100 * cw[x] / g["a"]) if x in cw and g["a"] and abs(chg) >= 0.10 else None] for c, x in rows if x in FO]
         out.append({"name": sec, "chg": round(chg, 2), "n": g["n"], "up": g["up"], "dn": g["dn"], "fo": sum(1 for _, s in rows if s in FO), "fos": sorted(s for _, s in rows if s in FO),   # 354e: its F&O shares - a tap on the sector lists them
-                    "eqw": round(g["eq"] / g["n"], 2),
+                    "eqw": round(g["eq"] / g["n"], 2), "one": one, "fol": fol,
                     "rot": {str(k): (round(g["r"][k][0] / g["r"][k][1], 2) if g["r"][k][1] else None) for k in WINS},
                     "rotx": {str(k): {"up": sum(1 for c, _ in g["rr"][k] if c > 0), "dn": sum(1 for c, _ in g["rr"][k] if c < 0), "n": len(g["rr"][k]),
                                       "top": [[s, round(c, 2), s in FO] for c, s in sorted(g["rr"][k], reverse=True)[:3]],
