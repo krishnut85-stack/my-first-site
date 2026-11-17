@@ -5,7 +5,8 @@
 #     sector (FOR / AGAINST the call), its sector now (rank, shares up, 🚀 run, ⚠ one company), its other F&O shares moving the same way, its
 #     own news, the futures build-up, its 20-day level, results due, today's 🧪 candidate. A call whose share or sector had strong / moderate
 #     news its way is 🗞 NEWS-BACKED. Each call's mark is kept (data/callwhy/<day>.json) so it can be scored against what the call did.
-#   · the page: when a BUY card comes, a 🔔 WHY NOW banner at the top with those lines (✕ closes it; tap = the share) · on the BOARD, each
+#   · the page: when a BUY card comes, a 🔔 WHY NOW banner at the top with those lines (✕ closes it; tap = the share); while open it keeps
+#     itself up to date - the price and the move since the call every 10 s, WATCH / HALF OUT / STOPPED, the why (today's news too) every 30 s · on the BOARD, each
 #     BUY card gets its why-line and the 🗞 NEWS-BACKED mark. The engine and its ringing are not touched.
 #   Needs patches 357 (the share note) and 364 (the BOARD). Adds callwhy.py, edits dashserve.py and home.html. Restarts the dashboard.
 set -u
@@ -44,15 +45,25 @@ cat > $W/why.html <<'WHY'
   const badge=v=>v&&v.backed?'<span class="gxbk" title="last night\'s news named this share or its sector, the call\'s way">🗞 NEWS-BACKED</span>':
     (v&&(v.news||[]).some(n=>!n.agree&&(n.dir==="up"||n.dir==="down"))?'<span class="gxbk ag" title="last night\'s news went the other way">🗞 NEWS AGAINST</span>':"");
   function shut(k,el){ seen[k]=1; try{ const d=Object.keys(seen); if(d.length>300) d.slice(0,150).forEach(x=>delete seen[x]); localStorage.setItem("gir_why_seen",JSON.stringify(seen)); }catch(e){} if(el) el.remove(); }
+  const OPEN={}, STW={open:"WATCH",half:"HALF OUT ✓ - book half, stop to entry",out:"STOPPED - out",closed:"CLOSED 15:10"};
+  function paint(el,m,v){ const p_=(()=>{ try{ const r=(TAPE||[]).find(x=>x.s===m.s); return r&&r.px; }catch(e){ return null; } })()||m.now;
+    const mv=p_&&m.px?((p_/m.px-1)*(m.dir>0?1:-1)*100):m.mv, n=new Date(Date.now()+19800000).toISOString().slice(11,19);
+    el.innerHTML=`<span class="x" title="close">✕</span><b class="h ${m.dir>0?"up":"dn"}">🔔 ${m.dir>0?"BUY CE":"BUY PE"} ${H(m.s)}</b> <span>${H(m.t)} at ₹${H(m.px)}</span>${badge(v)}`+
+      `<div style="font-size:12px;margin-top:2px">now ${p_?"₹"+H((+p_).toFixed(2)):"-"} · <b class="${mv>=0?"up":"dn"}">${mv!=null?(mv>=0?"+":"")+(+mv).toFixed(1)+"% its way":""}</b> · ${H(STW[m.st]||m.st||"")}</div>`+
+      `<div style="color:#a3aebf;font-size:11.5px">WHY NOW · updated ${n}</div><ul>${((v&&v.bul)||[]).slice(0,8).map(b=>`<li>${H(b)}</li>`).join("")}</ul>`; }
   async function ring(m,day){ const k=day+"|"+m.s+"|"+m.t; if(seen[k]) return; let box=document.getElementById("gxwn");
     if(box&&box.querySelector(`[data-k="${CSS.escape(k)}"]`)) return; const v=await why(m.s,m.dir>0?1:-1); if(!v) return;
     if(!box){ box=document.createElement("div"); box.id="gxwn"; document.body.appendChild(box); } if(box.querySelector(`[data-k="${CSS.escape(k)}"]`)) return;
-    const el=document.createElement("div"); el.className="t"; el.dataset.k=k;
-    el.innerHTML=`<span class="x" title="close">✕</span><b class="h ${m.dir>0?"up":"dn"}">🔔 ${m.dir>0?"BUY CE":"BUY PE"} ${H(m.s)}</b> <span>${H(m.t)}</span>${badge(v)}<div style="color:#a3aebf;font-size:11.5px">WHY NOW</div><ul>${(v.bul||[]).slice(0,7).map(b=>`<li>${H(b)}</li>`).join("")}</ul>`;
-    el.addEventListener("click",ev=>{ shut(k,el); if(!ev.target.closest(".x")){ try{ mkOpen(m.s); }catch(_){} } });
-    box.prepend(el); while(box.children.length>3) box.lastChild.remove(); }
+    const el=document.createElement("div"); el.className="t"; el.dataset.k=k; paint(el,m,v); OPEN[k]={m,el,v,day};
+    el.addEventListener("click",ev=>{ delete OPEN[k]; shut(k,el); if(!ev.target.closest(".x")){ try{ mkOpen(m.s); }catch(_){} } });
+    box.prepend(el); while(box.children.length>3){ const z=box.lastChild; delete OPEN[z.dataset.k]; z.remove(); } }
+  let tick=0;
+  async function refresh(hu){ tick++; for(const [k,o] of Object.entries(OPEN)){ if(!document.body.contains(o.el)){ delete OPEN[k]; continue; }
+      const m2=Object.values((hu&&hu.mon)||{}).find(x=>x&&x.s===o.m.s&&x.t===o.m.t); if(m2) o.m=m2;
+      if(tick%3===0){ delete CW[o.m.s+"|"+(o.m.dir>0?1:-1)]; const v=await why(o.m.s,o.m.dir>0?1:-1); if(v) o.v=v; }
+      paint(o.el,o.m,o.v); } }
   async function pull(){ if(document.hidden) return; try{ const r=await fetch("headsup?k="+encodeURIComponent(KEY()),{cache:"no-store"}); if(!r.ok) return; const hu=await r.json(); const n=istNow();
-      if(!hu||hu.day!==n.d) return; Object.values(hu.mon||{}).forEach(m=>{ if(m&&m.s&&mins(m.t)>=0&&n.m-mins(m.t)<=20) ring(m,hu.day); }); }catch(e){} }
+      if(!hu||hu.day!==n.d) return; Object.values(hu.mon||{}).forEach(m=>{ if(m&&m.s&&mins(m.t)>=0&&n.m-mins(m.t)<=20) ring(m,hu.day); }); refresh(hu); }catch(e){} }   /* patch 373: open banners refresh - price every 10 s, the why every 30 s */
   function decorate(){ const bd=document.getElementById("gxbd"); if(!bd||!bd.classList.contains("on")) return;
     bd.querySelectorAll('.c[onclick*="mkOpen("]').forEach(c=>{ if(c.querySelector(".gxwy373")) return; const m=/mkOpen\('([^']+)'\)/.exec(c.getAttribute("onclick")||""); if(!m) return;
       const dir=c.classList.contains("d")?-1:1, v=(CW[m[1]+"|"+dir]||{}).v; if(!v){ why(m[1],dir).then(()=>{ const x=c.querySelector(".gxwy373"); if(!x) decorate(); }); return; }

@@ -5,7 +5,8 @@ hit capital markets, knew ANGELONE moved with its whole sector - and the card sa
 those 15 minutes, which went -1.7% to +0.3%).
 view(sym, dir) -> for one BUY call, from what GIR already holds (nothing fetched from outside - it answers at once):
   NEWS      last night's 🌙 overnight list (overnight.py): a story naming THIS share, or a share of ITS SECTOR - and whether its direction
-            agrees with the call. A call whose share or sector is in the news its way is marked NEWS-BACKED.
+            agrees with the call · and TODAY's news on the share (after the last close, newest first, with its time and the AI's full-story
+            reading where GIR has it). A call with news its way (strong / moderate overnight, or the AI's reading today) is marked NEWS-BACKED.
   SECTOR    its sector now (all NSE shares, by size - seclive): % today, rank, shares up / down, ⚠ when one company is most of it, and a
             🚀 run today (secsurge.py)
   PEERS     its sector's other F&O shares moving the same way (many = the sector, alone = the share's own story)
@@ -71,6 +72,35 @@ def view(sym, dr=1):
         runs = [e for e in (sl.get("surge") or []) if e.get("sec") == sec and e.get("dir") == dr]
         if runs:
             out["run"] = {"t": runs[-1]["t"], "late": runs[-1].get("late"), "r": runs[-1].get("r")}
+    # TODAY'S NEWS on this share - only what came after the last close, newest first, with the AI's full-story reading where GIR has it
+    try:
+        import newsroom, sqlite3, re as _re
+        n_ = dt.datetime.now(IST); c_ = n_.replace(hour=15, minute=30, second=0, microsecond=0)
+        if n_ < c_:
+            c_ -= dt.timedelta(days=1)
+        while c_.weekday() > 4:
+            c_ -= dt.timedelta(days=1)
+        fr = sorted([x for x in (newsroom.items_for(sym, 24, 0) or []) if float(x.get("ts") or 0) >= c_.timestamp()], key=lambda x: -float(x.get("ts") or 0))
+        AI = {}
+        try:
+            for p_ in (os.path.join(D, "tomorrow.db"), os.path.join(D, "data", "tomorrow.db")):
+                if os.path.exists(p_):
+                    con = sqlite3.connect("file:%s?mode=ro" % p_, uri=True, timeout=5)
+                    for (tx,) in con.execute("select text from alerts where day=? and sym=? and text like '%CLAUDE read the full story%'", (today, sym)):
+                        m_ = _re.search(r"CLAUDE read the full story: (BULLISH|BEARISH|NEUTRAL)", tx or "")
+                        if m_:
+                            AI[tx] = m_.group(1)
+                    con.close(); break
+        except Exception:
+            pass
+        out["today_news"] = []
+        for x in fr[:3]:
+            h_ = str(x.get("h") or ""); ai = next((v for tx, v in AI.items() if h_[:40] and h_[:40] in tx), None)
+            out["today_news"].append({"t": dt.datetime.fromtimestamp(float(x.get("ts") or 0), IST).strftime("%H:%M"), "h": h_[:150], "src": x.get("domain") or x.get("src"), "ai": ai})
+            if ai and ((ai == "BULLISH" and dr > 0) or (ai == "BEARISH" and dr < 0)):
+                out["backed"] = True
+    except Exception:
+        out["today_news"] = []
     # THE SHARE - from the note
     out["own"] = (N.get("why") or [])[:2]; out["nonews"] = N.get("nonews")
     out["fut"] = (N.get("fut") or [])[:1]; out["levels"] = N.get("levels"); out["due"] = N.get("due"); out["cand"] = N.get("cand") or []
@@ -80,7 +110,11 @@ def view(sym, dr=1):
     for n in out["news"][:2]:
         B.append(("🗞 %s last night (%s) - %s%s" % ("NEWS FOR" if n["agree"] else "NEWS AGAINST" if n["dir"] in ("up", "down") else "NEWS, direction unclear,", n["how"], n["h"],
                                                       (" · " + n["why"]) if n["why"] else "")))
-    if not out["news"]:
+    for n in out.get("today_news") or []:
+        B.append("📰 TODAY %s · %s%s" % (n["t"], n["h"], (" · AI: %s%s" % (n["ai"], " - FOR the call" if (n["ai"] == "BULLISH") == (dr > 0) and n["ai"] != "NEUTRAL" else " - AGAINST the call" if n["ai"] != "NEUTRAL" else "")) if n.get("ai") else ""))
+    if not out["news"] and not out.get("today_news"):
+        B.append("🗞 no news for this share since the last close, nor for its sector in last night's list - this is money moving")
+    elif not out["news"]:
         B.append("🗞 nothing for this share or its sector in last night's list")
     if x:
         s_ = out["sector"]; p_ = out["peers"]
