@@ -17,13 +17,16 @@ IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
 OUT = os.path.join(D, "data", "seccand.json")
 LOG = os.path.join(D, "data", "seccand_log.json")
 LVF = os.path.join(D, "data", "seccand_lv.json")
-TRIG = (("09:45", "ET"), ("10:00", "BT"), ("10:30", "AB"), ("11:00", "A"), ("12:00", "A"))
+TRIG = (("09:20", "G"), ("09:45", "ET"), ("10:00", "BT"), ("10:30", "AB"), ("11:00", "A"), ("12:00", "A"))
+# patch 361: G = GAPDAY - gapstudy.py (2 years): on a day the WHOLE MARKET opens 0.7%+ down, the F&O shares that opened 3%+ down rose 2.69% from
+#   their open to the close, 87% of 568 cases - but on only 24 days (about one a month). A share gapping down by itself did NOT bounce (no lean).
+#   So: only when NIFTY itself opens 0.7%+ down, CE at 09:20 on the shares that opened 3%+ down; scored to 15:10 with a wide 4% stop.
 # patch 361: T = STRONG3 - pickstudy.py (58 days, the F&O shares of the 3 strongest sectors that are up): above VWAP + past yesterday's high +
 #   volume 1.5x its normal for that time of day was the best mark - to 15:10 +0.31%, 58% up, +0.39% over the pool at 10:00 (+0.28% at 09:45),
 #   the same in both halves. CE only (no PE mark passed). Scored with the 2-hour rule like BREAK.
 # patch 355b: E = BOUNCE - a share that fell 2%+ yesterday WITH its theme (the theme -1%+; the share not far worse than the theme): CE at 09:45.
 #   sectoropt.py, 14 days, real option: 88 trades, 53% won, +₹97,000 with the CARD rule (stop 2.5%, half +1.5%, rest 15:10) - scored that way.
-RULE = {"A": (0.025, 0.035, 120), "B": (0.025, 0.035, 120), "E": (0.025, 0.015, None), "T": (0.025, 0.035, 120)}
+RULE = {"A": (0.025, 0.035, 120), "B": (0.025, 0.035, 120), "E": (0.025, 0.015, None), "T": (0.025, 0.035, 120), "G": (0.04, 0.035, None)}
 WINDOW_MIN = 4
 _lv = {"day": None, "lv": {}, "busy": False}
 
@@ -149,6 +152,25 @@ def find(kinds, SEC, W, Q, FO, LV, vwap):
     return out
 
 
+def find_gapday(kite, FO):
+    """G: [(kind, sym, +1, price, 'the whole market', NIFTY's gap, why)] - only on a day NIFTY opened 0.7%+ below yesterday's close: the F&O shares
+    that opened 3%+ down (gapstudy.py). Any other day: nothing."""
+    import getdata
+    L_ = sorted(FO); q = {}
+    for i in range(0, len(L_), 400):
+        q.update(getdata.call(kite.quote, (["NSE:NIFTY 50"] if i == 0 else []) + ["NSE:" + s for s in L_[i:i + 400]]) or {})
+    gp = lambda v: (float((v.get("ohlc") or {}).get("open") or 0) / float((v.get("ohlc") or {}).get("close") or 0) - 1) if v and (v.get("ohlc") or {}).get("open") and (v.get("ohlc") or {}).get("close") else None
+    ng = gp(q.get("NSE:NIFTY 50"))
+    if ng is None or ng > -0.007:
+        return []
+    out = []
+    for s in L_:
+        v = q.get("NSE:" + s); g = gp(v)
+        if g is not None and g <= -0.03 and v.get("last_price"):
+            out.append(("G", s, 1, float(v["last_price"]), "the whole market", ng, "a market gap-down day (NIFTY opened %+.2f%%): this share opened %+.1f%% - on such days the hard-hit shares have bounced from the open (24 days in 2 years)" % (ng * 100, g * 100)))
+    return out
+
+
 def find_three(t, SEC, W, Q, FO, LV, vwap, vol):
     """T: [(kind, sym, +1, price, sector, sector %, why)] - an F&O share of one of the 3 strongest sectors, up on the day, above VWAP, past yesterday's
     high, with 1.5x its normal volume for this time of day (pickstudy.py)"""
@@ -203,7 +225,7 @@ def tick(n, SEC, W, Q, FO, kite):
             have = {(c["kind"], c["s"]) for c in st["cands"]}; new = 0
             LV_ = _lv["lv"] if _lv["day"] == day else {}
             for kind, s, dr, lp, sec, mv, why in (find(kinds, SEC, W, Q, FO, LV_, vwap) + (find_bounce(Q, FO, LV_) if "E" in kinds else [])
-                                                  + (find_three(t, SEC, W, Q, FO, LV_, vwap, vol) if "T" in kinds else [])):
+                                                  + (find_three(t, SEC, W, Q, FO, LV_, vwap, vol) if "T" in kinds else []) + (find_gapday(kite, FO) if "G" in kinds else [])):
                 if (kind, s) not in have:
                     have.add((kind, s)); new += 1
                     st["cands"].append({"t": t, "kind": kind, "s": s, "dir": dr, "px": round(lp, 2), "sec": sec, "secchg": round(mv * 100, 2), "why": why})
@@ -222,7 +244,7 @@ def score(day=None):
     st = _load(OUT, {})
     if st.get("day") != day or not st.get("cands"):
         return None
-    K = OR.Kite(day); tot = {"A": [0, 0, 0.0], "B": [0, 0, 0.0], "E": [0, 0, 0.0], "T": [0, 0, 0.0]}
+    K = OR.Kite(day); tot = {"A": [0, 0, 0.0], "B": [0, 0, 0.0], "E": [0, 0, 0.0], "T": [0, 0, 0.0], "G": [0, 0, 0.0]}
     for c in st["cands"]:
         try:
             if c["s"] not in K.eq:
@@ -262,9 +284,9 @@ def after_close(n):
 def view():
     """what the page shows: today's candidates + the running record"""
     st = _load(OUT, {}); lg = _load(LOG, {"days": {}})
-    rec = {"A": [0, 0, 0, 0, 0], "B": [0, 0, 0, 0, 0], "E": [0, 0, 0, 0, 0], "T": [0, 0, 0, 0, 0]}  # trades, won, ₹, days, green days
+    rec = {"A": [0, 0, 0, 0, 0], "B": [0, 0, 0, 0, 0], "E": [0, 0, 0, 0, 0], "T": [0, 0, 0, 0, 0], "G": [0, 0, 0, 0, 0]}  # trades, won, ₹, days, green days
     for d, v in sorted(lg.get("days", {}).items()):
-        for k in "ABET":
+        for k in "ABETG":
             a = v.get(k) or [0, 0, 0]
             if a[0]:
                 r = rec[k]; r[0] += a[0]; r[1] += a[1]; r[2] += a[2]; r[3] += 1; r[4] += a[2] > 0
