@@ -163,6 +163,18 @@ def market_part(now, FO, M=None, cal=None):
     for k in ("results", "results_prev", "ban"):
         cal[k] = [s for s in (cal.get(k) or []) if s in FO]
     items, tilt = [], {}
+    NS = _load(os.path.join(D, "data", "nightstudy.json"), {}).get("links") or {}   # nightstudy.py: did this link pay after the open?
+
+    def tested(sym, sec):
+        v = NS.get("%s|%s" % (sym, sec)) or {}; bg = v.get("big") or {}
+        if not bg.get("cases"):
+            return (" · not testable (Asia is still trading at 09:15)" if sym in ("^N225", "^HSI", "^KS11", "000001.SS") else
+                    " · not tested yet (nightstudy.py)" if not NS else " · too few big nights to test"), "untested"
+        verdict = "ok" if v.get("ok") else "fade" if v.get("fade") else "no"
+        txt = " · tested on %d big nights: the gap went its way %d%% of the time · after the open %+.2f%% beyond the average share %s" % (
+            bg["nights"], bg.get("gap_right") or 0, bg.get("a1510") or 0,
+            {"ok": "✔ it paid", "fade": "↺ the shares gave the gap back - do not chase the gap", "no": "✘ not proven - read it for the gap only"}[verdict])
+        return txt, verdict
     for m in M:
         if not (m.get("ok") and m.get("big")):
             continue
@@ -172,8 +184,9 @@ def market_part(now, FO, M=None, cal=None):
                 t_ = tilt.setdefault(l["sector"], {"up": [], "down": []}); t_[l["dir"]].append(mv)
             sh = [s for s in l["shares"] if s in FO][:6]
             if sh:
+                tx, vd = tested(m.get("sym"), l["sector"])
                 items.append({"time": (m.get("at") or "")[-5:], "headline": "%s overnight (as of %s)" % (mv, m.get("at") or "?"), "shares": sh, "dir": l["dir"] if l["dir"] in ("up", "down") else "unclear",
-                              "strength": "market", "kind": "market", "why": "read-across: " + l["why"]})
+                              "strength": "market", "kind": "market", "why": ("read-across: " + l["why"] + tx)[:300], "test": vd})
     TL = []
     for sec, v in tilt.items():
         n = len(v["up"]) - len(v["down"])
@@ -189,7 +202,7 @@ def watch_list(items, cal):
     W = {}
     for it in items:
         for s in it["shares"]:
-            if it["dir"] in ("up", "down"):
+            if it["dir"] in ("up", "down") and it.get("test") != "fade":     # a link that reversed after the open is not a reason to watch
                 mk_ = it.get("kind") == "market"
                 W.setdefault(s, {"up": [], "down": []})[it["dir"]].append((mk_, ("🌍 " + it["headline"].split(" overnight")[0]) if mk_ else ("📰 " + it["headline"][:80])))
     out = []

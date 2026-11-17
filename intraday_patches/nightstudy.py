@@ -13,7 +13,10 @@ perfect market prediction for tomorrow"). The 07:00 morning list (patch 380) map
 ✔ = after the open (09:30 -> 15:10, beyond the average) +0.10% or more in BOTH halves of the days, 8+ nights, and "sure" 2.5+ (the night-by-night
 average over its standard error - one number per night, since a night's shares move together). The gap is shown but cannot be
 traded. -> data/nightstudy.txt and data/nightstudy.json (each link's verdict, for the morning list). Orders nothing, no Kite call.
-  cd /home/globalbot/intraday && nice -n 15 python3 nightstudy.py"""
+  cd /home/globalbot/intraday && nice -n 15 python3 nightstudy.py      (the 67 days GIR keeps)
+  cd /home/globalbot && set -a && . ./.env && set +a && cd intraday && nice -n 15 python3 nightstudy.py fetch
+        first fetches about a YEAR (250 trading days) of Kite's 5-minute prices for the F&O shares (~10 minutes, kept in data/nightstudy/,
+        one small row a day per share), then runs the study on it. ↺ = a link that reversed after the open, the same test the other way."""
 import os, re, sys, json, time, datetime as dt
 import numpy as np
 D = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, D)
@@ -27,12 +30,12 @@ def say(s=""):
 
 
 def history(sym, get=None):
-    """[(local date, close)] for about a year of daily bars - the exchange's own date (Yahoo's gmtoffset)"""
+    """[(local date, close)] for about two years of daily bars - the exchange's own date (Yahoo's gmtoffset)"""
     import requests
     get = get or requests.get
     for host in ("query1", "query2"):
         try:
-            r = get("https://%s.finance.yahoo.com/v8/finance/chart/%s?range=1y&interval=1d" % (host, sym), timeout=20,
+            r = get("https://%s.finance.yahoo.com/v8/finance/chart/%s?range=2y&interval=1d" % (host, sym), timeout=20,
                     headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"})
             if r.status_code != 200:
                 continue
@@ -60,6 +63,79 @@ def night_move(H, day, pts):
     if (day - H[i[-1]][0]).days > 4:                          # the market was shut for days - no fresh night
         return None
     return (b - a) if pts else 100.0 * (b / a - 1)
+
+
+LONG = os.path.join(D, "data", "nightstudy")
+
+
+def day_points(A):
+    """5-minute rows [ord, minute, o, h, l, c, v] -> [[ord, open, c0930, c1030, c1510, last close]] one row a day"""
+    out = []
+    for p in np.split(A, np.flatnonzero(np.diff(A[:, 0])) + 1):
+        cl = np.full(72, np.nan); op = None
+        for row in p:
+            k = int(row[1]) // 5
+            if 0 <= k < 72:
+                cl[k] = row[5]
+                if k == 0:
+                    op = float(row[2])
+        for k in range(1, 72):
+            if cl[k] != cl[k]:
+                cl[k] = cl[k - 1]
+        fin = np.isfinite(cl)
+        if op and fin[[B930, B1030, END]].all() and fin.sum() >= 60:
+            out.append([float(p[0, 0]), op, cl[B930], cl[B1030], cl[END], float(cl[fin][-1])])
+    return np.array(out, dtype=np.float64)
+
+
+def fetch(ndays=250):
+    """Kite 5-minute prices of the F&O shares for about `ndays` trading days -> data/nightstudy/<SYM>.npy (one row a day, small).
+    A share fetched today is skipped. Kite gives at most 100 days of 5-minute candles a request: pieces of 80 days."""
+    import seclive as SL, getdata
+    os.makedirs(LONG, exist_ok=True); kite = SL.get_kite()
+    tok = {i["tradingsymbol"]: int(i["instrument_token"]) for i in getdata.call(kite.instruments, "NSE") if i.get("instrument_type") == "EQ"}
+    today = dt.date.today(); frm = dt.datetime.combine(today - dt.timedelta(days=int(ndays * 1.45) + 5), dt.time(9, 15)); to = dt.datetime.combine(today, dt.time(15, 30))
+    got = fails = 0
+    for s in sorted(SL.fo_set()):
+        f = os.path.join(LONG, re.sub(r"[^A-Z0-9]", "_", s) + ".npy")
+        if os.path.exists(f) and dt.date.fromtimestamp(os.path.getmtime(f)) == today:
+            continue
+        if s not in tok:
+            continue
+        rows = []; x0 = frm; bad = None
+        while x0 < to:
+            x1 = min(x0 + dt.timedelta(days=80), to)
+            for k in range(2):
+                try:
+                    rows.extend(kite.historical_data(tok[s], x0, x1, "5minute")); time.sleep(0.36); bad = None; break
+                except Exception as ex:
+                    bad = ex; time.sleep(2.5)
+            x0 = x1 + dt.timedelta(seconds=1)
+        if not rows:
+            fails += 1; print("  %s: %s" % (s, str(bad)[:60]), flush=True)
+            if fails >= 25 and not got:
+                raise RuntimeError("Kite refused the first 25 shares - stopped")
+            continue
+        A = np.array([[r["date"].date().toordinal(), r["date"].hour * 60 + r["date"].minute - 555, r["open"], r["high"], r["low"], r["close"], r["volume"]] for r in rows], dtype=np.float64)
+        np.save(f, day_points(A)); got += 1
+        if got % 25 == 0:
+            print("  fetched %d shares ..." % got, flush=True)
+    print("  fetched %d shares, %d failed -> %s" % (got, fails, LONG), flush=True)
+
+
+def load_long(FO):
+    """{day ordinal: {sym: (prev close, open, c0930, c1030, c1510)}} from data/nightstudy/ (the year fetched by `fetch`)"""
+    P = {}
+    for s in FO:
+        f = os.path.join(LONG, re.sub(r"[^A-Z0-9]", "_", s) + ".npy")
+        try:
+            A = np.load(f)
+        except Exception:
+            continue
+        for i in range(1, len(A)):
+            if A[i, 0] - A[i - 1, 0] <= 5:
+                P.setdefault(int(A[i, 0]), {})[s] = (float(A[i - 1, 5]), float(A[i, 1]), float(A[i, 2]), float(A[i, 3]), float(A[i, 4]))
+    return {d: v for d, v in P.items() if len(v) >= 120}
 
 
 def load_india():
@@ -109,11 +185,15 @@ def main():
     import morningmkts as MM
     import seclive as SL
     SEC, _ = SL.universe(); FO = SL.fo_set()
-    P = load_india(); days = sorted(P)
+    P = load_india(); src = "data/secstudy"
+    PL = load_long(FO)
+    if len(PL) > len(P):
+        P, src = PL, "data/nightstudy (the year fetched)"
+    days = sorted(P)
     if len(days) < 20:
         say("❌ 5-minute prices for only %d days in data/secstudy - run sectorstudy.py once" % len(days)); return
-    say("📊 DO THE OVERNIGHT MARKET LINKS PAY AFTER THE OPEN? · %d Indian days (%s to %s) · the links of the 07:00 morning list (morningmkts.py)" % (
-        len(days), dt.date.fromordinal(days[0]), dt.date.fromordinal(days[-1])))
+    say("📊 DO THE OVERNIGHT MARKET LINKS PAY AFTER THE OPEN? · %d Indian days (%s to %s, %s) · the links of the 07:00 morning list (morningmkts.py)" % (
+        len(days), dt.date.fromordinal(days[0]), dt.date.fromordinal(days[-1]), src))
     AV = {d: np.mean([measures(v) for v in P[d].values()], axis=0) for d in days}     # the average F&O share each day
     mid = days[len(days) // 2]; av = lambda x: float(np.mean(x)) if len(x) else float("nan")
     say("  how to read: each number is in the link's direction and beyond the average F&O share that day ('whole market': the average share itself)")
@@ -180,8 +260,11 @@ def main():
     for v in OUT.values():                                   # the link's verdict: ✔ on its big nights AND holding on the half-size nights too
         bg, hf = v.get("big") or {}, v.get("half") or {}
         v["ok"] = bool(bg.get("ok") and (hf.get("t") or 0) >= 2.0 and (hf.get("h1") or 0) > 0 and (hf.get("h2") or 0) > 0)
-    ok = [k for k, v in OUT.items() if v["ok"]]
+        v["fade"] = bool((bg.get("nights") or 0) >= 8 and (bg.get("t") or 0) <= -2.5 and (bg.get("h1") or 0) <= -0.1 and (bg.get("h2") or 0) <= -0.1
+                         and (hf.get("t") or 0) <= -2.0 and (hf.get("h1") or 0) < 0 and (hf.get("h2") or 0) < 0)
+    ok = [k for k, v in OUT.items() if v["ok"]]; fd = [k for k, v in OUT.items() if v["fade"]]
     say(""); say("✔ LINKS THAT PAID AFTER THE OPEN (✔ on the big nights, and holding on the half-size nights): %s" % (", ".join(ok) if ok else "none"))
+    say("↺ LINKS THAT REVERSED AFTER THE OPEN (the same test the other way - the gap went with the night, then the shares gave it back): %s" % (", ".join(fd) if fd else "none"))
     say("  on made-up prices with NO real link, this rule passed a link by luck in 1 run of 12 - a ✔ is evidence, not proof; it is re-run as days add up")
     say("  (a link can still be right about the GAP - that is in the price before anyone can trade; the 07:00 list shows it as information)")
     try:
@@ -192,4 +275,6 @@ def main():
 
 
 if __name__ == "__main__":
+    if sys.argv[1:2] == ["fetch"]:                           # needs Kite: cd /home/globalbot && set -a && . ./.env && set +a && cd intraday && python3 nightstudy.py fetch
+        fetch(int(sys.argv[2]) if sys.argv[2:] and sys.argv[2].isdigit() else 250)
     main()
