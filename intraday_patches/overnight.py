@@ -11,6 +11,14 @@ GIR's list at 22:59). What was missing: one list BEFORE THE OPEN of what came af
   score   (15:50) every listed share with a direction: the OPENING GAP its way, open -> 10:00 and open -> 15:10 its way (Kite 5-minute prices)
           -> data/overnight_log.json, the running record by strength. The gap cannot be traded; the two after-the-open columns can.
   view()  for the page: today's list and the record.
+  patch 380 (Rama, 17 Nov 16:45: "start monitoring all the news and the overnight sector movement, and keep the list ready at 07:00"):
+  07:00   the list is made at 07:00 (not 08:35), and now also reads the OVERNIGHT MARKETS (morningmkts.py: the US indices and sector funds,
+          the Indian companies in New York, crude, metals, gold, the yield, the dollar, the rupee, Asia): every big move becomes a line for the
+          reader AND a 🌍 MARKET item on the list (the F&O shares it usually moves, which way, why) · the SECTOR TILT (which Indian sectors the
+          night's markets point up or down) · TODAY'S CALENDAR (results due today and last evening, the F&O ban list) · 👀 WATCH AT THE OPEN
+          (a share that two or more items point the same way)
+  08:35   the same again with the fresh markets and news (Asia is open by then); what is new since 07:00 is marked NEW
+  15:50   the score as before - the 🌍 MARKET items are scored too, so the record shows whether the market links pay ("market" row)
 A paper record: no sound, no Telegram, no order.     python3 overnight.py make | score [YYYY-MM-DD] | auto | show"""
 import os, re, sys, json, time, sqlite3, datetime as dt
 D = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, D)
@@ -134,8 +142,67 @@ def lines(now):
     return since, out[-230:]
 
 
-def make(now=None):
-    """the morning list -> data/overnight.json (a day is made once; `make again` replaces it)"""
+def market_part(now, FO, M=None, cal=None):
+    """patch 380: the overnight markets -> 🌍 MARKET items, the sector tilt, today's calendar. M / cal can be given (the test)"""
+    import morningmkts as MM
+    if M is None:
+        try:
+            M = MM.markets()
+        except Exception as ex:
+            M = []; print("overnight: the markets were not read: %s" % str(ex)[:80], flush=True)
+    if cal is None:
+        cal = MM.calendar(now.date())
+        try:                                                 # results declared last evening (after the close) count too
+            d = now.date() - dt.timedelta(days=1)
+            while d.weekday() > 4:
+                d -= dt.timedelta(days=1)
+            c = sqlite3.connect("file:%s?mode=ro" % os.path.join(D, "chains.db"), uri=True, timeout=10)
+            cal["results_prev"] = sorted({s for (s,) in c.execute("select sym from results_cal where d=?", (str(d),))}); c.close()
+        except Exception:
+            cal["results_prev"] = []
+    for k in ("results", "results_prev", "ban"):
+        cal[k] = [s for s in (cal.get(k) or []) if s in FO]
+    items, tilt = [], {}
+    for m in M:
+        if not (m.get("ok") and m.get("big")):
+            continue
+        mv = "%s %s%.2f%s" % (m["name"], "+" if m["chg"] > 0 else "", m["chg"], "%" if m.get("unit") == "%" else " pts")
+        for l in m["links"]:
+            if l["dir"] in ("up", "down"):
+                t_ = tilt.setdefault(l["sector"], {"up": [], "down": []}); t_[l["dir"]].append(mv)
+            sh = [s for s in l["shares"] if s in FO][:6]
+            if sh:
+                items.append({"time": (m.get("at") or "")[-5:], "headline": "%s overnight (as of %s)" % (mv, m.get("at") or "?"), "shares": sh, "dir": l["dir"] if l["dir"] in ("up", "down") else "unclear",
+                              "strength": "market", "kind": "market", "why": "read-across: " + l["why"]})
+    TL = []
+    for sec, v in tilt.items():
+        n = len(v["up"]) - len(v["down"])
+        TL.append({"sector": sec, "dir": "up" if n > 0 else "down" if n < 0 else "mixed", "up": v["up"], "down": v["down"]})
+    TL.sort(key=lambda x: (x["sector"] != "whole market", -abs(len(x["up"]) - len(x["down"])), x["sector"]))
+    mk = [{k: m.get(k) for k in ("sym", "name", "ok", "chg", "unit", "at", "big")} for m in M]
+    return M, mk, items, TL, cal
+
+
+def watch_list(items, cal):
+    """👀 a share with a NEWS item and at least one more item (news or market) the SAME way, and none the other way - two market links alone
+    are left to the sector tilt (on a strong Nasdaq night every IT share would be listed); results / ban added as facts"""
+    W = {}
+    for it in items:
+        for s in it["shares"]:
+            if it["dir"] in ("up", "down"):
+                mk_ = it.get("kind") == "market"
+                W.setdefault(s, {"up": [], "down": []})[it["dir"]].append((mk_, ("🌍 " + it["headline"].split(" overnight")[0]) if mk_ else ("📰 " + it["headline"][:80])))
+    out = []
+    for s, v in W.items():
+        for d_, o_ in (("up", "down"), ("down", "up")):
+            if len(v[d_]) >= 2 and any(not m for m, _ in v[d_]) and not v[o_]:
+                out.append({"s": s, "dir": d_, "why": [w for m, w in sorted(v[d_], key=lambda x: x[0])][:3],
+                            "results": s in (cal.get("results") or []) or s in (cal.get("results_prev") or []), "ban": s in (cal.get("ban") or [])})
+    return sorted(out, key=lambda x: -len(x["why"]))[:8]
+
+
+def make(now=None, update=False, M=None, cal=None):
+    """the morning list -> data/overnight.json (07:00; `update` at 08:35 keeps the 07:00 time and marks what is new)"""
     import seclive as SL
     now = now or dt.datetime.now(IST); day = str(now.date())
     since, LN = lines(now)
@@ -143,14 +210,29 @@ def make(now=None):
     by = {}
     for s in sorted(FO, key=lambda s: -(W.get(s) or 0)):
         by.setdefault(SEC.get(s, "other"), []).append(s)
-    st = {"day": day, "at": now.strftime("%H:%M"), "since": since.strftime("%d %b %H:%M"), "n_lines": len(LN), "items": [], "scored": False, "model": MODEL}
+    M, mk, mitems, TL, cal = market_part(now, FO, M, cal)
+    try:
+        import morningmkts as MM
+        for x in MM.lines_for_model(M):
+            LN.append((now, "world markets", x))
+    except Exception:
+        pass
+    prev = _load(OUT, {})
+    st = {"day": day, "at": now.strftime("%H:%M"), "since": since.strftime("%d %b %H:%M"), "n_lines": len(LN), "items": [], "scored": False, "model": MODEL,
+          "mkts": mk, "tilt": TL, "cal": cal, "watch": [], "first_at": prev.get("first_at") or prev.get("at") if (update and prev.get("day") == day) else now.strftime("%H:%M"), "upd": bool(update)}
+    old = {re.sub(r"[^a-z0-9]", "", (it.get("headline") or "").lower())[:40] for it in (prev.get("items") or [])} if (update and prev.get("day") == day) else None
     if not LN:
+        st["items"] = mitems; st["watch"] = watch_list(mitems, cal)
         st["note"] = "GIR collected no news lines since the close"; _save(st, OUT); return st
     import anthropic
     user = "The news lines collected since %s IST (time · source · text):\n%s\n\nThe F&O shares by sector (the largest first):\n%s" % (
         since.strftime("%d %b %H:%M"), "\n".join("%s · %s · %s" % (t.strftime("%d %b %H:%M"), src, txt) for t, src, txt in LN), json.dumps(by, ensure_ascii=False))
-    with anthropic.Anthropic().messages.stream(model=MODEL, max_tokens=16000, system=SYSTEM, messages=[{"role": "user", "content": user}]) as s_:
-        r = s_.get_final_message()
+    try:
+        with anthropic.Anthropic().messages.stream(model=MODEL, max_tokens=16000, system=SYSTEM, messages=[{"role": "user", "content": user}]) as s_:
+            r = s_.get_final_message()
+    except Exception as ex:                                  # patch 380: the markets and the calendar are kept even when the reader fails
+        st["items"] = mitems; st["watch"] = watch_list(mitems, cal); st["note"] = "the news reader failed (%s) - the market items only" % str(ex)[:60]
+        _save(st, OUT); return st
     txt = "\n".join(b.text for b in r.content if b.type == "text")
     a, b = txt.find("["), txt.rfind("]")
     try:
@@ -166,7 +248,12 @@ def make(now=None):
         st["items"].append({"time": str(x.get("time") or "")[:11], "headline": str(x.get("headline") or "")[:170], "shares": sh,
                             "dir": x.get("dir") if x.get("dir") in ("up", "down") else "unclear", "strength": x.get("strength") if x.get("strength") in ("strong", "moderate", "weak") else "weak",
                             "why": str(x.get("why") or "")[:140]})
-    st["items"] = st["items"][:14]; st["tokens"] = [r.usage.input_tokens, r.usage.output_tokens]
+    st["items"] = st["items"][:14] + mitems; st["tokens"] = [r.usage.input_tokens, r.usage.output_tokens]
+    st["watch"] = watch_list(st["items"], cal)
+    if old is not None:
+        for it in st["items"]:
+            if it.get("kind") != "market" and re.sub(r"[^a-z0-9]", "", it["headline"].lower())[:40] not in old:
+                it["new"] = True
     if r.stop_reason == "refusal":
         st["note"] = "the model declined to read"
     _save(st, OUT)
@@ -215,11 +302,12 @@ def view():
     st = _load(OUT, {}); lg = _load(LOG, {"days": {}}); rec = {}
     for d, rows in sorted(lg.get("days", {}).items()):
         for r in rows:
-            for k in (r.get("strength") or "weak", "all"):
+            for k in ((r.get("strength") or "weak", "all") if r.get("strength") != "market" else ("market",)):   # patch 380: the market links kept apart
                 a = rec.setdefault(k, [0, 0.0, 0.0, 0.0, 0]); a[0] += 1; a[1] += r["gap"]; a[2] += r["o10"]; a[3] += r["oc"]; a[4] += r["oc"] > 0
     rec = {k: [a[0], round(a[1] / a[0], 2), round(a[2] / a[0], 2), round(a[3] / a[0], 2), round(100 * a[4] / a[0])] for k, a in rec.items() if a[0]}
     return {"day": st.get("day"), "at": st.get("at"), "since": st.get("since"), "items": st.get("items") or [], "scored": bool(st.get("scored")), "note": st.get("note"),
-            "n_lines": st.get("n_lines"), "record": rec, "days": len(lg.get("days", {})), "t": time.time()}
+            "n_lines": st.get("n_lines"), "record": rec, "days": len(lg.get("days", {})), "t": time.time(),
+            "mkts": st.get("mkts") or [], "tilt": st.get("tilt") or [], "cal": st.get("cal") or {}, "watch": st.get("watch") or [], "first_at": st.get("first_at"), "upd": bool(st.get("upd"))}
 
 
 if __name__ == "__main__":
@@ -228,12 +316,14 @@ if __name__ == "__main__":
         st = _load(OUT, {}); hm = now.strftime("%H:%M")
         if hm < "09:15" and st.get("day") != str(now.date()):
             a = ["make"]
+        elif "08:20" <= hm < "09:15" and st.get("day") == str(now.date()) and not st.get("upd"):   # patch 380: the 08:35 refresh of the 07:00 list
+            a = ["update"]
         elif hm >= "15:40" and st.get("day") == str(now.date()) and not st.get("scored"):
             a = ["score"]
         else:
             print("overnight: nothing to do at %s" % hm); sys.exit(0)
-    if a[:1] == ["make"]:
-        st = make(now); print("overnight %s: %d news lines since %s -> %d items%s" % (st["day"], st["n_lines"], st["since"], len(st["items"]), (" · " + st["note"]) if st.get("note") else ""))
+    if a[:1] in (["make"], ["update"]):
+        st = make(now, update=a[:1] == ["update"]); print("overnight %s: %d news lines since %s -> %d items%s" % (st["day"], st["n_lines"], st["since"], len(st["items"]), (" · " + st["note"]) if st.get("note") else ""))
     elif a[:1] == ["score"]:
         r = score(a[1] if a[1:] else None); print("overnight scored: %s" % (("%d share-rows" % len(r)) if r is not None else "no list for that day"))
     v = view()
