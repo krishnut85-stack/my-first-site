@@ -263,6 +263,13 @@ def main():
                 last_min = mn; hist.append({"m": mn, "p": {s: v[0] for s, v in Q.items()}}); hist = [h for h in hist if h["m"] >= mn - 75]
                 save({"day": day, "h": hist}, HF)
             V = compute(SEC, W, Q, hist, FO, wsrc, n); V["live"] = live
+            if live and not once:                                             # patch 372: 🚀 a sector running - never stops the sectors
+                try:
+                    import secsurge
+                    for e in secsurge.check(V, n):
+                        log("surge: " + secsurge.line(e))
+                except Exception as ex:
+                    log("secsurge: %s" % str(ex)[:120])
             save(V, OUT)
             if not once:                                                      # patch 355: the sector candidates (a paper test) - never stops the sectors
                 try:
