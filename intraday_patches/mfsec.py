@@ -123,7 +123,18 @@ def update(today, n):
 
 
 def probe(today):
-    import fpisec
+    import fpisec, requests
+    for name, u in (("a 2025 page known to exist", URL % (2025, "may", 25)), ("SEBI's index page", "https://www.sebi.gov.in/statistics/mutual-fund/deployment-of-funds-by-all-mutual-funds.html")):
+        try:
+            r = requests.get(u, headers=UA, timeout=30)
+            print("%s: %s (%d bytes)%s" % (name, r.status_code, len(r.content), " · %d industries read" % len(parse(r.text)) if "2025" in u and r.status_code == 200 else ""), flush=True)
+            if "index" in name and r.status_code == 200:
+                L_ = sorted(set(re.findall(r'href="([^"]*(?:deployment|equity)[^"]*)"', r.text, re.I)))
+                print("  links on it (%d): %s" % (len(L_), " · ".join(x[-70:] for x in L_[-14:])))
+                for m_ in re.findall(r"<option[^>]*value=\"([^\"]+)\"", r.text)[:14]:
+                    print("  option:", m_[:90])
+        except Exception as ex:
+            print("%s: %s" % (name, str(ex)[:90]), flush=True)
     for y, m in months(today, 4):
         print("month %04d-%02d:" % (y, m), flush=True)
         html, u = get(y, m, quiet=False)
