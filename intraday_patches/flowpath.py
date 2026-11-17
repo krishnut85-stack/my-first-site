@@ -5,6 +5,8 @@ ones they sold most 42 times of 48. This looks inside that:
   1) THE PATH        the 5 most bought and the 5 most sold sectors of each fortnight - the sector against the market in each stretch: 20-11 and
                      10-1 days BEFORE the fortnight, its first half, its second half, and 1-5 / 6-10 / 11-20 / 21-40 days AFTER it ends.
                      Does the price go first and the money follow, do they move together, or does the price keep going afterwards?
+  1b) THE CLUE       half-way through a fortnight, before any report: do the sectors leading / lagging in its first half turn out to be the
+                     ones the foreign funds were buying / selling - and do they go on in the second half and the 10 days after?
   2) IN THE DAY      on the days of such a fortnight: is the bought sector's gain made OVERNIGHT (yesterday's close -> the open) or in the
                      DAYTIME (open -> close)? And from Kite's 5-minute prices (the days sectorstudy.py keeps): the first hour (to 10:15),
                      the middle (10:15-14:15), the last 75 minutes (14:15-15:30) - when in the session do institutions' sectors gain?
@@ -119,6 +121,22 @@ def main():
         say("    %-34s %9s %9s %11s   %2d of %2d (%2d%%) · halves %s / %s" % (name, pc(av(T)), pc(av(B)), pc(av(d_)), sum(1 for v in d_ if v > 0), len(d_), 100 * sum(1 for v in d_ if v > 0) / len(d_), pc(av(d_[:h])), pc(av(d_[h:]))))
     say("    read it like this: a big difference BEFORE = the price moved first and the money followed · during = together · AFTER = still tradable")
 
+    say("")
+    say("1b) THE CLUE - half-way through a fortnight, BEFORE any report: take the sectors that did best / worst against the market in its FIRST half")
+    hit, sec2, nxt = [], [], []
+    for k, a, b, top, bot in FN:
+        mid = (a + b) // 2; q = len(top)
+        R1 = sorted(IDX, key=lambda s: -float(REL[s][a + 1:mid + 1].sum())); t1, b1 = R1[:q], R1[-q:]
+        hit.append((len(set(t1) & set(top)) + len(set(b1) & set(bot))) / (2.0 * q))
+        sec2.append(sum(float(REL[s][mid + 1:b + 1].sum()) for s in t1) / q - sum(float(REL[s][mid + 1:b + 1].sum()) for s in b1) / q)
+        if b + 10 < n:
+            nxt.append(sum(float(REL[s][b + 1:b + 11].sum()) for s in t1) / q - sum(float(REL[s][b + 1:b + 11].sum()) for s in b1) / q)
+    av = lambda v: sum(v) / len(v) if v else float("nan"); h = len(sec2) // 2; q0 = len(FN[0][3])
+    say("    does it name what they are buying? of the first-half leaders and laggards, %d%% turn out to be among the fortnight's most bought / most sold (by chance: %d%%)" % (
+        round(100 * av(hit)), round(100.0 * q0 / len(IDX))))
+    say("    do they go on? first-half leaders minus laggards: in the SECOND half %s (ahead in %d of %d, halves %s / %s) · in the 10 days after the fortnight %s (ahead in %d of %d)" % (
+        pc(av(sec2)), sum(1 for v in sec2 if v > 0), len(sec2), pc(av(sec2[:h])), pc(av(sec2[h:])), pc(av(nxt)), sum(1 for v in nxt if v > 0), len(nxt)))
+    say("    read it: a high first line = the price tells you early where the money is going · a plus on the second line = there is still something left to trade")
     say("")
     say("2) IN THE DAY - on the days of the fortnight, the bought sectors minus the sold ones, per day (in hundredths of a percent)")
     To, Ti = [], []
