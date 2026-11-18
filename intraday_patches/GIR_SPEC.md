@@ -3,6 +3,48 @@
 For the Claude session running ON the GIR server (/home/globalbot/intraday). Build GIR exactly to this file. When the trader adds
 something, this file is updated and you are told to re-read it.
 
+## TRIAL - the top rule (from 19 Nov, one week)
+
+The trader is building a fail-safe F&O trading system. It works as a chain, and every link must hold:
+
+    DATA  ->  the ANALYST and his TEAM (the agents)  ->  GIR (the page and the alerts)  ->  the TRADER
+
+- **Data** (prices, futures and options, sectors, world prices, news) is collected by the agents.
+- **The analyst leads the team.** Each agent is a team member with one job; the analyst turns their findings into decisions.
+  A weak or silent team member is the analyst's problem to report and fix.
+- **GIR presents the analyst's decisions** clearly (section 5), and **the trader acts**.
+
+On 18 Nov about $30 of AI was spent and the chain failed: the drivers moved the night before (copper at its lowest since July,
+gold down, US tech selling off, a strong dollar), the sectors confirmed at 09:20, and the analyst named none of the shares in time.
+
+**For one week, the analyst is judged on one thing only - did it tell the trader the right thing, at the right time:**
+1. **19:45 and 07:15 note:** did it name the sectors and the F&O shares that actually moved the next day, before they moved?
+2. **By 09:30:** did it say GO NOW (or GET READY) on the right shares, with trigger, stop and target?
+3. **During the day:** did it say HOLD, BOOK HALF or EXIT at the right time on its own calls?
+
+**Daily scorecard at 15:45, in plain words, sent to the trader** (page + the decisions Telegram channel):
+- what the analyst said and when (19:45, 07:15, every GO NOW / GET READY / follow-up);
+- what actually happened: every F&O share that moved 2%+, and every sector that moved 1%+;
+- the score: named before the move / named late / missed - with the reason for every late or missed one, and which team
+  member (agent) failed;
+- each team member's day: ran or not, found what, woke the analyst or not;
+- the AI spend by model, and the cost per useful call.
+
+**During the trial: no new features and no page changes** - only fixes that make the analyst name the right shares earlier,
+and the cost cap (section 6). If the scorecard does not improve within the week, change how the analyst thinks (its method and
+inputs), not how the page looks.
+
+**How the analyst writes** - like an experienced analyst at a trading desk, never a list of news:
+- WHAT'S HAPPENING - the market and the drivers in two or three sentences;
+- WHAT I'D DO NOW - GO NOW / GET READY · share · PE or CE · strike · trigger · stop · target · hold until, then why in one line;
+- WHAT I'D AVOID - shares that have already used their room;
+- WHAT WOULD CHANGE MY VIEW - and "I'll tell you at once".
+
+**The page order (when page work resumes after the trial):** 1 Market (indices, mood in one sentence, breadth, FII/DII, PCR,
+expiry, ban) · 2 Sector performance (every sector as a bar) · 3 Sector rotation (money out -> in, drivers, sector run times) ·
+4 Trade plans (every share in position in each moving sector) · 5 News that matters (only news that moves F&O shares, with its
+effect) · the analyst's desk note always on the right.
+
 ## 0. How to work and report (no shortcuts)
 
 - Read the WHOLE file before starting. Every numbered item is a requirement, not a suggestion.
