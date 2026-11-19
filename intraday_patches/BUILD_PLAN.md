@@ -181,6 +181,8 @@ J- and R- numbers are COLLECTION_PLAN's jobs and recorders.
 | F30 | Raw recorder: every websocket frame with receive time (all keys), every HTTP body that changed, every news item with first-seen time per source, every SSE event, alert and AI call | writer thread off the live path | live | zstd after 15:35; 90 days ticks on server, db forever | replay (section 4) | frames per connection vs norm | drop to underlyings + held strikes if behind | partly - verify |
 | F31 | Journal, plan cards, paper twin of every GO NOW / triggered GET READY, price 30 min after exit, P&L split | own | per trade | 16:00 build | E15 -> Journal, Scorecard, Positions | - | - | partly - build in v2 |
 
+MISSING EXTERNAL SOURCES - ranked list with how to collect each: design_v3/EXTERNAL_SOURCES_MISSING.md (the 'before Monday' ten first).
+
 ### 1.3 The four Kite keys (S9) - who carries what
 
 Every token in **FULL mode** (Kite's quote mode carries no OI, no bid / ask and no exchange timestamp - the option gate would be
