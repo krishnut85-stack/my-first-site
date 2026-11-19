@@ -1,0 +1,6 @@
+run <server>/girdata/replay/out/2026-11-19: 57 movers 2%+
+  AI share of triage rows: 0 of 135 (0%); rules fallbacks: {None: 135}
+  rings 14 (09:15-09:45: 13); by hour {'09': 14}
+  early / late / missed / wrong - cards: 0 / 1 / 56 / 0 · cards + WATCH: 5 / 2 / 46 / 4 · old system: 26 / 20 / 8 / 3
+  AI: 0 calls, $0.000, {}, stop reasons {}
+  lanes: {'MUST SEE': 7, 'WATCH': 117, 'LOG': 11}
