@@ -287,7 +287,7 @@ makes calls after the loss limit. Every call states entry, stop, what proves it 
 | 44 | Capital, open positions, fills (entry / exit price, time), P&L | Kite positions + GIR | live | risk bar, sizing, journal | basic | |
 | 45 | Trade journal: plan card, reason, mistake tags, price 30 min after exit | GIR | per trade | weekly review | basic | |
 | 46 | Every AI call: time, inputs, decision, taken / skipped, paper result | GIR | per call | AI scorecard | basic | |
-| 47 | AI spend by model and hour | GIR | live | $10 cap, cost per useful call | basic | |
+| 47 | AI spend by model and hour | GIR | live | $20 cap, cost per useful call | basic | |
 | **Health of the data itself** |||||||
 | 48 | Age and source of every number; stale flags; Kite vs NSE mismatches | GIR | live + 08:45 / 16:30 | trust, blocking calls | basic | |
 | 49 | Raw recording of every tick, news item (first-seen time) and AI answer | GIR | live | exact replay of any day | basic | |
@@ -387,8 +387,9 @@ background, never blocking the alert. Legal: public endpoints only, respect term
 ### S2. The live price feed (fast and never silently frozen)
 - One feed process; the websocket callback only queues the raw frame (nothing slow inside it); a decoder keeps the latest tick
   per instrument in memory / Redis; a page gateway pushes only changed fields 4-10 times a second.
-- Coverage within Kite limits (3 connections x 3,000): 218 shares + current futures + ATM +-5 strikes CE / PE (~5,250); quote mode
-  for the chain, full mode (depth) only for watch-list strikes and open positions; re-centre strikes when spot moves half a strike
+- Coverage within Kite limits (3 connections x 3,000 per key): 218 shares + current futures + ATM +-5 strikes CE / PE (~5,250); FULL mode
+  for every option strike (Kite's quote mode carries NO open interest, NO bid / ask and NO exchange timestamp - the option gate would be
+  blind; full mode for ~5,000 strikes is about 1 MB/s, well within capacity); re-centre strikes when spot moves half a strike
   (subscribe new before unsubscribing old).
 - After EVERY reconnect: resubscribe each connection's list and set the mode again; backoff with jitter. Stall detection with
   2-3 liquid "sentinel" instruments per connection (> 3 s silent in market hours -> reconnect), and a rotating quote-API sweep
@@ -533,13 +534,19 @@ baskets (breadth > 85% by 10:00, tight time stops) are moderate.
   never put one in git, a chat or a screenshot. List the variable names (not values) in the report.
 - Use them to spread the live feed: each key gives up to 3 websocket connections (~3,000 instruments each). Plan: key 1 = the 218
   shares + current-month futures + indices; key 2 = option strikes ATM +-5 for the watch list and open positions (full mode with
-  depth); key 3 = the rest of the option chains (quote mode); key 4 = a HOT STANDBY that takes over any connection that stalls
+  depth); key 3 = the rest of the option chains (FULL mode - quote mode has no OI, bid / ask or timestamp) plus a REST OI sweep every 1-3 min; key 4 = a HOT STANDBY that takes over any connection that stalls
   (and runs the rotating quote-API sweep that finds silently dead prices). Each key has its own REST rate limits - spread quote /
   historical calls across them.
 - Every key needs its own daily login (access token). Keep the login manual and do not automate it around Zerodha's rules; the
   08:45 pre-flight checks all four tokens and rings the trader if any is not logged in.
 - Check Zerodha's current Kite Connect terms for using several apps on one account before relying on this; if any use is not
   allowed, say so and use only what is.
+- Kite gives NO IV / greeks, no option-chain endpoint, no history for expired contracts, no 20-level depth, no trade-by-trade data:
+  GIR computes IV / greeks itself; an independent second feed (e.g. Upstox on its long-lived read-only analytics token) runs all the
+  time; NSE's option chain is the official cross-check for IV / OI; expired-option intraday history (e.g. Dhan's or ICICI Breeze's
+  historical data, needs an account in the trader's name) can fill IV rank and results-reaction tables from week one [verify terms].
+- Kite Connect costs about Rs 500 / month per app with historical data (four keys ~ Rs 2,000 + GST) [verify]; API ORDER placement
+  needs a static IP (data-only use does not) [verify].
 
 ### S10. The AI agents already built - kept, reorganised, and made to earn their place
 Every agent stays, but in the right tier (S4), and each is scored daily (B8: keep it only if its calls earn at least 3x its cost;
@@ -563,6 +570,85 @@ drop it if it has not beaten the random baseline after 100 calls).
 
 The daily 15:45 scorecard shows each agent's line: ran or not, what it found, what it woke, what reached the trader, its cost, and
 its record. An agent that ran all day and produced nothing useful is reported with the reason.
+
+### S11. Mid-session ROTATION ALARM (three experts, 18 Nov - after the PSU-bank rotation GIR caught late)
+- Why it was missed: rotation was measured mostly since the open / 09:30-10:30 (S8), not on ROLLING 15 / 30-minute windows all
+  session; no same-time-of-day volume baselines; no basket-level futures / options signal; no bond-yield / rupee feed in session.
+- Baskets: build each day from the F&O universe file (PSU banks have only ~7 F&O names, not 12); breadth as a FRACTION of the
+  basket; also the theme baskets (PSU defence, rail, power financiers, Adani, Tata ...). One source for every basket list.
+- Every minute, 09:30-14:00, rolling 15 / 30 min: beta-adjusted relative strength vs NIFTY (PSU banks ~1.4x beta) and its RANK
+  change; breadth (up and above VWAP); equal-weight vs index (one share > 60-70% of the move = not a rotation; recompute without
+  the heavyweight); volume vs the 20-day median of the SAME time slot; futures LB / SC across the basket (OI summed over all months;
+  ignore near-month-only SC in expiry week); call-buying bursts, call-wall unwinding, put writing, call IV rising; volume delta;
+  excess basis widening; WHERE the money comes from (sectors losing 3+ ranks); 10-year yield / USD/INR moves; news match +-10 min.
+- GET READY (amber): any two of - rank up 3+ in 15 min · breadth >= ~2/3 of the basket · sector volume >= 1.5x slot normal ·
+  basket futures LB/SC >= 60% with volume >= 2.5x · a news match.
+- GO NOW: beta-adjusted RS >= +0.6% over 30 min · breadth >= ~85% · equal-weight >= 0.8x the index · volume >= 2x · basket above
+  VWAP for 2 five-minute bars · calls bought / walls unwinding in 3+ names · a source sector or news trigger named · then the share
+  passes checklist D and the option gate E, the event lock E5 and the IV-crush filter. No new rotation entries after 14:00.
+- CANCEL: breadth falls below ~60% or the basket drops below VWAP. One alert per basket per 30 min, only escalating; log every
+  alarm (fired and failed).
+- The alert states the AGE: "GO · money OUT of PVT BANKS (-4 ranks), IT (-3) INTO PSU BANKS since 11:40 (14 min) · RS +0.8% ·
+  breadth 6/7 · RVOL 2.6 · 10y -5 bp · leader SBIN · laggard BANKBARODA · trigger <headline / none> · OUT: you hold INFY CE -> EXIT".
+- Which share: alarm < 20 min old -> laggard catch-up only if above VWAP, own volume rising, no own news, before 13:00, spread < 1%;
+  alarm > 20 min -> the leader on its first pullback to VWAP that holds. Don't chase: range used > 1.2 ATR (70-100% = pullback only,
+  half size; > 100% stand aside), alarm > 45 min old, sector already +2.5% vs NIFTY, ATM premium +40% / IV > 1.3x 20-day, breadth
+  falling, within 0.3 ATR of the day / previous-day high, unconfirmed headline, after 14:00. One trade per theme (two only if the
+  first is booked). Open CE in the sector the money is LEAVING with the share below VWAP -> exit now.
+- **TREND-DAY EXCEPTION (the trader, 18 Nov: TITAN fell the most that day while the drawings marked it "extended - not
+  tradable"):** when the driver and the sector are confirmed and the share has fresh build-up in the call's direction and is
+  making lower highs below VWAP (higher lows above VWAP for CE), "extended" is a WARNING, never a block: the call becomes
+  "enter on the bounce to VWAP / the first lower high, half size". Replay 18 Nov TITAN, KALYANKJIL, MANAPPURAM, SAIL to set
+  the numbers; the no-chase limits above are starting values only.
+- Proof: replay the mid-November PSU-bank day from GIR's recordings (find the day): when the rotation began, when GET READY / GO NOW
+  would have fired, which shares and strikes, against what happened. Thresholds are starting values - pool all sectors, 60+ days,
+  100+ events, walk-forward, before trusting them.
+
+### S12. POLICY SHOCK DURING MARKET HOURS - Parliament, Cabinet, regulators (the trader, 18 Nov)
+Why: a bill passed or a regulator order in the middle of the session moves named shares at once (CERC market coupling -> IEX fell
+about 29% in one day [verify the date]; IRDAI commission caps -> PB Fintech (POLICYBZR) and the insurers). Today GIR has almost no
+feed for this: the plan polls these sites every 15 min from weeks 2-4 (COLLECTION_PLAN line 257). That is too slow.
+- **Sources, in the order the news arrives:**
+  1. LIVE (0 min): Sansad TV Lok Sabha / Rajya Sabha streams, PIB / DD News / ministry press briefings (YouTube), turned to text
+     live (speech-to-text) and searched for watched words; minister, ministry, PIB and regulator X accounts.
+  2. WIRES (0-3 min): ANI / PTI X, Reuters India (sitemap every 15 s), TV tickers (CNBC-TV18, ET Now), ET / Moneycontrol live blogs.
+  3. OFFICIAL (0-15 min): the regulator sites checked for changes every 1-2 min in market hours - IRDAI, CERC, SEBI, RBI, TRAI,
+     CCI, PFRDA, CDSCO, NPPA, FSSAI, DGCA, DGFT, DGTR, CBIC; sansad.in bills and "business of the day"; e-Gazette; PIB releases.
+     Every 15 min outside market hours.
+  4. FILINGS: the company's own NSE / BSE reply ("impact on us") every 3-5 s (already in the plan).
+- **The day's watch list (07:00):** which bills are listed in Lok Sabha / Rajya Sabha today, open consultation papers and draft
+  regulations, regulator board meetings, court hearings - each mapped to its F&O shares and the direction. During a Parliament
+  session this is checked every morning.
+- **The policy map (built once, kept up to date):** regulator / ministry / bill -> F&O shares -> likely direction. Examples:
+  IRDAI (commission, bancassurance, FDI) -> POLICYBZR, SBILIFE, HDFCLIFE, ICICIPRULI, ICICIGI, LICI; CERC (market coupling,
+  trading margin) -> IEX, power traders; SEBI (F&O rules, MTF, margins) -> ANGELONE, BSE, CDSL, MCX, MOTILALOFS, 360ONE;
+  RBI -> banks / NBFCs; TRAI -> BHARTIARTL, IDEA, INDUSTOWER; NPPA -> pharma; DGCA -> INDIGO; duties (CBIC / DGTR / DGFT) -> metals,
+  chemicals, autos.
+- **How it rings:** a hit on a watched word from a LIVE or WIRE source wakes the analyst at once with the mapped shares - GET READY
+  (unconfirmed, quote the source and the time); GO NOW only after a second source or the official page / gazette. Denials,
+  "no decision yet", "considering" and clarifications wake the analyst too (the 18 Nov SEBI-MTF miss). The reading of the
+  direction is checked by a second model (the 18 Nov MCX margin mistake: lower margins = more trading = good for MCX).
+- **Most SEBI / RBI news breaks as a "sources say" story** (TV reporter, wire, X) long before the regulator's site, e.g. 18 Nov
+  "SEBI mulls MTF limits" -> ANGELONE fell at once. So the TV reporters' and wires' X accounts (the X API account, when credits are
+  added) and the CNBC-TV18 / ET Now live speech-to-text are the first line, not the regulator pages.
+- **BASKET SHOCK - the price is often the fastest news:** from the live ticks, 3+ shares of one policy basket (e.g. brokers ANGELONE,
+  BSE, CDSL, MCX, MOTILALOFS) moving the same way 1%+ inside 60 s on a volume burst -> alarm within ~10 s "BROKERS falling together -
+  news not found yet" -> search every source for the cause -> GET READY with the headline once found. Never a GO NOW on price alone.
+- **Speed targets (first source -> GIR page):** basket shock 10 s; X / TV text 15-30 s; wires 30 s; regulator site 60-120 s.
+  Measured every day in the 15:45 audit (the first-source time vs. GIR's time vs. when the share began to move).
+- **Proof:** replay past policy days from the recordings and news archives (IEX market coupling, the IRDAI commission news, SEBI
+  F&O rules): the time the first source had it vs. the time GIR would call, and the share's move in that gap.
+
+## THE WEBSITE - girtrader.com
+- GIR's web front end is **girtrader.com** (served by gir-dash on the GIR server). Every page in this file is a page of girtrader.com.
+- Private, one user: behind the login (the site password is never shown, copied or sent in any chat); HTTPS only; not indexed by
+  search engines (noindex, robots disallow); never embedded or shared publicly (exchange-data licence and SEBI rules - see S7).
+- Addresses: girtrader.com (the live trading screen) · girtrader.com/old (the previous page, kept one click away until the new one
+  is approved) · girtrader.com/preview (the new design, live data, for the trader to try BEFORE it replaces the main page) ·
+  girtrader.com/m (the phone app - installable, push notifications need HTTPS) · girtrader.com/status (GREEN / AMBER / RED health,
+  S3) · girtrader.com/shots (screenshots for the trader's review, behind the login).
+- New designs go to /preview first, are tested (S5 release gate, 30-minute soak), and replace the main page only with the trader's
+  "switch on"; /old stays as the fallback.
 
 ## 0. How to work and report (no shortcuts)
 
@@ -684,9 +770,9 @@ at the close for each, against the old alerts' late list (OPENING 6-11 min late,
     squeezed together, nothing overlapping or cut off; the sector board and the analyst's latest decision biggest and at the top.
     Show a screenshot of the new layout before switching it on.
 
-## 6. Cost - $10 a day, used wisely, never silent
+## 6. Cost - $20 a day, used wisely, never silent
 
-6.1 Hard cap in the code: **$10 a day**, split across 24 hours (about $3 night and morning prep, $6 market hours, $1 reserve for big
+6.1 Hard cap in the code: **$20 a day** (set by the trader, 18 Nov: start at $20), split across 24 hours (about $5 night and morning prep, $12 market hours, $3 reserve for big
     news). It must really stop at the cap (on 18 Nov it spent $27.24 against a $5 cap - find and fix why).
 6.2 Models: Fable only for the final GO NOW check and the 07:15 sector plan; Sonnet for the board's reasoning and follow-ups; Haiku
     for reading every news item. Prompt caching on every call (target 80%+ cached); send only the facts each call needs.
