@@ -270,6 +270,8 @@ buy / sell / target / "accumulate" / "avoid" call on an F&O share and act within
 gets a TV buy call -> "watch for a bounce: PE GO NOW cancelled"; (3) every TV analyst is scored: how often the share moved
 their way in the next 30 min / day, so a call from a high-hit-rate voice weighs more. Replay test: 19 Nov PAYTM TV call ->
 GIR alert within 30 s of the words.
+**BROKER STRATEGY CALLS** (Goldman, Morgan Stanley, Jefferies, CLSA, Nomura ...): an event type with its own story thread per
+house and hit rate - design_v3/BROKER_CALLS.md (first case: Goldman on India, CNBC-TV18, 19 Nov 2026: OW banks, OW industrials).
 Updated nightly from the day's recording; every call quotes the knowledge it used ("why: gold -1.6%, MANAPPURAM beta 1.3 to gold").
 **SECTOR LINKS - binding spec in design_v3/SECTOR_LINKS.md; links used only when proven on the history database.** It holds the
 sector-to-sector table (L01-L17), the sector-to-driver table, the proof rule (at least 30 events, hit rate at least 58% and 8 points
