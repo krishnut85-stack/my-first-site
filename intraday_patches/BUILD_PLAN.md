@@ -259,6 +259,12 @@ history, global series, a news archive) with the trader's yes per item. From it 
 how often it followed through next day and next week, the typical size and lag, and what made it fail - and every evening note
 quotes the closest past analogue ("like 12 Mar 2024: copper -4%, autos +2.1% next day, followed through 7 of 9 times").
 Updated nightly from the day's recording; every call quotes the knowledge it used ("why: gold -1.6%, MANAPPURAM beta 1.3 to gold").
+**CHAIN-OF-EVENTS ENGINE - binding spec in design_v3/CHAIN_OF_EVENTS.md; the 18 -> 19 Nov autos CE replay must pass before
+Monday.** It adds step E2b (the second-order analyst): every evening each driver past threshold (1-day or 3/5-day), each NSE sector
+that moved 1.5%+ and each "driver moved, users not yet reacted" gap runs through both sides of the chain map, is graded (WEAK /
+MEDIUM / STRONG) and goes out as TOMORROW'S OPTION WATCH at 19:45 (CE / PE lists, Dec-or-current strike per E7, trigger, cancel),
+re-checked at 22:45 (only if the grade changes), 07:15 and 09:08 (STANDS / CHANGED / CANCELLED); every chain fired or missed is
+logged and its hit rate quoted. Also fix test 4.1: MOTHERSON is an auto-parts maker (copper = cost), not a metals PE.
 
 ## 2. LAYER 2 - THE DECISION ENGINE
 
