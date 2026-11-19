@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GIR · Help &amp; legend (?)</title>
 <!--
-  GIR v3 · ? · HELP & LEGEND · round 2 redraw · Thu 19 Nov 2026 11:44:20 IST (CONFERENCE state S4, as F10) · design mockup - illustrative values.
+  GIR v3 · ? · HELP & LEGEND · final pass · Thu 19 Nov 2026 11:44:20 IST (CONFERENCE state S4, as F10) · design mockup - illustrative values.
   Shell copied verbatim from shell.html (current shellwork/build.js output); only the section-6 clock and countdown differ (S4).
   No page-scoped shell CSS: the 1366 fixes live in shellwork/build.js for every page.
   States from the URL hash: #t=words|keys|colours|old (right tabs) · #g=<WORDS group> · #q=<find text> (hyphen = space, aliases e.g. 'oi build up', 'top movers') · #full (every panel at its
-  natural height, for review) · #s=<panel>:<row> (scroll a list to a row). Source: helpr2/build.js + page.css + page.html + page.js.
+  natural height, for review) · #s=<panel>:<row> (scroll a list to a row). Source: helpfinal/build.js + page.css + page.html + page.js.
 -->
 <style>
 /* ===================== SHELL CSS START (copy verbatim) ===================== */
@@ -424,11 +424,15 @@ button.wi{background:none;border-top:0;border-right:0;border-bottom:0;font-famil
 .cc{border:2px solid var(--action);border-radius:4px;background:var(--panel)}
 .cc .hd{background:var(--action);color:var(--action-ink);font-size:15px;font-weight:800;padding:3px 6px;display:flex;align-items:center;gap:5px;white-space:nowrap}
 .cc .hd a.sym{color:inherit;text-decoration-color:rgba(20,17,10,.6)}
-.cc .hd .ex{margin-left:auto;font-size:12px;font-weight:800}
+.cc .hd .ex{margin-left:auto;font-size:13px;font-weight:800}
 .cc .ln{white-space:normal;padding:2px 6px;font-size:12px;color:var(--text-2);line-height:1.34;border-bottom:1px solid var(--line)}
 .cc .ln b{color:var(--text);font-weight:600}
 .cc b.n,.cc .vt{white-space:nowrap}
-.cc .ln.sub .sh-c{height:17px;padding:0 4px;font-size:11px;vertical-align:0}
+.cc .vts{display:inline-block;white-space:nowrap}
+.cc .vt{margin-right:0}
+.cc .vt + .vt{margin-left:7px;position:relative}
+.cc .vt + .vt::before{content:'';position:absolute;left:-4px;top:3px;bottom:2px;width:1px;background:var(--line-2)}
+.cc .ln.sub .sh-c{height:17px;padding:0 4px;font-size:12px;vertical-align:0}
 .cc .ln:last-child{border-bottom:0}
 .cc .ln.sub{font-size:11px;color:var(--text-2);background:var(--panel-2);white-space:nowrap;overflow:hidden}
 .cc .ln.tb{padding:1px 0 2px}
@@ -459,6 +463,7 @@ button.wi{background:none;border-top:0;border-right:0;border-bottom:0;font-famil
 .vt{display:inline-flex;gap:2px;align-items:baseline;white-space:nowrap;margin-right:4px;font-size:12px}
 .vt .p{font-family:var(--mono);font-size:12px;color:var(--text-3)}
 .mk{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:var(--panel-3);border:1px solid var(--text-3);color:var(--text);font-size:11px;font-weight:700;font-family:var(--mono);flex:none;line-height:1;letter-spacing:0;vertical-align:-2px}
+.mk.fu{border-radius:3px;background:var(--action-bg);border-color:var(--action)}
 .cc .hd .mk{background:var(--action-ink);color:var(--action);border-color:var(--action-ink)}
 .lg{display:grid;grid-template-columns:18px minmax(0,1fr);column-gap:6px;padding:4px 8px;border-bottom:1px solid var(--line);font-size:13px;color:var(--text-2);line-height:1.34;outline:0}
 .lg:hover,.lg:focus-visible{background:var(--panel-3)}
@@ -478,15 +483,15 @@ button.wi{background:none;border-top:0;border-right:0;border-bottom:0;font-famil
 .box.sebi{font-size:13px;color:var(--text);border-color:var(--line-2);background:var(--panel-2)}
 
 /* tabs + chips (right column) */
-.tabs{flex:none;display:flex;height:26px;background:var(--panel-2);border-bottom:1px solid var(--line);overflow:hidden}
+.tabs{flex:none;display:flex;height:26px;background:var(--panel-2);border-bottom:1px solid var(--line);overflow:hidden;box-shadow:inset 3px 0 0 var(--acc-sys);padding-left:3px}
 .tab{display:flex;align-items:center;gap:4px;padding:0 8px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);border-right:1px solid var(--line);cursor:pointer;white-space:nowrap;background:none;border-top:0;border-bottom:0;border-left:0;font-family:var(--sans)}
 .tab .n{font-weight:400;color:var(--text-3)}
 .tab.on{color:var(--text);background:var(--panel);box-shadow:inset 0 -2px 0 var(--text)}
 .tab.on .n{color:var(--text-2)}
 .tab .fb{font-family:var(--mono);font-size:11px;border-radius:7px;padding:0 4px;background:var(--info-bg);color:var(--info);font-weight:600;letter-spacing:0}
 .tab.zero{opacity:.45}
-.chips{display:flex;flex-wrap:wrap;align-items:center;gap:3px 2px;padding:4px 5px;border-bottom:1px solid var(--line);flex:none;min-width:0}
-.chip{height:18px;display:inline-flex;align-items:center;gap:3px;padding:0 2px;border:1px solid var(--line-2);border-radius:3px;font-size:11px;font-weight:600;letter-spacing:0;color:var(--text-2);cursor:pointer;flex:none;background:none;font-family:var(--sans)}
+.chips{display:flex;flex-wrap:wrap;align-items:center;gap:4px 3px;padding:5px 8px;border-bottom:1px solid var(--line);flex:none;min-width:0}
+.chip{height:19px;display:inline-flex;align-items:center;justify-content:center;gap:3px;padding:0 2px;min-width:0;white-space:nowrap;border:1px solid var(--line-2);border-radius:3px;font-size:11px;font-weight:600;letter-spacing:0;color:var(--text-2);cursor:pointer;flex:1 1 auto;background:none;font-family:var(--sans)}
 .chip .n{font-size:11px;color:var(--text-3);font-weight:400}
 .chip.on{background:var(--panel-3);color:var(--text);border-color:var(--text-3)}
 .chip.on .n{color:var(--text)}
@@ -500,6 +505,7 @@ button.wi{background:none;border-top:0;border-right:0;border-bottom:0;font-famil
 .gl .g{float:right;font-size:11px;color:var(--text-3);margin-left:6px}
 .gl b{color:var(--text);font-weight:600}
 .gl.gx{display:none}
+.nb{white-space:nowrap}
 
 /* KEYS */
 .kr{display:grid;grid-template-columns:92px minmax(0,1fr);column-gap:8px;padding:3px 8px;border-bottom:1px solid var(--line);align-items:baseline;outline:0}
@@ -552,7 +558,6 @@ button.wi{background:none;border-top:0;border-right:0;border-bottom:0;font-famil
 .onr .nw kbd{line-height:13px;padding:0 3px}
 
 /* COLOUR KEY panel (first view, CONFERENCE 1.5) */
-#p-ck .ph{box-shadow:inset 3px 0 0 var(--line-2)}
 #ck{flex:none;padding:2px 0 3px}
 .ckr{display:grid;grid-template-columns:70px minmax(0,1fr);column-gap:6px;align-items:center;padding:3px 8px;outline:0}
 .ckr:hover,.ckr:focus-visible{background:var(--panel-3)}
@@ -620,17 +625,22 @@ body.full .lgnone{display:none!important}
 @media (max-width:1499px){
   .w1600{display:none !important}
   .n1366{display:inline}
+  .ph .hint.n1366{flex:none}
+  #p-pages .ph{gap:4px;padding:0 5px 0 8px}
+  #p-pages .ph .pt{letter-spacing:.035em}
+  .ph .hint.n1366 a{color:var(--text-2)}
   .find{width:206px}
   #t1{display:none}
   .roww{gap:6px}
   #help{grid-template-rows:26px 26px 32px minmax(0,1fr);row-gap:5px}
   .cc .ln{padding:1px 6px}
   .spec{padding-top:3px!important}
-  .vt{gap:1px;margin-right:3px}
+  .vt{gap:1px;margin-right:2px}
   .pgp{font-size:17px}
   .wi{padding:0 7px;font-size:12px}
-  .cols{grid-template-columns:236px minmax(0,1fr) 384px;column-gap:6px}
-  .cardrow{grid-template-columns:478px minmax(0,1fr)}
+  .cols{grid-template-columns:228px minmax(0,1fr) 384px;column-gap:6px}
+  .cardrow{grid-template-columns:486px minmax(0,1fr)}
+  .cc .vt{gap:0}
   .col3{row-gap:6px}
   .chip .n{display:none}
   body.qon .chip .n{display:inline}
@@ -653,6 +663,24 @@ body.full .lgnone{display:none!important}
   .tab{padding:0 5px;gap:3px}
   .tab[data-t=keys] .n{display:none}
   .cc .hd{font-size:14px}
+  /* r3: type minimums at 1366 (1.4) - body lines 13 px, strike-chooser numbers 12 px (tables at 1366 only) */
+  .cc .ln,.cc .fu{font-size:13px;line-height:17px}
+  .cc .ln.sub{font-size:13px;line-height:17px}
+  .cc .ssk th{padding:1px 2px}
+  .cc .ssk td{font-size:12px;line-height:15px;padding:0 2px}
+  .chip{font-size:12px;padding:0 4px}
+  .chips{padding:3px 8px}
+  .chips.one{flex-wrap:nowrap;overflow:hidden}
+  .chips.one .chip{flex:0 0 auto}
+  .chips.one.fit .chip{flex:1 0 auto}
+  #tabbody .gl{padding:3px 8px;line-height:1.28}
+  #tabbody .gh{height:18px}
+  .ckc .sh-c{height:18px}
+  .ckc{gap:2px 5px}
+  .col3{row-gap:5px}
+  .chip.cmore{flex:none;color:var(--text);border-style:dashed}
+  .ckr{padding:1px 8px}
+  #ck{padding:2px 0}
 }
 body.full .col3{grid-column:1 / -1;grid-template-rows:auto auto;margin-top:8px}
 body.full #tabbody{column-count:3;column-gap:0}
@@ -803,7 +831,7 @@ body.full #tabbody .gh{break-after:avoid}
   <div class="cols">
     <!-- ============ column 1: PAGES (R31, TRADER-1) ============ -->
     <section class="pn" id="p-pages" data-name="Pages">
-      <div class="ph"><span class="pt">Pages · <b id="pg-n"></b></span><span class="hint w1600">same list as the tab bar</span></div>
+      <div class="ph sh-acc-sys"><span class="pt">Pages · <b id="pg-n"></b></span><span class="hint w1600">same list as the tab bar</span><span class="hint n1366"><a class="lk" href="#t=keys" id="t1-cue" data-tip="F-keys only change the page: GIR never sends an order (broker F1 = BUY, F2 = SELL stays in that terminal). Fn-lock and the key tester: KEYS tab.">no orders ›</a></span></div>
       <div class="pgh"><span>key</span><span>page</span><span>what it is for</span></div>
       <div class="scw" id="w-pages"><div class="pb" id="pages"></div></div>
       <div class="pin" id="t1"></div>
@@ -811,7 +839,7 @@ body.full #tabbody .gh{break-after:avoid}
 
     <!-- ============ column 2: READ A CALL CARD (R07, R12-R15, R42) - the specimen at full height + its legend ============ -->
     <section class="pn" id="p-card" data-name="Read a call card">
-      <div class="ph"><span class="pt">Read a call card</span><span class="hint">specimen: the GO NOW of 10:05 on <kbd class="k">F1</kbd>, frozen at 10:05:12 · every number checks</span></div>
+      <div class="ph sh-acc-sys"><span class="pt">Read a call card</span><span class="hint">specimen: the GO NOW of 10:05 on <kbd class="k">F1</kbd>, frozen at 10:05:12 · every number checks</span></div>
       <div class="cardrow">
         <div class="spec" id="spec"></div>
         <div class="lgcol"><div class="scw" id="w-legend"><div class="pb" id="legend"></div></div></div>
@@ -827,7 +855,7 @@ body.full #tabbody .gh{break-after:avoid}
       </section>
       <!-- COLOUR KEY (r2, CONFERENCE 1.5): the fixed colour table in the first view, drawn with the shell's own .sh-c-* classes -->
       <section class="pn" id="p-ck" data-name="Colour key">
-        <div class="ph"><span class="pt">Colour key</span><span class="hint"><span class="mh">folded while SOUNDS is open · </span><span class="mx">one meaning each · same on every page · </span><a class="lk" href="#t=colours" id="ck-all">all ›</a></span></div>
+        <div class="ph sh-acc-sys"><span class="pt">Colour key</span><span class="hint"><span class="mh">folded while SOUNDS is open · </span><span class="mx">one meaning each · same on every page · </span><a class="lk" href="#t=colours" id="ck-all">all ›</a></span></div>
         <div id="ck"></div>
       </section>
     </div>
@@ -877,22 +905,22 @@ const dk = k => k ? ` data-k="${k.split(' ').map(x => KW[x] || x).join(' · ')}"
 
 /* ================= the trade cycle (R41) - sub-labels kept at 1366 in a short form ================= */
 const CYC = [
-  ['PREPARE', [S('F1'), S('F2'), S('F4')], 'Morning · World · Calendar', 'Morning·World·Cal.', 'morning.html', 'Before 09:15: pre-flight, the night\'s drivers (US cues, crude, gold, USD/INR), the PLAN, today\'s events and results.'],
-  ['FIND', [K('F2'), K('F3'), K('F4')], 'Sectors · Rotation · News', 'Sectors·Rotation·News', 'sectors.html', 'Which sector is moving and why: board, rotation, theme, news, basket shock.'],
-  ['SHARE', [K('F7'), K('F8')], 'leader · dependent · laggard', 'leader·depend.·laggard', 'share.html', 'Pick the share by its role in the sector (F2 shows the roles); check it on its Share page and with the Analyst.'],
+  ['PREPARE', [S('F1'), S('F2'), S('F4')], 'Morning · World · Calendar', 'Morning · World · Calendar', 'morning.html', 'Before 09:15: pre-flight, the night\'s drivers (US cues, crude, gold, USD/INR), the PLAN, today\'s events and results.'],
+  ['FIND', [K('F2'), K('F3'), K('F4')], 'Sectors · Rotation · News', 'Sectors · Rotation · News', 'sectors.html', 'Which sector is moving and why: board, rotation, theme, news, basket shock.'],
+  ['SHARE', [K('F7'), K('F8')], 'leader · dependent · laggard', 'leader · dep. · laggard', 'share.html', 'Pick the share by its role in the sector (F2 shows the roles); check it on its Share page and with the Analyst.'],
   ['STRIKE', [K('F9')], 'ATM · 1 ITM · 1 OTM', 'ATM · 1 ITM · 1 OTM', 'chain.html', 'Strike chooser: this and next expiry side by side, with GIR\'s pick and why.'],
   ['PLAN', [K('Space')], 'stop · size · cost', 'stop · size · cost', 'plan-card.html', 'Plan card: stop and target in premium AND share price, lots, cash, charges, the Kite line.'],
   ['ENTER', ['<kbd class="k">Kite</kbd>'], 'you place it - GIR never', 'in Kite · GIR never', 'positions.html', 'You place the order in Kite. GIR never places, changes or cancels an order; it reads the fill back.'],
-  ['MANAGE', [K('F1'), K('F6')], 'follow-ups · trail · 15:10', 'follow-ups·trail·15:10', 'desk-trade.html', 'You are here now: 2 positions open. Follow-ups BOOK HALF / EXIT with the reason, time stop, 15:10.'],
+  ['MANAGE', [K('F1'), K('F6')], 'follow-ups · trail · 15:10', 'follow-ups · trail · 15:10', 'desk-trade.html', 'You are here now: 2 positions open. Follow-ups BOOK HALF / EXIT with the reason, time stop, 15:10.'],
   ['EXIT', [K('X'), K('F6')], 'exit coach · in Kite', 'exit coach · in Kite', 'positions.html', 'X opens the exit coach for the focused position (then Enter). You exit in Kite.'],
-  ['REVIEW', [S('F6'), S('F8'), S('F10')], 'Journal · Scorecard · Replay', 'Journal·Score·Replay', 'journal.html', 'After 15:10: journal, the 15:45 scorecard (misses, mistakes, rules kept), replay.'],
+  ['REVIEW', [S('F6'), S('F8'), S('F10')], 'Journal · Scorecard · Replay', 'Journal · Score · Replay', 'journal.html', 'After 15:10: journal, the 15:45 scorecard (misses, mistakes, rules kept), replay.'],
 ];
 $('cyc').innerHTML = CYC.map((c, i) => `<a class="st${c[0] === 'MANAGE' ? ' now' : ''}" href="${c[4]}" data-tip="${esc(c[5])}"><span class="l1"><span class="nm"><i>${i + 1}</i>${c[0]}</span>${c[1].join('')}</span><span class="l2"><span class="w">${c[2]}</span><span class="s">${c[3]}</span></span></a>`).join('');
 
 /* ================= PAGES (R31) - the same one list as the tab bar (REQUIREMENTS section D) ================= */
 // [key html, page, href, purpose, used, cls]
 const PAGES = [
-  [K('F1'), 'Desk', 'desk-hunt.html', '<b>one option to buy now</b> / your trade · <b>F&amp;O MOVERS</b> tab', '09:15-15:10', '', 'mov'],
+  [K('F1'), 'Desk', 'desk-hunt.html', '<b>one option to buy now</b> / your trade · <b>F&amp;O MOVERS</b>', '09:15-15:10', '', 'mov'],
   [K('Space'), 'Plan card', 'plan-card.html', 'last cold check: stop, target, lots, cost', 'on a call'],
   [K('F2'), 'Sectors', 'sectors.html', 'every sector ranked · <b>F&amp;O MOVERS</b> up / down / all · roles', '09:15-15:10', '', 'mov'],
   [K('F3'), 'Rotation', 'rotation.html', 'money out of X into Y · 15M 30M 1H TODAY', '09:30-15:10'],
@@ -954,7 +982,7 @@ $('spec').innerHTML = `
         <tr><td>STOP ${M(4)}</td><td>11.90 <span class="gov">BACKSTOP</span></td><td>288.60 <span class="gov">GOVERNS</span></td></tr>
         <tr><td>TARGET 1</td><td>≈16.20</td><td>280.30</td></tr>
         <tr><td>NO-CHASE ${M(2)}</td><td>&gt; 13.90</td><td>&lt; 284.20</td></tr></table></div>
-    <div class="ln">${M(5)} <b>1 lot 3,000</b> · cash <b class="n">₹39,750</b> · costs <b class="n">₹420</b> <span class="t2">(charges ₹125 + slippage ₹295)</span><br>
+    <div class="ln">${M(5)} <b>1 lot 3,000</b> · cash <b class="n">₹39,750</b> · costs <b class="n">₹420</b> <span class="t2">(charges ₹125 + slip<span class="w1600">page</span> ₹295)</span><br>
       max loss at share stop <b class="n dnc">−₹3,870 0.77R</b> · at backstop <b class="n">−₹4,470 0.89R</b><br>
       target 1 <b class="n upc">+₹8,430</b> net · <b>R:R 2.2</b> · B/E by 15:10: share −0.8 pts · θ ₹80/h</div>
     <div class="ln tb">
@@ -967,7 +995,7 @@ $('spec').innerHTML = `
     <div class="ln">${M(6)} hold to <b class="n">13:30</b> · time stop <b class="n">11:05</b> if not +0.5R · out by 15:10<br><b class="amb">Don't exit before the stop or the target unless GIR says EXIT.</b></div>
     <div class="ln">${M(7)} <span class="gc">✓ sprd 0.8%</span><span class="gc">✓ depth 9×<span class="w1600"> bid</span></span><span class="gc">✓ |Δ| .48</span><span class="gc w">! MWPL 86%</span><span class="gc w">! same driver<span class="w1600">: gold</span></span></div>
     <div class="ln">${M(8)} ⚖ VOTE <b>4 of 5 agree</b> <span class="t2 w1600">(agents 1-3, news, money)</span> · weighted <b>84%</b> · auditor <b>PE</b> <span class="y">✓</span><br>
-      <span class="vt">agent 1 <span class="y">✓</span><span class="p">58% n31</span></span><span class="vt">2 <span class="y">✓</span><span class="p">61% n33</span></span><span class="vt">3 <span class="xx">✕</span><span class="p">44% n27</span></span><span class="vt">news <span class="y">✓</span><span class="p">63% n41</span></span><span class="vt">money <span class="y">✓</span><span class="p">55% n36</span></span></div>
+      <span class="vts"><span class="vt">agent 1 <span class="y">✓</span><span class="p">58% n31</span></span><span class="vt">2 <span class="y">✓</span><span class="p">61% n33</span></span><span class="vt">3 <span class="xx">✕</span><span class="p">44% n27</span></span><span class="vt">news <span class="y">✓</span><span class="p">63% n41</span></span><span class="vt">money <span class="y">✓</span><span class="p">55% n36</span></span></span></div>
     <div class="ln">${M(9)} analyst <b class="n">10:05:00</b> · age <b class="n">12s</b> · gold theme + sector + money agents</div>
     <div class="ln fu">↳ <b class="n">11:40:12</b> <b class="amb">BOOK</b> (stalled) · 1 lot: stop to B/E 13.40, trail · yours only</div>
   </div>`;
@@ -978,12 +1006,13 @@ const LEG = [
   [3, 'Levels in <b>PREMIUM and SHARE</b>; the trigger is the share price - the premium lags (≈ = info).'],
   [4, '<b>GOVERNS</b> = the share stop decides. <b>BACKSTOP</b> = Kite SL-L on the premium (trigger 11.90, limit 11.40), within 60 s.'],
   [5, '<b>Max loss</b> = (13.25 − 12.10) × 3,000 + ₹420 costs = <b class="n">₹3,870</b> = 0.77R (1R = ₹5,000). <b>ATM / 1 ITM / 1 OTM</b>, Dec vs Nov; ★ = GIR\'s pick.'],
-  [6, '<b>Hold time.</b> BOOK HALF / TRAIL / EXIT follow-ups, with the reason, <b>only on trades you took</b>.'],
+  [6, '<b>Hold time</b> 13:30 and the <b>time stop</b> 11:05 if not +0.5R; out by 15:10 always. Between stop and target, sit unless GIR says EXIT.'],
   [7, '<b>✓</b> pass · <b class="amb">!</b> warning, still yours to take · <b class="xx">✕</b> hard block <b>only BAN, LOSS LOCK (lock room), STALE</b>.'],
   [8, '<b>THE VOTE</b>: the 5 = agents 1-3, news, money, weighted by hit rate (% · n): 237 ÷ 281 = 84%. <span class="xx">✕</span> = against, <span class="q">?</span> = did not vote. The auditor checks, never votes.'],
   [9, '<b>Age</b> = exchange time of the newest input; past its limit = STALE: greyed, ✕, reason named.'],
+  ['↳', '<b>Follow-up</b> BOOK HALF / TRAIL / EXIT with the reason and the Kite step, <b>only on trades you took</b>: here 11:40:12 BOOK, stop to B/E 13.40.'],
 ];
-$('legend').innerHTML = `<div class="lgnone" id="lgnone"></div>` + LEG.map(l => `<div class="lg f" tabindex="0">${M(l[0])}<span>${l[1]}</span></div>`).join('')
+$('legend').innerHTML = `<div class="lgnone" id="lgnone"></div>` + LEG.map(l => `<div class="lg f" tabindex="0">${l[0] === '↳' ? '<span class="mk fu">↳</span>' : M(l[0])}<span>${l[1]}</span></div>`).join('')
   + `<div class="box lim f" tabindex="0" id="lim"><b>YOUR LIMITS</b> 3 trades a day · 2 open · never two on one sector or driver · 1 lot until trade 100 · ≤ 1R (₹5,000) a trade · premium out ≤ 10% (!) · day lock ₹10,000: <b>₹9,350 left · lock room ₹1,980 if both stops hit</b> → a 3rd card at 0.77R (₹3,870) is ✕ BLOCKED · lock room.</div>`;
 // the ROLES box sits under the card at 1600 (both in the first view); at 1366 it opens the legend list (the card needs the height)
 $('spec').insertAdjacentHTML('beforeend', `<div class="box f" tabindex="0" id="roles"><div class="bh">Roles · never a bare "NOT TRADABLE"<span class="r">at 10:05, as on F1</span></div>
@@ -998,7 +1027,7 @@ function placeRoles() {
   $('legend').append(r);                                      // ROLES: in the legend list at both sizes (after item 9)
   if (MQ.matches) r.after(lim); else $('spec').append(lim);   // 1600: YOUR LIMITS under the card, in the first view
 }
-placeRoles(); MQ.addEventListener('change', () => { placeRoles(); layout(); });
+placeRoles(); MQ.addEventListener('change', () => { placeRoles(); fitChips(); layout(); });
 
 /* ================= right column: tabs ================= */
 // ---- WORDS (P20: every abbreviation) [word, group, meaning]
@@ -1075,7 +1104,7 @@ const W = [
   ['F&amp;O MOVERS', 'METHOD', 'the biggest gainers and losers of the 222 F&amp;O shares, <b>UP / DOWN / ALL</b>, each with its sector, role and build-up tag (TITAN −2.48% SB, the day\'s biggest faller) - <b>F2 Sectors</b> beside the board, <b>F1 Desk</b> left column. A click opens the share.', 'mov'],
   ['THEME', 'METHOD', 'driver → sector → every F&amp;O share: gold −1.6% → TITAN, KALYANKJIL, MANAPPURAM, MUTHOOTFIN; copper −1.8% → POLYCAB, KEI, HINDALCO.'],
   ['CONFIRMED 09:20', 'METHOD', 'sector moving one way with breadth, build-up and its driver; never before 09:20.'],
-  ['breadth 3/4', 'METHOD', 'how many of the sector\'s F&amp;O shares move its way.'],
+  ['breadth 11/14 · F&amp;O 3/4', 'METHOD', 'shares moving the sector\'s way, over <b>ALL listed shares</b> (basis: the NSE sectoral index, or a free-float basket of every listed share), never F&amp;O alone: <b class="nb">11/14 all shares · F&amp;O 3/4</b>. Only the F&amp;O names moving = <b class="nb">NARROW - F&amp;O-only move</b>.'],
   ['RS', 'METHOD', 'relative strength vs the sector / NIFTY since 09:15.'],
   ['RVOL', 'METHOD', 'volume vs normal for this time of day; &gt; 1.5 valid, &gt; 2.5 strong.'],
   ['ATR', 'METHOD', 'average true range (14 days): the share\'s normal day move (MANAPPURAM 9.30).'],
@@ -1287,7 +1316,7 @@ const TABS = [['words', 'Words'], ['keys', 'Keys'], ['colours', 'Colours'], ['so
 let tab = 'words', grp = 'ALL';
 function wordsHtml() {
   return GRP.map(g => `<div class="gh" data-gg="${g}">${g}<span class="r">${GNAME[g] || ''}</span></div>`
-    + W.filter(w => w[1] === g).map(w => `<div class="gl f" tabindex="0" data-g="${w[1]}"${dk(w[3])}><span class="w">${w[0]}</span>${w[2]}</div>`).join('')).join('');
+    + W.filter(w => w[1] === g).map(w => `<div class="gl f" tabindex="0" data-g="${w[1]}"${dk(w[3])}><span class="w">${w[0]}</span>${w[2].replace(/\|Δ\| ?([.\d-]+)/g, '<span class="nb">|Δ| $1</span>')}</div>`).join('')).join('');
 }
 function keysHtml() {
   return KEYS.map(k => k.length === 1 ? `<div class="gh">${k[0]}</div>`
@@ -1316,6 +1345,7 @@ function ckHtml() {
 }
 $('ck').innerHTML = ckHtml();
 $('ck-all').addEventListener('click', e => { e.preventDefault(); tab = 'colours'; view(); });
+$('t1-cue').addEventListener('click', e => { e.preventDefault(); tab = 'keys'; view(); });
 function oldHtml() {
   return OLD.map(o => `<div class="onr f" tabindex="0"${dk(o[2])}><span class="o">${o[0]}</span><span class="nw">${o[1]}</span></div>`).join('')
     + `<div class="note f" tabindex="0">Nothing was removed. Cannot find something? Type it in ${K('/')} or in "find in help" above.</div>`;
@@ -1358,18 +1388,39 @@ function drawChips(counts) {
     .filter(([g, n]) => !counts || n > 0 || g.replace('&amp;', '&') === grp)
     .map(([g, n]) => `<button class="chip${g.replace('&amp;', '&') === grp ? ' on' : ''}${n === 0 ? ' z' : ''}" data-g="${g}" title="${n === 0 ? 'no word in this group matches the find text' : g}">${CHIPN(g)} <span class="n">${n}</span></button>`).join('');
 }
+/* r3: at 1366 the group chips sit on ONE row (WORDS keeps >= 5 rows in the first view); the rest are one click away behind "+n ▾" */
+let chipsOpen = false;
+function fitChips() {
+  const box = $('glchips'); box.classList.remove('one', 'fit');
+  box.querySelectorAll('.chip').forEach(c => c.style.display = '');
+  const old = box.querySelector('.cmore'); if (old) old.remove();
+  if (!MQ.matches || tab !== 'words' || box.style.display === 'none') return;
+  const chips = [...box.querySelectorAll('.chip')];
+  if (chipsOpen) { box.insertAdjacentHTML('beforeend', `<button class="chip cmore on" title="fold the groups back to one row">▴ fewer</button>`); return; }
+  box.classList.add('one');
+  box.insertAdjacentHTML('beforeend', `<button class="chip cmore" title="show every word group">+0 ▾</button>`);
+  const more = box.querySelector('.cmore');
+  const fits = () => box.scrollWidth <= box.clientWidth + 0.5;
+  let hidden = 0;
+  for (let i = chips.length - 1; i > 0 && !fits(); i--) {
+    if (chips[i].classList.contains('on')) continue;          // the active group always stays in view
+    chips[i].style.display = 'none'; hidden++; more.textContent = `+${hidden} ▾`;
+  }
+  if (!hidden) more.remove();
+  box.classList.add('fit');                                   // then the row is spread edge to edge
+}
 function showTab() {
   document.querySelectorAll('#tabbody > div').forEach(d => d.style.display = d.dataset.tb === tab ? '' : 'none');
   document.querySelectorAll('#tabbody .gl').forEach(r => r.classList.toggle('gx', grp !== 'ALL' && r.dataset.g !== grp));
   document.querySelectorAll('#tabbody .gh[data-gg]').forEach(h => h.style.display = grp !== 'ALL' && h.dataset.gg !== grp ? 'none' : '');
   $('p-tabs').dataset.name = TABS.find(t => t[0] === tab)[1].replace('&amp;', '&');
   $('tabbody').scrollTop = 0;
-  // 1366 + SOUNDS: the colour key folds to its header (a visible cue), so the ANGELONE case reads whole without scrolling
-  const mini = tab === 'sounds' && MQ.matches;
+  // SOUNDS: the colour key folds to its header (a visible cue), so the ANGELONE case reads whole without scrolling
+  const mini = tab === 'sounds';   // final: folded at both sizes, so the case AND the three tones read whole
   $('p-ck').classList.toggle('mini', mini);
 }
 $('tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (!b) return; tab = b.dataset.t; view(); });
-$('glchips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; grp = b.dataset.g; view(); });
+$('glchips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; if (b.classList.contains('cmore')) { chipsOpen = !chipsOpen; fitChips(); layout(); return; } grp = b.dataset.g; view(); });
 
 /* ================= scroll lists (R08): rail + whole-row snap + "n more" ================= */
 document.querySelectorAll('.scw').forEach(w => {
@@ -1401,7 +1452,8 @@ function snap(pb) {
 }
 const nameOf = r => { const e = r.querySelector('.w, .nm, .o, .lb, .bh, .t, .kk, .sw, .ckl, b') || r; return e.textContent.replace(/\s+/g, ' ').trim().slice(0, 34); };
 function counts(pb) {
-  const pr = pb.getBoundingClientRect(), rows = itemsOf(pb);
+  // the legend counts its callouts only (1-9 + the follow-up): the same 10 at both sizes; ROLES / YOUR LIMITS are boxes, named apart
+  const pr = pb.getBoundingClientRect(), rows = pb.id === 'legend' ? itemsOf(pb).filter(r => r.classList.contains('lg')) : itemsOf(pb);
   let below = 0, above = 0, shown = 0, next = '';
   rows.forEach(r => { const b = r.getBoundingClientRect(); if (b.top >= pr.bottom - 1) { if (!below) next = nameOf(r); below++; } else if (b.bottom <= pr.top + 1) above++; else shown++; });
   return { below, above, shown, all: rows.length, next };
@@ -1417,11 +1469,34 @@ function rails() {
   document.querySelectorAll('.more').forEach(mo => {
     const pb = $(mo.dataset.for); const c = counts(pb);
     mo.classList.toggle('all', !c.below);
-    mo.innerHTML = c.below ? `<b>▼ ${c.below} more below</b><span class="nx">${c.next ? 'next: ' + c.next : ''}</span><span class="r">${c.shown} of ${c.all} shown</span>`
-      : `<span>${c.above ? `▲ ${c.above} above · ` : ''}end of list</span><span class="r">${c.all} ${c.all === 1 ? 'row' : 'rows'}</span>`;
+    const unit = pb.id === 'legend' ? 'callouts' : 'shown';
+    const boxes = pb.id === 'legend' ? itemsOf(pb).filter(r => !r.classList.contains('lg') && r.getBoundingClientRect().top >= pb.getBoundingClientRect().bottom - 1) : [];
+    if (!c.below && boxes.length) { mo.classList.remove('all'); mo.innerHTML = `<b>▼ ${boxes.map(nameOf).map(t => t.split(' ·')[0]).join(' · ')}</b><span class="r">${c.all} of ${c.all} callouts</span>`; return; }
+    mo.innerHTML = c.below ? `<b>▼ ${c.below} more below</b><span class="nx">${c.next ? 'next: ' + c.next : ''}</span><span class="r">${c.shown} of ${c.all} ${unit}</span>`
+      : `<span>${c.above ? `▲ ${c.above} above · ` : ''}end of list</span><span class="r">${c.all} ${pb.id === 'legend' ? 'callouts' : c.all === 1 ? 'row' : 'rows'}</span>`;
+    // a narrow bar drops words, never shows a half name: "more below" -> "more", then the next name goes
+    const nx = mo.querySelector('.nx');
+    if (nx && nx.scrollWidth > nx.clientWidth + 1) { mo.querySelector('b').textContent = `▼ ${c.below} more`; if (nx.scrollWidth > nx.clientWidth + 1) nx.remove(); }
   });
 }
-function layout() { document.querySelectorAll('.scw .pb').forEach(snap); rails(); }
+function fill(pb) {
+  if (document.body.classList.contains('full')) return;
+  const items = itemsOf(pb);
+  items.forEach(r => { r.style.paddingTop = ''; r.style.paddingBottom = ''; });
+  snap(pb);
+  const sc = pb.parentElement, avail = pb.closest('.scw').clientHeight - 19, h = sc.clientHeight;
+  if (pb.scrollHeight - pb.scrollTop <= h + 1) return;            // whole list shown: the bar says "end of list"
+  const pr = pb.getBoundingClientRect();
+  const vis = items.filter(r => { const b = r.getBoundingClientRect(); return b.top >= pr.top - 1 && b.bottom <= pr.bottom + 1; });
+  const left = avail - h; if (left < 2 || !vis.length) return;
+  const add = Math.floor((left - 2) / vis.length / 2 * 10) / 10; if (add <= 0) return;
+  const base = items.map(r => { const cs = getComputedStyle(r); return [parseFloat(cs.paddingTop), parseFloat(cs.paddingBottom)]; });
+  items.forEach((r, i) => { r.style.paddingTop = (base[i][0] + add) + 'px'; r.style.paddingBottom = (base[i][1] + add) + 'px'; });
+  snap(pb);
+  // never lose a whole row to the spread: if one fell out, go back to the plain rows
+  if (pb.parentElement.clientHeight < h) { items.forEach(r => { r.style.paddingTop = ''; r.style.paddingBottom = ''; }); snap(pb); }
+}
+function layout() { document.querySelectorAll('.scw .pb').forEach(fill); rails(); }
 // scroll by whole rows, so a row is never left half-shown
 function step(pb, d) {
   const top0 = pb.getBoundingClientRect().top, st = pb.scrollTop, H = pb.clientHeight;
@@ -1468,7 +1543,7 @@ function refresh() {
       const inText = nz(r.textContent).includes(q), inKey = !inText && q.length > 1 && nq(r.dataset.k || '').includes(q);
       const m = inText || inKey;
       // a row found by its alias says so: "≈ oi build up" (the trader's words) beside the row's own words
-      if (inKey) { r.classList.add('akm'); (r.querySelector('.pu, .nw, .d, .ckc') || r).insertAdjacentHTML('afterbegin', `<span class="ali">≈ ${q.replace(/</g, '&lt;')}</span>`); }
+      if (inKey) { r.classList.add('akm'); (r.querySelector('.pu, .nw, .d, .ckc') || r).insertAdjacentHTML('afterbegin', (r.closest('#ck') ? `<span class="ali" title="found by its alias: ${q.replace(/</g, '&lt;').replace(/"/g, '&quot;')}">≈</span>` : `<span class="ali">≈ ${q.replace(/</g, '&lt;')}</span>`)); }
       if (m) { if (inText) mark(r, q); hits.push(r); const t = where(r); if (t) byTab[t]++; if (r.dataset.g) { byGrp[r.dataset.g] = (byGrp[r.dataset.g] || 0) + 1; byGrp.ALL++; } }
       else if (!r.closest('.spec')) r.classList.add('hide');
     });
@@ -1481,7 +1556,7 @@ function refresh() {
 }
 function view() {
   const q = $('q').value.trim();
-  drawTabs(byTab); drawChips(byGrp); showTab();
+  drawTabs(byTab); drawChips(byGrp); fitChips(); showTab();
   // group headers with nothing visible under them hide too
   document.querySelectorAll('#tabbody .gh').forEach(h => {
     let n = h.nextElementSibling, any = false;

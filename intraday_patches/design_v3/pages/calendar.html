@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GIR · ⇧F4 Calendar &amp; policy</title>
-<!-- GIR v3 · Shift+F4 CALENDAR & POLICY (IA P14; first view R28, R43, R20; one click R29) · round 2 · Thu 19 Nov 2026, state S4 11:44:20 ·
-     design mockup - illustrative values. Built by calr2/build.js to CONFERENCE.md (binding): shell copied from shell.html and set to S4 by
+<!-- GIR v3 · Shift+F4 CALENDAR & POLICY (IA P14; first view R28, R43, R20; one click R29) · FINAL pass (R44-R49) · Thu 19 Nov 2026, state S4 11:44:20 ·
+     design mockup - illustrative values. Built by calfinal/build.js to CONFERENCE.md (binding): shell copied from shell.html and set to S4 by
      shellwork/state.js (no page-scoped shell fix), values from CONFERENCE section 4, colours from the shell's .sh-c-* classes (table 1.5),
      LIVE CALL card replaced by one line (calendar item 2), drawn scrollbars + named "more" bars (common fixes 2 and 3). -->
 <style>
@@ -316,6 +316,8 @@ body.srch .sh-typed{display:inline}
 .more.on{display:flex}
 .more b{color:var(--text);font-weight:600}
 .more .mn{overflow:hidden;text-overflow:clip;min-width:0}
+.more .mx{flex:none;margin-left:auto;padding-left:10px;border-left:1px solid var(--line-2);color:var(--text-3)}
+.more .mx i{font-style:normal;color:var(--text-3);margin-right:6px}
 
 .age{font-family:var(--mono);font-size:11px;color:var(--text-2);letter-spacing:-0.02em;white-space:nowrap}
 .t2{color:var(--text-2)} .t3{color:var(--text-3)} .b{font-weight:700}
@@ -330,7 +332,7 @@ a.lk2{color:var(--info);text-decoration:none;white-space:nowrap}
 a.lk2:hover{text-decoration:underline}
 a.sk{color:var(--info);font-weight:600;text-decoration:underline dotted var(--info-line);text-underline-offset:3px;white-space:nowrap}
 .pc{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:-0.02em;white-space:nowrap}
-.u{display:inline-flex;align-items:center;gap:3px;white-space:nowrap;vertical-align:middle}
+.u{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;vertical-align:middle}
 .u .sh-c{height:18px;padding:0 4px;font-size:11px;letter-spacing:.02em}
 .rl b{font-size:11px;margin-left:1px}
 a.bu{text-decoration:none;font-family:var(--mono)}
@@ -362,15 +364,15 @@ a.bu:hover{filter:brightness(1.2)}
 .ddm div:hover{background:var(--panel-3);color:var(--text)}
 
 /* ---- row 2: HERO (his trades and the page's answer: white accent) ---- */
-#hero{background:var(--panel);border:1px solid var(--line-2);border-radius:4px;padding:4px 12px 5px 14px;min-width:0;overflow:hidden}
+#hero{background:var(--panel);border:1px solid var(--line-2);border-radius:4px;padding:3px 12px 4px 14px;min-width:0;overflow:hidden}
 #hero>div{display:flex;align-items:center;gap:7px;white-space:nowrap;overflow:hidden}
-#hero .h1{height:30px}
+#hero .h1{height:29px}
 #hero .ans{font-size:20px;font-weight:700;color:var(--text);letter-spacing:-0.005em}
 #hero .ans2{font-size:20px;font-weight:700;color:var(--text);display:inline-flex;align-items:center;gap:8px}
 #hero .ans2 .sh-c{font-size:12px}
 #hero .ans3{font-size:16px;color:var(--text-2)} #hero .ans3 b{color:var(--text);font-weight:600}
 #hero .sep2{font-size:20px;color:var(--text-3)}
-#hero .h2{height:26px;font-size:13px;color:var(--text)}
+#hero .h2{height:24px;font-size:13px;color:var(--text)}
 #hero .h2 .sh-lb{color:var(--text-2);margin-right:2px}
 #hero .h2 b{font-weight:700}
 #hero .ok2,.ok2{color:var(--info);font-weight:700}
@@ -395,8 +397,8 @@ a.bu:hover{filter:brightness(1.2)}
 #tl .ph2.obs{background:var(--panel-3)}
 #tl .ph2.ent{background:var(--info-bg);color:var(--info);justify-content:flex-start;padding-left:8px}
 #tl .ph2.late{background:var(--panel-3)}
-#tl .ph2.man{background:var(--line-2);color:var(--text);letter-spacing:-0.04em}
-#tl .ph2.ex{background:var(--danger-bg);color:var(--danger);overflow:visible;justify-content:flex-start;padding-left:2px;z-index:1}
+#tl .ph2.man{background:var(--line-2);color:var(--text);letter-spacing:-0.03em}
+#tl .ph2.ex{background:var(--danger-bg);color:var(--danger);overflow:visible;justify-content:flex-start;padding-left:6px;z-index:1}
 #tl .ph2.flat{background:none}
 #tl .win{position:absolute;top:0;bottom:0;background:var(--stripe);border-left:1px solid var(--stale);border-right:1px solid var(--stale)}
 #tl .now{position:absolute;top:22px;height:34px;width:2px;background:var(--text);z-index:2}
@@ -412,10 +414,11 @@ a.bu:hover{filter:brightness(1.2)}
 #tl .pin.am .mk{background:var(--info)}
 #tl .pin.rt{transform:translateX(-100%)}
 #tl .pin .t{font-family:var(--mono);color:var(--text-2);font-size:11px}
-#tl .pin .sh-c{height:18px;font-size:11px;padding:0 4px}
+#tl .pin .sh-c{height:18px;font-size:12px;padding:0 4px}
 .imp{display:inline-flex;align-items:center;height:18px;padding:0 5px;border-radius:3px;font-family:var(--mono);font-size:12px;font-weight:700;white-space:nowrap}
 .imp.dn{color:var(--down);background:var(--down-bg);border:1px solid var(--down-line)}
 .imp.up{color:var(--up);background:var(--up-bg);border:1px solid var(--up-line)}
+.imp.shr{font-size:14px;height:20px}
 #tl .ac{width:280px;flex:none;border-left:1px solid var(--line);padding-left:10px;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:18px;column-gap:10px;align-content:start}
 #tl .ac .hd{grid-column:1 / span 2;font-size:11px;font-weight:700;color:var(--text-2);letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between}
 #tl .ac .hd span:last-child{text-transform:none;letter-spacing:0;font-weight:400}
@@ -436,11 +439,27 @@ a.bu:hover{filter:brightness(1.2)}
 .dg.drv{color:var(--info);background:var(--info-bg)}
 .dg.rxg,.dg.sec{position:static}
 /* EVENTS rows */
-.er{display:grid;grid-template-columns:54px minmax(0,1fr) 62px;column-gap:8px;padding:4px 8px 5px 10px;border-bottom:1px solid var(--line);align-items:start}
+.er{display:grid;grid-template-columns:54px minmax(0,1fr) 62px;column-gap:8px;padding:3px 8px 4px 10px;border-bottom:1px solid var(--line);align-items:start}
 .er:hover{background:var(--panel-2)}
 .er.done .tm{color:var(--text-2)}
 .er.noise{display:none}
-.er.pin{background:rgba(108,178,255,.05);box-shadow:inset 3px 0 0 var(--info);grid-template-columns:44px minmax(0,1fr)}
+.er.pin{box-shadow:inset 3px 0 0 var(--down);grid-template-columns:44px minmax(0,1fr)}
+.er.pin:hover{filter:brightness(1.08)}
+.er.pin .nm .pc{font-size:13px;margin-left:2px}
+.nw{font-size:12px;font-weight:400;margin-left:8px;white-space:nowrap}
+/* sector line (R49): name · % from ALL listed shares · basis · breadth all / F&O · NARROW flag */
+.sl{grid-column:1 / -1;position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:0 10px;min-height:22px;line-height:22px;white-space:nowrap;padding:0 6px;margin:1px 0 2px -4px;border-radius:2px;font-size:12px;color:var(--text-2)}
+.sl a.sk{font-size:13px;font-weight:700;color:var(--text);text-decoration-color:var(--text-3)}
+.sl .pc{font-size:13px;font-weight:700}
+.sl .bs{font-size:11px;color:var(--text-2);border:1px solid var(--line-2);border-radius:2px;padding:0 4px;line-height:15px}
+.sl .br b{color:var(--text);font-family:var(--mono);font-weight:600;letter-spacing:-0.02em}
+.sl .sg{display:inline-flex;align-items:center;gap:7px}
+.sl .hb{position:relative;flex:none;margin-left:auto;width:40px;height:4px;background:var(--panel-3)}
+.sl .hb::before{content:'';position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--text-3)}
+.sl .hb i{position:absolute;top:0;height:4px}
+.sl .hb i.d{background:var(--down)} .sl .hb i.u{background:var(--up)}
+.nar{font-size:12px;font-weight:700;letter-spacing:.02em;color:var(--text);border:1px dashed var(--text-2);border-radius:2px;padding:0 4px;line-height:15px;white-space:nowrap}
+.pr .xp .sl{margin:2px 0 3px -4px}
 .er.pin .fl{grid-column:1 / -1;margin:0}
 .er.pin .nm{white-space:nowrap;overflow:hidden}
 .er .tm{font-family:var(--mono);font-size:13px;color:var(--text);font-weight:600;line-height:20px;letter-spacing:-0.02em;white-space:nowrap}
@@ -456,9 +475,9 @@ a.bu:hover{filter:brightness(1.2)}
 .er .l2 b{color:var(--text);font-weight:600}
 .er .cs{text-align:right;font-size:11px;color:var(--text-2);line-height:14px}
 .er .cs .v{font-family:var(--mono);font-size:13px;color:var(--text);font-weight:600;display:block;line-height:20px;white-space:nowrap}
-.er .cs .s{display:block}
-.er .fl{display:flex;flex-wrap:wrap;align-items:center;gap:3px 10px;margin-top:2px}
-.er .fl .u{height:22px}
+.er .cs .s{display:block;font-size:12px}
+.er .fl{display:flex;flex-wrap:wrap;align-items:center;gap:1px 12px;margin-top:0}
+.er .fl .u{height:21px}
 .er .fl .lbl{margin-right:5px;vertical-align:middle}
 .sx{font-size:11px;font-weight:700;letter-spacing:.02em;height:16px;display:inline-flex;align-items:center;padding:0 3px;border-radius:2px;border:1px solid var(--line-2);color:var(--text-2);flex:none;line-height:1}
 .sx.in{border-color:var(--text-2);color:var(--text)}
@@ -499,15 +518,17 @@ a.bu:hover{filter:brightness(1.2)}
 .wlr .sh-lb{margin-right:5px}
 /* DERIVATIVES · RESULTS */
 .rs{height:20px;font-size:11px;padding:0 5px;margin-left:2px}
+.ban .ln,.xw .ln{display:flex;flex-wrap:wrap;align-items:center;gap:0 6px;font-size:13px;color:var(--text-2);line-height:22px;min-width:0}
+.ban .bl,.xw .bl{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);white-space:nowrap}
+.xw .ln:not(.hd){display:grid;grid-template-columns:64px minmax(0,1fr);column-gap:8px}
+.xw .bc{display:flex;flex-wrap:wrap;align-items:center;gap:0 6px;min-width:0}
 .ban{padding:5px 8px 6px 10px;border-bottom:1px solid var(--line-2);background:var(--danger-bg);box-shadow:inset 3px 0 0 var(--danger)}
-.ban>div{display:flex;align-items:center;flex-wrap:wrap;gap:3px 6px;font-size:13px;color:var(--text-2);line-height:22px}
 .ban .b1 .sh-c{height:18px;font-size:11px}
 .ban .b1 .t2{font-size:12px}
 .ban .b2 b.yo{color:var(--text);font-weight:700}
 .ban b{color:var(--text);font-weight:600}
 .ban .lbl{margin-right:0}
-.xw{padding:5px 8px 6px 10px;border-bottom:1px solid var(--line-2);background:var(--panel-2);font-size:13px;line-height:19px;color:var(--text-2)}
-.xw .x1{display:flex;align-items:center;flex-wrap:wrap;gap:0 7px;line-height:21px}
+.xw{padding:5px 8px 6px 10px;border-bottom:1px solid var(--line-2);background:var(--panel-2)}
 .xw b{color:var(--text);font-weight:600}
 .rr,.rx{display:grid;grid-template-columns:56px minmax(0,1fr);column-gap:8px;padding:4px 8px 5px 10px;border-bottom:1px solid var(--line);align-items:start}
 .rr .wh,.rx .wh{font-size:11px;color:var(--text-2);line-height:14px}
@@ -538,20 +559,27 @@ a.bu:hover{filter:brightness(1.2)}
 
 /* ---- 1366 ---- */
 @media (max-width:1499px){
-  #pg{gap:5px 6px;grid-template-columns:minmax(0,1fr) minmax(0,0.89fr) minmax(0,1.14fr)}
+  #pg{gap:5px 6px;grid-template-columns:minmax(0,1.18fr) minmax(0,0.835fr) minmax(0,1.065fr)}
+  #dr .cb .chip{padding:0 5px}
   #purp .why{font-size:12px}
-  #hero{padding:3px 10px 4px 12px}
-  #hero .h1{height:28px}
+  #hero{padding:2px 10px 3px 12px}
+  #hero .h1{height:27px}
   #hero .ans,#hero .ans2,#hero .sep2{font-size:18px}
-  #hero .h2{height:24px}
+  #hero .h2{height:23px}
+  .ph{height:24px} .cb{padding:2px 6px}
   #tl .tll{width:104px}
   #tl .pin{font-size:12px} #tl .pin a.lk{font-size:13px}
-  #tl .ax{height:70px}
+  #tl .ax{height:66px}
   #tl .tll{gap:1px} #tl .tll>*{line-height:15px} #tl .tlw{padding:3px 10px 3px 12px}
-  #tl .bar{top:22px;height:16px} #tl .tks{top:39px} #tl .lm{top:51px;height:19px} #tl .now{top:20px;height:32px} #tl .nowl{top:39px}
-  .pr .p1{grid-template-columns:82px minmax(0,1fr) 78px 70px 54px;column-gap:6px;height:26px}
+  #tl .lane{height:20px} #tl .pin{line-height:19px;top:0} #tl .bar{top:20px;height:15px} #tl .tks{top:36px} #tl .lm{top:48px;height:18px} #tl .now{top:19px;height:30px} #tl .nowl{top:36px}
+  .pr .p1{grid-template-columns:84px minmax(0,1fr) 74px 70px 48px;column-gap:6px;height:26px;padding:0 4px 0 8px}
+  .pr .bd{letter-spacing:0} .pr .stg{letter-spacing:0}
+  .sl .hb{display:none} .sl{gap:0 8px} .sl .sg{gap:5px}
   .cyc{gap:5px;font-size:12px}
 }
+.pr .xp .sl .hb{display:none}
+.wlr.stg-l{background:none;white-space:nowrap;overflow:hidden}
+.wlr.stg-l b.nf{color:var(--info)}
 
 </style>
 </head>
@@ -689,10 +717,10 @@ a.bu:hover{filter:brightness(1.2)}
 </div>
 
 <section id="hero" class="sh-acc-mine" title="The page's answer: what on the calendar can move your F&amp;O shares and your open trades today">
-  <div class="h1"><span class="ans">No scheduled event in session today</span><span class="sep2">·</span><span class="ans2"><span class="sh-c sh-c-info">POLICY SHOCK</span>SEBI MTF “sources say” → brokers <b class="dn">▼</b></span><span class="sep2 wide">·</span><span class="ans3 wide">next: <b>Mon 23 Nov expiry</b> · <b>Fri 4 Dec RBI</b></span><span class="age r">11:44:20</span></div>
-  <div class="h2"><span class="sh-lb">live</span><span class="sh-c sh-c-ready">GET READY</span><a class="lk" href="share.html#ANGELONE" data-nm="ANGELONE">ANGELONE</a><span class="sh-c sh-c-pe">PE</span><b class="mono">2,300</b><span class="t2">Dec</span><span class="sh-c sh-c-exit" title="Hard block (R12): lock room ₹1,980 (if both open share stops hit) is smaller than this trade's max loss, so 0 lots. GO NOW 11:43:05 was suppressed. It reopens only after an exit.">BLOCKED · lock room</span><a class="lk2" href="analyst.html" title="the call and its card on F8 Analyst">F8 ›</a>
-    <span class="vs"></span><span class="sh-lb">yours</span><a class="lk" href="share.html#MANAPPURAM" data-nm="MANAPPURAM">MANAPPURAM</a><span class="sh-c sh-c-held wide">HELD</span><span class="ok2">clear to 15:10 ✓</span><span class="t2">· MWPL <b class="mono">86%</b>: in ban <b>can close, cannot add</b></span>
-    <span class="vs"></span><a class="lk" href="share.html#HINDALCO" data-nm="HINDALCO">HINDALCO</a><span class="sh-c sh-c-held wide">HELD</span><span class="ok2">LME 18:00 after 15:10 ✓</span></div>
+  <div class="h1"><span class="ans">No scheduled event in session today</span><span class="sep2">·</span><span class="ans2"><span class="sh-c sh-c-info">POLICY SHOCK</span>SEBI MTF “sources say” → brokers <b class="dn">▼</b></span><span class="sep2">·</span><span class="ans3">next: <b>Mon 23 Nov expiry</b> · <b>Fri 4 Dec RBI</b></span><span class="age r">11:44:20</span></div>
+  <div class="h2"><span class="sh-lb">live</span><span class="sh-c sh-c-stale" title="Hard block (R12): lock room ₹1,980 (if both open share stops hit) is smaller than this trade's max loss ₹4,070, so 0 lots. GET READY 11:42:38 → GO NOW 11:43:05 was suppressed. It reopens only after an exit.">BLOCKED · lock room</span><a class="lk" href="share.html#ANGELONE" data-nm="ANGELONE">ANGELONE</a><span class="sh-c sh-c-pe">PE</span><b class="mono">2,300</b><span class="t2">Dec · <b class="mono">0</b> lots<span class="wide"> · GO NOW 11:43:05 suppressed</span></span><a class="lk2" href="analyst.html" title="the call and its card on F8 Analyst">F8 ›</a>
+    <span class="vs"></span><span class="sh-lb">yours</span><a class="lk" href="share.html#MANAPPURAM" data-nm="MANAPPURAM">MANAPPURAM</a><span class="sh-c sh-c-held" title="your open position (F6 MY TRADES)">HELD</span><span class="ok2">clear to 15:10 ✓</span><span class="t2" title="MWPL = market-wide position limit. At 86% nothing changes for you. If it crosses 95% the share enters the F&amp;O ban: you can still close your PUT, you cannot add.">· MWPL <b class="mono">86%</b> · ban at <b class="mono">95%</b></span>
+    <span class="vs"></span><a class="lk" href="share.html#HINDALCO" data-nm="HINDALCO">HINDALCO</a><span class="sh-c sh-c-held" title="your open position (F6 MY TRADES)">HELD</span><span class="ok2">LME 18:00 after 15:10 ✓</span></div>
 </section>
 
 <section class="pn sh-acc-mkt" id="tl">
@@ -710,7 +738,7 @@ a.bu:hover{filter:brightness(1.2)}
     <span class="now" style="left:48.43%"></span><span class="nowl" style="left:48.43%">11:44</span>
     <div class="lane lm">
       <span class="pin" style="left:0.3%" title="China Oct property sales −9% y/y, 07:30 IST → copper −1.8% (low 10:12; −0.92% now)"><i class="mk"></i><span class="t">07:30</span>China <span class="imp dn">▼ copper 1.8%</span></span>
-      <span class="pin" style="left:42.95%" title="ROTATION 30M: money out of IT and AUTO into PHARMA; pharma futures long build-up, SUNPHARMA +1.42% LB leader"><i class="mk"></i><span class="t">11:20</span><a class="lk" href="rotation.html">ROTATION</a><span class="wide">IT, AUTO</span>→ PHARMA <span class="imp up">▲ <span class="wide">SUNPHARMA&nbsp;</span>1.42%</span><a class="sh-c sh-c-lb bu" href="futures-oi.html#LB" title="pharma long build-up - opens F10 filtered to LB">LB · F10</a></span>
+      <span class="pin" style="left:42.95%" title="ROTATION 30M: money out of IT and AUTO into PHARMA; pharma futures long build-up, SUNPHARMA +1.42% LB leader"><i class="mk"></i><span class="t">11:20</span><a class="lk" href="rotation.html">ROTATION</a><span class="wide">IT, AUTO</span>→ PHARMA <span class="imp up shr">▲ SUNPHARMA&nbsp;1.42%</span><a class="sh-c sh-c-lb bu" href="futures-oi.html#LB" title="pharma long build-up - opens F10 filtered to LB">LB · F10</a></span>
     </div>
   </div>
 </div>
@@ -729,17 +757,17 @@ a.bu:hover{filter:brightness(1.2)}
 
   <section class="pn" id="ev">
     <div class="ph sh-acc-mkt"><span class="pt">EVENTS<span class="wide">&nbsp;· 4 WEEKS</span></span><span class="lks"><a class="lk2" href="sectors.html#movers" title="F2 Sectors · F&amp;O MOVERS (UP / DOWN / ALL)">F2 movers</a><span class="t3">·</span><a class="lk2" href="futures-oi.html#buildup" title="F10 Fut &amp; OI · BUILD-UP list LB / SB / SC / LU with counts">F10 build-up</a></span><span class="pa"><span class="cnt" data-for="evb"></span><button class="nb" data-t="evb" data-d="-1" title="previous rows">▲</button><button class="nb" data-t="evb" data-d="1" title="next rows">▼</button><span class="age">11:30</span></span></div>
-    <div class="cb"><span class="chip on" data-f="all">all <span class="n">27</span></span><span class="chip" data-f="t1">Tier 1 <span class="n">4</span></span><span class="chip" data-f="in" title="in-session events in the next 4 weeks (today: none)">in-session <span class="n">5</span></span><span class="chip" data-f="mine" title="events that touch your 2 open trades (MANAPPURAM, HINDALCO)">my trades <span class="n">3</span></span><span class="chip" data-f="noise" title="WPI, IIP, forex reserves, core sector, GST, jobless claims: noise for intraday, hidden by default">noise <span class="n">6</span> hidden</span><span class="nx wide" title="the next Tier 1 event">next T1 <b>RBI Fri 4 Dec 10:00</b></span></div>
-    <div class="scw"><div class="pb" id="evb"><div class="dg drv" data-k="-2">Drove today<span class="sub">pinned · gold, copper · pharma build-up <a class="lk2" href="futures-oi.html#LB" title="F10 Fut &amp; OI filtered to LB: SUNPHARMA +1.42% LB leader since 11:20">F10 LB ›</a></span></div><div class="er pin" data-k="0" data-tier="3" data-sess="NIGHT" data-mine="1" data-secs="gold" data-nm="FOMC → gold" title="FOMC minutes 00:30 IST (ET 14:00): “fewer cuts in 2027”, hawkish (GIR tone +0.6 vs the last 24) · DXY +0.6% · COMEX gold −1.58% overnight, MCX gold −1.62% now · TITAN = the day's biggest F&O faller, EXTENDED: enter only on the bounce · KALYANKJIL = laggard, catch-down trigger 5-min < 521.60 · one gold PUT at a time">
+    <div class="cb"><span class="chip on" data-f="all">all <span class="n">27</span></span><span class="chip" data-f="t1">Tier 1 <span class="n">4</span></span><span class="chip" data-f="in" title="events that fall inside market hours, from Mon 23 Nov to 16 Dec. Today (Thu 19 Nov) has none.">in session from Mon <span class="n">5</span></span><span class="chip" data-f="mine" title="events that touch your 2 open trades (MANAPPURAM, HINDALCO)">my trades <span class="n">3</span></span><span class="chip" data-f="noise" title="WPI, IIP, forex reserves, core sector, GST, jobless claims: noise for intraday, hidden by default">noise <span class="n">6</span> hidden</span><span class="nx wide" title="the next Tier 1 event">next T1 <b>RBI 4 Dec</b></span></div>
+    <div class="scw"><div class="pb" id="evb"><div class="dg drv" data-k="-2">Drove today<span class="sub">pinned · <span class="wide">sector % over all listed shares, free-float · breadth all / F&amp;O</span><span class="n1366">% over all listed, free-float · breadth all / F&amp;O</span> <a class="lk2" href="futures-oi.html#LB" title="F10 Fut &amp; OI filtered to LB: SUNPHARMA +1.42% LB leader since 11:20">F10 LB ›</a></span></div><div class="er pin" data-k="0" data-tier="3" data-sess="NIGHT" data-mine="1" data-secs="gold" data-nm="FOMC → gold" title="FOMC minutes 00:30 IST (ET 14:00): “fewer cuts in 2027”, hawkish (GIR tone +0.6 vs the last 24) · DXY +0.6% · COMEX gold −1.58% overnight, MCX gold −1.62% now · TITAN = the day's biggest F&O faller, EXTENDED: enter only on the bounce · KALYANKJIL = laggard (LB at 10:05, LU now), catch-down trigger 5-min < 521.60 · one gold PUT at a time">
     <span class="tm" title="ET 14:00">00:30</span>
-    <div class="bd"><div class="l1"><span class="nm">FOMC → gold −1.6% → <a class="sk" href="sectors.html#jewellers" title="opens the sector in place on F2 (accordion, live numbers)">jewellers · gold loans</a> PUT</span></div></div><div class="fl"><span class="u"><a class="lk" href="share.html#TITAN" data-nm="TITAN">TITAN</a><span class="pc dn">−2.48%</span><a class="sh-c sh-c-sb bu" href="futures-oi.html#SB" title="short build-up: price down, OI up - opens F10 Fut &amp; OI filtered to SB">SB</a><span class="sh-c sh-c-leader rl" title="LEADER: moves first and most">LEADER</span></span><span class="u"><a class="lk" href="share.html#MUTHOOTFIN" data-nm="MUTHOOTFIN">MUTHOOTFIN</a><span class="pc dn">−1.95%</span><a class="sh-c sh-c-sb bu" href="futures-oi.html#SB" title="short build-up: price down, OI up - opens F10 Fut &amp; OI filtered to SB">SB</a><span class="sh-c sh-c-dep rl" title="DEPENDENT: moves with the driver">DEP</span></span><span class="u"><a class="lk" href="share.html#MANAPPURAM" data-nm="MANAPPURAM">MANAPPURAM</a><span class="pc dn">−2.30%</span><a class="sh-c sh-c-sb bu" href="futures-oi.html#SB" title="short build-up: price down, OI up - opens F10 Fut &amp; OI filtered to SB">SB</a><span class="sh-c sh-c-dep rl" title="DEPENDENT: moves with the driver">DEP</span><span class="sh-c sh-c-held" title="your open position (F6 MY TRADES)">HELD</span></span><span class="u"><a class="lk" href="share.html#KALYANKJIL" data-nm="KALYANKJIL">KALYANKJIL</a><span class="pc dn">−0.62%</span><a class="sh-c sh-c-lb bu" href="futures-oi.html#LB" title="long build-up: price up, OI up - opens F10 Fut &amp; OI filtered to LB">LB</a><span class="sh-c sh-c-lag rl" title="LAGGARD: has not moved yet - CATCH-DOWN candidate">LAGGARD<b class="dn">▼</b></span></span></div>
-  </div><div class="er pin" data-k="0" data-tier="2" data-sess="PRE" data-mine="1" data-secs="metals" data-nm="China → copper" title="China Oct property sales −9% y/y (prior −7%), 07:30 IST · copper low −1.81% at 10:12, −0.92% now">
+    <div class="bd"><div class="l1"><span class="nm">FOMC → gold <span class="pc dn">−1.6%</span></span></div></div><div class="sl sh-heat-dn" style="--m:2.01" title="TITAN 58% × −2.48 + KALYANKJIL, MANAPPURAM, MUTHOOTFIN and 10 non-F&amp;O jewellers / gold-loan cos (free-float weights) = −2.01%"><span class="sg"><a class="sk" href="sectors.html#jewellers" title="opens the sector in place on F2 (accordion, live numbers)">Jewellers &amp; gold loans</a><span class="pc dn">−2.01%</span><span class="bs">all 14 listed</span></span><span class="sg"><span class="br" title="breadth over all listed shares of the sector · and over its F&amp;O shares"><b>11/14</b> all · F&amp;O <b>4/4</b></span></span><span class="hb"><i class="d" style="right:50%;width:33.5%"></i></span></div><div class="fl"><span class="u"><a class="lk" href="share.html#TITAN" data-nm="TITAN">TITAN</a><span class="pc dn">−2.48%</span><a class="sh-c sh-c-sb bu" href="futures-oi.html#SB" title="short build-up: price down, OI up - opens F10 Fut &amp; OI filtered to SB">SB</a><span class="sh-c sh-c-leader rl" title="LEADER: moves first and most">LEADER</span></span><span class="u"><a class="lk" href="share.html#MANAPPURAM" data-nm="MANAPPURAM">MANAPPURAM</a><span class="pc dn">−2.30%</span><a class="sh-c sh-c-sb bu" href="futures-oi.html#SB" title="short build-up: price down, OI up - opens F10 Fut &amp; OI filtered to SB">SB</a><span class="sh-c sh-c-held" title="your open position (F6 MY TRADES)">HELD</span></span><span class="u"><a class="lk" href="share.html#MUTHOOTFIN" data-nm="MUTHOOTFIN">MUTHOOTFIN</a><span class="pc dn">−1.95%</span><a class="sh-c sh-c-sb bu" href="futures-oi.html#SB" title="short build-up: price down, OI up - opens F10 Fut &amp; OI filtered to SB">SB</a></span><span class="u"><a class="lk" href="share.html#KALYANKJIL" data-nm="KALYANKJIL">KALYANKJIL</a><span class="pc dn">−0.62%</span><a class="sh-c sh-c-lu bu" href="futures-oi.html#LU" title="long unwinding: price down, OI down - opens F10 Fut &amp; OI filtered to LU">LU</a><span class="sh-c sh-c-lag rl" title="LAGGARD: has not moved yet - CATCH-DOWN candidate">LAGGARD<b class="dn">▼</b></span></span></div>
+  </div><div class="er pin" data-k="0" data-tier="2" data-sess="PRE" data-mine="1" data-secs="metals" data-nm="China → copper" title="China Oct property sales −9% y/y (prior −7%), 07:30 IST · copper low −1.81% at 10:12, −0.92% now · POLYCAB back above VWAP 6,872: leg faded">
     <span class="tm" title="CST 10:00">07:30</span>
-    <div class="bd"><div class="l1"><span class="nm">China −9% → copper −1.8% → <a class="sk" href="sectors.html#cables" title="opens the sector in place on F2 (accordion, live numbers)">cables · metals</a> PUT</span></div></div><div class="fl"><span class="u"><a class="lk" href="share.html#POLYCAB" data-nm="POLYCAB">POLYCAB</a><span class="pc dn">−2.05%</span><a class="sh-c sh-c-sb bu" href="futures-oi.html#SB" title="short build-up: price down, OI up - opens F10 Fut &amp; OI filtered to SB">SB</a><span class="sh-c sh-c-leader rl" title="LEADER: moves first and most">LEADER</span></span><span class="u"><a class="lk" href="share.html#KEI" data-nm="KEI">KEI</a><span class="pc dn">−1.90%</span><a class="sh-c sh-c-sb bu" href="futures-oi.html#SB" title="short build-up: price down, OI up - opens F10 Fut &amp; OI filtered to SB">SB</a><span class="sh-c sh-c-dep rl" title="DEPENDENT: moves with the driver">DEP</span></span><span class="u"><a class="lk" href="share.html#HINDALCO" data-nm="HINDALCO">HINDALCO</a><span class="pc dn">−1.11%</span><a class="sh-c sh-c-sb bu" href="futures-oi.html#SB" title="short build-up: price down, OI up - opens F10 Fut &amp; OI filtered to SB">SB</a><span class="sh-c sh-c-dep rl" title="DEPENDENT: moves with the driver">DEP</span><span class="sh-c sh-c-held" title="your open position (F6 MY TRADES)">HELD</span></span></div>
+    <div class="bd"><div class="l1"><span class="nm">China −9% → copper <span class="pc dn">−1.8%</span><span class="t2 nw">low 10:12 · now −0.92%</span></span></div></div><div class="sl sh-heat-dn" style="--m:1.16" title="all 9 listed cables &amp; wires makers, free-float = −1.16%; only 4 of 9 down, but all 3 F&amp;O names down: NARROW - an F&amp;O-only move"><span class="sg"><a class="sk" href="sectors.html#cables" title="opens the sector in place on F2 (accordion, live numbers)">Cables &amp; wires</a><span class="pc dn">−1.16%</span><span class="bs">all 9 listed</span></span><span class="sg"><span class="br" title="breadth over all listed shares of the sector · and over its F&amp;O shares"><b>4/9</b> all · F&amp;O <b>3/3</b></span><span class="nar" title="NARROW: only the F&amp;O names move, most listed shares of the sector do not - treat as an F&amp;O-only move">NARROW · F&amp;O-only</span></span><span class="hb"><i class="d" style="right:50%;width:19.3%"></i></span></div><div class="sl sh-heat-dn" style="--m:1.28" title="NIFTY METAL index (NSE, 15 shares, free-float) = −1.28%"><span class="sg"><a class="sk" href="sectors.html#metals" title="opens the sector in place on F2 (accordion, live numbers)">Metals</a><span class="pc dn">−1.28%</span><span class="bs">NIFTY METAL index</span></span><span class="sg"><span class="br" title="breadth over all listed shares of the sector · and over its F&amp;O shares"><b>13/15</b> all · F&amp;O <b>9/11</b></span></span><span class="hb"><i class="d" style="right:50%;width:21.3%"></i></span></div><div class="fl"><span class="u"><a class="lk" href="share.html#POLYCAB" data-nm="POLYCAB">POLYCAB</a><span class="pc dn">−1.60%</span><a class="sh-c sh-c-sb bu" href="futures-oi.html#SB" title="short build-up: price down, OI up - opens F10 Fut &amp; OI filtered to SB">SB</a><span class="sh-c sh-c-leader rl" title="LEADER: moves first and most">LEADER</span></span><span class="u"><a class="lk" href="share.html#KEI" data-nm="KEI">KEI</a><span class="pc dn">−1.45%</span><a class="sh-c sh-c-lu bu" href="futures-oi.html#LU" title="long unwinding: price down, OI down - opens F10 Fut &amp; OI filtered to LU">LU</a></span><span class="u"><a class="lk" href="share.html#HINDALCO" data-nm="HINDALCO">HINDALCO</a><span class="pc dn">−1.11%</span><a class="sh-c sh-c-sb bu" href="futures-oi.html#SB" title="short build-up: price down, OI up - opens F10 Fut &amp; OI filtered to SB">SB</a><span class="sh-c sh-c-held" title="your open position (F6 MY TRADES)">HELD</span></span></div>
   </div><div class="er done" data-k="-1" data-tier="3" data-sess="POST" data-mine="0" data-secs="oil" data-nm="EIA crude">
     <span class="tm" title="ET 10:30 · since the close">21:00<span class="tz">Wed 18</span></span>
     <div class="bd"><div class="l1"><span class="nm">EIA crude stocks → Brent −1.10%</span></div>
-      <div class="l2"><span class="tags"><span class="tr">T3</span><span class="sx">POST</span><span class="sx dn2">DONE</span></span>OMCs ▲ <a class="lk" href="share.html#BPCL" data-nm="BPCL">BPCL</a> <a class="lk" href="share.html#HINDPETRO" data-nm="HINDPETRO">HINDPETRO</a> · ▼ <a class="lk" href="share.html#ONGC" data-nm="ONGC">ONGC</a> <a class="lk" href="share.html#OIL" data-nm="OIL">OIL</a></div></div>
+      <div class="l2"><span class="tags"><span class="tr">T3</span><span class="sx">POST</span><span class="sx dn2">DONE</span></span>▲ <a class="lk" href="share.html#BPCL" data-nm="BPCL">BPCL</a> <a class="lk" href="share.html#HINDPETRO" data-nm="HINDPETRO">HINDPETRO</a> · ▼ <a class="lk" href="share.html#ONGC" data-nm="ONGC">ONGC</a> <a class="lk" href="share.html#OIL" data-nm="OIL">OIL</a></div></div>
     <span class="cs"><span class="v">+3.1mb</span><span class="s">cons −0.8</span></span>
   </div><div class="dg today" data-k="0">Thu 19 Nov<span class="sub">today · in session: none scheduled</span></div><div class="er" data-k="0" data-tier="3" data-sess="POST" data-mine="0" data-secs="it" data-nm="WIPRO board">
     <span class="tm">16:30<span class="tz">board</span></span>
@@ -749,7 +777,7 @@ a.bu:hover{filter:brightness(1.2)}
   </div><div class="er" data-k="0" data-tier="3" data-sess="POST" data-mine="0" data-secs="capgoods" data-nm="ABB MD on TV">
     <span class="tm">17:30<span class="tz">ET Now</span></span>
     <div class="bd"><div class="l1"><span class="nm">TV: ABB India MD interview</span></div>
-      <div class="l2"><span class="tags"><span class="tr">T3</span><span class="sx">POST</span></span>“not affecting us” is weighed, not trusted → <a class="lk" href="share.html#SIEMENS" data-nm="SIEMENS">SIEMENS</a> <a class="lk" href="share.html#CGPOWER" data-nm="CGPOWER">CGPOWER</a></div></div>
+      <div class="l2"><span class="tags"><span class="tr">T3</span><span class="sx">POST</span></span>weighed, not trusted → <a class="lk" href="share.html#SIEMENS" data-nm="SIEMENS">SIEMENS</a> <a class="lk" href="share.html#CGPOWER" data-nm="CGPOWER">CGPOWER</a></div></div>
     <span class="cs"><span class="v">TV</span><span class="s">schedule</span></span>
   </div><div class="er" data-k="0" data-tier="3" data-sess="POST" data-mine="1" data-secs="metals" data-nm="LME official">
     <span class="tm">18:00<span class="tz">LON 12:30</span></span>
@@ -898,13 +926,13 @@ a.bu:hover{filter:brightness(1.2)}
   <section class="pn" id="pol">
     <div class="ph sh-acc-mkt"><span class="pt">POLICY PIPELINE</span><span class="lks"><a class="lk2" href="sectors.html#movers" title="F2 Sectors · F&amp;O MOVERS (UP / DOWN / ALL)">F2 movers</a><span class="t3">·</span><a class="lk2" href="futures-oi.html#buildup" title="F10 Fut &amp; OI · BUILD-UP list LB / SB / SC / LU with counts">F10 build-up</a></span><span class="pa"><span class="cnt" data-for="plb"></span><button class="nb" data-t="plb" data-d="-1" title="previous rows">▲</button><button class="nb" data-t="plb" data-d="1" title="next rows">▼</button><span class="age">11:44:20</span></span></div>
     <div class="cb"><span class="chip on" data-f="all">all <span class="n">10</span></span><span class="chip" data-f="mine" title="items that touch your open trades">my trades <span class="n">1</span></span><span class="chip zero" data-f="den" title="denials / 'no decision' statements from the regulator itself; a denial CANCELs the call">denials <span class="n">0</span> · none yet</span><span class="nx" title="the date chip shows whether the item / date is confirmed"><span class="dt C">CONFIRMED</span><span class="dt R">RUMOURED</span></span></div>
-    <div class="scw"><div class="pb" id="plb"><div class="pr live" data-live="1" data-mine="0" data-den="0" data-secs="brokers" data-nm="SEBI paper" title="SEBI consultation paper on the margin trading facility (MTF) framework, published 18 Nov 17:32 on sebi.gov.in; public comments until Sat 28 Nov. This is a document that exists: CONFIRMED.">
-  <div class="p1"><span class="bd">SEBI</span><span class="it">MTF paper (18 Nov)</span><span class="stg A">ANNOUNCED</span><span class="dt C" title="CONFIRMED date">28 Nov</span><span class="ss">7 sess.</span></div>
+    <div class="scw"><div class="pb" id="plb"><div class="pr live" data-live="1" data-mine="0" data-den="0" data-secs="brokers" data-nm="SEBI paper" title="SEBI consultation paper on the margin trading facility (MTF) framework, published 18 Nov 17:32 on sebi.gov.in; public comments until Sat 28 Nov = 6 sessions incl. today (19, 20, 23, 25, 26, 27; Tue 24 holiday). This is a document that exists: CONFIRMED.">
+  <div class="p1"><span class="bd">SEBI</span><span class="it">MTF paper (18 Nov)</span><span class="stg A">ANNOUNCED</span><span class="dt C" title="CONFIRMED date">28 Nov</span><span class="ss">6 sess.</span></div>
   
 </div><div class="pr live open" data-live="1" data-mine="0" data-den="0" data-secs="brokers" data-nm="SEBI story" title="CNBC-TV18 11:42:31 “SEBI mulls MTF limits - sources”, ET live blog 11:42:44 (echoes CNBC). No decision and no SEBI statement yet; the board date 16 Dec is itself rumoured.">
-  <div class="p1"><span class="bd">SEBI</span><span class="it">MTF limits · “sources say”</span><span class="stg P">PENDING</span><span class="dt R" title="RUMOURED - not confirmed">16 Dec</span><span class="ss">19 sess.</span></div>
-  <div class="xp"><div class="xa"><span class="u"><a class="lk" href="share.html#ANGELONE" data-nm="ANGELONE">ANGELONE</a><span class="pc dn">−2.10%</span><a class="sh-c sh-c-sb bu" href="futures-oi.html#SB" title="short build-up: price down, OI up - opens F10 Fut &amp; OI filtered to SB">SB</a><span class="sh-c sh-c-leader rl" title="LEADER: moves first and most">LEADER</span></span><span class="u"><a class="lk" href="share.html#BSE" data-nm="BSE">BSE</a><span class="pc dn">−1.88%</span><a class="sh-c sh-c-sb bu" href="futures-oi.html#SB" title="short build-up: price down, OI up - opens F10 Fut &amp; OI filtered to SB">SB</a><span class="sh-c sh-c-dep rl" title="DEPENDENT: moves with the driver">DEP</span></span><span class="u"><a class="lk" href="share.html#MOTILALOFS" data-nm="MOTILALOFS">MOTILALOFS</a><span class="pc dn">−1.10%</span><a class="sh-c sh-c-lu bu" href="futures-oi.html#LU" title="long unwinding: price down, OI down - opens F10 Fut &amp; OI filtered to LU">LU</a><span class="sh-c sh-c-lag rl" title="LAGGARD: has not moved yet - CATCH-DOWN candidate">LAGGARD<b class="dn">▼</b></span></span><span class="u"><a class="lk" href="share.html#CDSL" data-nm="CDSL">CDSL</a><span class="pc dn">−1.62%</span><a class="sh-c sh-c-lu bu" href="futures-oi.html#LU" title="long unwinding: price down, OI down - opens F10 Fut &amp; OI filtered to LU">LU</a><span class="sh-c sh-c-dep rl" title="DEPENDENT: moves with the driver">DEP</span></span></div>
-    <div class="xb"><b>Paper above = CONFIRMED; today's story = what SEBI may decide on it, no decision.</b> Not exposed: <a class="lk" href="share.html#MCX" data-nm="MCX">MCX</a> <a class="lk" href="share.html#360ONE" data-nm="360ONE">360ONE</a> · SEBI denial = CANCEL · <a class="lk2" href="news.html" title="the story in the one news list (F4): CNBC-TV18 11:42:31, ET live blog 11:42:44, CDSL 11:43:50 “no communication from SEBI”; priced in −6.8% in 20 d, IV 1.30x">F4 story ›</a></div></div>
+  <div class="p1"><span class="bd">SEBI</span><span class="it"><span class="wide">MTF limits · “sources say”</span><span class="n1366">MTF · sources say</span></span><span class="stg P">PENDING</span><span class="dt R" title="RUMOURED - not confirmed">16 Dec</span><span class="ss">19 sess.</span></div>
+  <div class="xp"><div class="sl sh-heat-dn" style="--m:1.34" title="all 12 listed brokers and exchanges, free-float weighted (no NSE index): BSE 30% · MCX 17% · CDSL 15% · ANGELONE … = −1.34%; 7 of 12 down incl. all 4 F&amp;O names: a broad move"><span class="sg"><a class="sk" href="sectors.html#brokers" title="opens the sector in place on F2 (accordion, live numbers)">Brokers &amp; exchanges</a><span class="pc dn">−1.34%</span><span class="bs">all 12 listed</span></span><span class="sg"><span class="br" title="breadth over all listed shares of the sector · and over its F&amp;O shares"><b>7/12</b> all · F&amp;O <b>4/4</b></span></span><span class="hb"><i class="d" style="right:50%;width:22.3%"></i></span></div><div class="xa"><span class="u"><a class="lk" href="share.html#ANGELONE" data-nm="ANGELONE">ANGELONE</a><span class="pc dn">−2.10%</span><a class="sh-c sh-c-sb bu" href="futures-oi.html#SB" title="short build-up: price down, OI up - opens F10 Fut &amp; OI filtered to SB">SB</a><span class="sh-c sh-c-leader rl" title="LEADER: moves first and most">LEADER</span></span><span class="u"><a class="lk" href="share.html#BSE" data-nm="BSE">BSE</a><span class="pc dn">−1.88%</span><a class="sh-c sh-c-lu bu" href="futures-oi.html#LU" title="long unwinding: price down, OI down - opens F10 Fut &amp; OI filtered to LU">LU</a></span><span class="u"><a class="lk" href="share.html#MOTILALOFS" data-nm="MOTILALOFS">MOTILALOFS</a><span class="pc dn">−1.10%</span><a class="sh-c sh-c-lu bu" href="futures-oi.html#LU" title="long unwinding: price down, OI down - opens F10 Fut &amp; OI filtered to LU">LU</a><span class="sh-c sh-c-lag rl" title="LAGGARD: has not moved yet - CATCH-DOWN candidate">LAGGARD<b class="dn">▼</b></span></span><span class="u"><a class="lk" href="share.html#CDSL" data-nm="CDSL">CDSL</a><span class="pc dn">−1.62%</span><a class="sh-c sh-c-lu bu" href="futures-oi.html#LU" title="long unwinding: price down, OI down - opens F10 Fut &amp; OI filtered to LU">LU</a></span></div>
+    <div class="xb"><b>Paper above = CONFIRMED · today's story = what SEBI may decide on it, no decision yet.</b> Not exposed: <a class="lk" href="share.html#MCX" data-nm="MCX">MCX</a> <a class="lk" href="share.html#360ONE" data-nm="360ONE">360ONE</a> · SEBI denial = CANCEL · <a class="lk2" href="news.html" title="the story in the one news list (F4): CNBC-TV18 11:42:31, ET live blog 11:42:44, CDSL 11:43:50 “no communication from SEBI”; priced in −6.8% in 20 d, IV 1.30x">F4 story ›</a></div></div>
 </div><div class="pr" data-live="0" data-mine="1" data-den="0" data-secs="gold" data-nm="BUDGET gold duty" title="Rumoured: cheaper gold → jewellers ▲ TITAN, KALYANKJIL · gold-loan collateral ▼ MANAPPURAM (your PUT), MUTHOOTFIN · far outside your holding window">
   <div class="p1"><span class="bd">BUDGET</span><span class="it">Gold import duty cut</span><span class="stg P">PENDING</span><span class="dt R" title="RUMOURED - not confirmed">1 Feb</span><span class="ss">50 sess.</span></div>
   
@@ -912,7 +940,7 @@ a.bu:hover{filter:brightness(1.2)}
   <div class="p1"><span class="bd">DGTR</span><span class="it">Steel safeguard 12%</span><span class="stg A">ANNOUNCED</span><span class="dt R" title="RUMOURED - not confirmed">30 Nov</span><span class="ss">7 sess.</span></div>
   
 </div><div class="pr" data-live="0" data-mine="0" data-den="0" data-secs="defence" data-nm="DAC" title="Defence Acquisition Council: an order over 10% of revenue matters → ▲ HAL, BEL, BDL, MAZDOCK · HAL +3.4% in 20 d">
-  <div class="p1"><span class="bd">DAC</span><span class="it">Defence council</span><span class="stg P">PENDING</span><span class="dt R" title="RUMOURED - not confirmed">end Nov</span><span class="ss">~7 sess.</span></div>
+  <div class="p1"><span class="bd">DAC</span><span class="it">Defence council</span><span class="stg P">PENDING</span><span class="dt R" title="RUMOURED - not confirmed">Nov-end</span><span class="ss">~7 sess.</span></div>
   
 </div><div class="pr" data-live="0" data-mine="0" data-den="0" data-secs="insurance brokers power" data-nm="Parliament" title="From Tue 1 Dec. Insurance FDI ▲ SBILIFE, HDFCLIFE · electricity bill ▼ IEX · today not sitting · Sansad TV speech-to-text armed from 1 Dec">
   <div class="p1"><span class="bd">PARLIAMENT</span><span class="it">Winter Session bills</span><span class="stg P">PENDING</span><span class="dt C" title="CONFIRMED date">1 Dec</span><span class="ss">8 sess.</span></div>
@@ -929,36 +957,37 @@ a.bu:hover{filter:brightness(1.2)}
 </div><div class="pr" data-live="0" data-mine="0" data-den="0" data-secs="pharma" data-nm="USFDA" title="LUPIN ▲ EIR received 09:21 (filing) · AUROPHARMA ▼ outcome pending, no date · an OAI / warning letter is usually −3% to −8% on that share">
   <div class="p1"><span class="bd">USFDA</span><span class="it">Inspections</span><span class="stg N">NOTIFIED</span><span class="dt C" title="CONFIRMED date">09:21</span><span class="ss">today</span></div>
   
-</div><div class="wlr" data-nm="07:00 watch list"><span class="sh-lb">07:00 watch list</span>Parliament <b>not sitting</b> · regulator meetings <b>none</b> · open papers <b>SEBI MTF</b> (to 28 Nov), <b>IRDAI</b> (to 7 Dec) · courts: none · sansad.in STALE 14m: no effect</div><div class="empty" id="ple"></div></div><div class="vsb" data-t="plb" title="drag or click to scroll"><i></i></div></div>
+</div><div class="wlr" data-nm="07:00 watch list"><span class="sh-lb">07:00 watch list</span>Parliament <b>not sitting</b> · regulators <b>no meeting</b> · open papers <b>SEBI MTF</b> (to 28 Nov), <b>IRDAI</b> (to 7 Dec) · courts: none · sansad.in STALE 14m: no effect</div><div class="wlr stg-l" data-nm="stage legend" title="how a policy item moves: a story or draft is PENDING, a published decision or draft is ANNOUNCED, it binds only when NOTIFIED (e-Gazette / circular)"><span class="sh-lb">stages</span><b>PENDING</b> → <b>ANNOUNCED</b> → <b class="nf">NOTIFIED</b><span class="wide"><span class="t3"> · </span>only NOTIFIED binds</span></div><div class="empty" id="ple"></div></div><div class="vsb" data-t="plb" title="drag or click to scroll"><i></i></div></div>
     <div class="more" data-for="plb"></div>
   </section>
 
   <section class="pn" id="dr">
     <div class="ph sh-acc-mkt"><span class="pt">DERIVATIVES · RESULTS</span><span class="pa"><span class="cnt" data-for="drb"></span><button class="nb" data-t="drb" data-d="-1" title="previous rows">▲</button><button class="nb" data-t="drb" data-d="1" title="next rows">▼</button><span class="age" title="NSE contract master 08:10 · ban list 11:40 · results calendar 11:40">11:40</span></span></div>
-    <div class="cb"><span class="chip on" data-f="all">all <span class="n">20</span></span><span class="chip" data-f="ban" title="names in ban (the row also lists > 85%)">ban <span class="n">2</span></span><span class="chip" data-f="exp" title="expiry, series, lots, holidays and ex-dates">expiry <span class="n">11</span></span><span class="chip" data-f="res">results <span class="n">3</span></span><span class="sh-c sh-c-info rs" title="RESULTS: Sep-quarter (Q2) results were due by Fri 14 Nov (SEBI LODR) - the season is over; only Sep-year-end companies and board meetings now; the Q3 season starts ~Fri 8 Jan">season over · ~8 Jan</span></div>
+    <div class="cb"><span class="chip on" data-f="all">all <span class="n">23</span></span><span class="chip" data-f="ban" title="one row: the 2 shares in ban and the 3 above 85% MWPL">ban</span><span class="chip" data-f="exp" title="this week's expiry rules + the F&amp;O calendar: expiry, series, lots, holidays, ex-dates">dates <span class="n">16</span></span><span class="chip" data-f="res" title="3 coming board meetings / results + the last results of 3 of today's movers">results <span class="n">6</span></span><span class="sh-c sh-c-info rs" title="RESULTS: Sep-quarter (Q2) results were due by Fri 14 Nov (SEBI LODR) - the season is over; only Sep-year-end companies and board meetings now; the Q3 season starts ~Fri 8 Jan">Q2 over · ~8 Jan</span></div>
     <div class="scw"><div class="pb" id="drb">
       <div class="ban" data-c="ban" data-secs="telecom banks metals gold" data-nm="BAN">
-  <div><span class="sh-c sh-c-exit" title="NSE ban list 11:40 · in ban: only close existing positions">BAN</span><a class="lk" href="share.html#IDEA" data-nm="IDEA">IDEA</a><b class="mono">97%</b><a class="lk" href="share.html#RBLBANK" data-nm="RBLBANK">RBLBANK</a><b class="mono">95%</b><span>→ <b>close only</b></span></div>
-  <div><a class="lk" href="share.html#MANAPPURAM" data-nm="MANAPPURAM">MANAPPURAM</a><span class="sh-c sh-c-held" title="your open position (F6 MY TRADES)">HELD</span><b class="mono">86%</b><span>·</span><b class="yo">can close, cannot add</b></div>
-  <div><span class="lbl">&gt; 85%</span><a class="lk" href="share.html#HINDCOPPER" data-nm="HINDCOPPER">HINDCOPPER</a><b class="mono">91%</b><a class="lk" href="share.html#SAIL" data-nm="SAIL">SAIL</a><b class="mono">88%</b><span class="t2">· MWPL ban at 95%</span></div>
-  <div><span class="t2" title="everything else is a warning you can still take">hard blocks:</span><b>ban · loss lock · stale data</b></div>
+  <div class="ln"><span class="sh-c sh-c-exit" title="NSE ban list 11:40 · in ban: only close existing positions">BAN</span><a class="lk" href="share.html#IDEA" data-nm="IDEA">IDEA</a><b class="mono">97%</b><span class="t3">·</span><a class="lk" href="share.html#RBLBANK" data-nm="RBLBANK">RBLBANK</a><b class="mono">95%</b><span>→ <b>close only</b></span></div>
+  <div class="ln"><a class="lk" href="share.html#MANAPPURAM" data-nm="MANAPPURAM">MANAPPURAM</a><span class="sh-c sh-c-held" title="your open position (F6 MY TRADES)">HELD</span><b class="mono">86%:</b><span>if it crosses <b class="mono">95%</b></span><span>you <b class="yo">can close your PUT, cannot add</b></span></div>
+  <div class="ln"><span class="bl">&gt; 85%</span><a class="lk" href="share.html#HINDCOPPER" data-nm="HINDCOPPER">HINDCOPPER</a><b class="mono">91%</b><span class="t3">·</span><a class="lk" href="share.html#SAIL" data-nm="SAIL">SAIL</a><b class="mono">88%</b><span class="t2">· ban at 95%</span></div>
+  <div class="ln"><span class="t2" title="everything else is a warning you can still take">hard blocks:</span><b>ban · loss lock · stale data</b></div>
 </div>
       <div class="xw" data-c="exp" data-nm="expiry-week rules" title="R43 rules for this week, from the NSE contract master and the results calendar">
-  <div class="x1"><span class="sh-xw">EXPIRY WEEK</span><b>Nov = Mon 23</b><span><span class="wide">(Tue 24 holiday)</span><span class="n1366">(Tue 24 hol)</span> · default <b>Dec</b><span class="wide">&nbsp;(29 Dec)</span></span></div>
-  <div>a Nov strike = <b>PHYSICAL · exit ITM before expiry day</b></div>
-  <div>Nov θ ~4x Dec · from Fri <b>no new Nov</b></div>
-  <div><span class="wn">IV CRUSH</span> buy after results, not before (SIEMENS 25 Nov)</div>
+  <div class="ln hd"><span class="sh-xw">EXPIRY WEEK</span><b>Nov = Mon 23</b><span class="t2"><span class="wide">(Tue 24 holiday)</span><span class="n1366">(Tue 24 hol)</span> · <b class="mono">3</b> sess.<span class="wide">&nbsp;incl. today</span></span></div>
+  <div class="ln"><span class="bl">default</span><span class="bc"><b>Dec</b><span class="t2">· Tue 29 Dec · <b class="mono">27</b> sess.</span></span></div>
+  <div class="ln"><span class="bl">Nov ITM</span><span class="bc"><b>PHYSICAL · exit before expiry day</b></span></div>
+  <div class="ln"><span class="bl">theta</span><span class="bc">Nov θ ~4x Dec · from Fri <b>no new Nov</b></span></div>
+  <div class="ln"><span class="bl"><span class="wn">IV CRUSH</span></span><span class="bc">buy after results, not before<span class="t2 wide">&nbsp;· SIEMENS 25 Nov</span></span></div>
 </div>
-      <div class="dg sec" data-s="r" title="Sep-quarter results were due by Fri 14 Nov (SEBI LODR)">results · season over (Q2 by 14 Nov, LODR)<span class="sub">next ~8 Jan</span></div>
+      <div class="dg sec" data-s="r" title="Sep-quarter results were due by Fri 14 Nov (SEBI LODR)">results · Q2 season over<span class="sub"><span class="wide">by 14 Nov (LODR) · </span>next ~8 Jan</span></div>
       <div class="rr" data-c="res" data-k="0" data-crush="0" data-mine="0" data-secs="it" data-nm="WIPRO board">
   <span class="wh"><span class="mono">Thu 19</span>16:30 · POST</span>
-  <div class="bd"><div class="r1"><a class="lk" href="share.html#WIPRO" data-nm="WIPRO">WIPRO</a><span class="q">board: buyback</span><span class="iv" title="ATM IV vs its own 20-day average · IV rank over 1 year">IV <b class="mono">1.12x</b> 20-d · rank 48</span></div><div class="r2">approval → next-day gap at the tender price</div></div>
+  <div class="bd"><div class="r1"><a class="lk" href="share.html#WIPRO" data-nm="WIPRO">WIPRO</a><span class="q">board: buyback</span><span class="iv" title="ATM IV vs its own 20-day average · IV rank over 1 year">IV <b class="mono">1.12x</b><span class="wide"> 20-d</span> · rank 48</span></div><div class="r2">approval → next-day gap at the tender price</div></div>
 </div><div class="rr" data-c="res" data-k="3" data-crush="1" data-mine="0" data-secs="capgoods" data-nm="SIEMENS FY26">
   <span class="wh"><span class="mono">Wed 25</span>after mkt</span>
-  <div class="bd"><div class="r1"><a class="lk" href="share.html#SIEMENS" data-nm="SIEMENS">SIEMENS</a><span class="q">FY26 annual</span><span class="iv" title="ATM IV vs its own 20-day average · IV rank over 1 year">IV <b class="mono">1.45x</b> 20-d · rank 71</span></div><div class="r2"><span class="wn">IV CRUSH RISK</span> ±3.8% implied vs 2.9% realised</div></div>
+  <div class="bd"><div class="r1"><a class="lk" href="share.html#SIEMENS" data-nm="SIEMENS">SIEMENS</a><span class="q">FY26 annual</span><span class="iv" title="ATM IV vs its own 20-day average · IV rank over 1 year">IV <b class="mono">1.45x</b><span class="wide"> 20-d</span> · rank 71</span></div><div class="r2"><span class="wn">IV CRUSH RISK</span> ±3.8% implied vs 2.9% realised</div></div>
 </div><div class="rr" data-c="res" data-k="6" data-crush="0" data-mine="0" data-secs="metals" data-nm="VEDL board">
   <span class="wh"><span class="mono">Mon 30</span>board</span>
-  <div class="bd"><div class="r1"><a class="lk" href="share.html#VEDL" data-nm="VEDL">VEDL</a><span class="q">interim dividend</span><span class="iv" title="ATM IV vs its own 20-day average · IV rank over 1 year">IV <b class="mono">0.98x</b> 20-d · rank 30</span></div><div class="r2">an announced dividend is already in the put premium</div></div>
+  <div class="bd"><div class="r1"><a class="lk" href="share.html#VEDL" data-nm="VEDL">VEDL</a><span class="q">interim dividend</span><span class="iv" title="ATM IV vs its own 20-day average · IV rank over 1 year">IV <b class="mono">0.98x</b><span class="wide"> 20-d</span> · rank 30</span></div><div class="r2">an announced dividend is already in the put premium</div></div>
 </div>
       <div class="dg rxg" data-s="x">last results · how the share reacted</div><div class="rx" data-c="res" data-nm="HINDALCO last results"><span class="wh"><span class="mono">12 Nov</span>reported</span><div class="bd"><div class="r1"><a class="lk" href="share.html#HINDALCO" data-nm="HINDALCO">HINDALCO</a><span class="q">EBITDA +8% y/y</span></div><div class="r2">gap <span class="pc dn">−1.8%</span> · day-1 range <span class="mono">3.1%</span> · day-2 <span class="pc dn">−0.6%</span></div></div></div><div class="rx" data-c="res" data-nm="TITAN last results"><span class="wh"><span class="mono">13 Nov</span>reported</span><div class="bd"><div class="r1"><a class="lk" href="share.html#TITAN" data-nm="TITAN">TITAN</a><span class="q">PAT +22% y/y</span></div><div class="r2">gap <span class="pc up">+2.4%</span> · day-1 range <span class="mono">3.6%</span> · day-2 <span class="pc dn">−1.1%</span></div></div></div><div class="rx" data-c="res" data-nm="MUTHOOTFIN last results"><span class="wh"><span class="mono">14 Nov</span>reported</span><div class="bd"><div class="r1"><a class="lk" href="share.html#MUTHOOTFIN" data-nm="MUTHOOTFIN">MUTHOOTFIN</a><span class="q">AUM +37% y/y</span></div><div class="r2">gap <span class="pc up">+3.2%</span> · day-1 range <span class="mono">4.6%</span> · day-2 <span class="pc dn">−1.4%</span></div></div></div>
       <div class="dg sec" data-s="d">F&amp;O calendar<span class="sub">contract master 08:10</span></div>
@@ -1013,12 +1042,14 @@ a.bu:hover{filter:brightness(1.2)}
     more.classList.add('on');
     const avail = scw.clientHeight, P = pb.getBoundingClientRect().top;
     let y = 0;
-    for (const r of rows(pb)) { const b = r.getBoundingClientRect(); const t = b.top - P, bt = b.bottom - P; if (bt <= 0.5) continue; if (bt <= avail + 0.5) y = Math.max(y, Math.round(bt)); else break; }
+    for (const r of rows(pb)) { const b = r.getBoundingClientRect(); const t = b.top - P, bt = b.bottom - P; if (bt <= 0.5) continue; if (bt <= avail + 0.5) { if (!r.classList.contains('dg')) y = Math.max(y, Math.round(bt)); } else break; } // a group head never ends a panel alone
     if (y < 40) y = lineCut(pb, avail);
     scw.style.flex = 'none'; scw.style.height = y + 'px'; more.style.height = (20 + avail - y) + 'px';
-    const below = rows(pb).filter(u => u.dataset.nm && u.getBoundingClientRect().top - P >= y - 2);
-    const names = below.map(u => u.dataset.nm);
-    more.innerHTML = `<b>▼ ${below.length} more:</b><span class="mn">${names.join(' · ')}</span>`;
+    // the count names only the rows the "1-8 of 10" counter counts; notes under the list (watch list, legend) are named apart
+    const below = U.filter(u => u.getBoundingClientRect().top - P >= y - 2);
+    const xtra = rows(pb).filter(u => u.dataset.nm && !U.includes(u) && u.getBoundingClientRect().top - P >= y - 2).map(u => u.dataset.nm);
+    const names = below.map(u => u.dataset.nm || '');
+    more.innerHTML = (below.length ? `<b>▼ ${below.length} more:</b><span class="mn">${names.join(' · ')}</span>` : `<b>▼ below:</b><span class="mn"></span>`) + (xtra.length ? `<span class="mx">${below.length ? '<i>also below</i>' : ''}${xtra.join(' · ')}</span>` : '');
     // keep the bar to whole names: drop names from the end until it fits, then add " · …"
     const mn = more.querySelector('.mn'); let k = names.length;
     while (k > 1 && mn.scrollWidth > mn.clientWidth + 1) { k--; mn.textContent = names.slice(0, k).join(' · ') + ' · …'; }
@@ -1079,13 +1110,13 @@ a.bu:hover{filter:brightness(1.2)}
     $$('#evb .dg').forEach(g => { let x = g.nextElementSibling, any = false; while (x && !x.classList.contains('dg') && !x.classList.contains('empty')) { if (x.style.display !== 'none') any = true; x = x.nextElementSibling; } g.style.display = any ? '' : 'none'; });
     const ee = $('#eve'); ee.innerHTML = EMPTY.ev[st.ev] || EMPTY.ev.all; ee.classList.toggle('show', n === 0);
     let m = 0; $$('#plb .pr').forEach(r => { const d = r.dataset, f = st.pol; const ok = secOk(r) && (f === 'all' || d[f] === '1'); r.style.display = ok ? '' : 'none'; if (ok) m++; });
-    $('#plb .wlr').style.display = st.pol === 'all' && st.sec === 'all' ? '' : 'none';
+    document.querySelectorAll('#plb .wlr').forEach(w => w.style.display = st.pol === 'all' && st.sec === 'all' ? '' : 'none');
     const pe = $('#ple'); pe.innerHTML = EMPTY.pol[st.pol] || EMPTY.pol.all; pe.classList.toggle('show', m === 0);
     let z = 0; const f = st.der;
     $$('#drb > *').forEach(r => { if (r.classList.contains('empty')) return; const c = r.dataset.c, dg = r.classList.contains('dg'); let ok;
-      if (dg) ok = r.dataset.s === 'd' ? ['all','exp','exd'].includes(f) : r.dataset.s === 'r' ? ['all','res','crush'].includes(f) : (f === 'all' || f === 'res');
+      if (dg) ok = r.dataset.s === 'd' ? ['all','exp'].includes(f) : r.dataset.s === 'r' ? ['all','res','crush'].includes(f) : (f === 'all' || f === 'res');
       else if (c === 'res') ok = (f === 'all' || f === 'res' || (f === 'crush' && r.dataset.crush === '1')) && (r.classList.contains('rx') ? true : secOk(r));
-      else ok = (f === 'all' || c === f) && (st.sec === 'all' || (r.dataset.secs || 'market').includes('market') || secOk(r));
+      else ok = (f === 'all' || c === f || (f === 'exp' && c !== 'ban')) && (st.sec === 'all' || (r.dataset.secs || 'market').includes('market') || secOk(r));
       r.style.display = ok ? '' : 'none'; if (ok && !dg) z++; });
     const de = $('#dre'); de.innerHTML = EMPTY.der[f] || EMPTY.der.all; de.classList.toggle('show', z === 0);
     $$('.pb').forEach(pb => pb.scrollTop = 0); fitAll();

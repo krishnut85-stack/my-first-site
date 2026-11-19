@@ -444,6 +444,7 @@ a.sh-t2:hover{background:var(--panel-3)}
 .hv-tl.hi .w{color:var(--text)}
 .hv-tl .w b{color:var(--text);font-weight:600}
 .hv-tl .w .hv-sym{font-size:13px}
+.hv-wrap .nw{white-space:nowrap}
 .hv-tl .o{display:block;color:var(--text-2);font-size:12px}
 
 /* small tables */
@@ -765,6 +766,10 @@ body.hv-all .hv-more,body.hv-all .hv-rail,body.hv-all .hv-end{display:none!impor
 .hv-wf .hd .sp{flex:1}
 .hv-wf svg{height:28px}
 @media (max-width:1499px){ .hv-pos .ph,.hv-pos .pc{padding:0 6px} .hv-wf .hd{font-size:11px} .hv-wf svg{height:22px} }
+/* fixup (f) R06 / type minimum 1.4: every share name is at least 14 px at both sizes (links and plain names); the text around it keeps its size */
+.hv-v0 b .hv-sym,.hv-v2 .hv-sym,.hv-na .hv-sym,.hv-r .fx .hv-sym,.hv-s .w .hv-sym,.hv-tl .w .hv-sym,.hv-hpop .hd b .hv-sym,.hv-sn{font-size:14px}
+.hv-sn{font-weight:600;color:var(--text)}
+@media (max-width:1499px){ .hv-v2{letter-spacing:-0.02em} }
 
 </style>
 </head>
@@ -939,7 +944,7 @@ const LIVECONN = KEYS.reduce((a, k) => a + k.conns.filter(c => !c[8]).length, 0)
 const SVC = [
   { g: 'Market engines · lists on F2 / F10' },
   ['F&amp;O MOVERS UP / DOWN / ALL', '222 shares · UP 61 · DOWN 157 <span class="hv-eq">= strip A/D ✓</span>', '8 s / 60 s', 0, '', ['sectors.html#movers', 'F2', 'open the F&amp;O MOVERS list on F2 Sectors (UP / DOWN / ALL, each share with its sector, role and build-up tag)']],
-  ['OI build-up LB / SB / SC / LU', '§BU <span class="hv-eq">of 222 · 666 futures</span><br>1 tag <span class="hv-eq">"build-up unknown"</span>: NATIONALUM (frozen OI)', '38 s / 3 min', 0, '', ['futures-oi.html#buildup', 'F10', 'open the OI BUILD-UP list on F10 Futures &amp; OI (LB / SB / SC / LU filter chips, build-up alerts)']],
+  ['OI build-up LB / SB / SC / LU', '§BU <span class="hv-eq">of 222 · 666 futures</span><br>1 tag <span class="hv-eq">"build-up unknown"</span>: <span class="nw">NATIONALUM (frozen OI)</span>', '38 s / 3 min', 0, '', ['futures-oi.html#buildup', 'F10', 'open the OI BUILD-UP list on F10 Futures &amp; OI (LB / SB / SC / LU filter chips, build-up alerts)']],
   ['F&amp;O money · BIG MONEY · tape', 'last burst 11:42:20 ANGELONE 2,300 PE · ₹ crore by sector', '8 s / 60 s', 0, '', ['futures-oi.html#money', 'F10', 'open F&amp;O MONEY, BIG MONEY and the TAPE on F10 Futures &amp; OI']],
   ['candle builder', '1-min · gaps 0 · = Kite historical 222 / 222', '20 s / 70 s'],
   ['quote sweep', 'REST on K4 · 16 s cycle · 222 F&amp;O + 1,968 other listed (sector breadth) · silent 2', '16 s / 60 s'],
@@ -1161,15 +1166,15 @@ const pos = `<section class="hv-pos sh-acc-mine" aria-label="your positions">
 const HOLDBTN = `<button class="hv-hold" data-hold title="Holding on purpose: give a reason, stop the escalation, logged (Journal ⇧F6 + 15:45 audit)">HOLDING ON PURPOSE…</button>`;
 const XROWS = [
   { k: 'X', cls: 'bad ex xr xe', dot: 'down', n: `<span class="sh-c sh-c-exit">EXIT</span> ${S('HINDALCO')} 680 PE`, chip: '', f: `${chip('down', 'NOT DONE 4m 40s')} <b>next: P1 call in 20 s</b> <span class="hv-mono">(11:44:40)</span> · acked <span class="hv-mono">11:39:52</span> ${HOLDBTN}`, xchip: 'NOT DONE 4m 40s' },
-  { k: 'X', cls: 'bad ex xr', dot: 'act', n: `<span class="sh-c sh-c-book">BOOK</span> ${S('MANAPPURAM')} 285 PE`, chip: '', f: `${chip('act', 'NOT ACKED 4m 08s')} stalled · 1 lot: book it or trail to <span class="hv-mono">286.00</span> · P2 tone every 60 s · <kbd>A</kbd>+<kbd>Enter</kbd> ack`, xchip: 'NOT ACKED 4m 08s' },
+  { k: 'X', cls: 'bad ex xr', dot: 'act', n: `<span class="sh-c sh-c-book">BOOK</span> ${S('MANAPPURAM')} 285 PE`, chip: '', f: `${chip('act', 'NOT ACKED 4m 08s')} stalled · 1 lot: book it or <span class="nw">trail to <span class="hv-mono">286.00</span></span> · P2 tone every 60 s · <span class="nw"><kbd>A</kbd>+<kbd>Enter</kbd> ack</span>`, xchip: 'NOT ACKED 4m 08s' },
 ];
 const EXC = [
   ...XROWS,
   RED ? { k: 'B', cls: 'bad ex', dot: 'down', n: 'K1 c1 · shares + indices', chip: chip('down', 'DOWN 14 s'), f: '<b>SAFE MODE</b>: no calls · stops judged on share price → check Kite' } : null,
-  { k: 'B', cls: 'bad ex', dot: 'stale', sec: 'OIL', n: `${S('IOC')} <small>Oil marketing</small>`, chip: chip('stale', 'STALE 1m 54s'), f: '<b>blocks</b> calls on IOC + Oil rotation · no tick since 11:42:26 · unblocks after 60 s fresh' },
+  { k: 'B', cls: 'bad ex', dot: 'stale', sec: 'OIL', n: `${S('IOC')} <small>Oil marketing</small>`, chip: chip('stale', 'STALE 1m 54s'), f: '<b>blocks</b> calls on <span class="hv-sn">IOC</span> + Oil rotation · no tick since 11:42:26 · unblocks after 60 s fresh' },
   { k: 'L', cls: 'ex', dot: 'lim', n: 'K3 + K3 c3', chip: chip('lim', 'LIMITED ×2'), f: '<b>c3 failed over</b> to K4 c3 11:42:54 · watching' },
   { k: 'L', cls: 'ex', dot: 'lim', sec: 'BRK', n: 'basket watch', chip: chip('lim', 'LIMITED'), f: '12 s vs 10 s target · silent card · 1st sound +42 s' },
-  { k: 'L', cls: 'ex', dot: 'lim', sec: 'OIL', n: 'rotation 15M / 30M / 1H', chip: chip('lim', 'LIMITED'), f: 'Oil marketing INCOMPLETE (IOC) · 21 sectors fresh' },
+  { k: 'L', cls: 'ex', dot: 'lim', sec: 'OIL', n: 'rotation 15M / 30M / 1H', chip: chip('lim', 'LIMITED'), f: 'Oil marketing INCOMPLETE (<span class="hv-sn">IOC</span>) · 21 sectors fresh' },
   { k: 'W', cls: 'ex', dot: 'ring', sec: 'MET', n: `${S('NATIONALUM')} <small>Metals</small>`, chip: chip('wn', 'WARNING'), f: 'fut OI frozen 4m 18s · tag <b>"build-up unknown"</b> · option calls allowed' },
   { k: 'W', cls: 'ex', dot: 'ring', n: `rings ${NRING} of 6 used`, chip: chip('wn', 'WARNING'), f: 'GO NOW + your exits <b>still ring</b> · GET READY now silent' },
 ].filter(Boolean);
@@ -1266,7 +1271,7 @@ const sndBody =
   `<div class="hv-s" data-sec="BRK"><span class="tt">11:42:08</span><span class="w"><b>BASKET SHOCK</b> BROKERS · news not found yet</span><span class="tone">silent card</span><span class="x">price-only card did not ring (rule until today) · 1st sound +42 s · from 20 Nov it rings GET READY</span></div>` +
   gh('Alert health') +
   row({ n: 'time to ack', v: '14 s / 30 s', f: 'median today (n=8) · 20-day median 19 s · P1 acks today 0' }) +
-  row({ n: 'unacked now', v: 'P1 0 · P2 1', f: 'P2 = BOOK MANAPPURAM 11:40:12 · P1 escalates: call, repeat 5 min, 15 min' }) +
+  row({ n: 'unacked now', v: 'P1 0 · P2 1', f: 'P2 = BOOK <span class="hv-sn">MANAPPURAM</span> 11:40:12 · P1 escalates: call, repeat 5 min, 15 min' }) +
   row({ n: 'chattering', v: '0', f: 're-fired within 10 min: 0 · a repeating exit tone is one alert' }) +
   row({ n: 'double rings', v: '0', f: 'one sound player · old alarm layer off' }) +
   row({ n: 'owner-only delivery', v: 'OK 08:45', f: 'decisions bot → 1 chat (your id) · groups 0 · forwarding off · phone 1 device' }) +
@@ -1274,14 +1279,14 @@ const sndBody =
   row({ n: 'routes', v: '', f: 'health alarms → system bot + phone, once per problem + "recovered" · never the decisions channel' });
 
 const TL = [
-  ['11:41:56', `move began: ANGELONE −1% first · PE 58.40`, '0 s'],
-  ['11:42:04', `rule met: 3rd share (CDSL) −1% inside 60 s · volume 4.1×`, '+8 s'],
-  ['11:42:08', `<b>BASKET SHOCK</b> card, silent · ANGELONE −1.1 · BSE −1.2 · CDSL −1.0 · MCX −0.6% · PE 61.10`, '+12 s', 1],
+  ['11:41:56', `move began: ANGELONE <span class="nw">−1% first</span><span class="o nw">2,300 PE 94.90 before → 104.30</span>`, '0 s'],
+  ['11:42:04', `rule met: 3rd share (CDSL) <span class="nw">−1% inside 60 s</span> · <span class="nw">volume 4.1×</span>`, '+8 s'],
+  ['11:42:08', `<b>BASKET SHOCK</b> card, silent · ANGELONE −1.1 · BSE −1.2 · CDSL −1.0 · MCX −0.6% · <span class="nw">PE 105.90</span>`, '+12 s', 1],
   ['11:42:31', `1st source: CNBC-TV18 speech-to-text (aired 11:42:17)`, '+35 s'],
-  ['11:42:38', `<b>GET READY</b> ANGELONE 2,300 PE ♪ · −1.8% · PE 64.90 · spread 1.6% (20d 0.8%) · depth 0.4 s · IV 41 → 44`, '+42 s', 1],
+  ['11:42:38', `<b>GET READY</b> ANGELONE <span class="nw">2,300 PE</span> ♪ · −1.8% · <span class="nw">PE 117.50</span> · <span class="nw">spread 1.6% (20d 0.8%)</span> · depth 0.4 s · <span class="nw">IV 41 → 43</span>`, '+42 s', 1],
   ['11:42:44', `ET live blog · 11:42:59 Moneycontrol (+63 s)`, '+48 s'],
   ['11:44:12', `SEBI site checked: no item yet · analyst woken`, ''],
-  ['11:44:20', `now: ANGELONE −2.10% · PE 66.20 · spread 0.8% · tradable: limit at mid`, ''],
+  ['11:44:20', `now: ANGELONE −2.10% · <span class="nw">PE 118.40/119.30</span> · spread 0.8% · tradable: limit at mid`, ''],
 ];
 const grid3 = (cells, cols) => `<div style="display:grid;grid-template-columns:${cols};column-gap:6px;padding:3px 9px 3px 9px;border-bottom:1px solid var(--line);font-size:12px;line-height:16px;color:var(--text-2);align-items:baseline">${cells}</div>`;
 const tr = (a, b, c, d, bold) => grid3(`<span${bold ? ' class="hv-t1" style="font-weight:600"' : ''}>${a}</span><span class="hv-mono" style="text-align:right${bold ? ';color:var(--text)' : ''}">${b}</span><span class="hv-mono" style="text-align:right${bold ? ';color:var(--text)' : ''}">${c}</span><span class="hv-mono" style="text-align:right;color:var(--text-3)">${d}</span>`, 'minmax(0,1fr) 50px 50px 48px');
@@ -1316,7 +1321,7 @@ const NNEWS = 8, NFILES = SRCROWS.length - NNEWS - 1;
 const RECON = [['lot sizes', ''], ['expiry dates', ''], ['strike lists', '+2 at 09:41'], ['tick size', ''], ['prev close', ''], ['start-of-day OI', '≤ 0.2%']];
 const xcFlag = gh('Flagged now', '(2)') +
   row({ dot: 'ring', sec: 'OIL MET', n: 'stream vs REST sweep', v: '11:44:20', f: `2 disagree: ${S('IOC')}, ${S('NATIONALUM')} · both in EXCEPTIONS` }) +
-  row({ dot: 'ring', sec: 'BRK', n: 'spread blow-out vs 20-day', v: '11:42:38', f: `${S('ANGELONE')} 2,300 PE 1.6% vs 0.8% at 11:42 · now 0.8%` }) +
+  row({ dot: 'ring', sec: 'BRK', n: 'spread blow-out vs 20-day', v: '11:42:38', f: `${S('ANGELONE')} <span class="nw">2,300 PE</span> <span class="nw">1.6% vs 0.8%</span> at 11:42 · <span class="nw">now 0.8%</span>` }) +
   '';
 const xcRest = `<div class="hv-gh" id="xg-ck">Live cross-checks<span>(8) · all pass</span></div>` +
   row({ n: 'P&amp;L = Kite positions − costs', v: '11:44:18', tip: 'MANAPPURAM (14.20 − 13.25) × 3,000 = +₹2,850 − ₹420 = +₹2,430 · HINDALCO (14.50 − 16.40) × 1,400 = −₹2,660 − ₹420 = −₹3,080 · costs ₹420 a trade = charges (₹125 / ₹86, the ONE charges table) + est. exit slippage (₹295 / ₹334)', f: '<span class="hv-eq">gross +₹190 − costs ₹840 = −₹650</span> = strip ✓ · costs = charges ₹211 + est. slippage ₹629 · loss lock uses the same net ✓' }) +
@@ -1330,7 +1335,7 @@ const xcRest = `<div class="hv-gh" id="xg-ck">Live cross-checks<span>(8) · all 
   gh('Kite vs NSE files', '08:30 · 10:30 · next 12:30') +
   `<div class="hv-rc">${RECON.map(r => `<span title="Kite vs NSE: ${r[0]} agree for all 222 F&amp;O shares"><b>✓</b>${r[0]}${r[1] ? ' <span class="hv-mono hv-t1">' + r[1] + '</span>' : ''}</span>`).join('')}</div><div class="hv-rcs">222 of 222 shares agree · <b>shares blocked: 0</b></div>` +
   gh('Detectors · 20-day replay proof', 'on ⇧F10 Replay') +
-  row({ n: 'basket watch', v: 'tuned 18 Nov', f: 'fired 9 · true 7 · false 2 · missed 0 · 18 Nov ANGELONE replay: +12 s' }) +
+  row({ n: 'basket watch', v: 'tuned 18 Nov', f: 'fired 9 · true 7 · false 2 · missed 0 · 18 Nov <span class="hv-sn">ANGELONE</span> replay: +12 s' }) +
   row({ n: 'stream-vs-REST stale', v: 'tuned 12 Nov', f: 'flagged 41 · true 39 · false 2' }) +
   row({ n: 'frozen-OI rule', v: 'tuned 19 Nov', f: 'n=23 · true 19 · false 4 → now a warning, not a block' }) +
   row({ n: '60 s unblock rule', v: 'tuned 10 Nov', f: '31 unblocks · stale again within 5 min: 1' }) +

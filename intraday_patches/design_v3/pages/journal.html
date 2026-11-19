@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GIR · Journal &amp; Edge</title>
-<!-- GIR v3 · Shift+F6 Journal, weekly review & edge (IA P13) · round 3. Shell copied verbatim from v3/shell.html; only the body class
+<!-- GIR v3 · Shift+F6 Journal, weekly review & edge (IA P13) · final pass. Shell copied verbatim from v3/shell.html; only the body class
      (page-journal) and the state values of SHELL.md section 6 "After 15:30" differ (clock 16:12:40, REVIEW · day review 16:00).
      Keys on this page: J / K move trade · Enter share page · 1-4 grade · E note · R pick next week's rule · X tax CSV · Esc close.
      Hashes: #ask ASK drawer · #help help drawer · #search the / suggestions · #session 09:15-15:10 state (performance greyed) · #t45 #t47 #t49 ... another trade. -->
@@ -85,6 +85,7 @@ body{background:var(--bg)}
 a{color:inherit;text-decoration:none}
 .n{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
 .up{color:var(--up)} .dn{color:var(--down)}
+.nwr{white-space:nowrap}
 kbd{font-family:var(--mono);font-size:11px;color:var(--text-2);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:3px;padding:0 4px;line-height:14px;display:inline-block;white-space:nowrap}
 :focus-visible{outline:1px solid var(--text);outline-offset:2px}
 
@@ -284,7 +285,7 @@ a.sh-t2:hover{background:var(--panel-3)}
 
 /* ===================== PAGE CSS (journal) ===================== */
 /* journal page (round 1) - page classes start with jn-, rv-, wk-, eg- or are generic panel classes.
-   Shell: nothing redefined; three page-scoped 1366 fixes at the end (marked SHELL FIX), proposed for shellwork/build.js. */
+   Shell: copied verbatim from v3/shell.html by build.js; nothing redefined, no page-scoped shell fixes. */
 .jn-wrap{position:absolute;left:12px;right:12px;top:8px;bottom:8px;display:flex;flex-direction:column;gap:6px}
 .jn-top{height:28px;flex:none;display:flex;align-items:center;gap:9px;white-space:nowrap;min-width:0}
 .jn-ttl{display:flex;align-items:center;gap:8px;flex:none}
@@ -338,9 +339,9 @@ kbd.sk{background:var(--text-2);color:var(--bg);border-color:var(--text-2);font-
    every browser / PWA window and in screenshots; native bars are hidden to avoid two bars. Bodies keep 10 px free on the right. */
 .pb{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding-right:10px;position:relative}
 .pb::-webkit-scrollbar{width:0;height:0}
-.rail{position:absolute;right:2px;width:7px;z-index:6;background:#232931;border:1px solid var(--line-2);border-radius:4px;cursor:pointer;box-sizing:border-box}
-.rail i{position:absolute;left:0;right:0;background:#7C8796;border-radius:3px;min-height:14px}
-.rail.full i{background:#3A424D}
+.rail{position:absolute;right:2px;width:7px;z-index:6;background:var(--panel-3);border:1px solid var(--line-2);border-radius:4px;cursor:pointer;box-sizing:border-box}
+.rail i{position:absolute;left:0;right:0;background:var(--text-3);border-radius:3px;min-height:14px}
+.rail.full i{background:var(--line-2)}
 /* "more below" tag: names the next section that is out of view, so nothing looks sliced (rows fade instead) */
 .more{position:absolute;right:12px;bottom:3px;z-index:7;display:none;align-items:center;gap:4px;height:17px;padding:0 6px;border:1px solid var(--line-2);border-radius:3px;background:var(--panel-2);font-size:11px;color:var(--text-2);white-space:nowrap;pointer-events:none;max-width:calc(100% - 30px);overflow:hidden;text-overflow:ellipsis}
 .more.on{display:inline-flex}
@@ -365,7 +366,7 @@ kbd.sk{background:var(--text-2);color:var(--bg);border-color:var(--text-2);font-
 .role{display:inline-flex;align-items:center;height:16px;padding:0 4px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.03em;border:1px solid var(--line-2);color:var(--text-2);line-height:1;flex:none;white-space:nowrap}
 .act{color:var(--action)}
 .mut{color:var(--text-3)}
-.est{color:#9AA2AE;border:1px dashed var(--stale);padding:0 3px 0 13px;border-radius:2px;font-size:11px;white-space:nowrap;position:relative}
+.est{color:var(--text-3);border:1px dashed var(--stale);padding:0 3px 0 13px;border-radius:2px;font-size:11px;white-space:nowrap;position:relative}
 .est::before,.tx .pend::before{content:"";position:absolute;left:3px;top:50%;width:7px;height:7px;margin-top:-4px;background:repeating-linear-gradient(135deg,rgba(160,168,180,.75) 0 2px,transparent 2px 4px)}
 
 /* grade chips: neutral words (green / red stay for P&L only): EARNED bright outline, GOOD LOSS grey, LUCKY amber dashed, LESSON amber filled */
@@ -386,7 +387,7 @@ kbd.sk{background:var(--text-2);color:var(--bg);border-color:var(--text-2);font-
 .tl-day .lk{color:var(--text);text-transform:none;letter-spacing:0;font-weight:700;border:2px solid var(--text);border-radius:3px;padding:0 3px;line-height:12px;font-size:11px}
 .tl-day .lkw{flex-basis:100%;text-transform:none;letter-spacing:0;font-weight:500;color:var(--text-2);white-space:normal;line-height:14px}
 .tr{padding:4px 6px 4px 9px;border-bottom:1px solid var(--line);cursor:pointer}
-.tr:hover{background:#161A20}
+.tr:hover{background:var(--panel-3)}
 .tr.sel{background:var(--panel-3);box-shadow:inset 2px 0 0 var(--text)}
 .tr .a{display:flex;align-items:center;gap:5px;white-space:nowrap;min-width:0}
 .tr .no{font-family:var(--mono);font-size:11px;color:var(--text-3);flex:none}
@@ -403,8 +404,8 @@ kbd.sk{background:var(--text-2);color:var(--bg);border-color:var(--text-2);font-
 .tr .c .w{color:var(--text-2);overflow:hidden;text-overflow:ellipsis}
 .tr .c .w.bad{color:var(--action);font-weight:600}
 .tr .b .role{height:16px}
-.tl-old{display:flex;align-items:center;gap:6px;padding:4px 8px 4px 9px;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-2);white-space:nowrap;cursor:pointer;background:#10131A}
-.tl-old:hover{background:#161A20}
+.tl-old{display:flex;align-items:center;gap:6px;padding:4px 8px 4px 9px;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-2);white-space:nowrap;cursor:pointer;background:var(--panel-2)}
+.tl-old:hover{background:var(--panel-3)}
 .tl-old .sp{flex:1}
 .tl-old .v{font-family:var(--mono);font-weight:600}
 .tl-old .tog{color:var(--text-3);width:9px}
@@ -412,7 +413,7 @@ kbd.sk{background:var(--text-2);color:var(--bg);border-color:var(--text-2);font-
 .to .a{display:flex;align-items:center;gap:5px;min-width:0}
 .to .a + .a{margin-top:2px}
 .to .tg{font-size:11px;color:var(--action);font-weight:600}
-.to:hover{background:#161A20}
+.to:hover{background:var(--panel-3)}
 .to.sel{background:var(--panel-3)}
 .to .no{font-family:var(--mono);font-size:11px;color:var(--text-3)}
 .to .sym{font-size:13px}
@@ -519,7 +520,7 @@ kbd.sk{background:var(--text-2);color:var(--bg);border-color:var(--text-2);font-
 .pvd td.k{text-align:left;padding-left:0;font-family:var(--sans);letter-spacing:0;color:var(--text-2)}
 .pvd td.k.stop{color:var(--danger);font-weight:700}
 .pvd td small{display:block;font-family:var(--sans);font-size:11px;color:var(--text-3);letter-spacing:0;line-height:13px}
-.pvd td.did{background:#0F1216}
+.pvd td.did{background:var(--panel-2)}
 .pvd-f{margin-top:3px;font-size:11px;line-height:15px;color:var(--text-3)}
 .pvd-f b{color:var(--text-2);font-weight:600}
 .pvd-f .m{color:var(--text-2)}
@@ -611,7 +612,7 @@ kbd.sk{background:var(--text-2);color:var(--bg);border-color:var(--text-2);font-
 .rule .now{font-size:12px;line-height:16px;color:var(--text-2);margin-bottom:4px}
 .rule .now b{color:var(--text)}
 .ro{display:grid;grid-template-columns:20px minmax(0,1fr) auto;column-gap:6px;align-items:start;padding:3px 5px;border:1px solid var(--line);border-radius:3px;margin-bottom:4px;font-size:12px;line-height:16px;color:var(--text);cursor:pointer}
-.ro:hover{background:#161A20}
+.ro:hover{background:var(--panel-3)}
 .ro.sug{border-color:var(--action-line);background:var(--action-bg)}
 .ro.pk{border:2px solid var(--text)}
 .ro .i{width:18px;height:18px;border:1px solid var(--line-2);border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text-2)}
@@ -643,7 +644,7 @@ kbd.sk{background:var(--text-2);color:var(--bg);border-color:var(--text-2);font-
 .byr th:first-child{text-align:left;padding-left:9px}
 .byr td{font-size:12px;line-height:15px;padding:2px 6px 2px 4px;text-align:right;color:var(--text-2);border-top:1px solid var(--line);font-family:var(--mono);letter-spacing:-0.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .byr td:first-child{text-align:left;padding-left:9px;font-family:var(--sans);letter-spacing:0;color:var(--text);font-weight:600;cursor:pointer}
-.byr tr.dd td{background:#0F1216;font-family:var(--sans);font-size:11px;color:var(--text-3);text-align:left;white-space:normal;line-height:14px;font-weight:400;cursor:default}
+.byr tr.dd td{background:var(--panel-2);font-family:var(--sans);font-size:11px;color:var(--text-3);text-align:left;white-space:normal;line-height:14px;font-weight:400;cursor:default}
 .byr .tog{display:inline-block;width:10px;color:var(--text-3)}
 .byr .tg{font-size:11px;color:var(--text-3);font-family:var(--sans)}
 
@@ -661,7 +662,7 @@ kbd.sk{background:var(--text-2);color:var(--bg);border-color:var(--text-2);font-
 .tx > span:first-child{overflow:hidden;text-overflow:ellipsis}
 .tx .m{text-align:right;color:var(--text)}
 .tx.tt{border-top:1px solid var(--line-2);font-weight:600;color:var(--text)}
-.tx .pend{white-space:nowrap;color:#9AA2AE;border:1px dashed var(--stale);padding:0 4px 0 14px;border-radius:2px;position:relative}
+.tx .pend{white-space:nowrap;color:var(--text-3);border:1px dashed var(--stale);padding:0 4px 0 14px;border-radius:2px;position:relative}
 .csv{display:inline-flex;align-items:center;height:18px;padding:0 6px;border:1px solid var(--line-2);border-radius:3px;font-size:11px;font-weight:600;color:var(--text-2);background:none;cursor:pointer;font-family:var(--sans)}
 
 /* ---------- drawers: ASK snaps to the left edge of column C (covers C + D completely); help the same ---------- */
@@ -748,6 +749,138 @@ body.insession .perf .ins-note b{color:var(--text);font-size:13px}
 @media (max-width:1499px){ .tl.w1600b{display:none!important} #pD{height:calc(69% - 4px)} }
 svg text.snapcut{visibility:hidden}
 
+/* =====================================================================================================================
+   FINAL PASS (19 Nov) - hero band, coloured CE / PE chips, the card as tokens, one why line (R44), R49 basis labels
+   ===================================================================================================================== */
+/* hero: the day's one answer, the day's P&L picture and the week (conference 1.3 / 1.5; R45 R46 R48) */
+.jn-hero{height:64px;flex:none;display:flex;align-items:stretch;background:var(--panel);border:1px solid var(--line);border-radius:4px;overflow:hidden;min-width:0}
+.jn-hero .hb{display:flex;flex-direction:column;justify-content:center;gap:1px;padding:0 14px;border-left:1px solid var(--line);min-width:0;flex:none}
+.jn-hero .hb:first-child{border-left:0;padding-left:15px}
+.jn-hero .lb{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);line-height:13px;white-space:nowrap}
+.jn-hero .lb .sp{flex:1}
+.jn-hero .s{font-size:12px;line-height:15px;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jn-hero .s .m{color:var(--text)}
+.jn-hero .hv{width:250px}
+.jn-hero .hv .v{font-size:21px;line-height:26px;font-weight:800;letter-spacing:.03em;color:var(--text)}
+.jn-hero .hp{width:232px}
+.jn-hero .hp .big{display:flex;align-items:baseline;gap:8px;white-space:nowrap}
+.jn-hero .hp .big b:first-child{font-size:26px;line-height:29px;font-weight:700}
+.jn-hero .hp .big b + b{font-size:15px;font-weight:700}
+.jn-hero .hc{flex:1 1 auto;min-width:300px}
+.jn-hero .hw{width:252px}
+.jn-hero .hw .lb b{font-size:12px;letter-spacing:-0.02em;text-transform:none}
+.jn-hero .ht{width:286px;background:var(--info-bg);box-shadow:inset 3px 0 0 var(--info)}
+.jn-hero .ht b{font-size:13px;line-height:17px;color:var(--text);font-weight:700;white-space:normal}
+.jn-hero .ht a{color:var(--text-2)} .jn-hero .ht a:hover{color:var(--text)}
+.jn-hero .ht kbd{line-height:12px}
+.hsv{display:block;width:100%;height:44px;margin-top:2px;overflow:visible}
+.hsv text{font-family:var(--mono);font-size:11px;letter-spacing:-0.02em}
+.hsv text.sa{font-family:var(--sans);letter-spacing:0}
+.lg2{display:inline-flex;align-items:center;gap:5px;text-transform:none;letter-spacing:0;font-weight:500}
+.lg2 i{display:inline-block;width:10px;height:3px;border-radius:1px;margin-left:4px}
+.lg2 i.u{background:var(--up)} .lg2 i.d{background:var(--down)}
+.lg2 i.c{height:8px;background:repeating-linear-gradient(135deg,rgba(107,115,128,.75) 0 2px,transparent 2px 4px)}
+
+/* CE / PE in colour (1.5): CE green, PE red - in the list, the review head and the not-taken rows */
+.cp.pe,.cpx.pe{color:var(--down);background:var(--down-bg);box-shadow:inset 0 0 0 1px var(--down-line)}
+.cp.ce,.cpx.ce{color:var(--up);background:var(--up-bg);box-shadow:inset 0 0 0 1px var(--up-line)}
+.cpx{display:inline-flex;align-items:center;height:16px;padding:0 4px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.04em;line-height:1;flex:none}
+.dv .nh .mut{font-family:var(--mono);font-size:12px;color:var(--text-2)}
+.dv .nh .sym + .cpx{margin-left:2px}
+
+/* R49: the basis of every sector move (index or all listed shares, breadth over all shares and over F&O) */
+.bs{font-size:11px;color:var(--text-3);font-weight:400;white-space:nowrap}
+
+/* the card as tokens: head chips · tokens · the hold rule on its own line · verdict at the right */
+.said2{display:flex;flex-direction:column;gap:3px}
+.said2 .shd{display:flex;align-items:center;gap:6px;white-space:nowrap;min-width:0}
+.said2 .shd .sh-c{height:18px;font-size:11px;padding:0 5px}
+.said2 .shd .sy{font-size:14px;font-weight:700;color:var(--text)}
+.said2 .shd .ck{font-size:13px;color:var(--text);font-weight:600}
+.said2 .shd .sp{flex:1}
+.said2 .vd{font-size:11px;font-weight:700;letter-spacing:.03em;color:var(--text);border:1px solid var(--text-3);border-radius:3px;padding:0 5px;line-height:16px}
+.said2 .vd.bad{color:var(--action);border-color:var(--action-line);background:var(--action-bg)}
+.said2 .tks{display:flex;flex-wrap:wrap;gap:2px 0;font-size:12px;line-height:17px;color:var(--text-2)}
+.said2 .tk{white-space:nowrap}
+.said2 .tk + .tk::before{content:"·";color:var(--text-3);margin:0 6px}
+.said2 .tk i{font-style:normal;color:var(--text-3)}
+.said2 .tk b{font-family:var(--mono);font-weight:600;color:var(--text);letter-spacing:-0.02em}
+.said2 .qt{font-size:12px;line-height:16px;color:var(--text-2);border-left:2px solid var(--line-2);padding-left:7px}
+.said2 .qt b{color:var(--text);font-weight:600}
+
+/* ONE why line (R44) + the other stories of that minute behind a click */
+.why1{display:flex;align-items:baseline;gap:7px;white-space:nowrap;min-width:0;font-size:12px;line-height:18px;color:var(--text-2)}
+.why1 .t{font-family:var(--mono);font-size:11px;color:var(--text-3);flex:none}
+.why1 .src{font-size:11px;color:var(--info);flex:none}
+.why1 .h{color:var(--text);min-width:0;overflow:hidden;text-overflow:ellipsis;flex:1}
+.stb{flex:none;height:18px;display:inline-flex;align-items:center;padding:0 6px;border:1px solid var(--line-2);border-radius:3px;background:none;color:var(--text-2);font:600 11px var(--sans);cursor:pointer;margin-right:2px}
+.stb:hover{background:var(--panel-3);color:var(--text)}
+.nwl{margin-top:3px;border-top:1px dashed var(--line-2);padding-top:2px}
+.nwl .nw{grid-template-columns:36px 92px minmax(0,1fr) 30px!important}
+.nwl .nw .src{color:var(--info)}
+.nwn{font-size:11px;color:var(--text-3);line-height:15px;margin-top:2px}
+.nwn a{color:var(--info)}
+
+/* the 18 Nov miss as a time list */
+.tln{display:grid;grid-template-columns:58px minmax(0,1fr);column-gap:8px;row-gap:2px;background:var(--info-bg);border-left:2px solid var(--info-line);padding:4px 6px 4px 8px}
+.tln .t{font-family:var(--mono);font-size:11px;color:var(--text-3);line-height:17px}
+.tln .t.fx{color:var(--up);font-family:var(--sans);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.tln b{font-family:var(--sans);letter-spacing:0}
+
+/* tax ledger: the contract-note lines under one head */
+.tx.hd{color:var(--text-3);font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border-top:1px solid var(--line);margin-top:2px}
+
+@media (max-width:1499px){
+  .jn-hero{height:56px}
+  .jn-hero .hb{padding:0 10px}
+  .jn-hero .hb:first-child{padding-left:11px}
+  .jn-hero .hv{width:196px} .jn-hero .hv .v{font-size:19px;line-height:23px}
+  .jn-hero .hp{width:178px} .jn-hero .hp .big b:first-child{font-size:24px;line-height:27px} .jn-hero .hp .big b + b{font-size:13px}
+  .jn-hero .hp .big{gap:6px}
+  .jn-hero .hw{width:200px}
+  .jn-hero .ht{width:236px}
+  .jn-hero .ht b{font-size:12px;line-height:15px}
+  .jn-hero .s{font-size:11px;line-height:14px}
+  .hsv{height:38px;margin-top:1px}
+  .jn-hero .hc .lg2{display:none}
+  .why1{gap:5px}
+  .said2 .tks{font-size:11.5px}
+}
+.said2 .mt{font-size:11px;color:var(--text-3);white-space:nowrap}
+.said2 .mt b{color:var(--text-2);font-weight:600}
+.jn-hero .s.w1600b{display:block}
+.jn-hero .hp .s .m{font-weight:600}
+@media (max-width:1499px){
+  .jn-hero .s.w1600b{display:none!important}
+  #pD{height:calc(62% - 4px)!important}
+  .jn-hero .hp{width:196px}
+  .jn-hero .hv{width:200px}
+}
+.pvd-f{display:flex;flex-wrap:wrap;align-items:center;gap:3px 8px}
+.pvd-f .pvs{font-size:11px;color:var(--text-2)} .pvd-f .pvs b{color:var(--text)}
+.pvd-f .pvx{flex-basis:100%;border-top:1px dashed var(--line-2);padding-top:2px}
+.jn-hero .ht b{margin-top:1px}
+@media (max-width:1499px){
+  .jn-hero .hp{width:206px}
+  .jn-hero .hv{width:188px}
+  .jn-hero .hp .s{font-size:11px}
+}
+@media (max-width:1499px){
+  .pvd td{padding-top:1px;padding-bottom:1px}
+  .rv-chain{line-height:15px}
+  .rv-head{padding:5px 0 5px 8px}
+  .rv-sec{padding:4px 0 5px 8px}
+  .lg{gap:1px 7px}
+}
+.jn-hero .lb .u{text-transform:none;letter-spacing:0;font-weight:500}
+@media (max-width:1499px){ .jn-hero .hp{width:214px} .jn-hero .ht{width:226px} }
+.said2 .shd{flex-wrap:wrap;row-gap:3px}
+.why1{align-items:flex-start}
+.why1 .h{white-space:normal;overflow:visible;line-height:17px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.why1 .t,.why1 .src,.why1 .rv-h{line-height:17px}
+.wf .r .bar{overflow:hidden}
+body.insession .jn-hero .hp,body.insession .jn-hero .hc,body.insession .jn-hero .hw,body.insession .jn-hero .hv{opacity:.18;filter:grayscale(1)}
+
 </style>
 </head>
 <body class="page-journal">
@@ -811,7 +944,7 @@ svg text.snapcut{visibility:hidden}
   <span class="sh-pt" title="Week to date (Mon 16 Nov to today) in rupees, net of costs, today included. 1R = ₹5,000"><span class="sh-lb">week</span><span class="n up">+₹1,282</span><span class="n up" style="font-size:12px">+0.26R</span></span>
   <span class="sh-pt" title="November to date in rupees, net of costs, today included. 1R = ₹5,000"><span class="sh-lb">month</span><span class="n up">+₹11,082</span><span class="n up" style="font-size:12px">+2.22R</span></span>
   <span class="sh-pt" title="Day loss lock at −2% = −₹10,000 (also: 2 losses in a row, weekly −6%). 19 Nov: not hit, day closed +₹5,387. Last lock: 18 Nov 11:31 - 2 losses in a row. Resets 09:00."><span class="sh-lb sh-wide">loss lock</span><span class="sh-lb sh-n1366">lock</span><span class="n" style="color:var(--text);font-weight:600">₹10,000</span><span>left</span><span class="sh-meter"><i style="width:0%"></i></span></span>
-  <span class="sh-pt" style="border-right:0" title="AI spend today vs the $20 daily cap; by model on Scorecard (Shift+F8)"><span class="sh-lb">AI</span><span class="n" style="color:var(--text)">$7.72</span><span>of $20</span><span class="sh-meter sh-wide"><i style="width:39%"></i></span></span>
+  <span class="sh-pt" style="border-right:0" title="AI spend today vs the $20 daily cap; by model on Scorecard (Shift+F8)"><span class="sh-lb">AI</span><span class="n" style="color:var(--text)">$7.69</span><span>of $20</span><span class="sh-meter sh-wide"><i style="width:38%"></i></span></span>
 </a>
 
 <!-- R03 TAB BAR - one list (REQUIREMENTS section D). Row 1 = plain F-keys, row 2 = SHIFT + F-keys (filled ⇧ keycaps). No key twice. -->
@@ -888,11 +1021,19 @@ svg text.snapcut{visibility:hidden}
     <button class="jn-help" id="helpBtn" title="? - what the grades, tags, R and gates mean · this page is silent">?</button>
   </div>
 
+  <section class="jn-hero sh-acc-mine" id="hero" aria-label="The day's answer">
+    <div class="hb hv"><span class="lb">day verdict · Thu 19 Nov</span><b class="v">CLEAN DAY</b><span class="s">3 of 3 plans kept · 0 breaks<span class="w1600"> · flat ✓</span></span></div>
+    <div class="hb hp"><span class="lb"><span>today · net of <span id="hChg">₹298</span><span class="w1600"> charges</span></span></span><span class="big"><b class="m" id="hNet">+₹5,387</b><b class="m" id="hR">+1.08R</b></span><span class="s" id="hSub"></span></div>
+    <div class="hb hc"><span class="lb"><span>day P&amp;L · open + realised, net of costs</span><span class="sp"></span><span class="lg2"><i class="u"></i>won <i class="d"></i>lost <i class="c"></i>cooling 11:45-12:05</span></span><svg id="dayc" class="hsv" aria-label="the day's P&amp;L curve 09:15-15:30 with the three trades"></svg></div>
+    <div class="hb hw"><span class="lb" id="hWk">week</span><svg id="wkb" class="hsv" aria-label="the week's P&amp;L by day"></svg></div>
+    <div class="hb ht"><span class="lb"><span>tomorrow<span class="w1600"> · today's lesson</span></span><span class="sp"></span><a href="morning.html" title="Shift+F1 Morning checklist carries it"><kbd class="sk">⇧F1</kbd></a></span><b title="checked by code before any GO NOW">Copper PUT only while copper still falls at entry</b></div>
+  </section>
+
   <div class="jn-grid">
     <!-- ============ A: every trade (full height) ============ -->
     <div class="jn-col" id="colA">
       <section class="pn" id="pT">
-        <div class="ph"><span class="t">Every trade</span><span class="sp"></span><span class="age">Kite 15:30</span>
+        <div class="ph sh-acc-mine"><span class="t">Every trade</span><span class="sp"></span><span class="age">Kite 15:30</span>
           <span class="ud"><button data-s="tlist" data-d="-1" aria-label="scroll up">▲</button><button data-s="tlist" data-d="1" aria-label="scroll down">▼</button></span></div>
         <div class="tl-ch"><div class="chips" id="scope"></div><div class="chips" id="grades"></div></div>
         <div class="pb" id="tlist"></div>
@@ -904,7 +1045,7 @@ svg text.snapcut{visibility:hidden}
     <!-- ============ B: trade review (filled by script) ============ -->
     <div class="jn-col" id="colB">
       <section class="pn" id="pR">
-        <div class="ph"><span class="t">Trade review</span><span class="k" id="rvk">#50 of 50 · Thu 19 Nov</span><span class="sp"></span><span class="age" id="rvage">built 16:00:12 · Kite fills · note ~18:00</span>
+        <div class="ph sh-acc-mine"><span class="t">Trade review</span><span class="k" id="rvk">#50 of 50 · Thu 19 Nov</span><span class="sp"></span><span class="age" id="rvage">built 16:00:12 · Kite fills · note ~18:00</span>
           <span class="ud"><button data-s="rvb" data-d="-1" aria-label="scroll up">▲</button><button data-s="rvb" data-d="1" aria-label="scroll down">▼</button></span></div>
         <div class="pb" id="rvb"></div>
       </section>
@@ -913,31 +1054,29 @@ svg text.snapcut{visibility:hidden}
     <!-- ============ C: day review + leakage / the ONE rule ============ -->
     <div class="jn-col" id="colC">
       <section class="pn" id="pD">
-        <div class="ph"><span class="t">Day review</span><span class="sp"></span><span class="age">19 Nov · 16:00:12</span>
+        <div class="ph sh-acc-mine"><span class="t">Day review</span><span class="sp"></span><span class="age">19 Nov · 16:00:12</span>
           <span class="ud"><button data-s="dlist" data-d="-1" aria-label="scroll up">▲</button><button data-s="dlist" data-d="1" aria-label="scroll down">▼</button></span></div>
         <div class="pb" id="dlist">
-          <div class="dv-big" data-sec="clean day" title="a no-trade day also counts as clean"><span class="cl">CLEAN DAY</span><span class="cl2">3 of 3 plans kept · flat ✓</span></div>
-          <div class="dv tm" data-sec="tomorrow"><span class="k">tomorrow</span><span><b>Copper PUT only while copper still falls</b><span class="w1600"> at entry (code checks)</span> → <kbd class="sk">⇧F1</kbd></span></div>
-          <div class="dv" data-sec="result"><span class="k">result</span><span><b class="m up">+₹5,387</b> <span class="m up">+1.08R</span><span class="w1600"> = <span class="m">1.08 − 0.55 + 0.55</span></span> · <span class="w1600">charges</span><span class="n1366">chg</span> <span class="m">₹298</span> <span class="est">est.<span class="w1600"> ~18:00</span></span></span></div>
-          <div class="dv full" data-sec="not taken"><span class="k">NOT TAKEN · 6 calls · paper +5.8R<span class="w1600"> · do instead</span></span><div>
-            <div class="nt"><span class="nh"><a class="sym" href="share.html#ANGELONE">ANGELONE</a><span class="mut">PUT 2,300</span><span class="r">+1.6R</span></span>
-              <span class="why"><span class="role rl-bs">BASKET SHOCK</span>cooling to 12:01 - held ✓</span>
-              <span class="tl w1600b" title="11:41:56 4 brokers −1% in 60 s → 11:42:08 GET READY on price alone (+12 s, news not found yet) → 11:42:31 TV: SEBI mulls MTF limits - sources → 11:42:33 GO NOW · ET 2nd source 11:43:10"><b>11:41:56</b> brokers −1% → <b>+12 s</b> GET READY → <b>11:42:31</b> TV "SEBI mulls MTF" → <b>11:42:33</b> GO NOW</span></div>
-            <div class="nt"><span class="nh"><a class="sym" href="share.html#KALYANKJIL">KALYANKJIL</a><span class="mut">PUT 500</span><span class="r">+1.2R</span></span><span class="why"><span class="role rl-lag">LAGGARD</span>catch-down<span class="w1600"> 11:51</span> · cooling, held ✓</span></div>
-            <div class="nt"><span class="nh"><a class="sym" href="share.html#KEI">KEI</a><span class="mut">PUT 3,900</span><span class="r">+0.9R</span></span><span class="why"><span class="role rl-dep">DEPENDENT</span>spread 1.2% → <b>3,850 PE</b><span class="w1600"> at 0.7%</span></span></div>
-            <div class="nt"><span class="nh"><a class="sym" href="share.html#MUTHOOTFIN">MUTHOOTFIN</a><span class="mut">PUT 3,200</span><span class="r">+0.7R</span></span><span class="why"><span class="role rl-dep">DEPENDENT</span><b class="blk">HARD BLOCK</b> stale 1m ✓</span></div>
-            <div class="nt"><span class="nh"><a class="sym" href="share.html#SUNPHARMA">SUNPHARMA</a><span class="mut">CE</span><a class="sym" href="share.html#DIVISLAB">DIVISLAB</a><span class="mut">CE</span><span class="r">+1.4R</span></span><span class="why"><a class="role rl-lb" href="futures-oi.html#bu=LB&amp;sec=pharma" title="Open F10 Futures &amp; OI with the LB (long build-up) filter on, pharma">LB LONG BUILD-UP</a><a class="f10" href="futures-oi.html#bu=LB&amp;sec=pharma" title="OI build-up LB/SB/SC/LU lives on F10 · F&amp;O movers UP/DOWN live on F2 Sectors"><kbd>F10</kbd> LB list</a><span class="w1600"> · 3 of 3 used ✓</span><span class="n1366"> · 3/3 ✓</span></span></div>
+          <div class="dv full" data-sec="not taken"><span class="k">NOT TAKEN · 6 calls · paper +5.8R<span class="w1600"> · why</span></span><div>
+            <div class="nt"><span class="nh"><a class="sym" href="share.html#ANGELONE">ANGELONE</a><span class="cpx pe">PE</span><span class="mut">2,300</span><span class="r">+1.6R</span></span>
+              <span class="why"><span class="role rl-bs">BASKET SHOCK</span><b class="blk">LOCK ROOM</b> <span class="nwr">₹1,980 &lt; max loss</span> → <span class="nwr">0 lots</span><span class="w1600">, then cooling</span> ✓</span>
+              <span class="tl w1600b" title="11:41:56 brokers basket first move · 11:42:08 BASKET SHOCK card (+12 s, news not found yet) · 11:42:31 CNBC-TV18 'SEBI mulls MTF limits - sources' (+35 s, 1st source) · 11:42:38 GET READY ANGELONE · 11:42:44 ET live blog (2nd outlet) · 11:43:05 GO NOW → SUPPRESSED (lock room) · after the exits cooling 11:45-12:05 → skipped · 12:40:15 SEBI: no decision yet"><b>11:41:56</b> move → <b>+12 s</b> SHOCK → <b>+35 s</b> CNBC-TV18 → <b>11:43:05</b> GO NOW suppressed</span></div>
+            <div class="nt"><span class="nh"><a class="sym" href="share.html#KALYANKJIL">KALYANKJIL</a><span class="cpx pe">PE</span><span class="mut">525</span><span class="r">+1.2R</span></span><span class="why"><span class="role rl-lag">LAGGARD <span class="dn">▼</span></span>&lt; 521.60 at 11:51 · cooling ✓</span></div>
+            <div class="nt"><span class="nh"><a class="sym" href="share.html#KEI">KEI</a><span class="cpx pe">PE</span><span class="mut">3,900</span><span class="r">+0.9R</span></span><span class="why"><span class="role rl-dep">DEPENDENT</span>spread 1.2% → <b>3,850 PE</b><span class="w1600"> at 0.7%</span></span></div>
+            <div class="nt"><span class="nh"><a class="sym" href="share.html#MUTHOOTFIN">MUTHOOTFIN</a><span class="cpx pe">PE</span><span class="mut">2,150</span><span class="r">+0.7R</span></span><span class="why"><span class="role rl-dep">DEPENDENT</span>same driver · 1 gold PE max</span></div>
+            <div class="nt"><span class="nh"><a class="sym" href="share.html#SUNPHARMA">SUNPHARMA</a><span class="cpx ce">CE</span><span class="mut">1,840</span><a class="sym" href="share.html#DIVISLAB">DIVISLAB</a><span class="cpx ce">CE</span><span class="r">+1.4R</span></span><span class="why"><a class="role rl-lb" href="futures-oi.html#bu=LB&amp;sec=pharma&amp;sel=SUNPHARMA" title="Open F10 Futures &amp; OI with the LB (long build-up) filter on, pharma (SUNPHARMA selected)">LB LONG BUILD-UP</a><a class="f10" href="futures-oi.html#bu=LB&amp;sec=pharma&amp;sel=SUNPHARMA" title="OI build-up LB/SB/SC/LU lives on F10 · F&amp;O movers UP/DOWN/ALL live on F2 Sectors"><kbd>F10</kbd> LB list</a><span class="w1600"> · 3 of 3 used ✓</span><span class="n1366"> · 3/3 ✓</span></span></div>
           </div></div>
-          <div class="dv" data-sec="blocks"><span class="k">blocks</span><span><b>hard 1</b> MUTHOOTFIN depth stale 11:20:10-11:21:14 · <b>warnings 2</b> you could take (KEI spread · MANAPPURAM MWPL 86%, taken)</span></div>
-          <div class="dv" data-sec="GIR exits"><span class="k">GIR exits</span><span>EXIT <b>1</b> HINDALCO saved <span class="m up">+0.27R</span> · BOOK <b>2</b> TITAN target ✓, MANAPPURAM stall <span class="m dn">−1.73R</span> vs plan (GIR's rule, not yours)<small>rule record: reversal EXIT right <b>5 of 7</b> · stall BOOK right <b>1 of 4</b> (n=4, on probation)</small></span></div>
-          <div class="dv" data-sec="breaks"><span class="k">breaks</span><span><b class="m">0</b> today · cost <span class="m">₹0</span> · week <b class="m">3</b> = <span class="m dn">−3.05R</span> (#46 1.87 · #47 0.60 · #45 0.58)</span></div>
+          <div class="dv" data-sec="blocks"><span class="k">blocks</span><span><b>hard 1</b> ANGELONE lock room 11:43:05 (0 lots) · <b>rule 1</b> MUTHOOTFIN 1 gold PE max · <b>warnings 2</b> you could take (KEI spread · MANAPPURAM MWPL 86% · ban at 95%, taken)</span></div>
+          <div class="dv" data-sec="GIR exits"><span class="k">GIR exits</span><span>EXIT <b>1</b> HINDALCO 11:39:40, sold 11:45:05 after the P1 call · saved <span class="m up">+0.26R</span> vs the stop · BOOK <b>2</b> TITAN target ✓, MANAPPURAM stall <span class="m dn">−1.20R</span> vs T1 (GIR's rule, not yours)<small>rule record: reversal EXIT right <b>5 of 7</b> · stall BOOK right <b>1 of 4</b> (n=4, on probation)</small></span></div>
+          <div class="dv" data-sec="breaks"><span class="k">breaks</span><span><b class="m">0</b> today · cost <span class="m">₹0</span> · week <b class="m">3</b> = <span class="m dn">−3.13R</span> (#46 1.87 · #47 0.68 · #45 0.58)</span></div>
+          <div class="dv" data-sec="cooling"><span class="k">cooling</span><span><b class="m">11:45 → 12:05</b> after the #49 loss · held ✓ (KALYANKJIL 11:51, ANGELONE skipped)</span></div>
           <div class="dv" data-sec="urges"><span class="k">urges</span><span>logged <b class="m">2</b> · acted <b class="m">0</b> - 11:55 "buy KALYANKJIL in cooling" · 14:40 "one more trade"</span></div>
           <div class="dv" data-sec="readiness"><span class="k">readiness</span><span>check-in 08:58: <b>4 of 5</b> (slept 7h) → <span class="m up">+1.08R</span></span></div>
           <div class="dv" data-sec="expiry" style="border-bottom:0"><span class="k">expiry</span><span><b>Mon 23 Nov</b> (2 sessions) · no Nov contracts open · ITM stock options settle physically - nothing to do; 29 Dec stays the default month</span></div>
         </div>
       </section>
       <section class="pn perf" id="pL">
-        <div class="ph" title="best case = right sector, share, entry, strike and exit, before costs; each row is the R lost at that step"><span class="t">Where the R leaked</span><span class="sp"></span><span class="age"><span class="w1600">built </span>16:00:12</span>
+        <div class="ph sh-acc-mine" title="best case = right sector, share, entry, strike and exit, before costs; each row is the R lost at that step"><span class="t">Where the R leaked</span><span class="sp"></span><span class="age"><span class="w1600">built </span>16:00:12</span>
           <span class="ud"><button data-s="llist" data-d="-1" aria-label="scroll up">▲</button><button data-s="llist" data-d="1" aria-label="scroll down">▼</button></span></div>
         <div class="ins-note"><b>Opens at 15:10.</b>The leakage and the rule picker are greyed in market hours.</div>
         <div class="pb" id="llist">
@@ -955,16 +1094,16 @@ svg text.snapcut{visibility:hidden}
     <!-- ============ D: this week | edge | month · tax (tabs; each tab shows its headline number) ============ -->
     <div class="jn-col" id="colD">
       <section class="pn perf" id="pX">
-        <div class="ph tabs" role="tablist">
+        <div class="ph tabs sh-acc-mine" role="tablist">
           <button class="tb on" data-tab="wlist" role="tab" title="This week 16-19 Nov · built 16:00:12">Week <b class="m up" id="tbW">+0.26R</b></button>
           <button class="tb" data-tab="elist" role="tab" title="Edge: all 50 trades since 1 Oct · built 16:00:12">Edge <b class="m" id="tbE">50/200</b></button>
-          <button class="tb" data-tab="mlist" role="tab" title="Month, size ladder, charter proposals and the tax ledger · contract note ~18:00"><span class="w1600">Month · tax</span><span class="n1366">Tax</span></button>
+          <button class="tb" data-tab="mlist" role="tab" title="Month, size ladder, charter proposals and the tax ledger · contract note ~18:00"><span class="w1600">Month · tax</span><span class="n1366">Mon·tax</span></button>
         </div>
         <div class="ph2"><span class="k" id="xk">16-19 Nov</span><span class="sp"></span><span class="age" id="xage">built 16:00:12</span>
           <span class="ud"><button data-s="wlist" data-d="-1" aria-label="scroll up" id="xu">▲</button><button data-s="wlist" data-d="1" aria-label="scroll down" id="xd">▼</button></span></div>
         <div class="ins-note"><b>Opens at 15:10.</b>Performance, the equity curve and the edge gates are greyed 09:15-15:10 so a big number cannot drive a trade.</div>
 <div class="pb" id="wlist">
-          <div class="wk-sub" id="wsub">4 of 5 sessions · final Fri 20 Nov 16:00 · n &lt; 30 = too early</div>
+          <div class="wk-sub" id="wsub">4 of 5 sessions · final Fri 20 Nov 16:00 · <span class="nwr">n &lt; 30 = too early</span></div>
           <div class="wk-t" id="wtiles" data-sec="tiles"></div>
           <div class="bh" data-sec="AI and sources" id="wai"></div>
           <div class="bh" data-sec="behaviour">
@@ -1026,12 +1165,12 @@ svg text.snapcut{visibility:hidden}
     <div class="ph"><span class="t">Ask the analyst</span><span class="k">about your journal</span><span class="sp"></span><button class="x" data-x="askD">Esc ✕</button></div>
     <div class="askb">
       <div class="dec"><span class="lb">latest answer · 16:11:52</span><b>Nothing to do tonight.</b> Tomorrow: copper PUT only while copper is still falling at entry.</div>
-      <div class="q"><i>16:11</i>Was the MANAPPURAM BOOK at 11:41:12 right?</div>
-      <div class="a">By the stall rule yes (3 flat 5-min bars, falling volume, premium flat), by the result no: the plan target 279.60 hit at 14:06 (ghost <b class="m up">+2.28R</b> vs your <b class="m up">+0.55R</b>). The stall rule is right 1 of 4 so far (n=4, too early). You did right to follow GIR - the −1.73R is GIR's. <b class="act">Action: stall rule on probation - with 1 lot it now says TRAIL to the last 5-min swing instead of BOOK.</b></div>
+      <div class="q"><i>16:11</i>Was the MANAPPURAM BOOK at 11:40:12 right?</div>
+      <div class="a">By the stall rule yes (3 flat 5-min bars, falling volume, premium flat), by the result no: T1 280.30 hit at 14:06 (ghost <b class="m up">+1.74R</b> vs your <b class="m up">+0.55R</b>). The stall rule is right 1 of 4 so far (n=4, too early). You did right to follow GIR - the −1.20R is GIR's. <b class="act">Action: stall rule on probation - with 1 lot it now says TRAIL to the last 5-min swing instead of BOOK.</b></div>
       <div class="q"><i>16:09</i>Why is the 50-trade gate NOT MET if I made money this month?</div>
       <div class="a">The gate is about keeping plans, not money: 42 of 50 kept = 84%. 5 of the 8 breaks are early exits (−5.6R). <b class="act">Action: pick rule 1 on Friday; re-check at trade 60. Nothing to do tonight.</b></div>
       <div class="q"><i>16:06</i>Did the charges change the week?</div>
-      <div class="a">Real charges this week are ₹733 for 8 trades (≈₹92 each: ₹40 brokerage, STT 0.1% of the sell premium, exchange fee, GST, stamp). Costs are 36% of the ₹2,015 gross - high because the wins were small. The old ₹420 a trade was a wrong estimate. <b class="act">Action: none - the 19 Nov contract note (~18:00) will true up ₹298 of estimates.</b></div>
+      <div class="a">Charges this week are ₹739 for 8 trades (≈₹92 each: ₹40 brokerage, STT 0.1% of the sell premium, exchange fee, GST, stamp). They are 37% of the ₹2,021 gross - high because two wins were small. The ₹420 per trade on the live strip is costs = charges + an exit-slippage allowance; realised trades carry charges only. <b class="act">Action: none - the 19 Nov contract note (~18:00) will true up ₹298 of estimates.</b></div>
       <div class="ask"><input placeholder="ask about any trade, e.g. 'TITAN 18 Nov vs 19 Nov'" aria-label="question"><kbd>Enter</kbd></div>
       <div class="k">mid model · about $0.01 a question · 3 today ($0.03) · every answer ends in an action</div>
     </div>
@@ -1098,31 +1237,31 @@ function zchg(b, s, q) {
 // fills b (buy) / s (sell) / q (lot); riskRs = net loss at the share stop when planned; leak = R lost [sector, share, entry, option, exit]
 const T = [
   { id: 50, day: 'Thu', dt: '19 Nov', sym: 'TITAN', side: 'PE', k: '3,400', exp: '29 Dec', sec: 'jewel', role: 'LEADER', setup: 'A · trend-day bounce',
-    grade: 'earned', b: 97.00, s: 128.40, q: 175, est: true, inT: '12:29:31', outT: '13:52:10', dur: '1h 23m', exitBy: 'GIR BOOK at target', ex: 'target ✓', riskRs: 1856,
+    grade: 'earned', b: 128.60, s: 160.00, q: 175, est: true, chgEst: 87, inT: '12:29:31', outT: '13:52:10', dur: '1h 23m', exitBy: 'GIR BOOK at target', ex: 'target ✓', riskRs: 1855,
     w: 'extended leader: bounce entry 3,414 ✓ · held to target', tags: [], leak: [0, 0, 0, 0.05, 0], brk: 0, ord: 8 },
-  { id: 49, day: 'Thu', dt: '19 Nov', sym: 'HINDALCO', side: 'PE', k: '680', exp: '29 Dec', sec: 'metals', role: 'LAGGARD', setup: 'B · laggard catch-down',
-    grade: 'good', b: 16.40, s: 14.50, q: 1400, est: true, inT: '11:02:14', outT: '11:41:05', dur: '39m', exitBy: 'GIR EXIT · reversal', ex: 'GIR EXIT', riskRs: 3641,
-    w: 'GIR EXIT on copper fading - saved 0.27R vs the stop', tags: [], leak: [0.2, 0.4, 0.3, 0, -0.27], brk: 0, ord: 6 },
+  { id: 49, day: 'Thu', dt: '19 Nov', sym: 'HINDALCO', side: 'PE', k: '680', exp: '29 Dec', sec: 'metals', role: 'DEPENDENT', setup: 'B · copper dependent',
+    grade: 'good', b: 16.40, s: 14.50, q: 1400, est: true, inT: '11:02:14', outT: '11:45:05', dur: '43m', exitBy: 'GIR EXIT 11:39:40 · sold after the P1 call', ex: 'GIR EXIT', riskRs: 3640,
+    w: 'GIR EXIT 11:39:40, sold 11:45:05 after the P1 call · 0.26R smaller than the stop', tags: [], leak: [0.2, 0.4, 0.3, 0, -0.26], brk: 0, ord: 6 },
   { id: 48, day: 'Thu', dt: '19 Nov', sym: 'MANAPPURAM', side: 'PE', k: '285', exp: '29 Dec', sec: 'jewel', role: 'DEPENDENT', setup: 'A · sector-confirmed break',
-    grade: 'earned', b: 13.25, s: 14.20, q: 3000, est: true, inT: '10:06:22', outT: '11:41:12', dur: '1h 35m', exitBy: 'GIR BOOK · stall', ex: 'GIR BOOK', riskRs: 3781,
-    w: 'GIR BOOK on stall; plan target hit 14:06 (GIR rule −1.73R)', tags: [], leak: [0, 0, 0, 0.05, 1.73], brk: 0, ord: 7 },
+    grade: 'earned', b: 13.25, s: 14.20, q: 3000, est: true, inT: '10:06:22', outT: '11:45:12', dur: '1h 39m', exitBy: 'GIR BOOK 11:40:12 · stall', ex: 'GIR BOOK', riskRs: 3540,
+    w: 'GIR BOOK on stall 11:40:12 · T1 280.30 hit 14:06 (GIR rule −1.20R)', tags: [], leak: [0, 0, 0, 0.05, 1.20], brk: 0, ord: 7 },
   { id: 47, day: 'Wed', dt: '18 Nov', sym: 'ANGELONE', side: 'CE', k: '2,450', exp: '29 Dec', sec: 'brokers', role: 'OWN TRADE', setup: 'no GIR call · Kite direct',
-    grade: 'lesson', b: 58.20, s: 46.40, q: 250, inT: '11:03:12', outT: '11:31:00', dur: '28m', exitBy: 'stop hit', ex: 'revenge', riskRs: 3020,
-    w: 'SEBI MTF story GIR missed · 2nd loss in a row → LOCKED', tags: ['revenge'], leak: [0.4, 0.4, 0, 0, 0], brk: 0.60, ord: 5 },
+    grade: 'lesson', b: 69.00, s: 55.70, q: 250, inT: '11:03:12', outT: '11:31:00', dur: '28m', exitBy: 'stop hit', ex: 'revenge', riskRs: 3325,
+    w: 'SEBI MTF story GIR missed · 2nd loss in a row → LOCKED', tags: ['revenge'], leak: [0.4, 0.4, 0, 0, 0], brk: 0.68, ord: 5 },
   { id: 46, day: 'Wed', dt: '18 Nov', sym: 'TITAN', side: 'PE', k: '3,650', exp: '29 Dec', sec: 'jewel', role: 'LEADER', setup: 'A · sector-confirmed break',
-    grade: 'lesson', b: 104.00, s: 98.80, q: 175, inT: '10:05:18', outT: '10:52:40', dur: '47m', exitBy: 'you · early exit', ex: 'early exit', riskRs: 2204,
+    grade: 'lesson', b: 108.00, s: 100.75, q: 175, inT: '10:05:18', outT: '10:52:40', dur: '47m', exitBy: 'you · early exit', ex: 'early exit', riskRs: 2135,
     w: '+30 min: −2.1% more · early exit cost 1.87R', tags: ['early exit'], leak: [0, 0, 0, 0, 1.87], brk: 1.87, ord: 4 },
   { id: 45, day: 'Tue', dt: '17 Nov', sym: 'PNB', side: 'CE', k: '115', exp: '29 Dec', sec: 'psub', role: 'ROTATION', setup: 'rotation into PSU banks (30M)',
     grade: 'lesson', b: 4.20, s: 3.85, q: 8000, inT: '13:12:40', outT: '13:58:00', dur: '46m', exitBy: 'stop hit', ex: 'chased', riskRs: 2906,
     w: 'rotation called late · entry chased +9%', tags: ['chased'], leak: [0.3, 0, 0.3, 0.1, 0], brk: 0.58, ord: 3 },
   { id: 44, day: 'Mon', dt: '16 Nov', sym: 'LUPIN', side: 'CE', k: '2,060', exp: '29 Dec', sec: 'pharma', role: 'LEADER', setup: 'A · long build-up break',
-    grade: 'earned', b: 41.20, s: 50.05, q: 400, inT: '10:14:12', outT: '12:40:20', dur: '2h 26m', exitBy: 'GIR BOOK at target', ex: 'target ✓', riskRs: 2763,
+    grade: 'earned', b: 40.50, s: 51.20, q: 400, inT: '10:14:12', outT: '12:40:20', dur: '2h 26m', exitBy: 'GIR BOOK at target', ex: 'target ✓', riskRs: 2680,
     w: 'pharma long build-up · rules kept ✓', tags: [], leak: [0, 0, 0, 0, 0], brk: 0, ord: 2 },
   { id: 43, day: 'Mon', dt: '16 Nov', sym: 'TATASTEEL', side: 'PE', k: '150', exp: '29 Dec', sec: 'metals', role: 'DEPENDENT', setup: 'A · steel on iron ore',
     grade: 'good', b: 4.85, s: 4.75, q: 5500, inT: '09:48:20', outT: '10:35:10', dur: '47m', exitBy: 'time stop', ex: 'time stop ✓', riskRs: 3066,
     w: 'no move in 45 min → exit on plan ✓', tags: [], leak: [0, 0, 0, 0, 0], brk: 0, ord: 1 },
 ];
-T.forEach(t => { t.c = zchg(t.b, t.s, t.q); t.chg = t.c.tot; t.gross = Math.round((t.s - t.b) * t.q); t.net = t.gross - t.chg; t.R = t.net / R5; t.xr = t.net / t.riskRs; t.wk = 'W3'; });
+T.forEach(t => { t.c = zchg(t.b, t.s, t.q); t.chg = t.chgEst || t.c.tot; t.gross = Math.round((t.s - t.b) * t.q); t.net = t.gross - t.chg; t.R = t.net / R5; t.xr = t.net / t.riskRs; t.wk = 'W3'; });
 const DAYS = [['Thu', '19 Nov', 'clean ✓', ''], ['Wed', '18 Nov', 'LOCKED 11:31', '2 losses in a row (charter rule) - not the ₹10,000 day loss'], ['Tue', '17 Nov', '1 break', ''], ['Mon', '16 Nov', 'clean ✓', '']];
 
 /* ================= the 42 older trades (#1-#42), built from their journalled R (net of charges) ================= */
@@ -1155,179 +1294,180 @@ const inScope = (t, sc) => sc === 'all' || (sc === 'nov' ? t.wk !== 'OCT' : t.wk
 /* ================= the review details (every week trade) ================= */
 const D = {
   50: {
-    chain: ['<b>gold −1.6%</b> night + 09:00', '<b>Jewellers &amp; gold loans DOWN</b> confirmed 09:20', '<b>TITAN LEADER</b> · SB all months · below VWAP, lower highs', '<b>EXTENDED 1.35 ATR</b> → enter on the bounce to VWAP / the first lower high · half size is impossible at 1 lot → risk capped by the tighter stop: <b>₹1,856 = 0.37R</b> (a normal 1-lot plan risks ≈0.8R)'],
-    said: '<b>GO NOW · PUT · TITAN · 3,400 · 29 Dec</b> · trigger 3,414 · stop 3,436 / 86.70 · target 3,350 / 129.00 · hold till 14:30 · <b>"Don\'t exit before the stop or the target unless GIR says EXIT"</b> · age 0.6s · source: senior analyst (theme + money + sector agents) · <b>kept ✓</b>',
-    vote: ['4 of 5 agree · 82% by hit rate', 'agent 1 ✓ 58%|n 112', 'agent 2 ✓ 61%|n 96', '!agent 3 ✗ 44%→48%|n 31 "oversold, wait"', 'news ✓ 52%|n 58', 'money ✓ SB 55%|n 74', 'auditor PE ✓', '?X ? did not vote'],
-    vnote: 'weights = each voter\'s hit rate, shrunk toward 50% for small n (agent 3: 44% on n 31 counts as 48%)',
+    chain: ['<b>gold −1.6%</b> night + 09:00', '<b>Jewellers &amp; gold loans −1.9%</b> <span class="bs">all 14 listed · free-float · breadth 12/14 · F&amp;O 4/4</span> · conf 09:20', '<b>TITAN LEADER</b> · SB all months · below VWAP, lower highs', '<b>EXTENDED 1.35 ATR</b> → bounce to VWAP 3,421, then a 5-min close &lt; 3,414 · <b class="nwr">1 lot (minimum) = 0.37R</b><span class="w1600">, about half normal risk</span>'],
+    said: '<b>GO NOW · PUT · TITAN · 3,400 · 29 Dec</b> · trigger 3,414 · stop 3,436 / 118.00 · target 3,356 / 160.60 · hold till 14:30 · <b>"Don\'t exit before the stop or the target unless GIR says EXIT"</b> · age 0.6s · source: senior analyst (theme + money + sector agents) · <b>kept ✓</b>',
+    vote: ['4 of 5 agree · 84% by hit rate', 'agent 1 ✓ 58%|n 31', 'agent 2 ✓ 61%|n 33', '!agent 3 ✗ 44%|n 27 "oversold, wait"', 'news ✓ 63%|n 41', 'money ✓ SB 55%|n 36', 'auditor PE ✓', '?X ? did not vote'],
+    vnote: 'weights = hit rates: yes 58 + 61 + 63 + 55 = 237 of 281 = 84% (agent 3: n 27 is under 30, grey weight)',
     news: [['12:10', 'WORLD', 'Gold extends slide, MCX −1.6% on a firm dollar', '▼ 4', 'Reuters'],
       ['11:58', 'JEWELLERS', 'Market desk: jewellers under pressure as gold falls', '▼ 3', 'CNBC-TV18 TV'],
       ['11:36', 'TITAN', 'Live blog: jewellery stocks extend losses, TITAN top drag', '▼ 3', 'ET live blog'],
       ['10:02', 'TITAN', 'Mgmt on TV: "gold swings not affecting demand" - priced in', '▲ 2', 'CNBC-TV18 STT']],
     nwh: '4 live at 12:29 · the 10:02 line read as priced in (weight 2)',
-    plan: [['entry', '97.00', 'ask ≈', '3,414', 'bounce <', '97.00', '12:29:31', '3,413.40', ''],
-      ['stop', '86.70', 'SL-L', '3,436', 'GOVERNS', '-', 'not hit', '3,428.90', 'high 12:47'],
-      ['trail', '-', '', '3,398', '13:31', '104.00', '13:32', '-', 'not hit'],
-      ['target', '129.00', '', '3,350', '', '128.40', '13:52:10', '3,349.60', '✓'],
-      ['no chase', '101.50', '', '3,405', '', '97.00', '✓ 0 over', '-', ''],
+    plan: [['entry', '128.60', 'ask', '3,414', 'bounce <', '128.60', '12:29:31', '3,413.20', ''],
+      ['stop', '≈118.00', 'share stop', '3,436', 'GOVERNS', '-', 'not hit', '3,428.90', 'high 12:47'],
+      ['trail', '-', '', '3,398', '13:31', '≈135.80', '13:32', '-', 'not hit'],
+      ['target', '160.60', '', '3,356', 'wall 3,350', '160.00', '13:52:10', '3,349.60', '✓'],
+      ['no chase', '132.50', '', '3,405', '', '128.60', '✓ 0 over', '-', ''],
       ['hold till', '14:30', 'time stop', '', '', '13:52', '1h 23m', '', '']],
-    pf: '<b>1 lot × 175</b> · cash <b>₹16,975</b> = 97.00 × 175 · at the share stop <b>−₹1,856</b> = 0.37R planned · Kite <b>TITAN26DEC3400PE</b> · broker <b>SL-L trig 86.70 lim 84.00</b> resting in 27 s ✓ → 13:32 <b>trig 104.00 lim 102.00</b>',
-    mkt: 'book in <b>96.50 / 97.00</b> · 0.52% · 41 lots · out <b>128.40 / 129.10</b> · 0.54% · 26 lots · spread cost <b>₹105</b>',
+    pf: '<b>1 lot × 175</b> · cash <b>₹22,505</b> · at the share stop <b>−₹1,855</b> = 0.37R planned · Kite <b>TITAN26DEC3400PE</b> · backstop <b>SL-L trig 118.00 lim 117.20</b> resting in 27 s ✓ → 13:32 <b>trig 135.80 lim 134.00</b>',
+    mkt: 'book in <b>128.10 / 128.60</b> · 0.39% · 41 lots · out <b>160.00 / 160.70</b> · 0.44% · 26 lots · spread cost <b>₹105</b>',
     ch: { from: 120, to: 315, lo: 3318, hi: 3446, seed: 7,
       kp: [[120, 3392], [145, 3398], [175, 3407], [190, 3417], [195, 3413], [205, 3418], [212, 3421], [225, 3412], [240, 3392], [256, 3381], [266, 3368], [277, 3350], [295, 3343], [307, 3338], [315, 3336]],
       wick: [[210, 3428.9]],
       vw: [[120, 3426], [145, 3421], [195, 3415], [255, 3405], [315, 3394]],
-      lv: [{ p: 3436, k: 'stop', t: '3,436' }, { p: 3414, k: 'trig', t: '3,414' }, { p: 3398, k: 'trail', t: '3,398' }, { p: 3350, k: 'tgt', t: '3,350' }],
-      mk: [{ m: 194, p: 3413.4, k: 'in' }, { m: 277, p: 3349.6, k: 'out' }, { m: 212, p: 3428.9, k: 'fu', t: 'H', pos: 'up' }, { m: 256, p: 3381, k: 'fu', t: 'T', pos: 'dn' }, { m: 277, p: 3349.6, k: 'fu', t: 'B', pos: 'dn' }, { m: 307, k: 'aft', t: '+30m' }],
-      pr: [[194, 97], [212, 92.4], [240, 107], [256, 113], [277, 128.4], [307, 133.5]], prl: ['97.00', '128.40'] },
-    fu: [['12:29:04', 'GO NOW', 'card: data 0.6s · vote 4 of 5 (82%) · senior analyst', 'you entered in 27 s'],
-      ['12:47:10', 'HOLD', 'bounce to 3,428.90 failed under the share stop 3,436 · premium low 92.40', 'acked 5 s', 1],
-      ['13:31:40', 'TRAIL', 'share stop 3,436 → 3,398 (last 5-min swing) = premium ≈104.00<small>Kite SL-L modified: trig 86.70 → 104.00 · lim 84.00 → 102.00</small>', 'you moved it 13:32:05 ✓'],
-      ['13:52:02', 'BOOK', 'target 3,350 reached - book all (1 lot)', 'P2 rang · sold 13:52:10 ✓']],
-    split: [['share move Δ −0.45 × 63.8 pts', 5024], ['convexity Γ .0015', 525], ['time decay θ 1h 23m × ₹37/h', -51], ['IV 24.13% → 24.26% = +0.13 pt × vega ₹786', 102], ['spread in + out', -105]],
-    ghost: [['plan followed', '<b class="m up">+1.08R</b>'], ['you', '<b class="m up">+1.08R</b> same ✓'], ['× the risk taken', '<b class="m">2.9×</b> (₹1,856)'], ['+30 min 14:22', '<span class="m">3,338.10 · prem ≈133.50</span>'], ['close 15:30', '<span class="m">3,323.60 −4.62%</span>']],
+      lv: [{ p: 3436, k: 'stop', t: '3,436' }, { p: 3414, k: 'trig', t: '3,414' }, { p: 3398, k: 'trail', t: '3,398' }, { p: 3356, k: 'tgt', t: '3,356' }],
+      mk: [{ m: 194, p: 3413.2, k: 'in' }, { m: 277, p: 3349.6, k: 'out' }, { m: 212, p: 3428.9, k: 'fu', t: 'H', pos: 'up' }, { m: 256, p: 3381, k: 'fu', t: 'T', pos: 'dn' }, { m: 277, p: 3349.6, k: 'fu', t: 'B', pos: 'dn' }, { m: 307, k: 'aft', t: '+30m' }],
+      pr: [[194, 128.6], [212, 121.4], [240, 140.2], [256, 146], [277, 160], [307, 165.5]], prl: ['128.60', '160.00'] },
+    fu: [['12:29:04', 'GO NOW', 'card: data 0.6s · vote 4 of 5 (84%) · senior analyst', 'you entered in 27 s'],
+      ['12:47:10', 'HOLD', 'bounce to 3,428.90 failed under the share stop 3,436 · premium low 121.40', 'acked 5 s', 1],
+      ['13:31:40', 'TRAIL', 'share stop 3,436 → 3,398 (last 5-min swing) = premium ≈135.80<small>Kite: MODIFY SL-L trig 118.00 → 135.80 · lim 117.20 → 134.00</small>', 'you moved it 13:32:05 ✓'],
+      ['13:52:02', 'BOOK', 'target 3,356 reached - book all (1 lot)', 'P2 rang · sold 13:52:10 ✓']],
+    split: [['share move Δ −0.464 × 63.6 pts', 5164], ['convexity Γ .0015', 539], ['time decay θ 1h 23m × ₹52/h', -72], ['IV 31.58% → 31.54% = −0.04 pt × vega ₹787', -31], ['spread in + out', -105]],
+    ghost: [['plan followed', '<b class="m up">+1.08R</b>'], ['you', '<b class="m up">+1.08R</b> same ✓'], ['× the risk taken', '<b class="m">2.9×</b> (₹1,855)'], ['+30 min 14:22', '<span class="m">3,338.10 · prem ≈165.50</span>'], ['close 15:30', '<span class="m">3,323.60 −4.62%</span>']],
     gnote: 'left +0.2R after the target - fine: the target was the plan. Yesterday you sold TITAN early (#46); today you held.',
-    mline: 'TITAN at entry · per-share PCR (Dec) <b>0.71</b> · max pain <b>3,450</b> · PE wall <b>3,300</b> (113 pts below, under the 3,350 target ✓) · CE wall 3,500 (+87) · IV <b>24.1%</b> vs 20d 23.9% · rank 41 · <b>IV-crush check:</b> no results / event within 5 days ✓ (results 4 Feb) · unusual: 3,400 PE burst 12:22 (+1,850 contracts)',
-    stk: [[1, '3,400 ATM ★', '29 Dec', '97.00', '−0.45', '.0015', '₹37', '₹786', '24.1/23.9', '41', '0.52%', '41', '2.0k', '+18%', '113↓', '−0.11%', '₹16,975', '+32%'],
-      [0, '3,450 1 ITM', '29 Dec', '124.60', '−0.55', '.0014', '₹34', '₹772', '23.8/23.6', '39', '0.81%', '22', '0.9k', '+6%', '113↓', '−0.12%', '₹21,805', '+30%'],
-      [0, '3,350 1 OTM', '29 Dec', '74.20', '−0.36', '.0014', '₹39', '₹741', '24.6/24.2', '44', '1.1%', '9', '0.6k', '+31%', '113↓', '−0.19%', '₹12,985', '+35%'],
-      [0, '3,400 ATM', '23 Nov', '28.60', '−0.44', '.0045', '₹123', '₹248', '26.2/24.4', '52', '0.66%', '96', '6.1k', '+42%', '63↓', '−0.17%', '₹5,005', '+118%']],
-    stkw: '<b>GIR\'s pick: 29 Dec ATM</b> - expiry week, so next month is the default; spread 0.52%, depth 41 lots. 23 Nov paid more today (+118%) but θ ₹123/h and ITM stock options settle physically - exit before Mon 23 Nov. 1 OTM: spread 1.1%, depth 9 lots (thin). Lot 175 · charges ≈₹87 a round trip.',
+    mline: 'TITAN at entry · per-share PCR (Dec) <b>0.71</b> · max pain <b>3,450</b> · PE wall <b>3,350</b> (63 pts below; the 3,356 target stops just before it ✓) · CE wall 3,500 (+87) · IV <b>31.6%</b> vs 20d 31.6% · rank 38 · <b>IV-crush check:</b> no results / event within 5 days ✓ (results 4 Feb) · unusual: 3,400 PE burst 12:22 (+1,850 contracts)',
+    stk: [[1, '3,400 ATM ★', '29 Dec', '128.60', '−0.46', '.0015', '₹52', '₹787', '31.6/31.6', '38', '0.39%', '41', '2.6k', '+18%', '63↓', '−6.7', '₹22,505', '+24%'],
+      [0, '3,450 1 ITM', '29 Dec', '153.70', '−0.54', '.0016', '₹51', '₹786', '31.3/31.6', '38', '0.6%', '28', '1.8k', '+12%', '63↓', '−5.2', '₹26,898', '+24%'],
+      [0, '3,350 1 OTM', '29 Dec', '107.70', '−0.39', '.0015', '₹52', '₹760', '32.2/31.6', '38', '1.1%', '12', '1.2k', '+9%', 'on it', '−7.6', '₹18,848', '+25%'],
+      [0, '3,400 ATM', '23 Nov', '32.70', '−0.44', '.0040', '₹189', '₹250', '36.9/31.6', '52', '1.4%', '33', '5.5k', '+4%', '63↓', '−7.1', '₹5,723', '+109%']],
+    stkw: '<b>GIR\'s pick: 29 Dec ATM</b> - expiry week, so next month is the default; spread 0.39%, depth 41 lots. 23 Nov paid more (+109%) but θ ₹189/h and ITM stock options settle physically - exit before Mon 23 Nov. 1 OTM: spread 1.1%, depth 12 lots, sits on the 3,350 wall. Lot 175 · charges ≈₹87 a round trip.',
     note: 'Waited for the bounce like the card said. The 12:47 wick to 3,428.90 scared me - kept the stop. Yesterday I sold TITAN too early; today I held to the target.', noteT: 'you · 14:05 · edit E'
   },
   49: {
-    chain: ['<b>copper −1.8%</b> 5-month low', '<b>Metals DOWN</b> confirmed 09:24', '<b>HINDALCO LAGGARD</b> · still near VWAP, RSI 68 · catch-down', 'trigger <b>680.90</b> = break of the 10:40 low'],
-    said: '<b>GO NOW · PUT · HINDALCO · 680 · 29 Dec</b> · trigger 680.90 · stop 686.10 / 13.40 · target 670.50 / ≈21.60 · hold till 14:30 · "Don\'t exit before the stop or the target unless GIR says EXIT" · age 0.9s · source: senior analyst · <b>EXIT came from GIR - kept ✓</b>',
+    chain: ['<b>copper −1.8%</b> 5-month low', '<b>Metals −1.2%</b> <span class="bs">NIFTY METAL index · breadth 11/15 · F&amp;O 8/11</span> · conf 09:24', '<b>HINDALCO DEPENDENT</b> (copper) · SB · below VWAP', 'trigger <b>680.90</b> = break of the 10:40 low'],
+    said: '<b>GO NOW · PUT · HINDALCO · 680 · 29 Dec</b> · trigger 680.90 · stop 686.10 / ≈13.80 · target 670.50 / ≈21.60 · hold till 14:30 · "Don\'t exit before the stop or the target unless GIR says EXIT" · age 0.9s · source: senior analyst · <b>EXIT came from GIR - kept ✓</b>',
     vote: ['3 of 5 agree · 61% by hit rate', 'agent 1 ✓ 58%|n 112', '!agent 2 ✗ 61%|n 96 "copper bouncing"', 'agent 3 ✓ 44%→48%|n 31', '?news ? none yet', 'money ✓ SB 55%|n 74', 'auditor PE ✓', '?X ? did not vote'],
-    vnote: 'a 3 of 5 vote is allowed for a laggard catch-down; the vote against (agent 2) was right this time',
+    vnote: 'a 3 of 5 vote is allowed for a dependent whose driver is confirmed; the vote against (agent 2) was right this time',
     news: [['11:31', 'HINDALCO', 'Management on TV: "the copper dip does not hurt us"', '▲ 3', 'CNBC-TV18 STT'],
       ['11:18', 'WORLD', 'Copper trims losses in Asian trade', '▲ 2', 'world feed'],
       ['10:52', 'METALS', 'Live blog: metal stocks slide, HINDALCO lags the pack', '▼ 2', 'Moneycontrol'],
       ['10:40', 'WORLD', 'LME copper −1.8%, lowest since July', '▼ 4', 'Reuters']],
     nwh: 'the 11:31 TV line came after entry - it is in the EXIT reason',
-    plan: [['entry', '16.40', 'ask ≈', '680.90', 'break <', '16.40', '11:02:14', '680.70', ''],
-      ['stop', '13.40', 'SL-L', '686.10', 'GOVERNS', '-', 'not hit', '685.30', 'high 11:36'],
-      ['target', '≈21.60', '', '670.50', 'PE wall', '14.50', '11:41:05', '684.40', 'GIR EXIT'],
+    plan: [['entry', '16.40', 'ask', '680.90', 'break <', '16.40', '11:02:14', '680.70', ''],
+      ['stop', '≈13.80', 'share stop', '686.10', 'GOVERNS', '-', 'not hit', '685.30', 'high 11:36'],
+      ['target', '≈21.60', '', '670.50', 'PE wall', '14.50', '11:45:05', '684.60', 'GIR EXIT'],
       ['no chase', '17.70', '', '679.60', '', '16.40', '✓', '-', ''],
-      ['hold till', '14:30', 'time stop', '', '', '11:41', '39m', '', '']],
-    pf: '<b>1 lot × 1,400</b> · cash <b>₹22,960</b> · at the share stop <b>−₹3,641</b> = 0.73R planned · Kite HINDALCO26DEC680PE · <b>SL-L trig 13.40 lim 12.60</b> resting in 31 s ✓ · EXIT: Kite LIMIT 14.45 → filled 14.50',
+      ['hold till', '14:30', 'time stop', '', '', '11:45', '43m', '', '']],
+    pf: '<b>1 lot × 1,400</b> · cash <b>₹22,960</b> · at the share stop <b>−₹3,640</b> = 0.73R planned (−₹4,060 with ₹420 est. costs) · backstop <b>SL-L trig 13.40 lim 12.60</b> resting in 31 s ✓ · EXIT: <b>MODIFY SL-L → LIMIT 14.45</b> (bid − 1 tick) → filled 14.50',
     mkt: 'book in <b>16.30 / 16.40</b> · 0.61% · 22 lots · out <b>14.50 / 14.60</b> · 0.69% · 18 lots · spread cost <b>₹140</b>',
     ch: { from: 60, to: 240, lo: 668, hi: 694, seed: 3,
       kp: [[60, 684], [100, 682], [105, 680.6], [120, 682.5], [140, 684.6], [145, 684.4], [170, 686.2], [180, 686.4], [200, 685.5], [240, 680]],
       wick: [[140, 685.3]],
       vw: [[60, 687], [100, 685.5], [145, 683.6], [200, 684.5], [240, 683]],
       lv: [{ p: 686.1, k: 'stop', t: '686.10' }, { p: 680.9, k: 'trig', t: '680.90' }, { p: 670.5, k: 'tgt', t: '670.50' }],
-      mk: [{ m: 107, p: 680.7, k: 'in' }, { m: 146, p: 684.4, k: 'out' }, { m: 129, p: 683, k: 'fu', t: 'W', pos: 'dn' }, { m: 145, p: 684.4, k: 'fu', t: 'E', pos: 'up' }, { m: 176, k: 'aft', t: '+30m' }],
-      pr: [[107, 16.4], [125, 15.6], [146, 14.5], [176, 13.9], [240, 15.2]], prl: ['16.40', '14.50'] },
-    fu: [['10:58:20', 'GO NOW', 'laggard catch-down · copper 5-month low · vote 3 of 5', 'you entered 3m 54s later (+0.0%)'],
+      mk: [{ m: 107, p: 680.7, k: 'in' }, { m: 150, p: 684.6, k: 'out' }, { m: 129, p: 683, k: 'fu', t: 'W', pos: 'dn' }, { m: 144.7, p: 684.4, k: 'fu', t: 'E', pos: 'up' }, { m: 180, k: 'aft', t: '+30m' }],
+      pr: [[107, 16.4], [125, 15.6], [145, 14.5], [150, 14.5], [180, 13.9], [240, 15.2]], prl: ['16.40', '14.50'] },
+    fu: [['10:58:20', 'GO NOW', 'copper dependent · copper 5-month low · vote 3 of 5', 'you entered 3m 54s later (+0.0%)'],
       ['11:24:10', 'WARN', 'copper leg WEAKENING −1.8% → −0.9% · hold, stop unchanged', 'acked 7 s', 1],
-      ['11:39:40', 'EXIT', 'reversal: above VWAP 683.60 for 2 bars · short covering OI −3% · TV 11:31 "copper dip does not hurt us"', 'P2 rang · sold 11:41:05 ✓']],
-    split: [['share move Δ −0.47 × +3.7 pts', -2435], ['convexity Γ .0097', 96], ['time decay θ 39m × ₹46/h', -30], ['IV 18.22% → 18.10% = −0.12 pt × vega ₹1,257', -151], ['spread in + out', -140]],
-    ghost: [['plan followed', '<b class="m dn">−0.82R</b> stop 12:04'], ['you (GIR EXIT)', '<b class="m dn">−0.55R</b> saved +0.27R'], ['× the risk taken', '<b class="m">−0.75×</b> (₹3,641)'], ['+30 min 12:11', '<span class="m">686.40 · prem ≈13.60</span>'], ['close 15:30', '<span class="m">677.57 −2.14%</span>']],
-    gnote: 'It fell from 13:20 on fresh shorts, but copper was flat - GIR did not call it again. Right share, early entry.',
+      ['11:39:40', 'EXIT', 'reversal: above VWAP 683.60 for 2 bars · short covering OI −3% · TV 11:31 "copper dip does not hurt us"', 'acked 11:39:52 · not done'],
+      ['11:44:40', 'P1 CALL', 'EXIT still open 5 min after the ack → phone call', 'sold 11:45:05 ✓']],
+    split: [['share move Δ −0.47 × +3.7 pts', -2432], ['convexity Γ .0097', 96], ['time decay θ 43m × ₹46/h', -33], ['IV 18.22% → 18.10% = −0.12 pt × vega ₹1,257', -151], ['spread in + out', -140]],
+    ghost: [['plan followed', '<b class="m dn">−0.81R</b> stop 12:04'], ['you (GIR EXIT, late)', '<b class="m dn">−0.55R</b> saved +0.26R'], ['× the risk taken', '<b class="m">−0.75×</b> (₹3,640)'], ['+30 min 12:15', '<span class="m">686.40 · prem ≈13.60</span>'], ['close 15:30', '<span class="m">677.57 −2.14%</span>']],
+    gnote: 'The EXIT waited 5m 25s (P1 call 11:44:40); the bid held 14.50, so the delay cost ₹0 today. It fell again from 13:20 on fresh shorts, but copper was flat - GIR did not call it again.',
     mline: 'HINDALCO at entry · PCR (Dec) <b>0.84</b> · max pain <b>690</b> · PE wall <b>670</b> (10.7 pts below = the target\'s obstacle) · CE wall 700 · IV 18.2% vs 20d 17.5% · rank 22 · <b>event check:</b> no results within 5 days ✓ (12 Feb)',
-    stk: [[1, '680 ATM ★', '29 Dec', '16.40', '−0.47', '.0097', '₹46', '₹1,257', '18.2/17.5', '22', '0.61%', '22', '3.1k', '+9%', '10↓', '−0.08%', '₹22,960', '−12%'],
-      [0, '690 1 ITM', '29 Dec', '21.80', '−0.58', '.0092', '₹43', '₹1,210', '17.9/17.4', '20', '0.92%', '14', '1.8k', '+4%', '10↓', '−0.09%', '₹30,520', '−10%'],
-      [0, '670 1 OTM', '29 Dec', '12.10', '−0.36', '.0090', '₹48', '₹1,180', '18.6/17.8', '25', '1.2%', '11', '2.4k', '+12%', 'on it', '−0.15%', '₹16,940', '−15%'],
-      [0, '680 ATM', '23 Nov', '5.60', '−0.46', '.0310', '₹71', '₹395', '20.4/18.0', '35', '1.8%', '40', '7.9k', '+38%', '10↓', '−0.21%', '₹7,840', '−31%']],
+    stk: [[1, '680 ATM ★', '29 Dec', '16.40', '−0.47', '.0097', '₹46', '₹1,257', '18.2/17.5', '22', '0.61%', '22', '3.1k', '+9%', '10↓', '−0.5', '₹22,960', '−12%'],
+      [0, '690 1 ITM', '29 Dec', '21.80', '−0.58', '.0092', '₹43', '₹1,210', '17.9/17.4', '20', '0.92%', '14', '1.8k', '+4%', '10↓', '−0.6', '₹30,520', '−10%'],
+      [0, '670 1 OTM', '29 Dec', '12.10', '−0.36', '.0090', '₹48', '₹1,180', '18.6/17.8', '25', '1.2%', '11', '2.4k', '+12%', 'on it', '−1.0', '₹16,940', '−15%'],
+      [0, '680 ATM', '23 Nov', '5.60', '−0.46', '.0310', '₹71', '₹395', '20.4/18.0', '35', '1.8%', '40', '7.9k', '+38%', '10↓', '−1.4', '₹7,840', '−31%']],
     stkw: '<b>GIR\'s pick: 29 Dec ATM</b> - 23 Nov spread 1.8% and θ ₹71/h; the 670 PE sits on the PUT wall. Lot 1,400 · charges ≈₹86.',
     note: 'Took GIR\'s EXIT even though it hurt. Lesson for GIR: a copper PUT needs copper still falling at entry.', noteT: 'you · 11:52',
     act: 'Action for tomorrow: a copper PUT only while copper is still falling at entry - checked by code before the GO NOW.'
   },
   48: {
-    chain: ['<b>gold −1.6%</b>', '<b>Jewellers &amp; gold loans DOWN</b> confirmed 09:20', '<b>MANAPPURAM DEPENDENT</b> (gold loans on gold) · SB · below VWAP', 'trigger <b>286.40</b> = break of the 09:45 low'],
-    said: '<b>GO NOW · PUT · MANAPPURAM · 285 · 29 Dec</b> · trigger 286.40 · stop 288.60 / 11.90 · T1 282.90 · target 279.60 / ≈17.10 · hold till 14:30 · "Don\'t exit before the stop or the target unless GIR says EXIT" · age 0.7s · MWPL 86% (warning) · <b>BOOK came from GIR - kept ✓</b>',
-    vote: ['4 of 5 agree · 82% by hit rate', 'agent 1 ✓ 58%|n 112', 'agent 2 ✓ 61%|n 96', '!agent 3 ✗ 44%→48%|n 31 "gold bounce near"', 'news ✓ 52%|n 58', 'money ✓ SB 55%|n 74', 'auditor PE ✓', '?X ? did not vote'], vnote: '',
+    chain: ['<b>gold −1.6%</b>', '<b>Jewellers &amp; gold loans −1.9%</b> <span class="bs">all 14 listed · free-float · breadth 12/14 · F&amp;O 4/4</span> · conf 09:20', '<b>MANAPPURAM DEPENDENT</b> (gold loans on gold) · SB · below VWAP', 'trigger <b>287.00</b> crossed 10:02:58'],
+    said: '<b>GO NOW · PUT · MANAPPURAM · 285 · 29 Dec</b> · trigger 287.00 · stop 288.60 / ≈12.07 · T1 280.30 / 16.20 (before the 280 PE wall) · hold till 14:30 · "Don\'t exit before the stop or the target unless GIR says EXIT" · age 0.7s · MWPL 86% (warning) · <b>BOOK came from GIR - kept ✓</b>',
+    vote: ['4 of 5 agree · 84% by hit rate', 'agent 1 ✓ 58%|n 31', 'agent 2 ✓ 61%|n 33', '!agent 3 ✗ 44%|n 27 "gold bounce near"', 'news ✓ 63%|n 41', 'money ✓ SB 55%|n 36', 'auditor PE ✓', '?X ? did not vote'], vnote: '',
     news: [['09:58', 'WORLD', 'Gold −1.4% in Asia; dollar firm', '▼ 4', 'Reuters'],
       ['09:51', 'GOLD LOANS', 'Live blog: gold-loan NBFCs slide as gold extends fall', '▼ 3', 'ET live blog'],
       ['09:30', 'MANAPPURAM', 'Filing: board meeting 28 Nov (fund raising)', '▲ 1', 'NSE filing']],
     nwh: '3 live at 10:06',
-    plan: [['entry', '13.25', 'ask ≈', '286.40', 'break <', '13.25', '10:06:22', '286.10', ''],
-      ['stop', '11.90', 'SL-L', '288.60', 'GOVERNS', '-', 'not hit', '287.20', 'high 10:31'],
-      ['target', '≈17.10', 'T1 15.05', '279.60', 'T1 282.90', '14.20', '11:41:12', '284.40', 'GIR BOOK'],
+    plan: [['entry', '13.25', 'ask', '287.00', 'break <', '13.25', '10:06:22', '286.40', ''],
+      ['stop', '≈12.07', 'share stop', '288.60', 'GOVERNS', '-', 'not hit', '287.20', 'high 10:31'],
+      ['target', '16.20', 'T1', '280.30', 'before 280', '14.20', '11:45:12', '284.50', 'GIR BOOK'],
       ['no chase', '14.30', '', '285.40', '', '13.25', '✓', '-', ''],
-      ['hold till', '14:30', 'time stop', '', '', '11:41', '1h 35m', '', '']],
-    pf: '<b>1 lot × 3,000</b> · cash <b>₹39,750</b> · at the share stop <b>−₹3,781</b> = 0.76R planned · Kite MANAPPURAM26DEC285PE · <b>SL-L trig 11.90 lim 11.20</b> resting in 22 s ✓',
+      ['hold till', '14:30', 'time stop', '', '', '11:45', '1h 39m', '', '']],
+    pf: '<b>1 lot × 3,000</b> · cash <b>₹39,750</b> · at the share stop <b>−₹3,540</b> = 0.71R planned (−₹3,960 with ₹420 est. costs) · backstop <b>SL-L trig 11.90 lim 11.40</b> resting in 22 s ✓',
     mkt: 'book in <b>13.20 / 13.25</b> · 0.38% · 31 lots · out <b>14.20 / 14.25</b> · 0.35% · 27 lots · spread cost <b>₹150</b>',
     ch: { from: 0, to: 315, lo: 276, hi: 292, seed: 11,
-      kp: [[0, 289.5], [20, 288.4], [30, 287.4], [45, 286.8], [50, 286.1], [70, 285.6], [76, 287.2], [95, 284.6], [110, 284.5], [140, 284.4], [175, 284.1], [240, 283], [290, 279.6], [315, 278.8]],
+      kp: [[0, 289.5], [20, 288.4], [30, 287.4], [45, 286.8], [50, 286.4], [70, 285.6], [76, 287.2], [95, 284.6], [110, 284.5], [140, 284.4], [175, 284.1], [240, 283], [290, 280.3], [315, 279.4]],
       vw: [[0, 289], [60, 287.5], [140, 286], [240, 284.6], [315, 282.6]],
-      lv: [{ p: 288.6, k: 'stop', t: '288.60' }, { p: 286.4, k: 'trig', t: '286.40' }, { p: 279.6, k: 'tgt', t: '279.60' }],
-      mk: [{ m: 51, p: 286.1, k: 'in' }, { m: 146, p: 284.4, k: 'out' }, { m: 97, p: 284.6, k: 'fu', t: 'H', pos: 'dn' }, { m: 145, p: 284.4, k: 'fu', t: 'B', pos: 'dn' }, { m: 291, k: 'aft', t: 'tgt 14:06' }],
-      pr: [[51, 13.25], [97, 14.0], [146, 14.2], [176, 14.4], [240, 15.0], [291, 17.1]], prl: ['13.25', '14.20'] },
-    fu: [['10:05:40', 'GO NOW', 'gold loans with the sector · SB · vote 4 of 5', 'entered in 41 s'],
+      lv: [{ p: 288.6, k: 'stop', t: '288.60' }, { p: 287, k: 'trig', t: '287.00' }, { p: 280.3, k: 'tgt', t: '280.30' }],
+      mk: [{ m: 51, p: 286.4, k: 'in' }, { m: 150, p: 284.5, k: 'out' }, { m: 97, p: 284.6, k: 'fu', t: 'H', pos: 'dn' }, { m: 145, p: 284.4, k: 'fu', t: 'B', pos: 'dn' }, { m: 291, k: 'aft', t: 'T1 14:06' }],
+      pr: [[51, 13.25], [97, 14.0], [145, 14.2], [150, 14.2], [176, 14.4], [240, 15.0], [291, 16.2]], prl: ['13.25', '14.20'] },
+    fu: [['10:05:00', 'GO NOW', 'gold loans with the sector · SB · vote 4 of 5', 'entered 10:06:22'],
       ['10:52:00', 'HOLD', 'on track −0.6% · give it time', 'acked 4 s', 1],
-      ['11:40:12', 'BOOK', 'STALLED: no new low for 3 five-min bars, falling volume, premium flat - 1 lot: book all', 'P2 rang · sold 11:41:12 ✓']],
-    split: [['share move Δ −0.49 × 1.7 pts', 2499], ['convexity Γ .0105', 50], ['time decay θ 1h 35m × ₹80/h', -127], ['IV 40.18% → 40.69% = +0.51 pt × vega ₹1,133', 578], ['spread in + out', -150]],
-    ghost: [['plan followed', '<b class="m up">+2.28R</b> tgt 14:06'], ['you (GIR BOOK)', '<b class="m up">+0.55R</b>'], ['× the risk taken', '<b class="m">0.72×</b> (₹3,781)'], ['+30 min 12:11', '<span class="m">284.10 still flat</span>'], ['close 15:30', '<span class="m">278.44 −4.08%</span>']],
-    gnote: 'You followed GIR - EARNED. The −1.73R is GIR\'s stall rule (right 1 of 4, n=4): on probation; with 1 lot it will say TRAIL, not BOOK.',
-    mline: 'MANAPPURAM at entry · PCR (Dec) <b>0.66</b> · max pain <b>292.5</b> · PE wall <b>280</b> (6 pts below; the 279.60 target sits on it) · CE wall 300 · IV 40.2% vs 20d 38.1% · rank 46 · <b>event check:</b> board meeting 28 Nov - outside 5 days ✓',
-    stk: [[1, '285 ATM ★', '29 Dec', '13.25', '−0.49', '.0105', '₹80', '₹1,133', '40.2/38.1', '46', '0.38%', '31', '4.4k', '+14%', '6↓', '−0.10%', '₹39,750', '+7%'],
-      [0, '290 1 ITM', '29 Dec', '16.30', '−0.58', '.0101', '₹76', '₹1,098', '39.8/37.9', '45', '0.62%', '18', '2.1k', '+6%', '6↓', '−0.11%', '₹48,900', '+6%'],
-      [0, '280 1 OTM', '29 Dec', '10.60', '−0.40', '.0100', '₹82', '₹1,080', '40.9/38.5', '48', '0.94%', '12', '3.3k', '+22%', 'on it', '−0.16%', '₹31,800', '+8%'],
-      [0, '285 ATM', '23 Nov', '4.10', '−0.47', '.0340', '₹160', '₹352', '46.8/41.0', '61', '2.4%', '44', '9.8k', '+51%', '6↓', '−0.27%', '₹12,300', '−5%']],
+      ['11:40:12', 'BOOK', 'STALLED: no new low for 3 five-min bars, falling volume, premium flat - 1 lot: book all', 'sold 11:45:12 (after the P1 call)']],
+    split: [['share move Δ −0.49 × 1.9 pts', 2793], ['convexity Γ .0105', 55], ['time decay θ 1h 39m × ₹80/h', -132], ['IV 36.62% → 36.87% = +0.25 pt × vega ₹1,134', 284], ['spread in + out', -150]],
+    ghost: [['plan followed', '<b class="m up">+1.74R</b> T1 14:06'], ['you (GIR BOOK)', '<b class="m up">+0.55R</b>'], ['× the risk taken', '<b class="m">0.77×</b> (₹3,540)'], ['+30 min 12:15', '<span class="m">284.10 still flat</span>'], ['close 15:30', '<span class="m">278.44 −4.38%</span>']],
+    gnote: 'You followed GIR - EARNED. The −1.20R is GIR\'s stall rule (right 1 of 4, n=4): on probation; with 1 lot it will say TRAIL, not BOOK.',
+    mline: 'MANAPPURAM at entry · PCR (Dec) <b>0.66</b> · max pain <b>292.5</b> · PE wall <b>280</b> (6.4 pts below; T1 280.30 stops just before it) · CE wall 300 · IV 36.6% vs 20d 34.8% · rank 46 · MWPL 86% · ban at 95% · <b>event check:</b> board meeting 28 Nov - outside 5 days ✓',
+    stk: [[1, '285 ATM ★', '29 Dec', '13.25', '−0.49', '.0105', '₹80', '₹1,134', '36.6/34.8', '46', '0.38%', '31', '4.4k', '+14%', '6↓', '−0.3', '₹39,750', '+7%'],
+      [0, '290 1 ITM', '29 Dec', '16.30', '−0.58', '.0101', '₹76', '₹1,098', '36.2/34.8', '45', '0.62%', '18', '2.1k', '+6%', '6↓', '−0.3', '₹48,900', '+6%'],
+      [0, '280 1 OTM', '29 Dec', '10.60', '−0.40', '.0100', '₹82', '₹1,080', '37.3/34.8', '48', '0.94%', '12', '3.3k', '+22%', 'on it', '−0.5', '₹31,800', '+8%'],
+      [0, '285 ATM', '23 Nov', '4.10', '−0.47', '.0340', '₹160', '₹352', '42.6/34.8', '61', '2.4%', '44', '9.8k', '+51%', '6↓', '−0.8', '₹12,300', '−5%']],
     stkw: '<b>GIR\'s pick: 29 Dec ATM</b> - 23 Nov spread 2.4%, θ ₹160/h; MWPL 86% (a warning, not a block) noted on the card. Lot 3,000 · charges ≈₹125.',
     note: 'Booked when GIR said stalled. Then it went to my target in the afternoon - annoying, but I followed the plan.', noteT: 'you · 12:02'
   },
   47: {
     chain: ['<b>no GIR call</b> - OWN TRADE via Kite', 'Brokers &amp; exchanges · no sector call', 'entered 11 min after the #46 TITAN loss - the 20-min cooling broken'],
     said: 'No card - an OWN TRADE counts toward the 3 trades and needs a share stop within 60 s. GIR found it in Kite at 11:03:20.', vote: [],
-    tln: '<b>11:03:12</b> you bought CALL 2,450 (OWN TRADE) → <b>11:27:10</b> CNBC-TV18 reporter: <b>"SEBI mulls MTF limits - sources"</b> → <b>11:27:40</b> brokers basket (ANGELONE, BSE, CDSL, MCX) −1.4% in 60 s on a volume burst → <b>GIR silent</b> - no basket-shock alarm existed on 18 Nov → <b>11:31:00</b> your stop 2,418 hit → <b>11:31:05</b> LOCKED (2 losses in a row). <b>Fix live since 19 Nov:</b> basket shock (S12) fired in 12 s on 19 Nov (11:42:08, GET READY on price alone) and found the story at 11:42:31 before any GO NOW.',
+    tln: [['11:03:12', 'you bought CALL 2,450 (OWN TRADE, no card)'], ['11:27:10', 'CNBC-TV18 reporter: "SEBI mulls MTF limits - sources"'], ['11:27:40', 'brokers basket (ANGELONE, BSE, CDSL, MCX) −1.4% in 60 s · <b>GIR silent</b>: no basket alarm on 18 Nov'], ['11:31:00', 'your stop 2,418 hit → 11:31:05 LOCKED (2 losses in a row)'], ['fix', 'since 19 Nov a basket move raises BASKET SHOCK in 12 s (11:42:08) and found the story 35 s after the first move']],
     news: [['11:27', 'POLICY', 'SEBI mulls MTF limits - sources (no decision yet)', '▼ 5', 'CNBC-TV18 TV'],
       ['11:34', 'POLICY', 'Live blog: brokers fall on SEBI MTF curb talk', '▼ 4', 'Moneycontrol'],
       ['11:52', 'POLICY', 'SEBI discussing MTF leverage caps, no proposal yet', '▼ 3', 'ET'],
       ['14:10', 'POLICY', 'SEBI official: "no decision taken" (denial)', '▲ 2', 'X / wire']],
     nwh: 'GIR had none of these on 18 Nov - the miss (TRADER-2)',
-    plan: [['entry', '-', 'no card', '-', '', '58.20', '11:03:12', '2,446', ''],
-      ['stop', '-', '', '2,418', 'you 11:03', '46.40', 'stop 11:31', '2,418', 'hit'],
+    plan: [['entry', '-', 'no card', '-', '', '69.00', '11:03:12', '2,446', ''],
+      ['stop', '-', '', '2,418', 'you 11:03', '55.70', 'stop 11:31', '2,418', 'hit'],
       ['target', '-', '', '-', '', '', '', '', ''],
       ['hold till', '-', '', '', '', '11:31', '28m', '', '']],
-    pf: 'GIR showed the NO STOP bar at 11:03:20; you typed a share stop in 20 s ✓ · <b>1 lot × 250</b> · cash ₹14,550 · stop = the whole risk <b>−₹3,020</b> · then <b>LOCKED 11:31:05</b> until 09:00 Thu (2 losses in a row)',
-    mkt: 'book in <b>58.00 / 58.20</b> · 0.34% · out <b>46.40 / 46.80</b> (SL-M through the gap) · spread cost <b>₹60</b>',
+    pf: 'GIR showed the NO STOP bar at 11:03:20; you typed a share stop in 20 s ✓ · <b>1 lot × 250</b> · cash ₹17,250 · at the stop <b>−₹3,325</b> + charges ₹75 = <b>−₹3,400</b> · then <b>LOCKED 11:31:05</b> until 09:00 Thu (2 losses in a row)',
+    mkt: 'book in <b>68.80 / 69.00</b> · 0.29% · out <b>55.70 / 56.10</b> (SL-M through the gap) · spread cost <b>₹75</b>',
     ch: { from: 60, to: 240, lo: 2380, hi: 2465, seed: 9,
       kp: [[60, 2452], [100, 2449], [108, 2446], [125, 2440], [132, 2438], [134, 2426], [136, 2418], [150, 2405], [180, 2398], [240, 2392]],
       vw: [[60, 2450], [130, 2444], [240, 2420]],
       lv: [{ p: 2418, k: 'stop', t: '2,418' }],
       mk: [{ m: 108, p: 2446, k: 'in' }, { m: 136, p: 2418, k: 'out' }, { m: 132, k: 'aft', t: 'TV 11:27' }],
-      pr: [[108, 58.2], [125, 55], [136, 46.4], [180, 38]], prl: ['58.20', '46.40'] },
+      pr: [[108, 69], [125, 65], [136, 55.7], [180, 47]], prl: ['69.00', '55.70'] },
     fu: [['11:03:20', 'NO STOP', 'OWN TRADE found in Kite - set the share stop', 'set in 20 s ✓', 1],
-      ['11:31:00', 'STOP', 'share stop 2,418 hit', 'sold 46.40 ✓'],
-      ['11:31:05', 'LOCKED', '2 losses in a row (charter) - until 09:00 Thu · not the ₹10,000 day loss (day −₹4,010)', 'kill-switch steps shown', 1]],
-    split: [['share move Δ 0.55 × −28 pts', -3850], ['convexity Γ', 176], ['time decay θ 28m', -27], ['IV 31.40% → 32.40% = +1.00 pt × vega ₹811 (the story)', 811], ['spread in + out', -60]],
-    ghost: [['no plan', 'nothing to follow'], ['you', '<b class="m dn">−0.60R</b> · × risk −1.0'], ['the story', '11:27 TV, 4 min before your stop'], ['GIR then', 'silent - the 18 Nov miss'], ['now', 'basket alarm in 12 s (19 Nov)']],
+      ['11:31:00', 'STOP', 'share stop 2,418 hit', 'sold 55.70 ✓'],
+      ['11:31:05', 'LOCKED', '2 losses in a row (charter) - until 09:00 Thu · not the ₹10,000 day loss (day −₹4,750)', 'kill-switch steps shown', 1]],
+    split: [['share move Δ 0.55 × −28 pts', -3850], ['convexity Γ', 176], ['time decay θ 28m', -27], ['IV 21.10% → 21.65% = +0.55 pt × vega ₹820 (the story)', 451], ['spread in + out', -75]],
+    ghost: [['no plan', 'nothing to follow'], ['you', '<b class="m dn">−0.68R</b> · × risk −1.0'], ['the story', '11:27 TV, 4 min before your stop'], ['GIR then', 'silent - the 18 Nov miss'], ['now', 'basket alarm in 12 s (19 Nov)']],
     gnote: 'GIR missed the SEBI story on 18 Nov. Since 19 Nov a basket move wakes GET READY in seconds - never GO NOW on price alone.',
     mline: '', stk: [], stkw: '',
     note: 'Angry after TITAN. Bought ANGELONE without a card. Never again inside cooling.', noteT: 'you · 18 Nov 16:22'
   },
   46: {
-    chain: ['<b>gold −2.0%</b> night', '<b>Jewellers &amp; gold loans DOWN</b> confirmed 09:20', '<b>TITAN LEADER</b> · SB · below VWAP', 'trigger <b>3,652</b> = break of the 09:50 low'],
-    said: '<b>GO NOW · PUT · TITAN · 3,650 · 29 Dec</b> · trigger 3,652 · stop 3,676 / 91.80 · target 3,560 / ≈152 · hold till 14:30 · <b>"Don\'t exit before the stop or the target unless GIR says EXIT" - broken</b> · age 0.5s',
+    chain: ['<b>gold −2.0%</b> night', '<b>Jewellers &amp; gold loans −2.4%</b> <span class="bs">all 14 listed · free-float · breadth 13/14 · F&amp;O 4/4</span> · conf 09:20', '<b>TITAN LEADER</b> · SB · below VWAP', 'trigger <b>3,652</b> = break of the 09:50 low'],
+    said: '<b>GO NOW · PUT · TITAN · 3,650 · 29 Dec</b> · trigger 3,652 · stop 3,676 / ≈95.80 · target 3,560 / ≈154.20 · hold till 14:30 · <b>"Don\'t exit before the stop or the target unless GIR says EXIT" - broken</b> · age 0.5s',
     vote: ['4 of 5 agree · 82% by hit rate', 'agent 1 ✓', 'agent 2 ✓', '!agent 3 ✗ "oversold"', 'news ✓', 'money ✓ SB', 'auditor PE ✓', '?X ? did not vote'], vnote: '',
     news: [['09:40', 'WORLD', 'Gold falls 2% overnight; copper at lowest since July', '▼ 4', 'Reuters'], ['09:55', 'TITAN', 'Live blog: TITAN slides with gold', '▼ 3', 'ET live blog']], nwh: '2 live at 10:05',
-    plan: [['entry', '104.00', 'ask ≈', '3,652', 'break <', '104.00', '10:05:18', '3,651.20', ''],
-      ['stop', '91.80', 'SL-L', '3,676', 'GOVERNS', '-', 'not hit', '3,668.00', 'high 10:31'],
-      ['target', '≈152', '', '3,560', '', '98.80', 'you 10:52', '3,662.40', 'EARLY'],
-      ['no chase', '108.50', '', '3,642', '', '104.00', '✓', '-', ''],
+    plan: [['entry', '108.00', 'ask', '3,652', 'break <', '108.00', '10:05:18', '3,651.20', ''],
+      ['stop', '≈95.80', 'share stop', '3,676', 'GOVERNS', '-', 'not hit', '3,668.00', 'high 10:31'],
+      ['target', '≈154.20', '', '3,560', '', '100.75', 'you 10:52', '3,662.40', 'EARLY'],
+      ['no chase', '112.50', '', '3,642', '', '108.00', '✓', '-', ''],
       ['hold till', '14:30', 'time stop', '', '', '10:52', '47m', '', '']],
-    pf: '<b>1 lot × 175</b> · cash ₹18,200 · at the share stop −₹2,204 = 0.44R planned · SL-L trig 91.80 lim 89.00 resting ✓ · exit coach asked a reason: "scared"',
-    mkt: 'book in 103.70 / 104.00 · 0.29% · 33 lots · out 98.80 / 99.20 · 0.40% · spread cost ₹61',
+    pf: '<b>1 lot × 175</b> · cash ₹18,900 · at the share stop −₹2,135 = 0.43R planned · backstop SL-L trig 95.00 lim 93.00 resting ✓ · exit coach asked a reason: "scared"',
+    mkt: 'book in 107.80 / 108.00 · 0.19% · 33 lots · out 100.75 / 101.05 · 0.30% · spread cost ₹44',
     ch: { from: 0, to: 315, lo: 3500, hi: 3700, seed: 5,
       kp: [[0, 3684], [30, 3664], [50, 3651], [76, 3668], [97, 3662], [130, 3585], [180, 3570], [215, 3560], [240, 3548], [300, 3536], [315, 3531]],
       vw: [[0, 3682], [76, 3664], [140, 3630], [240, 3590], [315, 3566]],
       lv: [{ p: 3676, k: 'stop', t: '3,676' }, { p: 3652, k: 'trig', t: '3,652' }, { p: 3560, k: 'tgt', t: '3,560' }],
       mk: [{ m: 50, p: 3651.2, k: 'in' }, { m: 97, p: 3662.4, k: 'out' }, { m: 76, p: 3668, k: 'fu', t: 'H', pos: 'up' }, { m: 127, k: 'aft', t: '+30m' }],
-      pr: [[50, 104], [76, 97.1], [97, 98.8], [127, 122.2], [215, 152.4], [315, 160]], prl: ['104.00', '98.80'] },
+      pr: [[50, 108], [76, 101.1], [97, 100.75], [127, 126.2], [215, 154.2], [315, 164]], prl: ['108.00', '100.75'] },
     fu: [['10:04:50', 'GO NOW', 'jewellers leader with the sector', 'entered in 28 s'],
       ['10:31:30', 'HOLD', 'bounce inside a −2% fall - stop 3,676 not touched', 'acked 6 s', 1],
       ['10:52:40', 'YOU', 'sold before the stop, target or time stop', 'no GIR EXIT was given', 1]],
-    split: [['share move Δ −0.49 × +11.2 pts', -960], ['convexity Γ', 19], ['time decay θ 47m × ₹36/h', -28], ['IV 21.62% → 21.77% = +0.15 pt × vega ₹801', 120], ['spread in + out', -61]],
-    ghost: [['plan followed', '<b class="m up">+1.68R</b> tgt ≈12:50'], ['you', '<b class="m dn">−0.20R</b> cost 1.87R'], ['× the risk taken', '<b class="m">−0.45×</b> (₹2,204)'], ['+30 min 11:22', '<span class="m">3,585 −2.1% more</span>'], ['close 15:30', '<span class="m">3,484.60 −5.3%</span>']],
+    split: [['share move Δ −0.49 × +11.2 pts', -960], ['convexity Γ', 19], ['time decay θ 47m × ₹36/h', -28], ['IV 22.06% → 21.76% = −0.30 pt × vega ₹854', -256], ['spread in + out', -44]],
+    ghost: [['plan followed', '<b class="m up">+1.60R</b> tgt ≈12:50'], ['you', '<b class="m dn">−0.27R</b> cost 1.87R'], ['× the risk taken', '<b class="m">−0.63×</b> (₹2,135)'], ['+30 min 11:22', '<span class="m">3,585 −2.1% more</span>'], ['close 15:30', '<span class="m">3,484.60 −5.3%</span>']],
     gnote: 'The biggest leak of the week. Rule 1 for next week targets exactly this.',
-    mline: 'TITAN at entry (18 Nov) · PCR (Dec) 0.78 · max pain 3,700 · PE wall 3,600 (51 pts below) · IV 21.6% vs 20d 21.2% · rank 30 · event check ✓',
-    stk: [[1, '3,650 ATM ★', '29 Dec', '104.00', '−0.49', '.0015', '₹36', '₹801', '21.6/21.2', '30', '0.29%', '33', '1.6k', '+11%', '51↓', '−0.10%', '₹18,200', '−5%']], stkw: 'one strike stored for this older review; the full chooser is kept from 19 Nov.',
+    mline: 'TITAN at entry (18 Nov) · PCR (Dec) 0.78 · max pain 3,700 · PE wall 3,600 (51 pts below) · IV 22.1% vs 20d 21.6% · rank 30 · event check ✓',
+    stk: [[1, '3,650 ATM ★', '29 Dec', '108.00', '−0.49', '.0015', '₹36', '₹854', '22.1/21.6', '30', '0.19%', '33', '1.6k', '+11%', '51↓', '−3.7', '₹18,900', '−7%']], stkw: 'one strike stored for this older review; the full chooser is kept from 19 Nov.',
     note: 'Got scared at the 10:31 bounce and sold. GIR said HOLD. Should have held.', noteT: 'you · 18 Nov 16:20'
   },
   45: {
-    chain: ['<b>ROTATION 30M</b>: money out of private banks (HDFCBANK, ICICIBANK −0.6%) into <b>PSU banks</b> (+1.4%)', 'GET READY <b>13:05</b> - late: the move began 12:40 (15M saw it 12:50, 30M confirmed 13:05)', '<b>PNB ROTATION</b> · above VWAP · LB in PSU bank futures', 'no chase above <b>3.85 / 116.00</b>'],
+    chain: ['<b>ROTATION 30M</b>: money out of private banks (NIFTY PVT BANK −0.6%) into <b>PSU banks +1.4%</b> <span class="bs">NIFTY PSU BANK · breadth 11/12 · F&amp;O 10/11</span>', 'GET READY <b>13:05</b> - late: the move began 12:40 (15M saw it 12:50, 30M confirmed 13:05)', '<b>PNB ROTATION</b> · above VWAP · LB in PSU bank futures', 'no chase above <b>3.85 / 116.00</b>'],
     said: '<b>GO NOW · CALL · PNB · 115 · 29 Dec</b> (rotation) · trigger 116.00 · stop 115.80 / 3.25 · target 118.10 / ≈4.90 · no chase above 3.85 · hold till 14:30 · age 1.1s · <b>you entered at 4.20 = +9% over the no-chase - broken</b>',
     vote: ['4 of 5 agree · 78% by hit rate', 'agent 1 ✓ 58%|n 108', 'agent 2 ✓ 61%|n 93', 'agent 3 ✓ 44%→48%|n 29', '!news ✗ 52%|n 55 "no story yet"', 'money ✓ LB 55%|n 71', 'auditor CE ✓', '?X ? did not vote'], vnote: 'ROTATION card: 15M / 30M / 1H windows, money out of X into Y, with the age of each window',
     news: [['12:44', 'POLICY', 'Govt may infuse capital in weak PSU banks - sources', '▲ 2', 'X / wire'],
@@ -1354,40 +1494,40 @@ const D = {
     ghost: [['plan (no chase 3.85)', 'no fill → <b class="m">0.00R</b>'], ['you', '<b class="m dn">−0.58R</b> · × risk −1.0'], ['+30 min 14:28', '<span class="m">115.30</span>'], ['close 15:30', '<span class="m">114.95 −0.9%</span>']],
     gnote: 'Right rotation, late call (13:05 vs a 12:40 start) and a chased entry. ROTATION record 2 of 6 (n=6) - too early to judge.',
     mline: 'PNB at entry · PCR (Dec) <b>1.12</b> · max pain <b>113</b> · CE wall <b>118</b> (1.6 pts above - before the 118.10 target, warned) · PE wall 110 · IV 27.0% vs 20d 25.8% · rank 48 · <b>event check:</b> no results within 5 days ✓',
-    stk: [[1, '115 ATM ★', '29 Dec', '4.20', '0.55', '.050', '₹70', '₹1,226', '27.0/25.8', '48', '1.2%', '64', '38k', '+12%', '1.6↑', '+0.6%', '₹33,600', '−8%'],
-      [0, '110 1 ITM', '29 Dec', '7.70', '0.71', '.041', '₹62', '₹1,080', '26.6/25.5', '45', '0.9%', '40', '21k', '+4%', '1.6↑', '+0.5%', '₹61,600', '−5%'],
-      [0, '120 1 OTM', '29 Dec', '2.10', '0.33', '.046', '₹64', '₹1,050', '27.9/26.4', '52', '2.4%', '90', '52k', '+20%', '1.6↑', '+0.9%', '₹16,800', '−14%'],
-      [0, '115 ATM', '24 Nov', '2.05', '0.58', '.140', '₹180', '₹410', '31.0/27.2', '66', '2.4%', '120', '64k', '+35%', '1.6↑', '+0.9%', '₹16,400', '−22%']],
-    stkw: '<b>GIR\'s pick: 29 Dec ATM</b> - lot 8,000 makes the spread ₹400 even at 1.2%; the near month 2.4%. (17 Nov: expiry was still Tue 24 Nov.)',
+    stk: [[1, '115 ATM ★', '29 Dec', '4.20', '0.55', '.050', '₹70', '₹1,226', '27.0/25.8', '48', '1.2%', '64', '38k', '+12%', '1.6↑', '+0.7', '₹33,600', '−8%'],
+      [0, '110 1 ITM', '29 Dec', '7.70', '0.71', '.041', '₹62', '₹1,080', '26.6/25.5', '45', '0.9%', '40', '21k', '+4%', '1.6↑', '+0.6', '₹61,600', '−5%'],
+      [0, '120 1 OTM', '29 Dec', '2.10', '0.33', '.046', '₹64', '₹1,050', '27.9/26.4', '52', '2.4%', '90', '52k', '+20%', '1.6↑', '+1.0', '₹16,800', '−14%'],
+      [0, '115 ATM', '23 Nov', '2.05', '0.58', '.140', '₹180', '₹410', '31.0/27.2', '66', '2.4%', '120', '64k', '+35%', '1.6↑', '+1.0', '₹16,400', '−22%']],
+    stkw: '<b>GIR\'s pick: 29 Dec ATM</b> - lot 8,000 makes the spread ₹400 even at 1.2%; the near month (Mon 23 Nov, Tue 24 holiday) 2.4%.',
     note: 'Chased - the rotation was already 30 min old.', noteT: 'you · 17 Nov 16:10'
   },
   44: {
-    chain: ['<b>pharma long build-up</b> (US generics, rupee weak)', '<b>Pharma UP</b> confirmed 09:35', '<b>LUPIN LEADER</b> · LB · above VWAP', 'trigger <b>2,051</b> = break of the opening high'],
-    said: '<b>GO NOW · CALL · LUPIN · 2,060 · 29 Dec</b> · trigger 2,051 · stop 2,038 / 33.80 · target 2,072 / ≈50.00 · hold till 14:30 · age 0.8s · <b>kept ✓</b>',
+    chain: ['<b>pharma long build-up</b> (US generics, rupee weak)', '<b>Pharma +1.1%</b> <span class="bs">NIFTY PHARMA index · breadth 16/20 · F&amp;O 13/16</span> · conf 09:35', '<b>LUPIN LEADER</b> · LB · above VWAP', 'trigger <b>2,051</b> = break of the opening high'],
+    said: '<b>GO NOW · CALL · LUPIN · 2,060 · 29 Dec</b> · trigger 2,051 · stop 2,038 / ≈33.80 · target 2,072 / ≈51.00 · hold till 14:30 · age 0.8s · <b>kept ✓</b>',
     vote: ['5 of 5 agree · 100% by hit rate', 'agent 1 ✓', 'agent 2 ✓', 'agent 3 ✓', 'news ✓', 'money ✓ LB', 'auditor CE ✓', '?X ? did not vote'], vnote: '',
     news: [['09:30', 'LUPIN', 'US FDA clears two LUPIN generics', '▲ 4', 'NSE filing'], ['09:48', 'PHARMA', 'Live blog: pharma index leads, rupee weak', '▲ 3', 'ET live blog']], nwh: '2 live at 10:14',
-    plan: [['entry', '41.20', 'ask ≈', '2,051', 'break >', '41.20', '10:14:12', '2,051.40', ''],
-      ['stop', '33.80', 'SL-L', '2,038', 'GOVERNS', '-', 'not hit', '2,043', 'low 11:00'],
-      ['target', '≈50.00', '', '2,072', '', '50.05', '12:40:20', '2,072.30', '✓'],
+    plan: [['entry', '40.50', 'ask', '2,051', 'break >', '40.50', '10:14:12', '2,051.40', ''],
+      ['stop', '≈33.80', 'share stop', '2,038', 'GOVERNS', '-', 'not hit', '2,043', 'low 11:00'],
+      ['target', '≈51.00', '', '2,072', '', '51.20', '12:40:20', '2,072.30', '✓'],
       ['hold till', '14:30', 'time stop', '', '', '12:40', '2h 26m', '', '']],
-    pf: '<b>1 lot × 400</b> · cash ₹16,480 · at the share stop −₹2,763 = 0.55R planned · SL-L trig 33.80 lim 32.00 resting ✓',
-    mkt: 'book in 41.10 / 41.20 · 0.24% · out 50.05 / 50.15 · spread cost ₹40',
+    pf: '<b>1 lot × 400</b> · cash ₹16,200 · at the share stop −₹2,680 = 0.54R planned · backstop SL-L trig 33.00 lim 32.00 resting ✓',
+    mkt: 'book in 40.40 / 40.50 · 0.25% · out 51.20 / 51.30 · spread cost ₹40',
     ch: { from: 0, to: 240, lo: 2032, hi: 2078, seed: 17,
       kp: [[0, 2040], [30, 2045], [55, 2050], [59, 2051.4], [80, 2049], [100, 2043], [115, 2047], [150, 2058], [180, 2066], [205, 2072.3], [240, 2070]],
       vw: [[0, 2041], [100, 2046], [240, 2058]],
       lv: [{ p: 2038, k: 'stop', t: '2,038' }, { p: 2051, k: 'trig', t: '2,051' }, { p: 2072, k: 'tgt', t: '2,072' }],
       mk: [{ m: 59, p: 2051.4, k: 'in', up: 1 }, { m: 205, p: 2072.3, k: 'out', up: 1 }, { m: 105, p: 2043, k: 'fu', t: 'H', pos: 'dn' }, { m: 235, k: 'aft', t: '+30m' }],
-      pr: [[59, 41.2], [100, 37.8], [150, 44], [205, 50.05], [235, 49.2]], prl: ['41.20', '50.05'] },
+      pr: [[59, 40.5], [100, 37.1], [150, 44.2], [205, 51.2], [235, 50.4]], prl: ['40.50', '51.20'] },
     fu: [['10:13:30', 'GO NOW', 'pharma leader with LB', 'entered in 42 s'], ['11:00:20', 'HOLD', 'dip to 2,043 holds above the stop 2,038', 'acked 5 s', 1], ['12:40:05', 'BOOK', 'target 2,072 reached - book all (1 lot)', 'sold 12:40:20 ✓']],
-    split: [['share move Δ 0.50 × 20.9 pts', 4180], ['convexity Γ .0026', 227], ['time decay θ 2h 26m × ₹40/h', -97], ['IV 26.04% → 25.34% = −0.70 pt × vega ₹1,043', -730], ['spread in + out', -40]],
-    ghost: [['plan followed', '<b class="m up">+0.69R</b> same ✓'], ['you', '<b class="m up">+0.69R</b> · × risk 1.25'], ['+30 min 13:10', '<span class="m">2,069.80</span>'], ['close 15:30', '<span class="m">2,061.40 +1.2%</span>']],
+    split: [['share move Δ 0.50 × 20.9 pts', 4180], ['convexity Γ .0026', 227], ['time decay θ 2h 26m × ₹40/h', -97], ['IV 16.10% → 16.11% = +0.01 pt × vega ₹1,123', 10], ['spread in + out', -40]],
+    ghost: [['plan followed', '<b class="m up">+0.84R</b> same ✓'], ['you', '<b class="m up">+0.84R</b> · × risk 1.57'], ['+30 min 13:10', '<span class="m">2,069.80</span>'], ['close 15:30', '<span class="m">2,061.40 +1.2%</span>']],
     gnote: 'Textbook: plan kept, target hit, no tag.',
-    mline: 'LUPIN at entry · PCR (Dec) 1.08 · max pain 2,040 · CE wall 2,100 (49 pts above) · IV 26.0% vs 20d 24.8% · rank 38 · event check ✓ (results 5 Feb)',
-    stk: [[1, '2,060 ATM ★', '29 Dec', '41.20', '0.50', '.0026', '₹40', '₹1,083', '26.0/24.8', '38', '0.24%', '52', '1.1k', '+15%', '49↑', '+0.2%', '₹16,480', '+21%']], stkw: 'one strike stored for this older review.',
+    mline: 'LUPIN at entry · PCR (Dec) 1.08 · max pain 2,040 · CE wall 2,100 (49 pts above) · IV 16.1% vs 20d 15.4% · rank 38 · event check ✓ (results 5 Feb)',
+    stk: [[1, '2,060 ATM ★', '29 Dec', '40.50', '0.50', '.0026', '₹40', '₹1,123', '16.1/15.4', '38', '0.25%', '52', '1.1k', '+15%', '49↑', '+4.1', '₹16,200', '+26%']], stkw: 'one strike stored for this older review.',
     note: 'Textbook. Held through the dip to 2,043.', noteT: 'you · 16 Nov 15:40'
   },
   43: {
-    chain: ['<b>iron ore −3%</b> (China steel data)', '<b>Steel DOWN</b> confirmed 09:30', '<b>TATASTEEL DEPENDENT</b> · SB', 'trigger <b>151.20</b> · time stop 45 min'],
+    chain: ['<b>iron ore −3%</b> (China steel data)', '<b>Metals −0.9%</b> <span class="bs">NIFTY METAL index · steel 9/10 down · F&amp;O 7/8</span> · conf 09:30', '<b>TATASTEEL DEPENDENT</b> · SB', 'trigger <b>151.20</b> · time stop 45 min'],
     said: '<b>GO NOW · PUT · TATASTEEL · 150 · 29 Dec</b> · trigger 151.20 · stop 152.40 / 3.95 · target 149.20 / ≈5.80 · time stop 45 min · age 0.7s · <b>kept ✓</b>',
     vote: ['4 of 5 agree · 80% by hit rate', 'agent 1 ✓', 'agent 2 ✓', '!agent 3 ✗ "range day"', 'news ✓', 'money ✓ SB', 'auditor PE ✓', '?X ? did not vote'], vnote: '',
     news: [['08:55', 'WORLD', 'Iron ore −3% on weak China steel output', '▼ 4', 'Reuters'], ['09:40', 'METALS', 'Live blog: steel stocks open lower', '▼ 2', 'Moneycontrol']], nwh: '2 live at 09:48',
@@ -1395,7 +1535,7 @@ const D = {
       ['stop', '3.95', 'SL-L', '152.40', 'GOVERNS', '-', 'not hit', '151.90', 'high'],
       ['target', '≈5.80', '', '149.20', '', '-', '', '-', ''],
       ['time stop', '45 min', '10:33', '', '', '4.75', '10:35:10', '151.10', '✓ plan']],
-    pf: '<b>1 lot × 5,500</b> · cash ₹26,675 · at the share stop −₹3,066 = 0.61R planned · SL-L trig 3.95 lim 3.70 resting ✓',
+    pf: '<b>1 lot × 5,500</b> · cash ₹26,675 · at the share stop −₹3,066 = 0.61R planned · backstop SL-L trig 3.90 lim 3.70 resting ✓',
     mkt: 'book in 4.80 / 4.85 · 1.0% · out 4.75 / 4.80 · spread cost ₹275',
     ch: { from: 0, to: 150, lo: 149.6, hi: 152.8, seed: 19,
       kp: [[0, 152.4], [20, 151.8], [33, 151.2], [45, 151.5], [60, 151.3], [80, 151.1], [110, 150.9], [150, 150.2]],
@@ -1408,13 +1548,13 @@ const D = {
     ghost: [['plan followed', '<b class="m dn">−0.13R</b> same ✓'], ['you', '<b class="m dn">−0.13R</b> · × risk −0.21'], ['+30 min 11:05', '<span class="m">150.90</span>'], ['close 15:30', '<span class="m">149.85 −1.3%</span>']],
     gnote: 'The time stop did its job: a small loss instead of a long wait.',
     mline: 'TATASTEEL at entry · PCR (Dec) 0.92 · max pain 152.5 · PE wall 145 (6.2 pts below) · IV 29.0% vs 20d 27.5% · rank 51 · event check ✓',
-    stk: [[1, '150 ATM ★', '29 Dec', '4.85', '−0.45', '.045', '₹110', '₹1,100', '29.0/27.5', '51', '1.0%', '88', '61k', '+9%', '6.2↓', '−0.3%', '₹26,675', '−2%']], stkw: 'one strike stored for this older review.',
+    stk: [[1, '150 ATM ★', '29 Dec', '4.85', '−0.45', '.045', '₹110', '₹1,100', '29.0/27.5', '51', '1.0%', '88', '61k', '+9%', '6.2↓', '−0.5', '₹26,675', '−2%']], stkw: 'one strike stored for this older review.',
     note: 'Nothing happened, the time stop did its job.', noteT: 'you · 16 Nov 15:42'
   }
 };
 
 /* ================= state ================= */
-let scope = 'week', gsel = null, sec = 'all', selId = 50, rulePick = 1;
+let scope = 'week', gsel = null, sec = 'all', selId = 50, rulePick = 1, storyOpen = false, fillOpen = false;
 const openGrp = { WK2: false, WK1: false, OCT: false };
 const pickGrade = {};
 const inSec = t => sec === 'all' || t.sec === sec;
@@ -1438,7 +1578,7 @@ function renderList() {
     rows.forEach(t => {
       const g = pickGrade[t.id] || t.grade;
       h += `<div class="tr${t.id === selId ? ' sel' : ''}" data-id="${t.id}">
-        <div class="a"><span class="no">#${t.id}</span>${share(t.sym)}<span class="ct"><span class="cp">${t.side === 'PE' ? 'PUT' : 'CALL'}</span> <span class="mono">${t.k}</span></span><span class="sp"></span><span class="pl ${cls(t.net)}">${inr(t.net)}</span></div>
+        <div class="a"><span class="no">#${t.id}</span>${share(t.sym)}<span class="ct"><span class="cp ${t.side === 'PE' ? 'pe' : 'ce'}">${t.side === 'PE' ? 'PUT' : 'CALL'}</span> <span class="mono">${t.k}</span></span><span class="sp"></span><span class="pl ${cls(t.net)}">${inr(t.net)}</span></div>
         <div class="b"><span class="role ${RC[t.role] || ''}">${t.role}</span><span class="gr ${GR[g][0]}">${GR[g][1]}</span><span class="rr ${cls(t.R)}">${rr(t.R)}</span></div>
         <div class="c"><span class="tm">${t.inT.slice(0, 5)}→${t.outT.slice(0, 5)}</span><span class="w${t.tags.length ? ' bad' : ''}" title="${t.w}">${t.ex}</span></div></div>`;
     });
@@ -1451,7 +1591,7 @@ function renderList() {
       h += `<div class="tl-old" data-grp="${gk}" title="click = open the week in place"><span class="tog">${openGrp[gk] ? '▾' : '▸'}</span><span>${GROUPS[gk][0]}</span><span class="mut">${rows.length} · ${won} won${brk ? ` · ${brk} break${brk === 1 ? '' : 's'}` : ''}</span><span class="sp"></span><span class="v ${cls(net)}">${inr(net)}</span></div>`;
       if (openGrp[gk]) rows.slice().reverse().forEach(t => {
         const g = pickGrade[t.id] || t.grade;
-        h += `<div class="to${t.id === selId ? ' sel' : ''}" data-id="${t.id}"><div class="a"><span class="no">#${t.id}</span>${share(t.sym)}<span class="cp">${t.side === 'PE' ? 'PUT' : 'CALL'}</span><span class="sp"></span><span class="rr ${cls(t.R)}">${rr(t.R)}</span></div><div class="a"><span class="role ${RC[t.role] || ''}">${t.role}</span><span class="gr ${GR[g][0]}">${GR[g][1]}</span>${t.tags.length ? `<span class="tg">${t.tags[0]}</span>` : ''}</div></div>`;
+        h += `<div class="to${t.id === selId ? ' sel' : ''}" data-id="${t.id}"><div class="a"><span class="no">#${t.id}</span>${share(t.sym)}<span class="cp ${t.side === 'PE' ? 'pe' : 'ce'}">${t.side === 'PE' ? 'PUT' : 'CALL'}</span><span class="sp"></span><span class="rr ${cls(t.R)}">${rr(t.R)}</span></div><div class="a"><span class="role ${RC[t.role] || ''}">${t.role}</span><span class="gr ${GR[g][0]}">${GR[g][1]}</span>${t.tags.length ? `<span class="tg">${t.tags[0]}</span>` : ''}</div></div>`;
       });
     });
   }
@@ -1520,9 +1660,29 @@ function stkTables(d) {
     <thead><tr><th>strike</th><th>exp</th><th>prem</th><th>Δ</th><th>Γ</th><th>θ/h</th><th>vega</th><th>IV/20d</th><th>rk</th><th>sprd</th><th>dep</th><th>OI · chg</th><th>wall</th><th>BE</th><th>cash</th><th>exit</th></tr></thead>
     <tbody>${d.stk.map(s => `<tr class="${s[0] ? 'pick' : ''}"><td>${s[1]}</td><td>${s[2]}</td><td>${s[3]}</td><td>${s[4]}</td><td>${s[5]}</td><td>${s[6]}</td><td>${s[7]}</td><td>${s[8]}</td><td>${s[9]}</td><td>${s[10]}</td><td>${s[11]}</td><td>${s[12]} ${s[13]}</td><td>${s[14]}</td><td>${s[15]}</td><td>${s[16]}</td><td class="${s[17][0] === '+' ? 'up' : 'dn'}">${s[17]}</td></tr>`).join('')}</tbody></table>`;
   const stack = `<table class="stk"><colgroup><col style="width:86px"><col style="width:44px"><col style="width:44px"><col style="width:48px"><col style="width:64px"><col style="width:48px"><col style="width:42px"><col style="width:46px"><col style="width:54px"><col style="width:40px"></colgroup>
-    <thead><tr><th>strike<small>expiry</small></th><th>prem</th><th>Δ<small>Γ</small></th><th>θ/h<small>vega</small></th><th>IV/20d<small>IV rank</small></th><th>spread<small>depth</small></th><th>OI<small>chg</small></th><th>wall<small>BE 15:10</small></th><th>cash<small>1 lot</small></th><th>by exit</th></tr></thead>
+    <thead><tr><th>strike<small>expiry</small></th><th>prem</th><th>Δ<small>Γ</small></th><th>θ/h<small>vega</small></th><th>IV/20d<small>IV rank</small></th><th>spread<small>depth</small></th><th>OI<small>chg</small></th><th>wall<small>BE pts</small></th><th>cash<small>1 lot</small></th><th>by exit</th></tr></thead>
     <tbody>${d.stk.map(s => `<tr class="${s[0] ? 'pick' : ''}"><td>${s[1]}<small>${s[2]}</small></td><td>${s[3]}</td><td>${s[4]}<small>${s[5]}</small></td><td>${s[6]}<small>${s[7]}</small></td><td>${s[8]}<small>${s[9]}</small></td><td>${s[10]}<small>${s[11]} lots</small></td><td>${s[12]}<small>${s[13]}</small></td><td>${s[14]}<small>${s[15]}</small></td><td>${s[16]}</td><td class="${s[17][0] === '+' ? 'up' : 'dn'}">${s[17]}</td></tr>`).join('')}</tbody></table>`;
   return stack;
+}
+/* THE CARD as tokens (conference 1.3: a plan is a row of tokens, not a paragraph): head chips · trigger · stop · target · hold ·
+   the hold rule quoted on its own line · the verdict (kept / broken) at the right of the head. The words are the stored card's. */
+function saidHtml(said, t) {
+  const m = said.match(/^<b>(GO NOW|GET READY) · (PUT|CALL) · ([A-Z&]+) · ([\d,]+) · ([^<]+)<\/b>([^·]*)· (.*)$/);
+  if (!m) return `<div class="said">${said}</div>`;
+  const [, kind, side, sym, k, exp, extra, rest] = m;
+  const toks = rest.split(' · ');
+  let verdict = '';
+  if (/kept|broken/.test(toks[toks.length - 1]) && !/Don't exit/.test(toks[toks.length - 1])) verdict = toks.pop();
+  const meta = toks.filter(x => /^(age|source:)/.test(x));
+  for (const x of meta) toks.splice(toks.indexOf(x), 1);
+  const quote = toks.filter(x => /Don't exit/.test(x)), plain = toks.filter(x => !/Don't exit/.test(x));
+  const ag = (meta.find(x => /^age/.test(x)) || '').replace('age ', ''), src = (meta.find(x => /^source:/.test(x)) || '').replace('source: ', '');
+  const LB = /^(trigger|stop|target|T1|hold till|no chase above|time stop|MWPL)\s+(.*)$/;
+  const tk = x => { const q = x.match(LB); return `<span class="tk">${q ? `<i>${q[1].replace(':', '')}</i> <b>${q[2]}</b>` : x}</span>`; };
+  const bad = /broken/.test(verdict);
+  const go = (D[t.id].fu.find(f => f[1] === kind) || [])[0] || '';
+  return `<div class="said2"><div class="shd"><span class="sh-c sh-c-book">${kind}${go ? ` <span class="n">${go.slice(0, 5)}</span>` : ''}</span><span class="sh-c ${side === 'PUT' ? 'sh-c-pe' : 'sh-c-ce'}">${side}</span><b class="sy">${sym}</b><span class="mono ck">${k} · ${exp}</span>${extra.trim() ? `<span class="mut">${extra.trim()}</span>` : ''}${ag ? `<span class="mt">age <b class="m">${ag}</b></span>` : ''}${src ? `<span class="mt" title="source: ${src}">${src.replace(/\s*\(.*\)/, '')}</span>` : ''}<span class="sp"></span>${verdict ? `<span class="vd${bad ? ' bad' : ''}" title="${verdict.replace(/<\/?b>/g, '').replace(/"/g, '&quot;')}">${bad ? 'broken' : 'kept ✓'}</span>` : ''}</div>
+    <div class="tks">${plain.map(tk).join('')}</div>${quote.length ? `<div class="qt">${quote.join(' ')}</div>` : ''}</div>`;
 }
 /* THE VOTE (R14): five voters - agents 1-3, news, money. Every chip carries ONE clear mark: ✓ agrees · ✗ votes against · ? did not vote.
    The auditor checks the side (PE / CE) and does not vote. The head "n of 5 agree" is COUNTED from the chips, never typed. */
@@ -1538,7 +1698,7 @@ function voteHtml(d, t) {
   const typed = +((d.vote[0].match(/^(\d) of 5/) || [])[1]);
   if (typed !== agree) console.log('CHECK vote mismatch #' + t.id + ' typed ' + typed + ' counted ' + agree);
   const M = { y: '✓', n: '✗', q: '?' };
-  return `<div class="vote"><span class="hd"${d.vnote ? ` title="${d.vnote}"` : ''}>${agree} of ${voters.length} agree${wt ? ' · ' + wt : ''}</span>${vs.map(v => `<span class="vc ${v.au ? 'au' : v.k}"${v.au ? ' title="the auditor checks the side; it does not vote"' : ''}><i>${v.au ? '✓' : M[v.k]}</i>${v.a}${v.n ? `<small>${v.n}</small>` : ''}</span>`).join('')}<span class="vl">✓ agrees · ✗ against · ? no vote · auditor = side check</span></div>`;
+  return `<div class="vote"><span class="hd" title="${d.vnote ? d.vnote + ' · ' : ''}✓ agrees · ✗ against · ? did not vote · the auditor checks the side and does not vote">${agree} of ${voters.length} agree${wt ? ' · ' + wt : ''}</span>${vs.map(v => `<span class="vc ${v.au ? 'au' : v.k}"${v.au ? ' title="the auditor checks the side; it does not vote"' : ''}><i>${v.au ? '✓' : M[v.k]}</i>${v.a}${v.n ? `<small>${v.n}</small>` : ''}</span>`).join('')}</div>`;
 }
 function renderReview() {
   const t = ALLT.find(x => x.id === selId);
@@ -1546,29 +1706,32 @@ function renderReview() {
   const d = D[t.id], g = pickGrade[t.id] || t.grade;
   $('rvk').textContent = `#${t.id} of 50 · ${t.day} ${t.dt}`;
   $('rvage').textContent = t.est ? 'built 16:00:12 · Kite fills · note ~18:00' : 'contract note ✓ · Kite fills';
-  const recon = `<span title="charges ₹${t.chg} = brokerage 40 · STT ${t.c.stt.toFixed(0)} · exchange ${t.c.txn.toFixed(0)} · GST ${t.c.gst.toFixed(0)} · stamp ${t.c.stamp.toFixed(0)} · SEBI ${t.c.sebi.toFixed(0)}">Kite fills ✓ 2 of 2 · contract note ${t.est ? '<span class="est">pending ~18:00</span>' : '✓'} · charges ${t.est ? 'est. ' : ''}<b>₹${t.chg}</b>${t.est ? ', diff after the note' : ', diff ₹0'} · <b>flat by 15:10 ✓</b> ${t.outT.slice(0, 5)}</span>`;
+  const recon = `<span title="${t.est ? `charges ₹${t.chg} = GIR's estimate (the day's ₹298 = ₹125 + ₹86 + ₹87 in the P&amp;L strip) until the 19 Nov contract note ~18:00, which brings the six lines` : `charges ₹${t.chg} = brokerage 40 · STT ${t.c.stt.toFixed(2)} (0.1% × ${fmt(t.s * t.q)} sold) · exchange ${t.c.txn.toFixed(2)} · GST ${t.c.gst.toFixed(2)} · stamp ${t.c.stamp.toFixed(2)} (0.003% × ${fmt(t.b * t.q)} bought) · SEBI ${t.c.sebi.toFixed(2)}`}">Kite fills ✓ 2 of 2 · <span class="w1600">contract </span>note ${t.est ? '<span class="est">pending ~18:00</span>' : '✓'} · <span class="w1600">charges</span><span class="n1366">chg</span> ${t.est ? 'est. ' : ''}<b>₹${t.chg}</b><span class="w1600">${t.est ? ', diff after the note' : ', diff ₹0'}</span> · <b>flat<span class="w1600"> by 15:10</span> ✓</b> ${t.outT.slice(0, 5)}</span>`;
   let h = `<div class="rv-head" data-sec="head">
-    <div class="rv-l1"><span class="no">#${t.id}</span>${share(t.sym)}<span class="cp">${t.side === 'PE' ? 'PUT' : 'CALL'}</span><span class="ctr">${t.k} · ${t.exp}</span><span class="role ${RC[t.role] || ''}">${t.role}</span><span class="sp"></span><span class="net ${cls(t.net)}">${inr(t.net)}</span><span class="rr ${cls(t.R)}" title="account R: result ÷ ₹5,000">${rr(t.R)}</span><span class="xr" title="result ÷ the rupees at the share stop (₹${fmt(t.riskRs)})">${sg(t.xr, 1)}× risk</span></div>
-    <div class="rv-l2"><span class="rx">${t.day} ${t.dt} · <span class="mono">${t.inT} → ${t.outT}</span> <span style="white-space:nowrap">(${t.dur})</span> · 1 lot × ${t.q.toLocaleString('en-IN')} · setup ${t.setup} · exit: ${t.exitBy}</span>
+    <div class="rv-l1"><span class="no">#${t.id}</span>${share(t.sym)}<span class="cp ${t.side === 'PE' ? 'pe' : 'ce'}">${t.side === 'PE' ? 'PUT' : 'CALL'}</span><span class="ctr">${t.k} · ${t.exp}</span><span class="role ${RC[t.role] || ''}">${t.role}</span><span class="sp"></span><span class="net ${cls(t.net)}">${inr(t.net)}</span><span class="rr ${cls(t.R)}" title="account R: result ÷ ₹5,000">${rr(t.R)}</span><span class="xr" title="result ÷ the rupees at the share stop (₹${fmt(t.riskRs)})">${sg(t.xr, 1)}× risk</span></div>
+    <div class="rv-l2"><span class="rx"><span class="w1600">${t.day} ${t.dt} · </span><span class="mono">${t.inT} → ${t.outT}</span> <span style="white-space:nowrap">(${t.dur})</span> · setup ${t.setup}<span class="w1600"> · exit: ${t.exitBy}</span></span>
       <span class="gp">${Object.keys(GR).map((k, i) => `<span class="gr ${GR[k][0]}${k === g ? ' pick' : ''}" data-pg="${k}" title="key ${i + 1}">${GR[k][1]}</span>`).join('')}</span></div>
     <div class="rv-rc">${recon}</div>
     <div class="rv-chain">${d.chain.map((c, i) => (i ? '<i>→</i>' : '') + `<span>${c}</span>`).join('')}</div></div>`;
-  if (d.tln) h += `<div class="rv-sec" data-sec="the missed story"><div class="rv-h">The story GIR missed · 18 Nov<span class="sp"></span><span class="s">S12 policy / basket shock</span></div><div class="tln">${d.tln}</div></div>`;
-  h += `<div class="rv-sec" data-sec="card · vote"><div class="rv-h">The card said · the vote<span class="sp"></span><span class="s">at entry</span></div><div class="said">${d.said}</div>
+  if (d.tln) h += `<div class="rv-sec" data-sec="the missed story"><div class="rv-h">The story GIR missed · 18 Nov<span class="sp"></span><span class="s">S12 policy / basket shock</span></div><div class="tln">${d.tln.map(([a, b]) => `<span class="t${a === 'fix' ? ' fx' : ''}">${a}</span><span>${b}</span>`).join('')}</div></div>`;
+  const cardB = `<div class="rv-sec" data-sec="card · vote"><div class="rv-h">The card said · the vote<span class="sp"></span><span class="s">at entry</span></div>${saidHtml(d.said, t)}
     ${d.vote.length ? voteHtml(d, t) : ''}</div>`;
-  if (d.news.length) h += `<div class="rv-sec" data-sec="stories at entry"><div class="rv-h">Stories live at entry<span class="sp"></span><span class="s">${d.nwh}</span></div>
-    ${d.news.map(n => `<div class="nw"><span class="t">${n[0]}</span><span class="w">${['WORLD', 'POLICY', 'JEWELLERS', 'GOLD LOANS', 'METALS', 'PHARMA', 'PSU BANKS'].includes(n[1]) ? n[1] : share(n[1])}</span><span class="h" title="${n[2]}">${n[2]}</span><span class="ai">${n[3]}</span><span class="src">${n[4]}</span></div>`).join('')}</div>`;
+  let whyB = '';
+  // R44: no news box here - ONE why line (time · source · headline); the other stories of that minute are one click away
+  if (d.news.length) { const n0 = d.news[0], more = d.news.length - 1;
+    whyB = `<div class="rv-sec" data-sec="why"><div class="why1"><span class="rv-h" style="margin:0">why</span><span class="t">${n0[0]}</span><span class="src">${n0[4]}</span><span class="h" title="${n0[2]}">${n0[2]}</span>${more ? `<button class="stb" data-st="1" title="${d.nwh}">${storyOpen ? '▾' : '▸'} ${more} more ${more === 1 ? 'story' : 'stories'}</button>` : ''}</div>
+    ${storyOpen && more ? `<div class="nwl">${d.news.slice(1).map(n => `<div class="nw"><span class="t">${n[0]}</span><span class="src">${n[4]}</span><span class="h" title="${n[2]}">${n[2]}</span><span class="ai">${n[3]}</span></div>`).join('')}<div class="nwn">${d.nwh} · all stories live on <a href="news.html">F4 News</a></div></div>` : ''}</div>`; }
   h += `<div class="rv-sec" data-sec="plan vs did"><div class="rv-g2"><div>
     <div class="rv-h">Plan vs did<span class="sp"></span><span class="s">premium | share</span></div>
     <table class="pvd"><colgroup><col class="lbc"><col><col><col><col></colgroup>
     <thead><tr><th class="g"></th><th class="hd" colspan="2">PLAN</th><th class="hd" colspan="2">DID</th></tr></thead><tbody>
     ${d.plan.map(p => `<tr><td class="k${p[0] === 'stop' ? ' stop' : ''}">${p[0]}</td><td>${p[1]}${p[2] ? `<small>${p[2]}</small>` : ''}</td><td>${p[3]}${p[4] ? `<small>${p[4]}</small>` : ''}</td><td class="did">${p[5]}${p[6] ? `<small>${p[6]}</small>` : ''}</td><td class="did">${p[7]}${p[8] ? `<small>${p[8]}</small>` : ''}</td></tr>`).join('')}
-    </tbody></table><div class="pvd-f">${d.pf}<br>${d.mkt}</div></div>
+    </tbody></table><div class="pvd-f"><div class="pvs" title="risk = premium lost at the share stop, before costs">1 lot × ${t.q.toLocaleString('en-IN')} · cash ₹${fmt(t.b * t.q)} · risk <b class="m">−₹${fmt(t.riskRs)}</b> = ${(t.riskRs / R5).toFixed(2)}R</div><button class="stb" data-fo="1">${fillOpen ? '▾' : '▸'}&nbsp;Kite orders<span class="w1600">&nbsp;&amp; fills</span></button>${fillOpen ? `<div class="pvx">${d.pf.replace(/^.*?planned(\s*\([^)]*\))?\s*·\s*/, '')}<br>${d.mkt}</div>` : ''}</div></div>
     <div><div class="rv-h">Chart at exit<span class="sp"></span><span class="s">5-min · saved ${t.outT.slice(0, 5)}</span></div><div class="chw" id="chw"></div>
-    <div class="lg"><span>${sw('var(--info)')}VWAP</span><span>${sw('var(--action)', '4 3')}trigger</span><span>${sw('var(--danger)')}stop governs</span>${d.ch.lv.some(l => l.k === 'trail') ? `<span>${sw('var(--danger)', '2 2', 1.5)}trail</span>` : ''}<span>${sw('var(--text)', '5 3', 1.5)}target</span><span style="color:var(--action)">▲ in</span><span style="color:var(--text)">▼ out</span><span style="color:var(--action)">Ⓗ GIR follow-up</span></div></div></div></div>`;
+    <div class="lg"><span>${sw('var(--info)')}VWAP</span><span>${sw('var(--action)', '4 3')}trigger</span><span>${sw('var(--danger)')}stop<span class="w1600"> governs</span></span>${d.ch.lv.some(l => l.k === 'trail') ? `<span>${sw('var(--danger)', '2 2', 1.5)}trail</span>` : ''}<span>${sw('var(--text)', '5 3', 1.5)}target</span><span style="color:var(--action)">▲ in</span><span style="color:var(--text)">▼ out</span><span style="color:var(--action)">Ⓗ <span class="w1600">GIR </span>follow-up</span></div></div></div></div>` + whyB + cardB;
   if (d.stk.length) h += `<div class="rv-sec" data-sec="strike review"><div class="rv-h">Strike review<span class="sp"></span><span class="s">at entry → what each did by your exit · lot ${t.q.toLocaleString('en-IN')}</span></div>
     <div class="stk-m">${d.mline}</div>${stkTables(d)}
-    <div class="stk-w">${d.stkw} Γ = Δ change per point · θ/h and vega (per 1 IV point) in ₹ per lot · rk = IV rank · dep = best-5 depth, lots · wall = points to the nearest OI wall in the trade's way · BE = share move to break even by 15:10 after θ, spread and charges.</div></div>`;
+    <div class="stk-w">${d.stkw} Γ = Δ change per point · θ/h and vega (per 1 IV point) in ₹ per lot · rk = IV rank · dep = best-5 depth, lots · wall = points to the nearest OI wall in the trade's way · BE pts = share points needed to break even by 15:10 after θ, spread and charges.</div></div>`;
   const tot = d.split.reduce((a, s) => a + s[1], 0);
   h += `<div class="rv-sec" data-sec="follow-ups"><div class="rv-h">GIR's follow-ups on your open trade<span class="sp"></span><span class="s">HOLD · TRAIL · BOOK · EXIT</span></div><div class="stk-w" style="margin:-2px 0 3px 0">EXIT and BOOK ring only for trades you hold; the times are GIR's, the right column is what you did.</div><div class="fu">${d.fu.map(f => `<span class="t">${f[0]}</span><span class="v${f[4] ? ' h' : ''}">${f[1]}</span><span class="d">${f[2]}</span><span class="ak">${f[3]}</span>`).join('')}</div>
     ${d.act ? `<div class="said" style="margin-top:4px"><b class="act">${d.act}</b></div>` : ''}</div>
@@ -1594,11 +1757,59 @@ function renderOld(t) {
   const g = pickGrade[t.id] || t.grade;
   $('rvk').textContent = `#${t.id} of 50 · ${GROUPS[t.wk][0]}`;
   $('rvage').textContent = 'contract note ✓ · Kite fills';
-  $('rvb').innerHTML = `<div class="rv-head"><div class="rv-l1"><span class="no">#${t.id}</span>${share(t.sym)}<span class="cp">${t.side === 'PE' ? 'PUT' : 'CALL'}</span><span class="role ${RC[t.role] || ''}">${t.role}</span><span class="sp"></span><span class="net ${cls(t.net)}">${inr(t.net)}</span><span class="rr ${cls(t.R)}">${rr(t.R)}</span></div>
+  $('rvb').innerHTML = `<div class="rv-head"><div class="rv-l1"><span class="no">#${t.id}</span>${share(t.sym)}<span class="cp ${t.side === 'PE' ? 'pe' : 'ce'}">${t.side === 'PE' ? 'PUT' : 'CALL'}</span><span class="role ${RC[t.role] || ''}">${t.role}</span><span class="sp"></span><span class="net ${cls(t.net)}">${inr(t.net)}</span><span class="rr ${cls(t.R)}">${rr(t.R)}</span></div>
     <div class="rv-l2"><span class="rx">${GROUPS[t.wk][0]} · ${SEC[t.sec]} · net of charges (contract note ✓) · flat by 15:10 ✓</span><span class="gp">${Object.keys(GR).map(k => `<span class="gr ${GR[k][0]}${k === g ? ' pick' : ''}" data-pg="${k}">${GR[k][1]}</span>`).join('')}</span></div></div>
     <div class="rv-sec"><div class="said">The full review (plan vs did, the card and the vote, stories at entry, strike review, follow-ups, P&amp;L split, ghost, chart) is stored with the trade. It opens here exactly like #50; this mockup draws it for the 8 trades of this week. <b>Replay ⇧F10</b> replays the day minute by minute.</div>
     <div class="tags" style="margin-top:6px">${TAGS.map(x => `<span class="tag${t.tags.includes(x) ? ' hit' : ''}">${t.tags.includes(x) ? '✕ ' : ''}${x}</span>`).join('')}</div></div>`;
   rails();
+}
+
+/* ================= HERO: the day's answer (verdict · today net · the day P&L curve · the week bars · tomorrow) ================= */
+// The curve is the open + realised P&L net of costs (open valued at the bid less est. exit costs, conference fix 10), 09:15-15:30.
+// Its realised steps are COMPUTED from the trades below (11:45 = #48 + #49, 13:52 = + #50), so the end equals the strip's +₹5,387.
+function renderHero() {
+  const d19 = T.filter(t => t.dt === '19 Nov'), net = d19.reduce((a, t) => a + t.net, 0), chg = d19.reduce((a, t) => a + t.chg, 0);
+  const g = id => T.find(t => t.id === id), r1 = g(48).net + g(49).net;
+  $('hNet').textContent = inr(net); $('hNet').className = 'm ' + cls(net); $('hR').textContent = rr(net / R5); $('hR').className = 'm ' + cls(net);
+  $('hSub').innerHTML = `${[50, 48, 49].map(i => `#${i} <span class="m ${cls(g(i).R)}">${sg(g(i).R)}</span>`).join(' · ')}`;
+  $('hChg').innerHTML = `₹${chg}`;
+  const P = [[0, 0], [51, 0], [52, -570], [70, 300], [97, 1830], [107, 1270], [125, 590], [140, -90], [145.5, -650], [150, r1], [194, r1], [195, r1 - 234], [212, r1 - 1450], [240, r1 + 1840], [256, r1 + 2855], [276, net - 300], [277, net], [375, net]];
+  const sv = $('dayc'), W = Math.round(sv.getBoundingClientRect().width), H = Math.round(sv.getBoundingClientRect().height);
+  sv.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const x0 = 1, x1 = W - 58, yT = 3, yB = H - 17, lo = -2000, hi = Math.max(6000, net + 600);
+  const X = m => x0 + m / 375 * (x1 - x0), Y = v => yT + (hi - v) / (hi - lo) * (yB - yT), y0 = Y(0);
+  const pts = P.map(([m, v]) => `${X(m).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');
+  let s = `<defs><clipPath id="hcU"><rect x="0" y="0" width="${W}" height="${y0}"/></clipPath><clipPath id="hcD"><rect x="0" y="${y0}" width="${W}" height="${H}"/></clipPath>
+    <pattern id="hcS" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2" height="4" fill="var(--stale)" opacity=".55"/></pattern></defs>`;
+  [11, 13, 15].forEach(hh => { const x = X(hh * 60 - 555); s += `<line x1="${x}" x2="${x}" y1="${yT}" y2="${yB}" stroke="var(--line)" stroke-dasharray="1 3"/>`; });
+  s += `<rect x="${X(150)}" y="${yT}" width="${X(170) - X(150)}" height="${yB - yT}" fill="url(#hcS)"><title>cooling 11:45 → 12:05 after the #49 loss - no new entries (ANGELONE skipped)</title></rect>`;
+  s += `<polygon points="${X(0)},${y0} ${pts} ${X(375)},${y0}" fill="rgba(var(--up-rgb),.20)" clip-path="url(#hcU)"/><polygon points="${X(0)},${y0} ${pts} ${X(375)},${y0}" fill="rgba(var(--down-rgb),.22)" clip-path="url(#hcD)"/>`;
+  s += `<line x1="${x0}" x2="${x1}" y1="${y0}" y2="${y0}" stroke="var(--line-2)"/><polyline points="${pts}" fill="none" stroke="var(--text)" stroke-width="1.4" stroke-linejoin="round"/>`;
+  s += `<circle cx="${X(145.5)}" cy="${Y(-650)}" r="2.4" fill="var(--down)"><title>11:40:30 open −₹650 net of ₹840 costs (the strip at S3)</title></circle><circle cx="${X(277)}" cy="${Y(net)}" r="3" fill="var(--up)"/>`;
+  s += `<text x="${x1 + 6}" y="${Y(net) + 4}" fill="var(--up)" style="font-weight:700">${inr(net)}</text><text x="${x1 + 6}" y="${y0 + 4}" fill="var(--text-3)">₹0</text>`;
+  // trade spans (lane under the curve) with their numbers; the colour is the trade's result
+  const lane = (a, b, y, c) => `<rect x="${X(a)}" y="${y}" width="${X(b) - X(a)}" height="3" rx="1" fill="${c}"/>`;
+  s += lane(51, 150, H - 4, 'var(--up)') + lane(107, 150, H - 8, 'var(--down)') + lane(194, 277, H - 4, 'var(--up)');
+  const lab = (m, t, c) => `<text x="${X(m)}" y="${H - 10}" fill="${c}" text-anchor="middle" style="font-weight:600">${t}</text>`;
+  s += `<text x="${x0}" y="${H - 10}" fill="var(--text-3)">09:15</text>` + lab(77, '#48', 'var(--up)') + lab(128, '#49', 'var(--down)') + lab(160, 'cool', 'var(--text-3)') + lab(235.5, '#50', 'var(--up)') + `<text x="${x1}" y="${H - 10}" fill="var(--text-3)" text-anchor="end">15:30</text>`;
+  sv.innerHTML = s;
+  // week bars (Mon-Fri), net of charges, from the same trades; Fri = still to come
+  const days = [['Mon', '16 Nov'], ['Tue', '17 Nov'], ['Wed', '18 Nov'], ['Thu', '19 Nov'], ['Fri', '20 Nov']].map(([d, dt]) => [d, T.filter(t => t.dt === dt).reduce((a, t) => a + t.net, 0), T.some(t => t.dt === dt)]);
+  const wk = days.reduce((a, d) => a + d[1], 0);
+  $('hWk').innerHTML = `<span>week <b class="m ${cls(wk)}">${inr(wk)}</b> <b class="m ${cls(wk)}">${rr(wk / R5)}</b></span><span class="sp"></span><span class="u">₹ '000</span>`;
+  const wv = $('wkb'), WW = Math.round(wv.getBoundingClientRect().width), WH = Math.round(wv.getBoundingClientRect().height);
+  wv.setAttribute('viewBox', `0 0 ${WW} ${WH}`);
+  const mx = Math.max(...days.map(d => Math.abs(d[1]))), zy = Math.round((WH - 13) * 0.5) + 1, sc = (zy - 1) / mx, cw = WW / 5;
+  let w = `<line x1="0" x2="${WW}" y1="${zy}" y2="${zy}" stroke="var(--line-2)"/>`;
+  days.forEach(([d, v, has], i) => {
+    const bw = 12, bx = i * cw + (cw - bw) / 2, h = Math.max(1, Math.abs(v) * sc), y = v >= 0 ? zy - h : zy, cx = i * cw + cw / 2;
+    w += has ? `<rect x="${bx}" y="${y}" width="${bw}" height="${h}" rx="1" fill="${v >= 0 ? 'var(--up)' : 'var(--down)'}"><title>${d} ${inr(v)} ${rr(v / R5)}</title></rect>`
+      : `<rect x="${bx + .5}" y="${zy - 8.5}" width="${bw - 1}" height="8" rx="1" fill="none" stroke="var(--line-2)" stroke-dasharray="2 2"/>`;
+    const k = (Math.abs(v) / 1000).toFixed(1);
+    w += has ? `<text x="${cx}" y="${v >= 0 ? zy + 11 : zy - 3}" fill="${v >= 0 ? 'var(--up)' : 'var(--down)'}" text-anchor="middle">${v >= 0 ? '+' : '−'}${k}</text>` : `<text x="${cx}" y="${zy + 11}" fill="var(--text-3)" text-anchor="middle">-</text>`;
+    w += `<text x="${cx}" y="${WH - 1}" fill="${d === 'Thu' ? 'var(--text)' : 'var(--text-3)'}" class="sa" text-anchor="middle">${d}</text>`;
+  });
+  wv.innerHTML = w;
 }
 
 /* ================= C1: week (computed from the trades; the sector filter really filters) ================= */
@@ -1612,22 +1823,22 @@ function renderWeek() {
   let run = 0, pk = 0, dd = 0; L.forEach(t => { run += t.net; pk = Math.max(pk, run); dd = Math.min(dd, run - pk); });
   const ex = L.reduce((a, t) => a + t.leak[4], 0), brk = L.reduce((a, t) => a + t.brk, 0), nb = L.filter(t => t.brk > 0).length;
   $('tbW').textContent = n ? rr(net / R5) : '0R'; $('tbW').className = 'm ' + cls(net);
-  $('wsub').innerHTML = `4 of 5 sessions${sec === 'all' ? '' : ' · ' + SEC[sec] + ' only'} · final Fri 20 Nov 16:00 · n &lt; 30 = too early`;
+  $('wsub').innerHTML = `4 of 5 sessions${sec === 'all' ? '' : ' · ' + SEC[sec] + ' only'} · final Fri 16:00 · <span class="nwr">n &lt; 30 = too early</span>`;
   const tiles = n ? [
-    ['Net P&L', `<span class="${cls(net)}">${inr(net)}</span><small class="${cls(net)}">${rr(net / R5)}</small>`, `${n} trades · net of ₹${fmt(chg)} charges`],
-    ['Expectancy', `<span class="${cls(mean)}">${sg(mean)}R</span><small>${sg(xm)}×</small>`, `${sg(mean - ci)} to ${sg(mean + ci)} · × = per risk taken · <b>too early n=${n}</b>`],
+    ['Net P&L', `<span class="${cls(net)}">${inr(net)}</span><small class="${cls(net)}">${rr(net / R5)}</small>`, `${n} trades · ₹${fmt(chg)} charges`],
+    ['Expectancy', `<span class="${cls(mean)}">${sg(mean)}R</span><small>${sg(xm)}×</small>`, `<span title="95% range ${sg(mean - ci)} to ${sg(mean + ci)} R · × = per risk taken">${sg(mean - ci)} to ${sg(mean + ci)}</span> · <b>n=${n}</b>`],
     ['Win rate', `${Math.round(100 * W.length / n)}%<small>${W.length} of ${n}</small>`, `avg <span class="up">${W.length ? rr(sw2 / W.length / R5) : '-'}</span> / <span class="dn">${Ls.length ? rr(-sl / Ls.length / R5) : '-'}</span>`],
-    ['Profit factor', `${sl ? (sw2 / sl).toFixed(2) : '-'}`, `drawdown <span class="dn">${inr(dd)}</span> <span title="closed trades in the order they were sold (#49 11:41:05 before #48 11:41:12)">by exit time</span>`],
-    ['Costs', `₹${fmt(chg)}`, `${gross ? Math.round(100 * chg / Math.abs(gross)) : 0}% of gross ${inr(gross)} · ≈₹${fmt(chg / n)} a trade`],
-    ['Exits vs plan', `<span class="${cls(-ex)}">${rr(-ex)}</span>`, sec === 'all' ? 'you 1.87 · GIR stall 1.73 · EXIT saved 0.27' : 'vs the plan'],
+    ['Profit factor', `${sl ? (sw2 / sl).toFixed(2) : '-'}`, `<span title="drawdown by exit time: closed trades in the order they were sold (#49 11:45:05 before #48 11:45:12)">drawdown <span class="dn nwr">${inr(dd)}</span></span>`],
+    ['Costs', `₹${fmt(chg)}`, `<span title="${gross ? Math.round(100 * chg / Math.abs(gross)) : 0}% of gross ${inr(gross)} · ≈₹${fmt(chg / n)} a trade">${gross ? Math.round(100 * chg / Math.abs(gross)) : 0}% of gross <span class="nwr">${inr(gross)}</span></span>`],
+    ['Exits vs plan', `<span class="${cls(-ex)}">${rr(-ex)}</span>`, sec === 'all' ? '<span title="you 1.87 (#46) · GIR stall rule 1.20 (#48) · GIR EXIT saved 0.26 (#49)">you 1.87 · GIR 1.20 · +0.26</span>' : 'vs the plan'],
     ['Rule breaks', `${nb}<small class="${cls(-brk)}">${rr(-brk)}</small>`, nb ? L.filter(t => t.brk).map(t => t.tags[0]).join(' · ') : 'none ✓'],
-    ['Flat by 15:10', `${n} of ${n} ✓`, `time stop used ${L.filter(t => t.ex.startsWith('time')).length} · 15:10 exit 0`]
+    ['Flat by 15:10', `${n} of ${n} ✓`, `time stop ${L.filter(t => t.ex.startsWith('time')).length} · 15:10 exit 0`]
   ] : [['Net P&L', '₹0', `no trade in ${SEC[sec]} this week`], ['Flat by 15:10', '-', 'nothing to check']];
   $('wtiles').innerHTML = tiles.map(t => `<div class="tile"><div class="l">${t[0]}</div><div class="v">${t[1]}</div><div class="s">${t[2]}</div></div>`).join('');
   const all = sec === 'all' ? '' : ' <span class="tg">(all sectors)</span>';
   $('wai').innerHTML = `<div class="h"><span>AI vs random</span><span class="sp"></span><span style="font-weight:500;letter-spacing:0;text-transform:none">R per GO NOW · paper</span></div>
     <div class="avr"><span><small>AI · n 14</small><b class="up">+0.50</b> ±0.42</span><span><small>random</small><b class="dn">−0.20</b></span><span><small>mechanical</small><b class="up">+0.10</b></span></div>
-    <div class="nb">ranges overlap at n=14 - <b>proves nothing yet</b>; re&#8209;check at n=50${sec === 'all' ? '' : ' (all sectors)'}</div>
+    <div class="nb" title="ranges overlap at n=14; re-check at n=50"><b>proves nothing yet</b> · n=14, re&#8209;check at 50${sec === 'all' ? '' : ' (all sectors)'}</div>
     <div class="r"><span title="GO NOW calls you took vs the ones you skipped, R per call">taken/skipped</span><span class="m"><span class="${cls(mean)}">${sg(mean)}</span> / <span class="up">+0.60</span>R <small>n ${n}/9</small></span></div>
     <div class="r"><span>AI late</span><span class="m">3 of 14 <small>11m · −0.4R</small></span></div>
     <div class="r"><span>source late (TV / X first)</span><span class="m">2 <small>−0.6R</small></span></div>
@@ -1645,17 +1856,17 @@ function renderWeek() {
     const a = i === 0 ? 0 : lvl, b = i === 0 ? ideal : lvl + v;
     if (i) lvl = b;
     if (v === 0 && i) return;
-    h += `<div class="r ${c}"><span class="k">${k}</span><span class="bar"><i class="${c}" style="left:${sc(Math.min(a, b))}%;width:${Math.max(0.6, w(b - a))}%"></i></span><span class="m">${rr(v)}</span></div>`;
-    if (c === 'big' && sec === 'all') h += `<div class="why"><b class="act">biggest:</b> <b>#46 TITAN early exit 1.87R</b> · #48 stall rule 1.73R (GIR's) · #49 EXIT saved 0.27R</div>`;
+    h += `<div class="r ${c}"><span class="k">${k}</span><span class="bar"><i class="${c}" style="left:${sc(Math.min(a, b))}%;width:${Math.min(100 - sc(Math.min(a, b)), Math.max(0.6, w(b - a)))}%"></i></span><span class="m">${rr(v)}</span></div>`;
+    if (c === 'big' && sec === 'all') h += `<div class="why"><b class="act">biggest:</b> <b>#46 TITAN early exit 1.87R</b> · #48 stall rule 1.20R (GIR's) · #49 EXIT saved 0.26R</div>`;
   });
-  const terms = steps.filter(x => x[1] !== 0).map(x => (x[1] < 0 ? '− ' : '+ ') + Math.abs(x[1]).toFixed(2) + (x[0] === 'costs' ? ' costs' : ''));
+  const terms = steps.filter(x => x[1] !== 0).map(x => '<span class="nwr">' + (x[1] < 0 ? '− ' : '+ ') + Math.abs(x[1]).toFixed(2) + (x[0] === 'costs' ? ' costs' : '') + '</span>');
   h += `<div class="r tot"><span class="k">net</span><span class="bar"><i class="nt${netR < 0 ? ' dn' : ''}" style="left:${sc(Math.min(0, netR))}%;width:${Math.max(0.6, w(netR))}%"></i></span><span class="m ${cls(netR)}">${rr(netR)}</span></div>
-    <div class="why">${sg(ideal)} ${terms.join(' ')} = <b>${rr(netR)}</b> · costs = charges ₹${fmt(chg)} ÷ ₹5,000; spreads are inside the fills</div>`;
+    <div class="why">${sg(ideal)} ${terms.length ? terms.slice(0, -1).concat(terms[terms.length - 1].replace(/<\/span>$/, ` = <b>${rr(netR)}</b></span>`)).join(' ') : `<span class="nwr">= <b>${rr(netR)}</b></span>`} · <span class="nwr">costs = charges ₹${fmt(chg)} ÷ ₹5,000</span>; spreads are inside the fills</div>`;
   $('wf').innerHTML = h;
 }
 function renderRules() {
   const R = [['No manual exit before the stop, target or time stop - the exit coach asks a typed reason and waits 60 s', 'GIR suggests · the biggest leak you control (#46)', '−1.87R'],
-    ['No OWN TRADE within 20 min of a loss - cooling also covers Kite-direct orders', 'Wed: #47 ANGELONE 11 min after #46', '−0.60R'],
+    ['No OWN TRADE within 20 min of a loss - cooling also covers Kite-direct orders', 'Wed: #47 ANGELONE 11 min after #46', '−0.68R'],
     ['No entry more than 3% above the plan premium - wait for the pullback', 'Tue: #45 PNB chased +9%', '−0.58R']];
   $('rules').innerHTML = R.map((r, i) => `<div class="ro${i === 0 ? ' sug' : ''}${rulePick === i + 1 && i !== 0 ? ' pk' : ''}" data-rule="${i + 1}"><span class="i">${i + 1}</span><span>${r[0]}<small>${r[1]}</small></span><span class="fx">${r[2]}</span></div>`).join('')
     + `<div class="mut" style="font-size:11px;line-height:14px">the pick shows on the Desk thesis line, the risk strip and the Morning checklist next week</div>`;
@@ -1725,23 +1936,24 @@ const OLDP = (() => { const r = rngf(11); return OLDT.map(t => { const bt = Math
 function renderTax() {
   const buy = OLDP.reduce((a, o) => a + o.bt, 0) + T.reduce((a, t) => a + t.b * t.q, 0);
   const sell = OLDP.reduce((a, o) => a + o.st, 0) + T.reduce((a, t) => a + t.s * t.q, 0);
-  const k = key => Math.round(OLDP.reduce((a, o) => a + o.c[key], 0) + T.reduce((a, t) => a + t.c[key], 0));
+  const TN = T.filter(t => !t.est);
+  const k = key => Math.round(OLDP.reduce((a, o) => a + o.c[key], 0) + TN.reduce((a, t) => a + t.c[key], 0));
   const brk = k('brk'), stt = k('stt'), txn = k('txn'), gst = k('gst'), st = k('stamp'), se = k('sebi');
-  const tot = brk + stt + txn + gst + st + se;
+  const tot6 = brk + stt + txn + gst + st + se;
   const net = ALLT.reduce((a, t) => a + t.net, 0), turn = Math.round(OLDP.reduce((a, o) => a + Math.abs(o.gross), 0) + T.reduce((a, t) => a + Math.abs(t.gross), 0));
-  const estT = T.filter(t => t.est), est = estT.reduce((a, t) => a + t.chg, 0), n = ALLT.length, done = n - estT.length;
+  const estT = T.filter(t => t.est), est = estT.reduce((a, t) => a + t.chg, 0), n = ALLT.length, done = n - estT.length, tot = tot6 + est;
   const nov = 9800 + T.reduce((a, t) => a + t.net, 0);
   const L = (x) => '₹' + fmt(x), lakh = v => '₹' + (v / 100000).toFixed(2) + ' L';
   $('moN').textContent = inr(nov); $('moR').textContent = rr(nov / R5);
-  $('txl').innerHTML = `<div class="tx"><span>contract notes</span><span class="m">${done} of ${n} trades ✓</span></div>
-    <div class="tx"><span class="pend" title="Zerodha sends the 19 Nov note about 18:00; until then the ${estT.length} trades' charges (#${estT.map(t => t.id).sort().join(', #')}) are GIR estimates (grey, R09)">${estT.length} pending<span class="w1600"> · 19 Nov</span> ~18:00</span><span class="m mut">est. ${L(est)}</span></div>
-    <div class="tx"><span><span class="w1600">premium </span>bought · sold</span><span class="m">${lakh(buy)} · ${lakh(sell)}</span></div>
+  $('txl').innerHTML = `<div class="tx"><span><span class="w1600">premium </span>bought · sold</span><span class="m">${lakh(buy)} · ${lakh(sell)}</span></div>
     <div class="tx"><span>turnover Σ|P&amp;L| (tax)</span><span class="m">${L(turn)}</span></div>
+    <div class="tx hd"><span>${done} contract notes ✓</span><span class="m"></span></div>
     <div class="tx"><span>STT 0.1%<span class="w1600"> of sold</span></span><span class="m">${L(stt)}</span></div>
     <div class="tx"><span>brokerage<span class="w1600"> ₹20</span> × ${brk / 20}<span class="w1600"> orders</span></span><span class="m">${L(brk)}</span></div>
     <div class="tx"><span>exch<span class="w1600">ange 0.035%</span> · GST<span class="w1600"> 18%</span></span><span class="m">${L(txn)} · ${L(gst)}</span></div>
     <div class="tx"><span>stamp<span class="w1600"> 0.003% of bought</span> · SEBI</span><span class="m">${L(st)} · ${L(se)}</span></div>
-    <div class="tx tt"><span>charges, all 6</span><span class="m">${L(tot)}</span></div>
+    <div class="tx"><span class="pend" title="Zerodha sends the 19 Nov note about 18:00; until then the ${estT.length} trades' charges (#${estT.map(t => t.id).sort().join(', #')}) are GIR estimates (grey, R09) = the P&amp;L strip's ₹298">${estT.length} pending<span class="w1600"> · 19 Nov</span> ~18:00</span><span class="m mut">est. ${L(est)}</span></div>
+    <div class="tx tt"><span>charges since 1 Oct</span><span class="m">${L(tot)}</span></div>
     <div class="tx"><span>net P&amp;L since 1 Oct</span><span class="m ${cls(net)}">${inr(net)}</span></div>`;
   $('txn').innerHTML = `F&amp;O = business income (ITR-3) · ≈₹${fmt(tot / n)} a trade · verify with your CA`;
   console.log('CHECK tax buy ' + Math.round(buy) + ' sell ' + Math.round(sell) + ' stt ' + stt + ' stamp ' + st + ' txn ' + txn + ' sebi ' + se + ' gst ' + gst + ' tot ' + tot + ' turn ' + turn + ' net ' + net);
@@ -1762,6 +1974,7 @@ function snapBottom(pb, limit, down) {
   // round 3: a ROW is atomic too (a label that wraps to 2 lines is never split between its lines), and so is every chart
   // (a picture is shown whole or moved below the band, never sliced by the fade)
   pb.querySelectorAll('.bar, .tile, kbd, button, input, tr, .tr, .to, .tl-day, .tl-old, .r, .nt, .tx, .dv, .why, .nb, .avr, .role, .sh-c, .hlp > span').forEach(e => { const r = e.getBoundingClientRect(); if (r.height && r.height < 100) boxes.push([r.top, r.bottom]); });
+  pb.querySelectorAll('.rv-sec, .bh, .mo, .rule, .wf, .gates').forEach(e => { const r = e.getBoundingClientRect(); if (r.height) boxes.push([r.top, Math.min(r.bottom, r.top + 44)]); });
   const lim0 = limit - top;
   pb.querySelectorAll('svg').forEach(e => { if (e.parentElement.closest('svg')) return; const r = e.getBoundingClientRect(); if (!r.height || r.height >= lim0 * 0.8) return;
     // a chart with a sub-chart (share candles + premium line) has ONE allowed cut: between the two pictures
@@ -1854,12 +2067,14 @@ function placeDrawers() {
 }
 
 /* ================= interactions ================= */
-function all() { renderList(); renderReview(); renderWeek(); renderRules(); renderEdge(); renderTax(); rails(); }
+function all() { renderHero(); renderList(); renderReview(); renderWeek(); renderRules(); renderEdge(); renderTax(); rails(); }
 document.addEventListener('click', e => {
   const tb = e.target.closest('.tb'); if (tb) { setTab(tb.dataset.tab); return; }
   const a = e.target.closest('[data-scope]'); if (a) { scope = a.dataset.scope; renderList(); rails(); return; }
   const g = e.target.closest('[data-g]'); if (g) { gsel = gsel === g.dataset.g ? null : g.dataset.g; renderList(); rails(); return; }
   const gp = e.target.closest('[data-grp]'); if (gp) { openGrp[gp.dataset.grp] = !openGrp[gp.dataset.grp]; renderList(); rails(); return; }
+  if (e.target.closest('[data-st]')) { storyOpen = !storyOpen; renderReview(); return; }
+  if (e.target.closest('[data-fo]')) { fillOpen = !fillOpen; renderReview(); return; }
   const pg = e.target.closest('[data-pg]'); if (pg) { pickGrade[selId] = pg.dataset.pg; renderList(); renderReview(); return; }
   const tr = e.target.closest('.tr, .to'); if (tr && !e.target.closest('a')) { selId = +tr.dataset.id; renderList(); renderReview(); return; }
   const ru = e.target.closest('[data-rule]'); if (ru) { rulePick = +ru.dataset.rule; renderRules(); return; }

@@ -334,7 +334,7 @@ body.srch .sh-sugg{display:block}
 .ph .nw{display:inline-flex;align-items:center;gap:5px;color:var(--info);cursor:pointer;font-size:12px}
 .ph .nw b{font-weight:700}
 .tog{display:inline-flex;align-items:center;gap:5px;color:var(--text-2);cursor:pointer;font-size:12px}
-.tog i{width:13px;height:13px;border:1px solid var(--text-3);border-radius:2px;font-style:normal;font-size:10px;line-height:11px;text-align:center;color:var(--text)}
+.tog i{width:13px;height:13px;border:1px solid var(--text-3);border-radius:2px;font-style:normal;font-size:11px;line-height:11px;text-align:center;color:var(--text)}
 .bd{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
 .scw{position:relative;flex:none;overflow:hidden}
 .pb{height:100%;overflow-y:scroll;overflow-x:hidden;scrollbar-width:none;padding-right:10px}
@@ -347,7 +347,7 @@ body.srch .sh-sugg{display:block}
 .more .nm{overflow:hidden;flex:0 1 auto;min-width:0;color:var(--text-2)}
 .more .pos{margin-left:auto;color:var(--text-3);font-size:11px;flex:none}
 .more .mb{display:inline-flex;gap:3px;flex:none}
-.more button{width:22px;height:18px;border:1px solid var(--line-2);border-radius:3px;background:var(--panel-3);color:var(--text);font-size:10px;line-height:1;cursor:pointer}
+.more button{width:22px;height:18px;border:1px solid var(--line-2);border-radius:3px;background:var(--panel-3);color:var(--text);font-size:11px;line-height:1;cursor:pointer}
 .more button:disabled{color:var(--text-3);opacity:.5;cursor:default}
 
 /* ---------- the list ---------- */
@@ -405,7 +405,7 @@ body.srch .sh-sugg{display:block}
 .sh2 span{font-weight:500;letter-spacing:0;text-transform:none;color:var(--text-3);font-size:12px;overflow:hidden}
 .sh2 .allc{margin-left:auto;font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--info)}
 .cc{box-shadow:inset 3px 0 0 var(--stale);border-bottom:0;padding-top:calc(4px + var(--rx,0px)/2);padding-bottom:calc(4px + var(--rx,0px)/2)}
-.cc.c-top{padding-top:calc(10px + var(--rx,0px)/2)} .cc.c-end{border-bottom:1px solid var(--line);padding-bottom:calc(10px + var(--rx,0px)/2)}
+.cc.c-top{padding-top:calc(9px + var(--rx,0px)/2)} .cc.c-end{border-bottom:1px solid var(--line);padding-bottom:calc(10px + var(--rx,0px)/2)}
 .c1{display:flex;align-items:center;gap:8px;white-space:nowrap}
 .c1 .lk{font-size:18px}
 .c1 .lots{margin-left:auto;font-size:15px;font-weight:700;color:var(--text)}
@@ -413,8 +413,10 @@ body.srch .sh-sugg{display:block}
 .c3{margin-top:3px;font-size:11px;color:var(--text-3);white-space:nowrap} .c3 .n{color:var(--text-2)}
 .c2 .wk{color:var(--text);font-weight:700}
 .c2 .age{margin-left:auto}
-.cg{display:grid;grid-template-columns:62px minmax(0,1fr) minmax(0,1fr);column-gap:10px;border-top:1px solid var(--line)}
-.cg>span{height:22px;display:flex;align-items:center;border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden}
+.cg{display:grid;grid-template-columns:62px minmax(0,1fr) minmax(0,1fr);column-gap:10px}
+.cc.cgr{padding-top:0;padding-bottom:0} .cc.cgr .cg{height:calc(22px + var(--rx,0px));border-bottom:1px solid var(--line)} .cc.cg0 .cg{border-top:1px solid var(--line);margin-top:2px}
+.cc.cgr+.cc:not(.cgr){padding-top:calc(7px + var(--rx,0px)/2)}
+.cg>span{display:flex;align-items:center;white-space:nowrap;overflow:hidden}
 .cg .h{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
 .cg .v{font-size:13px;color:var(--text);gap:5px} .cg .v small{font-family:var(--sans);font-size:11px;color:var(--text-3);letter-spacing:0}
 .vote{display:flex;align-items:center;flex-wrap:wrap;gap:5px}
@@ -423,9 +425,10 @@ body.srch .sh-sugg{display:block}
 .vt small{font-family:var(--mono);font-size:11px;color:var(--text-3);font-weight:500}
 .vt.no{color:var(--text-2);border-style:dashed} .vt .q{color:var(--text-3)} .vt.au{color:var(--text-2);background:var(--panel-2)}
 .gates{display:flex;flex-wrap:wrap;gap:4px}
+.gates .g{padding:0 4px}
 .g{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 5px;border:1px solid var(--line-2);border-radius:3px;font-size:12px;color:var(--text-2);white-space:nowrap}
 .g b{color:var(--text);font-weight:700}
-.g.ok::before{content:'✓';color:var(--text-2);font-weight:700}
+.g.ok{color:var(--text-2)}
 .g.wn::before{content:'⚠';color:var(--text-2)}
 .g.bad{border-color:var(--danger);color:var(--danger)} .g.bad::before{content:'✗';font-weight:700} .g.bad b{color:var(--danger)}
 .hold{font-size:13px;line-height:18px;color:var(--text-2)} .hold b{color:var(--text)}
@@ -476,7 +479,8 @@ body.srch .sh-sugg{display:block}
   #hero .h1{font-size:19px;line-height:24px}
   #hero .hv .lk{font-size:16px}
   #cols{grid-template-columns:minmax(0,1fr) 494px}
-  .lh,.rw{grid-template-columns:62px 180px minmax(0,1fr) 48px 184px;column-gap:10px}
+  .lh,.rw{grid-template-columns:70px 180px minmax(0,1fr) 46px 194px;column-gap:10px}
+  .mr{padding-top:6px;padding-bottom:7px}
   .lh{padding:0 20px 0 12px}
   .rw{padding-left:12px;padding-right:10px}
   .fc{padding:0 6px;gap:4px} #chips{gap:5px;padding:0 8px 0 10px}
@@ -484,11 +488,32 @@ body.srch .sh-sugg{display:block}
   .ph{padding:0 6px 0 11px}
   .blk{padding-left:12px;padding-right:11px}
   .br{grid-template-columns:98px 88px 30px 58px minmax(0,1fr) 96px}
-  .ch{font-size:12px}
+  .ch{font-size:12px} .ch td,.ch th{padding-left:3px;padding-right:3px}
 }
 
 @media (max-width:1499px){
   .m1 .gt{display:none}
+}
+
+/* drawer snap units: a section = header unit (.us) + row units + end unit (.ue, carries the divider) */
+.blk.u{border-bottom:0;padding-top:calc(2px + var(--rx,0px)/2);padding-bottom:calc(2px + var(--rx,0px)/2)}
+.blk.u.us{padding-top:calc(10px + var(--rx,0px)/2)} .blk.u.ue{border-bottom:1px solid var(--line);padding-bottom:calc(10px + var(--rx,0px)/2)}
+.blk.u .sh2{margin-bottom:4px} .blk.u p{margin-top:0}
+.blk.u.ur{padding-top:calc(1.5px + var(--rx,0px)/2);padding-bottom:calc(1.5px + var(--rx,0px)/2)}
+.lockb{background:var(--panel-2);box-shadow:inset 3px 0 0 var(--stale);line-height:18px}
+.lockb b{color:var(--text)} .lockb a{color:var(--action);font-weight:700}
+.lr,.cr{display:grid;align-items:center;column-gap:8px;white-space:nowrap;font-size:13px;color:var(--text-2);min-height:22px}
+.lr{grid-template-columns:62px minmax(0,1fr) 54px 54px 74px}
+.lr>span:nth-child(2){white-space:normal;overflow:hidden}
+.lr .n{color:var(--text)} .lr.first{color:var(--text)} .lr.first b{color:var(--info)}
+.lh2{font-size:11px;font-weight:700;letter-spacing:0;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--line);min-height:20px;padding-bottom:2px}
+.cr{grid-template-columns:86px 104px 70px 40px 34px 34px 46px 1fr;column-gap:6px;color:var(--text)}
+.cr small{color:var(--text-3);font-size:11px;margin-left:3px}
+.cr.pk{background:var(--panel-3);font-weight:700;border-radius:3px;margin:0 -4px;padding:0 4px}
+.ui .li{position:relative;padding-left:14px;line-height:18px} .ui .li::before{content:'•';position:absolute;left:2px;color:var(--text-3)} .ui .li b{color:var(--text)}
+@media (max-width:1499px){
+  .cr{grid-template-columns:82px 96px 58px 30px 30px 28px 42px 1fr;column-gap:4px;font-size:12px}
+  .lr{grid-template-columns:60px minmax(0,1fr) 50px 52px 74px}
 }
 
 </style>
@@ -626,9 +651,9 @@ body.srch .sh-sugg{display:block}
   <div class="hl">
     <div class="h0"><span class="live"><i></i>LIVE EVENT</span><span class="sh-c sh-c-info" title="BASKET / POLICY SHOCK = blue (info), never amber">POLICY SHOCK · SEBI</span><span class="age">S-1119-047 · first seen <span class="n">11:42:31</span></span></div>
     <div class="h1">SEBI mulls MTF limits - sources; no decision yet</div>
-    <div class="h2"><span class="sh-c say" title="dashed = not confirmed: no SEBI circular, press release or e-Gazette yet (checked 11:44:00)">SOURCES SAY · NOT CONFIRMED</span><span class="t2">CDSL <span class="n">11:44:18</span>: “no communication from SEBI” - <b>not a denial</b></span></div>
+    <div class="h2"><span class="sh-c say" title="dashed = not confirmed: no SEBI circular, press release or e-Gazette yet (checked 11:44:00)">SOURCES SAY · NOT CONFIRMED</span><span class="t2" title="CDSL filing 11:44:18: no communication received from SEBI on MTF - a clarification, not a denial">CDSL <span class="n">11:44:18</span>: no SEBI letter - <b>not a denial</b></span></div>
     <div class="h3" title="Brokers &amp; exchanges: free-float weighted basket of all 12 listed brokers and exchanges (no NSE index): BSE 30 % · MCX 17 % · CDSL 15 % · ANGELONE 10 % · 8 non-F&amp;O 28 %. Breadth over all 12 listed shares and over the 4 F&amp;O shares.">
-      <a class="sec" href="sectors.html#brk">Brokers &amp; exchanges</a><span class="n dn b">▼ −1.34%</span><span class="t3">all 12 listed · free-float</span><span class="t2">breadth <b class="n">7/12</b> all · F&amp;O <b class="n">4/4</b></span><span class="sh-c nar" title="only the F&amp;O names move: 5 of the 8 non-F&amp;O brokers are not down">NARROW</span>
+      <a class="sec" href="sectors.html#brk">Brokers</a><span class="n dn b">▼ −1.34%</span><span class="t2">all 12 listed · <b class="n">7/12</b> down · F&amp;O <b class="n">4/4</b></span><span class="sh-c nar" title="only the F&amp;O names move: 5 of the 8 non-F&amp;O brokers are not down">NARROW</span>
     </div>
   </div>
   <div class="tl">
@@ -636,8 +661,8 @@ body.srch .sh-sugg{display:block}
   </div>
   <div class="hv">
     <div class="v1"><a class="lk" href="share.html#ANGELONE">ANGELONE</a><span class="sh-c sh-c-pe">PE 2,300 Dec</span><span class="n t2">118.40 / 119.30</span></div>
-    <div class="v2"><span class="sh-c sh-c-stale" title="hard block (R12): loss lock. Only ban, the loss lock and stale data block a call.">BLOCKED · lock room</span><span class="n b">0 lots</span><span class="t3">GO NOW <span class="n">11:43:05</span> suppressed</span></div>
-    <div class="v3" title="lock room = ₹10,000 day lock − ₹8,020 if both open positions hit their share stops now. Max loss of 1 lot = (121.60 − 106.60) × 250 + costs ₹320 (charges ₹80 + slippage ₹240).">max loss <b class="n">₹4,070</b> &gt; lock room <b class="n">₹1,980</b> <span class="t3">if both stops hit</span></div>
+    <div class="v2"><span class="sh-c sh-c-stale" title="hard block (R12): loss lock. Only ban, the loss lock and stale data block a call. GO NOW 11:43:05 was suppressed.">BLOCKED · lock room</span><span class="n b">0 lots</span></div>
+    <div class="v3" title="lock room = ₹10,000 day lock − ₹8,020 if both open positions hit their share stops now. Max loss of 1 lot = (121.60 − 106.60) × 250 + costs ₹320 (charges ₹80 + slippage ₹240).">max loss <b class="n">₹4,070</b> &gt; room <b class="n">₹1,980</b> <span class="t3">both stops hit</span></div>
     <div class="v4" title="BOOK MANAPPURAM at 14.20 (+₹2,430 net) leaves only HINDALCO at risk (−₹4,060 at its stop): room ₹10,000 − ₹1,630 = ₹8,370, then 1 lot of this PE fits (worst case −₹5,700, ₹4,300 left).">opens: <a href="positions.html#MANAPPURAM"><b>BOOK MANAPPURAM</b></a> → room <b class="n">₹8,370</b></div>
   </div>
 </section>
@@ -694,19 +719,14 @@ body.srch .sh-sugg{display:block}
           <!-- 1 · THE CALL CARD (fix 4 order: verdict → trigger / stop / target → THE VOTE → gate chips → hold rule) -->
           <div class="blk cc c-top" data-n="the call">
             <div class="c1"><span class="sh-c sh-c-stale">BLOCKED · lock room</span><a class="lk" href="share.html#ANGELONE">ANGELONE</a><span class="sh-c sh-c-pe">PE 2,300 Dec</span><span class="lots n" title="0 lots: max loss ₹4,070 is bigger than the lock room ₹1,980">0 lots</span></div>
-            <div class="c2" title="GO NOW at 11:43:05 (4 of 4 agreed) was suppressed by the lock room; the CDSL filing at 11:44:18 re-voted it 3 of 4 (weighted 0.64, was 0.81)">GO NOW <span class="n">11:43:05</span> → suppressed · re-voted <span class="n">11:44:18</span> → <span class="wk">WEAKENED</span></div>
-            <div class="c3">source CNBC-TV18 <span class="n">11:42:31</span> + basket shock <span class="n">11:42:08</span> · age <span class="n">2 s</span> · weighted <span class="n">0.64</span></div>
+            <div class="c2" title="GO NOW at 11:43:05 (4 of 4 agreed) was suppressed by the lock room; the CDSL filing at 11:44:18 re-voted it 3 of 4 (weighted 0.64, was 0.81)">GO NOW <span class="n">11:43:05</span> → suppressed · <span class="n">11:44:18</span> → <span class="wk">WEAKENED</span><span class="age">age <span class="n">2 s</span></span></div>
           </div>
-          <div class="blk cc" data-n="trigger · stop · target">
-            <div class="cg">
-              <span></span><span class="h">premium · 2,300 PE Dec</span><span class="h">share · ANGELONE</span>
-              <span class="h">now</span><span class="v n">118.40 / 119.30 <small>0.4 s</small></span><span class="v n">2,296.50 <span class="dn">−2.10%</span></span>
-              <span class="h">trigger</span><span class="v n">≈ 121.60 <small>fill</small></span><span class="v n">&lt; 2,290 <small>5-min close</small></span>
-              <span class="h">stop</span><span class="v n">106.60 <small>bid</small></span><span class="v n">&gt; 2,320 <small>5-min close</small></span>
-              <span class="h">T1</span><span class="v n">133.70 <small>trail to cost</small></span><span class="v n">2,265</span>
-              <span class="h">target</span><span class="v n">147.60 <small>BOOK</small></span><span class="v n">2,240 <small>above the 2,200 put wall</small></span>
-            </div>
-          </div>
+          <div class="blk cc cgr cg0" data-n="head"><div class="cg"><span class="h"></span><span class="h">premium · 2,300 PE Dec</span><span class="h">share · ANGELONE</span></div></div>
+          <div class="blk cc cgr" data-n="now"><div class="cg"><span class="h">now</span><span class="v n" title="data age: quotes 11:44:19.6 Kite WS">118.40 / 119.30 <small>data 0.4 s</small></span><span class="v n">2,296.50 <span class="dn">−2.10%</span></span></div></div>
+          <div class="blk cc cgr" data-n="trigger"><div class="cg"><span class="h">trigger</span><span class="v n">≈ 121.60 <small>fill</small></span><span class="v n">&lt; 2,290 <small>5-min close</small></span></div></div>
+          <div class="blk cc cgr" data-n="stop"><div class="cg"><span class="h">stop</span><span class="v n">106.60 <small>bid</small></span><span class="v n">&gt; 2,320 <small>5-min close</small></span></div></div>
+          <div class="blk cc cgr" data-n="T1"><div class="cg"><span class="h">T1</span><span class="v n">133.70 <small>trail to cost</small></span><span class="v n">2,265</span></div></div>
+          <div class="blk cc cgr" data-n="target"><div class="cg"><span class="h">target</span><span class="v n">147.60 <small>BOOK</small></span><span class="v n">2,240 <small>above the 2,200 put wall</small></span></div></div>
           <div class="blk cc" data-n="the vote">
             <div class="vote" title="THE VOTE = n of N agree, N = voters who voted (agents 1-3, news, money), each weighted by its hit rate over the last 60 sessions: agent 1 58 % (n 73) · agent 2 61 % (n 69) · news 52 % (n 41) · money 63 % (n 88). ? = did not vote (agent 3 was reading the KEI filing). The auditor checks the direction with a 2nd model and does not vote. Weighted 0.64 (was 0.81 at 11:43:05, 4 of 4).">
               <span class="sh-lb">the vote</span><b class="vn">3 of 4 agree</b><span class="vt">agents 1 ✓ 2 ✓ <span class="q">3 ?</span></span><span class="vt no">news ✗</span><span class="vt">money ✓</span><span class="vt au">auditor PE ✓</span>
@@ -718,89 +738,67 @@ body.srch .sh-sugg{display:block}
               <span class="g ok" title="lots at the best ask; you need 1">depth <b class="n">18</b></span>
               <span class="g wn" title="IV 41.3 vs 20-day 31.8 · IV rank 76: IV-crush risk if SEBI denies (≈ −4 IV pts ≈ −12 on the premium)">IV/20d <b class="n">1.30x</b></span>
               <span class="g ok" title="ANGELONE market-wide position limit used · ban at 95 %">MWPL <b class="n">38%</b></span>
-              <span class="g ok" title="quotes 11:44:19.6 Kite WS">data <b class="n">0.4s</b></span>
               <span class="g bad" title="hard block: max loss ₹4,070 &gt; lock room ₹1,980 → 0 lots">lock <b class="n">₹1,980</b> &lt; <b class="n">₹4,070</b></span>
             </div>
           </div>
           <div class="blk cc c-end" data-n="hold rule">
-            <div class="hold"><b>Hold</b> to T1 / target or <span class="n">14:30</span> · not +0.5R by <span class="n">12:45</span> → exit · <b><span class="n">15:10</span> hard exit</b> · <b>don't exit before the stop or the target unless GIR says EXIT</b></div>
+            <div class="hold"><b>Hold</b> to T1 / target or <span class="n">14:30</span> · not +0.5R by <span class="n">12:45</span> → exit · <b><span class="n">15:10</span> hard exit</b> · <b>don't exit before the stop or the target unless GIR says EXIT</b> · source CNBC-TV18 <span class="n">11:42:31</span> + basket shock <span class="n">11:42:08</span></div>
           </div>
 
-          <!-- 2 · THE LOCK GATE in plain words (R12: the reason + what to do instead) -->
-          <div class="blk lockb" data-n="why 0 lots">
-            <div><b>Why 0 lots:</b> if both open stops hit you are at <b class="n dn">−₹8,020</b>; one lot can lose <b class="n">₹4,070</b> = (<span class="n">121.60 − 106.60</span>) × <span class="n">250</span> + costs <span class="n">₹320</span> (charges ₹80 + slippage ₹240) → <b class="n dn">−₹12,090</b>, <b class="n">₹2,090</b> past the ₹10,000 lock.</div>
-            <div><b>What to do:</b> <a href="positions.html#MANAPPURAM">BOOK MANAPPURAM</a> (GIR said BOOK <span class="n">11:40:12</span>) → room <b class="n">₹8,370</b> → 1 lot fits: worst case <span class="n">−₹5,700</span>, <span class="n">₹4,300</span> left · it is trade 3 of 3 = your last.</div>
-          </div>
+          <!-- 2 · THE LOCK GATE in plain words (R12: the reason + what to do instead) - every child below is one whole snap unit -->
+          <div class="blk u us lockb" data-n="why 0 lots"><b>Why 0 lots:</b> if both open stops hit you are at <b class="n dn">−₹8,020</b>; one lot can lose <b class="n">₹4,070</b> = (<span class="n">121.60 − 106.60</span>) × <span class="n">250</span> + costs <span class="n">₹320</span> (charges ₹80 + slippage ₹240) → <b class="n dn">−₹12,090</b>, <b class="n">₹2,090</b> past the ₹10,000 lock.</div>
+          <div class="blk u ue lockb"><b>What to do:</b> <a href="positions.html#MANAPPURAM">BOOK MANAPPURAM</a> (GIR said BOOK <span class="n">11:40:12</span>) → room <b class="n">₹8,370</b> → 1 lot fits: worst case <span class="n">−₹5,700</span>, <span class="n">₹4,300</span> left · it is trade 3 of 3 = your last.</div>
 
           <!-- 3 · THE STORY -->
-          <div class="blk" data-n="the story">
-            <div class="sh2">the story <span>· what is new · who said it</span></div>
-            <div class="chs"><span class="sh-c sh-c-info">POLICY · SEBI</span><span class="sh-c say">SOURCES SAY</span><span class="sh-c tok">CLARIFIED · CDSL</span><span class="sh-c tok">1 source + 4 retells</span><span class="sh-c newc" title="vs the SEBI paper of 18 Nov 17:32: the per-client cap is new">NEW vs 18 Nov paper</span><span class="aiw"><span class="dn">▼</span> wt <b>4</b></span></div>
-            <p><b>New today:</b> “a per-client MTF limit is being weighed” - not in the <a href="#" data-goto="17:32:10">SEBI consultation paper of 18 Nov 17:32</a> (public, comments to <b>28 Nov</b>). The paper itself is old news (weight 2 last night; it armed the broker watch).</p>
-            <p><b>CDSL <span class="n">11:44:18</span>:</b> “no communication received from SEBI on MTF” - a clarification, <b>not a denial</b> → call kept, weakened. SEBI denies or says “no decision” → <b>CANCEL</b>.</p>
-          </div>
+          <div class="blk u us" data-n="the story"><div class="sh2">the story <span>· what is new · who said it</span></div>
+            <div class="chs"><span class="sh-c sh-c-info">POLICY · SEBI</span><span class="sh-c say">SOURCES SAY</span><span class="sh-c tok">CLARIFIED · CDSL</span><span class="sh-c tok">1 source + 4 retells</span><span class="sh-c newc" title="vs the SEBI paper of 18 Nov 17:32: the per-client cap is new">NEW vs 18 Nov paper</span><span class="aiw"><span class="dn">▼</span> wt <b>4</b></span></div></div>
+          <div class="blk u"><p><b>New today:</b> “a per-client MTF limit is being weighed” - not in the <a href="#" data-goto="17:32:10">SEBI consultation paper of 18 Nov 17:32</a> (public, comments to <b>28 Nov</b>). The paper itself is old news (weight 2 last night; it armed the broker watch).</p></div>
+          <div class="blk u ue"><p><b>CDSL <span class="n">11:44:18</span>:</b> “no communication received from SEBI on MTF” - a clarification, <b>not a denial</b> → call kept, weakened. SEBI denies or says “no decision” → <b>CANCEL</b>.</p></div>
 
           <!-- 4 · THE BASKET (R49: all listed shares) -->
-          <div class="blk" data-n="the basket">
-            <div class="sh2">the basket <span>· Brokers &amp; exchanges · all 12 listed, free-float <b class="n dn">−1.34%</b></span></div>
-            <div class="bk">
-              <div class="br sh-heat-dn" style="--m:2.10"><a class="lk" href="share.html#ANGELONE">ANGELONE</a><span class="sh-c sh-c-leader">LEADER</span><a class="sh-c sh-c-sb" href="futures-oi.html#bu=SB" title="short build-up: price down, futures OI up · opens F10 filtered SB">SB</a><span class="n dn pc">−2.10%</span><span class="bar"><i style="right:50%;width:42%"></i></span><span class="ac">the call ↑</span></div>
-              <div class="br sh-heat-dn" style="--m:1.88"><a class="lk" href="share.html#BSE">BSE</a><span class="sh-c sh-c-dep">DEPENDENT</span><a class="sh-c sh-c-lu" href="futures-oi.html#bu=LU" title="long unwinding: price down, OI down · opens F10 filtered LU">LU</a><span class="n dn pc">−1.88%</span><span class="bar"><i style="right:50%;width:38%"></i></span><span class="ac">nothing to do</span></div>
-              <div class="br sh-heat-dn" style="--m:1.62"><a class="lk" href="share.html#CDSL">CDSL</a><span class="sh-c sh-c-dep">DEPENDENT</span><a class="sh-c sh-c-lu" href="futures-oi.html#bu=LU">LU</a><span class="n dn pc">−1.62%</span><span class="bar"><i style="right:50%;width:32%"></i></span><span class="ac">its own filing</span></div>
-              <div class="br sh-heat-dn" style="--m:1.30"><a class="lk" href="share.html#MCX">MCX</a><span class="sh-c tok" title="a commodity exchange, not margin trading: no role in this story">not MTF</span><a class="sh-c sh-c-lu" href="futures-oi.html#bu=LU">LU</a><span class="n dn pc">−1.30%</span><span class="bar"><i style="right:50%;width:26%"></i></span><span class="ac">watch only</span></div>
-              <div class="br"><span class="nm2" title="MOTILALOFS, 360ONE, NUVAMA … (not in F&amp;O)">8 non-F&amp;O brokers</span><span class="n dn pc">−0.35%</span><span class="bar"><i style="right:50%;width:7%"></i></span><span class="ac">5 of 8 not down</span></div>
-            </div>
-            <p class="t2s">breadth <b class="n">7/12</b> all listed · F&amp;O <b class="n">4/4</b> · <span class="sh-c nar">NARROW</span> only the F&amp;O names fall</p>
-          </div>
+          <div class="blk u us" data-n="the basket"><div class="sh2">the basket <span>· Brokers &amp; exchanges · all 12 listed, free-float <b class="n dn">−1.34%</b></span></div></div>
+          <div class="blk u ur"><div class="br sh-heat-dn" style="--m:2.10"><a class="lk" href="share.html#ANGELONE">ANGELONE</a><span class="sh-c sh-c-leader">LEADER</span><a class="sh-c sh-c-sb" href="futures-oi.html#bu=SB" title="short build-up: price down, futures OI up · opens F10 filtered SB">SB</a><span class="n dn pc">−2.10%</span><span class="bar"><i style="right:50%;width:42%"></i></span><span class="ac">the call ↑</span></div></div>
+          <div class="blk u ur"><div class="br sh-heat-dn" style="--m:1.88"><a class="lk" href="share.html#BSE">BSE</a><span class="sh-c sh-c-dep">DEPENDENT</span><a class="sh-c sh-c-lu" href="futures-oi.html#bu=LU" title="long unwinding: price down, OI down · opens F10 filtered LU">LU</a><span class="n dn pc">−1.88%</span><span class="bar"><i style="right:50%;width:38%"></i></span><span class="ac">nothing to do</span></div></div>
+          <div class="blk u ur"><div class="br sh-heat-dn" style="--m:1.62"><a class="lk" href="share.html#CDSL">CDSL</a><span class="sh-c sh-c-dep">DEPENDENT</span><a class="sh-c sh-c-lu" href="futures-oi.html#bu=LU">LU</a><span class="n dn pc">−1.62%</span><span class="bar"><i style="right:50%;width:32%"></i></span><span class="ac">its own filing</span></div></div>
+          <div class="blk u ur"><div class="br sh-heat-dn" style="--m:1.30"><a class="lk" href="share.html#MCX">MCX</a><span class="sh-c tok" title="a commodity exchange, not margin trading: no role in this story">not MTF</span><a class="sh-c sh-c-lu" href="futures-oi.html#bu=LU">LU</a><span class="n dn pc">−1.30%</span><span class="bar"><i style="right:50%;width:26%"></i></span><span class="ac">watch only</span></div></div>
+          <div class="blk u ur"><div class="br"><span class="nm2" title="MOTILALOFS, 360ONE, NUVAMA … (not in F&amp;O)">8 non-F&amp;O brokers</span><span class="n dn pc">−0.35%</span><span class="bar"><i style="right:50%;width:7%"></i></span><span class="ac">5 of 8 not down</span></div></div>
+          <div class="blk u ue"><p class="t2s">breadth <b class="n">7/12</b> all listed · F&amp;O <b class="n">4/4</b> · <span class="sh-c nar">NARROW</span> only the F&amp;O names fall</p></div>
 
           <!-- 5 · SOURCE LADDER (R20 seconds since the first source, R21 TV / live blogs) -->
-          <div class="blk" data-n="source ladder">
-            <div class="sh2">source ladder <span>· seconds after the move (11:41:56) and after the 1st source</span></div>
-            <table class="ld">
-              <tr><th>seen</th><th>who</th><th class="r">move</th><th class="r">1st src</th><th>role</th></tr>
-              <tr><td class="n">11:41:56</td><td>price: ANGELONE, BSE, CDSL on 4.1x volume</td><td class="n r">0 s</td><td class="n r">−35 s</td><td class="t3">first</td></tr>
-              <tr><td class="n">11:42:08</td><td>GIR BASKET SHOCK · “news not found yet”</td><td class="n r">+12 s</td><td class="n r">−23 s</td><td><span class="ib">alarm</span></td></tr>
-              <tr><td class="n">11:42:20</td><td>2,300 PE burst 7x · 82% at the ask</td><td class="n r">+24 s</td><td class="n r">−11 s</td><td class="t3">money</td></tr>
-              <tr class="first"><td class="n">11:42:31</td><td><b>CNBC-TV18 reporter · TV text</b> <span class="t3">aired 11:42:17</span></td><td class="n r">+35 s</td><td class="n r"><b>1st</b></td><td><span class="ib">source</span></td></tr>
-              <tr><td class="n">11:42:44</td><td>ET live blog (echoes CNBC-TV18)</td><td class="n r">+48 s</td><td class="n r">+13 s</td><td class="t3">retell</td></tr>
-              <tr><td class="n">11:42:50</td><td>ET Now ticker</td><td class="n r">+54 s</td><td class="n r">+19 s</td><td class="t3">retell</td></tr>
-              <tr><td class="n">11:42:59</td><td>Moneycontrol live blog</td><td class="n r">+63 s</td><td class="n r">+28 s</td><td class="t3">retell</td></tr>
-              <tr><td class="n">11:43:40</td><td>Reuters India (“citing a TV report”)</td><td class="n r">+104 s</td><td class="n r">+69 s</td><td class="t3">retell</td></tr>
-              <tr><td class="n">11:44:00</td><td>SEBI · PIB · e-Gazette pages: nothing</td><td class="n r">-</td><td class="n r">-</td><td class="t3">not yet</td></tr>
-              <tr><td class="n">11:44:16</td><td>BSE MD on ET Now (management on TV)</td><td class="n r">+140 s</td><td class="n r">+105 s</td><td class="t3">reaction</td></tr>
-              <tr class="first"><td class="n">11:44:18</td><td><b>CDSL filing: no SEBI letter</b></td><td class="n r">+142 s</td><td class="n r">+107 s</td><td><span class="ib">clarified</span></td></tr>
-            </table>
-          </div>
+          <div class="blk u us" data-n="source ladder"><div class="sh2">source ladder <span>· seconds after the move (11:41:56) and after the 1st source</span></div>
+            <div class="lr lh2"><span>seen</span><span>who</span><span class="r">move</span><span class="r">1st src</span><span>role</span></div></div>
+          <div class="blk u ul"><div class="lr"><span class="n">11:41:56</span><span>price: ANGELONE, BSE, CDSL on 4.1x volume</span><span class="n r">0 s</span><span class="n r">−35 s</span><span class="t3">first</span></div></div>
+          <div class="blk u ul"><div class="lr"><span class="n">11:42:08</span><span>GIR BASKET SHOCK · “news not found yet”</span><span class="n r">+12 s</span><span class="n r">−23 s</span><span><span class="ib">alarm</span></span></div></div>
+          <div class="blk u ul"><div class="lr"><span class="n">11:42:20</span><span>2,300 PE burst 7x · 82% at the ask</span><span class="n r">+24 s</span><span class="n r">−11 s</span><span class="t3">money</span></div></div>
+          <div class="blk u ul"><div class="lr first"><span class="n">11:42:31</span><span><b>CNBC-TV18 reporter · TV text</b></span><span class="n r">+35 s</span><span class="n r"><b>1st</b></span><span><span class="ib">source</span></span></div></div>
+          <div class="blk u ul"><div class="lr"><span class="n">11:42:44</span><span>ET live blog (echoes CNBC-TV18)</span><span class="n r">+48 s</span><span class="n r">+13 s</span><span class="t3">retell</span></div></div>
+          <div class="blk u ul"><div class="lr"><span class="n">11:42:50</span><span>ET Now ticker</span><span class="n r">+54 s</span><span class="n r">+19 s</span><span class="t3">retell</span></div></div>
+          <div class="blk u ul"><div class="lr"><span class="n">11:42:59</span><span>Moneycontrol live blog</span><span class="n r">+63 s</span><span class="n r">+28 s</span><span class="t3">retell</span></div></div>
+          <div class="blk u ul"><div class="lr"><span class="n">11:43:40</span><span>Reuters India (“citing a TV report”)</span><span class="n r">+104 s</span><span class="n r">+69 s</span><span class="t3">retell</span></div></div>
+          <div class="blk u ul"><div class="lr"><span class="n">11:44:00</span><span>SEBI · PIB · e-Gazette pages: nothing</span><span class="n r">-</span><span class="n r">-</span><span class="t3">not yet</span></div></div>
+          <div class="blk u ul"><div class="lr"><span class="n">11:44:16</span><span>BSE MD on ET Now (management on TV)</span><span class="n r">+140 s</span><span class="n r">+105 s</span><span class="t3">reaction</span></div></div>
+          <div class="blk u ul ue"><div class="lr first"><span class="n">11:44:18</span><span><b>CDSL filing: no SEBI letter</b></span><span class="n r">+142 s</span><span class="n r">+107 s</span><span><span class="ib">clarified</span></span></div></div>
 
           <!-- 6 · GIR'S READING -->
-          <div class="blk" data-n="GIR's reading">
-            <div class="sh2">GIR's reading <span>· direction checked by a 2nd model</span></div>
-            <ul class="rd">
-              <li>MTF limits = less margin lending = fewer trades → <b>brokers ▼</b>, ANGELONE most (MTF ≈ 18 % of its income). MCX is a commodity exchange → watch only.</li>
-              <li>“Sources say, no decision yet” is news: it woke the analyst at <span class="n">11:42:32</span>. A SEBI denial → <b>CANCEL</b>; a broker PE you hold → <b>EXIT</b>.</li>
-              <li><b>Weight 4</b> = size 2 + tier 1 (CNBC-TV18) + price agrees 1 + verification 0 (SOURCES SAY; OFFICIAL adds 1). Management talk on TV is capped at 2.</li>
-            </ul>
-          </div>
+          <div class="blk u us" data-n="GIR's reading"><div class="sh2">GIR's reading <span>· direction checked by a 2nd model</span></div></div>
+          <div class="blk u ui"><div class="li">MTF limits = less margin lending = fewer trades → <b>brokers ▼</b>, ANGELONE most (MTF ≈ 18 % of its income). MCX is a commodity exchange → watch only.</div></div>
+          <div class="blk u ui"><div class="li">“Sources say, no decision yet” is news: it woke the analyst at <span class="n">11:42:32</span>. A SEBI denial → <b>CANCEL</b>; a broker PE you hold → <b>EXIT</b>.</div></div>
+          <div class="blk u ui ue"><div class="li"><b>Weight 4</b> = size 2 + tier 1 (CNBC-TV18) + price agrees 1 + verification 0 (SOURCES SAY; OFFICIAL adds 1). Management talk on TV is capped at 2.</div></div>
 
-          <!-- 7 · STRIKE CHOOSER (fix 5: one expiry, 3 rows, 8 columns) -->
-          <div class="blk" data-n="strike chooser">
-            <div class="sh2">strike chooser <span>· Dec · ANGELONE 2,296.50 · lot 250</span><a class="allc" href="chain.html#ANGELONE" title="OI change, γ, vega, IV rank, charges, to-wall, break-even and the Nov expiry (Mon 23 Nov, physical settlement: exit ITM before expiry day)">all columns · Nov ›</a></div>
-            <table class="ch">
-              <tr><th>PE Dec</th><th class="r">bid / ask</th><th class="r" title="₹ per lot · ticks of ₹0.05">spread</th><th class="r">depth</th><th class="r">Δ</th><th class="r" title="premium lost per trading hour, per lot of 250">θ ₹/h</th><th class="r">IV/20d</th><th class="r">cash</th></tr>
-              <tr title="OI +18 % today"><td>2,350 <small>ITM</small></td><td class="n r">142.85/144.85</td><td class="n r bad">₹500·40t</td><td class="n r">12</td><td class="n r">−.52</td><td class="n r">−53</td><td class="n r">1.28x</td><td class="n r">₹36,213</td></tr>
-              <tr class="pk" title="OI +31 % today, premium up = long put build-up"><td>2,300 <small>ATM ★</small></td><td class="n r">118.40/119.30</td><td class="n r">₹225·18t</td><td class="n r">18</td><td class="n r">−.46</td><td class="n r">−55</td><td class="n r">1.30x</td><td class="n r">₹29,825</td></tr>
-              <tr title="OI +22 % today"><td>2,250 <small>OTM</small></td><td class="n r">96.45/98.20</td><td class="n r bad">₹438·35t</td><td class="n r">9</td><td class="n r">−.39</td><td class="n r">−55</td><td class="n r">1.32x</td><td class="n r">₹24,550</td></tr>
-            </table>
-            <p class="t2s"><b>GIR's pick 2,300 ATM ★</b>: tightest spread, most depth, break-even <span class="n">4.4</span> share pts by 15:10 · R:R <span class="n">1.5</span> after costs · cost = ask × 250.</p>
-          </div>
+          <!-- 7 · STRIKE CHOOSER (fix 5: one expiry, 3 rows) -->
+          <div class="blk u us" data-n="strike chooser"><div class="sh2">strike chooser <span>· Dec · ANGELONE 2,296.50 · lot 250</span><a class="allc" href="chain.html#ANGELONE" title="OI change, γ, vega, IV rank, charges, to-wall, break-even and the Nov expiry (Mon 23 Nov, physical settlement: exit ITM before expiry day)">all columns · Nov ›</a></div>
+            <div class="cr lh2"><span>PE Dec</span><span class="r">bid / ask</span><span class="r" title="₹ per lot · ticks of ₹0.05">spread</span><span class="r" title="depth: lots at the best ask">lots</span><span class="r">Δ</span><span class="r" title="θ: ₹ of premium lost per trading hour, per lot of 250">θ/h</span><span class="r">IV/20d</span><span class="r">cash</span></div></div>
+          <div class="blk u ul"><div class="cr" title="OI +18 % today"><span>2,350 <small>ITM</small></span><span class="n r">142.85/144.85</span><span class="n r t3">₹500·40t</span><span class="n r">12</span><span class="n r">−.52</span><span class="n r">−53</span><span class="n r">1.28x</span><span class="n r">₹36,213</span></div></div>
+          <div class="blk u ul"><div class="cr pk" title="OI +31 % today, premium up = long put build-up"><span>2,300 <small>ATM ★</small></span><span class="n r">118.40/119.30</span><span class="n r">₹225·18t</span><span class="n r">18</span><span class="n r">−.46</span><span class="n r">−55</span><span class="n r">1.30x</span><span class="n r">₹29,825</span></div></div>
+          <div class="blk u ul"><div class="cr" title="OI +22 % today"><span>2,250 <small>OTM</small></span><span class="n r">96.45/98.20</span><span class="n r t3">₹438·35t</span><span class="n r">9</span><span class="n r">−.39</span><span class="n r">−55</span><span class="n r">1.32x</span><span class="n r">₹24,550</span></div></div>
+          <div class="blk u ue"><p class="t2s"><b>GIR's pick 2,300 ATM ★</b>: tightest spread, most depth, break-even <span class="n">4.4</span> share pts by 15:10 · R:R <span class="n">1.5</span> after costs · cost = ask × 250.</p></div>
 
           <!-- 8 · SPEED AND RECORD -->
-          <div class="blk" data-n="speed">
-            <div class="sh2">speed vs targets <span>· S12, audited 15:45</span></div>
-            <p class="t2s">basket alarm <b class="n">12 s</b> after the move ✓ · TV text <b class="n">14 s</b> after air ✓ · first wire <b class="n">69 s</b> ✗ slow · regulator page: not yet · CDSL filing on the story in <b class="n">2 s</b> ✓ · BASKET SHOCK, last 60 sessions: 14 alarms, 11 causes found, 3 false · <a href="replay.html#2026-11-18">⇧F10 Replay 18 Nov</a></p>
-          </div>
+          <div class="blk u us" data-n="speed"><div class="sh2">speed vs targets <span>· S12, audited 15:45</span></div></div>
+          <div class="blk u"><p class="t2s">basket alarm <b>12 s</b> after the move ✓ · TV text <b>14 s</b> after air ✓ · first wire <b>69 s</b> ✗ slow · regulator page: not yet · CDSL filing on the story in <b>2 s</b> ✓</p></div>
+          <div class="blk u ue"><p class="t2s">BASKET SHOCK, last 60 sessions: <b>14</b> alarms · <b>11</b> causes found · <b>3</b> false · <a href="replay.html#2026-11-18">⇧F10 Replay 18 Nov</a></p></div>
 
-          <div class="blk nx" data-n="next"><span class="sh-lb">next</span><span><kbd>Enter</kbd> share page</span><span><kbd>Space</kbd> plan card</span><span><kbd>F9</kbd> chain</span><span><kbd>F8</kbd> analyst</span><span><kbd>F6</kbd> book MANAPPURAM</span><span class="t3">GIR never places an order</span></div>
+          <div class="blk u us ue nx" data-n="next"><span class="sh-lb">next</span><span><kbd>Enter</kbd> share page</span><span><kbd>Space</kbd> plan card</span><span><kbd>F9</kbd> chain</span><span><kbd>F8</kbd> analyst</span><span><kbd>F6</kbd> book MANAPPURAM</span><span class="t3">GIR never places an order</span></div>
         </div><div class="vsb" data-t="sb"><i></i></div></div>
         <div class="more" id="sbm"></div>
       </div>
@@ -859,31 +857,31 @@ const D = [
   hd:'Clarification: “no communication received from SEBI on MTF”', ai:'▲', w:2, wt:'2 = size 1 + tier 1 + verification 0 (a clarification, not a denial)', ver:'CLARIFIED', src:'NSE filing', st:'NEW',
   call:['link','','on the live event ↑','attached to the live event in 2 s: the ANGELONE call was re-voted 3 of 4 (WEAKENED)'], fl:['fil','pol']},
  {g:'today', f:'11:44:16', s:'11:44:03', sym:'BSE', dp:'−1.88%', role:'dep', sec:'Brokers & exchanges',
-  hd:'BSE MD on ET Now: “MTF is a broker matter, exchange volumes not hit”', ai:'▲', w:2, wt:'2 = management talk on TV (capped at 2)', ver:'ON RECORD', src:'ET Now · TV text, 13 s after air', st:'NEW',
+  hd:'BSE MD on ET Now: “MTF is a broker matter, exchange volumes not hit”', ai:'▲', w:2, wt:'2 = management talk on TV (capped at 2)', ver:'ON RECORD', src:'ET Now TV · +13 s', st:'NEW',
   call:['none','','basket call is ANGELONE ↑','talk, not a buy signal: BSE is still −1.88 %'], fl:['pol','tv']},
  {g:'today', f:'11:43:51', s:'11:43:48', sym:'KEI', dp:'−1.90%', role:'dep', sec:'Cables & wires',
   hd:'Board outcome - attachment, 12 pages', ai:'·', w:'-', wt:'weighed once read', ver:'OFFICIAL', src:'NSE filing', st:'READING… 29 s', stc:'rdg',
   call:['none','','waits until read (~29 s)','any call on KEI waits until the filing is read and weighed'], fl:['fil']},
  {g:'today', f:'11:40:12', s:'11:40:05', kind:'MARKET', drv:'copper −0.92%', sec:'Cables & wires', syms:['POLYCAB','KEI','HINDALCO'],
-  hd:'Copper near a 5-month low; cables and metals drag the market', ai:'▼', w:3, wt:'3 = sector story, tier 2, retold', ver:'REPORTED', src:'Moneycontrol live blog', fold:2, st:'RETOLD',
+  hd:'Copper near a 5-month low; cables and metals drag the market', ai:'▼', w:3, wt:'3 = sector story, tier 2, retold', ver:'REPORTED', src:'Moneycontrol blog', fold:2, st:'RETOLD',
   call:['none','','told at 06:40 ↓','old news retold is old news · copper −0.92 % now, low −1.81 % at 10:12'], fl:['mkt','tv']},
  {g:'today', f:'11:38:20', s:'11:38:09', kind:'MARKET', drv:'jewellers −2.01%', sec:'Jewellers & gold loans', syms:['TITAN','KALYANKJIL'],
   hd:'Jewellers drag the market; TITAN −2.5 %, KALYANKJIL only −0.6 %', ai:'▼', w:3, wt:'3 = sector story, tier 2, retold', ver:'REPORTED', src:'ET live blog', st:'RETOLD',
   call:['none','','gold calls on 06:58 ↓','leg 1 of the gold theme, no new fact · KALYANKJIL has not caught down yet'], fl:['mkt','tv','my']},
  {g:'today', f:'11:31:05', s:'11:30:51', sym:'HINDALCO', dp:'−1.11%', role:'dep', held:1, sec:'Metals',
-  hd:'Management on CNBC-TV18: “copper dip does not hurt our margins”', ai:'▲', w:2, wt:'2 = management talk on TV (capped at 2)', ver:'ON RECORD', src:'CNBC-TV18 · TV text, 14 s after air', st:'NEW',
+  hd:'Management on CNBC-TV18: “copper dip does not hurt our margins”', ai:'▲', w:2, wt:'2 = management talk on TV (capped at 2)', ver:'ON RECORD', src:'CNBC-TV18 TV · +14 s', st:'NEW',
   call:['exit','PE 680','not done 11:39:40','GIR said EXIT 11:39:40 (copper fading, not this talk) · acked 11:39:52, not done · Kite: MODIFY SL-L → LIMIT 14.45 (bid − 1 tick)'], fl:['my','tv']},
  {g:'today', f:'11:20:14', s:'11:20:01', sym:'SUNPHARMA', dp:'+1.42%', role:'leader', sec:'Pharma',
-  hd:'Management on CNBC-TV18: “US business not hit by tariff talk”', ai:'▲', w:2, wt:'2 = management talk on TV (capped at 2)', ver:'ON RECORD', src:'CNBC-TV18 · TV text', st:'PRICED IN 0.4 ATR', stc:'old',
+  hd:'Management on CNBC-TV18: “US business not hit by tariff talk”', ai:'▲', w:2, wt:'2 = management talk on TV (capped at 2)', ver:'ON RECORD', src:'CNBC-TV18 TV', st:'PRICED IN 0.4 ATR', stc:'old',
   call:['ready','CE 1,840','max ₹1,906 ✓','LEADER LB: pullback to VWAP 1,824, then a 5-min close > 1,824 · from the 08:40 pharma theme (wt 4), not this talk · max loss ₹1,906 fits the lock room ₹1,980 · trade 3 of 3 = your last; a slot opens only after an exit'], fl:['tv']},
  {g:'today', f:'11:05:40', s:'-', kind:'MARKET', drv:'PSU banks +0.47%', sec:'PSU banks', syms:['SBIN','BANKBARODA','PNB'],
-  hd:'PSU banks rising together since 11:05 - no story found', ai:'▲', w:'-', wt:'no story: no weight', ver:'NO SOURCE', src:'filings, wires, TV, blogs, regulators searched', st:'UNEXPLAINED', stc:'unx',
+  hd:'PSU banks rising together since 11:05 - no story found', ai:'▲', w:'-', wt:'no story: no weight', ver:'NO SOURCE', src:'all feeds searched', st:'UNEXPLAINED', stc:'unx',
   call:['none','','needs a cause → F3','GET READY needs a cause or 2 of 5 rotation signals (F3 Rotation) · money in: PSU banks +₹64 cr OI (LB)'], fl:['mkt']},
  {g:'today', f:'10:12:54', s:'10:12:40', sym:'TITAN', dp:'−2.48%', role:'leader', sec:'Jewellers & gold loans',
-  hd:'Management on CNBC-TV18: “gold fall not affecting demand”', ai:'▲', w:2, wt:'2 = management talk on TV (capped at 2)', ver:'ON RECORD', src:'CNBC-TV18 · TV text', st:'NEW',
+  hd:'Management on CNBC-TV18: “gold fall not affecting demand”', ai:'▲', w:2, wt:'2 = management talk on TV (capped at 2)', ver:'ON RECORD', src:'CNBC-TV18 TV', st:'NEW',
   call:['ready','PE 3,400','max ₹1,898 ✓','LEADER SB, EXTENDED (R13): enter on the bounce to VWAP 3,421, then a 5-min close < 3,414 · stop 3,436 · target 3,356 (before the 3,350 wall) · now 135.40 / 135.95 · 1 lot (minimum) · max loss ₹1,898 fits the lock room ₹1,980 (₹82 spare) · from the 06:58 gold theme · trade 3 of 3 = your last'], fl:['tv','my']},
  {g:'today', f:'10:12:44', s:'10:12:30', sym:'MUTHOOTFIN', dp:'−1.95%', role:'dep', sec:'Jewellers & gold loans',
-  hd:'Rumour of buying a microfinance lender - NSE reply: “no such proposal”', ai:'▼', w:2, wt:'2 = denial of a rumour', ver:'DENIED', src:'NSE filing reply · rumour 09:41', st:'DENIED',
+  hd:'Rumour of buying a microfinance lender - NSE reply: “no such proposal”', ai:'▼', w:2, wt:'2 = denial of a rumour', ver:'DENIED', src:'NSE reply · rumour 09:41', st:'DENIED',
   call:['none','','same driver: no 2nd gold PE','its gold-loan role is unchanged (06:58 row) · the rumour move undone'], fl:['fil']},
  {g:'today', f:'10:09:05', s:'10:08:40', sym:'HINDALCO', dp:'−1.11%', role:'dep', held:1, sec:'Metals',
   hd:'Domestic broker upgrades to BUY, target ₹780', ai:'▲', w:2, wt:'2 = broker call (fades in 1-2 days)', ver:'REPORTED', src:'ET live blog', st:'INFO',
@@ -892,24 +890,24 @@ const D = [
   hd:'Reply on a dividend report: “will inform when the board decides”', ai:'▼', w:1, wt:'1 = clarification, no new fact', ver:'CLARIFIED', src:'NSE filing', st:'NO MOVE',
   call:['none','','',''], fl:['fil']},
  {g:'today', f:'09:58:44', s:'09:58:41', sym:'DRREDDY', dp:'+0.40%', sec:'Pharma', l2:'Pharma',
-  hd:'USFDA EIR received: formulations unit inspection closed, VAI', ai:'▲', w:4, wt:'4 = size 2 + OFFICIAL 1 + tier 1', ver:'OFFICIAL', src:'NSE filing · 5 sources', st:'PRICED IN 0.9 ATR', stc:'old',
+  hd:'USFDA EIR received: formulations unit inspection closed, VAI', ai:'▲', w:4, wt:'4 = size 2 + OFFICIAL 1 + tier 1', ver:'OFFICIAL', src:'NSE filing + 5', st:'PRICED IN 0.9 ATR', stc:'old',
   call:['none','','0.9 ATR already done','price moved 6 min before we saw it (09:52) · pharma calls: SUNPHARMA leader, DIVISLAB laggard'], fl:['fil','crit']},
  {g:'today', f:'09:46:20', s:'09:46:02', sym:'POLYCAB', dp:'−2.05%', role:'leader', sec:'Cables & wires',
-  hd:'LME copper at a 5-month low; cable makers slide', ai:'▼', w:4, wt:'4 = sector driver 2 + tier 1 + price agrees 1', ver:'REPORTED', src:'Moneycontrol live blog + Reuters', st:'PRICED IN 1.2 ATR', stc:'old',
+  hd:'LME copper at a 5-month low; cable makers slide', ai:'▼', w:4, wt:'4 = sector driver 2 + tier 1 + price agrees 1', ver:'REPORTED', src:'MC blog + Reuters', st:'PRICED IN 1.2 ATR', stc:'old',
   call:['none','','copper bounced: no new PE','copper −0.92 % now from a −1.81 % low at 10:12 · Cables & wires NARROW (breadth 4/9 all · F&O 3/3)'], fl:['crit','tv']},
  {g:'today', f:'09:40:30', s:'09:40:12', kind:'MARKET', drv:'gold, steel, copper ▼', sec:'Metals', syms:[],
-  hd:'CNBC-TV18: gold, steel and copper falling all morning', ai:'▼', w:3, wt:'3 = sector talk, tier 1', ver:'ON AIR', src:'CNBC-TV18 · 6 segments 09:40-10:20', fold:5, st:'NEW',
+  hd:'CNBC-TV18: gold, steel and copper falling all morning', ai:'▼', w:3, wt:'3 = sector talk, tier 1', ver:'ON AIR', src:'CNBC-TV18 · 6 segments', fold:5, st:'NEW',
   call:['none','','themes on ⇧F2 World','TV talk confirms the themes; theme calls live on the 06:40 / 06:58 rows'], fl:['mkt','tv']},
  {g:'today', f:'09:31:10', s:'09:30:52', sym:'HINDZINC', dp:'−1.20%', sec:'Metals', l2:'Metals',
   hd:'BSE levies a ₹1.1 lakh fine for a board-composition lapse', ai:'▼', w:1, wt:'1 = fine tiny against its size', ver:'OFFICIAL', src:'BSE filing', st:'NO MOVE',
   call:['none','','a small fine never rings',''], fl:['fil','pol']},
  // ---------------- BEFORE 09:15 ----------------
  {g:'pre', f:'08:40:12', s:'08:39:55', kind:'WORLD', drv:'US → pharma', sec:'Pharma', syms:['SUNPHARMA','DIVISLAB','LUPIN'],
-  hd:'US extends the generic-drug tariff waiver', ai:'▲', w:4, wt:'4 = sector driver 2 + tier 1 + price agrees 1', ver:'REPORTED', src:'Reuters wire · 5 sources', st:'PRICED IN 0.5 ATR', stc:'old',
+  hd:'US extends the generic-drug tariff waiver', ai:'▲', w:4, wt:'4 = sector driver 2 + tier 1 + price agrees 1', ver:'REPORTED', src:'Reuters + 5', st:'PRICED IN 0.5 ATR', stc:'old',
   call:['blocked','CE 6,000','DIVISLAB ₹2,750','DIVISLAB LAGGARD ▲ CATCH-UP (5,960 −0.20 %): 5-min close > 5,985 · max loss ₹2,750 > lock room ₹1,980 → 0 lots · the CE leader SUNPHARMA is on the 11:20 row · LUPIN 2,100 CE watch'], fl:['world','crit','pol']},
- {g:'pre', f:'08:10:05', s:'08:10:00', kind:'MARKET', drv:'F&O ban list', sec:'Jewellers & gold loans', syms:['MANAPPURAM','IDEA','RBLBANK'],
+ {g:'pre', f:'08:10:05', s:'08:10:00', kind:'MARKET', drv:'F&O ban list', sec:'Jewellers & gold loans', syms:['MANAPPURAM'],
   hd:'F&O ban: IDEA, RBLBANK · above 85 % MWPL: HINDCOPPER, SAIL, MANAPPURAM 86 %', ai:'·', w:3, wt:'3 = exchange file, affects your position', ver:'OFFICIAL', src:'NSE ban file', st:'INFO',
-  call:['book','PE 285','MWPL 86% · exit ok','GIR said BOOK 11:40:12 (stalled) · MWPL 86 % · ban at 95 % · in ban: close only - an exit is always allowed'], fl:['mkt','my','pol']},
+  call:['book','PE 285','MWPL 86%','GIR said BOOK 11:40:12 (stalled) · MWPL 86 % · ban at 95 % · in ban: close only - an exit is always allowed'], fl:['mkt','my','pol']},
  {g:'pre', f:'06:58:02', s:'06:57:30', kind:'WORLD', drv:'gold −1.62%', sec:'Jewellers & gold loans', syms:['TITAN','KALYANKJIL','MANAPPURAM','MUTHOOTFIN'],
   hd:'Gold slides as the dollar firms after the FOMC minutes', ai:'▼', w:4, wt:'4 = world driver 2 + 7 sources 1 + price agrees 1', ver:'REPORTED', src:'7 sources', fold:8, st:'PRICED IN 1.0 ATR', stc:'old',
   call:['blocked','PE 525','KALYANKJIL ₹4,970','KALYANKJIL LAGGARD ▼ CATCH-DOWN (524.80 −0.62 %): 5-min close < 521.60 · 525 PE (520 too wide, 1.7 %) · max loss ₹4,970 > lock room ₹1,980 → 0 lots · TITAN LEADER on the 10:12 row · MANAPPURAM, MUTHOOTFIN DEPENDENT (one gold PE max)'], fl:['world','crit','my']},
@@ -964,7 +962,7 @@ function row(r) {
     const dc = /−/.test(r.drv) ? 'dn' : /\+/.test(r.drv) ? 'up' : '';
     tag = `<div class="t1"><span class="drv ${dc}">${r.drv}</span></div><div class="t2r"><span class="sh-c ${r.kind.startsWith('POLICY') ? 'sh-c-info' : 'kd'}">${r.kind}</span>${s.slice(0, 1).map(SY).join('')}${more}</div>`;
   }
-  const ai = r.ai === '▲' ? '<span class="ar up">▲</span>' : r.ai === '▼' ? '<span class="ar dn">▼</span>' : '<span class="ar t3">·</span>';
+  const ai = r.ai === '▲' ? '<span class="ar up">▲</span>' : r.ai === '▼' ? '<span class="ar dn">▼</span>' : '<span class="ar t3" title="no direction yet">○</span>';
   const st = `<span class="sh-c ${r.stc === 'rdg' ? 'sh-c-stale' : r.stc === 'unx' ? 'sh-c-info' : r.stc === 'new' ? 'newc' : r.stc === 'old' ? 'tok' : (STC[r.st] || 'tok')}">${r.st}</span>`;
   const ver = `<span class="sh-c ${r.ver === 'OFFICIAL' ? 'offc' : 'tok'}">${r.ver}</span>`;
   const sc = SECT[r.sec];
@@ -990,24 +988,30 @@ function render() {
   lb.scrollTop = 0; layout();
 }
 // ---------- whole-row snapping, drawn scrollbars (.vsb), "▼ n more: …" bars that name what is hidden (fix 2 / fix 3) ----------
-function snap(id) {
-  const pb = document.getElementById(id), wrap = pb.parentElement, bd = wrap.parentElement;
-  pb.style.setProperty('--rx', '0px'); wrap.style.height = 'auto';
-  const avail = bd.clientHeight - 26, kids = [...pb.children];
-  const hOf = c => c.getBoundingClientRect().height;
+// A window shows whole children from index i0; leftover space is spread as even padding inside them (max 14 px each), so
+// there is never a sliced row and never a hole. At the end of the list the window is aligned so the last child sits at the bottom.
+const I0 = { lb: 0, sb: 0 };
+function snapFrom(id, i0) {
+  const pb = document.getElementById(id), wrap = pb.parentElement, bd = wrap.parentElement, kids = [...pb.children];
+  pb.style.setProperty('--rx', '0px'); wrap.style.height = bd.clientHeight - 26 + 'px';
+  const avail = bd.clientHeight - 26, hOf = c => c.getBoundingClientRect().height;
+  i0 = Math.max(0, Math.min(i0, kids.length - 1));
+  let tail = 0; for (let i = i0; i < kids.length; i++) tail += hOf(kids[i]);
+  if (i0 > 0 && tail < avail) { while (i0 > 0 && tail + hOf(kids[i0 - 1]) <= avail) { i0--; tail += hOf(kids[i0]); } }
   let cum = 0, k = 0;
-  for (const c of kids) { const h = hOf(c); if (cum + h > avail + 0.5) break; cum += h; k++; }
-  if (k && k < kids.length) { // spread the leftover as even breathing room inside the visible rows (max 12 px each), never a hole
-    const rx = Math.min(12, (avail - cum) / k); pb.style.setProperty('--rx', rx.toFixed(2) + 'px');
-    cum = 0; for (let i = 0; i < k; i++) cum += hOf(kids[i]);
-  }
-  wrap.style.height = (k ? Math.min(cum, avail) : avail) + 'px';
+  for (let i = i0; i < kids.length; i++) { const h = hOf(kids[i]); if (cum + h > avail + 0.5) break; cum += h; k++; }
+  if (!k) { k = 1; cum = Math.min(kids[i0] ? hOf(kids[i0]) : avail, avail); }
+  const more = i0 + k < kids.length || i0 > 0;
+  if (more && kids.length) { const rx = Math.min(10, (avail - cum) / k); pb.style.setProperty('--rx', rx.toFixed(2) + 'px'); cum = 0; for (let i = i0; i < i0 + k; i++) cum += hOf(kids[i]); }
+  wrap.style.height = (more ? Math.min(cum, avail) : avail) + 'px';
+  I0[id] = i0; pb.scrollTop = kids[i0] ? kids[i0].offsetTop : 0;
   info(id);
 }
+function snap(id) { snapFrom(id, 0); }
 function info(id) {
   const pb = document.getElementById(id), bar = pb.parentElement.parentElement.querySelector('.more'), wrap = pb.parentElement;
   const kids = [...pb.children], top = pb.scrollTop, bot = top + wrap.clientHeight;
-  const below = kids.filter(c => c.offsetTop + 2 >= bot), above = kids.filter(c => c.offsetTop < top - 2);
+  const below = kids.filter(c => c.offsetTop + 2 >= bot), above = kids.filter(c => c.offsetTop + c.offsetHeight <= top + 2);
   const rowsOnly = a => a.filter(c => c.classList.contains('rw'));
   const v = document.querySelector(`.vsb[data-t="${id}"]`), th = v.querySelector('i');
   const H = wrap.clientHeight, ratio = pb.clientHeight / Math.max(pb.scrollHeight, 1);
@@ -1018,25 +1022,30 @@ function info(id) {
   if (id === 'lb') {
     const R = rowsOnly(kids), b = rowsOnly(below), a = rowsOnly(above);
     const first = a.length + 1, last = R.length - b.length;
-    bar.innerHTML = (b.length ? `<span class="ar">▼</span><b>${b.length} more:</b><span class="nm">${b.slice(0, 5).map(x => x.dataset.n).join(' · ')}${b.length > 5 ? ' …' : ''}</span>` : R.length ? `<span class="ar">■</span><span class="nm t3">end of the list · ♪ news never rings by itself</span>` : '<span class="nm t3">-</span>')
+    bar.innerHTML = (b.length ? `<span class="ar">▼</span><b>${b.length} more:</b><span class="nm">${b.slice(0, 5).map(x => x.dataset.n).join(' · ')}${b.length > 5 ? ' …' : ''}</span>` : R.length ? `<span class="ar">■</span><span class="nm t3">end of the list · ♪ news never rings by itself</span>` : '<span class="nm t3">no story in this view · ALL and ALL SECTORS clear the filters</span>')
       + `<span class="pos n">${R.length ? first + '-' + last : 0} of ${R.length}</span>${btn}`;
   } else {
-    bar.innerHTML = (below.length ? `<span class="ar">▼</span><b>more:</b><span class="nm">${below.map(x => x.dataset.n).filter(Boolean).join(' · ')}</span>` : `<span class="ar">■</span><span class="nm t3">end of the story</span>`)
-      + `<span class="pos n">${kids.length - below.length} of ${kids.length}</span>${btn}`;
+    const secs = kids.filter(c => c.dataset.n), cut = below.length ? below[0] : null;
+    let names = below.map(x => x.dataset.n).filter(Boolean);
+    if (cut && !cut.dataset.n) { let j = kids.indexOf(cut); while (j > 0 && !kids[j].dataset.n) j--; names = ['rest of ' + kids[j].dataset.n].concat(names); }
+    const seen = secs.filter(c => c.offsetTop < bot - 2).length;
+    bar.innerHTML = (below.length ? `<span class="ar">▼</span><b>more:</b><span class="nm">${names.join(' · ')}</span>` : `<span class="ar">■</span><span class="nm t3">end of the story</span>`)
+      + `<span class="pos n">part ${seen} of ${secs.length}</span>${btn}`;
   }
   const nm = bar.querySelector('.nm');
   if (nm && nm.scrollWidth > nm.clientWidth + 1) { const parts = nm.textContent.replace(/ …$/, '').split(' · '); while (parts.length > 1 && nm.scrollWidth > nm.clientWidth + 1) { parts.pop(); nm.textContent = parts.join(' · ') + ' …'; } }
   bar.querySelectorAll('button').forEach(b => b.onclick = () => page(id, +b.dataset.d));
 }
-function page(id, d) { // scroll by whole children so the top child is always whole
-  const pb = document.getElementById(id), kids = [...pb.children], top = pb.scrollTop, H = pb.parentElement.clientHeight;
-  let t;
-  if (d > 0) { const n = kids.find(c => c.offsetTop + c.offsetHeight > top + H + 1); t = n ? n.offsetTop : pb.scrollHeight; }
-  else { t = Math.max(0, top - H); const n = kids.find(c => c.offsetTop >= t - 1); t = n ? n.offsetTop : 0; }
-  pb.scrollTop = t; info(id);
+function page(id, d) { // one page of whole children up or down
+  const pb = document.getElementById(id), kids = [...pb.children], H = pb.parentElement.clientHeight, avail = pb.parentElement.parentElement.clientHeight - 26;
+  let i0 = I0[id];
+  if (d > 0) { const top = pb.scrollTop; const n = kids.findIndex(c => c.offsetTop + c.offsetHeight > top + H + 1); if (n < 0) return; i0 = n; }
+  else { let cum = 0; while (i0 > 0 && cum + kids[i0 - 1].getBoundingClientRect().height <= avail) { i0--; cum += kids[i0].getBoundingClientRect().height; } }
+  snapFrom(id, i0);
 }
 function layout() { snap('lb'); snap('sb'); tl(); }
-['lb', 'sb'].forEach(id => document.getElementById(id).addEventListener('scroll', () => info(id)));
+const ST_T = {};
+['lb', 'sb'].forEach(id => document.getElementById(id).addEventListener('scroll', () => { info(id); clearTimeout(ST_T[id]); ST_T[id] = setTimeout(() => { const pb = document.getElementById(id), kids = [...pb.children]; if (!kids.length) return; let i = kids.findIndex(c => c.offsetTop + c.offsetHeight / 2 > pb.scrollTop); if (i < 0) i = kids.length - 1; if (i !== I0[id] || Math.abs(pb.scrollTop - kids[i].offsetTop) > 1) snapFrom(id, i); }, 140); }));
 document.querySelectorAll('.vsb').forEach(v => v.addEventListener('mousedown', e => { const pb = document.getElementById(v.dataset.t), r = v.getBoundingClientRect(); pb.scrollTop = (e.clientY - r.top) / r.height * (pb.scrollHeight - pb.clientHeight); }));
 window.addEventListener('resize', layout);
 // ---------- filters ----------
@@ -1059,9 +1068,13 @@ function tl() {
   const sv = document.getElementById('tlsvg'); const W = sv.clientWidth, H = sv.clientHeight; if (!W) return;
   const cs = getComputedStyle(document.documentElement), C = n => cs.getPropertyValue(n).trim();
   // x: seconds after 11:41:40. 0-92 s gets 76 % of the width (the shock), 92-160 s is compressed (a ≈ break)
-  const L = 6, R = W - 6, BRK = 92, END = 162, XB = L + (R - L) * 0.76;
+  const L = 34, R = W - 6, LL = 4, BRK = 92, END = 162, XB = L + (R - L) * 0.76;
   const x = t => t <= BRK ? L + t / BRK * (XB - L) : XB + (t - BRK) / (END - BRK) * (R - XB);
-  const Y0 = 21, Y1 = H - 21; // price band between the two label lanes
+  // the ANGELONE name ends 10 px left of the CDSL +142 s marker; when it then reaches under the GO NOW marker (narrow widths)
+  // the price band is lifted 5 px and the name sits on its own row, so no ring or leader ever touches the text
+  const am = document.createElementNS('http://www.w3.org/2000/svg', 'text'); am.setAttribute('font-family', 'Inter, Segoe UI, sans-serif'); am.setAttribute('font-size', '12'); am.setAttribute('font-weight', '700'); am.textContent = 'ANGELONE −2.10%'; sv.innerHTML = ''; sv.appendChild(am);
+  const aEnd = Math.min(R - 2, x(158) - 10), aTight = aEnd - am.getComputedTextLength() < x(85) + 10;
+  const Y0 = 21, Y1 = H - (aTight ? 30 : 25); // price band between the two label lanes (room under it for the ANGELONE name)
   const y = v => Y0 + (0.5 - v) / 3.0 * (Y1 - Y0);
   const A = [[0, .28], [10, .30], [16, .30], [22, -.20], [28, -.70], [34, -1.10], [40, -1.45], [46, -1.75], [52, -1.95], [58, -2.02], [64, -2.06], [68, -2.10], [75, -2.04], [85, -2.12], [100, -2.18], [120, -2.15], [140, -2.20], [152, -2.14], [160, -2.10]];
   const B = [[0, .10], [16, .10], [24, -.15], [34, -.50], [46, -.85], [58, -1.05], [72, -1.18], [85, -1.24], [110, -1.31], [140, -1.36], [160, -1.34]];
@@ -1070,15 +1083,15 @@ function tl() {
   const SF = `font-family="Inter, Segoe UI, sans-serif" font-size="12"`;
   let s = '';
   // zero line + −2 % guide
-  s += `<line x1="${L}" x2="${R}" y1="${y(0)}" y2="${y(0)}" stroke="${C('--line-2')}"/><text x="${L}" y="${y(0) - 3}" ${MF} fill="${C('--text-3')}">0 %</text>`;
-  s += `<line x1="${L}" x2="${R}" y1="${y(-2)}" y2="${y(-2)}" stroke="${C('--line')}" stroke-dasharray="2 3"/><text x="${L}" y="${y(-2) + 12}" ${MF} fill="${C('--text-3')}">−2 %</text>`;
+  s += `<line x1="${L}" x2="${R}" y1="${y(0)}" y2="${y(0)}" stroke="${C('--line-2')}"/><text x="${L - 6}" y="${y(0) + 4}" ${MF} fill="${C('--text-3')}" text-anchor="end">0%</text>`;
+  s += `<line x1="${L}" x2="${R}" y1="${y(-2)}" y2="${y(-2)}" stroke="${C('--line')}" stroke-dasharray="2 3"/><text x="${L - 6}" y="${y(-2) + 4}" ${MF} fill="${C('--text-3')}" text-anchor="end">−2%</text>`;
   // the compressed part
   s += `<rect x="${XB}" y="${Y0 - 2}" width="${R - XB}" height="${Y1 - Y0 + 4}" fill="${C('--panel-2')}" opacity=".7"/><text x="${XB + 4}" y="${y(0) - 3}" ${MF} fill="${C('--text-3')}">≈ 1 min</text>`;
   // area under ANGELONE (red tint) and the lines
   s += `<path d="${P(A)} L ${x(160)} ${y(0)} L ${x(0)} ${y(0)} Z" fill="rgba(${C('--down-rgb')},.10)"/>`;
   s += `<path d="${P(B)}" fill="none" stroke="${C('--text-3')}" stroke-width="1.3" stroke-dasharray="3 2"/><path d="${P(A)}" fill="none" stroke="${C('--down')}" stroke-width="1.8"/>`;
   const la = A[A.length - 1], lbb = B[B.length - 1];
-  s += `<circle cx="${x(la[0])}" cy="${y(la[1])}" r="2.6" fill="${C('--down')}"/><circle cx="${x(lbb[0])}" cy="${y(lbb[1])}" r="2.2" fill="${C('--text-3')}"/>`;
+  s += `<circle cx="${x(lbb[0])}" cy="${y(lbb[1])}" r="2.2" fill="${C('--text-3')}"/>`;
   // markers: [t, label, colour, lane 0 = top / 1 = bottom]
   const EV = [
     [16, 'move 11:41:56', C('--text'), 0, 'the price moved first: ANGELONE, BSE, CDSL on 4.1x volume'],
@@ -1095,8 +1108,8 @@ function tl() {
   [0, 1].forEach(li => {
     const ln = EV.filter(e => e[3] === li).map(e => ({ e, X: x(e[0]), w: wOf(e[1]) }));
     ln.forEach(o => { o.a = o.X - o.w / 2; });
-    for (let i = 0; i < ln.length; i++) { const lo = i ? ln[i - 1].a + ln[i - 1].w + 12 : L; ln[i].a = Math.max(ln[i].a, lo); }
-    for (let i = ln.length - 1; i >= 0; i--) { const hi = i < ln.length - 1 ? ln[i + 1].a - 12 : R; if (ln[i].a + ln[i].w > hi) ln[i].a = hi - ln[i].w; }
+    for (let i = 0; i < ln.length; i++) { const lo = i ? ln[i - 1].a + ln[i - 1].w + 12 : LL; ln[i].a = Math.max(ln[i].a, lo); }
+    for (let i = ln.length - 1; i >= 0; i--) { const hi = i < ln.length - 1 ? ln[i + 1].a - 12 : W - 4; if (ln[i].a + ln[i].w > hi) ln[i].a = hi - ln[i].w; }
     ln.forEach(({ e, X, w, a }) => {
       const ty = li ? H - 3 : 11, dot = y(interp(A, e[0]));
       const ly = li ? H - 15 : 15;
@@ -1105,8 +1118,11 @@ function tl() {
     });
   });
   // the two lines named at their ends (inside the compressed part)
-  s += `<text x="${R - 2}" y="${y(-2.10) + 13}" ${SF} fill="${C('--down')}" font-weight="700" text-anchor="end">ANGELONE −2.10%</text>`;
-  s += `<text x="${R - 2}" y="${y(-1.34) - 5}" ${SF} fill="${C('--text-3')}" text-anchor="end">brokers, all 12 −1.34%</text>`;
+  s += `<text x="${aEnd.toFixed(1)}" y="${aTight ? H - 17 : y(-2.10) + 13}" ${SF} fill="${C('--down')}" font-weight="700" text-anchor="end">ANGELONE −2.10%</text>`;
+  // the basket name never crosses the GO NOW tick: long form when it fits, short form at narrow widths
+  const goX = x(85) + 6, bkL = 'brokers, all 12 −1.34%', bkS = '12 brokers −1.34%';
+  const bk = (R - 2 - wOf(bkL) >= goX) ? bkL : bkS;
+  s += `<text x="${R - 2}" y="${y(-1.34) - 5}" ${SF} fill="${C('--text-3')}" text-anchor="end">${bk}</text>`;
   sv.innerHTML = s;
 }
 function interp(d, t) { for (let i = 1; i < d.length; i++) if (d[i][0] >= t) { const [a, va] = d[i - 1], [b, vb] = d[i]; return va + (vb - va) * (t - a) / (b - a); } return d[d.length - 1][1]; }
