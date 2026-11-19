@@ -292,6 +292,7 @@ MISSING KNOWLEDGE - the desk's own gap list, built in with the rest: design_v3/M
 LINK BOOK - every driver and sector, both sides: design_v3/LINK_BOOK.md (to be proven on the history database).
 POLITICAL AND ELECTION CYCLE - design_v3/POLITICAL_CYCLE.md: policy delays and pre-election measures as chains, with the election calendar in the Calendar page.
 EVENT MEMORY - design_v3/EVENT_MEMORY.md: every story is remembered with its price reaction and recalled the moment it comes back.
+NEWS-TO-SECTOR ENGINE - how every outside item is studied and mapped to sectors and shares: design_v3/NEWS_TO_SECTOR_ENGINE.md (open ideas round, 19 Nov).
 
 ## 2. LAYER 2 - THE DECISION ENGINE
 
