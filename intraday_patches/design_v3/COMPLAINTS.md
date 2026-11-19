@@ -48,5 +48,5 @@
 44. UNITDSPR misread: the old analyst called the Scotch duty news (165%?) POSITIVE for United Spirits; the share fell pre-market,
     second only to PAYTM. Bulk Scotch is ~80% of India's Scotch imports and is USL's blending input: a higher duty or a denied
     FTA rate is a COST = negative. Second-model direction check (S12) and the policy map must catch this.
-45. PAYTM -5% pre-market - the trader says the cause is a RESTRUCTURING of the payments business into a separate entity (not the UPI MDR story I guessed). GIR must read the actual filing / news and name the real cause before any call: was it in GIR before 09:00, and what did it call? NPCI circulars must be watched.
+45. PAYTM -7% on 19 Nov (low 1,756 at 10:36 vs 1,890 close): reports said the UPI merchant fee (MDR, 0.4% above Rs 2,000) may be delayed again until after the early-2027 state elections (UP) because shopkeepers oppose it - fewer months of fee income. Pine Labs -5.4%, MobiKwik -8%. A POLICY + ELECTION-CYCLE chain: GIR must catch such reports (wires, TV, live blogs) at once, read the real cause, and map it to PAYTM / fintechs before the move.
 46. Live event speeches (WFE annual meeting, Mumbai 17-19 Nov, NSE / SEBI heads on BT TV, CNBC-TV18, ET Now) -> TV watcher.
