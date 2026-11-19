@@ -39,6 +39,9 @@ live or recorded data - **never copy a number from a drawing into code.**
   corporate data (shareholding, pledges, deals) where free sources are slow. For each paid item: what it gives, cost per month,
   and the trader's yes before buying (list them in the first evening report). F07 (a second broker feed) and F18 (spare-phone
   Telegram listener) stay out unless he asks; F08 NSE chain check stays as a sanity check.
+- **He is an NRI (NRO account): he may NOT trade commodities.** MCX / currency are used as DATA only, never as a trade. Kite may
+  not stream MCX / CDS unless the segment is active on the account - ask Zerodha whether data is possible without trading
+  rights; if not, world metals / crude / gold come from the global futures feed (paid list #10) and free LME / Yahoo series.
 - **He trades OPTIONS (~90%).** Futures are never suggested as a trade. Futures data (build-up, OI by month) is used only as a
   signal for the option call. Every call, page and message speaks in options: strike, premium, spread, stop / target in premium
   and share price.
