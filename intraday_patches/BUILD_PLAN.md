@@ -259,6 +259,10 @@ history, global series, a news archive) with the trader's yes per item. From it 
 how often it followed through next day and next week, the typical size and lag, and what made it fail - and every evening note
 quotes the closest past analogue ("like 12 Mar 2024: copper -4%, autos +2.1% next day, followed through 7 of 9 times").
 Updated nightly from the day's recording; every call quotes the knowledge it used ("why: gold -1.6%, MANAPPURAM beta 1.3 to gold").
+**SECTOR LINKS - binding spec in design_v3/SECTOR_LINKS.md; links used only when proven on the history database.** It holds the
+sector-to-sector table (L01-L17), the sector-to-driver table, the proof rule (at least 30 events, hit rate at least 58% and 8 points
+above normal, holds in both halves and the last 2 years, proof line quoted on the call), the 19:45 TOMORROW'S OPTION WATCH format
+(unproven links shown as "IDEA - NOT PROVEN", confirmed live at the open) and replay tests E1-E5 (18 -> 19 Nov metals -> autos first).
 **CHAIN-OF-EVENTS ENGINE - binding spec in design_v3/CHAIN_OF_EVENTS.md; the 18 -> 19 Nov autos CE replay must pass before
 Monday.** It adds step E2b (the second-order analyst): every evening each driver past threshold (1-day or 3/5-day), each NSE sector
 that moved 1.5%+ and each "driver moved, users not yet reacted" gap runs through both sides of the chain map, is graded (WEAK /

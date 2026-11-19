@@ -33,7 +33,7 @@ metals. Metals alone rarely give MARUTI +6%; two or three chains pointing the sa
    rotation out of metals (NIFTY METAL / NIFTY AUTO ratio); sales talk (VAHAN mid-month, wedding season, Nov sales on 1 Dec);
    GIFT / FII mood; any own news on MARUTI (if none: rotation + short covering).
 
-**Expiry:** 19 Nov is 3 sessions before the Tue 24 Nov monthly expiry, so rule E7 (last 5-7 sessions) picks the **DECEMBER**
+**Expiry:** 19 Nov is 3 sessions before the November monthly expiry (Mon 23 Nov - 24 Nov is an NSE holiday; the contract master decides), so rule E7 (last 5-7 sessions) picks the **DECEMBER**
 series; the November strike is shown beside it, never picked. Strikes are filled from the chain (F26) - never typed by hand.
 
 **The notifications GIR must send (wording binding; <> = filled from data):**
