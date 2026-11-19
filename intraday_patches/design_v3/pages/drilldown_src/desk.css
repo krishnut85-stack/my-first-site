@@ -1,8 +1,8 @@
 /* ===================== PAGE CSS: F3 ROTATION · SECTOR DRILL-DOWN (SECTOR_DRILLDOWN.md, R50) ===================== */
 /* No shell rule is overridden. Colours = shell tokens + the shared .sh-c-* classes only. */
-#pg{--pw:428px;--hh:128px;--sr:28px;--mr:26px;--gw:104px;--rail:12px;
+#pg{--pw:428px;--hh:128px;--sr:28px;--mr:26px;--gw:104px;--rail:16px;
   --scols:30px minmax(0,1fr) 86px 62px 60px 96px 132px 112px 150px;
-  --mcols:184px 58px 56px 48px 62px 58px 76px 48px minmax(0,1fr) 98px 84px 32px;
+  --mcols:178px 60px 56px 46px 62px 54px 76px 46px minmax(0,1fr) 104px 84px 34px;
   position:absolute;left:12px;right:12px;top:8px;bottom:8px;display:grid;grid-template-rows:26px minmax(0,1fr);gap:6px}
 .t2{color:var(--text-2)} .t3{color:var(--text-3)} .tx{color:var(--text)}
 .r{text-align:right}
@@ -43,10 +43,10 @@ a.lk:hover,.lkx:hover{text-decoration:underline;text-underline-offset:3px}
 .scb::-webkit-scrollbar{display:none}
 .scb:focus-visible{box-shadow:inset 0 0 0 1px var(--info-line)}
 .rail{flex:none;width:var(--rail);display:flex;flex-direction:column;border-left:1px solid var(--line);background:var(--panel-2);user-select:none;touch-action:none}
-.rail .rb{flex:none;height:14px;display:flex;align-items:center;justify-content:center;color:var(--text-2);cursor:pointer;font-size:9px;line-height:1;background:none;border:0;padding:0;font-family:var(--sans)}
+.rail .rb{flex:none;height:16px;display:flex;align-items:center;justify-content:center;color:var(--text-2);cursor:pointer;font-size:10px;line-height:1;background:none;border:0;padding:0;font-family:var(--sans)}
 .rail .rb:hover{background:var(--panel-3);color:var(--text)}
-.rail .trk{flex:1;position:relative;margin:1px 2px;cursor:pointer;background:var(--line);border-radius:3px}
-.rail .trk i{position:absolute;left:0;right:0;border-radius:3px;background:var(--text-3);min-height:18px;cursor:grab}
+.rail .trk{flex:1;position:relative;margin:1px 2px;min-width:11px;cursor:pointer;background:var(--line);border-radius:3px}
+.rail .trk i{position:absolute;left:0;right:0;border-radius:3px;background:var(--text-3);min-height:24px;cursor:grab}
 .rail .trk i:hover,.rail.drag .trk i{background:var(--text-2)}
 .rail.drag .trk i{cursor:grabbing}
 .rail.all .trk i{background:var(--line-2)}
@@ -113,7 +113,8 @@ a.lk:hover,.lkx:hover{text-decoration:underline;text-underline-offset:3px}
 .srow .nm b{font-size:14px;font-weight:700}
 .srow .nm .bas{font-size:11px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis}
 .srow .ce{display:flex;align-items:center;gap:4px}
-.srow .ce .sh-c{height:18px;font-size:11px;padding:0 5px}
+.srow .ce .sh-c{height:18px;font-size:12px;padding:0 5px}
+.srow .ce .t3{font-size:12px}
 .srow .num{font-family:var(--mono);text-align:right;color:var(--text-2)}
 .srow .num.hl{color:var(--text);font-weight:700}
 .srow .dy{display:flex;align-items:center;justify-content:flex-end;gap:6px}
@@ -131,12 +132,12 @@ a.lk:hover,.lkx:hover{text-decoration:underline;text-underline-offset:3px}
 .blk{border-left:3px solid var(--info);background:var(--bg);margin-bottom:2px}
 .bh{position:sticky;top:0;z-index:3;background:var(--panel-2)}
 .bh .srow{padding-left:5px}
-.sl{height:21px;display:flex;align-items:center;gap:7px;padding:0 8px 0 10px;white-space:nowrap;font-size:12px;color:var(--text-2);border-top:1px solid var(--line);overflow:hidden}
+.sl{height:22px;display:flex;align-items:center;gap:7px;padding:0 8px 0 10px;white-space:nowrap;font-size:12px;color:var(--text-2);border-top:1px solid var(--line);overflow:hidden}
 .sl b{font-family:var(--mono);font-weight:700}
 .sl .snm{font-family:var(--sans);font-size:14px;letter-spacing:.03em}
 .sl .pc{font-size:14px}
 .sl .sep{color:var(--line-2)}
-.sl .sh-c{height:18px;font-size:11px;padding:0 5px}
+.sl .sh-c{height:18px;font-size:12px;padding:0 5px}
 .runb{display:inline-block;width:46px;height:6px;background:var(--line);border-radius:2px;position:relative;flex:none}
 .runb i{position:absolute;left:0;top:0;bottom:0;background:var(--up);border-radius:2px}
 .runb.dn i{background:var(--down)}
@@ -174,12 +175,12 @@ a.lk:hover,.lkx:hover{text-decoration:underline;text-underline-offset:3px}
 .rmb i{position:absolute;left:0;top:0;bottom:0;background:var(--text-2)}
 .rmb.ext i{background:var(--action)}
 .mrow .c-bu{display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:12px;color:var(--text-2)}
-.mrow .c-bu .sh-c{height:17px;font-size:11px;padding:0 4px;width:24px;justify-content:center}
+.mrow .c-bu .sh-c{height:17px;font-size:12px;padding:0 3px;width:26px;justify-content:center}
 .mrow .c-wt{display:flex;align-items:center;justify-content:flex-end;gap:4px;font-family:var(--mono);font-size:12px;color:var(--text-2)}
 .wtb{display:inline-block;width:14px;height:5px;background:var(--line);position:relative;flex:none}
 .wtb i{position:absolute;left:0;top:0;bottom:0;background:var(--info)}
 .mrow .c-op{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:13px}
-.mrow .c-op .sh-c{height:18px;font-size:11px;padding:0 4px;letter-spacing:0}
+.mrow .c-op .sh-c{height:18px;font-size:12px;padding:0 4px;letter-spacing:0}
 .mrow .c-op .sp{font-size:12px;color:var(--text-2)}
 .mrow .c-op .sp.w{color:var(--action)}
 .mrow .c-op .st{color:var(--action);font-size:12px;font-family:var(--sans)}
@@ -187,8 +188,8 @@ a.lk:hover,.lkx:hover{text-decoration:underline;text-underline-offset:3px}
 .mrow .c-gt .ok{color:var(--up);font-weight:700}
 .mrow .c-gt .no{color:var(--text-2)} .mrow .c-gt .no::before{content:'✕ ';color:var(--down)}
 .mrow .c-gt .ex{color:var(--text);font-weight:700}
-.mrow .c-gt .sh-c{height:17px;font-size:11px;padding:0 4px}
-.mrow .c-ai .sh-c{height:18px;font-size:11px;padding:0 4px}
+.mrow .c-gt .sh-c{height:17px;font-size:12px;padding:0 4px}
+.mrow .c-ai .sh-c{height:18px;font-size:12px;padding:0 4px}
 .mrow .c-ai .sil{font-size:12px;color:var(--text-3)}
 .mrow .c-ag{font-family:var(--mono);font-size:11px;color:var(--text-3);text-align:right}
 .mrow.stale{background-image:repeating-linear-gradient(135deg, var(--stripe) 0 6px, transparent 6px 12px)}
@@ -289,18 +290,17 @@ a.lk:hover,.lkx:hover{text-decoration:underline;text-underline-offset:3px}
 
 /* ---------- 1366 ---------- */
 @media (max-width:1499px){
-  #pg{--pw:360px;--hh:112px;--sr:24px;--mr:23px;--gw:78px;
-    --scols:24px minmax(0,1fr) 76px 52px 48px 84px 114px 84px 136px;
-    --mcols:142px 54px 50px 42px 56px 56px 70px 40px minmax(0,1fr) 84px 78px 28px}
+  #pg{--pw:350px;--hh:112px;--sr:24px;--mr:23px;--gw:70px;
+    --scols:22px minmax(0,1fr) 84px 50px 42px 86px 98px 92px 132px;
+    --mcols:134px 60px 52px 38px 54px 50px 66px 38px minmax(0,1fr) 84px 76px 30px}
   .gl .g1{letter-spacing:0;line-height:11px} .gl .g1 .r13{white-space:nowrap} .gl{padding:0 3px 0 5px;justify-content:center} .gl .g2{line-height:11px} .gl .more{line-height:12px}
   .sl{height:20px} .mhd{height:19px} .nonfo{height:22px} #win>.ph{height:24px} .shd{height:20px} .pf{height:20px} .nent{height:18px;padding-top:1px}
   .mrow .c-sh .sh-c,.mrow .c-op .sh-c,.mrow .c-ai .sh-c{height:17px}
   .gl .g2.w16{display:none}
-  .mrow .c-rm,.mrow .c-bu{font-size:11.5px}
+  .mrow .c-rm,.mrow .c-bu{font-size:12px}
   .fs{height:15px;font-size:11px} .fst{line-height:13px;height:13px} .fs .sh-c{height:14px;font-size:11px;padding:0 3px}
   .fside{gap:2px} .fs2{height:17px;cursor:default} .fs2:hover{background:none} .fs2>span[data-s]{cursor:pointer} .fs2>span[data-s]:hover b{text-decoration:underline} .fs2 b{font-size:12px}
   .mrow .c-ai .sh-c{letter-spacing:0;padding:0 3px}
-  .p2{font-size:11.5px}
   .wd{display:none!important}
   #purp{gap:8px} #purp .why{font-size:12.5px}
   .flow{gap:3px;letter-spacing:.02em}
@@ -316,13 +316,14 @@ a.lk:hover,.lkx:hover{text-decoration:underline;text-underline-offset:3px}
   .mhd{letter-spacing:.01em}
   .mrow{font-size:12px}
   .mrow .num{font-size:12px}
-  .mrow .c-op{font-size:12px;gap:4px}
-  .mrow .c-op .sp{font-size:11px}
-  .mrow .c-sd,.mrow .c-gt{font-size:11.5px}
-  .mrow .c-ai .sil{font-size:11px}
+  .mrow .num.pc{font-size:14px}
+  .mrow .c-op{font-size:12px;gap:3px}
+  .mrow .c-op .sp{font-size:12px}
+  .mrow .c-sd,.mrow .c-gt{font-size:12px}
+  .mrow .c-ai .sil{font-size:12px}
   .gl{padding:3px 3px 2px 5px}
   .gl .g1{font-size:11px;letter-spacing:.01em}
-  .sl{gap:5px;padding-left:8px;font-size:11.5px}
+  .sl{gap:5px;padding-left:8px;font-size:12px}
   .sl .snm{font-size:13px}
   .runb{width:34px}
   .ps{padding:5px 8px 5px 10px}
@@ -338,3 +339,69 @@ a.lk:hover,.lkx:hover{text-decoration:underline;text-underline-offset:3px}
 }
 
 @media (min-width:1500px){ .mrow{height:25px} }
+
+/* ===================== round 2 ===================== */
+.mrow .c-op .pr{color:var(--text)}
+.mrow .c-op .st,.mrow .c-sh .st{color:var(--action);font-size:13px;font-family:var(--sans)}
+.mrow .c-sh .sh-c-held{height:17px;font-size:11px;padding:0 4px}
+.sh-c.bu0{width:26px;justify-content:center}
+.srow:focus-visible,.nonfo:focus-visible,.fs:focus-visible,.ne:focus-visible,.morebar:focus-visible,#heroLine .s:focus-visible,.rr:focus-visible{outline:1px solid var(--info);outline-offset:-1px}
+/* "+n more" = a full-width row at the end of the capped list that names what is hidden */
+.morebar{display:block;width:100%;height:22px;text-align:left;padding:0 8px;border:0;border-top:1px dashed var(--line-2);background:var(--panel);color:var(--info);font:600 12px var(--sans);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.morebar:hover{background:var(--panel-3);text-decoration:underline}
+.gl .g1{white-space:nowrap}
+.nolag .gl{justify-content:center}
+.nolag .nl{height:22px;display:flex;align-items:center;padding:0 8px;font-size:12px;color:var(--text-3)}
+.sl.mbn{font-weight:700;letter-spacing:.02em}
+.sl.mb-info{color:var(--info);background:var(--info-bg)} .sl.mb-ready{color:var(--action);background:var(--action-bg)} .sl.mb-exit{color:var(--danger);background:rgba(255,90,82,.12)} .sl.mb-held{color:var(--text);background:var(--panel-3)}
+.sl .un{color:var(--action);font-family:var(--sans)}
+.sl .sn{font-family:var(--sans);flex:none}
+.sl .sn.ell{flex:0 1 auto}
+.sl .up2{color:var(--up);font-weight:600}
+.sl .t3.ell,.sl .t2.ell{flex:0 1 auto}
+/* flow picture: ribbons are pictures only; labels have non-overlapping hit zones */
+#flowSvg path.rb2{pointer-events:none}
+#flowSvg .hz{cursor:pointer}
+#flowSvg .hz.oth{cursor:help}
+#flowSvg text{pointer-events:none}
+#flowSvg tspan.nmx{font-size:13px;font-weight:700;fill:var(--text)}
+.fs .pc{font-size:12px}
+.fs .sh-c{font-size:12px}
+/* the share pane */
+#sp .ph{gap:6px}
+#sp .ph .sym{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+#sp .ph .pa{gap:4px}
+.hbn{display:flex;align-items:center;gap:8px;padding:6px 12px;font-size:12.5px;border-bottom:1px solid var(--line)}
+.hbn b{font-size:14px;letter-spacing:.02em;white-space:nowrap}
+.hbn span{color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hbn.rd{background:rgba(255,90,82,.14);box-shadow:inset 3px 0 0 var(--danger)} .hbn.rd b{color:var(--danger)}
+.hbn.gy{background:var(--stripe);box-shadow:inset 3px 0 0 var(--stale)} .hbn.gy b{color:var(--text)}
+.xw{display:inline-flex;align-items:center;height:19px;padding:0 6px;margin-bottom:4px;border:1px solid var(--info-line);background:var(--info-bg);color:var(--info);border-radius:3px;font-size:12px;white-space:nowrap}
+.tbx.dim td{color:var(--text-3)}
+.tbx.dim .pk{background:var(--stripe)}
+.tbx td .dn{color:var(--down);font-weight:700}
+.rk3 .lots.z{color:var(--danger)}
+.ev.am{color:var(--action);border-color:var(--action-line)} .ev.rd{color:var(--danger);border-color:var(--danger)}
+.btn[disabled]{opacity:.55;cursor:not-allowed;border-style:dashed}
+.btn[disabled]:hover{background:none;color:var(--text-2)}
+.cmp td.dn{color:var(--down)}
+.mchart{display:block;width:100%}
+.mchart text{font-family:var(--mono);fill:var(--text-3)}
+.mchart text.lb{font-family:var(--sans)}
+.drw .wy{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.drw .wy .whyl{color:var(--info);font-weight:700;font-size:11px}
+.drw .wy .un{color:var(--action)}
+/* mockup state switch (design review only) */
+.mockb{margin-left:8px;height:18px;padding:0 6px;border:1px dashed var(--line-2);border-radius:3px;background:none;color:var(--text-3);font:600 11px var(--sans);cursor:pointer;flex:none}
+.mockb:hover{color:var(--text)}
+.mockm{right:12px;bottom:34px;width:220px;padding:6px}
+.mockm .tt{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:4px}
+.mockm .mi{display:block;width:100%;text-align:left;height:24px;padding:0 6px;border:0;background:none;color:var(--text);font:13px var(--sans);cursor:pointer;border-radius:3px}
+.mockm .mi:hover{background:var(--panel-3)}
+@media (max-width:1499px){
+  .nolag .nl,.morebar{height:21px}
+  .hbn{padding:5px 10px}
+  .p2{font-size:12px}
+  .srow .br{font-size:12px}
+  .fs .pc,.fs .sh-c{font-size:12px}
+}

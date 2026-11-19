@@ -1,9 +1,10 @@
 // Builds pages/rotation-drilldown.html: shell CSS / top / footer copied VERBATIM from v3/shell.html, state values only (SHELL.md 6):
 // the S2 preset (flat, 0 of 3) at clock 11:05:00 via shellwork/state.js, then the illustrative 19 Nov 11:05 market values.
 const fs = require('fs'), path = require('path');
-const V3 = '/home/user/my-first-site/intraday_patches/design_v3', HERE = __dirname;
-const ST = require(path.join(HERE, '../design/v3/shellwork/state.js'));
-const shell = fs.readFileSync(V3 + '/shell.html', 'utf8');
+// Runs from its own folder (node build.js, from anywhere): shell state presets vendored in ./shellwork, the shell is ../../shell.html.
+const HERE = __dirname, V3 = path.resolve(HERE, '..', '..');
+const ST = require(path.join(HERE, 'shellwork', 'state.js'));
+const shell = fs.readFileSync(path.join(V3, 'shell.html'), 'utf8');
 const cut = (a, b) => { const i = shell.indexOf(a), j = shell.indexOf(b, i); if (i < 0 || j < 0) throw new Error('marker ' + a); return shell.slice(i, j + b.length); };
 const css = cut('/* ===================== SHELL CSS START', 'SHELL CSS END ===================== */');
 let top = cut('<!-- ===================== SHELL TOP START', 'SHELL TOP END ===================== -->');
@@ -41,9 +42,9 @@ top = rep(top, '$2.35</span>', '$2.60</span>');
 top = top.replace('Values illustrative (Thu 19 Nov 2026, 11:40:30)', 'Values illustrative (Thu 19 Nov 2026, 11:05:00, banks day)');
 if (!top.includes('11:05:00') || !top.includes('4h 05m')) throw new Error('clock not applied');
 
-const pcss = fs.readFileSync(HERE + '/desk.css', 'utf8') + '\n.nr{display:none}\n@media (max-width:1499px){.nr{display:inline}}\n';
-const main = fs.readFileSync(HERE + '/desk.main.html', 'utf8');
-const data = fs.readFileSync(HERE + '/data.js', 'utf8'), js = fs.readFileSync(HERE + '/desk.js', 'utf8');
+const pcss = fs.readFileSync(path.join(HERE, 'desk.css'), 'utf8') + '\n.nr{display:none}\n@media (max-width:1499px){.nr{display:inline}}\n';
+const main = fs.readFileSync(path.join(HERE, 'desk.main.html'), 'utf8');
+const data = fs.readFileSync(path.join(HERE, 'data.js'), 'utf8'), js = fs.readFileSync(path.join(HERE, 'desk.js'), 'utf8');
 const html = `<!doctype html>
 <html lang="en">
 <head>
@@ -75,9 +76,10 @@ ${js}
 </body>
 </html>
 `;
-fs.writeFileSync(V3 + '/pages/rotation-drilldown.html', html);
+fs.writeFileSync(path.join(V3, 'pages', 'rotation-drilldown.html'), html);
 console.log('wrote', html.length, 'bytes');
 // phone page
-const ph = fs.readFileSync(HERE + '/phone.html', 'utf8').replace('/*DATA*/', () => data).replace('/*PHONE*/', () => fs.readFileSync(HERE + '/phone.js', 'utf8'));
-fs.writeFileSync(V3 + '/pages/rotation-drilldown-phone.html', ph);
+const ph = fs.readFileSync(path.join(HERE, 'phone.html'), 'utf8').replace('/*DATA*/', () => data).replace('/*PHONE*/', () => fs.readFileSync(path.join(HERE, 'phone.js'), 'utf8'));
+fs.writeFileSync(path.join(V3, 'pages', 'rotation-drilldown-phone.html'), ph);
 console.log('wrote phone', ph.length);
+// screenshots + the clip / overlap / font report: node shot.js
