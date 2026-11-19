@@ -1549,7 +1549,8 @@ if (typeof module !== 'undefined') module.exports = GD;
   document.addEventListener('click', function (e) { var t = e.target;
     var cl = t.closest('[data-close]'); if (cl) { $('#' + cl.dataset.close).classList.remove('on'); return; }
     if (t.closest('#rrChip')) { applyRR(); return; }
-    if (t.closest('#mockB')) { $('#mockM').classList.toggle('on'); return; }
+    if (t.closest('#mockB')) { var mm = $('#mockM'), bb2 = $('#mockB').getBoundingClientRect(), pg2 = $('#pg').getBoundingClientRect(); mm.classList.toggle('on');
+      mm.style.right = 'auto'; mm.style.bottom = 'auto'; mm.style.left = Math.max(0, bb2.right - pg2.left - 220) + 'px'; mm.style.top = (bb2.top - pg2.top - mm.offsetHeight - 4) + 'px'; return; }
     var mk = t.closest('#mockM [data-mock]'); if (mk) { setMock(mk.dataset.mock); return; }
     var bb = t.closest('[data-bas]'); if (bb) { basis(bb); return; }
     var mo = t.closest('[data-more]'); if (mo) { st.more[mo.dataset.more] = !st.more[mo.dataset.more]; drawTable(); writeHash(); return; }
@@ -1594,7 +1595,7 @@ if (typeof module !== 'undefined') module.exports = GD;
     if (k === 'p' || k === 'P') { togglePin(); return; }
     if (k === 'r' || k === 'R') { applyRR(); return; }
     if (k === 'Escape') { if (closePops()) return; if (st.sel) { st.sel = null; $$('#wb .mrow.sel').forEach(function (r) { r.classList.remove('sel'); }); drawPane(); writeHash(); return; } if (st.open) { openSector(st.open); return; } return; }
-    if ((k === 'PageDown' || k === 'PageUp' || k === 'Home' || k === 'End') && !(t.classList && t.classList.contains('scb'))) { var sc = $('#wb'); sc.scrollTop = k === 'Home' ? 0 : k === 'End' ? sc.scrollHeight : sc.scrollTop + (k === 'PageDown' ? 1 : -1) * sc.clientHeight * 0.9; e.preventDefault(); }
+    if (k === 'PageDown' || k === 'PageUp' || k === 'Home' || k === 'End') { var sc = inPane ? $('#pb') : (t.closest && t.closest('#rb')) ? $('#rb') : $('#wb'); sc.scrollTop = k === 'Home' ? 0 : k === 'End' ? sc.scrollHeight : sc.scrollTop + (k === 'PageDown' ? 1 : -1) * sc.clientHeight * 0.9; e.preventDefault(); }
   });
   function kf() { $$('#wb .srow').forEach(function (r) { r.classList.toggle('kf', +r.dataset.i === st.kf); }); }
 
