@@ -60,6 +60,7 @@ live or recorded data - **never copy a number from a drawing into code.**
   no history downloads, no multi-page browser tests, no heavy builds - those run after 15:35 or at the weekend. The TV
   speech-to-text (tvstt.py, the biggest CPU user) moves to a paid speech-to-text service or a small separate server (price it
   in the paid list). The live page must always answer in under 1 s.
+- NEWS READING PLAN - tiered models, caching, batch, weekend / holiday schedule, target $3-5 a day: design_v3/NEWS_READING_PLAN.md.
 
 ### 0.1 Start now, on /preview, without touching the live system
 
