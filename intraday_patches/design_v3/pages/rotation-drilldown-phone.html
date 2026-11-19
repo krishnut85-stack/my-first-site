@@ -449,7 +449,7 @@ var GD = (function () {
   // price pane (candles, VWAP, OR box, trigger / stop / target, CE wall above and PE wall below) + a premium pane under it.
   // Layout top to bottom: price pane · premium caption · premium pane · time axis - nothing prints on anything else.
   function chartSvg(s, m, p, W, o) {
-    o = o || {}; var Hp = o.hp || 100, Hq = o.hq || 34, fs = o.fs || 11, padL = 4, padR = o.padR || 56, b = bars(m), n = b.length;
+    o = o || {}; var Hp = o.hp || 100, Hq = o.hq || 34, fs = o.fs || 11, padL = 4, padR = o.padR || 68, b = bars(m), n = b.length;
     var lo = Math.min(m.lo, p.stop, m.vwap, p.tgt, p.trig), hi = Math.max(m.hi, p.tgt, p.trig, p.stop); var pad = (hi - lo) * 0.10; lo -= pad; hi += pad;
     var X = function (i) { return padL + (i + 0.5) * (W - padL - padR) / n; }, Y = function (v) { return 4 + (hi - v) / (hi - lo) * (Hp - 8); }, bw = Math.max(3, (W - padL - padR) / n - 3);
     var capY = Hp + fs + 4, y0 = capY + 4, axY = y0 + Hq + fs + 3, H = axY + 3;
@@ -463,11 +463,14 @@ var GD = (function () {
     if (!p.block || /STALE/.test(p.block)) { hl(p.trig, 'var(--action)', 'T ' + lv(p.trig)); hl(p.stop, 'var(--down)', 'S ' + lv(p.stop)); hl(p.tgt, 'var(--up)', 'G ' + lv(p.tgt)); }
     // walls: drawn as lines when inside the price range, else as an edge marker with the distance
     [['C', m.wallC, 'var(--down)'], ['P', m.wallP, 'var(--up)']].forEach(function (wl) { var val = wl[1], inR = val <= hi && val >= lo, lab = (wl[0] === 'C' ? 'CE wall ' : 'PE wall ') + fmt(val, val % 1 ? 1 : 0);
-      if (inR) { var y = Y(val); h += '<line x1="' + padL + '" x2="' + (W - padR + 2) + '" y1="' + y + '" y2="' + y + '" stroke="' + wl[2] + '" stroke-width="2" opacity=".55"/>'; labs.push([y + 4, wl[2], lab.replace(' wall', 'w')]); }
+      if (inR) { var y = Y(val); h += '<line x1="' + padL + '" x2="' + (W - padR + 2) + '" y1="' + y + '" y2="' + y + '" stroke="' + wl[2] + '" stroke-width="2" opacity=".55"/>'; labs.push([y + 4, wl[2], (wl[0] === 'C' ? 'CE ' : 'PE ') + fmt(val, val % 1 ? 1 : 0)]); }
       else { var ye = wl[0] === 'C' ? 4 : Hp - 4; h += '<line x1="' + padL + '" x2="' + (W - padR + 2) + '" y1="' + ye + '" y2="' + ye + '" stroke="' + wl[2] + '" stroke-width="2" stroke-dasharray="1 3" opacity=".7"/>' +
         '<text x="' + (W - padR - 2) + '" y="' + (wl[0] === 'C' ? ye + fs + 1 : ye - 3) + '" text-anchor="end" fill="' + wl[2] + '">' + lab + (wl[0] === 'C' ? ' ↑ ' : ' ↓ ') + (Math.abs(val / m.ltp - 1) * 100).toFixed(1) + '%</text>'; } });
     // right-hand labels: no two overlap
-    labs.sort(function (a, c) { return a[0] - c[0]; }); var last = -99; labs.forEach(function (l) { var y = Math.max(l[0], last + fs + 1); y = Math.min(y, Hp + 2); last = y; h += '<text x="' + (W - padR + 4) + '" y="' + y + '" fill="' + l[1] + '">' + l[2] + '</text>'; });
+    labs.sort(function (a, c) { return a[0] - c[0]; }); var gp = fs + 3, ys = labs.map(function (l) { return l[0]; });
+    for (var q = 0; q < ys.length; q++) ys[q] = Math.max(ys[q], q ? ys[q - 1] + gp : fs);           // spread down
+    if (ys.length && ys[ys.length - 1] > Hp + 2) { ys[ys.length - 1] = Hp + 2; for (q = ys.length - 2; q >= 0; q--) ys[q] = Math.min(ys[q], ys[q + 1] - gp); }   // then up
+    labs.forEach(function (l, q) { h += '<text x="' + (W - padR + 4) + '" y="' + ys[q].toFixed(1) + '" fill="' + l[1] + '">' + l[2] + '</text>'; });
     var K = p.K, cp = p.cp, prem = b.map(function (x, i) { return bs(x.c, K, T + (n - 1 - i) * 5 / 60 / 24 / 365, m.iv, cp); }), c0 = contract(s, m, 'atm');
     var pl = Math.min.apply(null, prem) - c0.sp, ph = Math.max.apply(null, prem) + c0.sp, PY = function (q) { return y0 + 2 + (ph - q) / (ph - pl) * (Hq - 4); };
     h += '<text class="lb" x="' + padL + '" y="' + capY + '">' + kTxt(K) + ' ' + cp + ' Dec premium · mid + bid/ask band</text><text x="' + (W - padR + 4) + '" y="' + capY + '" fill="var(--text-2)">' + fmt(c0.ask, 2) + '</text>';

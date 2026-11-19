@@ -1,8 +1,8 @@
 /* ===================== PAGE CSS: F3 ROTATION · SECTOR DRILL-DOWN (SECTOR_DRILLDOWN.md, R50) ===================== */
 /* No shell rule is overridden. Colours = shell tokens + the shared .sh-c-* classes only. */
-#pg{--pw:428px;--hh:128px;--sr:28px;--mr:26px;--gw:104px;--rail:16px;
-  --scols:30px minmax(0,1fr) 86px 62px 60px 96px 132px 112px 150px;
-  --mcols:178px 60px 56px 46px 62px 54px 76px 46px minmax(0,1fr) 104px 84px 34px;
+#pg{--pw:416px;--hh:128px;--sr:28px;--mr:26px;--gw:112px;--rail:16px;
+  --scols:30px minmax(0,1fr) 86px 62px 60px 96px 120px 136px 150px;
+  --mcols:192px 60px 54px 44px 56px 56px 70px 44px minmax(0,1fr) 100px 84px 34px;
   position:absolute;left:12px;right:12px;top:8px;bottom:8px;display:grid;grid-template-rows:26px minmax(0,1fr);gap:6px}
 .t2{color:var(--text-2)} .t3{color:var(--text-3)} .tx{color:var(--text)}
 .r{text-align:right}
@@ -292,7 +292,7 @@ a.lk:hover,.lkx:hover{text-decoration:underline;text-underline-offset:3px}
 @media (max-width:1499px){
   #pg{--pw:350px;--hh:112px;--sr:24px;--mr:23px;--gw:86px;
     --scols:22px minmax(0,1fr) 84px 50px 42px 86px 92px 128px 132px;
-    --mcols:146px 54px 48px 36px 52px 50px 64px 32px minmax(0,1fr) 88px 74px 30px}
+    --mcols:144px 54px 48px 36px 54px 50px 64px 32px minmax(0,1fr) 88px 76px 28px}
   .gl .g1{letter-spacing:0;line-height:11px} .gl .g1 .r13{white-space:nowrap} .gl{padding:0 3px 0 5px;justify-content:center} .gl .g2{line-height:11px} .gl .more{line-height:12px}
   .sl{height:20px} .mhd{height:19px} .nonfo{height:22px} #win>.ph{height:24px} .shd{height:20px} .pf{height:20px} .nent{height:18px;padding-top:1px}
   .mrow .c-sh .sh-c,.mrow .c-op .sh-c,.mrow .c-ai .sh-c{height:17px}
@@ -421,3 +421,16 @@ a.lk:hover,.lkx:hover{text-decoration:underline;text-underline-offset:3px}
   .fs2 b{font-size:12px}
   .fside{width:300px}
 }
+
+.mrow,.mhd{column-gap:5px}
+.mrow .c-rm{gap:1px}
+.gl .g1{white-space:normal}
+.grp.one .gl .g2{display:none}
+.mrow .c-gt .st{color:var(--action);font-size:13px}
+.sl .rn{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.sl .rn .runb{flex:none}
+.rk3:has(.lots){white-space:normal}
+.p1b{gap:5px}
+@media (max-width:1499px){ .mrow,.mhd{column-gap:3px} .mrow .c-ai .sh-c{letter-spacing:-0.01em;padding:0 3px} }
+.mrow .c-op .st{margin-left:1px}
+.wl{overflow:hidden;text-overflow:ellipsis}
