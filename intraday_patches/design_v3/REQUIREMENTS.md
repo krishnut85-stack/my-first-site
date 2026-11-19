@@ -147,3 +147,12 @@ replaced by this new design. Only its FEATURES (the data and functions below) mu
   that sector), NOT only its F&O shares. Pages must label the basis ("NIFTY METAL index" / "all 14 listed jewellers, free-float
   weighted"), show breadth over all shares (e.g. "breadth 11 / 14 all shares · F&O 3 / 4"), and flag "NARROW - F&O-only move" when
   only the F&O names move. Only the trade list (CE / PE plans) is limited to F&O shares.
+- **R50 Sector drill-down** - the trader, 19 Nov: clicking a sector anywhere opens its F&O shares (coming up / leader / laggard /
+  against / not tradable); clicking a share shows its details beside the list. Full spec: SECTOR_DRILLDOWN.md.
+- **R51 Every control works, and is tested** - the trader, 19 Nov: dragging a sector list's scrollbar with the mouse did not move the
+  list; only the wheel worked. Every list that scrolls inside a panel has a VISIBLE scrollbar (at least 10 px) that can be dragged
+  with the mouse, clicked on the track, and moved by wheel, PageUp / PageDown / Home / End and the arrow keys. No hidden scrollbars;
+  no invisible layer may catch the pointer. Before any page is approved or released, EVERY control is tested by machine (Playwright)
+  and by hand: each tab, F-key, button, icon, link, chip, sector row, share name, drawer, scrollbar drag, wheel, keyboard shortcut,
+  Esc and Back, at 1600x900, 1366x768 and phone. The result is a table of control / action / expected / PASS or FAIL; a page with
+  any FAIL is not approved.

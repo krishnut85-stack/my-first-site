@@ -137,6 +137,7 @@ past results, the share's history stats, all news, and his own record on this sh
 8. **"New entrants" strip:** shares that turned COMING UP in the last 15 min across all sectors. It does not ring.
 
 ## 7. Live faults seen 19 Nov evening (F2 / F3 photos), fixed by this
+0. Dragging the list's scrollbar with the mouse does not move it (only the wheel works). See R51: visible, draggable scrollbars, and every control tested.
 1. Expanded rows overprint the rows below on F3. Only 4 member rows show, with no "+n more".
 2. The basis is "5 named members" / "rebuilt from F&O members only", which breaks R49.
 3. Yesterday's move is shown as today's in the pre-open ("mixed day - jewellers lead the fall"), and there are two clocks.
