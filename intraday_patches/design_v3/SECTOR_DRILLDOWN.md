@@ -155,3 +155,19 @@ past results, the share's history stats, all news, and his own record on this sh
 5. TITAN (−5.3%, the day's biggest faller) is tagged "follower". The pane suggests a November expiry, but it should be December.
 6. Dashes and "not known" everywhere. The reason should be shown once.
 7. The orange replay bar covers part of the market strip.
+
+## 8. Approved 19 Nov evening (mock-ups in pages/rotation-drilldown*.html), with conditions for the live build
+Votes: senior F&O dealer 8.5, design authority 9, strict checker 9 - all approve, after 3 design rounds. Each judge drove the
+controls with their own hands (Playwright, real mouse and finger touches): laptop 204/204 controls, phone 46/46, rules 26/26,
+layout 29/29. Earlier "PASS" tables that forced states or used a mouse for touch were thrown out and re-run.
+**Build these too (carried conditions):**
+1. One component: the F2 board row and heat tile, the F1 Desk chip and the Morning pre-open view reuse the same openSector code and
+   the same group / lot rules (no second copy), and pass the same mouse, touch and scrollbar tests (test_desk.js / test_phone.js).
+2. Phone fast flick: after a fast flick of a scrollbar, the next tap must still open the row. Test on a real Android phone; if it
+   fails, preventDefault on the rail's touchstart / touchmove and open rows on a short pointerup.
+3. Phone action bar shows the size: "Copy 1,460 CE · 1 lot", so he never copies without seeing the lots.
+4. LOCKED: dim the plan block (as BAN does) and put the lock reason on a second line in the pane, not only in a tooltip.
+5. Move the Pin toast above the action bar so it never covers the share name and price.
+6. Trade safety stays as approved: R:R below 1 after costs, or one lot above 1R, gives "0 lots" with the reason; BAN and STALE
+   disable Copy; the ATM star only marks a strike he could actually take; EXTENDED uses one rule in the group, the gate cell and
+   the pane.
