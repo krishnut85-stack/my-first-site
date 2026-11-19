@@ -32,15 +32,19 @@ live or recorded data - **never copy a number from a drawing into code.**
 ## 0. HOW TO WORK
 
 ### 0.6 The trader's directions, 19 Nov (these win over anything below)
-- **Kite only for market data.** No second broker feed, no extra accounts, no paid data: Upstox / Angel / Shoonya / Dhan and paid
-  expired-option history are DROPPED (F07 and the paid part of F14 are out; F08 NSE chain check stays only as a free sanity check).
-  The Telegram-channel listener on a spare phone (F18) is dropped. X stays off until he adds credits.
+- **Kite is the market-data feed - no second broker account** (no Upstox / Angel / Shoonya / Dhan feed). **Paid data and services
+  ARE allowed and expected** - the trader: "I am ready to pay. Without paying you get nothing." Buy what gives speed and depth from
+  outside: paid news / wire access and subscriptions (Economic Times / ET Prime, Business Standard, Moneycontrol Pro or similar),
+  X API credits, live TV speech-to-text, an economic calendar with consensus, results consensus, expired-option and IV history,
+  corporate data (shareholding, pledges, deals) where free sources are slow. For each paid item: what it gives, cost per month,
+  and the trader's yes before buying (list them in the first evening report). F07 (a second broker feed) and F18 (spare-phone
+  Telegram listener) stay out unless he asks; F08 NSE chain check stays as a sanity check.
 - **He trades OPTIONS (~90%).** Futures are never suggested as a trade. Futures data (build-up, OI by month) is used only as a
   signal for the option call. Every call, page and message speaks in options: strike, premium, spread, stop / target in premium
   and share price.
 - **News he cannot watch himself must reach him:** everything CNBC-TV18 says, continuously (live speech-to-text from the free
-  official stream) and the Economic Times (website, live blog, markets pages - no paid subscription), plus Moneycontrol, Business
-  Standard, NDTV Profit, ET Now's free stream where available.
+  official stream) and the Economic Times (website, live blog, markets pages - with a paid subscription for full access), plus Moneycontrol, Business
+  Standard, NDTV Profit and ET Now - paid subscriptions where they give full or faster access.
 - **The analyst must KNOW, like a senior F&O broker** - and say it WELL IN ADVANCE: for each F&O share (business, drivers, peers,
   group, results, how it reacts to each kind of news), for each sector (what moves it, how it reacts to each driver and event), and
   for NIFTY / BANKNIFTY / FINNIFTY (which sectors and heavyweights move the index, by how much). Built as the KNOWLEDGE BASE (1.7)
@@ -229,7 +233,7 @@ keep running.
 ---------------------------------------------------------------------------------------------------------------------------------
 
 ### 1.7 The KNOWLEDGE BASE - what the senior analyst knows (built this week, kept up to date)
-| Part | What it holds | Source (free / own) | Used by |
+| Part | What it holds | Source (paid where better / own) | Used by |
 |---|---|---|---|
 | Share dossier (every F&O share) | business, segments, group, peers, drivers with sensitivity (e.g. gold -1% -> MANAPPURAM about -x%), results dates and history of reactions, promoter / pledge / big holders, typical day range, beta to sector and NIFTY, other names / aliases | NSE / BSE filings and shareholding, annual reports, own price history, SHARE_DOSSIER_AND_MACRO.md | every call, Share page, notes |
 | Sector map (every sector) | members (ALL listed shares, weights), drivers and how each moves the sector, event -> reaction table (rate cut, crude +5%, rupee, duty change, regulator order ...), lead / lag between members | own history (replays), NSE indices, GIR_SPEC 1.1 | E2-E6, Sectors, Rotation, World |
