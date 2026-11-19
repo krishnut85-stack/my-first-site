@@ -139,7 +139,7 @@ button{font-family:var(--sans);color:inherit;background:none;border:0;cursor:poi
 .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:13px;color:var(--text-2);position:relative}
 .tab svg{width:20px;height:20px}
 .tab.on{color:var(--text)} .tab.on::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--text)}
-.toast{position:absolute;left:16px;right:16px;bottom:76px;z-index:9;background:var(--panel-3);border:1px solid var(--line-2);border-radius:8px;padding:10px 12px;font-size:14px;display:none}
+.toast{position:absolute;left:16px;right:16px;top:150px;z-index:9;pointer-events:none;background:var(--panel-3);border:1px solid var(--line-2);border-radius:8px;padding:10px 12px;font-size:14px;display:none}
 .toast.on{display:block}
 .mock{position:absolute;left:0;right:0;text-align:center;top:15px;font-size:11px;color:var(--text-3);z-index:1;pointer-events:none}
 /* round 2 */
@@ -165,6 +165,10 @@ button{font-family:var(--sans);color:inherit;background:none;border:0;cursor:poi
 .wn.am{color:var(--action);border-color:var(--action-line)} .wn.am::before{content:'!';color:var(--action)}
 .lots.z{color:var(--danger)}
 .btn[disabled]{opacity:.5;border-style:dashed}
+.actb{flex:none;display:flex;gap:8px;padding:8px 12px;border-top:1px solid var(--line-2);background:var(--panel-2)}
+.actb .btn{flex:1 1 0;min-width:0;padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.actb .btn.pri{flex:1.6 1 0}
+.actb .btn.pri:not([disabled]){border-color:var(--info-line);color:var(--info)}
 .pin{font-size:13px;font-weight:800;color:var(--bg);background:var(--info);border-radius:3px;padding:0 4px;line-height:18px}
 .mchart{display:block;width:100%}
 .mchart text{font-family:var(--mono);fill:var(--text-3)}
@@ -191,7 +195,7 @@ button{font-family:var(--sans);color:inherit;background:none;border:0;cursor:poi
 
   <div class="ct">
     <!-- SCREEN 1: the sector list -->
-    <div class="hd"><div class="t"><h1>SECTORS</h1><button class="chip on win" id="winC" title="tap = next window (15M · 30M · 1H · TODAY)">30M ▾</button><span class="chip" style="margin-left:auto" title="the engine's calls today by side: it has been PE-biased, so the CE side is shown to you directly">engine <b class="dn" style="margin-left:4px">PE 41</b>/<b class="up">CE 2</b></span></div>
+    <div class="hd"><div class="t"><h1>SECTORS</h1><button class="chip on win" id="winC" title="tap = next window (15M · 30M · 1H · TODAY)">30M ▾</button><button class="chip" id="engC" style="margin-left:auto" title="the engine's calls today by side: it has been PE-biased, so the CE side is shown to you directly">engine <b class="dn" style="margin-left:4px">PE 41</b>/<b class="up">CE 2</b></button></div>
       <div class="flow" id="flowL"></div>
       <div class="sub" id="flowS"></div></div>
     <div class="scw"><div class="scb" id="secL"></div><div class="rail" data-for="secL" aria-label="scrollbar"><span class="tk"></span><i></i></div></div>
@@ -205,6 +209,7 @@ button{font-family:var(--sans);color:inherit;background:none;border:0;cursor:poi
     <div class="sheet" id="shareS">
       <div class="top" id="shTop"></div>
       <div class="scw"><div class="scb" id="shB"></div><div class="rail" data-for="shB" aria-label="scrollbar"><span class="tk"></span><i></i></div></div>
+      <div class="actb" id="shAct"></div>
     </div>
   </div>
   <div class="mock">design mockup - illustrative values</div>

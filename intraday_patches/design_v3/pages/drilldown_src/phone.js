@@ -70,8 +70,8 @@
     else h += '<div class="sec"><div class="pl3"><span></span><span class="h">share</span><span class="h">premium</span><span class="l">trigger</span><span class="v">' + lv(p.trig) + '</span><span class="v">≈' + px(p.pT) + '</span><span class="l">stop</span><span class="v dn">' + lv(p.stop) + '</span><span class="v dn">≈' + px(p.pS) + '</span><span class="l">target</span><span class="v up">' + lv(p.tgt) + '</span><span class="v up">≈' + px(p.pG) + '</span></div>' +
       '<div class="txt" style="margin-top:4px">' + esc(p.how) + '</div><div class="txt">risk 1 lot <b>₹' + F(p.risk, 0) + '</b> = ' + (p.risk / G.R1).toFixed(2) + 'R · R:R <b class="' + (p.rr < 1 ? 'dn' : '') + '">' + p.rr.toFixed(2) + '</b> after costs</div>' +
       '<div class="txt">' + (p.lots && !m.ext ? esc(p.sizeTxt) : '<span class="lots' + (p.lots ? '' : ' z') + '">' + esc(p.lotsTxt) + '</span>') + '</div><div class="txt">trades <b>0 of 3</b> · 15:10 in <b>' + G.MODES[G.MODE.k].left + '</b></div></div>';
-    var W = $('#shB').clientWidth - 24;
-    h += '<div class="sec"><div class="stt">5-MIN · VWAP · OR · WALLS</div>' + G.chartSvg(s, m, p, W, { hp: 120, hq: 40, fs: 13, padR: 84 }) + '</div>';
+    var W = Math.max(280, $('#shB').clientWidth - 24);
+    h += '<div class="sec"><div class="stt">5-MIN · VWAP · OR · WALLS</div>' + G.chartSvg(s, m, p, W, { hp: 120, hq: 40, fs: 13, padR: 92, capShort: 1 }) + '</div>';
     h += '<div class="sec"><button class="wybtn" id="wyB">WHY ' + m.sym + ' is moving ›</button><div class="whyx" id="wyX"><div><b>Sector:</b> ' + whyTxt(s) + '</div>' + (s.why && s.why.bg ? '<div class="t3">background · ' + esc(s.why.bg.join(' · ')) + '</div>' : '') +
       (m.news.length ? m.news.slice(0, 2).map(function (n) { return '<div><b>' + n[1] + '</b> · ' + esc(n[2]) + ' <span class="t3">(' + n[0] + ' · ' + n[3] + ')</span></div>'; }).join('') : '<div class="t3">no story of its own today</div>') + '</div></div>';
     h += '<div class="sec"><div class="stt">AI</div><div class="txt">' + (m.aiv ? '<span class="c c-ready">GET READY</span> ' + m.aiv.replace(/^GET READY /, '') : '<b style="font-family:var(--sans)">AI silent</b> - your read') + '</div></div>';
@@ -83,8 +83,10 @@
     if (!w.length && !p.block && !p.warn) w.push('<span class="wn">spread ' + a.sprPct.toFixed(1) + '%</span><span class="wn">depth ' + a.dep + ' lots</span><span class="wn">MWPL ' + m.mwpl + '%</span>');
     h += '<div class="sec">' + w.join('') + '<span class="wn" style="border-style:dashed">' + esc(m.res) + '</span></div>';
     var can = p.takeable;
-    h += '<div class="sec"><div class="txt t3">GIR never places orders - you place the order in Kite.</div><div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap"><button class="btn" id="pCopy"' + (can ? '' : ' disabled') + '>' + (can ? 'Copy contract' : m.ban ? 'BAN - close only' : 'Copy off · 0 lots') + '</button><button class="btn" id="pPin">' + (st.pins[m.sym] ? 'Unpin · ' : 'Pin · ') + Object.keys(st.pins).length + '/5</button><a class="btn" href="share.html#' + m.sym + '">Full page ›</a></div></div><div style="height:16px"></div>';
-    $('#shB').innerHTML = h; }
+    h += '<div class="sec"><div class="txt t3">GIR never places orders - you place the order in Kite.</div></div><div style="height:16px"></div>';
+    $('#shB').innerHTML = h;
+    // the actions stay on screen at the foot of the sheet (no scrolling to reach Copy)
+    $('#shAct').innerHTML = '<button class="btn pri" id="pCopy"' + (can ? '' : ' disabled') + ' title="' + (can ? 'copy ' + m.sym + ' 29DEC ' + p.K + ' ' + p.cp : '') + '">' + (can ? 'Copy ' + kT(p.K) + ' ' + p.cp : m.ban ? 'BAN - close only' : 'Copy off · 0 lots') + '</button><button class="btn" id="pPin">' + (st.pins[m.sym] ? 'Unpin · ' : 'Pin · ') + Object.keys(st.pins).length + '/5</button><a class="btn" href="share.html#' + m.sym + '">Full page ›</a>'; }
 
   // ---------------- the rails: 28 px touch target; drag the thumb or tap the track (finger or mouse) ----------------
   var rails = [];
@@ -105,7 +107,7 @@
 
   // ---------------- navigation (history: Back steps share -> list -> sectors) ----------------
   function openSector(id, push) { st.open = id; st.sel = null; st.nfo = false; drawSector(); $('#memL').scrollTop = 0; $('#secS').classList.add('on'); if (push !== false) history.pushState({ s: id }, '', '#s=' + encodeURIComponent(id)); updAll(); }
-  function openShare(sym, push) { st.sel = sym; drawShare(); $('#shB').scrollTop = 0; $$('#memL .mr').forEach(function (r) { r.classList.toggle('sel', r.dataset.sym === sym); }); $('#shareS').classList.add('on'); if (push !== false) history.pushState({ s: st.open, r: sym }, '', '#s=' + encodeURIComponent(st.open) + '&r=' + sym); updAll(); }
+  function openShare(sym, push) { st.sel = sym; $('#shareS').classList.add('on'); drawShare(); $('#shB').scrollTop = 0; $$('#memL .mr').forEach(function (r) { r.classList.toggle('sel', r.dataset.sym === sym); }); if (push !== false) history.pushState({ s: st.open, r: sym }, '', '#s=' + encodeURIComponent(st.open) + '&r=' + encodeURIComponent(sym)); updAll(); }
   function apply(state) { state = state || {}; if (state.r) { if (st.open !== state.s) { st.open = state.s; drawSector(); } $('#secS').classList.add('on'); openShare(state.r, false); return; }
     $('#shareS').classList.remove('on'); if (state.s) { if (st.open !== state.s) { st.open = state.s; drawSector(); } $('#secS').classList.add('on'); } else { $('#secS').classList.remove('on'); st.open = null; } updAll(); }
   window.addEventListener('popstate', function (e) { apply(e.state); });
@@ -114,6 +116,7 @@
     if (t.closest('#banM .x')) { $('#banM').classList.remove('on'); return; }
     if (t.closest('#banC')) { var bn = []; S.forEach(function (s) { s.members.forEach(function (m) { if (m.ban) bn.push('<b>' + m.sym + '</b> MWPL ' + m.mwpl + '% (' + s.id + ')'); }); });
       $('#banM').innerHTML = '<span class="x">✕</span><b>F&amp;O ban today (2)</b><br>' + bn.join('<br>') + '<br>In ban: only close existing positions. Ban at 95% MWPL.'; $('#banM').classList.toggle('on'); return; }
+    if (t.closest('#engC')) { toast('engine today: PE 41 / CE 2 - PE-biased, so every rising sector shows its CE shares to you directly'); return; }
     if (t.closest('#plR')) { location.href = 'phone.html#risk'; return; }
     if (t.closest('#winC')) { st.win = (st.win + 1) % 4; drawFlow(); toast('window ' + ['15M', '30M', '1H', 'TODAY'][st.win] + ' · ' + G.flows(st.win).rng); return; }
     if (t.closest('#whyB')) { $('#whyX').classList.toggle('on'); updAll(); return; }

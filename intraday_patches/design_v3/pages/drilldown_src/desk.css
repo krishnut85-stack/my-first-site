@@ -2,7 +2,7 @@
 /* No shell rule is overridden. Colours = shell tokens + the shared .sh-c-* classes only. */
 #pg{--pw:416px;--hh:128px;--sr:28px;--mr:26px;--gw:112px;--rail:16px;
   --scols:30px minmax(0,1fr) 86px 62px 60px 96px 120px 136px 150px;
-  --mcols:192px 60px 54px 44px 56px 56px 70px 44px minmax(0,1fr) 100px 84px 34px;
+  --mcols:190px 53px 55px 44px 56px 56px 70px 44px minmax(0,1fr) 102px 84px 34px;
   position:absolute;left:12px;right:12px;top:8px;bottom:8px;display:grid;grid-template-rows:26px minmax(0,1fr);gap:6px}
 .t2{color:var(--text-2)} .t3{color:var(--text-3)} .tx{color:var(--text)}
 .r{text-align:right}
@@ -161,7 +161,8 @@ a.lk:hover,.lkx:hover{text-decoration:underline;text-underline-offset:3px}
 .gi .mrow:last-child{border-bottom:0}
 .mrow:hover{box-shadow:inset 0 0 0 999px rgba(255,255,255,.035)}
 .mrow.sel{background:var(--panel-3)!important;box-shadow:inset 3px 0 0 var(--text)}
-.mrow.rrf{outline:1px solid var(--info);outline-offset:-2px}
+.mrow.rrf{animation:rrf 1s ease-out 1}
+@keyframes rrf{0%,70%{outline:1px solid var(--info);outline-offset:-2px}100%{outline:1px solid transparent;outline-offset:-2px}}
 .mrow>span{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .mrow .c-sh{display:flex;align-items:center;gap:5px}
 .mrow .c-sh .sh-c{height:17px;font-size:11px;padding:0 4px;letter-spacing:.01em}
@@ -285,14 +286,14 @@ a.lk:hover,.lkx:hover{text-decoration:underline;text-underline-offset:3px}
 .cmp td{font-family:var(--mono);text-align:right;padding:0 4px;height:22px;border-bottom:1px solid var(--line);white-space:nowrap;color:var(--text)}
 .cmp td:first-child{font-family:var(--sans);font-weight:700;cursor:pointer}
 .cmp tr.best td{background:var(--action-bg)}
-.toast{position:absolute;right:16px;bottom:30px;z-index:46;background:var(--panel-3);border:1px solid var(--line-2);border-radius:4px;padding:5px 10px;font-size:12px;color:var(--text);display:none}
+.toast{position:absolute;right:16px;bottom:30px;z-index:46;pointer-events:none;background:var(--panel-3);border:1px solid var(--line-2);border-radius:4px;padding:5px 10px;font-size:12px;color:var(--text);display:none}
 .toast.on{display:block}
 
 /* ---------- 1366 ---------- */
 @media (max-width:1499px){
   #pg{--pw:350px;--hh:112px;--sr:24px;--mr:23px;--gw:86px;
-    --scols:22px minmax(0,1fr) 84px 50px 42px 86px 92px 128px 132px;
-    --mcols:144px 54px 48px 36px 54px 50px 64px 32px minmax(0,1fr) 88px 76px 28px}
+    --scols:22px minmax(0,1fr) 84px 50px 42px 86px 92px 128px 152px;
+    --mcols:145px 51px 50px 37px 54px 55px 69px 32px minmax(0,1fr) 84px 78px 29px}
   .gl .g1{letter-spacing:0;line-height:11px} .gl .g1 .r13{white-space:nowrap} .gl{padding:0 3px 0 5px;justify-content:center} .gl .g2{line-height:11px} .gl .more{line-height:12px}
   .sl{height:20px} .mhd{height:19px} .nonfo{height:22px} #win>.ph{height:24px} .shd{height:20px} .pf{height:20px} .nent{height:18px;padding-top:1px}
   .mrow .c-sh .sh-c,.mrow .c-op .sh-c,.mrow .c-ai .sh-c{height:17px}
@@ -437,3 +438,27 @@ a.lk:hover,.lkx:hover{text-decoration:underline;text-underline-offset:3px}
 @media (max-width:1499px){ .mrow,.mhd{column-gap:3px} .mrow .c-ai .sh-c{letter-spacing:-0.01em;padding:0 3px} }
 .mrow .c-op .st{margin-left:1px}
 .wl{overflow:hidden;text-overflow:ellipsis}
+.blk .sl{gap:6px}
+@media (max-width:1499px){ .blk .sl{gap:5px} }
+
+/* ===================== round 3 (1366 cuts, chip minimum, rail buttons) ===================== */
+/* every chip is 12 px (CONFERENCE 1.4: chip text 12 px) - rows, sector rows, flow, pane */
+.sh-c.sm,.fs .sh-c,.srow .cr .sh-c,.srow .st .sh-c,.mrow .c-sh .sh-c,.mrow .c-sh .sh-c-held,.p1b .sh-c,.p1 .sh-c,.p2 .sh-c,.stt .sh-c,.tbx th .sh-c,.ai .sh-c{font-size:12px}
+.srow .cr .sh-c{width:28px}
+.mrow .c-sh .sh-c{letter-spacing:0;padding:0 3px}
+/* rail: the 1 px divider is drawn inside, so the up / down buttons are the full 16 x 16 */
+.rail{border-left:0;box-shadow:inset 1px 0 0 var(--line)}
+.rail .rb{width:100%;min-width:16px;height:16px}
+/* column heads: shorter words, never cut; the head columns line up with the row cells (row left padding added to the group column) */
+.mhd{letter-spacing:.02em;grid-template-columns:calc(var(--gw) + 6px) var(--mcols)}
+@media (max-width:1499px){
+  #pg{--gw:83px}
+  .mrow{padding:0 4px 0 5px} .mhd{padding-right:4px;letter-spacing:0;grid-template-columns:calc(var(--gw) + 5px) var(--mcols)}
+  .mrow .num small{margin-left:1px}
+  .mrow .c-sh{gap:4px}
+  .fs .sh-c{font-size:12px;height:15px}
+}
+/* trade-box heads: the strike chips and ATM / 1 ITM / ★ at 12 px */
+.tbx th{font-size:12px}
+@media (max-width:1499px){ .tbx th{padding:2px 3px} .tbx th .sh-c{padding:0 3px} }
+.rk3.wr{white-space:normal}

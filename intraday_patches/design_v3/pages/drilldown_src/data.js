@@ -198,7 +198,7 @@ var GD = (function () {
     var fitLock = Math.floor(LOCK / risk), fitR = Math.floor(R1 / risk), lots = 0, why = '', block = '', warn = '';
     var mode = MODE.k;
     if (m.ban) { block = 'BAN - only close existing'; why = 'F&O ban · MWPL ' + m.mwpl + '% (ban at 95%)'; }
-    else if (mode === 'locked') { block = 'LOCKED - no new trades today'; why = 'loss lock hit'; }
+    else if (mode === 'locked') { block = 'LOCKED - no new trades today'; why = 'day loss lock hit: 3 losing trades = −₹10,000'; }
     else if (m.stale) { block = 'STALE ' + m.stale + 's'; why = 'share quote ' + m.stale + 's old - no GO NOW until it ticks'; }
     else if (c.ostale) { block = 'OPTION STALE ' + c.oage + 's'; why = 'option bid/ask ' + c.oage + 's old - no GO NOW until it ticks'; }
     else if (mode === 'preopen') { block = 'pre-open - not live'; why = 'levels from the 18 Nov close'; }
@@ -272,31 +272,40 @@ var GD = (function () {
   // price pane (candles, VWAP, OR box, trigger / stop / target, CE wall above and PE wall below) + a premium pane under it.
   // Layout top to bottom: price pane · premium caption · premium pane · time axis - nothing prints on anything else.
   function chartSvg(s, m, p, W, o) {
-    o = o || {}; var Hp = o.hp || 100, Hq = o.hq || 34, fs = o.fs || 11, padL = 4, padR = o.padR || 68, b = bars(m), n = b.length;
+    o = o || {}; var Hp = o.hp || 100, Hq = o.hq || 34, fs = o.fs || 11, padL = 4, b = bars(m), n = b.length;
+    // level labels say what they are (TRIG / STOP / TGT, never a lone T that reads as target); the right margin fits the longest one
+    var showLv = !p.block || /STALE/.test(p.block), LT = 'TRIG ' + lv(p.trig), LS = 'STOP ' + lv(p.stop), LG = 'TGT ' + lv(p.tgt);
+    var longest = Math.max(showLv ? Math.max(LT.length, LS.length, LG.length) : 0, ('CE ' + fmt(m.wallC, m.wallC % 1 ? 1 : 0) + '↑').length, ('PE ' + fmt(m.wallP, m.wallP % 1 ? 1 : 0) + '↓').length);
+    var padR = Math.max(o.padR || 74, Math.ceil(longest * fs * 0.62) + 8);
     var lo = Math.min(m.lo, p.stop, m.vwap, p.tgt, p.trig), hi = Math.max(m.hi, p.tgt, p.trig, p.stop); var pad = (hi - lo) * 0.10; lo -= pad; hi += pad;
     var X = function (i) { return padL + (i + 0.5) * (W - padL - padR) / n; }, Y = function (v) { return 4 + (hi - v) / (hi - lo) * (Hp - 8); }, bw = Math.max(3, (W - padL - padR) / n - 3);
     var capY = Hp + fs + 4, y0 = capY + 4, axY = y0 + Hq + fs + 3, H = axY + 3;
     var h = '<svg class="mchart" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" style="font-size:' + fs + 'px">';
-    var orY1 = Y(m.orH), orY2 = Y(m.orL); h += '<rect x="' + padL + '" y="' + orY1 + '" width="' + (X(2) + bw / 2 - padL) + '" height="' + Math.max(1, orY2 - orY1) + '" fill="var(--info-bg)" stroke="var(--info-line)"/><text class="lb" x="' + (padL + 2) + '" y="' + (orY1 - 2) + '">OR</text>';
+    var orY1 = Y(m.orH), orY2 = Y(m.orL); h += '<rect x="' + padL + '" y="' + orY1 + '" width="' + (X(2) + bw / 2 - padL) + '" height="' + Math.max(1, orY2 - orY1) + '" fill="var(--info-bg)" stroke="var(--info-line)"/>';
+    // the OR label sits clear of the box border: inside the box when it is tall enough, else under it; a dark halo keeps it readable over a candle
+    var orTy = orY2 - orY1 >= fs + 8 ? orY1 + fs + 2 : orY2 + fs + 5 <= Hp ? orY2 + fs + 3 : orY1 - fs - 1 > 0 ? orY1 - 5 : orY1 + fs + 2;
+    var orLab = '<text class="lb orl" x="' + (padL + 3) + '" y="' + orTy.toFixed(1) + '" fill="var(--info)" stroke="var(--panel)" stroke-width="3" paint-order="stroke">OR</text>';
     var cum = 0, v = [], cv = 0; b.forEach(function (x, i) { var vol = 1 + (i < 3 ? 1.2 : 0) + (i > 15 ? 0.6 : 0); cum += (x.h + x.l + x.c) / 3 * vol; cv += vol; v.push(cum / cv); });
     var adj = m.vwap - v[n - 1]; h += '<polyline fill="none" stroke="var(--info)" stroke-width="1.5" points="' + v.map(function (x, i) { return X(i).toFixed(1) + ',' + Y(x + adj * i / (n - 1)).toFixed(1); }).join(' ') + '"/>';
     var labs = [];
     function hl(val, col, lab, dash) { var y = Y(val); h += '<line x1="' + padL + '" x2="' + (W - padR + 2) + '" y1="' + y + '" y2="' + y + '" stroke="' + col + '" stroke-dasharray="' + (dash || '4 3') + '" stroke-width="1"/>'; labs.push([y + 4, col, lab]); }
     b.forEach(function (x, i) { var c = x.c >= x.o ? 'var(--up)' : 'var(--down)'; h += '<line x1="' + X(i) + '" x2="' + X(i) + '" y1="' + Y(x.h) + '" y2="' + Y(x.l) + '" stroke="' + c + '"/><rect x="' + (X(i) - bw / 2) + '" y="' + Math.min(Y(x.o), Y(x.c)) + '" width="' + bw + '" height="' + Math.max(1, Math.abs(Y(x.o) - Y(x.c))) + '" fill="' + c + '"/>'; });
-    if (!p.block || /STALE/.test(p.block)) { hl(p.trig, 'var(--action)', 'T ' + lv(p.trig)); hl(p.stop, 'var(--down)', 'S ' + lv(p.stop)); hl(p.tgt, 'var(--up)', 'G ' + lv(p.tgt)); }
+    h += orLab;   // drawn over the candles, under the level lines
+    if (showLv) { hl(p.trig, 'var(--action)', LT); hl(p.stop, 'var(--down)', LS); hl(p.tgt, 'var(--up)', LG); }
     // walls: drawn as lines when inside the price range, else as an edge marker with the distance
     [['C', m.wallC, 'var(--down)'], ['P', m.wallP, 'var(--up)']].forEach(function (wl) { var val = wl[1], inR = val <= hi && val >= lo, lab = (wl[0] === 'C' ? 'CE wall ' : 'PE wall ') + fmt(val, val % 1 ? 1 : 0);
       if (inR) { var y = Y(val); h += '<line x1="' + padL + '" x2="' + (W - padR + 2) + '" y1="' + y + '" y2="' + y + '" stroke="' + wl[2] + '" stroke-width="2" opacity=".55"/>'; labs.push([y + 4, wl[2], (wl[0] === 'C' ? 'CE ' : 'PE ') + fmt(val, val % 1 ? 1 : 0)]); }
-      else { var ye = wl[0] === 'C' ? 4 : Hp - 4; h += '<line x1="' + padL + '" x2="' + (W - padR + 2) + '" y1="' + ye + '" y2="' + ye + '" stroke="' + wl[2] + '" stroke-width="2" stroke-dasharray="1 3" opacity=".7"/>' +
-        '<text x="' + (W - padR - 2) + '" y="' + (wl[0] === 'C' ? ye + fs + 1 : ye - 3) + '" text-anchor="end" fill="' + wl[2] + '">' + lab + (wl[0] === 'C' ? ' ↑ ' : ' ↓ ') + (Math.abs(val / m.ltp - 1) * 100).toFixed(1) + '%</text>'; } });
+      else { var ye = wl[0] === 'C' ? 4 : Hp - 4; h += '<line x1="' + padL + '" x2="' + (W - padR + 2) + '" y1="' + ye + '" y2="' + ye + '" stroke="' + wl[2] + '" stroke-width="2" stroke-dasharray="1 3" opacity=".7"><title>' + lab + ' (' + (Math.abs(val / m.ltp - 1) * 100).toFixed(1) + '% away, off the chart)</title></line>';
+        labs.push([wl[0] === "C" ? fs : Hp - 2, wl[2], (wl[0] === 'C' ? 'CE ' : 'PE ') + fmt(val, val % 1 ? 1 : 0) + (wl[0] === 'C' ? '↑' : '↓')]); } });
     // right-hand labels: no two overlap
     labs.sort(function (a, c) { return a[0] - c[0]; }); var gp = fs + 3, ys = labs.map(function (l) { return l[0]; });
     for (var q = 0; q < ys.length; q++) ys[q] = Math.max(ys[q], q ? ys[q - 1] + gp : fs);           // spread down
-    if (ys.length && ys[ys.length - 1] > Hp + 2) { ys[ys.length - 1] = Hp + 2; for (q = ys.length - 2; q >= 0; q--) ys[q] = Math.min(ys[q], ys[q + 1] - gp); }   // then up
+    if (ys.length && ys[ys.length - 1] > Hp - 2) { ys[ys.length - 1] = Hp - 2; for (q = ys.length - 2; q >= 0; q--) ys[q] = Math.min(ys[q], ys[q + 1] - gp); }   // then up
     labs.forEach(function (l, q) { h += '<text x="' + (W - padR + 4) + '" y="' + ys[q].toFixed(1) + '" fill="' + l[1] + '">' + l[2] + '</text>'; });
     var K = p.K, cp = p.cp, prem = b.map(function (x, i) { return bs(x.c, K, T + (n - 1 - i) * 5 / 60 / 24 / 365, m.iv, cp); }), c0 = contract(s, m, 'atm');
     var pl = Math.min.apply(null, prem) - c0.sp, ph = Math.max.apply(null, prem) + c0.sp, PY = function (q) { return y0 + 2 + (ph - q) / (ph - pl) * (Hq - 4); };
-    h += '<text class="lb" x="' + padL + '" y="' + capY + '">' + kTxt(K) + ' ' + cp + ' Dec premium · mid + bid/ask band</text><text x="' + (W - padR + 4) + '" y="' + capY + '" fill="var(--text-2)">' + fmt(c0.ask, 2) + '</text>';
+    var cap = kTxt(K) + ' ' + cp + ' Dec premium' + (o.capShort ? '' : ' · mid + bid/ask band'); if (cap.length * fs * 0.56 > W - padR - padL - 4) cap = kTxt(K) + ' ' + cp + ' Dec premium';
+    h += '<text class="lb" x="' + padL + '" y="' + capY + '">' + cap + '</text><text x="' + (W - padR + 4) + '" y="' + capY + '" fill="var(--text-2)">' + fmt(c0.ask, 2) + '</text>';
     h += '<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + y0 + '" y2="' + y0 + '" stroke="var(--line)"/>';
     h += '<polygon fill="var(--up-bg)" points="' + prem.map(function (q, i) { return X(i).toFixed(1) + ',' + PY(q + c0.sp / 2).toFixed(1); }).join(' ') + ' ' + prem.slice().reverse().map(function (q, j) { var i = n - 1 - j; return X(i).toFixed(1) + ',' + PY(q - c0.sp / 2).toFixed(1); }).join(' ') + '"/>';
     h += '<polyline fill="none" stroke="var(--' + (cp === 'CE' ? 'up' : 'down') + ')" stroke-width="1.4" points="' + prem.map(function (q, i) { return X(i).toFixed(1) + ',' + PY(q).toFixed(1); }).join(' ') + '"/>';

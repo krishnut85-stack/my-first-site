@@ -102,7 +102,7 @@
     else if (/OPTION STALE/.test(p.block)) h = '<span class="sh-c sh-c-stale" title="the option bid/ask is old: no GO NOW until it ticks">OPT ' + G.contract(s, m, 'atm').oage + 's</span>';
     else if (m.grp === 'lag') h = '<span class="tx" title="laggard trigger: ' + esc(p.how) + '">trig ' + (s.dir > 0 ? '&gt;' : '&lt;') + ' ' + F(p.trig, p.trig < 200 ? 2 : 1) + '</span>';
     else if (m.grp === 'against') h = '<span class="tx" title="against its sector' + (m.own ? ': ' + esc(m.own) : '') + '">' + (m.own ? (/news/.test(m.own) ? 'own news' : 'own story') : 'vs sec ' + sg2(m.rs30)) + '</span>';
-    else if (m.ext && m.gok) h = '<span class="ex" title="EXTENDED - don\'t chase: EXT ' + G.extOf(m).toFixed(2) + ' ATR · range used ' + G.room(m).used.toFixed(2) + ' ATR &gt; 0.8 · ' + esc(p.how) + '">EXT → ' + F(p.trig, p.trig < 200 ? 2 : 1) + '</span>';
+    else if (m.ext && m.gok) h = '<span class="ex" title="EXTENDED - don\'t chase: EXT ' + G.extOf(m).toFixed(2) + ' ATR · range used ' + G.room(m).used.toFixed(2) + ' ATR &gt; 0.8 · ' + esc(p.how) + '">EXT→' + F(p.trig, p.trig < 200 ? 2 : 1) + '</span>';
     else if (m.gok) h = '<span class="ok" title="all 4 gates pass: RS15 &gt; 0 · RS30 ≥ +0.5 · RVOL ≥ 1.5 · 2 closed 5-min bars on the VWAP side · no build-up against · score ' + m.score.toFixed(2) + '">✓ 4/4</span>' + (m.neu ? '<span class="sh-c sh-c-info" title="new entrant ' + m.neu + ', added at the bottom of its group">NEW</span>' : '');
     else h = '<span class="no" title="the gate that failed: ' + esc(f) + (m.fails.length > 1 ? ' (+' + (m.fails.length - 1) + ' more: ' + esc(m.fails.slice(1).join(', ')) + ')' : '') + '">' + esc(f.replace(' bars', '').replace(' build-up', '')) + '</span>';
     return '<span class="c-gt">' + h + '</span>'; }
@@ -112,7 +112,7 @@
   function mrow(s, m, best, pend) { var p = pct(m), r = G.room(m), pl = G.plan(s, m), heat = (m.grp === 'up' || m.grp === 'against') ? ' sh-heat-' + (p >= 0 ? 'up' : 'dn') : '';
     var rd = pend && pend[m.sym] ? '<span class="rd" title="rank change: score now above the row over it; the order holds while your pointer or keys are in the list">▲' + pend[m.sym] + '</span>' : '';
     return '<div class="mrow' + heat + (m.sym === st.sel ? ' sel' : '') + (m.stale ? ' stale' : '') + (m.ban ? ' ban' : '') + (rd ? ' rrf' : '') + '" data-sym="' + m.sym + '" style="--m:' + Math.min(2, Math.abs(p)).toFixed(2) + '">' +
-      '<span class="c-sh"><a class="lk" data-sym="' + m.sym + '">' + m.sym + '</a>' + rd + (st.pins[m.sym] ? '<span class="pin">PIN</span>' : '') + (held(m) ? '<span class="sh-c sh-c-held">HELD</span>' : '') + roleChip(m) + '</span>' +
+      '<span class="c-sh"><a class="lk" data-sym="' + m.sym + '">' + m.sym + '</a>' + rd + (st.pins[m.sym] ? '<span class="pin">PIN</span>' : '') + (held(m) ? '<span class="sh-c sh-c-held" title="you hold this share (role: ' + (m.role || '').toLowerCase() + ', in the pane)">HELD</span>' : roleChip(m)) + '</span>' +
       '<span class="num pc ' + (p >= 0 ? 'up' : 'dn') + '" data-t="pc">' + sgp(p) + '</span>' +
       '<span class="num" title="RS30 vs sector; arrow = 15-min slope">' + sg2(m.rs30) + '<small class="' + (m.sl === '↗' ? 'up' : m.sl === '↘' ? 'dn' : 't3') + '">' + m.sl + '</small></span>' +
       '<span class="num" title="RVOL vs the 20-session median to this minute; arrow = rising">' + m.rvol.toFixed(1) + '<small class="' + (m.rvUp ? 'up' : 't3') + '">' + (m.rvUp ? '▲' : '→') + '</small></span>' +
@@ -120,7 +120,7 @@
       '<span class="c-rm' + (r.used > 0.8 ? ' am' : '') + '" title="ATR used ' + r.used.toFixed(2) + ' · ATR left ' + r.left.toFixed(2) + ' (ATR14 ' + lv(m.atr) + ')">' + r.used.toFixed(1) + '<span class="t3">·</span>' + r.left.toFixed(1) + '</span>' +
       '<span class="c-bu" title="OI change, all months, %">' + buChip(m.bu) + (m.oi > 0 ? '+' : '') + m.oi.toFixed(1) + '</span>' +
       '<span class="c-wt" title="weight in the sector (all listed, free-float)"><span class="wtb"><i style="width:' + Math.min(100, m.wt / 31 * 100) + '%"></i></span>' + m.wt.toFixed(1) + '</span>' +
-      optCell(s, m, best) + gateCell(s, m, pl, best) + aiCell(m) + '<span class="c-ag" data-t="ag" title="share quote age · option quote ' + G.contract(s, m, 'atm').oage + 's">' + (mode() === 'preopen' ? 'close' : m.age) + '</span></div>'; }
+      optCell(s, m, best) + gateCell(s, m, pl, best) + aiCell(m) + '<span class="c-ag" data-t="ag" title="' + (mode() === 'preopen' ? 'previous close (18 Nov) - not live' : 'share quote age · option quote ' + G.contract(s, m, 'atm').oage + 's') + '">' + (mode() === 'preopen' ? 'prev' : m.age) + '</span></div>'; }
 
   function whyHtml(s, long) { var w = s.why;
     if (!w) return '<span class="whyl">WHY</span><b class="un">UNEXPLAINED</b><span class="t3 ell">no driver or story found today (checked 11:05)</span>';
@@ -137,10 +137,10 @@
       '<span class="t2">' + (s.idx ? s.idx : 'ff basket') + '</span>' + (s.idx && s.bpct != null ? '<span class="r16 t3">· basket ' + sgp(s.bpct) + '</span>' : '') + '<button class="lkx" data-bas="' + s.id + '" title="the basis of this move (R49)">basis ›</button><span class="sep">·</span>' +
       '<span>all ' + s.n + ' <b class="up">▲' + s.up + '</b> <b class="dn">▼' + s.dn + '</b></span><span class="sep">·</span><span>F&amp;O <b class="up">▲' + fo.up + '</b> <b class="dn">▼' + fo.dn + '</b></span><span class="sep">·</span>' +
       '<span>RS30 <b>' + sg2(s.rs30) + '</b></span>' + (s.conf ? '<span class="sh-c sh-c-info" title="rotation confirmed ' + s.conf + '"><span class="r16">CONFIRMED</span><span class="r13">CONF</span> ' + s.conf + '</span>' : '') + (nar ? '<span class="sh-c sh-c-stale" title="NARROW - F&amp;O-only move: F&amp;O ' + Math.round(nar.fo * 100) + '% one way, the other listed shares only ' + Math.round(nar.nf * 100) + '%">NARROW</span>' : '') +
-      (run ? '<span class="sep">·</span><span class="rn" title="sector run clock: ' + (up ? 'up' : 'down') + ' since ' + run.since + ', ' + run.len + ' so far vs a typical run of ' + run.typ + ' (n=' + run.nn + ' past runs) · breadth ' + run.br + ' vs 15 min ago' + (run.fade ? ' - FADING' : '') + '">' + (up ? 'up' : 'down') + ' since <b>' + run.since + '</b> · <b>' + run.len + '</b><span class="runb' + (up ? '' : ' dn') + '"><i style="width:' + Math.min(100, mins(run.len) / mins(run.typ) * 100).toFixed(0) + '%"></i></span>typ ' + run.typ.replace(' ', '') + ' n=' + run.nn + ' <span class="' + (run.fade ? 'dn' : 't2') + '">' + (run.fade ? 'FADING ' : '') + run.br + (run.fade ? '' : ' ▲') + '</span></span>' : '') + '</div>';
+      (run ? '<span class="sep">·</span><span class="rn" title="sector run clock: ' + (up ? 'up' : 'down') + ' since ' + run.since + ', ' + run.len + ' so far vs a typical run of ' + run.typ + ' (n=' + run.nn + ' past runs) · breadth ' + run.br + ' vs 15 min ago' + (run.fade ? ' - FADING' : '') + '">' + (up ? 'up' : 'down') + '<span class="r16"> since</span> <b>' + run.since + '</b> · <b>' + run.len + '</b><span class="runb' + (up ? '' : ' dn') + '"><i style="width:' + Math.min(100, mins(run.len) / mins(run.typ) * 100).toFixed(0) + '%"></i></span>typ ' + run.typ.replace(' ', '') + ' n=' + run.nn + ' <span class="' + (run.fade ? 'dn' : 't2') + '">' + (run.fade ? 'FADING ' : '') + run.br + (run.fade ? '' : ' ▲') + '</span></span>' : '') + '</div>';
     var rrc = pend ? '<button class="chip rrc" id="rrChip" title="the order never changes under your pointer or keys: the new order applies when the pointer leaves the list, after 30 s with the pointer and focus outside the list, or on R">re-ranked <kbd>R</kbd> apply</button>' : '';
     var l2 = '<div class="sl">' + whyHtml(s) + '<span class="gr"><span class="sh-c sh-c-info" title="Expiry week: Nov expires Mon 23 Nov (Tue 24 holiday); in-the-money stock options are physically settled, so December (Tue 29 Dec) is the only month offered">Expiry week · physical - Dec only</span>' + rrc + '</span></div>';
-    var mb = { forming: ['info', 'FORMING · before 09:30 - the list settles on closed bars at 09:30, no new entries from it'], manage: ['ready', 'MANAGE ONLY - no new entries after 14:30 · exits by 15:10'], locked: ['exit', 'LOCKED - no new trades today · loss lock ₹10,000 hit'], preopen: ['info', 'PRE-OPEN - NOT LIVE · levels and groups from the 18 Nov close'], held: ['held', 'you already hold Banks: BANKBARODA 275 CE · 1 lot · trades 1 of 3'] }[mode()];
+    var mb = { forming: ['info', 'FORMING · before 09:30 - the list settles on closed bars at 09:30, no new entries from it'], manage: ['ready', 'MANAGE ONLY - no new entries after 14:30 · exits by 15:10'], locked: ['exit', 'LOCKED - no new trades today · day loss lock hit: 3 losing trades = −₹10,000 (exits stay usable)'], preopen: ['info', 'PRE-OPEN - NOT LIVE · levels and groups from the 18 Nov close'], held: ['held', 'you already hold Banks: BANKBARODA 275 CE · 1 lot · trades 1 of 3'] }[mode()];
     var l3 = mb && (mode() !== 'held' || s.id === 'Banks') ? '<div class="sl mbn mb-' + mb[0] + '">' + mb[1] + '</div>' : '';
     return l1 + l2 + l3; }
 
@@ -164,7 +164,7 @@
       if (s.id !== st.open) { h += srow(s, i, false); return; }
       var gs = visibleGroups(s), best = bestPick(s), pend = G.pendingRR(s), hasLag = gs.some(function (x) { return x.g === 'lag'; });
       h += '<div class="blk' + (st.nfo[s.id] ? ' nfo' : '') + '" data-s="' + s.id + '"><div class="bh">' + srow(s, i, true) + sline(s) +
-        '<div class="mhd"><span>group</span><span>share · role</span><span class="r">day %</span><span class="r" title="RS30 vs sector, 15-min slope">vs sec</span><span class="r">RVOL</span><span>VWAP/OR</span><span title="ATR used · ATR left">room</span><span title="build-up, all months · OI change %">B/U · OI%</span><span class="r">wt %</span><span title="December strike · ask premium · bid/ask spread %">Dec strike · prem · %</span><span>state / gate</span><span>AI</span><span class="r">age</span></div></div>';
+        '<div class="mhd"><span>group</span><span>share · role</span><span class="r">day %</span><span class="r" title="RS30 vs sector, 15-min slope">vs sec</span><span class="r">RVOL</span><span title="price vs VWAP and the opening range">VWAP·OR</span><span title="ATR used · ATR left">room</span><span title="build-up, all months · OI change %">B/U · OI%</span><span class="r" title="weight in the sector, %">wt%</span><span title="December strike · ask premium · bid/ask spread %">Dec strike · prem · %</span><span>state / gate</span><span>AI</span><span class="r">age</span></div></div>';
       gs.forEach(function (x, gi) { var L = G.gLabel(s, x.g, x.items.length);
         if (x.g !== 'up' && x.g !== 'lead' && !hasLag && (gi === 0 || gs[gi - 1].g === 'up' || gs[gi - 1].g === 'lead')) h += nolag(s);
         var g2 = x.g === 'lead' ? (x.items[0].ext ? 'pullback entry' : 'a gate fails') : x.g === 'nt' ? (x.items[0].ban ? 'F&amp;O ban' : L[1]) : L[1];
@@ -193,7 +193,7 @@
   function drawPane() {
     var pb = $('#pb'), y = pb.scrollTop;
     var f = st.sel ? G.find(st.sel) : null, s = f ? f.s : sec(st.open);
-    $('#spSym').textContent = f ? f.m.sym : (s ? s.id : ''); $('#spSym').title = $('#spSym').textContent;
+    $('#spSym').textContent = f ? f.m.sym : (s ? (short[s.id] || s.id) : ''); $('#spSym').title = f ? f.m.sym : (s ? s.id : '');
     if (!f) { pb.innerHTML = s ? paneSector(s) : '<div class="ps"><div class="stt">no sector open</div><div class="p2">click a sector row, a flow label or press 1-9</div></div>'; rails.forEach(function (r) { r.upd(); }); return; }
     var m = f.m, p = G.plan(s, m), a = G.contract(s, m, 'atm'), i = G.contract(s, m, 'itm'), r = G.room(m), pc = pct(m), ce = p.cp === 'CE';
     $('#flShare').href = 'share.html#' + m.sym; $('#flChain').href = 'chain.html#' + m.sym + '-' + a.K + a.cp;
@@ -232,8 +232,8 @@
       '<div class="how" title="' + esc(p.how) + '">' + esc(p.how) + '</div>' +
       '<div class="rk3">risk 1 lot <b>₹' + F(p.risk, 0) + '</b> = ' + (p.risk / G.R1).toFixed(2) + 'R · R:R <b class="' + (p.rr < 1 ? 'dn' : '') + '">' + p.rr.toFixed(2) + '</b> after costs</div><div class="rk3 t3">costs ₹' + p.costs + ' = charges ₹' + p.charges + ' + slippage ₹' + p.slip + '</div>' +
       '<div class="rk3" title="lock room ₹' + F(G.LOCK, 0) + ' (if all stops hit) and the 1R rule (₹' + F(G.R1, 0) + ')">' + (p.lots && !m.ext ? esc(p.sizeTxt.replace(/→ (\d+ lots?)$/, '→ ')) + '<span class="lots">' + p.lots + (p.lots > 1 ? ' lots' : ' lot') + '</span>' : '<span class="lots' + (p.lots ? '' : ' z') + '">' + esc(p.lotsTxt) + '</span>') + '</div>' +
-      '<div class="rk3">trades <b>' + (mode() === 'held' ? '1' : '0') + ' of 3</b> · 15:10 in <b>' + G.MODES[mode()].left + '</b> · holding <b>' + (mode() === 'held' ? 'BANKBARODA 275 CE' : 'none') + '</b></div></div>';
-    h += '<div class="ps"><div class="wl" title="5-min candles · VWAP (blue) · opening range box · trigger T / stop S / target G · CE wall above and PE wall below (lines, or an edge marker when out of range)">5-min · VWAP · OR · walls CE ' + F(m.wallC, m.wallC % 1 ? 1 : 0) + ' / PE ' + F(m.wallP, m.wallP % 1 ? 1 : 0) + '</div>' + G.chartSvg(s, m, p, $('#pb').clientWidth - (wide() ? 24 : 20), { hp: wide() ? 112 : 92, hq: wide() ? 38 : 32 }) + '</div>';
+      '<div class="rk3 wr">trades <b>' + ({ held: '1', locked: '3' }[mode()] || '0') + ' of 3</b> · 15:10 in <b>' + G.MODES[mode()].left + '</b> · holding <b>' + (mode() === 'held' ? 'BANKBARODA 275 CE' : 'none') + '</b></div></div>';
+    h += '<div class="ps"><div class="wl" title="5-min candles · VWAP (blue) · opening range box · trigger TRIG / stop STOP / target TGT · CE wall above and PE wall below (lines, or an edge marker when out of range)">5-min · VWAP · OR · walls CE ' + F(m.wallC, m.wallC % 1 ? 1 : 0) + ' / PE ' + F(m.wallP, m.wallP % 1 ? 1 : 0) + '</div>' + G.chartSvg(s, m, p, $('#pb').clientWidth - (wide() ? 24 : 20), { hp: wide() ? 112 : 92, hq: wide() ? 38 : 32 }) + '</div>';
     h += '<div class="ps"><div class="ai"><span class="lab">AI</span>' + (m.aiv && mode() === 'live' ? '<span class="sh-c sh-c-ready">GET READY</span><span class="ell">' + esc(m.aiv.replace(/^GET READY /, '')) + '</span>' : '<b>AI silent</b><span class="t3">- your read</span>') + '</div></div>';
     h += '<div class="ps"><div class="evs"><span class="ev' + (m.resT ? ' am' : '') + '">' + esc(m.res) + '</span><span class="ev' + (/^ex-date/.test(m.exd) ? ' am' : '') + '">' + esc(m.exd) + '</span><span class="ev ' + (m.mwpl >= 90 ? 'rd' : m.mwpl >= 80 ? 'am' : '') + '">MWPL ' + m.mwpl + '%</span></div></div>';
     h += '<div class="ps">' + (m.news.length ? m.news.slice(0, 2).map(function (n) { return '<div class="nw" title="' + esc(n[2]) + '"><span class="tm">' + n[0] + ' · ' + n[3] + '</span><b>' + n[1] + '</b> · ' + esc(n[2]) + '</div>'; }).join('') : '<div class="nw t3">no story of its own today</div>') + '</div>';
@@ -315,7 +315,30 @@
   function basis(btn) { var s = sec(btn.dataset.bas), p = $('#basP'); if (p.classList.contains('on')) { p.classList.remove('on'); return; } var r = btn.getBoundingClientRect(), pg = $('#pg').getBoundingClientRect(), nar = G.narrow(s);
     p.innerHTML = '<span class="x" data-close="basP">✕</span><b>Basis (R49)</b><br>Move: ' + (s.idx ? '<b>' + s.idx + ' ' + sgp(s.pct) + '</b> (the NSE sectoral index; it exists, so it is the move)' + (s.bpct != null ? '. For reference, the free-float basket of all ' + s.n + ' listed shares: ' + sgp(s.bpct) : '') : 'free-float weighted basket of <b>all ' + s.n + ' listed shares</b> ' + sgp(s.pct) + ' (no NSE index for this sector)') + '.<br>Breadth and weights: always over all ' + s.n + ' listed: ▲' + s.up + ' ▼' + s.dn + '. The F&amp;O list (' + s.members.length + ') is the tradable part; the other ' + s.nonfo.n + ' (▲' + s.nonfo.up + ' ▼' + s.nonfo.dn + ', ' + s.nonfo.wt + '% weight) are context only.<br>₹cr flow: free-float mcap ₹' + s.ff + ' lakh cr × the window move vs NIFTY.<br>' + (nar ? '<b>NARROW - F&amp;O-only move</b>: F&amp;O ' + Math.round(nar.fo * 100) + '% one way, the other listed ' + Math.round(nar.nf * 100) + '%.' : 'Not NARROW: the non-F&amp;O shares move with it.');
     p.style.left = Math.min(r.left - pg.left, pg.width - 400) + 'px'; p.style.top = (r.bottom - pg.top + 4) + 'px'; p.style.width = '390px'; p.classList.add('on'); }
-  function setMock(k) { G.MODE.k = k; $('#mockB').innerHTML = 'mock: ' + MOCK[k] + ' ▾'; $('#mockM').classList.remove('on'); drawHero(); drawTable(); drawPane(); writeHash(); toast('mockup state: ' + MOCK[k]); }
+  // the mock states change the shell P&L strip too, so no two places disagree (locked = 3 losing trades, −₹10,000; held = 1 trade open)
+  var PNL0 = null;
+  function shellMock(k) { var a = document.getElementById('sh-pnl'); if (!a) return; if (PNL0 === null) PNL0 = a.innerHTML; var h = PNL0;
+    function r(x, y) { if (h.indexOf(x) < 0) throw new Error('shellMock: ' + x); h = h.split(x).join(y); }
+    if (k === 'locked') {
+      r('<span class="sh-big" style="color:var(--text)">₹0</span><span class="n" style="color:var(--text-2)">0.0R</span>', '<span class="sh-big dn">−₹10,000</span><span class="n dn">−2.0R</span>');
+      r('realised <span class="n">₹0</span>', 'realised <span class="n dn">−₹10,000</span>'); r('real <span class="n">₹0</span>', 'real <span class="n dn">−₹10,000</span>');
+      r('Flat: no trade yet today.', '3 trades closed today, all at their stops: −₹10,000 net of costs. Flat now.');
+      r('<span class="n" style="color:var(--text);font-weight:600">0 of 3</span>', '<span class="n" style="color:var(--text);font-weight:600">3 of 3</span>');
+      r('<span class="n dn">−₹4,105</span><span class="n dn" style="font-size:12px">−0.82R</span>', '<span class="n dn">−₹14,105</span><span class="n dn" style="font-size:12px">−2.82R</span>');
+      r('<span class="n up">+₹5,695</span><span class="n up" style="font-size:12px">+1.14R</span>', '<span class="n dn">−₹4,305</span><span class="n dn" style="font-size:12px">−0.86R</span>');
+      r('<span class="n" style="color:var(--text);font-weight:600">₹10,000</span><span>left</span><span class="sh-meter"><i style="width:0%"></i></span>', '<span class="sh-c sh-c-exit" style="height:18px">LOCKED</span><span class="n" style="color:var(--text);font-weight:600">₹0</span><span>left</span><span class="sh-meter"><i style="width:100%;background:var(--danger)"></i></span>');
+    } else if (k === 'held') {
+      r('<span class="sh-big" style="color:var(--text)">₹0</span><span class="n" style="color:var(--text-2)">0.0R</span>', '<span class="sh-big up">+₹1,240</span><span class="n up">+0.2R</span>');
+      r('realised <span class="n">₹0</span> · open <span class="n">₹0</span>', 'realised <span class="n">₹0</span> · open <span class="n up">+₹1,240</span>'); r('real <span class="n">₹0</span> · open <span class="n">₹0</span>', 'real <span class="n">₹0</span> · open <span class="n up">+₹1,240</span>');
+      r('Flat: no trade yet today.', 'Open: BANKBARODA 275 CE, 1 lot, +₹1,240; its stop is trailed to entry, so at the share stop it is ₹0.');
+      r('Open positions (max 2): none', 'Open positions (max 2): BANKBARODA 275 CE · 1 lot');
+      r('<span class="sh-lb">open</span><span class="n" style="color:var(--text);font-weight:600">0</span>', '<span class="sh-lb">open</span><span class="n" style="color:var(--text);font-weight:600">1</span>');
+      r('<span class="n" style="color:var(--text);font-weight:600">0 of 3</span>', '<span class="n" style="color:var(--text);font-weight:600">1 of 3</span>');
+      r('<span class="n dn">−₹4,105</span><span class="n dn" style="font-size:12px">−0.82R</span>', '<span class="n dn">−₹2,865</span><span class="n dn" style="font-size:12px">−0.57R</span>');
+      r('<span class="n up">+₹5,695</span><span class="n up" style="font-size:12px">+1.14R</span>', '<span class="n up">+₹6,935</span><span class="n up" style="font-size:12px">+1.39R</span>');
+    }
+    a.innerHTML = h; }
+  function setMock(k) { G.MODE.k = k; shellMock(k); $('#mockB').innerHTML = 'mock: ' + MOCK[k] + ' ▾'; $('#mockM').classList.remove('on'); drawHero(); drawTable(); drawPane(); writeHash(); toast('mockup state: ' + MOCK[k]); }
 
   // ---------------- events ----------------
   document.addEventListener('click', function (e) { var t = e.target;
@@ -376,7 +399,7 @@
   $$('.rail').forEach(Rail);
   $('#mockB').innerHTML = 'mock: ' + MOCK[mode()] + ' ▾';
   $('#mockM').innerHTML = '<div class="tt">design mockup states</div>' + Object.keys(MOCK).map(function (k) { return '<button class="mi" data-mock="' + k + '">' + MOCK[k] + '</button>'; }).join('');
-  drawHero(); drawTable(); drawPane();
+  shellMock(mode()); drawHero(); drawTable(); drawPane();
   if (st.restoreY != null) $('#wb').scrollTop = st.restoreY;
   if (st.restoreFocus) { wbEl.focus({ preventScroll: true }); writeHash(); }
   window.addEventListener('resize', function () { drawHero(); drawTable(); drawPane(); });

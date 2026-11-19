@@ -139,7 +139,7 @@ button{font-family:var(--sans);color:inherit;background:none;border:0;cursor:poi
 .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:13px;color:var(--text-2);position:relative}
 .tab svg{width:20px;height:20px}
 .tab.on{color:var(--text)} .tab.on::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--text)}
-.toast{position:absolute;left:16px;right:16px;bottom:76px;z-index:9;background:var(--panel-3);border:1px solid var(--line-2);border-radius:8px;padding:10px 12px;font-size:14px;display:none}
+.toast{position:absolute;left:16px;right:16px;top:150px;z-index:9;pointer-events:none;background:var(--panel-3);border:1px solid var(--line-2);border-radius:8px;padding:10px 12px;font-size:14px;display:none}
 .toast.on{display:block}
 .mock{position:absolute;left:0;right:0;text-align:center;top:15px;font-size:11px;color:var(--text-3);z-index:1;pointer-events:none}
 /* round 2 */
@@ -165,6 +165,10 @@ button{font-family:var(--sans);color:inherit;background:none;border:0;cursor:poi
 .wn.am{color:var(--action);border-color:var(--action-line)} .wn.am::before{content:'!';color:var(--action)}
 .lots.z{color:var(--danger)}
 .btn[disabled]{opacity:.5;border-style:dashed}
+.actb{flex:none;display:flex;gap:8px;padding:8px 12px;border-top:1px solid var(--line-2);background:var(--panel-2)}
+.actb .btn{flex:1 1 0;min-width:0;padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.actb .btn.pri{flex:1.6 1 0}
+.actb .btn.pri:not([disabled]){border-color:var(--info-line);color:var(--info)}
 .pin{font-size:13px;font-weight:800;color:var(--bg);background:var(--info);border-radius:3px;padding:0 4px;line-height:18px}
 .mchart{display:block;width:100%}
 .mchart text{font-family:var(--mono);fill:var(--text-3)}
@@ -191,7 +195,7 @@ button{font-family:var(--sans);color:inherit;background:none;border:0;cursor:poi
 
   <div class="ct">
     <!-- SCREEN 1: the sector list -->
-    <div class="hd"><div class="t"><h1>SECTORS</h1><button class="chip on win" id="winC" title="tap = next window (15M · 30M · 1H · TODAY)">30M ▾</button><span class="chip" style="margin-left:auto" title="the engine's calls today by side: it has been PE-biased, so the CE side is shown to you directly">engine <b class="dn" style="margin-left:4px">PE 41</b>/<b class="up">CE 2</b></span></div>
+    <div class="hd"><div class="t"><h1>SECTORS</h1><button class="chip on win" id="winC" title="tap = next window (15M · 30M · 1H · TODAY)">30M ▾</button><button class="chip" id="engC" style="margin-left:auto" title="the engine's calls today by side: it has been PE-biased, so the CE side is shown to you directly">engine <b class="dn" style="margin-left:4px">PE 41</b>/<b class="up">CE 2</b></button></div>
       <div class="flow" id="flowL"></div>
       <div class="sub" id="flowS"></div></div>
     <div class="scw"><div class="scb" id="secL"></div><div class="rail" data-for="secL" aria-label="scrollbar"><span class="tk"></span><i></i></div></div>
@@ -205,6 +209,7 @@ button{font-family:var(--sans);color:inherit;background:none;border:0;cursor:poi
     <div class="sheet" id="shareS">
       <div class="top" id="shTop"></div>
       <div class="scw"><div class="scb" id="shB"></div><div class="rail" data-for="shB" aria-label="scrollbar"><span class="tk"></span><i></i></div></div>
+      <div class="actb" id="shAct"></div>
     </div>
   </div>
   <div class="mock">design mockup - illustrative values</div>
@@ -418,7 +423,7 @@ var GD = (function () {
     var fitLock = Math.floor(LOCK / risk), fitR = Math.floor(R1 / risk), lots = 0, why = '', block = '', warn = '';
     var mode = MODE.k;
     if (m.ban) { block = 'BAN - only close existing'; why = 'F&O ban · MWPL ' + m.mwpl + '% (ban at 95%)'; }
-    else if (mode === 'locked') { block = 'LOCKED - no new trades today'; why = 'loss lock hit'; }
+    else if (mode === 'locked') { block = 'LOCKED - no new trades today'; why = 'day loss lock hit: 3 losing trades = −₹10,000'; }
     else if (m.stale) { block = 'STALE ' + m.stale + 's'; why = 'share quote ' + m.stale + 's old - no GO NOW until it ticks'; }
     else if (c.ostale) { block = 'OPTION STALE ' + c.oage + 's'; why = 'option bid/ask ' + c.oage + 's old - no GO NOW until it ticks'; }
     else if (mode === 'preopen') { block = 'pre-open - not live'; why = 'levels from the 18 Nov close'; }
@@ -492,31 +497,40 @@ var GD = (function () {
   // price pane (candles, VWAP, OR box, trigger / stop / target, CE wall above and PE wall below) + a premium pane under it.
   // Layout top to bottom: price pane · premium caption · premium pane · time axis - nothing prints on anything else.
   function chartSvg(s, m, p, W, o) {
-    o = o || {}; var Hp = o.hp || 100, Hq = o.hq || 34, fs = o.fs || 11, padL = 4, padR = o.padR || 68, b = bars(m), n = b.length;
+    o = o || {}; var Hp = o.hp || 100, Hq = o.hq || 34, fs = o.fs || 11, padL = 4, b = bars(m), n = b.length;
+    // level labels say what they are (TRIG / STOP / TGT, never a lone T that reads as target); the right margin fits the longest one
+    var showLv = !p.block || /STALE/.test(p.block), LT = 'TRIG ' + lv(p.trig), LS = 'STOP ' + lv(p.stop), LG = 'TGT ' + lv(p.tgt);
+    var longest = Math.max(showLv ? Math.max(LT.length, LS.length, LG.length) : 0, ('CE ' + fmt(m.wallC, m.wallC % 1 ? 1 : 0) + '↑').length, ('PE ' + fmt(m.wallP, m.wallP % 1 ? 1 : 0) + '↓').length);
+    var padR = Math.max(o.padR || 74, Math.ceil(longest * fs * 0.62) + 8);
     var lo = Math.min(m.lo, p.stop, m.vwap, p.tgt, p.trig), hi = Math.max(m.hi, p.tgt, p.trig, p.stop); var pad = (hi - lo) * 0.10; lo -= pad; hi += pad;
     var X = function (i) { return padL + (i + 0.5) * (W - padL - padR) / n; }, Y = function (v) { return 4 + (hi - v) / (hi - lo) * (Hp - 8); }, bw = Math.max(3, (W - padL - padR) / n - 3);
     var capY = Hp + fs + 4, y0 = capY + 4, axY = y0 + Hq + fs + 3, H = axY + 3;
     var h = '<svg class="mchart" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" style="font-size:' + fs + 'px">';
-    var orY1 = Y(m.orH), orY2 = Y(m.orL); h += '<rect x="' + padL + '" y="' + orY1 + '" width="' + (X(2) + bw / 2 - padL) + '" height="' + Math.max(1, orY2 - orY1) + '" fill="var(--info-bg)" stroke="var(--info-line)"/><text class="lb" x="' + (padL + 2) + '" y="' + (orY1 - 2) + '">OR</text>';
+    var orY1 = Y(m.orH), orY2 = Y(m.orL); h += '<rect x="' + padL + '" y="' + orY1 + '" width="' + (X(2) + bw / 2 - padL) + '" height="' + Math.max(1, orY2 - orY1) + '" fill="var(--info-bg)" stroke="var(--info-line)"/>';
+    // the OR label sits clear of the box border: inside the box when it is tall enough, else under it; a dark halo keeps it readable over a candle
+    var orTy = orY2 - orY1 >= fs + 8 ? orY1 + fs + 2 : orY2 + fs + 5 <= Hp ? orY2 + fs + 3 : orY1 - fs - 1 > 0 ? orY1 - 5 : orY1 + fs + 2;
+    var orLab = '<text class="lb orl" x="' + (padL + 3) + '" y="' + orTy.toFixed(1) + '" fill="var(--info)" stroke="var(--panel)" stroke-width="3" paint-order="stroke">OR</text>';
     var cum = 0, v = [], cv = 0; b.forEach(function (x, i) { var vol = 1 + (i < 3 ? 1.2 : 0) + (i > 15 ? 0.6 : 0); cum += (x.h + x.l + x.c) / 3 * vol; cv += vol; v.push(cum / cv); });
     var adj = m.vwap - v[n - 1]; h += '<polyline fill="none" stroke="var(--info)" stroke-width="1.5" points="' + v.map(function (x, i) { return X(i).toFixed(1) + ',' + Y(x + adj * i / (n - 1)).toFixed(1); }).join(' ') + '"/>';
     var labs = [];
     function hl(val, col, lab, dash) { var y = Y(val); h += '<line x1="' + padL + '" x2="' + (W - padR + 2) + '" y1="' + y + '" y2="' + y + '" stroke="' + col + '" stroke-dasharray="' + (dash || '4 3') + '" stroke-width="1"/>'; labs.push([y + 4, col, lab]); }
     b.forEach(function (x, i) { var c = x.c >= x.o ? 'var(--up)' : 'var(--down)'; h += '<line x1="' + X(i) + '" x2="' + X(i) + '" y1="' + Y(x.h) + '" y2="' + Y(x.l) + '" stroke="' + c + '"/><rect x="' + (X(i) - bw / 2) + '" y="' + Math.min(Y(x.o), Y(x.c)) + '" width="' + bw + '" height="' + Math.max(1, Math.abs(Y(x.o) - Y(x.c))) + '" fill="' + c + '"/>'; });
-    if (!p.block || /STALE/.test(p.block)) { hl(p.trig, 'var(--action)', 'T ' + lv(p.trig)); hl(p.stop, 'var(--down)', 'S ' + lv(p.stop)); hl(p.tgt, 'var(--up)', 'G ' + lv(p.tgt)); }
+    h += orLab;   // drawn over the candles, under the level lines
+    if (showLv) { hl(p.trig, 'var(--action)', LT); hl(p.stop, 'var(--down)', LS); hl(p.tgt, 'var(--up)', LG); }
     // walls: drawn as lines when inside the price range, else as an edge marker with the distance
     [['C', m.wallC, 'var(--down)'], ['P', m.wallP, 'var(--up)']].forEach(function (wl) { var val = wl[1], inR = val <= hi && val >= lo, lab = (wl[0] === 'C' ? 'CE wall ' : 'PE wall ') + fmt(val, val % 1 ? 1 : 0);
       if (inR) { var y = Y(val); h += '<line x1="' + padL + '" x2="' + (W - padR + 2) + '" y1="' + y + '" y2="' + y + '" stroke="' + wl[2] + '" stroke-width="2" opacity=".55"/>'; labs.push([y + 4, wl[2], (wl[0] === 'C' ? 'CE ' : 'PE ') + fmt(val, val % 1 ? 1 : 0)]); }
-      else { var ye = wl[0] === 'C' ? 4 : Hp - 4; h += '<line x1="' + padL + '" x2="' + (W - padR + 2) + '" y1="' + ye + '" y2="' + ye + '" stroke="' + wl[2] + '" stroke-width="2" stroke-dasharray="1 3" opacity=".7"/>' +
-        '<text x="' + (W - padR - 2) + '" y="' + (wl[0] === 'C' ? ye + fs + 1 : ye - 3) + '" text-anchor="end" fill="' + wl[2] + '">' + lab + (wl[0] === 'C' ? ' ↑ ' : ' ↓ ') + (Math.abs(val / m.ltp - 1) * 100).toFixed(1) + '%</text>'; } });
+      else { var ye = wl[0] === 'C' ? 4 : Hp - 4; h += '<line x1="' + padL + '" x2="' + (W - padR + 2) + '" y1="' + ye + '" y2="' + ye + '" stroke="' + wl[2] + '" stroke-width="2" stroke-dasharray="1 3" opacity=".7"><title>' + lab + ' (' + (Math.abs(val / m.ltp - 1) * 100).toFixed(1) + '% away, off the chart)</title></line>';
+        labs.push([wl[0] === "C" ? fs : Hp - 2, wl[2], (wl[0] === 'C' ? 'CE ' : 'PE ') + fmt(val, val % 1 ? 1 : 0) + (wl[0] === 'C' ? '↑' : '↓')]); } });
     // right-hand labels: no two overlap
     labs.sort(function (a, c) { return a[0] - c[0]; }); var gp = fs + 3, ys = labs.map(function (l) { return l[0]; });
     for (var q = 0; q < ys.length; q++) ys[q] = Math.max(ys[q], q ? ys[q - 1] + gp : fs);           // spread down
-    if (ys.length && ys[ys.length - 1] > Hp + 2) { ys[ys.length - 1] = Hp + 2; for (q = ys.length - 2; q >= 0; q--) ys[q] = Math.min(ys[q], ys[q + 1] - gp); }   // then up
+    if (ys.length && ys[ys.length - 1] > Hp - 2) { ys[ys.length - 1] = Hp - 2; for (q = ys.length - 2; q >= 0; q--) ys[q] = Math.min(ys[q], ys[q + 1] - gp); }   // then up
     labs.forEach(function (l, q) { h += '<text x="' + (W - padR + 4) + '" y="' + ys[q].toFixed(1) + '" fill="' + l[1] + '">' + l[2] + '</text>'; });
     var K = p.K, cp = p.cp, prem = b.map(function (x, i) { return bs(x.c, K, T + (n - 1 - i) * 5 / 60 / 24 / 365, m.iv, cp); }), c0 = contract(s, m, 'atm');
     var pl = Math.min.apply(null, prem) - c0.sp, ph = Math.max.apply(null, prem) + c0.sp, PY = function (q) { return y0 + 2 + (ph - q) / (ph - pl) * (Hq - 4); };
-    h += '<text class="lb" x="' + padL + '" y="' + capY + '">' + kTxt(K) + ' ' + cp + ' Dec premium · mid + bid/ask band</text><text x="' + (W - padR + 4) + '" y="' + capY + '" fill="var(--text-2)">' + fmt(c0.ask, 2) + '</text>';
+    var cap = kTxt(K) + ' ' + cp + ' Dec premium' + (o.capShort ? '' : ' · mid + bid/ask band'); if (cap.length * fs * 0.56 > W - padR - padL - 4) cap = kTxt(K) + ' ' + cp + ' Dec premium';
+    h += '<text class="lb" x="' + padL + '" y="' + capY + '">' + cap + '</text><text x="' + (W - padR + 4) + '" y="' + capY + '" fill="var(--text-2)">' + fmt(c0.ask, 2) + '</text>';
     h += '<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + y0 + '" y2="' + y0 + '" stroke="var(--line)"/>';
     h += '<polygon fill="var(--up-bg)" points="' + prem.map(function (q, i) { return X(i).toFixed(1) + ',' + PY(q + c0.sp / 2).toFixed(1); }).join(' ') + ' ' + prem.slice().reverse().map(function (q, j) { var i = n - 1 - j; return X(i).toFixed(1) + ',' + PY(q - c0.sp / 2).toFixed(1); }).join(' ') + '"/>';
     h += '<polyline fill="none" stroke="var(--' + (cp === 'CE' ? 'up' : 'down') + ')" stroke-width="1.4" points="' + prem.map(function (q, i) { return X(i).toFixed(1) + ',' + PY(q).toFixed(1); }).join(' ') + '"/>';
@@ -603,8 +617,8 @@ if (typeof module !== 'undefined') module.exports = GD;
     else h += '<div class="sec"><div class="pl3"><span></span><span class="h">share</span><span class="h">premium</span><span class="l">trigger</span><span class="v">' + lv(p.trig) + '</span><span class="v">≈' + px(p.pT) + '</span><span class="l">stop</span><span class="v dn">' + lv(p.stop) + '</span><span class="v dn">≈' + px(p.pS) + '</span><span class="l">target</span><span class="v up">' + lv(p.tgt) + '</span><span class="v up">≈' + px(p.pG) + '</span></div>' +
       '<div class="txt" style="margin-top:4px">' + esc(p.how) + '</div><div class="txt">risk 1 lot <b>₹' + F(p.risk, 0) + '</b> = ' + (p.risk / G.R1).toFixed(2) + 'R · R:R <b class="' + (p.rr < 1 ? 'dn' : '') + '">' + p.rr.toFixed(2) + '</b> after costs</div>' +
       '<div class="txt">' + (p.lots && !m.ext ? esc(p.sizeTxt) : '<span class="lots' + (p.lots ? '' : ' z') + '">' + esc(p.lotsTxt) + '</span>') + '</div><div class="txt">trades <b>0 of 3</b> · 15:10 in <b>' + G.MODES[G.MODE.k].left + '</b></div></div>';
-    var W = $('#shB').clientWidth - 24;
-    h += '<div class="sec"><div class="stt">5-MIN · VWAP · OR · WALLS</div>' + G.chartSvg(s, m, p, W, { hp: 120, hq: 40, fs: 13, padR: 84 }) + '</div>';
+    var W = Math.max(280, $('#shB').clientWidth - 24);
+    h += '<div class="sec"><div class="stt">5-MIN · VWAP · OR · WALLS</div>' + G.chartSvg(s, m, p, W, { hp: 120, hq: 40, fs: 13, padR: 92, capShort: 1 }) + '</div>';
     h += '<div class="sec"><button class="wybtn" id="wyB">WHY ' + m.sym + ' is moving ›</button><div class="whyx" id="wyX"><div><b>Sector:</b> ' + whyTxt(s) + '</div>' + (s.why && s.why.bg ? '<div class="t3">background · ' + esc(s.why.bg.join(' · ')) + '</div>' : '') +
       (m.news.length ? m.news.slice(0, 2).map(function (n) { return '<div><b>' + n[1] + '</b> · ' + esc(n[2]) + ' <span class="t3">(' + n[0] + ' · ' + n[3] + ')</span></div>'; }).join('') : '<div class="t3">no story of its own today</div>') + '</div></div>';
     h += '<div class="sec"><div class="stt">AI</div><div class="txt">' + (m.aiv ? '<span class="c c-ready">GET READY</span> ' + m.aiv.replace(/^GET READY /, '') : '<b style="font-family:var(--sans)">AI silent</b> - your read') + '</div></div>';
@@ -616,8 +630,10 @@ if (typeof module !== 'undefined') module.exports = GD;
     if (!w.length && !p.block && !p.warn) w.push('<span class="wn">spread ' + a.sprPct.toFixed(1) + '%</span><span class="wn">depth ' + a.dep + ' lots</span><span class="wn">MWPL ' + m.mwpl + '%</span>');
     h += '<div class="sec">' + w.join('') + '<span class="wn" style="border-style:dashed">' + esc(m.res) + '</span></div>';
     var can = p.takeable;
-    h += '<div class="sec"><div class="txt t3">GIR never places orders - you place the order in Kite.</div><div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap"><button class="btn" id="pCopy"' + (can ? '' : ' disabled') + '>' + (can ? 'Copy contract' : m.ban ? 'BAN - close only' : 'Copy off · 0 lots') + '</button><button class="btn" id="pPin">' + (st.pins[m.sym] ? 'Unpin · ' : 'Pin · ') + Object.keys(st.pins).length + '/5</button><a class="btn" href="share.html#' + m.sym + '">Full page ›</a></div></div><div style="height:16px"></div>';
-    $('#shB').innerHTML = h; }
+    h += '<div class="sec"><div class="txt t3">GIR never places orders - you place the order in Kite.</div></div><div style="height:16px"></div>';
+    $('#shB').innerHTML = h;
+    // the actions stay on screen at the foot of the sheet (no scrolling to reach Copy)
+    $('#shAct').innerHTML = '<button class="btn pri" id="pCopy"' + (can ? '' : ' disabled') + ' title="' + (can ? 'copy ' + m.sym + ' 29DEC ' + p.K + ' ' + p.cp : '') + '">' + (can ? 'Copy ' + kT(p.K) + ' ' + p.cp : m.ban ? 'BAN - close only' : 'Copy off · 0 lots') + '</button><button class="btn" id="pPin">' + (st.pins[m.sym] ? 'Unpin · ' : 'Pin · ') + Object.keys(st.pins).length + '/5</button><a class="btn" href="share.html#' + m.sym + '">Full page ›</a>'; }
 
   // ---------------- the rails: 28 px touch target; drag the thumb or tap the track (finger or mouse) ----------------
   var rails = [];
@@ -638,7 +654,7 @@ if (typeof module !== 'undefined') module.exports = GD;
 
   // ---------------- navigation (history: Back steps share -> list -> sectors) ----------------
   function openSector(id, push) { st.open = id; st.sel = null; st.nfo = false; drawSector(); $('#memL').scrollTop = 0; $('#secS').classList.add('on'); if (push !== false) history.pushState({ s: id }, '', '#s=' + encodeURIComponent(id)); updAll(); }
-  function openShare(sym, push) { st.sel = sym; drawShare(); $('#shB').scrollTop = 0; $$('#memL .mr').forEach(function (r) { r.classList.toggle('sel', r.dataset.sym === sym); }); $('#shareS').classList.add('on'); if (push !== false) history.pushState({ s: st.open, r: sym }, '', '#s=' + encodeURIComponent(st.open) + '&r=' + sym); updAll(); }
+  function openShare(sym, push) { st.sel = sym; $('#shareS').classList.add('on'); drawShare(); $('#shB').scrollTop = 0; $$('#memL .mr').forEach(function (r) { r.classList.toggle('sel', r.dataset.sym === sym); }); if (push !== false) history.pushState({ s: st.open, r: sym }, '', '#s=' + encodeURIComponent(st.open) + '&r=' + encodeURIComponent(sym)); updAll(); }
   function apply(state) { state = state || {}; if (state.r) { if (st.open !== state.s) { st.open = state.s; drawSector(); } $('#secS').classList.add('on'); openShare(state.r, false); return; }
     $('#shareS').classList.remove('on'); if (state.s) { if (st.open !== state.s) { st.open = state.s; drawSector(); } $('#secS').classList.add('on'); } else { $('#secS').classList.remove('on'); st.open = null; } updAll(); }
   window.addEventListener('popstate', function (e) { apply(e.state); });
@@ -647,6 +663,7 @@ if (typeof module !== 'undefined') module.exports = GD;
     if (t.closest('#banM .x')) { $('#banM').classList.remove('on'); return; }
     if (t.closest('#banC')) { var bn = []; S.forEach(function (s) { s.members.forEach(function (m) { if (m.ban) bn.push('<b>' + m.sym + '</b> MWPL ' + m.mwpl + '% (' + s.id + ')'); }); });
       $('#banM').innerHTML = '<span class="x">✕</span><b>F&amp;O ban today (2)</b><br>' + bn.join('<br>') + '<br>In ban: only close existing positions. Ban at 95% MWPL.'; $('#banM').classList.toggle('on'); return; }
+    if (t.closest('#engC')) { toast('engine today: PE 41 / CE 2 - PE-biased, so every rising sector shows its CE shares to you directly'); return; }
     if (t.closest('#plR')) { location.href = 'phone.html#risk'; return; }
     if (t.closest('#winC')) { st.win = (st.win + 1) % 4; drawFlow(); toast('window ' + ['15M', '30M', '1H', 'TODAY'][st.win] + ' · ' + G.flows(st.win).rng); return; }
     if (t.closest('#whyB')) { $('#whyX').classList.toggle('on'); updAll(); return; }
