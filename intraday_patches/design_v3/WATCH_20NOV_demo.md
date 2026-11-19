@@ -1,3 +1,5 @@
+> **Desk correction (MISSING_KNOWLEDGE items 1-3):** November stock options expire Mon 23 Nov and settle by PHYSICAL delivery - in-the-money buys carry a delivery margin in the last days (check Zerodha's current table). From Fri 20 Nov use DECEMBER strikes only; Mon 23 Nov = expiry-day mode (half size, best setups only, no new entry after 14:00).
+
 TOMORROW'S OPTION WATCH - Fri 20 Nov (GIR 19:45)
 NOT YET CONFIRMED: Thu sector closes, Thu FII/DII, PAYTM details, tonight's US close. The desk's sources disagree on Wed's US close (S&P -0.8% or -0.2%; Nasdaq -1.2% or +0.4%), so check live. Every premium %, odds figure and "how often" below is an ESTIMATE, not a backtest.
 

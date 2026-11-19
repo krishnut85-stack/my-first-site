@@ -300,14 +300,14 @@ raw body when changed (rec/raw) -> news.sqlite. Feeds: N19 / N07 at night, SP / 
 | ~20th | PBoC LPR (06:30-06:45); core sector 17:00; India flash PMI (~20th-23rd, 10:30) | J52 / J81 | GN | N07 / SP lock |
 | ~28th 16:00 | IIP | J10 | GN | N19 |
 | Last days of month | NBS PMI (07:00 on the last day); APM gas price; VAHAN month final -> expected values for the 1st | J52 / J37 | GN / TH | N19, N07 |
-| Last Tuesday | Stock F&O monthly expiry (24 Nov 2026, 29 Dec 2026): expiry-week mode from the Wednesday before - K3 C3 adds next-month ATM+-2 for every share, futures tokens roll, physical-settlement warning, "prefer next month" in the option gate, OI read across ALL months | J62 / section 2 | FD / OP | OG, C09 |
+| Last Tuesday | Stock F&O monthly expiry (23 Nov (24 Nov is an NSE holiday) 2026, 29 Dec 2026): expiry-week mode from the Wednesday before - K3 C3 adds next-month ATM+-2 for every share, futures tokens roll, physical-settlement warning, "prefer next month" in the option gate, OI read across ALL months | J62 / section 2 | FD / OP | OG, C09 |
 | Weekly | Tue: Nifty weekly expiry; Thu: Sensex weekly expiry (heavyweight distortion); Wed: Cabinet (PIB 15:00-17:00); Wed 21:00 EIA; Fri 17:00 RBI forex reserves; Fri SCFI; Thu Drewry WCI; Tue-Wed night FDA warning letters | various | various | N19 / N07 |
 | Quarterly | Results season (mid-Jan-mid-Feb, mid-Apr-end-May, mid-Jul-mid-Aug, mid-Oct-mid-Nov): board-meeting calendar daily (J31), consensus captured per result from CNBC-TV18 / ET Now polls and NDTV Profit "vs estimate" lines, XBRL parsed at filing, IV build-up / crush recorded around each result, results-reaction table; quarter-start business updates (1st-10th of Jan / Apr / Jul / Oct); shareholding / pledge (by the 21st); MSCI (Feb / May / Aug / Nov) and FTSE (Mar / Jun / Sep / Dec) reviews - exit rebalance shares by 14:45 on the effective day (E5); GDP 16:00 last working day of Feb / May / Aug / Nov | J31, J60, J77, calendar | KB / NR / OP | OG, N19, SP |
 | Bi-monthly | RBI MPC: 10:00 decision, ~12:00 press conference, minutes after 14 days at 17:00 - Tier-1 in session (flat 15 min before to 30 min after) | J81 + RBI YouTube STT + press-release poll 15 s | GN / TV | SP lock, HX |
 | Semi-annual | Nifty index reconstitution (announced late Feb / late Aug; effective end-Mar / end-Sep), Sensex (Jun / Dec), lot-size reviews, AMFI categorisation (Jan / Jul); F&O inclusions / exclusions (irregular) | J63 circulars, niftyindices press releases | DK | GATE, HX |
 | Yearly | Union Budget 1 Feb 11:00 (Tier-1 in session); Economic Survey; NSE holiday list (December) -> reload; IMD monsoon (mid-April forecast, end-May update, June onset, June-September daily rain - seasonal CORE); Muhurat trading; RBI dividend (May) | calendar + J81 + IMD page | GN / TH | all |
 | Clock changes | US DST 14 Mar 2027, Europe 28 Mar 2027 (and back on 1 Nov / 25 Oct): every US / EU-linked job moves one hour; MCX close 23:55 <-> 23:30 | scheduler (0.6) | DK | all |
-| Near dates [verify each] | 24 Nov stock expiry (inside the trial week); 26 Nov US Thanksgiving (US closed), 27 Nov US half day; 30 Nov GDP Q2 16:00 and NBS PMI 07:00; 1 Dec (Tue) auto sales, RatingDog PMI 07:15, India PMI 10:30; MSCI November review effective about end-Nov; RBI MPC early December | calendar rows now | TH | N19 / N07 |
+| Near dates [verify each] | 23 Nov (24 Nov is an NSE holiday) stock expiry (inside the trial week); 26 Nov US Thanksgiving (US closed), 27 Nov US half day; 30 Nov GDP Q2 16:00 and NBS PMI 07:00; 1 Dec (Tue) auto sales, RatingDog PMI 07:15, India PMI 10:30; MSCI November review effective about end-Nov; RBI MPC early December | calendar rows now | TH | N19 / N07 |
 
 ### 1J. Freeze points - what each note must read (manifest rule)
 
@@ -645,7 +645,7 @@ satellite / AIS / app-download / web-traffic data, CMIE / Capitaline / ACE, paid
 "TRIAL-OK" = runs during the trial week (from 19 Nov) with no page change: back-end collectors, recorders, health checks and new
 inputs to the analyst's notes. Anything that changes what the page shows waits for the end of the trial.
 
-### Phase 1 - week 1 (the trial week, 19-25 Nov; stock expiry 24 Nov falls inside it)
+### Phase 1 - week 1 (the trial week, 19-25 Nov; stock expiry 23 Nov (24 Nov is an NSE holiday) falls inside it)
 Order inside the week: first what makes the 19:45 / 07:15 notes name the right shares, then the gate, then the recorders.
 
 | Day | Item | Jobs | TRIAL-OK |
@@ -658,9 +658,9 @@ Order inside the week: first what makes the 19:45 / 07:15 notes name the right s
 | 20-21 Nov | Recorders start: raw frames, instrument dumps (forever), ATM IV per minute + daily, spreads by strike (09:30 / 12:00 / 14:30), pre-open series, futures OI all months | R1-R6, R9, J02, J72, J77, J78 | YES |
 | 21 Nov | NSE + BSE announcement JSON at 3-5 s with earliest-wins dedupe and the category classifier (order win, clarification / denial, USFDA terms, results, OFS / QIP, tax demand) | J60 | YES |
 | 21 Nov | Reuters news sitemap in; remove dead Reuters RSS and Nitter; Google News out of the alert path | code issue e | YES |
-| 22-23 Nov (weekend) | Automatic calendar with consensus (ForexFactory + official), results calendar, risk strip; the near-date rows (24 Nov expiry, 26-27 Nov US holiday, 30 Nov GDP / NBS PMI, 1 Dec auto sales) | J28, J31, J65, J10, J27, J52, code issue h | YES |
+| 22-23 Nov (weekend) | Automatic calendar with consensus (ForexFactory + official), results calendar, risk strip; the near-date rows (23 Nov (24 Nov is an NSE holiday) expiry, 26-27 Nov US holiday, 30 Nov GDP / NBS PMI, 1 Dec auto sales) | J28, J31, J65, J10, J27, J52, code issue h | YES |
 | 22-23 Nov | EOD loaders checked: ban T+1, combineoi (2025 columns), bhavcopies, delivery, deals, FII / DII, FOVOLT; evening Kite-vs-NSE reconciliation blocking mismatched shares | J12-J22, J35 | YES |
-| 23-24 Nov | Expiry-week mode for 24 Nov (next-month strikes, futures roll, physical-settlement warning) | section 2, 1I | YES |
+| 23-23 Nov (24 Nov is an NSE holiday) | Expiry-week mode for 23 Nov (24 Nov is an NSE holiday) (next-month strikes, futures roll, physical-settlement warning) | section 2, 1I | YES |
 | 24-25 Nov | Per-source latency record + the 15:45 movers list and "missed the move" list into the scorecard | J05, J06, R10 | YES (scorecard text, not a page change) |
 | by 30 Nov | VAHAN MTD recorder + the 1 Dec auto-sales expectation lines in the 19:45 note | J37, J56 | YES |
 | all week | SEBI / RBI / PIB RSS into the policy pipeline; nightly derived history (ATR, levels, RVOL baselines) | J25 (RSS part), J38 | YES |
@@ -708,4 +708,4 @@ Order inside the week: first what makes the 19:45 / 07:15 notes name the right s
 12. Yahoo explicit-contract symbol formats for Brent / WTI / COMEX metals; CNBC quote symbols (US2Y, IN10Y).
 13. VAHAN dashboard access pattern (no owner data, low rate); MoCA panel; Grid-India PSP URL pattern; IEX snapshot tables.
 14. USFDA warning-letter page filters, Import Alert 66-40 page, openFDA endpoints.
-15. Dates: 24 Nov expiry, MSCI November review effective date, 30 Nov GDP, RBI MPC December dates, NSE 2027 holiday list (December).
+15. Dates: 23 Nov (24 Nov is an NSE holiday) expiry, MSCI November review effective date, 30 Nov GDP, RBI MPC December dates, NSE 2027 holiday list (December).
