@@ -251,6 +251,13 @@ PE watch on cables / metals". Every evening the SECOND-ORDER analyst (a role in 
 today through both sides of the sector map (losers AND winners) and writes "TOMORROW'S OPTION WATCH" with CE and PE lists, the
 strike, the trigger and the reason, confirmed or cancelled by the 07:15 update and the 09:08 pre-open. A move GIR explains only
 after it happened counts as a MISS in the 15:45 audit.
+**The history database (the trader, 19 Nov: "collect all the database - how the market behaved for 5, 10 years").** Build a
+10-year (at least 5-year) daily history for every F&O share, every sector index and basket, NIFTY / BANKNIFTY, and every driver
+(LME / COMEX / MCX metals, crude, gold, silver, USD/INR, DXY, US 10y, US indices, China futures), plus futures OI where available,
+results dates and reactions, policy and event dates. Kite historical first; buy what Kite lacks (older OI, expired options / IV
+history, global series, a news archive) with the trader's yes per item. From it the knowledge base learns, for every chain:
+how often it followed through next day and next week, the typical size and lag, and what made it fail - and every evening note
+quotes the closest past analogue ("like 12 Mar 2024: copper -4%, autos +2.1% next day, followed through 7 of 9 times").
 Updated nightly from the day's recording; every call quotes the knowledge it used ("why: gold -1.6%, MANAPPURAM beta 1.3 to gold").
 
 ## 2. LAYER 2 - THE DECISION ENGINE
