@@ -91,3 +91,6 @@ About a third of revenue is cables and wires, about 15-20% is Lloyd ACs, plus fa
 - LESSON ON SOURCES: the "ASHOKLEY +9%" headline used on 19 Nov was from 5 Nov - GIR must check every price move against its own
   live data, never trust a headline's number or date.
 - REPLAY TEST: 20 Nov - score these odds against what AMBER, PGEL, VOLTAS, MARUTI, TVSMOTOR, M&M, HEROMOTOCO actually did.
+- CORRECTION FROM HISTORY (server, 19 Nov evening): on the 5-year history a FULL fade of stretched names after an input-cost relief
+  rally happened only 3-7% of the time, not the 30-45% the desk estimated. The "fade the stretched names" PE rule is DROPPED; the
+  history wins over desk estimates.
