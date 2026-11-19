@@ -1,0 +1,1419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GIR · Reference (Shift F7)</title>
+<!--
+  GIR v3 · Shift+F7 · REFERENCE · round 2 redraw · Thu 19 Nov 2026 11:44:20 IST · design mockup - illustrative values.
+  F&O list + sector map (one accordion list, all 222 shares + 5 indices), theme map, contracts / corp. actions / log,
+  policy + rotation baskets, other names. Shell copied verbatim from shell.html r2 sync (state values only: clock 11:44:20 and 3h 26m, SHELL.md section 6).
+  Source: referencer2/build.js + page.css + page.html + page.js; checker referencer2/shot.js.
+-->
+<style>
+/* ===================== SHELL CSS START (copy verbatim) ===================== */
+:root{
+  --bg:#0B0D10; --panel:#12151A; --panel-2:#181C22; --panel-3:#1E232B;
+  --line:#262C35; --line-2:#323A45;
+  --text:#E7EAEE; --text-2:#B3BAC4; --text-3:#8E97A3;
+  --up:#34C47C; --up-bg:rgba(52,196,124,.12); --down:#F2615D; --down-bg:rgba(242,97,93,.12);
+  --action:#F5A524; --action-ink:#14110A; --action-line:rgba(245,165,36,.55); --action-bg:rgba(245,165,36,.09);
+  --info:#6CB2FF; --info-bg:rgba(108,178,255,.10); --info-line:rgba(108,178,255,.38);
+  --stale:#6B7380; --stripe:repeating-linear-gradient(135deg, rgba(140,148,160,.28) 0 3px, transparent 3px 7px);
+  --danger:#FF5A52; --danger-bg:rgba(255,90,82,.14);
+  --replay:#9B87F5;
+  --sans: Inter, "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", "DejaVu Sans Mono", Consolas, monospace;
+  /* shell geometry - pages position their content from these, never from magic numbers */
+  --sh-mkt:80px; --sh-pnl:30px; --sh-tabs:52px; --sh-top:162px; --sh-foot:22px; --sh-gut:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13px;line-height:1.3}
+a{color:inherit;text-decoration:none}
+.n{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
+.up{color:var(--up)} .dn{color:var(--down)}
+kbd{font-family:var(--mono);font-size:11px;color:var(--text-2);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:3px;padding:0 4px;line-height:14px;display:inline-block;white-space:nowrap}
+:focus-visible{outline:1px solid var(--text);outline-offset:2px}
+
+#sh-mkt,#sh-pnl,#sh-tabs,#sh-foot{position:fixed;left:0;right:0;white-space:nowrap;z-index:50}
+.sh-sep{width:1px;align-self:stretch;background:var(--line);flex:none}
+.sh-lb{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+.sh-age{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:-0.02em}
+.sh-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--info);flex:none}
+.sh-meter{width:48px;height:6px;background:var(--panel-3);border-radius:1px;overflow:hidden;flex:none}
+.sh-meter i{display:block;height:100%;background:var(--info)}
+.sh-meter.warn i{background:var(--action)}
+/* stale look for any strip item: add class sh-stale to the item and put "STALE 12s" in its .sh-age */
+.sh-stale{background:var(--stripe)}
+.sh-stale .n,.sh-stale .sh-px{color:var(--stale)!important}
+
+/* ---------- R01 market strip ---------- */
+#sh-mkt{top:0;height:var(--sh-mkt);background:var(--panel-2)}
+.sh-m1{height:44px;display:flex;align-items:stretch;border-bottom:1px solid var(--line);padding:0 0 0 4px}
+.sh-ix,.sh-mi{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:0 8px;border-right:1px solid var(--line);flex:none}
+.sh-ix:hover{background:var(--panel-3)}
+.sh-l1{display:flex;align-items:center;gap:8px;height:14px}
+.sh-nm{font-size:11px;font-weight:600;letter-spacing:.05em;color:var(--text-2)}
+.sh-spk{color:var(--text-2);margin-left:auto;flex:none}
+.sh-l2{display:flex;align-items:baseline;gap:6px}
+.sh-px{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-0.02em;color:var(--text)}
+.sh-ch{font-size:12px}
+.sh-pc{font-size:13px;font-weight:600}
+.sh-status{margin-left:auto;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:2px;padding:0 12px;border-left:1px solid var(--line);flex:none}
+.sh-st1,.sh-st2{display:flex;align-items:center;gap:7px}
+.sh-mstate{height:18px;display:inline-flex;align-items:center;padding:0 6px;border:1px solid var(--info-line);color:var(--info);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.05em}
+.sh-phase{font-size:12px;color:var(--text-2)} .sh-phase b{color:var(--text);font-weight:600}
+.sh-clock{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-0.02em}
+.sh-ist{font-size:11px;color:var(--text-3)}
+.sh-m2{height:36px;display:flex;align-items:stretch;padding:0 0 0 4px;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-2)}
+.sh-t2{display:flex;flex-direction:column;justify-content:center;gap:1px;padding:0 10px;border-right:1px solid var(--line);flex:none}
+a.sh-t2:hover{background:var(--panel-3)}
+.sh-t2l{display:flex;align-items:center;gap:6px;height:14px}
+.sh-t2l .sh-lb{letter-spacing:.04em}
+.sh-t2v{display:flex;align-items:center;gap:5px;height:18px}
+.sh-t2v .n{font-size:13px}
+.sh-t2v .v{color:var(--text)}
+.sh-xw{height:14px;display:inline-flex;align-items:center;padding:0 4px;border:1px solid var(--text-3);border-radius:2px;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--text);line-height:1}
+.sh-ban{height:18px;display:inline-flex;align-items:center;gap:4px;padding:0 6px;border:1px solid var(--danger);background:var(--danger-bg);color:var(--danger);border-radius:9px;font-size:11px;font-weight:700;letter-spacing:.04em;cursor:pointer}
+.sh-ban:hover{background:rgba(255,90,82,.24)}
+
+/* ---------- R02 my F&O P&L strip ---------- */
+#sh-pnl{top:var(--sh-mkt);height:var(--sh-pnl);background:var(--panel);border-bottom:1px solid var(--line-2);display:flex;align-items:center;padding:0 12px;font-size:12px;cursor:pointer}
+#sh-pnl:hover{background:#151920}
+.sh-pt{display:flex;align-items:center;gap:5px;padding:0 8px;height:18px;border-right:1px solid var(--line);flex:none}
+.sh-pt:first-child{padding-left:0}
+.sh-pt .n{font-size:13px}
+.sh-ptitle{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text);padding:0 7px;height:18px;line-height:16px;border:1px solid var(--line-2);border-radius:3px}
+.sh-big{font-family:var(--mono);font-size:16px;font-weight:700;letter-spacing:-0.02em}
+.sh-brk{color:var(--text-2)} .sh-brk .n{font-size:12px}
+.sh-go{margin-left:auto;display:flex;align-items:center;gap:6px;color:var(--text-2);font-size:12px;padding-left:10px;flex:none}
+.sh-go b{color:var(--text);font-weight:600;letter-spacing:.04em}
+
+/* ---------- R03 tab bar ---------- */
+#sh-tabs{top:calc(var(--sh-mkt) + var(--sh-pnl));height:var(--sh-tabs);background:var(--panel-2);border-bottom:1px solid var(--line-2);display:flex;align-items:stretch}
+.sh-mark{width:54px;flex:none;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding-left:12px;border-right:1px solid var(--line)}
+.sh-mark b{font-size:16px;font-weight:800;letter-spacing:.14em;line-height:18px}
+.sh-mark span{font-size:11px;color:var(--text-3);line-height:13px}
+.sh-grid{display:grid;grid-template-rows:26px 25px;grid-auto-columns:auto;align-items:stretch;flex:none}
+.sh-rl{display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text-3);border-right:1px solid var(--line)}
+.sh-rl1{grid-row:1;grid-column:1;border-bottom:1px solid var(--line)}
+.sh-rl2{grid-row:2;grid-column:1;color:var(--text)}
+.sh-rl2 span{border:1px solid var(--text-2);border-radius:3px;padding:0 4px;line-height:16px;background:var(--panel-3)}
+.sh-tab{display:flex;align-items:center;gap:6px;padding:0 6px;color:var(--text-2);border-right:1px solid var(--line);cursor:pointer}
+.sh-grid>.sh-tab[style*="grid-row:1;"]{border-bottom:1px solid var(--line)}
+.sh-tab:hover{background:var(--panel-3)}
+.sh-tl{font-size:13px;color:var(--text-2)}
+.sh-k{color:var(--text-2)}
+.sh-ks{background:var(--text-2);color:var(--bg);border-color:var(--text-2);border-bottom-color:#7E8691;font-weight:700}
+.sh-free{cursor:default}
+.sh-free:hover{background:none}
+.sh-free .sh-tl{font-size:11px;color:var(--text-3)}
+.sh-free .sh-ks{background:none;color:var(--text-3);border-color:var(--line-2);font-weight:400}
+.sh-f5{flex-direction:column;justify-content:center;align-items:flex-start;gap:3px;background:repeating-linear-gradient(135deg, rgba(140,148,160,.07) 0 3px, transparent 3px 7px)}
+.sh-f5a{display:flex;align-items:center;gap:6px}
+.sh-f5a .sh-tl{font-size:12px;color:var(--text-3)}
+.sh-koff{color:var(--text-3);text-decoration:line-through}
+.sh-f5b{font-size:11px;color:var(--text-3)}
+.sh-right{flex:1;min-width:0;display:grid;grid-template-rows:26px 25px;grid-template-columns:minmax(0,1fr);border-left:1px solid var(--line-2)} /* fix (market r2): the track keeps its share at 1366 when the "/" box shows its placeholder */
+.sh-r1,.sh-r2{display:flex;align-items:stretch;justify-content:flex-start}
+.sh-r1{border-bottom:1px solid var(--line)}
+.sh-r1 .sh-tab:last-child{border-right:0}
+.sh-r2{align-items:center;gap:6px;padding:0 12px 0 8px}
+.sh-cmd{position:relative;flex:1;max-width:300px;min-width:136px;height:20px;border:1px solid var(--line-2);border-radius:3px;background:var(--bg);display:flex;align-items:center;gap:6px;padding:0 6px;cursor:text}
+.sh-cmd kbd{line-height:12px}
+.sh-ph{font-size:12px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis}
+.sh-typed{display:none;font-family:var(--mono);font-size:13px;color:var(--text)}
+.sh-typed i{display:inline-block;width:7px;height:14px;background:var(--text-2);vertical-align:-2px;margin-left:1px}
+.sh-btn{height:20px;display:inline-flex;align-items:center;gap:5px;padding:0 7px;border:1px solid var(--line-2);border-radius:3px;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--text-2);background:none;cursor:pointer;flex:none;font-family:var(--sans)}
+.sh-btn:hover{background:var(--panel-3)}
+.sh-btn .on{color:var(--text)}
+.sh-btn svg{flex:none}
+.sh-al{font-size:11px;color:var(--text-2);flex:none}
+.sh-al .n{color:var(--text);font-size:12px}
+/* search suggestions (R04): shown while typing; in pages it opens from script, in this file from body.demo */
+.sh-sugg{display:none;position:absolute;top:24px;right:-1px;width:480px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:60;white-space:normal;cursor:default}
+.sh-sg-h{height:24px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;border-bottom:1px solid var(--line)}
+.sh-sg-r{display:grid;grid-template-columns:100px 1fr 72px 60px;align-items:center;column-gap:8px;height:44px;padding:0 10px;border-bottom:1px solid var(--line)}
+.sh-sg-r.sel{background:var(--panel-3);box-shadow:inset 2px 0 0 var(--text)}
+.sh-sg-s{font-size:15px;font-weight:600;color:var(--text)}
+.sh-sg-s em{font-style:normal;text-decoration:underline;text-underline-offset:3px}
+.sh-sg-d{font-size:12px;color:var(--text-2);line-height:1.35}
+.sh-sg-d span{color:var(--text-3);font-size:11px}
+.sh-sg-p{text-align:right;font-size:13px}
+.sh-sg-v{display:flex;gap:6px;flex-wrap:wrap;padding:7px 10px;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-2)}
+.sh-sg-v span{border:1px solid var(--line-2);border-radius:3px;padding:0 5px;line-height:18px}
+.sh-sg-f{padding:5px 10px;font-size:11px;color:var(--text-3)}
+/* sound legend popover (R10) - opens under the LEGEND button */
+.sh-pop{display:none;position:absolute;z-index:60;background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,.5);white-space:normal}
+
+/* active tab: ONE body class page-<slug> lights the matching tab (generated list) */
+.page-morning .sh-tab[data-tab="morning"],
+.page-desk-hunt .sh-tab[data-tab="desk"],
+.page-desk-trade .sh-tab[data-tab="desk"],
+.page-plan-card .sh-tab[data-tab="desk"],
+.page-plan-card .sh-tab[data-tab="plan-card"],
+.page-sectors .sh-tab[data-tab="sectors"],
+.page-rotation .sh-tab[data-tab="rotation"],
+.page-news .sh-tab[data-tab="news"],
+.page-positions .sh-tab[data-tab="positions"],
+.page-share .sh-tab[data-tab="share"],
+.page-analyst .sh-tab[data-tab="analyst"],
+.page-chain .sh-tab[data-tab="chain"],
+.page-futures-oi .sh-tab[data-tab="futures-oi"],
+.page-world .sh-tab[data-tab="world"],
+.page-calendar .sh-tab[data-tab="calendar"],
+.page-journal .sh-tab[data-tab="journal"],
+.page-reference .sh-tab[data-tab="reference"],
+.page-scorecard .sh-tab[data-tab="scorecard"],
+.page-health .sh-tab[data-tab="health"],
+.page-replay .sh-tab[data-tab="replay"],
+.page-settings .sh-tab[data-tab="settings"],
+.page-help .sh-tab[data-tab="help"],
+.page-market .sh-tab[data-tab="market"]{background:var(--panel-3);color:var(--text);box-shadow:inset 0 -2px 0 var(--text)}
+.page-morning .sh-tab[data-tab="morning"] .sh-tl,
+.page-desk-hunt .sh-tab[data-tab="desk"] .sh-tl,
+.page-desk-trade .sh-tab[data-tab="desk"] .sh-tl,
+.page-plan-card .sh-tab[data-tab="desk"] .sh-tl,
+.page-plan-card .sh-tab[data-tab="plan-card"] .sh-tl,
+.page-sectors .sh-tab[data-tab="sectors"] .sh-tl,
+.page-rotation .sh-tab[data-tab="rotation"] .sh-tl,
+.page-news .sh-tab[data-tab="news"] .sh-tl,
+.page-positions .sh-tab[data-tab="positions"] .sh-tl,
+.page-share .sh-tab[data-tab="share"] .sh-tl,
+.page-analyst .sh-tab[data-tab="analyst"] .sh-tl,
+.page-chain .sh-tab[data-tab="chain"] .sh-tl,
+.page-futures-oi .sh-tab[data-tab="futures-oi"] .sh-tl,
+.page-world .sh-tab[data-tab="world"] .sh-tl,
+.page-calendar .sh-tab[data-tab="calendar"] .sh-tl,
+.page-journal .sh-tab[data-tab="journal"] .sh-tl,
+.page-reference .sh-tab[data-tab="reference"] .sh-tl,
+.page-scorecard .sh-tab[data-tab="scorecard"] .sh-tl,
+.page-health .sh-tab[data-tab="health"] .sh-tl,
+.page-replay .sh-tab[data-tab="replay"] .sh-tl,
+.page-settings .sh-tab[data-tab="settings"] .sh-tl,
+.page-help .sh-tab[data-tab="help"] .sh-tl,
+.page-market .sh-tab[data-tab="market"] .sh-tl{color:var(--text);font-weight:600}
+
+/* ---------- main ---------- */
+#page{position:fixed;left:0;right:0;top:var(--sh-top);bottom:var(--sh-foot);overflow:hidden}
+
+/* ---------- footer ---------- */
+#sh-foot{bottom:0;height:var(--sh-foot);background:var(--panel-2);border-top:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 12px;font-size:11px;color:var(--text-3)}
+#sh-foot .sh-sebi{font-size:12px;color:var(--text-2)}
+#sh-foot .sh-fs{width:1px;height:11px;background:var(--line-2);flex:none}
+#sh-foot .sh-keys{display:flex;align-items:center;gap:5px}
+#sh-foot kbd{line-height:12px}
+#sh-foot .sh-mock{margin-left:auto;color:var(--text-2)}
+.sh-n1366{display:none}
+
+/* ---------- 1366 rule (below 1500 px): drop, never wrap ---------- */
+@media (max-width:1499px){
+  .sh-wide{display:none!important}
+  .sh-n1366{display:inline-flex}
+  .sh-tab{padding:0 5px;gap:5px}
+  .sh-mark{width:48px;padding-left:9px}
+  .sh-tl{font-size:12px}
+  .sh-ix,.sh-mi{padding:0 8px}
+  .sh-t2,.sh-pt{padding:0 5px}
+  .sh-pt{gap:4px}
+  .sh-meter{width:34px} /* r2 sync: room for the short realised / open / charges, stk fut and the holiday */
+  .sh-cmd{max-width:200px;min-width:120px}
+}
+/* ===================== SHELL CSS END ===================== */
+
+/* "/" search suggestions (R04): the shell dropdown opens from the page script (state shot reference_v3r2_srch.png) */
+body.srch .sh-sugg{display:block}
+body.srch .sh-ph{display:none}
+body.srch .sh-typed{display:inline}
+body.srch .sh-cmd{overflow:visible!important}
+
+/* ===================== PAGE CSS (reference, Shift+F7, round 2) ===================== */
+.rf-wrap{position:absolute;left:12px;right:12px;top:8px;bottom:8px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.mono{font-family:var(--mono);letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.t2{color:var(--text-2)} .t3{color:var(--text-3)}
+a.sym{font-weight:600;color:var(--text);border-bottom:1px dotted var(--line-2)}
+a.sym:hover{color:var(--info);border-bottom-color:var(--info)}
+a.lk{color:var(--info)} a.lk:hover{text-decoration:underline}
+
+/* ---- title row ---- */
+.rf-top{height:26px;flex:none;display:flex;align-items:center;gap:10px;white-space:nowrap;min-width:0}
+.rf-ttl{display:flex;align-items:center;gap:8px;flex:none}
+.rf-ttl b{font-size:15px;font-weight:700;letter-spacing:.02em}
+.rf-kk{background:var(--text-2);color:var(--bg);border-color:var(--text-2);border-bottom-color:#7E8691;font-weight:700}
+.rf-purp{font-size:13px;color:var(--text-2);min-width:0;flex:1;overflow:hidden}
+.rf-purp b{color:var(--text);font-weight:600}
+.rf-sel{height:24px;display:inline-flex;align-items:center;padding:0 4px 0 6px;border:1px solid var(--line-2);border-radius:3px;background:var(--panel);flex:none}
+.rf-sel select{background:transparent;border:0;color:var(--text);font:600 12px var(--sans);outline:none;cursor:pointer;max-width:210px}
+.rf-sel select option{background:var(--panel-2)}
+.rf-sel.on{border-color:var(--info-line);background:var(--info-bg)}
+.rf-btn{height:24px;display:inline-flex;align-items:center;gap:5px;padding:0 8px;border:1px solid var(--line-2);border-radius:3px;background:none;color:var(--text-2);font:600 11px var(--sans);letter-spacing:.03em;cursor:pointer;flex:none;text-decoration:none}
+.rf-btn:hover{background:var(--panel-3);color:var(--text)}
+.rf-btn.lock{border-style:dashed;color:var(--text-3);cursor:not-allowed}
+.rf-btn.lock .mono{color:var(--text-2)}
+.rf-help{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line-2);border-radius:50%;font-size:12px;font-weight:700;color:var(--text-2);flex:none}
+
+/* ---- verdict band ---- */
+.rf-verd{height:60px;flex:none;display:flex;align-items:stretch;background:var(--panel);border:1px solid var(--line);border-radius:4px;overflow:hidden;min-width:0}
+.rf-vs{flex:none;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:0 12px;border-right:1px solid var(--line);background:var(--panel-2)}
+.rf-big{display:inline-flex;align-items:center;gap:8px;height:26px;padding:0 9px;border:2px solid var(--info);border-radius:4px;color:var(--text);font-size:16px;font-weight:700;letter-spacing:.05em}
+.rf-big i{width:9px;height:9px;border-radius:50%;background:var(--info);display:inline-block}
+.rf-vs small{font-size:11px;color:var(--text-3)}
+.rf-vt{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:1px;padding:0 12px}
+.rf-v1{font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;line-height:17px}
+.rf-v1 b{font-weight:700}
+.rf-v2,.rf-v3{font-size:12px;color:var(--text-2);white-space:nowrap;overflow:hidden;line-height:16px}
+.rf-v2 b{color:var(--text);font-weight:600}
+.rf-tiles{flex:none;display:flex}
+.rf-tile{width:122px;padding:6px 10px 0 10px;border-left:1px solid var(--line);white-space:nowrap;overflow:hidden}
+.rf-tile .l{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);line-height:14px}
+.rf-tile .v{font-family:var(--mono);font-size:16px;font-weight:700;letter-spacing:-0.02em;line-height:20px;color:var(--text)}
+.rf-tile .v small{font-family:var(--sans);font-size:12px;font-weight:600;color:var(--text-2);letter-spacing:0}
+.rf-tile .s{font-size:11px;color:var(--text-3);line-height:14px}
+.rf-tile .s .ban{color:var(--danger);font-weight:700}
+
+/* ---- grid: F&O list | theme + contracts | baskets + names ---- */
+.rf-grid{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,640fr) minmax(0,460fr) minmax(0,460fr);gap:8px}
+.rf-col{display:grid;grid-template-rows:minmax(0,1fr);gap:8px;min-height:0;min-width:0}
+.rf-col.c2{grid-template-rows:minmax(0,1fr) 212px}
+.rf-col.c3{grid-template-rows:minmax(0,1fr) 196px}
+
+/* panels */
+.pn{background:var(--panel);border:1px solid var(--line);border-radius:4px;display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden;position:relative}
+.ph{height:26px;flex:none;background:var(--panel-2);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 8px 0 9px;white-space:nowrap;min-width:0}
+.ph .t{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);flex:none}
+.ph .k{font-size:11px;color:var(--text-3);min-width:0;overflow:hidden;flex:1}
+.ph .age{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:-0.02em;flex:none;display:inline-flex;align-items:center;gap:4px;margin-left:auto}
+.find{display:inline-flex;align-items:center;gap:5px;flex:none}
+.find span{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3)}
+.find input{width:118px;height:20px;background:var(--bg);border:1px solid var(--line-2);border-radius:3px;color:var(--text);font:12px var(--mono);padding:0 5px;outline:none}
+.find input:focus{border-color:var(--info-line)}
+.find input::placeholder{color:var(--text-3)}
+
+/* scroll areas: native bar hidden (headless and some OS themes hide it); an always-drawn rail ▲ track+thumb ▼ shows the length (R08) */
+.scw{flex:1;min-height:0;display:flex;position:relative}
+.pb{flex:1;min-height:0;min-width:0;overflow-y:scroll;overflow-x:hidden;scrollbar-width:none;scroll-snap-type:y proximity;scroll-padding-top:15px;order:0}
+.pb::-webkit-scrollbar{display:none}
+.pb [data-u]{scroll-snap-align:start}
+.rail{order:1;flex:none;width:14px;display:flex;flex-direction:column;background:var(--panel-2);border-left:1px solid var(--line)}
+.rb{flex:none;height:16px;display:flex;align-items:center;justify-content:center;font-size:11px;line-height:1;color:var(--text-2);cursor:pointer;user-select:none}
+.rb:hover{color:var(--text);background:var(--panel-3)}
+.trk{flex:1;position:relative;margin:1px 3px;background:#1C2128;border-radius:4px;cursor:pointer}
+.trk i{position:absolute;left:0;right:0;top:0;border-radius:4px;background:#7D8693;min-height:14px}
+.trk:hover i{background:var(--text-2)}
+.scw.fit .trk i{background:#46505D}
+.fade{position:absolute;left:0;right:15px;bottom:0;height:0;pointer-events:none;background:var(--panel-2);border-top:1px dashed var(--line-2);display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;z-index:4}
+.fadeT{position:absolute;left:0;right:15px;top:0;height:0;pointer-events:none;background:var(--panel-2);border-bottom:1px dashed var(--line-2);display:flex;align-items:flex-end;justify-content:flex-start;overflow:hidden;z-index:4}
+.fade span{padding-top:1px!important}
+.fadeT span,.fade span{font-size:11px;line-height:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;color:var(--text-3);padding:0 8px;font-family:var(--mono);letter-spacing:-.02em}
+.scw.end .fade{display:none}
+.pb-end{flex:none;display:flex;justify-content:center;align-items:flex-start;scroll-snap-align:none}
+.pb-end.tall::before{content:'end of the list';font-size:11px;color:var(--text-3);padding-top:6px;font-family:var(--mono);letter-spacing:-.02em}
+
+.pf{flex:none;border-top:1px solid var(--line);padding:3px 9px;font-size:11px;color:var(--text-3);line-height:14px;white-space:normal;background:var(--panel)}
+.pf b{color:var(--text-2);font-weight:600}
+.chips{display:flex;gap:4px;flex:none;flex-wrap:nowrap}
+.chip{height:19px;display:inline-flex;align-items:center;gap:4px;padding:0 5px;border:1px solid var(--line-2);border-radius:3px;font-size:11px;font-weight:600;color:var(--text-2);background:none;cursor:pointer;font-family:var(--sans);letter-spacing:.02em;white-space:nowrap}
+.chip .n{font-size:11px;color:var(--text)}
+.chip.on{background:var(--panel-3);color:var(--text);border-color:var(--text-3)}
+.chip.zero{color:var(--text-3);border-style:dashed}
+.chip.zero .n{color:var(--text-3)}
+.gh{background:var(--panel-2);border-bottom:1px solid var(--line);padding:3px 9px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);line-height:15px}
+.gh span{text-transform:none;letter-spacing:0;font-weight:400}
+.fd{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--info);flex:none}
+.fd.late{background:none;border:1.5px solid var(--stale)}
+.empty{padding:12px;font-size:13px;color:var(--text-2);line-height:18px}
+.empty b{color:var(--text)}
+
+/* tags (DESIGN_SYSTEM 7.4) */
+.tg{height:17px;display:inline-flex;align-items:center;padding:0 5px;border:1px solid var(--line-2);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.03em;color:var(--text-2);white-space:nowrap;vertical-align:1px;line-height:1}
+.tg.role{background:var(--panel-3);color:var(--text)}
+.tg.held{border-color:var(--text-3);color:var(--text)}
+.tg.ban{border-color:var(--danger);background:var(--danger-bg);color:var(--danger)}
+.tg.sprd{border-color:var(--danger);color:var(--danger)}
+.tg.gr{border-color:var(--action-line);background:var(--action-bg);color:var(--action)}
+.tg.conf{border-color:var(--info-line);color:var(--info)}
+.tg.form{color:var(--text-3)}
+.tg.xd{border-color:var(--info-line);color:var(--info);background:var(--info-bg)}
+.tg.near{color:var(--text-2)}
+.tg.qt{color:var(--text-3);border-style:dashed}
+.tg.late{background:var(--stripe);border-color:var(--stale);color:var(--text-2)}
+.tg.chg{color:var(--text-2);border-style:dotted}
+.tg.clash{color:var(--text-2)}
+.tg.wk{color:var(--text-3);border-style:dashed;font-weight:600}
+.warn{color:var(--action)}
+
+/* ---- F&O LIST = SECTOR MAP ---- */
+.cb{flex:none;height:27px;display:flex;align-items:center;padding:0 9px;border-bottom:1px solid var(--line);background:var(--panel);overflow:hidden}
+.banx{flex:none;border-bottom:1px solid var(--line);background:var(--panel-2);padding:3px 9px 4px 9px;display:grid;grid-template-columns:auto minmax(0,1fr);row-gap:2px;column-gap:6px;align-items:baseline;font-size:12px;line-height:16px;color:var(--text-2)}
+.banx .tg{justify-self:start}
+.banx b{color:var(--text);font-weight:600}
+.banx .sym{font-size:13px}
+.uv-h,.uv-r{display:grid;grid-template-columns:minmax(0,1fr) 58px 48px 74px 58px 66px 56px 62px 66px;column-gap:0;align-items:center;padding:0 4px 0 9px}
+.uv-h{flex:none;height:30px;column-gap:0;background:var(--panel-2);border-bottom:1px solid var(--line);font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);line-height:12px;padding-right:19px}
+.uv-h span{white-space:normal;cursor:pointer;user-select:none}
+.uv-h span:hover{color:var(--text-2)}
+.uv-h span.on{color:var(--text)}
+.uv-h small{display:block;font-size:11px;text-transform:none;letter-spacing:0;font-weight:400}
+.uv-h .r,.uv-r .r{text-align:right;padding-right:6px;padding-left:8px}
+.uv-r{min-height:24px;border-bottom:1px solid var(--line);padding-top:3px;padding-bottom:3px;row-gap:0}
+.uv-r:hover{background:var(--panel-2)}
+.uv-r.held{box-shadow:inset 2px 0 0 var(--text-3)}
+.uv-r.ban .s a{color:var(--text-2)}
+.uv-r .s{font-size:14px;white-space:nowrap;overflow:hidden;padding-right:4px;line-height:20px}
+.uv-r .n{font-size:13px}
+.uv-r .md{color:var(--text-3)}
+.uv-r > .r{white-space:nowrap}
+.uv-r .mw{display:flex;align-items:center;justify-content:flex-end;gap:3px;padding-right:6px;padding-left:6px}
+.uv-r .mw svg{flex:none;color:var(--text-3)}
+.uv-r .mw.hi .n{color:var(--text);font-weight:700}
+.uv-r .res{font-size:12px;color:var(--text-3);font-family:var(--mono);letter-spacing:-0.02em;text-align:right;white-space:nowrap}
+.uv-r .nt{grid-column:1 / -1;font-size:12px;color:var(--text-2);line-height:16px;padding:0 0 1px 0}
+.uv-r .nt .lb{color:var(--text-3)}
+.uv-r .nt .tg{margin-right:5px}
+.uv-r .nt b{color:var(--text);font-weight:600}
+.uv-r .nt .bk{color:var(--danger);font-weight:700}
+/* sector rows (the accordion, R22): open in place */
+.sg{display:flex;align-items:center;gap:7px;min-height:28px;padding:3px 26px 3px 7px;border-bottom:1px solid var(--line);background:var(--panel-2);cursor:pointer;white-space:nowrap;min-width:0}
+.sg:hover{background:var(--panel-3)}
+.sg .tw{font-size:11px;color:var(--text-3);width:10px;flex:none}
+.sg .nm{font-size:14px;font-weight:600;color:var(--text);flex:none}
+.sg .cnt{font-size:11px;color:var(--text-3);flex:none}
+.sg .sm{font-size:11px;color:var(--text-3);overflow:hidden;min-width:0;flex:1}
+.sg .pc{font-size:14px;font-weight:600;margin-left:auto;flex:none}
+.sg .tg{flex:none}
+.sg.op{background:var(--panel-3)}
+.sgw{border-bottom:0}
+.sgx{padding:2px 9px 3px 24px;border-bottom:1px solid var(--line);background:var(--panel-2);font-size:12px;line-height:16px;color:var(--text-2)}
+.sgx b{color:var(--text);font-weight:600}
+
+/* ---- THEME map ---- */
+.dix{flex:none;border-bottom:1px solid var(--line);background:var(--panel-2);padding:3px 9px 4px 9px;display:flex;flex-wrap:wrap;column-gap:8px;row-gap:0;font-size:12px;line-height:16px}
+.dix .st{font-size:11px;margin-right:-3px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3)}
+.dix .st.p{color:var(--info)}
+.dix .it{color:var(--text-2);white-space:nowrap;cursor:pointer}
+.dix .it b{color:var(--text);font-weight:600}
+.dix .it:hover b{color:var(--info)}
+.th-b{padding:5px 9px 6px 9px;border-bottom:1px solid var(--line)}
+.th-b.x{background:linear-gradient(90deg,var(--info-bg),transparent 55%)}
+.th-1{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:7px;row-gap:1px;white-space:nowrap;min-width:0}
+.th-1 .dv{font-size:14px;font-weight:700;letter-spacing:.03em}
+.th-1 .pc{font-size:14px;font-weight:600}
+.th-1 .pc.t2{color:var(--text-2)}
+.th-1 .src{font-size:11px;color:var(--text-3)}
+.th-1 .tg{margin-left:auto;flex:none}
+.th-s{margin-top:3px;font-size:12px;color:var(--text-2);line-height:16px;display:flex;flex-wrap:wrap;column-gap:6px}
+.th-s .ar{color:var(--text-3)}
+.th-s .sn{color:var(--text);font-weight:600}
+.th-s .hr{font-size:11px;color:var(--text-3);margin-left:auto;white-space:nowrap}
+.th-s .rel{color:var(--text-2)}
+.th-s .hr.ok{color:var(--text-2)}
+.th-m{display:flex;flex-wrap:wrap;gap:2px 8px;margin:1px 0 0 12px;font-size:13px;align-items:center}
+.th-m .sym{font-size:14px}
+.th-act{margin-top:4px;font-size:12px;line-height:16px;color:var(--text-2);padding:2px 7px 3px 7px;border-left:2px solid var(--action-line);background:var(--action-bg)}
+.th-act b{color:var(--text)}
+.th-act b.mono{font-family:var(--sans);font-variant-numeric:tabular-nums;letter-spacing:0}
+.th-act .mono{font-family:var(--sans);font-variant-numeric:tabular-nums;letter-spacing:0}
+.th-act .sd{color:var(--down);font-weight:700}
+
+/* ---- BASKETS: policy (S12) + rotation (S11) ---- */
+.pl-b{padding:5px 9px 6px 9px;border-bottom:1px solid var(--line)}
+.pl-b.shock{box-shadow:inset 3px 0 0 var(--action);background:var(--action-bg)}
+.pl-1{display:flex;align-items:baseline;gap:7px;white-space:nowrap;min-width:0}
+.pl-1 .rg{font-size:14px;font-weight:700;letter-spacing:.02em}
+.pl-1 .ar{font-size:12px;color:var(--text-2);overflow:hidden;min-width:0}
+.pl-1 .tg{margin-left:auto;flex:none}
+.pl-1[data-pl]{cursor:pointer}
+.pl-1 .tw{font-size:11px;color:var(--text-3);flex:none}
+.pl-q + .pl-b,.pl-b + .pl-b{border-top:0}
+.pl-now{margin-top:4px;font-size:12px;line-height:16px;color:var(--text-2);padding:3px 7px 4px 7px;border:1px solid var(--action-line);border-radius:3px;background:var(--panel)}
+.pl-now b{color:var(--text)}
+.pl-now .clk{font-family:var(--mono);letter-spacing:-.02em;font-size:12px;color:var(--text-2)}
+.pl-now .clk b{color:var(--text);font-weight:600}
+.pl-sh{display:flex;flex-wrap:wrap;gap:1px 9px;margin-top:3px;font-size:13px;align-items:baseline}
+.pl-sh .sym{font-size:14px}
+.pl-sh .pc{font-size:12px;font-weight:600}
+.pl-sh .wd{font-size:11px;color:var(--text-3)}
+.pl-l{margin-top:3px;font-size:12px;color:var(--text-2);line-height:16px}
+.pl-l .lb{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-right:4px}
+.pl-l b{color:var(--text);font-weight:600}
+.pl-q{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-bottom:1px solid var(--line)}
+.pl-qi{display:flex;align-items:baseline;gap:5px;padding:3px 8px 3px 9px;min-height:22px;border-bottom:1px solid var(--line);cursor:pointer;white-space:nowrap;overflow:hidden;font-size:12px;color:var(--text-2)}
+.pl-qi:nth-child(odd){border-right:1px solid var(--line)}
+.pl-qi.w{grid-column:1 / -1;border-right:0;white-space:normal;background:var(--panel-2)}
+.pl-qi.w .s2{font-size:12px;color:var(--text-2)}
+.pl-qi.w .s2 b{font-size:12px}
+.pl-qi:hover{background:var(--panel-2)}
+.pl-qi b{font-size:13px;color:var(--text);font-weight:700}
+.pl-qi .tw{font-size:11px;color:var(--text-3)}
+.pl-qi .s2{color:var(--text-3);font-size:11px;overflow:hidden}
+.pl-qx{grid-column:1 / -1;padding:4px 9px 6px 24px;border-bottom:1px solid var(--line);background:var(--panel-2)}
+.rotw{border-bottom:1px solid var(--line)}
+.rotw .rot{border-bottom:0}
+.rot{display:grid;grid-template-columns:12px minmax(0,1fr) 54px 24px;align-items:center;column-gap:6px;padding:3px 8px 3px 9px;min-height:24px;border-bottom:1px solid var(--line);cursor:pointer}
+.rot:hover{background:var(--panel-2)}
+.rot .tw{font-size:11px;color:var(--text-3)}
+.rot .nm{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden}
+.rot .nm small{font-size:11px;font-weight:400;color:var(--text-3);margin-left:5px}
+.rot .pc{font-size:13px;font-weight:600;text-align:right}
+.rot .c{font-size:11px;color:var(--text-3);text-align:right;font-family:var(--mono)}
+.rotx{padding:3px 9px 5px 27px;border-top:1px solid var(--line);background:var(--panel-2);display:flex;flex-wrap:wrap;gap:1px 9px;font-size:12px}
+.rotx .sym{font-size:13px}
+
+/* ---- NAMES ---- */
+.nm-t{display:flex;align-items:center;gap:5px;flex:1;min-width:0}
+.nm-t label{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);flex:none}
+.nm-t input{flex:1;min-width:0;height:20px;background:var(--bg);border:1px solid var(--line-2);border-radius:3px;color:var(--text);font:12px var(--mono);letter-spacing:-0.02em;padding:0 5px;outline:none}
+.nm-t input:focus{border-color:var(--info-line)}
+.nm-res{padding:3px 9px;font-size:12px;line-height:16px;color:var(--text-2);border-bottom:1px solid var(--line);background:var(--info-bg)}
+.nm-res b{color:var(--text)}
+.nm-q{padding:3px 9px;font-size:12px;line-height:16px;color:var(--text-2);border-bottom:1px solid var(--line)}
+.nm-q b{color:var(--text);font-weight:600}
+.nm-q .tg{margin-right:5px}
+.nm-r{padding:4px 9px 5px 9px;border-bottom:1px solid var(--line)}
+.nm-1{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:7px;white-space:nowrap;min-width:0}
+.nm-1 .sym{font-size:14px}
+.nm-1 .co{font-size:12px;color:var(--text-2);flex:1}
+.nm-1 .pr{font-size:11px;color:var(--text-3);font-family:var(--mono);flex:none;letter-spacing:-.02em;margin-left:auto}
+.nm-2{font-size:12px;color:var(--text-2);line-height:16px;margin-top:1px}
+.nm-2 .lb{font-size:11px;color:var(--text-3)}
+.nm-2 b{color:var(--text);font-weight:600}
+.nm-3{font-size:12px;line-height:16px;margin-top:2px;color:var(--text-2)}
+.nm-3 .tg{margin-right:4px}
+
+/* ---- CONTRACTS ---- */
+.ct-r{display:grid;grid-template-columns:80px minmax(0,1fr);column-gap:10px;padding:3px 9px;border-bottom:1px solid var(--line);font-size:12px;line-height:16px;color:var(--text-2)}
+.ct-r .d{font-family:var(--mono);font-size:12px;color:var(--text);letter-spacing:-0.02em;white-space:normal;overflow-wrap:normal}
+.ct-r b{color:var(--text);font-weight:600}
+.ct-r .ew{color:var(--text);font-weight:700;letter-spacing:.02em}
+.ct-r.ex{grid-template-columns:56px minmax(0,1fr)}
+.ct-r.ex .d{color:var(--text-2);font-family:var(--sans);font-weight:700;font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+.ct-late{padding:3px 9px 4px 9px;border-bottom:1px solid var(--line);background:var(--stripe);font-size:12px;line-height:16px;color:var(--text-2)}
+.ct-late b{color:var(--text);font-weight:600}
+.ct-late .tg{margin-right:5px;background:var(--panel)}
+
+/* ---- tooltip (R31): one styled tooltip for every title on the page ---- */
+#tip,.tipbox{position:fixed;z-index:70;max-width:340px;padding:6px 9px;background:#232932;border:1px solid var(--line-2);border-radius:4px;box-shadow:0 8px 22px rgba(0,0,0,.55);font-size:12px;line-height:16px;color:var(--text);white-space:normal;pointer-events:none;display:none}
+#tip.on,.tipbox{display:block}
+.tipbox::before{content:'';position:absolute;left:14px;top:-5px;width:8px;height:8px;background:#232932;border-left:1px solid var(--line-2);border-top:1px solid var(--line-2);transform:rotate(45deg)}
+.tip-on{outline:1px solid var(--info);outline-offset:1px}
+
+/* ---- 1366 x 768 (below 1500): same panels, same words, tighter type; nothing dropped ---- */
+@media (max-width:1499px){
+  .rf-wrap{gap:5px;top:6px;bottom:6px}
+  .rf-top{gap:8px;height:24px}
+  .rf-grid{gap:6px}
+  .rf-col{gap:6px}
+  .pl-now{line-height:15px;padding:2px 6px 3px 6px}
+  .ct-r{line-height:15px;padding:2px 8px}
+  .ct-late{line-height:15px}
+  .th-act{line-height:15px}
+  .dix{font-size:11.5px;line-height:15px}
+  .dix{column-gap:7px}
+  .th-b{padding:3px 8px 4px 8px}
+  .th-s{margin-top:2px}
+  .th-act{margin-top:3px}
+  .th-s{line-height:15px}
+  .rf-ttl b{font-size:14px}
+  .rf-purp{font-size:12px}
+  .rf-btn{padding:0 6px}
+  .rf-sel select{max-width:168px}
+  .rf-verd{height:48px}
+  .rf-vt{gap:0}
+  .rf-vs small{font-size:11px}
+  .rf-vs{padding:0 9px}
+  .rf-big{font-size:14px;height:23px;padding:0 7px}
+  .rf-vt{padding:0 9px}
+  .rf-v1{font-size:12px;line-height:15px}
+  .rf-v2,.rf-v3{font-size:11.5px;line-height:14px}
+  .rf-tile{width:100px;padding:2px 8px 0 8px}
+  .rf-tile .l{line-height:13px}
+  .rf-tile .v{font-size:15px;line-height:17px}
+  .rf-tile .s{line-height:13px}
+  .rf-col.c2{grid-template-rows:minmax(0,1fr) 162px}
+  .rf-col.c3{grid-template-rows:minmax(0,1fr) 150px}
+  .rf-grid{grid-template-columns:minmax(0,560fr) minmax(0,385fr) minmax(0,385fr)}
+  #p-nm .ph{gap:6px;padding:0 6px 0 8px}
+  .uv-h,.uv-r{grid-template-columns:minmax(0,1fr) 50px 40px 64px 48px 60px 48px 54px 56px;padding-left:8px;padding-right:2px}
+  .uv-r .tg.sprd{padding:0 2px}
+  .uv-r .n{letter-spacing:-0.04em}
+  .uv-h{padding-right:17px}
+  .uv-r .n{font-size:12px}
+  .uv-h .r,.uv-r .r{padding-right:5px;padding-left:6px}
+  .uv-r .mw{padding-right:5px}
+  .find input{width:104px}
+  .th-b,.pl-b{padding:4px 8px 5px 8px}
+  .th-1 .src{font-size:11px}
+  .chip{padding:0 3px;letter-spacing:0;gap:3px}
+  .cb .chips{gap:3px}
+  .cb{padding:0 6px}
+  .ct-r{grid-template-columns:76px minmax(0,1fr);column-gap:8px}
+  .ct-r.ex{grid-template-columns:56px minmax(0,1fr)}
+}
+
+</style>
+</head>
+<body class="page-reference">
+
+<!-- ===================== SHELL TOP START (copy verbatim) ===================== -->
+<!-- R01 MARKET STRIP - identical on every page. Click an index = MARKET screen. Values illustrative (Thu 19 Nov 2026, 11:40:30). -->
+<header id="sh-mkt" aria-label="Market strip">
+  <div class="sh-m1">
+      <a class="sh-ix" href="market.html#NIFTY" title="NIFTY 50: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">NIFTY 50</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,4.1 3.4,2.0 4.8,3.4 6.1,5.8 7.5,7.6 8.9,6.3 10.3,8.2 11.7,9.4 13.0,7.9 14.4,9.0 15.8,8.5 17.2,6.7 18.6,4.3 19.9,4.4 21.3,5.7 22.7,6.2 24.1,6.7 25.4,6.4 26.8,8.0 28.2,6.4 29.6,8.8 31.0,7.4 32.3,10.2 33.7,11.5 35.1,12.0 36.5,12.0 37.9,11.6 39.2,10.9 40.6,9.7 42.0,10.7" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="10.7" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">24,486.20</span><span class="sh-ch n dn sh-wide">−152.76</span><span class="sh-pc n dn">▼ −0.62%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#BANKNIFTY" title="BANKNIFTY: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">BANKNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,12.0 3.4,10.2 4.8,8.9 6.1,8.2 7.5,7.9 8.9,7.8 10.3,7.7 11.7,7.0 13.0,7.3 14.4,8.9 15.8,8.5 17.2,10.5 18.6,9.1 19.9,7.7 21.3,7.0 22.7,8.6 24.1,7.6 25.4,6.1 26.8,6.8 28.2,5.7 29.6,3.9 31.0,2.0 32.3,2.7 33.7,3.4 35.1,3.8 36.5,2.5 37.9,2.5 39.2,4.4 40.6,3.7 42.0,2.4" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="2.4" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">52,140.50</span><span class="sh-ch n dn sh-wide">−109.73</span><span class="sh-pc n dn">▼ −0.21%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#SENSEX" title="SENSEX: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">SENSEX</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,12.0 3.4,11.7 4.8,10.5 6.1,10.1 7.5,9.3 8.9,9.6 10.3,8.5 11.7,8.0 13.0,7.6 14.4,6.7 15.8,6.0 17.2,6.7 18.6,5.9 19.9,6.2 21.3,6.3 22.7,6.7 24.1,5.6 25.4,4.7 26.8,4.1 28.2,3.0 29.6,2.5 31.0,2.5 32.3,2.1 33.7,2.0 35.1,3.3 36.5,3.0 37.9,2.4 39.2,2.0 40.6,2.7 42.0,2.2" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="2.2" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">80,412.65</span><span class="sh-ch n dn sh-wide">−469.11</span><span class="sh-pc n dn">▼ −0.58%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#FINNIFTY" title="FINNIFTY: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">FINNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,5.9 3.4,2.0 4.8,4.8 6.1,4.5 7.5,3.6 8.9,2.3 10.3,6.0 11.7,8.6 13.0,5.4 14.4,3.0 15.8,6.1 17.2,7.8 18.6,10.6 19.9,7.9 21.3,9.7 22.7,9.0 24.1,7.1 25.4,9.0 26.8,9.2 28.2,11.3 29.6,9.9 31.0,12.0 32.3,9.7 33.7,6.4 35.1,7.8 36.5,5.7 37.9,6.7 39.2,9.7 40.6,8.9 42.0,8.7" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="8.7" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">23,905.40</span><span class="sh-ch n dn sh-wide">−38.31</span><span class="sh-pc n dn">▼ −0.16%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#MIDCPNIFTY" title="MIDCPNIFTY: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">MIDCPNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,2.0 3.4,3.3 4.8,2.9 6.1,3.9 7.5,2.9 8.9,3.2 10.3,3.6 11.7,3.6 13.0,3.6 14.4,3.6 15.8,4.6 17.2,4.7 18.6,5.9 19.9,6.8 21.3,6.5 22.7,7.2 24.1,8.3 25.4,8.3 26.8,8.3 28.2,9.1 29.6,9.2 31.0,9.4 32.3,10.5 33.7,9.6 35.1,10.2 36.5,11.4 37.9,12.0 39.2,12.0 40.6,12.0 42.0,11.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="11.0" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">12,640.15</span><span class="sh-ch n dn sh-wide">−131.55</span><span class="sh-pc n dn">▼ −1.03%</span></span>
+      </a>
+    <div class="sh-mi" title="India VIX, change from previous close">
+      <span class="sh-l1"><span class="sh-nm">INDIA VIX</span></span>
+      <span class="sh-l2"><span class="sh-px n">14.82</span><span class="sh-pc n up">▲ +2.84%</span></span>
+    </div>
+    <div class="sh-mi" title="GIFT Nifty (NSE IX), trades pre-open and at night; gap vs NIFTY 50 spot">
+      <span class="sh-l1"><span class="sh-nm">GIFT NIFTY</span><span class="sh-age">prem +44</span></span>
+      <span class="sh-l2"><span class="sh-px n">24,530.5</span><span class="sh-pc n dn">▼ −0.55%</span></span>
+    </div>
+    <div class="sh-status" title="Market status from the exchange clock · phase · time to the 15:10 exit · worst age of the strip's live prices">
+      <span class="sh-st1"><span class="sh-mstate">OPEN</span><span class="sh-phase"><b>ENTRY</b> · <span class="n">3h 26m</span> to 15:10</span></span>
+      <span class="sh-st2"><span class="sh-clock">11:44:20</span><span class="sh-ist">IST</span><span class="sh-dot"></span><span class="sh-age" style="color:var(--text-2)">data 0.4s</span></span>
+    </div>
+  </div>
+  <div class="sh-m2">
+    <span class="sh-t2" title="US dollar / rupee spot"><span class="sh-t2l"><span class="sh-lb">USD/INR</span></span><span class="sh-t2v"><span class="n v">88.94</span><span class="n up">▲ +0.08%</span></span></span>
+    <span class="sh-t2" title="Brent crude, $ per barrel; feed age 1m"><span class="sh-t2l"><span class="sh-lb">Brent</span><span class="sh-age">$/bbl · 1m</span></span><span class="sh-t2v"><span class="n v">63.84</span><span class="n dn">▼ −1.10%</span></span></span>
+    <span class="sh-t2" title="Gold, MCX near month, ₹ per 10 g"><span class="sh-t2l"><span class="sh-lb">Gold MCX</span><span class="sh-age">₹/10g</span></span><span class="sh-t2v"><span class="n v">1,24,610</span><span class="n dn">▼ −1.62%</span></span></span>
+    <span class="sh-t2" title="FII / DII cash market net, ₹ crore. In the day: yesterday's NSE provisional figure; after ~18:00 today's provisional replaces it (yesterday's final then shows on hover)"><span class="sh-t2l"><span class="sh-lb">FII/DII cash</span><span class="sh-age">₹cr · 18 Nov prov</span></span><span class="sh-t2v"><span>FII</span><span class="n v">−1,842</span><span>· DII</span><span class="n v">+1,315</span></span></span>
+    <span class="sh-t2" title="FII F&amp;O net from NSE participant data, ₹ crore, 18 Nov: index futures −2,110 · stock futures +640 (at 1366 wide: stk) · detail on Futures &amp; OI, F10"><span class="sh-t2l"><span class="sh-lb">FII F&amp;O</span><span class="sh-age">₹cr · 18 Nov</span></span><span class="sh-t2v"><span>idx fut</span><span class="n v">−2,110</span><span class="sh-wide" style="display:inline-flex;gap:5px">· stk fut <span class="n v">+640</span></span><span class="sh-n1366" style="gap:4px">· stk <span class="n v">+640</span></span></span></span>
+    <span class="sh-t2" title="Put-call ratio of open interest, as of 11:39"><span class="sh-t2l"><span class="sh-lb">PCR (OI)</span><span class="sh-age">11:39</span></span><span class="sh-t2v"><span>NIFTY</span><span class="n v">0.92</span><span>· BANKNIFTY</span><span class="n v">1.08</span></span></span>
+    <span class="sh-t2" title="Advancing / declining F&amp;O shares (unchanged 4)"><span class="sh-t2l"><span class="sh-lb">A/D F&amp;O</span><span class="sh-age">of 222</span></span><span class="sh-t2v"><span class="n v">▲ 61</span><span class="n v">▼ 157</span></span></span>
+    <a class="sh-t2" href="calendar.html#expiry" title="Stock F&amp;O expiry from the contract master; sessions left incl. today; moved from Tue 24 Nov (holiday)"><span class="sh-t2l"><span class="sh-xw" title="EXPIRY WEEK: next month is the default strike month; in-the-money stock options are physically settled - exit before expiry day">EXPIRY WEEK</span><span class="sh-age">next 29 Dec</span></span><span class="sh-t2v"><span class="v">Mon 23 Nov</span><span class="sh-wide" style="color:var(--text-3)">(Tue 24 holiday)</span><span class="sh-n1366" style="color:var(--text-3)">(Tue 24 hol)</span><span>·</span><span class="n v">3</span><span>sessions left</span></span></a>
+    <span class="sh-t2" style="border-right:0;border-left:1px solid var(--line);margin-left:auto;padding-right:12px"><span class="sh-t2l"><span class="sh-lb">F&amp;O ban</span><span class="sh-age sh-wide">tap = list</span></span><span class="sh-t2v"><a class="sh-ban" href="futures-oi.html#mwpl" title="F&amp;O ban list - tap for the list. In ban: only close existing positions, no new ones.">BAN 2</a><span class="sh-age sh-wide">&gt;85% 3</span></span></span>
+  </div>
+</header>
+
+<!-- R02 MY F&O P&L - always visible. Rupees net of all charges (realised + open). Whole strip = link to F6 MY TRADES. -->
+<a id="sh-pnl" href="positions.html" aria-label="My F&amp;O P&amp;L - opens MY TRADES">
+  <span class="sh-pt"><span class="sh-ptitle" title="tap = MY TRADES (F6)">MY F&amp;O P&amp;L ›</span><span class="sh-lb">today</span><span class="sh-big dn">−₹650</span><span class="n dn">−0.1R</span></span>
+    <span class="sh-pt sh-brk sh-wide" title="TODAY = realised + open, net of all charges (open valued at the bid less estimated exit charges). Charges today, round trip, already inside TODAY: MANAPPURAM ₹120 + HINDALCO ₹70 = ₹190 - from the ONE charges table (Zerodha rates, verified 18 Nov; the date shows in Settings › Charges): brokerage ₹20/order + STT 0.1% of the sell premium + exchange + GST + stamp">realised <span class="n">₹0</span> · open <span class="n">−₹650</span> net · charges <span class="n">₹190</span></span><span class="sh-pt sh-brk sh-n1366" style="gap:4px" title="TODAY = realised + open, net of all charges (open valued at the bid less estimated exit charges). Charges today, round trip, already inside TODAY: MANAPPURAM ₹120 + HINDALCO ₹70 = ₹190 - from the ONE charges table (Zerodha rates, verified 18 Nov; the date shows in Settings › Charges): brokerage ₹20/order + STT 0.1% of the sell premium + exchange + GST + stamp">real <span class="n">₹0</span> · open <span class="n">−₹650</span> · chg <span class="n">₹190</span></span>
+  <span class="sh-pt" title="Open positions (max 2) · if every open position hit its share stop now: −₹8,020 net of charges (−1.6R); the day lock would still leave ₹1,980"><span class="sh-lb">open</span><span class="n" style="color:var(--text);font-weight:600">2</span><span>· at stops</span><span class="n" style="color:var(--text)">−₹8,020</span></span>
+  <span class="sh-pt"><span class="sh-lb">trades</span><span class="n" style="color:var(--text);font-weight:600">2 of 3</span></span>
+  <span class="sh-pt"><span class="sh-lb">week</span><span class="n dn">−₹6,650</span><span class="n dn" style="font-size:12px">−1.3R</span></span>
+  <span class="sh-pt"><span class="sh-lb">month</span><span class="n up">+₹3,150</span><span class="n up" style="font-size:12px">+0.6R</span></span>
+  <span class="sh-pt" title="Day loss lock at −2% = −₹10,000 (also: 2 losses in a row, weekly −6%). Meter amber from 75%, LOCKED chip at 100%. Exits always stay usable."><span class="sh-lb">loss lock</span><span class="n" style="color:var(--text);font-weight:600">₹9,350</span><span>left</span><span class="sh-wide">of <span class="n">₹10,000</span></span><span class="sh-meter"><i style="width:7%"></i></span></span>
+  <span class="sh-pt" style="border-right:0" title="AI spend today vs the $20 daily cap; by model on Scorecard (Shift+F8)"><span class="sh-lb">AI</span><span class="n" style="color:var(--text)">$4.10</span><span>of $20</span><span class="sh-meter"><i style="width:21%"></i></span></span>
+</a>
+
+<!-- R03 TAB BAR - one list (REQUIREMENTS section D). Row 1 = plain F-keys, row 2 = SHIFT + F-keys (filled ⇧ keycaps). No key twice. -->
+<nav id="sh-tabs" aria-label="Pages">
+  <a class="sh-mark" href="desk-hunt.html" title="girtrader.com"><b>GIR</b></a>
+  <div class="sh-grid">
+        <span class="sh-rl sh-rl1">F-KEY</span>
+        <span class="sh-rl sh-rl2"><span>SHIFT +</span></span>
+        <a class="sh-tab" data-tab="desk" href="desk-hunt.html" style="grid-row:1;grid-column:2" title="F1 · Desk - hunting / in a trade: the one screen for 09:15-15:10"><kbd class="sh-k">F1</kbd><span class="sh-tl">Desk</span></a>
+        <a class="sh-tab" data-tab="sectors" href="sectors.html" style="grid-row:1;grid-column:3" title="F2 · Sectors board, accordion, F&O movers"><kbd class="sh-k">F2</kbd><span class="sh-tl">Sectors</span></a>
+        <a class="sh-tab" data-tab="rotation" href="rotation.html" style="grid-row:1;grid-column:4" title="F3 · Rotation 15M / 30M / 1H / TODAY: money out of X into Y"><kbd class="sh-k">F3</kbd><span class="sh-tl">Rotation</span></a>
+        <a class="sh-tab" data-tab="news" href="news.html" style="grid-row:1;grid-column:5" title="F4 · One news list"><kbd class="sh-k">F4</kbd><span class="sh-tl">News</span></a>
+        <span class="sh-tab sh-f5" style="grid-row:1 / span 2;grid-column:6" title="F5 (and Shift+F5) would reload the browser and could drop live prices mid-trade, so GIR blocks it. Reload = Ctrl+Shift+R (asks first while a position is open). See ? Help."><span class="sh-f5a"><kbd class="sh-k sh-koff">F5</kbd><span class="sh-tl">off</span></span><span class="sh-f5b"><span class="sh-wide">reload blocked</span><span class="sh-n1366">no reload</span></span></span>
+        <a class="sh-tab" data-tab="positions" href="positions.html" style="grid-row:1;grid-column:7" title="F6 · Positions & Risk = MY TRADES: P&L, exits"><kbd class="sh-k">F6</kbd><span class="sh-tl">My trades</span></a>
+        <a class="sh-tab" data-tab="share" href="share.html" style="grid-row:1;grid-column:8" title="F7 · Share page: chart, levels, chain, futures, news, WHY"><kbd class="sh-k">F7</kbd><span class="sh-tl">Share</span></a>
+        <a class="sh-tab" data-tab="analyst" href="analyst.html" style="grid-row:1;grid-column:9" title="F8 · Analyst: latest decision, ASK drawer"><kbd class="sh-k">F8</kbd><span class="sh-tl">Analyst</span></a>
+        <a class="sh-tab" data-tab="chain" href="chain.html" style="grid-row:1;grid-column:10" title="F9 · Option chain + OI scenarios"><kbd class="sh-k">F9</kbd><span class="sh-tl">Chain</span></a>
+        <a class="sh-tab" data-tab="futures-oi" href="futures-oi.html" style="grid-row:1;grid-column:11" title="F10 · Futures & OI + MONEY: LB/SB/SC/LU, futures by month, F&O money, BIG MONEY, tape"><kbd class="sh-k">F10</kbd><span class="sh-tl">Fut & OI</span></a>
+        <a class="sh-tab" data-tab="morning" href="morning.html" style="grid-row:2;grid-column:2" title="Shift+F1 · Morning & pre-flight (+ PRE-OPEN 09:00-09:08)"><kbd class="sh-k sh-ks">⇧F1</kbd><span class="sh-tl">Morning</span></a>
+        <a class="sh-tab" data-tab="world" href="world.html" style="grid-row:2;grid-column:3" title="Shift+F2 · World drivers + THEME"><kbd class="sh-k sh-ks">⇧F2</kbd><span class="sh-tl">World</span></a>
+        <span class="sh-tab sh-free" style="grid-row:2;grid-column:4" title="Shift+F3 is not used"><kbd class="sh-k sh-ks">⇧F3</kbd><span class="sh-tl">not used</span></span>
+        <a class="sh-tab" data-tab="calendar" href="calendar.html" style="grid-row:2;grid-column:5" title="Shift+F4 · Calendar: results, events, ex-dates, expiry, Parliament business"><kbd class="sh-k sh-ks">⇧F4</kbd><span class="sh-tl">Calendar</span></a>
+        <a class="sh-tab" data-tab="journal" href="journal.html" style="grid-row:2;grid-column:7" title="Shift+F6 · Journal: every trade, notes, mistakes, rules kept"><kbd class="sh-k sh-ks">⇧F6</kbd><span class="sh-tl">Journal</span></a>
+        <a class="sh-tab" data-tab="reference" href="reference.html" style="grid-row:2;grid-column:8" title="Shift+F7 · Reference: F&O list, lots, sectors map, policy baskets, aliases"><kbd class="sh-k sh-ks">⇧F7</kbd><span class="sh-tl">Reference</span></a>
+        <a class="sh-tab" data-tab="scorecard" href="scorecard.html" style="grid-row:2;grid-column:9" title="Shift+F8 · Calls & Scorecard: 15:45 audit, misses, cost"><kbd class="sh-k sh-ks">⇧F8</kbd><span class="sh-tl">Scorecard</span></a>
+        <a class="sh-tab" data-tab="health" href="health.html" style="grid-row:2;grid-column:10" title="Shift+F9 · Health: every service and feed, data age, Kite login"><kbd class="sh-k sh-ks">⇧F9</kbd><span class="sh-tl">Health</span></a>
+        <a class="sh-tab" data-tab="replay" href="replay.html" style="grid-row:2;grid-column:11" title="Shift+F10 · Replay any past day, minute by minute"><kbd class="sh-k sh-ks">⇧F10</kbd><span class="sh-tl">Replay</span></a>
+  </div>
+  <div class="sh-right">
+    <div class="sh-r1">
+      <a class="sh-tab" data-tab="settings" href="settings.html" title="Ctrl+, · Charter & Settings: his rules, sounds, Telegram, limits" style="border-left:1px solid var(--line)"><kbd class="sh-k">Ctrl ,</kbd><span class="sh-tl">Settings</span></a>
+      <a class="sh-tab" data-tab="help" href="help.html" title="? · Help: every page's purpose, keys (why F5 is off), colours, sounds"><kbd class="sh-k">?</kbd><span class="sh-tl">Help</span></a>
+      <a class="sh-tab" data-tab="market" href="market.html" title="MARKET: NIFTY / BANKNIFTY trading screen. No F-key: type /NIFTY or click an index in the strip"><kbd class="sh-k">/NIFTY</kbd><span class="sh-tl">Market</span></a>
+      <a class="sh-tab sh-wide" data-tab="plan-card" href="plan-card.html" title="Space on a call · Plan card drawer (Desk)"><kbd class="sh-k">Space</kbd><span class="sh-tl">Plan card</span></a>
+    </div>
+    <div class="sh-r2">
+      <label class="sh-cmd" title="/ = command line: symbol (TITAN), contract (HINDALCO 680 PE), verbs (TITAN OC, TITAN FUT, METALS, GOLD, NEWS TITAN, STATUS); free text searches news. Never sends an order.">
+        <kbd>/</kbd><span class="sh-ph">symbol<span class="sh-wide">, contract</span>, verb</span><span class="sh-typed">TIT<i></i></span>
+        <span class="sh-sugg" role="listbox" aria-label="Suggestions">
+          <span class="sh-sg-h"><span class="sh-lb">2 F&amp;O shares match "TIT"</span><span class="sh-age">as you type · 2+ letters</span></span>
+          <span class="sh-sg-r sel" role="option"><span class="sh-sg-s"><em>TIT</em>AN</span><span class="sh-sg-d">Titan Company<br><span>Jewellers &amp; gold loans · lot 175</span></span><span class="sh-sg-p n">3,398.20</span><span class="sh-sg-p n dn">−2.48%</span></span>
+          <span class="sh-sg-r" role="option"><span class="sh-sg-s"><em>TIT</em>AGARH</span><span class="sh-sg-d">Titagarh Rail Systems<br><span>Railways &amp; capital goods · lot 725</span></span><span class="sh-sg-p n">912.35</span><span class="sh-sg-p n dn">−0.84%</span></span>
+          <span class="sh-sg-v"><span class="n">TITAN OC</span><span class="n">TITAN FUT</span><span class="n">NEWS TITAN</span><span class="n">LOG TITAN</span><span>search news for "TIT"</span></span>
+          <span class="sh-sg-f"><kbd>↑</kbd> <kbd>↓</kbd> choose · <kbd>Enter</kbd> open the share page · <kbd>Tab</kbd> complete · <kbd>Esc</kbd> close</span>
+        </span>
+      </label>
+      <button class="sh-btn" title="SOUND ON (at 1366 wide the button reads speaker + ON). Sound on / off. Exits on an open position (STOP, BOOK HALF, EXIT, 15:10) can never be muted. M mutes GO NOW / GET READY for 10 min."><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 4h2.5L7 1v10L3.5 8H1z" fill="currentColor"/><path d="M8.6 3.6a3.4 3.4 0 0 1 0 4.8M10 2.2a5.4 5.4 0 0 1 0 7.6" stroke="currentColor" fill="none" stroke-width="1.1"/></svg><span class="on"><span class="sh-wide">SOUND </span>ON</span></button>
+      <button class="sh-btn" title="Sound legend: which alert makes which sound">♪ LEGEND</button>
+      <span class="sh-al" title="Unacknowledged alerts (A then Enter acknowledges)">P1 <span class="n">0</span> · P2 <span class="n">1</span></span>
+    </div>
+  </div>
+</nav>
+<!-- ===================== SHELL TOP END ===================== -->
+
+<main id="page">
+<div class="rf-wrap">
+
+  <!-- title row: key + name + one-line purpose (R06) + ALL SECTORS filter that filters every panel (R36) + locked editors + CSV + help.
+       Same words at 1600 and 1366. -->
+  <div class="rf-top">
+    <span class="rf-ttl"><kbd class="rf-kk">⇧F7</kbd><b>REFERENCE</b></span>
+    <span class="rf-purp"><b>The map every call is built on.</b> Live OI build-up (LB/SB/SC/LU) + F&amp;O movers ▲▼: <a class="lk" href="futures-oi.html#movers" title="F10 Futures &amp; OI: the build-up of every F&amp;O share by month and combined, and the MOVERS ▲▼ list (every share by price %, UP / DOWN / ALL). This page is the static map behind them: lots, strikes, sectors, drivers, baskets, other names.">F10 Fut &amp; OI ›</a> · <a class="lk" href="sectors.html" title="F2 Sectors: the movers inside each sector, with roles and build-up per share">F2 ›</a></span>
+    <label class="rf-sel" id="secsel" title="ALL SECTORS filters every panel on this page: the F&amp;O list, the theme map, the baskets and the names (contracts apply to every share). A share in two sectors shows under both."><select id="secf" aria-label="sector filter"></select></label>
+    <button class="rf-btn lock" title="The two editors (sector map and names) open only 15:35-09:00. Every edit is logged with its reason. Why: a map change mid-session would change the roles, sector % and tags behind the calls that are live now. Reading, testing a word and CSV always work.">EDIT MAP · NAMES 🔒 <span class="mono">15:35</span> · in <span class="mono">3h 51m</span> · protects live calls</button>
+    <a class="rf-btn" href="#" title="Download the F&amp;O list (lots, steps, ticks, strikes, sectors, baskets, aliases) as CSV - read-only">CSV</a>
+    <a class="rf-help" href="help.html#reference" title="? Help - every column, tag and rule on this page">?</a>
+  </div>
+
+  <!-- verdict band: can every call trust today's reference data? (R09, R39) + five count tiles (kept at 1366) -->
+  <section class="rf-verd" aria-label="reference verdict">
+    <div class="rf-vs">
+      <span class="rf-big" title="MAP OK = lots, tick sizes, strike lists and expiries agree between the Kite instrument file and the NSE / BSE contract master for every F&amp;O share and index. A share that disagrees is HARD-BLOCKED for calls until they agree - the only kind of block this page can cause."><i></i>MAP OK</span>
+      <small>read-only · 0 blocked now</small>
+    </div>
+    <div class="rf-vt">
+      <div class="rf-v1" title="Kite instrument file 08:10 vs NSE contract master 08:10 and BSE (SENSEX) 08:12"><b>Kite = NSE on all <span id="v-agree"></span> F&amp;O shares + 5 indices</b> · lots, ticks, strikes, expiries · <b>0 blocked now</b></div>
+      <div class="rf-v2" title="The SAIL block is kept in the audit log (Health ⇧F9 and the change log below)"><b>08:45 check: 1 mismatch</b> (SAIL lot) → <a class="sym" href="share.html#SAIL">SAIL</a> blocked <span class="mono">08:41-09:05</span>, fixed by the reload · <b>re-checked <span class="mono">11:30</span>: all OK</b></div>
+      <div class="rf-v3"><a class="sym" href="share.html#TITAN">TITAN</a> 2 new strikes <span class="mono">09:41</span> → chain <span class="mono">09:41:30</span> · corp. actions <span class="tg late" title="the NSE corporate-actions file for 19 Nov is late (due 08:30): GIR uses 18 Nov's; blocks nothing - no ex-date in the next 3 sessions">LATE</span> blocks nothing · plain code, no AI cost · never rings</div>
+    </div>
+    <div class="rf-tiles" id="tiles"></div>
+  </section>
+
+  <div class="rf-grid">
+
+    <!-- COLUMN 1: the F&O list = sector map (one accordion list; options first, R07 / R22 / R42 inputs) -->
+    <div class="rf-col">
+      <section class="pn" id="p-uv">
+        <div class="ph"><span class="t" title="Every F&amp;O share (222) and the 5 index options, grouped by the versioned sector map v14 (since 01 Nov). Click a sector to open or close it in place.">F&amp;O list · sector map</span>
+          <label class="find" title="Find in this list: type a symbol or sector (2+ letters). Matching sectors open in place; Esc clears. The / box in the tab bar opens a share page instead."><span>find</span><input id="uvq" autocomplete="off" spellcheck="false" placeholder="share/sector"></label>
+          <span class="k" id="uvk"></span>
+          <span class="age" title="lots / strikes: NSE contract master 08:10 · MWPL: NSE 11:30 file, futures-equivalent (delta-based) OI as NSE uses since 2025 · premium, spread, depth, IV: live Kite"><span class="fd"></span>NSE 08:10 · MWPL FutEq <span class="mono">11:30</span> · live</span></div>
+        <div class="cb"><span class="chips" id="uvchips"></span></div>
+        <div class="banx" id="banx"></div>
+        <div class="uv-h" id="uvh"></div>
+        <div class="scw"><div class="rail" data-t="uvb"><span class="rb" data-d="-1" title="scroll up one screen">▲</span><span class="trk" title="the bar shows where you are in the list and how long it is - click or drag to scroll"><i></i></span><span class="rb" data-d="1" title="scroll down one screen">▼</span></div><div class="fade" data-t="uvb"><span></span></div><div class="fadeT" data-t="uvb"><span></span></div><div class="pb" id="uvb"></div></div>
+        <div class="pf" id="uvpf"></div>
+      </section>
+    </div>
+
+    <!-- COLUMN 2: theme map (driver -> sector -> every share, R18) + contracts / corporate actions / log (R25, R43) -->
+    <div class="rf-col c2">
+      <section class="pn" id="p-th">
+        <div class="ph"><span class="t">Theme map</span><span class="k" title="same-way % = days the sector moved the driver's way. PAST = the driver moved at least its trigger (1.0×) and wakes the theme agent; it falls back to NEAR only below 0.8× (no flapping). NEAR = 0.8-1.0×. quiet = below 0.8×. same way = % of days the sector moved the driver's way (95% range) vs any day; n under 30 = rule of thumb; weak = the range reaches the any-day rate. Fit on 2 years of days, refit 01 Nov (World ⇧F2).">% = same-way days vs any day · n</span><span class="age"><span class="fd"></span><span class="mono">11:44:15</span></span></div>
+        <div class="dix" id="dix"></div>
+        <div class="scw"><div class="rail" data-t="thb"><span class="rb" data-d="-1" title="scroll up one screen">▲</span><span class="trk" title="the bar shows where you are in the list and how long it is - click or drag to scroll"><i></i></span><span class="rb" data-d="1" title="scroll down one screen">▼</span></div><div class="fade" data-t="thb"><span></span></div><div class="fadeT" data-t="thb"><span></span></div><div class="pb" id="thb"></div></div>
+      </section>
+      <section class="pn" id="p-ct">
+        <div class="ph"><span class="t">Contracts · actions · log</span><span class="k" title="Not filtered by sector: expiries, holidays and corporate actions apply to every share">every share</span><span class="age" title="NSE contract master 08:10 (on time) · corporate-actions file LATE"><span class="fd"></span>NSE <span class="mono">08:10</span></span></div>
+        <div class="scw"><div class="rail" data-t="ctb"><span class="rb" data-d="-1" title="scroll up one screen">▲</span><span class="trk" title="the bar shows where you are in the list and how long it is - click or drag to scroll"><i></i></span><span class="rb" data-d="1" title="scroll down one screen">▼</span></div><div class="fade" data-t="ctb"><span></span></div><div class="fadeT" data-t="ctb"><span></span></div><div class="pb" id="ctb"></div></div>
+      </section>
+    </div>
+
+    <!-- COLUMN 3: baskets (policy S12 + rotation S11, R19 / R20 / R21) + other names (aliases, word tester) -->
+    <div class="rf-col c3">
+      <section class="pn" id="p-pl">
+        <div class="ph"><span class="t">Baskets</span><span class="k" id="plk"></span><span class="age" title="basket map v9 (18 Nov 16:05) · prices live"><span class="fd"></span>v9 · live</span></div>
+        <div class="scw"><div class="rail" data-t="plb"><span class="rb" data-d="-1" title="scroll up one screen">▲</span><span class="trk" title="the bar shows where you are in the list and how long it is - click or drag to scroll"><i></i></span><span class="rb" data-d="1" title="scroll down one screen">▼</span></div><div class="fade" data-t="plb"><span></span></div><div class="fadeT" data-t="plb"><span></span></div><div class="pb" id="plb"></div></div>
+      </section>
+      <section class="pn" id="p-nm">
+        <div class="ph"><span class="t" id="nmk">Other names</span><span class="nm-t"><label for="nmq" title="Type a name from a headline, TV line or live blog: GIR shows which F&amp;O share it tags, or why it tags none. Plain code, no AI cost.">test a word</label><input id="nmq" value="Muthoot" autocomplete="off" spellcheck="false"></span><span class="age" title="name table updated 18 Nov 16:20"><span class="fd"></span>18 Nov <span class="mono">16:20</span></span></div>
+        <div class="scw"><div class="rail" data-t="nmb"><span class="rb" data-d="-1" title="scroll up one screen">▲</span><span class="trk" title="the bar shows where you are in the list and how long it is - click or drag to scroll"><i></i></span><span class="rb" data-d="1" title="scroll down one screen">▼</span></div><div class="fade" data-t="nmb"><span></span></div><div class="fadeT" data-t="nmb"><span></span></div><div class="pb" id="nmb"><div class="nm-res" id="nmres" data-r data-u></div><div class="nm-q" id="nmqt" data-r data-u></div><div id="nmlist"></div></div></div>
+      </section>
+    </div>
+
+  </div>
+</div>
+
+</main>
+
+<!-- ===================== SHELL FOOTER START (copy verbatim) ===================== -->
+<footer id="sh-foot">
+  <span class="sh-sebi">About 9 in 10 individual F&amp;O traders lose money (SEBI study)</span><span class="sh-fs"></span>
+  <span>AI-generated, personal use only</span><span class="sh-fs"></span>
+  <a href="health.html" style="display:flex;align-items:center;gap:5px" title="worst component; opens Health (Shift+F9)"><span class="sh-dot" style="width:7px;height:7px"></span>health GREEN · worst K3 <span class="n">1.2s</span> · AI full</a><span class="sh-fs"></span>
+  <span class="sh-keys"><kbd>/</kbd>search <kbd>?</kbd>help <kbd>Space</kbd>plan card <kbd>Esc</kbd>close<span class="sh-wide" style="display:inline-flex;gap:5px;align-items:center"><kbd>A</kbd>+<kbd>Enter</kbd>ack <kbd>M</kbd>mute</span></span>
+  <a href="phone.html" title="the phone version: girtrader.com/m (four screens)">phone /m</a><span class="sh-fs"></span>
+  <span class="sh-mock">design mockup - illustrative values</span>
+</footer>
+<!-- ===================== SHELL FOOTER END ===================== -->
+
+<div id="tip" role="tooltip"></div>
+<script>
+/* GIR v3 · Reference (Shift+F7) · round 2 · Thu 19 Nov 2026 11:44:20 IST · design mockup - illustrative values.
+   Every count on the page (verdict, tiles, chips, sector counts, filter options, "n more") is computed from the arrays below, so
+   the numbers agree with each other and with the shell (A/D "of 222", BAN 2 · >85% 3, open −₹650 = −₹3,080 + ₹2,430, charges ₹190 from the ONE charges table). */
+const $ = id => document.getElementById(id);
+const S = s => `<a class="sym" href="share.html#${s}" title="open ${s} on the Share page (F7)">${s}</a>`;
+const fmt = n => n.toLocaleString('en-IN');
+const sg = v => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2) + '%';
+const cls = v => v > 0 ? 'up' : v < 0 ? 'dn' : 't2';
+const hash = s => [...s].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
+
+/* ---------------- SECTOR MAP v14 (every F&O share has exactly one primary sector) ---------------- */
+// key, name, status [cls, text], drivers line, policy line, % today (null = equal weight of the drawn members), members
+const SECT = [
+  ['JEW', 'Jewellers & gold loans', ['conf', 'CONFIRMED 09:20'], '<b>Gold</b> - revenue + stock value (jewellers), collateral value (gold loans) · silver minor · USD/INR import cost', 'RBI gold-loan norms → gold loans', null, 'TITAN KALYANKJIL MANAPPURAM MUTHOOTFIN'],
+  ['CAB', 'Cables & wires', ['conf', 'CONFIRMED 09:20'], '<b>Copper</b> - an input COST, yet the shares trade WITH copper (64%, n=44) · aluminium cost', '-', null, 'POLYCAB KEI HAVELLS'],
+  ['MET', 'Metals', ['conf', 'CONFIRMED 09:22'], '<b>LME copper, aluminium, zinc</b> - revenue · silver (HINDZINC) · iron ore (NMDC) · China news', 'CBIC / DGTR duties', null, 'HINDALCO VEDL NATIONALUM HINDCOPPER HINDZINC NMDC'],
+  ['BRK', 'Brokers & exchanges', ['gr', 'SHOCK 11:42'], '<b>SEBI</b> rules (MTF, margins, F&amp;O) · market volumes · no world driver', 'SEBI basket (core 5)', null, 'ANGELONE BSE CDSL MCX MOTILALOFS 360ONE CAMS KFINTECH'],
+  ['PHA', 'Pharma', ['conf', 'LONG BUILD-UP 10:42'], '<b>USFDA</b>, US drug pricing / tariffs · USD/INR (exports)', 'NPPA · CDSCO · USFDA', null, 'SUNPHARMA DIVISLAB CIPLA LUPIN DRREDDY AUROPHARMA ZYDUSLIFE TORNTPHARM ALKEM GLENMARK'],
+  ['STL', 'Steel', ['form', 'no theme'], '<b>Dalian iron ore</b>, China steel, SHFE rebar · import duties', 'CBIC / DGTR duties', null, 'SAIL TATASTEEL JSWSTEEL JINDALSTEL JSL APLAPOLLO'],
+  ['RLT', 'Realty', ['form', 'FORMING 2 of 5'], '<b>India 10y</b>, RBI rates (inverse)', 'RBI', -0.90, 'DLF GODREJPROP OBEROIRLTY LODHA PRESTIGE'],
+  ['PSB', 'PSU banks', ['form', 'FORMING 2 of 5'], '<b>India 10y</b>, RBI liquidity · beta 1.4× NIFTY', 'RBI', 0.60, 'SBIN BANKBARODA PNB CANBK UNIONBANK INDIANB BANKINDIA'],
+  ['OMC', 'Oil marketing', ['form', 'quiet'], '<b>Brent</b> - a COST (inverse, 72%, n=55) · USD/INR import cost', '-', 0.85, 'IOC BPCL HINDPETRO'],
+  ['AVI', 'Aviation', ['form', 'quiet'], '<b>Brent</b> - fuel COST (inverse)', 'DGCA · MoCA', 0.80, 'INDIGO'],
+  ['TYR', 'Tyres', ['form', 'quiet'], '<b>Brent</b> + rubber - COST (inverse)', '-', 0.55, 'APOLLOTYRE BALKRISIND MRF'],
+  ['PNT', 'Paints', ['form', 'quiet'], '<b>Brent</b> - crude derivatives are a COST (inverse)', '-', 0.40, 'ASIANPAINT PIDILITIND'],
+  ['OIL', 'Upstream oil & gas', ['form', 'quiet'], '<b>Brent</b> - revenue (with it)', '-', -0.40, 'ONGC OIL GAIL PETRONET RELIANCE MGL'],
+  ['IT', 'IT', ['form', 'avoid today'], '<b>Nasdaq, ADRs, USD/INR</b>, Accenture news', '-', -0.30, 'INFY TCS HCLTECH WIPRO TECHM LTIM PERSISTENT COFORGE MPHASIS OFSS KPITTECH TATAELXSI LTTS'],
+  ['PVB', 'Private banks', ['form', 'quiet'], '<b>India 10y</b>, RBI policy, credit growth', 'RBI', 0.10, 'HDFCBANK ICICIBANK KOTAKBANK AXISBANK INDUSINDBK IDFCFIRSTB FEDERALBNK BANDHANBNK RBLBANK AUBANK'],
+  ['NBF', 'NBFC & housing finance', ['form', 'quiet'], '<b>India 10y</b> (funding cost), RBI risk weights', 'RBI', -0.35, 'BAJFINANCE BAJAJFINSV SHRIRAMFIN CHOLAFIN LICHSGFIN PNBHOUSING LTF SBICARD POONAWALLA ABCAPITAL JIOFIN HUDCO IIFL CANFINHOME M&MFIN'],
+  ['INS', 'Insurance', ['form', 'quiet'], 'rates, IRDAI rules', 'IRDAI', 0.20, 'SBILIFE HDFCLIFE ICICIPRULI ICICIGI LICI MFSL POLICYBZR'],
+  ['PFI', 'Power financiers', ['form', 'quiet'], 'rates, power capex', 'RBI', 0.45, 'PFC RECLTD IREDA'],
+  ['AMC', 'Asset managers', ['form', 'quiet'], 'market levels, SEBI TER rules', 'SEBI (wider)', -0.95, 'HDFCAMC NAM-INDIA'],
+  ['AUT', 'Auto & parts', ['form', 'quiet'], 'monthly sales (1st), steel / aluminium cost', '-', -0.25, 'MARUTI M&M TMPV BAJAJ-AUTO HEROMOTOCO EICHERMOT TVSMOTOR ASHOKLEY BHARATFORG MOTHERSON BOSCHLTD EXIDEIND SONACOMS TIINDIA UNOMINDA ESCORTS'],
+  ['FMC', 'FMCG', ['form', 'quiet'], 'rural demand, input costs (palm oil, crude)', '-', 0.15, 'HINDUNILVR ITC NESTLEIND BRITANNIA DABUR MARICO GODREJCP COLPAL TATACONSUM UNITDSPR VBL PATANJALI'],
+  ['CEM', 'Cement', ['form', 'quiet'], 'pet coke, power cost, infra spend', '-', -0.20, 'ULTRACEMCO SHREECEM AMBUJACEM ACC DALBHARAT GRASIM RAMCOCEM'],
+  ['PWR', 'Power & utilities', ['form', 'quiet'], 'coal, power demand · CERC rules', 'CERC', -0.10, 'NTPC POWERGRID TATAPOWER ADANIGREEN ADANIENSOL JSWENERGY NHPC TORNTPOWER CESC IEX COALINDIA'],
+  ['CG', 'Capital goods & electricals', ['form', 'quiet'], 'order flow, GE Vernova / Siemens Energy · SOX (DIXON, KAYNES)', '-', -0.45, 'LT SIEMENS ABB BHEL CGPOWER CUMMINSIND SUPREMEIND ASTRAL KAYNES DIXON BLUESTARCO INOXWIND'],
+  ['DEF', 'Defence', ['form', 'quiet'], 'geopolitics, European defence shares, orders', '-', 0.30, 'HAL BEL BDL MAZDOCK SOLARINDS'],
+  ['RLY', 'Railways', ['form', 'quiet'], 'budget, orders', '-', -0.15, 'IRCTC IRFC RVNL TITAGARH'],
+  ['TEL', 'Telecom', ['form', 'quiet'], 'tariffs, AGR, spectrum', 'TRAI · DoT', -0.10, 'BHARTIARTL IDEA INDUSTOWER HFCL TATACOMM'],
+  ['INT', 'Internet & new age', ['form', 'quiet'], 'Nasdaq mood, own news', '-', -0.55, 'ETERNAL NYKAA PAYTM DELHIVERY NAUKRI INDIAMART'],
+  ['CD', 'Consumer durables', ['form', 'quiet'], 'demand, copper / steel cost', '-', -0.30, 'VOLTAS CROMPTON AMBER'],
+  ['CHM', 'Chemicals & agro', ['form', 'quiet'], 'China prices, crude, monsoon', 'CBIC / DGTR duties', 0.10, 'PIIND UPL SRF COROMANDEL CHAMBLFERT TATACHEM ATUL'],
+  ['HOS', 'Healthcare services', ['form', 'quiet'], 'own news', '-', 0.25, 'APOLLOHOSP MAXHEALTH FORTIS LAURUSLABS BIOCON SYNGENE LALPATHLAB'],
+  ['INF', 'Infra, ports & logistics', ['form', 'quiet'], 'orders, budget, freight', '-', -0.40, 'ADANIENT ADANIPORTS GMRAIRPORT CONCOR NBCC NCC'],
+  ['RET', 'Retail, hotels & lifestyle', ['form', 'quiet'], 'urban demand, festive season', '-', 0.05, 'TRENT DMART PAGEIND JUBLFOOD INDHOTEL ABFRL'],
+  ['MED', 'Media', ['form', 'quiet'], 'ad spend', '-', -0.20, 'SUNTV'],
+].map(r => ({ k: r[0], nm: r[1], st: r[2], drv: r[3], pol: r[4], pc0: r[5], mem: r[6].split(' ') }));
+const SK = Object.fromEntries(SECT.map(s => [s.k, s]));
+const SEC2 = { TITAN: [['CD', 0.3]], HINDALCO: [['CAB', 0.3]], HINDCOPPER: [['CAB', 0.3]], HAVELLS: [['CD', 0.5]], NMDC: [['STL', 0.3]] };
+const PRIM = {}; SECT.forEach(s => s.mem.forEach(m => { PRIM[m] = s.k; }));
+const secsOf = sym => [PRIM[sym], ...(SEC2[sym] || []).map(x => x[0])].filter(Boolean);
+
+/* live % today (same feed as F2, 11:44) - fixed where other pages show them, the rest filled around the sector average */
+const PC = { TITAN: -2.48, KALYANKJIL: -0.62, MANAPPURAM: -2.30, MUTHOOTFIN: -1.95, POLYCAB: -2.05, KEI: -1.90, HAVELLS: -1.10,
+  HINDALCO: -1.11, VEDL: -1.40, NATIONALUM: -1.80, HINDCOPPER: -1.98, HINDZINC: -1.75, NMDC: -0.66,
+  ANGELONE: -2.40, BSE: -2.00, CDSL: -1.70, MCX: -1.30, MOTILALOFS: -1.10, '360ONE': -0.40, CAMS: -2.10, KFINTECH: -1.80,
+  SAIL: -1.55, JINDALSTEL: -1.30, TATASTEEL: -0.90, JSL: -0.80, JSWSTEEL: -0.70, APLAPOLLO: -1.35,
+  SUNPHARMA: 1.85, DIVISLAB: -0.20, CIPLA: 1.25, LUPIN: 1.70, DRREDDY: 1.10, AUROPHARMA: 0.95, ZYDUSLIFE: 1.05, TORNTPHARM: 0.80, ALKEM: 1.10, GLENMARK: 0.90,
+  INDIGO: 0.80, INFY: -0.50, TCS: -0.20, IDEA: -0.80, RBLBANK: -0.60 };
+SECT.forEach(s => {
+  const fixed = s.mem.filter(m => m in PC), free = s.mem.filter(m => !(m in PC));
+  if (s.pc0 === null) { s.pc = Math.round(s.mem.reduce((a, m) => a + PC[m], 0) / s.mem.length * 100) / 100; return; }
+  s.pc = s.pc0;
+  if (!free.length) return;
+  const target = s.pc0 * s.mem.length - fixed.reduce((a, m) => a + PC[m], 0);
+  let acc = 0;
+  free.forEach((m, i) => {
+    if (i === free.length - 1) { PC[m] = Math.round((target - acc) * 100) / 100; return; }
+    const v = Math.round((target / free.length + ((hash(m) % 100) / 100 - 0.5) * 1.1) * 100) / 100; PC[m] = v; acc += v;
+  });
+});
+const N_FO = SECT.reduce((a, s) => a + s.mem.length, 0);   // must be 222 (the shell's A/D "of 222")
+if (N_FO !== 222) console.error('F&O count ' + N_FO + ' != 222');
+
+/* roles today (sector engine on F2 at 11:44; read-only here) and his open positions (F6 MY TRADES; both Dec, both opened today) */
+const ROLE = { TITAN: 'LEADER', KALYANKJIL: 'LAGGARD', MANAPPURAM: 'DEPENDENT', MUTHOOTFIN: 'DEPENDENT', POLYCAB: 'LEADER', KEI: 'FOLLOWER',
+  SUNPHARMA: 'LEADER', DIVISLAB: 'LAGGARD', ANGELONE: 'LEADER', BSE: 'DEPENDENT', NATIONALUM: 'FOLLOWER', HINDALCO: 'FOLLOWER' };
+const HELD = { MANAPPURAM: { c: 'Dec 285 PE', t: '10:06', pl: '+₹2,430', ch: '₹120' }, HINDALCO: { c: 'Dec 680 PE', t: '11:02', pl: '−₹3,080', ch: '₹70' } };   // charges: the ONE table, = the shell's ₹190
+const roleTag = s => ROLE[s] ? `<span class="tg role" title="role today from the sector engine (F2): leader / dependent / laggard / follower">${ROLE[s]}</span>` : '';
+const heldTag = s => HELD[s] ? `<span class="tg held" title="your open position (F6 MY TRADES): ${HELD[s].c}, expires Tue 29 Dec, opened ${HELD[s].t}, ${HELD[s].pl} net; GIR's 15:10 exit closes it today">YOU HOLD ${HELD[s].c}</span>` : '';
+const roleTags = s => roleTag(s) + heldTag(s);
+
+/* ---------------- THE F&O LIST rows ---------------- */
+// FEES = charges for 1 lot in + out from the ONE charges table (Settings › Charges, Zerodha rates verified 18 Nov) - the same table
+// that gives the shell's "charges ₹190" (MANAPPURAM ₹120 + HINDALCO ₹70): ₹20 + ₹20 brokerage, STT 0.1% of the sell premium,
+// exchange, GST 18%, stamp. The bid / ask SPREAD is not a charge: it is the SPRD % column (₹ in the tooltip and the notes).
+const fees = cost => Math.round(47.2 + 0.00186 * cost);
+// sym, label, lot, step, Dec ATM premium (mid, live), spread now %, spread 5-day median %, depth (ask lots, best 5, live), IV now, IV 20-day,
+// MWPL % (FutEq OI), MWPL 5 days, results, strikes listed (Dec), flags, note
+const DR = [
+  ['TITAN', 'Jewellers', 175, 50, 103.60, 0.6, 0.5, 41, 29, 24, 38, [30, 33, 35, 36, 38], '~Feb', 58, ['chg'], '2 new Nov strikes <b>3,200 · 3,150</b> (NSE 09:41) → in chain + chooser 09:41:30 · also Consumer durables 0.3'],
+  ['KALYANKJIL', 'Jewellers', 1350, 10, 19.60, 0.7, 0.6, 22, 41, 36, 47, [40, 42, 44, 45, 47], '~Feb', 52, ['chg'], 'Nov strikes: spread 1.6% (≈ ₹200 a lot in + out) → use the <b>Dec 500 PE</b> (0.6%) · Jan lot 1,175'],
+  ['MANAPPURAM', 'Gold loans', 3000, 2.5, 10.15, 0.9, 0.8, 64, 38, 31, 86, [62, 70, 77, 81, 86], '~Feb', 46, [], 'MWPL 86%: if it enters the ban (95%) you can still close it, not add'],
+  ['MUTHOOTFIN', 'Gold loans', 275, 20, 58.90, 0.7, 0.7, 28, 33, 29, 44, [39, 40, 42, 43, 44], '~Feb', 62, [], '"Muthoot" alone is not this share (Other names)'],
+  ['POLYCAB', 'Cables', 125, 50, 248.00, 0.6, 0.6, 33, 33, 28, 29, [24, 25, 27, 28, 29], '~Jan', 64, [], 'copper is a COST, yet it trades WITH copper (64%, n=44)'],
+  ['KEI', 'Cables', 175, 50, 96.80, 0.9, 0.9, 19, 36, 31, 33, [30, 31, 31, 32, 33], '~Jan', 56, [], ''],
+  ['HAVELLS', 'Cables · FMEG', 500, 20, 31.20, 0.6, 0.6, 52, 24, 22, 21, [20, 20, 21, 21, 21], '~Jan', 54, [], 'also Consumer durables 0.5'],
+  ['HINDALCO', 'Metals · alu', 1400, 10, 14.10, 0.7, 0.7, 75, 30, 27, 24, [21, 22, 22, 23, 24], '~Feb', 50, [], 'Novelis (US) news tags here · also Cables 0.3'],
+  ['VEDL', 'Metals', 1150, 5, 13.60, 0.7, 0.7, 60, 31, 29, 31, [28, 29, 30, 30, 31], '~Feb', 48, [], ''],
+  ['NATIONALUM', 'Metals · alu', 3750, 2.5, 6.10, 1.2, 1.1, 30, 39, 35, 52, [44, 46, 49, 50, 52], '~Feb', 40, ['chg'], 'ATM spread 1.2% → the <b>1 ITM strike</b> (0.8%) costs less to trade · Jan lot 3,375'],
+  ['HINDCOPPER', 'Metals · copper', 2650, 5, 9.40, 1.2, 1.2, 18, 44, 38, 91, [70, 76, 82, 87, 91], '~Feb', 44, [], 'MWPL 91%: may enter the ban tomorrow - new trades allowed today · spread 1.2% → <b>1 ITM</b> (0.9%)'],
+  ['HINDZINC', 'Metals · zinc', 1225, 5, 12.10, 0.9, 0.9, 24, 28, 26, 18, [17, 17, 18, 18, 18], '~Jan', 42, ['chg'], 'ex-dividend 27 Nov (₹10.10, 2.1%) → NSE cuts every <b>Dec and Jan</b> strike by ₹10.10; lot unchanged · GIR levels × 0.979'],
+  ['NMDC', 'Mining · ore', 6750, 1, 2.40, 1.0, 1.0, 40, 35, 33, 22, [21, 21, 22, 22, 22], '~Feb', 36, [], 'iron ore driver · also Steel 0.3'],
+  ['ANGELONE', 'Broker', 250, 50, 78.20, 0.9, 0.8, 26, 48, 39, 47, [41, 42, 44, 45, 47], '~Jan', 60, [], 'SEBI basket core · old name Angel Broking · IV up 9 on the shock'],
+  ['BSE', 'Exchange', 375, 50, 88.40, 0.7, 0.6, 40, 44, 38, 39, [36, 37, 37, 38, 39], '~Feb', 66, [], 'SEBI basket core · "BSE Sensex" lines are index news, not BSE Ltd'],
+  ['CDSL', 'Depository', 475, 20, 44.10, 0.9, 0.8, 22, 41, 35, 35, [33, 33, 34, 34, 35], '~Jan', 52, [], 'SEBI basket core'],
+  ['MCX', 'Exchange', 125, 100, 212.50, 0.8, 0.7, 18, 40, 36, 41, [37, 38, 39, 40, 41], '~Jan', 48, [], 'SEBI basket core · "MCX gold / crude" lines are prices, not MCX news'],
+  ['MOTILALOFS', 'Broker', 700, 10, 29.80, 1.4, 1.3, 9, 45, 40, 22, [20, 21, 21, 22, 22], '~Jan', 44, [], 'spread 1.4%, depth 9 lots → the <b>1 ITM</b> (0.9%) with a limit at mid'],
+  ['360ONE', 'Wealth', 500, 20, 38.60, 1.0, 1.0, 12, 34, 32, 27, [25, 26, 26, 27, 27], '~Jan', 46, [], 'SEBI basket (wider)'],
+  ['CAMS', 'RTA', 150, 50, 118.40, 0.9, 0.9, 14, 36, 33, 31, [29, 30, 30, 31, 31], '~Jan', 50, [], ''],
+  ['KFINTECH', 'RTA', 450, 20, 36.20, 1.0, 1.0, 11, 37, 34, 28, [26, 27, 27, 28, 28], '~Jan', 46, [], ''],
+  ['SUNPHARMA', 'Pharma', 350, 20, 41.20, 0.5, 0.5, 120, 24, 22, 18, [16, 16, 17, 17, 18], '~Jan', 70, [], 'long build-up leader'],
+  ['DIVISLAB', 'Pharma', 100, 50, 148.50, 0.9, 0.9, 21, 27, 26, 23, [22, 22, 23, 23, 23], '~Feb', 60, [], 'pharma laggard still flat (−0.20%) - catch-up CE on F2'],
+  ['CIPLA', 'Pharma', 375, 20, 36.80, 0.6, 0.6, 64, 23, 22, 20, [18, 19, 19, 20, 20], '~Jan', 58, [], ''],
+  ['LUPIN', 'Pharma', 425, 20, 34.90, 0.7, 0.7, 30, 27, 25, 21, [19, 20, 20, 21, 21], '~Feb', 56, [], ''],
+  ['DRREDDY', 'Pharma', 625, 10, 22.60, 0.6, 0.6, 48, 24, 23, 17, [16, 16, 17, 17, 17], '~Jan', 54, [], ''],
+  ['AUROPHARMA', 'Pharma', 550, 10, 27.60, 0.7, 0.7, 36, 28, 26, 24, [22, 23, 23, 24, 24], '~Feb', 50, [], ''],
+  ['ZYDUSLIFE', 'Pharma', 900, 10, 18.90, 0.8, 0.8, 30, 27, 26, 26, [24, 25, 25, 26, 26], '~Feb', 48, [], ''],
+  ['TORNTPHARM', 'Pharma', 250, 50, 63.80, 0.8, 0.8, 16, 23, 22, 15, [14, 14, 15, 15, 15], '~Jan', 50, [], ''],
+  ['ALKEM', 'Pharma', 125, 50, 118.60, 0.9, 0.9, 10, 25, 24, 14, [13, 13, 14, 14, 14], '~Feb', 48, [], ''],
+  ['GLENMARK', 'Pharma', 375, 20, 42.10, 0.9, 0.9, 22, 33, 31, 33, [30, 31, 32, 32, 33], '~Feb', 52, [], ''],
+  ['SAIL', 'Steel', 4700, 2.5, 4.90, 0.9, 0.9, 44, 34, 32, 88, [71, 78, 82, 85, 88], '~Feb', 40, ['chg'], 'lot <b>4,700</b>: Kite showed 4,750 at 08:41 → hard block till the 09:05 reload · MWPL 88%: new trades allowed'],
+  ['TATASTEEL', 'Steel', 5500, 2.5, 4.10, 0.6, 0.6, 210, 28, 27, 26, [24, 25, 25, 26, 26], '~Feb', 46, [], ''],
+  ['JSWSTEEL', 'Steel', 675, 10, 24.50, 0.6, 0.6, 58, 25, 24, 19, [18, 18, 19, 19, 19], '~Jan', 50, [], ''],
+  ['JINDALSTEL', 'Steel', 625, 10, 28.40, 0.7, 0.7, 35, 30, 29, 30, [27, 28, 29, 29, 30], '~Feb', 48, [], ''],
+  ['JSL', 'Stainless', 1000, 10, 18.60, 0.9, 0.9, 20, 31, 30, 34, [31, 32, 33, 33, 34], '~Jan', 44, [], ''],
+  ['APLAPOLLO', 'Steel tubes', 350, 20, 47.20, 0.8, 0.8, 15, 29, 28, 25, [23, 24, 24, 25, 25], '~Jan', 46, [], ''],
+  ['IDEA', 'Telecom', 71475, 1, 0.35, 14.3, 14.3, 900, 52, 50, 97, [90, 92, 94, 96, 97], '~Feb', 24, ['ban'], '<span class="bk">BAN</span> (MWPL 97%) - <b>only close existing positions</b>, no new trades · premium 0.35: one 0.05 tick is 14% (tick-bound, not illiquid)'],
+  ['RBLBANK', 'Pvt banks', 3175, 2.5, 7.20, 0.8, 0.8, 50, 34, 32, 95, [86, 89, 92, 94, 95], '~Jan', 44, ['ban'], '<span class="bk">BAN</span> (MWPL 95%) - <b>only close existing positions</b>, no new trades'],
+  ['IEX', 'Power exch.', 3750, 2.5, 5.30, 0.9, 0.9, 40, 38, 36, 58, [52, 54, 55, 57, 58], '~Jan', 40, [], 'CERC basket · market coupling is its big policy risk'],
+  ['POLICYBZR', 'Insurance tech', 350, 20, 52.40, 0.8, 0.8, 22, 34, 33, 33, [31, 32, 32, 33, 33], '~Feb', 50, [], 'IRDAI basket · brands Policybazaar, Paisabazaar'],
+  ['ETERNAL', 'Internet', 2425, 5, 9.10, 0.6, 0.6, 210, 36, 35, 12, [11, 11, 12, 12, 12], '~Jan', 60, [], 'old name <b>Zomato</b> (renamed 2025) · Blinkit, District'],
+  ['TMPV', 'Auto · cars', 800, 10, 22.40, 0.6, 0.6, 140, 31, 30, 21, [20, 20, 21, 21, 21], '~Feb', 56, [], 'old <b>Tata Motors</b> (2025 demerger): cars, EV, JLR · trucks = TMCV (not F&amp;O)'],
+  ['INDIGO', 'Aviation', 150, 50, 118.00, 0.6, 0.6, 40, 27, 26, 15, [14, 14, 15, 15, 15], '~Jan', 58, [], 'Brent is a COST (inverse) · DGCA basket'],
+  ['INFY', 'IT', 400, 20, 36.10, 0.4, 0.4, 300, 22, 21, 9, [9, 9, 9, 9, 9], '~Jan', 74, [], 'Nasdaq, ADRs and USD/INR drive it · avoid IT today (Nasdaq past its trigger)'],
+];
+const LOTS = [125, 150, 175, 200, 250, 275, 300, 350, 375, 400, 425, 450, 500, 550, 600, 625, 700, 750, 800, 900, 1000, 1100, 1200, 1250, 1400, 1500, 1600, 1800, 2000, 2400, 2700, 3000, 3500, 4000, 4500, 5000];
+function gen(sym) {  // plausible values for the rows not drawn by hand (deterministic, illustrative)
+  const h = hash(sym), cost = 9000 + (h % 26000), lot = LOTS[(h >>> 3) % LOTS.length];
+  const prem = Math.max(0.5, Math.round(cost / lot * 20) / 20), px = prem / 0.04;
+  const step = px < 100 ? 1 : px < 250 ? 2.5 : px < 500 ? 5 : px < 1000 ? 10 : px < 2500 ? 20 : px < 5000 ? 50 : 100;
+  const spm = Math.round((0.4 + ((h >>> 5) % 55) / 100) * 10) / 10, spn = Math.min(0.9, Math.round((spm + (((h >>> 7) % 3) - 1) * 0.1) * 10) / 10);
+  const iv20 = 18 + (h >>> 9) % 20, iv = iv20 + ((h >>> 11) % 6) - 2, mw = 8 + (h >>> 13) % 55;
+  const mwt = [mw - 4, mw - 3, mw - 2, mw - 1, mw].map(v => Math.max(1, v));
+  return [sym, SK[PRIM[sym]].nm, lot, step, prem, Math.max(0.3, spn), spm, 10 + (h >>> 4) % 140, iv, iv20, mw, mwt, (h % 2) ? '~Jan' : '~Feb', 30 + (h >>> 6) % 50, [], ''];
+}
+const DRS = Object.fromEntries(DR.map(r => [r[0], r]));
+const mk = (r, g) => ({ s: r[0], lb: r[1], lot: r[2], step: r[3], prem: r[4], spn: r[5], spm: r[6], dep: r[7], iv: r[8], iv20: r[9], mw: r[10], mwt: r[11], res: r[12], stk: r[13], f: r[14], nt: r[15], g });
+const U = [];
+SECT.forEach(s => s.mem.forEach(m => U.push(mk(DRS[m] || gen(m), s.k))));
+// index options: lot from the Jan 2026 revision; ₹/LOT and SPRD for the expiry named on the row
+const IDX = [
+  ['NIFTY', 'NSE · weekly (Tue)', 65, 50, 118.00, 0.1, 0.1, 950, 14.6, 13.9, 'current weekly <b>Mon 23 Nov</b> ATM (Tue 24 holiday) · lot 75 → 65 from the Jan 2026 series · <a class="lk" href="market.html#NIFTY">MARKET ›</a>'],
+  ['BANKNIFTY', 'NSE · monthly', 30, 100, 412.00, 0.1, 0.1, 620, 15.8, 15.1, 'monthly <b>Mon 23 Nov</b> ATM (no weekly) · lot 35 → 30 · <a class="lk" href="market.html#BANKNIFTY">MARKET ›</a>'],
+  ['FINNIFTY', 'NSE · monthly', 60, 50, 168.00, 0.2, 0.2, 140, 15.1, 14.6, 'monthly <b>Mon 23 Nov</b> ATM · lot 65 → 60'],
+  ['MIDCPNIFTY', 'NSE · monthly', 120, 25, 96.00, 0.2, 0.2, 110, 17.2, 16.4, 'monthly <b>Mon 23 Nov</b> ATM · lot 140 → 120'],
+  ['SENSEX', 'BSE · weekly Thu', 20, 100, 420.00, 0.2, 0.2, 180, 14.9, 14.2, 'this week\'s expires <b>today 15:30</b> (BSE) · ₹/lot = next weekly <b>Thu 26 Nov</b> ATM'],
+].map(r => ({ s: r[0], lb: r[1], lot: r[2], step: r[3], prem: r[4], spn: r[5], spm: r[6], dep: r[7], iv: r[8], iv20: r[9], mw: null, mwt: null, res: '-', stk: null, f: ['idx'], nt: r[10], g: 'IDX' }));
+const ALL = [...IDX, ...U];
+ALL.forEach(r => { r.cost = Math.round(r.prem * r.lot); r.fee = fees(r.cost); r.sprR = Math.round(r.spn / 100 * r.cost); });
+
+/* ---------------- THEME MAP data (driver -> sector -> every F&O share) ---------------- */
+// id, label, move, unit, source, trigger, neutral colour?, [sector, key, relation, hit%, lo, hi, any-day %, n, shares], action, proof
+const TH = [
+  ['GOLD', 'GOLD', -1.62, '%', 'MCX Dec · COMEX', 1.5, false, [
+    ['Jewellers', 'JEW', 'revenue', 71, 57, 82, 50, 48, 'TITAN KALYANKJIL'],
+    ['Gold loans', 'JEW', 'collateral', 66, 52, 78, 50, 48, 'MANAPPURAM MUTHOOTFIN']],
+    `<b>TITAN</b> <span class="sd">PE</span> extended → bounce to VWAP <b class="mono">3,414</b> (LTP <span class="mono">3,398.20</span>, 0.5% below), half size · <b>KALYANKJIL</b> <span class="sd">PE</span> catch-down <span class="warn">GET READY</span>`,
+    'trigger ±1.5% (replay Nov 2024 - Oct 2026): fired on 48 days (24 a year) · the sector followed by 15:10 on 34 of them (71%) → false alarms 29% · PAST at 1.0×, back to NEAR only below 0.8×'],
+  ['COPPER', 'COPPER', -1.80, '%', 'LME · 5-mth low', 2, false, [
+    ['Cables & wires', 'CAB', 'COST, trades WITH it', 64, 49, 77, 47, 44, 'POLYCAB KEI HAVELLS'],
+    ['Metals', 'MET', 'revenue', 69, 55, 80, 50, 52, 'HINDALCO VEDL HINDCOPPER']],
+    `<b>POLYCAB</b> <span class="sd">PE</span> extended → bounce to <b class="mono">6,925</b> (1st lower high, VWAP 6,940; LTP <span class="mono">6,868.40</span>, 0.8% below), half size`,
+    'trigger ±2% (replay 2 years): fired on 31 days (15 a year) · followed by 15:10 on 21 (68%) → false alarms 32% · NEAR from 0.8×'],
+  ['NDX', 'NASDAQ · SOX', -1.90, '%', 'fut · SOX −2.6%', 1.5, false, [
+    ['IT', 'IT', 'US clients, ADRs', 54, 42, 66, 51, 60, 'INFY TCS HCLTECH WIPRO TECHM LTIM PERSISTENT COFORGE MPHASIS OFSS KPITTECH TATAELXSI LTTS'],
+    ['Electronics (SOX)', 'CG', 'chip cycle', null, 0, 0, 50, 22, 'DIXON KAYNES']],
+    `thesis 07:15: <b>avoid IT</b> today - no CE on IT while Nasdaq is past its trigger`, 'trigger ±1.5% (replay 2 years): fired on 58 days · IT followed on 54% → weak; used to AVOID, not to call'],
+  ['DXY', 'DXY', 0.54, '%', 'ICE · 15m late', 0.5, false, [['context', null, 'pushed gold down overnight', null, 0, 0, 0, null, '']], '', 'context only: no F&amp;O sector is called on DXY'],
+  ['SILVER', 'SILVER', -2.40, '%', 'COMEX', 3, false, [
+    ['Metals', 'MET', 'HINDZINC silver revenue', 58, 44, 70, 50, 52, 'HINDZINC'],
+    ['Jewellers', 'JEW', 'minor', 52, 38, 65, 50, 48, 'TITAN KALYANKJIL']], '', 'trigger ±3% · fired on 22 days in 2 years'],
+  ['ALU', 'ALUMINIUM', -1.10, '%', 'LME', 2, false, [
+    ['Metals', 'MET', 'revenue', 63, 49, 75, 50, 52, 'NATIONALUM HINDALCO VEDL'],
+    ['Cables & wires', 'CAB', 'input cost', 55, 40, 69, 47, 44, 'POLYCAB KEI HAVELLS']], '', 'trigger ±2%'],
+  ['ZINC', 'ZINC', -0.90, '%', 'LME', 1.5, false, [['Metals', 'MET', 'revenue', null, 0, 0, 50, 24, 'HINDZINC']], '', 'trigger ±1.5%'],
+  ['BRENT', 'BRENT', -1.10, '%', 'ICE · 1m', 2, false, [
+    ['Oil marketing', 'OMC', 'COST - inverse', 72, 59, 82, 49, 55, 'IOC BPCL HINDPETRO'],
+    ['Aviation', 'AVI', 'fuel COST - inverse', null, 0, 0, 50, 26, 'INDIGO'],
+    ['Paints', 'PNT', 'COST - inverse', 61, 47, 73, 50, 50, 'ASIANPAINT PIDILITIND'],
+    ['Tyres', 'TYR', 'COST - inverse', null, 0, 0, 50, 18, 'APOLLOTYRE BALKRISIND MRF'],
+    ['Upstream oil & gas', 'OIL', 'revenue', 68, 55, 79, 51, 55, 'ONGC OIL GAIL PETRONET RELIANCE MGL']], '', 'trigger ±2%'],
+  ['ORE', 'IRON ORE · STEEL', -0.80, '%', 'Dalian · SHFE', 3, false, [
+    ['Steel', 'STL', 'steel price', 62, 48, 74, 50, 50, 'SAIL TATASTEEL JSWSTEEL JINDALSTEL JSL APLAPOLLO'],
+    ['Metals', 'MET', 'NMDC ore revenue', 58, 44, 70, 50, 52, 'NMDC']], '', 'trigger ±3%'],
+  ['INR', 'USD/INR', 0.08, '%', 'spot · rupee weaker', 0.3, true, [
+    ['IT', 'IT', 'exports - gains when the rupee weakens', 58, 45, 70, 51, 60, 'INFY TCS HCLTECH WIPRO TECHM LTIM PERSISTENT COFORGE MPHASIS OFSS KPITTECH TATAELXSI LTTS'],
+    ['Pharma', 'PHA', 'exports', 57, 44, 69, 50, 60, 'SUNPHARMA DIVISLAB CIPLA LUPIN DRREDDY AUROPHARMA ZYDUSLIFE TORNTPHARM ALKEM GLENMARK'],
+    ['Oil marketing', 'OMC', 'import COST - inverse', 58, 45, 70, 49, 55, 'IOC BPCL HINDPETRO']], '', 'trigger ±0.3% · USD/INR up = rupee weaker (neutral colour: not good or bad by itself)'],
+  ['IN10Y', 'INDIA 10Y', -3, 'bp', 'CCIL · down helps banks', 10, true, [
+    ['Banks', 'PSB', 'bond book, rates - inverse', 60, 45, 73, 51, 44, 'SBIN BANKBARODA PNB CANBK UNIONBANK INDIANB BANKINDIA HDFCBANK ICICIBANK KOTAKBANK AXISBANK'],
+    ['Realty', 'RLT', 'rates - inverse', 63, 45, 78, 50, 28, 'DLF GODREJPROP OBEROIRLTY LODHA PRESTIGE'],
+    ['Gold loans', 'JEW', 'funding cost - inverse', 56, 41, 70, 50, 44, 'MANAPPURAM MUTHOOTFIN']], '', 'trigger ±10 bp · yields DOWN help banks and realty (neutral colour)'],
+].map(r => ({ id: r[0], nm: r[1], mv: r[2], u: r[3], src: r[4], tr: r[5], neu: r[6], secs: r[7], act: r[8], proof: r[9], x: Math.abs(r[2]) / r[5] }));
+TH.forEach(t => { t.x = Math.round(t.x * 100) / 100; t.st = t.x >= 1 ? 'PAST' : t.x >= 0.8 ? 'NEAR' : 'quiet'; });
+const THEMED = new Set(); TH.filter(t => t.st !== 'quiet').forEach(t => t.secs.forEach(s => (s[8] || '').split(' ').filter(Boolean).forEach(m => THEMED.add(m))));
+
+/* ---------------- BASKETS (policy S12 + rotation S11) ---------------- */
+const PL = [
+  { rg: 'SEBI', ar: 'capital markets', core: 'ANGELONE BSE CDSL MCX MOTILALOFS', wide: '360ONE CAMS KFINTECH HDFCAMC NAM-INDIA',
+    words: 'MTF · margin · F&amp;O rules · lot size · weekly expiry · "sources say" · "considering" · "no decision yet" · denial',
+    reads: 'MTF limit or margin up → brokers ▼ (ANGELONE most) · <b>lower commodity margins → MCX ▲</b> (more trading - the 18 Nov 09:01 misread, now a rule) · every reading checked by a 2nd model',
+    now: `<div><b>"brokers falling together - news not found yet"</b></div>
+      <div title="move began = the first basket share past 2σ of its own 60-s moves · alarm = the 3rd share past 2σ on 4.1× volume · aired = CNBC-TV18 segment on air · read = GIR had the words (speech-to-text 14 s) · price led the news = 11:41:16 → 11:42:17 = 61 s">move <b class="mono">11:41:16</b> → alarm <b class="mono">11:42:08</b> → aired <b class="mono">11:42:17</b> → read <b class="mono">11:42:31</b> · price led the news by 61 s (move → aired)</div>
+      <div>CNBC-TV18 reporter (TV speech-to-text): <b>"SEBI mulls MTF limits - sources; no decision yet"</b> · SEBI site: nothing yet (checked every 10 s) · X off: an X-first story is missed</div>
+      <div>GO NOW only after a 2nd source or SEBI's page · <b class="mono">11:44:16</b> BSE MD, ET Now: "MTF is a broker matter" · <b class="mono">11:44:18</b> CDSL filing: no SEBI letter, not a denial · <a class="lk" href="news.html#mtf">F4 ›</a></div>` },
+  { rg: 'RBI', ar: 'banks · NBFC · gold loans', core: 'MANAPPURAM MUTHOOTFIN BAJFINANCE SBIN HDFCBANK ICICIBANK', wide: '', watch: 'MPC 4 Dec', open: 1,
+    today: 'today: no RBI story - gold loans fall with <b>GOLD</b> (theme map), not on policy',
+    words: 'repo · CRR · risk weight · <b>gold-loan LTV / norms</b> · digital lending',
+    reads: 'rate cut → banks, NBFC, realty ▲ · risk weights up → NBFC ▼ · gold-loan norms tightened → MANAPPURAM, MUTHOOTFIN ▼' },
+  { rg: 'IRDAI', ar: 'insurance', core: 'POLICYBZR SBILIFE HDFCLIFE ICICIPRULI ICICIGI LICI', wide: '', watch: 'consult. to 30 Nov',
+    words: 'commission cap · bancassurance · FDI · surrender value', reads: 'commission caps → POLICYBZR ▼, insurers mixed' },
+  { rg: 'CERC', ar: 'power trading', core: 'IEX', wide: 'NTPC TATAPOWER JSWENERGY', watch: 'quiet',
+    words: 'market coupling · trading margin', reads: 'market coupling → IEX ▼ (the biggest one-day policy risk in this basket)' },
+  { rg: 'TRAI · DoT', ar: 'telecom', core: 'BHARTIARTL IDEA INDUSTOWER', wide: '', watch: 'IDEA in BAN',
+    words: 'tariff · AGR · spectrum', reads: 'AGR relief → IDEA ▲ (IDEA in BAN: only close existing positions) · tariff hike → BHARTIARTL, IDEA ▲' },
+  { rg: 'NPPA·CDSCO·USFDA', ar: 'pharma', core: 'SUNPHARMA CIPLA DRREDDY LUPIN AUROPHARMA ZYDUSLIFE', wide: '', watch: 'quiet',
+    words: 'price cap · warning letter · OAI · import alert · US tariff', reads: 'price cap or OAI → that one share ▼ (rarely the sector)' },
+  { rg: 'DGCA · MoCA', ar: 'aviation', core: 'INDIGO', wide: '', watch: 'quiet', words: 'fare cap · safety order · grounding', reads: 'fare cap or grounding → INDIGO ▼' },
+  { rg: 'CBIC·DGTR·DGFT', ar: 'duties', core: 'SAIL TATASTEEL JSWSTEEL JINDALSTEL HINDALCO', wide: 'UPL SRF', watch: 'quiet',
+    words: 'safeguard duty · anti-dumping · export duty', reads: 'import duty on steel → steel ▲ · export duty → steel ▼' },
+  { rg: 'Parliament', ar: 'Parliament · Cabinet: bills, approvals', core: '', wide: '', watch: 'no bill today',
+    words: 'bills in "business of the day" (sansad.in) · Cabinet decisions (PIB)', reads: 'each listed bill is mapped to its F&amp;O shares at 07:00 · today: no listed bill maps to an F&amp;O share' },
+];
+const ROT = [ // rotation / group baskets (S11: one source for every basket list, built daily from the F&O file); a basket holding a
+  // share of today's themes comes first (Tata group: TITAN, the gold-theme leader and the day's biggest faller)
+  ['Tata group', 'beta 1.0×', 'TITAN TMPV TATASTEEL TATAPOWER TATACONSUM TCS TATACOMM TATAELXSI TATACHEM TRENT INDHOTEL'],
+  ['PSU banks', 'beta 1.4×', 'SBIN BANKBARODA PNB CANBK UNIONBANK INDIANB BANKINDIA'],
+  ['PSU defence', 'beta 1.3×', 'HAL BEL BDL MAZDOCK'],
+  ['Rail', 'beta 1.5×', 'IRCTC IRFC RVNL TITAGARH'],
+  ['Power financiers', 'beta 1.3×', 'PFC RECLTD IREDA'],
+  ['Adani group', 'beta 1.6×', 'ADANIENT ADANIPORTS ADANIGREEN ADANIENSOL'],
+].map(r => ({ nm: r[0], beta: r[1], mem: r[2].split(' ') }));
+const plMem = p => (p.core + ' ' + p.wide).split(' ').filter(Boolean);
+const INBASKET = new Set(PL.flatMap(p => p.core.split(' ').filter(Boolean)));
+
+/* ---------------- OTHER NAMES ---------------- */
+const NM = [
+  { s: 'MUTHOOTFIN', co: 'Muthoot Finance', isin: 'INE414G01012', pr: 97, rc: 92, n: 156, l2: 'subsidiary Belstar Microfinance', t: 'clash', rule: '"Muthoot" alone → no tag: Muthoot Fincorp is a different, unlisted company. Tag needs "Finance" or the symbol.' },
+  { s: 'MANAPPURAM', co: 'Manappuram Finance', isin: 'INE522D01027', pr: 99, rc: 95, n: 140, l2: 'subsidiary Asirvad Micro Finance · people: MD, CFO (names stored, hidden in mockup)' },
+  { s: 'KALYANKJIL', co: 'Kalyan Jewellers India', isin: 'INE303R01014', pr: 91, rc: 88, n: 88, l2: 'brand Candere', t: 'clash', rule: '"Kalyan" alone is also a city (Kalyan-Dombivli) → tag only with jewellers / jewellery / Candere' },
+  { s: 'TITAN', co: 'Titan Company', isin: 'INE280A01028', pr: 98, rc: 94, n: 412, l2: 'brands Tanishq, CaratLane, Mia, Zoya, Fastrack · parent Tata group · people: MD, CFO (TV quotes)', t: 'clash', rule: '"Titan" with space / submarine / ocean words → no tag' },
+  { s: 'TMPV', co: 'Tata Motors Passenger Vehicles', isin: 'INE155A01022', pr: 90, rc: 84, n: 61, l2: 'old name <b>Tata Motors</b> · brands JLR, Tata EV · demerged 2025: trucks and buses went to TMCV (not F&amp;O)', t: 'clash', rule: '"Tata Motors" + cars / EV / JLR → TMPV · + trucks / buses / CV → TMCV (sector measures only) · alone → TMPV, marked "check"' },
+  { s: 'ETERNAL', co: 'Eternal', isin: 'INE758T01015', pr: 100, rc: 97, n: 212, l2: 'old name <b>Zomato</b> (renamed 2025) · brands Blinkit, District, Hyperpure' },
+  { s: 'MCX', co: 'Multi Commodity Exchange of India', isin: 'INE745G01035', pr: 94, rc: 90, n: 120, l2: '', t: 'clash', rule: '"MCX gold / crude / silver fell" is a PRICE line, not MCX news → no tag. Tags on volumes, SEBI, margins, results.' },
+  { s: 'BSE', co: 'BSE Ltd', isin: 'INE118H01025', pr: 93, rc: 89, n: 240, l2: '', t: 'clash', rule: '"BSE Sensex", "BSE-listed", "BSE filing" → no tag on BSE Ltd' },
+  { s: 'ANGELONE', co: 'Angel One', isin: 'INE732I01013', pr: 99, rc: 93, n: 98, l2: 'old name <b>Angel Broking</b> · people: CEO, CFO (TV quotes)' },
+  { s: 'HINDALCO', co: 'Hindalco Industries', isin: 'INE038A01020', pr: 97, rc: 91, n: 180, l2: 'subsidiary <b>Novelis</b> (US) · parent Aditya Birla group' },
+  { s: 'POLICYBZR', co: 'PB Fintech', isin: 'INE417T01026', pr: 98, rc: 90, n: 72, l2: 'brands Policybazaar, Paisabazaar' },
+  { s: 'INDIGO', co: 'InterGlobe Aviation', isin: 'INE646L01027', pr: 99, rc: 96, n: 160, l2: 'brand IndiGo' },
+  { s: 'IDEA', co: 'Vodafone Idea', isin: 'INE669E01016', pr: 96, rc: 90, n: 310, l2: 'brand Vi', t: 'qt', al: 'Vi', rule: 'alias "Vi" QUARANTINED 18 Nov (31% right, n=29: Roman six, "vi" in text)' },
+  { s: 'NAM-INDIA', co: 'Nippon Life India Asset Mgmt', isin: 'INE298J01013', pr: 95, rc: 86, n: 44, l2: 'brand Nippon India Mutual Fund', t: 'qt', al: 'Nippon', rule: 'alias "Nippon" QUARANTINED (12% right, n=41: Nippon Steel, Nippon Paint)' },
+  { s: 'FORCEMOT', co: 'Force Motors (not F&amp;O)', isin: 'INE451A01017', pr: 88, rc: 80, n: 25, l2: '', t: 'qt', al: 'Force', rule: 'alias "Force" QUARANTINED (9% right, n=58: "task force", "air force") · not F&amp;O: sector measures only' },
+];
+const SW = [
+  ['"gold loan", "gold loans"', 'MANAPPURAM MUTHOOTFIN'],
+  ['"jewellery demand", "jewellers"', 'TITAN KALYANKJIL'],
+  ['"MTF", "margin trading"', 'ANGELONE BSE CDSL MCX MOTILALOFS'],
+  ['"cables and wires"', 'POLYCAB KEI HAVELLS'],
+  ['"OMCs", "oil marketing"', 'IOC BPCL HINDPETRO'],
+];
+const TEST = {
+  muthoot: '"Muthoot" alone → <b>no tag</b> (Muthoot Fincorp) · "Muthoot Finance" → ' + S('MUTHOOTFIN') + ' ✓ 97% right, finds 92%, n=156',
+  'tata motors': '"Tata Motors" → since the 2025 demerger: with cars / EV / JLR → ' + S('TMPV') + ' · with trucks / buses → TMCV (not F&amp;O) · alone → ' + S('TMPV') + ' marked "check"',
+  zomato: '"Zomato" → ' + S('ETERNAL') + ' (old name, renamed 2025) ✓ 100% right (n=212)',
+  force: '"Force" → <b>QUARANTINED, no tag</b> · "Force Motors" → FORCEMOT (not F&amp;O: sector measures only)',
+  nippon: '"Nippon" → <b>QUARANTINED, no tag</b> · "Nippon India Mutual Fund" → ' + S('NAM-INDIA'),
+  kalyan: '"Kalyan" → ' + S('KALYANKJIL') + ' only with jewellers / jewellery / Candere; alone it is a city → no tag',
+  mcx: '"MCX" → ' + S('MCX') + ' on exchange news only; "MCX gold fell" is a price line → no tag',
+  tanishq: '"Tanishq" → ' + S('TITAN') + ' (brand) ✓',
+  novelis: '"Novelis" → ' + S('HINDALCO') + ' (US subsidiary) ✓',
+  'gold loan': '"gold loan" → ' + S('MANAPPURAM') + ' ' + S('MUTHOOTFIN') + ' (sector words)',
+  vi: '"Vi" → <b>QUARANTINED, no tag</b> · "Vodafone Idea" → ' + S('IDEA') + ' (in BAN)',
+  bse: '"BSE" → ' + S('BSE') + ' only when about BSE Ltd; "BSE Sensex" → MARKET, not the share',
+};
+
+/* ---------------- CONTRACTS · CORPORATE ACTIONS · LOG (not filtered: they apply to every share) ---------------- */
+const CT = [
+  ['late', '<span class="tg late">LATE</span><b>corp. actions</b>: due <b>08:30</b>, not in at <b>11:40</b> → using 18 Nov\'s · <b>blocks nothing</b>: no ex-date in 3 sessions · next HINDZINC ex 27 Nov: Dec + Jan strikes −₹10.10 (×0.979)'],
+  ['Nov', '<b>Mon 23 Nov</b> · <span class="ew">EXPIRY WEEK</span> · <b>3 sessions left</b> (Thu 19, Fri 20, Mon 23) · ITM stock options settle by delivery, margin from Tue 17'],
+  ['Dec', '<b>Tue 29 Dec</b> · the default strike month · 27 sessions'],
+  ['Jan', '<b>Mon 25 Jan</b> · moved from Tue 26 (Republic Day)'],
+  ['weekly', 'NIFTY: current weekly <b>Mon 23 Nov</b> (Tue 24 holiday) · SENSEX Thu (BSE) → <b>today 15:30</b> · BANKNIFTY, FINNIFTY, MIDCPNIFTY monthly only'],
+  ['rule', 'expiry week: Dec is the default strike month · an ITM Nov stock option held into expiry is <b>physically settled</b> (delivery margin from Tue 17, E-4) - GIR\'s 15:10 exit closes it first · <b>no new Nov stock-option trades on expiry day</b>'],
+  ['gh', 'Holidays'],
+  ['Tue 24 Nov', 'trading holiday (NSE, BSE; MCX morning closed)'],
+  ['Fri 25 Dec', 'Christmas'],
+  ['gh', 'Lot revisions <span>· contract master</span>'],
+  ['Jan 2026', 'index lots in force: NIFTY 75 → <b>65</b> · BANKNIFTY 35 → <b>30</b> · FINNIFTY 65 → <b>60</b> · MIDCPNIFTY 140 → <b>120</b> · SENSEX 20 (BSE)'],
+  ['Jan 2027', 'KALYANKJIL 1,350 → 1,175 · NATIONALUM 3,750 → 3,375 · 4 more (none you hold) · Nov and Dec lots unchanged'],
+  ['gh', 'F&amp;O list changes'],
+  ['Jan series', '3 added · 2 excluded (none in today\'s themes): excluded shares get no new Jan contracts; Nov and Dec trade to expiry'],
+  ['gh', 'Corporate actions in the series'],
+  ['27 Nov', 'HINDZINC interim dividend ₹10.10 (2.1% of price, above the 2% extraordinary line) → NSE deducts it from every strike of every contract expiring after the ex-date (<b>Dec and Jan</b>); lot unchanged · GIR scales past levels × 0.979 and reloads the chain that morning'],
+  ['gh', 'Strike lists'],
+  ['09:41', 'NSE added TITAN <b>3,200 · 3,150</b> Nov (price neared the lowest strike) → chain and strike chooser had them <b>09:41:30</b>'],
+  ['gh', 'Change log <span>· edits only 15:35-09:00, each with its reason</span>'],
+  ['09:05 auto', 'SAIL lot 4,750 → <b>4,700</b>: the Kite reload matches NSE · block lifted'],
+  ['08:45 auto', '08:45 check: 1 mismatch (SAIL lot) · 221 OK'],
+  ['08:41 auto', 'SAIL <b>HARD BLOCK</b>: Kite lot 4,750 vs NSE 4,700 - no calls until they agree'],
+  ['18 Nov 16:20', 'you: alias "Vi" → IDEA quarantined (31% right, n=29)'],
+  ['18 Nov 16:12', 'you: RBI basket + "gold-loan LTV" → MANAPPURAM, MUTHOOTFIN'],
+  ['18 Nov 16:05', 'you: SEBI basket + "considering", "no decision yet", "denial" (the 18 Nov MTF miss)'],
+  ['18 Nov 15:58', 'you: MCX rule - lower margins = more trading = ▲ (the 09:01 misread)'],
+  ['01 Nov v14', 'sector map: HINDALCO and HINDCOPPER join Cables & wires at weight 0.3'],
+];
+
+/* ================================================================ RENDER ================================================================ */
+const state = { sec: '', chip: 'all', q: '', sort: null, dir: 1, open: { JEW: 1, CAB: 1, MET: 1, BRK: 1, PHA: 1, STL: 1 }, pl: {}, rot: {} };
+const moving = s => s.st[0] !== 'form' || /FORMING/.test(s.st[1]);
+const ORDER = ['IDX', ...SECT.filter(moving).map(s => s.k), ...SECT.filter(s => !moving(s)).sort((a, b) => a.nm.localeCompare(b.nm)).map(s => s.k)];
+const CHIPS = [
+  ['all', 'ALL', () => true, 'every F&amp;O share (index options are a group of their own)'],
+  ['theme', 'THEMES', r => THEMED.has(r.s), 'shares under a world driver that is PAST or NEAR its trigger in the theme map (gold, copper, Nasdaq · SOX, silver)'],
+  ['ban', 'BAN/&gt;85%', r => r.mw >= 85, 'in ban (95%+ of MWPL): only close existing positions · above 85%: may enter the ban, new trades still allowed'],
+  ['held', 'YOU HOLD', r => !!HELD[r.s], 'your open positions (F6 MY TRADES)'],
+  ['sprd', 'SPRD&gt;1%', r => r.spn > 1, 'live ATM spread above 1%: the note names the better strike - a warning, never a reject'],
+  ['chg', 'CHANGED', r => r.f.includes('chg'), 'lot, strike list or corporate action changed'],
+  ['res', 'RESULTS 5d', r => false, 'results in the next 5 sessions (IV-crush risk)'],
+];
+const secOK = r => !state.sec || (r.g !== 'IDX' && secsOf(r.s).includes(state.sec));
+const qOK = r => { const q = state.q.trim().toLowerCase(); if (q.length < 2) return true; return (r.s + ' ' + r.lb + ' ' + (r.g === 'IDX' ? 'index' : SK[r.g].nm)).toLowerCase().includes(q); };
+function spark(a) {
+  const mn = Math.min(...a), mx = Math.max(...a), w = 16, h = 10;
+  const pts = a.map((v, i) => `${(1 + i * (w - 2) / (a.length - 1)).toFixed(1)},${(mx === mn ? h / 2 : 1 + (h - 2) * (1 - (v - mn) / (mx - mn))).toFixed(1)}`).join(' ');
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="1"/></svg>`;
+}
+const COLS = [
+  ['s', 'Share', '', 'share symbol - click opens the Share page (F7); line 2: sector · option tick · strikes listed · notes'],
+  ['lot', 'Lot', 'r', 'lot size today (contract master 08:10); Kite = NSE checked 08:45 and 11:30'],
+  ['step', 'Step', 'r', 'strike step: the gap between two listed strikes (Dec series)'],
+  ['cost', '₹/lot', 'r', '₹/LOT = what 1 lot of the Dec ATM option costs now at mid (premium × lot). Dec is the default month in expiry week. Index rows: the expiry written on the row.'],
+  ['fee', 'Fees<small>in+out</small>', 'r', 'FEES = charges for 1 lot in and out, from the ONE charges table (Settings › Charges, Zerodha rates verified 18 Nov): ₹20 + ₹20 brokerage, STT 0.1% of the sell premium, exchange, GST, stamp. The same table gives the P&amp;L strip its charges ₹190 today (MANAPPURAM ₹120 + HINDALCO ₹70). The bid / ask spread is NOT a charge - it is the SPRD % column; its rupees show on hover over a spread.'],
+  ['spn', 'Sprd %<small>now·5d</small>', 'r', 'SPRD = Dec ATM bid / ask spread as % of mid: live now · 5-day median at 09:30-10:00. Not a charge, but a cost you pay crossing it: in + out ≈ spread % × ₹/LOT (hover a value for its rupees). Above 1% = red outline + the better strike in the note.'],
+  ['dep', 'Depth', 'r', 'DEPTH = lots offered on the ASK side across Kite\'s best 5 levels, Dec ATM, live - what a buyer can lift without moving the price.'],
+  ['iv', 'IV<small>now·20d</small>', 'r', 'IV = Dec ATM implied volatility now · its 20-day average. IV far above its average + results soon = IV-crush risk (Calendar ⇧F4).'],
+  ['mw', 'MWPL', 'r', 'MWPL = open interest as % of the market-wide position limit, futures-equivalent (delta-based) OI as NSE uses since 2025 · 5-day sparkline · ban at 95%.'],
+];
+function rowHTML(r) {
+  const f1 = v => v >= 10 ? v.toFixed(0) : v.toFixed(1);
+  const spT = r.spn > 1 ? `<span class="tg sprd" title="live spread above 1% of the premium - the note names the better strike">${f1(r.spn)}</span>` : `<span class="n">${f1(r.spn)}</span>`;
+  const mw = r.mw == null ? `<span class="t3">-</span>` : `${spark(r.mwt)}<span class="n">${r.mw}%</span>`;
+  const tags = (r.f.includes('ban') ? `<span class="tg ban" title="F&amp;O ban: only close existing positions">BAN</span>` : '') +
+    (r.mw >= 85 && r.mw < 95 ? `<span class="tg near" title="above 85% of the market-wide position limit: may enter the ban; new trades allowed today">&gt;85%</span>` : '') +
+    (r.f.includes('chg') ? `<span class="tg chg" title="lot, strike list or corporate action changed">CHANGED</span>` : '') +
+    (INBASKET.has(r.s) ? `<span class="tg near" title="in a policy basket (Baskets panel)">BASKET</span>` : '') + roleTag(r.s) +
+    (HELD[r.s] ? `${heldTag(r.s)}<b>in ${HELD[r.s].t} · ${HELD[r.s].pl}</b> net of ${HELD[r.s].ch} charges (your strike; the columns are Dec ATM) · ` : '');
+  const meta = r.g === 'IDX' ? `<span class="lb">${r.lb} · tick 0.05 ·</span> ` : `<span class="lb">${r.lb} · tick 0.05 · ${r.stk} strikes · results <span title="expected Q3 results month - none in the next 5 sessions (RESULTS 5d chip; dates on Calendar ⇧F4)">${r.res}</span> ·</span> `;
+  const why = r.s === 'HINDALCO' ? 'bought after the first fall; HINDALCO bounced from −1.6% to −1.11% since · GIR\'s 15:10 exit closes it today · ' : r.s === 'MANAPPURAM' ? 'bought before most of the fall · GIR\'s 15:10 exit closes it today · ' : '';
+  return `<div class="uv-r${HELD[r.s] ? ' held' : ''}${r.f.includes('ban') ? ' ban' : ''}" data-r data-u>
+      <span class="s">${r.g === 'IDX' ? `<a class="sym" href="market.html#${r.s}" title="open the ${r.s} MARKET screen">${r.s}</a>` : S(r.s)}</span>
+      <span class="n r">${fmt(r.lot)}</span><span class="n r">${r.step}</span><span class="n r">₹${fmt(r.cost)}</span><span class="n r">₹${fmt(r.fee)}</span>
+      <span class="r" title="spread now ${f1(r.spn)}% of ₹${fmt(r.cost)} ≈ ₹${fmt(r.sprR)} for 1 lot in + out (not a charge) · 5-day median ${f1(r.spm)}%">${spT}<span class="n md">·${f1(r.spm)}</span></span><span class="n r">${fmt(r.dep)}</span>
+      <span class="r"><span class="n">${r.iv.toFixed(0)}</span><span class="n md">·${r.iv20.toFixed(0)}</span></span>
+      <span class="mw${r.mw >= 85 ? ' hi' : ''}">${mw}</span>
+      <div class="nt">${meta}${tags}${why}${r.nt ? `<span>${r.nt}</span>` : ''}</div></div>`;
+}
+function groupHead(k, rows, open) {
+  if (k === 'IDX') return `<div class="sg${open ? ' op' : ''}" data-g="IDX" title="click = open / close in place"><span class="tw">${open ? '▾' : '▸'}</span><span class="nm">Index options</span><span class="cnt">5 · NSE + BSE</span><span class="sm">lots 65 · 30 · 60 · 120 · 20 · SENSEX expires today 15:30</span></div>`;
+  const s = SK[k];
+  return `<div class="sg${open ? ' op' : ''}" data-g="${k}" title="click = open / close in place · ${s.mem.length} F&amp;O shares, % = equal weight of the primary members, live"><span class="tw">${open ? '▾' : '▸'}</span><span class="nm">${s.nm}</span><span class="cnt">${s.mem.length}</span><span class="tg ${s.st[0]}">${s.st[1]}</span><span class="pc n ${cls(s.pc)}">${sg(s.pc)}</span></div>`;
+}
+function groupX(k) {
+  if (k === 'IDX') return `<div class="sgx">₹/LOT and SPRD for the expiry on each row · NIFTY current weekly <b>Mon 23 Nov</b> (Tue 24 holiday) · SENSEX weekly Thu on BSE (today 15:30) · BANKNIFTY, FINNIFTY, MIDCPNIFTY monthly</div>`;
+  const s = SK[k];
+  const sec2 = Object.entries(SEC2).filter(([, v]) => v.some(x => x[0] === k)).map(([m, v]) => `${m} ${v.find(x => x[0] === k)[1]}`);
+  return `<div class="sgx">driver: ${s.drv}${s.pol !== '-' ? ` · policy: <b>${s.pol}</b>` : ''}${sec2.length ? ` · also here at weight below 1 (build-up only, not the %): ${sec2.join(', ')}` : ''} · <a class="lk" href="sectors.html#${k}">F2 ›</a></div>`;
+}
+function renderUV() {
+  const ch = CHIPS.find(c => c[0] === state.chip);
+  const base = ALL.filter(r => secOK(r) && qOK(r));
+  const stockBase = base.filter(r => r.g !== 'IDX');
+  $('uvchips').innerHTML = CHIPS.map(c => {
+    const n = c[0] === 'all' ? (state.sec || state.q.trim().length >= 2 ? stockBase.length : N_FO) : stockBase.filter(c[2]).length;
+    return `<button class="chip${c[0] === state.chip ? ' on' : ''}${n === 0 ? ' zero' : ''}" data-chip="${c[0]}" title="${c[3]}">${c[1]} <span class="n">${n}</span></button>`;
+  }).join('');
+  $('uvh').innerHTML = COLS.map(c => `<span class="${c[2]}${state.sort === c[0] ? ' on' : ''}" data-sort="${c[0]}" title="${c[3]} · click = sort (again = reverse, third = back to sectors)">${c[1]}${state.sort === c[0] ? (state.dir > 0 ? ' ▲' : ' ▼') : ''}</span>`).join('');
+  const rows = base.filter(r => state.chip === 'all' || (r.g !== 'IDX' && ch[2](r)));
+  const filtered = state.chip !== 'all' || state.q.trim().length >= 2 || !!state.sec;
+  let h = '';
+  if (!rows.length) {
+    h = state.chip === 'res'
+      ? `<div class="empty" data-r data-u><b>No F&amp;O share has results in the next 5 sessions.</b> The Q2 season ended 14 Nov; Q3 dates arrive from early January (board-meeting notices). Calendar ⇧F4 shows each one with IV vs 20-day and the IV-crush warning.</div>`
+      : `<div class="empty" data-r data-u><b>No share here matches "${ch[1]}${state.q ? ' · ' + state.q : ''}".</b> Choose ALL, clear find, or ALL SECTORS in the title row.</div>`;
+  } else if (state.sort) {
+    const k = state.sort, d = state.dir;
+    h = [...rows].sort((a, b) => { const x = a[k], y = b[k]; return (typeof x === 'string' ? x.localeCompare(y) : ((x == null ? -1 : x) - (y == null ? -1 : y))) * d; }).map(rowHTML).join('');
+  } else {
+    ORDER.forEach(k => {
+      const gr = rows.filter(r => r.g === k);
+      if (!gr.length) return;
+      const open = filtered || !!state.open[k];
+      h += `<div class="sgw" data-r data-u data-grp="${k === 'IDX' ? 'Index options' : SK[k].nm}">` + groupHead(k, gr, open) + (open ? groupX(k) : '') + '</div>';
+      if (open) h += gr.map(rowHTML).join('');
+    });
+  }
+  $('uvb').innerHTML = h;
+  $('uvk').textContent = '';
+  const ban = ALL.filter(r => r.f.includes('ban')).sort((a, b) => b.mw - a.mw), near = ALL.filter(r => r.mw >= 85 && !r.f.includes('ban')).sort((a, b) => b.mw - a.mw);
+  $('banx').title = state.sec ? 'the ban list is for every sector, not only the filtered one' : '';
+  $('banx').innerHTML = `<span class="tg ban" title="F&amp;O ban (NSE 08:10, MWPL 11:30): only close existing positions">BAN ${ban.length}</span><span>${ban.map(r => `${S(r.s)} <b>${r.mw}%</b>`).join(' · ')} → <b>only close existing positions</b>, no new trades</span>` +
+    `<span class="tg near" title="above 85% of the market-wide position limit (futures-equivalent OI)">&gt;85% ${near.length}</span><span>${near.map(r => `${S(r.s)} <b>${r.mw}%</b>${HELD[r.s] ? ' (you hold)' : ''}`).join(' · ')} → may enter the ban; new trades allowed today</span>`;
+  $('uvpf').innerHTML = `<b>Buying needs only the premium - except Nov ITM stock options this week: delivery margin from Tue 17 Nov</b> (your 2 holds are Dec) · ₹/LOT = Dec ATM now (index: the row's expiry) · DEPTH = ask lots, best 5 · hover a column for its rule · ${ALL.length} rows`;
+}
+
+function hitText(s) {
+  if (s[7] == null) return '';
+  if (s[3] == null || s[7] < 30) return `<span class="hr" title="fewer than 30 days of history: shown as a rule of thumb, never as a hit rate">rule of thumb (n=${s[7]})</span>`;
+  const weak = s[4] <= s[6];
+  return `<span class="hr${weak ? '' : ' ok'}" title="same way = % of days the sector closed the driver's way · 95% range ${s[4]}-${s[5]}% · on any day the sector moves that way ${s[6]}% of the time${weak ? ' · WEAK: the range reaches the any-day rate, so it cannot be told apart from chance' : ''}">${s[3]}% (${s[4]}-${s[5]}) vs ${s[6]}% any day · n=${s[7]}${weak ? ' · <span class="tg wk">weak</span>' : ''}</span>`;
+}
+function renderTH() {
+  const rows = TH.filter(t => !state.sec || t.secs.some(x => x[1] === state.sec || (x[1] && (x[8] || '').split(' ').some(s => s && secsOf(s).includes(state.sec)))));
+  const ord = { PAST: 0, NEAR: 1, quiet: 2 };
+  const idx = [...TH].sort((a, b) => ord[a.st] - ord[b.st] || b.x - a.x);
+  const mv = t => t.u === 'bp' ? `${t.mv > 0 ? '+' : '−'}${Math.abs(t.mv)} bp` : sg(t.mv);
+  const mvs = t => t.u === 'bp' ? `${t.mv > 0 ? '+' : '−'}${Math.abs(t.mv)}bp` : (t.mv > 0 ? '+' : '−') + Math.abs(t.mv).toFixed(Math.abs(t.mv) < 0.1 ? 2 : 1);
+  $('dix').innerHTML = ['PAST', 'NEAR', 'quiet'].map(st => `<span class="st${st === 'PAST' ? ' p' : ''}" title="${st === 'PAST' ? 'at or past its trigger (1.0×): wakes the theme agent; back to NEAR only below 0.8×' : st === 'NEAR' ? '0.8-1.0× of its trigger' : 'below 0.8× of its trigger'}">${st}</span>${idx.filter(t => t.st === st).map(t => `<span class="it" data-jump="th-${t.id}" title="${t.nm}: ${mv(t)} (moves in %, yields in bp), ${t.x.toFixed(2)}× its ±${t.tr}${t.u === 'bp' ? ' bp' : '%'} trigger - click to jump">${t.st === 'quiet' ? t.nm.replace('IRON ORE · STEEL', 'ORE').replace('ALUMINIUM', 'ALU').replace('INDIA 10Y', '10Y') : `<b>${t.nm}</b>`} ${mvs(t)}</span>`).join('')}`).join('');
+  $('thb').innerHTML = rows.length ? rows.map(t => {
+    const tr = `±${t.tr}${t.u === 'bp' ? ' bp' : '%'}`;
+    const tag = `<span class="tg ${t.st === 'PAST' ? 'xd' : t.st === 'NEAR' ? 'near' : 'form'}" title="${t.proof}">${t.st} ${tr} · ${t.x.toFixed(1)}×</span>`;
+    const secs = t.secs.map(s => {
+      const sh = (s[8] || '').split(' ').filter(Boolean);
+      return `<div data-u><div class="th-s"><span><span class="ar">→</span> ${s[1] ? `<a class="sn" href="sectors.html#${s[1]}" title="open ${s[0]} on F2 Sectors">${s[0]}</a>` : `<span class="sn">${s[0]}</span>`} <span class="rel">· ${s[2]}</span></span>${hitText(s)}</div>` +
+        (sh.length ? `<div class="th-m">${sh.map(m => `<span>${S(m)} ${roleTags(m)}</span>`).join('')}</div>` : '') + '</div>';
+    }).join('');
+    return `<div class="th-b${t.st === 'PAST' ? ' x' : ''}" id="th-${t.id}" data-r data-grp="${t.nm}"><div data-u><div class="th-1"><span class="dv">${t.nm}</span><span class="pc n ${t.neu ? 't2' : cls(t.mv)}">${mv(t)}</span><span class="src">${t.src}</span>${tag}</div></div>${t.act ? `<div class="th-act" data-u>${t.act}</div>` : ''}${secs}</div>`;
+  }).join('') : `<div class="empty" data-r data-u><b>No world driver maps to ${SK[state.sec].nm}.</b> It moves on its own news and on policy: see Baskets (right) and News F4.</div>`;
+}
+
+function renderPL() {
+  // order (round 2): the live SEBI shock · the 8 quiet policy baskets (click = open in place, right below the grid) · the rotation
+  // baskets (S11, click = members in place) · the SEBI rule / record / words last. Every block is cut into snap units (data-u) so a
+  // scroll edge never leaves half a basket.
+  const inSec = p => !state.sec || plMem(p).some(m => secsOf(m).includes(state.sec));
+  const rows = PL.filter(inSec);
+  const mem = list => `<div class="pl-sh">${list.map(m => `<span>${S(m)} <span class="pc n ${cls(PC[m])}">${sg(PC[m])}</span></span>`).join('')}</div>`;
+  const full = p => {   // an opened basket: header + members (one unit), then words / reads lines (one unit each)
+    const core = p.core.split(' ').filter(Boolean), wide = p.wide.split(' ').filter(Boolean);
+    const head = p.now
+      ? `<div class="pl-1"><span class="rg">${p.rg}</span><span class="ar">${core.length} shares</span><span class="tg gr" title="GET READY only: GO NOW needs a 2nd source or SEBI's page">GET READY</span><span class="tg gr" style="margin-left:0" title="BASKET SHOCK live since 11:42:08">BASKET SHOCK 11:42</span></div>`
+      : `<div class="pl-1" data-pl="${p.rg}" title="click = close"><span class="tw">▾</span><span class="rg">${p.rg}</span><span class="ar">${p.ar} · ${core.length === 1 ? '1 share' : core.length + ' shares'}</span><span class="tg form">${p.watch}</span></div>`;
+    if (p.now) {
+      const lines = p.now.trim().split(/\n\s*/).map(l => l.replace(/^<div/, '<div data-u'));
+      return `<div class="pl-b shock" data-r data-grp="${p.rg} shock"><div data-u>${head}</div><div class="pl-now">${lines.join('')}</div><div data-u>${mem(core)}</div></div>`;
+    }
+    return `<div class="pl-b" data-r data-grp="${p.rg}"><div data-u>${head}${p.today ? `<div class="pl-l">${p.today}</div>` : ''}${core.length ? mem(core) : ''}</div>` +
+      `${wide.length ? `<div class="pl-l" data-u><span class="lb">wider</span>${wide.join(', ')}</div>` : ''}<div class="pl-l" data-u><span class="lb">words</span>${p.words}</div><div class="pl-l" data-u><span class="lb">reads</span>${p.reads}</div></div>`;
+  };
+  let h = '';
+  const sebi = rows.find(p => p.now);
+  if (sebi) h += full(sebi);
+  const rest = rows.filter(p => !p.now);
+  const shut = rest.filter(p => !state.pl[p.rg]);
+  // RBI first in the grid: one full-width line with today's reading (gold loans fall with GOLD, not on policy); the quiet ones one cell each
+  if (shut.length) h += `<div class="pl-q">${shut.map(p => { const c = p.core.split(' ').filter(Boolean).length;
+    return p.rg === 'RBI' ? `<div class="pl-qi w" data-pl="RBI" data-r data-u title="click = open in place: members, words, reads"><span class="tw">▸</span><b>RBI</b><span class="s2">banks, NBFC, gold loans · ${c} · <b>MPC 4 Dec</b> · no RBI story today: gold loans fall with GOLD</span></div>`
+      : `<div class="pl-qi" data-pl="${p.rg}" data-r data-u title="${p.ar} · ${c === 1 ? '1 share' : c + ' shares'} · words: ${p.words.replace(/<[^>]+>/g, '').replace(/"/g, '&quot;')} · click = open in place"><span class="tw">▸</span><b>${p.rg}</b><span class="s2">${c}${p.watch !== 'quiet' ? ' · ' + p.watch : ''}</span></div>`; }).join('')}</div>`;
+  rest.filter(p => state.pl[p.rg]).forEach(p => { h += full(p); });
+  if (!rows.length) h += `<div class="empty" data-r data-u><b>No policy basket holds a ${SK[state.sec].nm} share.</b></div>`;
+  if (!state.sec) {
+    h += `<div class="gh" data-r data-u="h" data-grp="rotation baskets" title="used by F3 Rotation (S11), built daily from the F&amp;O file · % = equal weight of the members, live · click a basket for its members">Rotation baskets <span>· ${ROT.length} · F3 Rotation (S11) · today's themes first</span></div>`;
+    ROT.forEach(b => {
+      const op = state.rot[b.nm];
+      const pc = Math.round(b.mem.reduce((a, m) => a + PC[m], 0) / b.mem.length * 100) / 100;
+      const rx = op ? `<div class="rotx">${b.mem.map(m => `<span>${S(m)} <span class="n ${cls(PC[m])}">${sg(PC[m])}</span></span>`).join('')}</div>` : '';
+      h += `<div class="rotw" data-r data-u data-grp="${b.nm}"><div class="rot" data-rot="${b.nm}" title="click = members in place · % = equal weight, live"><span class="tw">${op ? '▾' : '▸'}</span><span class="nm">${b.nm}<small>${b.beta}</small></span><span class="pc n ${cls(pc)}">${sg(pc)}</span><span class="c">${b.mem.length}</span></div>${rx}</div>`;
+    });
+  }
+  if (sebi) h += `<div class="gh" data-r data-u="h" data-grp="SEBI rule">SEBI basket · rule, record, words <span>· S12</span></div><div class="pl-b" data-r data-grp="SEBI rule">
+      <div class="pl-l" data-u title="per-share volatility, not a flat 1%: 1% in 60 s is routine for ANGELONE and rare for CDSL"><span class="lb">rule</span>3+ shares of one basket each past <b>2σ of their own 60-s moves</b> (ANGELONE 0.9%, CDSL 0.5%) inside 60 s, same way, volume 3×+ → alarm "news not found yet" · silent pre-alert at 15 s / 1.5σ · regulator sites every 60 s, every 10 s while a shock is open · GET READY only, never GO NOW on price alone</div>
+      <div class="pl-l" data-u><span class="lb">record</span>last 90 days: 7 shocks · 5 found their news within 5 min · false alarms 0.4 a week (Replay ⇧F10)</div>
+      <div class="pl-l" data-u><span class="lb">wider</span>${sebi.wide.split(' ').join(', ')}</div>
+      <div class="pl-l" data-u><span class="lb">words</span>${sebi.words}</div><div class="pl-l" data-u><span class="lb">reads</span>${sebi.reads}</div></div>`;
+  $('plb').innerHTML = h;
+  $('plk').textContent = `${PL.length} policy (S12) · ${ROT.length} rotation (S11)`;
+}
+
+function renderNM() {
+  const rows = NM.filter(r => !state.sec || secsOf(r.s).includes(state.sec));
+  const sw = SW.filter(w => !state.sec || w[1].split(' ').some(m => secsOf(m).includes(state.sec)));
+  const q = ($('nmq').value || '').trim().toLowerCase();
+  let hit = null, res = '';
+  if (q.length >= 2) {
+    const key = Object.keys(TEST).find(k => k === q || (q.length >= 3 && k.startsWith(q)));
+    if (key) { res = TEST[key]; hit = (NM.find(r => TEST[key].includes('#' + r.s + '"')) || {}).s; }
+    else {
+      const m = NM.find(r => (r.s + ' ' + r.co + ' ' + r.l2).toLowerCase().includes(q));
+      res = m ? `"${q}" → ${S(m.s)} (${m.co}) ✓ ${m.pr}% right, finds ${m.rc}% (n=${m.n})` : `"${q}" → <b>no F&amp;O share</b>: the story goes to MARKET / WORLD / POLICY by its words`;
+      hit = m && m.s;
+    }
+  } else res = 'type 2+ letters of a name from a headline, a TV line or a live blog';
+  $('nmres').innerHTML = res;
+  const qt = NM.filter(r => r.t === 'qt');
+  $('nmqt').innerHTML = `<span class="tg qt" title="a quarantined name never tags a share until its precision is back above 90% on 30+ headlines">QUARANTINED ${qt.length}</span>never tag: ${qt.map(r => `<b title="${r.rule.replace(/"/g, '&quot;')}">"${r.al}"</b>`).join(' · ')}`;
+  $('nmk').title = `1,846 names (brands, parents, subsidiaries, old names, people's roles) for ${N_FO} F&O shares. right % = precision (tags that were right); finds % = recall (headlines about the share that it tagged), with n. Quarantined names never tag.`;
+  $('nmlist').innerHTML = (rows.map(r => `<div class="nm-r" data-r data-grp="${r.s}"${r.s === hit ? ' style="box-shadow:inset 2px 0 0 var(--info)"' : ''}><div data-u><div class="nm-1">${S(r.s)}<span class="co">${r.co}</span><span class="pr" title="right = precision, finds = recall (headlines about ${r.s} that were tagged), n = headlines checked">${r.pr}% · finds ${r.rc}% · n=${r.n}</span></div>
+      <div class="nm-2"><span class="lb">ISIN</span> <span class="mono">${r.isin}</span>${r.l2 ? ' · ' + r.l2 : ''}</div></div>
+      ${r.rule ? `<div class="nm-3" data-u><span class="tg ${r.t === 'qt' ? 'qt' : 'clash'}" title="${r.t === 'qt' ? 'never tags until precision recovers' : 'the same word means something else: the rule says when it tags'}">${r.t === 'qt' ? 'QUARANTINED' : 'WORD CLASH'}</span>${r.rule}</div>` : ''}</div>`).join('')) +
+    (sw.length ? `<div class="gh" data-r data-u="h" data-grp="sector words">Sector words → shares <span>· a sector story tags every share in it</span></div>` + sw.map(w => `<div class="nm-r" data-r data-u><div class="nm-2"><b>${w[0]}</b> → ${w[1].split(' ').map(S).join(' ')}</div></div>`).join('') : '') ||
+    `<div class="empty" data-r data-u><b>No name rules for ${SK[state.sec].nm}.</b> Its shares are tagged by symbol and company name only.</div>`;
+}
+
+function renderCT() {
+  $('ctb').innerHTML = CT.map(r => r[0] === 'gh' ? `<div class="gh" data-r data-u="h" data-grp="${r[1].replace(/<[^>]+>.*$/, '').replace(/&amp;/g, '&')}">${r[1]}</div>`
+    : r[0] === 'late' ? `<div class="ct-late" data-r data-u title="expected 08:30 · checked 08:30, 09:00, 10:00, 11:00, 11:40 · Health ⇧F9 shows the feed">${r[1]}</div>`
+    : `<div class="ct-r${/^(Nov|Dec|Jan|weekly|rule)$/.test(r[0]) ? ' ex' : ''}" data-r data-u><span class="d">${r[0]}</span><span>${r[1]}</span></div>`).join('');
+}
+
+function renderTop() {
+  $('v-agree').textContent = `${N_FO}`;
+  const ban = ALL.filter(r => r.f.includes('ban')).sort((a, b) => b.mw - a.mw), near = ALL.filter(r => r.mw >= 85 && !r.f.includes('ban'));
+  const tiles = [
+    ['F&amp;O shares', `${N_FO} <small>+5 idx</small>`, 'lots, strikes', 'Every F&amp;O share + the 5 index options'],
+    ['F&amp;O ban', `${ban.length} <small>· &gt;85% ${near.length}</small>`, `<span class="ban">${ban.map(r => r.s).join(', ')}</span>`, 'NSE ban list 08:10 + MWPL 11:30 (futures-equivalent OI); in ban: only close existing positions'],
+    ['Sectors', `${SECT.length}`, `map v14 · ${N_FO}`, 'Sector map v14, effective 01 Nov: every F&amp;O share in one primary sector'],
+    ['Baskets', `${PL.length} <small>policy</small>`, `+ ${ROT.length} rotation`, 'Policy baskets (S12) and rotation baskets (S11)'],
+    ['Other names', '1,846', `${NM.filter(r => r.t === 'qt').length} quarantined`, 'Aliases, brands, old names, parents; quarantined names never tag'],
+  ];
+  $('tiles').innerHTML = tiles.map(t => `<div class="rf-tile" title="${t[3]}"><div class="l">${t[0]}</div><div class="v">${t[1]}</div><div class="s">${t[2]}</div></div>`).join('');
+  const opts = [['', `ALL SECTORS (${SECT.length})`], ...ORDER.filter(k => k !== 'IDX').map(k => [k, `${SK[k].nm} (${SK[k].mem.length})`])];
+  $('secf').innerHTML = opts.map(o => `<option value="${o[0]}"${o[0] === state.sec ? ' selected' : ''}>${o[1]}</option>`).join('');
+}
+function renderAll() { renderUV(); renderTH(); renderPL(); renderNM(); $('secsel').classList.toggle('on', !!state.sec); requestAnimationFrame(rails); }
+
+/* ---------------- scroll rails (R08): always drawn, thumb = position and length ----------------
+   Round 2: the edges snap to whole ROW UNITS (data-u: a share row, a sector head + its driver line, a theme sector + its shares, one
+   line of a basket...). Whenever the list is scrolled, a "▲ n above · in <group>" strip covers the top edge down to the end of the
+   first unit it touches; whenever more is below, a "▼ n more" strip covers the bottom edge up to the start of the first unit that does
+   not fit (a heading is never left alone above it). So no half row and no orphan line can show at either edge. */
+const STRIP = 15;
+function units(pb) { return [...pb.querySelectorAll('[data-u]')].filter(u => !u.querySelector('[data-u]') && u.getClientRects().length && u.getBoundingClientRect().height > 0); }
+function lineCut(pb, P, edge) {   // fallback for a unit taller than half the panel: cover only the cut text line
+  let v = edge === 'b' ? P.bottom : P.top; const tw = document.createTreeWalker(pb, NodeFilter.SHOW_TEXT); let n;
+  while ((n = tw.nextNode())) { if (!n.textContent.trim()) continue; const rg = document.createRange(); rg.selectNodeContents(n);
+    for (const b of rg.getClientRects()) { if (b.height <= 3) continue;
+      if (edge === 'b' && b.top < P.bottom - STRIP && b.bottom > P.bottom - STRIP && b.top < v) v = b.top;
+      if (edge === 't' && b.top < P.top + STRIP && b.bottom > P.top + STRIP && b.bottom > v) v = b.bottom; } }
+  return edge === 'b' ? Math.min(v, P.bottom - STRIP) : Math.max(v, P.top + STRIP);
+}
+function rails() {
+  document.querySelectorAll('.scw').forEach(w => {
+    const pb = w.querySelector('.pb'), t = w.querySelector('.trk'), i = t.querySelector('i'), fd = w.querySelector('.fade'), f = fd.querySelector('span'), ft = w.querySelector('.fadeT');
+    // end spacer: the list's last screen starts on a unit, right under the ▲ strip (so scrolling to the end never shows a cut row)
+    let sp = pb.querySelector(':scope > .pb-end');
+    if (!sp) { sp = document.createElement('div'); sp.className = 'pb-end'; sp.setAttribute('aria-hidden', 'true'); }
+    if (sp !== pb.lastElementChild) pb.appendChild(sp);
+    const keep = pb.scrollTop; sp.style.height = '0px'; sp.classList.remove('tall');
+    { const C = pb.scrollHeight, c0 = pb.clientHeight;
+      if (C > c0 + 1) { const base = pb.getBoundingClientRect().top - pb.scrollTop, need = C - c0 + STRIP;
+        const st = units(pb).map(u => u.getBoundingClientRect().top - base).filter(v => v >= need - 0.5).sort((x, y) => x - y)[0];
+        if (st != null) { const hgt = Math.max(0, Math.round(st - STRIP + c0 - C)); sp.style.height = hgt + 'px'; sp.classList.toggle('tall', hgt >= 26); } }
+      pb.scrollTop = keep; }
+    const H = t.clientHeight, sh = pb.scrollHeight, ch = pb.clientHeight, max = Math.max(1, sh - ch);
+    const hh = Math.max(14, Math.round(H * Math.min(1, ch / sh)));
+    i.style.height = hh + 'px'; i.style.top = Math.round((H - hh) * Math.min(1, pb.scrollTop / max)) + 'px';
+    w.classList.toggle('fit', sh <= ch + 1);
+    const end = pb.scrollTop + ch >= sh - 2; w.classList.toggle('end', end);
+    const P = pb.getBoundingClientRect(), U = units(pb), rc = U.map(u => u.getBoundingClientRect());
+    // top edge
+    let topCut = P.top;
+    if (pb.scrollTop > 1) {
+      let bot = P.top + STRIP;
+      rc.forEach(r => { if (r.top < P.top + STRIP - 0.5 && r.bottom > P.top + 0.5 && r.bottom > bot) bot = r.bottom; });
+      topCut = bot - P.top > ch / 2 ? lineCut(pb, P, 't') : bot;
+    }
+    // bottom edge
+    let botCut = P.bottom;
+    if (!end) {
+      let k = rc.findIndex(r => r.bottom > P.bottom - STRIP + 0.5);
+      if (k > 0 && U[k - 1].dataset.u === 'h' && rc[k - 1].top >= topCut) k--;          // never leave a heading alone at the bottom
+      const top = k < 0 ? P.bottom - STRIP : Math.min(rc[k].top, P.bottom - STRIP);
+      botCut = P.bottom - top > ch / 2 ? lineCut(pb, P, 'b') : top;
+    }
+    const ct = Math.max(0, Math.ceil(topCut - P.top)), cov = Math.max(0, Math.ceil(P.bottom - botCut));
+    ft.style.height = ct + 'px'; pb.dataset.coverT = ct; fd.style.height = cov + 'px'; pb.dataset.cover = cov;
+    const R = [...pb.querySelectorAll('[data-r]')];
+    const above = R.filter(e => e.getBoundingClientRect().top < P.top + ct - 1).length;
+    const below = R.filter(e => e.getBoundingClientRect().bottom > P.bottom - cov + 1).length;
+    let grp = '';   // the group the first visible row belongs to (sector, driver, basket, heading)
+    const firstVis = R.find(e => e.getBoundingClientRect().bottom > P.top + ct + 1);
+    if (firstVis) { const all = [...pb.querySelectorAll('[data-grp]')]; for (const g of all) { if (g.getBoundingClientRect().top < P.top + ct + 1 && (g === firstVis || g.compareDocumentPosition(firstVis) & 4 || g.contains(firstVis))) grp = g.dataset.grp; } }
+    ft.querySelector('span').textContent = ct ? `▲ ${above} above${grp ? ' · in ' + grp : ''}` : '';
+    const nx = k => { const u = U[k]; if (!u) return ''; if (u.dataset.grp) return u.dataset.grp; const e = u.querySelector('a.sym,.sn,.sg .nm,.rg,.dv,b,.d') || u; return e.textContent.trim().replace(/\s+/g, ' ').slice(0, 30); };
+    const nk = rc.findIndex(r => r.bottom > P.bottom - cov + 0.5);
+    f.textContent = cov ? `▼ ${below} more${nk >= 0 && nx(nk) ? ' · next ' + nx(nk) : ''}` : '';
+    w.querySelector('.rb[data-d="1"]').title = end ? 'end of the list' : `scroll down one screen · ${below} more below`;
+    w.querySelector('.rb[data-d="-1"]').title = pb.scrollTop > 1 ? `scroll up one screen · ${above} above` : 'top of the list';
+  });
+}
+document.querySelectorAll('.pb').forEach(pb => pb.addEventListener('scroll', rails));
+window.addEventListener('resize', rails);
+
+function pageBy(pb, d) {   // one screen, landing on a unit start, keeping the last partly shown unit in view
+  const P = pb.getBoundingClientRect(), U = units(pb);
+  if (d > 0) { const nx = U.find(u => u.getBoundingClientRect().bottom > P.bottom - STRIP - 1 - (+pb.dataset.cover || 0) + (+pb.dataset.cover || 0));
+    const y = nx ? nx.getBoundingClientRect().top - P.top + pb.scrollTop - STRIP : pb.scrollTop + pb.clientHeight - 40;
+    pb.scrollTop = Math.max(pb.scrollTop + 20, y); }
+  else pb.scrollTop = Math.max(0, pb.scrollTop - (pb.clientHeight - 40));
+  rails();
+}
+/* ---------------- tooltips (R31): every title on the page shows in one styled box ---------------- */
+const tip = $('tip');
+function placeTip(box, el) {
+  const r = el.getBoundingClientRect(); box.style.left = '0px'; box.style.top = '0px';
+  const w = box.offsetWidth, h = box.offsetHeight;
+  let x = Math.min(Math.max(6, r.left), innerWidth - w - 6), y = r.bottom + 7;
+  if (y + h > innerHeight - 26) y = r.top - h - 7;
+  box.style.left = x + 'px'; box.style.top = y + 'px';
+}
+document.addEventListener('mouseover', e => {
+  const el = e.target.closest('[title],[data-tip]'); if (!el || el.closest('#sh-mkt,#sh-pnl,#sh-tabs,#sh-foot')) { tip.classList.remove('on'); return; }
+  if (el.hasAttribute('title')) { el.dataset.tip = el.getAttribute('title'); el.removeAttribute('title'); }
+  tip.innerHTML = el.dataset.tip; tip.classList.add('on'); placeTip(tip, el);
+});
+document.addEventListener('mouseout', e => { if (!e.relatedTarget || !e.relatedTarget.closest('[data-tip]')) tip.classList.remove('on'); });
+function pinTip(el) {   // state shots: several tooltips at once
+  if (!el) return; const b = document.createElement('div'); b.className = 'tipbox';
+  b.innerHTML = el.getAttribute('title') || el.dataset.tip || ''; document.body.appendChild(b); el.classList.add('tip-on'); placeTip(b, el);
+}
+
+/* ---------------- events ---------------- */
+renderTop(); renderCT(); renderAll();
+$('secf').addEventListener('change', e => { state.sec = e.target.value; state.chip = 'all'; renderAll(); });
+$('uvq').addEventListener('input', e => { state.q = e.target.value; renderUV(); rails(); });
+$('uvq').addEventListener('keydown', e => { if (e.key === 'Escape') { e.target.value = ''; state.q = ''; renderUV(); rails(); } });
+$('nmq').addEventListener('input', () => { renderNM(); rails(); });
+document.addEventListener('click', e => {
+  const c = e.target.closest('[data-chip]'); if (c) { state.chip = c.dataset.chip; renderUV(); rails(); return; }
+  const so = e.target.closest('[data-sort]'); if (so) { const k = so.dataset.sort; if (state.sort !== k) { state.sort = k; state.dir = 1; } else if (state.dir > 0) state.dir = -1; else state.sort = null; renderUV(); rails(); return; }
+  const g = e.target.closest('.sg'); if (g && !e.target.closest('a')) { const k = g.dataset.g; state.open[k] = !state.open[k]; renderUV(); rails(); return; }
+  const p = e.target.closest('[data-pl]'); if (p && !e.target.closest('a')) { state.pl[p.dataset.pl] = !state.pl[p.dataset.pl]; renderPL(); rails(); return; }
+  const ro = e.target.closest('[data-rot]'); if (ro && !e.target.closest('a')) { const k = ro.dataset.rot; state.rot[k] = !state.rot[k]; renderPL(); rails(); return; }
+  const j = e.target.closest('[data-jump]'); if (j) { const b = $(j.dataset.jump), pb = $('thb'); if (b) { pb.scrollTop = b.offsetTop - pb.offsetTop - (b.offsetTop - pb.offsetTop > 0 ? STRIP : 0); rails(); } return; }
+  const rb = e.target.closest('.rb'); if (rb) { pageBy($(rb.parentNode.dataset.t), +rb.dataset.d); return; }
+  const tk = e.target.closest('.trk'); if (tk) { const pb = $(tk.parentNode.dataset.t), r = tk.getBoundingClientRect(); pb.scrollTop = (e.clientY - r.top) / r.height * pb.scrollHeight - pb.clientHeight / 2; }
+});
+// URL hash states (also used for the review shots): #sec=BRK  #chip=res  #srch  #word=...
+const hs = decodeURIComponent(location.hash);
+const m = hs.match(/sec=([A-Z]+)/); if (m && SK[m[1]]) { state.sec = m[1]; renderTop(); renderAll(); }
+const ch = hs.match(/chip=([a-z]+)/); if (ch) { state.chip = ch[1]; renderUV(); }
+const wq = hs.match(/word=([^&]+)/); if (wq) { $('nmq').value = wq[1]; renderNM(); }
+if (/srch/.test(hs)) document.body.classList.add('srch');
+document.querySelector('.sh-cmd').addEventListener('click', e => { if (!e.target.closest('.sh-sugg')) document.body.classList.toggle('srch'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.body.classList.remove('srch'); });
+requestAnimationFrame(rails);
+
+</script>
+</body>
+</html>

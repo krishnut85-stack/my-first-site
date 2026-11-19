@@ -784,9 +784,9 @@ at the close for each, against the old alerts' late list (OPENING 6-11 min late,
 
 6.1 Hard cap in the code: **$20 a day** (set by the trader, 18 Nov: start at $20), split across 24 hours (about $5 night and morning prep, $12 market hours, $3 reserve for big
     news). It must really stop at the cap (on 18 Nov it spent $27.24 against a $5 cap - find and fix why).
-6.2 Models: Fable only for the final GO NOW check and the 07:15 sector plan; Sonnet for the board's reasoning and follow-ups; Haiku
+6.2 Models: top model only for the final GO NOW check and the 07:15 sector plan; mid model for the board's reasoning and follow-ups; small model
     for reading every news item. Prompt caching on every call (target 80%+ cached); send only the facts each call needs.
-6.3 When the cap is reached: the board keeps making calls from the numbers, Haiku keeps reading, one message to the trader.
+6.3 When the cap is reached: the board keeps making calls from the numbers, small model keeps reading, one message to the trader.
 6.4 Show the spend on the page, and daily at 15:45: spend by model and by hour, and what it bought (calls made, right or wrong,
     cost per useful call).
 

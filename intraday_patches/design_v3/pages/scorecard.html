@@ -1,0 +1,1869 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GIR · Calls &amp; Scorecard</title>
+<!-- GIR v3 · Shift+F8 Calls & Scorecard (the 15:45 audit). Shell copied verbatim from v3/shell.html; only the body class
+     (page-scorecard) and the state values of SHELL.md section 6 "After 15:30 (scorecard 15:46)" differ.
+     FINAL pass (R44-R49): calmer type (13 px body, 12 px chips), hero P&amp;L 26 px, R49 sector basis, compact strike review. Keys on this page: T Telegram copy · Q ask · F sector filter · J / K move the call · Esc close.
+     Hashes for the proof shots: #tg Telegram · #ask ASK drawer · #cost AI COST tab · #path call-log PATH columns + filters · #sector group by sector. -->
+<style>
+/* ===================== SHELL CSS START (copy verbatim) ===================== */
+/* colour tokens = CONFERENCE 1.5 (fixed meanings). DARK is the default; LIGHT = <html data-theme="light"> (or the same attribute,
+   or class th-light, on <body>); AUTO = data-theme="auto" follows the OS. Pages never redefine a token. */
+:root{color-scheme:dark;
+  --bg:#0B0D10; --panel:#12151A; --panel-2:#181C22; --panel-3:#1E232B; --line:#262C35; --line-2:#323A45; --text:#E7EAEE; --text-2:#B3BAC4;
+  --text-3:#8E97A3; --up:#34C47C; --up-bg:rgba(52,196,124,.12); --up-line:rgba(52,196,124,.60); --up-rgb:52,196,124; --down:#F2615D;
+  --down-bg:rgba(242,97,93,.12); --down-line:rgba(242,97,93,.60); --down-rgb:242,97,93; --lb:#34C47C; --lb-bg:rgba(52,196,124,.22); --sb:#F2615D;
+  --sb-bg:rgba(242,97,93,.22); --sc:#8FE3B5; --sc-ink:#8FE3B5; --lu:#FF9E9A; --lu-ink:#FF9E9A; --action:#F5A524; --action-ink:#14110A;
+  --action-line:rgba(245,165,36,.55); --action-bg:rgba(245,165,36,.09); --go:#F5A524; --warn:#F5A524; --info:#6CB2FF; --info-bg:rgba(108,178,255,.10);
+  --info-line:rgba(108,178,255,.38); --stale:#6B7380; --stripe:repeating-linear-gradient(135deg, rgba(140,148,160,.28) 0 3px, transparent 3px 7px);
+  --danger:#FF5A52; --danger-bg:rgba(255,90,82,.14); --danger-ink:#1A0806; --leader:#36C5D0; --leader-bg:rgba(54,197,208,.13); --dep:#B79CFF;
+  --dep-bg:rgba(183,156,255,.13); --lag:#EE8AC0; --lag-bg:rgba(238,138,192,.13); --held:#E7EAEE; --held-ink:#0B0D10; --replay:#9B87F5;
+  --acc-mkt:#6CB2FF; --acc-call:#F5A524; --acc-mine:#E7EAEE; --acc-sys:#6B7380; --hover-strip:#151920; --ks-edge:#7E8691; --shadow:0 8px 24px
+  rgba(0,0,0,.5); --ban-hover:rgba(255,90,82,.24);
+  --sans: Inter, "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", "DejaVu Sans Mono", Consolas, monospace;
+  /* shell geometry - pages position their content from these, never from magic numbers */
+  --sh-mkt:80px; --sh-pnl:30px; --sh-tabs:52px; --sh-top:162px; --sh-foot:22px; --sh-gut:12px;
+}
+[data-theme="light"],body.th-light{color-scheme:light;
+  --bg:#ECEFF3; --panel:#FFFFFF; --panel-2:#F6F7F9; --panel-3:#E3E7EC; --line:#D9DEE5; --line-2:#C3CAD4; --text:#10141A; --text-2:#3B4450;
+  --text-3:#5A6470; --up:#08804A; --up-bg:rgba(8,128,74,.10); --up-line:rgba(8,128,74,.55); --up-rgb:8,128,74; --down:#C42B27;
+  --down-bg:rgba(196,43,39,.09); --down-line:rgba(196,43,39,.55); --down-rgb:196,43,39; --lb:#08804A; --lb-bg:rgba(8,128,74,.16); --sb:#C42B27;
+  --sb-bg:rgba(196,43,39,.15); --sc:#5FC28E; --sc-ink:#08804A; --lu:#EE8D89; --lu-ink:#C42B27; --action:#9A5A00; --action-ink:#14110A;
+  --action-line:rgba(184,110,0,.60); --action-bg:rgba(245,165,36,.14); --go:#F5A524; --warn:#D98A00; --info:#1763BF; --info-bg:rgba(23,99,191,.08);
+  --info-line:rgba(23,99,191,.42); --stale:#7A828E; --stripe:repeating-linear-gradient(135deg, rgba(110,118,130,.22) 0 3px, transparent 3px 7px);
+  --danger:#CC2A22; --danger-bg:rgba(204,42,34,.09); --danger-ink:#FFFFFF; --leader:#087680; --leader-bg:rgba(10,127,138,.09); --dep:#6743D6;
+  --dep-bg:rgba(103,67,214,.08); --lag:#B2367A; --lag-bg:rgba(178,54,122,.08); --held:#10141A; --held-ink:#FFFFFF; --replay:#6A4FD6; --acc-mkt:#1763BF;
+  --acc-call:#C77D00; --acc-mine:#10141A; --acc-sys:#7A828E; --hover-strip:#F1F3F6; --ks-edge:#232A33; --shadow:0 8px 24px rgba(20,30,45,.16);
+  --ban-hover:rgba(204,42,34,.16);
+}
+@media (prefers-color-scheme: light){ [data-theme="auto"]{color-scheme:light;
+  --bg:#ECEFF3; --panel:#FFFFFF; --panel-2:#F6F7F9; --panel-3:#E3E7EC; --line:#D9DEE5; --line-2:#C3CAD4; --text:#10141A; --text-2:#3B4450;
+  --text-3:#5A6470; --up:#08804A; --up-bg:rgba(8,128,74,.10); --up-line:rgba(8,128,74,.55); --up-rgb:8,128,74; --down:#C42B27;
+  --down-bg:rgba(196,43,39,.09); --down-line:rgba(196,43,39,.55); --down-rgb:196,43,39; --lb:#08804A; --lb-bg:rgba(8,128,74,.16); --sb:#C42B27;
+  --sb-bg:rgba(196,43,39,.15); --sc:#5FC28E; --sc-ink:#08804A; --lu:#EE8D89; --lu-ink:#C42B27; --action:#9A5A00; --action-ink:#14110A;
+  --action-line:rgba(184,110,0,.60); --action-bg:rgba(245,165,36,.14); --go:#F5A524; --warn:#D98A00; --info:#1763BF; --info-bg:rgba(23,99,191,.08);
+  --info-line:rgba(23,99,191,.42); --stale:#7A828E; --stripe:repeating-linear-gradient(135deg, rgba(110,118,130,.22) 0 3px, transparent 3px 7px);
+  --danger:#CC2A22; --danger-bg:rgba(204,42,34,.09); --danger-ink:#FFFFFF; --leader:#087680; --leader-bg:rgba(10,127,138,.09); --dep:#6743D6;
+  --dep-bg:rgba(103,67,214,.08); --lag:#B2367A; --lag-bg:rgba(178,54,122,.08); --held:#10141A; --held-ink:#FFFFFF; --replay:#6A4FD6; --acc-mkt:#1763BF;
+  --acc-call:#C77D00; --acc-mine:#10141A; --acc-sys:#7A828E; --hover-strip:#F1F3F6; --ks-edge:#232A33; --shadow:0 8px 24px rgba(20,30,45,.16);
+  --ban-hover:rgba(204,42,34,.16);
+} }
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13px;line-height:1.3}
+body{background:var(--bg)}
+
+/* ---------- the colour table as shared classes (CONFERENCE 1.5) - pages use these, never their own colours for these meanings ---------- */
+.sh-c{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 6px;border:1px solid transparent;border-radius:3px;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.03em;line-height:1;white-space:nowrap;vertical-align:middle;flex:none}
+.sh-c-ce{color:var(--up);border-color:var(--up-line);background:var(--up-bg)}
+.sh-c-pe{color:var(--down);border-color:var(--down-line);background:var(--down-bg)}
+.sh-c-lb{color:var(--lb);background:var(--lb-bg)}
+.sh-c-sb{color:var(--sb);background:var(--sb-bg)}
+.sh-c-sc{color:var(--sc-ink);border-color:var(--sc)}
+.sh-c-lu{color:var(--lu-ink);border-color:var(--lu)}
+.sh-c-go{color:var(--action-ink);background:var(--go);border-color:var(--go);font-weight:800}
+.sh-c-ready{color:var(--action);border-color:var(--action-line);background:var(--action-bg)}
+.sh-c-book{color:var(--action);border-color:var(--action-line)}
+.sh-c-exit{color:var(--danger-ink);background:var(--danger);border-color:var(--danger);font-weight:800}
+.sh-c-leader{color:var(--leader);border-color:var(--leader);background:var(--leader-bg)}
+.sh-c-dep{color:var(--dep);border-color:var(--dep);background:var(--dep-bg)}
+.sh-c-lag{color:var(--lag);border-color:var(--lag);background:var(--lag-bg)}
+.sh-c-lag .dn,.sh-c-lag .up{font-weight:800}
+.sh-c-held{color:var(--held-ink);background:var(--held);border-color:var(--held);font-weight:800}
+.sh-c-info{color:var(--info);border-color:var(--info-line);background:var(--info-bg)}
+.sh-c-stale{color:var(--text-2);border-color:var(--stale);background:var(--stripe)}
+.sh-c-replay{color:var(--replay);border-color:var(--replay)}
+/* heat rows: alpha .06 + .06 per 1 % move, max .24. Set --m to the absolute % move, e.g. style="--m:2.48" */
+.sh-heat-up{background:rgba(var(--up-rgb), min(.24, calc(.06 + .06 * var(--m, 0))))}
+.sh-heat-dn{background:rgba(var(--down-rgb), min(.24, calc(.06 + .06 * var(--m, 0))))}
+/* panel header accents (3 px left): market data / a live GIR call / his trades or risk / system */
+.sh-acc-mkt{box-shadow:inset 3px 0 0 var(--acc-mkt)} .sh-acc-call{box-shadow:inset 3px 0 0 var(--acc-call)}
+.sh-acc-mine{box-shadow:inset 3px 0 0 var(--acc-mine)} .sh-acc-sys{box-shadow:inset 3px 0 0 var(--acc-sys)}
+a{color:inherit;text-decoration:none}
+.n{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
+.up{color:var(--up)} .dn{color:var(--down)}
+kbd{font-family:var(--mono);font-size:11px;color:var(--text-2);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:3px;padding:0 4px;line-height:14px;display:inline-block;white-space:nowrap}
+:focus-visible{outline:1px solid var(--text);outline-offset:2px}
+
+#sh-mkt,#sh-pnl,#sh-tabs,#sh-foot{position:fixed;left:0;right:0;white-space:nowrap;z-index:50}
+.sh-sep{width:1px;align-self:stretch;background:var(--line);flex:none}
+.sh-lb{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+.sh-age{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:-0.02em}
+.sh-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--info);flex:none}
+.sh-meter{width:48px;height:6px;background:var(--panel-3);border-radius:1px;overflow:hidden;flex:none}
+.sh-meter i{display:block;height:100%;background:var(--info)}
+.sh-meter.warn i{background:var(--warn)}
+/* stale look for any strip item: add class sh-stale to the item and put "STALE 12s" in its .sh-age */
+.sh-stale{background:var(--stripe)}
+.sh-stale .n,.sh-stale .sh-px{color:var(--stale)!important}
+
+/* ---------- R01 market strip ---------- */
+#sh-mkt{top:0;height:var(--sh-mkt);background:var(--panel-2)}
+.sh-m1{height:44px;display:flex;align-items:stretch;border-bottom:1px solid var(--line);padding:0 0 0 4px}
+.sh-ix,.sh-mi{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:0 8px;border-right:1px solid var(--line);flex:none}
+.sh-ix:hover{background:var(--panel-3)}
+.sh-l1{display:flex;align-items:center;gap:8px;height:14px}
+.sh-nm{font-size:11px;font-weight:600;letter-spacing:.05em;color:var(--text-2)}
+.sh-spk{color:var(--text-2);margin-left:auto;flex:none}
+.sh-l2{display:flex;align-items:baseline;gap:6px}
+.sh-px{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-0.02em;color:var(--text)}
+.sh-ch{font-size:12px}
+.sh-pc{font-size:13px;font-weight:600}
+.sh-status{margin-left:auto;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:2px;padding:0 12px;border-left:1px solid var(--line);flex:none}
+.sh-st1,.sh-st2{display:flex;align-items:center;gap:7px}
+.sh-mstate{height:18px;display:inline-flex;align-items:center;padding:0 6px;border:1px solid var(--info-line);color:var(--info);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.05em}
+.sh-phase{font-size:12px;color:var(--text-2)} .sh-phase b{color:var(--text);font-weight:600}
+.sh-clock{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-0.02em}
+.sh-ist{font-size:11px;color:var(--text-3)}
+.sh-m2{height:36px;display:flex;align-items:stretch;padding:0 0 0 4px;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-2)}
+.sh-t2{display:flex;flex-direction:column;justify-content:center;gap:1px;padding:0 10px;border-right:1px solid var(--line);flex:none}
+a.sh-t2:hover{background:var(--panel-3)}
+.sh-t2l{display:flex;align-items:center;gap:6px;height:14px}
+.sh-t2l .sh-lb{letter-spacing:.04em}
+.sh-t2v{display:flex;align-items:center;gap:5px;height:18px}
+.sh-t2v .n{font-size:13px}
+.sh-t2v .v{color:var(--text)}
+.sh-xw{height:14px;display:inline-flex;align-items:center;padding:0 4px;border:1px solid var(--text-3);border-radius:2px;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--text);line-height:1}
+.sh-ban{height:18px;display:inline-flex;align-items:center;gap:4px;padding:0 6px;border:1px solid var(--danger);background:var(--danger-bg);color:var(--danger);border-radius:9px;font-size:11px;font-weight:700;letter-spacing:.04em;cursor:pointer}
+.sh-ban:hover{background:var(--ban-hover)}
+
+/* ---------- R02 my F&O P&L strip ---------- */
+#sh-pnl{top:var(--sh-mkt);height:var(--sh-pnl);background:var(--panel);border-bottom:1px solid var(--line-2);display:flex;align-items:center;padding:0 12px;font-size:12px;cursor:pointer}
+#sh-pnl:hover{background:var(--hover-strip)}
+.sh-pt{display:flex;align-items:center;gap:5px;padding:0 8px;height:18px;border-right:1px solid var(--line);flex:none}
+.sh-pt:first-child{padding-left:0}
+.sh-pt .n{font-size:13px}
+.sh-ptitle{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text);padding:0 7px;height:18px;line-height:16px;border:1px solid var(--line-2);border-radius:3px}
+.sh-big{font-family:var(--mono);font-size:16px;font-weight:700;letter-spacing:-0.02em}
+.sh-brk{color:var(--text-2)} .sh-brk .n{font-size:12px}
+.sh-go{margin-left:auto;display:flex;align-items:center;gap:6px;color:var(--text-2);font-size:12px;padding-left:10px;flex:none}
+.sh-go b{color:var(--text);font-weight:600;letter-spacing:.04em}
+
+/* ---------- R03 tab bar ---------- */
+#sh-tabs{top:calc(var(--sh-mkt) + var(--sh-pnl));height:var(--sh-tabs);background:var(--panel-2);border-bottom:1px solid var(--line-2);display:flex;align-items:stretch}
+.sh-mark{width:54px;flex:none;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding-left:12px;border-right:1px solid var(--line)}
+.sh-mark b{font-size:16px;font-weight:800;letter-spacing:.14em;line-height:18px}
+.sh-mark span{font-size:11px;color:var(--text-3);line-height:13px}
+.sh-grid{display:grid;grid-template-rows:26px 25px;grid-auto-columns:auto;align-items:stretch;flex:none}
+.sh-rl{display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text-3);border-right:1px solid var(--line)}
+.sh-rl1{grid-row:1;grid-column:1;border-bottom:1px solid var(--line)}
+.sh-rl2{grid-row:2;grid-column:1;color:var(--text)}
+.sh-rl2 span{border:1px solid var(--text-2);border-radius:3px;padding:0 4px;line-height:16px;background:var(--panel-3)}
+.sh-tab{display:flex;align-items:center;gap:6px;padding:0 6px;color:var(--text-2);border-right:1px solid var(--line);cursor:pointer}
+.sh-grid>.sh-tab[style*="grid-row:1;"]{border-bottom:1px solid var(--line)}
+.sh-tab:hover{background:var(--panel-3)}
+.sh-tl{font-size:13px;color:var(--text-2)}
+.sh-k{color:var(--text-2)}
+.sh-ks{background:var(--text-2);color:var(--bg);border-color:var(--text-2);border-bottom-color:var(--ks-edge);font-weight:700}
+.sh-free{cursor:default}
+.sh-free:hover{background:none}
+.sh-free .sh-tl{font-size:11px;color:var(--text-3)}
+.sh-free .sh-ks{background:none;color:var(--text-3);border-color:var(--line-2);font-weight:400}
+.sh-f5{flex-direction:column;justify-content:center;align-items:flex-start;gap:3px;background:repeating-linear-gradient(135deg, rgba(140,148,160,.07) 0 3px, transparent 3px 7px)}
+.sh-f5a{display:flex;align-items:center;gap:6px}
+.sh-f5a .sh-tl{font-size:12px;color:var(--text-3)}
+.sh-koff{color:var(--text-3);text-decoration:line-through}
+.sh-f5b{font-size:11px;color:var(--text-3)}
+.sh-right{flex:1;min-width:0;display:grid;grid-template-rows:26px 25px;grid-template-columns:minmax(0,1fr);border-left:1px solid var(--line-2)} /* fix (market r2): the track keeps its share at 1366 when the "/" box shows its placeholder */
+.sh-r1,.sh-r2{display:flex;align-items:stretch;justify-content:flex-start}
+.sh-r1{border-bottom:1px solid var(--line)}
+.sh-r1 .sh-tab:last-child{border-right:0}
+.sh-r2{align-items:center;gap:6px;padding:0 12px 0 8px}
+.sh-cmd{container-type:inline-size;position:relative;flex:1;max-width:300px;min-width:136px;height:20px;border:1px solid var(--line-2);border-radius:3px;background:var(--bg);display:flex;align-items:center;gap:6px;padding:0 6px;cursor:text}
+.sh-cmd kbd{line-height:12px}
+.sh-ph{font-size:12px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis}
+/* conference fix (1366 "/" clip): the placeholder picks the longest form that fits the box, never an ellipsis:
+   "symbol, contract, verb" -> "symbol, verb" -> "symbol" (the box shrinks when SOUND reads MUTED 9:42 or OFF) */
+.sh-ph-c,.sh-ph-v{display:none}
+@container (min-width:96px){.sh-ph-v{display:inline}}
+@container (min-width:150px){.sh-ph-c{display:inline}}
+.sh-typed{display:none;font-family:var(--mono);font-size:13px;color:var(--text)}
+.sh-typed i{display:inline-block;width:7px;height:14px;background:var(--text-2);vertical-align:-2px;margin-left:1px}
+.sh-btn{height:20px;display:inline-flex;align-items:center;gap:5px;padding:0 7px;border:1px solid var(--line-2);border-radius:3px;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--text-2);background:none;cursor:pointer;flex:none;font-family:var(--sans)}
+.sh-btn:hover{background:var(--panel-3)}
+.sh-btn .on{color:var(--text)}
+.sh-btn svg{flex:none}
+.sh-al{font-size:11px;color:var(--text-2);flex:none}
+.sh-al .n{color:var(--text);font-size:12px}
+/* search suggestions (R04): shown while typing; in pages it opens from script, in this file from body.demo */
+.sh-sugg{display:none;position:absolute;top:24px;right:-1px;width:480px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;box-shadow:var(--shadow);z-index:60;white-space:normal;cursor:default}
+.sh-sg-h{height:24px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;border-bottom:1px solid var(--line)}
+.sh-sg-r{display:grid;grid-template-columns:100px 1fr 72px 60px;align-items:center;column-gap:8px;height:44px;padding:0 10px;border-bottom:1px solid var(--line)}
+.sh-sg-r.sel{background:var(--panel-3);box-shadow:inset 2px 0 0 var(--text)}
+.sh-sg-s{font-size:15px;font-weight:600;color:var(--text)}
+.sh-sg-s em{font-style:normal;text-decoration:underline;text-underline-offset:3px}
+.sh-sg-d{font-size:12px;color:var(--text-2);line-height:1.35}
+.sh-sg-d span{color:var(--text-3);font-size:11px}
+.sh-sg-p{text-align:right;font-size:13px}
+.sh-sg-v{display:flex;gap:6px;flex-wrap:wrap;padding:7px 10px;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-2)}
+.sh-sg-v span{border:1px solid var(--line-2);border-radius:3px;padding:0 5px;line-height:18px}
+.sh-sg-f{padding:5px 10px;font-size:11px;color:var(--text-3)}
+/* sound legend popover (R10) - opens under the LEGEND button */
+.sh-pop{display:none;position:absolute;z-index:60;background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;box-shadow:var(--shadow);white-space:normal}
+
+/* active tab: ONE body class page-<slug> lights the matching tab (generated list) */
+.page-morning .sh-tab[data-tab="morning"],
+.page-desk-hunt .sh-tab[data-tab="desk"],
+.page-desk-trade .sh-tab[data-tab="desk"],
+.page-plan-card .sh-tab[data-tab="desk"],
+.page-plan-card .sh-tab[data-tab="plan-card"],
+.page-sectors .sh-tab[data-tab="sectors"],
+.page-rotation .sh-tab[data-tab="rotation"],
+.page-news .sh-tab[data-tab="news"],
+.page-positions .sh-tab[data-tab="positions"],
+.page-share .sh-tab[data-tab="share"],
+.page-analyst .sh-tab[data-tab="analyst"],
+.page-chain .sh-tab[data-tab="chain"],
+.page-futures-oi .sh-tab[data-tab="futures-oi"],
+.page-world .sh-tab[data-tab="world"],
+.page-calendar .sh-tab[data-tab="calendar"],
+.page-journal .sh-tab[data-tab="journal"],
+.page-reference .sh-tab[data-tab="reference"],
+.page-scorecard .sh-tab[data-tab="scorecard"],
+.page-health .sh-tab[data-tab="health"],
+.page-replay .sh-tab[data-tab="replay"],
+.page-settings .sh-tab[data-tab="settings"],
+.page-help .sh-tab[data-tab="help"],
+.page-market .sh-tab[data-tab="market"]{background:var(--panel-3);color:var(--text);box-shadow:inset 0 -2px 0 var(--text)}
+.page-morning .sh-tab[data-tab="morning"] .sh-tl,
+.page-desk-hunt .sh-tab[data-tab="desk"] .sh-tl,
+.page-desk-trade .sh-tab[data-tab="desk"] .sh-tl,
+.page-plan-card .sh-tab[data-tab="desk"] .sh-tl,
+.page-plan-card .sh-tab[data-tab="plan-card"] .sh-tl,
+.page-sectors .sh-tab[data-tab="sectors"] .sh-tl,
+.page-rotation .sh-tab[data-tab="rotation"] .sh-tl,
+.page-news .sh-tab[data-tab="news"] .sh-tl,
+.page-positions .sh-tab[data-tab="positions"] .sh-tl,
+.page-share .sh-tab[data-tab="share"] .sh-tl,
+.page-analyst .sh-tab[data-tab="analyst"] .sh-tl,
+.page-chain .sh-tab[data-tab="chain"] .sh-tl,
+.page-futures-oi .sh-tab[data-tab="futures-oi"] .sh-tl,
+.page-world .sh-tab[data-tab="world"] .sh-tl,
+.page-calendar .sh-tab[data-tab="calendar"] .sh-tl,
+.page-journal .sh-tab[data-tab="journal"] .sh-tl,
+.page-reference .sh-tab[data-tab="reference"] .sh-tl,
+.page-scorecard .sh-tab[data-tab="scorecard"] .sh-tl,
+.page-health .sh-tab[data-tab="health"] .sh-tl,
+.page-replay .sh-tab[data-tab="replay"] .sh-tl,
+.page-settings .sh-tab[data-tab="settings"] .sh-tl,
+.page-help .sh-tab[data-tab="help"] .sh-tl,
+.page-market .sh-tab[data-tab="market"] .sh-tl{color:var(--text)}
+/* conference fix (1366 clip): the active tab is NOT bold, so the tab grid has the same width on every page and the right block
+   ("/" box, sound, legend, P1 / P2) never loses pixels to a bold label */
+
+/* ---------- main ---------- */
+#page{position:fixed;left:0;right:0;top:var(--sh-top);bottom:var(--sh-foot);overflow:hidden}
+
+/* ---------- footer ---------- */
+#sh-foot{bottom:0;height:var(--sh-foot);background:var(--panel-2);border-top:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 12px;font-size:11px;color:var(--text-3)}
+#sh-foot .sh-sebi{font-size:12px;color:var(--text-2)}
+#sh-foot .sh-fs{width:1px;height:11px;background:var(--line-2);flex:none}
+#sh-foot .sh-keys{display:flex;align-items:center;gap:5px}
+#sh-foot kbd{line-height:12px}
+#sh-foot .sh-mock{margin-left:auto;color:var(--text-2)}
+.sh-n1366{display:none}
+
+/* ---------- 1366 rule (below 1500 px): drop, never wrap ---------- */
+@media (max-width:1499px){
+  .sh-wide{display:none!important}
+  .sh-n1366{display:inline-flex}
+  .sh-tab{padding:0 5px;gap:5px}
+  .sh-mark{width:48px;padding-left:9px}
+  .sh-tl{font-size:12px}
+  .sh-ix,.sh-mi{padding:0 8px}
+  .sh-t2,.sh-pt{padding:0 5px}
+  .sh-pt{gap:4px}
+  .sh-meter{width:34px} /* room for the short realised / open / costs, stk fut and the holiday */
+  .sh-cmd{max-width:200px;min-width:80px}
+  .sh-r2{gap:5px;padding-left:6px} .sh-btn{padding:0 5px} /* room for "MUTED 9:42" + "P1 1 · P2 1" without a clip */
+}
+/* ===================== SHELL CSS END ===================== */
+
+/* ===================== PAGE CSS (scorecard) ===================== */
+/* ===================== PAGE CSS: Shift+F8 CALLS & SCORECARD · round 3 ===================== */
+/* nothing here redefines a sh- class (the r2 page-scoped "/" box rule is gone: the shell's build.js now keeps P1 · P2 visible at 1366) */
+
+.sc-wrap{position:absolute;left:12px;right:12px;top:8px;bottom:8px;display:grid;grid-template-rows:26px 146px minmax(0,1fr);gap:6px}
+.sc-top{display:flex;align-items:center;gap:10px;white-space:nowrap;min-width:0}
+.sc-ttl{display:flex;align-items:center;gap:8px;flex:none}
+.sc-ttl b{font-size:15px;font-weight:700;letter-spacing:.02em}
+.sc-kk{background:var(--text-2);color:var(--bg);border-color:var(--text-2);border-bottom-color:#7E8691;font-weight:700}
+.sc-sub{font-size:12px;color:var(--text-3)}
+.sc-purp{font-size:13px;color:var(--text-2);min-width:0;overflow:hidden}
+.sc-sp{flex:1;min-width:0}
+.sc-cyc{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--text-3);flex:none}
+.sc-cyc a{color:var(--text-2)} .sc-cyc a:hover{color:var(--text)}
+.sc-cyc i{font-style:normal;color:var(--line-2)}
+.sc-cyc .here{color:var(--text);border:1px solid var(--text-2);border-radius:3px;padding:0 4px;line-height:16px}
+.sc-closed{height:22px;display:inline-flex;align-items:center;padding:0 8px;border:1px solid var(--line-2);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--text-3);flex:none}
+.sc-sel{height:24px;display:inline-flex;align-items:center;padding:0 4px 0 6px;border:1px solid var(--line-2);border-radius:3px;background:var(--panel);flex:none}
+.sc-sel select{background:transparent;border:0;color:var(--text);font:600 12px var(--sans);outline:none;cursor:pointer;max-width:170px}
+.sc-sel select option{background:var(--panel-2)}
+.sc-btn{height:24px;display:inline-flex;align-items:center;gap:5px;padding:0 8px;border:1px solid var(--line-2);border-radius:3px;background:none;color:var(--text-2);font:600 11px var(--sans);letter-spacing:.04em;cursor:pointer;flex:none}
+.sc-btn:hover,.sc-btn.on{background:var(--panel-3);color:var(--text)}
+.sc-btn .n{font-size:11px}
+.sc-help{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line-2);border-radius:50%;font-size:12px;font-weight:700;color:var(--text-2);flex:none}
+
+/* panels (DESIGN_SYSTEM 6 / 7.1) */
+.pn{background:var(--panel);border:1px solid var(--line);border-radius:4px;display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden;position:relative}
+.ph{height:24px;flex:none;background:var(--panel-2);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;padding:0 5px 0 9px;white-space:nowrap;min-width:0;overflow:hidden}
+.ph .t{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);flex:none}
+.ph .k{font-size:11px;color:var(--text-3);min-width:0;overflow:hidden;flex:0 1 auto}
+.ph .k b{color:var(--text-2);font-weight:600}
+.ph .k .okk{color:var(--text)}
+.ph .sp,.sub .sp{flex:1 1 0;min-width:0}
+.ph .age,.sub .age{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:-0.02em;flex:none}
+.cnt{font-family:var(--mono);font-size:11px;color:var(--text-2);letter-spacing:-0.02em;flex:none}
+.ud{display:flex;gap:3px;flex:none}
+.ud button{width:20px;height:18px;border:1px solid var(--line-2);border-radius:3px;background:var(--panel);color:var(--text-2);font-size:11px;padding:0;line-height:1;cursor:pointer;font-family:var(--sans)}
+.ud button:hover{background:var(--panel-3);color:var(--text)}
+.sub{height:22px;flex:none;display:flex;align-items:center;gap:6px;padding:0 6px 0 8px;border-bottom:1px solid var(--line);white-space:nowrap;min-width:0;overflow:hidden;font-size:11px;color:var(--text-3)}
+.sub .note{font-size:11px;color:var(--text-3);flex:none}
+.sub b{color:var(--text-2);font-weight:600}
+/* R08 - every list scrolls inside its panel with a 10 px bar DRAWN IN THE PAGE (not the browser's own bar, which headless
+   captures and some OS settings hide): track #1A1F27, thumb #7C8796 (about 4:1 on the track), visible at rest, draggable,
+   track click = one page; the ▲ ▼ buttons in the panel header step one page. A list that fits shows a full-length thumb.
+   Native bars are switched off so there is never a double bar. */
+.pbw{flex:1 1 auto;min-height:0;display:flex;position:relative}
+.pb{flex:1 1 auto;min-height:0;min-width:0;overflow-y:scroll;overflow-x:hidden;scrollbar-width:none;margin-right:10px}
+.pb::-webkit-scrollbar,.drawer pre::-webkit-scrollbar,.askb::-webkit-scrollbar{display:none}
+.drawer pre,.askb{scrollbar-width:none}
+.vsb{position:absolute;top:0;right:0;bottom:0;width:10px;background:#1A1F27;border-left:1px solid var(--line-2);cursor:pointer;z-index:3}
+.vsb i{position:absolute;left:2px;right:2px;top:0;min-height:22px;background:#7C8796;border-radius:3px;cursor:grab}
+.vsb:hover i,.vsb.drag i{background:#A3ADBA}
+.vsb.fit i{top:2px!important;bottom:2px;height:auto!important}
+/* the scroll cue under a detail body: what is still below, by name (R08) */
+.more{height:18px;flex:none;display:flex;align-items:flex-start;padding-top:2px!important;gap:5px;padding:0 9px;border-top:1px dashed var(--line-2);font-size:11px;color:var(--text-2);white-space:nowrap;overflow:hidden;cursor:pointer;background:var(--panel)}
+.more b{color:var(--text);font-weight:600}
+.more .ar{font-family:var(--mono);color:var(--text);font-weight:700}
+.more.end{color:var(--text-3)}
+.pf{height:20px;flex:none;border-top:1px solid var(--line);padding:0 9px;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-3);white-space:nowrap;overflow:hidden}
+.pf b{color:var(--text-2);font-weight:600}
+.pf .n{font-size:11px}
+
+.chips{display:flex;gap:4px;flex:none}
+.chip{height:18px;display:inline-flex;align-items:center;gap:4px;padding:0 5px;border:1px solid var(--line-2);border-radius:3px;font-size:11px;font-weight:600;color:var(--text-2);background:none;cursor:pointer;font-family:var(--sans);letter-spacing:.02em;flex:none}
+.chip .n{font-size:11px;color:var(--text)}
+.chip.on{background:var(--panel-3);color:var(--text);border-color:var(--text-3)}
+.chip.zero{color:var(--text-3);border-style:dashed}
+.chip.zero .n{color:var(--text-3)}
+.chip.sep{margin-left:6px;border-style:dashed}
+.seg{display:flex;flex:none;border:1px solid var(--line-2);border-radius:3px;overflow:hidden}
+.seg button{height:18px;border:0;background:none;color:var(--text-3);font:600 11px var(--sans);letter-spacing:.03em;padding:0 6px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line-2)}
+.seg button.on{background:var(--panel-3);color:var(--text)}
+.fbtn{height:18px;border:1px solid var(--line-2);border-radius:3px;background:none;color:var(--text-2);font:600 11px var(--sans);padding:0 6px;cursor:pointer;flex:none}
+.fbtn.on{background:var(--panel-3);color:var(--text)}
+.fbar{display:none;gap:8px}
+.fbar.on{display:flex}
+.fbar label{display:inline-flex;align-items:center;gap:4px;color:var(--text-3)}
+.fbar select{max-width:94px;background:var(--panel);border:1px solid var(--line-2);border-radius:3px;color:var(--text);font:600 11px var(--sans);height:18px;padding:0 2px}
+.tabs{display:flex;gap:0;flex:none;border:1px solid var(--line-2);border-radius:3px;overflow:hidden}
+.tabs button{height:18px;border:0;background:none;color:var(--text-3);font:700 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;padding:0 7px;cursor:pointer}
+.tabs button+button{border-left:1px solid var(--line-2)}
+.tabs button.on{background:var(--panel-3);color:var(--text)}
+.tabs .n{font-family:var(--mono);font-weight:600;color:var(--text-2);letter-spacing:-0.02em}
+
+/* ---- band 1 ---- */
+.sc-band{display:grid;grid-template-columns:minmax(0,606fr) minmax(0,520fr) minmax(0,438fr);gap:6px;min-height:0}
+.vbody{padding:5px 12px 0 12px;display:flex;flex-direction:column;min-width:0}
+.vbody .v1{font-size:18px;line-height:24px;font-weight:700;color:var(--text);white-space:nowrap;margin-bottom:2px;letter-spacing:-0.005em}
+.vbody .v1 .up{color:var(--up)}
+.vbody .vl{display:flex;gap:8px;font-size:14px;line-height:18px;color:var(--text-2);white-space:nowrap}
+.vbody .vl .i{font-family:var(--mono);color:var(--text-3);font-size:12px;width:10px;flex:none}
+.vbody b{color:var(--text);font-weight:600}
+.vbody .act{color:var(--action);font-weight:700}
+.vbody a.go{color:var(--info);border-bottom:1px dotted var(--info-line)}
+.tiles{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:1fr 1fr;min-height:0}
+.tile{padding:3px 8px 0 9px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0;overflow:hidden;white-space:nowrap}
+.tile:nth-child(4n){border-right:0}
+.tile:nth-child(n+5){border-bottom:0}
+.tile .l{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);line-height:13px}
+.tile .v{font-family:var(--mono);font-size:16px;font-weight:700;letter-spacing:-0.02em;line-height:18px;height:18px;color:var(--text);display:flex;align-items:baseline;gap:5px}
+.tile .v small{font-family:var(--sans);font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:0}
+.tile .v.low{color:var(--text-3)}
+.tile .s{font-size:11px;color:var(--text-3);line-height:13px;height:13px}
+.tile .l{height:13px}
+.tile .s b{color:var(--text-2);font-weight:600}
+.lowtag{font-size:11px;font-family:var(--sans);font-weight:600;color:var(--text-3);border:1px dashed var(--line-2);border-radius:3px;padding:0 3px;line-height:14px}
+.rbody{padding:3px 10px 0 10px;font-size:12px;line-height:14px;color:var(--text-2);display:flex;flex-direction:column;min-width:0}
+.rbody .rl{white-space:nowrap;display:flex;gap:6px;min-width:0}
+.rbody .ok{color:var(--text)}
+.rbody .ok::before{content:"✓ ";color:var(--info);font-weight:700}
+.rbody .h{font-size:12px;font-weight:600;color:var(--text-2);margin-top:2px;white-space:nowrap}
+.rbody b{color:var(--text);font-weight:600}
+.rbody .wn{color:var(--text-2);font-weight:700;font-size:11px}
+/* hard block = grey label with a red marker (red text is kept for down / PE only) */
+.rbody .blk{color:var(--text);font-weight:700;font-size:11px;letter-spacing:.04em;border:1px solid var(--text-3);border-left:3px solid var(--danger);border-radius:2px;padding:0 4px;line-height:13px}
+
+/* ---- main grid ---- */
+.sc-main{display:grid;grid-template-columns:minmax(0,676fr) minmax(0,464fr) minmax(0,424fr);gap:6px;min-height:0}
+.sc-col{display:flex;flex-direction:column;gap:6px;min-height:0;min-width:0;position:relative}
+#pm{flex:258 1 0} #pc{flex:270 1 0}
+#pd{flex:1 1 0}
+#pa{flex:300 1 0} #pg{flex:226 1 0}
+
+/* tables */
+.tb{width:100%;border-collapse:collapse;table-layout:fixed}
+.tb th{position:sticky;top:0;z-index:2;background:var(--panel-2);height:20px;padding:0 5px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden}
+.tb td{height:21px;padding:0 5px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:12px;color:var(--text-2);line-height:16px;white-space:nowrap;overflow:hidden}
+.tb .r{text-align:right}
+.tb tr.sel td{background:var(--panel-3)}
+.tb tr.sel td:first-child{box-shadow:inset 3px 0 0 var(--text)}
+.tb tbody tr{cursor:pointer}
+.tb tbody tr:hover td{background:#161A20}
+.tb tr.sel:hover td{background:var(--panel-3)}
+.tb tr.sum td{height:18px;background:var(--panel-2);font-size:11px;color:var(--text-2);cursor:default}
+.tb tr.sum b{color:var(--text)}
+.tb tr.grp td{height:18px;background:var(--panel-2)!important;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);font-weight:700;cursor:default}
+.tb tr.grp td .n{letter-spacing:0;text-transform:none}
+.tb tr.fold td{color:var(--text-3);font-size:11px}
+.tb tr.fold .sym{font-size:12px}
+.tb tr.sechd td{height:22px;background:#151920}
+.tb tr.sechd .snm{font-size:13px;font-weight:600;color:var(--text)}
+.l2{font-size:11px;color:var(--text-3)}
+.sym{font-size:14px;font-weight:600;color:var(--text);line-height:16px}
+.sym:hover{text-decoration:underline;text-underline-offset:3px}
+.mono,.tb .n{font-family:var(--mono);letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.pct{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:-0.02em}
+.pct.sm{font-size:12px}
+.act{color:var(--action)}
+.gry{color:var(--text-3)}
+.wht{color:var(--text)}
+
+/* chips used in rows: colour rule - green/red only for price and P&L, amber only for GIR's action (GET READY / GO NOW, Fix),
+   blue = info, grey = status. PROBATION is a grey bordered pill (not amber). */
+.vd{display:inline-flex;align-items:center;height:17px;padding:0 4px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.04em;line-height:1;vertical-align:middle}
+.vd.bef{border:1px solid var(--info-line);color:var(--info)}
+.vd.late{border:1px solid var(--line-2);color:var(--text)}
+.vd.miss{background:var(--panel-3);color:var(--text);border:1px solid var(--text-3)}
+.vd.wrong{border:1px dashed var(--line-2);color:var(--text-2)}
+.vd + .lt{margin-left:5px;font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:-0.02em}
+.role{display:inline-flex;align-items:center;height:17px;padding:0 4px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.03em;border:1px solid var(--line-2);color:var(--text-2);line-height:1;vertical-align:middle}
+.bu{font-family:var(--mono);font-size:11px;color:var(--text-3);margin-left:4px;letter-spacing:-0.02em}
+.cp{display:inline-flex;align-items:center;height:16px;padding:0 3px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.03em;line-height:1;margin-left:4px;vertical-align:middle}
+.cp.pe{color:var(--down);border:1px solid rgba(242,97,93,.5)}
+.cp.ce{color:var(--up);border:1px solid rgba(52,196,124,.5)}
+.oc{display:inline-flex;align-items:center;height:17px;padding:0 4px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.03em;line-height:1;border:1px solid var(--line-2);color:var(--text-2);vertical-align:middle}
+.oc.taken{border-color:var(--text-2);color:var(--text)}
+.oc.sup{border-style:dashed;color:var(--text-2)}
+.oc.exp,.oc.can{color:var(--text-3)}
+.kp{display:inline-flex;align-items:center;height:17px;padding:0 3px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:0;border:1px solid var(--line-2);color:var(--text-2);line-height:1;vertical-align:middle}
+.kp.keep{border-color:var(--info-line);color:var(--info)}
+.kp.prob{border-color:var(--text-3);color:var(--text);background:var(--panel-3)}
+.kp.off{color:var(--text-3);border-style:dashed}
+.kp.paper{color:var(--text-3)}
+.go{display:inline-flex;align-items:center;height:18px;padding:0 5px;border-radius:3px;border:1px solid var(--action-line);color:var(--action);font-size:11px;font-weight:700;letter-spacing:.05em}
+.stl{color:var(--stale);background:repeating-linear-gradient(135deg,rgba(140,148,160,.22) 0 3px,transparent 3px 7px);padding:0 3px;border-radius:2px}
+.shock{display:inline-flex;align-items:center;height:16px;padding:0 3px;border:1px solid var(--info-line);color:var(--info);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.04em}
+
+/* ---- call card (detail of the selected call; fixed, one open at a time) ---- */
+.cd{padding:4px 10px 2px 10px;font-size:12px;line-height:14px;color:var(--text-2)}
+.cd .hd{display:flex;align-items:center;gap:5px;white-space:nowrap;margin-bottom:3px}
+.cd .hd .sym{font-size:15px}
+.cd .ln{white-space:normal}
+.cd b{color:var(--text);font-weight:600}
+.cd .sec{margin-top:3px;padding-top:3px;border-top:1px solid var(--line)}
+.cd .h{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-bottom:2px;white-space:nowrap;display:flex;gap:6px}
+.cd .h .x{font-weight:600;letter-spacing:0;text-transform:none;color:var(--text-3)}
+.pg{display:grid;grid-template-columns:62px minmax(0,1fr) minmax(0,1fr);column-gap:8px;white-space:nowrap}
+.pg .hh{font-size:11px;color:var(--text-3)}
+.pg .n{color:var(--text)}
+.pg .q{color:var(--text-3)}
+.cd .hh2{font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--text-3);margin-right:4px}
+.vote{display:flex;flex-wrap:wrap;gap:2px}
+.cd .role{height:15px}
+.vote span{font-size:11px;border:1px solid var(--line-2);border-radius:3px;padding:0 3px;line-height:16px;color:var(--text-2);white-space:nowrap}
+.vote span.y{color:var(--text)}
+.vote span.no{border-color:var(--text-3);color:var(--text);background:var(--panel-3)}
+.vote span.q{border-style:dashed;color:var(--text-3)}
+.vote span.vh{border:0;padding:0 4px 0 0;font-weight:700;letter-spacing:.04em;color:var(--text-3)}
+.vote span i{font-style:normal;color:var(--text-3)}
+.sr{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px}
+.sr th{font-weight:600;color:var(--text-3);text-align:right;padding:0 3px;height:16px;white-space:nowrap;letter-spacing:.02em;border-bottom:1px solid var(--line)}
+.sr th:first-child,.sr td:first-child{text-align:left;padding-left:0}
+.sr td{text-align:right;padding:0 3px;height:14px;line-height:14px;white-space:nowrap;font-family:var(--mono);letter-spacing:-0.03em;color:var(--text-2)}
+.sr td:first-child{font-family:var(--sans);letter-spacing:0;color:var(--text-3)}
+.sr .pk{color:var(--text);background:rgba(255,255,255,.04)}
+.sr th.pk{color:var(--text)}
+.sr tr.nv td:not(:first-child){color:var(--text-3)}
+.cd .tx{white-space:normal}
+
+/* ---- miss audit (detail of the selected mover) ---- */
+.au{padding:4px 8px 8px 8px;font-size:12px;line-height:15px;color:var(--text-2)}
+.au .st{display:grid;grid-template-columns:56px 30px minmax(0,1fr);column-gap:6px;padding:2px 0;border-bottom:1px solid #1B2028}
+.au .st > b{font-family:var(--mono);font-weight:600;color:var(--text);letter-spacing:-0.02em}
+.au .st > i{font-style:normal;font-family:var(--mono);color:var(--text-3);text-align:right;letter-spacing:-0.02em}
+.au .st > span{min-width:0}
+.au .st .m{color:var(--text);display:block}
+.au .st .s2{display:block;color:var(--text-3);font-size:11px;line-height:14px}
+.au .st.gr > b{color:var(--action)}
+.au .fx{color:var(--action);font-weight:700}
+.au .h{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin:6px 0 2px 0}
+.au .mt{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px}
+.au .mt th{font-weight:600;color:var(--text-3);text-align:right;padding:0 3px;height:16px;border-bottom:1px solid var(--line);white-space:nowrap}
+.au .mt td{text-align:right;padding:0 3px;height:15px;font-family:var(--mono);letter-spacing:-0.03em;color:var(--text-2);white-space:nowrap}
+.au .mt th:first-child,.au .mt td:first-child{text-align:left;padding-left:0;font-family:var(--sans);letter-spacing:0;color:var(--text-3)}
+.au .tx{margin-top:4px}
+.au .tx b{color:var(--text);font-weight:600}
+
+/* ---- agents / AI cost ---- */
+.ag td .an{font-weight:600;color:var(--text)}
+.ag td,.ag th{padding:0 3px!important}
+.ag td .fr{font-family:var(--mono);font-size:11px;color:var(--text-3);margin-left:4px}
+.km{width:100%;border-collapse:collapse;table-layout:fixed}
+.km th{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);text-align:right;padding:0 6px;height:18px;border-bottom:1px solid var(--line)}
+.km th:first-child,.km td:first-child{text-align:left;padding-left:9px}
+.km td{font-size:12px;line-height:15px;padding:2px 6px;border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden;color:var(--text-2);text-align:right;font-family:var(--mono);letter-spacing:-0.02em}
+.km td:first-child{font-family:var(--sans);color:var(--text);font-weight:600;letter-spacing:0}
+.km td.w{text-align:left;font-family:var(--sans);letter-spacing:0;color:var(--text-3);font-size:11px;white-space:normal;padding-top:0;padding-left:18px!important}
+.km tr.m1 td{border-bottom:0}
+.kbig{padding:5px 9px 3px 9px;display:flex;align-items:baseline;gap:8px;white-space:nowrap}
+.kbig b{font-family:var(--mono);font-size:18px;font-weight:700;letter-spacing:-0.02em;color:var(--text)}
+.kbig span{font-size:12px;color:var(--text-2)}
+.kmeter{height:6px;background:var(--panel-3);border-radius:1px;margin:0 9px 4px 9px;overflow:hidden;display:flex}
+.kmeter i{display:block;height:100%}
+.kh{padding:4px 9px 2px 9px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.kh .h{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);line-height:15px;display:flex;justify-content:space-between}
+.bars{display:flex;align-items:flex-end;gap:3px;height:40px;margin-top:2px}
+.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
+.bars i{display:block;width:100%;background:var(--text-3);border-radius:1px 1px 0 0}
+.bars div.pk i{background:var(--text-2)}
+.bars u{text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--text-2);line-height:13px;letter-spacing:-0.04em}
+.blab{display:flex;gap:3px;margin-top:1px}
+.blab span{flex:1;text-align:center;font-family:var(--mono);font-size:11px;color:var(--text-3);min-width:0}
+.kpu{font-size:12px;line-height:17px;color:var(--text-2)}
+.kpu b{color:var(--text);font-family:var(--mono);font-weight:700;letter-spacing:-0.02em}
+.kcap{margin:4px 9px 6px 9px;padding:4px 8px;border:1px solid var(--line-2);border-radius:3px;font-size:12px;line-height:16px;color:var(--text-2)}
+.kcap b{color:var(--text)}
+
+/* drawers: overlay over the right column only */
+.drawer{display:none;position:absolute;inset:0;z-index:45;background:var(--panel-2);border:1px solid var(--text-3);border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,.55);flex-direction:column}
+.drawer.on{display:flex}
+.drawer .x{height:18px;border:1px solid var(--line-2);border-radius:3px;background:none;color:var(--text-2);font:600 11px var(--sans);padding:0 6px;cursor:pointer;flex:none}
+.dnote2{font-size:11px;color:var(--text-3);padding:3px 10px;border-bottom:1px solid var(--line)}
+.drawer pre{flex:1;overflow:auto;margin:0;padding:8px 10px;font-family:var(--mono);font-size:12px;line-height:16px;color:var(--text);white-space:pre-wrap}
+.askb{flex:1;min-height:0;padding:6px 10px 8px 10px;display:flex;flex-direction:column;gap:5px;overflow:auto;font-size:12px;line-height:16px}
+.askb .q{color:var(--text);font-weight:600}
+.askb .q i{font-style:normal;font-family:var(--mono);font-weight:400;color:var(--text-3);font-size:11px;margin-right:6px}
+.askb .a{color:var(--text-2)} .askb .a b{color:var(--text)} .askb .a .act{font-weight:700}
+.askb .ask{display:flex;align-items:center;gap:6px;height:26px;border:1px solid var(--line-2);border-radius:3px;padding:0 6px;background:var(--bg);flex:none;margin-top:auto}
+.askb .ask input{flex:1;min-width:0;background:none;border:0;color:var(--text);font:12px var(--sans);outline:none}
+
+/* ---- 1366 rule (below 1500): narrower columns, shorter labels, same content; nothing a requirement needs is dropped ---- */
+.n1366{display:none!important}
+.n1366b{display:none!important}
+@media (max-width:1499px){
+  .w1600{display:none!important}
+  .n1366{display:inline!important}
+  .n1366b{display:block!important}
+  .sc-wrap{grid-template-rows:24px 140px minmax(0,1fr);gap:5px}
+  .tile .l,.tile .s{height:12px;line-height:12px}
+  .rbody{padding-top:1px}
+  .sc-main,.sc-band,.sc-col{gap:5px}
+  .fbar select{max-width:86px}
+  #pc .pf{display:none}
+  .au{font-size:11px;line-height:14px}
+  .au .st{grid-template-columns:52px 30px minmax(0,1fr)}
+  .ph{height:22px}
+  .sub{height:20px}
+  .tb td{height:19px}
+  .tb th{height:19px}
+  .tb tr.sum td{height:16px}
+  .pf{height:18px}
+  .tile .v{line-height:18px}
+  .tile{padding:1px 5px 0 7px}
+  .vbody .v1{margin-bottom:0}
+  .ag .fnd{font-size:11px}
+  .ag .an{font-size:11px}
+  #pg .pf{display:none}
+  .au .st .s2.w1600{display:none}
+  .sc-top{gap:8px}
+  .sc-purp{font-size:12px}
+  .sc-closed .w{display:none}
+  .sc-band{grid-template-columns:minmax(0,520fr) minmax(0,440fr) minmax(0,370fr)}
+  .vbody{padding:4px 9px 0 9px}
+  .vbody .v1{font-size:17px;line-height:22px}
+  .vbody .vl{font-size:13px;line-height:18px;gap:6px}
+  .tile .v{font-size:15px}
+  .rbody{padding:3px 8px 0 8px;font-size:11px;line-height:14px}
+  .sc-main{grid-template-columns:minmax(0,600fr) minmax(0,380fr) minmax(0,350fr)}
+  #pm{flex:175 1 0} #pc{flex:209 1 0}
+  #pa{flex:250 1 0} #pg{flex:140 1 0}
+  .tb td{height:20px;padding:0 4px}
+  .tb th{padding:0 4px}
+  .cd{padding:5px 8px 8px 8px}
+  .pg{grid-template-columns:54px minmax(0,1fr) minmax(0,1fr)}
+  .sr td,.sr th{padding:0 2px}
+  .au .mt td,.au .mt th{padding:0 2px}
+}
+.ag .l2{display:none}
+
+/* ---- round 2 additions ---- */
+.pbw > pre,.pbw > .askb{flex:1 1 auto;min-width:0;margin-right:10px}
+.drawer .pbw{flex:1 1 auto}
+.tb .io{font-size:12px}
+.tb td.snd{font-size:12px}
+.tb .tgc{font-size:12px}
+.au .st{padding:1px 0}
+.cd .stk{margin-top:2px;padding:2px 5px;border:1px solid var(--line-2);border-radius:3px}
+@media (max-width:1499px){
+  #ct td,#ct th{padding:0 3px}
+  .tb .io,.tb .tgc,.tb td.snd{font-size:11px}
+  .sc-sel select{max-width:128px}
+  .sc-btn{padding:0 6px;gap:4px}
+}
+@media (max-width:1499px){
+  #mt td,#mt th{padding:0 3px}
+  #mt td.res{font-size:11px}
+  #ct .mono,#ct td.r{font-size:11px}
+  #ct .oc{letter-spacing:0}
+  .ag td,.ag th{padding:0 2px!important}
+  .sub.s12{display:none}
+  .au .st .s2{line-height:13px}
+}
+.sr col.c0{width:22%}
+#pa{flex:316 1 0} #pg{flex:210 1 0}
+@media (max-width:1499px){
+  .sc-main{grid-template-columns:minmax(0,610fr) minmax(0,376fr) minmax(0,344fr)}
+  .sr col.c0{width:17%}
+  .sr td,.sr th{padding:0 1px}
+  #pa{flex:262 1 0} #pg{flex:128 1 0}
+}
+@media (max-width:1499px){ .ph{gap:6px} }
+
+/* ---- round 3 ---- */
+.oil{display:inline-flex;align-items:center;height:18px;padding:0 5px;border:1px solid var(--info-line);border-radius:3px;color:var(--info);font-size:11px;font-weight:600;flex:none;white-space:nowrap;text-decoration:none}
+.oil:hover{background:var(--info-bg)}
+a.bul{text-decoration:none;border-bottom:1px dotted var(--line-2)}
+a.bul:hover{color:var(--info);border-bottom-color:var(--info)}
+th a.thl{color:var(--info);text-decoration:none}
+.tb tr.sum .okm{color:var(--text)}
+.tb tr.sum .bad{color:var(--danger);font-weight:700}
+.sr .sp1{color:var(--text-3)}
+.sr .sp2{margin-left:6px}
+.sr .pk .sp1{color:var(--text-2)}
+.sr tr.r1366{display:none}
+@media (max-width:1499px){ .sr tr.r1600{display:none} .sr tr.r1366{display:table-row} }
+.au .tx b{white-space:nowrap}
+.tb.set-result td:last-child .mono{letter-spacing:-0.05em}
+
+/* ---- round 3 colour (CONFERENCE 1.5, shell tokens only; the meanings are the shell's) ---- */
+.role.ld{color:var(--leader);border-color:var(--leader);background:var(--leader-bg)}
+.role.dp{color:var(--dep);border-color:var(--dep);background:var(--dep-bg)}
+.role.lg{color:var(--lag);border-color:var(--lag);background:var(--lag-bg)}
+.role.bk{color:var(--info);border-color:var(--info-line);background:var(--info-bg)}
+.role b{font-weight:800;margin-left:2px}
+a.bul{display:inline-flex;align-items:center;height:15px;padding:0 3px;border-radius:3px;border:1px solid transparent;font-weight:700;vertical-align:middle}
+a.bul.lb{color:var(--lb);background:var(--lb-bg)} a.bul.sb{color:var(--sb);background:var(--sb-bg)}
+a.bul.sc{color:var(--sc-ink);border-color:var(--sc)} a.bul.lu{color:var(--lu-ink);border-color:var(--lu)}
+a.bul:hover{border-color:var(--info);color:var(--info)}
+.vd.bef{border:1px solid var(--up-line);color:var(--up);background:var(--up-bg)}
+.vd.late{border:1px solid var(--action-line);color:var(--action);background:transparent}
+.vd.miss{background:var(--danger-bg);color:var(--down);border:1px solid var(--down-line)}
+.vd.wrong{border:1px dashed var(--down-line);color:var(--down)}
+.tb td.mvc{position:relative}
+.tb td.mvc .mbar{position:absolute;bottom:0;height:3px;border-radius:1px;opacity:.75}
+.tb td.mvc .mbar.dn{right:50%;background:var(--down)}
+.tb td.mvc .mbar.up{left:50%;background:var(--up)}
+.tb td.mvc::after{content:"";position:absolute;left:50%;bottom:1px;width:1px;height:5px;background:var(--line-2)}
+.tb tbody tr.sh-heat-dn:hover td,.tb tbody tr.sh-heat-up:hover td{background:rgba(255,255,255,.04)}
+@media (max-width:1499px){ .sc-top{gap:5px} .sc-cyc{gap:3px} .sc-sel select{max-width:130px} .sc-closed{padding:0 6px} }
+/* latency waterfall (TIMING set and the miss audit) */
+.tb td.wfc{padding-right:2px}
+.wf{display:inline-flex;align-items:center;width:calc(100% - 32px);height:8px;background:var(--line);border-radius:2px;overflow:hidden;vertical-align:middle;position:relative}
+.wf i{display:block;height:100%}
+.wf i.d{background:var(--info)}
+.wf i.a{background:var(--text-3)}
+.wf b{position:absolute;right:1px;top:-4px;font-size:11px;color:var(--text);line-height:14px}
+.wfl{display:inline-block;width:30px;text-align:right;font-size:11px;color:var(--text-2);vertical-align:middle}
+.wfa{display:flex;gap:2px;margin:3px 0 2px;height:26px}
+.wfa .seg{display:flex;flex-direction:column;min-width:0}
+.wfa .seg i{display:block;height:8px;border-radius:1px}
+.wfa .seg.g i{background:var(--info)} .wfa .seg.y i{background:var(--text-3)}
+.wfa .seg em{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--text-2);white-space:nowrap;margin-top:3px;letter-spacing:-0.03em}
+.wfa .seg.g{min-width:58px}
+
+/* ===================== FINAL pass (R44-R49 + CONFERENCE 1.4 type minimums) =====================
+   body text / table numbers 13 px (12 px tables only at 1366), chip text 12 px, share names and % 14 px, hero line 18-22 px,
+   hero number 26 px. Fewer rows on screen, more air; colour only with its fixed 1.5 meaning. */
+.sc-wrap{grid-template-rows:26px 160px minmax(0,1fr);gap:8px}
+.sc-band,.sc-main,.sc-col{gap:8px}
+.sc-btn{font-size:12px}
+.sc-btn kbd{font-size:11px}
+
+/* hero */
+.vbody{padding:6px 14px 0 14px}
+.vbody .v1{display:flex;align-items:baseline;font-size:18px;line-height:32px;margin-bottom:3px}
+.vbody .v1 .hn{font-family:var(--mono);font-size:26px;font-weight:700;letter-spacing:-0.03em}
+.vbody .v1 .hr{font-family:var(--mono);font-size:16px;font-weight:700;margin-left:8px;letter-spacing:-0.02em}
+.vbody .v1 .hs{margin-left:16px;padding-left:14px;border-left:1px solid var(--line-2);font-size:19px;font-weight:600;color:var(--text);line-height:22px}
+.vbody .v1 .dn{color:var(--down)}
+.vbody .vl{font-size:14px;line-height:19px}
+.vbody .vl .i{font-size:12px;line-height:19px}
+
+/* the score: one value, coloured, a mini picture where it is faster */
+.tile{padding:6px 10px 0 12px}
+.tile .l{font-size:11px;line-height:13px;height:13px}
+.tile .v{font-size:18px;line-height:22px;height:22px;margin:1px 0 1px}
+.tile .v small{font-size:12px}
+.tile .v .up{color:var(--up)} .tile .v .dn{color:var(--down)} .tile .v .act{color:var(--action)}
+.tile .v small.up{color:var(--up);font-family:var(--mono);font-weight:700}
+.tile .s{font-size:12px;line-height:15px;height:15px;color:var(--text-3)}
+.stk3{display:flex;gap:2px;height:7px;margin-top:4px;width:100%;max-width:150px}
+.stk3 i{display:block;border-radius:1px}
+.stk3 i.b{background:var(--up)} .stk3 i.l{background:var(--action)} .stk3 i.x{background:var(--down)}
+.aim{display:block;height:7px;margin-top:4px;max-width:150px;background:var(--panel-3);border-radius:1px;overflow:hidden}
+.aim i{display:block;height:100%;background:var(--info)}
+.basis{font-size:12px;color:var(--info);white-space:nowrap}
+
+/* rules & blocks */
+.rbody{padding:6px 12px 0 12px;font-size:13px;line-height:17px;gap:0}
+.okg{display:flex;flex-wrap:wrap;column-gap:14px;row-gap:1px}
+.okg .ok{white-space:nowrap}
+.okg .ok.gk{color:var(--text-2)}
+.rbody .h{font-size:13px;margin-top:6px;margin-bottom:2px}
+.rc{display:grid;grid-template-columns:96px 70px 38px minmax(0,1fr);align-items:center;column-gap:8px;height:18px;white-space:nowrap}
+.rc .rcl{color:var(--text-2);font-size:12px}
+.rc .rcb{height:7px;background:var(--panel-3);border-radius:1px;overflow:hidden}
+.rc .rcb i{display:block;height:100%;background:var(--text-2)}
+.rc b{text-align:right;font-weight:700}
+.rc .rcn{color:var(--text-3);font-size:12px;overflow:hidden;text-overflow:clip}
+.rbody .rl{margin-top:6px;align-items:center;gap:8px}
+.rbody .blk{font-size:12px;line-height:16px}
+.rbody .wn{margin-left:auto;font-size:12px;color:var(--action);border:1px solid var(--action-line);border-radius:3px;padding:0 5px;line-height:16px;cursor:pointer}
+
+/* chips: 12 px text (1.4) */
+.chip,.seg button,.fbtn,.tabs button{font-size:12px;height:20px}
+.chip .n,.tabs .n{font-size:12px}
+.vd,.role,.oc,.kp{font-size:12px;height:18px;padding:0 5px}
+.cp{font-size:12px;height:17px;padding:0 4px}
+.cp.pe{background:var(--down-bg);border-color:var(--down-line)}
+.cp.ce{background:var(--up-bg);border-color:var(--up-line)}
+.oil,.shock{font-size:12px;height:20px}
+.shock{height:18px}
+.vote span{font-size:12px;line-height:18px;padding:0 4px}
+.vote{gap:3px;align-items:center}
+.vote .vl2{border:0;padding:0 0 0 2px;color:var(--text-3)}
+.vote .au2{border:0;color:var(--text-3)}
+.vote span.no{border-color:var(--down-line);color:var(--down);background:var(--down-bg)}
+.oc.taken{border-color:var(--text);color:var(--text)}
+.kp.prob{color:var(--text)}
+
+/* panels: a little more air */
+.ph{height:26px}
+.sub{height:26px;font-size:12px}
+.pf{height:22px;font-size:12px}
+.pf .n{font-size:12px}
+.more{height:20px;font-size:12px}
+.cnt{font-size:12px}
+
+/* tables: 13 px numbers, 14 px names and % */
+.tb th{height:22px}
+.tb td{height:25px;font-size:13px}
+.tb tr.sum td{height:22px;font-size:12px}
+.tb tr.grp td{height:20px}
+.tb tr.fold td{font-size:12px}
+.tb tr.fold .sym{font-size:14px}
+.tb tr.sechd td{height:26px}
+.tb tr.sechd .vd{margin-right:8px}
+.tb tr.sechd .basis{margin-right:8px}
+.l2{font-size:12px}
+.nar{display:inline-flex;align-items:center;height:18px;padding:0 5px;margin-right:8px;border:1px dashed var(--line-2);border-radius:3px;font-size:12px;font-weight:700;letter-spacing:.03em;color:var(--text-2)}
+.pct.sm{font-size:14px}
+.tb .io,.tb td.snd,.tb .tgc{font-size:13px}
+.ag td .fr{font-size:12px}
+.wfl{font-size:12px;width:34px}
+.wf{width:calc(100% - 36px)}
+
+/* call card + miss audit: 13 px body */
+.cd{padding:8px 12px 4px 12px;font-size:13px;line-height:18px}
+.cd .hd{gap:6px;margin-bottom:4px}
+.cd .hd .sp{flex:1}
+.cd .hd .sh-c{height:20px}
+.cd .sec{margin-top:6px;padding-top:6px}
+.cd .role{height:18px}
+.pg{grid-template-columns:70px minmax(0,1fr) minmax(0,1fr);row-gap:1px;margin:2px 0 4px}
+.pg .hh{font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.pg .q{font-size:12px}
+.sr{font-size:12px}
+.sr th{height:20px;font-size:12px}
+.sr td{height:19px;line-height:19px}
+.sr td:first-child{font-size:12px}
+.sr tr.xr{display:none}
+.sr.all tr.xr{display:table-row}
+.sr tr.srt td{padding:3px 0 0 0;height:auto}
+.allr{background:none;border:0;padding:0;color:var(--info);font:600 12px var(--sans);cursor:pointer}
+.au{padding:6px 10px 8px 10px;font-size:13px;line-height:17px}
+.au .st{grid-template-columns:62px 34px minmax(0,1fr);padding:3px 0;border-bottom-color:var(--line)}
+.au .st .s2{font-size:12px;line-height:16px}
+.au .mt{font-size:12px}
+.au .mt th{height:18px}
+.au .mt td{height:17px}
+.wfa .seg em{font-size:12px}
+.secl{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:0 0 4px;padding:3px 0 5px;border-bottom:1px solid var(--line);color:var(--text)}
+.km td{font-size:13px}
+.km td.w{font-size:12px}
+.kpu{font-size:13px;line-height:19px}
+
+/* proportions at 1600 */
+.sc-main{grid-template-columns:minmax(0,690fr) minmax(0,470fr) minmax(0,400fr)}
+#pm{flex:1 1 0} #pc{flex:1 1 0}
+#pa{flex:300 1 0} #pg{flex:250 1 0}
+
+/* light theme: the few page-drawn colours get light values (tokens do the rest) */
+[data-theme="light"] .vsb,body.th-light .vsb{background:#E3E7EC}
+[data-theme="light"] .vsb i,body.th-light .vsb i{background:#7A828E}
+[data-theme="light"] .tb tbody tr:hover td,body.th-light .tb tbody tr:hover td{background:#F0F2F5}
+[data-theme="light"] .tb tr.sechd td,body.th-light .tb tr.sechd td{background:#F6F7F9}
+[data-theme="light"] .sr .pk,body.th-light .sr .pk{background:rgba(0,0,0,.04)}
+[data-theme="light"] .drawer,body.th-light .drawer{box-shadow:0 8px 24px rgba(0,0,0,.18)}
+
+@media (max-width:1499px){
+  .sc-wrap{grid-template-rows:24px 148px minmax(0,1fr);gap:6px}
+  .sc-band,.sc-main,.sc-col{gap:6px}
+  .sc-btn{font-size:12px}
+  .vbody{padding:4px 10px 0 10px}
+  .vbody .v1{line-height:28px;margin-bottom:1px}
+  .vbody .v1 .hn{font-size:24px}
+  .vbody .v1 .hr{font-size:14px;margin-left:6px}
+  .vbody .v1 .hs{font-size:18px;margin-left:12px;padding-left:10px}
+  .vbody .vl{font-size:13px;line-height:18px}
+  .vbody .vl .i{line-height:18px}
+  .tile{padding:4px 6px 0 9px}
+  .tile .l{height:12px;line-height:12px}
+  .tile .v{font-size:16px;line-height:20px;height:20px;margin:1px 0 0}
+  .tile .s{line-height:15px;height:15px}
+  .stk3,.aim{margin-top:4px}
+  .rbody{padding:4px 9px 0 9px;font-size:13px;line-height:17px}
+  .okg{column-gap:10px}
+  .rbody .h{margin-top:3px;margin-bottom:1px}
+  .rc{grid-template-columns:88px 44px 36px minmax(0,1fr);column-gap:6px;height:17px}
+  .rbody .rl{margin-top:3px;gap:6px}
+  .ph{height:24px}
+  .sub{height:24px}
+  .chip,.seg button,.fbtn,.tabs button{height:19px}
+  .seg button{padding:0 5px}
+  .chip{padding:0 4px}
+  .tb th{height:20px}
+  .tb td{height:22px;font-size:12px}
+  #ct .mono,#ct td.r,#mt td.res{font-size:12px}
+  .tb .io,.tb td.snd,.tb .tgc{font-size:12px}
+  .tb tr.sum td{height:20px}
+  .tb tr.sechd td{height:24px}
+  .cd{padding:6px 9px 6px 9px;font-size:13px;line-height:17px}
+  .pg{grid-template-columns:60px minmax(0,1fr) minmax(0,1fr)}
+  .sr td,.sr th{font-size:12px}
+  .au{padding:5px 8px 8px 8px;font-size:13px;line-height:17px}
+  .au .st{grid-template-columns:58px 32px minmax(0,1fr)}
+  .au .st .s2{line-height:15px}
+  .ag .fnd,.ag .an{font-size:12px}
+  .sc-main{grid-template-columns:minmax(0,606fr) minmax(0,382fr) minmax(0,342fr)}
+  .sc-band{grid-template-columns:minmax(0,500fr) minmax(0,436fr) minmax(0,394fr)}
+  #pa{flex:262 1 0} #pg{flex:150 1 0}
+}
+/* final tune 1 */
+.sc-wrap{grid-template-rows:26px 164px minmax(0,1fr)}
+.vbody{padding-top:4px}
+.vbody .v1{line-height:30px}
+.vbody .vl,.vbody .vl .i{line-height:18px}
+.tile{padding:4px 8px 0 10px}
+.tile .v{margin:0}
+.rbody .h{display:flex;align-items:center;gap:0}
+.rbody .h .wn{margin-left:auto}
+.sc-main{grid-template-columns:minmax(0,700fr) minmax(0,446fr) minmax(0,414fr)}
+/* final tune 2 */
+.sc-wrap{grid-template-rows:26px 168px minmax(0,1fr)}
+.sc-main{grid-template-columns:minmax(0,700fr) minmax(0,440fr) minmax(0,420fr)}
+#ct td,#ct th{padding:0 4px}
+#ct .oc{letter-spacing:0;padding:0 4px}
+.wfa .seg.g{min-width:66px}
+.hrule{margin-top:4px;padding:4px 8px;border:1px solid var(--line-2);border-left:3px solid var(--text);border-radius:3px;display:flex;flex-direction:column;gap:1px}
+.hrule .hk{font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--text)}
+.hrule .hq{color:var(--text-2)}
+.whyb{display:flex;gap:2px;height:8px;margin:2px 0 4px}
+.whyb i{display:block;border-radius:1px}
+.whyb i.d{background:var(--up)} .whyb i.g{background:var(--up-line)} .whyb i.c{background:var(--down)}
+.whyg{display:grid;grid-template-columns:1.2fr .8fr .9fr 1.3fr .9fr;column-gap:6px;margin-bottom:3px}
+.whyg span{display:flex;flex-direction:column;min-width:0;white-space:nowrap}
+.whyg i{font-style:normal;font-size:11px;color:var(--text-3);letter-spacing:.03em;line-height:14px}
+.whyg b{font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:-0.02em;line-height:17px}
+.whyg b.up{color:var(--up)} .whyg b.dn{color:var(--down)}
+.whyg em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--text-3);line-height:14px}
+.cd b.up{color:var(--up)}
+
+</style>
+</head>
+<body class="page-scorecard">
+
+<!-- ===================== SHELL TOP START (copy verbatim) ===================== -->
+<!-- R01 MARKET STRIP - identical on every page. Click an index = MARKET screen. Values illustrative (Thu 19 Nov 2026, 11:40:30). -->
+<header id="sh-mkt" aria-label="Market strip">
+  <div class="sh-m1">
+      <a class="sh-ix" href="market.html#NIFTY" title="NIFTY 50: 19 Nov close, as of 15:30 (market closed) · change from 18 Nov close · % · sparkline 09:15-15:30. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">NIFTY 50</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,4.1 3.4,2.0 4.8,3.4 6.1,5.8 7.5,7.6 8.9,6.3 10.3,8.2 11.7,9.4 13.0,7.9 14.4,9.0 15.8,8.5 17.2,6.7 18.6,4.3 19.9,4.4 21.3,5.7 22.7,6.2 24.1,6.7 25.4,6.4 26.8,8.0 28.2,6.4 29.6,8.8 31.0,7.4 32.3,10.2 33.7,11.5 35.1,12.0 36.5,12.0 37.9,11.6 39.2,10.9 40.6,9.7 42.0,10.7" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="10.7" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n" style="color:var(--text-3)">24,431.95</span><span class="sh-ch n dn sh-wide">−207.00</span><span class="sh-pc n dn">▼ −0.84%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#BANKNIFTY" title="BANKNIFTY: 19 Nov close, as of 15:30 (market closed) · change from 18 Nov close · % · sparkline 09:15-15:30. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">BANKNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,12.0 3.4,10.2 4.8,8.9 6.1,8.2 7.5,7.9 8.9,7.8 10.3,7.7 11.7,7.0 13.0,7.3 14.4,8.9 15.8,8.5 17.2,10.5 18.6,9.1 19.9,7.7 21.3,7.0 22.7,8.6 24.1,7.6 25.4,6.1 26.8,6.8 28.2,5.7 29.6,3.9 31.0,2.0 32.3,2.7 33.7,3.4 35.1,3.8 36.5,2.5 37.9,2.5 39.2,4.4 40.6,3.7 42.0,2.4" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="2.4" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n" style="color:var(--text-3)">52,078.40</span><span class="sh-ch n dn sh-wide">−171.85</span><span class="sh-pc n dn">▼ −0.33%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#SENSEX" title="SENSEX: 19 Nov close, as of 15:30 (market closed) · change from 18 Nov close · % · sparkline 09:15-15:30. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">SENSEX</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,12.0 3.4,11.7 4.8,10.5 6.1,10.1 7.5,9.3 8.9,9.6 10.3,8.5 11.7,8.0 13.0,7.6 14.4,6.7 15.8,6.0 17.2,6.7 18.6,5.9 19.9,6.2 21.3,6.3 22.7,6.7 24.1,5.6 25.4,4.7 26.8,4.1 28.2,3.0 29.6,2.5 31.0,2.5 32.3,2.1 33.7,2.0 35.1,3.3 36.5,3.0 37.9,2.4 39.2,2.0 40.6,2.7 42.0,2.2" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="2.2" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n" style="color:var(--text-3)">80,212.30</span><span class="sh-ch n dn sh-wide">−669.45</span><span class="sh-pc n dn">▼ −0.83%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#FINNIFTY" title="FINNIFTY: 19 Nov close, as of 15:30 (market closed) · change from 18 Nov close · % · sparkline 09:15-15:30. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">FINNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,5.9 3.4,2.0 4.8,4.8 6.1,4.5 7.5,3.6 8.9,2.3 10.3,6.0 11.7,8.6 13.0,5.4 14.4,3.0 15.8,6.1 17.2,7.8 18.6,10.6 19.9,7.9 21.3,9.7 22.7,9.0 24.1,7.1 25.4,9.0 26.8,9.2 28.2,11.3 29.6,9.9 31.0,12.0 32.3,9.7 33.7,6.4 35.1,7.8 36.5,5.7 37.9,6.7 39.2,9.7 40.6,8.9 42.0,8.7" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="8.7" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n" style="color:var(--text-3)">23,861.15</span><span class="sh-ch n dn sh-wide">−82.55</span><span class="sh-pc n dn">▼ −0.34%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#MIDCPNIFTY" title="MIDCPNIFTY: 19 Nov close, as of 15:30 (market closed) · change from 18 Nov close · % · sparkline 09:15-15:30. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">MIDCPNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,2.0 3.4,3.3 4.8,2.9 6.1,3.9 7.5,2.9 8.9,3.2 10.3,3.6 11.7,3.6 13.0,3.6 14.4,3.6 15.8,4.6 17.2,4.7 18.6,5.9 19.9,6.8 21.3,6.5 22.7,7.2 24.1,8.3 25.4,8.3 26.8,8.3 28.2,9.1 29.6,9.2 31.0,9.4 32.3,10.5 33.7,9.6 35.1,10.2 36.5,11.4 37.9,12.0 39.2,12.0 40.6,12.0 42.0,11.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="11.0" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n" style="color:var(--text-3)">12,598.40</span><span class="sh-ch n dn sh-wide">−173.30</span><span class="sh-pc n dn">▼ −1.36%</span></span>
+      </a>
+    <div class="sh-mi" title="India VIX: 19 Nov close (as of 15:30), change from 18 Nov close 14.41">
+      <span class="sh-l1"><span class="sh-nm">INDIA VIX</span></span>
+      <span class="sh-l2"><span class="sh-px n" style="color:var(--text-3)">14.95</span><span class="sh-pc n up">▲ +3.75%</span></span>
+    </div>
+    <div class="sh-mi" title="GIFT Nifty (NSE IX), trades pre-open and at night; gap vs NIFTY 50 spot">
+      <span class="sh-l1"><span class="sh-nm">GIFT NIFTY</span><span class="sh-age">prem +20</span></span>
+      <span class="sh-l2"><span class="sh-px n">24,452.0</span><span class="sh-pc n dn">▼ −0.87%</span></span>
+    </div>
+    <div class="sh-status" title="Market status from the exchange clock · phase · time to the 15:10 exit · worst age of the strip's live prices">
+      <span class="sh-st1"><span class="sh-mstate" style="border-color:var(--line-2);color:var(--text-3)">CLOSED</span><span class="sh-phase"><b>REVIEW</b> · audit <span class="n">15:45</span></span></span>
+      <span class="sh-st2"><span class="sh-clock">15:46:10</span><span class="sh-ist">IST</span><span class="sh-dot" style="background:var(--text-3)"></span><span class="sh-age" style="color:var(--text-2)">as of 15:30</span></span>
+    </div>
+  </div>
+  <div class="sh-m2">
+    <span class="sh-t2" title="US dollar / rupee spot"><span class="sh-t2l"><span class="sh-lb">USD/INR</span></span><span class="sh-t2v"><span class="n v">88.97</span><span class="n up">▲ +0.11%</span></span></span>
+    <span class="sh-t2" title="Brent crude, $ per barrel; feed age 1m"><span class="sh-t2l"><span class="sh-lb">Brent</span><span class="sh-age">$/bbl · 1m</span></span><span class="sh-t2v"><span class="n v">63.62</span><span class="n dn">▼ −1.44%</span></span></span>
+    <span class="sh-t2" title="Gold, MCX near month, ₹ per 10 g"><span class="sh-t2l"><span class="sh-lb">Gold MCX</span><span class="sh-age">₹/10g</span></span><span class="sh-t2v"><span class="n v">1,24,560</span><span class="n dn">▼ −1.66%</span></span></span>
+    <span class="sh-t2" title="FII / DII cash market net, ₹ crore. In the day: yesterday's NSE provisional figure; after ~18:00 today's provisional replaces it (yesterday's final then shows on hover)"><span class="sh-t2l"><span class="sh-lb">FII/DII cash</span><span class="sh-age">₹cr · 18 Nov prov</span></span><span class="sh-t2v"><span>FII</span><span class="n v">−1,842</span><span>· DII</span><span class="n v">+1,315</span></span></span>
+    <span class="sh-t2" title="FII F&amp;O net from NSE participant data, ₹ crore, 18 Nov: index futures −2,110 · stock futures +640 (at 1366 wide: stk) · detail on Futures &amp; OI, F10"><span class="sh-t2l"><span class="sh-lb">FII F&amp;O</span><span class="sh-age">₹cr · 18 Nov</span></span><span class="sh-t2v"><span>idx fut</span><span class="n v">−2,110</span><span class="sh-wide" style="display:inline-flex;gap:5px">· stk fut <span class="n v">+640</span></span><span class="sh-n1366" style="gap:4px">· stk <span class="n v">+640</span></span></span></span>
+    <span class="sh-t2" title="Put-call ratio of open interest at the 15:30 close"><span class="sh-t2l"><span class="sh-lb">PCR (OI)</span><span class="sh-age">15:30</span></span><span class="sh-t2v"><span>NIFTY</span><span class="n v">0.88</span><span>· BANKNIFTY</span><span class="n v">1.04</span></span></span>
+    <span class="sh-t2" title="Advancing / declining F&amp;O shares at the 15:30 close (unchanged 3)"><span class="sh-t2l"><span class="sh-lb">A/D F&amp;O</span><span class="sh-age">of 222</span></span><span class="sh-t2v"><span class="n v">▲ 54</span><span class="n v">▼ 165</span></span></span>
+    <a class="sh-t2" href="calendar.html#expiry" title="Stock F&amp;O expiry from the contract master; sessions left incl. today; moved from Tue 24 Nov (holiday)"><span class="sh-t2l"><span class="sh-xw" title="EXPIRY WEEK: next month is the default strike month; in-the-money stock options are physically settled - exit before expiry day">EXPIRY WEEK</span><span class="sh-age">next 29 Dec</span></span><span class="sh-t2v"><span class="v">Mon 23 Nov</span><span class="sh-wide" style="color:var(--text-3)">(Tue 24 holiday)</span><span class="sh-n1366" style="color:var(--text-3)">(Tue 24 hol)</span><span>·</span><span class="n v">2</span><span>sessions left</span></span></a>
+    <span class="sh-t2" style="border-right:0;border-left:1px solid var(--line);margin-left:auto;padding-right:12px"><span class="sh-t2l"><span class="sh-lb">F&amp;O ban</span><span class="sh-age sh-wide">tap = list</span></span><span class="sh-t2v"><a class="sh-ban" href="futures-oi.html#mwpl" title="F&amp;O ban list - tap for the list. Ban at 95% MWPL · in ban: close only (only close existing positions, no new ones).">BAN 2</a><span class="sh-age sh-wide">&gt;85% 3</span></span></span>
+  </div>
+</header>
+
+<!-- R02 MY F&O P&L - always visible. Rupees net of costs (realised + open; costs = charges + est. exit slippage, always split in the tooltip). Whole strip = link to F6 MY TRADES. -->
+<a id="sh-pnl" href="positions.html" aria-label="My F&amp;O P&amp;L - opens MY TRADES">
+  <span class="sh-pt"><span class="sh-ptitle" title="tap = MY TRADES (F6)">MY F&amp;O P&amp;L ›</span><span class="sh-lb">today</span><span class="sh-big up">+₹5,387</span><span class="n up">+1.08R</span></span>
+    <span class="sh-pt sh-brk sh-wide" title="TODAY = realised + open. 19 Nov: 3 trades, all closed, so realised uses actual fills and charges (no slippage estimate left). Charges #48 MANAPPURAM ₹125 + #49 HINDALCO ₹86 + #50 TITAN ₹87 = ₹298 (GIR estimate until the 19 Nov contract note ~18:00) - from the ONE charges table (Settings › Charges, dated)">realised <span class="n">+₹5,387</span> · open <span class="n">₹0</span> · charges <span class="n">₹298</span></span><span class="sh-pt sh-brk sh-n1366" style="gap:4px" title="TODAY = realised + open. 19 Nov: 3 trades, all closed, so realised uses actual fills and charges (no slippage estimate left). Charges #48 MANAPPURAM ₹125 + #49 HINDALCO ₹86 + #50 TITAN ₹87 = ₹298 (GIR estimate until the 19 Nov contract note ~18:00) - from the ONE charges table (Settings › Charges, dated)">real <span class="n">+₹5,387</span> · open <span class="n">₹0</span> · chg <span class="n">₹298</span></span>
+  <span class="sh-pt" title="Open positions (max 2): none - flat since 13:52 (#50 TITAN out 13:52)"><span class="sh-lb">open</span><span class="n" style="color:var(--text);font-weight:600">0</span><span>· at share stops</span><span class="n" style="color:var(--text)">₹0</span></span>
+  <span class="sh-pt"><span class="sh-lb">trades</span><span class="n" style="color:var(--text);font-weight:600">3 of 3</span></span>
+  <span class="sh-pt" title="Week to date (Mon 16 Nov to today) in rupees, net of costs, today included. 1R = ₹5,000"><span class="sh-lb">week</span><span class="n up">+₹1,282</span><span class="n up" style="font-size:12px">+0.26R</span></span>
+  <span class="sh-pt" title="November to date in rupees, net of costs, today included. 1R = ₹5,000"><span class="sh-lb">month</span><span class="n up">+₹11,082</span><span class="n up" style="font-size:12px">+2.22R</span></span>
+  <span class="sh-pt" title="Day loss lock at −2% = −₹10,000 (also: 2 losses in a row, weekly −6%). 19 Nov: not hit, day closed +₹5,387. Last lock: 18 Nov 11:31 - 2 losses in a row. Resets 09:00."><span class="sh-lb sh-wide">loss lock</span><span class="sh-lb sh-n1366">lock</span><span class="n" style="color:var(--text);font-weight:600">₹10,000</span><span>left</span><span class="sh-meter"><i style="width:0%"></i></span></span>
+  <span class="sh-pt" style="border-right:0" title="AI spend today vs the $20 daily cap; by model on Scorecard (Shift+F8)"><span class="sh-lb">AI</span><span class="n" style="color:var(--text)">$7.69</span><span>of $20</span><span class="sh-meter sh-wide"><i style="width:38%"></i></span></span>
+</a>
+
+<!-- R03 TAB BAR - one list (REQUIREMENTS section D). Row 1 = plain F-keys, row 2 = SHIFT + F-keys (filled ⇧ keycaps). No key twice. -->
+<nav id="sh-tabs" aria-label="Pages">
+  <a class="sh-mark" href="desk-hunt.html" title="girtrader.com"><b>GIR</b></a>
+  <div class="sh-grid">
+        <span class="sh-rl sh-rl1">F-KEY</span>
+        <span class="sh-rl sh-rl2"><span>SHIFT +</span></span>
+        <a class="sh-tab" data-tab="desk" href="desk-hunt.html" style="grid-row:1;grid-column:2" title="F1 · Desk - hunting / in a trade: the one screen for 09:15-15:10"><kbd class="sh-k">F1</kbd><span class="sh-tl">Desk</span></a>
+        <a class="sh-tab" data-tab="sectors" href="sectors.html" style="grid-row:1;grid-column:3" title="F2 · Sectors board, accordion, F&O movers"><kbd class="sh-k">F2</kbd><span class="sh-tl">Sectors</span></a>
+        <a class="sh-tab" data-tab="rotation" href="rotation.html" style="grid-row:1;grid-column:4" title="F3 · Rotation 15M / 30M / 1H / TODAY: money out of X into Y"><kbd class="sh-k">F3</kbd><span class="sh-tl">Rotation</span></a>
+        <a class="sh-tab" data-tab="news" href="news.html" style="grid-row:1;grid-column:5" title="F4 · One news list"><kbd class="sh-k">F4</kbd><span class="sh-tl">News</span></a>
+        <span class="sh-tab sh-f5" style="grid-row:1 / span 2;grid-column:6" title="F5 (and Shift+F5) would reload the browser and could drop live prices mid-trade, so GIR blocks it. Reload = Ctrl+Shift+R (asks first while a position is open). See ? Help."><span class="sh-f5a"><kbd class="sh-k sh-koff">F5</kbd><span class="sh-tl">off</span></span><span class="sh-f5b"><span class="sh-wide">reload blocked</span><span class="sh-n1366">no reload</span></span></span>
+        <a class="sh-tab" data-tab="positions" href="positions.html" style="grid-row:1;grid-column:7" title="F6 · Positions & Risk = MY TRADES: P&L, exits"><kbd class="sh-k">F6</kbd><span class="sh-tl">My trades</span></a>
+        <a class="sh-tab" data-tab="share" href="share.html" style="grid-row:1;grid-column:8" title="F7 · Share page: chart, levels, chain, futures, news, WHY"><kbd class="sh-k">F7</kbd><span class="sh-tl">Share</span></a>
+        <a class="sh-tab" data-tab="analyst" href="analyst.html" style="grid-row:1;grid-column:9" title="F8 · Analyst: latest decision, ASK drawer"><kbd class="sh-k">F8</kbd><span class="sh-tl">Analyst</span></a>
+        <a class="sh-tab" data-tab="chain" href="chain.html" style="grid-row:1;grid-column:10" title="F9 · Option chain + OI scenarios"><kbd class="sh-k">F9</kbd><span class="sh-tl">Chain</span></a>
+        <a class="sh-tab" data-tab="futures-oi" href="futures-oi.html" style="grid-row:1;grid-column:11" title="F10 · Futures & OI + MONEY: LB/SB/SC/LU, futures by month, F&O money, BIG MONEY, tape"><kbd class="sh-k">F10</kbd><span class="sh-tl">Fut & OI</span></a>
+        <a class="sh-tab" data-tab="morning" href="morning.html" style="grid-row:2;grid-column:2" title="Shift+F1 · Morning & pre-flight (+ PRE-OPEN 09:00-09:08)"><kbd class="sh-k sh-ks">⇧F1</kbd><span class="sh-tl">Morning</span></a>
+        <a class="sh-tab" data-tab="world" href="world.html" style="grid-row:2;grid-column:3" title="Shift+F2 · World drivers + THEME"><kbd class="sh-k sh-ks">⇧F2</kbd><span class="sh-tl">World</span></a>
+        <span class="sh-tab sh-free" style="grid-row:2;grid-column:4" title="Shift+F3 is not used"><kbd class="sh-k sh-ks">⇧F3</kbd><span class="sh-tl">not used</span></span>
+        <a class="sh-tab" data-tab="calendar" href="calendar.html" style="grid-row:2;grid-column:5" title="Shift+F4 · Calendar: results, events, ex-dates, expiry, Parliament business"><kbd class="sh-k sh-ks">⇧F4</kbd><span class="sh-tl">Calendar</span></a>
+        <a class="sh-tab" data-tab="journal" href="journal.html" style="grid-row:2;grid-column:7" title="Shift+F6 · Journal: every trade, notes, mistakes, rules kept"><kbd class="sh-k sh-ks">⇧F6</kbd><span class="sh-tl">Journal</span></a>
+        <a class="sh-tab" data-tab="reference" href="reference.html" style="grid-row:2;grid-column:8" title="Shift+F7 · Reference: F&O list, lots, sectors map, policy baskets, aliases"><kbd class="sh-k sh-ks">⇧F7</kbd><span class="sh-tl">Reference</span></a>
+        <a class="sh-tab" data-tab="scorecard" href="scorecard.html" style="grid-row:2;grid-column:9" title="Shift+F8 · Calls & Scorecard: 15:45 audit, misses, cost"><kbd class="sh-k sh-ks">⇧F8</kbd><span class="sh-tl">Scorecard</span></a>
+        <a class="sh-tab" data-tab="health" href="health.html" style="grid-row:2;grid-column:10" title="Shift+F9 · Health: every service and feed, data age, Kite login"><kbd class="sh-k sh-ks">⇧F9</kbd><span class="sh-tl">Health</span></a>
+        <a class="sh-tab" data-tab="replay" href="replay.html" style="grid-row:2;grid-column:11" title="Shift+F10 · Replay any past day, minute by minute"><kbd class="sh-k sh-ks">⇧F10</kbd><span class="sh-tl">Replay</span></a>
+  </div>
+  <div class="sh-right">
+    <div class="sh-r1">
+      <a class="sh-tab" data-tab="settings" href="settings.html" title="Ctrl+, · Charter & Settings: his rules, sounds, Telegram, limits" style="border-left:1px solid var(--line)"><kbd class="sh-k">Ctrl ,</kbd><span class="sh-tl">Settings</span></a>
+      <a class="sh-tab" data-tab="help" href="help.html" title="? · Help: every page's purpose, keys (why F5 is off), colours, sounds"><kbd class="sh-k">?</kbd><span class="sh-tl">Help</span></a>
+      <a class="sh-tab" data-tab="market" href="market.html" title="MARKET: NIFTY / BANKNIFTY trading screen. No F-key: type /NIFTY or click an index in the strip"><kbd class="sh-k">/NIFTY</kbd><span class="sh-tl">Market</span></a>
+      <a class="sh-tab sh-wide" data-tab="plan-card" href="plan-card.html" title="Space on a call · Plan card drawer (Desk)"><kbd class="sh-k">Space</kbd><span class="sh-tl">Plan card</span></a>
+    </div>
+    <div class="sh-r2">
+      <label class="sh-cmd" title="/ = command line: symbol (TITAN), contract (HINDALCO 680 PE), verbs (TITAN OC, TITAN FUT, METALS, GOLD, NEWS TITAN, STATUS); free text searches news. Never sends an order.">
+        <kbd>/</kbd><span class="sh-ph">symbol<span class="sh-ph-c">, contract</span><span class="sh-ph-v">, verb</span></span><span class="sh-typed">TIT<i></i></span>
+        <span class="sh-sugg" role="listbox" aria-label="Suggestions">
+          <span class="sh-sg-h"><span class="sh-lb">2 F&amp;O shares match "TIT"</span><span class="sh-age">as you type · 2+ letters</span></span>
+          <span class="sh-sg-r sel" role="option"><span class="sh-sg-s"><em>TIT</em>AN</span><span class="sh-sg-d">Titan Company<br><span>Jewellers &amp; gold loans · lot 175</span></span><span class="sh-sg-p n">3,398.20</span><span class="sh-sg-p n dn">−2.48%</span></span>
+          <span class="sh-sg-r" role="option"><span class="sh-sg-s"><em>TIT</em>AGARH</span><span class="sh-sg-d">Titagarh Rail Systems<br><span>Railways &amp; capital goods · lot 725</span></span><span class="sh-sg-p n">912.35</span><span class="sh-sg-p n dn">−0.84%</span></span>
+          <span class="sh-sg-v"><span class="n">TITAN OC</span><span class="n">TITAN FUT</span><span class="n">NEWS TITAN</span><span class="n">LOG TITAN</span><span>search news for "TIT"</span></span>
+          <span class="sh-sg-f"><kbd>↑</kbd> <kbd>↓</kbd> choose · <kbd>Enter</kbd> open the share page · <kbd>Tab</kbd> complete · <kbd>Esc</kbd> close</span>
+        </span>
+      </label>
+      <button class="sh-btn" title="SOUND ON (at 1366 wide the button reads speaker + ON). Sound on / off. Exits on an open position (STOP, BOOK HALF, EXIT, 15:10) can never be muted. M mutes GO NOW / GET READY for 10 min."><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 4h2.5L7 1v10L3.5 8H1z" fill="currentColor"/><path d="M8.6 3.6a3.4 3.4 0 0 1 0 4.8M10 2.2a5.4 5.4 0 0 1 0 7.6" stroke="currentColor" fill="none" stroke-width="1.1"/></svg><span class="on"><span class="sh-wide">SOUND </span>ON</span></button>
+      <button class="sh-btn" title="Sound legend: which alert makes which sound">♪ LEGEND</button>
+      <span class="sh-al" title="Unacknowledged alerts (A then Enter acknowledges)">P1 <span class="n">0</span> · P2 <span class="n">0</span></span>
+    </div>
+  </div>
+</nav>
+<!-- ===================== SHELL TOP END ===================== -->
+
+<main id="page">
+<div class="sc-wrap">
+
+  <!-- title row: page key + name + one-line purpose (R06), trade cycle hand-offs (R41), closed state, sector filter (R36), Telegram, ASK, help -->
+  <div class="sc-top">
+    <span class="sc-ttl"><kbd class="sc-kk">⇧F8</kbd><b>CALLS &amp; SCORECARD</b></span>
+    <span class="sc-purp" title="The 15:45 audit: did GIR say the right thing, at the right time - and what did it cost?">Right call, right time? At what cost?</span>
+    <span class="sc-sp"></span>
+    <nav class="sc-cyc" aria-label="trade cycle">
+      <a href="morning.html" title="PREPARE - Morning (Shift+F1)">PREPARE</a><i>›</i>
+      <a href="sectors.html" title="FIND - Sectors F2, Rotation F3">FIND</a><i>›</i>
+      <a href="chain.html" title="CHOOSE share + strike - Desk F1, Chain F9">STRIKE</a><i>›</i>
+      <a href="positions.html" title="MANAGE and EXIT - My trades F6">EXIT</a><i>›</i>
+      <a href="journal.html" title="JOURNAL - Shift+F6">JOURNAL</a><i>›</i>
+      <span class="here" title="REVIEW - you are here">REVIEW</span><i>›</i>
+      <a href="morning.html#plan" title="Tonight's fixes and the ASK actions go into the 19:45 note and tomorrow's PLAN (Shift+F1)">PLAN<span class="w1600"> ⇧F1</span></a>
+    </nav>
+    <span class="sc-closed" title="Every price on this page is GIR's 15:30 snapshot. Re-scored tomorrow 07:00 with the NSE bhavcopy."><span class="w">MARKET&nbsp;</span>CLOSED · 15:30</span>
+    <label class="sc-sel" title="Filters every list on this page (F)"><select id="secf" aria-label="sector filter"></select></label>
+    <button class="sc-btn" id="tgbtn" title="Telegram: the same scorecard, sent 15:45:08 to you only - your own chat, nobody else (T)">TELEGRAM <span class="n">15:45<span class="w1600">:08</span></span> ✓ <span class="w1600">to </span>you only <kbd>T</kbd></button>
+    <button class="sc-btn" id="askbtn" title="Ask the analyst about today's audit - an overlay over the right column (Q)">ASK › <kbd>Q</kbd></button>
+    <a class="sc-help" href="help.html#scorecard" title="? Help - what every column, colour and rule on this page means">?</a>
+  </div>
+
+  <!-- band 1: the verdict (largest text on the page, R16) · the score (8 tiles) · rules, rules cost and blocks -->
+  <div class="sc-band">
+    <section class="pn" id="pv">
+      <div class="ph sh-acc-mine"><span class="t">Verdict of the day</span><span class="k">trial day 1 of 5 · senior analyst · 15:45:00</span><span class="sp"></span><span class="age">CLOSED · as of 15:30</span></div>
+      <div class="vbody" id="verdict"></div>
+    </section>
+    <section class="pn" id="psc">
+      <div class="ph sh-acc-sys"><span class="t">The score</span><span class="k" id="sck"></span><span class="sp"></span><span class="age">built 15:45:00</span></div>
+      <div class="tiles" id="tiles"></div>
+    </section>
+    <section class="pn" id="pr">
+      <div class="ph sh-acc-mine"><span class="t">Rules &amp; blocks</span><span class="k"><b class="okk">7 of 7 kept</b></span><span class="sp"></span><span class="age">charter · 15:45</span></div>
+      <div class="rbody" id="rules"></div>
+    </section>
+  </div>
+
+  <!-- the audit: three columns. Left = the two lists (what moved, call log). Middle = the open call card (detail of the call log,
+       one open at a time, fixed). Right = the miss audit (detail of what moved) and the agent ledger / AI cost. -->
+  <div class="sc-main">
+    <div class="sc-col c1">
+      <section class="pn" id="pm">
+        <div class="ph sh-acc-mkt">
+          <span class="t">What moved · 2%+</span>
+          <span class="seg" id="msort"></span>
+          <span class="sp"></span>
+          <span class="cnt" id="mcnt"></span>
+          <span class="ud" data-t="mb"><button data-s="-1" title="scroll up">▲</button><button data-s="1" title="scroll down">▼</button></span>
+        </div>
+        <div class="sub"><span class="chips" id="mchips"></span><span class="sp"></span><a class="oil" href="futures-oi.html#buildup" title="The full OI build-up list of all 222 F&amp;O shares (not only the 2%+ movers): F10 Fut &amp; OI › BUILD-UP, filters LB · SB · SC · LU, all months, as of 15:30. Same numbers as the B/U column here.">OI build-up › F10</a><span class="age w1600">as of 15:30</span></div>
+        <div class="pb" id="mb"><table class="tb" id="mt"></table></div>
+      </section>
+
+      <section class="pn" id="pc">
+        <div class="ph sh-acc-mine">
+          <span class="t">Call log</span>
+          <span class="k">immutable · Dec<span class="n1366"> · 15:30</span><span class="w1600"> · EARLY/RUNNING hidden</span></span>
+          <span class="sp"></span>
+          <span class="seg" id="cset"></span>
+          <button class="fbtn" id="fbtn" title="filter by setup, leg, time window, DTE, IV bucket">FILTERS <span id="fcount">0</span> ▾</button>
+          <span class="cnt" id="ccnt"></span>
+          <span class="ud" data-t="cb"><button data-s="-1" title="scroll up">▲</button><button data-s="1" title="scroll down">▼</button></span>
+        </div>
+        <div class="sub"><span class="chips" id="cchips"></span><span class="sp"></span><span class="note w1600">R = ₹5,000 · 15:30</span></div>
+        <div class="sub fbar" id="fbar"></div>
+        <div class="pb" id="cb"><table class="tb" id="ct"></table></div>
+        <div class="pf" id="recline"></div>
+      </section>
+    </div>
+
+    <div class="sc-col c2">
+      <section class="pn" id="pd">
+        <div class="ph sh-acc-sys"><span class="t">Call card</span><span class="k" id="dk"></span><span class="sp"></span><span class="age">as issued · J / K</span>
+          <span class="ud" data-t="db"><button data-s="-1" title="scroll up">▲</button><button data-s="1" title="scroll down">▼</button></span></div>
+        <div class="pb" id="db"></div>
+        <div class="more" title="what is still below in this card - click for the next page"></div>
+      </section>
+    </div>
+
+    <div class="sc-col c3">
+      <section class="pn" id="pa">
+        <div class="ph sh-acc-mkt"><span class="t">Miss audit</span><span class="k" id="ak"></span><span class="sp"></span>
+          <span class="ud" data-t="ab"><button data-s="-1" title="scroll up">▲</button><button data-s="1" title="scroll down">▼</button></span></div>
+        <div class="sub" id="asub"></div>
+        <div class="pb" id="ab"></div>
+        <div class="more" title="what is still below in this audit - click for the next page"></div>
+      </section>
+
+      <section class="pn" id="pg">
+        <div class="ph sh-acc-sys"><span class="tabs" id="gtabs"></span><span class="sp"></span><span class="age">to 15:45</span>
+          <span class="ud" data-t="gb"><button data-s="-1" title="scroll up">▲</button><button data-s="1" title="scroll down">▼</button></span></div>
+        <div class="sub" id="gsub"></div>
+        <div class="pb" id="gb"></div>
+        <div class="pf" id="gfoot"></div>
+      </section>
+
+      <!-- drawers: an OVERLAY over this right column only (R16 "pushes nothing away"); the shell bands, the verdict, the lists and the call card stay visible. One at a time. -->
+      <aside class="drawer" id="tgd" aria-label="Telegram copy">
+        <div class="ph sh-acc-sys"><span class="t">Telegram copy</span><span class="k">sent to you only · 15:45:08</span><span class="sp"></span><button class="x" data-close>Esc ✕</button></div>
+        <div class="dnote2">Overlay on the right column (miss audit + agents). Same facts as this page.</div>
+        <pre id="tgtext"></pre>
+      </aside>
+      <aside class="drawer" id="askd" aria-label="Ask the analyst">
+        <div class="ph sh-acc-sys"><span class="t">Ask the analyst</span><span class="k">answers to you only</span><span class="sp"></span><button class="x" data-close>Esc ✕</button></div>
+        <div class="dnote2">Overlay on the right column (miss audit + agents) · mid model · about $0.01 a question</div>
+        <div class="askb" id="askb"></div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ===================== SHELL FOOTER START (copy verbatim) ===================== -->
+<footer id="sh-foot">
+  <a href="health.html" style="display:flex;align-items:center;gap:5px" title="ONE wording on every page: health READY / LIMITED / DOWN (the Health page's own words) · the worst item and its age · AI full / lite / off. Opens Health (Shift+F9)"><span class="sh-dot" style="width:7px;height:7px"></span>health READY · feeds closed 15:30 · AI full</a><span class="sh-fs"></span>
+  <span class="sh-keys"><kbd>/</kbd>search <kbd>?</kbd>help <kbd>Space</kbd>plan card <kbd>Esc</kbd>close<span class="sh-wide" style="display:inline-flex;gap:5px;align-items:center"><kbd>A</kbd>+<kbd>Enter</kbd>ack <kbd>M</kbd>mute</span></span>
+  <a href="phone.html" title="the phone version: girtrader.com/m (four screens)">phone /m</a><span class="sh-fs"></span>
+  <span class="sh-mock">design mockup - illustrative values</span>
+</footer>
+<!-- ===================== SHELL FOOTER END ===================== -->
+<script>
+const SHELL_STRIP = {"today":"+₹5,387","todayR":"+1.08R","charges":"₹298","week":"+₹1,282","month":"+₹11,082","trades":{"MANAPPURAM":{"no":48,"chg":125},"HINDALCO":{"no":49,"chg":86},"TITAN":{"no":50,"chg":87}}};
+/* GIR v3 · Shift+F8 Calls & Scorecard · Thu 19 Nov 2026 15:46 · round 2 redraw · design mockup - illustrative values.
+   Every count on the page (tiles, chips, rules cost, Telegram text) is computed from the arrays below, so the numbers agree.
+   R = ₹5,000 fixed (the charter's 1R = half the ₹10,000 day lock). Paper results: in at ask +1 tick, out at the real bid −1 tick,
+   at the IV of that minute (so IV crush is inside the number), net of round-trip charges from the ONE charges table (Settings ›
+   Charges, the same table the MY F&O P&L strip uses): brokerage ₹20 a side, STT 0.1% of the sell premium, exchange 0.03503%,
+   GST 18%, stamp 0.003% of the buy. Taken trades use the state file's charges (#48 MANAPPURAM ₹125 + #49 HINDALCO ₹86 + #50 TITAN
+   ₹87 = ₹298, CONFERENCE section 4 S5); untaken calls show an estimate (≈). Fills: CONFERENCE section 4 (TITAN 128.60 › 160.00,
+   MANAPPURAM out 11:45:12, HINDALCO out 11:45:05 at 14.50, cooling 11:45 → 12:05, ANGELONE suppressed by the lock room).
+   Taken ₹ and R are COMPUTED from the fills below - never typed - and the Σ row is checked against the shell strip (SHELL_STRIP,
+   injected by build.js from shellwork/state_close19.js). Greeks: Black-76 on the share, r = 0. */
+const M = '−';
+const sg = (x, dp = 2) => (x > 0 ? '+' : x < 0 ? M : '') + Math.abs(x).toFixed(dp);
+const pct = (x, dp = 2) => sg(x, dp) + '%';
+const cls = x => x > 0 ? 'up' : x < 0 ? 'dn' : '';
+const inr = x => (x > 0 ? '+' : x < 0 ? M : '') + '₹' + Math.abs(x).toLocaleString('en-IN');
+const R = x => sg(x, 1) + 'R';
+const sec = t => { const p = t.split(':').map(Number); return p[0] * 3600 + p[1] * 60 + (p[2] || 0); };
+const dur = s => s < 60 ? Math.round(s) + ' s' : s < 3600 ? Math.round(s / 60) + 'm' : Math.floor(s / 3600) + 'h ' + String(Math.round(s % 3600 / 60)).padStart(2, '0') + 'm';
+const T = s => `<span class="mono">${s}</span>`;
+const tm = s => s.replace(/(\d\d:\d\d(:\d\d)?)/g, '<span class="mono">$1</span>');
+const share = (s, c = 'sym') => `<a class="${c}" href="share.html#${s}" title="open ${s} on the Share page (F7)">${s}</a>`;
+const RUNIT = 5000;
+// round-trip charges on one option trade (₹, rounded) - the ONE charges table
+const chgOf = (buy, sell) => { const ex = 0.0003503 * (buy + sell); return Math.round(40 + 0.001 * sell + ex + 0.18 * (40 + ex) + 0.00003 * buy + 0.000001 * (buy + sell)); };
+const R2 = x => sg(x, 2) + 'R';
+const narrow = () => innerWidth < 1500;
+const ROLEC = { LEADER: 'ld', DEPENDENT: 'dp', LAGGARD: 'lg', BASKET: 'bk' };
+const roleTag = (role, s) => `<span class="role ${ROLEC[role] || ''}">${role}${role === 'LAGGARD' && s === 'KALYANKJIL' ? ' <b class="dn">▼</b>' : role === 'LAGGARD' && s === 'DIVISLAB' ? ' <b class="up">▲</b>' : ''}</span>`;
+const W = (a, b) => `<span class="w1600">${a}</span><span class="n1366">${b}</span>`;
+
+const SECT = {
+  JEW: ['Jewellers & gold loans', 'Jewellers'], GL: ['Jewellers & gold loans', 'Gold loans'], CAB: ['Cables & wires', 'Cables'],
+  MET: ['Metals', 'Metals'], BRK: ['Brokers & exchanges', 'Brokers'], PHA: ['Pharma', 'Pharma'], DEF: ['Defence', 'Defence'],
+  IT: ['IT', 'IT'], PSB: ['PSU banks', 'PSU banks'], CEL: ['Consumer electronics', 'Cons. electronics'],
+};
+const VD = { B: ['bef', 'BEFORE'], L: ['late', 'LATE'], X: ['miss', 'MISSED'], W: ['wrong', 'WRONG'] };
+
+/* ---- every F&O share that moved 2%+ (25 of 222) ----
+   note = first note that named it (19:45 = the evening before), nat = when GIR first named it, warn = a BEFORE row that still
+   carries a warning or a rule (shown after the misses). atm = Dec ATM premium move from the first valid entry (from) to the best
+   bid of the day, net of the spread. cls = the IA cause class. */
+const MV = (s, k, role, bu, mv, began, src, note, nat, calls, v, res, cl, agent, atm, from, warn, det, dn) => ({ s, k, role, bu, mv, began, src, note, nat, calls, v, res, cl, agent, atm, from, warn, det, dn });
+const MOV = [
+  MV('TITAN', 'JEW', 'LEADER', 'SB', -4.62, '09:15', 'gold · night', '19:45', '07:15', 'GR 09:30 · GO 12:29', 'B', 'taken +1.08R', 'named before - extended leader kept', 'theme', 58, '09:30', 0,
+    [['09:15', 'gap −1.2% · short build-up OI +6.2%'], ['09:30', 'GET READY PE 3,450 · 09:30: EXTENDED 1.9 ATR from VWAP → bounce entry, half size', 1], ['11:36', 'GET READY PE 3,400 · trigger 3,414 = the first lower high', 1], ['12:29', 'GO NOW · 12:29: 1.35 ATR · trigger crossed · TAKEN @128.60', 1], ['13:05', 'HOLD - target 3,356 not reached'], ['13:52', 'BOOK at target (share 3,349.60) @160.00 bid', 1]],
+    'Close 3,323.60 (−4.62%), the <b>day\'s biggest faller</b>. Kept as LEADER while extended - the trend-day rule (TRADER-5) worked.'),
+  MV('ANGELONE', 'BRK', 'BASKET', 'SB', -4.31, '11:41:56', 'TV 11:42:31', '', '11:42:08', 'GR 11:42:38 › GO +27 s', 'L', 'SHOCK · no news', 'SHOCK - news not found yet (S12), caught 12 s late vs 10 s target', 'basket watch', 27, '11:42:38', 0, null, null),
+  MV('MANAPPURAM', 'GL', 'DEPENDENT', 'SB', -4.08, '09:16', 'gold · night', '19:45', '07:15', 'GR 09:20 · GO 10:05', 'B', 'taken +0.55R', 'named before', 'theme', 32, '10:05', 0,
+    [['09:20', 'GET READY PE 285 (gold loans on gold)', 1], ['10:05', 'GO NOW · trigger 287.00 crossed 10:02:58 · TAKEN 10:06 @13.25', 1], ['10:52', 'HOLD'], ['11:40', 'BOOK 11:40:12 - stalled 3 bars (1 lot: all) · out 11:45:12 @14.20', 1]],
+    'Close 279.32 vs exit 284.10: the stall BOOK took a sure +0.55R and left 1.73R vs the plan target 280.30 (Journal #48). By rule - one day, no change.'),
+  MV('MUTHOOTFIN', 'GL', 'DEPENDENT', 'SB', -3.86, '09:15', 'TV 10:12 MD', '19:45', '07:15', 'GR 09:20 · GO 10:12', 'B', 'held 1m · +0.7R', 'hard block 1m: depth stale (R12) - released, then GO', 'theme', 27, '10:12', 1,
+    [['09:20', 'GET READY PE 2,150', 1], ['10:05', 'BLOCKED 1m: order-book depth STALE 64 s (hard block - stale data)'], ['10:12', 'GO NOW after depth fresh · you skipped: one gold bet open', 1], ['10:12', 'TV: MD says "not affecting us" - share −3.5% → −2.5% → fell again']],
+    'The hard block was right (no depth = no fill price). Paper +0.7R. You chose one gold-loan trade - fine.'),
+  MV('BSE', 'BRK', 'BASKET', 'SB', -3.64, '11:41:58', 'TV 11:42:31', '', '11:42:08', 'in the ANGELONE call', 'L', 'SHOCK · in call #12', 'SHOCK - basket member, alarm 10 s after it began', 'basket watch', 61, '11:42:38', 0, null, null),
+  MV('KALYANKJIL', 'JEW', 'LAGGARD', 'SB', -3.42, '11:35', 'catch-down', '19:45', '07:15', 'GR 09:48 · GO 11:51', 'B', 'cooling: +1.2R', 'suppressed by your cooling rule (exits 11:45 → 12:05)', 'theme', 44, '11:51', 1,
+    [['09:48', 'GET READY catch-down: laggard +0.4%, RSI 71, sector falling', 1], ['11:35', 'began to fall'], ['11:51', '5-min close below 521.60 → GO NOW 525 PE (520 too wide, 1.7%)', 1], ['11:51', 'SUPPRESSED: cooling 11:45 → 12:05 (HINDALCO out 11:45:05) · silent']],
+    'Close 510.04 (−3.42%): the laggard caught down exactly as the method says. Rules cost +1.2R paper.'),
+  MV('CDSL', 'BRK', 'BASKET', 'SB', -3.12, '11:42:01', 'TV 11:42:31', '', '11:42:08', 'in the ANGELONE call', 'L', 'SHOCK · in call #12', 'SHOCK - basket member, alarm 7 s after it began', 'basket watch', 47, '11:42:38', 0, null, null),
+  MV('POLYCAB', 'CAB', 'LEADER', 'SB', -3.05, '09:15', 'copper · night', '19:45', '07:15', 'GR 09:22', 'B', 'expired → 6,800 PE', 'GET READY expired (no bounce) · spread 1.3% → better strike 6,800 PE (0.7%)', 'theme', 24, '09:30', 1,
+    [['09:22', 'GET READY PE 6,900 · trigger 6,985 (bounce) · sprd 1.3% → try 6,800 PE sprd 0.7%', 1], ['11:00', 'EXPIRED - fell without a bounce to the trigger']],
+    'A leader that never bounces: <b class="act">Fix:</b> after 60 min without the bounce, offer a breakdown trigger (5-min close below the day low).'),
+  MV('KEI', 'CAB', 'DEPENDENT', 'SB', -2.74, '10:12', 'copper · night', '19:45', '07:15', 'GR 10:04 · GO 10:31', 'B', 'skip → 3,850 PE', 'you skipped: spread 1.2% (warning) · better strike 3,850 PE (0.6%)', 'theme', 30, '10:31', 1,
+    [['10:04', 'GET READY PE 3,900 · sprd 1.2%', 1], ['10:31', 'GO NOW · queued silently (you were in MANAPPURAM) · try 3,850 PE sprd 0.6%', 1]],
+    'Paper +0.9R on the 3,900 PE; the 3,850 PE would have cost ₹300 less to enter.'),
+  MV('HINDCOPPER', 'MET', 'LEADER', 'SB', -2.61, '09:15', 'copper · night', '', '', '-', 'X', 'GATED → 265 PE', 'GATED - bad miss: a spread warning acted as a block', 'option gate', 31, '09:30', 0,
+    [['09:15', 'fell with copper, short build-up'], ['09:22', 'theme ranked it, the option gate dropped it: 270 PE spread 2.1%'], ['09:22', 'the 265 PE had spread 0.9% · depth 22 lots - never offered']],
+    'Spread is a warning, not a block (R12). <b class="act">Fix:</b> the liquidity filter offers the better strike: <b>265 PE (spread 0.9%)</b>.'),
+  MV('MCX', 'BRK', 'BASKET', 'SB', -2.44, '11:42:03', 'TV 11:42:31', '', '11:42:08', 'in the ANGELONE call', 'L', 'SHOCK · in call #12', 'SHOCK - basket member, alarm 5 s after it began', 'basket watch', 35, '11:42:38', 0, null, null),
+  MV('JINDALSTEL', 'MET', 'DEPENDENT', 'SB', -2.40, '09:24', 'iron ore STALE', '10:00', '10:00', 'note 10:00 · no call', 'L', 'iron ore STALE', 'DATA LATE (iron ore STALE 2h 42m) + ANALYST LATE 36m', 'world prices', 14, '10:00', 0,
+    [['06:10', 'iron ore (Dalian) STALE from here - world prices agent'], ['07:15', 'note left steel out: driver not confirmed'], ['09:22', 'Metals confirmed by the sector agent'], ['09:24', 'began'], ['10:00', 'named in the 10:00 note, no call', 1]],
+    '<b class="act">Fix:</b> a stale driver must not hide a sector - use the sector\'s own move from 09:20. Iron ore source: add the SGX contract as backup.'),
+  MV('VEDL', 'MET', 'LEADER', 'SB', -2.31, '09:20', 'copper · night', '07:15', '07:15', 'GR 09:25', 'B', 'expired', 'GET READY expired (trigger 452.10 not met)', 'theme', 18, '09:30', 0, null, null),
+  MV('COFORGE', 'IT', 'LEADER', 'SB', -2.28, '09:15', 'Nasdaq · night', '', '', 'note: "avoid IT"', 'X', 'READ WRONG', 'READ WRONG - "avoid IT" is not a plan', 'senior analyst', 20, '09:30', 0,
+    [['07:15', 'note: "avoid IT - IT gaps then fades"'], ['09:15', 'fell all day on fresh shorts (vol 2.6×)']],
+    '"Avoid" is not a plan. <b class="act">Fix:</b> a sector named with a direction always gets its PE / CE list, half size if unsure.'),
+  MV('SAIL', 'MET', 'LEADER', 'SB', -2.22, '09:22', 'copper / steel', '07:15', '07:15', 'blocked all day', 'B', 'GATED · good miss', 'GATED - good miss: lot size in the contract master ≠ NSE file (bad data = hard block)', 'reference data', 15, '09:30', 1,
+    [['07:15', 'named PE in the note'], ['08:40', 'contract master lot 4,750 ≠ NSE file 6,000 → hard block (stale / bad data)'], ['all day', 'no call - a wrong lot would size the trade wrong']],
+    'A good miss: never size on a wrong lot. <b class="act">Fix:</b> reload the NSE lot file at 08:30 and compare before 09:00.'),
+  MV('HINDALCO', 'MET', 'DEPENDENT', 'SB', -2.14, '09:15', 'copper · night', '19:45', '07:15', 'GO 10:58 · EXIT 11:39 · out 11:45', 'B', 'taken −0.55R', 'named before · right share, early entry', 'senior analyst', 12, '10:58', 0,
+    [['10:58', 'GO NOW PE 680 · queued silently (in MANAPPURAM) · TAKEN from the screen 11:02 @16.40', 1], ['11:18', 'copper turned up · short covering'], ['11:24', 'WARN: copper leg weakening', 1], ['11:39', 'EXIT call 11:39:40 - reversal (2 bars above VWAP) · acked 11:39:52, not done', 1], ['11:44', 'P1 phone call 11:44:40 → out 11:45:05 @14.50 · cooling 11:45 → 12:05', 1], ['12:04', 'stop 686.10 hit: −₹4,100 (−0.82R)'], ['13:20', 'fresh shorts - fell to the close']],
+    'EXIT by rule saved ₹1,354 (+0.27R) vs the stop. <b class="act">Fix:</b> a copper PUT needs copper still falling at entry - checked by code.'),
+  MV('TATASTEEL', 'MET', 'DEPENDENT', 'SB', -2.05, '09:31', 'iron ore STALE', '', '10:31', 'GR 10:31', 'L', 'OI sweep gap 1h', 'DATA LATE 1h 00m: the OI sweep had a gap 09:40-10:25', 'money (OI)', 10, '10:31', 0,
+    [['09:31', 'began · short build-up already in the 09:35 OI'], ['09:40', 'OI sweep stopped (gap to 10:25) - money agent'], ['10:31', 'GET READY PE 150 - 1h late', 1], ['12:00', 'EXPIRED - trigger not met']],
+    '<b class="act">Fix:</b> heartbeat on the OI sweep: ring at 2 min of silence (S3).'),
+  MV('NATIONALUM', 'MET', 'DEPENDENT', 'SB', -2.02, '09:20', 'alu · night', '07:15', '07:15', '-', 'B', 'named, no call', 'named in the note; below the call cut (score 0.52)', 'theme', 11, '09:30', 0, null, null),
+  MV('DIXON', 'CEL', 'LEADER', 'LB', 3.21, '13:05', 'PIB 13:02', '', '', '-', 'X', 'TAG: Padget alias', 'TAG MISSED - the news named a subsidiary', 'news reader', 38, '13:05', 0,
+    [['13:02', 'PIB release names "Padget Electronics" (DIXON\'s subsidiary)'], ['13:02', 'news reader read it - share tag empty'], ['13:05', 'began · long build-up']],
+    '<b class="act">Fix:</b> add the alias Padget → DIXON (other names list, Reference ⇧F7).'),
+  MV('SUNPHARMA', 'PHA', 'LEADER', 'LB', 2.58, '09:40', 'LB · night', '07:15', '07:15', 'GR 10:42 · GO 13:10', 'B', 'cap 3/3: +0.8R', 'suppressed by the 3-trade cap (TITAN was #3)', 'theme', 26, '10:42', 1, null, null),
+  MV('BEL', 'DEF', 'LEADER', 'LB', 2.44, '10:20', 'MoD 10:14', '', '', '-', 'X', 'MoD site not polled', 'DATA MISSED - the MoD order page is not polled', 'policy map', 25, '10:34', 0,
+    [['10:14', 'MoD order on mod.gov.in - not polled'], ['10:20', 'began'], ['10:34', 'Defence confirmed 3/4 - no call (no driver)']],
+    '<b class="act">Fix:</b> add the MoD and DPSU sites to the 1-2 min official poll (S12).'),
+  MV('LUPIN', 'PHA', 'LEADER', 'LB', 2.22, '09:15', 'LB · night', '07:15', '07:15', 'skip: results 20 Nov', 'B', 'IV crush: skipped', 'skipped by rule - IV crush risk: results 20 Nov, IV 1.42× of 20d', 'theme', 9, '09:30', 1,
+    [['07:15', 'named CE · results tomorrow 20 Nov'], ['09:20', 'CE 2,100 IV 1.42× of 20-day (rank 88) → skip: IV crush after results']],
+    'Right to skip: the ATM CE made only +9% on a 2.2% rise - IV fell 1.42× → 1.31× during the day.'),
+  MV('PNB', 'PSB', 'LEADER', 'LB', 2.08, '13:05', 'no story', '', '13:20', 'GR 13:20 · CANCEL 14:00', 'L', 'NO CAUSE · 15m', 'NO CAUSE - rotation read every 5 min, 15m late', 'rotation', 14, '13:20', 0,
+    [['13:05', 'PSU banks +4 ranks in 15 min, no story'], ['13:20', 'ROTATION GET READY CE 120 · money OUT of IT INTO PSU banks · age 15m · silent (in TITAN)', 1], ['14:00', 'CANCEL - no new entries after 14:00 · sprd 1.6% → try 118 CE (0.8%)']],
+    '<b class="act">Fix:</b> the rolling 15-min window reads every minute (it read every 5).'),
+  MV('DIVISLAB', 'PHA', 'LAGGARD', 'LB', 2.04, '12:40', 'catch-up', '', '11:30', 'GR 11:30 · GO 12:46', 'B', 'cap 3/3: +0.6R', 'suppressed by the 3-trade cap · named by a call before its move', 'theme', 19, '12:46', 1, null, null),
+  MV('CIPLA', 'PHA', 'LAGGARD', 'LB', 2.01, '11:05', 'catch-up', '07:15', '07:15', '-', 'B', 'below the cut', 'named in the note; below the call cut (score 0.55)', 'theme', 16, '11:05', 1, null, null),
+];
+// named-and-wrong: named in a note or a call, did not move 2%+ its way - a different population (not in the 25)
+const WRONG = [
+  ['HAVELLS', 'CAB', 'NAMED PE', 'LB', 0.41, 'copper is a cost', 'note 07:15', 'READ WRONG'],
+  ['JSWSTEEL', 'MET', 'NAMED PE', 'SB', -0.94, 'right way, < 2%', 'note 07:15', 'NO CAUSE'],
+  ['DRREDDY', 'PHA', 'NAMED CE', 'SB', -0.32, 'fell, sector rose', 'note 07:15', 'NO CAUSE'],
+];
+/* ---- sectors that moved 1%+ ---- */
+// R49 (CONFERENCE override): a sector's %, breadth and rank come from EVERY listed share of the sector - the NSE sectoral index
+// where one exists, else a free-float basket of all listed shares - never the F&O names alone. Breadth is shown both ways
+// (all listed · F&O). NARROW = only the F&O names moved. [key, name, close %, verdict, basis (long, short), breadth all [n, of],
+// breadth F&O [n, of], driver · when confirmed, F&O members in the 2%+ list]
+const SECS = [
+  ['JEW', 'Jewellers & gold loans', -3.62, 'B', ['all 18 listed, free-float', '18 listed'], [15, 18], [4, 4], 'gold −1.6% · conf 09:20', ['TITAN', 'MANAPPURAM', 'MUTHOOTFIN', 'KALYANKJIL']],
+  ['BRK', 'Brokers & exchanges', -3.21, 'L', ['all 21 listed, free-float', '21 listed'], [19, 21], [5, 5], 'SEBI MTF story · alarm +12 s', ['ANGELONE', 'BSE', 'CDSL', 'MCX']],
+  ['CAB', 'Cables & wires', -2.36, 'B', ['all 9 listed, free-float', '9 listed'], [7, 9], [2, 3], 'copper −1.8% · conf 09:20', ['POLYCAB', 'KEI']],
+  ['MET', 'Metals', -1.71, 'B', ['NIFTY METAL index', 'NIFTY METAL'], [48, 61], [10, 11], 'copper, alu · conf 09:22', ['HINDCOPPER', 'JINDALSTEL', 'VEDL', 'SAIL', 'HINDALCO', 'TATASTEEL', 'NATIONALUM']],
+  ['PHA', 'Pharma', 1.58, 'B', ['NIFTY PHARMA index', 'NIFTY PHARMA'], [118, 176], [17, 21], 'long build-up · conf 10:42', ['SUNPHARMA', 'LUPIN', 'DIVISLAB', 'CIPLA']],
+  ['DEF', 'Defence', 1.42, 'X', ['NIFTY INDIA DEFENCE index', 'NIFTY DEFENCE'], [14, 18], [3, 4], 'MoD order 10:14 · no call', ['BEL']],
+  ['IT', 'IT', -1.18, 'B', ['NIFTY IT index', 'NIFTY IT'], [61, 88], [8, 10], 'Nasdaq −2.2% · "avoid", no plan', ['COFORGE']],
+  ['PSB', 'PSU banks', 1.12, 'L', ['NIFTY PSU BANK index', 'NIFTY PSU BANK'], [10, 12], [6, 7], 'no story · rotation GR 13:20', ['PNB']],
+];
+// a 2%+ F&O mover whose whole sector stayed under 1%: the move was NARROW (F&O names only)
+const NARROWS = { CEL: ['Consumer electronics', 0.62, ['all 11 listed, free-float', '11 listed'], [4, 11], [2, 2]] };
+const brd = (a, f, short) => short ? `${a[0]}/${a[1]} · F&amp;O ${f[0]}/${f[1]}` : `breadth ${a[0]}/${a[1]} all · F&amp;O ${f[0]}/${f[1]}`;
+const SECOF = k => SECS.find(x => x[0] === k || (k === 'GL' && x[0] === 'JEW'));
+
+/* ---- the call log: 13 calls, every version (immutable) ----
+   o = TAKEN / SUPPRESSED / SKIPPED / EXPIRED / CANCELLED; snd = what the speaker did; tg = Telegram sent › delivered › ack (your
+   chat only); then = share price when issued; p = share % at +15 / +30 / +60 min and at the close. */
+const C = (n, s, k, side, K, lot, path, o, why, inout, pin, pout, sprd, iv, real, rr, paper, gonow, snd, tg, age, then, p, setup, leg, win, ivb, hint) =>
+  ({ n, s, k, side, K, lot, path, o, why, inout, pin, pout, sprd, iv, real, rr, paper, gonow, snd, tg, age, then, p, setup, leg, win, ivb, hint });
+const CALLS = [
+  C(1, 'MANAPPURAM', 'GL', 'PE', '285', 3000, 'GR 09:20 › GO 10:05 › BOOK 11:40 › out 11:45', 'TAKEN', 'stall: 3 flat bars → BOOK (1 lot: all)', '10:06›11:45', 13.25, 14.20, 0.8, 1.10, 0, 0, 0.55, 1, 'rang · GO NOW', '10:05:02 › 10:05:03 › ack 10:05:11', '0.4 s', '287.10', [-0.4, -0.6, -0.9, -1.5], 'breakdown', 'gold', '09:45-11:00', '1.0-1.2×'),
+  C(5, 'TITAN', 'JEW', 'PE', '3,400', 175, 'GR 09:30 › 11:36 › GO 12:29 › BOOK 13:52', 'TAKEN', 'extended leader: bounce entry 3,414 ✓', '12:29›13:52', 128.60, 160.00, 0.5, 1.00, 0, 0, 1.08, 1, 'rang · GO NOW', '12:29:05 › 12:29:06 › ack 12:29:21', '0.6 s', '3,413.20', [-0.4, -0.9, -1.6, -2.6], 'bounce entry', 'gold', '11:00-13:00', '1.0-1.2×'),
+  C(10, 'HINDALCO', 'MET', 'PE', '680', 1400, 'GO 10:58 › WARN 11:24 › EXIT 11:39 › P1 11:44', 'TAKEN', 'GO NOW queued silently (in MANAPPURAM) · taken from the screen · EXIT call 11:39:40 acked, not done → P1 call 11:44:40 → out 11:45:05', '11:02›11:45', 16.40, 14.50, 0.7, 1.08, 0, 0, -0.55, 1, 'queued silently · in MANAPPURAM', '10:58:02 › 10:58:03 › ack 11:01:40', '0.5 s', '684.70', [0.1, 0.4, 0.2, -1.4], 'breakdown', 'copper', '09:45-11:00', '1.0-1.2×'),
+  C(6, 'KALYANKJIL', 'JEW', 'PE', '525', 1350, 'GR 09:48 › GO 11:51', 'SUPPRESSED', 'cooling 11:45 → 12:05 (HINDALCO out 11:45:05, MANAPPURAM 11:45:12)', 'GO 11:51', 26.40, null, 0.8, 1.10, null, null, 1.2, 1, 'silent · suppressed', '11:51:02 › 11:51:03 › ack 11:51:30', '0.5 s', '506.40', [-0.6, -1.1, -1.6, -1.7], 'catch-down', 'gold', '11:00-13:00', '1.0-1.2×'),
+  C(12, 'ANGELONE', 'BRK', 'PE', '2,300', 250, 'GR 11:42:38 › GO 11:43:05', 'SUPPRESSED', 'lock room ₹1,980 < 1-lot max loss → 0 lots · after the 11:45 exits: cooling → skipped · paper at the 13:40 bid, IV 1.19×', 'GO 11:43', 119.30, null, 0.8, 1.30, null, null, 1.11, 1, 'GR tick rang · GO silent', '11:42:38.4 › 11:42:39.6 › ack 11:42:51', '0.3 s', '2,321.00', [-0.8, -1.3, -2.0, -3.9], 'shock', 'brokers', '11:00-13:00', '> 1.2×'),
+  C(9, 'SUNPHARMA', 'PHA', 'CE', '1,840', 350, 'GR 10:42 › GO 13:10', 'SUPPRESSED', 'trades 3 of 3 used (TITAN was #3)', 'GO 13:10', 34.10, null, 0.5, 1.00, null, null, 0.8, 1, 'silent · suppressed', '13:10:02 › 13:10:03 › ack 13:10:40', '0.4 s', '1,829.00', [0.3, 0.6, 0.9, 1.2], 'pullback', 'pharma', '13:00-15:10', '1.0-1.2×'),
+  C(11, 'DIVISLAB', 'PHA', 'CE', '6,000', 100, 'GR 11:30 › GO 12:46', 'SUPPRESSED', 'trades 3 of 3 used', 'GO 12:46', 148.50, null, 0.9, 1.10, null, null, 0.6, 1, 'silent · suppressed', '12:46:02 › 12:46:03 › ack 12:47:10', '0.5 s', '5,968.00', [0.3, 0.5, 0.8, 1.4], 'catch-up', 'pharma', '11:00-13:00', '1.0-1.2×'),
+  C(2, 'MUTHOOTFIN', 'GL', 'PE', '2,150', 375, 'GR 09:20 › HELD 10:05 › GO 10:12', 'SKIPPED', 'held 1m: depth stale (hard) · you: one gold bet', 'GO 10:12', 41.20, null, 0.7, 1.12, null, null, 0.7, 1, 'queued silently · in MANAPPURAM', '10:12:01 › 10:12:02 › ack 10:12:40', '0.9 s', '2,141.00', [-0.5, -0.8, -1.2, -2.6], 'breakdown', 'gold', '09:45-11:00', '1.0-1.2×'),
+  C(7, 'KEI', 'CAB', 'PE', '3,900', 175, 'GR 10:04 › GO 10:31', 'SKIPPED', 'you: spread 1.2% → try 3,850 PE (0.6%)', 'GO 10:31', 52.40, null, 1.2, 1.00, null, null, 0.9, 1, 'queued silently · in MANAPPURAM', '10:31:02 › 10:31:03 › ack 10:31:50', '0.6 s', '3,921.00', [-0.5, -0.9, -1.4, -2.1], 'breakdown', 'copper', '09:45-11:00', '1.0-1.2×', '3,850 PE'),
+  C(3, 'POLYCAB', 'CAB', 'PE', '6,900', 125, 'GR 09:22 › EXPIRED 11:00', 'EXPIRED', 'no bounce to 6,985 · sprd 1.3% → try 6,800 PE', 'GR 09:22', null, null, 1.3, 1.05, null, null, null, 0, 'rang · GET READY', '09:22:01 › 09:22:02 › ack 09:22:30', '0.4 s', '7,012.00', [-0.6, -0.9, -1.3, -2.4], 'bounce entry', 'copper', '09:15-09:45', '1.0-1.2×', '6,800 PE'),
+  C(4, 'VEDL', 'MET', 'PE', '450', 1150, 'GR 09:25 › EXPIRED 11:30', 'EXPIRED', 'trigger 452.10 not met', 'GR 09:25', null, null, 0.9, 1.00, null, null, null, 0, 'rang · GET READY', '09:25:01 › 09:25:02 › ack 09:25:44', '0.5 s', '455.20', [-0.2, -0.5, -0.8, -1.9], 'bounce entry', 'copper', '09:15-09:45', '1.0-1.2×'),
+  C(8, 'TATASTEEL', 'MET', 'PE', '150', 5500, 'GR 10:31 › EXPIRED 12:00', 'EXPIRED', 'late: OI sweep gap 09:40-10:25', 'GR 10:31', null, null, 0.9, 1.00, null, null, null, 0, 'queued silently · in MANAPPURAM', '10:31:01 › 10:31:02 › ack 10:31:50', '0.7 s', '151.10', [-0.1, -0.3, -0.6, -1.1], 'breakdown', 'steel', '09:45-11:00', '1.0-1.2×'),
+  C(13, 'PNB', 'PSB', 'CE', '120', 8000, 'GR 13:20 › CANCEL 14:00', 'CANCELLED', '14:00: no new entries · sprd 1.6% → try 118 CE', 'GR 13:20', null, null, 1.6, 1.10, null, null, null, 0, 'queued silently · in TITAN', '13:20:01 › 13:20:02 › ack 13:21:05', '0.5 s', '117.40', [0.3, 0.5, 0.9, 1.1], 'rotation', 'PSU banks', '13:00-15:10', '1.0-1.2×', '118 CE'),
+];
+// journal numbers (#48 / #49 / #50) and each call's charges
+const ST = typeof SHELL_STRIP === 'object' && SHELL_STRIP.trades ? SHELL_STRIP.trades : {};
+const JNO = { 1: 48, 10: 49, 5: 50 };
+CALLS.forEach(c => {
+  // taken: the charges of the state file (= journal, = strip); not taken: an estimate from the same table, shown with ≈
+  c.chg = c.pin === null ? null : c.o === 'TAKEN' && ST[c.s] ? ST[c.s].chg : chgOf(c.pin * c.lot, (c.pout === null ? c.pin : c.pout) * c.lot);
+  if (c.o === 'TAKEN') { c.real = Math.round((c.pout - c.pin) * c.lot) - c.chg; c.rr = +(c.real / RUNIT).toFixed(2); c.paper = c.rr; }
+});
+// ANGELONE paper, computed: in 119.40 › 13:40 bid 141.95, 1 lot × 250, estimated charges
+const ANG = (() => { const chg = chgOf(119.40 * 250, 141.95 * 250), net = Math.round((141.95 - 119.40) * 250) - chg; return { chg, net, r: +(net / RUNIT).toFixed(2) }; })();
+CALLS.find(c => c.s === 'ANGELONE').paper = ANG.r;
+const OC = { TAKEN: 'taken', SUPPRESSED: 'sup', SKIPPED: '', EXPIRED: 'exp', CANCELLED: 'can' };
+const FOLLOW = [['MANAPPURAM', 'BOOK 11:40 (stall) · out 11:45:12', 1], ['HINDALCO', 'WARN 11:24 › EXIT 11:39 (reversal) › P1 call 11:44 · out 11:45:05', 1], ['TITAN', 'HOLD 13:05 › BOOK 13:52 (target)', 1]];
+
+/* ---- each agent's day (S10 / spec 2.3); problems first ---- */
+// [agent, model, ran, fresh %, found (short), report, woke, reached, cost, status, why]
+const AG = [
+  ['world prices', 'code', '24 h', 92, 'iron ore STALE<span class="w1600"> 2h 42m</span>', 'iron ore (Dalian) feed stale 06:10 → steel held back → JINDALSTEL late', 0, 0, 0, 'prob', 'add SGX backup'],
+  ['money (OI)', 'code', 'gap 45m', 88, 'OI gap 09:40-10:25', '36 signals: SB 22 · LB 12 · SC 2 · gap → TATASTEEL 1h late', 4, 2, 0, 'prob', 'heartbeat 2 min'],
+  ['rotation', 'code', '09:30-14:00', 96, 'PSU banks 15m late', '3 alarms: GR 1 · CANCEL 1 · read every 5 min', 3, 2, 0, 'prob', 'read every 1 min'],
+  ['policy map', 'small model', 'all day', 100, 'MoD site not polled', 'SEBI MTF ✓ · "no decision" 12:40 ✓ · BEL missed', 1, 0, 0.06, 'prob', 'add MoD, DPSU'],
+  ['news reader', 'small model', 'all day', 99, 'Padget alias missed', '41 material of 1,412 items · DIXON missed', 9, 4, 0.92, 'prob', 'alias list'],
+  ['X (Twitter)', '-', 'OFF', null, 'OFF · no X credits', 'add credits by 23 Nov - you decide', '-', '-', 0, 'off', ''],
+  ['order flow', 'code', 'all day', 91, '31 events, logging', 'paper only until 100 signals', 0, 0, 0, 'paper', ''],
+  ['theme', 'code', 'all day', 97, '13 of 16 moved', 'TITAN leader, KALYANKJIL laggard', 7, 6, 0, 'keep', 'best today'],
+  ['sector', 'code', 'all day', 97, '8 sectors, 5 on time', 'jewellers 09:20 · pharma 10:42', 6, 5, 0, 'keep', ''],
+  ['basket watch', 'code', 'all day', 100, 'brokers shock 12 s', 'alarm 11:42:08 · target 10 s', 1, 1, 0, 'keep', 'batch 0.5 s'],
+  ['TV watcher', 'small model', 'mkt hours', 97, 'SEBI story +35 s', 'MUTHOOTFIN MD "not affecting us" 10:12', 2, 2, 0.41, 'keep', 'chunk 5 s'],
+  ['world / global', 'small model', 'notes + live', 100, '5 drivers, all in note', 'gold, copper, Nasdaq, DXY, silver', 3, 2, 0.18, 'keep', ''],
+  ['option bursts', 'code', 'all day', 94, '6 bursts, 4 right', 'ANGELONE 2,300 PE burst 11:42:20', 2, 1, 0, 'keep', ''],
+  ['pre-open', 'code', 'pre-open', 100, '7 gaps · TITAN ✓', 'TITAN gap −1.2% flagged 09:08', 1, 1, 0, 'keep', ''],
+  ['desks+auditor', 'mid model', '48 calls', 95, '12 views · 1 wrong', 'agent 3 voted against TITAN (wrong)', 10, 6, 2.10, 'keep', ''],
+  ['senior analyst', 'top model', '13 of 15', 96, '2 notes · 9 GO NOW', 'at fault: JINDALSTEL (late), COFORGE', '-', 9, 3.40, 'keep', '2 at fault'],
+  ['follow-up', 'mid model', 'rules first', 98, '3 of 3 right', 'BOOK 11:40 · EXIT 11:39 · BOOK 13:52', '-', 7, 0.62, 'keep', ''],
+];
+const FOUND1366 = { 'world prices': 'iron ore STALE', 'money (OI)': 'OI gap 45 min', rotation: 'PSU banks late', 'policy map': 'MoD not polled', 'news reader': 'Padget missed', 'X (Twitter)': 'no X credits', 'order flow': '31 events', theme: '13 of 16 moved', sector: '5 of 8 on time', 'basket watch': 'shock in 12 s', 'TV watcher': 'SEBI +35 s', 'world / global': '5 drivers', 'option bursts': '4 of 6 right', 'pre-open': 'TITAN gap ✓', 'desks+auditor': '1 of 12 wrong', 'senior analyst': '2 notes · 9 GO', 'follow-up': '3 of 3 right' };
+const KP = { keep: ['keep', 'KEEP'], prob: ['prob', 'PROBATION'], paper: ['paper', 'PAPER ONLY'], off: ['off', 'OFF'] };
+
+/* ---- AI cost ---- */
+const MODELS = [['top model', 13, '84%', 'the 07:15 plan, the 19:45 note, 9 GO NOW checks (cap 15)'], ['mid model', 55, '81%', 'desks 48 calls $2.10 · follow-ups 7 $0.62'], ['small model', 1520, '80%', 'news 1,412 · TV 96 · world 8 · policy 4'], ['code', '11 agents', '-', 'sector, theme, money, basket ... no AI cost']];
+const HOURS = [['08', 1.20], ['09', 1.10], ['10', 1.30], ['11', 1.60], ['12', 1.05], ['13', 0.80], ['14', 0.44], ['15', 0.20]];
+const CAP = 20;
+
+/* ================= computed facts (one source for every number) ================= */
+const cnt = v => MOV.filter(r => r.v === v).length;
+const nB = cnt('B'), nL = cnt('L'), nX = cnt('X'), nW = WRONG.length, nMov = MOV.length, UNIVERSE = 222;
+const nNote = MOV.filter(r => r.note === '19:45' || r.note === '07:15').length;
+const byCall = MOV.filter(r => r.v === 'B' && !(r.note === '19:45' || r.note === '07:15'));
+const by930 = CALLS.filter(c => /^GR 09:(2\d|30)/.test(c.path)).length;
+const named = nB + nL + nW, hits = nB + nL;
+const rnd = (named * nMov / UNIVERSE).toFixed(1);
+const leadS = MOV.filter(r => r.v === 'B').map(r => sec(r.began) - sec(r.nat)).sort((a, b) => a - b);
+const median = a => a.length % 2 ? a[a.length >> 1] : (a[a.length / 2 - 1] + a[a.length / 2]) / 2;
+const shockLate = MOV.filter(r => r.v === 'L' && r.agent === 'basket watch').map(r => sec(r.nat) - sec(r.began)).sort((a, b) => a - b);
+const sB = SECS.filter(s => s[3] === 'B').length, sL = SECS.filter(s => s[3] === 'L').length, sX = SECS.filter(s => s[3] === 'X').length;
+const goNow = CALLS.filter(c => c.gonow);
+const paperSum = goNow.reduce((a, c) => a + c.paper, 0), paperAvg = paperSum / goNow.length;
+const goRight = goNow.filter(c => c.paper > 0).length;
+const taken = CALLS.filter(c => c.o === 'TAKEN');
+const dayNet = taken.reduce((a, c) => a + c.real, 0), dayR = +(dayNet / RUNIT).toFixed(2), dayChg = taken.reduce((a, c) => a + c.chg, 0);
+// THE CHECK: the call-log Σ must equal the shell's MY F&O P&L strip (same state file). A mismatch shows ≠ in red and shot.js fails.
+const STRIP = typeof SHELL_STRIP === 'object' ? SHELL_STRIP : null;
+const stripDom = (() => { const b = document.querySelector('#sh-pnl .sh-big'); return b ? [b.textContent.trim(), b.nextElementSibling ? b.nextElementSibling.textContent.trim() : ''] : [null, null]; })();
+// both the state file AND the strip as rendered must agree with Σ - a later shell re-copy that changes the strip turns the mark red
+const stripOK = !!STRIP && STRIP.today === inr(dayNet) && STRIP.todayR === R2(dayR) && STRIP.charges === '₹' + dayChg.toLocaleString('en-IN') && stripDom[0] === inr(dayNet) && stripDom[1] === R2(dayR);
+console.log('CHECK SIGMA', JSON.stringify({ sigma: inr(dayNet), sigmaR: R2(dayR), charges: dayChg, strip: STRIP, ok: stripOK }));
+const fuRight = FOLLOW.filter(f => f[2]).length;
+const aiTot = AG.reduce((a, g) => a + g[8], 0);
+const byModel = { top model: 0, mid model: 0, small model: 0, code: 0 };
+AG.forEach(g => { if (byModel[g[1]] !== undefined) byModel[g[1]] += g[8]; });
+const useful = goRight + fuRight;
+const hourTot = HOURS.reduce((a, h) => a + h[1], 0);
+const ocCount = k => CALLS.filter(c => c.o === k).length;
+const fmt$ = x => '$' + x.toFixed(2);
+const coolCost = CALLS.filter(c => c.o === 'SUPPRESSED' && /cooling|lock room/.test(c.why)); // held out by the lock room or cooling
+const capCost = CALLS.filter(c => c.o === 'SUPPRESSED' && /3 of 3/.test(c.why));
+const rsum = a => a.reduce((x, c) => x + c.paper, 0);
+const rulesCost = rsum(coolCost) + rsum(capCost);
+const nKeep = AG.filter(g => g[9] === 'keep').length, nProb = AG.filter(g => g[9] === 'prob').length, nPaper = AG.filter(g => g[9] === 'paper').length;
+console.log('CHECK', { nB, nL, nX, nW, nNote, byCall: byCall.map(r => r.s), by930, named, hits, rnd, lead: dur(median(leadS)), shock: shockLate, dayNet, dayR, dayChg, aiTot: aiTot.toFixed(2), hourTot: hourTot.toFixed(2), useful, goNow: goNow.length, paperAvg: paperAvg.toFixed(2), rulesCost, keep: nKeep, prob: nProb });
+
+/* ================= band 1: verdict (the biggest text on the page) ================= */
+document.getElementById('verdict').innerHTML = `
+  <div class="v1"><span class="hn up">${inr(dayNet)}</span><span class="hr up">${R2(dayR)}</span><span class="hs">${nNote} of ${nMov} named<span class="w1600"> pre-open</span> · <span class="dn">${nX} missed</span></span></div>
+  <div class="vl"><span class="i">1</span><span><b>Trades:</b> ${['TITAN', 'MANAPPURAM', 'HINDALCO'].map(s => { const c = taken.find(x => x.s === s); return `${s} <span class="${cls(c.rr)}">${R2(c.rr)}</span>`; }).join(' · ')}<span class="w1600 gry"> · chg ₹${dayChg}</span></span></div>
+  <div class="vl"><span class="i">2</span><span><b>Brokers shock:</b> alarm 12 s; GO NOW after ${W('a 2nd source', '2nd source')}; lock room held you out</span></div>
+  <div class="vl"><span class="i">3</span><span><b>Rules cost ${rulesCost.toFixed(1)}R paper</b><span class="w1600"> (held out ${rsum(coolCost).toFixed(1)}R · cap ${rsum(capCost).toFixed(1)}R)</span> - 1 day is too early to change a rule</span></div>
+  <div class="vl"><span class="i">4</span><span><span class="act">Fix tonight:</span> MoD poll<span class="w1600"> (BEL)</span> · Padget alias<span class="w1600"> (DIXON)</span> · OI gap <a class="go" href="morning.html#plan" title="Tonight's fixes and the ASK actions go into the 19:45 note and tomorrow's PLAN (Shift+F1)">→ <span class="w1600">19:45 note + </span>PLAN ⇧F1</a></span></div>
+  <div class="vl"><span class="i">5</span><span><b>Tomorrow<span class="w1600"> Fri 20</span>:</b> last session before 23 Nov expiry · Dec only · LUPIN IV crush</span></div>`;
+
+/* ================= band 1: the score (8 tiles; any rate with n < 30 is grey) ================= */
+const tile = (l, v, s1, s2, t, low) => `<div class="tile" title="${t || ''}"><div class="l">${l}</div><div class="v${low ? ' low' : ''}">${v}</div><div class="s">${s1}</div><div class="s">${s2}</div></div>`;
+const stack = (parts) => `<span class="stk3">${parts.map(([n, c]) => `<i class="${c}" style="flex:${n}"></i>`).join('')}</span>`;
+document.getElementById('sck').innerHTML = `all ${UNIVERSE} F&amp;O shares count · <span class="lowtag">grey = n &lt; 30</span>`;
+document.getElementById('tiles').innerHTML = [
+  tile('In the notes', `${nNote} <small>of ${nMov}</small>`, `+${byCall.length} by call = <b>${nB}</b>`, `09:30: ${by930} of ${by930} GR`, `named in the 19:45 or 07:15 note; +${byCall.map(r => r.s + ' (GR ' + r.nat + ', moved ' + r.began + ')').join(', ')} named by a call before it moved = ${nB} BEFORE`),
+  tile(`Movers 2%+ · ${nMov}`, `<span class="up">${nB}</span><small>·</small><span class="act">${nL}</span><small>·</small><span class="dn">${nX}</span>`, stack([[nB, 'b'], [nL, 'l'], [nX, 'x']]), `bef · late · missed`, `${nMov} of ${UNIVERSE} F&O shares moved 2%+: before ${nB} (green) · late ${nL} (amber) · missed ${nX} (red)`),
+  tile('Precision', `${hits} <small>of ${named}</small>`, `random ${rnd} · n ${named}`, `+${nW} named wrong`, `shares named that moved 2%+ their way, vs a random set of ${named} F&O shares (expects ${rnd}); the ${nW} named-and-wrong moved < 2% and are a separate list`, 1),
+  tile('Median lead', dur(median(leadS)), `n = ${leadS.length}`, `basket 4: ${median(shockLate)} s`, `lead = from the time GIR named it to the move; the brokers basket alarm came ${shockLate.join(', ')} s after each member began (median ${median(shockLate)} s; ANGELONE ${Math.max(...shockLate)} s vs target 10 s)`, 1),
+  tile('GO NOW calls', `${goNow.length} <small class="up">${R(paperAvg)}/call</small>`, `${goRight} of ${goNow.length} right`, 'rnd −.2 · mech +.3', 'RECORD (also in the call-log footer): calibration H 4/4 · M 3/4 · L 1/1 · OI next 60 min SB 15/22 · LB 7/12 · SC 1/2 · n < 30. Paper net per GO NOW (in at ask +1 tick, out at the real bid −1 tick at that minute\'s IV). Baselines today: random = 1,000 draws of 9 F&O shares at the same minutes, same side: −0.2R/call (5-95%: −0.6 to +0.3); mechanical = biggest driver → mapped sector → highest-beta shares: +0.3R/call', 1),
+  tile('Sectors 1%+', `${sB} <small>of ${SECS.length}</small>`, `${sL} late · ${sX} missed`, `<span class="basis">basis: all listed</span>`, 'sectors that moved 1%+, named before the move. Sector % and breadth come from EVERY listed share of the sector (the NSE sectoral index, else a free-float basket of all listed shares), not the F&O names alone - BY SECTOR in WHAT MOVED shows each basis and breadth both ways'),
+  tile('Audible', `6 <small>of 6 max</small>`, 'GO 2 · READY 4', '+ your 3 exits', 'rang: GO NOW 2 (MANAPPURAM 10:05, TITAN 12:29) · GET READY on a sector call 4 (jewellers 09:20, cables 09:22, metals 09:25, brokers 11:42:38) · while you were in a trade, new calls queued silently · suppressed calls are silent · your own exits (BOOK 11:40, EXIT 11:39, BOOK 13:52) always ring and are not counted'),
+  tile('AI spend', `${fmt$(aiTot)} <small>of $${CAP}</small>`, `<span class="aim"><i style="width:${Math.round(aiTot / CAP * 100)}%"></i></span>`, `${fmt$(aiTot / useful)} / useful call`, `${useful} useful = ${goRight} GO NOW right on paper + ${fuRight} follow-ups right · ${fmt$(aiTot / goNow.length)} per GO NOW · ${Math.round(aiTot / CAP * 100)}% of the $${CAP} cap`),
+].join('');
+
+/* ================= band 1: rules, rules cost, blocks ================= */
+const rl = a => a.map(c => `${c.s} +${c.paper.toFixed(1)}R`).join(' · ');
+const rbar = (a, lab) => `<div class="rc" title="${a.map(c => `${c.s} ${c.o.toLowerCase()} (${c.why}) · paper +${c.paper.toFixed(2)}R`).join(' · ')}"><span class="rcl">${lab}</span><span class="rcb"><i style="width:${(rsum(a) / rulesCost * 100).toFixed(0)}%"></i></span><b class="mono">${rsum(a).toFixed(1)}R</b><span class="rcn">${a.map(c => c.s).join(' · ')}</span></div>`;
+document.getElementById('rules').innerHTML = `
+  <div class="okg">
+    <span class="ok" title="flat at 13:52, before the 15:10 exit">flat 13:52</span><span class="ok">trades 3/3</span><span class="ok">lock untouched</span><span class="ok" title="a stop on every trade">stops set</span>
+    <span class="ok">no ban share</span><span class="ok" title="1 lot each; the charter allows 2">1 lot</span><span class="ok" title="20 min from the exit fills 11:45:05 / 11:45:12 (HINDALCO EXIT call 11:39:40, acked, done only after the P1 call 11:44:40)">cooling to 12:05</span><span class="ok gk" title="max 2 open at once: kept (11:02-11:45)">max 2 open</span></div>
+  <div class="h">Rules cost <b>${rulesCost.toFixed(1)}R paper</b><span class="gry"> · saved 0R · n = 1 day</span><span class="wn" title="warnings he could still take - the better strike when the spread is wide (R12): HINDCOPPER 265 PE · KEI 3,850 PE · POLYCAB 6,800 PE · PNB 118 CE">WARN 4 ›</span></div>
+  ${rbar(coolCost, 'lock / cooling')}
+  ${rbar(capCost, '3-trade cap')}
+  <div class="rl"><span class="blk" title="hard blocks are only ban, loss lock and stale / bad data (R12)">BLOCKS</span><span title="hard blocks today: MUTHOOTFIN 1 min (order-book depth stale 64 s) · SAIL all day (lot in the contract master ≠ NSE file) · ban 0 · loss lock 0">MUTHOOTFIN stale depth 1m · SAIL bad lot</span></div>`;
+
+/* ================= what moved (misses table) ================= */
+let mFilter = 'ALL', secFilter = 'ALL', mSort = 'problems', selMov = 'ANGELONE', basketOpen = true, openSecs = new Set(SECS.map(s => s[0]));
+const inSec = k => secFilter === 'ALL' || SECT[k][0] === secFilter;
+function leadText(r) {
+  if (r.v === 'X') return '';
+  const d = sec(r.began) - sec(r.nat);
+  if (d >= 0) return narrow() ? dur(d).replace(' ', '').replace(/(h\d\d)m$/, '$1') : dur(d).replace(' ', '');
+  return -d < 60 ? -d + ' s' : -d < 7200 ? Math.round(-d / 60) + 'm' : dur(-d);
+}
+// 1366: the same cause in fewer words (full text in the row tooltip and the audit)
+const RES1366 = { HINDCOPPER: 'GATED → 265 PE', BEL: 'MoD not polled', COFORGE: 'READ WRONG', BSE: 'SHOCK · #12', CDSL: 'SHOCK · #12', MCX: 'SHOCK · #12', POLYCAB: 'expired · 6,800', SAIL: 'GATED · good', JINDALSTEL: 'iron ore STALE', TATASTEEL: 'OI gap 1h', MUTHOOTFIN: 'held 1m · +0.7R', KALYANKJIL: 'cooling +1.2R', KEI: 'skip → 3,850', LUPIN: 'IV crush: skip', PNB: 'NO CAUSE · 15m', SUNPHARMA: 'cap 3/3 +0.8R', DIVISLAB: 'cap 3/3 +0.6R', DIXON: 'TAG: Padget' };
+const grpKey = r => r.v === 'X' ? 0 : r.v === 'L' ? 1 : r.warn ? 2 : 3;
+function movCols() {
+  return narrow() ? [['Share', 112], ['Role · B/U', 111, '', 'B/U = OI build-up of the share (LB long build-up · SB short build-up · SC short covering · LU long unwinding). Click = F10 Fut &amp; OI, BUILD-UP list with the LB / SB / SC / LU filters', 'futures-oi.html#buildup'], ['Move', 56, 'r'], ['ATM Dec', 76, 'r', 'Dec ATM premium move from the first valid entry (minute shown) to the best bid, net of the spread'], ['Began', 48], ['Verdict', 92], ['Result · cause', 0]]
+    : [['Share', 118], ['Role · B/U', 128, '', 'B/U = OI build-up of the share (LB long build-up · SB short build-up · SC short covering · LU long unwinding). Click = F10 Fut &amp; OI, BUILD-UP list with the LB / SB / SC / LU filters', 'futures-oi.html#buildup'], ['Move', 66, 'r'], ['ATM Dec', 80, 'r', 'Dec ATM premium move from the first valid entry (minute shown) to the best bid, net of the spread'], ['Began', 58], ['Verdict · lead', 114], ['Result · cause', 0]];
+}
+function movRow(r, extra = '') {
+  const NW = narrow(); const lt = leadText(r);
+  const began = r.began.length > 5 ? r.began.slice(0, 5) : r.began;
+  return `<tr class="${selMov === r.s ? 'sel' : ''}${extra} ${r.mv < 0 ? 'sh-heat-dn' : 'sh-heat-up'}" style="--m:${Math.abs(r.mv).toFixed(2)}" data-mv="${r.s}" title="${SECT[r.k][1]} · began ${r.began} (${r.src}) · ${r.calls} · cause: ${r.cl} · agent: ${r.agent}">
+    <td>${share(r.s)}</td>
+    <td>${roleTag(r.role, r.s)}<a class="bu bul ${r.bu.toLowerCase()}" href="futures-oi.html#buildup?f=${r.bu}" title="${{ LB: 'LONG BUILD-UP', SB: 'SHORT BUILD-UP', SC: 'SHORT COVERING', LU: 'LONG UNWINDING' }[r.bu]} - open F10 Fut &amp; OI build-up list filtered to ${r.bu}">${r.bu}</a></td>
+    <td class="r mvc"><span class="pct ${cls(r.mv)}">${pct(r.mv)}</span><i class="mbar ${r.mv < 0 ? 'dn' : 'up'}" style="width:${Math.min(50, Math.abs(r.mv) / 5 * 50).toFixed(0)}%"></i></td>
+    <td class="r"><span class="mono wht">+${r.atm}%</span><span class="bu">${r.from.slice(0, 5)}</span></td>
+    <td><span class="mono">${began}</span></td>
+    <td><span class="vd ${VD[r.v][0]}">${VD[r.v][1]}</span>${lt ? `<span class="lt">${lt}</span>` : ''}</td>
+    <td class="res"><span class="${r.v === 'B' && !r.warn ? '' : 'wht'}">${RES1366[r.s] || r.res}</span></td></tr>`;
+}
+function renderMovers() {
+  const cols = movCols(), NC = cols.length, NW = narrow();
+  const head = `<colgroup>${cols.map(c => `<col${c[1] ? ` style="width:${c[1]}px"` : ''}>`).join('')}</colgroup><thead><tr>${cols.map(c => `<th${c[2] ? ' class="r"' : ''}${c[3] ? ` title="${c[3]}"` : ''}>${c[4] ? c[0].replace('B/U', `<a class="thl" href="${c[4]}">B/U ›</a>`) : c[0]}</th>`).join('')}</tr></thead>`;
+  let rows = MOV.filter(r => inSec(r.k)).filter(r => mFilter === 'ALL' || mFilter === 'W' ? mFilter === 'ALL' : (mFilter === 'DOWN' && r.mv < 0) || (mFilter === 'UP' && r.mv > 0) || r.v === mFilter);
+  if (mFilter === 'W') rows = [];
+  if (mSort === 'problems') rows.sort((a, b) => grpKey(a) - grpKey(b) || Math.abs(b.mv) - Math.abs(a.mv));
+  else rows.sort((a, b) => Math.abs(b.mv) - Math.abs(a.mv));
+  let h = '';
+  const fold = mSort === 'problems' && !basketOpen && rows.some(r => r.s === 'ANGELONE');
+  if (mSort === 'sector') {
+    SECS.filter(s => secFilter === 'ALL' || s[1] === secFilter).forEach(s => {
+      const open = openSecs.has(s[0]);
+      h += `<tr class="sechd ${s[2] < 0 ? 'sh-heat-dn' : 'sh-heat-up'}" style="--m:${Math.abs(s[2]).toFixed(2)}" data-sec="${s[0]}" title="${s[1]} ${pct(s[2])} = ${s[4][0]} (every listed share, not only F&amp;O) · breadth ${s[5][0]} of ${s[5][1]} listed shares moved its way · F&amp;O ${s[6][0]} of ${s[6][1]} · ${s[7]}"><td colspan="2"><span class="gry">${open ? '▾' : '▸'}</span> <span class="snm">${NW ? (SECT[s[0]] || [0, s[1]])[1] : s[1]}</span></td><td class="r"><span class="pct ${cls(s[2])}">${pct(s[2])}</span></td><td colspan="${NC - 3}"><span class="vd ${VD[s[3]][0]}">${VD[s[3]][1]}</span><span class="basis">${NW ? s[4][1] : s[4][0]}</span><span class="l2">${brd(s[5], s[6], NW)}</span></td></tr>`;
+      if (open) s[5].map(x => MOV.find(r => r.s === x)).filter(r => rows.includes(r)).forEach(r => { h += movRow(r); });
+    });
+    const inS = new Set(SECS.flatMap(x => x[5])), rest = rows.filter(r => !inS.has(r.s));
+    if (rest.length) { const z = NARROWS.CEL; h += `<tr class="sechd sh-heat-up" style="--m:${z[1]}" title="${z[0]} ${pct(z[1])} = ${z[2][0]} · only ${z[3][0]} of ${z[3][1]} listed shares rose, both F&amp;O names did: an F&amp;O-only move"><td colspan="2"><span class="gry">▾</span> <span class="snm">${NW ? 'Cons. electronics' : z[0]}</span></td><td class="r"><span class="pct ${cls(z[1])}">${pct(z[1])}</span></td><td colspan="${NC - 3}"><span class="nar">NARROW${NW ? '' : ' - F&amp;O-only move'}</span><span class="basis">${NW ? z[2][1] : z[2][0]}</span><span class="l2">${brd(z[3], z[4], NW)}</span></td></tr>`; rest.forEach(r => { h += movRow(r); }); }
+  } else {
+    rows.forEach(r => {
+      if (fold && ['BSE', 'CDSL', 'MCX'].includes(r.s)) return;
+      h += movRow(r);
+      if (fold && r.s === 'ANGELONE') {
+        const mem = ['BSE', 'CDSL', 'MCX'].map(x => MOV.find(q => q.s === x)).filter(q => rows.includes(q));
+        h += `<tr class="fold" data-fold="1" title="3 more basket members, all LATE, in the ANGELONE call - click to list them as rows"><td>+${mem.length} basket ▸</td><td colspan="${NC - 1}">${mem.map(q => `${share(q.s)} <span class="pct sm ${cls(q.mv)}">${pct(q.mv)}</span> <span class="lt">${leadText(q)}</span>`).join(' · ')} · all LATE<span class="w1600">, in the ANGELONE call</span></td></tr>`;
+      }
+    });
+  }
+  const wr = WRONG.filter(w => inSec(w[1]));
+  if ((mFilter === 'ALL' || mFilter === 'W') && wr.length && mSort !== 'sector') {
+    h += `<tr class="grp"><td colspan="${NC}">+${wr.length} named, wrong · moved &lt; 2% their way · not in the ${nMov} · counts against precision</td></tr>`;
+    wr.forEach(w => {
+      h += `<tr title="${w[5]} · ${w[6]}"><td>${share(w[0])}</td><td><span class="role">${w[2]}</span></td><td class="r"><span class="pct ${cls(w[4])}">${pct(w[4])}</span></td><td class="r">-</td><td>-</td><td><span class="vd wrong">WRONG</span></td><td>${w[7]}</td></tr>`;
+    });
+  }
+  if (!h) h = `<tr><td colspan="${NC}" style="color:var(--text-3);height:28px">No F&amp;O share in ${secFilter === 'ALL' ? 'any sector' : secFilter} moved 2%+ that way today - not an error.</td></tr>`;
+  document.getElementById('mt').innerHTML = head + '<tbody>' + h + '</tbody>';
+  const CC = [['ALL', nMov], ['DOWN', MOV.filter(r => r.mv < 0).length], ['UP', MOV.filter(r => r.mv > 0).length], ['B', nB], ['L', nL], ['X', nX]];
+  const lab = { ALL: 'ALL', DOWN: 'DOWN', UP: 'UP', B: 'BEFORE', L: 'LATE', X: 'MISSED' };
+  document.getElementById('mchips').innerHTML = CC.map(([k, n]) => `<button class="chip${mFilter === k ? ' on' : ''}" data-m="${k}">${lab[k]} <span class="n">${n}</span></button>`).join('') + `<button class="chip sep${mFilter === 'W' ? ' on' : ''}" data-m="W" title="named and wrong - moved < 2% their way; not in the 25">+${nW} WRONG</button>`;
+  document.getElementById('msort').innerHTML = [['problems', 'MISSES FIRST'], ['move', 'BY MOVE'], ['sector', 'BY SECTOR']].map(([k, l]) => `<button class="${mSort === k ? 'on' : ''}" data-ms="${k}" title="sort / group the list; a row click opens its audit on the right">${l}</button>`).join('');
+  updCount('mb');
+}
+
+/* ================= miss audit (detail of the selected mover) ================= */
+const step = (t, o, main, s2 = [], gr, more) => `<div class="st${gr ? ' gr' : ''}"${more ? ` data-more='${more}'` : ''}><b>${t}</b><i>${o}</i><span><span class="m">${main}</span>${s2.map(x => `<span class="s2">${x}</span>`).join('')}</span></div>`;
+const FX = s => `<span class="fx">Fix:</span> ${s}`;
+function renderAudit() {
+  const r = MOV.find(x => x.s === selMov) || MOV[1];
+  const ak = document.getElementById('ak'), sub = document.getElementById('asub'), ab = document.getElementById('ab');
+  ak.innerHTML = `${share(r.s, 'sym sm')} <span class="pct sm ${cls(r.mv)}">${pct(r.mv)}</span> · <span class="vd ${VD[r.v][0]}">${VD[r.v][1]}</span> ${r.v === 'L' ? leadText(r) : ''}`;
+  sub.classList.toggle('s12', r.s === 'ANGELONE');
+  if (r.s === 'ANGELONE') {
+    sub.innerHTML = `<b>vs S12 target:</b> alarm 12 s (10) · TV 35 s (15-30) · wire 48 s (30)`;
+    ab.innerHTML = `<div class="au">
+      ${step('11:41:56', '0s', W('move began: −2.1% in 40 s · volume 4.1×', 'move began: −2.1% in 40 s · vol 4.1×'))}
+      ${step('11:42:08', '+12s', `<span class="shock">BASKET SHOCK</span> brokers, no news yet`, ['target 10 s · ' + FX('tick batch 1 s → 0.5 s')])}
+      ${step('11:42:20', '+24s', W('2,300 PE burst: 1,240 lots in 20 s (6.2×)', '2,300 PE burst: 1,240 lots / 20 s'))}
+      ${step('11:42:31', '+35s', '1st source: CNBC-TV18 speech-to-text', [W('target 15-30 s · ', 'target 15-30 s · ') + FX(W('speech chunk 10 → 5 s', 'chunk 10 → 5 s'))])}
+      ${step('11:42:38', '+42s', W('GET READY PUT 2,300 Dec · tick rang once', 'GET READY PUT 2,300 Dec · rang once'), [W('118.40 / 119.30 · sprd 0.8% · depth 6 lots (shock)', '118.40/119.30 · sprd 0.8% · 6 lots')], 1)}
+      ${step('11:42:44', '+48s', '2nd source: ET live blog', ['target 30 s · ' + FX('wire poll 30 → 10 s')])}
+      ${step('11:43:05', '+69s', 'GO NOW → SUPPRESSED (lock room)', [W('2 open, at share stops −₹8,020 · silent · then cooling 11:45 → 12:05', '₹1,980 < 1-lot max loss · silent')], 1, '11:43 GO NOW')}
+      ${step('12:40:15', '+58m', '"SEBI: no decision yet" → nothing to do', ['IV 1.30× → 1.19×: IV crush risk'], 0, '12:40 SEBI')}
+      <div class="h">Delivery of the GET READY · seconds after 11:42</div>
+      <div class="wfa" data-more="latency waterfall" title="to scale: exchange print 37.6 s → your ack 51.0 s after 11:42 = 13.4 s. GIR part 2.0 s = tick 0.3 · detector 0.1 · sound 0.1 · Telegram send 0.3 · delivery 1.2"><span class="seg g" style="flex:2.0"><i></i><em>GIR 2.0 s</em></span><span class="seg y" style="flex:11.4"><i></i><em>you: ack after 11.4 s (A + Enter)</em></span></div>
+      <div class="tx">${W('exchange 37.6 › tick in 37.9 › detector 38.0 › sound 38.1 › Telegram sent 38.4 › delivered 39.6 › you ack 51.0 (A + Enter) · to you only', 'exchange 37.6 › tick 37.9 › detector 38.0 › sound 38.1 › Telegram 38.4 › delivered 39.6 › you ack 51.0 · to you only')}</div>
+      <div class="h" data-more="basket proof">Basket proof · 5 of 5 in 60 s (rule: 3+) · Kite ≈ 1 tick/s</div>
+      <table class="mt"><colgroup><col style="width:21%"><col><col><col><col><col></colgroup><thead><tr><th>11:4x</th><th>ANGEL</th><th>BSE</th><th>CDSL</th><th>MCX</th><th>MOTIL</th></tr></thead><tbody>
+        <tr><td>began</td><td>1:56.4</td><td>1:58.1</td><td>2:01.0</td><td>2:03.2</td><td>2:05.6</td></tr>
+        <tr><td>−1% after</td><td>8 s</td><td>7 s</td><td>6 s</td><td>9 s</td><td>24 s</td></tr>
+        <tr><td>volume</td><td>4.1×</td><td>3.8×</td><td>3.1×</td><td>2.9×</td><td>2.4×</td></tr>
+        <tr><td>alarm late</td><td>12 s</td><td>10 s</td><td>7 s</td><td>5 s</td><td>2 s</td></tr></tbody></table>
+      <div class="tx" data-more="story">Story: <b>"SEBI mulls MTF limits - sources"</b> (TV, wire; not SEBI's site). 12:40 "no decision yet" (sources).</div>
+      <div class="tx" data-more="paper ${R(ANG.r)}"><b>Paper by rule</b> (1 lot × 250): in 119.40 (ask +1 tick) › out 141.95 at the 13:40 bid, IV 1.19×, less ≈₹${ANG.chg} charges = +₹${ANG.net.toLocaleString('en-IN')} = <b>${R(ANG.r)}</b> (at the entry IV it would read +1.6R - not used). <b>ATM +27%</b> = Dec 2,300 PE, 11:42:38 ask 119.30 → best bid 151.60 at 15:02.</div>
+      <div class="tx">18 Nov, the same story class: GIR said nothing. Today: alarm in 12 s, GET READY in 42 s.</div></div>`;
+  } else {
+    sub.innerHTML = `<b>${r.cl}</b>`;
+    const steps = (r.det || [[r.began, 'move began (' + r.src + ')'], [r.nat || '-', r.calls]]).map(d => step(d[0], '', d[1], [], d[2])).join('');
+    ab.innerHTML = `<div class="au">
+      <div class="tx" style="margin:0 0 4px 0">${roleTag(r.role, r.s)} · ${W('build-up ', '')}${r.bu} · began <b>${r.began}</b>${W(` (${r.src})`, '')} · first named ${r.nat ? '<b>' + r.nat + '</b>' + (r.note ? ' (note ' + r.note + ')' : '') : '<b>never</b>'} · calls: ${r.calls}</div>
+      ${(() => { const s = SECOF(r.k), z = !s && r.k === 'CEL' ? NARROWS.CEL : null; return s ? `<div class="secl">${SECT[r.k][0]} <span class="pct sm ${cls(s[2])}">${pct(s[2])}</span> <span class="basis">${narrow() ? s[4][1] : s[4][0]}</span><span class="gry">${brd(s[5], s[6], narrow())}</span></div>` : z ? `<div class="secl">${z[0]} <span class="pct sm up">${pct(z[1])}</span> <span class="nar">NARROW</span><span class="gry">${brd(z[3], z[4], true)}</span></div>` : ''; })()}
+      ${steps}
+      <div class="tx">${r.dn || r.cl}</div>
+      <div class="tx"><b>ATM +${r.atm}%</b> = Dec ATM premium from the first valid entry ${r.from} to the best bid · agent at fault / credited: <b>${r.agent}</b></div></div>`;
+  }
+  ab.scrollTop = 0; updCount('ab');
+}
+
+/* ================= call log ================= */
+let cFilter = 'ALL', cSet = 'RESULT', selCall = 5, fOpen = false;
+const FILT = { setup: 'all', leg: 'all', win: 'all', dte: 'all', ivb: 'all' };
+const FOPT = { setup: ['all', ...new Set(CALLS.map(c => c.setup))], leg: ['all', ...new Set(CALLS.map(c => c.leg))], win: ['all', '09:15-09:45', '09:45-11:00', '11:00-13:00', '13:00-15:10'], dte: ['all', 'Dec · 40 DTE', 'Nov · 2 sessions'], ivb: ['all', '< 1.0×', '1.0-1.2×', '> 1.2×'] };
+const FLAB = { setup: 'setup', leg: 'leg', win: 'time', dte: 'DTE', ivb: 'IV' };
+const passF = c => (FILT.setup === 'all' || c.setup === FILT.setup) && (FILT.leg === 'all' || c.leg === FILT.leg) && (FILT.win === 'all' || c.win === FILT.win) && (FILT.dte === 'all' || FILT.dte.startsWith('Dec')) && (FILT.ivb === 'all' || c.ivb === FILT.ivb);
+const contract = c => `${share(c.s)} <span class="mono wht">${c.K}</span><span class="cp ${c.side === 'PE' ? 'pe' : 'ce'}">${c.side}</span>`;
+function callCols() {
+  const NW = narrow();
+  const base = [['#', NW ? 22 : 26, 'r'], ['Contract · 1 lot', NW ? 164 : 176], ['Outcome', NW ? 92 : 100]];
+  if (cSet === 'PATH') return NW ? [...base, ['Issued', 64], ['Then', 58, 'r'], ['+15m', 44, 'r'], ['+30m', 44, 'r'], ['+60m', 44, 'r'], ['Close', 0, 'r']] : [...base, ['Issued', 70], ['Then', 76, 'r'], ['+15m', 50, 'r'], ['+30m', 50, 'r'], ['+60m', 50, 'r'], ['Close', 0, 'r']];
+  // TIMING is about delivery: the outcome chip gives its room to the sound text (outcome stays in the row tooltip, RESULT and the card)
+  const WF = ['Latency', NW ? 70 : 86, '', 'waterfall from the Telegram send: blue = delivered to your phone, grey = until your ack (A + Enter). Scale 0-60 s, longer waits capped with ›'];
+  const SND = ['Sound', 0, '', 'rang = sound played · queued = on screen, no sound, because a trade was open (your exit tones stay clear) · silent = suppressed by a rule'];
+  if (cSet === 'TIMING') return NW ? [base[0], base[1], ['Age', 40, 'r', 'data age when the call was issued'], SND, WF, ['Telegram sent › ack', 150]] : [base[0], base[1], ['Age', 48, 'r', 'data age when the call was issued'], SND, WF, ['Telegram sent › ack', 170]];
+  return NW ? [...base, ['In › out', 76, '', 'fill times; an exit can come minutes after its EXIT call (HINDALCO EXIT 11:39:40, acked, not done → P1 call 11:44:40 → out 11:45:05)'], ['Premium', 89, 'r'], ['Sprd · IV', 67, 'r'], ['₹ · R', 0, 'r']]
+    : [...base, ['In › out', 92, '', 'fill times; an exit can come minutes after its EXIT call (HINDALCO EXIT 11:39:40, acked, not done → P1 call 11:44:40 → out 11:45:05)'], ['Prem in › out', 106, 'r'], ['Sprd · IV', 84, 'r'], ['₹ · R', 0, 'r']];
+}
+function callRow(c) {
+  const NW = narrow();
+  const res = c.o === 'TAKEN' ? `<span class="mono ${cls(c.real)}">${inr(c.real)}</span> <span class="mono ${cls(c.rr)}">${R2(c.rr)}</span>` : c.paper !== null ? `<span class="gry">paper</span> <span class="mono wht">${R(c.paper)}</span>` : '<span class="gry">no fill</span>';
+  const prem = c.pin === null ? `<span class="gry">${c.hint ? 'try ' + c.hint : '-'}</span>` : c.pout === null ? `<span class="mono">${c.pin.toFixed(2)}</span> <span class="gry">ask</span>` : `<span class="mono wht">${c.pin.toFixed(2)}›${c.pout.toFixed(2)}</span>`;
+  const sp = `<span class="mono">${c.sprd.toFixed(1)}%</span> <span class="mono ${c.iv > 1.2 ? 'wht' : ''}">${c.iv.toFixed(2)}×</span>`;
+  let tds = '';
+  if (cSet === 'PATH') {
+    const issued = c.path.match(/(GO|GR) (\d\d:\d\d)/g).pop();
+    tds = `<td>${tm(issued)}</td><td class="r mono">${NW && c.then.length > 7 ? c.then.replace(/\.\d+$/, '') : c.then}</td>${c.p.map(x => `<td class="r"><span class="mono ${cls(x)}">${pct(x, 1)}</span></td>`).join('')}`;
+  } else if (cSet === 'TIMING') {
+    const snd = c.snd.replace('queued silently', 'queued');
+    const tg = c.tg.replace(/ › \d\d:\d\d:\d\d(\.\d)? › /, ' › ').replace(/(\d\d:\d\d:\d\d)\.\d/g, '$1');
+    const ts = c.tg.match(/\d\d:\d\d:\d\d(\.\d)?/g).map(sec), dl = ts[1] - ts[0], ak = ts[2] - ts[0], SC = 60;
+    const wf = `<span class="wf" title="sent ${c.tg.split(' › ')[0]} · delivered +${dl.toFixed(1)} s · ack +${Math.round(ak)} s"><i class="d" style="width:${Math.max(3, dl / SC * 100).toFixed(1)}%"></i><i class="a" style="width:${Math.max(0, Math.min(ak, SC) - dl) / SC * 100}%"></i>${ak > SC ? '<b>›</b>' : ''}</span><span class="wfl mono">${ak < 100 ? Math.round(ak) + ' s' : Math.floor(ak / 60) + 'm' + String(Math.round(ak % 60)).padStart(2, '0')}</span>`;
+    tds = `<td class="r mono">${c.age}</td><td class="snd${/queued|silent/.test(c.snd) ? '' : ' wht'}">${snd}</td><td class="wfc">${wf}</td><td><span class="mono tgc">${NW ? tg.replace(/ › /, '›') : tg}</span></td>`;
+  } else {
+    tds = `<td><span class="mono io">${c.o === 'TAKEN' ? c.inout : '<span class="gry">' + c.inout + '</span>'}</span></td><td class="r">${prem}</td><td class="r">${sp}</td><td class="r">${res}</td>`;
+  }
+  return `<tr class="${c.n === selCall ? 'sel' : ''}" data-call="${c.n}" title="${c.o} · ${c.path} · ${c.why}"><td class="r mono gry">${c.n}</td><td>${contract(c)}</td>${cSet === 'TIMING' ? '' : `<td><span class="oc ${OC[c.o]}">${c.o}</span></td>`}${tds}</tr>`;
+}
+const ORDER = ['TAKEN', 'SUPPRESSED', 'SKIPPED', 'EXPIRED', 'CANCELLED'];
+function renderCalls() {
+  const cols = callCols();
+  const rows = CALLS.filter(c => inSec(c.k)).filter(c => cFilter === 'ALL' || c.o === cFilter).filter(passF).sort((a, b) => ORDER.indexOf(a.o) - ORDER.indexOf(b.o) || a.n - b.n);
+  let h = '';
+  rows.forEach((c, i) => {
+    h += callRow(c);
+    if (c.o === 'TAKEN' && (!rows[i + 1] || rows[i + 1].o !== 'TAKEN') && cFilter !== 'SUPPRESSED') {
+      const t = rows.filter(x => x.o === 'TAKEN');
+      if (t.length === taken.length) h += `<tr class="sum"><td></td><td colspan="${cols.length - 1}">Σ taken ${t.length}: <b>${inr(dayNet)}</b> · <b>${R2(dayR)}</b> net of ₹${dayChg}<span class="w1600"> (${[...t].sort((x, y) => JNO[x.n] - JNO[y.n]).map(x => '₹' + x.chg).join(' + ')})</span> ${stripOK ? '<span class="okm" title="checked on load: Σ, R and charges equal the MY F&amp;O P&amp;L strip (both from shellwork/state_close19.js)">= P&amp;L strip ✓</span>' : `<span class="bad" title="Σ does not equal the strip - fix before trusting either">≠ P&amp;L strip ${stripDom[0] || '?'} ✗</span>`}<span class="w1600"> · 2 open 11:02-11:45: ₹62,710 in</span></td></tr>`;
+    }
+  });
+  if (!rows.length) h = `<tr><td colspan="${cols.length}" style="color:var(--text-3);height:28px">No ${cFilter === 'ALL' ? '' : cFilter.toLowerCase() + ' '}call in ${secFilter === 'ALL' ? 'any sector' : secFilter} today - not an error.</td></tr>`;
+  document.getElementById('ct').innerHTML = `<colgroup>${cols.map(c => `<col${c[1] ? ` style="width:${c[1]}px"` : ''}>`).join('')}</colgroup><thead><tr>${cols.map(c => `<th${c[2] ? ' class="r"' : ''}${c[3] ? ` title="${c[3]}"` : ''}>${c[0]}</th>`).join('')}</tr></thead><tbody>${h}</tbody>`;
+  document.getElementById('ct').className = 'tb set-' + cSet.toLowerCase();
+  const CC = [['ALL', CALLS.length], ...ORDER.map(k => [k, ocCount(k)]), ['VETOED', 0]];
+  document.getElementById('cchips').innerHTML = CC.map(([k, n]) => `<button class="chip${cFilter === k ? ' on' : ''}${n === 0 ? ' zero' : ''}" data-c="${k}" title="${n === 0 ? 'No vetoed call in any sector today - not an error' : k + ' calls'}">${k} <span class="n">${n}</span></button>`).join('');
+  document.getElementById('cset').innerHTML = ['RESULT', 'PATH', 'TIMING'].map(k => `<button class="${cSet === k ? 'on' : ''}" data-cs="${k}" title="${{ RESULT: 'premium, spread, IV, ₹ and R', PATH: 'share price then and at +15 / +30 / +60 min and the close', TIMING: 'data age at issue, sound, Telegram sent › ack (your chat only)' }[k]}">${k}</button>`).join('');
+  const nf = Object.values(FILT).filter(v => v !== 'all').length;
+  document.getElementById('fcount').textContent = nf;
+  document.getElementById('fbtn').classList.toggle('on', fOpen);
+  const fb = document.getElementById('fbar'); fb.classList.toggle('on', fOpen);
+  fb.innerHTML = Object.keys(FILT).map(k => `<label>${FLAB[k]}<select data-f="${k}">${FOPT[k].map(o => `<option${FILT[k] === o ? ' selected' : ''}>${o}</option>`).join('')}</select></label>`).join('') + '';
+  updCount('cb');
+}
+document.getElementById('recline').innerHTML = `<b>RECORD</b> calibration H <span class="n">4/4</span> · M <span class="n">3/4</span> · L <span class="n">1/1</span> · OI 60 min SB <span class="n">15/22</span> · LB <span class="n">7/12</span> · SC <span class="n">1/2</span> <span class="lowtag">n &lt; 30</span>`;
+
+/* ================= call card (detail of the selected call) ================= */
+// strike review of #50 TITAN, computed on the same charges basis as the strip (ATM = the trade itself)
+const SRK = ['itm', 'atm', 'otm', 'nov'];
+// ₹ net uses the SAME 1-lot round-trip charges as #50 (₹87 from the state file), so ATM = the trade exactly
+const SRCHG = (ST.TITAN && ST.TITAN.chg) || 87;
+const SRV = Object.fromEntries([['itm', 153.7, 190.6], ['atm', 128.6, 160.0], ['otm', 107.7, 134.8], ['nov', 32.7, 68.5]].map(([k, a, b]) => {
+  const pts = +(b - a).toFixed(2), chg = SRCHG, net = Math.floor(pts * 175 + 1e-6) - chg;
+  return [k, { a, b, pts, chg, net, cash: Math.round(a * 175), pc: '+' + Math.round((b - a) / a * 100) + '%' }];
+}));
+console.log('CHECK STRIKE', JSON.stringify(SRV));
+let srAll = false;
+function renderCard() {
+  const c = CALLS.find(x => x.n === selCall) || CALLS[1];
+  const db = document.getElementById('db');
+  document.getElementById('dk').innerHTML = c.n === 5 ? `#5 · data 0.6 s<span class="w1600"> · ack 12:29:21</span>` : `#${c.n} · data ${c.age}<span class="w1600"> · ${c.s} ${c.K} ${c.side}</span>`;
+  if (c.n === 5) {
+    db.innerHTML = `<div class="cd">
+      <div class="hd"><span class="sh-c sh-c-go" title="as issued 12:29:04 - closed 13:52">GO NOW</span><span class="mono wht">12:29:04</span>${share('TITAN')}<span class="mono wht">3,400</span><span class="cp pe">PE</span><span class="gry">29 Dec</span><span class="sp"></span><span class="oc taken">TAKEN</span></div>
+      <div class="ln">${roleTag('LEADER')} <b>day's biggest faller −4.62%</b> · gold −1.6%<span class="w1600"> · conf H</span></div>
+      <div class="ln" title="09:30: 1.9 ATR from VWAP · 12:29: 1.35 ATR → entry on the bounce to the first lower high 3,414, half size"><b>EXTENDED</b> 1.9 → 1.35 ATR · bounce 3,414 · half size</div>
+      <div class="ln" title="1 lot (the charter allows 2)"><b>1 lot × 175</b> · cash <b>₹${Math.round(c.pin * c.lot).toLocaleString('en-IN')}</b> · ${W('charges', 'chg')} ₹${c.chg} · depth 41</div>
+      <div class="sec"><div class="pg">
+        <span class="hh">plan</span><span class="hh">premium</span><span class="hh">share</span>
+        <span>trigger</span><span><span class="n">128.60</span> <span class="q">ask, mid +.25</span></span><span><span class="n">3,414</span> <span class="q">lower high</span></span>
+        <span>stop</span><span><span class="n">118.00</span> <span class="q">SL-L 117.20</span></span><span><span class="n">3,436</span> <span class="q">governs</span></span>
+        <span>target</span><span class="n">160.60</span><span><span class="n">3,356</span> <span class="q">before 3,350 wall</span></span>
+        <span>exit 13:52</span><span><span class="n">160.00</span> <span class="q" title="bid, mid −0.35">−0.60 vs tgt</span></span><span><span class="n">3,349.60</span> <span class="q">BOOK</span></span>
+      </div>
+      <div class="ln"><b>hold to 14:30</b> · risk 0.37R · made <b class="up">${R2(c.rr)}</b> = ${(c.rr / 0.37).toFixed(1)}× risk</div>
+      <div class="hrule"><span class="hk">HOLD RULE ✓ kept</span><span class="hq">"Don't exit before the stop or the target unless GIR says EXIT"</span></div>
+      <div class="ln n1366b stk" data-more="strike review"><b>Strike:</b> ATM 3,400 Dec ✓ ₹${SRV.atm.net.toLocaleString('en-IN')} · Nov 3,400 ₹${SRV.nov.net.toLocaleString('en-IN')}<br><b>Nov not used:</b> ITM delivery margin in expiry week</div></div>
+      <div class="sec" data-more="vote"><div class="vote"><span class="vh" title="weights = hit rates: yes 58+61+63+55 = 237 of 281 = 84%. Every range overlaps 50% - no single voter is an edge yet">VOTE 4 of 5 · 84%</span><span class="vl2">agents</span><span class="y" title="agent 1: 58% right, n = 31 (replay), 90% range 43-72%">1 ✓ 58%</span><span class="y" title="agent 2: 61%, n = 33, range 46-75%">2 ✓ 61%</span><span class="no" title="agent 3: 44%, n = 27 (< 30: grey weight), range 27-62% - voted against: oversold, wait">3 ✗ 44% oversold</span><span class="y" title="63%, n = 41, range 49-76%">news ✓ 63%</span><span class="y" title="55%, n = 36, range 40-70%">money ✓ 55%</span><span class="q" title="X (Twitter) agent is OFF - did not vote">X ?</span><span class="au2" title="the auditor checks and does not vote">auditor: PE ok</span></div></div>
+      <div class="sec" data-more="WHY +24%"><div class="h" title="points of premium, 128.60 › 160.00 = +31.40: Δ +29.50 + Γ +3.10 − vega 0.20 − θ 0.34 − fills 0.66 = 31.40">Why +24% <span class="x">+31.40 pts of premium, 12:29 › 13:52</span></div>
+        <div class="whyb" title="share of the +31.40 points: Δ 89% · Γ 9% · costs (vega, θ, fills) −4%"><i class="d" style="flex:29.5"></i><i class="g" style="flex:3.1"></i><i class="c" style="flex:1.2"></i></div>
+        <div class="whyg"><span><i>Δ share</i><b class="up">+29.5</b></span><span><i>Γ</i><b class="up">+3.1</b></span><span><i>vega</i><b class="dn">−0.2</b></span><span><i>θ 1h 23m</i><b class="dn">−0.34</b><em>≈₹60</em></span><span><i>fills</i><b class="dn">−0.66</b></span></div>
+        <div class="ln gry">own IV 31.6 → 31.5 %: the share paid, not IV</div></div>
+      <div class="sec"><div class="h" data-more="strike review ITM · ATM · OTM · Nov">Strike review<span class="w1600"> 12:29›13:52</span> <span class="x">best Δ per ₹ · wall 3,300 PE −114 pts</span></div>
+        <table class="sr${srAll ? ' all' : ''}"><colgroup><col class="c0"><col><col><col><col></colgroup>
+          <thead><tr><th>${W('Dec · mid', 'Dec mid')}</th><th>3,450 ITM</th><th class="pk">3,400 ✓</th><th>3,350 OTM</th><th>Nov 3,400</th></tr></thead><tbody>
+          <tr><td>${W('in › out', 'in›out')}</td>${SRK.map(k => `<td${k === 'atm' ? ' class="pk"' : ''}>${SRV[k].a.toFixed(1)}›${SRV[k].b.toFixed(1)}</td>`).join('')}</tr>
+          <tr class="r1600" title="₹ net = (out − in) × 175 − ₹${SRCHG} charges (the same 1-lot round trip as #50, from the state file = the P&amp;L strip), rounded down: ${SRK.map(k => `${k.toUpperCase()} ${SRV[k].pts.toFixed(1)} × 175 − ${SRV[k].chg} = ${SRV[k].net.toLocaleString('en-IN')}`).join(' · ')}. ATM = trade #50 exactly"><td>% · ₹ net</td>${SRK.map(k => `<td${k === 'atm' ? ' class="pk"' : ''}><span class="sp1">${SRV[k].pc}</span><span class="sp2">${SRV[k].net.toLocaleString('en-IN')}</span></td>`).join('')}</tr><tr class="r1366" title="₹ net = (out − in) × 175 − ₹${SRCHG} charges (the same 1-lot round trip as #50, from the state file = the P&amp;L strip), rounded down: ${SRK.map(k => `${k.toUpperCase()} ${SRV[k].pts.toFixed(1)} × 175 − ${SRV[k].chg} = ${SRV[k].net.toLocaleString('en-IN')}`).join(' · ')}. ATM = trade #50 exactly"><td>% move</td>${SRK.map(k => `<td${k === 'atm' ? ' class="pk"' : ''}>${SRV[k].pc}</td>`).join('')}</tr><tr class="r1366" title="₹ net = (out − in) × 175 − ₹${SRCHG} charges (the same 1-lot round trip as #50, from the state file = the P&amp;L strip), rounded down: ${SRK.map(k => `${k.toUpperCase()} ${SRV[k].pts.toFixed(1)} × 175 − ${SRV[k].chg} = ${SRV[k].net.toLocaleString('en-IN')}`).join(' · ')}. ATM = trade #50 exactly"><td>₹ net</td>${SRK.map(k => `<td${k === 'atm' ? ' class="pk"' : ''}>${SRV[k].net.toLocaleString('en-IN')}</td>`).join('')}</tr>
+          <tr class="xr"><td>Δ · Γ</td><td>−.54 .0016</td><td class="pk">−.46 .0015</td><td>−.39 .0015</td><td>−.44 .0040</td></tr>
+          <tr><td>${W('θ/hr · vega', 'θ/h vega')}</td><td>₹51 · 786</td><td class="pk">₹52 · 787</td><td>₹52 · 760</td><td>₹189 · 250</td></tr>
+          <tr><td>${W('IV ×20d · rank', 'IV×20d rk')}</td><td>0.99× 38</td><td class="pk">1.00× 38</td><td>1.02× 38</td><td>1.17× 52</td></tr>
+          <tr><td>${W('sprd · depth', 'sprd dep')}</td><td>0.6% 28</td><td class="pk">0.5% 41</td><td>1.1% 12</td><td>1.4% 33</td></tr>
+          <tr class="xr"><td>OI · chg</td><td>1,842 +12%</td><td class="pk">2,630 +18%</td><td>1,210 +9%</td><td>5,480 +4%</td></tr>
+          <tr class="xr"><td>${W('BE by 15:10', 'BE 15:10')}</td><td>−5.2</td><td class="pk">−6.7</td><td>−7.6</td><td>−7.1</td></tr>
+          <tr class="xr"><td>cash · lot</td>${SRK.map(k => `<td${k === 'atm' ? ' class="pk"' : ''}>₹${SRV[k].cash.toLocaleString('en-IN')}</td>`).join('')}</tr>
+          <tr class="srt"><td colspan="5"><button class="allr" data-sr="1">${srAll ? '▴ fewer rows' : 'all rows › Δ Γ · OI chg · break-even · cash'}</button></td></tr></tbody></table>
+        <div class="ln" data-more="Nov not used" style="margin-top:2px">${W(`<b>Nov not used:</b> ITM needs NSE delivery margin from E-4, the broker squares off ITM in expiry week; θ 3.6×, Γ 2.7× with 2 sessions left. ₹ net = (out − in) × 175 − ₹${SRCHG} (the #50 round trip).`, '<b>Nov not used:</b> ITM needs delivery margin from E-4 and the broker squares off ITM in expiry week; θ 3.6×, Γ 2.7×.')}</div></div>
+    </div>`;
+  } else {
+    const res = c.o === 'TAKEN' ? `${inr(c.real)} ${R2(c.rr)} real · net of ₹${c.chg}` : c.paper !== null ? `paper ${R(c.paper)}` : 'no fill';
+    const fu = FOLLOW.find(f => f[0] === c.s);
+    db.innerHTML = `<div class="cd">
+      <div class="hd"><span class="sh-c ${c.gonow ? 'sh-c-go' : 'sh-c-ready'}" title="as issued">${c.gonow ? 'GO NOW' : 'GET READY'}</span>${share(c.s)}<span class="mono wht">${c.K}</span><span class="cp ${c.side === 'PE' ? 'pe' : 'ce'}">${c.side}</span><span class="gry">29 Dec</span><span class="sp"></span><span class="oc ${OC[c.o]}">${c.o}</span></div>
+      <div class="ln">${tm(c.path)}</div>
+      ${c.o === 'TAKEN' ? `<div class="ln">filled <span class="mono wht">${c.inout}</span> <span class="gry">(fill times)</span></div>` : ''}
+      <div class="ln">${c.why}</div>
+      <div class="ln">1 lot × ${c.lot.toLocaleString('en-IN')}${c.pin ? ` · cash ₹${Math.round(c.pin * c.lot).toLocaleString('en-IN')}` : ''} · ${c.chg !== null ? `${W('charges', 'chg')} ${c.o === 'TAKEN' ? '' : '≈'}₹${c.chg} · ` : ''}sprd ${c.sprd.toFixed(1)}% · IV ${c.iv.toFixed(2)}×${W(' of 20d', '')}</div>
+      <div class="sec"><div class="h">Result</div>
+        <div class="ln">${c.pin ? `premium ${c.pin.toFixed(2)}${c.pout ? ' › ' + c.pout.toFixed(2) : ' ask'} · ` : ''}<b>${res}</b>${c.hint ? ` · better strike <b>${c.hint}</b>` : ''}</div>
+        ${fu ? `<div class="ln">follow-ups: ${fu[1]} - right</div>` : ''}</div>
+      <div class="sec" data-more="path"><div class="h">Path of the share <span class="x">then ${c.then}</span></div>
+        <div class="ln">+15m <b>${pct(c.p[0], 1)}</b> · +30m <b>${pct(c.p[1], 1)}</b> · +60m <b>${pct(c.p[2], 1)}</b> · close <b>${pct(c.p[3], 1)}</b></div></div>
+      <div class="sec" data-more="delivery"><div class="h">Delivery</div>
+        <div class="ln">data ${c.age} · sound: ${c.snd}</div><div class="ln">TG ${c.tg} · to you only</div>
+        <div class="ln gry">${W('setup ', '')}${c.setup} · ${W('leg ', '')}${c.leg} · ${c.win} · IV ${W('bucket ', '')}${c.ivb}</div></div></div>`;
+  }
+  db.scrollTop = 0; updCount('db');
+}
+
+/* ================= agents / AI cost (one panel, two tabs) ================= */
+let gTab = 'AGENTS';
+function renderAgents() {
+  const NW = narrow();
+  document.getElementById('gtabs').innerHTML = `<button class="${gTab === 'AGENTS' ? 'on' : ''}" data-g="AGENTS">Agents <span class="n">${AG.length}</span></button><button class="${gTab === 'COST' ? 'on' : ''}" data-g="COST">AI cost <span class="n">${fmt$(aiTot)}</span></button>`;
+  const gb = document.getElementById('gb'), gs = document.getElementById('gsub'), gf = document.getElementById('gfoot');
+  if (gTab === 'AGENTS') {
+    gs.innerHTML = `<b>${nKeep} keep · ${nProb} probation · ${nPaper} paper${W(' · X agent OFF', ' · X OFF')}</b><span class="sp"></span><span class="cnt" id="gcnt"></span>`;
+    const cols = NW ? [['Agent', 82], ['Found today', 0], ['W›R', 34, 'r'], ['$', 42, 'r'], ['Keep?', 80]] : [['Agent · fresh', 124], ['Found today', 0], ['W›R', 40, 'r'], ['Cost', 48, 'r'], ['Keep?', 90]];
+    gb.innerHTML = `<table class="tb ag"><colgroup>${cols.map(c => `<col${c[1] ? ` style="width:${c[1]}px"` : ''}>`).join('')}</colgroup><thead><tr>${cols.map(c => `<th${c[2] ? ' class="r"' : ''} title="${c[0] === 'W › R' ? 'woke the analyst › reached you' : ''}">${c[0]}</th>`).join('')}</tr></thead><tbody>` + AG.map(g => {
+      const [a, m, ran, fr, found0, rep, wk, re, cost, st, why] = g;
+      const found = FOUND1366[a] || found0;
+      const frs = fr === null ? '' : fr < 95 ? `<span class="fr stl">${fr}%</span>` : `<span class="fr">${fr}%</span>`;
+      const c$ = cost === 0 ? '$0' : fmt$(cost);
+      if (NW) return `<tr data-ag="1" title="${m} · ran ${ran} · fresh ${fr === null ? '-' : fr + '%'} · ${rep}${why ? ' · next: ' + why : ''}"><td><span class="an">${a}</span></td><td><span class="fnd ${st === 'keep' ? '' : 'wht'}">${found}</span></td><td class="r mono">${wk}›${re}</td><td class="r mono">${c$}</td><td><span class="kp ${KP[st][0]}">${KP[st][1]}</span></td></tr>`;
+      return `<tr data-ag="1" title="${m} · ran ${ran} · ${rep}${why ? ' · next: ' + why : ''}"><td><span class="an">${a}</span>${frs}</td><td><span class="${st === 'keep' ? '' : 'wht'}">${found}</span></td><td class="r mono">${wk}›${re}</td><td class="r mono">${c$}</td><td><span class="kp ${KP[st][0]}">${KP[st][1]}</span></td></tr>`;
+    }).join('') + '</tbody></table>';
+    gf.innerHTML = `AI <b>${fmt$(aiTot)}</b> of $20 · top model ${fmt$(byModel.top model)} · mid model ${fmt$(byModel.mid model)} · small model ${fmt$(byModel.small model)} · code $0`;
+  } else {
+    gs.innerHTML = `<b>${fmt$(aiTot)} of $${CAP} cap · ${Math.round(aiTot / CAP * 100)}% · cached 82%</b><span class="sp"></span><span class="w1600">17 Nov $19.60 · 18 Nov $27.24</span>`;
+    const mx = Math.max(...HOURS.map(h => h[1]));
+    gb.innerHTML = `<table class="km"><colgroup><col style="width:30%"><col style="width:26%"><col style="width:22%"><col style="width:22%"></colgroup>
+      <thead><tr><th>Model</th><th>Calls</th><th>Cached</th><th>Cost</th></tr></thead><tbody>
+      ${MODELS.map(m => `<tr class="m1"><td>${m[0]}</td><td>${typeof m[1] === 'number' ? m[1].toLocaleString('en-IN') : m[1]}</td><td>${m[2]}</td><td style="color:var(--text)">${fmt$(byModel[m[0]] || 0)}</td></tr><tr><td class="w" colspan="4">${m[3]}</td></tr>`).join('')}</tbody></table>
+      <div class="kh"><div><div class="h"><span>By hour</span><span class="mono">sum ${fmt$(hourTot)}</span></div>
+        <div class="bars">${HOURS.map(h => `<div class="${h[1] === mx ? 'pk' : ''}" title="${h[0]}: ${fmt$(h[1])}"><i style="height:${Math.round(h[1] / mx * 34)}px"></i></div>`).join('')}</div>
+        <div class="blab">${HOURS.map(h => `<span>${h[0]}</span>`).join('')}</div></div>
+        <div class="kpu">per GO NOW <b>${fmt$(aiTot / goNow.length)}</b><br>per trade taken <b>${fmt$(aiTot / taken.length)}</b><br>per useful call <b>${fmt$(aiTot / useful)}</b> (${useful})<br>peak 11-12h = the shock</div></div>
+      <div class="kcap"><b>18 Nov $27.24 broke the cap:</b> the cap was checked only before the top model brief, so the desks re-ran 31 times while a feed flapped. <b>Today:</b> a hard stop checked before every call; at $20 the board keeps calling from numbers and small model keeps reading.</div>`;
+    gf.innerHTML = `top model: 07:15 plan + final GO NOW check only (cap 15)`;
+  }
+  gb.scrollTop = 0; updCount('gb');
+}
+
+/* ================= every list ends on a whole row (judges: no row sliced at the panel bottom) ================= */
+const SNAP = 'tbody tr, .st, .cd > *, .cd .sec > *, .cd .pg > span, .cd .sr tr, .au > *, .au .mt tr, .km tr, .kh, .kcap, .tx';
+function snap(pb) {
+  const w = pb.parentNode, mo = w.nextElementSibling && w.nextElementSibling.classList.contains('more') ? w.nextElementSibling : null;
+  w.style.flex = ''; if (mo) { mo.style.display = 'none'; if (pb.scrollHeight > pb.clientHeight + 1) { mo.style.display = ''; mo.style.flex = '0 0 18px'; } }
+  const H = pb.clientHeight, top = pb.getBoundingClientRect().top, sc = pb.scrollTop;
+  let cut = 0, over = false;
+  const els = [...pb.querySelectorAll(SNAP)].filter(e => e.getBoundingClientRect().height >= 1);
+  els.forEach(e => { const r = e.getBoundingClientRect(); const b = r.bottom - top + sc; if (b <= H + 0.5) cut = Math.max(cut, b); else over = true; });
+  if (over) { // a heading whose next block does not fit moves below the cut too
+    els.filter(e => e.classList.contains('h') && (e.parentNode.classList.contains('au') || e.parentNode.classList.contains('sec'))).forEach(e => { const nx = e.nextElementSibling; if (!nx) return; const r = e.getBoundingClientRect(), rn = nx.getBoundingClientRect(); if (r.bottom - top + sc <= cut + 0.5 && rn.bottom - top + sc > H + 0.5) cut = Math.min(cut, r.top - top + sc - 1); });
+  }
+  if (over && cut > 0 && cut < H) { w.style.flex = '0 0 ' + Math.ceil(cut) + 'px'; if (mo) mo.style.flex = '1 0 18px'; }
+  updBar(pb); updMore(pb);
+}
+function snapAll() { document.querySelectorAll('.pb').forEach(snap); ['mb', 'cb', 'gb'].forEach(updCount); }
+
+/* ================= R08: the 10 px bar drawn in the page (visible at rest, at every size, in every capture) ================= */
+function addBar(sc) {
+  const w = document.createElement('div'); w.className = 'pbw'; sc.parentNode.insertBefore(w, sc); w.appendChild(sc);
+  const b = document.createElement('div'); b.className = 'vsb'; b.innerHTML = '<i></i>'; w.appendChild(b);
+  sc.addEventListener('scroll', () => { updBar(sc); updMore(sc); });
+  b.addEventListener('mousedown', e => {
+    const th = b.firstChild, r = b.getBoundingClientRect();
+    if (e.target === th) {
+      const y0 = e.clientY, s0 = sc.scrollTop, k = (sc.scrollHeight - sc.clientHeight) / Math.max(1, r.height - th.offsetHeight);
+      b.classList.add('drag');
+      const mv = ev => { sc.scrollTop = s0 + (ev.clientY - y0) * k; };
+      const up = () => { b.classList.remove('drag'); removeEventListener('mousemove', mv); removeEventListener('mouseup', up); };
+      addEventListener('mousemove', mv); addEventListener('mouseup', up);
+    } else sc.scrollBy({ top: (e.clientY < th.getBoundingClientRect().top ? -1 : 1) * sc.clientHeight * 0.9, behavior: 'smooth' });
+    e.preventDefault();
+  });
+}
+function updBar(sc) {
+  const b = sc.parentNode.querySelector(':scope > .vsb'); if (!b) return;
+  const th = b.firstChild, H = sc.clientHeight, S = sc.scrollHeight;
+  if (S <= H + 1) { b.classList.add('fit'); b.title = 'scroll bar · all of this list is visible'; return; }
+  b.classList.remove('fit');
+  const h = Math.max(22, Math.round(H * H / S)), t = Math.round((H - h) * sc.scrollTop / (S - H));
+  th.style.height = h + 'px'; th.style.top = t + 'px';
+  b.title = `scroll bar · ${Math.round(H / S * 100)}% visible - drag, click the track, or ▲ ▼ in the header`;
+}
+/* the cue under a detail body names what is still below (or above) */
+function updMore(sc) {
+  const mo = sc.parentNode.nextElementSibling; if (!mo || !mo.classList.contains('more')) return;
+  const top = sc.getBoundingClientRect().top, H = sc.clientHeight, st = sc.scrollTop;
+  const below = [], above = [];
+  sc.querySelectorAll('[data-more]').forEach(e => { const r = e.getBoundingClientRect(); if (r.height < 1) return; const y0 = r.top - top, y1 = r.bottom - top; if (y0 > H - 3) below.push(e.dataset.more); else if (y1 < 3) above.push(e.dataset.more); });
+  const anyBelow = sc.scrollHeight - st - H > 2;
+  mo.classList.toggle('end', !anyBelow);
+  if (anyBelow) {
+    const L = [...new Set(below)];
+    for (let k = L.length; k >= 0; k--) {
+      mo.innerHTML = `<span class="ar">▼</span><span>more below${L.length ? ':' : ''}</span><b>${L.slice(0, k).join(' · ')}</b>${k < L.length ? `<span>+${L.length - k}</span>` : ''}`;
+      if (mo.scrollWidth <= mo.clientWidth) break;
+    }
+  }
+  else if (st > 2) { const L = [...new Set(above)]; for (let k = L.length; k >= 0; k--) { mo.innerHTML = `<span class="ar">▲</span><span>end · above:</span><b>${L.slice(-k || L.length).slice(0, k).join(' · ') || 'the top'}</b>${k < L.length ? `<span>+${L.length - k}</span>` : ''}`; if (mo.scrollWidth <= mo.clientWidth) break; } }
+  else mo.innerHTML = '<span>all shown</span>';
+}
+
+/* ================= scroll position counts next to ▲▼ ================= */
+function updCount(id) {
+  const pb = document.getElementById(id); if (!pb) return;
+  const map = { mb: 'mcnt', cb: 'ccnt', gb: 'gcnt' }; const out = document.getElementById(map[id]); if (!out) return;
+  const rows = [...pb.querySelectorAll('tbody tr[data-mv], tbody tr[data-fold], tbody tr[data-call], tbody tr[data-ag]')];
+  if (!rows.length) { out.textContent = ''; return; }
+  const top = pb.scrollTop + (pb.querySelector('thead') ? pb.querySelector('thead').offsetHeight : 0), bot = pb.scrollTop + pb.clientHeight;
+  let n = 0; const idx = rows.map(r => { const w = r.dataset.fold ? 3 : 1; const a = n + 1; n += w; return [a, n, r.offsetTop, r.offsetTop + r.offsetHeight]; });
+  const vis = idx.filter(x => x[3] <= bot + 1 && x[2] >= top - 1);
+  out.textContent = vis.length ? (vis[0][0] === vis[vis.length - 1][1] ? `${vis[0][0]} of ${n}` : `${vis[0][0]}-${vis[vis.length - 1][1]} of ${n}`) : `of ${n}`;
+}
+['mb', 'cb', 'gb'].forEach(id => document.getElementById(id).addEventListener('scroll', () => updCount(id)));
+['mb', 'cb', 'db', 'ab', 'gb', 'tgtext', 'askb'].forEach(id => addBar(document.getElementById(id)));
+
+/* ================= Telegram copy (same facts) ================= */
+document.getElementById('tgtext').textContent =
+`GIR scorecard · Thu 19 Nov · 15:45 · trial day 1
+MARKET CLOSED - as of 15:30 · sent to you only
+VERDICT
+${inr(dayNet)} (${R2(dayR)}) · ${nNote} of ${nMov} named pre-open · ${nX} missed
+1 Trades: TITAN ${R2(taken.find(c => c.s === 'TITAN').rr)} (bounce entry), MANAPPURAM
+  ${R2(taken.find(c => c.s === 'MANAPPURAM').rr)}, HINDALCO ${R2(taken.find(c => c.s === 'HINDALCO').rr).replace(M, '-')} (exit by rule)
+  net of ₹${dayChg} charges (${[...taken].sort((x, y) => JNO[x.n] - JNO[y.n]).map(c => '₹' + c.chg).join(' + ')})
+2 Brokers shock 11:42 alarm in 12 s; GO NOW after
+  a 2nd source; the lock room held you out
+3 Rules cost ${rulesCost.toFixed(1)}R paper (lock/cooling ${rsum(coolCost).toFixed(1)}, cap ${rsum(capCost).toFixed(1)}) -
+  1 day is too early to change a rule
+4 Fix tonight: MoD site (BEL), "Padget" alias
+  (DIXON), OI sweep gap 09:40-10:25 (TATASTEEL)
+5 Tomorrow Fri 20: last session before 23 Nov
+  expiry - Dec only; LUPIN results = IV crush;
+  US close + GIFT night session in the 19:45 note
+MOVERS 2%+ ${nMov} of ${UNIVERSE}: before ${nB} · late ${nL} · missed ${nX}
+  +${nW} named, wrong (not in the ${nMov})
+PRECISION ${hits} of ${named} vs random ${rnd} (n<30)
+SECTORS 1%+ ${SECS.length} (NSE index / all listed shares):
+  before ${sB} · late ${sL} · missed ${sX}
+LEAD median ${dur(median(leadS))} (n=${leadS.length})
+CALLS ${CALLS.length}: taken ${ocCount('TAKEN')} · suppressed ${ocCount('SUPPRESSED')} ·
+  skipped ${ocCount('SKIPPED')} · expired ${ocCount('EXPIRED')} · cancelled ${ocCount('CANCELLED')}
+${taken.map(c => `#${JNO[c.n]} ${c.s} ${c.K} ${c.side} ${inr(c.real)} ${R2(c.rr)}`).join('\n')}
+GO NOW ${goNow.length}: ${R(paperAvg)}/call paper · random -0.2R
+FOLLOW-UPS ${fuRight} of ${FOLLOW.length} right · ALERTS rang 6 of 6
+AI ${fmt$(aiTot)} of $20 · top model ${fmt$(byModel.top model)} · mid model ${fmt$(byModel.mid model)}
+  small model ${fmt$(byModel.small model)} · ${fmt$(aiTot / useful)} per useful call
+AGENTS on probation: world prices (iron ore),
+  money (sweep gap), rotation, policy map (MoD),
+  news reader (alias) · X agent OFF
+design mockup - illustrative values`;
+
+/* ================= ASK drawer (answers end in an action, to you only) ================= */
+document.getElementById('askb').innerHTML = `
+  <div class="q"><i>15:47</i>Why a loss on HINDALCO if it fell 2.14%?</div>
+  <div class="a">The 10:58 GO NOW was right on direction, early on timing: copper turned up at 11:18 and HINDALCO went back above VWAP on short covering. The EXIT call 11:39:40 was by rule (reversal); you acked 11:39:52 but did not act; the P1 phone call came 11:44:40 and you were out 11:45:05 at 14.50: −₹2,746 (−0.55R) net of ₹86 charges; the share stop 686.10 would have hit at 12:04 (−₹4,100, −0.82R), so the EXIT saved ₹1,354 (+0.27R). It fell from 13:20 on fresh shorts. <b class="act">Action for tomorrow:</b> a copper PUT needs copper still falling at entry - checked by code before the GO NOW. Goes into the 19:45 note and tomorrow's PLAN.</div>
+  <div class="q"><i>15:48</i>Why did HINDALCO's GO NOW not ring?</div>
+  <div class="a">You were in MANAPPURAM. While a trade is open, a new GO NOW shows on the screen and queues silently, so your exit tones stay clear. You took it from the screen at 11:02. <b class="act">Nothing to do</b> - or turn on "ring GO NOW while in a trade" in Settings (Ctrl ,).</div>
+  <div class="q"><i>15:49</i>Was suppressing ANGELONE right?</div>
+  <div class="a">Yes, by your rules. At 11:43:05 the lock room was ₹1,980 - less than one lot's max loss, so 0 lots; after your exits at 11:45 the cooling ran to 12:05, so it stayed skipped. Paper ${R(ANG.r)} (+₹${ANG.net.toLocaleString('en-IN')} net of ≈₹${ANG.chg}) at the real 13:40 bid with IV 1.19× (+1.6R at the entry IV). Rules cost ${rulesCost.toFixed(1)}R paper today; one day is no reason to change a rule. <b class="act">Nothing to do.</b></div>
+  <label class="ask"><input placeholder="ask about any row - e.g. why was BEL missed?" aria-label="question"><kbd>Enter</kbd></label>`;
+
+/* ================= filter + interactions ================= */
+const sel = document.getElementById('secf');
+const SN = [...new Set(Object.values(SECT).map(v => v[0]))];
+sel.innerHTML = `<option value="ALL">ALL SECTORS (${SN.length})</option>` + SN.map(s => `<option value="${s}">${s}</option>`).join('');
+sel.addEventListener('change', () => { secFilter = sel.value; renderMovers(); renderCalls(); });
+function renderAll() { renderMovers(); renderCalls(); renderCard(); renderAudit(); renderAgents(); }
+
+if (location.hash === '#path') { cSet = 'PATH'; fOpen = true; }
+if (location.hash === '#timing') cSet = 'TIMING';
+if (location.hash === '#titan') selCall = 5;
+if (location.hash === '#cost') gTab = 'COST';
+if (location.hash === '#sector') mSort = 'sector';
+renderAll(); snapAll();
+addEventListener('resize', () => { renderMovers(); renderCalls(); renderAgents(); snapAll(); });
+
+document.addEventListener('click', () => setTimeout(snapAll, 0));
+document.addEventListener('click', e => {
+  if (e.target.closest('a')) return;
+  const m = e.target.closest('[data-m]'); if (m) { mFilter = m.dataset.m; renderMovers(); return; }
+  const ms = e.target.closest('[data-ms]'); if (ms) { mSort = ms.dataset.ms; renderMovers(); return; }
+  const fo = e.target.closest('[data-fold]'); if (fo) { basketOpen = true; renderMovers(); return; }
+  const sh = e.target.closest('[data-sec]'); if (sh) { const k = sh.dataset.sec; openSecs.has(k) ? openSecs.delete(k) : openSecs.add(k); renderMovers(); return; }
+  const mv = e.target.closest('[data-mv]'); if (mv) { selMov = mv.dataset.mv; renderMovers(); renderAudit(); return; }
+  const c = e.target.closest('[data-c]'); if (c) { cFilter = c.dataset.c; renderCalls(); return; }
+  const cs = e.target.closest('[data-cs]'); if (cs) { cSet = cs.dataset.cs; renderCalls(); return; }
+  if (e.target.closest('[data-sr]')) { srAll = !srAll; const st = document.getElementById('db').scrollTop; renderCard(); document.getElementById('db').scrollTop = st; return; }
+  const cr = e.target.closest('[data-call]'); if (cr) { selCall = +cr.dataset.call; renderCalls(); renderCard(); return; }
+  if (e.target.closest('#fbtn')) { fOpen = !fOpen; renderCalls(); return; }
+  const g = e.target.closest('[data-g]'); if (g) { gTab = g.dataset.g; renderAgents(); return; }
+  const ud = e.target.closest('.ud button'); if (ud) { const pb = document.getElementById(ud.parentElement.dataset.t); pb.scrollBy({ top: ud.dataset.s * pb.clientHeight * 0.8, behavior: 'smooth' }); return; }
+  if (e.target.closest('[data-close]')) { closeDrawers(); return; }
+  const mo = e.target.closest('.more'); if (mo) { const pb = mo.previousElementSibling.querySelector('.pb'); pb.scrollBy({ top: pb.clientHeight * 0.8, behavior: 'smooth' }); return; }
+});
+document.addEventListener('change', e => { const f = e.target.closest('[data-f]'); if (f) { FILT[f.dataset.f] = f.value; renderCalls(); } });
+const tgd = document.getElementById('tgd'), askd = document.getElementById('askd');
+function closeDrawers() { tgd.classList.remove('on'); askd.classList.remove('on'); document.getElementById('tgbtn').classList.remove('on'); document.getElementById('askbtn').classList.remove('on'); }
+function openDrawer(d) { const was = d.classList.contains('on'); closeDrawers(); if (!was) { d.classList.add('on'); document.getElementById(d === tgd ? 'tgbtn' : 'askbtn').classList.add('on'); updBar(document.getElementById('tgtext')); updBar(document.getElementById('askb')); } }
+document.getElementById('tgbtn').addEventListener('click', () => openDrawer(tgd));
+document.getElementById('askbtn').addEventListener('click', () => openDrawer(askd));
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') { if (e.key === 'Escape') e.target.blur(); return; }
+  if (e.key === 't' || e.key === 'T') openDrawer(tgd);
+  if (e.key === 'q' || e.key === 'Q') openDrawer(askd);
+  if (e.key === 'Escape') closeDrawers();
+  if (e.key === 'f' || e.key === 'F') { e.preventDefault(); sel.focus(); }
+  if (e.key === 'j' || e.key === 'k') {
+    const vis = [...document.querySelectorAll('#ct tr[data-call]')].map(r => +r.dataset.call); const i = vis.indexOf(selCall);
+    selCall = vis[Math.max(0, Math.min(vis.length - 1, i + (e.key === 'j' ? 1 : -1)))]; renderCalls(); renderCard();
+  }
+});
+if (location.hash === '#tg') openDrawer(tgd);
+if (location.hash === '#ask') openDrawer(askd);
+
+</script>
+</body>
+</html>

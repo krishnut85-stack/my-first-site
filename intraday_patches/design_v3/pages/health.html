@@ -1,0 +1,1504 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GIR · Health (Shift F9)</title>
+<!--
+  GIR v3 r3 · Shift+F9 · DATA HEALTH & MONITORING (/status) · Thu 19 Nov 2026 11:44:20 IST · design mockup - illustrative values.
+  Shell copied verbatim from shell.html (conference build 01:41); only the S4 state values changed via shellwork/state.js (clock 11:44:20 + countdown).
+  Page content lives in main#page. Source: healthr3/build.js + page.css + page.js.
+  Every count on the page is computed from one data set in page.js, so the verdict, tiles, chips, footer and lists always agree.
+  #specimen-red in the URL draws the DOWN specimen (hatched SPECIMEN border); there is no button for it on the live page.
+-->
+<style>
+/* ===================== SHELL CSS START (copy verbatim) ===================== */
+/* colour tokens = CONFERENCE 1.5 (fixed meanings). DARK is the default; LIGHT = <html data-theme="light"> (or the same attribute,
+   or class th-light, on <body>); AUTO = data-theme="auto" follows the OS. Pages never redefine a token. */
+:root{color-scheme:dark;
+  --bg:#0B0D10; --panel:#12151A; --panel-2:#181C22; --panel-3:#1E232B; --line:#262C35; --line-2:#323A45; --text:#E7EAEE; --text-2:#B3BAC4;
+  --text-3:#8E97A3; --up:#34C47C; --up-bg:rgba(52,196,124,.12); --up-line:rgba(52,196,124,.60); --up-rgb:52,196,124; --down:#F2615D;
+  --down-bg:rgba(242,97,93,.12); --down-line:rgba(242,97,93,.60); --down-rgb:242,97,93; --lb:#34C47C; --lb-bg:rgba(52,196,124,.22); --sb:#F2615D;
+  --sb-bg:rgba(242,97,93,.22); --sc:#8FE3B5; --sc-ink:#8FE3B5; --lu:#FF9E9A; --lu-ink:#FF9E9A; --action:#F5A524; --action-ink:#14110A;
+  --action-line:rgba(245,165,36,.55); --action-bg:rgba(245,165,36,.09); --go:#F5A524; --warn:#F5A524; --info:#6CB2FF; --info-bg:rgba(108,178,255,.10);
+  --info-line:rgba(108,178,255,.38); --stale:#6B7380; --stripe:repeating-linear-gradient(135deg, rgba(140,148,160,.28) 0 3px, transparent 3px 7px);
+  --danger:#FF5A52; --danger-bg:rgba(255,90,82,.14); --danger-ink:#1A0806; --leader:#36C5D0; --leader-bg:rgba(54,197,208,.13); --dep:#B79CFF;
+  --dep-bg:rgba(183,156,255,.13); --lag:#EE8AC0; --lag-bg:rgba(238,138,192,.13); --held:#E7EAEE; --held-ink:#0B0D10; --replay:#9B87F5;
+  --acc-mkt:#6CB2FF; --acc-call:#F5A524; --acc-mine:#E7EAEE; --acc-sys:#6B7380; --hover-strip:#151920; --ks-edge:#7E8691; --shadow:0 8px 24px
+  rgba(0,0,0,.5); --ban-hover:rgba(255,90,82,.24);
+  --sans: Inter, "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", "DejaVu Sans Mono", Consolas, monospace;
+  /* shell geometry - pages position their content from these, never from magic numbers */
+  --sh-mkt:80px; --sh-pnl:30px; --sh-tabs:52px; --sh-top:162px; --sh-foot:22px; --sh-gut:12px;
+}
+[data-theme="light"],body.th-light{color-scheme:light;
+  --bg:#ECEFF3; --panel:#FFFFFF; --panel-2:#F6F7F9; --panel-3:#E3E7EC; --line:#D9DEE5; --line-2:#C3CAD4; --text:#10141A; --text-2:#3B4450;
+  --text-3:#5A6470; --up:#08804A; --up-bg:rgba(8,128,74,.10); --up-line:rgba(8,128,74,.55); --up-rgb:8,128,74; --down:#C42B27;
+  --down-bg:rgba(196,43,39,.09); --down-line:rgba(196,43,39,.55); --down-rgb:196,43,39; --lb:#08804A; --lb-bg:rgba(8,128,74,.16); --sb:#C42B27;
+  --sb-bg:rgba(196,43,39,.15); --sc:#5FC28E; --sc-ink:#08804A; --lu:#EE8D89; --lu-ink:#C42B27; --action:#9A5A00; --action-ink:#14110A;
+  --action-line:rgba(184,110,0,.60); --action-bg:rgba(245,165,36,.14); --go:#F5A524; --warn:#D98A00; --info:#1763BF; --info-bg:rgba(23,99,191,.08);
+  --info-line:rgba(23,99,191,.42); --stale:#7A828E; --stripe:repeating-linear-gradient(135deg, rgba(110,118,130,.22) 0 3px, transparent 3px 7px);
+  --danger:#CC2A22; --danger-bg:rgba(204,42,34,.09); --danger-ink:#FFFFFF; --leader:#087680; --leader-bg:rgba(10,127,138,.09); --dep:#6743D6;
+  --dep-bg:rgba(103,67,214,.08); --lag:#B2367A; --lag-bg:rgba(178,54,122,.08); --held:#10141A; --held-ink:#FFFFFF; --replay:#6A4FD6; --acc-mkt:#1763BF;
+  --acc-call:#C77D00; --acc-mine:#10141A; --acc-sys:#7A828E; --hover-strip:#F1F3F6; --ks-edge:#232A33; --shadow:0 8px 24px rgba(20,30,45,.16);
+  --ban-hover:rgba(204,42,34,.16);
+}
+@media (prefers-color-scheme: light){ [data-theme="auto"]{color-scheme:light;
+  --bg:#ECEFF3; --panel:#FFFFFF; --panel-2:#F6F7F9; --panel-3:#E3E7EC; --line:#D9DEE5; --line-2:#C3CAD4; --text:#10141A; --text-2:#3B4450;
+  --text-3:#5A6470; --up:#08804A; --up-bg:rgba(8,128,74,.10); --up-line:rgba(8,128,74,.55); --up-rgb:8,128,74; --down:#C42B27;
+  --down-bg:rgba(196,43,39,.09); --down-line:rgba(196,43,39,.55); --down-rgb:196,43,39; --lb:#08804A; --lb-bg:rgba(8,128,74,.16); --sb:#C42B27;
+  --sb-bg:rgba(196,43,39,.15); --sc:#5FC28E; --sc-ink:#08804A; --lu:#EE8D89; --lu-ink:#C42B27; --action:#9A5A00; --action-ink:#14110A;
+  --action-line:rgba(184,110,0,.60); --action-bg:rgba(245,165,36,.14); --go:#F5A524; --warn:#D98A00; --info:#1763BF; --info-bg:rgba(23,99,191,.08);
+  --info-line:rgba(23,99,191,.42); --stale:#7A828E; --stripe:repeating-linear-gradient(135deg, rgba(110,118,130,.22) 0 3px, transparent 3px 7px);
+  --danger:#CC2A22; --danger-bg:rgba(204,42,34,.09); --danger-ink:#FFFFFF; --leader:#087680; --leader-bg:rgba(10,127,138,.09); --dep:#6743D6;
+  --dep-bg:rgba(103,67,214,.08); --lag:#B2367A; --lag-bg:rgba(178,54,122,.08); --held:#10141A; --held-ink:#FFFFFF; --replay:#6A4FD6; --acc-mkt:#1763BF;
+  --acc-call:#C77D00; --acc-mine:#10141A; --acc-sys:#7A828E; --hover-strip:#F1F3F6; --ks-edge:#232A33; --shadow:0 8px 24px rgba(20,30,45,.16);
+  --ban-hover:rgba(204,42,34,.16);
+} }
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13px;line-height:1.3}
+body{background:var(--bg)}
+
+/* ---------- the colour table as shared classes (CONFERENCE 1.5) - pages use these, never their own colours for these meanings ---------- */
+.sh-c{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 6px;border:1px solid transparent;border-radius:3px;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.03em;line-height:1;white-space:nowrap;vertical-align:middle;flex:none}
+.sh-c-ce{color:var(--up);border-color:var(--up-line);background:var(--up-bg)}
+.sh-c-pe{color:var(--down);border-color:var(--down-line);background:var(--down-bg)}
+.sh-c-lb{color:var(--lb);background:var(--lb-bg)}
+.sh-c-sb{color:var(--sb);background:var(--sb-bg)}
+.sh-c-sc{color:var(--sc-ink);border-color:var(--sc)}
+.sh-c-lu{color:var(--lu-ink);border-color:var(--lu)}
+.sh-c-go{color:var(--action-ink);background:var(--go);border-color:var(--go);font-weight:800}
+.sh-c-ready{color:var(--action);border-color:var(--action-line);background:var(--action-bg)}
+.sh-c-book{color:var(--action);border-color:var(--action-line)}
+.sh-c-exit{color:var(--danger-ink);background:var(--danger);border-color:var(--danger);font-weight:800}
+.sh-c-leader{color:var(--leader);border-color:var(--leader);background:var(--leader-bg)}
+.sh-c-dep{color:var(--dep);border-color:var(--dep);background:var(--dep-bg)}
+.sh-c-lag{color:var(--lag);border-color:var(--lag);background:var(--lag-bg)}
+.sh-c-lag .dn,.sh-c-lag .up{font-weight:800}
+.sh-c-held{color:var(--held-ink);background:var(--held);border-color:var(--held);font-weight:800}
+.sh-c-info{color:var(--info);border-color:var(--info-line);background:var(--info-bg)}
+.sh-c-stale{color:var(--text-2);border-color:var(--stale);background:var(--stripe)}
+.sh-c-replay{color:var(--replay);border-color:var(--replay)}
+/* heat rows: alpha .06 + .06 per 1 % move, max .24. Set --m to the absolute % move, e.g. style="--m:2.48" */
+.sh-heat-up{background:rgba(var(--up-rgb), min(.24, calc(.06 + .06 * var(--m, 0))))}
+.sh-heat-dn{background:rgba(var(--down-rgb), min(.24, calc(.06 + .06 * var(--m, 0))))}
+/* panel header accents (3 px left): market data / a live GIR call / his trades or risk / system */
+.sh-acc-mkt{box-shadow:inset 3px 0 0 var(--acc-mkt)} .sh-acc-call{box-shadow:inset 3px 0 0 var(--acc-call)}
+.sh-acc-mine{box-shadow:inset 3px 0 0 var(--acc-mine)} .sh-acc-sys{box-shadow:inset 3px 0 0 var(--acc-sys)}
+a{color:inherit;text-decoration:none}
+.n{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
+.up{color:var(--up)} .dn{color:var(--down)}
+kbd{font-family:var(--mono);font-size:11px;color:var(--text-2);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:3px;padding:0 4px;line-height:14px;display:inline-block;white-space:nowrap}
+:focus-visible{outline:1px solid var(--text);outline-offset:2px}
+
+#sh-mkt,#sh-pnl,#sh-tabs,#sh-foot{position:fixed;left:0;right:0;white-space:nowrap;z-index:50}
+.sh-sep{width:1px;align-self:stretch;background:var(--line);flex:none}
+.sh-lb{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+.sh-age{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:-0.02em}
+.sh-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--info);flex:none}
+.sh-meter{width:48px;height:6px;background:var(--panel-3);border-radius:1px;overflow:hidden;flex:none}
+.sh-meter i{display:block;height:100%;background:var(--info)}
+.sh-meter.warn i{background:var(--warn)}
+/* stale look for any strip item: add class sh-stale to the item and put "STALE 12s" in its .sh-age */
+.sh-stale{background:var(--stripe)}
+.sh-stale .n,.sh-stale .sh-px{color:var(--stale)!important}
+
+/* ---------- R01 market strip ---------- */
+#sh-mkt{top:0;height:var(--sh-mkt);background:var(--panel-2)}
+.sh-m1{height:44px;display:flex;align-items:stretch;border-bottom:1px solid var(--line);padding:0 0 0 4px}
+.sh-ix,.sh-mi{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:0 8px;border-right:1px solid var(--line);flex:none}
+.sh-ix:hover{background:var(--panel-3)}
+.sh-l1{display:flex;align-items:center;gap:8px;height:14px}
+.sh-nm{font-size:11px;font-weight:600;letter-spacing:.05em;color:var(--text-2)}
+.sh-spk{color:var(--text-2);margin-left:auto;flex:none}
+.sh-l2{display:flex;align-items:baseline;gap:6px}
+.sh-px{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-0.02em;color:var(--text)}
+.sh-ch{font-size:12px}
+.sh-pc{font-size:13px;font-weight:600}
+.sh-status{margin-left:auto;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:2px;padding:0 12px;border-left:1px solid var(--line);flex:none}
+.sh-st1,.sh-st2{display:flex;align-items:center;gap:7px}
+.sh-mstate{height:18px;display:inline-flex;align-items:center;padding:0 6px;border:1px solid var(--info-line);color:var(--info);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.05em}
+.sh-phase{font-size:12px;color:var(--text-2)} .sh-phase b{color:var(--text);font-weight:600}
+.sh-clock{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-0.02em}
+.sh-ist{font-size:11px;color:var(--text-3)}
+.sh-m2{height:36px;display:flex;align-items:stretch;padding:0 0 0 4px;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-2)}
+.sh-t2{display:flex;flex-direction:column;justify-content:center;gap:1px;padding:0 10px;border-right:1px solid var(--line);flex:none}
+a.sh-t2:hover{background:var(--panel-3)}
+.sh-t2l{display:flex;align-items:center;gap:6px;height:14px}
+.sh-t2l .sh-lb{letter-spacing:.04em}
+.sh-t2v{display:flex;align-items:center;gap:5px;height:18px}
+.sh-t2v .n{font-size:13px}
+.sh-t2v .v{color:var(--text)}
+.sh-xw{height:14px;display:inline-flex;align-items:center;padding:0 4px;border:1px solid var(--text-3);border-radius:2px;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--text);line-height:1}
+.sh-ban{height:18px;display:inline-flex;align-items:center;gap:4px;padding:0 6px;border:1px solid var(--danger);background:var(--danger-bg);color:var(--danger);border-radius:9px;font-size:11px;font-weight:700;letter-spacing:.04em;cursor:pointer}
+.sh-ban:hover{background:var(--ban-hover)}
+
+/* ---------- R02 my F&O P&L strip ---------- */
+#sh-pnl{top:var(--sh-mkt);height:var(--sh-pnl);background:var(--panel);border-bottom:1px solid var(--line-2);display:flex;align-items:center;padding:0 12px;font-size:12px;cursor:pointer}
+#sh-pnl:hover{background:var(--hover-strip)}
+.sh-pt{display:flex;align-items:center;gap:5px;padding:0 8px;height:18px;border-right:1px solid var(--line);flex:none}
+.sh-pt:first-child{padding-left:0}
+.sh-pt .n{font-size:13px}
+.sh-ptitle{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text);padding:0 7px;height:18px;line-height:16px;border:1px solid var(--line-2);border-radius:3px}
+.sh-big{font-family:var(--mono);font-size:16px;font-weight:700;letter-spacing:-0.02em}
+.sh-brk{color:var(--text-2)} .sh-brk .n{font-size:12px}
+.sh-go{margin-left:auto;display:flex;align-items:center;gap:6px;color:var(--text-2);font-size:12px;padding-left:10px;flex:none}
+.sh-go b{color:var(--text);font-weight:600;letter-spacing:.04em}
+
+/* ---------- R03 tab bar ---------- */
+#sh-tabs{top:calc(var(--sh-mkt) + var(--sh-pnl));height:var(--sh-tabs);background:var(--panel-2);border-bottom:1px solid var(--line-2);display:flex;align-items:stretch}
+.sh-mark{width:54px;flex:none;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding-left:12px;border-right:1px solid var(--line)}
+.sh-mark b{font-size:16px;font-weight:800;letter-spacing:.14em;line-height:18px}
+.sh-mark span{font-size:11px;color:var(--text-3);line-height:13px}
+.sh-grid{display:grid;grid-template-rows:26px 25px;grid-auto-columns:auto;align-items:stretch;flex:none}
+.sh-rl{display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text-3);border-right:1px solid var(--line)}
+.sh-rl1{grid-row:1;grid-column:1;border-bottom:1px solid var(--line)}
+.sh-rl2{grid-row:2;grid-column:1;color:var(--text)}
+.sh-rl2 span{border:1px solid var(--text-2);border-radius:3px;padding:0 4px;line-height:16px;background:var(--panel-3)}
+.sh-tab{display:flex;align-items:center;gap:6px;padding:0 6px;color:var(--text-2);border-right:1px solid var(--line);cursor:pointer}
+.sh-grid>.sh-tab[style*="grid-row:1;"]{border-bottom:1px solid var(--line)}
+.sh-tab:hover{background:var(--panel-3)}
+.sh-tl{font-size:13px;color:var(--text-2)}
+.sh-k{color:var(--text-2)}
+.sh-ks{background:var(--text-2);color:var(--bg);border-color:var(--text-2);border-bottom-color:var(--ks-edge);font-weight:700}
+.sh-free{cursor:default}
+.sh-free:hover{background:none}
+.sh-free .sh-tl{font-size:11px;color:var(--text-3)}
+.sh-free .sh-ks{background:none;color:var(--text-3);border-color:var(--line-2);font-weight:400}
+.sh-f5{flex-direction:column;justify-content:center;align-items:flex-start;gap:3px;background:repeating-linear-gradient(135deg, rgba(140,148,160,.07) 0 3px, transparent 3px 7px)}
+.sh-f5a{display:flex;align-items:center;gap:6px}
+.sh-f5a .sh-tl{font-size:12px;color:var(--text-3)}
+.sh-koff{color:var(--text-3);text-decoration:line-through}
+.sh-f5b{font-size:11px;color:var(--text-3)}
+.sh-right{flex:1;min-width:0;display:grid;grid-template-rows:26px 25px;grid-template-columns:minmax(0,1fr);border-left:1px solid var(--line-2)} /* fix (market r2): the track keeps its share at 1366 when the "/" box shows its placeholder */
+.sh-r1,.sh-r2{display:flex;align-items:stretch;justify-content:flex-start}
+.sh-r1{border-bottom:1px solid var(--line)}
+.sh-r1 .sh-tab:last-child{border-right:0}
+.sh-r2{align-items:center;gap:6px;padding:0 12px 0 8px}
+.sh-cmd{container-type:inline-size;position:relative;flex:1;max-width:300px;min-width:136px;height:20px;border:1px solid var(--line-2);border-radius:3px;background:var(--bg);display:flex;align-items:center;gap:6px;padding:0 6px;cursor:text}
+.sh-cmd kbd{line-height:12px}
+.sh-ph{font-size:12px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis}
+/* conference fix (1366 "/" clip): the placeholder picks the longest form that fits the box, never an ellipsis:
+   "symbol, contract, verb" -> "symbol, verb" -> "symbol" (the box shrinks when SOUND reads MUTED 9:42 or OFF) */
+.sh-ph-c,.sh-ph-v{display:none}
+@container (min-width:96px){.sh-ph-v{display:inline}}
+@container (min-width:150px){.sh-ph-c{display:inline}}
+.sh-typed{display:none;font-family:var(--mono);font-size:13px;color:var(--text)}
+.sh-typed i{display:inline-block;width:7px;height:14px;background:var(--text-2);vertical-align:-2px;margin-left:1px}
+.sh-btn{height:20px;display:inline-flex;align-items:center;gap:5px;padding:0 7px;border:1px solid var(--line-2);border-radius:3px;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--text-2);background:none;cursor:pointer;flex:none;font-family:var(--sans)}
+.sh-btn:hover{background:var(--panel-3)}
+.sh-btn .on{color:var(--text)}
+.sh-btn svg{flex:none}
+.sh-al{font-size:11px;color:var(--text-2);flex:none}
+.sh-al .n{color:var(--text);font-size:12px}
+/* search suggestions (R04): shown while typing; in pages it opens from script, in this file from body.demo */
+.sh-sugg{display:none;position:absolute;top:24px;right:-1px;width:480px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;box-shadow:var(--shadow);z-index:60;white-space:normal;cursor:default}
+.sh-sg-h{height:24px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;border-bottom:1px solid var(--line)}
+.sh-sg-r{display:grid;grid-template-columns:100px 1fr 72px 60px;align-items:center;column-gap:8px;height:44px;padding:0 10px;border-bottom:1px solid var(--line)}
+.sh-sg-r.sel{background:var(--panel-3);box-shadow:inset 2px 0 0 var(--text)}
+.sh-sg-s{font-size:15px;font-weight:600;color:var(--text)}
+.sh-sg-s em{font-style:normal;text-decoration:underline;text-underline-offset:3px}
+.sh-sg-d{font-size:12px;color:var(--text-2);line-height:1.35}
+.sh-sg-d span{color:var(--text-3);font-size:11px}
+.sh-sg-p{text-align:right;font-size:13px}
+.sh-sg-v{display:flex;gap:6px;flex-wrap:wrap;padding:7px 10px;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-2)}
+.sh-sg-v span{border:1px solid var(--line-2);border-radius:3px;padding:0 5px;line-height:18px}
+.sh-sg-f{padding:5px 10px;font-size:11px;color:var(--text-3)}
+/* sound legend popover (R10) - opens under the LEGEND button */
+.sh-pop{display:none;position:absolute;z-index:60;background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;box-shadow:var(--shadow);white-space:normal}
+
+/* active tab: ONE body class page-<slug> lights the matching tab (generated list) */
+.page-morning .sh-tab[data-tab="morning"],
+.page-desk-hunt .sh-tab[data-tab="desk"],
+.page-desk-trade .sh-tab[data-tab="desk"],
+.page-plan-card .sh-tab[data-tab="desk"],
+.page-plan-card .sh-tab[data-tab="plan-card"],
+.page-sectors .sh-tab[data-tab="sectors"],
+.page-rotation .sh-tab[data-tab="rotation"],
+.page-news .sh-tab[data-tab="news"],
+.page-positions .sh-tab[data-tab="positions"],
+.page-share .sh-tab[data-tab="share"],
+.page-analyst .sh-tab[data-tab="analyst"],
+.page-chain .sh-tab[data-tab="chain"],
+.page-futures-oi .sh-tab[data-tab="futures-oi"],
+.page-world .sh-tab[data-tab="world"],
+.page-calendar .sh-tab[data-tab="calendar"],
+.page-journal .sh-tab[data-tab="journal"],
+.page-reference .sh-tab[data-tab="reference"],
+.page-scorecard .sh-tab[data-tab="scorecard"],
+.page-health .sh-tab[data-tab="health"],
+.page-replay .sh-tab[data-tab="replay"],
+.page-settings .sh-tab[data-tab="settings"],
+.page-help .sh-tab[data-tab="help"],
+.page-market .sh-tab[data-tab="market"]{background:var(--panel-3);color:var(--text);box-shadow:inset 0 -2px 0 var(--text)}
+.page-morning .sh-tab[data-tab="morning"] .sh-tl,
+.page-desk-hunt .sh-tab[data-tab="desk"] .sh-tl,
+.page-desk-trade .sh-tab[data-tab="desk"] .sh-tl,
+.page-plan-card .sh-tab[data-tab="desk"] .sh-tl,
+.page-plan-card .sh-tab[data-tab="plan-card"] .sh-tl,
+.page-sectors .sh-tab[data-tab="sectors"] .sh-tl,
+.page-rotation .sh-tab[data-tab="rotation"] .sh-tl,
+.page-news .sh-tab[data-tab="news"] .sh-tl,
+.page-positions .sh-tab[data-tab="positions"] .sh-tl,
+.page-share .sh-tab[data-tab="share"] .sh-tl,
+.page-analyst .sh-tab[data-tab="analyst"] .sh-tl,
+.page-chain .sh-tab[data-tab="chain"] .sh-tl,
+.page-futures-oi .sh-tab[data-tab="futures-oi"] .sh-tl,
+.page-world .sh-tab[data-tab="world"] .sh-tl,
+.page-calendar .sh-tab[data-tab="calendar"] .sh-tl,
+.page-journal .sh-tab[data-tab="journal"] .sh-tl,
+.page-reference .sh-tab[data-tab="reference"] .sh-tl,
+.page-scorecard .sh-tab[data-tab="scorecard"] .sh-tl,
+.page-health .sh-tab[data-tab="health"] .sh-tl,
+.page-replay .sh-tab[data-tab="replay"] .sh-tl,
+.page-settings .sh-tab[data-tab="settings"] .sh-tl,
+.page-help .sh-tab[data-tab="help"] .sh-tl,
+.page-market .sh-tab[data-tab="market"] .sh-tl{color:var(--text)}
+/* conference fix (1366 clip): the active tab is NOT bold, so the tab grid has the same width on every page and the right block
+   ("/" box, sound, legend, P1 / P2) never loses pixels to a bold label */
+
+/* ---------- main ---------- */
+#page{position:fixed;left:0;right:0;top:var(--sh-top);bottom:var(--sh-foot);overflow:hidden}
+
+/* ---------- footer ---------- */
+#sh-foot{bottom:0;height:var(--sh-foot);background:var(--panel-2);border-top:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 12px;font-size:11px;color:var(--text-3)}
+#sh-foot .sh-sebi{font-size:12px;color:var(--text-2)}
+#sh-foot .sh-fs{width:1px;height:11px;background:var(--line-2);flex:none}
+#sh-foot .sh-keys{display:flex;align-items:center;gap:5px}
+#sh-foot kbd{line-height:12px}
+#sh-foot .sh-mock{margin-left:auto;color:var(--text-2)}
+.sh-n1366{display:none}
+
+/* ---------- 1366 rule (below 1500 px): drop, never wrap ---------- */
+@media (max-width:1499px){
+  .sh-wide{display:none!important}
+  .sh-n1366{display:inline-flex}
+  .sh-tab{padding:0 5px;gap:5px}
+  .sh-mark{width:48px;padding-left:9px}
+  .sh-tl{font-size:12px}
+  .sh-ix,.sh-mi{padding:0 8px}
+  .sh-t2,.sh-pt{padding:0 5px}
+  .sh-pt{gap:4px}
+  .sh-meter{width:34px} /* room for the short realised / open / costs, stk fut and the holiday */
+  .sh-cmd{max-width:200px;min-width:80px}
+  .sh-r2{gap:5px;padding-left:6px} .sh-btn{padding:0 5px} /* room for "MUTED 9:42" + "P1 1 · P2 1" without a clip */
+}
+/* ===================== SHELL CSS END ===================== */
+
+/* ===================== PAGE CSS (health, Shift+F9, r3) ===================== */
+/* every page class starts with hv- (no collision with the shell's sh- classes or globals) */
+.hv-wrap{position:absolute;left:12px;right:12px;top:8px;bottom:8px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.hv-mono{font-family:var(--mono);letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.hv-t1{color:var(--text)} .hv-t2{color:var(--text-2)} .hv-t3{color:var(--text-3)}
+/* share links: one visible style everywhere (dotted underline) */
+.hv-sym{font-weight:600;color:var(--text);text-decoration:none;border-bottom:1px dotted var(--text-2);padding-bottom:0;cursor:pointer}
+.hv-sym:hover{border-bottom-style:solid;border-bottom-color:var(--text)}
+
+/* ---- title row ---- */
+.hv-top{height:28px;flex:none;display:flex;align-items:center;gap:10px;white-space:nowrap;min-width:0}
+.hv-ttl{display:flex;align-items:center;gap:8px;flex:none}
+.hv-ttl b{font-size:15px;font-weight:700;letter-spacing:.02em}
+.hv-kk{background:var(--text-2);color:var(--bg);border-color:var(--text-2);border-bottom-color:#7E8691;font-weight:700}
+.hv-sub{font-size:12px;color:var(--text-3)}
+.hv-purp{font-size:13px;color:var(--text-2);min-width:0;flex:1}
+.hv-purp b{color:var(--text);font-weight:600}
+.hv-sel{height:24px;display:inline-flex;align-items:center;padding:0 4px 0 6px;border:1px solid var(--line-2);border-radius:3px;background:var(--panel);flex:none}
+.hv-sel select{background:transparent;border:0;color:var(--text);font:600 12px var(--sans);outline:none;cursor:pointer}
+.hv-sel select option{background:var(--panel-2)}
+.hv-btn{height:24px;display:inline-flex;align-items:center;gap:5px;padding:0 8px;border:1px solid var(--line-2);border-radius:3px;background:none;color:var(--text-2);font:600 11px var(--sans);letter-spacing:.04em;cursor:pointer;flex:none;text-decoration:none;position:relative}
+.hv-btn:hover,.hv-btn.on{background:var(--panel-3);color:var(--text)}
+.hv-btn kbd{line-height:12px}
+.hv-help{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line-2);border-radius:50%;font-size:12px;font-weight:700;color:var(--text-2);flex:none;text-decoration:none}
+
+/* ---- verdict band ---- */
+.hv-verd{height:70px;flex:none;display:flex;align-items:stretch;background:var(--panel);border:1px solid var(--line);border-radius:4px;overflow:hidden;min-width:0}
+.hv-vs{flex:none;width:150px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:4px;padding:0 12px;border-right:1px solid var(--line);background:var(--panel-2)}
+.hv-big{display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 10px;border:2px solid var(--info);border-radius:4px;color:var(--text);font-size:20px;font-weight:700;letter-spacing:.06em}
+.hv-big i{width:10px;height:10px;border-radius:50%;background:var(--info);display:inline-block}
+.hv-vs small{font-size:11px;color:var(--text-2);letter-spacing:.03em;font-weight:600}
+.hv-vt{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:0 12px}
+.hv-v1{font-size:15px;color:var(--text);line-height:19px}
+.hv-v1 b{font-weight:700}
+.hv-v2{font-size:13px;color:var(--text-2);line-height:17px;white-space:nowrap}
+.hv-v2 b{color:var(--text);font-weight:600}
+.hv-tiles{flex:none;display:grid;grid-template-columns:repeat(3,148px);grid-template-rows:1fr 1fr}
+.hv-tile{padding:2px 9px 0 9px;border-left:1px solid var(--line);white-space:nowrap;min-width:0}
+.hv-tile:nth-child(-n+3){border-bottom:1px solid var(--line)}
+.hv-tile .tl{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);line-height:13px}
+.hv-tile .tv{font-size:11px;color:var(--text-2);line-height:17px}
+.hv-tile .tv b{font-family:var(--mono);font-size:15px;font-weight:700;letter-spacing:-0.02em;color:var(--text);margin-right:3px}
+
+/* ---- your positions band ---- */
+.hv-pos{flex:none;background:var(--panel);border:1px solid var(--line-2);border-radius:4px;overflow:hidden}
+.hv-pt{display:grid;grid-template-columns:repeat(9,max-content);justify-content:space-between;align-items:center;column-gap:10px;padding:0 10px;min-width:0}
+.hv-pt.h{height:20px;background:var(--panel-2);border-bottom:1px solid var(--line)}
+.hv-pt.h span{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);white-space:nowrap}
+.hv-pt.h .hv-ptt{color:var(--text-2);font-weight:700}
+.hv-pt.r{height:23px;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-2);white-space:nowrap}
+.hv-pt.r:last-child{border-bottom:0}
+.hv-pt.r > span{min-width:0;white-space:nowrap}
+.hv-pt.r .hv-sym{font-size:14px}
+.hv-pt.r b{color:var(--text);font-weight:600}
+.hv-pt .ok{color:var(--info);font-weight:700}
+.hv-act{display:inline-flex;align-items:center;height:18px;padding:0 6px;border-radius:3px;border:1px solid var(--action-line);background:var(--action-bg);color:var(--action);font-size:11px;font-weight:700;letter-spacing:.04em;margin-right:5px}
+
+/* ---- the 4 columns of panels ---- */
+.hv-grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;position:relative}
+.hv-col{display:flex;flex-direction:column;gap:8px;min-height:0;min-width:0}
+.hv-pn{background:var(--panel);border:1px solid var(--line);border-radius:4px;display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden;position:relative;flex:1}
+.hv-ph{height:26px;flex:none;background:var(--panel-2);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;padding:0 6px 0 9px;white-space:nowrap;min-width:0}
+.hv-ph .t{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);flex:none}
+.hv-ph .sp{flex:1;min-width:0}
+.hv-ph .age{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:-0.02em;flex:none;display:inline-flex;align-items:center;gap:4px}
+.hv-ph .age .sh-dot{width:7px;height:7px}
+.hv-ud{display:flex;gap:3px;flex:none}
+.hv-ud button{width:20px;height:18px;border:1px solid var(--line-2);border-radius:3px;background:var(--panel);color:var(--text-2);font-size:11px;padding:0;line-height:1;cursor:pointer;font-family:var(--sans)}
+.hv-ud button:hover{background:var(--panel-3);color:var(--text)}
+.hv-chips{display:flex;gap:4px;flex:none}
+.hv-chip{height:18px;display:inline-flex;align-items:center;gap:4px;padding:0 5px;border:1px solid var(--line-2);border-radius:3px;font-size:11px;font-weight:600;color:var(--text-2);background:none;cursor:pointer;font-family:var(--sans);letter-spacing:.02em}
+.hv-chip .cn{font-family:var(--mono);font-size:11px;color:var(--text)}
+.hv-chip.on{background:var(--panel-3);color:var(--text);border-color:var(--text-3)}
+.hv-chip.zero{color:var(--text-3);border-style:dashed}
+.hv-chip.zero .cn{color:var(--text-3)}
+/* list body: native bar hidden, our own always-visible 7 px rail is drawn instead (headless screenshots hide native bars) */
+.hv-pb{flex:1;min-height:0;overflow-y:scroll;overflow-x:hidden;scrollbar-width:none;padding-right:16px;position:relative}
+.hv-pb::-webkit-scrollbar{display:none}
+/* rail: 7 px track in its own 16 px gutter, drawn ABOVE the more bar so the thumb is never hidden */
+.hv-rail{position:absolute;right:3px;width:7px;background:#262C35;border-radius:4px;border:1px solid #3A424D;cursor:pointer;z-index:5}
+.hv-rail i{position:absolute;left:0;right:0;background:#C3CAD3;border-radius:3px;min-height:28px}
+.hv-more{position:absolute;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;z-index:3;cursor:pointer;}
+.hv-more span{height:17px;background:var(--panel);padding:0 8px;border:1px solid var(--line-2);border-radius:9px;display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--text-2);letter-spacing:.03em}
+.hv-more span b{font-family:var(--mono);color:var(--text)}
+
+/* group heads: plain rows (not sticky), so nothing slides under them */
+.hv-gh{padding:4px 9px 3px 9px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);background:var(--panel-2);border-bottom:1px solid var(--line);line-height:15px;display:flex;flex-wrap:wrap;column-gap:8px}
+.hv-gh span{text-transform:none;letter-spacing:0;font-weight:400}
+
+/* generic row: line 1 = dot · name · value · state; line 2 = one short fact */
+.hv-r{display:grid;grid-template-columns:10px minmax(0,1fr) auto;column-gap:7px;padding:3px 0 3px 9px;border-bottom:1px solid var(--line);align-items:center;min-width:0}
+.hv-r:hover{background:#161A20}
+.hv-r .nm{font-size:13px;font-weight:600;color:var(--text);min-width:0;line-height:17px}
+.hv-r .nm .hv-sym{font-size:14px}
+.hv-r .nm small{font-size:12px;font-weight:400;color:var(--text-3)}
+.hv-r .vl{font-family:var(--mono);font-size:12px;color:var(--text-2);letter-spacing:-0.02em;white-space:nowrap;display:flex;align-items:center;gap:5px;justify-self:end}
+.hv-r .fx{grid-column:2 / span 2;font-size:12px;color:var(--text-2);line-height:16px;min-width:0}
+.hv-r .fx b{color:var(--text);font-weight:600}
+.hv-r .fx .hv-sym{font-size:13px}
+.hv-r.tm{grid-template-columns:58px minmax(0,1fr) auto}
+.hv-r.tm .tt{font-family:var(--mono);font-size:12px;color:var(--text-2);line-height:17px;align-self:start}
+.hv-r.bad{background:#15181D}
+.hv-r.ex .nm{font-size:14px}
+
+/* freshness shapes: live = filled dot, limited / watch = ring, stale = striped square, off = dashed ring, down = red square */
+.hv-d{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--info);flex:none;align-self:center}
+.hv-d.ring{background:none;border:1.5px solid var(--info)}
+.hv-d.lim{background:none;border:1.5px solid var(--text-2)}
+.hv-d.stale{border-radius:0;background:var(--stripe);border:1px solid var(--stale)}
+.hv-d.off{background:none;border:1.5px dashed var(--text-3)}
+.hv-d.down{border-radius:0;background:var(--danger)}
+.hv-d.act{border-radius:1px;background:var(--action)}
+
+/* state chips - always a word */
+.hv-sc{display:inline-flex;align-items:center;height:18px;padding:0 5px;border-radius:3px;font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.04em;line-height:1;white-space:nowrap;flex:none;border:1px solid var(--line-2);color:var(--text-2)}
+.hv-sc.ok{border-color:var(--info-line);color:var(--info)}
+.hv-sc.stale{background:var(--stripe);border-color:var(--stale);color:var(--text)}
+.hv-sc.lim{border-color:var(--text-2);color:var(--text)}
+.hv-sc.wn{border-color:var(--text-3);color:var(--text);border-style:dashed}
+.hv-sc.off{border-style:dashed;color:var(--text-3)}
+.hv-sc.dec{border-color:var(--action-line);color:var(--action);background:var(--action-bg)}
+.hv-sc.act{border-color:var(--action-line);color:var(--action);background:var(--action-bg)}
+.hv-sc.open{border-color:var(--text-2);color:var(--text)}
+.hv-sc.closed{color:var(--text-3)}
+.hv-sc.quiet{color:var(--text-3);border-color:var(--line)}
+.hv-sc.down{border-color:var(--danger);color:var(--danger);background:var(--danger-bg)}
+
+/* Kite key tables */
+.hv-kh{display:flex;align-items:center;gap:7px;padding:5px 0 3px 9px;min-width:0;white-space:nowrap}
+.hv-kid{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text);border:1px solid var(--line-2);border-radius:3px;padding:0 5px;line-height:18px;flex:none}
+.hv-kh .role{font-size:13px;font-weight:600;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:clip}
+.hv-kl{font-size:12px;color:var(--text-2);padding:0 0 3px 9px;line-height:16px}
+.hv-ct{display:grid;grid-template-columns:22px minmax(0,1fr) 42px 64px 30px 34px 20px;column-gap:5px;font-size:12px;line-height:18px;color:var(--text-2);align-items:baseline;padding:0 0 5px 9px;border-bottom:1px solid var(--line)}
+.hv-ct .h{font-size:11px;color:var(--text-3);letter-spacing:.03em;text-transform:uppercase;white-space:nowrap}
+.hv-ct .c{font-family:var(--mono);color:var(--text-3)}
+.hv-ct .r{text-align:right;font-family:var(--mono);letter-spacing:-0.02em;white-space:nowrap}
+.hv-ct .hold{white-space:nowrap;overflow:hidden;min-width:0}
+.hv-ct .moved{grid-column:2 / span 6;color:var(--text);line-height:17px}
+.hv-ct .dn{color:var(--danger);font-weight:600}
+
+/* sound log */
+.hv-s{display:grid;grid-template-columns:58px minmax(0,1fr) auto;column-gap:7px;padding:4px 0 4px 9px;border-bottom:1px solid var(--line);font-size:12px;line-height:17px;color:var(--text-2);align-items:start}
+.hv-s .tt{font-family:var(--mono);color:var(--text-2)}
+.hv-s .w b{color:var(--text);font-weight:600}
+.hv-s .w .hv-sym{font-size:13px}
+.hv-s .tone{font-size:11px;color:var(--text-3);white-space:nowrap;text-align:right}
+.hv-s .x{grid-column:2 / span 2;font-size:12px;color:var(--text-2);line-height:16px}
+.hv-s .x b{color:var(--text);font-weight:600}
+.hv-rule{padding:6px 9px;border-bottom:1px solid var(--line);font-size:12px;line-height:17px;color:var(--text-2);background:#15181D}
+.hv-rule b{color:var(--text);font-weight:600}
+
+/* timeline */
+.hv-tl{display:grid;grid-template-columns:58px minmax(0,1fr) 42px;column-gap:6px;padding:3px 0 3px 9px;border-bottom:1px solid var(--line);font-size:12px;line-height:16px;color:var(--text-2);align-items:start}
+.hv-tl .tt{font-family:var(--mono);color:var(--text)}
+.hv-tl .dl{text-align:right;font-family:var(--mono);color:var(--text-3)}
+.hv-tl.hi{background:#15181D}
+.hv-tl.hi .w{color:var(--text)}
+.hv-tl .w b{color:var(--text);font-weight:600}
+.hv-tl .w .hv-sym{font-size:13px}
+.hv-tl .o{display:block;color:var(--text-2);font-size:12px}
+
+/* small tables */
+.hv-tb{width:100%;border-collapse:collapse;table-layout:fixed}
+.hv-tb th{height:20px;padding:0 6px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);text-align:right;border-bottom:1px solid var(--line);background:var(--panel-2);white-space:nowrap}
+.hv-tb th:first-child{text-align:left;padding-left:9px}
+.hv-tb td{padding:3px 6px;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-2);line-height:16px;white-space:nowrap;text-align:right;font-family:var(--mono);letter-spacing:-0.02em}
+.hv-tb td:first-child{text-align:left;padding-left:9px;font-family:var(--sans);letter-spacing:0;white-space:normal}
+.hv-tb tr.tot td{color:var(--text);font-weight:600}
+
+/* reconciliation chips */
+.hv-rc{display:flex;flex-wrap:wrap;gap:4px;padding:6px 0 2px 9px}
+.hv-rc span{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 6px;border:1px solid var(--line-2);border-radius:3px;font-size:12px;color:var(--text-2);white-space:nowrap}
+.hv-rc span b{color:var(--info);font-weight:700}
+.hv-rcs{padding:2px 0 6px 9px;font-size:12px;color:var(--text-2);border-bottom:1px solid var(--line)}
+.hv-rcs b{color:var(--text);font-weight:600}
+
+/* never-again rows */
+.hv-na{display:grid;grid-template-columns:14px minmax(0,1fr) auto;column-gap:6px;padding:4px 0 4px 9px;border-bottom:1px solid var(--line);font-size:12px;line-height:16px;color:var(--text-2);align-items:baseline}
+.hv-na .ck{color:var(--info);font-weight:700}
+.hv-na .ck.q{color:var(--action)}
+.hv-na b{color:var(--text);font-weight:600}
+.hv-na .cn{font-size:11px;color:var(--text-3);font-family:var(--mono);white-space:nowrap}
+[data-hide]{display:none!important}
+
+/* ---- drawer: RUNBOOK + LIMITS ---- */
+.hv-drw{position:absolute;top:36px;right:0;bottom:0;width:820px;max-width:62%;background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;box-shadow:-10px 0 28px rgba(0,0,0,.55);z-index:45;display:none;flex-direction:column}
+body.hv-rb .hv-drw{display:flex}
+.hv-drw .hv-ph{background:var(--panel-3)}
+.hv-x{width:22px;height:20px;border:1px solid var(--line-2);border-radius:3px;background:none;color:var(--text-2);cursor:pointer;font-size:12px}
+.hv-rbk{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px 9px}
+.hv-rbc{border:1px solid var(--line-2);border-radius:4px;padding:6px 9px;background:var(--panel)}
+.hv-rbc h4{margin:0 0 3px 0;font-size:13px;color:var(--text);font-weight:700}
+.hv-rbc h4 small{font-size:11px;color:var(--text-3);font-weight:600;letter-spacing:.04em;margin-left:6px;text-transform:uppercase}
+.hv-rbc ol{margin:0;padding-left:17px;font-size:12px;line-height:17px;color:var(--text-2)}
+.hv-rbc ol b{color:var(--text);font-weight:600}
+.hv-lim td,.hv-lim th{text-align:left!important;font-family:var(--sans)!important;letter-spacing:0!important;white-space:normal!important}
+.hv-lim td:first-child{color:var(--text);font-weight:600}
+.hv-lim td.now{background:rgba(108,178,255,.06)}
+.hv-lim th.now{color:var(--text)}
+
+/* test-alarm confirm */
+.hv-pop{position:absolute;top:30px;right:0;width:330px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:46;padding:9px 10px;white-space:normal;font-size:12px;line-height:17px;color:var(--text-2);display:none;text-align:left;letter-spacing:0;font-weight:400}
+.hv-pop b{color:var(--text)}
+.hv-pop .bt{display:flex;gap:6px;margin-top:7px}
+body.hv-ta .hv-pop{display:block}
+
+/* ---- the DOWN specimen (only with #specimen-red in the URL): hatched border + label, the whole page follows ---- */
+.hv-spec{display:none}
+body.hv-red .hv-spec{display:flex;position:absolute;inset:0;pointer-events:none;z-index:44;border:3px solid transparent;border-image:repeating-linear-gradient(135deg,var(--danger) 0 6px,transparent 6px 12px) 3;justify-content:center}
+body.hv-red .hv-spec span{position:absolute;top:-1px;background:var(--danger);color:#fff;font-size:11px;font-weight:700;letter-spacing:.05em;padding:1px 8px;border-radius:0 0 3px 3px}
+body.hv-red .hv-verd{border:2px solid var(--danger);background:var(--danger-bg)}
+body.hv-red .hv-big{border-color:var(--danger)}
+body.hv-red .hv-big i{background:none;border:2px solid var(--danger);border-radius:0;width:9px;height:9px}
+
+/* ---- 1366 x 768 (below 1500 px): same content, same words; tighter spacing only ---- */
+@media (max-width:1499px){
+  .hv-wrap{gap:6px}
+  .hv-grid,.hv-col{gap:6px}
+  .hv-top{gap:7px}
+  .hv-ttl b{font-size:14px}
+  .hv-purp{font-size:12px}
+  .hv-btn{padding:0 6px}
+  .hv-verd{height:68px}
+  .hv-vs{width:140px;padding:0 9px}
+  .hv-big{font-size:17px;height:27px;padding:0 8px}
+  .hv-vt{padding:0 9px}
+  .hv-v1{font-size:14px;line-height:18px}
+  .hv-v2{font-size:12px;line-height:16px}
+  .hv-tiles{grid-template-columns:repeat(3,140px)}
+  .hv-tile{padding:3px 7px 0 7px}
+  .hv-tile .tv b{font-size:14px}
+  .hv-pt{column-gap:6px;padding:0 8px}
+  .hv-pt.r{height:24px;font-size:12px}
+  .hv-pt.r .hv-sym{font-size:13px}
+  .hv-r .nm{font-size:13px}
+  .hv-ct{grid-template-columns:20px minmax(0,1fr) 38px 56px 26px 30px 16px;column-gap:4px}
+}
+
+/* column proportions: the problem panels get more height */
+.hv-col.c1 #p-exc{flex:1.6} .hv-col.c2 #p-svc{flex:1.2} .hv-col.c3 #p-snd{flex:1.1}
+/* r2: no shell rules here - the shell is shell.html verbatim (the 1366 '/' box rule went back to the shell owner) */
+.hv-gh span{white-space:nowrap}
+.hv-end{font-size:11px;color:var(--text-3);text-align:center;padding-top:3px;letter-spacing:.04em;text-transform:uppercase}
+.hv-drw .hv-tb td{padding:2px 6px;line-height:15px}
+.hv-drw .hv-tb th{height:18px}
+.hv-rbk{gap:6px;padding:6px 9px}
+.hv-rbc{padding:5px 9px}
+.hv-rbc ol{line-height:16px}
+/* proof mode (#all-rows): every list drawn at full length on one tall page, for review only */
+body.hv-all main#page{position:absolute;bottom:auto;height:auto}
+body.hv-all .hv-wrap{position:relative;left:auto;right:auto;top:auto;bottom:auto;margin:8px 12px 40px 12px}
+body.hv-all .hv-grid{flex:none;align-items:start}
+body.hv-all .hv-pn{flex:none!important}
+body.hv-all .hv-pb{overflow:visible;flex:none}
+body.hv-all .hv-more,body.hv-all .hv-rail,body.hv-all .hv-end{display:none!important}
+
+/* ---- r2: your exits first (verdict line, EXCEPTIONS rows, chip) ---- */
+.hv-v0{font-size:14px;line-height:19px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px;min-width:0}
+.hv-v0 b{color:var(--action);font-weight:700}
+.hv-v0 b .hv-sym{color:var(--action);border-bottom-color:var(--action-line)}
+.hv-vx{flex:none;height:18px;display:inline-flex;align-items:center;padding:0 6px;border-radius:3px;background:var(--action);color:var(--action-ink);font-size:11px;font-weight:800;letter-spacing:.05em}
+.hv-r.xr{background:var(--action-bg);box-shadow:inset 3px 0 0 var(--action)}
+.hv-r.xr .nm{color:var(--action)}
+.hv-r.xr .nm .hv-sym{color:var(--text)}
+.hv-r.xr .fx kbd{font-size:11px;line-height:12px}
+.hv-chip.act{border-color:var(--action-line);color:var(--action);background:var(--action-bg)}
+.hv-chip.act .cn{color:var(--action)}
+.hv-hold{height:18px;display:inline-flex;align-items:center;padding:0 6px;margin-left:2px;border:1px solid var(--action-line);border-radius:3px;background:none;color:var(--action);font:700 11px var(--sans);letter-spacing:.03em;cursor:pointer;vertical-align:1px}
+.hv-hold:hover{background:var(--action-bg)}
+.hv-hold.sm{padding:0 5px}
+/* holding-on-purpose popover */
+.hv-hpop{display:none;position:absolute;z-index:46;width:470px;background:var(--panel-2);border:1px solid var(--action-line);border-radius:4px;box-shadow:0 10px 28px rgba(0,0,0,.6);padding:8px 10px 9px 10px;font-size:12px;line-height:17px;color:var(--text-2);white-space:normal}
+.hv-hpop .hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.hv-hpop .hd b{font-size:13px;color:var(--action);letter-spacing:.02em}
+.hv-hpop b{color:var(--text)}
+.hv-hpop .ln{margin:3px 0}
+.hv-hpop .lb{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-top:5px}
+.hv-hpop .lb span{text-transform:none;letter-spacing:0;font-weight:400}
+.hv-hpop .ch{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0}
+.hv-hpop .ch span{height:20px;display:inline-flex;align-items:center;padding:0 6px;border:1px solid var(--line-2);border-radius:3px;color:var(--text-2);cursor:pointer}
+.hv-hpop .ch span.on{border-color:var(--action);color:var(--text);background:var(--action-bg)}
+.hv-hpop .in{height:24px;display:flex;align-items:center;padding:0 7px;border:1px solid var(--line-2);border-radius:3px;background:var(--bg);color:var(--text);font-size:13px}
+.hv-hpop .in i{display:inline-block;width:7px;height:14px;background:var(--text-2);margin-left:1px}
+.hv-hpop .cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:2px}
+.hv-hpop .bt{display:flex;gap:6px;margin-top:6px}
+/* all 12 Kite connections at a glance: rows c1-c3, columns K1-K4 */
+.hv-km{display:grid;grid-template-columns:44px repeat(4,minmax(0,1fr));column-gap:4px;align-items:center;padding:2px 0 2px 9px;border-bottom:1px solid var(--line);font-size:12px;line-height:18px;color:var(--text-2)}
+.hv-km.h{font-size:11px;color:var(--text-3);background:var(--panel-2);letter-spacing:.02em}
+.hv-km.h span{text-align:right;white-space:nowrap;overflow:hidden}
+.hv-km.h span:first-child{text-align:left}
+.hv-km.h b{font-family:var(--mono);color:var(--text);font-weight:700}
+.hv-km .c{font-family:var(--mono);color:var(--text-3)}
+.hv-km .r{text-align:right;font-family:var(--mono);letter-spacing:-0.02em;white-space:nowrap;color:var(--text)}
+.hv-km .r.lim{background:#1A1E25;border-radius:2px;padding-right:3px}
+.hv-km .ok{color:var(--info);font-weight:700}
+.hv-km .mv{color:var(--text);font-family:var(--sans);font-weight:600}
+.hv-km .dn{color:var(--danger);font-weight:700;font-family:var(--sans)}
+.hv-verd{height:86px}
+@media (max-width:1499px){
+  .hv-verd{height:80px}
+  .hv-v0{font-size:13px;line-height:18px} .hv-vx{padding:0 4px;letter-spacing:.02em}
+  .hv-v1{font-size:13px;line-height:17px}
+  .hv-hpop{width:440px}
+}
+
+.hv-vs small.ck{font-weight:400;color:var(--text-3)}
+.hv-r.xr .nm{font-size:14px}
+.hv-r.xr .fx .hv-sc{margin-right:3px;vertical-align:1px}
+.hv-r.xr .fx{line-height:20px}
+
+/* ===================== r3 ===================== */
+/* "more" bar: plain panel colour (hatching means stale or blocked only - conference fix 3) */
+.hv-more{background:var(--panel)}
+/* title row: purpose, then the one-line hand-off (R41) */
+.hv-purp{flex:0 1 auto}
+.hv-ho{display:flex;align-items:center;gap:6px;flex:none;margin-right:auto;font-size:12px;color:var(--text-2)}
+.hv-ho .l{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+.hv-ho a{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 7px 0 3px;border:1px solid var(--line-2);border-radius:3px;color:var(--text);text-decoration:none;font-weight:600;background:var(--panel)}
+.hv-ho a:hover{background:var(--panel-3)}
+.hv-ho kbd{line-height:13px}
+/* hero: the page's one answer, 18 px at both sizes (conference 1.3) */
+.hv-verd{height:92px}
+.hv-v1{font-size:18px;line-height:23px}
+.hv-v1 b{font-weight:700}
+/* status tiles in colour with a word */
+.hv-tile{position:relative;padding-left:11px}
+.hv-tile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--line-2)}
+.hv-tile.ok{background:var(--info-bg)}
+.hv-tile.ok::before{background:var(--info)}
+.hv-tile.flag::before{background:var(--text)}
+.hv-tile.down{background:var(--danger-bg)}
+.hv-tile.down::before{background:var(--danger)}
+.hv-tile .tl{display:flex;align-items:center;justify-content:space-between;gap:4px;padding-top:4px}
+.hv-tile .tl .w{font-size:11px;font-weight:700;letter-spacing:.04em;padding:0 4px;border-radius:2px;line-height:14px;border:1px solid}
+.hv-tile.ok .tl .w{color:var(--info);border-color:var(--info-line)}
+.hv-tile.flag .tl .w{color:var(--text);border-color:var(--text-2)}
+.hv-tile.down .tl .w{color:var(--danger);border-color:var(--danger)}
+.hv-tile .tv{line-height:22px}
+/* heartbeat sparkline under the verdict word */
+.hv-hb{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-3)}
+.hv-hb svg{display:block;flex:none}
+.hv-vs{gap:3px}
+/* links to the page that shows a list (F2 movers, F10 build-up / money) */
+.hv-go{color:var(--text);text-decoration:none;border-bottom:1px dotted var(--text-2);font-weight:600}
+.hv-go:hover{border-bottom-style:solid}
+.hv-go .k{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--info);border:1px solid var(--info-line);border-radius:3px;padding:0 4px;margin-left:3px;letter-spacing:0}
+.hv-na .hv-go{font-size:12px;color:var(--info);border-bottom-color:var(--info-line);margin-right:2px}
+.hv-r.go .nm a.nm-go{border-bottom:0}
+.hv-r.go .nm a.nm-go:hover{text-decoration:underline}
+.hv-bu{display:inline-flex;gap:4px;vertical-align:middle;margin:1px 0}
+.hv-bu .sh-c{text-decoration:none;height:18px;font-size:12px}
+.hv-eq{white-space:nowrap}
+.hv-n16{display:none}
+@media (max-width:1499px){
+  .hv-w16{display:none}
+  .hv-ho{gap:5px}
+  .hv-ho a{padding:0 5px 0 3px}
+  .hv-pt{column-gap:7px}
+  .hv-n16{display:inline}
+  .hv-verd{height:86px}
+  .hv-v1{font-size:18px;line-height:22px}
+  .hv-tile{padding-left:9px}
+  .hv-tile .tl{padding-top:3px}
+  .hv-tile .tv{line-height:20px}
+}
+
+/* ===================== FINAL (19 Nov) ===================== */
+/* hero band = the verdict + your 2 positions, one framed block */
+.hv-hero{flex:none;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line-2);border-radius:4px;overflow:hidden;min-width:0}
+.hv-hero .hv-verd{border:0;border-radius:0;border-bottom:1px solid var(--line);height:96px}
+.hv-v1{font-size:20px;line-height:25px}
+.hv-vt{gap:3px}
+/* the exits line: EXIT = danger, BOOK = amber (conference 1.5) */
+.hv-v0{gap:7px;font-size:14px;overflow:visible}
+.hv-v0 .hv-vl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);flex:none}
+.hv-v0 b{font-weight:700}
+.hv-v0 b.x,.hv-v0 b.x .hv-sym{color:var(--danger);border-bottom-color:var(--down-line)}
+.hv-v0 b.bk,.hv-v0 b.bk .hv-sym{color:var(--action);border-bottom-color:var(--action-line)}
+.hv-v0 .sh-c{height:19px}
+
+/* your positions: ONE grid - every header cell sits over its own values in both rows */
+.hv-pos{display:grid;border:0;border-radius:0;background:var(--panel);
+  grid-template-columns:minmax(0,1.35fr) minmax(0,.95fr) minmax(0,.95fr) minmax(0,.7fr) minmax(0,.85fr) minmax(0,.95fr) minmax(0,2.2fr) minmax(0,2.15fr);
+  align-items:stretch;padding:0 4px}
+.hv-pos .ph,.hv-pos .pc{display:flex;align-items:center;padding:0 8px;white-space:nowrap;min-width:0;border-bottom:1px solid var(--line)}
+.hv-pos .ph{height:22px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);background:var(--panel-2);margin:0 -4px;padding:0 12px}
+.hv-pos .ph{margin:0}
+.hv-pos .ph.t{color:var(--text);font-weight:700}
+.hv-pos .r{justify-content:flex-end;text-align:right}
+.hv-pos .pc{height:31px;font-size:13px;color:var(--text-2);gap:6px}
+.hv-pos .pc.last{border-bottom:0}
+.hv-pos .pc.nm .hv-sym{font-size:15px}
+.hv-pos .pc.nm b{color:var(--text);font-weight:600}
+.hv-pos .pc.hv-mono,.hv-pos .pc .hv-mono{font-size:13px;color:var(--text)}
+.hv-pos .ok{color:var(--info);font-weight:700}
+.hv-pos .said .sh-c,.hv-pos .done .hv-sc{flex:none}
+.hv-pos .done .nx{color:var(--text);font-weight:600}
+.hv-pos .done .hv-hold{margin-left:auto}
+.hv-pos .hv-sc{height:20px;font-size:12px}
+.hv-sc.down{border-color:var(--danger);color:var(--danger);background:var(--danger-bg)}
+
+/* EXCEPTIONS: your exits lead, in their fixed colours */
+.hv-r.xr{background:var(--action-bg);box-shadow:inset 3px 0 0 var(--action)}
+.hv-r.xr.xe{background:var(--danger-bg);box-shadow:inset 3px 0 0 var(--danger)}
+.hv-r.xr .nm{color:var(--text);display:flex;align-items:center;gap:6px}
+.hv-r.xr .nm .sh-c{height:19px}
+.hv-r.xr .nm .sh-c-pe{height:18px;font-size:11px;padding:0 4px}
+.hv-na .ck.x{color:var(--danger)}
+.hv-sc.dec{border-color:var(--info-line);color:var(--info);background:var(--info-bg)}
+.hv-s .w .sh-c{height:18px;font-size:11px;margin-right:2px;vertical-align:1px}
+
+/* panels: 6 at most (conference 1.3) - the full-height columns get the long lists */
+.hv-col.c1 #p-exc{flex:1.75} .hv-col.c3 #p-snd{flex:1.05}
+.hv-ph .t{color:var(--text)}
+.hv-ph{padding-left:11px}
+.hv-gh{color:var(--text-3)}
+.hv-gh[data-grp^="Market engines"]{box-shadow:inset 3px 0 0 var(--acc-mkt);color:var(--info)}
+.hv-gh[data-grp^="Your trade"]{box-shadow:inset 3px 0 0 var(--acc-mine);color:var(--text-2)}
+
+/* Kite matrix as a picture: every cell tinted by its state */
+.hv-km{column-gap:3px;padding:2px 0 2px 9px}
+.hv-km .r{background:var(--info-bg);border-radius:2px;padding:0 5px;line-height:20px}
+.hv-km .r.lim{background:var(--stripe);border:1px solid var(--stale);color:var(--text);line-height:18px}
+.hv-km.h span{padding-right:5px}
+
+/* latency waterfall (where the 12 s went) */
+.hv-wf{padding:6px 9px 6px 9px;border-bottom:1px solid var(--line)}
+.hv-wf svg{display:block;width:100%;height:34px}
+.hv-wf .lg{display:flex;flex-wrap:wrap;gap:3px 10px;font-size:11px;color:var(--text-2);margin-top:4px;line-height:14px}
+.hv-wf .lg i{display:inline-block;width:8px;height:8px;border-radius:1px;margin-right:4px;vertical-align:0}
+
+@media (max-width:1499px){
+  .hv-hero .hv-verd{height:90px}
+  .hv-v1{font-size:19px;line-height:23px}
+  .hv-v0{font-size:13px;gap:5px}
+  .hv-pos{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,.9fr) minmax(0,.72fr) minmax(0,.9fr) minmax(0,.98fr) minmax(0,2.25fr) minmax(0,2.1fr);padding:0 2px}
+  .hv-pos .ph,.hv-pos .pc{padding:0 6px}
+  .hv-pos .ph{letter-spacing:.03em}
+  .hv-pos .pc{height:28px;font-size:12px;gap:5px}
+  .hv-pos .pc.hv-mono,.hv-pos .pc .hv-mono{font-size:12px}
+  .hv-pos .pc.nm .hv-sym{font-size:14px}
+}
+/* positions: auto tracks = each column as wide as its widest cell (header included), spare width shared out */
+.hv-pos{grid-template-columns:repeat(8,auto)}
+@media (max-width:1499px){ .hv-pos{grid-template-columns:repeat(8,auto)} .hv-v0 .hv-vl{display:none} }
+/* column 1: the Kite matrix is a fixed picture; EXCEPTIONS takes the rest */
+.hv-col.c1 #p-keys{flex:none;height:150px}
+.hv-col.c3 #p-snd{flex:none;height:186px}
+@media (max-width:1499px){ .hv-col.c1 #p-keys{height:136px} .hv-col.c3 #p-snd{height:170px} }
+/* final layout: one seam across columns 3 and 4 */
+.hv-col.c1 #p-keys{height:auto}
+.hv-col.c3 #p-snd,.hv-col.c4 #p-x{flex:none;height:calc(50% + 34px)}
+.hv-col.c3 #p-lat,.hv-col.c4 #p-keys{flex:1}
+@media (max-width:1499px){ .hv-col.c3 #p-snd,.hv-col.c4 #p-x{height:calc(50% + 22px)} }
+/* verdict: 3 lines (exits · the answer · what is limited), compact left box */
+.hv-hero .hv-verd{height:80px}
+.hv-vs{gap:2px}
+.hv-big{height:28px}
+.hv-v2 b.bl{color:var(--text)}
+.hv-pos .ph{height:21px}
+.hv-pos .pc{height:29px}
+@media (max-width:1499px){
+  .hv-hero .hv-verd{height:76px}
+  .hv-big{height:26px}
+  .hv-pos .ph{height:20px}
+  .hv-pos .pc{height:27px}
+  .hv-pos .ph,.hv-pos .pc{padding:0 5px}
+}
+.hv-hero .hv-verd{height:88px}
+.hv-tile .tv{line-height:21px}
+.hv-r.xr .nm{white-space:nowrap}
+@media (max-width:1499px){ .hv-hero .hv-verd{height:82px} .hv-tile .tv{line-height:19px} .hv-c16{display:none} }
+@media (max-width:1499px){ .hv-km{grid-template-columns:40px repeat(4,minmax(0,1fr))} .hv-km.h span{padding-right:3px;letter-spacing:0} }
+@media (max-width:1499px){ .hv-km{grid-template-columns:44px repeat(4,minmax(0,1fr))} .hv-km .r{padding:0 4px} .hv-v2{letter-spacing:-0.01em} }
+.hv-s .w .nw{white-space:nowrap}
+.hv-wf .hd{display:flex;align-items:baseline;gap:5px;font-size:12px;color:var(--text-2);line-height:16px;margin-bottom:2px;white-space:nowrap}
+.hv-wf .hd b{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text)}
+.hv-wf .hd .sp{flex:1}
+.hv-wf svg{height:28px}
+@media (max-width:1499px){ .hv-pos .ph,.hv-pos .pc{padding:0 6px} .hv-wf .hd{font-size:11px} .hv-wf svg{height:22px} }
+
+</style>
+</head>
+<body class="page-health">
+
+<!-- ===================== SHELL TOP START (copy verbatim) ===================== -->
+<!-- R01 MARKET STRIP - identical on every page. Click an index = MARKET screen. Values illustrative (Thu 19 Nov 2026, 11:40:30). -->
+<header id="sh-mkt" aria-label="Market strip">
+  <div class="sh-m1">
+      <a class="sh-ix" href="market.html#NIFTY" title="NIFTY 50: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">NIFTY 50</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,4.1 3.4,2.0 4.8,3.4 6.1,5.8 7.5,7.6 8.9,6.3 10.3,8.2 11.7,9.4 13.0,7.9 14.4,9.0 15.8,8.5 17.2,6.7 18.6,4.3 19.9,4.4 21.3,5.7 22.7,6.2 24.1,6.7 25.4,6.4 26.8,8.0 28.2,6.4 29.6,8.8 31.0,7.4 32.3,10.2 33.7,11.5 35.1,12.0 36.5,12.0 37.9,11.6 39.2,10.9 40.6,9.7 42.0,10.7" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="10.7" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">24,486.20</span><span class="sh-ch n dn sh-wide">−152.76</span><span class="sh-pc n dn">▼ −0.62%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#BANKNIFTY" title="BANKNIFTY: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">BANKNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,12.0 3.4,10.2 4.8,8.9 6.1,8.2 7.5,7.9 8.9,7.8 10.3,7.7 11.7,7.0 13.0,7.3 14.4,8.9 15.8,8.5 17.2,10.5 18.6,9.1 19.9,7.7 21.3,7.0 22.7,8.6 24.1,7.6 25.4,6.1 26.8,6.8 28.2,5.7 29.6,3.9 31.0,2.0 32.3,2.7 33.7,3.4 35.1,3.8 36.5,2.5 37.9,2.5 39.2,4.4 40.6,3.7 42.0,2.4" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="2.4" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">52,140.50</span><span class="sh-ch n dn sh-wide">−109.73</span><span class="sh-pc n dn">▼ −0.21%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#SENSEX" title="SENSEX: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">SENSEX</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,12.0 3.4,11.7 4.8,10.5 6.1,10.1 7.5,9.3 8.9,9.6 10.3,8.5 11.7,8.0 13.0,7.6 14.4,6.7 15.8,6.0 17.2,6.7 18.6,5.9 19.9,6.2 21.3,6.3 22.7,6.7 24.1,5.6 25.4,4.7 26.8,4.1 28.2,3.0 29.6,2.5 31.0,2.5 32.3,2.1 33.7,2.0 35.1,3.3 36.5,3.0 37.9,2.4 39.2,2.0 40.6,2.7 42.0,2.2" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="2.2" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">80,412.65</span><span class="sh-ch n dn sh-wide">−469.11</span><span class="sh-pc n dn">▼ −0.58%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#FINNIFTY" title="FINNIFTY: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">FINNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,5.9 3.4,2.0 4.8,4.8 6.1,4.5 7.5,3.6 8.9,2.3 10.3,6.0 11.7,8.6 13.0,5.4 14.4,3.0 15.8,6.1 17.2,7.8 18.6,10.6 19.9,7.9 21.3,9.7 22.7,9.0 24.1,7.1 25.4,9.0 26.8,9.2 28.2,11.3 29.6,9.9 31.0,12.0 32.3,9.7 33.7,6.4 35.1,7.8 36.5,5.7 37.9,6.7 39.2,9.7 40.6,8.9 42.0,8.7" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="8.7" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">23,905.40</span><span class="sh-ch n dn sh-wide">−38.31</span><span class="sh-pc n dn">▼ −0.16%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#MIDCPNIFTY" title="MIDCPNIFTY: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">MIDCPNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,2.0 3.4,3.3 4.8,2.9 6.1,3.9 7.5,2.9 8.9,3.2 10.3,3.6 11.7,3.6 13.0,3.6 14.4,3.6 15.8,4.6 17.2,4.7 18.6,5.9 19.9,6.8 21.3,6.5 22.7,7.2 24.1,8.3 25.4,8.3 26.8,8.3 28.2,9.1 29.6,9.2 31.0,9.4 32.3,10.5 33.7,9.6 35.1,10.2 36.5,11.4 37.9,12.0 39.2,12.0 40.6,12.0 42.0,11.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="11.0" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">12,640.15</span><span class="sh-ch n dn sh-wide">−131.55</span><span class="sh-pc n dn">▼ −1.03%</span></span>
+      </a>
+    <div class="sh-mi" title="India VIX, change from previous close">
+      <span class="sh-l1"><span class="sh-nm">INDIA VIX</span></span>
+      <span class="sh-l2"><span class="sh-px n">14.82</span><span class="sh-pc n up">▲ +2.84%</span></span>
+    </div>
+    <div class="sh-mi" title="GIFT Nifty (NSE IX), trades pre-open and at night; gap vs NIFTY 50 spot">
+      <span class="sh-l1"><span class="sh-nm">GIFT NIFTY</span><span class="sh-age">prem +44</span></span>
+      <span class="sh-l2"><span class="sh-px n">24,530.5</span><span class="sh-pc n dn">▼ −0.55%</span></span>
+    </div>
+    <div class="sh-status" title="Market status from the exchange clock · phase · time to the 15:10 exit · worst age of the strip's live prices">
+      <span class="sh-st1"><span class="sh-mstate">OPEN</span><span class="sh-phase"><b>ENTRY</b> · <span class="n">3h 26m</span> to 15:10</span></span>
+      <span class="sh-st2"><span class="sh-clock">11:44:20</span><span class="sh-ist">IST</span><span class="sh-dot"></span><span class="sh-age" style="color:var(--text-2)">data 0.4s</span></span>
+    </div>
+  </div>
+  <div class="sh-m2">
+    <span class="sh-t2" title="US dollar / rupee spot"><span class="sh-t2l"><span class="sh-lb">USD/INR</span></span><span class="sh-t2v"><span class="n v">88.94</span><span class="n up">▲ +0.08%</span></span></span>
+    <span class="sh-t2" title="Brent crude, $ per barrel; feed age 1m"><span class="sh-t2l"><span class="sh-lb">Brent</span><span class="sh-age">$/bbl · 1m</span></span><span class="sh-t2v"><span class="n v">63.84</span><span class="n dn">▼ −1.10%</span></span></span>
+    <span class="sh-t2" title="Gold, MCX near month, ₹ per 10 g"><span class="sh-t2l"><span class="sh-lb">Gold MCX</span><span class="sh-age">₹/10g</span></span><span class="sh-t2v"><span class="n v">1,24,610</span><span class="n dn">▼ −1.62%</span></span></span>
+    <span class="sh-t2" title="FII / DII cash market net, ₹ crore. In the day: yesterday's NSE provisional figure; after ~18:00 today's provisional replaces it (yesterday's final then shows on hover)"><span class="sh-t2l"><span class="sh-lb">FII/DII cash</span><span class="sh-age">₹cr · 18 Nov prov</span></span><span class="sh-t2v"><span>FII</span><span class="n v">−1,842</span><span>· DII</span><span class="n v">+1,315</span></span></span>
+    <span class="sh-t2" title="FII F&amp;O net from NSE participant data, ₹ crore, 18 Nov: index futures −2,110 · stock futures +640 (at 1366 wide: stk) · detail on Futures &amp; OI, F10"><span class="sh-t2l"><span class="sh-lb">FII F&amp;O</span><span class="sh-age">₹cr · 18 Nov</span></span><span class="sh-t2v"><span>idx fut</span><span class="n v">−2,110</span><span class="sh-wide" style="display:inline-flex;gap:5px">· stk fut <span class="n v">+640</span></span><span class="sh-n1366" style="gap:4px">· stk <span class="n v">+640</span></span></span></span>
+    <span class="sh-t2" title="Put-call ratio of open interest, as of 11:39"><span class="sh-t2l"><span class="sh-lb">PCR (OI)</span><span class="sh-age">11:39</span></span><span class="sh-t2v"><span>NIFTY</span><span class="n v">0.92</span><span>· BANKNIFTY</span><span class="n v">1.08</span></span></span>
+    <span class="sh-t2" title="Advancing / declining F&amp;O shares (unchanged 4)"><span class="sh-t2l"><span class="sh-lb">A/D F&amp;O</span><span class="sh-age">of 222</span></span><span class="sh-t2v"><span class="n v">▲ 61</span><span class="n v">▼ 157</span></span></span>
+    <a class="sh-t2" href="calendar.html#expiry" title="Stock F&amp;O expiry from the contract master; sessions left incl. today; moved from Tue 24 Nov (holiday)"><span class="sh-t2l"><span class="sh-xw" title="EXPIRY WEEK: next month is the default strike month; in-the-money stock options are physically settled - exit before expiry day">EXPIRY WEEK</span><span class="sh-age">next 29 Dec</span></span><span class="sh-t2v"><span class="v">Mon 23 Nov</span><span class="sh-wide" style="color:var(--text-3)">(Tue 24 holiday)</span><span class="sh-n1366" style="color:var(--text-3)">(Tue 24 hol)</span><span>·</span><span class="n v">3</span><span>sessions left</span></span></a>
+    <span class="sh-t2" style="border-right:0;border-left:1px solid var(--line);margin-left:auto;padding-right:12px"><span class="sh-t2l"><span class="sh-lb">F&amp;O ban</span><span class="sh-age sh-wide">tap = list</span></span><span class="sh-t2v"><a class="sh-ban" href="futures-oi.html#mwpl" title="F&amp;O ban list - tap for the list. Ban at 95% MWPL · in ban: close only (only close existing positions, no new ones).">BAN 2</a><span class="sh-age sh-wide">&gt;85% 3</span></span></span>
+  </div>
+</header>
+
+<!-- R02 MY F&O P&L - always visible. Rupees net of costs (realised + open; costs = charges + est. exit slippage, always split in the tooltip). Whole strip = link to F6 MY TRADES. -->
+<a id="sh-pnl" href="positions.html" aria-label="My F&amp;O P&amp;L - opens MY TRADES">
+  <span class="sh-pt"><span class="sh-ptitle" title="tap = MY TRADES (F6)">MY F&amp;O P&amp;L ›</span><span class="sh-lb">today</span><span class="sh-big dn">−₹650</span><span class="n dn">−0.1R</span></span>
+    <span class="sh-pt sh-brk sh-wide" title="TODAY = realised + open. Open is valued at the bid less estimated exit costs; realised uses actual fills and charges. Costs ₹840 = charges ₹211 (statutory, round trip, from the ONE charges table in Settings › Charges, dated: MANAPPURAM ₹125 + HINDALCO ₹86) + est. exit slippage ₹629 (MANAPPURAM ₹295 + HINDALCO ₹334). Per trade: MANAPPURAM +₹2,430 net of ₹420 costs · HINDALCO −₹3,080 net of ₹420 costs">realised <span class="n">₹0</span> · open <span class="n">−₹650</span> net of <span class="n">₹840</span> costs</span><span class="sh-pt sh-brk sh-n1366" style="gap:4px" title="TODAY = realised + open. Open is valued at the bid less estimated exit costs; realised uses actual fills and charges. Costs ₹840 = charges ₹211 (statutory, round trip, from the ONE charges table in Settings › Charges, dated: MANAPPURAM ₹125 + HINDALCO ₹86) + est. exit slippage ₹629 (MANAPPURAM ₹295 + HINDALCO ₹334). Per trade: MANAPPURAM +₹2,430 net of ₹420 costs · HINDALCO −₹3,080 net of ₹420 costs">real <span class="n">₹0</span> · open <span class="n">−₹650</span> · costs <span class="n">₹840</span></span>
+  <span class="sh-pt" title="Open positions (max 2). If every open position hit its SHARE stop now: −₹8,020 net of costs (HINDALCO −₹4,060 + MANAPPURAM −₹3,960 = −1.6R) - lock room ₹1,980. At the Kite backstops (SL-L): −₹9,090 (−1.8R) - lock room ₹910"><span class="sh-lb">open</span><span class="n" style="color:var(--text);font-weight:600">2</span><span>· at share stops</span><span class="n" style="color:var(--text)">−₹8,020</span></span>
+  <span class="sh-pt"><span class="sh-lb">trades</span><span class="n" style="color:var(--text);font-weight:600">2 of 3</span></span>
+  <span class="sh-pt" title="Week to date (Mon 16 Nov to today) in rupees, net of costs, today included. 1R = ₹5,000"><span class="sh-lb">week</span><span class="n dn">−₹4,755</span><span class="n dn" style="font-size:12px">−0.95R</span></span>
+  <span class="sh-pt" title="November to date in rupees, net of costs, today included. 1R = ₹5,000"><span class="sh-lb">month</span><span class="n up">+₹5,045</span><span class="n up" style="font-size:12px">+1.01R</span></span>
+  <span class="sh-pt" title="Rupees left before the day loss lock (−2% = −₹10,000; also 2 losses in a row, weekly −6%). Lock room = what is left if every open position hits its share stop. Meter amber from 75%, LOCKED chip at 100%. Exits always stay usable."><span class="sh-lb sh-wide">loss lock</span><span class="sh-lb sh-n1366">lock</span><span class="n" style="color:var(--text);font-weight:600">₹9,350</span><span>left</span><span class="sh-meter"><i style="width:7%"></i></span></span>
+  <span class="sh-pt" style="border-right:0" title="AI spend today vs the $20 daily cap; by model on Scorecard (Shift+F8)"><span class="sh-lb">AI</span><span class="n" style="color:var(--text)">$4.10</span><span>of $20</span><span class="sh-meter sh-wide"><i style="width:21%"></i></span></span>
+</a>
+
+<!-- R03 TAB BAR - one list (REQUIREMENTS section D). Row 1 = plain F-keys, row 2 = SHIFT + F-keys (filled ⇧ keycaps). No key twice. -->
+<nav id="sh-tabs" aria-label="Pages">
+  <a class="sh-mark" href="desk-hunt.html" title="girtrader.com"><b>GIR</b></a>
+  <div class="sh-grid">
+        <span class="sh-rl sh-rl1">F-KEY</span>
+        <span class="sh-rl sh-rl2"><span>SHIFT +</span></span>
+        <a class="sh-tab" data-tab="desk" href="desk-hunt.html" style="grid-row:1;grid-column:2" title="F1 · Desk - hunting / in a trade: the one screen for 09:15-15:10"><kbd class="sh-k">F1</kbd><span class="sh-tl">Desk</span></a>
+        <a class="sh-tab" data-tab="sectors" href="sectors.html" style="grid-row:1;grid-column:3" title="F2 · Sectors board, accordion, F&O movers"><kbd class="sh-k">F2</kbd><span class="sh-tl">Sectors</span></a>
+        <a class="sh-tab" data-tab="rotation" href="rotation.html" style="grid-row:1;grid-column:4" title="F3 · Rotation 15M / 30M / 1H / TODAY: money out of X into Y"><kbd class="sh-k">F3</kbd><span class="sh-tl">Rotation</span></a>
+        <a class="sh-tab" data-tab="news" href="news.html" style="grid-row:1;grid-column:5" title="F4 · One news list"><kbd class="sh-k">F4</kbd><span class="sh-tl">News</span></a>
+        <span class="sh-tab sh-f5" style="grid-row:1 / span 2;grid-column:6" title="F5 (and Shift+F5) would reload the browser and could drop live prices mid-trade, so GIR blocks it. Reload = Ctrl+Shift+R (asks first while a position is open). See ? Help."><span class="sh-f5a"><kbd class="sh-k sh-koff">F5</kbd><span class="sh-tl">off</span></span><span class="sh-f5b"><span class="sh-wide">reload blocked</span><span class="sh-n1366">no reload</span></span></span>
+        <a class="sh-tab" data-tab="positions" href="positions.html" style="grid-row:1;grid-column:7" title="F6 · Positions & Risk = MY TRADES: P&L, exits"><kbd class="sh-k">F6</kbd><span class="sh-tl">My trades</span></a>
+        <a class="sh-tab" data-tab="share" href="share.html" style="grid-row:1;grid-column:8" title="F7 · Share page: chart, levels, chain, futures, news, WHY"><kbd class="sh-k">F7</kbd><span class="sh-tl">Share</span></a>
+        <a class="sh-tab" data-tab="analyst" href="analyst.html" style="grid-row:1;grid-column:9" title="F8 · Analyst: latest decision, ASK drawer"><kbd class="sh-k">F8</kbd><span class="sh-tl">Analyst</span></a>
+        <a class="sh-tab" data-tab="chain" href="chain.html" style="grid-row:1;grid-column:10" title="F9 · Option chain + OI scenarios"><kbd class="sh-k">F9</kbd><span class="sh-tl">Chain</span></a>
+        <a class="sh-tab" data-tab="futures-oi" href="futures-oi.html" style="grid-row:1;grid-column:11" title="F10 · Futures & OI + MONEY: LB/SB/SC/LU, futures by month, F&O money, BIG MONEY, tape"><kbd class="sh-k">F10</kbd><span class="sh-tl">Fut & OI</span></a>
+        <a class="sh-tab" data-tab="morning" href="morning.html" style="grid-row:2;grid-column:2" title="Shift+F1 · Morning & pre-flight (+ PRE-OPEN 09:00-09:08)"><kbd class="sh-k sh-ks">⇧F1</kbd><span class="sh-tl">Morning</span></a>
+        <a class="sh-tab" data-tab="world" href="world.html" style="grid-row:2;grid-column:3" title="Shift+F2 · World drivers + THEME"><kbd class="sh-k sh-ks">⇧F2</kbd><span class="sh-tl">World</span></a>
+        <span class="sh-tab sh-free" style="grid-row:2;grid-column:4" title="Shift+F3 is not used"><kbd class="sh-k sh-ks">⇧F3</kbd><span class="sh-tl">not used</span></span>
+        <a class="sh-tab" data-tab="calendar" href="calendar.html" style="grid-row:2;grid-column:5" title="Shift+F4 · Calendar: results, events, ex-dates, expiry, Parliament business"><kbd class="sh-k sh-ks">⇧F4</kbd><span class="sh-tl">Calendar</span></a>
+        <a class="sh-tab" data-tab="journal" href="journal.html" style="grid-row:2;grid-column:7" title="Shift+F6 · Journal: every trade, notes, mistakes, rules kept"><kbd class="sh-k sh-ks">⇧F6</kbd><span class="sh-tl">Journal</span></a>
+        <a class="sh-tab" data-tab="reference" href="reference.html" style="grid-row:2;grid-column:8" title="Shift+F7 · Reference: F&O list, lots, sectors map, policy baskets, aliases"><kbd class="sh-k sh-ks">⇧F7</kbd><span class="sh-tl">Reference</span></a>
+        <a class="sh-tab" data-tab="scorecard" href="scorecard.html" style="grid-row:2;grid-column:9" title="Shift+F8 · Calls & Scorecard: 15:45 audit, misses, cost"><kbd class="sh-k sh-ks">⇧F8</kbd><span class="sh-tl">Scorecard</span></a>
+        <a class="sh-tab" data-tab="health" href="health.html" style="grid-row:2;grid-column:10" title="Shift+F9 · Health: every service and feed, data age, Kite login"><kbd class="sh-k sh-ks">⇧F9</kbd><span class="sh-tl">Health</span></a>
+        <a class="sh-tab" data-tab="replay" href="replay.html" style="grid-row:2;grid-column:11" title="Shift+F10 · Replay any past day, minute by minute"><kbd class="sh-k sh-ks">⇧F10</kbd><span class="sh-tl">Replay</span></a>
+  </div>
+  <div class="sh-right">
+    <div class="sh-r1">
+      <a class="sh-tab" data-tab="settings" href="settings.html" title="Ctrl+, · Charter & Settings: his rules, sounds, Telegram, limits" style="border-left:1px solid var(--line)"><kbd class="sh-k">Ctrl ,</kbd><span class="sh-tl">Settings</span></a>
+      <a class="sh-tab" data-tab="help" href="help.html" title="? · Help: every page's purpose, keys (why F5 is off), colours, sounds"><kbd class="sh-k">?</kbd><span class="sh-tl">Help</span></a>
+      <a class="sh-tab" data-tab="market" href="market.html" title="MARKET: NIFTY / BANKNIFTY trading screen. No F-key: type /NIFTY or click an index in the strip"><kbd class="sh-k">/NIFTY</kbd><span class="sh-tl">Market</span></a>
+      <a class="sh-tab sh-wide" data-tab="plan-card" href="plan-card.html" title="Space on a call · Plan card drawer (Desk)"><kbd class="sh-k">Space</kbd><span class="sh-tl">Plan card</span></a>
+    </div>
+    <div class="sh-r2">
+      <label class="sh-cmd" title="/ = command line: symbol (TITAN), contract (HINDALCO 680 PE), verbs (TITAN OC, TITAN FUT, METALS, GOLD, NEWS TITAN, STATUS); free text searches news. Never sends an order.">
+        <kbd>/</kbd><span class="sh-ph">symbol<span class="sh-ph-c">, contract</span><span class="sh-ph-v">, verb</span></span><span class="sh-typed">TIT<i></i></span>
+        <span class="sh-sugg" role="listbox" aria-label="Suggestions">
+          <span class="sh-sg-h"><span class="sh-lb">2 F&amp;O shares match "TIT"</span><span class="sh-age">as you type · 2+ letters</span></span>
+          <span class="sh-sg-r sel" role="option"><span class="sh-sg-s"><em>TIT</em>AN</span><span class="sh-sg-d">Titan Company<br><span>Jewellers &amp; gold loans · lot 175</span></span><span class="sh-sg-p n">3,398.20</span><span class="sh-sg-p n dn">−2.48%</span></span>
+          <span class="sh-sg-r" role="option"><span class="sh-sg-s"><em>TIT</em>AGARH</span><span class="sh-sg-d">Titagarh Rail Systems<br><span>Railways &amp; capital goods · lot 725</span></span><span class="sh-sg-p n">912.35</span><span class="sh-sg-p n dn">−0.84%</span></span>
+          <span class="sh-sg-v"><span class="n">TITAN OC</span><span class="n">TITAN FUT</span><span class="n">NEWS TITAN</span><span class="n">LOG TITAN</span><span>search news for "TIT"</span></span>
+          <span class="sh-sg-f"><kbd>↑</kbd> <kbd>↓</kbd> choose · <kbd>Enter</kbd> open the share page · <kbd>Tab</kbd> complete · <kbd>Esc</kbd> close</span>
+        </span>
+      </label>
+      <button class="sh-btn" title="SOUND ON (at 1366 wide the button reads speaker + ON). Sound on / off. Exits on an open position (STOP, BOOK HALF, EXIT, 15:10) can never be muted. M mutes GO NOW / GET READY for 10 min."><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 4h2.5L7 1v10L3.5 8H1z" fill="currentColor"/><path d="M8.6 3.6a3.4 3.4 0 0 1 0 4.8M10 2.2a5.4 5.4 0 0 1 0 7.6" stroke="currentColor" fill="none" stroke-width="1.1"/></svg><span class="on"><span class="sh-wide">SOUND </span>ON</span></button>
+      <button class="sh-btn" title="Sound legend: which alert makes which sound">♪ LEGEND</button>
+      <span class="sh-al" title="Unacknowledged alerts (A then Enter acknowledges)">P1 <span class="n">0</span> · P2 <span class="n">1</span></span>
+    </div>
+  </div>
+</nav>
+<!-- ===================== SHELL TOP END ===================== -->
+
+<!-- PAGE CONTENT: main#page = 1600 x 716 px at 1600x900 (y 162-878); 1366 x 584 px at 1366x768. -->
+<main id="page"><div class="hv-wrap" id="hv"></div></main>
+
+<!-- ===================== SHELL FOOTER START (copy verbatim) ===================== -->
+<footer id="sh-foot">
+  <a href="health.html" style="display:flex;align-items:center;gap:5px" title="ONE wording on every page: health READY / LIMITED / DOWN (the Health page's own words) · the worst item and its age · AI full / lite / off. Opens Health (Shift+F9)"><span class="sh-dot" style="width:7px;height:7px"></span>health READY · worst K3 <span class="n">1.2s</span> · AI full</a><span class="sh-fs"></span>
+  <span class="sh-keys"><kbd>/</kbd>search <kbd>?</kbd>help <kbd>Space</kbd>plan card <kbd>Esc</kbd>close<span class="sh-wide" style="display:inline-flex;gap:5px;align-items:center"><kbd>A</kbd>+<kbd>Enter</kbd>ack <kbd>M</kbd>mute</span></span>
+  <a href="phone.html" title="the phone version: girtrader.com/m (four screens)">phone /m</a><span class="sh-fs"></span>
+  <span class="sh-mock">design mockup - illustrative values</span>
+</footer>
+<!-- ===================== SHELL FOOTER END ===================== -->
+
+<script>
+/* GIR v3 r3 · Health (Shift+F9) · Thu 19 Nov 2026 11:44:20 IST · design mockup - illustrative values.
+   ONE data set below drives every count (verdict, tiles, chips, footer, lists), so the numbers always agree.
+   Problems first in every panel. #specimen-red in the URL draws the DOWN specimen (no button on the live page). */
+(function () {
+const RED = /specimen-red/.test(location.hash);
+const ALL = /all-rows/.test(location.hash); if (ALL) document.body.classList.add('hv-all');
+const $ = id => document.getElementById(id);
+const S = s => `<a class="hv-sym" href="share.html#${s}" title="open ${s} on the Share page (F7)">${s}</a>`;
+const fmt = n => n.toLocaleString('en-IN');
+const SEC = { OIL: 'Oil marketing', MET: 'Metals', PHA: 'Pharma', GL: 'Gold loans', JEW: 'Jewellers', CAB: 'Cables & wires', BRK: 'Brokers & exchanges' };
+const SHARE_RE = /\b(IOC|NATIONALUM|HINDALCO|MANAPPURAM|MUTHOOTFIN|ANGELONE|TITAN|KALYANKJIL|LUPIN|BSE|CDSL|MCX|RELIANCE|POLYCAB|KEI|HINDCOPPER|SAIL)\b(?![^<]*>)(?![^<]*<\/a>)/g;
+const L = t => t.replace(SHARE_RE, m => S(m)); // link every share name in a text
+
+/* =============================== DATA =============================== */
+// Kite: 4 keys x 3 connections. conn: [c, holds, instr, p50, p95, skew, depthAge, rc, state, note]
+const KEYS = [
+  { k: 'K3', role: 'other chains · FULL', login: '08:06', st: 'lim', note: 'flapping · 5 reconnects today (09:31, 10:05, 11:31, 11:40, 11:42)', conns: [
+    ['c1', 'chains, part 1', 1606, '0.7', '1.2', '0.3', '0.8', 0],
+    ['c2', 'chains, part 2', 1606, '0.7', '1.2', '0.3', '0.9', 2],
+    ['c3', null, 0, '', '', '', '', 3, 'lim', '<b>failed over</b> to K4 c3 at <span class="hv-mono">11:42:54</span> after 2 stalls in 15 min · idle, watching to 11:57'] ] },
+  { k: 'K4', role: 'hot standby + REST sweeps', login: '08:07', st: 'ok', conns: [
+    ['c1', 'held, 2nd path', 28, '0.3', '0.8', '0.2', '0.4', 0],
+    ['c2', 'standby', 2, '0.4', '0.9', '0.2', '-', 0],
+    ['c3', 'K3 part 3', 1584, '0.6', '1.1', '0.3', '0.7', 0] ] },
+  { k: 'K2', role: 'your strikes · FULL + depth', login: '08:05', st: 'ok', note: 'pre-limit: p95 &gt; 2 s with a position open = LATE (limit 5 s)', conns: [
+    ['c1', 'Nov ATM ±5', 398, '0.4', '0.9', '0.2', '0.4', 0],
+    ['c2', 'Dec ATM ±5', 398, '0.4', '0.9', '0.2', '0.4', 0],
+    ['c3', 'held, calls', 128, '0.3', '0.8', '0.2', '0.3', 0] ] },
+  { k: 'K1', role: 'shares, futures, indices', login: '08:04', st: 'ok', conns: [
+    ['c1', 'shares + indices', 245, '0.4', '0.9', '0.2', '-', 0],
+    ['c2', 'futures, 3 mo', 666, '0.5', '1.0', '0.2', '-', 0],
+    ['c3', 'MCX + CDS', 46, '0.6', '1.1', '0.3', '-', 0] ] },
+];
+if (RED) { const c = KEYS[3].conns[0]; c[8] = 'down'; c[9] = '<b class="dn">DOWN · silent 14 s</b> since 11:44:06 · 245 shares + indices grey · restarted once 11:44:16'; c[1] = null; KEYS[3].st = 'down'; }
+const INST = KEYS.reduce((a, k) => a + k.conns.reduce((b, c) => b + c[2], 0), 0);
+const NCONN = KEYS.length * 3;
+const LIVECONN = KEYS.reduce((a, k) => a + k.conns.filter(c => !c[8]).length, 0);
+
+// services: [name, fact, value, state] ; groups as {g}
+const SVC = [
+  { g: 'Market engines · lists on F2 / F10' },
+  ['F&amp;O MOVERS UP / DOWN / ALL', '222 shares · UP 61 · DOWN 157 <span class="hv-eq">= strip A/D ✓</span>', '8 s / 60 s', 0, '', ['sectors.html#movers', 'F2', 'open the F&amp;O MOVERS list on F2 Sectors (UP / DOWN / ALL, each share with its sector, role and build-up tag)']],
+  ['OI build-up LB / SB / SC / LU', '§BU <span class="hv-eq">of 222 · 666 futures</span><br>1 tag <span class="hv-eq">"build-up unknown"</span>: NATIONALUM (frozen OI)', '38 s / 3 min', 0, '', ['futures-oi.html#buildup', 'F10', 'open the OI BUILD-UP list on F10 Futures &amp; OI (LB / SB / SC / LU filter chips, build-up alerts)']],
+  ['F&amp;O money · BIG MONEY · tape', 'last burst 11:42:20 ANGELONE 2,300 PE · ₹ crore by sector', '8 s / 60 s', 0, '', ['futures-oi.html#money', 'F10', 'open F&amp;O MONEY, BIG MONEY and the TAPE on F10 Futures &amp; OI']],
+  ['candle builder', '1-min · gaps 0 · = Kite historical 222 / 222', '20 s / 70 s'],
+  ['quote sweep', 'REST on K4 · 16 s cycle · 222 F&amp;O + 1,968 other listed (sector breadth) · silent 2', '16 s / 60 s'],
+  ['OI / chain sweep', 'REST on K3 every 60 s · frozen 1 (NATIONALUM fut)', '38 s / 3 min'],
+  ['sector engine · basis ALL listed shares', '22 sectors · NSE index, else free-float basket of all listed · breadth all + F&amp;O · 21 fresh', '12 s / 2 min'],
+  ['theme: driver → shares', 'gold ↓ TITAN, KALYANKJIL, MANAPPURAM, MUTHOOTFIN · copper ↓ POLYCAB, KEI, HINDALCO', '30 s / 2 min'],
+  ['unusual option activity', '14 bursts today · last ANGELONE 2,300 PE 11:42:20', '4 s / 60 s'],
+  { g: 'Needs a look', st: 'lim' },
+  ['basket watch', '6 policy baskets · 1 miss today: BROKERS 12 s', '12 s / 10 s', 'lim', 'BRK'],
+  ['rotation 15M/30M/1H', 'Oil marketing INCOMPLETE (IOC) · 21 fresh', '20 s / 2 min', 'lim', 'OIL'],
+  { g: 'Your trade engines' },
+  ['positions / orders sync', '2 positions · 4 orders · = Kite ✓', '1.6 s / 10 s'],
+  ['broker-stop checker', '2 SL-L resting at the backstops ✓', '1.6 s / 10 s'],
+  ['exit messages (your trades only)', 'EXIT HINDALCO not done · BOOK MANAPPURAM not acked', '0.4 s / 5 s'],
+  ['15:10 exit timer', 'armed · flags HINDALCO, MANAPPURAM · test 08:47 ✓', '3h 26m left'],
+  ['risk &amp; loss lock', 'net −₹650 after ₹840 costs (charges ₹211 + slippage ₹629) · ₹9,350 left · at share stops −₹8,020 · lock room ₹1,980 · trades 2 of 3', '1.0 s / 10 s'],
+  ['ban / MWPL gate', 'BAN 2 · &gt;85% 3 incl. MANAPPURAM 86% (yours) · test: call on IDEA refused ✓', '11:30 / 30 min'],
+  { g: 'Options analytics · GIR computes (Kite gives none)' },
+  ['greeks &amp; IV', '1,842 strikes · IV outside 5-200: 0', '3.1 s / 15 s'],
+  ['underlying used', 'same-expiry future (Nov → Nov fut, Dec → Dec fut)', '1.0 s / 10 s'],
+  ['risk-free rate', '91-day T-bill 6.52% · auction Wed 18 Nov (prev Wed 11 Nov 6.53%)', '1 d / 8 d'],
+  ['dividends / ex-dates', '3 shares go ex before 29 Dec · adjusted', '07:40 / daily'],
+  ['time to expiry clock', 'Nov: Mon 23 Nov 15:30 · 3 sessions · 976 trading min · Dec: 27 sessions', 'holiday ✓'],
+  ['IV history · IV rank', '20 of 20 days · 248-day rank · last close 18 Nov', '07:35 / daily'],
+  ['per-share PCR · max pain', '222 shares · OI change by strike', '58 s / 3 min'],
+  ['expiry-week rules', 'ITM Nov stock options: exit by Fri 20 Nov · yours are Dec', 'armed'],
+  ['broker expiry-week rule (Zerodha)', 'delivery margin on ITM Nov stock F&amp;O from E−4 · ITM Nov longs may be blocked or squared off · you hold Dec', 'checked 08:45'],
+  ['liquidity filter', 'spread &gt; 1% → better strike offered · 31 today', '2 s / 10 s'],
+  ['margin &amp; charges', 'SPAN 11:00 · the ONE charges table (Settings) · STT 0.15% since 08:40 · cash check per call', '44 min / 2 h'],
+  { g: 'Analyst &amp; AI' },
+  ['analyst (decisions)', 'latest 11:42:52 GET READY ANGELONE PE · not the brief · no blink', '1m 28s / 5 min'],
+  ['small · small model', '860 calls · $1.00 · cache 79% · rejects 0', 'p95 1.1 s / 2 s'],
+  ['mid · mid model', '30 calls · $1.48 · cache 78% · rejects 2', 'p95 6.8 s / 8 s'],
+  ['top · top model', '6 calls · $1.62 · cache 81% · GO NOW check + 07:15 plan', 'p95 17.9 s / 25 s'],
+  { budget: true },
+  { g: 'News pipeline &amp; search' },
+  ['dedupe · tag · classify', '1,412 items today · 6% mapped to no share', 'p50 0.9 s / 1.5 s'],
+  ['search index ("/")', '222 F&amp;O shares + aliases · "TIT" → 2 rows', '38 ms / 300 ms'],
+  { g: 'World feeds · session-aware' },
+  ['MCX + USD/INR via Kite', 'gold −1.62% · copper −1.8% · crude · USD/INR', '0.9 s / 10 s'],
+  ['world data API', 'Brent, COMEX, LME, US 10y, DXY', '58 s / 5 min'],
+  ['Asia + US futures, GIFT', 'Nikkei, Kospi, Hang Seng, SHFE · US futures', '1m 04s / 5 min'],
+  { g: 'Delivery' },
+  ['page stream (SSE)', 'seq gaps 0 · 2 clients · auto-resume armed', '0.2 s / 5 s'],
+  ['sound player', 'one player · old alarm layer off · self-test 09:00 ✓', 'OK'],
+  ['Telegram decisions bot', 'owner only: 1 chat id ✓ · groups 0 · forwarding off', 'p95 2.2 s / 5 s'],
+  ['Telegram system bot', 'health only · always sends "recovered"', 'p95 2.4 s / 5 s'],
+  ['phone push', '1 device (yours) ✓ · same three tones', 'p95 2.2 s / 5 s'],
+  ['phone call (P1)', 'test 08:45 ✓ · 1 number', 'OK'],
+  ['recorder (raw frames)', '418 MB · gaps 0 · queue 0 · no SQL in market hours', '0.3 s / 10 s'],
+  { g: 'Monitoring · watched from outside' },
+  ['heartbeat checker', '§ rows vs the clock\'s limits · late 0', '20 s / 60 s'],
+  ['status.json', 'this page turns red by itself if older', '4 s / 120 s'],
+  ['dead-man ping (outside)', 'silence 3 min = phone call', '20 s / 3 min'],
+  ['uptime monitor (outside)', 'reads the age of status.json', 'OK 11:44:00'],
+  ['systemd watchdog', 'pinged inside the loop · restarts 1 (09:52) · loops 0', 'OK'],
+  ['canary · every 15 min', 'page +1.2 s · Telegram +2.0 s · next 11:45', '14 min / 16 min'],
+  ['Kite token check', '4 of 4 · every 5 min from 08:00', '4 min / 5 min'],
+  { g: 'Host · Mumbai region' },
+  ['disk', '118 GB free', '41% / 80%'],
+  ['memory', 'swap 0', '58% / 85%'],
+  ['event loop lag', 'feed callback only queues frames', '4 ms / 100 ms'],
+  ['clock offset', 'vs NTP · exchange time from sentinels', '+3 ms / 100 ms'],
+  ['TLS certificate · backup', 'backup 02:10 ✓', '61 d / 14 d'],
+];
+const SVCROWS = SVC.filter(s => Array.isArray(s));
+const NS = SVCROWS.length + 1; // + the AI budget row
+
+// sources: [name, fact, value, state]
+const SRC = [
+  { g: 'Not enabled · your decision' },
+  ['X lists · journalists, regulators', 'needs X API credits · before 23 Nov', 'NOT ENABLED', 'off'],
+  { g: 'News · items in 15 min vs usual' },
+  ['Regulators · SEBI, RBI, PIB, Parliament, IRDAI, CERC', '2 items (usual 0-4) · last SEBI item 11:44:12', '11:44:12', 0, 'BRK'],
+  ['TV speech-to-text · CNBC-TV18, ET Now', '150 lines (usual 150-180) · text 14 s after air', '11:44:19', 0, 'GL'],
+  ['Live blogs · ET, Moneycontrol', '9 entries (usual 4-14) · last ET 11:42:44', '11:44:05', 0, 'BRK'],
+  ['NSE announcements', '14 (9-22) · first seen p50 8 s', '11:44:18'],
+  ['BSE announcements', '11 (7-18) · first seen p50 9 s', '11:44:17'],
+  ['Reuters news sitemap', '6 (3-9) · every 15 s', '11:44:10'],
+  ['Publisher sitemaps · ET, MC, BS, Mint', '27 (18-40) · every 20-30 s', '11:44:00'],
+  ['Telegram channels · 11', '23 (12-35) · push', '11:44:16'],
+  { g: 'Files &amp; calendars · content date + known-answer row' },
+  ['NSE contract master', 'expiry Mon 23 Nov (moved from Tue 24, holiday) ✓ · next 29 Dec', '08:15:40'],
+  ['NSE MWPL / combined OI', '222 rows · &gt;85%: HINDCOPPER 91 · SAIL 88 · MANAPPURAM 86', '11:30:12'],
+  ['NSE ban list (fo_secban)', '2 = the BAN pill (IDEA, RBLBANK) ✓', '08:30:05'],
+  ['NSE option chain (for the IV check)', '222 shares · 2 / s, polite · 0 empty', '11:40:00'],
+  ['Kite instrument dump', '94,512 rows (88-102k) · RELIANCE NSE EQ ✓', '08:02:11'],
+  ['NSE lot sizes (fo_mktlots)', '222 rows = Kite 222 / 222 ✓', '08:15:42'],
+  ['SPAN margin file', '222 shares · TITAN DEC row ✓', '11:00:04'],
+  ['charges table (Settings › Charges)', 'STT 0.15% sell (Finance Act 2026) · ₹20/order · exch · GST · stamp · + slippage-allowance row · rates verified 18 Nov', '19 Nov 08:40'],
+  ['NSE F&amp;O bhavcopy', '52,880 rows · TITAN NOV settle ✓ (yesterday is right)', '18 Nov 18:42'],
+  ['NSE FII / DII + FII F&amp;O stats', '= strip: FII −1,842 · DII +1,315 · idx fut −2,110 · stk fut +640', '18 Nov 19:10'],
+  ['economic calendar', 'Fed, US CPI, RBI, India CPI / IIP · next: US jobless 19:00', '07:00:10'],
+  ['results calendar (board meetings)', '4 F&amp;O results today, all after 15:30', '07:05:02'],
+  ['holiday list', '24 Nov holiday → Nov expiry shift ✓', '01 Jan'],
+];
+const SRCROWS = SRC.filter(s => Array.isArray(s));
+const SRCON = SRCROWS.filter(s => s[3] !== 'off');
+
+// component totals (one count everywhere)
+const LIMITED = ['K3', 'K3 c3', 'basket watch', 'rotation'];
+const TOTAL = KEYS.length + NCONN + NS + SRCON.length;
+const NDOWN = RED ? 1 : 0;
+const NREADY = TOTAL - LIMITED.length - NDOWN;
+
+// incidents: [time, what, action/never-again, state, sec]
+const INC = [
+  ['11:42:40', 'K3 c3 stalled again, 2nd time in 3 min', 'failed over to K4 c3 in 14 s · rule: 2 stalls in 15 min → standby (worked)', 'WATCHING'],
+  ['11:42:26', 'IOC token silent on K1 c1', 'quote sweep found it in 22 s · never again: sweep 16 s → 8 s tonight', 'OPEN', 'OIL'],
+  ['11:42:08', 'BROKERS basket alarm 12 s (target 10 s), silent card', 'first sound +42 s · never again: batch 1 s → 0.5 s, burst 2 bars → 1, the basket card rings GET READY', 'OPEN', 'BRK'],
+  ['11:40:02', 'NATIONALUM futures OI frozen', 'rule changed: frozen OI = WARNING on the build-up tag, not a block on option calls', 'OPEN', 'MET'],
+  ['11:40:21', 'K3 c3 sentinels silent 3 s', 'resubscribed · fresh 11:40:35 · LUPIN 2,100 CE held 14 s', 'CLOSED', 'PHA'],
+  ['11:31:12', 'K3 c2 gap 41 s (1,606 strikes)', 'grey until the 11:32 snapshot · added: gap &gt; 30 s re-subscribes in halves', 'CLOSED'],
+  ['10:05:00', 'K3 c3 token re-subscribing 12 s', 'MUTHOOTFIN 3,200 PE GO NOW held until depth fresh (10:12)', 'CLOSED', 'GL'],
+  ['09:48:02', 'TV speech-to-text: HTTP 200, empty text', 'restarted 09:52 · added: test clip every 5 min', 'CLOSED'],
+  ['09:31:40', 'K3 c2 sentinels silent 3.0 s', 'resubscribed in 2.1 s · rule worked', 'CLOSED'],
+];
+const NOPEN = INC.filter(i => i[3] !== 'CLOSED').length;
+const NWATCH = INC.filter(i => i[3] === 'WATCHING').length;
+// never again: 18 Nov complaints as automatic checks (every 5 min). [state 1 ok / 2 flag / 0 decision, text, complaint numbers]
+const NA = [
+  [2, '<b>EXIT messages</b> only on your trades · 2 today: EXIT HINDALCO acked, <b>not done</b> · BOOK MANAPPURAM not acked', '#37'],
+  [1, '<b>OI build-up and F&amp;O movers</b> one click away: <a class="hv-go" href="futures-oi.html#buildup">F10 BUILD-UP ›</a> <a class="hv-go" href="sectors.html#movers">F2 MOVERS ›</a> · every build-up tag links to its F10 filter', '19 Nov'],
+  [1, '<b>"/" search</b> answers as you type: "TIT" → 2 rows in 38 ms', '#1 #20 #25'],
+  [1, '<b>One sound player</b>, old alarm layer off · double rings 0', '#19 #36'],
+  [1, '<b>Analyst box</b> shows the latest decision (11:42:52), not the morning brief · no blink', '#18 #41'],
+  [1, '<b>Sector accordion</b> opens in place with live numbers (snapshot 0.2 s)', '#22'],
+  [1, '<b>Page stream</b>: no gap over 10 s today · auto-resume armed', '#43'],
+  [1, '<b>AI cap</b> enforced before each call ($20)', '#2 #23'],
+  [1, '<b>Telegram</b>: decisions channel only, owner only', '#40'],
+  [0, '<b>gir-watchdog</b> fails every 5 min while paper exits are off: retire it, or turn paper exits on', '#17'],
+  [0, '<b>Second price vendor</b> (needs an account in your name): a silent Kite token would fail over', 'S2'],
+];
+
+// sounds: [time, kind, what, tone, sec, extra]
+const EXITS = [
+  ['11:39:40', 'EXIT', 'HINDALCO 680 PE', 'MET', 'acked 11:39:52 · next: P1 call in 20 s', 'NOT DONE'],
+  ['11:40:12', 'BOOK', 'MANAPPURAM 285 PE', 'GL', 'tone ×5, every 60 s · P2 open', 'NOT ACKED'],
+];
+const RINGS = [
+  ['11:42:38', 'GET READY', 'ANGELONE 2,300 PE · brokers basket', 'soft tick', 'BRK', 6],
+  ['10:58:10', 'GO NOW', 'HINDALCO 680 PE', 'chime', 'MET', 5],
+  ['10:12:30', 'GO NOW', 'MUTHOOTFIN 3,200 PE', 'chime', 'GL', 4, '7m 28s after 10:05 · over pace'],
+  ['10:05:02', 'GO NOW', 'MANAPPURAM 285 PE', 'chime', 'GL', 3],
+  ['09:22:40', 'GET READY', 'Cables &amp; wires (sector call)', 'soft tick', 'CAB', 2, '2m 26s after 09:20 · over pace'],
+  ['09:20:14', 'GET READY', 'Jewellers &amp; gold loans (sector call)', 'soft tick', 'JEW', 1],
+];
+const NRING = RINGS.length, NPACE = RINGS.filter(r => r[6]).length;
+
+/* =============================== RENDER =============================== */
+const row = (o) => `<div class="hv-r${o.cls ? ' ' + o.cls : ''}"${o.sec ? ` data-sec="${o.sec}"` : ''}${o.st ? ` data-st="${o.st}"` : ''}${o.tip ? ` title="${o.tip}"` : ''}><span class="hv-d ${o.dot || ''}"></span><span class="nm">${o.n}</span><span class="vl">${o.v || ''}${o.chip || ''}</span>${o.f ? `<span class="fx">${o.f}</span>` : ''}</div>`;
+const gh = (t, s) => `<div class="hv-gh">${t}${s !== undefined ? `<span>${s}</span>` : ''}</div>`;
+const panel = (id, title, extra, age, body, acc) => `<section class="hv-pn" id="${id}"><div class="hv-ph sh-acc-${acc || 'sys'}"><span class="t">${title}</span>${extra || ''}<span class="sp"></span>${age ? `<span class="age"><span class="sh-dot"></span>${age}</span>` : ''}<span class="hv-ud"><button aria-label="scroll up" title="up">▲</button><button aria-label="scroll down" title="down">▼</button></span></div><div class="hv-pb">${body}</div></section>`;
+const chip = (cls, txt, tip) => `<span class="hv-sc ${cls}"${tip ? ` title="${tip}"` : ''}>${txt}</span>`;
+const DOT = { ok: '', lim: 'lim', off: 'off', down: 'down', stale: 'stale', warn: 'ring' };
+
+// ---- title row
+const top = `<div class="hv-top">
+  <span class="hv-ttl"><kbd class="hv-kk">⇧F9</kbd><b>DATA HEALTH</b><span class="hv-sub">/status · 11:44:20</span></span>
+  <span class="hv-purp" title="A DOWN component opens this page once by itself; you can leave it. The page turns red by itself if status.json is older than 2 min."><b>Can you trust the screen right now?</b> Problems first<span class="hv-w16">, then feeds, keys, services</span>.</span>
+  <nav class="hv-ho" aria-label="hand-off" title="R41: the next step from here, one key or click"><span class="l">next</span><a href="positions.html" title="F6 My trades: act on your 2 exits (orders only in Kite)"><kbd>F6</kbd>your exits</a><a href="sectors.html#movers" title="F2 Sectors: the F&amp;O MOVERS list (UP / DOWN / ALL)"><kbd>F2</kbd>F&amp;O movers</a><a href="futures-oi.html#buildup" title="F10 Futures &amp; OI: the OI BUILD-UP list (LB / SB / SC / LU)"><kbd>F10</kbd>OI build-up</a></nav>
+  <label class="hv-sel" title="Filters the share rows (exceptions, incidents, sounds, sources). Your 2 positions, keys, services and host always stay."><select id="secf" aria-label="sector filter"></select></label>
+  <span style="position:relative;flex:none"><button class="hv-btn" id="tabtn" title="Send a TEST through the page, phone push and both Telegram bots (asks first)">TEST ALARM</button>
+    <span class="hv-pop" id="tapop"><b>Send a TEST alarm now?</b><br>A canary marked TEST goes to this page, your phone and both Telegram bots. It plays no ring tone and does <b>not</b> use the 6-ring budget.<span class="bt"><button class="hv-btn on" id="tasend">SEND TEST</button><button class="hv-btn" id="tano">CANCEL</button></span></span></span>
+  <button class="hv-btn" id="rbbtn" title="Runbook (what to do when a feed, the server, the AI or a Kite key dies) and the freshness limits by phase">RUNBOOK · LIMITS <kbd>R</kbd></button>
+  <a class="hv-help" href="help.html#health" title="? Help: what every state, shape and limit on this page means; the DOWN specimen lives there">?</a>
+</div>`;
+
+// ---- verdict band
+// r3: every tile carries its state in colour AND a word (blue OK · white-outline LIMITED / USED · red DOWN)
+const tiles = RED ? [
+  ['Kite keys', '4/4', 'exp 06:00 Fri', 'ok', 'OK'], ['Live feed', '10/12', 'K1 c1 silent', 'down', 'DOWN'], ['Worst lag', '14 s', 'K1 c1 · limit 5 s', 'down', 'DOWN'],
+  ['status.json', '4 s', 'red if &gt; 120 s', 'ok', 'OK'], ['Dead-man', '11:44', 'every 60 s', 'ok', 'OK'], ['Rings', `${NRING}/6`, 'GET READY silent', 'flag', 'USED'],
+] : [
+  ['Kite keys', '4/4', 'exp 06:00 Fri', 'ok', 'OK'], ['Live feed', `${LIVECONN}/${NCONN}`, '1 failed over', 'flag', 'LIMITED'], ['Worst lag', '1.2 s', 'K3 · limit 5 s', 'ok', 'OK'],
+  ['status.json', '4 s', 'red if &gt; 120 s', 'ok', 'OK'], ['Dead-man', '11:44', 'every 60 s', 'ok', 'OK'], ['Rings', `${NRING}/6`, 'GET READY silent', 'flag', 'USED'],
+];
+const tileHTML = () => `<div class="hv-tiles">${tiles.map((t, i) => `<div class="hv-tile ${t[3]}" title="${TIPS[i]}"><div class="tl">${t[0]}<span class="w">${t[4]}</span></div><div class="tv"><b>${t[1]}</b> ${t[2]}</div></div>`).join('')}</div>`;
+// heartbeat sparkline: worst p95 lag per minute 11:15-11:44 (30 bars, scale 0-5 s = the limit); dead-man pings 30 of 30
+const HB = [1.0, 0.9, 1.1, 1.0, 0.9, 1.0, 1.1, 1.0, 1.2, 1.0, 0.9, 1.0, 1.1, 1.0, 1.0, 1.1, 5.0, 1.2, 1.0, 1.1, 1.0, 0.9, 1.0, 1.1, 1.2, 3.0, 1.1, 4.1, 1.3, 1.2];
+if (RED) { HB[28] = 5; HB[29] = 5; }
+const hbSvg = () => `<span class="hv-hb" title="heartbeat, 11:15-11:44: worst p95 lag each minute (bar top = the 5 s limit) · tall bars: 11:31 K3 c2 gap 41 s, 11:40 c3 sentinels 3 s, 11:42 c3 stall → K4 · dead-man pings 30 of 30"><svg width="84" height="14" viewBox="0 0 84 14" aria-hidden="true"><line x1="0" y1="0.5" x2="84" y2="0.5" stroke="var(--line-2)" stroke-dasharray="2 2"/>${HB.map((v, i) => { const h = Math.max(2, Math.round(Math.min(v, 5) / 5 * 13)); const c = RED && i >= 28 ? 'var(--danger)' : v >= 2 ? 'var(--text-2)' : 'var(--info)'; return `<rect x="${(i * 2.8).toFixed(1)}" y="${14 - h}" width="2" height="${h}" fill="${c}"/>`; }).join('')}</svg><span>30 min</span></span>`;
+const TIPS = ['Each key needs its own manual daily login; checked every 5 min from 08:00; the 08:45 pre-flight rings you if one is missing',
+  `${NCONN} websocket connections (4 keys × 3), max 3,000 instruments each; ${fmt(INST)} instruments live`,
+  'Worst p95 lag of any live connection (exchange → decoder). Limit 5 s; pre-limit 2 s with a position open (LATE, ring dot)',
+  'The status file the outside monitor reads; this page turns red by itself if it is older than 2 min',
+  'Pinged every minute from inside the data loop to an outside service; silence for 3 min = a phone call to you',
+  'Audible rings today outside your own exits vs the budget of 6 a session. Budget used: GET READY = silent card + Telegram + phone push; GO NOW and your exits still ring'];
+// ---- your positions band (always shown, under any sector filter)
+const shareCell = (p, a) => RED ? `<span class="hv-sc stale">STALE 14 s</span> <span class="hv-mono">${p}</span>` : `<span class="hv-mono">${p}</span> <span class="hv-t3">·</span> <span class="hv-mono">${a}</span>`;
+const ok = '<span class="ok">✓</span>';
+const pc = (cls, html, tip) => `<span class="pc ${cls}"${tip ? ` title="${tip}"` : ''}>${html}</span>`;
+const PH = [['l', 'Your 2 positions', 'Always shown, whatever the sector filter'], ['r', 'bid / ask · spread', 'option bid / ask now and the spread as % of mid'],
+  ['r', '2-path age', 'option premium age on both independent paths: K2 c3 · K4 c1'], ['r', 'depth · skew', 'market-depth age · exchange-time vs receipt skew'],
+  ['r', 'share · age', 'share price on K1 c1: your stops are judged on it'], ['r', 'SL-L at Kite', 'the backstop resting at Kite: SL-L trigger / limit'],
+  ['l', 'GIR said → delivered', 'the exit message, its sound and where it was delivered (Telegram, phone)'], ['l', 'done in Kite? · 15:10 armed ✓', 'is the exit done in Kite? (GIR never places orders) · the 15:10 exit timer is armed for both']];
+const POS = [
+  { tip: 'HINDALCO 680 PE 29 Dec · 1 lot of 1,400 · Dec series: no physical settlement this week · time stop 11:47', sym: 'HINDALCO', k: '680', ba: '14.50/14.60', sp: '0.7%', pa: '0.3 · 0.3 s', dk: '0.4 · 0.2 s', px: '684.70', pxa: '0.3 s', sl: '13.40/12.90',
+    said: `<span class="sh-c sh-c-exit">EXIT</span><span class="hv-mono">11:39:40</span> <span class="hv-t3">·</span> TG${'<span class="ok">✓</span>'} phone${'<span class="ok">✓</span>'} <span class="hv-t3">·</span> acked <span class="hv-mono">11:39:52</span>`,
+    done: `<span class="hv-sc down">NOT DONE 4m 40s</span><span class="nx" title="P1 phone call due at 11:44:40 · to hold on purpose, use HOLDING ON PURPOSE… on the EXCEPTIONS row">next: P1 call in 20 s</span>` },
+  { tip: 'MANAPPURAM 285 PE 29 Dec · 1 lot of 3,000 · MWPL 86%: if it is banned you can only close · Dec series: no physical settlement this week', sym: 'MANAPPURAM', k: '285', ba: '14.20/14.25', sp: '0.4%', pa: '0.3 · 0.3 s', dk: '0.5 · 0.2 s', px: '284.50', pxa: '0.4 s', sl: '11.90/11.40',
+    said: `<span class="sh-c sh-c-book">BOOK</span><span class="hv-mono">11:40:12</span> <span class="hv-t3">·</span> TG${'<span class="ok">✓</span>'} phone${'<span class="ok">✓</span>'} <span class="hv-t3">·</span> not acked`,
+    done: `<span class="hv-sc act">NOT ACKED 4m 08s</span><span class="nx">P2 · tone every 60 s</span>` },
+];
+const okc = '<span class="ok">✓</span>';
+const pos = `<section class="hv-pos sh-acc-mine" aria-label="your positions">
+  ${PH.map((h, i) => `<span class="ph ${h[0]}${i === 0 ? ' t' : ''}" title="${h[2]}">${h[1]}</span>`).join('')}
+  ${POS.map((p, n) => [
+    pc('l nm', `${S(p.sym)} <b class="hv-mono">${p.k}</b> <span class="sh-c sh-c-pe">PE</span> <span class="hv-t3">Dec ×1</span>`, p.tip),
+    pc('r hv-mono', `${p.ba} <span class="hv-t3">·</span> ${p.sp}`),
+    pc('r hv-mono', p.pa), pc('r hv-mono', p.dk),
+    pc('r', RED ? `<span class="hv-sc stale">STALE 14 s</span> <span class="hv-mono">${p.px}</span>` : `<span class="hv-mono">${p.px} <span class="hv-t3">·</span> ${p.pxa}</span>`),
+    pc('r hv-mono', `${p.sl} ${okc}`),
+    pc('l said', p.said), pc('l done', p.done)].map(x => n === POS.length - 1 ? x.replace('class="pc ', 'class="pc last ') : x).join('')).join('')}
+</section>`;
+
+// ---- column 1: exceptions + Kite keys
+// your exits not acted on: the worst items on the page (they lead the verdict and EXCEPTIONS; no sector filter hides them)
+const HOLDBTN = `<button class="hv-hold" data-hold title="Holding on purpose: give a reason, stop the escalation, logged (Journal ⇧F6 + 15:45 audit)">HOLDING ON PURPOSE…</button>`;
+const XROWS = [
+  { k: 'X', cls: 'bad ex xr xe', dot: 'down', n: `<span class="sh-c sh-c-exit">EXIT</span> ${S('HINDALCO')} 680 PE`, chip: '', f: `${chip('down', 'NOT DONE 4m 40s')} <b>next: P1 call in 20 s</b> <span class="hv-mono">(11:44:40)</span> · acked <span class="hv-mono">11:39:52</span> ${HOLDBTN}`, xchip: 'NOT DONE 4m 40s' },
+  { k: 'X', cls: 'bad ex xr', dot: 'act', n: `<span class="sh-c sh-c-book">BOOK</span> ${S('MANAPPURAM')} 285 PE`, chip: '', f: `${chip('act', 'NOT ACKED 4m 08s')} stalled · 1 lot: book it or trail to <span class="hv-mono">286.00</span> · P2 tone every 60 s · <kbd>A</kbd>+<kbd>Enter</kbd> ack`, xchip: 'NOT ACKED 4m 08s' },
+];
+const EXC = [
+  ...XROWS,
+  RED ? { k: 'B', cls: 'bad ex', dot: 'down', n: 'K1 c1 · shares + indices', chip: chip('down', 'DOWN 14 s'), f: '<b>SAFE MODE</b>: no calls · stops judged on share price → check Kite' } : null,
+  { k: 'B', cls: 'bad ex', dot: 'stale', sec: 'OIL', n: `${S('IOC')} <small>Oil marketing</small>`, chip: chip('stale', 'STALE 1m 54s'), f: '<b>blocks</b> calls on IOC + Oil rotation · no tick since 11:42:26 · unblocks after 60 s fresh' },
+  { k: 'L', cls: 'ex', dot: 'lim', n: 'K3 + K3 c3', chip: chip('lim', 'LIMITED ×2'), f: '<b>c3 failed over</b> to K4 c3 11:42:54 · watching' },
+  { k: 'L', cls: 'ex', dot: 'lim', sec: 'BRK', n: 'basket watch', chip: chip('lim', 'LIMITED'), f: '12 s vs 10 s target · silent card · 1st sound +42 s' },
+  { k: 'L', cls: 'ex', dot: 'lim', sec: 'OIL', n: 'rotation 15M / 30M / 1H', chip: chip('lim', 'LIMITED'), f: 'Oil marketing INCOMPLETE (IOC) · 21 sectors fresh' },
+  { k: 'W', cls: 'ex', dot: 'ring', sec: 'MET', n: `${S('NATIONALUM')} <small>Metals</small>`, chip: chip('wn', 'WARNING'), f: 'fut OI frozen 4m 18s · tag <b>"build-up unknown"</b> · option calls allowed' },
+  { k: 'W', cls: 'ex', dot: 'ring', n: `rings ${NRING} of 6 used`, chip: chip('wn', 'WARNING'), f: 'GO NOW + your exits <b>still ring</b> · GET READY now silent' },
+].filter(Boolean);
+const RECOV = [
+  ['11:40:21', 'LUPIN 2,100 CE quote stale 9 s (K3 c3)', 'WATCH held until fresh 11:40:35', 'PHA'],
+  ['11:31:12', '1,606 strikes, gap 41 s (K3 c2)', 'grey until the 11:32 snapshot'],
+  ['10:05:00', 'MUTHOOTFIN 3,200 PE depth 12 s old (K3 c3)', 'GO NOW held; sent 10:12 once fresh', 'GL'],
+];
+const RULES = [
+  ['option quote or depth &gt; 5 s', '<b>HARD BLOCK</b> on that strike'],
+  ['share / future price &gt; 10 s', '<b>HARD BLOCK</b> on calls in that share'],
+  ['futures OI frozen or &gt; 6 min', '<b>WARNING</b>: build-up tag only'],
+  ['held, both paths &gt; 5 s', '<b>P1</b> + "price STALE - check Kite"'],
+];
+const SCC = { OPEN: 'open', CLOSED: 'closed', WATCHING: 'lim' };
+const incRow = i => `<div class="hv-r tm"${i[4] ? ` data-sec="${i[4]}"` : ''}><span class="tt">${i[0]}</span><span class="nm" style="font-size:12px">${L(i[1])}</span><span class="vl">${chip(SCC[i[3]], i[3])}</span><span class="fx">${L(i[2])}</span></div>`;
+const excBody = gh('Problems now', `(${EXC.length}) · worst first`) + EXC.map(row).join('') +
+  `<div class="hv-gh" id="xg-inc">Incidents open<span>(${NOPEN}) · newest first · safe mode today: none</span></div>` + INC.filter(i => i[3] !== 'CLOSED').map(incRow).join('') +
+  `<div class="hv-gh" id="xg-na">Never again · 18 Nov complaints<span>${NA.length} checks every 5 min · ✓ ${NA.filter(n => n[0] === 1).length} · ! ${NA.filter(n => n[0] === 2).length} · your decision ${NA.filter(n => !n[0]).length}</span></div>` +
+  NA.map(n => `<div class="hv-na"><span class="ck${n[0] === 1 ? '' : n[0] === 2 ? ' x' : ' q'}">${n[0] === 1 ? '✓' : n[0] === 2 ? '!' : '?'}</span><span>${L(n[1])}${n[0] === 0 ? ' ' + chip('dec', 'YOUR DECISION', 'GIR reminds, it does not act') : ''}</span><span class="cn">${n[2]}</span></div>`).join('') +
+  gh('Quiet · not stale', '(1)') + row({ dot: 'off', n: '3 far strikes', chip: chip('quiet', 'QUIET 6m+'), f: 'no trade, feed healthy · plain grey · never a pick' }) +
+  gh('Stale rule by data type', '(4)') + RULES.map(r => `<div class="hv-na"><span class="ck">·</span><span>${r[0]} → ${r[1]}</span><span class="cn"></span></div>`).join('') +
+  `<div class="hv-gh" id="xg-cl">Closed today<span>(${INC.length - NOPEN})</span></div>` + INC.filter(i => i[3] === 'CLOSED').map(incRow).join('') +
+  gh('Reports') + `<div class="hv-na"><span class="ck">✓</span><span><b>08:45 pre-flight</b> READY, sent 08:45:20 (system bot) · next <b>16:30</b> · weekly reliability Sat</span><span class="cn">S3.7</span></div>`;
+const nExit = EXC.filter(e => e.k === 'X').length, nBlock = EXC.filter(e => /STALE|DOWN/.test(e.chip || '')).length, nLim = EXC.filter(e => /LIMITED/.test(e.chip)).length, nWarn = EXC.filter(e => /WARNING/.test(e.chip)).length;
+
+// ---- verdict band (after EXCEPTIONS, so its counts are the same numbers)
+const verd = RED ? `<section class="hv-verd" aria-label="health verdict">
+  <div class="hv-vs"><span class="hv-big"><i></i>DOWN</span><small>SAFE MODE since 11:44:06</small>${hbSvg()}</div>
+  <div class="hv-vt"><div class="hv-v0" title="Your own exits come before any data problem: GIR said it, you have not done it. Exits are done in Kite; GIR never places orders."><span class="hv-vl">your exits</span><span class="sh-c sh-c-exit">EXIT</span><b class="x">${S('HINDALCO')} 680 PE not done 4m 40s</b><span class="hv-t2 nx">next: P1 call in 20 s</span><span class="hv-t3">·</span><span class="sh-c sh-c-book">BOOK</span><b class="bk">${S('MANAPPURAM')} 285 PE not acked 4m 08s</b></div>
+  <div class="hv-v1"><b>SAFE MODE - no calls.</b> K1 c1 silent 14 s</div>
+  <div class="hv-v2" title="Shares + indices grey STALE since 11:44:06 · restarted 11:44:16 · entries only after READY 5 min · P1: system bot + phone · option premium fresh on K2 c3 + K4 c1">shares + indices STALE since 11:44:06 · restarted 11:44:16 · your stops are judged on the share price: <b>check the Kite app</b></div></div>
+  ${tileHTML()}</section>`
+: `<section class="hv-verd" aria-label="health verdict">
+  <div class="hv-vs" title="READY / LIMITED / DOWN, judged on the data (age, rows, values), not on 'process up'"><span class="hv-big"><i></i>READY</span><small>${LIMITED.length} LIMITED · 0 DOWN</small><small class="ck">checked 11:44:00</small>${hbSvg()}</div>
+  <div class="hv-vt"><div class="hv-v0" title="Your own exits come before any data problem: GIR said it, you have not done it. Exits are done in Kite; GIR never places orders."><span class="hv-vl">your exits</span><span class="sh-c sh-c-exit">EXIT</span><b class="x">${S('HINDALCO')} 680 PE not done 4m 40s</b><span class="hv-t2 nx">next: P1 call in 20 s</span><span class="hv-t3">·</span><span class="sh-c sh-c-book">BOOK</span><b class="bk">${S('MANAPPURAM')} 285 PE not acked 4m 08s</b></div>
+  <div class="hv-v1" title="${TOTAL} components: ${KEYS.length + NCONN} Kite (4 keys + 12 connections) + ${NS} services + ${SRCON.length} sources"><b>Data READY with ${LIMITED.length} LIMITED</b> · ${nBlock} share blocked · ${nWarn} warnings</div>
+  <div class="hv-v2" title="K3 flapping: c3 failed over to K4 at 11:42:54 · basket watch 12 s vs the 10 s target · Oil rotation INCOMPLETE (IOC) · ${NOPEN} incidents open (${NWATCH} watching)">${NREADY} of ${TOTAL} READY <span class="hv-t3">·</span> <b class="bl">blocked</b> ${S('IOC')} no tick 1m 54s <span class="hv-t3">·</span> <b>limited</b> K3 c3, basket watch, Oil rotation <span class="hv-t3">·</span> <b>warn</b> ${S('NATIONALUM')} OI, rings 6/6 <span class="hv-t3">·</span> ${NOPEN} incidents</div></div>
+  ${tileHTML()}</section>`;
+
+
+const KORD = ['K1', 'K2', 'K3', 'K4'].map(id => KEYS.find(k => k.k === id));
+const kcell = c => c[8] === 'down' ? '<span class="dn">DOWN 14 s</span>' : c[1] === null ? '<span class="mv">→ K4 c3</span>' : `<span class="ok">✓</span> ${c[4]}`;
+const KR = { K1: 'shares, futures, indices', K2: 'your strikes + depth', K3: 'other chains', K4: 'hot standby + REST sweeps' };
+const kmat = `<div class="hv-km h" title="all 12 websocket connections: p95 lag exchange → decoder, seconds (limit 5 s)"><span>p95 lag</span>${KORD.map(k => `<span title="${k.k}: ${KR[k.k]}"><b>${k.k}</b> ${{ K1: 'shares', K2: 'yours', K3: 'chains', K4: 'standby' }[k.k]}</span>`).join('')}</div>` +
+  [0, 1, 2].map(i => `<div class="hv-km"><span class="c">c${i + 1}</span>${KORD.map(k => `<span class="r${k.conns[i][1] === null ? ' lim' : ''}">${kcell(k.conns[i])}</span>`).join('')}</div>`).join('') +
+  gh('Per key · problem first', 'login, token, every connection');
+const keyBody = kmat + KEYS.map(k => {
+  const st = k.st === 'lim' ? chip('lim', 'LIMITED') : k.st === 'down' ? chip('down', 'DOWN') : chip('ok', 'LOGGED IN');
+  return `<div class="hv-kh"><span class="hv-kid">${k.k}</span><span class="role">${k.role}</span>${st}</div>
+  <div class="hv-kl">login <span class="hv-mono hv-t1">${k.login}</span> · token ✓ 11:40 · expires <span class="hv-mono hv-t1">06:00</span> Fri${k.note ? ' · ' + k.note : ''}</div>
+  <div class="hv-ct"><span class="h">#</span><span class="h">holds</span><span class="h r">instr</span><span class="h r" title="lag exchange → decoder, seconds">p50/p95</span><span class="h r" title="exchange-time vs receipt skew, s">skew</span><span class="h r" title="age of the market depth, s">depth</span><span class="h r" title="reconnects today">rc</span></div>` +
+  k.conns.map(c => c[1] === null
+    ? `<div class="hv-ct"><span class="c">${c[0]}</span><span class="moved">${c[9]} · rc ${c[7]}</span></div>`
+    : `<div class="hv-ct"><span class="c">${c[0]}</span><span class="hold">${c[1]}</span><span class="r">${fmt(c[2])}</span><span class="r">${c[3]}/${c[4]}</span><span class="r">${c[5]}</span><span class="r">${c[6]}</span><span class="r">${c[7]}</span></div>`).join('');
+}).join('') +
+  row({ n: 'quote sweep · REST on K4', v: '16 s / 60 s', f: `~500 / s · last 11:44:04-11:44:20 · silent found 2: ${S('IOC')}, ${S('NATIONALUM')} fut OI` }) +
+  row({ n: 'OI sweep · REST on K3', v: '38 s / 3 min', f: `every 60 s · frozen 1 · ${fmt(INST)} instruments live, each connection under 3,000` }) +
+  row({ dot: 'off', n: 'token values', v: 'never shown', f: 'names only · Kite gives no IV, greeks or chain: GIR computes them' });
+
+// ---- column 2: services + incidents
+// build-up counts = the F10 chips (ALL 222 · LB 41 · SB 74 · SC 18 · LU 27); each chip opens its F10 filter (conference fix 15)
+const BU = [['LB', 41, 'long build-up: price up, OI up'], ['SB', 74, 'short build-up: price down, OI up'], ['SC', 18, 'short covering: price up, OI down'], ['LU', 27, 'long unwinding: price down, OI down']];
+const BUCH = `<span class="hv-bu">${BU.map(b => `<a class="sh-c sh-c-${b[0].toLowerCase()}" href="futures-oi.html#buildup?f=${b[0]}" title="${b[2]} · open the ${b[0]} filter on F10">${b[0]} ${b[1]}</a>`).join('')}</span>`;
+let svcBody = '', curG = '';
+SVC.forEach((s, i) => {
+  if (s.g) { curG = s.g; const n = SVC.slice(i + 1).findIndex(x => x.g); const cnt = SVC.slice(i + 1, n < 0 ? undefined : i + 1 + n).filter(x => Array.isArray(x) || x.budget).length; svcBody += `<div class="hv-gh" data-grp="${s.g}">${s.g}<span>(${cnt})</span></div>`; return; }
+  if (s.budget) {
+    svcBody += `<div class="hv-r" data-st="ok" title="AI spend checked before every call against per-call / hour / day counters. Ladder: 60% ($12) top model off · 85% ($17) mid model only · 100% rules only"><span class="hv-d"></span><span class="nm">AI budget <span class="hv-mono">$4.10</span> <small>of $20 · 21% · ladder FULL</small></span><span class="vl">cache 79% / 70%</span>
+    <span class="fx"><span style="position:relative;display:block;height:7px;background:var(--panel-3);border-radius:1px;margin:3px 0 2px 0"><i style="position:absolute;left:0;top:0;bottom:0;width:21%;background:var(--info);border-radius:1px"></i><u style="position:absolute;left:60%;top:-2px;bottom:-2px;width:1px;background:var(--text-2)"></u><u style="position:absolute;left:85%;top:-2px;bottom:-2px;width:1px;background:var(--text-2)"></u></span>
+    by hour <span class="hv-mono">07h 0.70 · 08h 0.52 · 09h 1.06 · 10h 1.02 · 11h 0.80</span> · $12 top off · $17 mid only · cost per useful call: 15:45 audit (⇧F8)</span></div>`;
+    return;
+  }
+  const st = s[3] || 'ok';
+  // r3: an engine whose output the trader reads on another page is a link to that page (Health checks the engine; the list lives there)
+  const nm = s[5] ? `<a class="hv-go nm-go" href="${s[5][0]}" title="${s[5][2]}">${s[0]} <span class="k">${s[5][1]} ›</span></a>` : s[0];
+  const fx = L(s[1].replace('§BU', '@@BU@@').replace('§', TOTAL)).replace('@@BU@@', BUCH);
+  svcBody += row({ dot: DOT[st], st, sec: s[4] || undefined, n: nm, v: s[2].replace('§', TOTAL) + (st === 'lim' ? chip('lim', 'LIMITED') : ''), f: fx, cls: s[5] ? 'go' : '' }).replace('§', TOTAL);
+});
+svcBody += `<div class="hv-rule" id="svc-empty" data-hide>No service is DOWN right now. All other services are READY; single-share problems are under EXCEPTIONS.</div>`;
+const svcLim = SVCROWS.filter(s => s[3] === 'lim').length;
+const svcChips = `<span class="hv-chips" id="svc-chips"><button class="hv-chip on" data-f="all">ALL <span class="cn">${NS}</span></button><button class="hv-chip" data-f="lim">LIMITED <span class="cn">${svcLim}</span></button><button class="hv-chip zero" data-f="down" title="none DOWN - the list says why">DOWN <span class="cn">0</span></button></span>`;
+
+
+
+// ---- column 3: alerts & sounds + latency
+const sndBody = 
+  gh('Your exits', `(${EXITS.length}) · never muted, not counted`) +
+  EXITS.map(e => `<div class="hv-s" data-sec="${e[3]}"><span class="tt">${e[0]}</span><span class="w"><span class="sh-c sh-c-${e[1] === 'EXIT' ? 'exit' : 'book'}">${e[1]}</span> <span class="nw">${L(e[2])} ♪</span></span><span class="tone">${chip(e[1] === 'EXIT' ? 'down' : 'act', e[5])}</span><span class="x">${e[4]}</span></div>`).join('') +
+  gh(`Rings today · ${NRING} of 6 used`, `still ring: GO NOW + your exits · over pace ${NPACE}`) +
+  RINGS.map(r => `<div class="hv-s" data-sec="${r[4]}"><span class="tt">${r[0]}</span><span class="w"><b>${r[1]}</b> ${L(r[2])}</span><span class="tone">${r[3]} · #${r[5]}</span>${r[6] ? `<span class="x">${chip('wn', 'OVER PACE')} ${r[6]}</span>` : ''}</div>`).join('') +
+  gh('Silent by rule', '(2)') +
+  `<div class="hv-s" data-sec="BRK"><span class="tt">11:43:05</span><span class="w"><b>GO NOW</b> ${S('ANGELONE')} 2,300 PE · SUPPRESSED</span><span class="tone">silent</span><span class="x">lock room ₹1,980 &lt; max loss of 1 lot = 0 lots · a blocked call never rings</span></div>` +
+  `<div class="hv-s" data-sec="BRK"><span class="tt">11:42:08</span><span class="w"><b>BASKET SHOCK</b> BROKERS · news not found yet</span><span class="tone">silent card</span><span class="x">price-only card did not ring (rule until today) · 1st sound +42 s · from 20 Nov it rings GET READY</span></div>` +
+  gh('Alert health') +
+  row({ n: 'time to ack', v: '14 s / 30 s', f: 'median today (n=8) · 20-day median 19 s · P1 acks today 0' }) +
+  row({ n: 'unacked now', v: 'P1 0 · P2 1', f: 'P2 = BOOK MANAPPURAM 11:40:12 · P1 escalates: call, repeat 5 min, 15 min' }) +
+  row({ n: 'chattering', v: '0', f: 're-fired within 10 min: 0 · a repeating exit tone is one alert' }) +
+  row({ n: 'double rings', v: '0', f: 'one sound player · old alarm layer off' }) +
+  row({ n: 'owner-only delivery', v: 'OK 08:45', f: 'decisions bot → 1 chat (your id) · groups 0 · forwarding off · phone 1 device' }) +
+  row({ n: 'canary (synthetic story + tick)', v: '11:30:00', f: 'page +1.2 s · Telegram +2.0 s · next 11:45' }) +
+  row({ n: 'routes', v: '', f: 'health alarms → system bot + phone, once per problem + "recovered" · never the decisions channel' });
+
+const TL = [
+  ['11:41:56', `move began: ANGELONE −1% first · PE 58.40`, '0 s'],
+  ['11:42:04', `rule met: 3rd share (CDSL) −1% inside 60 s · volume 4.1×`, '+8 s'],
+  ['11:42:08', `<b>BASKET SHOCK</b> card, silent · ANGELONE −1.1 · BSE −1.2 · CDSL −1.0 · MCX −0.6% · PE 61.10`, '+12 s', 1],
+  ['11:42:31', `1st source: CNBC-TV18 speech-to-text (aired 11:42:17)`, '+35 s'],
+  ['11:42:38', `<b>GET READY</b> ANGELONE 2,300 PE ♪ · −1.8% · PE 64.90 · spread 1.6% (20d 0.8%) · depth 0.4 s · IV 41 → 44`, '+42 s', 1],
+  ['11:42:44', `ET live blog · 11:42:59 Moneycontrol (+63 s)`, '+48 s'],
+  ['11:44:12', `SEBI site checked: no item yet · analyst woken`, ''],
+  ['11:44:20', `now: ANGELONE −2.10% · PE 66.20 · spread 0.8% · tradable: limit at mid`, ''],
+];
+const grid3 = (cells, cols) => `<div style="display:grid;grid-template-columns:${cols};column-gap:6px;padding:3px 9px 3px 9px;border-bottom:1px solid var(--line);font-size:12px;line-height:16px;color:var(--text-2);align-items:baseline">${cells}</div>`;
+const tr = (a, b, c, d, bold) => grid3(`<span${bold ? ' class="hv-t1" style="font-weight:600"' : ''}>${a}</span><span class="hv-mono" style="text-align:right${bold ? ';color:var(--text)' : ''}">${b}</span><span class="hv-mono" style="text-align:right${bold ? ';color:var(--text)' : ''}">${c}</span><span class="hv-mono" style="text-align:right;color:var(--text-3)">${d}</span>`, 'minmax(0,1fr) 50px 50px 48px');
+const th = (a, b, c, d) => `<div class="hv-gh" style="display:grid;grid-template-columns:minmax(0,1fr) 50px 50px 48px;column-gap:6px"><span style="text-transform:uppercase;letter-spacing:.05em;font-weight:700">${a}</span><span style="text-align:right;font-weight:700">${b}</span><span style="text-align:right;font-weight:700">${c}</span><span style="text-align:right;font-weight:700">${d}</span></div>`;
+// latency waterfall: one bar, 0-12 s; the market part grey, GIR's parts blue, the 2 s past the 10 s target red-outlined
+const WF = () => { const P = [['market: 3rd share −1%', 8.0, 'rgba(142,151,163,.42)'], ['tick arrival', 0.9, 'rgba(108,178,255,.45)'], ['batch wait', 1.0, 'rgba(108,178,255,.70)'], ['burst confirm', 1.9, 'var(--info)'], ['build + send', 0.2, 'var(--text)']];
+  const W = 1000, sx = W / 12.5; let x = 0; const bars = P.map(p => { const w = p[1] * sx, r = `<rect x="${x.toFixed(1)}" y="5" width="${Math.max(1, w - 2).toFixed(1)}" height="16" rx="1.5" fill="${p[2]}"/>`; x += w; return r; }).join('');
+  const t = 10 * sx;
+  return `<div class="hv-wf" title="BROKERS basket shock 11:42: first move 11:41:56 → BASKET SHOCK card 11:42:08 = 12.0 s (target 10 s). Tonight: batch 1 s → 0.5 s, burst 2 bars → 1 = about 9.6 s"><div class="hd"><b>11:42 basket alarm</b> <span class="hv-mono hv-t1">12.0 s</span> vs target <span class="hv-mono">10 s</span></div><svg viewBox="0 0 ${W} 26" preserveAspectRatio="none" aria-hidden="true">${bars}
+    <rect x="${t.toFixed(1)}" y="2" width="${(12 * sx - t).toFixed(1)}" height="22" fill="none" stroke="var(--danger)" stroke-width="2" stroke-dasharray="5 3" vector-effect="non-scaling-stroke"/>
+    <line x1="${t.toFixed(1)}" y1="0" x2="${t.toFixed(1)}" y2="26" stroke="var(--text)" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>
+    <div class="lg">${P.map(p => `<span><i style="background:${p[2]}"></i>${p[0]} <b class="hv-mono hv-t1">${p[1].toFixed(1)} s</b></span>`).join('')}<span><i style="background:none;border:1px dashed var(--danger)"></i>over target <b class="hv-mono" style="color:var(--danger)">+2.0 s</b></span></div></div>`; };
+const latBody = WF() +
+  TL.map(t => `<div class="hv-tl${t[3] ? ' hi' : ''}" data-sec="BRK"><span class="tt">${t[0]}</span><span class="w">${L(t[1])}</span><span class="dl">${t[2]}</span></div>`).join('') +
+  th('Price path', 'p50', 'p95', 'limit') +
+  tr('exchange → decoder', '0.62 s', '1.15 s', '5 s') + tr('pre-limit, position open (LATE)', '', '', '2 s') + tr('decoder → page stream', '3 ms', '9 ms', '1 s') +
+  tr('stream → painted', '41 ms', '96 ms', '0.5 s') + tr('glass total', '0.67 s', '1.24 s', '1.3 s', 1) +
+  th('Alert → delivered', 'p50', 'p95', 'limit') +
+  tr('page card + tone', '0.3 s', '0.6 s', '5 s') + tr('phone push', '0.9 s', '2.2 s', '5 s') + tr('Telegram decisions', '0.9 s', '2.2 s', '5 s') + tr('Telegram system', '1.1 s', '2.4 s', '5 s') +
+  th('Event → alert', 'p50', 'p95', 'limit') +
+  tr('GO NOW (n=3)', '1.2 s', '1.4 s', '5 s') + tr('your exits (n=2)', '0.4 s', '0.4 s', '5 s') + tr('basket shock (n=1)', '12 s', '12 s', '10 s', 1);
+
+// ---- column 4: sources + checks
+let srcBody = '';
+SRC.forEach((s, i) => {
+  if (i < 2) return; // "not enabled" is listed with the other your-decision items at the top of the panel
+  if (s.g) { const n = SRC.slice(i + 1).findIndex(x => x.g); const cnt = SRC.slice(i + 1, n < 0 ? undefined : i + 1 + n).length; srcBody += `<div class="hv-gh" id="sg${i}">${s.g}<span>(${cnt})</span></div>`; return; }
+  srcBody += row({ sec: s[4], n: s[0], v: s[2], f: L(s[1]) });
+});
+const NNEWS = 8, NFILES = SRCROWS.length - NNEWS - 1;
+
+const RECON = [['lot sizes', ''], ['expiry dates', ''], ['strike lists', '+2 at 09:41'], ['tick size', ''], ['prev close', ''], ['start-of-day OI', '≤ 0.2%']];
+const xcFlag = gh('Flagged now', '(2)') +
+  row({ dot: 'ring', sec: 'OIL MET', n: 'stream vs REST sweep', v: '11:44:20', f: `2 disagree: ${S('IOC')}, ${S('NATIONALUM')} · both in EXCEPTIONS` }) +
+  row({ dot: 'ring', sec: 'BRK', n: 'spread blow-out vs 20-day', v: '11:42:38', f: `${S('ANGELONE')} 2,300 PE 1.6% vs 0.8% at 11:42 · now 0.8%` }) +
+  '';
+const xcRest = `<div class="hv-gh" id="xg-ck">Live cross-checks<span>(8) · all pass</span></div>` +
+  row({ n: 'P&amp;L = Kite positions − costs', v: '11:44:18', tip: 'MANAPPURAM (14.20 − 13.25) × 3,000 = +₹2,850 − ₹420 = +₹2,430 · HINDALCO (14.50 − 16.40) × 1,400 = −₹2,660 − ₹420 = −₹3,080 · costs ₹420 a trade = charges (₹125 / ₹86, the ONE charges table) + est. exit slippage (₹295 / ₹334)', f: '<span class="hv-eq">gross +₹190 − costs ₹840 = −₹650</span> = strip ✓ · costs = charges ₹211 + est. slippage ₹629 · loss lock uses the same net ✓' }) +
+  row({ n: 'order book on held + called strikes', v: '11:44:15', f: 'crossed / locked 0 · zero bid 0 · LTP outside bid / ask 0 · price-band hits 0' }) +
+  row({ n: 'GIR IV vs NSE option chain', v: '11:40:00', f: 'median 0.4 vol pts · max 2.1 (limit 3)' }) +
+  row({ n: 'IV range 5-200', v: '11:44:15', f: '0 of 1,842 strikes outside' }) +
+  row({ n: 'put-call parity vs future', v: '11:44:10', f: '3 far strikes outside 0.3% → QUIET, never offered' }) +
+  row({ n: 'candles vs Kite historical', v: '11:30:00', f: '222 of 222 shares match' }) +
+  row({ n: 'sector % vs NSE sectoral index', v: '11:44:00', f: 'basis ALL listed shares (not F&amp;O only) · 22 of 22 sectors within 0.15%' }) +
+  row({ n: 'strip vs NSE', v: '11:39:00', f: 'PCR 0.92 / 1.08 ✓ · A/D 61 / 157 ✓ · BAN 2 ✓ · &gt;85% 3 ✓' }) +
+  gh('Kite vs NSE files', '08:30 · 10:30 · next 12:30') +
+  `<div class="hv-rc">${RECON.map(r => `<span title="Kite vs NSE: ${r[0]} agree for all 222 F&amp;O shares"><b>✓</b>${r[0]}${r[1] ? ' <span class="hv-mono hv-t1">' + r[1] + '</span>' : ''}</span>`).join('')}</div><div class="hv-rcs">222 of 222 shares agree · <b>shares blocked: 0</b></div>` +
+  gh('Detectors · 20-day replay proof', 'on ⇧F10 Replay') +
+  row({ n: 'basket watch', v: 'tuned 18 Nov', f: 'fired 9 · true 7 · false 2 · missed 0 · 18 Nov ANGELONE replay: +12 s' }) +
+  row({ n: 'stream-vs-REST stale', v: 'tuned 12 Nov', f: 'flagged 41 · true 39 · false 2' }) +
+  row({ n: 'frozen-OI rule', v: 'tuned 19 Nov', f: 'n=23 · true 19 · false 4 → now a warning, not a block' }) +
+  row({ n: '60 s unblock rule', v: 'tuned 10 Nov', f: '31 unblocks · stale again within 5 min: 1' }) +
+  row({ n: 'unusual option activity', v: 'tuned 14 Nov', f: '112 bursts · 1%+ move after in 61 (54%)' });
+const xcOff = gh('Not enabled · your decision', '(2)') +
+  row({ dot: 'off', n: 'X lists · journalists, regulators', v: chip('off', 'NOT ENABLED'), f: 'needs X API credits · before 23 Nov' }) +
+  row({ dot: 'off', n: 'second vendor (read-only)', v: chip('off', 'NOT ENABLED'), f: 'needs an account in your name · until then: 2 Kite paths + REST sweep' });
+const xcBody = xcFlag + xcOff + srcBody + xcRest;
+const xcChips = `<span class="hv-chips" id="src-chips"><button class="hv-chip" data-j="sg2" title="jump to the news sources (feed health, not headlines)">NEWS <span class="cn">${NNEWS}</span></button><button class="hv-chip" data-j="sg11" title="jump to the files and calendars">FILES <span class="cn">${NFILES}</span></button></span>`;
+const excJump = `<span class="hv-chips" id="exc-chips"><button class="hv-chip" data-j="xg-inc" title="jump to the open incidents">INCIDENTS <span class="cn">${NOPEN}</span></button><button class="hv-chip hv-c16" data-j="xg-na" title="jump to the never-again checks (18 Nov complaints)">NEVER AGAIN <span class="cn">${NA.length}</span></button></span>`;
+
+// ---- drawer: runbook + limits by phase
+const RB = [
+  ['A feed dies', 'connection silent &gt; 5 s', ['GIR goes <b>SAFE MODE</b>: prices grey "STALE since", no calls', 'restarts the feed once; your exits keep working on the 2nd path (K4 c1)', 'GIR-signal entries only after READY for 5 min', '<b>You:</b> check your positions in the Kite app']],
+  ['The GIR server dies', 'dead-man silent 3 min → phone call', ['<b>Trade from the Kite app</b> (web or phone)', 'your SL-L backstops rest at Kite: they still protect you', 'close everything in Kite by 15:10', 'GIR rebuilds from the 02:10 tested snapshot']],
+  ['AI is down', 'tier timeouts, provider error', ['panels say "AI unavailable"', 'engines keep running: sectors, build-up, stale, basket watch', 'no new GO NOW (top-model check missing): GET READY only', 'your exits still come from the rules engine']],
+  ['A Kite key is lost', 'token expired or logged out', ['its connections move to K4 standby by themselves', 'log in to that key again (manual daily login)', 'the 08:45 pre-flight rings you if a key is missing', 'held positions stay on 2 paths throughout']],
+];
+const LIM = [
+  ['feed sentinels', 'n/a', 'stale &gt; 5 s · reconnect &gt; 3 s', 'CLOSED', 'CLOSED'],
+  ['your strikes / called', 'indicative 30 s', 'LIVE ≤ 2 s · stale &gt; 5 s', 'CLOSED', 'CLOSED'],
+  ['other share / future', 'indicative 30 s', 'stale &gt; 10 s', 'CLOSED', 'CLOSED'],
+  ['other option quote', 'n/a', 'stale &gt; 15 s · QUIET 2 min', 'CLOSED', 'CLOSED'],
+  ['futures / option OI', 'n/a', 'tag grey 5 min · stale 6 min', 'bhavcopy by 19:00', 'yesterday\'s file'],
+  ['sector aggregate', 'n/a', '&lt; 90% fresh = INCOMPLETE', 'as of 15:30', 'as of 15:30'],
+  ['positions / orders sync', '30 s', '10 s · P1 with a position', '60 s', 'n/a'],
+  ['news source', '15 min', 'items vs usual, 15 min', '30 min', '2 h'],
+  ['world drivers', 'per cadence', 'per cadence', 'per cadence', 'CLOSED is not STALE'],
+  ['NSE / Kite files', 'content date today', 'today', 'today', 'next day after 18:00'],
+  ['status.json', '120 s', '120 s', '120 s', '120 s'],
+];
+const drawer = `<aside class="hv-drw" id="drw" aria-label="runbook and limits"><div class="hv-ph"><span class="t">Runbook · what to do when something dies</span><span class="sp"></span><button class="hv-x" id="rbx" title="close (Esc)">✕</button></div>
+<div class="hv-pb" style="padding-right:0"><div class="hv-rbk">${RB.map((r, i) => `<div class="hv-rbc"><h4>${i + 1}. ${r[0]}<small>${r[1]}</small></h4><ol>${r[2].map(x => `<li>${x}</li>`).join('')}</ol></div>`).join('')}</div>
+<div class="hv-gh">Freshness limits by phase<span>the one table · DATA.md 1.3 · now: MARKET</span></div>
+<table class="hv-tb hv-lim"><colgroup><col style="width:22%"><col style="width:16%"><col style="width:24%"><col style="width:17%"><col style="width:21%"></colgroup><thead><tr><th>family</th><th>pre-open 09:00-09:15</th><th class="now">market 09:15-15:30</th><th>post-close to 18:00</th><th>night</th></tr></thead>
+<tbody>${LIM.map(l => `<tr><td>${l[0]}</td><td>${l[1]}</td><td class="now">${l[2]}</td><td>${l[3]}</td><td>${l[4]}</td></tr>`).join('')}</tbody></table></div></aside>`;
+
+/* =============================== ASSEMBLE =============================== */
+const excChips = `<span class="hv-chips"><span class="hv-chip act" title="your exits not acted on">EXITS <span class="cn">${nExit}</span></span><span class="hv-chip" title="hard blocks">BLOCK <span class="cn">${nBlock}</span></span><span class="hv-chip" title="LIMITED components">LIMITED <span class="cn">${nLim}</span></span><span class="hv-chip" title="warnings you can still trade through">WARN <span class="cn">${nWarn}</span></span></span>`;
+const sndChips = `<span class="hv-chips"><span class="hv-chip" title="rings vs the budget of 6 a session">RINGS <span class="cn">${NRING}/6</span></span><span class="hv-chip" title="rings closer than 10 min to the one before">PACE <span class="cn">${NPACE}</span></span></span>`;
+const holdPop = `<div class="hv-hpop" id="hpop" role="dialog" aria-label="holding on purpose">
+  <div class="hd"><b>HOLDING ${S('HINDALCO')} 680 PE ON PURPOSE</b><button class="hv-x" id="hpx" title="close (Esc)">✕</button></div>
+  <div class="ln">GIR said <b>EXIT</b> at <span class="hv-mono">11:39:40</span> (reversal: back above VWAP 683.60 for 2 bars). You acked <span class="hv-mono">11:39:52</span>. Only an acked EXIT or BOOK can be held.</div>
+  <div class="lb">Why are you holding? <span>(one tap or type · required · logged)</span></div>
+  <div class="ch"><span class="on">share stop 686.10 not hit</span><span>waiting for the 5-min close</span><span>my read: copper still falling</span><span>other…</span></div>
+  <div class="in"><span class="hv-mono">share stop 686.10 not hit</span><i></i></div>
+  <div class="cols"><div><div class="lb">Stops now</div>the P1 phone call due 11:44:40 (in 20 s) · repeat tone · this EXIT turns to <span class="hv-sc lim">HELD</span> + your reason on every page</div>
+  <div><div class="lb">Still on</div>Kite SL-L 13.40 / 12.90 resting · a <b>new</b> exit (stop hit, 2nd reversal, time stop) re-arms the full escalation · 15:10 exit rings · asks again 11:59:40</div></div>
+  <div class="ln">Logged: Journal ⇧F6 + the 15:45 audit ("held against EXIT": what the exit would have saved or cost). GIR never places orders: to exit, use Kite.</div>
+  <div class="bt"><button class="hv-btn on" id="hpok">HOLD · LOG REASON</button><button class="hv-btn" id="hpno">CANCEL</button></div></div>`;
+$('hv').innerHTML = top + `<div class="hv-hero">` + verd + pos + `</div>` + `<div class="hv-grid">
+  <div class="hv-col c1">${panel('p-exc', 'Exceptions', excJump, '', excBody, 'mine')}</div>
+  <div class="hv-col c2">${panel('p-svc', 'Services', svcChips, '', svcBody)}</div>
+  <div class="hv-col c3">${panel('p-snd', 'Alerts · sounds', sndChips, '', sndBody)}${panel('p-lat', 'Latency', '', '11:44:10', latBody)}</div>
+  <div class="hv-col c4">${panel('p-x', 'Checks · sources', xcChips, '', xcBody)}${panel('p-keys', 'Kite keys · 12 conn.', '', '11:44:20', keyBody)}</div>
+</div>` + drawer + holdPop + `<div class="hv-spec"></div>`;
+
+/* =============================== BEHAVIOUR =============================== */
+// sector filter (R36): really filters the share rows; positions band always stays
+const used = [...new Set([...document.querySelectorAll('#hv [data-sec]')].flatMap(e => e.dataset.sec.split(' ')))].filter(s => SEC[s]);
+const sel = $('secf');
+sel.innerHTML = `<option value="">ALL SECTORS (${used.length})</option>` + used.map(s => `<option value="${s}">${SEC[s]}</option>`).join('');
+const applyFilter = () => { const v = sel.value;
+  document.querySelectorAll('#hv .hv-grid [data-sec]').forEach(e => (!v || e.dataset.sec.split(' ').includes(v)) ? e.removeAttribute('data-hide') : e.setAttribute('data-hide', ''));
+  refreshAll(); };
+sel.addEventListener('change', applyFilter);
+
+// services chips
+$('svc-chips').addEventListener('click', e => {
+  const b = e.target.closest('.hv-chip'); if (!b) return;
+  $('svc-chips').querySelectorAll('.hv-chip').forEach(c => c.classList.toggle('on', c === b));
+  const f = b.dataset.f, pb = document.querySelector('#p-svc .hv-pb');
+  pb.querySelectorAll('.hv-r,.hv-gh').forEach(r => { const keep = f === 'all' || (f === 'lim' && (r.dataset.st === 'lim' || r.dataset.grp === 'Needs a look')); keep ? r.removeAttribute('data-hide') : r.setAttribute('data-hide', ''); });
+  f === 'down' ? $('svc-empty').removeAttribute('data-hide') : $('svc-empty').setAttribute('data-hide', '');
+  pb.scrollTop = 0; refreshAll();
+});
+['src-chips', 'exc-chips'].forEach(id => $(id).addEventListener('click', e => { const b = e.target.closest('.hv-chip'); if (!b) return; const t = $(b.dataset.j), pb = t.closest('.hv-pb'); pb.scrollTo({ top: t.offsetTop, behavior: 'smooth' }); }));
+
+// every list: visible 7 px rail + thumb, ▲▼ buttons, whole rows only (a solid "▼ N more" bar covers any part-row)
+const panels = [...document.querySelectorAll('#hv .hv-grid .hv-pn')];
+function units(pb) { return [...pb.children].filter(c => c.offsetParent !== null && c.offsetHeight > 0 && !c.classList.contains('hv-rail') && !c.classList.contains('hv-more')); }
+function refresh(pn) {
+  const pb = pn.querySelector('.hv-pb'), rail = pn.querySelector('.hv-rail'), th = rail.firstChild, more = pn.querySelector('.hv-more');
+  const H = pb.clientHeight, SH = pb.scrollHeight, top = pb.scrollTop;
+  rail.style.top = (pb.offsetTop + 3) + 'px'; rail.style.height = (H - 6) + 'px';
+  const rh = H - 8, tH = SH > H ? Math.max(28, rh * H / SH) : rh; th.style.height = tH + 'px';
+  th.style.top = (SH > H ? (rh - tH) * top / (SH - H) : 0) + 'px'; th.style.opacity = SH > H ? 1 : .35;
+  const us = units(pb); let cut = -1;
+  for (let i = 0; i < us.length; i++) { const b = us[i].offsetTop + us[i].offsetHeight - top; if (b > H + 0.5) { cut = i; break; } }
+  if (cut < 0) { more.style.display = 'none'; return; }
+  let ct = us[cut].offsetTop - top;
+  while (H - ct < 19 && cut > 0) { cut--; ct = us[cut].offsetTop - top; }
+  while (cut > 0 && us[cut - 1].classList.contains('hv-gh') && us[cut - 1].offsetTop - top > 0) { cut--; ct = us[cut].offsetTop - top; }
+  const n = us.slice(cut).filter(u => !u.classList.contains('hv-gh')).length;
+  more.style.display = 'flex'; more.style.top = (pb.offsetTop + ct) + 'px'; more.style.height = (H - ct) + 'px';
+  more.innerHTML = `<span>▼ <b>${n}</b> more below</span>`;
+  more.dataset.to = us[cut].offsetTop;
+}
+// end spacer: the last page of a list also starts on a whole row (so no row is cut at the top when scrolled to the end)
+function padEnd(pn) { const pb = pn.querySelector('.hv-pb'); let sp = pb.querySelector(':scope > .hv-end');
+  if (!sp) { sp = document.createElement('div'); sp.className = 'hv-end'; sp.textContent = 'end of list'; pb.appendChild(sp); }
+  sp.style.height = '20px'; const H = pb.clientHeight, us = units(pb).filter(u => u !== sp);
+  const SH = sp.offsetTop + 20; if (SH <= H) { sp.style.height = '20px'; return; }
+  const u = us.find(x => x.offsetTop >= SH - H); sp.style.height = (20 + (u ? u.offsetTop - (SH - H) : 0)) + 'px'; }
+function refreshAll() { panels.forEach(padEnd); panels.forEach(refresh); }
+panels.forEach(pn => {
+  const pb = pn.querySelector('.hv-pb');
+  const rail = document.createElement('div'); rail.className = 'hv-rail'; rail.innerHTML = '<i></i>'; pn.appendChild(rail);
+  const more = document.createElement('div'); more.className = 'hv-more'; pn.appendChild(more);
+  const [u, d] = pn.querySelectorAll('.hv-ud button');
+  const down = () => { const us = units(pb); const to = +more.dataset.to || 0; pb.scrollTo({ top: more.style.display === 'none' ? pb.scrollHeight : to, behavior: 'smooth' }); };
+  const up = () => { const us = units(pb), t = pb.scrollTop, H = pb.clientHeight; let to = 0; for (const x of us) { if (x.offsetTop >= t - H + 20) { to = x.offsetTop; break; } } pb.scrollTo({ top: Math.min(to, Math.max(0, t - 20)), behavior: 'smooth' }); };
+  d.onclick = down; u.onclick = up; more.onclick = down;
+  rail.onclick = e => { const r = rail.getBoundingClientRect(); (e.clientY - r.top < r.height / 2 ? up : down)(); };
+  pb.addEventListener('scroll', () => refresh(pn), { passive: true });
+});
+// snap a list so its top row is whole (used by the buttons and by the screenshot script)
+window.hvScrollTo = (id, frac) => { const pn = $(id), pb = pn.querySelector('.hv-pb'); const target = (pb.scrollHeight - pb.clientHeight) * frac; const us = units(pb); let to = 0; for (const x of us) { if (x.offsetTop <= target + 1) to = x.offsetTop; } pb.scrollTop = Math.min(to, pb.scrollHeight - pb.clientHeight); refresh(pn); };
+window.hvPage = (id, k) => { const pn = $(id), pb = pn.querySelector('.hv-pb'); pb.scrollTop = 0; refresh(pn); for (let i = 0; i < k; i++) { const m = pn.querySelector('.hv-more'); if (m.style.display === 'none') break; pb.scrollTop = +m.dataset.to; refresh(pn); } };
+window.addEventListener('resize', refreshAll);
+refreshAll(); setTimeout(refreshAll, 60);
+window.hvRefresh = refreshAll; window.hvFilter = v => { sel.value = v; applyFilter(); };
+
+// holding on purpose: opens under the button that asked; HOLD logs and stops the escalation (row shows HELD + reason)
+const hold = (on, btn) => { const pp = $('hpop'); if (!on) { pp.style.display = 'none'; return; }
+  const b = (btn || document.querySelector('#p-exc [data-hold]')).getBoundingClientRect(), w = $('hv').getBoundingClientRect();
+  pp.style.display = 'block'; const ph = pp.offsetHeight, pw = pp.offsetWidth;
+  let top = b.bottom - w.top + 4; if (top + ph > w.height) top = Math.max(0, b.top - w.top - ph - 4);
+  pp.style.top = top + 'px'; pp.style.left = Math.min(Math.max(0, b.left - w.left - 8), w.width - pw) + 'px'; };
+document.querySelectorAll('[data-hold]').forEach(b => b.onclick = e => { e.stopPropagation(); hold(true, b); });
+$('hpx').onclick = $('hpno').onclick = () => hold(false);
+$('hpok').onclick = () => { hold(false); document.querySelectorAll('[data-hold]').forEach(b => { b.outerHTML = '<span class="hv-sc lim" title="held on purpose 11:44:31 · share stop 686.10 not hit · logged">HELD · stop 686 not hit</span>'; }); };
+$('hpop').querySelectorAll('.ch span').forEach(c => c.onclick = () => { $('hpop').querySelectorAll('.ch span').forEach(x => x.classList.toggle('on', x === c)); $('hpop').querySelector('.in span').textContent = c.textContent === 'other…' ? '' : c.textContent; });
+window.hvHold = hold;
+
+// runbook drawer + keys
+const rb = on => { document.body.classList.toggle('hv-rb', on); $('rbbtn').classList.toggle('on', on); };
+$('rbbtn').onclick = () => rb(!document.body.classList.contains('hv-rb')); $('rbx').onclick = () => rb(false);
+window.hvRunbook = rb;
+// test alarm: asks first
+$('tabtn').onclick = () => document.body.classList.toggle('hv-ta'); $('tano').onclick = () => document.body.classList.remove('hv-ta');
+$('tasend').onclick = () => { document.body.classList.remove('hv-ta'); $('tabtn').textContent = 'TEST SENT 11:44:21'; };
+// "/" search (shell suggestions, opened from script as on the other pages)
+window.openSearch = () => { const g = document.querySelector('.sh-sugg'); if (!g) return; g.style.display = 'block'; const ph = document.querySelector('.sh-ph'), ty = document.querySelector('.sh-typed'); if (ph) ph.style.display = 'none'; if (ty) ty.style.display = 'inline'; };
+const cmd = document.querySelector('.sh-cmd'); if (cmd) cmd.addEventListener('click', window.openSearch);
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
+  if (e.key === '/') { e.preventDefault(); window.openSearch(); }
+  if (e.key === 'r' || e.key === 'R') rb(!document.body.classList.contains('hv-rb'));
+  if (e.key === 'Escape') { rb(false); hold(false); document.body.classList.remove('hv-ta'); const g = document.querySelector('.sh-sugg'); if (g) g.style.display = 'none'; }
+});
+
+// the DOWN specimen also drives the shell's values (allowed state changes): index tiles stale, footer health DOWN
+if (RED) {
+  document.body.classList.add('hv-red');
+  const pu = document.querySelector('.hv-purp'); pu.innerHTML = '<span class="hv-sc down">SPECIMEN</span> what DOWN looks like<span class="hv-w16"> · not live · opened from ? Help</span>'; pu.title = 'SPECIMEN: what DOWN looks like - not live, opened from ? Help';
+  document.querySelectorAll('.sh-ix').forEach(e => e.classList.add('sh-stale'));
+  const f = document.querySelector('#sh-foot a[href="health.html"]'); if (f) f.innerHTML = '<span class="sh-dot" style="width:7px;height:7px;background:var(--danger)"></span>health DOWN · K1 c1 silent <span class="n">14s</span>';
+}
+
+// keep a number and its unit together (no lone "s" on a new line)
+(function glue(root) {
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); const re = /(\d) (s|ms|min|MB|GB|d|k|h)\b/g; let n;
+  while ((n = w.nextNode())) if (re.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(re, '$1 $2');
+})($('hv'));
+refreshAll();
+})();
+
+</script>
+</body>
+</html>
