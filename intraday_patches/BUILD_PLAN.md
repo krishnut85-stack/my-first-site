@@ -244,6 +244,13 @@ for cables and metals (POLYCAB, KEI, HINDALCO, VEDL) AND CE for the users of tho
 HEROMOTOCO, M&M, EICHERMOT up 3-5%, NIFTY AUTO +3% on 19 Nov), consumer durables, cable users. Same for crude (OMCs, paints, tyres,
 aviation win when it falls), the rupee (IT wins when it weakens), gold (jewellers' margins vs gold-loan books). The sector map holds
 the beneficiary side for every driver, and the 07:15 note lists both: "copper -1.8%: PE cables / metals · CE autos".
+**Tell him THE EVENING BEFORE (the trader, 19 Nov: "this information I needed from the desk yesterday").** On 18 Nov metals
+fell all day; the 19:45 note on 18 Nov had to say: "Metals down (copper, aluminium, steel) = lower input cost for automakers ->
+TOMORROW: CE watch on autos - MARUTI, HEROMOTOCO, TVSMOTOR, M&M, ASHOKLEY, EICHERMOT (leader / laggard, strikes, triggers);
+PE watch on cables / metals". Every evening the SECOND-ORDER analyst (a role in E2, not optional) runs every driver that moved
+today through both sides of the sector map (losers AND winners) and writes "TOMORROW'S OPTION WATCH" with CE and PE lists, the
+strike, the trigger and the reason, confirmed or cancelled by the 07:15 update and the 09:08 pre-open. A move GIR explains only
+after it happened counts as a MISS in the 15:45 audit.
 Updated nightly from the day's recording; every call quotes the knowledge it used ("why: gold -1.6%, MANAPPURAM beta 1.3 to gold").
 
 ## 2. LAYER 2 - THE DECISION ENGINE
@@ -714,7 +721,7 @@ WIRES confirmed DOWN at 09:20; metals down; pharma the only real long build-up. 
 | Rules | no exits for trades not taken; the one-gold-bet rule; loss lock after 2 losses; one sound per alert; every output ends in an action per share |
 | Cost | the replay's AI spend under the day budget, cache reads >= 70% |
 
-### 4.2 Replay 19 Nov (trial day 1) - incl. AUTO CE: copper / aluminium slump overnight -> NIFTY AUTO CE call by 09:20 (MARUTI, ASHOKLEY, TVSMOTOR, M&M)
+### 4.2 Replay 19 Nov (trial day 1) - incl. AUTO CE: the 18 Nov 19:45 note must already name autos CE for 19 Nov; then copper / aluminium slump overnight -> NIFTY AUTO CE call by 09:20 (MARUTI, ASHOKLEY, TVSMOTOR, M&M)
 
 | Case | Pass criteria |
 |---|---|
