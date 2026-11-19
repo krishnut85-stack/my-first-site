@@ -35,7 +35,7 @@ button{font-family:var(--sans);color:inherit;background:none;border:0;cursor:poi
 .mk .a .pc{letter-spacing:-0.04em}
 .mk .pc{font-family:var(--mono);font-size:13px}
 .mk .b{height:22px;display:flex;align-items:center;gap:5px;font-size:13px;color:var(--text-2);white-space:nowrap}
-.ban{height:18px;display:inline-flex;align-items:center;padding:0 4px;border:1px solid var(--danger);color:var(--danger);background:rgba(255,90,82,.14);border-radius:3px;font-size:13px;font-weight:700}
+.banc{height:18px;display:inline-flex;align-items:center;padding:0 4px;border:1px solid var(--danger);color:var(--danger);background:rgba(255,90,82,.14);border-radius:3px;font-size:13px;font-weight:700}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--info);display:inline-block}
 /* P&L line 100-144 */
 .pl{position:absolute;left:0;right:0;top:100px;height:44px;background:var(--panel);border-bottom:1px solid var(--line-2);padding:2px 12px 0;display:flex;flex-direction:column;justify-content:center}
@@ -174,7 +174,7 @@ button{font-family:var(--sans);color:inherit;background:none;border:0;cursor:poi
 .sheetm.on{display:block}
 .sheetm b{color:var(--text)}
 .sheetm .x{float:right;color:var(--text-3);min-width:44px;min-height:32px;text-align:right}
-.mk .ban{cursor:pointer;height:24px}
+.mk .banc{cursor:pointer;height:24px}
 .pl{cursor:pointer}
 .chip.win{cursor:pointer}
 </style>
@@ -184,7 +184,7 @@ button{font-family:var(--sans);color:inherit;background:none;border:0;cursor:poi
   <div class="os"><span>11:05</span><span class="ic">5G <svg width="22" height="11" viewBox="0 0 22 11"><rect x=".5" y=".5" width="19" height="10" rx="2" fill="none" stroke="currentColor"/><rect x="2" y="2" width="13" height="7" rx="1" fill="currentColor"/></svg></span></div>
   <div class="mk" title="tap = MARKET sheet (every R01 item)">
     <div class="a"><span><span class="nm">NIFTY</span><span class="px">25,514.35</span><span class="pc up">+0.72%</span></span><span><span class="nm">BANKNIFTY</span><span class="px">59,842.60</span><span class="pc up">+1.12%</span></span></div>
-    <div class="b"><span>SENSEX <span class="n up">+0.66%</span></span><span>VIX <span class="n dn" title="India VIX −3.42%">11.86</span></span><button class="ban" id="banC" title="tap = the banned shares">BAN 2</button><span style="margin-left:auto;display:inline-flex;align-items:center;gap:4px">OPEN <span class="n" style="color:var(--text)">11:05:00</span><span class="n" title="worst data age" style="color:var(--info)">0.4s</span></span></div>
+    <div class="b"><span>SENSEX <span class="n up">+0.66%</span></span><span>VIX <span class="n dn" title="India VIX −3.42%">11.86</span></span><button class="banc" id="banC" title="tap = the banned shares">BAN 2</button><span style="margin-left:auto;display:inline-flex;align-items:center;gap:4px">OPEN <span class="n" style="color:var(--text)">11:05:00</span><span class="n" title="worst data age" style="color:var(--info)">0.4s</span></span></div>
   </div>
   <div class="pl" id="plR" title="tap = RISK (P&amp;L curve, net of costs)"><div class="l1"><span class="tt">MY F&amp;O P&amp;L</span><span class="t2">TODAY</span><span class="big">₹0</span><span class="n t2">0.0R</span><span class="gt">›</span></div>
     <div class="l2">open <b>0</b> · trades <b>0 of 3</b> · lock <b>₹10,000</b> left · week <b class="dn">−₹4,105</b></div></div>

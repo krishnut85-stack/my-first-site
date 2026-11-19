@@ -43,10 +43,16 @@
     var root = getComputedStyle(document.documentElement);
     h += '<defs><linearGradient id="gF" x1="0" x2="1"><stop offset="0" stop-color="rgb(' + root.getPropertyValue('--down-rgb') + ')" stop-opacity=".75"/><stop offset="1" stop-color="rgb(' + root.getPropertyValue('--up-rgb') + ')" stop-opacity=".8"/></linearGradient></defs>';
     var ly = 2, oy = [], ry = [], ryy = 2; f.out.forEach(function (a) { oy.push(ly); ly += a[1] * k + gap; }); f.inn.forEach(function (a) { ry.push(ryy); ryy += a[1] * k + gap; });
-    var rfill = f.inn.map(function () { return 0; });
+    var rfill = f.inn.map(function () { return 0; }), rib = [];
     f.out.forEach(function (o, i) { var sy = oy[i];
       f.inn.forEach(function (inn, j) { var lh = o[1] * inn[1] / f.si * k, rh = inn[1] * o[1] / f.so * k, ty = ry[j] + rfill[j]; rfill[j] += rh;
-        h += '<path class="rb2" d="M' + x0 + ',' + sy + ' C' + mx + ',' + sy + ' ' + mx + ',' + ty + ' ' + x1 + ',' + ty + ' L' + x1 + ',' + (ty + rh) + ' C' + mx + ',' + (ty + rh) + ' ' + mx + ',' + (sy + lh) + ' ' + x0 + ',' + (sy + lh) + ' Z" fill="url(#gF)" opacity="' + (o[0] === 'others' ? .3 : .62) + '"/>'; sy += lh; }); });
+        rib.push({ d: 'M' + x0 + ',' + sy + ' C' + mx + ',' + sy + ' ' + mx + ',' + ty + ' ' + x1 + ',' + ty + ' L' + x1 + ',' + (ty + rh) + ' C' + mx + ',' + (ty + rh) + ' ' + mx + ',' + (sy + lh) + ' ' + x0 + ',' + (sy + lh) + ' Z',
+          c: 'M' + x0 + ',' + (sy + lh / 2) + ' C' + mx + ',' + (sy + lh / 2) + ' ' + mx + ',' + (ty + rh / 2) + ' ' + x1 + ',' + (ty + rh / 2), w: (lh + rh) / 2, from: o[0], to: inn[0], cr: o[1] * inn[1] / f.si, op: o[0] === 'others' ? .3 : .62 }); sy += lh; }); });
+    // every ribbon is a target for ITS destination; thin ribbons are drawn last (on top) with a 10 px invisible hit stroke
+    rib.sort(function (a, b) { return b.w - a.w; });
+    var tip = function (r) { return '<title>' + esc(r.from) + ' → ' + esc(r.to) + ' ≈ ₹' + F(r.cr, 0) + ' cr (share of the window) · click = open ' + esc(r.to) + '</title>'; };
+    rib.forEach(function (r) { h += '<path class="rb2" data-s="' + esc(r.to) + '" d="' + r.d + '" fill="url(#gF)" opacity="' + r.op + '">' + tip(r) + '</path>'; });
+    rib.forEach(function (r) { h += '<path class="rbh" data-s="' + esc(r.to) + '" data-from="' + esc(r.from) + '" d="' + r.c + '" fill="none" stroke="transparent" stroke-width="' + Math.max(10, r.w) + '">' + tip(r) + '</path>'; });
     // labels: at the bar centre, spread so no two overlap; bars as 3 px edges
     function lab(list, ys, left) { var last = -99, out = '', fsz = 13, minG = wide() ? 16 : 15;
       list.forEach(function (a, i) { var bh = Math.max(1, a[1] * k), c = ys[i] + bh / 2 + 4.5, y0 = Math.max(c, last + minG), y = Math.min(y0, H - 2); a._y = y;
@@ -58,7 +64,7 @@
     h += lab(f.out, oy, true) + lab(f.inn, ry, false);
     // hit zones: one per label, never overlapping (split at the midpoints between labels); ribbons themselves are not targets
     function zones(list, left) { var out = ''; list.forEach(function (a, i) { var y1 = i === 0 ? 0 : (list[i - 1]._y + a._y) / 2 - 4, y2 = i === list.length - 1 ? H : (a._y + list[i + 1]._y) / 2 - 4;
-      out += '<rect class="hz' + (a[0] === 'others' ? ' oth' : '') + '" data-s="' + (a[0] === 'others' ? '' : a[0]) + '" x="' + (left ? 0 : mx) + '" y="' + y1 + '" width="' + (left ? mx : W - mx) + '" height="' + Math.max(1, y2 - y1) + '" fill="transparent"><title>' + esc(crTip(a)) + (a[0] === 'others' ? '' : ' · click = open ' + a[0]) + '</title></rect>'; }); return out; }
+      out += '<rect class="hz' + (a[0] === 'others' ? ' oth' : '') + '" data-s="' + (a[0] === 'others' ? '' : a[0]) + '" x="' + (left ? 0 : x1 - 2) + '" y="' + y1 + '" width="' + (left ? x0 + 2 : W - x1 + 2) + '" height="' + Math.max(1, y2 - y1) + '" fill="transparent"><title>' + esc(crTip(a)) + (a[0] === 'others' ? '' : ' · click = open ' + a[0]) + '</title></rect>'; }); return out; }
     h += zones(f.out, true) + zones(f.inn, false);
     svg.innerHTML = h;
     $('#flowTot').textContent = 'OUT −₹' + F(f.so, 0) + ' cr · IN +₹' + F(f.si, 0) + ' cr';

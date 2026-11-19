@@ -42,8 +42,17 @@ found the engine late and PE-biased, so the up-side (CE) shares must be visible 
 1. **COMING UP NOW**
 2. **LEADER** (even if extended, with its pullback trigger)
 3. **LAGGARD - may catch up**
-4. **AGAINST THE SECTOR (n)**, with the opposite side's strike
-5. **NOT TRADABLE**, dimmed, with the reason
+4. **WAITING - a gate fails**: with the sector, but a gate fails (the failed gate is named in the row: "RS30 +0.21",
+   "RVOL 1.1", "VWAP 1/2"). Shown "0 lots - waiting". The same name on the laptop at 1600 and 1366 and on the phone.
+   *(Added 19 Nov, round 2, at the request of both panels: every F&O member needs a group, and "GATE OPEN" read as "go".)*
+5. **AGAINST THE SECTOR (n)**, with the opposite side's strike
+6. **NOT TRADABLE**, dimmed, with the reason
+
+**How a share gets its group (one rule set, computed in one place, so the row, the gate cell and the pane always agree):**
+NOT TRADABLE (ban) → AGAINST (moving the other way with RS30 ≤ −0.5 in the sector's direction) → the LEADER (the biggest
+mover with the sector: COMING UP NOW if it passes every gate and is not EXTENDED, else LEADER) → COMING UP NOW (all four gates,
+not EXTENDED, score on/off 0.60 / 0.45) → LAGGARD (flat, breadth ≥ 70% one way, no own news, build-up not against) → WAITING.
+When breadth is under 70% the list says "no laggard - breadth 63% one way, below the 70% rule".
 
 **Rules for the groups:**
 - A rising sector shows CE strikes on the first three groups. A falling sector mirrors this with "coming down" and PE strikes.

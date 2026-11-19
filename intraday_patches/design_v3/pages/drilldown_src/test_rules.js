@@ -1,0 +1,36 @@
+// The rules of SECTOR_DRILLDOWN.md 3 / 5 checked over EVERY member of every sector (the shared module both pages use).
+// node test_rules.js  ->  a PASS / FAIL table (markdown) on stdout
+const G = require('./data.js');
+const R = []; const rec = (c, d, ok, n) => R.push([c, d, ok ? 'PASS' : 'FAIL', n || '']);
+const all = G.SECTORS.flatMap(s => s.members.map(m => ({ s, m, p: G.plan(s, m) })));
+const bad = f => all.filter(f).map(x => x.m.sym);
+let b;
+b = bad(x => !['up', 'lead', 'lag', 'wait', 'against', 'nt'].includes(x.m.grp)); rec('six groups only', 'every member is in COMING UP / LEADER / LAGGARD / WAITING / AGAINST / NOT TRADABLE', !b.length, b.join(' '));
+b = bad(x => x.m.grp === 'up' && (!x.m.gok || x.m.ext)); rec('COMING UP = 4 gates and not EXTENDED', 'no share in COMING UP/DOWN NOW fails a gate or is extended (INFY case)', !b.length, b.join(' ') || 'all ' + all.filter(x => x.m.grp === 'up').length + ' pass');
+b = bad(x => x.m.grp === 'up' && x.m.score < 0.60 && !x.m.wasUp); rec('COMING UP score on at 0.60', 'every COMING UP share scores ≥ 0.60', !b.length, b.join(' '));
+b = bad(x => x.m.ext !== (G.extOf(x.m) > 1 || G.room(x.m).used > 0.8 ? 1 : 0)); rec('EXTENDED rule', 'EXT > 1.0 or range used > 0.8 ATR, the same flag in list, gate and pane', !b.length, b.join(' '));
+b = bad(x => x.m.grp === 'lag' && !x.s.lagRule.ok); rec('LAGGARD only at breadth ≥ 70%', 'no LAGGARD where breadth is under 70% one way', !b.length, b.join(' ') || 'laggards: ' + all.filter(x => x.m.grp === 'lag').map(x => x.m.sym + ' (' + x.s.id + ' ' + Math.round(x.s.lagRule.bw * 100) + '%)').join(', '));
+const noLag = G.SECTORS.filter(s => !s.lagRule.ok).map(s => s.id + ' ' + Math.round(s.lagRule.bw * 100) + '%'); rec('"no laggard" sectors', 'sectors under 70% show "no laggard - breadth n%"', noLag.length === 7, noLag.join(', '));
+b = G.SECTORS.filter(s => s.members.filter(m => m.role === 'LEADER').length > 1).map(s => s.id); rec('one LEADER per sector', 'at most one LEADER chip in a sector (Realty / FMCG had two)', !b.length, b.join(' ') || G.SECTORS.map(s => (s.members.find(m => m.role === 'LEADER') || {}).sym).join(' · '));
+b = bad(x => x.m.grp === 'lead' && x.m.gok && !x.m.ext); rec('LEADER group = extended or a gate fails', 'a leader that passes every gate and is not extended is in COMING UP (BPCL, DRREDDY, NESTLEIND)', !b.length, b.join(' '));
+b = bad(x => x.m.grp === 'against' && !(x.s.dir * G.pctOf(x.m) < 0 && x.s.dir * x.m.rs30 <= -0.5)); rec('AGAINST rule', 'moving the other way with RS30 ≤ −0.5', !b.length, b.join(' '));
+b = bad(x => x.p.lots > 0 && x.p.rr < 1); rec('R:R < 1 → 0 lots', 'no share is sized with R:R below 1 after costs (INFY 0.07, BANDHAN 0.46, YES 0.09 cases)', !b.length, b.join(' '));
+b = bad(x => x.p.lots > 0 && x.p.risk > G.R1); rec('1 lot > 1R → 0 lots', 'no share is sized when one lot risks more than 1R', !b.length, b.join(' '));
+b = bad(x => x.p.lots > 0 && (x.m.grp === 'wait' || x.m.grp === 'nt')); rec('WAITING / NOT TRADABLE → 0 lots', 'no lots while a gate fails or in ban', !b.length, b.join(' '));
+b = bad(x => x.m.ban && !(x.p.lots === 0 && /^BAN - only close existing/.test(x.p.block) && !x.p.takeable)); rec('BAN hard block', 'INDUSINDBK / HINDCOPPER: 0 lots, "BAN - only close existing", not takeable (no ★, no Copy)', !b.length, b.join(' '));
+b = bad(x => x.m.stale && !(x.p.lots === 0 && /^STALE/.test(x.p.block))); rec('STALE hard block', 'stale share quote → 0 lots, no GO NOW', !b.length, b.join(' '));
+b = bad(x => G.contract(x.s, x.m, 'atm').ostale && !x.m.stale && !x.m.ban && !(x.p.lots === 0 && /OPTION STALE/.test(x.p.block))); rec('option quote age', 'a stale option book (LODHA 11s) blocks like a stale share', !b.length, b.join(' ') || 'LODHA ' + G.plan(G.sec('Realty'), G.find('LODHA').m).block);
+b = bad(x => x.m.grp === 'lag' && !/\d/.test(x.p.how)); rec('LAGGARD shows its trigger price', 'every laggard has a number (TECHM "trig < OR low" case)', !b.length, all.filter(x => x.m.grp === 'lag').map(x => x.m.sym + ' ' + x.p.trig).join(', '));
+const ic = G.find('ICICIBANK'), ip = G.plan(ic.s, ic.m); rec('ICICIBANK arithmetic unchanged', 'risk ₹3,070 = 0.61R, R:R 1.31, 1 lot, 1,460 CE ask 46.60', ip.risk === 3070 && ip.rr.toFixed(2) === '1.31' && ip.lots === 1 && G.contract(ic.s, ic.m, 'atm').ask === 46.6, 'risk ' + ip.risk + ' rr ' + ip.rr.toFixed(2) + ' · ' + ip.sizeTxt);
+rec('sizing wording', '"lock room allows 3 · 1R rule allows 1 → 1 lot"', ip.sizeTxt === 'lock room allows 3 · 1R rule allows 1 → 1 lot', ip.sizeTxt);
+rec('hysteresis on 0.60 / off 0.45', 'comingUp(0.55, was) = true, (0.55, new) = false, (0.44, was) = false, (0.61, new) = true', G.comingUp(0.55, true) && !G.comingUp(0.55, false) && !G.comingUp(0.44, true) && G.comingUp(0.61, false));
+const it = G.sec('IT'); rec('TODAY flow = ff × (sector − NIFTY)', 'IT −1.76% vs NIFTY on ₹25 lakh cr = −₹44,000 cr; Banks +0.40% on ₹42 lakh cr', G.crOf(it, 3) === -44000 && G.crOf(G.sec('Banks'), 3) === 16800, 'IT ' + G.crOf(it, 3) + ' · Banks ' + G.crOf(G.sec('Banks'), 3));
+const f30 = G.flows(1); rec('30M flow totals', 'OUT and IN sums shown (₹7,140 cr each)', f30.so === 7140 && f30.si === 7140, 'OUT ' + f30.so + ' · IN ' + f30.si);
+rec('Banks basis = NIFTY BANK', 'Banks move = NIFTY BANK +1.12% (as in the strip), the all-41 basket +1.06% shown beside it', G.sec('Banks').pct === 1.12 && G.sec('Banks').idx === 'NIFTY BANK' && G.sec('Banks').bpct === 1.06);
+const nar = G.SECTORS.filter(s => G.narrow(s)).map(s => s.id); rec('NARROW flag', 'F&O ≥ 75% one way while the other listed < 60%', nar.length >= 1, nar.join(', '));
+const pend = G.pendingRR(G.sec('Banks')); rec('pending re-rank', 'AXISBANK ▲1 pending at load (score 0.89 > ICICI 0.86, snapshot order kept)', !!pend && pend.AXISBANK === 1, JSON.stringify(pend));
+const bw = G.sec('Banks'); rec('Banks WHY = no live driver', 'live slot holds only today: "UNEXPLAINED" + BANKNIFTY fut LB; FII / Goldman are background 18 Nov', !bw.why.drv && /since 10:05/.test(bw.why.live) && bw.why.bg.every(t => /18 Nov/.test(t)));
+rec('HDFCBANK own story', 'no yesterday commentary as a headline ("no story of its own today")', G.find('HDFCBANK').m.news.length === 0);
+console.log('| # | rule | what was checked | result | note |\n|---|---|---|---|---|');
+R.forEach((r, i) => console.log(`| ${i + 1} | ${r[0]} | ${r[1]} | ${r[2]} | ${r[3]} |`));
+console.log('PASS', R.filter(r => r[2] === 'PASS').length, 'FAIL', R.filter(r => r[2] === 'FAIL').length);

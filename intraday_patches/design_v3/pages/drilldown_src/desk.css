@@ -360,7 +360,9 @@ a.lk:hover,.lkx:hover{text-decoration:underline;text-underline-offset:3px}
 .sl .up2{color:var(--up);font-weight:600}
 .sl .t3.ell,.sl .t2.ell{flex:0 1 auto}
 /* flow picture: ribbons are pictures only; labels have non-overlapping hit zones */
-#flowSvg path.rb2{pointer-events:none}
+#flowSvg path.rb2{cursor:pointer}
+#flowSvg path.rbh{cursor:pointer;pointer-events:stroke}
+#flowSvg path.rb2:hover{opacity:.9}
 #flowSvg .hz{cursor:pointer}
 #flowSvg .hz.oth{cursor:help}
 #flowSvg text{pointer-events:none}
