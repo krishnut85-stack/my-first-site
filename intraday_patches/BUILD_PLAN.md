@@ -31,6 +31,24 @@ live or recorded data - **never copy a number from a drawing into code.**
 
 ## 0. HOW TO WORK
 
+### 0.6 The trader's directions, 19 Nov (these win over anything below)
+- **Kite only for market data.** No second broker feed, no extra accounts, no paid data: Upstox / Angel / Shoonya / Dhan and paid
+  expired-option history are DROPPED (F07 and the paid part of F14 are out; F08 NSE chain check stays only as a free sanity check).
+  The Telegram-channel listener on a spare phone (F18) is dropped. X stays off until he adds credits.
+- **He trades OPTIONS (~90%).** Futures are never suggested as a trade. Futures data (build-up, OI by month) is used only as a
+  signal for the option call. Every call, page and message speaks in options: strike, premium, spread, stop / target in premium
+  and share price.
+- **News he cannot watch himself must reach him:** everything CNBC-TV18 says, continuously (live speech-to-text from the free
+  official stream) and the Economic Times (website, live blog, markets pages - no paid subscription), plus Moneycontrol, Business
+  Standard, NDTV Profit, ET Now's free stream where available.
+- **The analyst must KNOW, like a senior F&O broker** - and say it WELL IN ADVANCE: for each F&O share (business, drivers, peers,
+  group, results, how it reacts to each kind of news), for each sector (what moves it, how it reacts to each driver and event), and
+  for NIFTY / BANKNIFTY / FINNIFTY (which sectors and heavyweights move the index, by how much). Built as the KNOWLEDGE BASE (1.7)
+  and used by the 19:45 / 07:15 notes and every live call: "if X happens, these sectors and shares move this way, NIFTY by about Y".
+- **Information is wealth:** the earlier he knows, the better - every news item, filing, TV statement and driver move must be
+  mapped to shares, sectors and the index within seconds, and reach him only when it matters (one sound, no noise).
+- A perfect web page AND a perfect phone app.
+
 ### 0.1 Start now, on /preview, without touching the live system
 
 | Rule | What it means in practice |
@@ -209,6 +227,15 @@ never evade. Ban file missing at 08:45 -> block new calls on yesterday's >= 80% 
 keep running.
 
 ---------------------------------------------------------------------------------------------------------------------------------
+
+### 1.7 The KNOWLEDGE BASE - what the senior analyst knows (built this week, kept up to date)
+| Part | What it holds | Source (free / own) | Used by |
+|---|---|---|---|
+| Share dossier (every F&O share) | business, segments, group, peers, drivers with sensitivity (e.g. gold -1% -> MANAPPURAM about -x%), results dates and history of reactions, promoter / pledge / big holders, typical day range, beta to sector and NIFTY, other names / aliases | NSE / BSE filings and shareholding, annual reports, own price history, SHARE_DOSSIER_AND_MACRO.md | every call, Share page, notes |
+| Sector map (every sector) | members (ALL listed shares, weights), drivers and how each moves the sector, event -> reaction table (rate cut, crude +5%, rupee, duty change, regulator order ...), lead / lag between members | own history (replays), NSE indices, GIR_SPEC 1.1 | E2-E6, Sectors, Rotation, World |
+| Index map | NIFTY / BANKNIFTY / FINNIFTY / MIDCPNIFTY weights, each sector's and heavyweight's contribution in points, how each driver moves the index | NSE index factsheets, own minute data | strip, Market page, notes ("NIFTY about -0.4% if ...") |
+| Event playbook | every past event type with what moved, how much, how fast (MCX margins, bulk Scotch duty, NPCI, SEBI MTF, IRDAI caps, CERC coupling, results, RBI ...) - the regression tests of E12 | replays of recorded days, news archive | E12 direction check, notes, Calendar |
+Updated nightly from the day's recording; every call quotes the knowledge it used ("why: gold -1.6%, MANAPPURAM beta 1.3 to gold").
 
 ## 2. LAYER 2 - THE DECISION ENGINE
 
