@@ -1,0 +1,60 @@
+<main id="page">
+<div id="pg">
+
+<!-- ROW 1 · purpose (R06) · engine bias counter (R50 6.1) · the trade-cycle hand-off (R41) · filter (R36) -->
+<div id="purp">
+  <h1><kbd>F3</kbd>ROTATION</h1>
+  <span class="why">money out of which sectors, into which<span class="wd"> · click a sector for its F&amp;O shares</span></span>
+  <span class="eng" id="eng" title="The engine's calls today by side. It has been late and PE-biased (independent review), so the CE side is shown to you directly in every rising sector, whatever the engine says.">engine today <b class="dn">PE 41</b>/<b class="up">CE 2</b><span class="t3">· PE-biased</span></span>
+  <span class="flow" title="the trade cycle (R41): this page is FIND; one key to each next step"><a href="morning.html">PREP</a><i>›</i><b>FIND</b><i>›</i><a href="share.html#ICICIBANK" id="flShare">SHARE</a><i>›</i><a href="chain.html#ICICIBANK" id="flChain">STRIKE</a><i>›</i><a href="plan-card.html">PLAN</a><i>›</i><span title="GIR never places orders">KITE</span><i>›</i><a href="positions.html">MANAGE</a><i>›</i><a href="journal.html">REVIEW</a></span>
+  <span class="rt">
+    <button class="chip on" id="ddAll" title="ALL SECTORS: 11 sectors with F&amp;O members are listed below (the flow, the table and the run clock)">ALL SECTORS <span class="n">11</span> ▾</button>
+    <span class="chip" id="pinC" title="Pinned shares go to the Desk watchlist (max 5). GIR raises GET READY on a pinned share when its gates pass.">pinned <span class="n" id="pinN">0</span>/5</span>
+  </span>
+</div>
+
+<div id="bd">
+<div id="lc">
+
+  <!-- HERO: the flow OUT -> IN (arrows sized by Rs cr; click a sector = opens it in the table below) + the new-entrants strip -->
+  <section id="flowP">
+    <div class="fh">
+      <span class="plab">the flow</span>
+      <span class="wchips" id="wch"><button class="chip" data-w="0">15M</button><button class="chip on" data-w="1">30M</button><button class="chip" data-w="2">1H</button><button class="chip" data-w="3">TODAY</button></span>
+      <span class="fsrc" title="R49: arrow width = Rs crore of free-float value each sector gained or lost against NIFTY in this window, over ALL its listed shares. n/N = breadth over all listed shares. The chip is the F&amp;O futures build-up that confirms it.">arrow = ₹ cr vs NIFTY · <b class="t2">all listed shares</b> · <span id="wrng">10:35-11:05</span></span>
+      <span class="fr"><span class="ldot"></span><span class="age">5s</span></span>
+    </div>
+    <div id="heroLine"></div>
+    <div class="fbody"><svg id="flowSvg" aria-label="money flow out of sectors into sectors, arrows sized by rupees crore"></svg><div class="fside" id="flowSide"></div></div>
+    <div class="nent" id="nent"></div>
+  </section>
+
+  <!-- THE SECTOR TABLE with the one open sector (SectorMembers): in normal page flow, it pushes the rows below it down -->
+  <section class="pn sh-acc-mkt" id="win">
+    <div class="ph"><span class="pt">sectors</span><span class="rkby" title="R49: every sector %, rank and breadth comes from ALL its listed shares - the NSE sectoral index where one exists, else a free-float basket of every listed share. Only the trade list is limited to F&amp;O shares.">ranked by <b class="t2" id="rkW">30M</b> RS · <b class="t2">all listed</b></span>
+      <span class="vchips"><button class="chip on" data-v="tbl">TABLE</button><button class="chip" data-v="run">RUN CLOCK</button></span>
+      <span class="pa"><span class="age" id="openTxt">Banks open</span><span class="ldot"></span><span class="age" title="computed 11:05:00 from cache in 40 ms, then live">live 0.3s</span></span></div>
+    <div id="tblV">
+      <div class="shd"><span class="r">#</span><span>sector · basis</span><span>ideas</span><span class="r">RS 30M</span><span class="r">today</span><span class="r">day %</span><span class="r">breadth · F&amp;O</span><span class="r">₹cr 30M</span><span>state · age</span></div>
+      <div class="sc"><div class="scb" id="wb" tabindex="0" aria-label="sectors and the open sector's F&amp;O shares"></div>
+        <div class="rail" data-for="wb"><button class="rb u" title="scroll up">▲</button><span class="trk"><i></i></span><button class="rb d" title="scroll down">▼</button></div></div>
+    </div>
+    <div id="runV"><div class="sc"><div class="scb" id="rb" tabindex="0"></div>
+      <div class="rail" data-for="rb"><button class="rb u" title="scroll up">▲</button><span class="trk"><i></i></span><button class="rb d" title="scroll down">▼</button></div></div></div>
+    <div class="pf" id="keys"><span class="kk"><kbd>1-9</kbd>sector</span><span class="kk"><kbd>↑</kbd><kbd>↓</kbd><kbd>J</kbd><kbd>K</kbd>share</span><span class="kk"><kbd>Enter</kbd>F7</span><span class="kk"><kbd>O</kbd>chain</span><span class="kk"><kbd>W</kbd>why</span><span class="kk"><kbd>Space</kbd>plan</span><span class="kk"><kbd>P</kbd>pin</span><span class="kk"><kbd>R</kbd>re-rank</span><span class="kk"><kbd>Esc</kbd>close step</span><span style="margin-left:auto" class="wd">list snapshot logged 11:05:00 · journal + scorecard</span><span class="nr t3" style="margin-left:auto" title="list snapshot logged 11:05:00 for the journal and the scorecard">logged 11:05:00</span></div>
+  </section>
+</div>
+
+  <!-- THE SHARE PANE (right column): loads on a click; the sector list stays visible. Double-click / Enter = full F7 page -->
+  <section class="pn sh-acc-mkt" id="sp" style="position:relative">
+    <div class="ph"><span class="pt wd">share</span><span class="sym" id="spSym"></span><span class="pa"><button class="btn" id="bF7" title="open the full Share page (F7) - same numbers"><kbd>Enter</kbd>F7</button><button class="btn" id="bO" title="option chain at the suggested December strike"><kbd>O</kbd>chain</button><button class="btn" id="bW" title="why this share is moving"><kbd>W</kbd>why</button><button class="btn" id="bP" title="pin to the Desk watchlist (max 5)"><kbd>P</kbd>pin</button></span></div>
+    <div class="sc"><div class="scb" id="pb" tabindex="0" aria-label="share details"></div>
+      <div class="rail" data-for="pb"><button class="rb u" title="scroll up">▲</button><span class="trk"><i></i></span><button class="rb d" title="scroll down">▼</button></div></div>
+    <div class="drw" id="whyD"></div>
+    <div class="drw" id="planD"></div>
+    <div class="toast" id="toast"></div>
+  </section>
+</div>
+<div class="pop" id="basP"></div>
+</div>
+</main>

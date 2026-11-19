@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GIR phone · Sectors · Banks drill-down</title>
+<!-- GIR v3 phone (390 x 844, SHELL.md section 9): the SECTOR DRILL-DOWN on the phone (SECTOR_DRILLDOWN.md 1: "the list becomes a
+     full-screen sheet; tapping a share opens the share sheet, and Back returns to the list"). Thu 19 Nov 2026 11:05:00 ·
+     design mockup - illustrative values. Same data module and maths as the laptop page, so both show the same numbers. -->
+<style>
+:root{--bg:#0B0D10;--panel:#12151A;--panel-2:#181C22;--panel-3:#1E232B;--line:#262C35;--line-2:#323A45;--text:#E7EAEE;--text-2:#B3BAC4;--text-3:#8E97A3;
+  --up:#34C47C;--up-bg:rgba(52,196,124,.12);--up-line:rgba(52,196,124,.60);--up-rgb:52,196,124;--down:#F2615D;--down-bg:rgba(242,97,93,.12);--down-line:rgba(242,97,93,.60);--down-rgb:242,97,93;
+  --lb:#34C47C;--lb-bg:rgba(52,196,124,.22);--sb:#F2615D;--sb-bg:rgba(242,97,93,.22);--sc:#8FE3B5;--sc-ink:#8FE3B5;--lu:#FF9E9A;--lu-ink:#FF9E9A;
+  --action:#F5A524;--action-line:rgba(245,165,36,.55);--action-bg:rgba(245,165,36,.09);--danger:#FF5A52;--danger-ink:#1A0806;
+  --leader:#36C5D0;--leader-bg:rgba(54,197,208,.13);--dep:#B79CFF;--dep-bg:rgba(183,156,255,.13);--lag:#EE8AC0;--lag-bg:rgba(238,138,192,.13);
+  --info:#6CB2FF;--info-bg:rgba(108,178,255,.10);--info-line:rgba(108,178,255,.38);--stale:#6B7380;--stripe:rgba(107,115,128,.28);
+  --sans:Inter,"Segoe UI",system-ui,sans-serif;--mono:"JetBrains Mono","DejaVu Sans Mono",Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#05070A;color:var(--text);font-family:var(--sans);font-size:13px;line-height:1.3;-webkit-tap-highlight-color:transparent}
+.n{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
+.up{color:var(--up)} .dn{color:var(--down)} .t2{color:var(--text-2)} .t3{color:var(--text-3)}
+b{font-weight:700}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--sans);color:inherit;background:none;border:0;cursor:pointer}
+#ph{position:relative;width:390px;height:844px;margin:0 auto;background:var(--bg);overflow:hidden}
+/* OS status (not ours) */
+.os{position:absolute;left:0;right:0;top:0;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:15px;font-weight:600;color:var(--text)}
+.os .ic{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--text-2)}
+/* compact market strip 44-100 */
+.mk{position:absolute;left:0;right:0;top:44px;height:56px;background:var(--panel-2);padding:0 12px;display:flex;flex-direction:column;justify-content:center}
+.mk .a{height:30px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.mk .a span{display:flex;align-items:baseline;gap:4px;white-space:nowrap}
+.mk .nm{font-size:12px;color:var(--text-2);font-weight:600;letter-spacing:0}
+.mk .px{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:-0.04em}
+.mk .a .pc{letter-spacing:-0.04em}
+.mk .pc{font-family:var(--mono);font-size:13px}
+.mk .b{height:22px;display:flex;align-items:center;gap:5px;font-size:13px;color:var(--text-2);white-space:nowrap}
+.ban{height:18px;display:inline-flex;align-items:center;padding:0 4px;border:1px solid var(--danger);color:var(--danger);background:rgba(255,90,82,.14);border-radius:3px;font-size:13px;font-weight:700}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--info);display:inline-block}
+/* P&L line 100-144 */
+.pl{position:absolute;left:0;right:0;top:100px;height:44px;background:var(--panel);border-bottom:1px solid var(--line-2);padding:2px 12px 0;display:flex;flex-direction:column;justify-content:center}
+.pl .l1{display:flex;align-items:baseline;gap:8px;height:22px}
+.pl .l1 .tt{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--text-2)}
+.pl .l1 .big{font-family:var(--mono);font-size:17px;font-weight:700}
+.pl .l1 .gt{margin-left:auto;color:var(--text-3);font-size:17px}
+.pl .l2{font-size:13px;color:var(--text-2);white-space:nowrap;height:18px}
+.pl .l2 b{color:var(--text);font-family:var(--mono);font-weight:600}
+/* content 144-780 */
+.ct{position:absolute;left:0;right:0;top:144px;height:636px;display:flex;flex-direction:column;background:var(--bg);overflow:hidden}
+.scw{position:relative;flex:1;min-height:0;display:flex}
+.scb{flex:1;min-width:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
+.scb::-webkit-scrollbar{display:none}
+.rail{flex:none;width:10px;position:relative;background:var(--panel-2);border-left:1px solid var(--line);touch-action:none}
+.rail i{position:absolute;left:2px;right:2px;border-radius:3px;background:var(--text-3);min-height:24px}
+.hd{flex:none;padding:8px 12px 6px;border-bottom:1px solid var(--line);background:var(--panel)}
+.hd .t{display:flex;align-items:center;gap:8px;height:28px}
+.hd h1{font-size:17px;font-weight:700;letter-spacing:.03em}
+.chip{height:24px;display:inline-flex;align-items:center;gap:4px;padding:0 8px;border:1px solid var(--line-2);border-radius:4px;font-size:13px;color:var(--text-2);white-space:nowrap}
+.chip.on{color:var(--text);border-color:var(--text-2);background:var(--panel-3)}
+.c{display:inline-flex;align-items:center;height:22px;padding:0 6px;border:1px solid transparent;border-radius:3px;font-size:13px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+.c-ce{color:var(--up);border-color:var(--up-line);background:var(--up-bg)} .c-pe{color:var(--down);border-color:var(--down-line);background:var(--down-bg)}
+.c-lb{color:var(--lb);background:var(--lb-bg)} .c-sb{color:var(--sb);background:var(--sb-bg)} .c-sc{color:var(--sc-ink);border-color:var(--sc)} .c-lu{color:var(--lu-ink);border-color:var(--lu)}
+.c-ready{color:var(--action);border-color:var(--action-line);background:var(--action-bg)}
+.c-leader{color:var(--leader);border-color:var(--leader);background:var(--leader-bg)} .c-dep{color:var(--dep);border-color:var(--dep);background:var(--dep-bg)} .c-lag{color:var(--lag);border-color:var(--lag);background:var(--lag-bg)}
+.c-fol{color:var(--text-2);border-color:var(--line-2)} .c-info{color:var(--info);border-color:var(--info-line);background:var(--info-bg)}
+.c-ban{color:var(--danger-ink);background:var(--danger)} .c-stale{color:var(--text-2);border-color:var(--stale);background:var(--stripe)}
+.flow{margin-top:4px;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.flow .o{color:var(--down)} .flow .i{color:var(--up)} .flow .a{color:var(--text-3);font-weight:400}
+.sub{font-size:13px;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:20px;line-height:20px}
+.sub b{color:var(--text);font-family:var(--mono);font-weight:600}
+/* sector rows */
+.sr{min-height:60px;padding:6px 12px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;justify-content:center;gap:3px;cursor:pointer}
+.sr:active{background:var(--panel-3)}
+.sr .r1{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.sr .rk{font-family:var(--mono);font-size:13px;color:var(--text-3);width:16px;text-align:right}
+.sr .nm{font-size:15px;font-weight:700}
+.sr .pc{font-family:var(--mono);font-size:15px;font-weight:700;margin-left:auto}
+.sr .r2{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);white-space:nowrap;padding-left:24px;overflow:hidden}
+.sr .r2 .c{height:20px;font-size:13px;padding:0 5px}
+.heat-up{background:rgba(var(--up-rgb), min(.20, calc(.05 + .05 * var(--m, 0))))} .heat-dn{background:rgba(var(--down-rgb), min(.20, calc(.05 + .05 * var(--m, 0))))}
+/* sheets */
+.sheet{position:absolute;left:0;right:0;top:0;bottom:0;background:var(--bg);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .22s ease;z-index:5}
+.sheet.on{transform:none}
+.sheet#shareS{z-index:6}
+.back{height:48px;display:flex;align-items:center;gap:6px;padding:0 12px 0 6px;font-size:15px;color:var(--info);font-weight:600;flex:none}
+.back .ar{font-size:22px;line-height:1}
+.sh1{display:flex;align-items:center;gap:8px;padding:0 12px;height:30px;white-space:nowrap}
+.sh1 .nm{font-size:18px;font-weight:700;letter-spacing:.02em}
+.sh1 .pc{font-family:var(--mono);font-size:17px;font-weight:700}
+.sh1 .px{font-family:var(--mono);font-size:18px;font-weight:700;margin-left:auto}
+.ln{padding:0 12px;font-size:13px;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:21px;line-height:21px}
+.ln b{color:var(--text);font-family:var(--mono);font-weight:600}
+.ln .w{color:var(--info);font-weight:700}
+.ln.wrap{white-space:normal;height:auto;line-height:19px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;padding-top:1px;padding-bottom:1px}
+.top{flex:none;background:var(--panel);border-bottom:1px solid var(--line-2);padding-bottom:5px}
+.gh{height:30px;display:flex;align-items:center;gap:8px;padding:0 12px;font-size:13px;font-weight:800;letter-spacing:.04em;color:var(--gc);background:color-mix(in srgb, var(--gc) 10%, transparent);border-left:3px solid var(--gc);border-bottom:1px solid var(--line)}
+.gh span{font-weight:500;letter-spacing:0;color:var(--text-2)}
+.g-up{--gc:var(--up)} .g-lead{--gc:var(--leader)} .g-lag{--gc:var(--lag)} .g-with{--gc:var(--text-2)} .g-against{--gc:var(--down)} .g-nt{--gc:var(--stale)}
+.mr{min-height:62px;padding:6px 12px 6px 15px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;justify-content:center;gap:4px;cursor:pointer}
+.mr:active,.mr.sel{background:var(--panel-3)}
+.mr .r1{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.mr .nm{font-size:15px;font-weight:700}
+.mr .pc{font-family:var(--mono);font-size:15px;font-weight:700;margin-left:auto}
+.mr .r2{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);white-space:nowrap;overflow:hidden}
+.mr .r2 .c{height:20px;padding:0 5px}
+.mr .r2 .n{color:var(--text)}
+.mr .ag{margin-left:auto;font-family:var(--mono);color:var(--text-3)}
+.mr.ban{opacity:.55}
+.mr.stale{background-image:repeating-linear-gradient(135deg, var(--stripe) 0 6px, transparent 6px 12px)}
+.ok{color:var(--up);font-weight:700}
+.nfo{min-height:48px;display:flex;align-items:center;gap:6px;padding:0 12px;font-size:13px;color:var(--text-3);border-bottom:1px solid var(--line)}
+.sec{padding:8px 12px;border-bottom:1px solid var(--line)}
+.stt{font-size:13px;font-weight:700;letter-spacing:.05em;color:var(--text);margin-bottom:5px;display:flex;align-items:center;gap:8px}
+.tbx{width:100%;border-collapse:collapse;table-layout:fixed;font-size:14px}
+.tbx th{font-size:13px;font-weight:700;text-align:right;padding:3px 4px;border-bottom:1px solid var(--line-2);white-space:nowrap}
+.tbx th:first-child{text-align:left;color:var(--text-3);font-weight:600}
+.tbx td{font-family:var(--mono);text-align:right;padding:0 4px;height:25px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbx td:first-child{font-family:var(--sans);font-size:13px;color:var(--text-3);text-align:left}
+.tbx .pk{background:var(--action-bg)}
+.pl3{display:grid;grid-template-columns:70px 1fr 90px;gap:2px 8px;align-items:baseline}
+.pl3 .h{font-size:13px;color:var(--text-3);text-align:right}
+.pl3 .l{font-size:13px;color:var(--text-3)}
+.pl3 .v{font-family:var(--mono);font-size:15px;font-weight:700;text-align:right}
+.txt{font-size:13px;color:var(--text-2);line-height:21px}
+.txt b{color:var(--text);font-family:var(--mono)}
+.lots{color:var(--text);font-weight:700}
+.wn{display:inline-flex;align-items:center;height:24px;padding:0 7px;border:1px solid var(--line-2);border-radius:3px;font-size:13px;margin:0 4px 4px 0}
+.wn::before{content:'✓';color:var(--up);margin-right:4px}
+.btn{height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0 14px;border:1px solid var(--line-2);border-radius:6px;font-size:14px;font-weight:600;color:var(--text)}
+/* bottom tabs 780-844 */
+.tabs{z-index:8;position:absolute;left:0;right:0;bottom:0;height:64px;background:var(--panel-2);border-top:1px solid var(--line-2);display:grid;grid-template-columns:repeat(4,1fr)}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:13px;color:var(--text-2);position:relative}
+.tab svg{width:20px;height:20px}
+.tab.on{color:var(--text)} .tab.on::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--text)}
+.toast{position:absolute;left:16px;right:16px;bottom:76px;z-index:9;background:var(--panel-3);border:1px solid var(--line-2);border-radius:8px;padding:10px 12px;font-size:14px;display:none}
+.toast.on{display:block}
+.mock{position:absolute;left:0;right:0;text-align:center;top:15px;font-size:11px;color:var(--text-3);z-index:1;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="ph">
+  <div class="os"><span>11:05</span><span class="ic">5G <svg width="22" height="11" viewBox="0 0 22 11"><rect x=".5" y=".5" width="19" height="10" rx="2" fill="none" stroke="currentColor"/><rect x="2" y="2" width="13" height="7" rx="1" fill="currentColor"/></svg></span></div>
+  <div class="mk" title="tap = MARKET sheet (every R01 item)">
+    <div class="a"><span><span class="nm">NIFTY</span><span class="px">25,514.35</span><span class="pc up">+0.72%</span></span><span><span class="nm">BANKNIFTY</span><span class="px">59,842.60</span><span class="pc up">+1.12%</span></span></div>
+    <div class="b"><span>SENSEX <span class="n up">+0.66%</span></span><span>VIX <span class="n dn" title="India VIX −3.42%">11.86</span></span><span class="ban">BAN 2</span><span style="margin-left:auto;display:inline-flex;align-items:center;gap:4px">OPEN <span class="n" style="color:var(--text)">11:05:00</span><span class="n" title="worst data age" style="color:var(--info)">0.4s</span></span></div>
+  </div>
+  <div class="pl"><div class="l1"><span class="tt">MY F&amp;O P&amp;L</span><span class="t2">TODAY</span><span class="big">₹0</span><span class="n t2">0.0R</span><span class="gt">›</span></div>
+    <div class="l2">open <b>0</b> · trades <b>0 of 3</b> · lock <b>₹10,000</b> left · week <b class="dn">−₹4,105</b></div></div>
+
+  <div class="ct">
+    <!-- SCREEN 1: the sector list -->
+    <div class="hd"><div class="t"><h1>SECTORS</h1><span class="chip on">30M</span><span class="chip" style="margin-left:auto">engine <b class="dn" style="margin-left:4px">PE 41</b>/<b class="up">CE 2</b></span></div>
+      <div class="flow"><span class="o">OUT of IT · FMCG</span> <span class="a">→</span> <span class="i">INTO BANKS · NBFC</span></div>
+      <div class="sub">ROT CONFIRMED 22m · all listed shares · tap a sector</div></div>
+    <div class="scw"><div class="scb" id="secL"></div><div class="rail" data-for="secL"><i></i></div></div>
+
+    <!-- SCREEN 2: the open sector, full-screen sheet -->
+    <div class="sheet" id="secS">
+      <div class="top"><button class="back" id="back1"><span class="ar">‹</span>Sectors</button><div id="secTop"></div></div>
+      <div class="scw"><div class="scb" id="memL"></div><div class="rail" data-for="memL"><i></i></div></div>
+    </div>
+    <!-- SCREEN 3: the share sheet -->
+    <div class="sheet" id="shareS">
+      <div class="top"><button class="back" id="back2"><span class="ar">‹</span><span id="back2t">Banks</span></button><div id="shTop"></div></div>
+      <div class="scw"><div class="scb" id="shB"></div><div class="rail" data-for="shB"><i></i></div></div>
+    </div>
+  </div>
+  <div class="mock">design mockup - illustrative values</div>
+  <nav class="tabs">
+    <a class="tab" href="phone.html#now"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="7"/><path d="M10 6v4l3 2"/></svg>NOW</a>
+    <a class="tab on"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 15l4-5 3 3 6-8"/></svg>CALL</a>
+    <a class="tab" href="phone.html#risk"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3l7 3v4c0 4-3 6-7 7-4-1-7-3-7-7V6z"/></svg>RISK</a>
+    <a class="tab" href="phone.html#alerts"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 14V9a5 5 0 0110 0v5l1.5 2h-13zM8 17a2 2 0 004 0"/></svg>ALERTS</a>
+  </nav>
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+// GIR · sector drill-down · ONE data + maths module shared by the laptop page and the phone page (inlined at build).
+// Illustrative day: Thu 19 Nov 2026 11:05:00 (design mockup - illustrative values). December expiry Tue 29 Dec 15:30.
+var GD = (function () {
+  'use strict';
+  var CLOCK = '11:05:00', HRS_LEFT = 4 + 5 / 60;            // to 15:10
+  var T = (40 + (15.5 - (11 + 5 / 60)) / 24) / 365;          // 19 Nov 11:05 -> 29 Dec 15:30, years
+  var R1 = 5000, LOCK = 10000;
+  function erf(x) { var s = x < 0 ? -1 : 1; x = Math.abs(x); var t = 1 / (1 + 0.3275911 * x);
+    var y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x); return s * y; }
+  function N(x) { return 0.5 * (1 + erf(x / Math.SQRT2)); }
+  function bs(S, K, t, v, cp) { var sd = v * Math.sqrt(t), d1 = (Math.log(S / K) + 0.5 * v * v * t) / sd, d2 = d1 - sd;
+    var c = S * N(d1) - K * N(d2); return cp === 'CE' ? c : c - S + K; }
+  function delta(S, K, t, v, cp) { var sd = v * Math.sqrt(t), d1 = (Math.log(S / K) + 0.5 * v * v * t) / sd; return cp === 'CE' ? N(d1) : N(d1) - 1; }
+  function r05(x) { return Math.round(x * 20) / 20; }
+  function r10(x) { return Math.round(x / 10) * 10; }
+  function fmt(x, d) { if (d === undefined) d = 2; var s = Math.abs(x).toFixed(d).split('.'), i = s[0], o = '';
+    // Indian grouping
+    if (i.length > 3) { var last = i.slice(-3), rest = i.slice(0, -3); rest = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ','); i = rest + ',' + last; }
+    o = i + (s[1] ? '.' + s[1] : ''); return (x < 0 ? '−' : '') + o; }
+  function sg(x, d) { return (x > 0 ? '+' : x < 0 ? '' : '') + fmt(x, d); }
+  function rs(x) { return '₹' + fmt(x, 0); }
+  function tickOf(S) { return S < 100 ? 0.05 : S < 500 ? 0.1 : 0.5; }
+
+  // ---------------- sectors (30M window, ranked by RS 30M over ALL listed shares - R49) ----------------
+  var SECTORS = [
+    { id: 'Banks', basis: 'all 41 listed · ff-wtd', idx: 'NIFTY BANK +1.12%', rs30: 0.72, today: 2, pct: 1.06, up: 31, dn: 10, n: 41, cr: 5860, bu: 'LB', st: 'ROT CONFIRMED', stAge: '22m', conf: '10:20',
+      run: { since: '10:05', len: '1h 00m', typ: '1h 40m', nn: 28, br: '27→31', fade: false },
+      why: { drv: 'FII buying 13 sessions', live: '+₹1,486 cr 18 Nov', story: 'Goldman: India banks to OW', src: 'CNBC-TV18 TV, 18 Nov 12:44', sage: '22h' },
+      nonfo: { n: 27, up: 19, dn: 8, wt: 8.6, ex: [['J&KBANK', 2.14], ['KARURVYSYA', 1.86], ['CUB', 1.62], ['DCBBANK', 1.40], ['SOUTHBANK', 0.92], ['UJJIVANSFB', -0.41], ['EQUITASBNK', -0.63], ['CENTRALBK', 1.12]] } },
+    { id: 'NBFC & finance', basis: 'all 92 listed · ff-wtd', rs30: 0.41, today: 4, pct: 0.64, up: 58, dn: 34, n: 92, cr: 1280, bu: 'LB', st: 'IN', stAge: '14m', conf: '10:51',
+      run: { since: '10:40', len: '25m', typ: '1h 10m', nn: 19, br: '52→58', fade: false },
+      why: { drv: 'with Banks - same FII flow', live: 'FINNIFTY +0.91%', story: '', src: '', sage: '' },
+      nonfo: { n: 87, up: 54, dn: 33, wt: 31.0, ex: [['CREDITACC', 1.2], ['MANAPPURAM', 0.6], ['IIFL', 0.9]] } },
+    { id: 'Realty', basis: 'NIFTY REALTY', rs30: 0.38, today: 1, pct: 1.38, up: 29, dn: 11, n: 40, cr: 940, bu: 'LB', st: 'NOT THIS ROT', stAge: '', conf: '10:31',
+      run: { since: '09:50', len: '1h 15m', typ: '55m', nn: 22, br: '33→29', fade: true },
+      why: null, nonfo: { n: 34, up: 23, dn: 11, wt: 18.0, ex: [['SOBHA', 1.9], ['BRIGADE', 1.4]] } },
+    { id: 'Metals', basis: 'NIFTY METAL', rs30: 0.22, today: 3, pct: 0.84, up: 30, dn: 12, n: 42, cr: 610, bu: 'SC', st: 'SHORTS LEAVE', stAge: '', conf: '',
+      run: { since: '10:25', len: '40m', typ: '1h 05m', nn: 31, br: '26→30', fade: false },
+      why: { drv: 'LME copper +1.2% (live)', live: '', story: 'China stimulus talk', src: 'Reuters 09:20', sage: '1h 45m' },
+      nonfo: { n: 36, up: 25, dn: 11, wt: 14.0, ex: [['JINDALSTEL', 1.1], ['WELCORP', 0.7]] } },
+    { id: 'Auto', basis: 'NIFTY AUTO', rs30: 0.04, today: 5, pct: 0.21, up: 24, dn: 22, n: 46, cr: 120, bu: 'LB', st: '', stAge: '', conf: '',
+      run: null, why: null, nonfo: { n: 41, up: 21, dn: 20, wt: 22.0, ex: [] } },
+    { id: 'Cement', basis: 'all 24 listed · ff-wtd', rs30: -0.02, today: 6, pct: 0.12, up: 13, dn: 11, n: 24, cr: -40, bu: '', st: '', stAge: '', conf: '',
+      run: null, why: null, nonfo: { n: 21, up: 12, dn: 9, wt: 19.0, ex: [] } },
+    { id: 'Power', basis: 'all 31 listed · ff-wtd', rs30: -0.08, today: 7, pct: 0.05, up: 16, dn: 15, n: 31, cr: -160, bu: '', st: '', stAge: '', conf: '',
+      run: null, why: null, nonfo: { n: 28, up: 15, dn: 13, wt: 24.0, ex: [] } },
+    { id: 'Oil & gas', basis: 'NIFTY OIL & GAS', rs30: -0.11, today: 8, pct: -0.18, up: 6, dn: 9, n: 15, cr: -290, bu: 'LU', st: '', stAge: '', conf: '',
+      run: null, why: { drv: 'Brent +0.42% (live)', live: '', story: '', src: '', sage: '' }, nonfo: { n: 11, up: 5, dn: 6, wt: 9.0, ex: [] } },
+    { id: 'Pharma', basis: 'NIFTY PHARMA', rs30: -0.18, today: 9, pct: -0.62, up: 30, dn: 58, n: 88, cr: -310, bu: 'LU', st: '', stAge: '', conf: '',
+      run: { since: '10:15', len: '50m', typ: '1h 20m', nn: 17, br: '50→58', fade: false },
+      why: { drv: 'peer US FDA warning letter', live: '', story: 'FDA letter to a peer plant', src: 'ET 09:31', sage: '1h 34m' }, nonfo: { n: 83, up: 29, dn: 54, wt: 34.0, ex: [] } },
+    { id: 'FMCG', basis: 'NIFTY FMCG', rs30: -0.36, today: 10, pct: -0.71, up: 21, dn: 39, n: 60, cr: -2380, bu: 'SB', st: 'OUT', stAge: '22m', conf: '10:20',
+      run: { since: '10:05', len: '1h 00m', typ: '1h 30m', nn: 24, br: '34→39', fade: false },
+      why: { drv: 'money to banks', live: '', story: 'rural demand note', src: 'Nomura 08:50', sage: '2h 15m' }, nonfo: { n: 55, up: 20, dn: 35, wt: 21.0, ex: [] } },
+    { id: 'IT', basis: 'NIFTY IT', rs30: -0.58, today: 11, pct: -1.04, up: 22, dn: 52, n: 74, cr: -4120, bu: 'SB', st: 'OUT', stAge: '22m', conf: '10:20',
+      run: { since: '09:40', len: '1h 25m', typ: '2h 05m', nn: 33, br: '47→52', fade: false },
+      why: { drv: 'USD/INR −0.12% (live)', live: '', story: 'Accenture guidance cut', src: 'overnight wires', sage: '14h' }, nonfo: { n: 68, up: 20, dn: 48, wt: 16.0, ex: [] } }
+  ];
+
+  // ---------------- F&O members ----------------
+  // grp: up (COMING UP / DOWN NOW) · lead · lag · with (gate open) · against · nt (NOT TRADABLE)
+  var M = {};
+  M['Banks'] = [
+    { sym: 'ICICIBANK', role: 'FOLLOWER', grp: 'up', prev: 1444.50, ltp: 1462.40, vwap: 1456.2, orL: 1450.0, orH: 1458.0, lo: 1450.0, hi: 1463.0, atr: 25, rs30: 0.92, rs15: 0.74, sl: '↗', rvol: 2.1, rvUp: 1, side: 'both', bu: 'LB', oi: 4.1, buN: 3.2, buD: 7.9, wt: 20.5, lot: 700, iv: 0.234, iv20: 0.218, step: 10, spr: 5, sprI: 6, dep: 18, depI: 9, gate: '✓ 4 of 4', gok: 1, ai: 'GET READY', aiT: '11:04', age: '0.3s', wallC: 1500, wallP: 1440, mwpl: 18, res: 'results ~24 Jan · no IV-crush risk now', exd: 'no ex-date',
+      news: [['09:52', 'ET', 'ICICI Bank: deposits beat system growth, 3rd month', '1h 13m'], ['18 Nov 12:44', 'CNBC-TV18', 'Goldman: India banks OW, ICICI top pick', '22h']],
+      aiv: 'GET READY 11:04 · 1,460 CE Dec · 4 of 5 agree' },
+    { sym: 'AXISBANK', role: 'FOLLOWER', grp: 'up', prev: 1226.80, ltp: 1248.30, vwap: 1240.1, orL: 1232.0, orH: 1239.0, lo: 1232.0, hi: 1249.0, atr: 24, rs30: 0.81, rs15: 0.88, sl: '↗', rvol: 2.6, rvUp: 1, side: 'both', bu: 'LB', oi: 6.3, buN: 4.0, buD: 11.6, wt: 7.9, lot: 625, iv: 0.245, iv20: 0.229, step: 10, spr: 5, sprI: 6, dep: 14, depI: 7, gate: '✓ 4 of 4', gok: 1, ai: '', age: '0.4s', rr: 1, wallC: 1300, wallP: 1200, mwpl: 22, res: 'results ~22 Jan', exd: 'no ex-date',
+      news: [['10:31', 'Moneycontrol', 'Axis Bank: card spends up 18% YoY in October', '34m']] },
+    { sym: 'BANKBARODA', role: 'FOLLOWER', grp: 'up', prev: 268.40, ltp: 274.65, vwap: 272.6, orL: 270.2, orH: 272.4, lo: 270.2, hi: 274.9, atr: 6.6, rs30: 0.74, rs15: 0.91, sl: '↗', rvol: 3.0, rvUp: 1, side: 'both', bu: 'LB', oi: 8.8, buN: 6.1, buD: 14.2, wt: 2.4, lot: 2925, iv: 0.29, iv20: 0.27, step: 2.5, spr: 2, sprI: 2, dep: 22, depI: 11, gate: '✓ 4 of 4', gok: 1, ai: '', age: '0.5s', neu: '11:01', wallC: 280, wallP: 270, mwpl: 31, res: 'results ~30 Jan', exd: 'no ex-date',
+      news: [['10:12', 'BS', 'PSU banks: Q3 credit growth seen at 13%', '53m']] },
+    { sym: 'SBIN', role: 'LEADER', grp: 'lead', prev: 958.20, ltp: 987.80, vwap: 974.6, orL: 958.0, orH: 966.5, lo: 958.0, hi: 989.4, atr: 18.5, rs30: 0.64, rs15: 0.12, sl: '→', rvol: 3.4, rvUp: 1, side: 'both', bu: 'LB', oi: 11.2, buN: 8.4, buD: 17.0, wt: 10.8, lot: 750, iv: 0.26, iv20: 0.24, step: 5, spr: 4, sprI: 4, dep: 25, depI: 14, gate: 'EXTENDED', gok: 0, ext: 1, ai: '', age: '0.3s', wallC: 1000, wallP: 960, mwpl: 27, res: 'results ~6 Feb', exd: 'no ex-date',
+      news: [['09:47', 'CNBC-TV18', 'SBI at record high; m-cap crosses ₹9 lakh cr', '1h 18m']] },
+    { sym: 'HDFCBANK', role: 'LAGGARD', grp: 'lag', prev: 1011.40, ltp: 1012.05, vwap: 1011.6, orL: 1006.2, orH: 1015.5, lo: 1006.2, hi: 1015.5, atr: 17, rs30: -0.42, rs15: 0.18, sl: '↗', rvol: 0.9, rvUp: 1, side: 'reclaim', bu: '', oi: 0.4, buN: 0.2, buD: 0.9, wt: 31.0, lot: 550, iv: 0.20, iv20: 0.195, step: 10, spr: 3, sprI: 4, dep: 30, depI: 16, gate: 'trig > 1,016.0', gok: 0, ai: '', age: '0.3s', wallC: 1040, wallP: 1000, mwpl: 12, res: 'results ~17 Jan', exd: 'no ex-date',
+      news: [['18 Nov 17:05', 'ET', 'HDFC Bank: no bad news; flows went to PSU names', '18h']] },
+    { sym: 'KOTAKBANK', role: 'FOLLOWER', grp: 'with', prev: 2086.00, ltp: 2108.90, vwap: 2101.4, orL: 2088.0, orH: 2099.0, lo: 2088.0, hi: 2112.0, atr: 38, rs30: 0.21, rs15: 0.30, sl: '→', rvol: 1.2, rvUp: 1, side: 'both', bu: 'LB', oi: 2.2, buN: 1.4, buD: 4.6, wt: 8.2, lot: 400, iv: 0.21, iv20: 0.205, step: 20, spr: 6, sprI: 8, dep: 9, depI: 5, gate: 'RS30 +0.21', gok: 0, ai: '', age: '0.4s', wallC: 2200, wallP: 2060, mwpl: 15, res: 'results ~24 Jan', exd: 'no ex-date', news: [] },
+    { sym: 'CANBK', role: 'FOLLOWER', grp: 'with', prev: 118.62, ltp: 120.86, vwap: 120.70, orL: 118.9, orH: 120.1, lo: 118.9, hi: 121.2, atr: 3.2, rs30: 0.58, rs15: 0.40, sl: '↗', rvol: 2.0, rvUp: 1, side: 'reclaim', bu: 'LB', oi: 5.0, buN: 3.1, buD: 9.4, wt: 1.7, lot: 6750, iv: 0.30, iv20: 0.28, step: 1, spr: 1, sprI: 1, dep: 12, depI: 6, gate: 'VWAP 1/2 bars', gok: 0, ai: '', age: '0.6s', wallC: 125, wallP: 118, mwpl: 41, res: 'results ~29 Jan', exd: 'no ex-date', news: [] },
+    { sym: 'PNB', role: 'FOLLOWER', grp: 'with', prev: 112.40, ltp: 113.98, vwap: 113.40, orL: 112.6, orH: 113.5, lo: 112.6, hi: 114.2, atr: 2.9, rs30: 0.33, rs15: 0.20, sl: '→', rvol: 1.6, rvUp: 1, side: 'both', bu: 'LB', oi: 3.1, buN: 2.0, buD: 5.8, wt: 1.9, lot: 8000, iv: 0.31, iv20: 0.29, step: 1, spr: 1, sprI: 1, dep: 10, depI: 5, gate: 'RS30 +0.33', gok: 0, ai: '', age: '0.5s', wallC: 120, wallP: 110, mwpl: 36, res: 'results ~28 Jan', exd: 'no ex-date', news: [] },
+    { sym: 'AUBANK', role: 'FOLLOWER', grp: 'with', prev: 742.30, ltp: 751.20, vwap: 748.0, orL: 741.0, orH: 747.5, lo: 741.0, hi: 753.0, atr: 19, rs30: 0.12, rs15: 0.10, sl: '→', rvol: 1.3, rvUp: 0, side: 'vwap', bu: 'SC', oi: -2.4, buN: -3.0, buD: -1.1, wt: 1.1, lot: 1000, iv: 0.27, iv20: 0.26, step: 10, spr: 6, sprI: 7, dep: 6, depI: 3, gate: 'STALE 12s', gok: 0, stale: 1, ai: '', age: '12s', wallC: 780, wallP: 740, mwpl: 24, res: 'results ~21 Jan', exd: 'no ex-date', news: [] },
+    { sym: 'FEDERALBNK', role: 'FOLLOWER', grp: 'with', prev: 228.10, ltp: 230.85, vwap: 229.9, orL: 228.0, orH: 229.6, lo: 228.0, hi: 231.4, atr: 5.2, rs30: 0.15, rs15: 0.08, sl: '→', rvol: 1.1, rvUp: 0, side: 'both', bu: 'LB', oi: 1.8, buN: 1.0, buD: 3.9, wt: 1.2, lot: 5000, iv: 0.27, iv20: 0.26, step: 2.5, spr: 2, sprI: 2, dep: 8, depI: 4, gate: 'RVOL 1.1', gok: 0, ai: '', age: '0.7s', wallC: 240, wallP: 225, mwpl: 19, res: 'results ~16 Jan', exd: 'no ex-date', news: [] },
+    { sym: 'IDFCFIRSTB', role: 'FOLLOWER', grp: 'with', prev: 78.40, ltp: 78.95, vwap: 78.90, orL: 78.2, orH: 78.8, lo: 78.2, hi: 79.3, atr: 2.1, rs30: 0.05, rs15: -0.10, sl: '↘', rvol: 1.4, rvUp: 0, side: 'vwap', bu: 'LB', oi: 1.2, buN: 0.8, buD: 2.4, wt: 1.3, lot: 9275, iv: 0.30, iv20: 0.29, step: 1, spr: 1, sprI: 1, dep: 7, depI: 4, gate: 'RS15 −0.10', gok: 0, ai: '', age: '0.5s', wallC: 80, wallP: 75, mwpl: 44, res: 'results ~24 Jan', exd: 'no ex-date', news: [] },
+    { sym: 'YESBANK', role: 'FOLLOWER', grp: 'with', prev: 22.10, ltp: 22.21, vwap: 22.16, orL: 22.0, orH: 22.25, lo: 22.0, hi: 22.3, atr: 0.55, rs30: -0.12, rs15: 0.02, sl: '→', rvol: 0.8, rvUp: 0, side: 'or', bu: '', oi: 0.3, buN: 0.1, buD: 0.6, wt: 0.9, lot: 31100, iv: 0.32, iv20: 0.31, step: 1, spr: 1, sprI: 1, dep: 40, depI: 20, gate: 'RVOL 0.8', gok: 0, ai: '', age: '0.8s', wallC: 25, wallP: 20, mwpl: 29, res: 'results ~22 Jan', exd: 'no ex-date', news: [] },
+    { sym: 'BANDHANBNK', role: 'DEPENDENT', grp: 'against', prev: 172.30, ltp: 170.32, vwap: 171.4, orL: 170.1, orH: 172.9, lo: 169.9, hi: 173.2, atr: 4.6, rs30: -1.10, rs15: -0.80, sl: '↘', rvol: 1.9, rvUp: 1, side: 'below', bu: 'SB', oi: 6.4, buN: 5.0, buD: 9.8, wt: 0.6, lot: 3600, iv: 0.33, iv20: 0.31, step: 2.5, spr: 2, sprI: 2, dep: 9, depI: 5, gate: 'own news 09:40', gok: 0, ai: '', age: '0.4s', wallC: 180, wallP: 165, mwpl: 48, res: 'results ~30 Jan', exd: 'no ex-date',
+      news: [['09:40', 'ET', 'Bandhan: MFI collection efficiency slips in Assam', '1h 25m']] },
+    { sym: 'INDUSINDBK', role: 'FOLLOWER', grp: 'nt', prev: 802.40, ltp: 799.05, vwap: 800.2, orL: 797.0, orH: 803.5, lo: 796.1, hi: 804.0, atr: 22, rs30: -0.60, rs15: -0.20, sl: '→', rvol: 1.0, rvUp: 0, side: 'below', bu: 'SB', oi: 1.1, buN: 0.6, buD: 2.2, wt: 1.9, lot: 700, iv: 0.36, iv20: 0.33, step: 10, spr: 8, sprI: 9, dep: 4, depI: 2, gate: 'BAN · close only', gok: 0, ban: 1, ai: '', age: '0.4s', wallC: 840, wallP: 780, mwpl: 96, res: 'results ~26 Jan', exd: 'no ex-date', news: [] }
+  ];
+  // compact members for the other sectors: [sym, grp, role, prev, pct, rvol, rs30, bu, oi, wt, lot, step, iv, gate, extra]
+  var C = {
+    'NBFC & finance': [['BAJFINANCE', 'up', 'FOLLOWER', 1018.40, 1.62, 2.4, 0.71, 'LB', 5.2, 22.0, 750, 10, 0.27, '✓ 4 of 4', { neu: '10:56' }], ['SHRIRAMFIN', 'lead', 'LEADER', 712.30, 2.85, 3.1, 0.66, 'LB', 9.1, 8.0, 825, 10, 0.31, 'EXTENDED', { ext: 1 }], ['CHOLAFIN', 'lag', 'LAGGARD', 1612.00, 0.08, 0.9, -0.31, '', 0.3, 7.0, 625, 20, 0.28, 'trig > OR high'], ['MUTHOOTFIN', 'with', 'DEPENDENT', 3240.0, 0.71, 1.1, 0.18, 'LB', 1.4, 3.0, 275, 50, 0.29, 'RVOL 1.1'], ['LICHSGFIN', 'against', 'DEPENDENT', 584.20, -0.92, 1.7, -0.95, 'SB', 4.4, 2.0, 1000, 5, 0.30, 'below VWAP']],
+    'Realty': [['DLF', 'up', 'LEADER', 742.50, 2.10, 2.8, 0.82, 'LB', 6.6, 24.0, 825, 10, 0.32, '✓ 4 of 4', { neu: '10:52' }], ['LODHA', 'up', 'FOLLOWER', 1185.0, 1.75, 2.2, 0.68, 'LB', 4.9, 14.0, 450, 10, 0.34, '✓ 4 of 4'], ['GODREJPROP', 'lead', 'LEADER', 2210.0, 3.20, 3.3, 0.52, 'LB', 8.0, 11.0, 275, 20, 0.36, 'EXTENDED', { ext: 1 }], ['OBEROIRLTY', 'lag', 'LAGGARD', 1712.0, 0.10, 0.8, -0.38, '', 0.2, 8.0, 350, 20, 0.30, 'trig > OR high'], ['PRESTIGE', 'with', 'FOLLOWER', 1598.0, 0.92, 1.3, 0.21, 'LB', 1.9, 6.0, 450, 20, 0.35, 'RVOL 1.3'], ['PHOENIXLTD', 'with', 'FOLLOWER', 1702.0, 0.85, 1.6, 0.14, 'SC', -1.2, 8.0, 350, 20, 0.31, 'RS30 +0.14']],
+    'Metals': [['TATASTEEL', 'up', 'FOLLOWER', 172.40, 1.50, 2.0, 0.64, 'LB', 3.9, 18.0, 5500, 2.5, 0.29, '✓ 4 of 4'], ['HINDALCO', 'lead', 'LEADER', 812.0, 1.90, 2.6, 0.55, 'SC', -1.9, 14.0, 1400, 10, 0.27, 'SC · fades fast'], ['JSWSTEEL', 'with', 'FOLLOWER', 1152.0, 0.60, 1.2, 0.12, 'LB', 1.1, 13.0, 675, 10, 0.26, 'RVOL 1.2'], ['VEDL', 'lag', 'LAGGARD', 488.0, 0.05, 0.9, -0.30, '', 0.4, 10.0, 1150, 5, 0.31, 'trig > OR high'], ['SAIL', 'with', 'DEPENDENT', 132.50, 0.90, 1.4, 0.20, 'LB', 2.0, 4.0, 4700, 1, 0.33, 'RVOL 1.4'], ['NMDC', 'against', 'DEPENDENT', 74.20, -0.60, 1.5, -0.88, 'SB', 2.8, 4.0, 6750, 1, 0.32, 'own: ore price cut']],
+    'Auto': [['BAJAJ-AUTO', 'lead', 'LEADER', 9110.0, 1.10, 1.4, 0.40, 'LB', 2.4, 12.0, 75, 100, 0.24, 'RVOL 1.4'], ['M&M', 'with', 'FOLLOWER', 3612.0, 0.60, 1.1, 0.10, 'LB', 1.0, 20.0, 200, 20, 0.25, 'RVOL 1.1'], ['EICHERMOT', 'with', 'FOLLOWER', 7050.0, 0.40, 1.0, 0.02, '', 0.3, 8.0, 175, 50, 0.24, 'RS30 +0.02'], ['MARUTI', 'lag', 'LAGGARD', 16240.0, 0.02, 0.8, -0.20, '', 0.1, 18.0, 50, 100, 0.22, 'trig > OR high'], ['TMPV', 'against', 'FOLLOWER', 412.0, -0.80, 1.6, -0.70, 'SB', 3.1, 9.0, 800, 5, 0.30, 'below VWAP']],
+    'Cement': [['ULTRACEMCO', 'with', 'LEADER', 11920.0, 0.30, 1.0, 0.05, '', 0.2, 30.0, 50, 100, 0.22, 'RVOL 1.0'], ['AMBUJACEM', 'lag', 'LAGGARD', 562.0, -0.10, 0.9, -0.15, '', 0.1, 12.0, 1050, 5, 0.25, 'trig > OR high'], ['SHREECEM', 'against', 'FOLLOWER', 28900.0, -0.50, 1.2, -0.40, 'LU', -0.8, 9.0, 25, 250, 0.23, 'below VWAP']],
+    'Power': [['NTPC', 'with', 'LEADER', 334.0, 0.40, 1.1, 0.08, '', 0.5, 26.0, 1500, 2.5, 0.24, 'RVOL 1.1'], ['POWERGRID', 'lag', 'LAGGARD', 288.0, -0.05, 0.9, -0.10, '', 0.1, 20.0, 1900, 2.5, 0.23, 'trig > OR high'], ['TATAPOWER', 'against', 'FOLLOWER', 398.0, -0.60, 1.4, -0.52, 'SB', 1.9, 8.0, 1450, 5, 0.29, 'below VWAP']],
+    'Oil & gas': [['ONGC', 'up', 'FOLLOWER', 242.0, -0.90, 1.8, -0.60, 'SB', 3.2, 14.0, 2250, 2.5, 0.27, '✓ 4 of 4'], ['BPCL', 'lead', 'LEADER', 338.0, -1.20, 2.0, -0.55, 'SB', 4.0, 6.0, 1975, 2.5, 0.29, '✓ 4 of 4'], ['IOC', 'with', 'FOLLOWER', 148.0, -0.30, 1.1, -0.10, '', 0.4, 5.0, 4875, 1, 0.27, 'RVOL 1.1'], ['RELIANCE', 'lag', 'LAGGARD', 1512.0, 0.05, 0.9, 0.20, '', 0.2, 48.0, 500, 10, 0.20, 'trig < OR low']],
+    'Pharma': [['SUNPHARMA', 'up', 'FOLLOWER', 1712.0, -1.10, 2.1, -0.70, 'SB', 3.6, 16.0, 350, 20, 0.24, '✓ 4 of 4'], ['DRREDDY', 'lead', 'LEADER', 1240.0, -1.60, 2.5, -0.81, 'SB', 5.3, 8.0, 625, 10, 0.26, '✓ 4 of 4'], ['CIPLA', 'with', 'FOLLOWER', 1522.0, -0.40, 1.2, -0.10, 'LU', -0.6, 9.0, 375, 20, 0.23, 'RVOL 1.2'], ['DIVISLAB', 'lag', 'LAGGARD', 6420.0, 0.10, 0.8, 0.30, '', 0.2, 7.0, 100, 50, 0.25, 'trig < OR low'], ['LUPIN', 'against', 'FOLLOWER', 2060.0, 0.40, 1.3, 0.62, 'LB', 1.8, 6.0, 425, 20, 0.27, 'own: US approval']],
+    'FMCG': [['HINDUNILVR', 'up', 'LEADER', 2412.0, -1.20, 2.0, -0.66, 'SB', 3.0, 22.0, 300, 20, 0.21, '✓ 4 of 4'], ['NESTLEIND', 'lead', 'LEADER', 1182.0, -1.70, 2.2, -0.74, 'SB', 4.1, 9.0, 500, 10, 0.22, '✓ 4 of 4'], ['ITC', 'with', 'FOLLOWER', 402.0, -0.50, 1.0, -0.12, 'LU', -0.4, 26.0, 1600, 5, 0.19, 'RVOL 1.0'], ['BRITANNIA', 'lag', 'LAGGARD', 5890.0, 0.00, 0.8, 0.25, '', 0.1, 7.0, 125, 50, 0.21, 'trig < OR low'], ['DABUR', 'against', 'FOLLOWER', 512.0, 0.30, 1.3, 0.55, 'LB', 1.2, 4.0, 1250, 5, 0.22, 'own: price hike']],
+    'IT': [['INFY', 'up', 'FOLLOWER', 1522.0, -1.60, 2.3, -0.72, 'SB', 4.4, 29.0, 400, 20, 0.25, '✓ 4 of 4'], ['HCLTECH', 'up', 'FOLLOWER', 1612.0, -1.30, 2.0, -0.61, 'SB', 3.7, 12.0, 350, 20, 0.24, '✓ 4 of 4'], ['TCS', 'lead', 'LEADER', 3060.0, -2.30, 2.8, -0.58, 'SB', 6.2, 26.0, 175, 20, 0.24, 'EXTENDED', { ext: 1 }], ['TECHM', 'lag', 'LAGGARD', 1512.0, -0.10, 0.9, 0.35, '', 0.2, 5.0, 600, 20, 0.26, 'trig < OR low'], ['WIPRO', 'with', 'FOLLOWER', 246.0, -0.70, 1.2, -0.20, 'SB', 1.1, 7.0, 3000, 2.5, 0.25, 'RVOL 1.2'], ['COFORGE', 'against', 'FOLLOWER', 1820.0, 0.60, 1.5, 0.70, 'LB', 2.2, 3.0, 375, 20, 0.30, 'own: deal win']]
+  };
+  function expand(c, dir) {
+    var o = c[14] || {}, prev = c[3], pct = c[4], ltp = Math.round(prev * (1 + pct / 100) * 100) / 100, atr = +(ltp * 0.021).toFixed(2);
+    var up = pct >= 0, lo = up ? prev * 0.999 : ltp * 0.998, hi = up ? ltp * 1.002 : prev * 1.001;
+    var vwap = up ? lo + (ltp - lo) * 0.55 : hi - (hi - ltp) * 0.55;
+    var m = { sym: c[0], grp: c[1], role: c[2], prev: prev, ltp: ltp, lo: +lo.toFixed(2), hi: +hi.toFixed(2), vwap: +vwap.toFixed(2), orL: +lo.toFixed(2), orH: +(lo + (hi - lo) * 0.45).toFixed(2), atr: atr,
+      rvol: c[5], rvUp: c[5] >= 1.5 ? 1 : 0, rs30: c[6], rs15: c[6] * 0.8, sl: Math.abs(c[6]) > 0.4 ? (c[6] > 0 ? '↗' : '↘') : '→', bu: c[7], oi: c[8], buN: +(c[8] * 0.7).toFixed(1), buD: +(c[8] * 1.9).toFixed(1), wt: c[9], lot: c[10], step: c[11], iv: c[12], iv20: +(c[12] - 0.015).toFixed(3),
+      spr: 3, sprI: 4, dep: 10, depI: 5, gate: c[13], gok: c[13].charAt(0) === '✓' ? 1 : 0, ai: '', age: '0.4s', side: (dir > 0 ? (ltp > vwap ? 'both' : 'below') : (ltp < vwap ? 'belowboth' : 'vwap')),
+      wallC: Math.ceil(ltp * 1.03 / c[11]) * c[11], wallP: Math.floor(ltp * 0.97 / c[11]) * c[11], mwpl: 20, res: 'results in Jan', exd: 'no ex-date', news: [] };
+    for (var k in o) m[k] = o[k];
+    return m;
+  }
+  SECTORS.forEach(function (s) { var dir = s.pct >= 0 ? 1 : -1; s.dir = dir; if (!M[s.id]) M[s.id] = (C[s.id] || []).map(function (c) { return expand(c, dir); }); s.members = M[s.id]; });
+
+  // ---------------- per-member maths (all numbers derive from here, so the pane and F7 agree) ----------------
+  var GORDER = ['up', 'lead', 'lag', 'with', 'against', 'nt'];
+  function optSide(s, m) { var ce = s.dir > 0; if (m.grp === 'against') ce = !ce; return ce ? 'CE' : 'PE'; }
+  function strikes(m, cp) { var atm = Math.round(m.ltp / m.step) * m.step; var itm = cp === 'CE' ? atm - m.step : atm + m.step; return [atm, itm]; }
+  function quote(m, K, cp, ticks, S) { S = S || m.ltp; var mid = bs(S, K, T, m.iv, cp), sp = ticks * 0.05; var bid = r05(mid - sp / 2); if (bid < 0.05) bid = 0.05; return { mid: mid, bid: bid, ask: +(bid + sp).toFixed(2), sp: sp }; }
+  function thetaDay(m, K, cp) { return bs(m.ltp, K, T, m.iv, cp) - bs(m.ltp, K, T - 1 / 365, m.iv, cp); }
+  function contract(s, m, which) {
+    var cp = optSide(s, m), ks = strikes(m, cp), K = which === 'itm' ? ks[1] : ks[0], ticks = which === 'itm' ? m.sprI : m.spr;
+    var q = quote(m, K, cp, ticks), d = delta(m.ltp, K, T, m.iv, cp), th = thetaDay(m, K, cp), thh = th / 6.25;
+    var lotCost = q.ask * m.lot, sprLot = q.sp * m.lot, sprPct = q.sp / ((q.bid + q.ask) / 2) * 100;
+    var bePts = (thh * HRS_LEFT + q.sp) / Math.abs(d), be = cp === 'CE' ? m.ltp + bePts : m.ltp - bePts;
+    var ivK = m.iv - (which === 'itm' ? 0.003 : 0);
+    return { cp: cp, K: K, bid: q.bid, ask: q.ask, mid: q.mid, sp: q.sp, sprLot: sprLot, sprPct: sprPct, dep: which === 'itm' ? m.depI : m.dep, d: d, thh: thh * m.lot, iv: ivK, iv20: m.iv20, lotCost: lotCost, be: be, bePts: bePts };
+  }
+  function plan(s, m) {
+    var cp = optSide(s, m), ce = cp === 'CE', tk = tickOf(m.ltp), trig, stop, tgt, how;
+    var rising = ce; // option direction
+    function rd(x) { return +(Math.round(x / tk) * tk).toFixed(2); }
+    if (m.grp === 'lead' && m.ext) { trig = rd(m.vwap); stop = rd(rising ? m.vwap - 0.35 * m.atr : m.vwap + 0.35 * m.atr); tgt = rising ? m.hi : m.lo; how = 'pullback to VWAP ' + fmt(trig, tk < 0.1 ? 2 : 1) + ' / first higher low, 1 lot (minimum)'; if (!rising) how = 'bounce to VWAP ' + fmt(trig, tk < 0.1 ? 2 : 1) + ' / first lower high, 1 lot (minimum)'; }
+    else if (m.grp === 'lag') { trig = rising ? rd(m.orH + tk) : rd(m.orL - tk); stop = rd(rising ? m.vwap - 0.25 * m.atr : m.vwap + 0.25 * m.atr); tgt = rd(rising ? trig + 0.6 * m.atr : trig - 0.6 * m.atr); how = '5-min close ' + (rising ? '>' : '<') + ' ' + fmt(trig, tk < 0.1 ? 2 : 1) + ' (OR ' + (rising ? 'high' : 'low') + ')'; }
+    else if (rising) { trig = rd(m.hi + tk); stop = rd(Math.floor((m.vwap - 0.1) / tk) * tk); tgt = rd(Math.min(m.lo + m.atr, m.wallC * 0.995)); if (tgt <= trig) tgt = rd(trig + 0.5 * m.atr); how = '5-min close > ' + fmt(trig, tk < 0.1 ? 2 : 1) + ' (day high)'; }
+    else { trig = rd(m.lo - tk); stop = rd(Math.ceil((m.vwap + 0.1) / tk) * tk); tgt = rd(Math.max(m.hi - m.atr, m.wallP * 1.005)); if (tgt >= trig) tgt = rd(trig - 0.5 * m.atr); how = '5-min close < ' + fmt(trig, tk < 0.1 ? 2 : 1) + ' (day low)'; }
+    var c = contract(s, m, 'atm'), K = c.K, hs = c.sp / 2;
+    var pT = r05(bs(trig, K, T, m.iv, cp) + hs), pS = r05(bs(stop, K, T, m.iv, cp) - hs), pG = r05(bs(tgt, K, T, m.iv, cp) - hs);
+    var charges = r10(40 + 0.0021 * c.lotCost), slip = r10(hs * m.lot), costs = charges + slip;
+    var risk = Math.round((pT - pS) * m.lot + costs), reward = Math.round((pG - pT) * m.lot - costs);
+    var fitLock = Math.floor(LOCK / risk), fitR = Math.floor(R1 / risk), lots, lotsTxt;
+    if (m.ban) { lots = 0; lotsTxt = '0 lots · BAN - only close existing'; }
+    else if (m.stale) { lots = 0; lotsTxt = '0 lots · STALE quote - no GO NOW'; }
+    else if (fitLock < 1) { lots = 0; lotsTxt = '0 lots · lock room'; }
+    else if (m.ext) { lots = 1; lotsTxt = '1 lot (minimum) - extended'; }
+    else if (fitR >= 1) { lots = Math.min(fitR, fitLock); lotsTxt = lots + (lots > 1 ? ' lots' : ' lot') + ' (1R rule)'; }
+    else { lots = 1; lotsTxt = '1 lot (minimum) = ' + (risk / R1).toFixed(1) + 'R'; }
+    return { cp: cp, trig: trig, stop: stop, tgt: tgt, how: how, pT: pT, pS: pS, pG: pG, charges: charges, slip: slip, costs: costs, risk: risk, reward: reward, rr: reward / risk, fitLock: fitLock, fitR: fitR, lots: lots, lotsTxt: lotsTxt, K: K };
+  }
+  function room(m) { var used = (m.hi - m.lo) / m.atr; return { used: used, left: Math.max(0, 1 - used) }; }
+  function groups(s) { var out = []; GORDER.forEach(function (g) { var a = s.members.filter(function (m) { return m.grp === g; }); if (a.length) out.push({ g: g, items: a }); }); return out; }
+  function gLabel(s, g, n) { var up = s.dir > 0, cp = up ? 'CE' : 'PE', ocp = up ? 'PE' : 'CE';
+    return { up: [up ? 'COMING UP NOW' : 'COMING DOWN NOW', n + ' · ' + cp], lead: ['LEADER', 'extended ok'], lag: ['LAGGARD', up ? 'may catch up' : 'may catch down'], with: ['WITH SECTOR', 'a gate open'], against: ['AGAINST THE SECTOR (' + n + ')', ocp + ' strike'], nt: ['NOT TRADABLE', 'reason shown'] }[g]; }
+  function ideas(s) { var ce = 0, pe = 0; s.members.forEach(function (m) { if (m.grp === 'nt' || m.grp === 'with') return; if (optSide(s, m) === 'CE') ce++; else pe++; }); return { ce: ce, pe: pe }; }
+  function fo(s) { var u = 0, d = 0; s.members.forEach(function (m) { if (m.ltp >= m.prev) u++; else d++; }); return { up: u, dn: d, n: s.members.length }; }
+  function sideTxt(m) { return { both: 'above both', vwap: 'above VWAP', or: 'above OR', reclaim: 'reclaiming', below: 'below both', belowboth: 'below both' }[m.side] || m.side; }
+  function find(sym) { for (var i = 0; i < SECTORS.length; i++) { var a = SECTORS[i].members; for (var j = 0; j < a.length; j++) if (a[j].sym === sym) return { s: SECTORS[i], m: a[j] }; } return null; }
+  // synthetic 5-min bars 09:15 -> 11:05 that respect open / low / high / last (seeded by symbol)
+  function bars(m) {
+    var seed = 0; for (var i = 0; i < m.sym.length; i++) seed = (seed * 31 + m.sym.charCodeAt(i)) % 2147483647;
+    function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+    var n = 23, up = m.ltp >= m.prev, open = up ? m.lo + (m.orH - m.lo) * 0.2 : m.hi - (m.hi - m.orL) * 0.2;
+    var loAt = up ? 1 : 15, hiAt = up ? 20 : 1, path = [];
+    for (var k = 0; k <= n; k++) { var t = k / n, base;
+      if (up) base = k <= loAt ? open + (m.lo - open) * (k / loAt) : k <= hiAt ? m.lo + (m.hi - m.lo) * Math.pow((k - loAt) / (hiAt - loAt), 0.9) : m.hi + (m.ltp - m.hi) * ((k - hiAt) / (n - hiAt));
+      else base = k <= hiAt ? open + (m.hi - open) * (k / hiAt) : k <= loAt ? m.hi + (m.lo - m.hi) * ((k - hiAt) / (loAt - hiAt)) : m.lo + (m.ltp - m.lo) * ((k - loAt) / (n - loAt));
+      path.push(base); }
+    var out = [], amp = (m.hi - m.lo) * 0.07;
+    for (var b = 0; b < n; b++) { var o = path[b], c = path[b + 1]; if (b > 1 && b < n - 1 && b !== loAt && b !== hiAt) c += (rnd() - 0.5) * amp;
+      var h = Math.max(o, c) + rnd() * amp * 0.6, l = Math.min(o, c) - rnd() * amp * 0.6; h = Math.min(h, m.hi); l = Math.max(l, m.lo);
+      if (b === hiAt - 1 && up) h = m.hi; if (b === loAt - 1 && !up) l = m.lo; if (b === 0) { up ? (l = m.lo) : (h = m.hi); }
+      out.push({ o: o, h: h, l: l, c: c }); path[b + 1] = c; }
+    out[n - 1].c = m.ltp; out[n - 1].h = Math.max(out[n - 1].h, m.ltp); out[n - 1].l = Math.min(out[n - 1].l, m.ltp);
+    return out;
+  }
+  return { CLOCK: CLOCK, T: T, HRS_LEFT: HRS_LEFT, R1: R1, LOCK: LOCK, SECTORS: SECTORS, GORDER: GORDER, bs: bs, fmt: fmt, sg: sg, rs: rs, contract: contract, plan: plan, room: room, groups: groups, gLabel: gLabel, ideas: ideas, fo: fo, sideTxt: sideTxt, find: find, bars: bars, optSide: optSide, tickOf: tickOf };
+})();
+if (typeof module !== 'undefined') module.exports = GD;
+
+</script>
+<script>
+// Phone drill-down: sector list -> full-screen sector sheet (groups) -> share sheet. Back (button or the device/browser Back)
+// returns step by step. Lists scroll by finger drag (native touch scrolling) and show a thin position rail.
+(function () {
+  'use strict';
+  var $ = function (s) { return document.querySelector(s); }, G = GD, F = G.fmt, S = G.SECTORS;
+  var st = { open: null, sel: null };
+  function pct(m) { return (m.ltp / m.prev - 1) * 100; }
+  function sgp(x) { return (x > 0 ? '+' : x < 0 ? '−' : '') + Math.abs(x).toFixed(2) + '%'; }
+  function sg2(x) { return (x > 0 ? '+' : x < 0 ? '−' : '') + Math.abs(x).toFixed(2); }
+  function px(x) { return F(x, 2); } function lv(x) { return F(x, x < 200 ? 2 : 1); }
+  function sec(id) { for (var i = 0; i < S.length; i++) if (S[i].id === id) return S[i]; }
+  function role(m) { return '<span class="c c-' + { LEADER: 'leader', LAGGARD: 'lag', DEPENDENT: 'dep', FOLLOWER: 'fol' }[m.role] + '">' + m.role + '</span>'; }
+  function toast(t) { var e = $('#toast'); e.textContent = t; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(function () { e.classList.remove('on'); }, 1500); }
+
+  function drawSectors() {
+    $('#secL').innerHTML = S.map(function (s, i) { var id = G.ideas(s), fo = G.fo(s), up = s.dir > 0, p = s.pct;
+      return '<div class="sr heat-' + (up ? 'up' : 'dn') + '" data-s="' + s.id + '" style="--m:' + Math.min(2, Math.abs(p)).toFixed(2) + '"><div class="r1"><span class="rk">' + (i + 1) + '</span><span class="nm">' + s.id + '</span>' +
+        (up ? '<span class="c c-ce">CE ' + id.ce + '</span>' : '<span class="c c-pe">PE ' + id.pe + '</span>') + '<span class="pc ' + (up ? 'up' : 'dn') + '">' + (up ? '▲' : '▼') + sgp(p) + '</span></div>' +
+        '<div class="r2">' + (up ? s.up : s.dn) + '/' + s.n + ' · F&amp;O ' + (up ? fo.up : fo.dn) + '/' + fo.n + ' · RS ' + sg2(s.rs30) + (s.run && s.run.fade ? ' · <span class="dn">FADING ' + s.run.br + '</span>' : s.st ? ' · <span style="color:' + (s.st === 'OUT' ? 'var(--down)' : 'var(--info)') + '">' + s.st + (s.stAge ? ' ' + s.stAge : '') + '</span>' : '') + '</div></div>'; }).join('');
+  }
+  function drawSector() { var s = sec(st.open); if (!s) return; var fo = G.fo(s), up = s.dir > 0, w = s.why, r = s.run;
+    $('#secTop').innerHTML = '<div class="sh1"><span class="nm">' + s.id.toUpperCase() + '</span><span class="pc ' + (up ? 'up' : 'dn') + '">' + (up ? '▲ ' : '▼ ') + sgp(s.pct) + '</span>' + (s.conf ? '<span class="c c-info" style="margin-left:auto">CONFIRMED ' + s.conf + '</span>' : '') + '</div>' +
+      '<div class="ln">all ' + s.n + ' listed · breadth <b class="up">▲' + s.up + '</b> <b class="dn">▼' + s.dn + '</b> · F&amp;O <b class="up">▲' + fo.up + '</b> <b class="dn">▼' + fo.dn + '</b> · RS30 <b>' + sg2(s.rs30) + '</b></div>' +
+      (r ? '<div class="ln">' + (up ? 'up' : 'down') + ' since <b>' + r.since + '</b> · <b>' + r.len + '</b> / typ ' + r.typ + ' n=' + r.nn + ' · ' + (r.fade ? '<span class="dn">FADING ' + r.br + '</span>' : r.br + ' ▲') + '</div>' : '') +
+      '<div class="ln wrap"><span class="w">WHY</span> ' + (w ? '<b style="font-family:var(--sans)">' + w.drv + '</b> ' + (w.live || '') + (w.story ? ' · ' + w.story + ' (' + w.src + ' · ' + w.sage + ')' : '') : '<b style="color:var(--action);font-family:var(--sans)">UNEXPLAINED</b>') + '</div>' +
+      '<div class="ln"><span class="c c-info" style="height:20px">Expiry week · December only</span> <span class="t3">· tap a share</span></div>';
+    var h = ''; G.GORDER.forEach(function (g) { var a = s.members.filter(function (m) { return m.grp === g; }); if (!a.length) return; var L = G.gLabel(s, g, a.length);
+      a.sort(function (x, y) { return (x.neu ? 1 : 0) - (y.neu ? 1 : 0); });
+      h += '<div class="gh g-' + g + '">' + L[0] + ' <span>' + (g === 'lead' && a[0].ext ? 'extended' : g === 'nt' ? 'F&amp;O ban' : L[1]) + '</span></div>';
+      a.forEach(function (m) { var c = G.contract(s, m, 'atm'), p = pct(m);
+        var gate = m.ban ? '<span class="c c-ban">BAN</span> close only' : m.stale ? '<span class="c c-stale">STALE 12s</span>' : m.gok ? '<span class="ok">✓ 4/4</span>' + (m.neu ? ' <span class="c c-info">NEW</span>' : '') : m.ext ? '<b>EXT → VWAP</b>' : (/^(trig|own)/.test(m.gate) ? m.gate : '✕ ' + m.gate);
+        h += '<div class="mr' + (m.ban ? ' ban' : '') + (m.stale ? ' stale' : '') + (m.sym === st.sel ? ' sel' : '') + '" data-sym="' + m.sym + '"><div class="r1"><span class="nm">' + m.sym + '</span>' + role(m) + '<span class="pc ' + (p >= 0 ? 'up' : 'dn') + '">' + sgp(p) + '</span></div>' +
+          '<div class="r2"><span class="c c-' + c.cp.toLowerCase() + '">' + F(c.K, c.K % 1 ? 1 : 0) + ' ' + c.cp + '</span><span class="n">' + px(c.ask) + '</span><span>' + c.sprPct.toFixed(1) + '%</span><span>·</span>' + gate + (m.ai ? ' <span class="c c-ready">' + m.ai + '</span>' : '') + '<span class="ag">' + m.age + '</span></div></div>'; }); });
+    var nf = s.nonfo; h += '<div class="nfo">▸ ' + nf.n + ' more listed, not F&amp;O · ▲' + nf.up + ' ▼' + nf.dn + ' · wt ' + nf.wt + '% · context only</div><div style="height:12px"></div>';
+    $('#memL').innerHTML = h; }
+  function drawShare() { var f = G.find(st.sel); if (!f) return; var s = f.s, m = f.m, a = G.contract(s, m, 'atm'), i = G.contract(s, m, 'itm'), p = G.plan(s, m), r = G.room(m), pc = pct(m), ce = a.cp === 'CE';
+    $('#back2t').textContent = s.id;
+    $('#shTop').innerHTML = '<div class="sh1"><span class="nm">' + m.sym + '</span><span class="px">' + px(m.ltp) + '</span><span class="pc ' + (pc >= 0 ? 'up' : 'dn') + '">' + sgp(pc) + '</span></div>' +
+      '<div class="ln">' + role(m) + ' <span class="c c-' + (m.grp === 'up' ? 'ce' : m.grp === 'against' ? 'pe' : 'fol') + '">' + G.gLabel(s, m.grp, 1)[0].replace(/ \(\d+\)$/, '') + '</span> <span class="n t3">' + m.age + '</span></div>';
+    var dV = (m.ltp - m.vwap) / m.atr;
+    var h = '<div class="sec"><div class="txt">VWAP <b>' + lv(m.vwap) + '</b> <span class="' + (dV >= 0 ? 'up' : 'dn') + '">' + (dV >= 0 ? '▲ +' : '▼ −') + Math.abs(dV).toFixed(2) + ' ATR</span> · OR <b>' + lv(m.orL) + '-' + lv(m.orH) + '</b></div>' +
+      '<div class="txt">vs sector RS30 <b>' + sg2(m.rs30) + ' ' + m.sl + '</b> · RVOL <b>' + m.rvol.toFixed(1) + '</b>' + (m.rvUp ? ' ▲' : '') + ' · ATR used <b>' + r.used.toFixed(2) + '</b></div>' +
+      '<div class="txt">OI build-up <span class="c c-' + (m.bu || 'fol').toLowerCase() + '" style="height:20px">' + (m.bu || '-') + '</span> Nov <b>' + sg2(m.buN) + '%</b> · Dec <b>' + sg2(m.buD) + '%</b></div></div>';
+    h += '<div class="sec"><div class="stt" style="color:var(--' + (ce ? 'up' : 'down') + ')">TRADE BOX · DECEMBER 29 Dec</div><table class="tbx"><colgroup><col style="width:38%"><col><col></colgroup><tr><th></th><th class="pk"><span class="c c-' + a.cp.toLowerCase() + '" style="height:20px">' + F(a.K, a.K % 1 ? 1 : 0) + ' ' + a.cp + '</span> ★</th><th><span class="c c-' + i.cp.toLowerCase() + '" style="height:20px">' + F(i.K, i.K % 1 ? 1 : 0) + ' ' + i.cp + '</span></th></tr>' +
+      [['bid / ask', px(a.bid) + '/' + px(a.ask), px(i.bid) + '/' + px(i.ask)], ['spread / lot', '₹' + F(a.sprLot, 0), '₹' + F(i.sprLot, 0)], ['spread %', a.sprPct.toFixed(1) + '%', i.sprPct.toFixed(1) + '%'], ['depth at bid', a.dep + ' lots', i.dep + ' lots'], ['Δ', Math.abs(a.d).toFixed(2), Math.abs(i.d).toFixed(2)], ['θ ₹/h per lot', '−₹' + F(a.thh, 0), '−₹' + F(i.thh, 0)], ['IV / 20-day', (a.iv * 100).toFixed(1) + '/' + (a.iv20 * 100).toFixed(1), (i.iv * 100).toFixed(1) + '/' + (i.iv20 * 100).toFixed(1)], ['lot cost = max loss', '₹' + F(a.lotCost, 0), '₹' + F(i.lotCost, 0)], ['break-even 15:10', lv(a.be), lv(i.be)]]
+        .map(function (rw) { return '<tr><td>' + rw[0] + '</td><td class="pk">' + rw[1] + '</td><td>' + rw[2] + '</td></tr>'; }).join('') + '</table></div>';
+    h += '<div class="sec"><div class="pl3"><span></span><span class="h">share</span><span class="h">premium</span><span class="l">trigger</span><span class="v">' + lv(p.trig) + '</span><span class="v">≈' + px(p.pT) + '</span><span class="l">stop</span><span class="v dn">' + lv(p.stop) + '</span><span class="v dn">≈' + px(p.pS) + '</span><span class="l">target</span><span class="v up">' + lv(p.tgt) + '</span><span class="v up">≈' + px(p.pG) + '</span></div>' +
+      '<div class="txt" style="margin-top:4px">' + p.how + '</div><div class="txt">risk 1 lot <b>₹' + F(p.risk, 0) + '</b> = ' + (p.risk / G.R1).toFixed(2) + 'R · R:R <b>' + p.rr.toFixed(2) + '</b></div><div class="txt">lock room <b>₹10,000</b> → fits ' + p.fitLock + ' → <span class="lots">' + p.lotsTxt + '</span></div><div class="txt">trades <b>0 of 3</b> · 15:10 in <b>4h 05m</b></div></div>';
+    h += '<div class="sec"><div class="stt">AI</div><div class="txt">' + (m.aiv ? '<span class="c c-ready">GET READY</span> ' + m.aiv.replace(/^GET READY /, '') : '<b style="font-family:var(--sans)">AI silent</b> - your read') + '</div></div>';
+    h += '<div class="sec"><span class="wn">spread ' + a.sprPct.toFixed(1) + '%</span><span class="wn">depth ' + a.dep + ' lots</span><span class="wn">MWPL ' + m.mwpl + '%</span><span class="wn">' + m.res + '</span></div>';
+    h += '<div class="sec"><div class="txt t3">GIR never places orders - you place the order in Kite.</div><div style="display:flex;gap:8px;margin-top:6px"><button class="btn" id="pCopy">Copy contract</button><button class="btn" id="pPin">Pin</button><a class="btn" href="share.html#' + m.sym + '">Full page ›</a></div></div><div style="height:16px"></div>';
+    $('#shB').innerHTML = h; $('#shB').scrollTop = 0; }
+
+  // a thin rail that shows the position and can be dragged with a finger or the mouse
+  var rails = [];
+  document.querySelectorAll('.rail').forEach(function (rail) { var scb = document.getElementById(rail.dataset.for), th = rail.querySelector('i');
+    function upd() { var sh = scb.scrollHeight, ch = scb.clientHeight, H = rail.clientHeight; if (!H) return; if (sh <= ch + 1) { th.style.top = '0px'; th.style.height = H + 'px'; return; } var hh = Math.max(24, H * ch / sh); th.style.height = hh + 'px'; th.style.top = ((H - hh) * scb.scrollTop / (sh - ch)) + 'px'; }
+    scb.addEventListener('scroll', upd); if (window.ResizeObserver) new ResizeObserver(upd).observe(scb);
+    th.addEventListener('pointerdown', function (e) { e.preventDefault(); try { th.setPointerCapture(e.pointerId); } catch (x) {} var y0 = e.clientY, s0 = scb.scrollTop, k = (scb.scrollHeight - scb.clientHeight) / Math.max(1, rail.clientHeight - th.offsetHeight);
+      function mv(ev) { scb.scrollTop = s0 + (ev.clientY - y0) * k; } function up() { th.removeEventListener('pointermove', mv); th.removeEventListener('pointerup', up); }
+      th.addEventListener('pointermove', mv); th.addEventListener('pointerup', up); });
+    rails.push(upd); });
+  function updAll() { setTimeout(function () { rails.forEach(function (u) { u(); }); }, 240); rails.forEach(function (u) { u(); }); }
+
+  function openSector(id, push) { st.open = id; st.sel = null; drawSector(); $('#memL').scrollTop = 0; $('#secS').classList.add('on'); if (push !== false) history.pushState({ s: id }, '', '#s=' + encodeURIComponent(id)); updAll(); }
+  function openShare(sym, push) { st.sel = sym; drawShare(); document.querySelectorAll('#memL .mr').forEach(function (r) { r.classList.toggle('sel', r.dataset.sym === sym); }); $('#shareS').classList.add('on'); if (push !== false) history.pushState({ s: st.open, r: sym }, '', '#s=' + encodeURIComponent(st.open) + '&r=' + sym); updAll(); }
+  function apply(state) { state = state || {}; if (state.r) { if (st.open !== state.s) { st.open = state.s; drawSector(); } $('#secS').classList.add('on'); openShare(state.r, false); return; }
+    $('#shareS').classList.remove('on'); st.sel = null; if (state.s) { if (st.open !== state.s) { st.open = state.s; drawSector(); } $('#secS').classList.add('on'); } else { $('#secS').classList.remove('on'); st.open = null; } updAll(); }
+  window.addEventListener('popstate', function (e) { apply(e.state); });
+  document.addEventListener('click', function (e) { var t = e.target;
+    if (t.closest('#back1') || t.closest('#back2')) { history.back(); return; }
+    var sr = t.closest('.sr'); if (sr) { openSector(sr.dataset.s); return; }
+    var mr = t.closest('.mr'); if (mr) { openShare(mr.dataset.sym); return; }
+    if (t.closest('#pCopy')) { var f = G.find(st.sel), c = G.contract(f.s, f.m, 'atm'); toast('copied: ' + f.m.sym + ' 29DEC ' + c.K + ' ' + c.cp); return; }
+    if (t.closest('#pPin')) { toast(st.sel + ' pinned to the Desk watchlist'); return; }
+  });
+  drawSectors(); updAll();
+  // deep link (e.g. #s=Banks&r=ICICIBANK) for the screenshots
+  var h = location.hash.replace(/^#/, ''), q = {}; h.split('&').forEach(function (kv) { var a = kv.split('='); if (a[0]) q[a[0]] = decodeURIComponent(a[1] || ''); });
+  history.replaceState({}, '', location.pathname);
+  if (q.s) { $('#secS').style.transition = 'none'; $('#shareS').style.transition = 'none'; openSector(q.s); if (q.r) openShare(q.r); setTimeout(function () { $('#secS').style.transition = ''; $('#shareS').style.transition = ''; }, 50); }
+  window.GIRPH = { st: st };
+})();
+
+</script>
+</body>
+</html>
