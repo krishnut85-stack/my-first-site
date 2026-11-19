@@ -239,6 +239,11 @@ keep running.
 | Sector map (every sector) | members (ALL listed shares, weights), drivers and how each moves the sector, event -> reaction table (rate cut, crude +5%, rupee, duty change, regulator order ...), lead / lag between members | own history (replays), NSE indices, GIR_SPEC 1.1 | E2-E6, Sectors, Rotation, World |
 | Index map | NIFTY / BANKNIFTY / FINNIFTY / MIDCPNIFTY weights, each sector's and heavyweight's contribution in points, how each driver moves the index | NSE index factsheets, own minute data | strip, Market page, notes ("NIFTY about -0.4% if ...") |
 | Event playbook | every past event type with what moved, how much, how fast (MCX margins, bulk Scotch duty, NPCI, SEBI MTF, IRDAI caps, CERC coupling, results, RBI ...) - the regression tests of E12 | replays of recorded days, news archive | E12 direction check, notes, Calendar |
+**Both sides of every driver (19 Nov lesson):** a driver move has LOSERS and WINNERS. Copper / aluminium slumping overnight is PE
+for cables and metals (POLYCAB, KEI, HINDALCO, VEDL) AND CE for the users of those metals - autos (MARUTI +6%, ASHOKLEY +9%, TVSMOTOR,
+HEROMOTOCO, M&M, EICHERMOT up 3-5%, NIFTY AUTO +3% on 19 Nov), consumer durables, cable users. Same for crude (OMCs, paints, tyres,
+aviation win when it falls), the rupee (IT wins when it weakens), gold (jewellers' margins vs gold-loan books). The sector map holds
+the beneficiary side for every driver, and the 07:15 note lists both: "copper -1.8%: PE cables / metals · CE autos".
 Updated nightly from the day's recording; every call quotes the knowledge it used ("why: gold -1.6%, MANAPPURAM beta 1.3 to gold").
 
 ## 2. LAYER 2 - THE DECISION ENGINE
@@ -709,7 +714,7 @@ WIRES confirmed DOWN at 09:20; metals down; pharma the only real long build-up. 
 | Rules | no exits for trades not taken; the one-gold-bet rule; loss lock after 2 losses; one sound per alert; every output ends in an action per share |
 | Cost | the replay's AI spend under the day budget, cache reads >= 70% |
 
-### 4.2 Replay 19 Nov (trial day 1)
+### 4.2 Replay 19 Nov (trial day 1) - incl. AUTO CE: copper / aluminium slump overnight -> NIFTY AUTO CE call by 09:20 (MARUTI, ASHOKLEY, TVSMOTOR, M&M)
 
 | Case | Pass criteria |
 |---|---|
