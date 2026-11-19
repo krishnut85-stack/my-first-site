@@ -258,6 +258,13 @@ results dates and reactions, policy and event dates. Kite historical first; buy 
 history, global series, a news archive) with the trader's yes per item. From it the knowledge base learns, for every chain:
 how often it followed through next day and next week, the typical size and lag, and what made it fail - and every evening note
 quotes the closest past analogue ("like 12 Mar 2024: copper -4%, autos +2.1% next day, followed through 7 of 9 times").
+**TV analyst calls move prices (the trader, 19 Nov):** PAYTM was falling (~1,700) when an analyst on CNBC-TV18 said "this is the
+best price to start buying"; the fall stopped at once and the share turned up. The TV speech-to-text (F17) must catch every
+buy / sell / target / "accumulate" / "avoid" call on an F&O share and act within 30 s: (1) if the trader HOLDS the other side
+(here a PAYTM PE) -> HIGH alert "TV BUY call on PAYTM at ~1,700 - bounce risk: book or trail now"; (2) if a falling share
+gets a TV buy call -> "watch for a bounce: PE GO NOW cancelled"; (3) every TV analyst is scored: how often the share moved
+their way in the next 30 min / day, so a call from a high-hit-rate voice weighs more. Replay test: 19 Nov PAYTM TV call ->
+GIR alert within 30 s of the words.
 Updated nightly from the day's recording; every call quotes the knowledge it used ("why: gold -1.6%, MANAPPURAM beta 1.3 to gold").
 **SECTOR LINKS - binding spec in design_v3/SECTOR_LINKS.md; links used only when proven on the history database.** It holds the
 sector-to-sector table (L01-L17), the sector-to-driver table, the proof rule (at least 30 events, hit rate at least 58% and 8 points
