@@ -30,7 +30,7 @@
   var SIDE = ['Realty', 'Metals'];
   var NEWE = [['11:01', 'BANKBARODA', 'Banks'], ['10:56', 'BAJFINANCE', 'NBFC & finance'], ['10:52', 'DLF', 'Realty']];
   var short = { 'NBFC & finance': 'NBFC', 'Oil & gas': 'Oil & gas' };
-  function crTip(r) { return r[0] === 'others' ? 'others: ' + (r[7] || []).join(', ') : r[0] + ': free-float mcap ₹' + r[5] + ' lakh cr × ' + (r[6] / r[5] / 1000).toFixed(3) + '% vs NIFTY = ' + (r[6] > 0 ? '+' : '−') + '₹' + F(r[1], 0) + ' cr'; }
+  function crTip(r) { return r[0] === 'others' ? 'others ₹' + F(r[1], 0) + ' cr: ' + (r[7] || []).join(', ') : r[0] + ': free-float mcap ₹' + r[5] + ' lakh cr (all listed) × ' + (r[6] > 0 ? '+' : '−') + Math.abs(r[6] / r[5] / 1000).toFixed(3) + '% vs NIFTY = ' + (r[6] > 0 ? '+' : '−') + '₹' + F(r[1], 0) + ' cr'; }
   function drawHero() {
     var f = G.flows(st.win), outs = f.out.filter(function (a) { return a[0] !== 'others'; }).slice(0, 2), ins = f.inn.slice(0, 2);
     $('#heroLine').innerHTML = '<span class="o">money OUT of</span> ' + outs.map(function (a) { return '<span class="s o" data-s="' + a[0] + '" tabindex="0">' + (short[a[0]] || a[0]) + '</span>'; }).join('<span class="ar">·</span>') +
@@ -51,7 +51,8 @@
     function lab(list, ys, left) { var last = -99, out = '', fsz = 13, minG = wide() ? 16 : 15;
       list.forEach(function (a, i) { var bh = Math.max(1, a[1] * k), c = ys[i] + bh / 2 + 4.5, y = Math.max(c, last + minG); y = Math.min(y, H - 2); last = y; a._y = y;
         out += '<rect x="' + (left ? x0 - 4 : x1 + 1) + '" y="' + ys[i] + '" width="3" height="' + bh + '" fill="var(--' + (left ? 'down' : 'up') + ')"/>';
-        var t = a[0] === 'others' ? '<tspan>others ₹' + F(a[1], 0) + ' cr</tspan>' : '<tspan class="nmx">' + (short[a[0]] || a[0]) + '</tspan><tspan fill="var(--' + (left ? 'down' : 'up') + ')" dx="5">' + sgp(a[4]) + '</tspan><tspan dx="5">' + (left ? '−' : '+') + '₹' + F(a[1], 0) + ' cr</tspan>' + (a[2] && a[2] !== '-' ? '<tspan dx="5" fill="var(--' + a[2].toLowerCase() + ')" font-weight="700">' + a[2] + '</tspan>' : '') + (wide() && a[3] ? '<tspan dx="4">' + a[3] + '</tspan>' : '');
+        if (a[0] === 'others' && !wide()) { a._y = y; return; }
+        var t = a[0] === 'others' ? '<tspan>others ' + (left ? '−' : '+') + '₹' + F(a[1], 0) + ' cr</tspan>' : '<tspan class="nmx">' + (short[a[0]] || a[0]) + '</tspan><tspan fill="var(--' + (left ? 'down' : 'up') + ')" dx="5">' + sgp(a[4]) + '</tspan><tspan dx="5">' + (left ? '−' : '+') + '₹' + F(a[1], 0) + ' cr</tspan>' + (a[2] && a[2] !== '-' ? '<tspan dx="5" fill="var(--' + a[2].toLowerCase() + ')" font-weight="700">' + a[2] + '</tspan>' : '') + (wide() && a[3] ? '<tspan dx="4">' + a[3] + '</tspan>' : '');
         out += '<text x="' + (left ? x0 - 10 : x1 + 10) + '" y="' + y + '"' + (left ? ' text-anchor="end"' : '') + '>' + t + '</text>'; }); return out; }
     h += lab(f.out, oy, true) + lab(f.inn, ry, false);
     // hit zones: one per label, never overlapping (split at the midpoints between labels); ribbons themselves are not targets
@@ -60,7 +61,9 @@
     h += zones(f.out, true) + zones(f.inn, false);
     svg.innerHTML = h;
     $('#flowTot').textContent = 'OUT −₹' + F(f.so, 0) + ' cr · IN +₹' + F(f.si, 0) + ' cr';
-    $('#flowSide').innerHTML = '<div class="fs fst">moving, not this rotation</div>' + SIDE.map(function (id) { var s = sec(id), ix = G.ideas(s);
+    if (!wide()) $('#flowSide').innerHTML = '<div class="fs fst">moving, not this rotation</div><div class="fs fs2">' + SIDE.map(function (id) { var s = sec(id), ix = G.ideas(s);
+      return '<span data-s="' + id + '" tabindex="0" title="click = open ' + id + ' · ' + (s.cr > 0 ? '+' : '−') + '₹' + F(Math.abs(s.cr), 0) + ' cr · ' + s.bu + '"><b>' + id + '</b> <span class="pc up">' + sgp(s.pct) + '</span> <span class="up">CE ' + ix.ce + '</span>' + (s.run && s.run.fade ? ' <span class="dn">fading</span>' : '') + '</span>'; }).join('<span class="t3"> · </span>') + '</div>';
+    else $('#flowSide').innerHTML = '<div class="fs fst">moving, not this rotation</div>' + SIDE.map(function (id) { var s = sec(id), ix = G.ideas(s);
       return '<div class="fs" data-s="' + id + '" tabindex="0" title="click = open ' + id + ' in the table"><b>' + id + '</b><span class="pc ' + (s.pct >= 0 ? 'up' : 'dn') + '">' + sgp(s.pct) + '</span><span class="n wd">' + (s.cr > 0 ? '+' : '−') + '₹' + F(Math.abs(s.cr), 0) + ' cr</span><span class="sh-c sh-c-' + s.bu.toLowerCase() + '">' + s.bu + '</span><span class="sh-c ' + (s.dir > 0 ? 'out-up' : 'out-dn') + '">' + (s.dir > 0 ? 'CE ' + ix.ce : 'PE ' + ix.pe) + '</span>' + (s.run && s.run.fade ? '<span class="dn" title="breadth ' + s.run.br + ' in 15 min">fading</span>' : '') + '</div>'; }).join('');
     $('#nent').innerHTML = '<span class="lab" style="color:var(--up)">new entrants</span><span class="t3">COMING UP in the last 15 min · all sectors · silent</span>' + NEWE.map(function (a) { return '<span class="ne" data-s="' + a[2] + '" data-r="' + a[1] + '" tabindex="0" title="click = open ' + a[2] + ' and load ' + a[1] + '"><span class="age">' + a[0] + '</span><b>' + a[1] + '</b><span class="t3">' + (short[a[2]] || a[2]) + '</span></span>'; }).join('');
   }
@@ -84,17 +87,17 @@
   function buChip(bu) { return bu ? '<span class="sh-c sh-c-' + bu.toLowerCase() + '" title="' + BUT[bu] + ', all months">' + bu + '</span>' : '<span class="sh-c nt bu0">-</span>'; }
   function buLink(bu, sym) { return bu ? '<a class="sh-c sh-c-' + bu.toLowerCase() + '" href="futures-oi.html#bu=' + bu + '&amp;s=' + sym + '" title="' + BUT[bu] + ' · opens F10 for ' + sym + '">' + bu + ' ›</a>' : '<span class="sh-c nt">-</span>'; }
   function sideCell(m) { var t = G.sideTxt(m), up = /above|reclaim/.test(t); var c = m.side === 'reclaim' ? 'tx' : (up ? 'up' : 'dn'); var g = m.side === 'reclaim' ? '↺' : (up ? '▲' : '▼');
-    var sh = { 'above both': 'both', 'above VWAP': 'VWAP', 'above OR': 'OR', 'reclaiming': 'reclaim', 'below both': 'both', 'below VWAP': 'VWAP', 'below OR': 'OR' }[t] || t;
+    var sh = { 'above both': 'both', 'above VWAP': 'VWAP', 'above OR': 'OR', 'reclaiming': 'VWAP', 'below both': 'both', 'below VWAP': 'VWAP', 'below OR': 'OR' }[t] || t;
     return '<span class="c-sd ' + c + '" title="VWAP ' + lv(m.vwap) + ' · OR ' + lv(m.orL) + '-' + lv(m.orH) + ' · ' + t + ' · ' + (m.vb || 0) + '/2 closed 5-min bars on the side">' + g + ' ' + sh + '</span>'; }
   function gateCell(s, m, p) { var h, f = m.fails[0] || '';
-    if (m.ban) h = '<span class="sh-c sh-c-exit" title="F&amp;O ban, MWPL ' + m.mwpl + '% (ban at 95%): only close existing positions">BAN</span><span class="t2">close only</span>';
+    if (m.ban) h = '<span class="sh-c sh-c-exit" title="F&amp;O ban, MWPL ' + m.mwpl + '% (ban at 95%): only close existing positions">BAN</span><span class="t2"><span class="r16">close only</span><span class="r13">close</span></span>';
     else if (m.stale) h = '<span class="sh-c sh-c-stale" title="last tick ' + m.stale + ' s ago: no GO NOW until it ticks">STALE ' + m.stale + 's</span>';
     else if (/OPTION STALE/.test(p.block)) h = '<span class="sh-c sh-c-stale" title="the option bid/ask is old: no GO NOW until it ticks">OPT ' + G.contract(s, m, 'atm').oage + 's</span>';
     else if (m.grp === 'lag') h = '<span class="tx" title="laggard trigger: ' + esc(p.how) + '">trig ' + (s.dir > 0 ? '&gt;' : '&lt;') + ' ' + F(p.trig, p.trig < 200 ? 2 : 1) + '</span>';
-    else if (m.grp === 'against') h = '<span class="tx" title="against its sector' + (m.own ? ': ' + esc(m.own) : '') + '">' + (m.own ? esc(m.own.replace(/^own:? ?/, 'own: ')) : 'vs sector ' + sg2(m.rs30)) + '</span>';
+    else if (m.grp === 'against') h = '<span class="tx" title="against its sector' + (m.own ? ': ' + esc(m.own) : '') + '">' + (m.own ? (/news/.test(m.own) ? 'own news' : esc(m.own.replace(/^own:? ?/, 'own: '))) : 'vs sec ' + sg2(m.rs30)) + '</span>';
     else if (m.ext && m.gok) h = '<span class="ex" title="EXTENDED - don\'t chase: EXT ' + G.extOf(m).toFixed(2) + ' ATR · range used ' + G.room(m).used.toFixed(2) + ' ATR &gt; 0.8 · ' + esc(p.how) + '">EXT → ' + F(p.trig, p.trig < 200 ? 2 : 1) + '</span>';
     else if (m.gok) h = '<span class="ok" title="all 4 gates pass: RS15 &gt; 0 · RS30 ≥ +0.5 · RVOL ≥ 1.5 · 2 closed 5-min bars on the VWAP side · no build-up against · score ' + m.score.toFixed(2) + '">✓ 4/4</span>' + (m.neu ? '<span class="sh-c sh-c-info" title="new entrant ' + m.neu + ', added at the bottom of its group">NEW</span>' : '');
-    else h = '<span class="no" title="the gate that failed' + (m.fails.length > 1 ? ' (+' + (m.fails.length - 1) + ' more: ' + esc(m.fails.slice(1).join(', ')) + ')' : '') + '">' + esc(f) + '</span>';
+    else h = '<span class="no" title="the gate that failed: ' + esc(f) + (m.fails.length > 1 ? ' (+' + (m.fails.length - 1) + ' more: ' + esc(m.fails.slice(1).join(', ')) + ')' : '') + '">' + esc(f.replace(' bars', '').replace(' build-up', '')) + '</span>';
     return '<span class="c-gt">' + h + '</span>'; }
   function aiCell(m) { return '<span class="c-ai">' + (m.ai && mode() === 'live' ? '<span class="sh-c sh-c-ready" title="GIR ' + m.ai + ' ' + m.aiT + '">' + m.ai + '</span>' : '<span class="sil">AI silent</span>') + '</span>'; }
   function optCell(s, m) { var c = G.contract(s, m, 'atm'), wsp = c.sprPct > 1.2;
@@ -108,7 +111,7 @@
       '<span class="num" title="RVOL vs the 20-session median to this minute; arrow = rising">' + m.rvol.toFixed(1) + '<small class="' + (m.rvUp ? 'up' : 't3') + '">' + (m.rvUp ? '▲' : '→') + '</small></span>' +
       sideCell(m) +
       '<span class="c-rm' + (r.used > 0.8 ? ' am' : '') + '" title="ATR used ' + r.used.toFixed(2) + ' · ATR left ' + r.left.toFixed(2) + ' (ATR14 ' + lv(m.atr) + ')">' + r.used.toFixed(1) + '<span class="t3">·</span>' + r.left.toFixed(1) + '</span>' +
-      '<span class="c-bu">' + buChip(m.bu) + (m.oi > 0 ? '+' : '') + m.oi.toFixed(1) + '%</span>' +
+      '<span class="c-bu" title="OI change, all months, %">' + buChip(m.bu) + (m.oi > 0 ? '+' : '') + m.oi.toFixed(1) + '</span>' +
       '<span class="c-wt" title="weight in the sector (all listed, free-float)"><span class="wtb"><i style="width:' + Math.min(100, m.wt / 31 * 100) + '%"></i></span>' + m.wt.toFixed(1) + '</span>' +
       optCell(s, m) + gateCell(s, m, pl) + aiCell(m) + '<span class="c-ag" data-t="ag" title="share quote age · option quote ' + G.contract(s, m, 'atm').oage + 's">' + (mode() === 'preopen' ? 'close' : m.age) + '</span></div>'; }
 
@@ -154,10 +157,10 @@
       if (s.id !== st.open) { h += srow(s, i, false); return; }
       var gs = visibleGroups(s), best = bestPick(s), pend = G.pendingRR(s), hasLag = gs.some(function (x) { return x.g === 'lag'; });
       h += '<div class="blk' + (st.nfo[s.id] ? ' nfo' : '') + '" data-s="' + s.id + '"><div class="bh">' + srow(s, i, true) + sline(s) +
-        '<div class="mhd"><span>group</span><span>share · role</span><span class="r">day %</span><span class="r" title="RS30 vs sector, 15-min slope">vs sec</span><span class="r">RVOL</span><span>VWAP/OR</span><span title="ATR used · ATR left">room</span><span title="build-up, all months · OI chg">B/U · OI</span><span class="r">wt %</span><span title="December strike · ask premium · bid/ask spread %">Dec strike · prem · %</span><span>state / gate</span><span>AI</span><span class="r">age</span></div></div>';
+        '<div class="mhd"><span>group</span><span>share · role</span><span class="r">day %</span><span class="r" title="RS30 vs sector, 15-min slope">vs sec</span><span class="r">RVOL</span><span>VWAP/OR</span><span title="ATR used · ATR left">room</span><span title="build-up, all months · OI change %">B/U · OI%</span><span class="r">wt %</span><span title="December strike · ask premium · bid/ask spread %">Dec strike · prem · %</span><span>state / gate</span><span>AI</span><span class="r">age</span></div></div>';
       gs.forEach(function (x, gi) { var L = G.gLabel(s, x.g, x.items.length);
         if (x.g !== 'up' && x.g !== 'lead' && !hasLag && (gi === 0 || gs[gi - 1].g === 'up' || gs[gi - 1].g === 'lead')) h += nolag(s);
-        var g2 = x.g === 'lead' ? (x.items[0].ext ? 'extended · pullback' : 'a gate fails') : x.g === 'nt' ? (x.items[0].ban ? 'F&amp;O ban' : L[1]) : L[1];
+        var g2 = x.g === 'lead' ? (x.items[0].ext ? 'pullback entry' : 'a gate fails') : x.g === 'nt' ? (x.items[0].ban ? 'F&amp;O ban' : L[1]) : L[1];
         h += '<div class="grp g-' + x.g + '"><div class="gl" title="' + L[0] + ' · ' + L[1] + '"><span class="g1">' + L[0] + '</span><span class="g2">' + g2 + '</span></div><div class="gi">' +
           x.shown.map(function (m) { return mrow(s, m, m.sym === best, pend); }).join('') +
           (x.hidden.length ? '<button class="morebar" data-more="' + s.id + '" title="show the ' + x.hidden.length + ' hidden shares (J also opens it)">▾ +' + x.hidden.length + ' more: ' + x.hidden.map(function (m) { return m.sym; }).join(' · ') + '</button>' : (st.more[s.id] && x.g === 'wait' && x.cap ? '<button class="morebar" data-more="' + s.id + '">▴ show fewer (' + (x.items.length - x.cap) + ')</button>' : '')) + '</div></div>'; });
@@ -190,10 +193,10 @@
     var dV = (m.ltp - m.vwap) / m.atr, gl = G.gLabel(s, m.grp, 1)[0].replace(/ \(\d+\)$/, '');
     var hard = /^(BAN|LOCKED|STALE|OPTION STALE)/.test(p.block), hb = '';
     if (hard || p.block) hb = '<div class="hbn ' + (/^BAN|LOCKED/.test(p.block) ? 'rd' : 'gy') + '"><b>' + esc(p.block) + '</b><span>' + esc(p.why) + '</span></div>';
-    var h = hb + '<div class="ps"><div class="p1"><a class="lk big" data-f7="' + m.sym + '" title="double-click or Enter = full F7 Share page (a single click does nothing)">' + m.sym + '</a>' + roleChip(m) + '<span class="px" data-t="px">' + px(m.ltp) + '</span><span class="pc ' + (pc >= 0 ? 'up' : 'dn') + '" data-t="ppc">' + sgp(pc) + '</span><span class="age" data-t="pag">' + m.age + '</span></div>' +
-      '<div class="p1b"><span class="sh-c ' + (m.grp === 'up' ? (ce ? 'sh-c-ce' : 'sh-c-pe') : m.grp === 'against' ? (ce ? 'sh-c-ce' : 'sh-c-pe') : 'nt') + '">' + gl + '</span><span>lot <b>' + F(m.lot, 0) + '</b> · weight <b>' + m.wt.toFixed(1) + '%</b> of sector</span></div>' +
+    var h = hb + '<div class="ps"><div class="p1"><a class="lk big" data-f7="' + m.sym + '" title="double-click or Enter = full F7 Share page (a single click does nothing)">' + m.sym + '</a><span class="r16">' + roleChip(m) + '</span><span class="px" data-t="px">' + px(m.ltp) + '</span><span class="pc ' + (pc >= 0 ? 'up' : 'dn') + '" data-t="ppc">' + sgp(pc) + '</span><span class="age" data-t="pag">' + m.age + '</span></div>' +
+      '<div class="p1b"><span class="sh-c ' + (m.grp === 'up' ? (ce ? 'sh-c-ce' : 'sh-c-pe') : m.grp === 'against' ? (ce ? 'sh-c-ce' : 'sh-c-pe') : 'nt') + '">' + gl + '</span><span class="r13">' + roleChip(m) + '</span><span>lot <b>' + F(m.lot, 0) + '</b> · wt <b>' + m.wt.toFixed(1) + '%</b><span class="r16"> of sector</span></span></div>' +
       '<div class="p2">VWAP <b>' + lv(m.vwap) + '</b> <span class="' + (dV >= 0 ? 'up' : 'dn') + '">' + (dV >= 0 ? '▲ +' : '▼ −') + Math.abs(dV).toFixed(2) + ' ATR</span> · OR <b>' + lv(m.orL) + '-' + lv(m.orH) + '</b> ' + (m.ltp > m.orH ? '<span class="up">▲</span>' : m.ltp < m.orL ? '<span class="dn">▼</span>' : 'inside') + '</div>' +
-      '<div class="p2">vs sector RS30 <b>' + sg2(m.rs30) + ' ' + m.sl + '</b> · RVOL <b>' + m.rvol.toFixed(1) + (m.rvUp ? ' ▲ rising' : ' → flat') + '</b> · score <b>' + m.score.toFixed(2) + '</b></div>' +
+      '<div class="p2">RS30 vs sector <b>' + sg2(m.rs30) + ' ' + m.sl + '</b> · RVOL <b>' + m.rvol.toFixed(1) + (m.rvUp ? ' ▲' : ' →') + '</b> · score <b>' + m.score.toFixed(2) + '</b></div>' +
       '<div class="p2">room: ATR used <b>' + r.used.toFixed(2) + '</b> · left <b>' + r.left.toFixed(2) + '</b> · EXT <b>' + G.extOf(m).toFixed(2) + '</b>' + (m.ext ? ' · <span style="color:var(--action)">EXTENDED - don\'t chase</span>' : '') + '</div>' +
       '<div class="p2">OI build-up ' + buLink(m.bu, m.sym) + ' Nov <b>' + sg1(m.buN) + '%</b> · Dec <b>' + sg1(m.buD) + '%</b> · all <b>' + sg1(m.oi) + '%</b></div></div>';
     // warnings in plain words, each with the fix
@@ -211,7 +214,7 @@
       '<table class="tbx' + dim + '"><colgroup><col style="width:36%"><col><col></colgroup><tr><th></th><th class="pk"><span class="sh-c sh-c-' + a.cp.toLowerCase() + '">' + kT(a.K) + ' ' + a.cp + '</span> ATM' + star + '</th><th><span class="sh-c sh-c-' + i.cp.toLowerCase() + '">' + kT(i.K) + ' ' + i.cp + '</span> 1 ITM</th></tr>' +
       [['bid / ask', px(a.bid) + ' / ' + px(a.ask), px(i.bid) + ' / ' + px(i.ask)], ['quote age', '<span class="' + (a.ostale ? 'dn' : '') + '">' + a.oage + 's</span>', '<span class="' + (i.ostale ? 'dn' : '') + '">' + i.oage + 's</span>'], ['spread per lot', '₹' + F(a.sprLot, 0) + ' · ' + a.sprPct.toFixed(1) + '%', '₹' + F(i.sprLot, 0) + ' · ' + i.sprPct.toFixed(1) + '%'], ['depth at bid', a.dep + ' lots', i.dep + ' lots'],
         ['Δ · θ ₹/h per lot', Math.abs(a.d).toFixed(2) + ' · −₹' + F(a.thh, 0), Math.abs(i.d).toFixed(2) + ' · −₹' + F(i.thh, 0)], ['IV vs 20-day', (a.iv * 100).toFixed(1) + ' / ' + (a.iv20 * 100).toFixed(1), (i.iv * 100).toFixed(1) + ' / ' + (i.iv20 * 100).toFixed(1)],
-        ['lot cost = max loss', '₹' + F(a.lotCost, 0), '₹' + F(i.lotCost, 0)], ['break-even 15:10', lv(a.be) + ' (' + (ce ? '+' : '−') + a.bePts.toFixed(1) + ')', lv(i.be) + ' (' + (ce ? '+' : '−') + i.bePts.toFixed(1) + ')']]
+        ['lot cost = max loss', '₹' + F(a.lotCost, 0), '₹' + F(i.lotCost, 0)], ['break-even 15:10', lv(a.be), lv(i.be)], ['share pts needed', (ce ? '+' : '−') + a.bePts.toFixed(1) + ' pts', (ce ? '+' : '−') + i.bePts.toFixed(1) + ' pts']]
         .map(function (rw) { return '<tr><td>' + rw[0] + '</td><td class="pk">' + rw[1] + '</td><td>' + rw[2] + '</td></tr>'; }).join('') + '</table>' + (warn.length ? '<div class="warns">' + warn.join('') + '</div>' : '') + '</div>';
     // the plan: hidden for a banned share (only close existing); every other block shows the levels but 0 lots and the reason
     if (m.ban) h += '<div class="ps"><div class="rk3"><b class="dn">BAN - only close existing.</b> No entry plan for a share in the F&amp;O ban.</div><div class="rk3">you hold no ' + m.sym + ' position · nothing to close</div></div>';
@@ -321,7 +324,7 @@
     var sr = t.closest('.srow'); if (sr) { openSector(sr.dataset.s); return; }
     var ne = t.closest('.ne'); if (ne) { st.open = null; openSector(ne.dataset.s); selShare(ne.dataset.r, true); return; }
     var hz = t.closest('#flowSvg .hz.oth'); if (hz) { toast(hz.textContent.replace(/^others: /, 'others: ')); return; }
-    var hs = t.closest('#flowSvg [data-s], #heroLine [data-s], .fs[data-s], .rr[data-s]'); if (hs && hs.getAttribute('data-s')) { var id = hs.getAttribute('data-s'); if (st.view === 'run') setView('tbl'); if (st.open !== id) openSector(id); else { var b = $('.blk', $('#wb')); if (b) $('#wb').scrollTop = b.offsetTop; } return; }
+    var hs = t.closest('#flowSvg [data-s], #heroLine [data-s], .fs[data-s], .fs2 [data-s], .rr[data-s]'); if (hs && hs.getAttribute('data-s')) { var id = hs.getAttribute('data-s'); if (st.view === 'run') setView('tbl'); if (st.open !== id) openSector(id); else { var b = $('.blk', $('#wb')); if (b) $('#wb').scrollTop = b.offsetTop; } return; }
     var cm = t.closest('.cmp td[data-sym]'); if (cm) { selShare(cm.dataset.sym, true); return; }
     var wc = t.closest('#wch .chip'); if (wc) { st.win = +wc.dataset.w; drawHero(); return; }
     var vc = t.closest('#win .vchips .chip'); if (vc) { setView(vc.dataset.v); return; }
@@ -342,7 +345,7 @@
     var t = e.target, k = e.key, tag = t.closest ? t.closest('input,textarea,select') : null; if (tag) return;
     var ctl = t.closest && t.closest('button,a[href],[role="button"]');
     if (ctl && (k === 'Enter' || k === ' ')) return;                       // a focused control keeps Enter / Space for itself
-    var inPane = t.closest && t.closest('#pb'), srowF = t.closest && t.closest('.srow'), other = t.closest && t.closest('.nonfo,.fs,.ne,#heroLine .s,.rr');
+    var inPane = t.closest && t.closest('#pb'), srowF = t.closest && t.closest('.srow'), other = t.closest && t.closest('.nonfo,.fs[data-s],.fs2 [data-s],.ne,#heroLine .s,.rr');
     if (other && (k === 'Enter' || k === ' ')) { other.click(); e.preventDefault(); return; }
     if (srowF && (k === 'Enter' || k === ' ')) { var sid = srowF.dataset.s; openSector(sid); var nf = $('.srow[data-s="' + sid.replace(/"/g, '') + '"]'); if (nf) nf.focus(); e.preventDefault(); return; }
     if (srowF && (k === 'ArrowDown' || k === 'ArrowUp')) { var rows = $$('#wb .srow'), ix = rows.indexOf(srowF), nx = rows[Math.max(0, Math.min(rows.length - 1, ix + (k === 'ArrowDown' ? 1 : -1)))]; if (nx) nx.focus(); e.preventDefault(); return; }

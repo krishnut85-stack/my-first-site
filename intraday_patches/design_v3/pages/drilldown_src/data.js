@@ -235,17 +235,19 @@ var GD = (function () {
 
   // ---------------- flows: Rs cr = free-float mcap (all listed) × (sector % − NIFTY %) in the window ----------------
   // excess % vs NIFTY per window (15M / 30M / 1H); TODAY uses the day % − NIFTY +0.72%
-  var EXC = [{ Banks: 0.0657, 'NBFC & finance': 0.030, IT: -0.082, FMCG: -0.0576, _o: -210 },
-    { Banks: 0.1395, 'NBFC & finance': 0.080, IT: -0.1648, FMCG: -0.140, _o: -640 },
-    { Banks: 0.225, 'NBFC & finance': 0.1206, Realty: 0.354, IT: -0.2776, FMCG: -0.183, Pharma: -0.1183, _o: -830 }];
-  function crOf(s, w) { if (w === 3) return Math.round(s.ff * (s.pct - NIFTY) * 1000); var e = EXC[w][s.id]; return e == null ? null : Math.round(s.ff * e * 1000); }
-  function flows(w) { var RNG = ['10:50-11:05', '10:35-11:05', '10:05-11:05', '09:15-11:05'][w], out = [], inn = [], oth = 0, otherN = [];
-    SECTORS.forEach(function (s) { var c = crOf(s, w); if (c == null) return; var f = fo(s), row = [s.id, Math.abs(c), s.bu || '-', (s.dir > 0 ? s.up : s.dn) + '/' + s.n, s.pct, s.ff, c];
+  // window values (Rs cr) for 15M / 30M / 1H; the implied excess % = cr / (ff × 1000) is shown in each tooltip. TODAY = ff × (day % − NIFTY %).
+  var WCR = [{ Banks: 2760, 'NBFC & finance': 480, IT: -2050, FMCG: -980, _o: -210 },
+    { Banks: 5860, 'NBFC & finance': 1280, IT: -4120, FMCG: -2380, _o: -640 },
+    { Banks: 9450, 'NBFC & finance': 1930, Realty: 920, IT: -6940, FMCG: -3110, Pharma: -1420, _o: -830 }];
+  function crOf(s, w) { if (w === 3) return Math.round(s.ff * (s.pct - NIFTY) * 1000); var e = WCR[w][s.id]; return e == null ? null : e; }
+  // the picture names the top 2 each side; the rest are summed as "others" (named in its tooltip)
+  function flows(w) { var RNG = ['10:50-11:05', '10:35-11:05', '10:05-11:05', '09:15-11:05'][w], out = [], inn = [];
+    SECTORS.forEach(function (s) { var c = crOf(s, w); if (c == null) return; var row = [s.id, Math.abs(c), s.bu || '-', (s.dir > 0 ? s.up : s.dn) + '/' + s.n, s.pct, s.ff, c];
       if (c < 0) out.push(row); else inn.push(row); });
     out.sort(function (a, b) { return b[1] - a[1]; }); inn.sort(function (a, b) { return b[1] - a[1]; });
-    var oc = w === 3 ? 3 : 3; if (out.length > oc) { out.slice(oc).forEach(function (r) { oth += r[1]; otherN.push(r[0]); }); out = out.slice(0, oc); }
-    if (w < 3) oth += -EXC[w]._o; if (oth) out.push(['others', oth, '', '', 0, 0, -oth, otherN]);
-    if (inn.length > 3) inn = inn.slice(0, 3);
+    function fold(list, extra) { if (list.length <= 2 && !extra) return list; var rest = list.slice(2), sum = extra || 0, names = rest.map(function (r) { return r[0]; });
+      rest.forEach(function (r) { sum += r[1]; }); var o = list.slice(0, 2); if (sum) o.push(['others', sum, '', '', 0, 0, sum, names.length ? names : ['other sectors']]); return o; }
+    out = fold(out, w < 3 ? -WCR[w]._o : 0); inn = fold(inn, 0);
     var so = 0, si = 0; out.forEach(function (r) { so += r[1]; }); inn.forEach(function (r) { si += r[1]; });
     return { rng: RNG, out: out, inn: inn, so: so, si: si, st: 'ROT CONFIRMED 22m' }; }
 

@@ -290,9 +290,9 @@ a.lk:hover,.lkx:hover{text-decoration:underline;text-underline-offset:3px}
 
 /* ---------- 1366 ---------- */
 @media (max-width:1499px){
-  #pg{--pw:350px;--hh:112px;--sr:24px;--mr:23px;--gw:70px;
-    --scols:22px minmax(0,1fr) 84px 50px 42px 86px 98px 92px 132px;
-    --mcols:134px 60px 52px 38px 54px 50px 66px 38px minmax(0,1fr) 84px 76px 30px}
+  #pg{--pw:350px;--hh:112px;--sr:24px;--mr:23px;--gw:86px;
+    --scols:22px minmax(0,1fr) 84px 50px 42px 86px 92px 128px 132px;
+    --mcols:146px 54px 48px 36px 52px 50px 64px 32px minmax(0,1fr) 88px 74px 30px}
   .gl .g1{letter-spacing:0;line-height:11px} .gl .g1 .r13{white-space:nowrap} .gl{padding:0 3px 0 5px;justify-content:center} .gl .g2{line-height:11px} .gl .more{line-height:12px}
   .sl{height:20px} .mhd{height:19px} .nonfo{height:22px} #win>.ph{height:24px} .shd{height:20px} .pf{height:20px} .nent{height:18px;padding-top:1px}
   .mrow .c-sh .sh-c,.mrow .c-op .sh-c,.mrow .c-ai .sh-c{height:17px}
@@ -404,4 +404,20 @@ a.lk:hover,.lkx:hover{text-decoration:underline;text-underline-offset:3px}
   .p2{font-size:12px}
   .srow .br{font-size:12px}
   .fs .pc,.fs .sh-c{font-size:12px}
+}
+
+@media (max-width:1499px){
+  .mrow .wtb{display:none}
+  .gl .g1{white-space:normal;line-height:11px}
+  .gl .g2{white-space:normal;line-height:11px}
+  #sp .ph .sym{display:none}
+  #sp .ph .pt.wd{display:inline!important}
+  .p1 .big{font-size:17px} .p1 .px{font-size:17px}
+  .p1b .r13 .sh-c{height:18px}
+  .fs2{display:flex;align-items:center;gap:4px;height:17px;font-size:12px;cursor:default}
+  .fs2:hover{background:none}
+  .fs2>span[data-s]{cursor:pointer;white-space:nowrap}
+  .fs2>span[data-s]:hover b{text-decoration:underline}
+  .fs2 b{font-size:12px}
+  .fside{width:300px}
 }
