@@ -270,6 +270,7 @@ MEDIUM / STRONG) and goes out as TOMORROW'S OPTION WATCH at 19:45 (CE / PE lists
 re-checked at 22:45 (only if the grade changes), 07:15 and 09:08 (STANDS / CHANGED / CANCELLED); every chain fired or missed is
 logged and its hit rate quoted. Also fix test 4.1: MOTHERSON is an auto-parts maker (copper = cost), not a metals PE.
 MISSING KNOWLEDGE - the desk's own gap list, built in with the rest: design_v3/MISSING_KNOWLEDGE.md.
+LINK BOOK - every driver and sector, both sides: design_v3/LINK_BOOK.md (to be proven on the history database).
 
 ## 2. LAYER 2 - THE DECISION ENGINE
 
