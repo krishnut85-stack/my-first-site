@@ -70,3 +70,24 @@ About a third of revenue is cables and wires, about 15-20% is Lloyd ACs, plus fa
 - https://www.businesstoday.in/markets/stocks/story/copper-prices-up-50-havells-polycab-shares-down-7-9-in-jan-concerns-overdone-512415-2026-01-22
 - https://www.zeebiz.com/market-news/news-nifty-auto-tumbles-15-in-2026-despite-record-sales-should-investors-worry-or-buy-dip-in-auto-stocks-391915
 - https://www.businessinsider.in/retail/news/your-acs-fridge-and-washing-machines-may-get-cheaper-soon/articleshow/92698315.cms
+
+## Follow-through study - 19 Nov 2026 desk note (input-cost relief rally: hold or fade?)
+- INVENTORY LAG: Oct-Dec costs are already locked in, so the margin gain shows in Q4 FY27 results (Apr-May); the market prices it
+  1-2 quarters early (that is the 19 Nov rally). Speed of pass-through: fastest 2-wheelers (TVSMOTOR, HEROMOTOCO) and MARUTI / M&M
+  (low stock, quarterly price resets); slow ASHOKLEY (fixed steel contracts); slowest VOLTAS / BLUESTARCO (expensive summer stock);
+  little real gain AMBER / PGEL (contract makers pass costs on); losers POLYCAB / KEI (inventory losses on copper).
+- DAY-2 ODDS (desk estimates, to be proven on the history database): quality autos - follow-through 25-30%, sideways / partial
+  give-back 40-45%, full fade 30%; stretched names (AMBER, PGEL, VOLTAS) - fade 45%, sideways 35%, up 20%. 3-5 days: sector stays
+  above the pre-rally close ~55-60%; stretched names drop back near it ~40%.
+- WHAT DECIDES DAY 2: copper overnight (bounce >1.5-2.6% = fade; another fall >=2% = up again); day-2 futures OI (price down + OI
+  up = fresh shorts -> PE; price down + OI down = longs exiting, milder); NIFTY / FII support.
+- PAST CASES: Jun-Jul 2022 metals -25-35% -> NIFTY AUTO beat NIFTY ~15% to a record before margins showed (real downtrend: leaders
+  hold); 5 Nov 2026 ASHOKLEY +9-10% then gave it all back within a week (178 -> ~160); 27 Aug 2026 durables +8% on metals, by
+  mid-Oct "sell Voltas on rebound". Pattern: after a one-day news spike, stretched names give back about half in 2-5 days.
+- OPTION PLAN TEMPLATE (next series near expiry): PE fade on the stretched names only after 09:45 on a break of the first-15-min low,
+  below the prior VWAP, OI confirming, sector down >0.7%; CE only on the fast pass-through leaders after 10:00 above the prior close
+  with price and OI both rising and copper not bouncing. Avoid: CE at the open, chasing a >1.5% gap, CE on contract makers / cable
+  makers, PE on metals at 52-week lows (crowded).
+- LESSON ON SOURCES: the "ASHOKLEY +9%" headline used on 19 Nov was from 5 Nov - GIR must check every price move against its own
+  live data, never trust a headline's number or date.
+- REPLAY TEST: 20 Nov - score these odds against what AMBER, PGEL, VOLTAS, MARUTI, TVSMOTOR, M&M, HEROMOTOCO actually did.
