@@ -675,6 +675,14 @@ study every share in it, pick the ones in position, tell me GO NOW, and give it 
 1.2 **Step 1 - confirm the sector's direction:** a steady move one way from the open to about 10:00 (not a spike); the futures
     build-up agrees (short build-up down, long build-up up); the news confirms (CNBC-TV18, Economic Times, Moneycontrol, or the
     driver itself). Then: "SECTOR DOWN / UP - confirmed since HH:MM · driver · news · build-up".
+    **The sector's move, weight and rank come from the WHOLE sector - every listed share in it, not only its F&O shares** (the
+    trader, 19 Nov). Use the official NSE sectoral / thematic index where one exists (NIFTY METAL, PHARMA, PSU BANK, IT, AUTO,
+    REALTY, FMCG, ENERGY, MEDIA, CAPITAL MARKETS ...: free-float weighted, all constituents). Where none exists (gold loans,
+    jewellers, cables & wires, brokers ...), build a free-float market-cap weighted basket of ALL listed shares in that sector from
+    the cash market (Kite quotes; the non-F&O names need only price and volume). Breadth (advancers / decliners) is counted over all
+    of the sector's shares too, and the "one share = X% of the move" warning uses those weights. Only the TRADE list is limited to
+    the sector's F&O shares (options exist only there). A sector moved by a few F&O names while the rest of the sector is flat is
+    marked "NARROW - F&O-only move", not confirmed.
 1.3 **Step 2 - list every F&O share in that sector**, each with: zone (overbought / oversold / neutral: daily and 5-min RSI, distance
     from the 20-day high and low), speed (beta to the sector, usual day range), size (large / mid / small cap), already moved today,
     room left to the next support or resistance (option floor / roof, 20-day low / high), futures money (fresh shorts / longs).
