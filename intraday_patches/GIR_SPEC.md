@@ -574,8 +574,10 @@ its record. An agent that ran all day and produced nothing useful is reported wi
 ### S11. Mid-session ROTATION ALARM (three experts, 18 Nov - after the PSU-bank rotation GIR caught late)
 - Why it was missed: rotation was measured mostly since the open / 09:30-10:30 (S8), not on ROLLING 15 / 30-minute windows all
   session; no same-time-of-day volume baselines; no basket-level futures / options signal; no bond-yield / rupee feed in session.
-- Baskets: build each day from the F&O universe file (PSU banks have only ~7 F&O names, not 12); breadth as a FRACTION of the
-  basket; also the theme baskets (PSU defence, rail, power financiers, Adani, Tata ...). One source for every basket list.
+- Baskets: the sector's move, breadth and rank use ALL listed shares of the sector (the official NSE index where one exists,
+  e.g. NIFTY PSU BANK with all its constituents; else a free-float weighted basket of every listed share in the sector) - see 1.2.
+  The F&O universe file (PSU banks have only ~7 F&O names) decides only which shares can be TRADED; breadth is shown both ways
+  ("all shares 10 / 12 · F&O 6 / 7"). Also the theme baskets (PSU defence, rail, power financiers, Adani, Tata ...). One source for every basket list.
 - Every minute, 09:30-14:00, rolling 15 / 30 min: beta-adjusted relative strength vs NIFTY (PSU banks ~1.4x beta) and its RANK
   change; breadth (up and above VWAP); equal-weight vs index (one share > 60-70% of the move = not a rotation; recompute without
   the heavyweight); volume vs the 20-day median of the SAME time slot; futures LB / SC across the basket (OI summed over all months;
