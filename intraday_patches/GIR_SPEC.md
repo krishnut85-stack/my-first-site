@@ -624,7 +624,7 @@ feed for this: the plan polls these sites every 15 min from weeks 2-4 (COLLECTIO
 - **The policy map (built once, kept up to date):** regulator / ministry / bill -> F&O shares -> likely direction. Examples:
   IRDAI (commission, bancassurance, FDI) -> POLICYBZR, SBILIFE, HDFCLIFE, ICICIPRULI, ICICIGI, LICI; CERC (market coupling,
   trading margin) -> IEX, power traders; SEBI (F&O rules, MTF, margins) -> ANGELONE, BSE, CDSL, MCX, MOTILALOFS, 360ONE;
-  RBI -> banks / NBFCs; TRAI -> BHARTIARTL, IDEA, INDUSTOWER; NPPA -> pharma; DGCA -> INDIGO; duties (CBIC / DGTR / DGFT) -> metals,
+  RBI -> banks / NBFCs; NPCI (UPI MDR, market-share caps, circulars) -> PAYTM, banks with big UPI books; TRAI -> BHARTIARTL, IDEA, INDUSTOWER; NPPA -> pharma; DGCA -> INDIGO; duties (CBIC / DGTR / DGFT) -> metals,
   chemicals, autos.
 - **How it rings:** a hit on a watched word from a LIVE or WIRE source wakes the analyst at once with the mapped shares - GET READY
   (unconfirmed, quote the source and the time); GO NOW only after a second source or the official page / gazette. Denials,
