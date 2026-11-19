@@ -205,11 +205,14 @@ function rec(ctrl, did, exp, ok, note) { R.push([SZ, ctrl, did, exp, ok ? 'PASS'
       const labs = await ev(() => [...document.querySelectorAll('#flowSvg text')].filter(t => t.querySelector('.nmx')).map(t => { const r = t.getBoundingClientRect(); return [t.querySelector('.nmx').textContent, r.x + r.width / 2, r.y + r.height / 2]; }));
       let okL = true, nl = []; for (const [nm, x, y] of labs) { await p.keyboard.press('9'); await p.mouse.click(x, y); await wait(80); const o = (await S()).open; nl.push(nm + '→' + o); if (o !== (MAPN[nm] || nm)) okL = false; }
       rec('flow labels (' + ['', '30M', '', 'TODAY'][+win] + ')', 'click the centre of every sector label in the picture', 'opens that sector', okL && labs.length >= 4, nl.join(' · '));
-      const n = await ev(() => document.querySelectorAll('#flowSvg path.rbh').length); let okR = true, nr = [];
-      for (let i = 0; i < n; i++) { const pt = await ev((i) => { const pth = document.querySelectorAll('#flowSvg path.rbh')[i], L = pth.getTotalLength(), m = pth.getScreenCTM();
-          for (const f of [0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8, 0.15, 0.85]) { const q = pth.getPointAtLength(L * f), x = q.x * m.a + m.e, y = q.y * m.d + m.f, e = document.elementFromPoint(x, y); if (e === pth) return [x, y, pth.dataset.s, pth.dataset.from]; } return [0, 0, pth.dataset.s, pth.dataset.from, 'unreachable']; }, i);
-        if (pt[4]) { okR = false; nr.push(pt[3] + '→' + pt[2] + ' unreachable'); continue; } await p.keyboard.press('9'); await p.mouse.click(pt[0], pt[1]); await wait(80); const o = (await S()).open; nr.push(pt[3] + '→' + pt[2] + ':' + o); if (o !== pt[2]) okR = false; }
-      rec('flow ribbons (' + ['', '30M', '', 'TODAY'][+win] + ')', 'click each ribbon (incl. 3-4 px ones) on its own path', 'opens the ribbon\'s labelled destination', okR, n + ' ribbons · ' + nr.join(' · ')); }
+      const rbs = await ev(() => [...document.querySelectorAll('#flowSvg path.rb2')].map(pth => { const L = pth.getBBox(), m = pth.getScreenCTM(), r = pth.getBoundingClientRect(); return [pth.dataset.s || '', r.height]; }));
+      let okR = true, nr = [];
+      for (let i = 0; i < rbs.length; i++) { const pt = await ev((i) => { const pth = document.querySelectorAll('#flowSvg path.rb2')[i], r = pth.getBoundingClientRect();
+          for (const fx of [0.5, 0.35, 0.65, 0.2, 0.8]) for (const fy of [0.5, 0.3, 0.7, 0.15, 0.85]) { const x = r.left + r.width * fx, y = r.top + r.height * fy, e = document.elementFromPoint(x, y); if (e === pth) return [x, y]; } return null; }, i);
+        const want = rbs[i][0]; if (!pt) { okR = false; nr.push((want || 'others') + ' unreachable'); continue; }
+        await p.keyboard.press('9'); const before = await S(); await p.mouse.click(pt[0], pt[1]); await wait(90); const o = (await S()).open, tt = await toastTxt();
+        nr.push((want || 'others') + '→' + (want ? o : (/others/.test(tt) ? 'toast' : o)) + ' (' + rbs[i][1].toFixed(0) + 'px)'); if (want ? o !== want : !/others/.test(tt)) okR = false; }
+      rec('flow ribbons (' + ['', '30M', '', 'TODAY'][+win] + ')', 'click every sector ribbon (thinnest included) on the ribbon itself', 'opens that ribbon\'s sector; "others" names its sectors', okR && rbs.length >= 4, rbs.length + ' ribbons · ' + nr.join(' · ')); }
     await clickC('#wch .chip[data-w="1"]');
     await clickC('#heroLine .s[data-s="IT"]'); rec('headline word', 'click IT in the hero line', 'opens IT', (await S()).open === 'IT');
     await clickC((W > 1500 ? '.fs' : '.fs2 span') + '[data-s="Realty"]'); rec('"moving, not this rotation"', 'click Realty', 'opens Realty', (await S()).open === 'Realty');

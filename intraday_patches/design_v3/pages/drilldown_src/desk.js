@@ -39,32 +39,32 @@
     $('#wrng').textContent = f.rng;
     $$('#wch .chip').forEach(function (c) { c.classList.toggle('on', +c.dataset.w === st.win); });
     var svg = $('#flowSvg'), W = svg.clientWidth || 600, H = svg.clientHeight || 60, Lw = wide() ? 232 : 196, Rw = wide() ? 226 : 186, x0 = Lw + 6, x1 = W - Rw - 6, mx = (x0 + x1) / 2;
-    var gap = 2, nmax = Math.max(f.out.length, f.inn.length), avail = H - 4 - gap * (nmax - 1), k = avail / Math.max(f.so, f.si), h = '';
-    var root = getComputedStyle(document.documentElement);
-    h += '<defs><linearGradient id="gF" x1="0" x2="1"><stop offset="0" stop-color="rgb(' + root.getPropertyValue('--down-rgb') + ')" stop-opacity=".75"/><stop offset="1" stop-color="rgb(' + root.getPropertyValue('--up-rgb') + ')" stop-opacity=".8"/></linearGradient></defs>';
-    var ly = 2, oy = [], ry = [], ryy = 2; f.out.forEach(function (a) { oy.push(ly); ly += a[1] * k + gap; }); f.inn.forEach(function (a) { ry.push(ryy); ryy += a[1] * k + gap; });
-    var rfill = f.inn.map(function () { return 0; }), rib = [];
-    f.out.forEach(function (o, i) { var sy = oy[i];
-      f.inn.forEach(function (inn, j) { var lh = o[1] * inn[1] / f.si * k, rh = inn[1] * o[1] / f.so * k, ty = ry[j] + rfill[j]; rfill[j] += rh;
-        rib.push({ d: 'M' + x0 + ',' + sy + ' C' + mx + ',' + sy + ' ' + mx + ',' + ty + ' ' + x1 + ',' + ty + ' L' + x1 + ',' + (ty + rh) + ' C' + mx + ',' + (ty + rh) + ' ' + mx + ',' + (sy + lh) + ' ' + x0 + ',' + (sy + lh) + ' Z',
-          c: 'M' + x0 + ',' + (sy + lh / 2) + ' C' + mx + ',' + (sy + lh / 2) + ' ' + mx + ',' + (ty + rh / 2) + ' ' + x1 + ',' + (ty + rh / 2), w: (lh + rh) / 2, from: o[0], to: inn[0], cr: o[1] * inn[1] / f.si, op: o[0] === 'others' ? .3 : .62 }); sy += lh; }); });
-    // every ribbon is a target for ITS destination; thin ribbons are drawn last (on top) with a 10 px invisible hit stroke
-    rib.sort(function (a, b) { return b.w - a.w; });
-    var tip = function (r) { return '<title>' + esc(r.from) + ' → ' + esc(r.to) + ' ≈ ₹' + F(r.cr, 0) + ' cr (share of the window) · click = open ' + esc(r.to) + '</title>'; };
-    rib.forEach(function (r) { h += '<path class="rb2" data-s="' + esc(r.to) + '" d="' + r.d + '" fill="url(#gF)" opacity="' + r.op + '">' + tip(r) + '</path>'; });
-    rib.forEach(function (r) { h += '<path class="rbh" data-s="' + esc(r.to) + '" data-from="' + esc(r.from) + '" d="' + r.c + '" fill="none" stroke="transparent" stroke-width="' + Math.max(10, r.w) + '">' + tip(r) + '</path>'; });
+    // each sector: its own ribbon from its bar to a central OUT -> IN connector (no invented sector-to-sector pairs, no crossings).
+    // Both sides on ONE scale (thickness = Rs cr), at least 6 px so every ribbon is a click target for ITS sector.
+    var gap = 2, MINH = 6, nmax = Math.max(f.out.length, f.inn.length), avail = H - 4 - gap * (nmax - 1), k = avail / Math.max(f.so, f.si), h = '';
+    function hts(list) { return list.map(function (a) { return Math.max(MINH, a[1] * k); }); }
+    for (var it = 0; it < 6; it++) { var ho = hts(f.out), hi = hts(f.inn), so = ho.reduce(function (x, y) { return x + y; }, 0), si = hi.reduce(function (x, y) { return x + y; }, 0); if (Math.max(so, si) <= avail + 0.5) break; k *= avail / Math.max(so, si) * 0.97; }
+    var root = getComputedStyle(document.documentElement), dn = root.getPropertyValue('--down-rgb'), upc = root.getPropertyValue('--up-rgb');
+    h += '<defs><linearGradient id="gO" x1="0" x2="1"><stop offset="0" stop-color="rgb(' + dn + ')" stop-opacity=".78"/><stop offset="1" stop-color="rgb(' + dn + ')" stop-opacity=".35"/></linearGradient><linearGradient id="gI" x1="0" x2="1"><stop offset="0" stop-color="rgb(' + upc + ')" stop-opacity=".35"/><stop offset="1" stop-color="rgb(' + upc + ')" stop-opacity=".8"/></linearGradient><linearGradient id="gC" x1="0" x2="1"><stop offset="0" stop-color="rgb(' + dn + ')" stop-opacity=".35"/><stop offset="1" stop-color="rgb(' + upc + ')" stop-opacity=".35"/></linearGradient></defs>';
+    var oy = [], ry = [], y = 2; ho.forEach(function (x) { oy.push(y); y += x + gap; }); y = 2; hi.forEach(function (x) { ry.push(y); y += x + gap; });
+    var cxL = mx - 18, cxR = mx + 18, cL = (H - so) / 2, cR = (H - si) / 2, tip = function (a, left) { return '<title>' + esc(crTip(a)) + (a[0] === 'others' ? '' : ' · click = open ' + esc(a[0])) + '</title>'; };
+    var rib = function (x1a, y1, h1, x2a, y2, h2, fill, ds, a, left) { var m = (x1a + x2a) / 2; return '<path class="rb2' + (ds ? '' : ' oth') + '"' + (ds ? ' data-s="' + esc(ds) + '"' : '') + ' d="M' + x1a + ',' + y1 + ' C' + m + ',' + y1 + ' ' + m + ',' + y2 + ' ' + x2a + ',' + y2 + ' L' + x2a + ',' + (y2 + h2) + ' C' + m + ',' + (y2 + h2) + ' ' + m + ',' + (y1 + h1) + ' ' + x1a + ',' + (y1 + h1) + ' Z" fill="url(#' + fill + ')">' + tip(a, left) + '</path>'; };
+    h += '<path d="M' + cxL + ',' + cL + ' L' + cxR + ',' + cR + ' L' + cxR + ',' + (cR + si) + ' L' + cxL + ',' + (cL + so) + ' Z" fill="url(#gC)" pointer-events="none"/>';
+    var cy = cL; f.out.forEach(function (a, i) { h += rib(x0, oy[i], ho[i], cxL, cy, ho[i], 'gO', a[0] === 'others' ? '' : a[0], a, true); cy += ho[i]; });
+    cy = cR; f.inn.forEach(function (a, j) { h += rib(cxR, cy, hi[j], x1, ry[j], hi[j], 'gI', a[0] === 'others' ? '' : a[0], a, false); cy += hi[j]; });
+    h += '<text x="' + mx + '" y="' + (H / 2 + 4) + '" text-anchor="middle" class="ctr">→</text>';
     // labels: at the bar centre, spread so no two overlap; bars as 3 px edges
-    function lab(list, ys, left) { var last = -99, out = '', fsz = 13, minG = wide() ? 16 : 15;
-      list.forEach(function (a, i) { var bh = Math.max(1, a[1] * k), c = ys[i] + bh / 2 + 4.5, y0 = Math.max(c, last + minG), y = Math.min(y0, H - 2); a._y = y;
+    function lab(list, ys, hs, left) { var last = -99, out = '', minG = wide() ? 16 : 15;
+      list.forEach(function (a, i) { var bh = hs[i], c = ys[i] + bh / 2 + 4.5, y0 = Math.max(c, last + minG), yy = Math.min(y0, H - 2); a._y = yy;
         out += '<rect x="' + (left ? x0 - 4 : x1 + 1) + '" y="' + ys[i] + '" width="3" height="' + bh + '" fill="var(--' + (left ? 'down' : 'up') + ')"/>';
         if (a[0] === 'others' && (!wide() || y0 > H - 2)) { return; }
-        last = y;
+        last = yy;
         var t = a[0] === 'others' ? '<tspan>others ' + (left ? '−' : '+') + '₹' + F(a[1], 0) + ' cr</tspan>' : '<tspan class="nmx">' + (short[a[0]] || a[0]) + '</tspan><tspan fill="var(--' + (left ? 'down' : 'up') + ')" dx="5">' + sgp(a[4]) + '</tspan><tspan dx="5">' + (left ? '−' : '+') + '₹' + F(a[1], 0) + ' cr</tspan>' + (a[2] && a[2] !== '-' ? '<tspan dx="5" fill="var(--' + a[2].toLowerCase() + ')" font-weight="700">' + a[2] + '</tspan>' : '') + (wide() && a[3] ? '<tspan dx="4">' + a[3] + '</tspan>' : '');
-        out += '<text x="' + (left ? x0 - 10 : x1 + 10) + '" y="' + y + '"' + (left ? ' text-anchor="end"' : '') + '>' + t + '</text>'; }); return out; }
-    h += lab(f.out, oy, true) + lab(f.inn, ry, false);
-    // hit zones: one per label, never overlapping (split at the midpoints between labels); ribbons themselves are not targets
+        out += '<text x="' + (left ? x0 - 10 : x1 + 10) + '" y="' + yy + '"' + (left ? ' text-anchor="end"' : '') + '>' + t + '</text>'; }); return out; }
+    h += lab(f.out, oy, ho, true) + lab(f.inn, ry, hi, false);
+    // label hit zones (left of the OUT bars, right of the IN bars), never overlapping
     function zones(list, left) { var out = ''; list.forEach(function (a, i) { var y1 = i === 0 ? 0 : (list[i - 1]._y + a._y) / 2 - 4, y2 = i === list.length - 1 ? H : (a._y + list[i + 1]._y) / 2 - 4;
-      out += '<rect class="hz' + (a[0] === 'others' ? ' oth' : '') + '" data-s="' + (a[0] === 'others' ? '' : a[0]) + '" x="' + (left ? 0 : x1 - 2) + '" y="' + y1 + '" width="' + (left ? x0 + 2 : W - x1 + 2) + '" height="' + Math.max(1, y2 - y1) + '" fill="transparent"><title>' + esc(crTip(a)) + (a[0] === 'others' ? '' : ' · click = open ' + a[0]) + '</title></rect>'; }); return out; }
+      out += '<rect class="hz' + (a[0] === 'others' ? ' oth' : '') + '"' + (a[0] === 'others' ? '' : ' data-s="' + esc(a[0]) + '"') + ' x="' + (left ? 0 : x1 - 2) + '" y="' + y1 + '" width="' + (left ? x0 + 2 : W - x1 + 2) + '" height="' + Math.max(1, y2 - y1) + '" fill="transparent">' + tip(a, left) + '</rect>'; }); return out; }
     h += zones(f.out, true) + zones(f.inn, false);
     svg.innerHTML = h;
     $('#flowTot').textContent = 'OUT −₹' + F(f.so, 0) + ' cr · IN +₹' + F(f.si, 0) + ' cr';
@@ -331,7 +331,7 @@
     var mr = t.closest('.mrow'); if (mr) { selShare(mr.dataset.sym); return; }
     var sr = t.closest('.srow'); if (sr) { openSector(sr.dataset.s); return; }
     var ne = t.closest('.ne'); if (ne) { st.open = null; openSector(ne.dataset.s); selShare(ne.dataset.r, true); return; }
-    var hz = t.closest('#flowSvg .hz.oth'); if (hz) { toast(hz.textContent.replace(/^others: /, 'others: ')); return; }
+    var hz = t.closest('#flowSvg .oth'); if (hz) { toast(hz.textContent); return; }
     var hs = t.closest('#flowSvg [data-s], #heroLine [data-s], .fs[data-s], .fs2 [data-s], .rr[data-s]'); if (hs && hs.getAttribute('data-s')) { var id = hs.getAttribute('data-s'); if (st.view === 'run') setView('tbl'); if (st.open !== id) openSector(id); else { var b = $('.blk', $('#wb')); if (b) $('#wb').scrollTop = b.offsetTop; } return; }
     var cm = t.closest('.cmp td[data-sym]'); if (cm) { selShare(cm.dataset.sym, true); return; }
     var wc = t.closest('#wch .chip'); if (wc) { st.win = +wc.dataset.w; drawHero(); return; }
