@@ -271,6 +271,7 @@ re-checked at 22:45 (only if the grade changes), 07:15 and 09:08 (STANDS / CHANG
 logged and its hit rate quoted. Also fix test 4.1: MOTHERSON is an auto-parts maker (copper = cost), not a metals PE.
 MISSING KNOWLEDGE - the desk's own gap list, built in with the rest: design_v3/MISSING_KNOWLEDGE.md.
 LINK BOOK - every driver and sector, both sides: design_v3/LINK_BOOK.md (to be proven on the history database).
+POLITICAL AND ELECTION CYCLE - design_v3/POLITICAL_CYCLE.md: policy delays and pre-election measures as chains, with the election calendar in the Calendar page.
 
 ## 2. LAYER 2 - THE DECISION ENGINE
 
