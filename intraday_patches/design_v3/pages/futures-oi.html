@@ -376,7 +376,7 @@ a.lk2{color:var(--info)}
 .vsb i{position:absolute;left:2px;right:2px;top:0;min-height:22px;background:var(--text-3);border-radius:3px}
 .vsb.fit i{top:2px!important;bottom:2px;height:auto!important;opacity:.45}
 .more{flex:none;height:24px;display:flex;align-items:center;gap:6px;padding:0 6px 0 12px;border-top:1px solid var(--line-2);background:var(--panel-2);font-size:11px;color:var(--text-2);white-space:nowrap;overflow:hidden}
-.more .ar{color:var(--text-3)} .more .nm{color:var(--text);font-weight:600;overflow:hidden;min-width:0}
+.more .ar{color:var(--text-3)} .more .nm{color:var(--text);font-weight:600;overflow:hidden;min-width:0;text-overflow:ellipsis}
 .more .mc{margin-left:auto;padding-left:8px;display:flex;align-items:center;gap:4px;font-family:var(--mono);color:var(--text-3);flex:none}
 .more .sb2{width:18px;height:16px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line-2);border-radius:3px;font-size:11px;color:var(--text-2);cursor:pointer;font-family:var(--sans)}
 
@@ -397,6 +397,7 @@ a.lk2{color:var(--info)}
 .grp .gb b{color:var(--text-2);font-weight:600}
 .grp .gr{grid-column:5;display:flex;align-items:center;gap:8px;flex:none}
 .grp .gr .n{font-size:12px}
+.grp .gm{font-weight:700}
 .grp.closed{color:var(--text-2);cursor:pointer}
 .nar{display:inline-flex;align-items:center;height:18px;padding:0 5px;border:1px dashed var(--text-2);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.03em;color:var(--text);white-space:nowrap;flex:none}
 .brow{height:var(--bh,46px);padding:0 10px 0 12px;border-bottom:1px solid var(--line);cursor:pointer;grid-template-rows:22px 16px;row-gap:2px;align-content:center;position:relative}
@@ -551,7 +552,9 @@ a.lk2{color:var(--info)}
   .brow .ltp,.brow .oi,.brow .cr{font-size:12px}
   .fl{width:auto}
   .fth,.ftr{grid-template-columns:54px 64px 48px 52px 52px 58px 32px;column-gap:4px;padding:0 10px}
-  .ftr{--frh:30px}
+  .ftr{--frh:28px}
+  .ftr .mo,.ftr .bs{line-height:12px}
+  .fv{padding:4px 10px 5px}
   .ftr .n{font-size:12px}
   .ftr .mo{flex-direction:row;gap:5px;align-items:baseline}
   .fr{grid-template-columns:100px minmax(0,1fr) 56px 28px;column-gap:6px;--flh:20px}
@@ -789,7 +792,7 @@ a.lk2{color:var(--info)}
   <section class="pn" id="money">
     <div class="ph sh-acc-mkt"><span class="pt">MONEY</span><span class="t2 phs">futures ₹ cr since open</span>
       <span class="pa"><span class="ldot"></span><span class="age">0.4s</span></span></div>
-    <div class="fmh"><span class="sh-lb">F&amp;O MONEY</span><span class="t3 fmn" title="futures exist only for F&amp;O shares, so this view is F&amp;O-only; sector % and breadth use all listed shares (F2)">by sector · F&amp;O shares only</span><a class="hlink" href="rotation.html">F3 ›</a></div>
+    <div class="fmh"><span class="sh-lb">F&amp;O MONEY</span><span class="t3 fmn" title="futures exist only for F&amp;O shares, so this view is F&amp;O-only; sector % and breadth use all listed shares (F2)">sector = sum of its F&amp;O rows</span><a class="hlink" href="rotation.html">F3 ›</a></div>
     <div id="flow"></div>
     <div class="fmf"><span class="t3">◀ bearish: new shorts (fill) · longs out (outline)</span><span class="fmm t3">bullish ▶</span></div>
     <div class="tabs" id="mTabs">
@@ -851,7 +854,7 @@ a.lk2{color:var(--info)}
   /* ---------------- data (prices = section 4 where it names them; the rest derived, illustrative) ---------------- */
   // sector % / breadth = the WHOLE sector (R49): NSE index, or all n listed shares free-float weighted. Rows = F&O shares only.
   const G = [
-    { id: 'jw', name: 'JEWELLERS &amp; GOLD LOANS', side: 'PE #1', p: -2.01, basis: 'all 14 listed · free-float', br: 'breadth 11/14 all · F&amp;O 4/4', gbu: 'SB 3/4', cr: '₹342 cr new shorts', rows: [
+    { id: 'jw', name: 'JEWELLERS &amp; GOLD LOANS', side: 'PE #1', p: -2.01, basis: 'all 14 listed · free-float', br: 'breadth 11/14 all · F&amp;O 4/4', gbu: 'SB 3/4', rows: [
       { s: 'TITAN', role: 'L', ltp: 3398.20, p: -2.48, oi: 10.3, cr: 233, bu: 'SB', since: '09:24', w15: 'SB', w60: 'SB', lot: 175, sel: 1,
         hint: '<span class="sh-c sh-c-ready">GET READY ★</span><span class="hint"><b>PE 3,400 Dec</b><span class="w16"> · VWAP bounce</span></span>' },
       { s: 'MANAPPURAM', role: 'D', held: 1, ltp: 284.50, p: -2.30, oi: 5.6, cr: 48, bu: 'SB', since: '09:21', w15: '-', w60: 'SB', lot: 3000,
@@ -860,7 +863,7 @@ a.lk2{color:var(--info)}
         hint: '<span class="hint">same driver · no 2nd gold PE</span>' },
       { s: 'KALYANKJIL', role: 'Gd', ltp: 524.80, p: -0.62, oi: -0.4, cr: -3, bu: 'LU', since: '11:05', w15: 'SB', w60: 'LU', lot: 1350,
         hint: '<span class="hint">525 PE · 5-min &lt; 521.60 · paper</span>' } ] },
-    { id: 'mt', name: 'METALS', side: 'PE #2', p: -1.28, basis: 'NIFTY METAL index', br: 'breadth 12/15 all · F&amp;O 9/11', gbu: 'SB 7/11', cr: '₹298 cr new shorts', rows: [
+    { id: 'mt', name: 'METALS', side: 'PE #2', p: -1.28, basis: 'NIFTY METAL index', br: 'breadth 12/15 all · F&amp;O 9/11', gbu: 'SB 7/11', rows: [
       { s: 'HINDCOPPER', ltp: 318.45, p: -1.70, oi: 2.6, cr: 38, bu: 'SB', since: '09:40', w15: 'SB', w60: 'SB', lot: 2650, hint: '<span class="hint">copper −0.92 % · MWPL 91 %</span>' },
       { s: 'NATIONALUM', ltp: 214.60, p: -1.50, oi: 1.9, cr: 21, bu: 'SB', since: '10:10', w15: 'SB', w60: 'SB', lot: 3750, stale: 1,
         hint: '<span class="sh-c sh-c-stale">OI STALE 4m</span><span class="hint">price live</span>' },
@@ -868,23 +871,37 @@ a.lk2{color:var(--info)}
       { s: 'HINDZINC', ltp: 492.10, p: -1.20, oi: 0.9, cr: 9, bu: 'SB', since: '10:31', w15: 'SB', w60: 'SB', lot: 1225, hint: '<span class="hint">silver weak</span>' },
       { s: 'HINDALCO', role: 'D', held: 1, ltp: 684.70, p: -1.11, oi: -0.6, cr: -9, bu: 'LU', since: '11:20', w15: 'SC', w60: 'LU', lot: 1400,
         hint: '<span class="hint"><b>680 PE</b> · EXIT · 15m SC<span class="w16"> against you</span></span>' },
-      { s: 'TATASTEEL', ltp: 158.20, p: -0.95, oi: 0.7, cr: 16, bu: 'SB', since: '10:48', w15: '-', w60: 'SB', lot: 5500, hint: '<span class="hint">steel · follows the index</span>' } ] },
-    { id: 'bk', name: 'BROKERS &amp; EXCHANGES', side: 'PE #3', p: -1.34, basis: 'all 12 listed · free-float', br: 'breadth 7/12 all · F&amp;O 4/4', narrow: 1, gbu: 'LU 3/4', cr: '₹164 cr longs out', rows: [
+      { s: 'JSWSTEEL', ltp: 1046.30, p: -1.04, oi: 1.1, cr: 34, bu: 'SB', since: '10:36', w15: 'SB', w60: 'SB', lot: 675, hint: '<span class="hint">steel · China prices soft</span>' },
+      { s: 'JINDALSTEL', ltp: 948.60, p: -1.02, oi: -0.4, cr: -6, bu: 'LU', since: '10:52', w15: 'LU', w60: 'LU', lot: 625, hint: '<span class="hint">longs out</span>' },
+      { s: 'VEDL', ltp: 452.80, p: -0.98, oi: 0.9, cr: 29, bu: 'SB', since: '10:41', w15: '-', w60: 'SB', lot: 1150 },
+      { s: 'TATASTEEL', ltp: 158.20, p: -0.95, oi: 0.7, cr: 16, bu: 'SB', since: '10:48', w15: '-', w60: 'SB', lot: 5500, hint: '<span class="hint">steel · follows the index</span>' },
+      { s: 'NMDC', ltp: 71.40, p: 0.22, oi: 0.5, cr: 3, bu: 'LB', since: '11:12', w15: '-', w60: 'LB', lot: 13500, hint: '<span class="hint">iron ore · holds up</span>' },
+      { s: 'APLAPOLLO', ltp: 1712.40, p: 0.40, oi: -0.3, cr: -2, bu: 'SC', since: '11:26', w15: '-', w60: 'SC', lot: 350, hint: '<span class="hint">covering only</span>' } ] },
+    { id: 'bk', name: 'BROKERS &amp; EXCHANGES', side: 'PE #3', p: -1.34, basis: 'all 12 listed · free-float', br: 'breadth 7/12 all · F&amp;O 4/4', narrow: 1, gbu: 'LU 3/4', rows: [
       { s: 'ANGELONE', role: 'L', ltp: 2296.50, p: -2.10, oi: 2.9, cr: 18, bu: 'SB', since: '11:42', w15: 'SB', w60: 'SB', lot: 250,
         hint: '<span class="sh-c sh-c-info">BASKET SHOCK</span><span class="hint">GO NOW <span class="w16">→ </span>suppressed</span>' },
       { s: 'BSE', ltp: 2412.30, p: -1.88, oi: -1.8, cr: -12, bu: 'LU', since: '11:42', w15: 'LU', w60: 'LU', lot: 375, hint: '<span class="hint">SEBI basket · longs out</span>' },
       { s: 'CDSL', ltp: 1592.40, p: -1.62, oi: -2.2, cr: -9, bu: 'LU', since: '11:42', w15: 'LU', w60: 'LU', lot: 475, hint: '<span class="hint">SEBI basket · longs out</span>' },
       { s: 'MCX', ltp: 8915.00, p: -1.30, oi: -1.1, cr: -7, bu: 'LU', since: '11:43', w15: 'LU', w60: '-', lot: 125, hint: '<span class="hint">SEBI basket · longs out</span>' } ] },
-    { id: 'cb', name: 'CABLES &amp; WIRES', side: 'PE #4', p: -1.16, basis: 'all 9 listed · free-float', br: 'breadth 4/9 all · F&amp;O 3/3', narrow: 1, gbu: 'SB 2/3', cr: '₹41 cr new shorts', rows: [
+    { id: 'cb', name: 'CABLES &amp; WIRES', side: 'PE #4', p: -1.16, basis: 'all 9 listed · free-float', br: 'breadth 4/9 all · F&amp;O 3/3', narrow: 1, gbu: 'SB 2/3', rows: [
       { s: 'POLYCAB', ltp: 7210.50, p: -1.60, oi: 3.4, cr: 22, bu: 'SB', since: '10:58', w15: 'SB', w60: 'SB', lot: 125, hint: '<span class="hint">copper input · NARROW move</span>' },
       { s: 'KEI', ltp: 4086.20, p: -1.45, oi: -0.8, cr: -4, bu: 'LU', since: '11:10', w15: 'LU', w60: 'LU', lot: 175, hint: '<span class="hint">longs out</span>' },
       { s: 'HAVELLS', ltp: 1488.60, p: -0.42, oi: 0.6, cr: 5, bu: 'SB', since: '11:30', w15: '-', w60: 'SB', lot: 500, hint: '<span class="hint">mild</span>' } ] },
-    { id: 'ph', name: 'PHARMA', side: 'CE #1', p: 0.98, basis: 'NIFTY PHARMA index', br: 'breadth 15/20 all · F&amp;O 10/13', gbu: 'LB 6/13', cr: '₹212 cr new longs', rows: [
+    { id: 'ph', name: 'PHARMA', side: 'CE #1', p: 0.98, basis: 'NIFTY PHARMA index', br: 'breadth 15/20 all · F&amp;O 10/13', gbu: 'LB 6/13', rows: [
       { s: 'SUNPHARMA', role: 'L', ltp: 1806.40, p: 1.42, oi: 4.6, cr: 51, bu: 'LB', since: '09:48', w15: 'LB', w60: 'LB', lot: 350,
         hint: '<span class="sh-c sh-c-ce">CE 1,840 Dec</span><span class="hint">paper only</span>' },
+      { s: 'GLENMARK', ltp: 1642.70, p: 1.63, oi: 2.1, cr: 19, bu: 'LB', since: '10:02', w15: 'LB', w60: 'LB', lot: 375 },
+      { s: 'ZYDUSLIFE', ltp: 984.20, p: 1.40, oi: 1.2, cr: 14, bu: 'LB', since: '10:08', w15: '-', w60: 'LB', lot: 900 },
       { s: 'LUPIN', ltp: 2084.30, p: 1.10, oi: 3.1, cr: 24, bu: 'LB', since: '10:15', w15: 'LB', w60: 'LB', lot: 425, hint: '<span class="hint">2,100 CE watch</span>' },
+      { s: 'BIOCON', ltp: 368.90, p: 1.10, oi: 5.2, cr: 28, bu: 'LB', since: '10:26', w15: 'LB', w60: 'LB', lot: 2500 },
+      { s: 'TORNTPHARM', ltp: 3412.50, p: 0.85, oi: -0.5, cr: -4, bu: 'SC', since: '10:50', w15: '-', w60: 'SC', lot: 250 },
+      { s: 'DRREDDY', ltp: 1284.60, p: 0.80, oi: -1.0, cr: -9, bu: 'SC', since: '10:34', w15: 'SC', w60: 'SC', lot: 625 },
       { s: 'CIPLA', ltp: 1512.80, p: 0.62, oi: -0.9, cr: -6, bu: 'SC', since: '10:40', w15: '-', w60: 'SC', lot: 375, hint: '<span class="hint">dropped · covering only</span>' },
-      { s: 'DIVISLAB', role: 'Gu', ltp: 5960.00, p: -0.20, oi: 1.2, cr: 11, bu: 'SB', since: '11:15', w15: '-', w60: 'SB', lot: 100, hint: '<span class="hint">6,000 CE · paper</span>' } ] } ];
+      { s: 'AUROPHARMA', ltp: 1218.40, p: 0.55, oi: 0.4, cr: 4, bu: 'LB', since: '11:05', w15: '-', w60: 'LB', lot: 550 },
+      { s: 'ALKEM', ltp: 5486.00, p: 0.30, oi: -0.3, cr: -2, bu: 'SC', since: '11:18', w15: '-', w60: 'SC', lot: 125 },
+      { s: 'DIVISLAB', role: 'Gu', ltp: 5960.00, p: -0.20, oi: 1.2, cr: 11, bu: 'SB', since: '11:15', w15: '-', w60: 'SB', lot: 100, hint: '<span class="hint">6,000 CE · paper</span>' },
+      { s: 'MANKIND', ltp: 2412.80, p: -0.35, oi: -0.6, cr: -3, bu: 'LU', since: '11:22', w15: '-', w60: 'LU', lot: 225 },
+      { s: 'LAURUSLABS', ltp: 612.30, p: -0.52, oi: 0.8, cr: 6, bu: 'SB', since: '11:31', w15: 'SB', w60: 'SB', lot: 1700 } ] } ];
   // shares of closed sectors (shown in the RANKED movers view)
   const POOL = [
     { s: 'EICHERMOT', sec: 'Auto', ltp: 6842.50, p: -1.15, oi: 1.4, cr: 19, bu: 'SB', since: '10:05', w15: '-', w60: 'SB', lot: 175 },
@@ -895,6 +912,9 @@ a.lk2{color:var(--info)}
     { s: 'HDFCBANK', sec: 'Banks', ltp: 1012.40, p: 0.21, oi: -0.4, cr: -18, bu: 'SC', since: '11:02', w15: '-', w60: 'SC', lot: 550 } ];
   const U = { all: 222, LB: 38, SB: 96, SC: 27, LU: 61, dn: 157, up: 61 }, CLOSED_SECT = 18;
   const OPEN = G.flatMap(g => g.rows);
+  // sector money = the sum of its F&O rows, signed by build-up: SB / LU = bearish (−), LB / SC = bullish (+)
+  const sgn = r => (r.bu === 'SB' || r.bu === 'LU' ? -1 : 1) * Math.abs(r.cr);
+  G.forEach(g => { g.net = g.rows.reduce((a, r) => a + sgn(r), 0); const t = {}; g.rows.forEach(r => { t[r.bu] = (t[r.bu] || 0) + Math.abs(r.cr); }); g.dom = Object.keys(t).sort((a, b) => t[b] - t[a])[0]; });
 
   /* ---------------- futures by month (Nov Mon 23 · Dec Tue 29 · Jan Mon 25), basis vs 7 %/yr carry ---------------- */
   const DAYS = [4, 40, 67], USUAL_ROLL = 48;
@@ -963,7 +983,7 @@ a.lk2{color:var(--info)}
         const rows = g.rows.filter(keep); if (!rows.length) return;
         h += `<div class="grp" data-more="${g.name.replace('&amp;', '&')}"><span class="gn">${g.name}</span><span class="gp ${cls(g.p)}">${sg(g.p)}%</span>
           ${g.narrow ? '<span class="nar" title="only the F&amp;O names move: NARROW - F&amp;O-only move">NARROW · F&amp;O-only</span>' : '<span></span>'}<span></span>
-          <span class="gr"><span class="t2">${g.gbu}</span><span class="t3">${g.side}</span></span>
+          <span class="gr"><span class="gm n ${cls(g.net)}" title="sum of the ${g.rows.length} F&amp;O rows below, ₹ cr futures OI since open: SB / LU count −, LB / SC count +">${g.net < 0 ? M : '+'}₹${Math.abs(g.net)} cr</span><span class="t2">${g.gbu}</span><span class="t3">${g.side}</span></span>
           <span class="gb" title="sector % and breadth from the WHOLE sector (R49), not only its F&amp;O shares">BASIS <b>${g.basis}</b> · ${g.br}</span></div>` + rows.map(r => brow(r)).join('');
       });
       const nOpen = OPEN.filter(keep).length, tot = st.b ? U[st.b] : st.m ? U[st.m] : U.all;
@@ -997,9 +1017,12 @@ a.lk2{color:var(--info)}
   $$('[data-bu]').forEach(x => x.addEventListener('click', e => { e.preventDefault(); const c = $(`.buc[data-b="${x.dataset.bu}"]`); if (c) c.click(); }));
 
   /* ---------------- MONEY ---------------- */
-  const FLOW = [['Jewellers &amp; gold', 'SB', -342], ['Metals', 'SB', -298], ['Brokers', 'LU', -164], ['IT', 'LU', -142], ['Auto', 'LU', -96], ['Pharma', 'LB', 212]];
-  $('#flow').innerHTML = FLOW.map(([n, t, v]) => { const w = Math.abs(v) / 342 * 48;
-    return `<div class="fr" title="${n.replace('&amp;', '&')}: futures OI ₹ ${Math.abs(v)} cr since open (${t})"><span class="fn">${n}</span><span class="fb"><i class="${t.toLowerCase()}" style="${v < 0 ? 'right' : 'left'}:50%;width:${w.toFixed(1)}%"></i></span><span class="fv2 ${v < 0 ? 'dn' : 'up'}">${v < 0 ? M : '+'}₹${Math.abs(v)}</span>${bu(t)}</div>`; }).join('');
+  const gN = id => G.find(g => g.id === id);
+  const FLOW = [['Jewellers &amp; gold', gN('jw').dom, gN('jw').net, gN('jw').rows.length], ['Metals', gN('mt').dom, gN('mt').net, gN('mt').rows.length], ['IT', 'LU', -142, 10], ['Auto', 'LU', -96, 15],
+    ['Brokers', gN('bk').dom, gN('bk').net, gN('bk').rows.length], ['Pharma', gN('ph').dom, gN('ph').net, gN('ph').rows.length]];
+  const FMAX = Math.max(...FLOW.map(x => Math.abs(x[2])));
+  $('#flow').innerHTML = FLOW.map(([n, t, v, k]) => { const w = Math.abs(v) / FMAX * 48;
+    return `<div class="fr" title="${n.replace('&amp;', '&')}: sum of its ${k} F&amp;O shares, futures OI ₹ cr since open, signed (SB / LU −, LB / SC +) = ${v < 0 ? '−' : '+'}₹${Math.abs(v)} cr · mostly ${t}"><span class="fn">${n}</span><span class="fb"><i class="${t.toLowerCase()}" style="${v < 0 ? 'right' : 'left'}:50%;width:${w.toFixed(1)}%"></i></span><span class="fv2 ${v < 0 ? 'dn' : 'up'}">${v < 0 ? M : '+'}₹${Math.abs(v)}</span>${bu(t)}</div>`; }).join('');
   const BIG = [
     { t: '11:42:20', s: 'ANGELONE', tag: '<span class="sh-c sh-c-info">BASKET SHOCK</span>', amt: '₹41 cr', shk: 1,
       m2: 'Nov fut 720 lots sold + PE burst · <a href="#shock" data-shock>card ›</a>' },
@@ -1071,7 +1094,7 @@ a.lk2{color:var(--info)}
     const cnt = pb.id === 'bub' ? countLine() : all.length ? `${f}-${f + v.length - 1} of ${mt.tab === 'tape' ? 41 : all.length}` : '';
     const tail = `<span class="mc">${cnt} <b class="sb2" data-t="${pb.id}" data-d="-1">▲</b><b class="sb2" data-t="${pb.id}" data-d="1">▼</b></span>`;
     const L = [...new Set(below)];
-    for (let k = L.length; k >= 0; k--) {
+    for (let k = L.length; k >= Math.min(1, L.length); k--) {
       mo.innerHTML = (L.length ? `<span class="ar">▼</span><span>below:</span><b class="nm">${L.slice(0, k).join(' · ')}${k < L.length ? ' …' : ''}</b>` : `<span class="ar">▲</span><span>${mt.tab === 'tape' && pb.id === 'mb' ? 'newest first · older in F7 tape' : 'all shown'}</span>`) + tail;
       const nm = mo.querySelector('.nm'); if (!nm || nm.scrollWidth <= nm.clientWidth + 1) break;
     }

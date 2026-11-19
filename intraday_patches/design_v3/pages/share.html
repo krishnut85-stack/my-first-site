@@ -356,8 +356,8 @@ i{font-style:normal}
 .cb{position:absolute;left:0;top:0;right:0;bottom:0;overflow-y:scroll;scrollbar-width:none;display:flex;flex-direction:column}
 .cb>.blk{flex:none}
 .cb::-webkit-scrollbar{display:none}
-.cbw.ovf .cb{right:14px}
-.vsb{display:none;position:absolute;right:4px;top:6px;bottom:6px;width:6px;background:var(--line);border-radius:3px}
+.cbw.ovf .cb{right:10px}
+.vsb{display:none;position:absolute;right:3px;top:6px;bottom:6px;width:5px;background:var(--line);border-radius:3px}
 .vsb i{position:absolute;left:0;right:0;top:0;height:40%;background:var(--text-3);border-radius:3px}
 .cbw.ovf .vsb{display:block}
 .more{display:none;height:26px;flex:none;align-items:center;gap:6px;padding:0 12px 0 13px;border-top:1px solid var(--line);font-size:12px;color:var(--text-2);white-space:nowrap;cursor:pointer}
@@ -381,7 +381,7 @@ i{font-style:normal}
 table{border-collapse:collapse;width:100%}
 .lv{table-layout:fixed}
 .lv th{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);text-align:left;height:22px;padding:0 6px;border-bottom:1px solid var(--line)}
-.lv th:first-child{width:86px;padding-left:13px} .lv th:nth-child(2){width:112px} .lv th:nth-child(3){width:76px} .lv th:nth-child(4){width:80px}
+.lv th:first-child{width:86px;padding-left:13px} .lv th:nth-child(2){width:112px} .lv th:nth-child(3){width:86px} .lv th:nth-child(4){width:80px}
 .lv th.r,.lv td.r{text-align:right}
 .lv td{height:25px;padding:0 6px;font-size:13px;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:clip;border-bottom:1px solid var(--line)}
 .lv tr:last-child td{border-bottom:0}
@@ -396,6 +396,7 @@ table{border-collapse:collapse;width:100%}
 .lv .tgt td:first-child{color:var(--info)}
 .lv .now td:first-child{color:var(--text)}
 .lv .now{background:var(--panel-2)}
+.lv .now td:nth-child(2){font-size:13px;padding-left:0;letter-spacing:-.01em}
 .lv .bkr td:first-child{color:var(--text-3);font-size:11px}
 .lv .bkr td.n:not(.dn){color:var(--text-2);font-weight:500}
 .vt,.gt,.hb,.hr,.wn,.sz,.wy,.bk2{display:grid;grid-template-columns:86px minmax(0,1fr);align-items:baseline;padding:5px 12px 5px 13px;font-size:13px;color:var(--text-2);line-height:18px}
@@ -413,8 +414,8 @@ table{border-collapse:collapse;width:100%}
 .cap b{color:var(--text-2);font-weight:600}
 .hr>span:last-child,.bk2>span:last-child,.wn>span:last-child{white-space:nowrap;overflow:hidden}
 .gt{align-items:center;row-gap:5px}
-.gs{display:flex;flex-wrap:wrap;gap:5px}
-.g{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 6px;border:1px solid var(--line-2);border-radius:3px;font-size:12px;color:var(--text);white-space:nowrap}
+.gs{display:flex;flex-wrap:wrap;gap:4px}
+.g{display:inline-flex;align-items:center;gap:3px;height:22px;padding:0 5px;border:1px solid var(--line-2);border-radius:3px;font-size:12px;color:var(--text);white-space:nowrap}
 .g.ok::before{content:"✓";color:var(--up);font-weight:700}
 .g.no{border-color:var(--danger);color:var(--danger);background:var(--danger-bg);font-weight:700}
 .g.no::before{content:"✗";font-weight:700}
@@ -465,6 +466,8 @@ table{border-collapse:collapse;width:100%}
 
 /* OI by strike */
 .oiw{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 300px}
+.oih2 .lk{margin-left:auto;letter-spacing:0;font-size:12px}
+.oih2{height:26px;flex:none;display:flex;align-items:center;padding:0 12px;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text-3);border-bottom:1px solid var(--line)}
 .oil{display:flex;flex-direction:column;min-height:0;border-right:1px solid var(--line)}
 .oih{height:26px;flex:none;display:grid;grid-template-columns:1fr 70px 1fr;align-items:center;padding:0 12px;font-size:11px;font-weight:700;letter-spacing:.06em;border-bottom:1px solid var(--line)}
 .oih span:nth-child(2){text-align:center;color:var(--text-3)}
@@ -476,7 +479,11 @@ table{border-collapse:collapse;width:100%}
 .oir-row.atm{background:var(--panel-2)}
 .oir-row .ce{display:flex;justify-content:flex-end;align-items:center;gap:6px}
 .oir-row .pe{display:flex;justify-content:flex-start;align-items:center;gap:6px}
-.oir-row .bar{height:10px;border-radius:1px}
+.oir-row .tk{flex:1;min-width:0;display:flex;height:10px}
+.oir-row .ce .tk{justify-content:flex-end}
+.oir-row .v{flex:none;min-width:40px}
+.oir-row .ce .v{text-align:right}
+.oir-row .bar{height:10px;border-radius:1px;flex:none}
 .oir-row .ce .bar{background:var(--up);opacity:.75}
 .oir-row .pe .bar{background:var(--down);opacity:.75}
 .oir-row .v{font-family:var(--mono);font-size:12px;color:var(--text-2)}
@@ -485,16 +492,16 @@ table{border-collapse:collapse;width:100%}
 .oir{display:flex;flex-direction:column;padding:0 0 0 0}
 .oisum{display:flex;flex-wrap:wrap;gap:4px 14px;padding:8px 12px;font-size:12px;color:var(--text-2);border-bottom:1px solid var(--line)}
 .oisum b{color:var(--text)}
-.sce{display:grid;grid-template-columns:40px auto minmax(0,1fr);align-items:center;gap:7px;padding:0 12px;height:34px;font-size:12px;color:var(--text-2);border-bottom:1px solid var(--line);white-space:nowrap}
-.sce>span:last-child{overflow:hidden;text-overflow:ellipsis}
+.sce{display:grid;grid-template-columns:40px minmax(0,1fr);grid-template-rows:auto auto;align-items:center;column-gap:8px;row-gap:3px;padding:6px 12px;font-size:12px;color:var(--text-2);border-bottom:1px solid var(--line);white-space:nowrap}
+.sce .sh-c{justify-self:start;height:18px;font-size:11px}
+.sce .tx{grid-column:2;color:var(--text)}
 .sce .n{color:var(--text-3);font-size:11px}
 .oif{padding:8px 12px;font-size:12px}
 
 /* futures */
 .ft{table-layout:fixed}
 .ft th{font-size:11px;font-weight:600;letter-spacing:.05em;color:var(--text-3);text-align:left;height:28px;padding:0 9px;border-bottom:1px solid var(--line);white-space:nowrap}
-.ft th:first-child{width:150px;padding-left:13px}
-.ft th:last-child{width:196px}
+.ft th:first-child{width:140px;padding-left:13px} .ft th:nth-child(2){width:84px} .ft th:nth-child(3){width:72px} .ft th:nth-child(4){width:72px} .ft th:nth-child(5){width:68px} .ft th:nth-child(6){width:72px} .ft th:nth-child(7){width:52px}
 .ft th.r,.ft td.r{text-align:right}
 .ft td{height:31px;padding:0 9px;font-size:13px;color:var(--text);border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden}
 .ft td:first-child{padding-left:13px}
@@ -575,10 +582,41 @@ table{border-collapse:collapse;width:100%}
 .ol.n1366{display:none}
 .ol u{color:var(--info);text-decoration:none;font-weight:600}
 
+/* small pictures inside the dossier tabs (shown where the pane has room: the 1366 tabs) */
+.pic{display:none;margin:10px 13px 0;padding:10px 12px 10px;border:1px solid var(--line);border-radius:4px;background:var(--panel-2)}
+.pic-h{display:flex;align-items:center;gap:10px;white-space:nowrap}
+.pic-h .lg{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--text-3)}
+.pic-h .lg i{display:inline-block;width:2px;height:11px;margin-left:6px}
+.pic-h .lg i.r1,.lfr .ln1{background:var(--danger)}
+.pic-h .lg i.r2,.lfr .ln2{background:var(--up)}
+.lf-rows{display:flex;flex-direction:column;gap:7px;margin-top:9px}
+.lfr{display:grid;grid-template-columns:96px minmax(0,1fr) 62px 74px;align-items:center;gap:8px;font-size:12px;color:var(--text-2);white-space:nowrap}
+.lfr .k{color:var(--text)}
+.lfr.pick .k{font-weight:700}
+.trk2{position:relative;height:12px;background:var(--panel-3);border-radius:2px}
+.trk2 .b{position:absolute;left:0;top:0;bottom:0;border-radius:2px}
+.trk2 .b.over{background:rgba(var(--down-rgb),.45)}
+.lfr.pick .trk2 .b.over{background:rgba(var(--down-rgb),.7)}
+.trk2 .b.roll{background:var(--stale);opacity:.7}
+.trk2 .b.sb{background:rgba(var(--down-rgb),.6)}
+.trk2 .b.stl{background:var(--stripe);border:1px solid var(--stale)}
+.lfr .ln1,.lfr .ln2{position:absolute;top:-3px;bottom:-3px;width:2px;margin-left:-1px}
+.lfr .v{text-align:right;color:var(--text)}
+.lfr .lots{font-size:11px;font-weight:700;letter-spacing:.03em;color:var(--text-3)}
+.lfr.pick .lots{color:var(--text)}
+.pic-f{margin-top:8px;font-size:12px;color:var(--text-3)}
+.pic-h .lg i.r3{background:var(--text);width:10px;height:2px}
+.pic-h .lg i.r4{background:var(--text-3);width:10px;height:1px}
+.ivpic{flex:none;margin-bottom:6px}
+.ivs{display:block;width:100%;height:60px;margin-top:8px}
+.ivs .l20{stroke:var(--text-3);stroke-width:1;stroke-dasharray:4 3;vector-effect:non-scaling-stroke}
+.ivs .liv{fill:none;stroke:var(--text);stroke-width:1.6;vector-effect:non-scaling-stroke}
+.ivx{display:flex;justify-content:space-between;margin-top:4px;font-size:11px;color:var(--text-3)}
+
 /* ---------- 1366 (below 1500 px): one tabbed centre panel; the dossier and the options detail become tabs ---------- */
 @media (max-width:1499px){
   .w{display:none}
-  .bd{grid-template-columns:456px minmax(0,1fr) 342px;grid-template-rows:minmax(0,1fr);grid-template-areas:"call cht sec"}
+  .bd{grid-template-columns:456px minmax(0,1fr) 334px;grid-template-rows:minmax(0,1fr);grid-template-areas:"call cht sec"}
   .dos,.opt{display:none}
   .h1{height:28px} .h2{height:56px;gap:14px;padding:0 12px 0 14px} .h3{height:28px}
   .rlb,.ans{padding-left:14px}
@@ -597,7 +635,7 @@ table{border-collapse:collapse;width:100%}
   .vd2{margin-top:4px} .vd3{margin-top:2px}
   .xt-l{padding:5px 12px}
   .lv th{height:20px} .lv td{height:23px}
-  .lv th:first-child{width:76px;padding-left:12px} .lv th:nth-child(2){width:108px} .lv th:nth-child(3){width:70px} .lv th:nth-child(4){width:76px}
+  .lv th:first-child{width:76px;padding-left:12px} .lv th:nth-child(2){width:114px} .lv th:nth-child(3){width:80px} .lv th:nth-child(4){width:74px}
   .lv td:first-child{padding-left:12px}
   .vt,.gt,.hb,.hr,.wn,.sz,.wy,.bk2{grid-template-columns:76px minmax(0,1fr);padding:4px 10px 4px 12px}
   .cap{padding:3px 10px 4px 12px;order:20}
@@ -611,13 +649,33 @@ table{border-collapse:collapse;width:100%}
   .tb2 button{padding:0 5px}
   .xt-l{padding:4px 12px}
   .wy{grid-template-columns:76px minmax(0,1fr) auto}
-  .g{padding:0 5px}
-  .st th{padding:0 6px} .st td{padding:0 6px;font-size:12px}
-  .st th:first-child{width:104px;padding-left:12px} .st td:first-child{padding-left:12px} .st th:nth-child(2){width:112px} .st th:nth-child(3){width:88px} .st th:nth-child(4){width:46px} .st th:nth-child(5){width:52px} .st th:nth-child(6){width:42px} .st th:nth-child(7){width:52px} .st th:nth-child(8){width:46px}
-  .oiw{grid-template-columns:minmax(0,1fr) 220px}
-  .ft th{padding:0 6px} .ft td{padding:0 6px;font-size:12px} .ft th:first-child{width:112px;padding-left:12px} .ft td:first-child{padding-left:12px} .ft th:last-child{width:96px}
+  .g{padding:0 4px;letter-spacing:-0.01em}
+  .gs{gap:3px}
+  .gt{padding-right:2px}
+  .st th{padding:0 4px} .st td{padding:0 4px;font-size:12px} .st td b{font-size:13px}
+  .st th:first-child{width:68px;padding-left:10px} .st td:first-child{padding-left:10px;line-height:13px} .st td:first-child i{display:block;margin-left:0} .st th:nth-child(2){width:100px} .st th:nth-child(3){width:80px} .st th:nth-child(4){width:42px} .st th:nth-child(5){width:46px} .st th:nth-child(6){width:40px} .st th:nth-child(7){width:48px} .st th:nth-child(8){width:46px}
+  .st td:last-child,.st th:last-child{padding-right:10px} .st th:last-child{letter-spacing:0}
+  .oiw{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}
+  .oil{border-right:0;border-bottom:1px solid var(--line)}
+  .oir{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .oih2{grid-column:1 / -1}
+  .sce{border-bottom:0;border-right:1px solid var(--line);padding:8px 10px;grid-template-columns:36px minmax(0,1fr)}
+  .sce:last-child{border-right:0}
+  .sce .tx{grid-column:1 / span 2;white-space:normal}
+  .ft th{padding:0 4px} .ft td{padding:0 4px;font-size:12px} .ft th:first-child{width:96px;padding-left:10px} .ft td:first-child{padding-left:10px} .ft th:nth-child(2){width:68px} .ft th:nth-child(3){width:58px} .ft th:nth-child(4){width:56px} .ft th:nth-child(5){width:52px} .ft th:nth-child(6){width:58px} .ft th:nth-child(7){width:40px}
+  .ft td:first-child i{display:block;margin-left:0;line-height:12px} .ft td{height:38px}
   .ft td:last-child i{display:none}
   .sr{min-height:44px}
+  .pic{display:block}
+  .ol.n1366{display:grid}
+  .ob .ol{flex:1 1 0;max-height:52px}
+  .st td:first-child{position:relative} .st td:first-child .star{position:absolute;left:52px;top:7px}
+  .st td{height:40px}
+  .ft td{height:40px}
+  .s2{gap:4px} .s2 .sh-c{padding:0 4px} .s2 .st{margin-left:2px}
+  .nr{height:auto;grid-template-columns:58px minmax(0,1fr) 40px;grid-template-rows:auto auto;row-gap:3px;padding-top:9px;padding-bottom:9px}
+  .nr .hd{grid-column:1 / span 3;grid-row:2;white-space:normal}
+  .nr .ai{grid-column:3;grid-row:1}
 }
 
 </style>
@@ -775,8 +833,8 @@ table{border-collapse:collapse;width:100%}
       <a class="rl2" href="sectors.html#movers-down" title="F&amp;O MOVERS on F2 Sectors (UP / DOWN / ALL)"><b>F&amp;O MOVERS #1</b> of 157 falling ▼ <span class="w">· the day's biggest F&amp;O faller</span> · <u>list F2 ›</u></a>
     </div>
     <div class="ans">
-      <div class="ans-l"><span class="sh-c sh-c-stale big">BLOCKED · lock room</span><span class="aw"><span class="dn">PUT</span> 3,400 Dec waits for an exit</span></div>
-      <div class="ans-s">lock room <b class="n">₹1,980</b> &lt; max loss <b class="n">₹2,150</b> → 0 lots · trade 3 of 3 = your last<span class="w"> · after EXIT HINDALCO → <b>1 lot</b></span></div>
+      <div class="ans-l"><span class="sh-c sh-c-stale big">BLOCKED · lock room</span><span class="aw"><span class="dn">PUT</span> 3,400 Dec waits for MANAPPURAM</span></div>
+      <div class="ans-s" title="BOOK MANAPPURAM at 14.20 (+₹2,430 net) leaves only HINDALCO at risk (−₹4,060 at its stop): room ₹10,000 + ₹2,430 − ₹4,060 = ₹8,370, and the one gold PE slot is free. EXIT HINDALCO alone would open the room but leave a 2nd gold PE.">lock room <b class="n">₹1,980</b> &lt; max loss <b class="n">₹2,150</b> → 0 lots · trade 3 of 3 = your last<span class="w"> · after BOOK MANAPPURAM → <b>1 lot</b></span></div>
     </div>
   </div>
   <div class="h3">
@@ -807,7 +865,7 @@ table{border-collapse:collapse;width:100%}
       <div class="vd blk" data-name="verdict">
         <div class="vd1"><span class="sh-c sh-c-stale">BLOCKED · lock room</span><b>0 lots now</b><span class="vd-s">trade 3 of 3 = your last</span></div>
         <div class="vd2">lock room <b class="n">₹1,980</b> <i>(all stops hit)</i> &lt; max loss <b class="n">₹2,150</b> → <b class="n">0</b> lots</div>
-        <div class="vd3"><span class="do">DO</span>wait for an exit: after EXIT HINDALCO the room is <b class="n">₹2,890</b> → <b>1 lot (minimum)</b> = 0.4R<span class="w">, about half normal risk</span></div>
+        <div class="vd3" title="BOOK MANAPPURAM at 14.20 (+₹2,430 net) leaves only HINDALCO at risk (−₹4,060 at its stop): GIR said BOOK 11:40:12. Room ₹10,000 + ₹2,430 − ₹4,060 = ₹8,370. The same exit frees the one gold PE slot. EXIT HINDALCO alone would open the room but leave a 2nd gold PE."><span class="do">DO</span><a class="lk" href="positions.html#MANAPPURAM">BOOK MANAPPURAM</a> first: room <b class="n">₹8,370</b>, gold slot free → <span style="white-space:nowrap"><b>1 lot (minimum)</b> = 0.4R</span><span class="w">, about half normal risk</span></div>
       </div>
       <div class="xt-l blk" data-name="entry"><span class="sh-c xt">EXTENDED</span><span>bounce to <b>VWAP 3,421</b>, then <b>5-min close &lt; 3,414</b></span></div>
       <table class="lv blk" data-name="levels">
@@ -820,7 +878,7 @@ table{border-collapse:collapse;width:100%}
           <tr class="bkr wr"><td>BACKSTOP</td><td class="r n">117.50</td><td class="r n">-</td><td class="r n dn">−₹2,360</td><td>SL-L lim 117.00</td></tr>
         </tbody>
       </table>
-      <div class="cap blk" data-name="cash · costs">cash <b class="n">₹22,505</b> · costs <b class="n">₹420</b> = charges ₹87 + slippage ₹333 · R:R <b class="n">2.2</b></div>
+      <div class="cap blk" data-name="cash &amp; costs">cash <b class="n">₹22,505</b> · costs <b class="n">₹420</b> = charges ₹87 + slippage ₹333 · R:R <b class="n">2.2</b></div>
       <div class="vt blk" data-name="vote">
         <span class="lbl">THE VOTE</span>
         <span class="vtx" title="N = voters who voted (agents 1-3, news, money); the auditor checks and does not vote; weighted by each voter's hit rate"><span class="v1"><b>4 of 5 agree</b> · agents 1<i class="ok">✓</i> 2<i class="ok">✓</i> 3<i class="no">✗</i> · news <i class="ok">✓</i> · money <i class="ok">✓</i></span>
@@ -835,13 +893,13 @@ table{border-collapse:collapse;width:100%}
       </div>
       <div class="hr blk" data-name="hold"><span class="lbl">HOLD</span><span>to target or stop, unless GIR says EXIT · out 15:10</span></div>
       <div class="bk2 blk n1366b" data-name="backstop"><span class="lbl">BACKSTOP</span><span>Kite SL-L <b class="n">117.50</b> / lim <b class="n">117.00</b> · if hit <b class="n dn">−₹2,360</b></span></div>
-      <div class="wn blk" data-name="warnings"><span class="lbl">WARNINGS</span><span><span class="sh-c sh-c-info">1 gold PE max</span> you hold MANAPPURAM · soft</span></div>
+      <div class="wn blk" data-name="warnings"><span class="lbl">WARNINGS</span><span><span class="sh-c sh-c-info">1 gold PE max</span> you hold MANAPPURAM · <b>clears on BOOK</b></span></div>
     </div><div class="vsb"><i></i></div></div>
     <div class="more" id="cbm"></div>
     <footer class="pf">
       <a class="btn" href="plan-card.html#TITAN">Plan card <kbd>Space</kbd></a>
       <a class="btn" href="chain.html#TITAN">Chain <kbd>F9</kbd></a>
-      <button class="btn" title="ring once (GET READY tick) when the room opens and the bounce arms">Ring <kbd>R</kbd></button>
+      <button class="btn" title="ring once (GET READY tick) when MANAPPURAM is booked (room and gold slot free) and the bounce arms">Ring <kbd>R</kbd></button>
       <button class="btn">Ask <kbd>Q</kbd></button>
       <span class="pfr" title="GIR never places orders">orders in Kite</span>
     </footer>
@@ -885,6 +943,15 @@ table{border-collapse:collapse;width:100%}
           </tbody>
         </table>
         <div class="pk"><span class="star">★</span> <b>GIR's pick 3,400 ATM:</b> tightest spread (0.41%), deepest book, Δ 0.48 · max loss → lots at room ₹1,980: ITM <span class="n">₹2,480</span> · ATM <span class="n">₹2,150</span> · OTM <span class="n">₹2,040</span> → <b>0 lots on every strike</b></div>
+        <div class="pic lockfit">
+          <div class="pic-h"><span class="lbl">MAX LOSS vs LOCK ROOM · 1 lot · Dec</span><span class="lg"><i class="r1"></i>now ₹1,980 <i class="r2"></i>after BOOK<span class="w"> MANAPPURAM</span> ₹8,370 ›</span></div>
+          <div class="lf-rows">
+            <div class="lfr"><span class="k n">3,450 ITM</span><span class="trk2"><i class="b over" style="width:82.7%"></i><i class="ln1" style="left:66%"></i><i class="ln2" style="left:99.4%"></i></span><span class="v n">₹2,480</span><span class="lots">0 now</span></div>
+            <div class="lfr pick"><span class="k n">3,400 ATM <b class="star">★</b></span><span class="trk2"><i class="b over" style="width:71.7%"></i><i class="ln1" style="left:66%"></i><i class="ln2" style="left:99.4%"></i></span><span class="v n">₹2,150</span><span class="lots">0 → 1 lot</span></div>
+            <div class="lfr"><span class="k n">3,350 OTM</span><span class="trk2"><i class="b over" style="width:68%"></i><i class="ln1" style="left:66%"></i><i class="ln2" style="left:99.4%"></i></span><span class="v n">₹2,040</span><span class="lots">0 now</span></div>
+          </div>
+          <div class="pic-f"><span class="w">every strike is </span>over the room now · after BOOK MANAPPURAM all fit<span class="w"> (₹8,370, off scale ›)</span> · ★ ATM takes 1 lot</div>
+        </div>
         <div class="pk pk2">not Nov: 3 sessions left, <b>PHYSICAL · exit ITM before expiry day</b> · BE ≈ 7 share pts by 15:10 · <a class="lk" href="chain.html#TITAN-all">all columns · Nov ›</a></div>
       </div>
 
@@ -896,11 +963,10 @@ table{border-collapse:collapse;width:100%}
             <div class="oib sc" id="oib"></div>
           </div>
           <div class="oir">
-            <div class="oisum"><span>PCR <b class="n">0.86</b></span><span>max pain <b class="n">3,400</b></span><span>walls <b class="n dn">3,350</b> put · <b class="n up">3,450</b> call</span></div>
-            <div class="sce"><span class="n">11:36</span><span class="sh-c sh-c-lb">BUYING</span><span>Dec 3,400 PE paying up · 1,150 lots / 5 min</span></div>
-            <div class="sce"><span class="n">11:20</span><span class="sh-c sh-c-sb">WRITING</span><span>3,450 CE roof building · +36%</span></div>
-            <div class="sce"><span class="n">10:48</span><span class="sh-c sh-c-sc">COVER</span><span>3,500 PE writers leave · −18%</span></div>
-            <div class="oif"><a class="lk" href="chain.html#TITAN">full chain + OI scenarios F9 ›</a></div>
+            <div class="oih2">OI SCENARIOS · Dec<a class="lk" href="chain.html#TITAN">full chain F9 ›</a></div>
+            <div class="sce"><span class="n">11:36</span><span class="sh-c sh-c-lb">BUYING</span><span class="tx">3,400 PE · 1,150 lots in 5 min</span></div>
+            <div class="sce"><span class="n">11:20</span><span class="sh-c sh-c-sb">WRITING</span><span class="tx">3,450 CE roof builds · +36%</span></div>
+            <div class="sce"><span class="n">10:48</span><span class="sh-c sh-c-sc">COVER</span><span class="tx">3,500 PE writers exit · −18%</span></div>
           </div>
         </div>
       </div>
@@ -910,12 +976,20 @@ table{border-collapse:collapse;width:100%}
         <table class="ft">
           <thead><tr><th>month</th><th class="r">price</th><th class="r">chg %</th><th class="r">basis ₹</th><th class="r">OI</th><th class="r">OI chg</th><th class="r">vol ×</th><th>build-up</th></tr></thead>
           <tbody>
-            <tr><td><b>Nov 23</b> <i>near · 3s</i></td><td class="r n">3,401.40</td><td class="r n dn">−2.47%</td><td class="r n">+3.20</td><td class="r n">18,420</td><td class="r n dn">−6.0%</td><td class="r n">2.6×</td><td><span class="sh-c sh-c-stale rl">ROLL</span><i>shorts move to Dec</i></td></tr>
-            <tr><td><b>Dec 29</b> <i>next · 27s</i></td><td class="r n">3,421.80</td><td class="r n dn">−2.45%</td><td class="r n">+23.60</td><td class="r n">21,960</td><td class="r n up">+23.2%</td><td class="r n">3.4×</td><td><span class="sh-c sh-c-sb">SB</span><i>price down, OI up</i></td></tr>
-            <tr class="stl"><td><b>Jan 25</b> <i>far</i></td><td class="r n">3,440.10</td><td class="r n">-</td><td class="r n">+41.90</td><td class="r n">1,380</td><td class="r n">-</td><td class="r n">-</td><td><span class="sh-c sh-c-stale">STALE 14s</span><i>not used</i></td></tr>
-            <tr class="all"><td><b>ALL</b> <i>Nov + Dec</i></td><td class="r n">-</td><td class="r n">-</td><td class="r n">-</td><td class="r n">40,380</td><td class="r n up">+7.9%</td><td class="r n">3.0×</td><td><span class="sh-c sh-c-sb">SB</span><i>Jan left out</i></td></tr>
+            <tr><td><b>Nov 23</b> <i>near · 3s</i></td><td class="r n">3,401.40</td><td class="r n dn">−2.47%</td><td class="r n">+3.20</td><td class="r n">18,420</td><td class="r n dn">−6.0%</td><td class="r n">2.6×</td><td><span class="sh-c sh-c-stale rl">ROLL</span><i>→ Dec</i></td></tr>
+            <tr><td><b>Dec 29</b> <i>next · 27s</i></td><td class="r n">3,421.80</td><td class="r n dn">−2.45%</td><td class="r n">+23.60</td><td class="r n">21,960</td><td class="r n up">+23.2%</td><td class="r n">3.4×</td><td><span class="sh-c sh-c-sb">SB</span><i>fresh shorts</i></td></tr>
+            <tr class="stl"><td><b>Jan 25</b> <i>far · not used</i></td><td class="r n">3,440.10</td><td class="r n">-</td><td class="r n">+41.90</td><td class="r n">1,380</td><td class="r n">-</td><td class="r n">-</td><td><span class="sh-c sh-c-stale">STALE 14s</span></td></tr>
+            <tr class="all"><td><b>ALL</b> <i>Nov + Dec</i></td><td class="r n">-</td><td class="r n">-</td><td class="r n">-</td><td class="r n">40,380</td><td class="r n up">+7.9%</td><td class="r n">3.0×</td><td><span class="sh-c sh-c-sb">SB</span><i>no Jan</i></td></tr>
           </tbody>
         </table>
+        <div class="pic oimon">
+          <div class="pic-h"><span class="lbl">OI BY MONTH · contracts</span><span class="lg">bar = OI · label = change today</span></div>
+          <div class="lf-rows">
+            <div class="lfr"><span class="k">Nov 23</span><span class="trk2"><i class="b roll" style="width:83.7%"></i></span><span class="v n">18,420</span><span class="lots dn">−6.0% roll</span></div>
+            <div class="lfr"><span class="k">Dec 29</span><span class="trk2"><i class="b sb" style="width:99.8%"></i></span><span class="v n">21,960</span><span class="lots dn">+23.2% SB</span></div>
+            <div class="lfr"><span class="k">Jan 25</span><span class="trk2"><i class="b stl" style="width:6.3%"></i></span><span class="v n">1,380</span><span class="lots">stale</span></div>
+          </div>
+        </div>
         <div class="pk">rollover <b class="n">54%</b> (Dec ÷ Nov + Dec) · usual <span class="n">41%</span> three sessions before expiry · fresh shorts, not just a roll</div>
         <div class="pk pk2"><a class="lk" href="futures-oi.html#buildup">LB / SB / SC / LU build-up list + alerts F10 ›</a> · <a class="lk" href="futures-oi.html#TITAN">F&amp;O money, BIG MONEY, tape F10 ›</a></div>
       </div>
@@ -955,11 +1029,11 @@ table{border-collapse:collapse;width:100%}
       </a>
       <a class="sr sh-heat-dn" style="--m:2.30" href="share.html#MANAPPURAM">
         <span class="s1"><b class="nm">MANAPPURAM</b><span class="n pr">284.50</span><span class="n pct dn">−2.30%</span><span class="bar"><i style="width:58%"></i></span></span>
-        <span class="s2"><span class="sh-c sh-c-dep">DEPENDENT</span><span class="sh-c sh-c-sb">SB</span><span class="sh-c sh-c-held">HELD</span><span class="st">BOOK · <b class="n up">+₹2,430</b></span><span class="wt n">wt 3%</span></span>
+        <span class="s2"><span class="sh-c sh-c-dep">DEPENDENT</span><span class="sh-c sh-c-sb">SB</span><span class="sh-c sh-c-held">HELD</span><span class="st" title="GIR said BOOK 11:40:12. Booking it frees the one gold PE slot and opens the lock room to ₹8,370 for TITAN">BOOK · <b class="n up">+₹2,430</b></span><span class="wt n">wt 3%</span></span>
       </a>
       <a class="sr sh-heat-dn" style="--m:1.95" href="share.html#MUTHOOTFIN">
         <span class="s1"><b class="nm">MUTHOOTFIN</b><span class="n pr">2,155.60</span><span class="n pct dn">−1.95%</span><span class="bar"><i style="width:49%"></i></span></span>
-        <span class="s2"><span class="sh-c sh-c-dep">DEPENDENT</span><span class="sh-c sh-c-sb">SB</span><span class="st">no 2nd gold PE</span><span class="wt n">wt 14%</span></span>
+        <span class="s2"><span class="sh-c sh-c-dep">DEPENDENT</span><span class="sh-c sh-c-sb">SB</span><span class="st" title="Same driver as TITAN and MANAPPURAM: one gold PE at a time (soft warning)">1 gold PE max</span><span class="wt n">wt 14%</span></span>
       </a>
       <a class="sr sh-heat-dn" style="--m:0.62" href="share.html#KALYANKJIL">
         <span class="s1"><b class="nm">KALYANKJIL</b><span class="n pr">524.80</span><span class="n pct dn">−0.62%</span><span class="bar"><i style="width:16%"></i></span></span>
@@ -988,9 +1062,15 @@ table{border-collapse:collapse;width:100%}
         </div>
         <div class="ivr"><b class="n">34</b><span>rank</span></div>
       </div>
+      <div class="pic ivpic">
+        <div class="pic-h"><span class="lbl">IV SINCE 09:15 · 3,400 PE Dec</span><span class="lg"><i class="r3"></i>IV <i class="r4"></i>20d 28.5</span></div>
+        <svg class="ivs" viewBox="0 0 480 70" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="52" x2="480" y2="52" class="l20"/><polyline class="liv" points="0,40 24,38 48,35 72,31 96,27 120,24 144,26 168,28 192,29 216,27 240,26 264,25 288,24 312,23 336,22 360,22 384,21 408,20 432,19 456,19 480,18"/></svg>
+        <div class="ivx"><span class="n">09:15 29.6%</span><span>rose with the fall, flat since 10:30</span><span class="n">11:40 31.4%</span></div>
+      </div>
       <div class="ol"><span class="lbl">IV</span><span><b class="n">1.10×</b> 20d · crush risk <b class="ok">none</b> · no event to 29 Dec</span></div>
       <div class="ol"><span class="lbl">GREEKS</span><span>Δ <b class="n">−0.48</b> · θ <b class="n">−₹48</b>/h · γ <b class="n">0.0012</b> · vega <b class="n">₹790</b> <i class="mut">per lot</i></span></div>
       <div class="ol"><span class="lbl">OI</span><span>PCR <b class="n">0.86</b> · max pain <b class="n">3,400</b> · walls <b class="n dn">3,350</b> P · <b class="n up">3,450</b> C</span></div>
+      <div class="ol n1366"><span class="lbl">UNUSUAL</span><span><span class="n">11:36</span> Dec 3,400 PE paying up · 1,150 lots in 5 min</span></div>
       <div class="ol"><span class="lbl">EXPIRY</span><span>Nov = expiry week, faster θ · Dec = default</span></div>
     </div></div>
   </section>
@@ -1109,19 +1189,19 @@ function oiRows(){var box=$('#oib');if(!box||!box.offsetParent)return;var h=box.
   var mid=4,a=mid-(n-1)/2,rows=OI.slice(a,a+n),mx=2640,rh=Math.floor(h/n);
   box.innerHTML=rows.map(function(r){var k=r[0],tag=k===3350?'<small>put wall</small>':k===3450?'<small>call wall</small>':k===3400?'<small>ATM</small>':'';
     var cw=Math.round(r[1]/mx*100),pw=Math.round(r[3]/mx*100);var f=function(v){return (v>0?'+':'−')+Math.abs(v)+'%'};
-    return '<div class="oir-row'+(k===3400?' atm':'')+'" style="height:'+rh+'px"><span class="c '+(r[2]>=0?'up':'dn')+'">'+f(r[2])+'</span><span class="ce"><span class="v">'+r[1].toLocaleString('en-IN')+'</span><span class="bar" style="width:'+cw+'%"></span></span><span class="k">'+k.toLocaleString('en-IN')+tag+'</span><span class="pe"><span class="bar" style="width:'+pw+'%"></span><span class="v">'+r[3].toLocaleString('en-IN')+'</span></span><span class="c l '+(r[4]>=0?'up':'dn')+'">'+f(r[4])+'</span></div>'}).join('');
+    return '<div class="oir-row'+(k===3400?' atm':'')+'" style="height:'+rh+'px"><span class="c '+(r[2]>=0?'up':'dn')+'">'+f(r[2])+'</span><span class="ce"><span class="v">'+r[1].toLocaleString('en-IN')+'</span><span class="tk"><span class="bar" style="width:'+cw+'%"></span></span></span><span class="k">'+k.toLocaleString('en-IN')+tag+'</span><span class="pe"><span class="tk"><span class="bar" style="width:'+pw+'%"></span></span><span class="v">'+r[3].toLocaleString('en-IN')+'</span></span><span class="c l '+(r[4]>=0?'up':'dn')+'">'+f(r[4])+'</span></div>'}).join('');
   var last=box.lastChild;if(last)last.style.borderBottom='0'}
 
 // ---------- the call card: whole blocks, spare height shared evenly, a named "more" bar when blocks do not fit ----------
 var cb=$('#cb'),cbw=cb.parentNode,cbm=$('#cbm');
 function blocks(){return $$('.blk',cb).sort(function(x,y){return x.offsetTop-y.offsetTop})}
 function fitCard(){var bl=blocks();bl.forEach(function(b){b.style.paddingTop='';b.style.paddingBottom=''});cbw.classList.remove('ovf');cbm.classList.remove('on');cb.style.height='';cb.style.bottom='';cb.scrollTop=0;
-  var avail=cbw.clientHeight,content=cb.scrollHeight;
+  var avail=cbw.clientHeight,lastB=bl[bl.length-1],content=lastB?lastB.offsetTop+lastB.offsetHeight:0;
   if(content<=avail+0.5){spread(bl,avail-content);return}
   cbm.classList.add('on');avail=cbw.clientHeight;cbw.classList.add('ovf');
   var top=cb.getBoundingClientRect().top,k=0,bot=0;bl.forEach(function(b,i){var r=b.getBoundingClientRect();if(r.bottom-top<=avail+0.5&&i===k){k=i+1;bot=r.bottom-top}});
   var vis=bl.slice(0,k);spread(vis,avail-bot);cb.style.bottom='auto';cb.style.height=avail+'px';upd()}
-function spread(bl,extra){var rows=bl.filter(function(b){return b.tagName!=='TABLE'});if(extra<2||!rows.length)return;var e=extra/rows.length;
+function spread(bl,extra){var rows=bl.filter(function(b){return b.tagName!=='TABLE'&&!b.classList.contains('vt')&&!b.classList.contains('cap')});if(extra<2||!rows.length)return;var e=extra/rows.length;
   rows.forEach(function(b){var cs=getComputedStyle(b);b.style.paddingTop=(parseFloat(cs.paddingTop)+e/2)+'px';b.style.paddingBottom=(parseFloat(cs.paddingBottom)+e/2)+'px'})}
 function upd(){if(!cbm.classList.contains('on'))return;var bl=blocks(),top=cb.getBoundingClientRect().top,h=cb.clientHeight,below=[],above=0;
   bl.forEach(function(b){var r=b.getBoundingClientRect();if(r.bottom-top>h+1)below.push(b.dataset.name);else if(r.top-top<-1)above++});

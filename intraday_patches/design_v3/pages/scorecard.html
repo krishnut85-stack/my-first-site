@@ -894,6 +894,74 @@ a.bul:hover{border-color:var(--info);color:var(--info)}
 .whyg b.up{color:var(--up)} .whyg b.dn{color:var(--down)}
 .whyg em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--text-3);line-height:14px}
 .cd b.up{color:var(--up)}
+/* final tune 3 */
+.tile .s{line-height:14px;height:14px}
+.tile .v{line-height:22px;height:22px}
+/* outcome group heads in the call log */
+.tb tr.ogh td{height:24px;background:var(--panel-2)!important;font-size:12px;letter-spacing:0;text-transform:none;font-weight:400;color:var(--text-3);cursor:default;padding-left:6px}
+.tb tr.ogh .oc{margin-right:10px;letter-spacing:.03em}
+.tb tr.ogh .ogt{color:var(--text-3)}
+.tb tr.ogh .ogp{float:right;color:var(--text-3);margin-right:4px}
+.tb tr.ogh .ogp b{color:var(--text);font-family:var(--mono);font-weight:600}
+.tb tr.sum.ogh b{color:var(--up);font-family:var(--mono)}
+.tb tr.sum.ogh .okm{color:var(--text-2);margin-left:4px}
+@media (max-width:1499px){
+  .sc-top{gap:6px}
+  .sc-band{grid-template-columns:minmax(0,500fr) minmax(0,446fr) minmax(0,384fr)}
+  .sc-main{grid-template-columns:minmax(0,590fr) minmax(0,390fr) minmax(0,350fr)}
+  .tile .s{line-height:14px;height:14px}
+  .tile .v{line-height:20px;height:20px}
+  #pa{flex:1 1 auto} #pg{flex:0 0 140px}
+  .tb tr.ogh td{height:22px}
+  #ct td,#ct th{padding:0 4px}
+}
+@media (max-width:1499px){
+  .sc-main{grid-template-columns:minmax(0,620fr) minmax(0,360fr) minmax(0,350fr)}
+  .vd{padding:0 4px}
+  .kp{padding:0 3px;letter-spacing:0}
+  .au .st{grid-template-columns:62px 32px minmax(0,1fr)}
+}
+.au .tx.dl{display:flex;flex-direction:column;gap:0;color:var(--text-3)}
+.au .tx.dl b{color:var(--text-2);font-family:var(--mono);font-weight:600}
+@media (max-width:1499px){
+  .au .st{grid-template-columns:62px minmax(0,1fr)}
+  .au .st > b{grid-column:1;grid-row:1}
+  .au .st > i{grid-column:1;grid-row:2;text-align:left;font-size:12px;line-height:15px}
+  .au .st > span{grid-column:2;grid-row:1 / span 2}
+  .sr col:nth-child(5),.sr tr > :nth-child(5):not([colspan]){display:none}
+  .sr col.c0{width:24%}
+  .pg{grid-template-columns:56px minmax(0,1fr) minmax(0,1fr)}
+}
+.role b{margin-left:3px}
+@media (max-width:1499px){
+  .pg{grid-template-columns:58px minmax(0,1fr) minmax(0,1fr)}
+  #pa .ph{gap:5px}
+}
+.rbody .h{gap:5px}
+.vbody a.go{display:inline-block;height:auto;line-height:16px;padding:0 5px;border:1px solid var(--info-line);border-radius:3px;color:var(--info);background:var(--info-bg);font-size:12px;font-weight:600;letter-spacing:0;border-bottom:1px solid var(--info-line)}
+#pm{flex:92 1 0} #pc{flex:108 1 0}
+@media (max-width:1499px){ #pm{flex:1 1 0} #pc{flex:1 1 0} }
+.whyg.pth{grid-template-columns:repeat(4,minmax(0,1fr))}
+.cd b.dn{color:var(--down)}
+.tb tr.sechd .vd,.tb tr.sechd .basis,.tb tr.sechd .nar{margin-right:6px}
+.tb tr.sechd .vd,.tb tr.sechd .basis,.tb tr.sechd .nar{margin-right:5px}
+.tb tr.sechd td:last-child{padding-right:3px}
+@media (max-width:1499px){
+  .ph{height:23px}
+  .sub{height:22px}
+  .tb th{height:19px}
+}
+.askb{font-size:13px;line-height:18px}
+.askb .ask input{font-size:13px}
+.nw{white-space:nowrap}
+.askb{gap:0}
+.askb .q{display:flex;align-items:baseline;gap:0;padding:6px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.askb .q.op{border-bottom:0;padding-bottom:2px;cursor:default}
+.askb .q .qa{margin-left:auto;color:var(--text-3);font-weight:400;padding-left:8px}
+.askb .q:not(.op){color:var(--text-2);font-weight:500}
+.askb .a{padding:0 0 8px 0;border-bottom:1px solid var(--line)}
+.askb .ask{margin-top:auto}
+.askb .a .act{white-space:nowrap}
 
 </style>
 </head>
@@ -1032,7 +1100,7 @@ a.bul:hover{border-color:var(--info);color:var(--info)}
     </nav>
     <span class="sc-closed" title="Every price on this page is GIR's 15:30 snapshot. Re-scored tomorrow 07:00 with the NSE bhavcopy."><span class="w">MARKET&nbsp;</span>CLOSED · 15:30</span>
     <label class="sc-sel" title="Filters every list on this page (F)"><select id="secf" aria-label="sector filter"></select></label>
-    <button class="sc-btn" id="tgbtn" title="Telegram: the same scorecard, sent 15:45:08 to you only - your own chat, nobody else (T)">TELEGRAM <span class="n">15:45<span class="w1600">:08</span></span> ✓ <span class="w1600">to </span>you only <kbd>T</kbd></button>
+    <button class="sc-btn" id="tgbtn" title="Telegram: the same scorecard, sent 15:45:08 to you only - your own chat, nobody else (T)">TELEGRAM <span class="n">15:45<span class="w1600">:08</span></span> ✓ <span class="w1600">to </span>you only<kbd class="w1600">T</kbd></button>
     <button class="sc-btn" id="askbtn" title="Ask the analyst about today's audit - an overlay over the right column (Q)">ASK › <kbd>Q</kbd></button>
     <a class="sc-help" href="help.html#scorecard" title="? Help - what every column, colour and rule on this page means">?</a>
   </div>
@@ -1048,7 +1116,7 @@ a.bul:hover{border-color:var(--info);color:var(--info)}
       <div class="tiles" id="tiles"></div>
     </section>
     <section class="pn" id="pr">
-      <div class="ph sh-acc-mine"><span class="t">Rules &amp; blocks</span><span class="k"><b class="okk">7 of 7 kept</b></span><span class="sp"></span><span class="age">charter · 15:45</span></div>
+      <div class="ph sh-acc-mine"><span class="t">Rules &amp; blocks</span><span class="k"><b class="okk" id="rulesKept">8 of 8 kept</b></span><span class="sp"></span><span class="age">charter · 15:45</span></div>
       <div class="rbody" id="rules"></div>
     </section>
   </div>
@@ -1166,7 +1234,7 @@ const chgOf = (buy, sell) => { const ex = 0.0003503 * (buy + sell); return Math.
 const R2 = x => sg(x, 2) + 'R';
 const narrow = () => innerWidth < 1500;
 const ROLEC = { LEADER: 'ld', DEPENDENT: 'dp', LAGGARD: 'lg', BASKET: 'bk' };
-const roleTag = (role, s) => `<span class="role ${ROLEC[role] || ''}">${role}${role === 'LAGGARD' && s === 'KALYANKJIL' ? ' <b class="dn">▼</b>' : role === 'LAGGARD' && s === 'DIVISLAB' ? ' <b class="up">▲</b>' : ''}</span>`;
+const roleTag = (role, s, short) => `<span class="role ${ROLEC[role] || ''}" title="${role}">${short && role === 'DEPENDENT' ? 'DEP' : role}${role === 'LAGGARD' && s === 'KALYANKJIL' ? '<b class="dn">▼</b>' : role === 'LAGGARD' && s === 'DIVISLAB' ? '<b class="up">▲</b>' : ''}</span>`;
 const W = (a, b) => `<span class="w1600">${a}</span><span class="n1366">${b}</span>`;
 
 const SECT = {
@@ -1257,13 +1325,13 @@ const SECS = [
   ['CAB', 'Cables & wires', -2.36, 'B', ['all 9 listed, free-float', '9 listed'], [7, 9], [2, 3], 'copper −1.8% · conf 09:20', ['POLYCAB', 'KEI']],
   ['MET', 'Metals', -1.71, 'B', ['NIFTY METAL index', 'NIFTY METAL'], [48, 61], [10, 11], 'copper, alu · conf 09:22', ['HINDCOPPER', 'JINDALSTEL', 'VEDL', 'SAIL', 'HINDALCO', 'TATASTEEL', 'NATIONALUM']],
   ['PHA', 'Pharma', 1.58, 'B', ['NIFTY PHARMA index', 'NIFTY PHARMA'], [118, 176], [17, 21], 'long build-up · conf 10:42', ['SUNPHARMA', 'LUPIN', 'DIVISLAB', 'CIPLA']],
-  ['DEF', 'Defence', 1.42, 'X', ['NIFTY INDIA DEFENCE index', 'NIFTY DEFENCE'], [14, 18], [3, 4], 'MoD order 10:14 · no call', ['BEL']],
+  ['DEF', 'Defence', 1.42, 'X', ['NIFTY DEFENCE index', 'NIFTY DEFENCE'], [14, 18], [3, 4], 'MoD order 10:14 · no call', ['BEL']],
   ['IT', 'IT', -1.18, 'B', ['NIFTY IT index', 'NIFTY IT'], [61, 88], [8, 10], 'Nasdaq −2.2% · "avoid", no plan', ['COFORGE']],
   ['PSB', 'PSU banks', 1.12, 'L', ['NIFTY PSU BANK index', 'NIFTY PSU BANK'], [10, 12], [6, 7], 'no story · rotation GR 13:20', ['PNB']],
 ];
 // a 2%+ F&O mover whose whole sector stayed under 1%: the move was NARROW (F&O names only)
 const NARROWS = { CEL: ['Consumer electronics', 0.62, ['all 11 listed, free-float', '11 listed'], [4, 11], [2, 2]] };
-const brd = (a, f, short) => short ? `${a[0]}/${a[1]} · F&amp;O ${f[0]}/${f[1]}` : `breadth ${a[0]}/${a[1]} all · F&amp;O ${f[0]}/${f[1]}`;
+const brd = (a, f, short) => short ? `${a[0]}/${a[1]} · F&amp;O ${f[0]}/${f[1]}` : `breadth all ${a[0]}/${a[1]} · F&amp;O ${f[0]}/${f[1]}`;
 const SECOF = k => SECS.find(x => x[0] === k || (k === 'GL' && x[0] === 'JEW'));
 
 /* ---- the call log: 13 calls, every version (immutable) ----
@@ -1274,9 +1342,9 @@ const C = (n, s, k, side, K, lot, path, o, why, inout, pin, pout, sprd, iv, real
 const CALLS = [
   C(1, 'MANAPPURAM', 'GL', 'PE', '285', 3000, 'GR 09:20 › GO 10:05 › BOOK 11:40 › out 11:45', 'TAKEN', 'stall: 3 flat bars → BOOK (1 lot: all)', '10:06›11:45', 13.25, 14.20, 0.8, 1.10, 0, 0, 0.55, 1, 'rang · GO NOW', '10:05:02 › 10:05:03 › ack 10:05:11', '0.4 s', '287.10', [-0.4, -0.6, -0.9, -1.5], 'breakdown', 'gold', '09:45-11:00', '1.0-1.2×'),
   C(5, 'TITAN', 'JEW', 'PE', '3,400', 175, 'GR 09:30 › 11:36 › GO 12:29 › BOOK 13:52', 'TAKEN', 'extended leader: bounce entry 3,414 ✓', '12:29›13:52', 128.60, 160.00, 0.5, 1.00, 0, 0, 1.08, 1, 'rang · GO NOW', '12:29:05 › 12:29:06 › ack 12:29:21', '0.6 s', '3,413.20', [-0.4, -0.9, -1.6, -2.6], 'bounce entry', 'gold', '11:00-13:00', '1.0-1.2×'),
-  C(10, 'HINDALCO', 'MET', 'PE', '680', 1400, 'GO 10:58 › WARN 11:24 › EXIT 11:39 › P1 11:44', 'TAKEN', 'GO NOW queued silently (in MANAPPURAM) · taken from the screen · EXIT call 11:39:40 acked, not done → P1 call 11:44:40 → out 11:45:05', '11:02›11:45', 16.40, 14.50, 0.7, 1.08, 0, 0, -0.55, 1, 'queued silently · in MANAPPURAM', '10:58:02 › 10:58:03 › ack 11:01:40', '0.5 s', '684.70', [0.1, 0.4, 0.2, -1.4], 'breakdown', 'copper', '09:45-11:00', '1.0-1.2×'),
+  C(10, 'HINDALCO', 'MET', 'PE', '680', 1400, 'GO 10:58 › WARN 11:24 › EXIT 11:39 › P1 11:44', 'TAKEN', 'EXIT 11:39:40 acked, not done → P1 call 11:44:40 → out 11:45:05 · taken from the screen', '11:02›11:45', 16.40, 14.50, 0.7, 1.08, 0, 0, -0.55, 1, 'queued silently · in MANAPPURAM', '10:58:02 › 10:58:03 › ack 11:01:40', '0.5 s', '684.70', [0.1, 0.4, 0.2, -1.4], 'breakdown', 'copper', '09:45-11:00', '1.0-1.2×'),
   C(6, 'KALYANKJIL', 'JEW', 'PE', '525', 1350, 'GR 09:48 › GO 11:51', 'SUPPRESSED', 'cooling 11:45 → 12:05 (HINDALCO out 11:45:05, MANAPPURAM 11:45:12)', 'GO 11:51', 26.40, null, 0.8, 1.10, null, null, 1.2, 1, 'silent · suppressed', '11:51:02 › 11:51:03 › ack 11:51:30', '0.5 s', '506.40', [-0.6, -1.1, -1.6, -1.7], 'catch-down', 'gold', '11:00-13:00', '1.0-1.2×'),
-  C(12, 'ANGELONE', 'BRK', 'PE', '2,300', 250, 'GR 11:42:38 › GO 11:43:05', 'SUPPRESSED', 'lock room ₹1,980 < 1-lot max loss → 0 lots · after the 11:45 exits: cooling → skipped · paper at the 13:40 bid, IV 1.19×', 'GO 11:43', 119.30, null, 0.8, 1.30, null, null, 1.11, 1, 'GR tick rang · GO silent', '11:42:38.4 › 11:42:39.6 › ack 11:42:51', '0.3 s', '2,321.00', [-0.8, -1.3, -2.0, -3.9], 'shock', 'brokers', '11:00-13:00', '> 1.2×'),
+  C(12, 'ANGELONE', 'BRK', 'PE', '2,300', 250, 'GR 11:42:38 › GO 11:43:05', 'SUPPRESSED', 'lock room ₹1,980 < 1-lot max loss → 0 lots · then cooling → skipped · paper at the 13:40 bid', 'GO 11:43', 119.30, null, 0.8, 1.30, null, null, 1.11, 1, 'GR tick rang · GO silent', '11:42:38.4 › 11:42:39.6 › ack 11:42:51', '0.3 s', '2,321.00', [-0.8, -1.3, -2.0, -3.9], 'shock', 'brokers', '11:00-13:00', '> 1.2×'),
   C(9, 'SUNPHARMA', 'PHA', 'CE', '1,840', 350, 'GR 10:42 › GO 13:10', 'SUPPRESSED', 'trades 3 of 3 used (TITAN was #3)', 'GO 13:10', 34.10, null, 0.5, 1.00, null, null, 0.8, 1, 'silent · suppressed', '13:10:02 › 13:10:03 › ack 13:10:40', '0.4 s', '1,829.00', [0.3, 0.6, 0.9, 1.2], 'pullback', 'pharma', '13:00-15:10', '1.0-1.2×'),
   C(11, 'DIVISLAB', 'PHA', 'CE', '6,000', 100, 'GR 11:30 › GO 12:46', 'SUPPRESSED', 'trades 3 of 3 used', 'GO 12:46', 148.50, null, 0.9, 1.10, null, null, 0.6, 1, 'silent · suppressed', '12:46:02 › 12:46:03 › ack 12:47:10', '0.5 s', '5,968.00', [0.3, 0.5, 0.8, 1.4], 'catch-up', 'pharma', '11:00-13:00', '1.0-1.2×'),
   C(2, 'MUTHOOTFIN', 'GL', 'PE', '2,150', 375, 'GR 09:20 › HELD 10:05 › GO 10:12', 'SKIPPED', 'held 1m: depth stale (hard) · you: one gold bet', 'GO 10:12', 41.20, null, 0.7, 1.12, null, null, 0.7, 1, 'queued silently · in MANAPPURAM', '10:12:01 › 10:12:02 › ack 10:12:40', '0.9 s', '2,141.00', [-0.5, -0.8, -1.2, -2.6], 'breakdown', 'gold', '09:45-11:00', '1.0-1.2×'),
@@ -1322,10 +1390,10 @@ const AG = [
   ['follow-up', 'mid model', 'rules first', 98, '3 of 3 right', 'BOOK 11:40 · EXIT 11:39 · BOOK 13:52', '-', 7, 0.62, 'keep', ''],
 ];
 const FOUND1366 = { 'world prices': 'iron ore STALE', 'money (OI)': 'OI gap 45 min', rotation: 'PSU banks late', 'policy map': 'MoD not polled', 'news reader': 'Padget missed', 'X (Twitter)': 'no X credits', 'order flow': '31 events', theme: '13 of 16 moved', sector: '5 of 8 on time', 'basket watch': 'shock in 12 s', 'TV watcher': 'SEBI +35 s', 'world / global': '5 drivers', 'option bursts': '4 of 6 right', 'pre-open': 'TITAN gap ✓', 'desks+auditor': '1 of 12 wrong', 'senior analyst': '2 notes · 9 GO', 'follow-up': '3 of 3 right' };
-const KP = { keep: ['keep', 'KEEP'], prob: ['prob', 'PROBATION'], paper: ['paper', 'PAPER ONLY'], off: ['off', 'OFF'] };
+const KP = { keep: ['keep', 'KEEP'], prob: ['prob', 'PROBATION'], paper: ['paper', 'PAPER'], off: ['off', 'OFF'] };
 
 /* ---- AI cost ---- */
-const MODELS = [['top model', 13, '84%', 'the 07:15 plan, the 19:45 note, 9 GO NOW checks (cap 15)'], ['mid model', 55, '81%', 'desks 48 calls $2.10 · follow-ups 7 $0.62'], ['small model', 1520, '80%', 'news 1,412 · TV 96 · world 8 · policy 4'], ['code', '11 agents', '-', 'sector, theme, money, basket ... no AI cost']];
+const MODELS = [['top model', 13, '84%', '07:15 plan · 19:45 note · 9 GO NOW checks'], ['mid model', 55, '81%', 'desks 48 calls $2.10 · follow-ups 7 $0.62'], ['small model', 1520, '80%', 'news 1,412 · TV 96 · world 8 · policy 4'], ['code', '11 agents', '-', 'sector, theme, money, basket ... no AI cost']];
 const HOURS = [['08', 1.20], ['09', 1.10], ['10', 1.30], ['11', 1.60], ['12', 1.05], ['13', 0.80], ['14', 0.44], ['15', 0.20]];
 const CAP = 20;
 
@@ -1371,7 +1439,7 @@ console.log('CHECK', { nB, nL, nX, nW, nNote, byCall: byCall.map(r => r.s), by93
 document.getElementById('verdict').innerHTML = `
   <div class="v1"><span class="hn up">${inr(dayNet)}</span><span class="hr up">${R2(dayR)}</span><span class="hs">${nNote} of ${nMov} named<span class="w1600"> pre-open</span> · <span class="dn">${nX} missed</span></span></div>
   <div class="vl"><span class="i">1</span><span><b>Trades:</b> ${['TITAN', 'MANAPPURAM', 'HINDALCO'].map(s => { const c = taken.find(x => x.s === s); return `${s} <span class="${cls(c.rr)}">${R2(c.rr)}</span>`; }).join(' · ')}<span class="w1600 gry"> · chg ₹${dayChg}</span></span></div>
-  <div class="vl"><span class="i">2</span><span><b>Brokers shock:</b> alarm 12 s; GO NOW after ${W('a 2nd source', '2nd source')}; lock room held you out</span></div>
+  <div class="vl"><span class="i">2</span><span><b>Brokers shock:</b> alarm 12 s; GO NOW after ${W('a 2nd source; lock room held you out', '2nd source; lock room held out')}</span></div>
   <div class="vl"><span class="i">3</span><span><b>Rules cost ${rulesCost.toFixed(1)}R paper</b><span class="w1600"> (held out ${rsum(coolCost).toFixed(1)}R · cap ${rsum(capCost).toFixed(1)}R)</span> - 1 day is too early to change a rule</span></div>
   <div class="vl"><span class="i">4</span><span><span class="act">Fix tonight:</span> MoD poll<span class="w1600"> (BEL)</span> · Padget alias<span class="w1600"> (DIXON)</span> · OI gap <a class="go" href="morning.html#plan" title="Tonight's fixes and the ASK actions go into the 19:45 note and tomorrow's PLAN (Shift+F1)">→ <span class="w1600">19:45 note + </span>PLAN ⇧F1</a></span></div>
   <div class="vl"><span class="i">5</span><span><b>Tomorrow<span class="w1600"> Fri 20</span>:</b> last session before 23 Nov expiry · Dec only · LUPIN IV crush</span></div>`;
@@ -1381,14 +1449,14 @@ const tile = (l, v, s1, s2, t, low) => `<div class="tile" title="${t || ''}"><di
 const stack = (parts) => `<span class="stk3">${parts.map(([n, c]) => `<i class="${c}" style="flex:${n}"></i>`).join('')}</span>`;
 document.getElementById('sck').innerHTML = `all ${UNIVERSE} F&amp;O shares count · <span class="lowtag">grey = n &lt; 30</span>`;
 document.getElementById('tiles').innerHTML = [
-  tile('In the notes', `${nNote} <small>of ${nMov}</small>`, `+${byCall.length} by call = <b>${nB}</b>`, `09:30: ${by930} of ${by930} GR`, `named in the 19:45 or 07:15 note; +${byCall.map(r => r.s + ' (GR ' + r.nat + ', moved ' + r.began + ')').join(', ')} named by a call before it moved = ${nB} BEFORE`),
-  tile(`Movers 2%+ · ${nMov}`, `<span class="up">${nB}</span><small>·</small><span class="act">${nL}</span><small>·</small><span class="dn">${nX}</span>`, stack([[nB, 'b'], [nL, 'l'], [nX, 'x']]), `bef · late · missed`, `${nMov} of ${UNIVERSE} F&O shares moved 2%+: before ${nB} (green) · late ${nL} (amber) · missed ${nX} (red)`),
-  tile('Precision', `${hits} <small>of ${named}</small>`, `random ${rnd} · n ${named}`, `+${nW} named wrong`, `shares named that moved 2%+ their way, vs a random set of ${named} F&O shares (expects ${rnd}); the ${nW} named-and-wrong moved < 2% and are a separate list`, 1),
+  tile('In the notes', `${nNote} <small>of ${nMov}</small>`, `+${byCall.length} by call = <b>${nB}</b>`, W(`09:30: ${by930} of ${by930} GR`, `09:30 · ${by930}/${by930} GR`), `named in the 19:45 or 07:15 note; +${byCall.map(r => r.s + ' (GR ' + r.nat + ', moved ' + r.began + ')').join(', ')} named by a call before it moved = ${nB} BEFORE`),
+  tile(`Movers 2%+${W(' · ' + nMov, '')}`, `<span class="up">${nB}</span><small>·</small><span class="act">${nL}</span><small>·</small><span class="dn">${nX}</span>`, stack([[nB, 'b'], [nL, 'l'], [nX, 'x']]), W('bef · late · missed', `bef·late·miss`), `${nMov} of ${UNIVERSE} F&O shares moved 2%+: before ${nB} (green) · late ${nL} (amber) · missed ${nX} (red)`),
+  tile('Precision', `${hits} <small>of ${named}</small>`, W(`random ${rnd} · n ${named}`, `rnd ${rnd} · n ${named}`), `+${nW} ${W('named ', '')}wrong`, `shares named that moved 2%+ their way, vs a random set of ${named} F&O shares (expects ${rnd}); the ${nW} named-and-wrong moved < 2% and are a separate list`, 1),
   tile('Median lead', dur(median(leadS)), `n = ${leadS.length}`, `basket 4: ${median(shockLate)} s`, `lead = from the time GIR named it to the move; the brokers basket alarm came ${shockLate.join(', ')} s after each member began (median ${median(shockLate)} s; ANGELONE ${Math.max(...shockLate)} s vs target 10 s)`, 1),
-  tile('GO NOW calls', `${goNow.length} <small class="up">${R(paperAvg)}/call</small>`, `${goRight} of ${goNow.length} right`, 'rnd −.2 · mech +.3', 'RECORD (also in the call-log footer): calibration H 4/4 · M 3/4 · L 1/1 · OI next 60 min SB 15/22 · LB 7/12 · SC 1/2 · n < 30. Paper net per GO NOW (in at ask +1 tick, out at the real bid −1 tick at that minute\'s IV). Baselines today: random = 1,000 draws of 9 F&O shares at the same minutes, same side: −0.2R/call (5-95%: −0.6 to +0.3); mechanical = biggest driver → mapped sector → highest-beta shares: +0.3R/call', 1),
+  tile(W('GO NOW calls', 'GO NOW'), `${goNow.length} <small class="up">${R(paperAvg)}/call</small>`, `${goRight} of ${goNow.length} right`, W('rnd −.2 · mech +.3', 'vs rnd −.2R'), 'RECORD (also in the call-log footer): calibration H 4/4 · M 3/4 · L 1/1 · OI next 60 min SB 15/22 · LB 7/12 · SC 1/2 · n < 30. Paper net per GO NOW (in at ask +1 tick, out at the real bid −1 tick at that minute\'s IV). Baselines today: random = 1,000 draws of 9 F&O shares at the same minutes, same side: −0.2R/call (5-95%: −0.6 to +0.3); mechanical = biggest driver → mapped sector → highest-beta shares: +0.3R/call', 1),
   tile('Sectors 1%+', `${sB} <small>of ${SECS.length}</small>`, `${sL} late · ${sX} missed`, `<span class="basis">basis: all listed</span>`, 'sectors that moved 1%+, named before the move. Sector % and breadth come from EVERY listed share of the sector (the NSE sectoral index, else a free-float basket of all listed shares), not the F&O names alone - BY SECTOR in WHAT MOVED shows each basis and breadth both ways'),
   tile('Audible', `6 <small>of 6 max</small>`, 'GO 2 · READY 4', '+ your 3 exits', 'rang: GO NOW 2 (MANAPPURAM 10:05, TITAN 12:29) · GET READY on a sector call 4 (jewellers 09:20, cables 09:22, metals 09:25, brokers 11:42:38) · while you were in a trade, new calls queued silently · suppressed calls are silent · your own exits (BOOK 11:40, EXIT 11:39, BOOK 13:52) always ring and are not counted'),
-  tile('AI spend', `${fmt$(aiTot)} <small>of $${CAP}</small>`, `<span class="aim"><i style="width:${Math.round(aiTot / CAP * 100)}%"></i></span>`, `${fmt$(aiTot / useful)} / useful call`, `${useful} useful = ${goRight} GO NOW right on paper + ${fuRight} follow-ups right · ${fmt$(aiTot / goNow.length)} per GO NOW · ${Math.round(aiTot / CAP * 100)}% of the $${CAP} cap`),
+  tile('AI spend', `${fmt$(aiTot)} <small>of $${CAP}</small>`, `<span class="aim"><i style="width:${Math.round(aiTot / CAP * 100)}%"></i></span>`, `${fmt$(aiTot / useful)} / useful${W(' call', '')}`, `${useful} useful = ${goRight} GO NOW right on paper + ${fuRight} follow-ups right · ${fmt$(aiTot / goNow.length)} per GO NOW · ${Math.round(aiTot / CAP * 100)}% of the $${CAP} cap`),
 ].join('');
 
 /* ================= band 1: rules, rules cost, blocks ================= */
@@ -1397,11 +1465,12 @@ const rbar = (a, lab) => `<div class="rc" title="${a.map(c => `${c.s} ${c.o.toLo
 document.getElementById('rules').innerHTML = `
   <div class="okg">
     <span class="ok" title="flat at 13:52, before the 15:10 exit">flat 13:52</span><span class="ok">trades 3/3</span><span class="ok">lock untouched</span><span class="ok" title="a stop on every trade">stops set</span>
-    <span class="ok">no ban share</span><span class="ok" title="1 lot each; the charter allows 2">1 lot</span><span class="ok" title="20 min from the exit fills 11:45:05 / 11:45:12 (HINDALCO EXIT call 11:39:40, acked, done only after the P1 call 11:44:40)">cooling to 12:05</span><span class="ok gk" title="max 2 open at once: kept (11:02-11:45)">max 2 open</span></div>
+    <span class="ok">no ban share</span><span class="ok" title="1 lot each; the charter allows 2">1 lot</span><span class="ok" title="20 min from the exit fills 11:45:05 / 11:45:12 (HINDALCO EXIT call 11:39:40, acked, done only after the P1 call 11:44:40)">cooling to 12:05</span><span class="ok" title="max 2 open at once: kept (11:02-11:45)">max 2 open</span></div>
   <div class="h">Rules cost <b>${rulesCost.toFixed(1)}R paper</b><span class="gry"> · saved 0R · n = 1 day</span><span class="wn" title="warnings he could still take - the better strike when the spread is wide (R12): HINDCOPPER 265 PE · KEI 3,850 PE · POLYCAB 6,800 PE · PNB 118 CE">WARN 4 ›</span></div>
   ${rbar(coolCost, 'lock / cooling')}
   ${rbar(capCost, '3-trade cap')}
   <div class="rl"><span class="blk" title="hard blocks are only ban, loss lock and stale / bad data (R12)">BLOCKS</span><span title="hard blocks today: MUTHOOTFIN 1 min (order-book depth stale 64 s) · SAIL all day (lot in the contract master ≠ NSE file) · ban 0 · loss lock 0">MUTHOOTFIN stale depth 1m · SAIL bad lot</span></div>`;
+{ const ticks = document.querySelectorAll('#rules .okg .ok').length; document.getElementById('rulesKept').textContent = `${ticks} of ${ticks} kept`; }
 
 /* ================= what moved (misses table) ================= */
 let mFilter = 'ALL', secFilter = 'ALL', mSort = 'problems', selMov = 'ANGELONE', basketOpen = true, openSecs = new Set(SECS.map(s => s[0]));
@@ -1413,10 +1482,10 @@ function leadText(r) {
   return -d < 60 ? -d + ' s' : -d < 7200 ? Math.round(-d / 60) + 'm' : dur(-d);
 }
 // 1366: the same cause in fewer words (full text in the row tooltip and the audit)
-const RES1366 = { HINDCOPPER: 'GATED → 265 PE', BEL: 'MoD not polled', COFORGE: 'READ WRONG', BSE: 'SHOCK · #12', CDSL: 'SHOCK · #12', MCX: 'SHOCK · #12', POLYCAB: 'expired · 6,800', SAIL: 'GATED · good', JINDALSTEL: 'iron ore STALE', TATASTEEL: 'OI gap 1h', MUTHOOTFIN: 'held 1m · +0.7R', KALYANKJIL: 'cooling +1.2R', KEI: 'skip → 3,850', LUPIN: 'IV crush: skip', PNB: 'NO CAUSE · 15m', SUNPHARMA: 'cap 3/3 +0.8R', DIVISLAB: 'cap 3/3 +0.6R', DIXON: 'TAG: Padget' };
+const RES1366 = { ANGELONE: 'SHOCK · no news', HINDCOPPER: 'gated → 265 PE', BEL: 'MoD not polled', COFORGE: 'READ WRONG', BSE: 'SHOCK · #12', CDSL: 'SHOCK · #12', MCX: 'SHOCK · #12', POLYCAB: 'expired · 6,800', SAIL: 'GATED · good', JINDALSTEL: 'iron ore STALE', TATASTEEL: 'OI gap 1h', MUTHOOTFIN: 'held 1m · +0.7R', KALYANKJIL: 'cooling +1.2R', KEI: 'skip → 3,850', LUPIN: 'IV crush: skip', PNB: 'NO CAUSE · 15m', SUNPHARMA: 'cap 3/3 +0.8R', DIVISLAB: 'cap 3/3 +0.6R', DIXON: 'TAG: Padget' };
 const grpKey = r => r.v === 'X' ? 0 : r.v === 'L' ? 1 : r.warn ? 2 : 3;
 function movCols() {
-  return narrow() ? [['Share', 112], ['Role · B/U', 111, '', 'B/U = OI build-up of the share (LB long build-up · SB short build-up · SC short covering · LU long unwinding). Click = F10 Fut &amp; OI, BUILD-UP list with the LB / SB / SC / LU filters', 'futures-oi.html#buildup'], ['Move', 56, 'r'], ['ATM Dec', 76, 'r', 'Dec ATM premium move from the first valid entry (minute shown) to the best bid, net of the spread'], ['Began', 48], ['Verdict', 92], ['Result · cause', 0]]
+  return narrow() ? [['Share', 113], ['Role · B/U', 120, '', 'B/U = OI build-up of the share (LB long build-up · SB short build-up · SC short covering · LU long unwinding). Click = F10 Fut &amp; OI, BUILD-UP list with the LB / SB / SC / LU filters', 'futures-oi.html#buildup'], ['Move', 56, 'r'], ['ATM Dec', 72, 'r', 'Dec ATM premium move from the first valid entry (minute shown) to the best bid, net of the spread'], ['Began', 47], ['Verdict', 97], ['Result · cause', 0]]
     : [['Share', 118], ['Role · B/U', 128, '', 'B/U = OI build-up of the share (LB long build-up · SB short build-up · SC short covering · LU long unwinding). Click = F10 Fut &amp; OI, BUILD-UP list with the LB / SB / SC / LU filters', 'futures-oi.html#buildup'], ['Move', 66, 'r'], ['ATM Dec', 80, 'r', 'Dec ATM premium move from the first valid entry (minute shown) to the best bid, net of the spread'], ['Began', 58], ['Verdict · lead', 114], ['Result · cause', 0]];
 }
 function movRow(r, extra = '') {
@@ -1424,12 +1493,12 @@ function movRow(r, extra = '') {
   const began = r.began.length > 5 ? r.began.slice(0, 5) : r.began;
   return `<tr class="${selMov === r.s ? 'sel' : ''}${extra} ${r.mv < 0 ? 'sh-heat-dn' : 'sh-heat-up'}" style="--m:${Math.abs(r.mv).toFixed(2)}" data-mv="${r.s}" title="${SECT[r.k][1]} · began ${r.began} (${r.src}) · ${r.calls} · cause: ${r.cl} · agent: ${r.agent}">
     <td>${share(r.s)}</td>
-    <td>${roleTag(r.role, r.s)}<a class="bu bul ${r.bu.toLowerCase()}" href="futures-oi.html#buildup?f=${r.bu}" title="${{ LB: 'LONG BUILD-UP', SB: 'SHORT BUILD-UP', SC: 'SHORT COVERING', LU: 'LONG UNWINDING' }[r.bu]} - open F10 Fut &amp; OI build-up list filtered to ${r.bu}">${r.bu}</a></td>
+    <td>${roleTag(r.role, r.s, NW)}<a class="bu bul ${r.bu.toLowerCase()}" href="futures-oi.html#buildup?f=${r.bu}" title="${{ LB: 'LONG BUILD-UP', SB: 'SHORT BUILD-UP', SC: 'SHORT COVERING', LU: 'LONG UNWINDING' }[r.bu]} - open F10 Fut &amp; OI build-up list filtered to ${r.bu}">${r.bu}</a></td>
     <td class="r mvc"><span class="pct ${cls(r.mv)}">${pct(r.mv)}</span><i class="mbar ${r.mv < 0 ? 'dn' : 'up'}" style="width:${Math.min(50, Math.abs(r.mv) / 5 * 50).toFixed(0)}%"></i></td>
     <td class="r"><span class="mono wht">+${r.atm}%</span><span class="bu">${r.from.slice(0, 5)}</span></td>
     <td><span class="mono">${began}</span></td>
     <td><span class="vd ${VD[r.v][0]}">${VD[r.v][1]}</span>${lt ? `<span class="lt">${lt}</span>` : ''}</td>
-    <td class="res"><span class="${r.v === 'B' && !r.warn ? '' : 'wht'}">${RES1366[r.s] || r.res}</span></td></tr>`;
+    <td class="res"><span class="${r.v === 'B' && !r.warn ? '' : 'wht'}">${NW && r.s === 'ANGELONE' ? 'no news found' : RES1366[r.s] || r.res}</span></td></tr>`;
 }
 function renderMovers() {
   const cols = movCols(), NC = cols.length, NW = narrow();
@@ -1444,10 +1513,10 @@ function renderMovers() {
     SECS.filter(s => secFilter === 'ALL' || s[1] === secFilter).forEach(s => {
       const open = openSecs.has(s[0]);
       h += `<tr class="sechd ${s[2] < 0 ? 'sh-heat-dn' : 'sh-heat-up'}" style="--m:${Math.abs(s[2]).toFixed(2)}" data-sec="${s[0]}" title="${s[1]} ${pct(s[2])} = ${s[4][0]} (every listed share, not only F&amp;O) · breadth ${s[5][0]} of ${s[5][1]} listed shares moved its way · F&amp;O ${s[6][0]} of ${s[6][1]} · ${s[7]}"><td colspan="2"><span class="gry">${open ? '▾' : '▸'}</span> <span class="snm">${NW ? (SECT[s[0]] || [0, s[1]])[1] : s[1]}</span></td><td class="r"><span class="pct ${cls(s[2])}">${pct(s[2])}</span></td><td colspan="${NC - 3}"><span class="vd ${VD[s[3]][0]}">${VD[s[3]][1]}</span><span class="basis">${NW ? s[4][1] : s[4][0]}</span><span class="l2">${brd(s[5], s[6], NW)}</span></td></tr>`;
-      if (open) s[5].map(x => MOV.find(r => r.s === x)).filter(r => rows.includes(r)).forEach(r => { h += movRow(r); });
+      if (open) s[8].map(x => MOV.find(r => r.s === x)).filter(r => rows.includes(r)).forEach(r => { h += movRow(r); });
     });
-    const inS = new Set(SECS.flatMap(x => x[5])), rest = rows.filter(r => !inS.has(r.s));
-    if (rest.length) { const z = NARROWS.CEL; h += `<tr class="sechd sh-heat-up" style="--m:${z[1]}" title="${z[0]} ${pct(z[1])} = ${z[2][0]} · only ${z[3][0]} of ${z[3][1]} listed shares rose, both F&amp;O names did: an F&amp;O-only move"><td colspan="2"><span class="gry">▾</span> <span class="snm">${NW ? 'Cons. electronics' : z[0]}</span></td><td class="r"><span class="pct ${cls(z[1])}">${pct(z[1])}</span></td><td colspan="${NC - 3}"><span class="nar">NARROW${NW ? '' : ' - F&amp;O-only move'}</span><span class="basis">${NW ? z[2][1] : z[2][0]}</span><span class="l2">${brd(z[3], z[4], NW)}</span></td></tr>`; rest.forEach(r => { h += movRow(r); }); }
+    const inS = new Set(SECS.flatMap(x => x[8])), rest = rows.filter(r => !inS.has(r.s));
+    if (rest.length) { const z = NARROWS.CEL; h += `<tr class="sechd sh-heat-up" style="--m:${z[1]}" title="${z[0]} ${pct(z[1])} = ${z[2][0]} · only ${z[3][0]} of ${z[3][1]} listed shares rose, both F&amp;O names did: an F&amp;O-only move"><td colspan="2"><span class="gry">▾</span> <span class="snm">${NW ? 'Cons. electronics' : z[0]}</span></td><td class="r"><span class="pct ${cls(z[1])}">${pct(z[1])}</span></td><td colspan="${NC - 3}"><span class="nar">NARROW${NW ? '' : ' · F&amp;O-only'}</span><span class="basis">${z[2][1] === '11 listed' ? 'all 11 listed' : z[2][1]}</span><span class="l2">${brd(z[3], z[4], NW)}</span></td></tr>`; rest.forEach(r => { h += movRow(r); }); }
   } else {
     rows.forEach(r => {
       if (fold && ['BSE', 'CDSL', 'MCX'].includes(r.s)) return;
@@ -1485,17 +1554,17 @@ function renderAudit() {
   if (r.s === 'ANGELONE') {
     sub.innerHTML = `<b>vs S12 target:</b> alarm 12 s (10) · TV 35 s (15-30) · wire 48 s (30)`;
     ab.innerHTML = `<div class="au">
-      ${step('11:41:56', '0s', W('move began: −2.1% in 40 s · volume 4.1×', 'move began: −2.1% in 40 s · vol 4.1×'))}
-      ${step('11:42:08', '+12s', `<span class="shock">BASKET SHOCK</span> brokers, no news yet`, ['target 10 s · ' + FX('tick batch 1 s → 0.5 s')])}
+      ${step('11:41:56', '0s', W('move began: −2.1% in 40 s · volume 4.1×', 'began: −2.1% in 40 s · vol 4.1×'))}
+      ${step('11:42:08', '+12s', `<span class="shock">BASKET SHOCK</span> ${W('brokers, no news yet', 'no news yet')}`, ['target 10 s · ' + FX(W('tick batch 1 s → 0.5 s', 'batch 1 → 0.5 s'))])}
       ${step('11:42:20', '+24s', W('2,300 PE burst: 1,240 lots in 20 s (6.2×)', '2,300 PE burst: 1,240 lots / 20 s'))}
-      ${step('11:42:31', '+35s', '1st source: CNBC-TV18 speech-to-text', [W('target 15-30 s · ', 'target 15-30 s · ') + FX(W('speech chunk 10 → 5 s', 'chunk 10 → 5 s'))])}
-      ${step('11:42:38', '+42s', W('GET READY PUT 2,300 Dec · tick rang once', 'GET READY PUT 2,300 Dec · rang once'), [W('118.40 / 119.30 · sprd 0.8% · depth 6 lots (shock)', '118.40/119.30 · sprd 0.8% · 6 lots')], 1)}
+      ${step('11:42:31', '+35s', W('1st source: CNBC-TV18 speech-to-text', '1st source: CNBC-TV18'), [W('target 15-30 s · ', 'target 15-30 s · ') + FX(W('speech chunk 10 → 5 s', 'chunk 10 → 5 s'))])}
+      ${step('11:42:38', '+42s', W('GET READY PUT 2,300 Dec · tick rang once', 'GET READY 2,300 PE · rang once'), [W('118.40 / 119.30 · sprd 0.8% · depth 6 lots (shock)', '118.40/119.30 · sprd 0.8% · 6 lots')], 1)}
       ${step('11:42:44', '+48s', '2nd source: ET live blog', ['target 30 s · ' + FX('wire poll 30 → 10 s')])}
       ${step('11:43:05', '+69s', 'GO NOW → SUPPRESSED (lock room)', [W('2 open, at share stops −₹8,020 · silent · then cooling 11:45 → 12:05', '₹1,980 < 1-lot max loss · silent')], 1, '11:43 GO NOW')}
-      ${step('12:40:15', '+58m', '"SEBI: no decision yet" → nothing to do', ['IV 1.30× → 1.19×: IV crush risk'], 0, '12:40 SEBI')}
+      ${step('12:40:15', '+58m', W('"SEBI: no decision yet" → nothing to do', '"no decision yet" → nothing to do'), ['IV 1.30× → 1.19×: IV crush risk'], 0, '12:40 SEBI')}
       <div class="h">Delivery of the GET READY · seconds after 11:42</div>
       <div class="wfa" data-more="latency waterfall" title="to scale: exchange print 37.6 s → your ack 51.0 s after 11:42 = 13.4 s. GIR part 2.0 s = tick 0.3 · detector 0.1 · sound 0.1 · Telegram send 0.3 · delivery 1.2"><span class="seg g" style="flex:2.0"><i></i><em>GIR 2.0 s</em></span><span class="seg y" style="flex:11.4"><i></i><em>you: ack after 11.4 s (A + Enter)</em></span></div>
-      <div class="tx">${W('exchange 37.6 › tick in 37.9 › detector 38.0 › sound 38.1 › Telegram sent 38.4 › delivered 39.6 › you ack 51.0 (A + Enter) · to you only', 'exchange 37.6 › tick 37.9 › detector 38.0 › sound 38.1 › Telegram 38.4 › delivered 39.6 › you ack 51.0 · to you only')}</div>
+      <div class="tx dl"><span>exchange <b>37.6</b> › tick <b>37.9</b> › detector <b>38.0</b></span><span>sound <b>38.1</b> › Telegram <b>38.4</b> › delivered <b>39.6</b></span><span>you ack <b>51.0</b> (A + Enter) · to you only</span></div>
       <div class="h" data-more="basket proof">Basket proof · 5 of 5 in 60 s (rule: 3+) · Kite ≈ 1 tick/s</div>
       <table class="mt"><colgroup><col style="width:21%"><col><col><col><col><col></colgroup><thead><tr><th>11:4x</th><th>ANGEL</th><th>BSE</th><th>CDSL</th><th>MCX</th><th>MOTIL</th></tr></thead><tbody>
         <tr><td>began</td><td>1:56.4</td><td>1:58.1</td><td>2:01.0</td><td>2:03.2</td><td>2:05.6</td></tr>
@@ -1527,14 +1596,14 @@ const passF = c => (FILT.setup === 'all' || c.setup === FILT.setup) && (FILT.leg
 const contract = c => `${share(c.s)} <span class="mono wht">${c.K}</span><span class="cp ${c.side === 'PE' ? 'pe' : 'ce'}">${c.side}</span>`;
 function callCols() {
   const NW = narrow();
-  const base = [['#', NW ? 22 : 26, 'r'], ['Contract · 1 lot', NW ? 164 : 176], ['Outcome', NW ? 92 : 100]];
-  if (cSet === 'PATH') return NW ? [...base, ['Issued', 64], ['Then', 58, 'r'], ['+15m', 44, 'r'], ['+30m', 44, 'r'], ['+60m', 44, 'r'], ['Close', 0, 'r']] : [...base, ['Issued', 70], ['Then', 76, 'r'], ['+15m', 50, 'r'], ['+30m', 50, 'r'], ['+60m', 50, 'r'], ['Close', 0, 'r']];
+  const base = [['#', NW ? 22 : 28, 'r'], ['Contract · 1 lot', NW ? 174 : 184]];
+  if (cSet === 'PATH') return NW ? [...base, ['Issued', 66], ['Then', 72, 'r'], ['+15m', 52, 'r'], ['+30m', 52, 'r'], ['+60m', 52, 'r'], ['Close', 0, 'r']] : [...base, ['Issued', 72], ['Then', 90, 'r'], ['+15m', 72, 'r'], ['+30m', 72, 'r'], ['+60m', 72, 'r'], ['Close', 0, 'r']];
   // TIMING is about delivery: the outcome chip gives its room to the sound text (outcome stays in the row tooltip, RESULT and the card)
-  const WF = ['Latency', NW ? 70 : 86, '', 'waterfall from the Telegram send: blue = delivered to your phone, grey = until your ack (A + Enter). Scale 0-60 s, longer waits capped with ›'];
+  const WF = ['Latency', NW ? 70 : 80, '', 'waterfall from the Telegram send: blue = delivered to your phone, grey = until your ack (A + Enter). Scale 0-60 s, longer waits capped with ›'];
   const SND = ['Sound', 0, '', 'rang = sound played · queued = on screen, no sound, because a trade was open (your exit tones stay clear) · silent = suppressed by a rule'];
-  if (cSet === 'TIMING') return NW ? [base[0], base[1], ['Age', 40, 'r', 'data age when the call was issued'], SND, WF, ['Telegram sent › ack', 150]] : [base[0], base[1], ['Age', 48, 'r', 'data age when the call was issued'], SND, WF, ['Telegram sent › ack', 170]];
-  return NW ? [...base, ['In › out', 76, '', 'fill times; an exit can come minutes after its EXIT call (HINDALCO EXIT 11:39:40, acked, not done → P1 call 11:44:40 → out 11:45:05)'], ['Premium', 89, 'r'], ['Sprd · IV', 67, 'r'], ['₹ · R', 0, 'r']]
-    : [...base, ['In › out', 92, '', 'fill times; an exit can come minutes after its EXIT call (HINDALCO EXIT 11:39:40, acked, not done → P1 call 11:44:40 → out 11:45:05)'], ['Prem in › out', 106, 'r'], ['Sprd · IV', 84, 'r'], ['₹ · R', 0, 'r']];
+  if (cSet === 'TIMING') return NW ? [base[0], base[1], ['Age', 44, 'r', 'data age when the call was issued'], SND, WF, ['Telegram ack', 106, '', 'your ack time (A + Enter); the send time is the issue time, shown in the bar tooltip and in PATH']] : [base[0], base[1], ['Age', 46, 'r', 'data age when the call was issued'], SND, WF, ['Telegram sent › ack', 186]];
+  return NW ? [...base, ['In › out', 88, '', 'fill times; an exit can come minutes after its EXIT call (HINDALCO EXIT 11:39:40, acked, not done → P1 call 11:44:40 → out 11:45:05)'], ['Premium', 100, 'r'], ['Sprd · IV', 80, 'r'], ['₹ · R', 0, 'r']]
+    : [...base, ['In › out', 100, '', 'fill times; an exit can come minutes after its EXIT call (HINDALCO EXIT 11:39:40, acked, not done → P1 call 11:44:40 → out 11:45:05)'], ['Prem in › out', 116, 'r'], ['Sprd · IV', 96, 'r'], ['₹ · R', 0, 'r']];
 }
 function callRow(c) {
   const NW = narrow();
@@ -1546,27 +1615,29 @@ function callRow(c) {
     const issued = c.path.match(/(GO|GR) (\d\d:\d\d)/g).pop();
     tds = `<td>${tm(issued)}</td><td class="r mono">${NW && c.then.length > 7 ? c.then.replace(/\.\d+$/, '') : c.then}</td>${c.p.map(x => `<td class="r"><span class="mono ${cls(x)}">${pct(x, 1)}</span></td>`).join('')}`;
   } else if (cSet === 'TIMING') {
-    const snd = c.snd.replace('queued silently', 'queued');
+    const snd = c.snd.replace('queued silently · in ', 'queued · ').replace('queued silently', 'queued');
     const tg = c.tg.replace(/ › \d\d:\d\d:\d\d(\.\d)? › /, ' › ').replace(/(\d\d:\d\d:\d\d)\.\d/g, '$1');
     const ts = c.tg.match(/\d\d:\d\d:\d\d(\.\d)?/g).map(sec), dl = ts[1] - ts[0], ak = ts[2] - ts[0], SC = 60;
     const wf = `<span class="wf" title="sent ${c.tg.split(' › ')[0]} · delivered +${dl.toFixed(1)} s · ack +${Math.round(ak)} s"><i class="d" style="width:${Math.max(3, dl / SC * 100).toFixed(1)}%"></i><i class="a" style="width:${Math.max(0, Math.min(ak, SC) - dl) / SC * 100}%"></i>${ak > SC ? '<b>›</b>' : ''}</span><span class="wfl mono">${ak < 100 ? Math.round(ak) + ' s' : Math.floor(ak / 60) + 'm' + String(Math.round(ak % 60)).padStart(2, '0')}</span>`;
-    tds = `<td class="r mono">${c.age}</td><td class="snd${/queued|silent/.test(c.snd) ? '' : ' wht'}">${snd}</td><td class="wfc">${wf}</td><td><span class="mono tgc">${NW ? tg.replace(/ › /, '›') : tg}</span></td>`;
+    tds = `<td class="r mono">${c.age}</td><td class="snd${/queued|silent/.test(c.snd) ? '' : ' wht'}">${snd}</td><td class="wfc">${wf}</td><td><span class="mono tgc">${NW ? tg.replace(/^.* › /, '') : tg}</span></td>`;
   } else {
     tds = `<td><span class="mono io">${c.o === 'TAKEN' ? c.inout : '<span class="gry">' + c.inout + '</span>'}</span></td><td class="r">${prem}</td><td class="r">${sp}</td><td class="r">${res}</td>`;
   }
-  return `<tr class="${c.n === selCall ? 'sel' : ''}" data-call="${c.n}" title="${c.o} · ${c.path} · ${c.why}"><td class="r mono gry">${c.n}</td><td>${contract(c)}</td>${cSet === 'TIMING' ? '' : `<td><span class="oc ${OC[c.o]}">${c.o}</span></td>`}${tds}</tr>`;
+  return `<tr class="${c.n === selCall ? 'sel' : ''}" data-call="${c.n}" title="${c.o} · ${c.path} · ${c.why}"><td class="r mono gry">${c.n}</td><td>${contract(c)}</td>${tds}</tr>`;
 }
 const ORDER = ['TAKEN', 'SUPPRESSED', 'SKIPPED', 'EXPIRED', 'CANCELLED'];
 function renderCalls() {
   const cols = callCols();
   const rows = CALLS.filter(c => inSec(c.k)).filter(c => cFilter === 'ALL' || c.o === cFilter).filter(passF).sort((a, b) => ORDER.indexOf(a.o) - ORDER.indexOf(b.o) || a.n - b.n);
   let h = '';
+  const GH = { SUPPRESSED: 'held out by your rules · lock room, cooling, 3-trade cap', SKIPPED: 'you chose · warnings you could still take', EXPIRED: 'trigger not met', CANCELLED: '14:00 · no new entries' };
   rows.forEach((c, i) => {
-    h += callRow(c);
-    if (c.o === 'TAKEN' && (!rows[i + 1] || rows[i + 1].o !== 'TAKEN') && cFilter !== 'SUPPRESSED') {
-      const t = rows.filter(x => x.o === 'TAKEN');
-      if (t.length === taken.length) h += `<tr class="sum"><td></td><td colspan="${cols.length - 1}">Σ taken ${t.length}: <b>${inr(dayNet)}</b> · <b>${R2(dayR)}</b> net of ₹${dayChg}<span class="w1600"> (${[...t].sort((x, y) => JNO[x.n] - JNO[y.n]).map(x => '₹' + x.chg).join(' + ')})</span> ${stripOK ? '<span class="okm" title="checked on load: Σ, R and charges equal the MY F&amp;O P&amp;L strip (both from shellwork/state_close19.js)">= P&amp;L strip ✓</span>' : `<span class="bad" title="Σ does not equal the strip - fix before trusting either">≠ P&amp;L strip ${stripDom[0] || '?'} ✗</span>`}<span class="w1600"> · 2 open 11:02-11:45: ₹62,710 in</span></td></tr>`;
+    if (!rows[i - 1] || rows[i - 1].o !== c.o) {
+      const g = rows.filter(x => x.o === c.o), pap = g.reduce((a, x) => a + (x.paper || 0), 0);
+      if (c.o === 'TAKEN' && g.length === taken.length) h += `<tr class="sum ogh"><td colspan="${cols.length}"><span class="oc taken">TAKEN ${g.length}</span>Σ <b>${inr(dayNet)}</b> · <b>${R2(dayR)}</b> net of ₹${dayChg}<span class="w1600"> (${[...g].sort((x, y) => JNO[x.n] - JNO[y.n]).map(x => '₹' + x.chg).join(' + ')})</span> ${stripOK ? '<span class="okm" title="checked on load: Σ, R and charges equal the MY F&amp;O P&amp;L strip (both from shellwork/state_close19.js)">= P&amp;L strip ✓</span>' : `<span class="bad" title="Σ does not equal the strip - fix before trusting either">≠ P&amp;L strip ${stripDom[0] || '?'} ✗</span>`}<span class="w1600 gry"> · 2 open 11:02-11:45</span></td></tr>`;
+      else h += `<tr class="grp ogh"><td colspan="${cols.length}"><span class="oc ${OC[c.o]}">${c.o} ${g.length}</span><span class="ogt">${narrow() ? GH[c.o].split(' · ')[0] : GH[c.o]}</span>${pap ? `<span class="ogp">paper <b>+${pap.toFixed(1)}R</b></span>` : ''}</td></tr>`;
     }
+    h += callRow(c);
   });
   if (!rows.length) h = `<tr><td colspan="${cols.length}" style="color:var(--text-3);height:28px">No ${cFilter === 'ALL' ? '' : cFilter.toLowerCase() + ' '}call in ${secFilter === 'ALL' ? 'any sector' : secFilter} today - not an error.</td></tr>`;
   document.getElementById('ct').innerHTML = `<colgroup>${cols.map(c => `<col${c[1] ? ` style="width:${c[1]}px"` : ''}>`).join('')}</colgroup><thead><tr>${cols.map(c => `<th${c[2] ? ' class="r"' : ''}${c[3] ? ` title="${c[3]}"` : ''}>${c[0]}</th>`).join('')}</tr></thead><tbody>${h}</tbody>`;
@@ -1600,16 +1671,16 @@ function renderCard() {
   document.getElementById('dk').innerHTML = c.n === 5 ? `#5 · data 0.6 s<span class="w1600"> · ack 12:29:21</span>` : `#${c.n} · data ${c.age}<span class="w1600"> · ${c.s} ${c.K} ${c.side}</span>`;
   if (c.n === 5) {
     db.innerHTML = `<div class="cd">
-      <div class="hd"><span class="sh-c sh-c-go" title="as issued 12:29:04 - closed 13:52">GO NOW</span><span class="mono wht">12:29:04</span>${share('TITAN')}<span class="mono wht">3,400</span><span class="cp pe">PE</span><span class="gry">29 Dec</span><span class="sp"></span><span class="oc taken">TAKEN</span></div>
+      <div class="hd"><span class="sh-c sh-c-go" title="as issued 12:29:04 - closed 13:52">GO NOW</span><span class="mono wht">12:29${W(':04', '')}</span>${share('TITAN')}<span class="mono wht">3,400</span><span class="cp pe">PE</span><span class="gry w1600">29 Dec</span><span class="sp"></span><span class="oc taken">TAKEN</span></div>
       <div class="ln">${roleTag('LEADER')} <b>day's biggest faller −4.62%</b> · gold −1.6%<span class="w1600"> · conf H</span></div>
       <div class="ln" title="09:30: 1.9 ATR from VWAP · 12:29: 1.35 ATR → entry on the bounce to the first lower high 3,414, half size"><b>EXTENDED</b> 1.9 → 1.35 ATR · bounce 3,414 · half size</div>
       <div class="ln" title="1 lot (the charter allows 2)"><b>1 lot × 175</b> · cash <b>₹${Math.round(c.pin * c.lot).toLocaleString('en-IN')}</b> · ${W('charges', 'chg')} ₹${c.chg} · depth 41</div>
       <div class="sec"><div class="pg">
         <span class="hh">plan</span><span class="hh">premium</span><span class="hh">share</span>
-        <span>trigger</span><span><span class="n">128.60</span> <span class="q">ask, mid +.25</span></span><span><span class="n">3,414</span> <span class="q">lower high</span></span>
+        <span>trigger</span><span><span class="n">128.60</span> <span class="q">ask${W(', mid +.25', '')}</span></span><span><span class="n">3,414</span> <span class="q">${W('lower high', 'LH')}</span></span>
         <span>stop</span><span><span class="n">118.00</span> <span class="q">SL-L 117.20</span></span><span><span class="n">3,436</span> <span class="q">governs</span></span>
-        <span>target</span><span class="n">160.60</span><span><span class="n">3,356</span> <span class="q">before 3,350 wall</span></span>
-        <span>exit 13:52</span><span><span class="n">160.00</span> <span class="q" title="bid, mid −0.35">−0.60 vs tgt</span></span><span><span class="n">3,349.60</span> <span class="q">BOOK</span></span>
+        <span>target</span><span class="n">160.60</span><span><span class="n">3,356</span> <span class="q">${W('before 3,350 wall', 'wall 3,350')}</span></span>
+        <span>exit 13:52</span><span><span class="n">160.00</span> <span class="q" title="bid, mid −0.35">${W('−0.60 vs tgt', '−0.60')}</span></span><span><span class="n">3,349.60</span> <span class="q">BOOK</span></span>
       </div>
       <div class="ln"><b>hold to 14:30</b> · risk 0.37R · made <b class="up">${R2(c.rr)}</b> = ${(c.rr / 0.37).toFixed(1)}× risk</div>
       <div class="hrule"><span class="hk">HOLD RULE ✓ kept</span><span class="hq">"Don't exit before the stop or the target unless GIR says EXIT"</span></div>
@@ -1620,8 +1691,8 @@ function renderCard() {
         <div class="whyg"><span><i>Δ share</i><b class="up">+29.5</b></span><span><i>Γ</i><b class="up">+3.1</b></span><span><i>vega</i><b class="dn">−0.2</b></span><span><i>θ 1h 23m</i><b class="dn">−0.34</b><em>≈₹60</em></span><span><i>fills</i><b class="dn">−0.66</b></span></div>
         <div class="ln gry">own IV 31.6 → 31.5 %: the share paid, not IV</div></div>
       <div class="sec"><div class="h" data-more="strike review ITM · ATM · OTM · Nov">Strike review<span class="w1600"> 12:29›13:52</span> <span class="x">best Δ per ₹ · wall 3,300 PE −114 pts</span></div>
-        <table class="sr${srAll ? ' all' : ''}"><colgroup><col class="c0"><col><col><col><col></colgroup>
-          <thead><tr><th>${W('Dec · mid', 'Dec mid')}</th><th>3,450 ITM</th><th class="pk">3,400 ✓</th><th>3,350 OTM</th><th>Nov 3,400</th></tr></thead><tbody>
+        <table class="sr${srAll ? ' all' : ''}"><colgroup><col class="c0"><col><col><col>${narrow() ? '' : '<col>'}</colgroup>
+          <thead><tr><th>${W('Dec · mid', 'Dec mid')}</th><th>3,450 ITM</th><th class="pk">3,400 ✓</th><th>3,350 OTM</th><th class="cnov">Nov 3,400</th></tr></thead><tbody>
           <tr><td>${W('in › out', 'in›out')}</td>${SRK.map(k => `<td${k === 'atm' ? ' class="pk"' : ''}>${SRV[k].a.toFixed(1)}›${SRV[k].b.toFixed(1)}</td>`).join('')}</tr>
           <tr class="r1600" title="₹ net = (out − in) × 175 − ₹${SRCHG} charges (the same 1-lot round trip as #50, from the state file = the P&amp;L strip), rounded down: ${SRK.map(k => `${k.toUpperCase()} ${SRV[k].pts.toFixed(1)} × 175 − ${SRV[k].chg} = ${SRV[k].net.toLocaleString('en-IN')}`).join(' · ')}. ATM = trade #50 exactly"><td>% · ₹ net</td>${SRK.map(k => `<td${k === 'atm' ? ' class="pk"' : ''}><span class="sp1">${SRV[k].pc}</span><span class="sp2">${SRV[k].net.toLocaleString('en-IN')}</span></td>`).join('')}</tr><tr class="r1366" title="₹ net = (out − in) × 175 − ₹${SRCHG} charges (the same 1-lot round trip as #50, from the state file = the P&amp;L strip), rounded down: ${SRK.map(k => `${k.toUpperCase()} ${SRV[k].pts.toFixed(1)} × 175 − ${SRV[k].chg} = ${SRV[k].net.toLocaleString('en-IN')}`).join(' · ')}. ATM = trade #50 exactly"><td>% move</td>${SRK.map(k => `<td${k === 'atm' ? ' class="pk"' : ''}>${SRV[k].pc}</td>`).join('')}</tr><tr class="r1366" title="₹ net = (out − in) × 175 − ₹${SRCHG} charges (the same 1-lot round trip as #50, from the state file = the P&amp;L strip), rounded down: ${SRK.map(k => `${k.toUpperCase()} ${SRV[k].pts.toFixed(1)} × 175 − ${SRV[k].chg} = ${SRV[k].net.toLocaleString('en-IN')}`).join(' · ')}. ATM = trade #50 exactly"><td>₹ net</td>${SRK.map(k => `<td${k === 'atm' ? ' class="pk"' : ''}>${SRV[k].net.toLocaleString('en-IN')}</td>`).join('')}</tr>
           <tr class="xr"><td>Δ · Γ</td><td>−.54 .0016</td><td class="pk">−.46 .0015</td><td>−.39 .0015</td><td>−.44 .0040</td></tr>
@@ -1631,26 +1702,28 @@ function renderCard() {
           <tr class="xr"><td>OI · chg</td><td>1,842 +12%</td><td class="pk">2,630 +18%</td><td>1,210 +9%</td><td>5,480 +4%</td></tr>
           <tr class="xr"><td>${W('BE by 15:10', 'BE 15:10')}</td><td>−5.2</td><td class="pk">−6.7</td><td>−7.6</td><td>−7.1</td></tr>
           <tr class="xr"><td>cash · lot</td>${SRK.map(k => `<td${k === 'atm' ? ' class="pk"' : ''}>₹${SRV[k].cash.toLocaleString('en-IN')}</td>`).join('')}</tr>
-          <tr class="srt"><td colspan="5"><button class="allr" data-sr="1">${srAll ? '▴ fewer rows' : 'all rows › Δ Γ · OI chg · break-even · cash'}</button></td></tr></tbody></table>
+          <tr class="srt"><td colspan="${narrow() ? 4 : 5}"><button class="allr" data-sr="1">${srAll ? '▴ fewer rows' : 'all rows › Δ Γ · OI chg · break-even · cash'}</button></td></tr></tbody></table>
         <div class="ln" data-more="Nov not used" style="margin-top:2px">${W(`<b>Nov not used:</b> ITM needs NSE delivery margin from E-4, the broker squares off ITM in expiry week; θ 3.6×, Γ 2.7× with 2 sessions left. ₹ net = (out − in) × 175 − ₹${SRCHG} (the #50 round trip).`, '<b>Nov not used:</b> ITM needs delivery margin from E-4 and the broker squares off ITM in expiry week; θ 3.6×, Γ 2.7×.')}</div></div>
     </div>`;
   } else {
-    const res = c.o === 'TAKEN' ? `${inr(c.real)} ${R2(c.rr)} real · net of ₹${c.chg}` : c.paper !== null ? `paper ${R(c.paper)}` : 'no fill';
+    const res = c.o === 'TAKEN' ? `<b class="${cls(c.real)}">${inr(c.real)} · ${R2(c.rr)}</b> real, net of ₹${c.chg}` : c.paper !== null ? `<b>paper ${R(c.paper)}</b> <span class="gry">(by rule, at the real bid)</span>` : '<b>no fill</b> <span class="gry">(trigger not reached)</span>';
     const fu = FOLLOW.find(f => f[0] === c.s);
+    const pc = (l, x) => `<span><i>${l}</i><b class="${cls(x)}">${pct(x, 1)}</b></span>`;
     db.innerHTML = `<div class="cd">
-      <div class="hd"><span class="sh-c ${c.gonow ? 'sh-c-go' : 'sh-c-ready'}" title="as issued">${c.gonow ? 'GO NOW' : 'GET READY'}</span>${share(c.s)}<span class="mono wht">${c.K}</span><span class="cp ${c.side === 'PE' ? 'pe' : 'ce'}">${c.side}</span><span class="gry">29 Dec</span><span class="sp"></span><span class="oc ${OC[c.o]}">${c.o}</span></div>
+      <div class="hd"><span class="sh-c ${c.gonow ? 'sh-c-go' : 'sh-c-ready'}" title="as issued">${c.gonow ? 'GO NOW' : 'GET READY'}</span>${share(c.s)}<span class="mono wht">${c.K}</span><span class="cp ${c.side === 'PE' ? 'pe' : 'ce'}">${c.side}</span><span class="gry w1600">29 Dec</span><span class="sp"></span><span class="oc ${OC[c.o]}">${c.o}</span></div>
       <div class="ln">${tm(c.path)}</div>
       ${c.o === 'TAKEN' ? `<div class="ln">filled <span class="mono wht">${c.inout}</span> <span class="gry">(fill times)</span></div>` : ''}
       <div class="ln">${c.why}</div>
-      <div class="ln">1 lot × ${c.lot.toLocaleString('en-IN')}${c.pin ? ` · cash ₹${Math.round(c.pin * c.lot).toLocaleString('en-IN')}` : ''} · ${c.chg !== null ? `${W('charges', 'chg')} ${c.o === 'TAKEN' ? '' : '≈'}₹${c.chg} · ` : ''}sprd ${c.sprd.toFixed(1)}% · IV ${c.iv.toFixed(2)}×${W(' of 20d', '')}</div>
-      <div class="sec"><div class="h">Result</div>
-        <div class="ln">${c.pin ? `premium ${c.pin.toFixed(2)}${c.pout ? ' › ' + c.pout.toFixed(2) : ' ask'} · ` : ''}<b>${res}</b>${c.hint ? ` · better strike <b>${c.hint}</b>` : ''}</div>
-        ${fu ? `<div class="ln">follow-ups: ${fu[1]} - right</div>` : ''}</div>
+      <div class="ln">1 lot × ${c.lot.toLocaleString('en-IN')}${c.pin ? ` · cash ₹${Math.round(c.pin * c.lot).toLocaleString('en-IN')}` : ''}${c.chg !== null ? ` · ${W('charges', 'chg')} ${c.o === 'TAKEN' ? '' : '≈'}₹${c.chg}` : ''}</div>
+      <div class="ln">sprd ${c.sprd.toFixed(1)}% · IV ${c.iv.toFixed(2)}×${W(' of 20d', '')}${c.hint ? ` · better strike <b>${c.hint}</b>` : ''}</div>
+      <div class="sec"><div class="h">Result${c.pin ? ` <span class="x">premium ${c.pin.toFixed(2)}${c.pout ? ' › ' + c.pout.toFixed(2) : ' ask'}</span>` : ''}</div>
+        <div class="ln">${res}</div>
+        ${fu ? `<div class="ln">follow-ups right: ${fu[1]}</div>` : ''}</div>
       <div class="sec" data-more="path"><div class="h">Path of the share <span class="x">then ${c.then}</span></div>
-        <div class="ln">+15m <b>${pct(c.p[0], 1)}</b> · +30m <b>${pct(c.p[1], 1)}</b> · +60m <b>${pct(c.p[2], 1)}</b> · close <b>${pct(c.p[3], 1)}</b></div></div>
-      <div class="sec" data-more="delivery"><div class="h">Delivery</div>
-        <div class="ln">data ${c.age} · sound: ${c.snd}</div><div class="ln">TG ${c.tg} · to you only</div>
-        <div class="ln gry">${W('setup ', '')}${c.setup} · ${W('leg ', '')}${c.leg} · ${c.win} · IV ${W('bucket ', '')}${c.ivb}</div></div></div>`;
+        <div class="whyg pth">${pc('+15m', c.p[0])}${pc('+30m', c.p[1])}${pc('+60m', c.p[2])}${pc('close', c.p[3])}</div></div>
+      <div class="sec" data-more="delivery"><div class="h">Delivery <span class="x">to you only</span></div>
+        <div class="ln">data ${c.age} · sound: ${c.snd.replace('queued silently · in ', 'queued · in ')}</div><div class="ln">TG ${c.tg.replace(/ › \d\d:\d\d:\d\d(\.\d)? › /, ' › ')}</div>
+        <div class="ln gry">${c.setup} · ${c.leg} · ${c.win} · IV ${c.ivb}</div></div></div>`;
   }
   db.scrollTop = 0; updCount('db');
 }
@@ -1663,7 +1736,7 @@ function renderAgents() {
   const gb = document.getElementById('gb'), gs = document.getElementById('gsub'), gf = document.getElementById('gfoot');
   if (gTab === 'AGENTS') {
     gs.innerHTML = `<b>${nKeep} keep · ${nProb} probation · ${nPaper} paper${W(' · X agent OFF', ' · X OFF')}</b><span class="sp"></span><span class="cnt" id="gcnt"></span>`;
-    const cols = NW ? [['Agent', 82], ['Found today', 0], ['W›R', 34, 'r'], ['$', 42, 'r'], ['Keep?', 80]] : [['Agent · fresh', 124], ['Found today', 0], ['W›R', 40, 'r'], ['Cost', 48, 'r'], ['Keep?', 90]];
+    const cols = NW ? [['Agent', 90], ['Found today', 0], ['W›R', 34, 'r'], ['$', 40, 'r'], ['Keep?', 84]] : [['Agent · fresh', 124], ['Found today', 0], ['W›R', 40, 'r'], ['Cost', 48, 'r'], ['Keep?', 90]];
     gb.innerHTML = `<table class="tb ag"><colgroup>${cols.map(c => `<col${c[1] ? ` style="width:${c[1]}px"` : ''}>`).join('')}</colgroup><thead><tr>${cols.map(c => `<th${c[2] ? ' class="r"' : ''} title="${c[0] === 'W › R' ? 'woke the analyst › reached you' : ''}">${c[0]}</th>`).join('')}</tr></thead><tbody>` + AG.map(g => {
       const [a, m, ran, fr, found0, rep, wk, re, cost, st, why] = g;
       const found = FOUND1366[a] || found0;
@@ -1693,18 +1766,28 @@ function renderAgents() {
 const SNAP = 'tbody tr, .st, .cd > *, .cd .sec > *, .cd .pg > span, .cd .sr tr, .au > *, .au .mt tr, .km tr, .kh, .kcap, .tx';
 function snap(pb) {
   const w = pb.parentNode, mo = w.nextElementSibling && w.nextElementSibling.classList.contains('more') ? w.nextElementSibling : null;
-  w.style.flex = ''; if (mo) { mo.style.display = 'none'; if (pb.scrollHeight > pb.clientHeight + 1) { mo.style.display = ''; mo.style.flex = '0 0 18px'; } }
+  w.style.flex = ''; if (mo) { mo.style.display = 'none'; if (pb.scrollHeight > pb.clientHeight + 1) { mo.style.display = ''; mo.style.flex = '0 0 20px'; } }
   const H = pb.clientHeight, top = pb.getBoundingClientRect().top, sc = pb.scrollTop;
   let cut = 0, over = false;
   const els = [...pb.querySelectorAll(SNAP)].filter(e => e.getBoundingClientRect().height >= 1);
   els.forEach(e => { const r = e.getBoundingClientRect(); const b = r.bottom - top + sc; if (b <= H + 0.5) cut = Math.max(cut, b); else over = true; });
   if (over) { // a heading whose next block does not fit moves below the cut too
     els.filter(e => e.classList.contains('h') && (e.parentNode.classList.contains('au') || e.parentNode.classList.contains('sec'))).forEach(e => { const nx = e.nextElementSibling; if (!nx) return; const r = e.getBoundingClientRect(), rn = nx.getBoundingClientRect(); if (r.bottom - top + sc <= cut + 0.5 && rn.bottom - top + sc > H + 0.5) cut = Math.min(cut, r.top - top + sc - 1); });
+    // a group head (outcome, sector, 'named wrong') never sits alone at the bottom of a list
+    els.filter(e => e.tagName === 'TR' && /\b(ogh|grp|sechd)\b/.test(e.className)).forEach(e => { const nx = e.nextElementSibling; if (!nx) return; const r = e.getBoundingClientRect(), rn = nx.getBoundingClientRect(); if (r.bottom - top + sc <= cut + 0.5 && rn.bottom - top + sc > H + 0.5) cut = Math.min(cut, r.top - top + sc); });
   }
-  if (over && cut > 0 && cut < H) { w.style.flex = '0 0 ' + Math.ceil(cut) + 'px'; if (mo) mo.style.flex = '1 0 18px'; }
+  if (over && cut > 0 && cut < H) { w.style.flex = '0 0 ' + Math.ceil(cut) + 'px'; if (mo) mo.style.flex = '1 0 20px'; }
   updBar(pb); updMore(pb);
 }
-function snapAll() { document.querySelectorAll('.pb').forEach(snap); ['mb', 'cb', 'gb'].forEach(updCount); }
+// the left column: WHAT MOVED is sized to whole rows (5 at 1600, 4 at 1366) and CALL LOG takes the rest, so neither ends on a hole
+function fitLeft() {
+  const pm = document.getElementById('pm'), mb = document.getElementById('mb'), pc = document.getElementById('pc'), cb = document.getElementById('cb');
+  pm.style.flex = ''; mb.parentNode.style.flex = ''; cb.parentNode.style.flex = '';
+  const tr = mb.querySelector('tbody tr[data-mv]'), th = mb.querySelector('thead'); if (!tr || !th) return;
+  const N = narrow() ? 4 : 5, fixed = pm.offsetHeight - mb.clientHeight;
+  pm.style.flex = `0 0 ${Math.ceil(fixed + th.offsetHeight + N * tr.getBoundingClientRect().height) + 1}px`;
+}
+function snapAll() { fitLeft(); document.querySelectorAll('.pb').forEach(snap); ['mb', 'cb', 'gb'].forEach(updCount); }
 
 /* ================= R08: the 10 px bar drawn in the page (visible at rest, at every size, in every capture) ================= */
 function addBar(sc) {
@@ -1802,14 +1885,19 @@ AGENTS on probation: world prices (iron ore),
 design mockup - illustrative values`;
 
 /* ================= ASK drawer (answers end in an action, to you only) ================= */
-document.getElementById('askb').innerHTML = `
-  <div class="q"><i>15:47</i>Why a loss on HINDALCO if it fell 2.14%?</div>
-  <div class="a">The 10:58 GO NOW was right on direction, early on timing: copper turned up at 11:18 and HINDALCO went back above VWAP on short covering. The EXIT call 11:39:40 was by rule (reversal); you acked 11:39:52 but did not act; the P1 phone call came 11:44:40 and you were out 11:45:05 at 14.50: −₹2,746 (−0.55R) net of ₹86 charges; the share stop 686.10 would have hit at 12:04 (−₹4,100, −0.82R), so the EXIT saved ₹1,354 (+0.27R). It fell from 13:20 on fresh shorts. <b class="act">Action for tomorrow:</b> a copper PUT needs copper still falling at entry - checked by code before the GO NOW. Goes into the 19:45 note and tomorrow's PLAN.</div>
-  <div class="q"><i>15:48</i>Why did HINDALCO's GO NOW not ring?</div>
-  <div class="a">You were in MANAPPURAM. While a trade is open, a new GO NOW shows on the screen and queues silently, so your exit tones stay clear. You took it from the screen at 11:02. <b class="act">Nothing to do</b> - or turn on "ring GO NOW while in a trade" in Settings (Ctrl ,).</div>
-  <div class="q"><i>15:49</i>Was suppressing ANGELONE right?</div>
-  <div class="a">Yes, by your rules. At 11:43:05 the lock room was ₹1,980 - less than one lot's max loss, so 0 lots; after your exits at 11:45 the cooling ran to 12:05, so it stayed skipped. Paper ${R(ANG.r)} (+₹${ANG.net.toLocaleString('en-IN')} net of ≈₹${ANG.chg}) at the real 13:40 bid with IV 1.19× (+1.6R at the entry IV). Rules cost ${rulesCost.toFixed(1)}R paper today; one day is no reason to change a rule. <b class="act">Nothing to do.</b></div>
-  <label class="ask"><input placeholder="ask about any row - e.g. why was BEL missed?" aria-label="question"><kbd>Enter</kbd></label>`;
+const NWM = h => h.replace(/([−+]?₹[\d,]+(?:\.\d+)?)/g, '<span class="nw">$1</span>').replace(/\(([−+][\d.]+R)\)/g, '<span class="nw">($1)</span>');
+const ASKS = [
+  ['15:47', 'Why a loss on HINDALCO if it fell 2.14%?', `The 10:58 GO NOW was right on direction, early on timing: copper turned up at 11:18 and HINDALCO went back above VWAP on short covering. The EXIT call 11:39:40 was by rule (reversal); you acked 11:39:52 but did not act; the P1 phone call came 11:44:40 and you were out 11:45:05 at 14.50: −₹2,746 (−0.55R) net of ₹86 charges. The share stop 686.10 would have hit at 12:04 (−₹4,100), so the EXIT saved ₹1,354 (+0.27R). <b class="act">Action for tomorrow:</b> a copper PUT needs copper still falling at entry - checked by code before the GO NOW. It goes into tonight's 19:45 note and tomorrow's PLAN (⇧F1).`],
+  ['15:48', 'Why did HINDALCO\'s GO NOW not ring?', `You were in MANAPPURAM. While a trade is open, a new GO NOW shows on the screen and queues silently, so your exit tones stay clear. You took it from the screen at 11:02. <b class="act">Nothing to do</b> - or turn on "ring GO NOW while in a trade" in Settings (Ctrl ,).`],
+  ['15:49', 'Was suppressing ANGELONE right?', `Yes, by your rules. At 11:43:05 the lock room was ₹1,980 - less than one lot's max loss, so 0 lots; after your exits at 11:45 the cooling ran to 12:05, so it stayed skipped. Paper ${R(ANG.r)} (+₹${ANG.net.toLocaleString('en-IN')} net of ≈₹${ANG.chg}) at the real 13:40 bid with IV 1.19×. Rules cost ${rulesCost.toFixed(1)}R paper today; one day is no reason to change a rule. <b class="act">Nothing to do.</b>`],
+];
+let askOpen = 0;
+function renderAsk() {
+  document.getElementById('askb').innerHTML = ASKS.map(([t, q, a], k) => `<div class="q${k === askOpen ? ' op' : ''}" data-ask="${k}" title="${k === askOpen ? '' : 'click to read the answer'}"><i>${t}</i>${q}<span class="qa">${k === askOpen ? '▾' : '▸'}</span></div>${k === askOpen ? `<div class="a">${NWM(a)}</div>` : ''}`).join('')
+    + `<label class="ask"><input placeholder="ask about any row - e.g. why was BEL missed?" aria-label="question"><kbd>Enter</kbd></label>`;
+  updBar(document.getElementById('askb'));
+}
+renderAsk();
 
 /* ================= filter + interactions ================= */
 const sel = document.getElementById('secf');
@@ -1824,7 +1912,7 @@ if (location.hash === '#titan') selCall = 5;
 if (location.hash === '#cost') gTab = 'COST';
 if (location.hash === '#sector') mSort = 'sector';
 renderAll(); snapAll();
-addEventListener('resize', () => { renderMovers(); renderCalls(); renderAgents(); snapAll(); });
+addEventListener('resize', () => { renderMovers(); renderCalls(); renderCard(); renderAgents(); snapAll(); });
 
 document.addEventListener('click', () => setTimeout(snapAll, 0));
 document.addEventListener('click', e => {
@@ -1842,12 +1930,14 @@ document.addEventListener('click', e => {
   const g = e.target.closest('[data-g]'); if (g) { gTab = g.dataset.g; renderAgents(); return; }
   const ud = e.target.closest('.ud button'); if (ud) { const pb = document.getElementById(ud.parentElement.dataset.t); pb.scrollBy({ top: ud.dataset.s * pb.clientHeight * 0.8, behavior: 'smooth' }); return; }
   if (e.target.closest('[data-close]')) { closeDrawers(); return; }
+  const aq = e.target.closest('[data-ask]'); if (aq) { askOpen = +aq.dataset.ask; renderAsk(); return; }
   const mo = e.target.closest('.more'); if (mo) { const pb = mo.previousElementSibling.querySelector('.pb'); pb.scrollBy({ top: pb.clientHeight * 0.8, behavior: 'smooth' }); return; }
 });
 document.addEventListener('change', e => { const f = e.target.closest('[data-f]'); if (f) { FILT[f.dataset.f] = f.value; renderCalls(); } });
 const tgd = document.getElementById('tgd'), askd = document.getElementById('askd');
 function closeDrawers() { tgd.classList.remove('on'); askd.classList.remove('on'); document.getElementById('tgbtn').classList.remove('on'); document.getElementById('askbtn').classList.remove('on'); }
-function openDrawer(d) { const was = d.classList.contains('on'); closeDrawers(); if (!was) { d.classList.add('on'); document.getElementById(d === tgd ? 'tgbtn' : 'askbtn').classList.add('on'); updBar(document.getElementById('tgtext')); updBar(document.getElementById('askb')); } }
+function openDrawer(d) { const was = d.classList.contains('on'); closeDrawers(); if (!was) { d.classList.add('on'); document.getElementById(d === tgd ? 'tgbtn' : 'askbtn').classList.add('on'); lineSnap(document.getElementById('tgtext'), 16, 8); updBar(document.getElementById('tgtext')); updBar(document.getElementById('askb')); } }
+function lineSnap(el, lh, pad) { const w = el.parentNode; w.style.flex = ''; const H = w.clientHeight; w.style.flex = `0 0 ${pad + Math.floor((H - pad) / lh) * lh}px`; }
 document.getElementById('tgbtn').addEventListener('click', () => openDrawer(tgd));
 document.getElementById('askbtn').addEventListener('click', () => openDrawer(askd));
 document.addEventListener('keydown', e => {

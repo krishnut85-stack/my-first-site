@@ -16,7 +16,7 @@
            spreads ₹ / lot · ticks; OI SCENARIOS (3 one-line rows) under it.  all columns › (bid·ask, depth, vol, Δ, θ, chg, IV) follows TODAY'S SIDE.
      R42 - F: STRIKE CHOOSER for the live call TITAN 3,400 PE: Dec, ITM / ATM ★ / OTM side by side - lock fit (max loss → lots, fix 13), bid / ask,
            spread ₹ / lot · ticks, b/e share pts by 15:10, Δ · θ ₹/h, IV / 20d, depth, OI chg, cash; GIR's pick and why; "all columns · Nov ›".
-     R43 - F: hero IV gauge (ATM IV 37.4 vs 20d 33.7 = 1.11x, rank 58, IV/RV10 1.2), IV crush none (results 12 Nov), PCR 0.54, max pain 285,
+     R43 - F: hero IV gauge (ATM IV 37.4 vs 20d 33.7 = 1.11x, IV rank 35 = (37.4−26.9)/(56.9−26.9) on the 1-year range drawn by the gauge, IV/RV10 1.2), IV crush none (results 12 Nov), PCR 0.54, max pain 285,
            expiry-week + PHYSICAL settlement chip, MWPL, UNUSUAL OPTION ACTIVITY (3 one-line rows), index options in CHAINS, charges in costs.
      R14 - C: Space / "plan card ›" on the pick opens the TITAN call card (vote line shown on the pick).  R12 - F/C: every BLOCKED tab and row
            carries its reason and what to do (lock room ₹1,980 vs max loss → 0 lots; wait for an exit); hard blocks only ban / lock / stale.
@@ -421,7 +421,7 @@ a.pt:hover{text-decoration:underline;text-underline-offset:3px}
 .tb .lg{display:inline-flex;align-items:center;gap:5px}
 .tb .lg .sh-c{height:18px;font-size:11px;padding:0 5px}
 .tb .lg i{display:inline-block;width:14px;height:8px;border-radius:1px;margin-left:4px}
-.lb0{background:rgba(var(--up-rgb),.30)} .lb1{background:rgba(var(--up-rgb),.75)} .lb2{border:1px dashed var(--text-3)}
+.lb0{background:rgba(var(--up-rgb),.38)} .lb1{background:var(--up)} .lb2{border:1px dashed var(--text-3)}
 .allc{margin-left:auto;color:var(--info);cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-weight:600;flex:none}
 .allc .t2{font-weight:400}
 .allc + .mc{margin-left:8px}
@@ -458,21 +458,20 @@ table.ch{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px}
 .ch td.ba{text-align:right;color:var(--text-2)}
 .ch td.ac{text-align:right;color:var(--text-2)} .ch td.ac.hi{color:var(--text);font-weight:700}
 /* the OI picture: CE bars grow LEFT from the strike column, PE bars grow RIGHT - a mirrored OI-by-strike chart inside the chain */
-.ch td.oi{position:relative;padding:0 8px}
-.ch td.oi .bars{position:absolute;top:5px;bottom:5px;display:flex}
-.ch td.oi.c .bars{right:0;left:6px;flex-direction:row-reverse}
-.ch td.oi.p .bars{left:0;right:6px}
+/* label and bar never share pixels: the numbers sit on the upper line, the bar runs in its own 5 px lane underneath, from the strike outward */
+.ch td.oi{position:relative;padding:0 8px 7px;line-height:16px}
+.ch td.oi .bars{position:absolute;bottom:3px;height:5px;display:flex}
+.ch td.oi.c .bars{right:0;left:8px;flex-direction:row-reverse}
+.ch td.oi.p .bars{left:0;right:8px}
 .ch td.oi i{display:block;height:100%;flex:none}
-.ch td.oi.c .b0{background:rgba(var(--up-rgb),.26)} .ch td.oi.c .b1{background:rgba(var(--up-rgb),.55)}
-.ch td.oi.p .b0{background:rgba(var(--down-rgb),.26)} .ch td.oi.p .b1{background:rgba(var(--down-rgb),.55)}
-.ch td.oi .b2{border:1px dashed var(--text-3);border-left:0;background:transparent}
+.ch td.oi.c .b0{background:rgba(var(--up-rgb),.38)} .ch td.oi.c .b1{background:var(--up)}
+.ch td.oi.p .b0{background:rgba(var(--down-rgb),.38)} .ch td.oi.p .b1{background:var(--down)}
+.ch td.oi .b2{box-sizing:border-box;border:1px dashed var(--text-3);border-left:0;background:transparent}
 .ch td.oi.c .b2{border-left:1px dashed var(--text-3);border-right:0}
-.ch td.oi.wall .bars{outline:1px solid var(--up);outline-offset:-1px}
-.ch td.oi .ot,.ch td.oi .oc{position:relative;z-index:1}
+.ch td.oi.wall .bars{outline:1px solid var(--up);outline-offset:0}
 .ch td.oi.c{text-align:left} .ch td.oi.p{text-align:right}
-.ch td.oi .ot{color:var(--text);font-weight:600}
-.ch td.oi .oc{color:var(--text-2);font-size:12px;margin-left:7px}
-.ch td.oi.c .ot{float:none}
+.ch td.oi .ot{display:inline-block;width:5ch;text-align:right;color:var(--text);font-weight:600}
+.ch td.oi .oc{display:inline-block;width:4ch;text-align:left;color:var(--text-2);font-size:12px;margin-left:7px}
 .ch td.oi.wall .ot{font-weight:800}
 .ch tr.itmc td.c{background:rgba(var(--up-rgb),.045)}
 .ch tr.itmp td.p,.ch tr.itmp td.ac,.ch tr.itmp td.sp{background:rgba(var(--down-rgb),.045)}
@@ -569,7 +568,8 @@ table.stk{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px}
   #lst .ph{gap:6px}
   #cho .ph{gap:6px;padding-left:10px} #cho .seg.sm span{padding:0 5px}
   .ch thead th{padding:0 5px} .ch tbody td{padding:0 5px;height:25px}
-  .ch td.oi{padding:0 5px}
+  .ch td.oi{padding:0 5px 6px;line-height:15px}
+  .ch td.oi.c .bars{left:5px} .ch td.oi.p .bars{right:5px} .ch td.oi .bars{height:4px;bottom:3px}
   .ch td.n,.ch td .n{font-size:12px}
   .ch td.oi .oc{font-size:11px;margin-left:4px}
   .kt{margin-left:3px}
@@ -595,8 +595,7 @@ table.stk{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px}
 /* blocked chooser tabs: the same strikes, greyed, every one 0 lots */
 .stk.dim td{color:var(--text-2)} .stk.dim td.bad{color:var(--danger)}
 .bwhy + .tw{margin-top:8px}
-/* OI numbers stay readable where a long bar runs under them */
-.ch td.oi .ot,.ch td.oi .oc{text-shadow:0 0 3px var(--panel),0 0 2px var(--panel)}
+
 
 </style>
 </head>
@@ -750,20 +749,20 @@ table.stk{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px}
     </div>
   </section>
 
-  <section class="hb sh-acc-mkt" id="ivx" title="R43: is the option cheap or dear? ATM implied volatility against its 20-day average and its 1-year range (IV rank = percentile of the daily ATM IV close, 1 year, n = 252)">
+  <section class="hb sh-acc-mkt" id="ivx" title="R43: is the option cheap or dear? ATM implied volatility against its 20-day average and its 1-year range (IV rank = where today's IV sits in its 1-year range of daily ATM IV closes: (now − low) / (high − low) = (37.4 − 26.9) / (56.9 − 26.9) = 35)">
     <div class="hl"><span class="sh-lb">IV · Dec ATM 285</span><span class="age">11:42:10</span><span class="mini t2" title="IV crush risk comes from a results date or an event inside the option's life">crush risk <b class="tx">none</b> · results 12 Nov</span></div>
     <div class="gw">
-      <svg class="gauge" viewBox="0 0 300 16" preserveAspectRatio="none" aria-label="IV gauge: 1-year range 24 to 52, 20-day 33.7, now 37.4">
+      <svg class="gauge" viewBox="0 0 300 16" preserveAspectRatio="none" aria-label="IV gauge: 1-year range 26.9 to 56.9, 20-day 33.7, now 37.4, rank 35">
         <defs><linearGradient id="ivg" x1="0" x2="1"><stop offset="0" style="stop-color:var(--leader);stop-opacity:.6"/><stop offset=".5" style="stop-color:var(--text-3);stop-opacity:.35"/><stop offset="1" style="stop-color:var(--action);stop-opacity:.65"/></linearGradient></defs>
         <rect x="0" y="5" width="300" height="6" rx="2" fill="url(#ivg)"/>
-        <rect x="103.2" y="1" width="1.6" height="14" style="fill:var(--text-2)"/>
+        <rect x="67.2" y="1" width="1.6" height="14" style="fill:var(--text-2)"/>
       </svg>
-      <span class="gdot" style="left:47.9%"></span>
-      <div class="gl"><span class="n t3">24</span><span class="g20" style="left:34.7%">20d <b class="n">33.7</b></span><span class="gnow" style="left:47.9%">now <b class="n">37.4</b></span><span class="n t3">52</span></div>
+      <span class="gdot" style="left:35%"></span>
+      <div class="gl"><span class="n t3" title="1-year low of the daily ATM IV close">26.9</span><span class="g20" style="left:22.7%">20d <b class="n">33.7</b></span><span class="gnow" style="left:35%">now <b class="n">37.4</b></span><span class="n t3" title="1-year high of the daily ATM IV close">56.9</span></div>
     </div>
     <div class="h2 ivn">
       <span class="kv"><b class="n">1.11x</b><span class="t2">20d</span></span>
-      <span class="kv"><span class="sh-lb">rank</span><b class="n">58</b></span>
+      <span class="kv" title="IV rank 35 of 100 = (37.4 − 26.9) / (56.9 − 26.9): where today's ATM IV sits between its 1-year low and high (the gauge above) · at 11:40 IV 37.1 = rank 34, as on the plan card"><span class="sh-lb">IV rank</span><b class="n">35</b></span>
       <span class="kv"><span class="sh-lb">IV/RV10</span><b class="n">1.2</b></span>
       <span class="kv" title="expected move to 15:10 from ATM IV 37.4 (1 standard deviation)"><b class="n">±5.0</b><span class="t2">to 15:10</span></span>
       <span class="kv" title="put-call OI ratio over the 11 strikes on screen"><span class="sh-lb">PCR</span><b class="n">0.54</b></span>
