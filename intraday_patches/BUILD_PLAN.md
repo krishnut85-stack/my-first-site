@@ -53,6 +53,11 @@ live or recorded data - **never copy a number from a drawing into code.**
   mapped to shares, sectors and the index within seconds, and reach him only when it matters (one sound, no noise).
 - A perfect web page AND a perfect phone app.
 
+- **Protect the live page in market hours (19 Nov: load 20 on 4 cores, girtrader.com took 15-27 s to answer).** 09:00-15:35:
+  no history downloads, no multi-page browser tests, no heavy builds - those run after 15:35 or at the weekend. The TV
+  speech-to-text (tvstt.py, the biggest CPU user) moves to a paid speech-to-text service or a small separate server (price it
+  in the paid list). The live page must always answer in under 1 s.
+
 ### 0.1 Start now, on /preview, without touching the live system
 
 | Rule | What it means in practice |
@@ -252,7 +257,7 @@ today through both sides of the sector map (losers AND winners) and writes "TOMO
 strike, the trigger and the reason, confirmed or cancelled by the 07:15 update and the 09:08 pre-open. A move GIR explains only
 after it happened counts as a MISS in the 15:45 audit.
 **The history database (the trader, 19 Nov: "collect all the database - how the market behaved for 5, 10 years").** Build a
-10-year (at least 5-year) daily history for every F&O share, every sector index and basket, NIFTY / BANKNIFTY, and every driver
+5-YEAR daily history (the trader, 19 Nov: "5 years is enough, not 10") for every F&O share, every sector index and basket, NIFTY / BANKNIFTY, and every driver
 (LME / COMEX / MCX metals, crude, gold, silver, USD/INR, DXY, US 10y, US indices, China futures), plus futures OI where available,
 results dates and reactions, policy and event dates. Kite historical first; buy what Kite lacks (older OI, expired options / IV
 history, global series, a news archive) with the trader's yes per item. From it the knowledge base learns, for every chain:

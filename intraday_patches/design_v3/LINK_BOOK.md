@@ -1670,7 +1670,7 @@ Cancel if: <conditions>. Trap: <C-number>."
 7. **Log and score.** Every link fired or missed is logged. The 15:45 scorecard counts a move GIR explained only after it happened as a
    MISS, and adds the day to the history database so the hit rate updates.
 
-**Proving the links on the 5-10 year history database** (SECTOR_LINKS part C rule: at least 30 events, hit rate at least 58% and at
+**Proving the links on the 5-year history database** (SECTOR_LINKS part C rule: at least 30 events, hit rate at least 58% and at
 least 8 points above normal, holds in both halves and in the last 2 years; the proof line is quoted on the call)
 - Test every row of table A in both directions, with the lag stated in the row (same day, next open, days).
 - Check every [E] size and every [V] intraday figure in this book against the NSE bhavcopy (closing prices) before it becomes a beta.
