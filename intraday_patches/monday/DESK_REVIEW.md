@@ -14,3 +14,9 @@
    the aerospace / defence share that jumped 4% on a 2.51% FII + DII bulk deal (find it in Thursday's NSE bulk / block file). From
    the 09:15 open and from Thursday's close, vs NIFTY and vs sector. His reads become a scored source ("TRADER READ") in EVENT_MEMORY.
 5. **preopenstudy.py**: still being checked by the desk; it lands this afternoon. G1 waits for it.
+
+## 20 Nov 08:30 IST - TRADER_CALLS.md now holds 33 of his past reads
+After 15:35 (light job), score every row marked "TO SCORE (server)" from the minute store / NSE closes: the move from the time he
+said it to that day's close and the next day's close, right side or not, vs NIFTY and vs sector. Also score today's 07:45 reads and
+his 19 Nov call (consumer and auto down on 20 Nov). Push the filled table. His reads go into EVENT_MEMORY as source "TRADER READ"
+with this hit rate, CE and PE kept apart (so far his PE reads have been right far more often than his CE reads).
