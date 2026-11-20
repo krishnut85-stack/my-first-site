@@ -1,5 +1,15 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 23:10 IST - THE TRADER: "work both CE and PE" - check the PE side is really produced
+The design is two-sided (head: up to 5 ideas PER SIDE; VWAP_LOSS / PDL_BREAK / DAY_LOW_BREAK triggers; seats fill winners AND losers).
+Prove it in the output:
+1. **Rehearsal summaries (FULL2-4) split everything by side:** ideas named, BUY NOW, hits, earliness and wrong-side rate - CE and PE
+   separately, each against its own base rate (random F&O shares that rose >= 1% / >= 2% vs fell >= 1% / >= 2% that day).
+2. **Every brief carries a PE line even on an up day:** the best PE candidates (shares below VWAP in the weakest sectors, with a
+   reason) or "no PE today: <reason>". Same for CE on a down day. Code checks the line is present.
+3. **Live:** a share that closes two 5-minute candles below VWAP with volume, in a weak sector with NIFTY / BANKNIFTY futures also
+   below VWAP, is a PE candidate exactly as the mirror case is a CE candidate - same gates, same ring rules.
+
 ## 20 Nov 23:00 IST - answers to 22:48 (weekend readers, rehearsal rules)
 - **22:20 money rules live (tests 56/56, the heavy-19:45 test, PROOF_2220 running): ACCEPTED.**
 - **FULL3 (20 Nov) and FULL4 (19 Nov) on the LIVE 22:20 rules: YES - correct.** FULL2 (18 Nov) on the old split shows the old
