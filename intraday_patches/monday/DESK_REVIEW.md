@@ -1,5 +1,13 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 12:05 IST - regulator sources that only the SERVER can read (they refuse cloud / foreign machines)
+WEB_SOURCES.md section 5 tested from the desk: 56 of 75 open. These 19 must be polled FROM THE SERVER (Indian network):
+NPCI (npci.org.in, www.npci.org.in - UPI circulars), www.mca.gov.in, rsdoc.nic.in, cdsco.gov.in, nppaindia.nic.in (drug prices),
+grid-india.in, report.grid-india.in, sansadtv.nic.in, eparlib.sansad.in, archive.pib.gov.in, bombayhighcourt.nic.in, aptel.gov.in,
+cbic-gst.gov.in, aera.gov.in, indianrailways.gov.in, gercin.org, www.tnerc.tn.gov.in; egazette.gov.in has an incomplete
+certificate chain - add the missing intermediate certificate to the server's trust store (never turn verification off).
+Use section 5's "FOR THE SERVER (F20 / F21)" polling plan for p_regs.py.
+
 ## 20 Nov 11:30 IST (hourly) - on STATUS 11:22
 - **I2 TV: accepted** (Deepgram on both channels since 07:00:55, median 32 s). Still needed by Monday: the plain "TV ONLY -
   unverified" news line, and block junk matches (TVSMOTOR from "TV").
