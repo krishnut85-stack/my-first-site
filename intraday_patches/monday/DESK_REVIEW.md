@@ -1,5 +1,13 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 19:30 IST - THE TRADER APPROVES the one-off ~$15 rehearsal (full Opus layer) - order of work
+"15 dollar. Ok." The rehearsal runs only AFTER the new desk is built - it cannot replay a desk that does not exist yet:
+1. Saturday: build the core, then the benches (19:20 entry).
+2. Saturday night: REHEARSAL - run the new desk on the recorded 18 / 19 / 20 Nov news, TV, filings and prices, minute by minute,
+   each seat seeing only what existed then; full Opus head layer allowed, one-off cap $15 on its own budget line (not the daily $5).
+   Score on the EDGE yardstick (top-5 hit rate, named before, wrong side, by seat / source). Push the scorecard.
+3. Sunday: fix what the rehearsal shows; shadow run on Sunday's live news; 19:45 the first real evening brief for Monday.
+
 ## 20 Nov 19:20 IST - THE TRADER: "BUILD EVERYTHING FROM NOW" (overrides the phased plan in DESK_TEAM.md section 7)
 Build ALL 40 seats / 10 benches this weekend, not one bench a day in week 1. Order of work: the MINIMUM first (head, flows,
 connections, devil, filings reader, second read, desk board, snapshot, J11 gate) so Monday has a working core even if time runs
