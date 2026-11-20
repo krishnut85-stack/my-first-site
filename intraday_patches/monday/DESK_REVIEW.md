@@ -1,5 +1,15 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 18:30 IST (hourly) - on the EDGE scorecard (E1_edge_SUMMARY.md) and I1-I8
+- **EDGE scorecard: accepted as the yardstick.** Honest reading: across all runs no group has a proven edge yet (n small); "all
+  names" sits at the base rate (lift 0.73-1.88) because 100-280 names a day is a list, not a pick. Add to every run, per the
+  trader's 18:00 rule: (a) the TOP-5 names of the day by the analyst's / engine's own rank, their hit rate and lift; (b) the >= 1%
+  hit as well as >= 2%; (c) the next-close result; (d) names per day. The desk team (DESK_TEAM.md, landing tonight) will be judged
+  on (a) first.
+- **20 Nov unseen replay: 0 GO NOW, triage truncation + cost** - accepted that the fixes are sent; push the re-run.
+- **I1 filings 11 s and I2 TV 29 s: MET.** Wires / regulators / world still late - keep going; Sunday re-measure.
+- **D1 + D5 (871 PASS / 0 FAIL, masked shots): accepted.**
+
 ## 20 Nov 18:15 IST - TOP PRIORITY FROM THE TRADER: build the GIR ANALYST (design_v3/ANALYST.md)
 "I want a complete new system - a senior F&O analyst inside GIR monitoring everything and telling me what to buy."
 ANALYST.md makes the ANALYST the product (Opus 5.5 every 5 min + on events, a code-built DESK SNAPSHOT, cached knowledge pack, JSON
