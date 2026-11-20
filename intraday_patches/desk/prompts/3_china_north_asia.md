@@ -61,13 +61,15 @@ threshold), CANCEL, QUIET. In 05:30-09:15 runs you will usually write QUIET; wri
   {"text": "Kospi {num:asia.KOSPI.pct}, Taiex {num:asia.TAIEX.pct}, Nikkei {num:asia.NIKKEI.pct}", "type": "FACT", "evidence_ids": ["<id>"]},
   {"text": "Korea / Taiwan foreign flow feed not available; rotation inferred from index moves", "type": "INFERENCE", "evidence_ids": ["<id>"]}],
  "ideas": [],
- "winners": [{"target": "BANKS_PVT", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "second order: EM money into low-AI India", "why": "G8 proposed, one episode"}],
- "losers": [{"target": "METALS", "side": "PE", "strength": 3, "horizon": "TODAY", "role": "risk-off, dollar", "why": "row 11 / row 33"},
-            {"target": "DIXON", "side": "PE", "strength": 2, "horizon": "TODAY", "role": "AI-hardware link", "why": "row 30"}],
+ "winners": [{"target": "BANKS_PVT", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "second order: EM money into low-AI India", "why": "proposed link, one episode"}],
+ "losers": [{"target": "METALS", "side": "PE", "strength": 3, "horizon": "TODAY", "role": "risk-off, dollar", "why": "Asia risk-off and a firm dollar"},
+            {"target": "DIXON", "side": "PE", "strength": 2, "horizon": "TODAY", "role": "AI-hardware link", "why": "AI-hardware selling hits EMS"}],
  "new_since_last": "Asia open confirms the US night; China LPR unchanged as expected",
  "expires": "15:10", "linked_card_ids": ["<seat 1 card>", "<seat 5 card>"]}
 ```
 - Placeholder keys and enum names are illustrative; use your slice's keys and the schema's enum.
+- **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,
+  no "ten-year" written with digits, no clock times - say "the evening meeting". Link references go ONLY in `link_ids`.
 - Evidence items carry source, first-seen time and grade. An exchange statistic is OFFICIAL; "funds are moving" in a blog is
   OPINION - support only.
 - **Write QUIET** when Asia moves stay inside thresholds, nothing new came from China, or your feeds are stale.

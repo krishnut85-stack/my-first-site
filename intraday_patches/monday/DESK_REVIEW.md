@@ -1,5 +1,11 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 20:15 IST - WEB / PHONE for the new desk: design_v3/DESK_WEB_CHANGES.md REPLACES DESK_TEAM.md section 6
+The trader: the approved v3 design stays. No new "Desk Room" page, no redesign. The desk speaks through the existing boxes
+(F1 GO NOW card = the head's BUY NOW with FROM / AGAINST / NOT PROVEN; desk-trade GIR row = manage notes; Morning plan band +
+19:45 ideas table = the evening brief; F8 Analyst tabs = themes + seat roster; the existing Ask box). Build its Monday list in its
+order (1-4 and 8 are the minimum, then 5, then 6; 7 drops first). The rest waits for week 1.
+
 ## 20 Nov 19:45 IST - the desk is building the BRAIN CONTENT now: intraday_patches/desk/prompts/
 One prompt file per seat (R1-R6, 1-40, H head analyst) + CONTRACTS.md (seat card + head output JSON schemas), written by senior
 desk builders and checked against DESK_TEAM.md - lands tonight. Server: keep building the plumbing (snapshot done; board, gate,

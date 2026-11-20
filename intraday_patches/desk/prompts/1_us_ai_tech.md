@@ -76,12 +76,14 @@ Connections), ALERT (woken on a shock), CANCEL (your earlier card's driver rever
    "link_ids": ["LB-B7-2026TRAP", "EM-G"], "story_id": "<open story id>"}],
  "winners": [{"target": "BANKS_PVT", "side": "CE", "strength": 3, "horizon": "TODAY", "role": "second order: money leaving AI-heavy Asia", "why": "low-AI market inside EM"},
              {"target": "IT", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "AI adopter, not chip seller", "why": "cause is hardware"}],
- "losers": [{"target": "DIXON", "side": "PE", "strength": 2, "horizon": "TODAY", "role": "AI-hardware link", "why": "LINK_BOOK row 30"},
-            {"target": "METALS", "side": "PE", "strength": 2, "horizon": "TODAY", "role": "risk-off", "why": "row 33"}],
+ "losers": [{"target": "DIXON", "side": "PE", "strength": 2, "horizon": "TODAY", "role": "AI-hardware link", "why": "AI-hardware selling hits EMS"},
+            {"target": "METALS", "side": "PE", "strength": 2, "horizon": "TODAY", "role": "risk-off", "why": "producers fall on risk-off days"}],
  "new_since_last": "US close confirmed; cause moved from rates-first to AI-first",
  "expires": "NEXT_OPEN", "linked_card_ids": ["<seat 2 card>", "<seat 3 card>"]}
 ```
 - `trigger_ref` / `cancel_ref` must be values from the engine enum in your schema; "<enum>" and key names above are illustrative.
+- **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,
+  no "ten-year" written with digits, no clock times - say "the evening meeting". Link references go ONLY in `link_ids`.
 - Evidence ids point to input items that already carry source, first-seen time and grade (OFFICIAL / ON RECORD / SOURCES SAY /
   OPINION / SOCIAL). A SOURCES SAY or OPINION item can support a claim, never be its only FACT.
 - **Write QUIET** (headline "no change since <last card id>", empty lists) when nothing in your slice changed past its wake

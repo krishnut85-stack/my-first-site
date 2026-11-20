@@ -63,16 +63,18 @@ action on India), VIEW (risk-on / risk-off tone), CANCEL (ceasefire, denial, rev
  "claims": [
   {"text": "Vessel attack near Hormuz confirmed by the shipping authority", "type": "FACT", "evidence_ids": ["<id>"]},
   {"text": "Brent {num:world.BRENT.pct} since the item", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "War headlines often fade by the close (C10)", "type": "JUDGEMENT", "evidence_ids": ["<id>"]}],
+  {"text": "War headlines often fade by the close", "type": "JUDGEMENT", "evidence_ids": ["<id>"]}],
  "ideas": [],
- "winners": [{"target": "ONGC", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "upstream revenue", "why": "row 2"},
-             {"target": "DEFENCE", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "conflict theme", "why": "row 54"}],
- "losers": [{"target": "OMC", "side": "PE", "strength": 3, "horizon": "TODAY", "role": "crude cost", "why": "row 2, leader HINDPETRO"},
-            {"target": "INDIGO", "side": "PE", "strength": 2, "horizon": "TODAY", "role": "fuel cost", "why": "row 2"}],
+ "winners": [{"target": "ONGC", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "upstream revenue", "why": "higher crude lifts upstream revenue"},
+             {"target": "DEFENCE", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "conflict theme", "why": "conflict lifts the defence theme"}],
+ "losers": [{"target": "OMC", "side": "PE", "strength": 3, "horizon": "TODAY", "role": "crude cost", "why": "crude cost; leader HINDPETRO"},
+            {"target": "INDIGO", "side": "PE", "strength": 2, "horizon": "TODAY", "role": "fuel cost", "why": "jet fuel is its biggest cost"}],
  "new_since_last": "First OFFICIAL confirmation; earlier items were SOURCES SAY",
  "expires": "15:10", "linked_card_ids": ["<seat 6 card>"]}
 ```
 - Placeholder keys and enum names are illustrative; use your slice's keys and the schema's enum.
+- **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,
+  no "ten-year" written with digits, no clock times - say "the evening meeting". Link references go ONLY in `link_ids`.
 - Evidence items carry source, first-seen time and grade; a social post or "sources say" line is never the only FACT of an ALERT.
 - **Write QUIET** when nothing new arrived, the only items are repeats, or Europe's open changes nothing.
 

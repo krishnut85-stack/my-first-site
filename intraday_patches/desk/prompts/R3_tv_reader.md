@@ -46,7 +46,7 @@ Apply BROKER_CALLS (routine), EVENT_MEMORY (TV-VOICE, TV CALLS), PREDICTION_LOOP
 ## 5. OUTPUT
 ```json
 {"seat": "R3", "kind": "FACT|THEME|ALERT", "item_id": "<chunk id>",
- "headline": "<= 25 words, no digits; start with the channel and the voice>", "strength": 2,
+ "headline": "<= 25 words, no digits; start with the voice (the channel goes in reader.channel - channel names hold digits)>", "strength": 2,
  "reader": {"channel": "CNBC-TV18|ET Now|CNBC Awaaz|Sansad TV", "speaker": "<as labelled>", "speaker_type": "<class>",
             "call_kind": "BROKER_CALL|SHARE_CALL|BOTTOM_CALL|TOP_CALL|MANAGEMENT|SOURCES_SAY|POLICY_VOICE|FLOW_THEME",
             "novelty": "NEW|REPEAT|CHANGE", "speaker_record": "<copied from input, or 'no record yet'>",
@@ -68,7 +68,7 @@ Goldman Sachs on India on screen: OVERWEIGHT BANKS (rate hikes, low valuation, l
 NIFTY was up about 0.5% with narrow breadth. The note was not yet online.
 ```json
 {"seat": "R3", "kind": "FACT", "item_id": "tv:cnbc:1244",
- "headline": "CNBC-TV18, Goldman Sachs: overweight India banks and industrials - industrials upgrade is new, banks a repeat",
+ "headline": "Goldman Sachs on business TV: overweight India banks and industrials - industrials upgrade is new, banks a repeat",
  "strength": 2,
  "reader": {"channel": "CNBC-TV18", "speaker": "Goldman Sachs strategy (graphic)", "speaker_type": "BROKER_STRATEGIST", "call_kind": "BROKER_CALL",
             "novelty": "CHANGE", "speaker_record": "no record yet", "verification": "TV ONLY - UNVERIFIED"},
