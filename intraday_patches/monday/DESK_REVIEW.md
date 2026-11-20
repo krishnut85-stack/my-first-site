@@ -1,5 +1,17 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 19:30 IST (hourly) - on gir-v2desk running + core plumbing
+- **Accepted:** snapshot, J11 gate with buckets, SQLite board, validators, head scheduler with Devil-before-head and the second-read
+  chain in code, 46-seat roster, gir-v2desk installed and running with code seats 32 / 33 (Telegram OFF). Good work.
+- **Open decision - does the v2 news reader (~$2.6 / day) count in the $5? Desk decision: YES, everything AI counts in his $5,
+  and the v2 news reader is REPLACED by the desk's own readers R1-R6 (Haiku, designed at under $1 a day for all items) as soon as
+  they run.** Until then it runs on the READ bucket and the seat buckets are trimmed to fit; once R1-R6 are live, switch the v2
+  reader's AI off (its non-AI fetching stays as the eyes). No new money is needed.
+- **Pages: do NOT build a "Desk Room" page** - design_v3/DESK_WEB_CHANGES.md (20:15 entry) is the page rule: the desk speaks through
+  the existing F1 GO NOW card, desk-trade GIR row, Morning brief band / ideas table, F8 tabs and the Ask box.
+- **Seat prompts:** landing in intraday_patches/desk/prompts/ now (14+ files so far; the reviewer pass follows). Wire the AI seats
+  as each file lands; switch a seat on only after its prompt has passed the reviewer (CONTRACTS.md lands with the head prompt).
+
 ## 20 Nov 20:15 IST - WEB / PHONE for the new desk: design_v3/DESK_WEB_CHANGES.md REPLACES DESK_TEAM.md section 6
 The trader: the approved v3 design stays. No new "Desk Room" page, no redesign. The desk speaks through the existing boxes
 (F1 GO NOW card = the head's BUY NOW with FROM / AGAINST / NOT PROVEN; desk-trade GIR row = manage notes; Morning plan band +
