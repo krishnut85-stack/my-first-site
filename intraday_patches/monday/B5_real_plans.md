@@ -34,3 +34,19 @@ Premium and size:
 - R:R values: before {2.0: 1233, None: 16} on 16 Nov (flat 2.0 on every card); after 245 distinct values.
 - Rings without premium: before 2 / 6 / 24 (16 / 18 / 19 Nov); after 0 / 0 / 0.
 - On these frames (captured 19 Nov, before the player carried the December chain) nearly every card is "no premium - not tradable", which is correct for that data. The current player fills rows2 from girdata/minute/<day>/opt (16, 18, 19 Nov and 27, 29 Oct have option minutes), so the E1 replays will price the cards.
+
+## With and without the replay-only "premium: Nov proxy" (desk order 20 Nov; switch GIR_PREM_PROXY=nov, removed by the live service at start)
+Captured frames, rules only, final engine 0.3. "GO NOW tradable" = GO NOW rows with lots >= 1.
+
+| day | proxy | priced cards | 0 lots | GO NOW tradable CE / PE | published side cards | rings |
+|---|---|---|---|---|---|---|
+| 18 Nov | off | 0 of 1,048 | 1,048 | 0 / 0 | 0 | 0 |
+| 18 Nov | on | 936 of 1,080 | 623 (408 still no premium, rest R:R < 1) | 5 / 96 | 12 (11 PE GO NOW, 1 CE GO NOW) | 12 |
+| 19 Nov | off | 0 of 1,160 | 1,160 | 0 / 0 | 3 | 0 |
+| 19 Nov | on | 533 of 1,175 | 940 | 6 / 4 | 10 (4 CE GO NOW, 3 PE GO NOW, 3 PE GET READY) | 4 |
+
+- 16 Nov frames carry no November chain rows, so the proxy cannot price them.
+- Where the frames have a share's chain, the proxy prices it. Shares with no recorded chain still read "no premium - not tradable".
+- The card always says "premium: Nov proxy X (replay only ...)".
+
+Today's live frames (real December chain from oc rows2 / exps, no proxy): 288 tradable cards; GO NOW tradable 9 CE / 7 PE.

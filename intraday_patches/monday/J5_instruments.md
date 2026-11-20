@@ -32,3 +32,14 @@ To do on Sat 21 Nov (outside market hours): `--fetch girdata/review/monday/instr
 
 ## Monday 08:15 live check
 Run on Monday's 08:00 file (v2/data/instr/NFO_2026-11-23.csv, written by gir-v2opt at its first pass) against Friday's. The plan-card lots must equal the file's December lot. Results are appended here.
+
+## Dry run 2 - Fri 20 Nov morning file vs a fresh download the same evening (16:15 IST)
+```
+J5 instrument check - old /home/globalbot/intraday/v2/data/instr/NFO_2026-11-20.csv · new /home/globalbot/girdata/review/monday/instr/NFO_2026-11-20_evening.csv · day 2026-11-23
+contracts by type: old {'FUT': 667, 'CE': 21943, 'PE': 22175} · new {'FUT': 667, 'CE': 23732, 'PE': 23943}
+F&O names: old 224 · new 224 · leaving 0 [] · joining 0 []
+expiries in the new file (days to expiry from 2026-11-23): 2026-11-23 (0 d), 2026-12-01 (8 d), 2026-12-08 (15 d), 2026-12-15 (22 d), 2026-12-22 (29 d), 2026-12-29 (36 d), 2027-01-25 (63 d), 2027-03-30 (127 d), 2027-06-29 (218 d), 2027-09-28 (309 d), 2027-12-28 (400 d), 2028-06-27 (582 d)
+the next stock series: 2026-12 · its lot changed vs the old file: 0 []
+its lot differs from the current series: 0 []
+plan-card lot = the next series' option lot, e.g. 360ONE 500, ABB 125, ABCAPITAL 1550, ADANIENSOL 675, ADANIENT 309, ADANIGREEN 600, ADANIPORTS 475, ADANIPOWER 3550, ALKEM 125, AMBER 100, AMBUJACEM 1200, ANANDRATHI 250
+```

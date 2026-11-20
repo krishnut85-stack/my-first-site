@@ -36,3 +36,9 @@ An October up day needs the player (October has no captured frames). It is in th
 - the short-covering CE window (09:30-11:00, above VWAP, with its sector);
 - the VIX kill on CE;
 - the cost-relief CE price rule.
+
+## Up day with priced cards (desk 20 Nov)
+- 19 Nov with the Nov proxy: GO NOW tradable CE 6 / PE 4; published GO NOW CE 4 / PE 3.
+- Before sizing, the GO NOW-ready cards were CE 76 / PE 24. Most CE ideas on 19 Nov fall away for missing chain rows in the frames ("no premium" on 611 cards) and for R:R < 1, not for the side.
+- The AI replays (coordinator E1) will show the lanes on the up day.
+- The mirror test (identical calls, sides swapped) is the side-equality proof that does not depend on data coverage.
