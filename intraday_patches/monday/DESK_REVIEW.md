@@ -1,5 +1,14 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 21:45 IST - NEW STANDING SOURCE: summits and meetings (design_v3/SUMMITS.md)
+The trader: "All these summits and meetings are very critical to study the market news and trend." Summits (chambers, sector bodies,
+broker investor conferences, company days, regulators / ministers on a stage, RBI MPC / SEBI board / GST Council, global meetings)
+are now a standing desk source: calendar before, live reading on the day, EVENT_MEMORY after, scored by speaker type and line type.
+Seat prompts 34 / 35 / 37 updated. SUMMIT_CALENDAR.md (dates + past statements with sources) lands next.
+**Order: AFTER Monday's must-haves (shadow pass, rehearsal, J6).** Then build SUMMITS.md section 6: the `summits` table (1), the
+stream URL per event in the STT recorder (2), the reader tags (3), the scorecard grouping (4), and the one-off backfill pricing of
+the past statements after 15:35 (5, code only, no AI cost). No new page.
+
 ## 20 Nov 21:25 IST - on the 19:58 shadow ("compiled grammar too large") - with the READY prompts
 - **Your second fix is right: do NOT send the full CONTRACTS schema to the API.** Per call, send only a SMALL API schema: the seat card
   core (seat, kind, headline, strength, claims, winners, losers, evidence, new_since_last, expires, proof, linked_card_ids, links) plus

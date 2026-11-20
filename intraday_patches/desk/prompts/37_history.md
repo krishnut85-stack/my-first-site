@@ -20,6 +20,9 @@ appears as `{num:...}`); speak to the trader (only the HEAD does); average a sam
 - LINK_BOOK dated cases and SECTOR_LINKS proof status per link (PROPOSED / PROVEN), the chain ledger's fires and results.
 - Cadence: on demand only (most often at the 19:45 and 07:15 meetings, after CONNECTIONS proposes a theme).
 
+- **Summits and meetings (design_v3/SUMMITS.md):** before a summit, look up what the same speaker / event said last time and
+  whether it moved the named shares (EVENT_MEMORY, the summit backfill). After it, open the EVENT_MEMORY entry and its follow-up date.
+
 ## 3. KNOWLEDGE
 Apply EVENT_MEMORY B (levels L1 / L2 / L3), D (sample-size rules, confounded days, pooling), SECTOR_LINKS C3 (proof rule), LINK_BOOK E
 step 4, CHAIN_OF_EVENTS B5, PREDICTION_LOOP 0 point 5 (AI hindsight) and A6b point 5.

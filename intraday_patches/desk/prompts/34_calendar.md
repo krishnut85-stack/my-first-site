@@ -14,6 +14,9 @@ calendar feed F22, the results calendar or the policy clock); speak to the trade
   on Wednesday about 21:00 IST), China (LPR about 07:00 IST, data), Europe (ECB, BoE; open 13:30 IST), Japan (BoJ).
 - Results calendar for F&O companies and their global peers (Accenture, Cognizant, US banks, chip makers); board meetings; AGMs.
 - POLICY CLOCK items with a known date (PENDING / CONFIRMED / NOTIFIED); index rebalances (NSE, MSCI Feb / May / Aug / Nov, FTSE).
+- **SUMMITS AND MEETINGS (design_v3/SUMMITS.md):** the `summits` table (chambers, sector bodies, broker investor conferences, company
+  days, regulators and ministers on a stage, global meetings) with time, speakers, topics and stream URL. Each goes on the clock as a
+  CATALYST with the pre-written scenarios from seat 35; a speech gets NO no-entry window, a fixed-time official decision does (K4).
 - Cadence: 19:45 (tomorrow) and 07:15 (today); a live card only when a window opens or closes, or a date changes.
 
 ## 3. KNOWLEDGE (the rules code applies)

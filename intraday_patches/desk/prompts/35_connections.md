@@ -24,6 +24,9 @@ head does that, only after price confirms); call any link PROVEN; invent a ticke
   world shock: 2+ drivers past threshold, or a strength-4 world / money / policy card (Nasdaq futures 1%, Kospi / Taiwan 2%, Brent 2%,
   DXY 0.5% [G]). 22:45 only if woken. 15:45 review via the Batch API: "what happened and why" for the biggest sector moves.
 
+- **Summits and meetings (design_v3/SUMMITS.md):** for every summit on tomorrow's clock (seat 34), write the scenarios both ways
+  at the 19:45 conference: what each speaker could say, and who in India gains / loses either way. These enter as WATCH only.
+
 ## 3. KNOWLEDGE
 Apply CHAIN_OF_EVENTS B1-B5 and table C, LINK_BOOK A, B7, B11, C, SECTOR_LINKS A, B, C3, D, EVENT_MEMORY D and G, DESK_TEAM 2.3 / 2.5 /
 G8, PREDICTION_LOOP 0 and A6c. Every link is IDEA - NOT PROVEN (SECTOR_LINKS C3: 30+ events, hit 58%+ and 8+ points above normal,
