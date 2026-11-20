@@ -213,7 +213,8 @@ def oi_matrix(syms):
 
 def oi_check(E):
     """every flagged expiry against the next market day's drop in the summed OI (over the symbols present both days)"""
-    syms = sorted(O.FOD)
+    old = {o_ for new_, olds in ALIAS.items() if new_ in O.FOD for o_ in olds}    # O.setup merged a renamed share's old days into its new
+    syms = sorted(x for x in O.FOD if x not in old)                              # symbol: count them once
     if not syms:
         return [], "no NSE daily futures file - the calendar could not be checked against OI"
     M = oi_matrix(syms)
@@ -627,16 +628,17 @@ def report(S, SER, E, open_, chk, chk_note, secs, names, nsh_data, t0, args):
     best = {}
     for sd in (0, 1):
         ps = [st for st in tries if st["side"] == SIDES[sd] and st["pass"]]
-        ps.sort(key=lambda st: (-st["lift_ci"][0], -st["tune"]["trades"]))
+        ps.sort(key=lambda st: (-st["lift_adj"], -st["lift_ci"][0], -st["tune"]["trades"]))     # the most certain edge first
         best[sd] = ps[0] if ps else None
-        P("  %s: %d of %d tries pass%s" % (SIDES[sd], len(ps), ntry, ": " + ", ".join("%s day %d (lift %.2f [%.2f-%.2f], held %.2f)" % (
-            st["set"], st["k"], st["lift"], st["lift_ci"][0], st["lift_ci"][1], st["lift_held"]) for st in ps) if ps else ""))
+        P("  %s: %d of %d tries pass%s" % (SIDES[sd], len(ps), ntry, ": " + ", ".join("%s day %d (lift %.2f [%.2f-%.2f], guard %.2f, held %.2f)" % (
+            st["set"], st["k"], st["lift"], st["lift_ci"][0], st["lift_ci"][1], st["lift_adj"], st["lift_held"]) for st in ps) if ps else ""))
         if not ps:
-            cand = [st for st in tries if st["side"] == SIDES[sd] and st["tune"]["trades"] > 0 and np.isfinite(st["lift_ci"][0])]
+            cand = [st for st in tries if st["side"] == SIDES[sd] and st["tune"]["trades"] > 0 and np.isfinite(st["lift_adj"])
+                    and st["lift_ci"][1] - st["lift_ci"][0] > 1e-9]          # not a set that IS the whole pool (MKT alone: lift 1.00 exactly)
             if cand:
-                c = max(cand, key=lambda st: st["lift_ci"][0])
-                P("     closest: %s day %d - lift %.2f [%.2f-%.2f]; failed: %s" % (c["set"], c["k"], c["lift"], c["lift_ci"][0], c["lift_ci"][1],
-                                                                             "; ".join(c["why"])))
+                c = min(cand, key=lambda st: (len(st["why"]), -st["lift_adj"]))         # the fewest rules failed, then the surest lift
+                P("     closest: %s day %d - lift %.2f [%.2f-%.2f], guard %.2f; failed: %s" % (c["set"], c["k"], c["lift"], c["lift_ci"][0],
+                                                                                        c["lift_ci"][1], c["lift_adj"], "; ".join(c["why"])))
     P("  (with %d tries a side, about 1 in 40 sets of pure noise clears a plain 95%% interval - hence the guard: the bound widened to z = %.2f)" % (
         ntry, S.zfam))
     P("")
@@ -670,7 +672,6 @@ def report(S, SER, E, open_, chk, chk_note, secs, names, nsh_data, t0, args):
             J["answer"][SIDES[sd]] = {"set": st["set"], "parts": st["parts"], "k": st["k"], "verdict": "PASS", "stats": st}
     Q("")
     for sd in (0, 1):
-        si = SETNAME.index(PLAN_SET)
         pl = [st for st in tries if st["side"] == SIDES[sd] and st["set"] == PLAN_SET and st["k"] == 3][0]
         Q("  THE PLAN'S OWN %s RULE (A3: %s, day 3): %d trades (%.1f a month), hit %s against random %s, lift %s [%s-%s], held-out lift %s - %s" % (
             SIDES[sd], "long build-up + rollover above its average + a top sector" if sd == 0 else "short build-up + rollover + a bottom sector",
@@ -678,7 +679,6 @@ def report(S, SER, E, open_, chk, chk_note, secs, names, nsh_data, t0, args):
             f1(pl["lift"], "%.2f"), f1(pl["lift_ci"][0], "%.2f"), f1(pl["lift_ci"][1], "%.2f"), f1(pl["lift_held"], "%.2f"),
             "PASS" if pl["pass"] else "FAIL (" + "; ".join(pl["why"]) + ")"))
         J["answer"]["plan_" + SIDES[sd]] = pl
-        del si
     Q("")
     Q("  HONEST CAVEATS - read before using any of this:")
     Q("  - NO OPTION HISTORY: the store has no option prices. The naked option and the debit spread are PROXIES priced from the share's own")
@@ -724,8 +724,8 @@ def ans_rows(Q, a, b, st):
             return "%s (hit %s)" % (sgn(x["naked_med"], "%+.0f%%"), pct(x["naked_hit"]))
         if key == "worst":
             w = x["worst"]
-            return "%s %s %s (spread %s)" % (w["share"], dday((dt.date.fromisoformat(w["entry"]) - dt.date(1970, 1, 1)).days).strftime("%d %b %y"),
-                                             sgn(w["move"]), sgn(w["spread"], "%+.0f%%"))
+            return "%s %s %s (spread %s)" % (w["share"], dt.date.fromisoformat(w["entry"]).strftime("%d %b %y"), sgn(w["move"]),
+                                             sgn(w["spread"], "%+.0f%%"))
         if key == "wm":
             w = x["worst_month"]
             return "%s series: %d trades, avg %s" % (w["series"], w["trades"], sgn(w["spread_avg"], "%+.0f%%"))
@@ -767,7 +767,8 @@ METHOD = (
     "BASELINES: ALL = every share the same side and day; TOP = the shares of the previous series' top sector (PE: bottom). RANDOM = for every",
     "  trade a random share of the same series, entry day and side; its hit count over 10,000 draws is drawn as the exactly equivalent",
     "  binomial count per series. LIFT = the set's hits / the random picks' expected hits; its 95% interval resamples whole months (series)",
-    "  2,000 times (onsetstudy.boot). p = the share of the 10,000 random draws that hit as often as the set.",
+    "  2,000 times (onsetstudy.boot). p = the share of the 10,000 random draws that hit as often as the set. MKT alone takes every share",
+    "  of a series or none, so against a same-series random pick its lift is exactly 1.00 by construction - it counts only in pairs.",
     "THE GUARD (added to the design's PASS rule): the lift's lower bound with the interval widened for the number of tries on that side",
     "  (Bonferroni on the log lift, the month-bootstrap's standard error): with ~93 tries a plain 95% interval lets pure noise pass.",
     "TUNING / HELD-OUT: held-out = series starting in the last 6 months of the store (onsetstudy's cut); tuning = series that end before",
