@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 11:22 IST
+Last update: 11:33 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -45,7 +45,7 @@ Last update: 11:22 IST
 | G2 Score this week's evening watches | NOT STARTED |  |  |  |
 | I1 NSE + BSE filings | IN PROGRESS | interim 09:00-11:30: median 55 s / worst 61 s vs 15 s target - LATE. NSE: CDN cache ~40 s (cache-buster fix staged); BSE ~30 s late at source; circulars only every 5 min (60 s staged) | external_delays.md (after 15:35) | 11:18 |
 | I2 TV speech-to-text | IN PROGRESS | TV speech-to-text RUNNING today since 07:00:55 on BOTH CNBC-TV18 and ET Now (Deepgram), last transcript line 10:33:47 on each; yesterday's 'TV listening stopped' meant the OLD on-server listener (tvstt.py), replaced by Deepgram on 19 Nov - not a stop of TV listening; delay table in external_delays.md; delay median 32 s / worst 38 s vs 60 s target - OK; but no plain 'TV only - unverified' news line yet (only map ideas) and tvcalls junk matches (TVSMOTOR from 'selling') - fixes after 15:35 | external_delays.md | 11:18 |
-| I3 Wires and publishers | IN PROGRESS | interim: median 278 s vs publishers' sitemap times (target 30 s) - LATE. Moneycontrol RSS dead (2024), ET RSS cached 2-10 min, Reuters 401 to bots, NDTV Profit feed ~30 min stale; sitemap-first polling to be staged | external_delays.md (after 15:35) | 11:18 |
+| I3 Wires and publishers | IN PROGRESS | interim: median 278 s vs publishers' sitemap times (target 30 s) - LATE. Moneycontrol RSS dead (2024), ET RSS cached 2-10 min, Reuters 401 to bots, NDTV Profit feed ~30 min stale; sitemap-first polling to be staged; desk targets for Monday: filings <= 20 s, wires <= 60 s, regulators <= 120 s; v2 switches to the Moneycontrol news sitemap; WEB_SOURCES.md section 3 free sources added over the weekend | external_delays.md (after 15:35) | 11:33 |
 | I4 World news and cues | IN PROGRESS | interim: FinancialJuice 51-109 s, Trump read every 5 min (60 s staged), GIFT stale overnight until the Kite login, Yahoo futures ~10 min behind, Asia 15-20 min; no DXY / Asia on the page yet | external_delays.md (after 15:35) | 11:18 |
 | I5 Regulators / Parliament / PIB | IN PROGRESS | interim: RBI 551 s; v2 has no SEBI / PIB / TRAI / CCI / sansad poller - new p_regs.py staged (SEBI RSS empty; IRDAI disallows robots); BSE notice times look GMT-as-IST (bug to fix) | external_delays.md (after 15:35) | 11:18 |
 | I6 Sector data (R49) | IN PROGRESS | checks vs NSE sector indices at 10:30 / 12:30 / 14:30 running | external_delays.md (after 15:35) | 11:18 |
@@ -56,7 +56,7 @@ Last update: 11:22 IST
 | J3 One trading calendar (Tue 24 holiday) | NOT STARTED |  |  |  |
 | J4 Fake-clock Monday 08:00 / 08:45 | NOT STARTED |  |  |  |
 | J5 Monday instrument file vs Friday | IN PROGRESS | December option lots equal November for all 224 names in today's file (35 change in January); plan-card lot taken from the chosen contract; Saturday dry run of Monday-vs-Friday file; live check Mon 08:15 |  | 09:38 |
-| J6 Silence every old sender | NOT STARTED |  |  |  |
+| J6 Silence every old sender | NOT STARTED | desk 11:30: on Monday stop or slow the old timers that burst in the same minute (falcon, crosscheck, govwatch, raven-manage) and keep the silent old system's AI off (J11); the old system's macro.py still reads the dead Moneycontrol RSS (left alone - it goes silent) |  | 11:33 |
 | J7 Fallback switch safe and his | NOT STARTED |  |  |  |
 | J8 Replay isolation | NOT STARTED |  |  |  |
 | J9 09:00-09:30 rules | NOT STARTED |  |  |  |
