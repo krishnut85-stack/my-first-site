@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 08:54 IST
+Last update: 09:07 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -52,7 +52,7 @@ Last update: 08:54 IST
 | I7 Economic + results calendar | IN PROGRESS | measuring | external_delays.md | 07:31 |
 | I8 Source health + silence alarm | IN PROGRESS | measuring | external_delays.md | 07:31 |
 | J1 Automatic Kite login | NOT STARTED | plan: keys 2/3/4 use the same Zerodha user + TOTP as key 1's auto-login (each app has its own key/secret); built after 15:35 today - a new login during market hours could cut the old engine's live sessions; Sunday dry run of all four; Monday 08:20 check |  | 08:33 |
-| J2 Today's live session read-only | IN PROGRESS | recorder gir-v2wsrec on Kite REST quote() (same fields as FULL: 5-level depth, OI, avg price), 665 instruments every 3 s - NO websocket slot is free today (keys 1-4 all carry 3+ live connections of the old system); keys 2/3/4 get today's token only when the old engine logs them in (~09:04 / ~09:21), so 09:00-09:04 pre-open comes from the 10-30 s snapshots | J2_live_readonly.md (16:00) | 07:38 |
+| J2 Today's live session read-only | IN PROGRESS | recording since 09:04:30 on key 2 by REST quote() (no websocket slot free): 665 instruments, 2 calls every 3 s, 0 errors; ~220 items/s polled, 88-101/s changed, largest gap 3.2 s; FULL fields: 5-level depth on 99.25 pct of items (all shares and futures), OI on 100 pct of futures; 09:00-09:04 from the 10-30 s snapshots (no key 2/3/4 token before the old engine's 09:04 login); ~40 MB/h; proof table by 16:00 | J2_live_readonly.md (16:00) | 09:07 |
 | J3 One trading calendar (Tue 24 holiday) | NOT STARTED |  |  |  |
 | J4 Fake-clock Monday 08:00 / 08:45 | NOT STARTED |  |  |  |
 | J5 Monday instrument file vs Friday | NOT STARTED |  |  |  |
