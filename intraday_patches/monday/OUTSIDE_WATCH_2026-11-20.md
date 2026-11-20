@@ -79,3 +79,22 @@ YES BANK pre-open fall and its cause; BANKNIFTY level and %; JSW Steel %; defenc
 - Motley Fool / Yahoo "Stock Market Today, Nov. 19"; CNBC 19 Nov; Decrypt (AMD, Micron, Anthropic)
 - Business Upturn (defence and metal sector, 19 Nov); MarketsMojo (PGEL); TradingView/Moneycontrol (copper 7-month low)
 - TradingView/Moody's, The Week, Wikipedia (Yes Bank AT-1)
+
+## 09:45-10:30
+
+**Logged around 10:30 IST.** About 30 web searches were run for this window, covering IANS, DSIJ, Upstox, Kotak Neo, BusinessToday, HDFC Sky and Business Standard, plus general queries. **None of them returned an item time-stamped 09:45-10:30 today.** Search results for 20 Nov kept falling back to 20 Nov **2025** pages (Nifty 26,192 / Sensex 85,632), and those were thrown out. Direct page fetches failed: business-standard.com and kotakneo.com do not resolve from this session, so those hosts must be allowed in the session's network settings before the live blogs can be read. ndtvprofit.com and cnbctv18.com are blocked for the search tool. **No new price levels are logged for this window. Do not treat the gap as "flat".**
+
+| Time (IST) | Share / sector | Move % and side | Why (source, time) | Confidence |
+|---|---|---|---|---|
+| 09:45-10:30 | NIFTY 50 / SENSEX | **NOT CONFIRMED.** No level or % found for this window. The last logged prints are still 09:17 (DSIJ/BS NIFTY 25,447.55 vs IANS 25,345, conflict open) and the ~09:20-09:30 SENSEX low of -615 (IANS) | No dated item in search results | NOT CONFIRMED |
+| 09:45-10:30 | BANKNIFTY | **NOT CONFIRMED.** No level or % found. Latest public data: record high 62,324.55 on 17 Nov (Angel One) | Angel One 17 Nov | NOT CONFIRMED |
+| 09:45-10:30 | NIFTY METAL / IT (sector leadership) | **NOT CONFIRMED** whether metal is still the worst sector and IT still the best after 09:45. No update found | none | NOT CONFIRMED |
+| 09:45-10:30 | YES BANK | **Still NOT CONFIRMED: no report of a ~10% fall today and no cause found.** New background only: Bar and Bench / Moneylife (17 Nov) confirm Yes Bank **and RBI** have filed review petitions against the SC AT-1 verdict. The Week (14 Nov) says the same. The trustee's 6 Nov contempt petition is pending. **No hearing date found** for either. If a hearing or order landed today it would fit the move, but it is **unverified**. Do not score a PE as news-confirmed | Bar and Bench / Moneylife 17 Nov; The Week 14 Nov | NOT CONFIRMED (today); background 2 src |
+| 09:45-10:30 | Defence: HAL, BEL, BDL, MAZDOCK, COCHINSHIP | **NOT CONFIRMED.** No move found for today. Only background: BEL disclosed **Rs 619 cr** of extra orders since 6 Nov (dated about 13-14 Nov; PSU Connect, Indian Masterminds, PSU Watch) and Rs 909 cr on 9 Nov; order book Rs 68,717 cr as of 1 Oct (Raksha Anirveda). No HAL, BDL, MAZDOCK or COCHINSHIP news dated 19-20 Nov found | PSU Connect / PSU Watch about 13-14 Nov | NOT CONFIRMED (today); BEL orders 2 src |
+| 09:45-10:30 | Dixon group: DIXON, PGEL, KAYNES, AMBER | **NOT CONFIRMED.** No item for today or this week. The copper 7-month-low tailwind (19 Nov) is still the only recent driver on record | none | NOT CONFIRMED |
+| 09:45-10:30 | DILIP BUILDCON | **Correction / context for the early row:** the Rs 419.47 cr Gurugram Metro depot job was first disclosed on **12 Nov** as an **L1 (lowest bidder)** status, and the stock was then +0.6% at Rs 405 (DSIJ, Arthneeti, Swarajya). Today's item (LoA, per Upstox / BS) would be the **formal award of a ~1.5%-of-order-book job, already partly known**, so a CE move may be muted. **Today's price NOT CONFIRMED** | DSIJ / Arthneeti 12 Nov; Swarajya | 2 src (background) |
+| 09:45-10:30 | ASHOKA BUILDCON | Context: the Diriyah job was awarded to its Saudi JV in **Feb 2026** (its share SAR 351.37 mn; Zawya), and the stock fell more than 3% even on the award day. **No outlet besides Upstox's 20 Nov stocks-to-watch was found reporting the cancellation.** Today's price NOT CONFIRMED (PE bias still unconfirmed) | Zawya (award); Upstox 20 Nov (cancellation) | cancellation 1 src |
+| 09:45-10:30 | Copper / rupee | **NOT CONFIRMED.** No LME copper print or rupee open found for today | none | NOT CONFIRMED |
+| 09:45-10:30 | Block deals / broker calls | **NOT CONFIRMED.** None found for 20 Nov | none | NOT CONFIRMED |
+
+**Note for scoring:** for 09:45-10:30, score both systems against the exchange tape (NSE closing and intraday data), not against this log. This window has no confirmed outside reference points.
