@@ -1,0 +1,150 @@
+{
+ "run": "FULL2",
+ "layer": "full",
+ "days": [
+  "2026-11-18"
+ ],
+ "made_ist": "2026-11-20 23:08:11",
+ "edge": {
+  "2026-11-18": {
+   "line": "EDGE 2026-11-18 2026-11-18: 12 names a day (4 knowledge-driven) \u00b7 TOP-5 by the analyst's own rank: >=1% 1/3 33% vs 19% lift 1.76, >=2% 1/3 33% vs 6% lift 5.74 \u00b7 all names >=1% 3/12 25% vs 23% lift 1.09, >=2% 3/12 25% vs 8% lift 3.34 \u00b7 knowledge >=2% 1/4 25% vs 5% lift 5.07 \u00b7 all names >=2% to the next close 2/12 17% vs 16% lift 1.01 \u00b7 old system >=2% 21/293 7% vs 8% lift 0.88 (293 names)",
+   "names_per_day": {
+    "analyst ideas": 3,
+    "prediction loop (lists, fired movers)": 9,
+    "ALL": 12,
+    "OLD system": 293,
+    "INDEX": 0
+   },
+   "top5_headline": {
+    "by": "list order",
+    "names": [
+     "POLYCAB PE 19:47",
+     "MAHABANK CE 19:47",
+     "PRESTIGE CE 19:47"
+    ],
+    "n": 3,
+    "hit1_close": 1,
+    "hit2_close": 1,
+    "proof": "NOT PROVEN (n = 3)",
+    "1_close": {
+     "n": 3,
+     "hits": 1,
+     "hit_rate": 0.333,
+     "base_rate": 0.19,
+     "lift": 1.76
+    },
+    "2_close": {
+     "n": 3,
+     "hits": 1,
+     "hit_rate": 0.333,
+     "base_rate": 0.058,
+     "lift": 5.74
+    },
+    "1_next": {
+     "n": 3,
+     "hits": 1,
+     "hit_rate": 0.333,
+     "base_rate": 0.318,
+     "lift": 1.05
+    },
+    "2_next": {
+     "n": 3,
+     "hits": 1,
+     "hit_rate": 0.333,
+     "base_rate": 0.187,
+     "lift": 1.79
+    },
+    "whose": "the analyst's own rank"
+   },
+   "error": null
+  }
+ },
+ "budget_days": [
+  {
+   "budget_day": "2026-11-16 15:40 -> 2026-11-17 15:40",
+   "session": "2026-11-17",
+   "usd": 0.006,
+   "calls": 3,
+   "refused": 0,
+   "by": {
+    "READ": 0.006
+   },
+   "steps": {},
+   "cap": 8.0,
+   "floors": [
+    [
+     "19:45",
+     1.1,
+     0.0
+    ],
+    [
+     "22:45",
+     0.3,
+     0.0
+    ],
+    [
+     "07:15",
+     0.6,
+     0.0
+    ],
+    [
+     "09:08",
+     0.6,
+     0.0
+    ]
+   ]
+  },
+  {
+   "budget_day": "2026-11-17 15:40 -> 2026-11-18 15:40",
+   "session": "2026-11-18",
+   "usd": 5.672,
+   "calls": 477,
+   "refused": 229,
+   "by": {
+    "LIVE": 1.369,
+    "MEET": 1.825,
+    "READ": 0.442,
+    "SEATS": 2.036
+   },
+   "steps": {
+    "LEAN (combined seat calls)": "2026-11-17 19:47 - SEATS $1.43",
+    "SEATS event-only": "2026-11-17 19:47",
+    "first refusal": "2026-11-17 19:47 (SEATS at 70% of $2.80 - event calls only)",
+    "MEET bucket full": "2026-11-18 07:17"
+   },
+   "cap": 8.0,
+   "floors": [
+    [
+     "19:45",
+     1.1,
+     1.068
+    ],
+    [
+     "22:45",
+     0.3,
+     0.334
+    ],
+    [
+     "07:15",
+     0.6,
+     0.422
+    ],
+    [
+     "09:08",
+     0.6,
+     0.0
+    ]
+   ]
+  }
+ ],
+ "replay_tick_min": 15,
+ "rules": "20nov",
+ "buckets": {
+  "MEET": 1.8,
+  "LIVE": 1.5,
+  "READ": 1.6,
+  "SEATS": 2.8,
+  "ASK": 0.3
+ },
+ "sim_cost": false
+}
