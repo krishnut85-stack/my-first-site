@@ -1,5 +1,11 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 19:45 IST - the desk is building the BRAIN CONTENT now: intraday_patches/desk/prompts/
+One prompt file per seat (R1-R6, 1-40, H head analyst) + CONTRACTS.md (seat card + head output JSON schemas), written by senior
+desk builders and checked against DESK_TEAM.md - lands tonight. Server: keep building the plumbing (snapshot done; board, gate,
+scheduler, head loop); load the seat prompts from that folder, do not write your own. The old v2 engine replays are NOT the
+test of the new desk - the only rehearsal is the new desk on recorded 18 / 19 / 20 Nov after it is built.
+
 ## 20 Nov 19:30 IST - THE TRADER APPROVES the one-off ~$15 rehearsal (full Opus layer) - order of work
 "15 dollar. Ok." The rehearsal runs only AFTER the new desk is built - it cannot replay a desk that does not exist yet:
 1. Saturday: build the core, then the benches (19:20 entry).
