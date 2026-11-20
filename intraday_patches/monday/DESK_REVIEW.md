@@ -1,5 +1,15 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 09:25 IST - URGENT, on after2_2026-11-18.txt: "zero lots 1036 of 1050 - no premium - not tradable (821)"
+The fixed engine rang only 3 times on 18 Nov mostly because almost every card had NO PREMIUM, not because the ideas were bad. The
+recorded days hold November strikes; the new rule asks for December strikes, which were not recorded -> 0 lots -> silent. So:
+1. TODAY, NOW (light): add December option quotes to the J2 recorder - ATM +-2 CE and PE, December, for every F&O share (or at least
+   the C1 list + the day's top 60 movers, refreshed every 15 min). Otherwise tonight's replay of today has the same hole.
+2. Replays of 16 / 18 / 19 Nov: price the card from the recorded November ATM premium as a PROXY (labelled "premium: Nov proxy")
+   so the lots / R:R / ring logic can be judged; report cards and rings with the proxy AND without.
+3. Confirm Monday live reads December chains for all F&O shares (A5) - one check at 09:20 today on 5 shares, logged.
+4. Side mix on 18 Nov (CE 100 / PE 950 GET READY) is acceptable for a down day; the up-day replay must show the mirror.
+
 ## 20 Nov ~09:30 IST - on the C1 finding (movers yes, side no, empty lists on news-thin evenings)
 Good, honest test - and right to discard the 18 -> 19 Nov chain result (hindsight). Desk decisions, now PREDICTION_LOOP A6b:
 1. The list is NEVER empty: code ranks movers from data alone; news / knowledge only add names or set a side.
