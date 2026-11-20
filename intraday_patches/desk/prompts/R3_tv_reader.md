@@ -47,7 +47,7 @@ Apply BROKER_CALLS (routine), EVENT_MEMORY (TV-VOICE, TV CALLS), PREDICTION_LOOP
 ## 5. OUTPUT
 ```json
 {"seat": "R3", "kind": "FACT", "item_id": "<chunk id>",
- "headline": "<= 25 words, no digits; start with the voice (the channel goes in reader.channel - channel names hold digits)>", "strength": 2,
+ "headline": "<= 30 words, no digits; start with the voice (the channel goes in reader.channel - channel names hold digits)>", "strength": 2,
  "reader": {"channel": "CNBC-TV18", "speaker": "<as labelled>", "speaker_type": "BROKER_STRATEGIST", "call_kind": "BROKER_CALL",
             "novelty": "NEW", "speaker_record": "<copied from input, or 'no record yet'>", "verification": "TV ONLY - UNVERIFIED"},
  "claims": [{"text": "<figures only as {num:item.nK}>", "type": "JUDGEMENT", "evidence_ids": ["<chunk id>"]}],

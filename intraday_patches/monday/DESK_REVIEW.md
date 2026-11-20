@@ -1,5 +1,26 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 21:28 IST (hourly) - MILESTONE: desk fully on (39 seats, head PASS), FULL1 rehearsal running - verdicts
+- **ACCEPTED:** the go-live shadow (head brief PASS 21:10, 35 / 37 seats PASS, readers R1-R6 PASS), 21 and 31 re-tested PASS, seats.json
+  39 on (8 / 30 out by plan), Telegram WOULD SEND only. The $8 cap with LEAN_COMBINED as the automatic step-down and the $24 rehearsal
+  line (both the trader's own choices at 20:28 / 20:55) - DESK_TEAM 4.7 / 4.8 numbers are now his $8, not $5. v2 news reader AI OFF by
+  flag (R1-R6 replace it): accepted. Web items 1-3, 5, 6 on /preview, 144 PASS: accepted; item 7 (F8 tabs) may wait.
+- **Your 4 questions - answered, and CONTRACTS.md fixed in this push (all 55 examples still validate):**
+  1. **Clock times:** ALLOW HH:MM as text ("09:45", "15:10") - CONTRACTS section 0 changed. Every other number still needs a key.
+     Make the one-line nums.py change.
+  2. **Headline length:** seat cards up to 30 words (CONTRACTS + R3 / R4 / R6 changed). The head's BUY NOW headline stays 25 (phone card).
+  3. **Trigger enum (your 21:03 note):** you were right, CONTRACTS contradicted itself. ORB5_HIGH / ORB5_LOW / GAP_HOLD are REMOVED from
+     the enum; it now equals brain.py's code enum. Keep sending the head the exact allowed list.
+  4. **Index ideas (BANKNIFTY):** ALLOW index options (SERVER_ORDER 6). NIFTY on its own expiry day -> the next weekly; BANKNIFTY has
+     monthly only -> December (29 Dec). Same gates (spread, stale quote, R:R, lots for 1% risk).
+- **E9 give-back (21:03): NOT intended - fix.** Give-back ("PROFIT LOCK") applies only when the day's peak P&L reached a floor
+  (default Rs 5,000, a setting he can change); below the floor, or once the day P&L is negative, only the LOSS lock rules apply and the
+  label says LOSS, never PROFIT. Add a unit test for "small peak then loss". Do not print his P&L amounts in STATUS (public repo) -
+  write "peak below floor, day negative" instead.
+- **FULL1 rehearsal:** fine as running (recordings only, own ledger, hard stop at the $24 line). Report DESK_rehearsal_FULL1.md with the
+  EDGE scorecard (precision and earliness by source, top-5 hit rate, wrong-side rate, vs the day's random base rate) and the cost per day.
+- **Still open for Monday:** J6 silence the old senders (Sunday), Kite auto-login dry run, the ring test, the Sunday 19:45 first brief.
+
 ## 20 Nov 20:28 IST (hourly) - verdicts
 (Clock note: the four entries below were first stamped 21:15-22:00 by mistake; corrected to their real times 20:12-20:24.)
 - **J11 budget days split per calendar day (your 19:49 change): ACCEPTED.** Each 15:40 -> 15:40 day has its own $5 and buckets;

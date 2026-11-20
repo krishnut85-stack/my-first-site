@@ -11,8 +11,8 @@ carry these schemas; code validates again after the call. GIR never places order
   section 6; code also lists the keys present in each call's snapshot (`snapshot_keys`), and only those may be used. Contract, lots,
   stop and target in a head output are `{code:contract}`, `{code:lots}`, `{code:stop}`, `{code:target}`. A placeholder whose key is not
   in that call's snapshot is a validation error.
-- **Text fields carry no bare digits** (whitelist: FY26, Q2, December and the like). Clock times are written in words ("the evening
-  meeting", "after the open settles"). Link and row references go only in id fields (`link_id`, `link_ids`, `links`, `trap_ids`).
+- **Text fields carry no bare digits** (whitelist: FY26, Q2, December and the like). Clock times MAY be written as HH:MM ("09:45", "15:10"; changed
+  20 Nov - a time is not a market number); every other number still goes through a num placeholder (section 6). Link and row references go only in id fields (`link_id`, `link_ids`, `links`, `trap_ids`).
 - **Evidence ids** must be ids present in THAT call's input. Each input item already carries `source`, `first_seen` and `grade`;
   a seat that grades a source itself uses the one table in section 5.
 - **Symbols** must be on today's F&O list (code list, ban shown); sector targets use the sector keys in section 4.
@@ -34,7 +34,7 @@ each seat's own block is a top-level field defined in `$defs` and tied to its se
   "seat":      {"$ref": "#/$defs/seat_stem"},
   "kind":      {"enum": ["FACT", "VIEW", "THEME", "OBJECTION", "ALERT", "QUIET", "CANCEL"]},
   "item_id":   {"type": "string", "description": "readers and story matcher: the input item this card is about"},
-  "headline":  {"type": "string", "maxLength": 200, "description": "<= 25 words, no digits"},
+  "headline":  {"type": "string", "maxLength": 200, "description": "<= 30 words for seat cards (changed 20 Nov from 25); the head's BUY NOW headline stays <= 25 words; no digits except HH:MM"},
   "strength":  {"type": "integer", "minimum": 1, "maximum": 5},
   "claims":    {"type": "array", "items": {"$ref": "#/$defs/claim"}},
   "ideas":     {"type": "array", "items": {"$ref": "#/$defs/idea"}},
@@ -319,7 +319,7 @@ each seat's own block is a top-level field defined in `$defs` and tied to its se
    "if": {"properties": {"mode": {"const": "MATCH"}}}, "then": {"required": ["mode", "story_id", "match", "novelty", "episode_type", "past", "sample"]}},
   "horizon": {"enum": ["TODAY", "TOMORROW", "2-5D"]},
   "trigger": {"enum": ["NOW", "OPEN_CONFIRM", "PDH_BREAK", "PDL_BREAK", "VWAP_RECLAIM", "VWAP_LOSS", "PULLBACK_VWAP",
-                       "DAY_HIGH_BREAK", "DAY_LOW_BREAK", "ORB5_HIGH", "ORB5_LOW", "GAP_HOLD"]},
+                       "DAY_HIGH_BREAK", "DAY_LOW_BREAK"]},
   "cancel": {"type": "string", "pattern": "^[A-Z][A-Z_]*$",
    "description": "one of: CANCEL_PX, VWAP_LOST, SECTOR_VWAP_LOST, SECTOR_LAGS_NIFTY, NIFTY_AGAINST, DRIVER_REVERSED, DENIAL_OR_SCOPE, GAP_FILLED, TIME_STOP. Code accepts any upper-case code and logs a warning for one outside this list until the engine enum ships; then this becomes a strict enum."}
  }
@@ -361,8 +361,8 @@ cannot sit next to real names). Every THEME card, whatever the seat (35 and the 
 This holds for a sector seat's second-read card too: the target row on its own side, and the other side named or "none + reason".
 
 A seat never writes BUY NOW, contract, strike, lots, stop or target.
-The trigger enum mirrors brain.py's code enum; ORB5_HIGH / ORB5_LOW / GAP_HOLD are PROPOSED and must be added
-to the engine enum before a seat may use them - until then code rejects them. Seat 32's rule says every first ORB5 / PDH fire loses
+The trigger enum mirrors brain.py's code enum exactly. ORB5_HIGH / ORB5_LOW / GAP_HOLD are PROPOSED only (NOT in the enum):
+they are added to the enum the day the engine ships them - until then code rejects them. Seat 32's rule says every first ORB5 / PDH fire loses
 after costs, so no example uses ORB5, PDH_BREAK or PDL_BREAK; PDH / PDL is only a timing aid on a share another bench already named,
 never an allowed entry in a regime line. The cancel codes are the PROPOSED list too, so until the engine enum ships `cancel_ref` is an
 upper-case code checked against the list with a warning, not a rejection; use one of the listed codes, never a placeholder.

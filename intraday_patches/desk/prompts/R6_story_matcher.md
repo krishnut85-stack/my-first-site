@@ -61,7 +61,7 @@ card "disputed" on the board; it does not touch any BUY NOW gate (only seat 15 o
 MATCH mode (STORY BACK):
 ```json
 {"seat": "R6", "kind": "FACT", "item_id": "<new item id>",
- "headline": "<= 25 words, no digits; starts 'STORY BACK:'>", "strength": 3,
+ "headline": "<= 30 words, no digits; starts 'STORY BACK:'>", "strength": 3,
  "reader": {"mode": "MATCH", "story_id": "<story id or NEW>", "match": "ATTACH", "novelty": "NEW-FACT", "episode_type": "<closed list>",
             "past": [{"episode_ref": "<row id>", "type": "<type>", "reaction": "{num:story.<story id>.ep<k>.close_pct}"}],
             "sample": {"level": "L1", "n": "{num:story.<story id>.n}", "rule": "EPISODES_ONLY"},

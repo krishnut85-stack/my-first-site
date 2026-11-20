@@ -50,7 +50,7 @@ Apply LINK_BOOK B10 (and master rows 3, 4, 7, 16, 17, 25-28, 42, 44, 47, 50-52, 
 ## 5. OUTPUT
 ```json
 {"seat": "R4", "kind": "FACT", "item_id": "<from input>",
- "headline": "<= 25 words, no digits: body, action, who is hit>", "strength": 3,
+ "headline": "<= 30 words, no digits: body, action, who is hit>", "strength": 3,
  "reader": {"body": "<RBI, SEBI ...>", "doc_type": "<type>", "doc_date_is_today": true,
             "policy_clock": {"story": null, "state": "PENDING", "moved_from": null,
                              "next_step": "<plain words, date only as {num:item.nK} or in quote>"},
