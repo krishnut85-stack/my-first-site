@@ -65,26 +65,31 @@ until SECTOR_LINKS C3 passes.
    1-5; ends "NOT PROVEN".
 
 ## 5. OUTPUT
-One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, ALERT (duty / OFS / China shock), OBJECTION (second read), CANCEL, QUIET.
+One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, ALERT (duty / OFS / China shock), OBJECTION (a blocking fact against an idea in your sector), CANCEL, QUIET.
 ```json
 {"seat": "24_metals_mining", "kind": "VIEW",
  "headline": "Metals lower at the open on risk-off and a firm dollar; producers PE early, no chase after a deep gap",
  "strength": 3,
  "claims": [
-  {"text": "Metal basket pre-open {num:sec.METAL.preopen_pct}; LME copper close {num:cmdty.LME_CU.pct}", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "Risk-off days take producers and users down together", "type": "INFERENCE", "evidence_ids": ["<id>"]},
-  {"text": "One producer has its own negative broker news and is the cleanest PE", "type": "JUDGEMENT", "evidence_ids": ["<id>"]}],
- "ideas": [{"symbol": "VEDL", "side": "PE", "horizon": "TODAY", "why_ids": ["<id>"],
+  {"text": "Metal basket pre-open {num:sec.METAL.preopen_pct}; LME copper close {num:cmdty.LME_CU.pct}", "type": "FACT", "evidence_ids": ["snap:preopen"]},
+  {"text": "Risk-off days take producers and users down together", "type": "INFERENCE", "evidence_ids": ["snap:preopen"]},
+  {"text": "One producer has its own negative broker news and is the cleanest PE", "type": "JUDGEMENT", "evidence_ids": ["r2:broker_target_cut"]}],
+ "ideas": [{"symbol": "VEDL", "side": "PE", "horizon": "TODAY", "why_ids": ["snap:preopen"],
    "against": "gap-downs in metals often recover by midday; short covering in short-heavy names",
-   "trigger_ref": "ORB5", "cancel_ref": "<enum>", "conviction": "MEDIUM - NOT PROVEN",
-   "link_ids": ["LB-33", "LB-24", "LB-C11"], "story_id": "<story id>"}],
- "winners": [{"target": "none", "why": "none found: risk-off, metal users fall too; defensives are other seats' call"}],
+   "trigger_ref": "VWAP_LOSS", "cancel_ref": "CANCEL_PX", "conviction": "MEDIUM - NOT PROVEN",
+   "link_ids": ["LB-A33", "LB-A24", "LB-C11"], "story_id": "<story id>"}],
+ "winners": [{"target": "none", "side": "CE", "strength": 1, "horizon": "TODAY", "role": "-", "why": "none found: risk-off, metal users fall too; defensives are other seats' call"}],
  "losers": [{"target": "VEDL", "side": "PE", "strength": 3, "horizon": "TODAY", "role": "leader down, own broker news", "why": "dollar, risk-off, target cut"},
             {"target": "TATASTEEL", "side": "PE", "strength": 2, "horizon": "TODAY", "role": "deepest options", "why": "risk-off falls hit steel first"}],
+ "evidence": [{"id": "snap:preopen", "source": "GIR snapshot - pre-open and world quotes (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"},
+              {"id": "r2:broker_target_cut", "source": "broker target cut via R2 wires", "first_seen": "<copied from input>", "grade": "OPINION"}],
  "new_since_last": "Asia opened sharply lower; a broker cut its target on one producer",
- "expires": "15:10", "linked_card_ids": ["<seat 7 card>", "<seat 3 card>"]}
+ "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<seat 7 card>", "<seat 3 card>"]}
 ```
-- `expires` is the card's expires_at. A "none" entry carries only its reason (no side, no strength). Placeholder keys and enum names are illustrative.
+- **Second read (E12.4, CONTRACTS $defs.second_read):** when code calls you as the independent second read on a name in your sector,
+  answer with ONE VIEW card carrying `"second_read": {"for_card_id": "<passed by code>", "side": "CE|PE|NONE", "target": "<symbol>",
+  "reason": "<one line>"}` - your own side from the facts you were given. Code sets AGREE / DISAGREE; never QUIET on a second read.
+- `expires` is the card's expires_at. A "none" entry still fills every impact field (side, strength one, horizon, why = the reason none was found) - CONTRACTS $defs.impact. Placeholder keys and enum names are illustrative.
 - **Text fields carry NO digits** (DESK_TEAM 4.5; whitelist FY26, Q2, December). Link references only in `link_ids`.
 - Evidence grades: exchange prices, DGTR / ministry notices, NMDC price filings, OFS notices OFFICIAL; a minister on record ON RECORD; duty
   talk "sources say" SOURCES SAY; a broker target cut OPINION; TV "metals crack" SOCIAL context.

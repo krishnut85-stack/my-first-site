@@ -60,18 +60,21 @@ decision), CANCEL, QUIET.
  "headline": "Hawkish Fed minutes plus firm dollar: tilt against FII-heavy banks and metals; exporters relatively firm",
  "strength": 2,
  "claims": [
-  {"text": "US ten-year at {num:world.US10Y.level}, DXY {num:world.DXY.level}, both up on the day", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "December hike already largely priced ({num:world.FEDFUT.dec_hike_prob})", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "Priced decision: little fresh push; FII flows can outweigh it", "type": "JUDGEMENT", "evidence_ids": ["<id>"]}],
+  {"text": "US ten-year at {num:world.US10Y.level}, DXY {num:world.DXY.level}, both up on the day", "type": "FACT", "evidence_ids": ["snap:us_rates"]},
+  {"text": "December hike already largely priced ({num:world.FEDFUT.dec_hike_prob})", "type": "FACT", "evidence_ids": ["cme:fedwatch"]},
+  {"text": "Priced decision: little fresh push; FII flows can outweigh it", "type": "JUDGEMENT", "evidence_ids": ["fed:minutes"]}],
  "ideas": [],
  "winners": [{"target": "IT", "side": "CE", "strength": 1, "horizon": "TOMORROW", "role": "relative, rupee leg", "why": "only if the Nasdaq is calm"},
              {"target": "PHARMA", "side": "CE", "strength": 1, "horizon": "TOMORROW", "role": "defensive, above VWAP only", "why": "money hides in defensives"}],
  "losers": [{"target": "METALS", "side": "PE", "strength": 3, "horizon": "TOMORROW", "role": "dollar-priced commodities", "why": "firm dollar weighs on metal prices"},
-            {"target": "BANKS", "side": "PE", "strength": 2, "horizon": "2-5D", "role": "FII-owned, rate-sensitive", "why": "FII selling risk; against: five-day FII buying"}],
+            {"target": "BANKS_PVT", "side": "PE", "strength": 2, "horizon": "2-5D", "role": "FII-owned, rate-sensitive", "why": "FII selling risk; against: five-day FII buying"}],
+ "evidence": [{"id": "snap:us_rates", "source": "GIR snapshot - US ten-year and DXY (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"},
+              {"id": "cme:fedwatch", "source": "CME FedWatch via R5", "first_seen": "<copied from input>", "grade": "ON RECORD"},
+              {"id": "fed:minutes", "source": "Federal Reserve minutes", "first_seen": "<copied from input>", "grade": "OFFICIAL"}],
  "new_since_last": "Minutes published; yields up since the evening meeting",
- "expires": "NEXT_OPEN", "linked_card_ids": ["<seat 10 card>"]}
+ "proof": "NOT PROVEN", "expires": "NEXT_OPEN", "linked_card_ids": ["<seat 10 card>"]}
 ```
-- Key names and "<enum>" values are illustrative; use the exact placeholder keys of your slice and the engine enum in your schema.
+- Key names are illustrative; use the exact placeholder keys of your slice. `trigger_ref` comes from the engine enum and `cancel_ref` is one of the CONTRACTS cancel codes (e.g. VWAP_LOST), never a placeholder.
 - **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,
   no "ten-year" written with digits, no clock times - say "the evening meeting". Link references go ONLY in `link_ids`.
 - Evidence items carry source, first-seen time and grade. A Fed statement or a release is OFFICIAL; a speaker is ON RECORD; a

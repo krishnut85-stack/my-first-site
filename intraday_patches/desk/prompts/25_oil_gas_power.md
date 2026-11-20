@@ -64,25 +64,32 @@ rows 2-3, 16-17; PREDICTION_LOOP 0, A6c. All links are IDEA - NOT PROVEN until S
 8. **Grade** with B4 points; strength 1-5; conviction ends "NOT PROVEN".
 
 ## 5. OUTPUT
-One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, ALERT (policy / Gulf / CERC shock), THEME (crude chain for 35), OBJECTION
-(second read), CANCEL, QUIET.
+One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, ALERT (policy / Gulf / CERC shock), THEME (crude chain for 35), OBJECTION (a blocking fact against an idea in your sector), CANCEL, QUIET.
 ```json
 {"seat": "25_oil_gas_power", "kind": "VIEW",
  "headline": "Brent steady near recent lows with Gulf risk: OMC CE only below the cancel level; no clean upstream trade",
  "strength": 2,
  "claims": [
-  {"text": "Brent {num:cmdty.BRENT.level}, {num:cmdty.BRENT.pct_5d} over five days; rupee {num:fx.USDINR.pct}", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "A falling crude price helps marketers first and hurts producers the same day", "type": "INFERENCE", "evidence_ids": ["<id>"]},
-  {"text": "Gulf attacks can swing crude either way; the crude-fall story is weeks old and priced", "type": "JUDGEMENT", "evidence_ids": ["<id>"]}],
- "ideas": [{"symbol": "HINDPETRO", "side": "CE", "horizon": "TODAY", "why_ids": ["<id>"],
+  {"text": "Brent {num:cmdty.BRENT.level}, {num:cmdty.BRENT.pct_5d} over five days; rupee {num:fx.USDINR.pct}", "type": "FACT", "evidence_ids": ["snap:brent"]},
+  {"text": "A falling crude price helps marketers first and hurts producers the same day", "type": "INFERENCE", "evidence_ids": ["snap:brent"]},
+  {"text": "Gulf attacks can swing crude either way; the crude-fall story is weeks old and priced", "type": "JUDGEMENT", "evidence_ids": ["r5:gulf_item"]}],
+ "ideas": [{"symbol": "HINDPETRO", "side": "CE", "horizon": "TODAY", "why_ids": ["snap:brent"],
    "against": "sector ran hard in the rally; a Gulf headline or a weak open cancels",
-   "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "<enum>", "conviction": "LOW - NOT PROVEN",
-   "link_ids": ["LB-1", "SL-L05", "LB-C2"], "story_id": "<story id>"}],
+   "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "VWAP_LOST", "conviction": "LOW - NOT PROVEN",
+   "link_ids": ["LB-A1", "SL-L05", "LB-C2"], "story_id": "<story id>"}],
  "winners": [{"target": "OMC", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "crude users, HINDPETRO leader", "why": "crude near its lows"}],
  "losers": [{"target": "ONGC", "side": "PE", "strength": 1, "horizon": "TODAY", "role": "upstream", "why": "lower realisation; weak while crude is flat"}],
+ "evidence": [{"id": "snap:brent", "source": "GIR snapshot - Brent and GIFT NIFTY (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"},
+              {"id": "r5:gulf_item", "source": "Gulf shipping report via R5", "first_seen": "<copied from input>", "grade": "SOURCES SAY"}],
  "new_since_last": "no new fuel or gas policy; crude flat overnight",
- "expires": "15:10", "linked_card_ids": ["<seat 6 card>", "<seat 4 card>"]}
+ "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<seat 6 card>", "<seat 4 card>"]}
 ```
+- **Second read (E12.4, CONTRACTS $defs.second_read):** when code calls you as the independent second read on a name in your sector,
+  answer with ONE VIEW card carrying `"second_read": {"for_card_id": "<passed by code>", "side": "CE|PE|NONE", "target": "<symbol>",
+  "reason": "<one line>"}` - your own side from the facts you were given. Code sets AGREE / DISAGREE; never QUIET on a second read.
+- **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
+  (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
+  winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
 - `expires` is the card's expires_at. Placeholder keys and enum names are illustrative.
 - **Text fields carry NO digits** (DESK_TEAM 4.5; whitelist FY26, Q2, December). Link references only in `link_ids`.
 - Evidence grades: PPAC / PIB / CERC / ministry notices, exchange files OFFICIAL; a minister or company chairman on record ON RECORD;

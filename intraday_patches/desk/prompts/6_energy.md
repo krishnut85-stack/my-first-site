@@ -58,18 +58,21 @@ war spike), CANCEL (driver reversed overnight, policy overrides), QUIET.
  "headline": "Brent fell sharply after the Indian close on supply news; OMCs and INDIGO gain, ONGC and OIL lose at the open",
  "strength": 3,
  "claims": [
-  {"text": "Brent {num:world.BRENT.pct} since the Indian close, {num:world.BRENT.pct5d} over five days", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "Cause: supply (OPEC item), not demand fear; GIFT NIFTY {num:mkt.GIFT.pct}", "type": "INFERENCE", "evidence_ids": ["<id>", "<id>"]},
-  {"text": "No fuel-policy item found this evening", "type": "FACT", "evidence_ids": ["<id>"]}],
- "ideas": [{"symbol": "HINDPETRO", "side": "CE", "horizon": "TODAY", "why_ids": ["<id>"],
+  {"text": "Brent {num:world.BRENT.pct} since the Indian close, {num:world.BRENT.pct5d} over five days", "type": "FACT", "evidence_ids": ["snap:brent"]},
+  {"text": "Cause: supply (OPEC item), not demand fear; GIFT NIFTY {num:mkt.GIFT.pct}", "type": "INFERENCE", "evidence_ids": ["r5:opec_item", "snap:brent"]},
+  {"text": "No fuel-policy item found this evening", "type": "FACT", "evidence_ids": ["r4:policy_sweep"]}],
+ "ideas": [{"symbol": "HINDPETRO", "side": "CE", "horizon": "TODAY", "why_ids": ["r5:opec_item"],
    "against": "rupee {num:fx.USDINR.pct} may halve the gain; the gap may take the move",
-   "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "<enum>", "conviction": "MEDIUM - NOT PROVEN",
-   "link_ids": ["LB-A1", "SL-L05", "COE-2"], "story_id": "<story id>"}],
+   "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "VWAP_LOST", "conviction": "MEDIUM - NOT PROVEN",
+   "link_ids": ["LB-A1", "SL-L05", "CH-C2"], "story_id": "<story id>"}],
  "winners": [{"target": "OMC", "side": "CE", "strength": 3, "horizon": "TODAY", "role": "leader HINDPETRO, then BPCL, IOC", "why": "cheaper crude widens marketing margin"},
              {"target": "INDIGO", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "fuel cost", "why": "cheaper jet fuel"}],
  "losers": [{"target": "ONGC", "side": "PE", "strength": 2, "horizon": "TODAY", "role": "upstream revenue", "why": "lower crude cuts upstream revenue"}],
+ "evidence": [{"id": "snap:brent", "source": "GIR snapshot - Brent and GIFT NIFTY (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"},
+              {"id": "r5:opec_item", "source": "OPEC item via R5", "first_seen": "<copied from input>", "grade": "ON RECORD"},
+              {"id": "r4:policy_sweep", "source": "R4 policy sweep (PIB, PPAC, RBI, CBIC)", "first_seen": "<copied from input>", "grade": "OFFICIAL"}],
  "new_since_last": "Brent move happened after the evening meeting and passed the crude-fall threshold",
- "expires": "15:10", "linked_card_ids": ["<seat 25 card>"]}
+ "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<seat 25 card>"]}
 ```
 - Placeholder keys and enum names are illustrative; use your slice's keys and the schema's enum.
 - **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,

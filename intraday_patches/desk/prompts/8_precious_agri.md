@@ -62,19 +62,22 @@ RBI gold-loan rule, sugar / edible-oil policy shock), CANCEL, QUIET.
  "headline": "Gold and silver fell hard on the dollar and Fed bets; gold lenders and MCX lower; jewellers not a clean CE",
  "strength": 3,
  "claims": [
-  {"text": "COMEX gold {num:cmdty.GOLD.pct} on the day, {num:cmdty.GOLD.pct5d} on the week; silver {num:cmdty.SILVER.pct}", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "Cause: dollar and rate-hike bets, not an Indian duty change", "type": "INFERENCE", "evidence_ids": ["<id>"]},
-  {"text": "No RBI or duty item today", "type": "FACT", "evidence_ids": ["<id>"]}],
- "ideas": [{"symbol": "MUTHOOTFIN", "side": "PE", "horizon": "TODAY", "why_ids": ["<id>"],
+  {"text": "COMEX gold {num:cmdty.GOLD.pct} on the day, {num:cmdty.GOLD.pct5d} on the week; silver {num:cmdty.SILVER.pct}", "type": "FACT", "evidence_ids": ["snap:comex"]},
+  {"text": "Cause: dollar and rate-hike bets, not an Indian duty change", "type": "INFERENCE", "evidence_ids": ["r5:fed_bets"]},
+  {"text": "No RBI or duty item today", "type": "FACT", "evidence_ids": ["r4:policy_sweep"]}],
+ "ideas": [{"symbol": "MUTHOOTFIN", "side": "PE", "horizon": "TODAY", "why_ids": ["snap:comex"],
    "against": "third day of falls - moves shrink; a gap-down may already hold the move",
-   "trigger_ref": "ORB5", "cancel_ref": "<enum>", "conviction": "MEDIUM - NOT PROVEN",
-   "link_ids": ["LB-A5", "COE-10"], "story_id": "<story id>"}],
+   "trigger_ref": "VWAP_LOSS", "cancel_ref": "CANCEL_PX", "conviction": "MEDIUM - NOT PROVEN",
+   "link_ids": ["LB-A5", "CH-C10"], "story_id": "<story id>"}],
  "winners": [{"target": "none", "side": "CE", "strength": 1, "horizon": "TODAY", "role": "-", "why": "none found: jewellers only a weeks tilt and they fell with gold this week"}],
  "losers": [{"target": "MUTHOOTFIN", "side": "PE", "strength": 3, "horizon": "TODAY", "role": "leader, purest gold-loan book", "why": "collateral worth less"},
             {"target": "HINDZINC", "side": "PE", "strength": 2, "horizon": "TODAY", "role": "silver proxy", "why": "silver drives its profit"},
             {"target": "MCX", "side": "PE", "strength": 1, "horizon": "TODAY", "role": "volume-dependent", "why": "can flip to CE on crash volume"}],
+ "evidence": [{"id": "snap:comex", "source": "GIR snapshot - COMEX gold and silver (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"},
+              {"id": "r5:fed_bets", "source": "FinancialJuice rate-bets line via R5", "first_seen": "<copied from input>", "grade": "ON RECORD"},
+              {"id": "r4:policy_sweep", "source": "R4 policy sweep (PIB, PPAC, RBI, CBIC)", "first_seen": "<copied from input>", "grade": "OFFICIAL"}],
  "new_since_last": "Gold broke to a new low after the evening meeting",
- "expires": "15:10", "linked_card_ids": ["<seat 2 card>"]}
+ "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<seat 2 card>"]}
 ```
 - Placeholder keys and enum names are illustrative; use your slice's keys and the schema's enum.
 - **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,

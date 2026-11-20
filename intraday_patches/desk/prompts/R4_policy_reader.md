@@ -66,7 +66,7 @@ Apply LINK_BOOK B10 (and master rows 3, 4, 7, 16, 17, 25-28, 42, 44, 47, 50-52, 
 - **QUIET** `{"seat": "R4", "kind": "QUIET", "item_id": "...", "reason": "STALE|PROCEDURAL|NO_FO_LINK|DUPLICATE"}` for old documents,
   procedural notices (meeting schedules, staff, tenders with no listed name), and items with no F&O link.
 - No digit in headline / claims / why / against (whitelist FY26, Q2, December); circular numbers and dates go in `quote`.
-- Link ids only from your input pack (e.g. "LB-A52", "CE-22").
+- Link ids only from your input pack (e.g. "LB-A52", "CH-C22").
 
 ## 6. EXAMPLE (19 Nov 2026; facts from design_v3/COMPLAINTS.md #44, CHAIN_OF_EVENTS row 22, TRADER_CALLS row 31)
 A Scotch import-duty item (the trader quoted "165 percent" at 09:13; the exact document is not in the repo - wording illustrative).
@@ -81,13 +81,13 @@ UNITDSPR; the share fell through -3% by 09:24, then closed +1.32%.
  "claims": [{"text": "Duty on bulk Scotch rises to {num:item.n1}.", "type": "FACT", "evidence_ids": ["pib:scotch_duty"]},
             {"text": "Bulk Scotch is an input for Indian blenders, so this is a cost, not protection.", "type": "INFERENCE", "evidence_ids": ["pib:scotch_duty"]}],
  "evidence": [{"id": "pib:scotch_duty", "source": "<site>", "first_seen": "<copied>", "grade": "OFFICIAL", "quote": "<exact text>"}],
- "winners": [],
- "losers": [{"target": "UNITDSPR", "side": "PE", "strength": 3, "horizon": "TODAY", "link_id": "CE-22", "why": "Input cost up for its blends"},
-            {"target": "RADICO", "side": "PE", "strength": 2, "horizon": "TODAY", "link_id": "CE-22", "why": "Same input, smaller exposure (check F&O list)"}],
+ "winners": [{"target": "none", "side": "CE", "strength": 1, "horizon": "TODAY", "link_id": null, "why": "none found: no listed Indian bulk-Scotch producer"}],
+ "losers": [{"target": "UNITDSPR", "side": "PE", "strength": 3, "horizon": "TODAY", "link_id": "CH-C22", "why": "Input cost up for its blends"},
+            {"target": "RADICO", "side": "PE", "strength": 2, "horizon": "TODAY", "link_id": "CH-C22", "why": "Same input, smaller exposure (check F&O list)"}],
  "ideas": [], "against": "Price can pass through; pre-open fall may already price it - it closed up",
- "new_since_last": "First notice of the duty", "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": [], "links": ["CE-22"]}
+ "new_since_last": "First notice of the duty", "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": [], "links": ["CH-C22"]}
 ```
-winners empty because no F&O name gains: "none found - no listed Indian bulk-Scotch producer" goes in the seat 11 note.
+winners carry one "none" row because no F&O name gains (no listed Indian bulk-Scotch producer); seat 11 repeats it in its note.
 Two more lessons from the files: the IRDAI rules behind the trader's POLICYBZR CE (13 Nov) were still a DRAFT, final not before
 April -> PENDING, strength 2 at most (POLICYBZR closed -2.15% on 16 Nov). And a "SEBI F&O rules effective 20 Nov" headline seen
 on 20 Nov 2026 was from 2024 -> QUIET (STALE).

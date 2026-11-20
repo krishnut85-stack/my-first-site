@@ -64,7 +64,7 @@ Kinds: VIEW (fresh money map), OBJECTION (an IV / expiry / spread trap on a name
  "tradability": [{"symbol": "AXISBANK", "contract": "December ATM", "state": "TRADABLE", "spread": "{num:opt.AXISBANK.dec_atm.spread_pct}", "quote_age": "{num:opt.AXISBANK.dec_atm.age_s}"}],
  "evidence": [{"id": "oi:<snap>", "source": "Kite futures OI via recorder", "first_seen": "<copied>", "grade": "OFFICIAL"}],
  "new_since_last": "Private banks turned from short covering to long build-up since the last hour",
- "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": [], "links": ["LB-C12", "J10"]}
+ "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": [], "links": ["LB-C12"]}
 ```
 - No digits in text fields. **Write QUIET** when the build-up map, VIX direction and trap list are unchanged since your last card.
 

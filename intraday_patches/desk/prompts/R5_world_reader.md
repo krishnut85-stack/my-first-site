@@ -63,7 +63,10 @@ Apply LINK_BOOK A23-A36, B7 (1-7), C1, C2, C3, C7, C17; DESK_TEAM G8; EVENT_MEMO
  "ideas": [], "against": "<one line>", "new_since_last": "<what this adds>",
  "proof": "NOT PROVEN", "expires": "NEXT_OPEN|15:10|2D", "linked_card_ids": [], "links": []}
 ```
-- winners and losers are REQUIRED; an empty side needs `{"target": "none", "why": "<reason>"}`.
+- winners and losers are REQUIRED; an empty side needs one full row `{"target": "none", "side": "CE", "strength": 1, "horizon": "...", "why": "<reason>"}`.
+- **A THEME card adds the LIGHT theme block** (CONTRACTS section 1): `"theme": {"theme_id": "<driver key>", "state": "NEW|CONFIRMING|BROKEN",
+  "route_to": ["35_connections", "10_flows"], "chain": [two or more nodes, each {node, channel, link_id, status, evidence_ids}]}`.
+  Only seat 35 writes the full form (confirm_live, kill_if, analogue); without the block code rejects the card.
 - **QUIET** `{"seat": "R5", "kind": "QUIET", "item_id": "...", "reason": "NO_INDIA_CHANNEL|REPEAT|STALE"}`.
 - No digit in headline / claims / why / against / cause (whitelist FY26, Q2, December); use placeholders or the quote.
 
@@ -71,18 +74,23 @@ Apply LINK_BOOK A23-A36, B7 (1-7), C1, C2, C3, C7, C17; DESK_TEAM G8; EVENT_MEMO
 monday/OUTSIDE_WATCH_2026-11-20.md)
 Anthropic listed on Nasdaq (priced $83, opened $111.50 about 22:18 IST, closed about +17%). S&P -2.02%, 6th straight loss; Nasdaq
 -2.3%; AMD about -9 to -10% on a short report; Nvidia -3.3% despite a beat. Causes found: rates (hawkish Fed minutes, US 10y about
-5.07-5.10%, dollar near a 19-month high) and the AI trade fading. ANT rose while the market fell, so the listing was not the cause.
+5.07-5.10%, dollar near a 19-month high) and the AI trade fading. ANT rose while the market fell: the listing did not drag the market down, but it may have pulled money out of
+other AI names (the trader's first link - carried as a candidate cause for seat 35).
 ```json
 {"seat": "R5", "kind": "THEME", "item_id": "fj:us_close", "headline": "US stocks fall for a sixth day on rates and AI-spend doubt; AI hardware hit hardest",
  "strength": 2,
- "reader": {"driver_keys": ["AI_CAPEX_SHOCK", "US_RATES_UP", "RISK_OFF"], "cause": "Hawkish Fed minutes plus fading AI trade; the listing itself rose",
+ "reader": {"driver_keys": ["AI_CAPEX_SHOCK", "US_RATES_UP", "RISK_OFF", "US_IPO_EVENT"], "cause": "Hawkish Fed minutes plus fading AI trade; the listing rose while other AI names fell",
             "money_goes": "Out of AI hardware (US chips, Korea, Taiwan) toward low-AI markets such as India", "order": "SECOND", "session": "US_NIGHT",
             "side_open": [{"target": "IT", "why": "Nasdaq down says PE, but the fall is AI hardware and Indian IT sells services (the US-tech trap)"}],
             "novelty": "FIRST"},
+ "theme": {"theme_id": "AI_CAPEX_SHOCK", "state": "NEW", "route_to": ["35_connections", "10_flows"],
+  "chain": [{"node": "US AI hardware sold on rates and AI-spend doubt", "channel": "flow", "link_id": "LB-B7-1", "status": "SEEN", "evidence_ids": ["fj:us_close"]},
+            {"node": "money leaves AI-heavy Korea and Taiwan", "channel": "flow", "link_id": null, "status": "EXPECTED", "evidence_ids": ["fj:us_close"]},
+            {"node": "low-AI India receives it, FII-heavy banks first", "channel": "flow", "link_id": null, "status": "EXPECTED", "evidence_ids": ["fj:us_close"]}]},
  "claims": [{"text": "S&P closed {num:item.n1} lower, a sixth straight loss.", "type": "FACT", "evidence_ids": ["fj:us_close"]},
             {"text": "AI-hardware money may rotate into India's FII-heavy banks.", "type": "INFERENCE", "evidence_ids": ["fj:us_close"]}],
  "evidence": [{"id": "fj:us_close", "source": "FinancialJuice", "first_seen": "<copied>", "grade": "ON RECORD", "quote": "<exact text>"}],
- "winners": [{"target": "PRIVATE_BANKS", "side": "CE", "strength": 2, "horizon": "TOMORROW", "link_id": null, "why": "EM rotation into India, FII buying streak; no tested link"}],
+ "winners": [{"target": "BANKS_PVT", "side": "CE", "strength": 2, "horizon": "TOMORROW", "link_id": null, "why": "EM rotation into India, FII buying streak; no tested link"}],
  "losers": [{"target": "METALS", "side": "PE", "strength": 3, "horizon": "TOMORROW", "link_id": "LB-A33", "why": "Risk-off plus strong dollar"},
             {"target": "DIXON", "side": "PE", "strength": 2, "horizon": "TOMORROW", "link_id": "LB-A30", "why": "AI-hardware selling day"}],
  "ideas": [], "against": "Dollar-and-yields link says banks PE; the desk put banks PE near half if the gap-down holds",

@@ -57,6 +57,9 @@ Apply BROKER_CALLS (routine), EVENT_MEMORY (TV-VOICE, TV CALLS), PREDICTION_LOOP
  "losers": [], "ideas": [], "against": "<one line>", "new_since_last": "<vs the house's last stance>",
  "proof": "NOT PROVEN", "expires": "15:10|NEXT_OPEN|2D", "linked_card_ids": [], "links": []}
 ```
+- **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
+  (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
+  winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
 - The FACT here is "X said Y on TV" - the content stays a JUDGEMENT unless the speaker is an official on record.
 - **QUIET** `{"seat": "R3", "kind": "QUIET", "item_id": "...", "reason": "NOTHING_PRICE_RELEVANT|REPEAT|RECAP_OF_PAPERS|UNSETTLED_NAME"}`.
   Most minutes are QUIET. Never write the same call twice in 10 minutes.
@@ -75,8 +78,8 @@ NIFTY was up about 0.5% with narrow breadth. The note was not yet online.
  "claims": [{"text": "Goldman favours banks and industrials (overweight means buy the sector).", "type": "JUDGEMENT", "evidence_ids": ["tv:cnbc:1244"]},
             {"text": "Industrials moved up from underweight; banks were already overweight.", "type": "FACT", "evidence_ids": ["tv:cnbc:1244"]}],
  "evidence": [{"id": "tv:cnbc:1244", "source": "CNBC-TV18", "first_seen": "<copied>", "grade": "OPINION", "quote": "<exact transcript / graphic>"}],
- "winners": [{"target": "CAPITAL_GOODS", "side": "CE", "strength": 2, "horizon": "2-5D", "link_id": null, "why": "Upgrade to overweight - the new part (LT leader)"},
-             {"target": "BANKS", "side": "CE", "strength": 1, "horizon": "2-5D", "link_id": null, "why": "Overweight repeated, not new"}],
+ "winners": [{"target": "CAPGOODS", "side": "CE", "strength": 2, "horizon": "2-5D", "link_id": null, "why": "Upgrade to overweight - the new part (LT leader)"},
+             {"target": "BANKS_PVT", "side": "CE", "strength": 1, "horizon": "2-5D", "link_id": null, "why": "Overweight repeated, not new"}],
  "losers": [{"target": "REALTY", "side": "PE", "strength": 1, "horizon": "2-5D", "link_id": null, "why": "Desk mapping: lags, not a crash"}],
  "ideas": [], "against": "TV only, note not online; strategy views act over weeks; valuations called full",
  "new_since_last": "Industrials upgraded from underweight", "proof": "NOT PROVEN", "expires": "2D", "linked_card_ids": [], "links": []}

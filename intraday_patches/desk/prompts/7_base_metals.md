@@ -61,19 +61,20 @@ shock, OFS), CANCEL (overnight rebound past the cancel line), QUIET.
  "headline": "Copper at a multi-month low and the dollar firm: metal producers lower at the open; AC makers the only same-day users",
  "strength": 3,
  "claims": [
-  {"text": "LME copper close {num:cmdty.LME_CU.pct}, aluminium {num:cmdty.LME_AL.pct}; SHFE day open {num:cmdty.SHFE_CU.pct}", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "Producer side same day; user side mostly weeks", "type": "INFERENCE", "evidence_ids": ["<id>"]},
-  {"text": "Grade MEDIUM on the chain points: size, two metals together, overnight confirmed", "type": "JUDGEMENT", "evidence_ids": ["<id>"]}],
- "ideas": [{"symbol": "HINDCOPPER", "side": "PE", "horizon": "TODAY", "why_ids": ["<id>"],
-   "against": "metals often recover after a gap down; wait for a break below the opening-range low",
-   "trigger_ref": "ORB5", "cancel_ref": "<enum>", "conviction": "MEDIUM - NOT PROVEN",
-   "link_ids": ["CU-MAP", "LB-A18", "COE-1"], "story_id": "<story id>"}],
+  {"text": "LME copper close {num:cmdty.LME_CU.pct}, aluminium {num:cmdty.LME_AL.pct}; SHFE day open {num:cmdty.SHFE_CU.pct}", "type": "FACT", "evidence_ids": ["snap:lme_close"]},
+  {"text": "Producer side same day; user side mostly weeks", "type": "INFERENCE", "evidence_ids": ["snap:lme_close"]},
+  {"text": "Grade MEDIUM on the chain points: size, two metals together, overnight confirmed", "type": "JUDGEMENT", "evidence_ids": ["snap:lme_close"]}],
+ "ideas": [{"symbol": "HINDCOPPER", "side": "PE", "horizon": "TODAY", "why_ids": ["snap:lme_close"],
+   "against": "metals often recover after a gap down; wait until the share loses VWAP after the open settles, never the first opening-range fire",
+   "trigger_ref": "VWAP_LOSS", "cancel_ref": "CANCEL_PX", "conviction": "MEDIUM - NOT PROVEN",
+   "link_ids": ["LB-A18", "CH-C1"], "story_id": "<story id>"}],
  "winners": [{"target": "VOLTAS", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "copper user, leader", "why": "COPPER_LINKS map"},
              {"target": "AUTO", "side": "CE", "strength": 1, "horizon": "2-5D", "role": "background tilt only", "why": "cost link works over weeks; no measured next-day edge"}],
  "losers": [{"target": "HINDCOPPER", "side": "PE", "strength": 3, "horizon": "TODAY", "role": "pure copper producer", "why": "COPPER_LINKS"},
             {"target": "METALS", "side": "PE", "strength": 3, "horizon": "TODAY", "role": "producers, dollar", "why": "weak China demand and a firm dollar"}],
+ "evidence": [{"id": "snap:lme_close", "source": "GIR snapshot - LME and SHFE closes (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"}],
  "new_since_last": "LME close confirmed the fall; SHFE did not bounce",
- "expires": "15:10", "linked_card_ids": ["<seat 2 card>", "<seat 3 card>"]}
+ "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<seat 2 card>", "<seat 3 card>"]}
 ```
 - Placeholder keys and enum names are illustrative; use your slice's keys and the schema's enum.
 - **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,

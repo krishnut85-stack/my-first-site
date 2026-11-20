@@ -51,13 +51,15 @@ Kinds: FACT (the day's scorecard), FACT per seat (`scope: "seat"`). JSON written
  "strength": 3,
  "claims": [
   {"text": "Ideas right {num:sc.right} of {num:sc.n}; CE beat the day by {num:sc.ce_lift_pts}, PE by {num:sc.pe_lift_pts}", "type": "FACT", "evidence_ids": ["score:<date>"]},
-  {"text": "Misses of three percent or more: {num:sc.miss3}, biggest {num:sc.miss_top}", "type": "FACT", "evidence_ids": ["score:<date>"]}],
+  {"text": "Misses of three percent or more: {num:sc.miss3}, biggest {num:sc.miss_top}", "type": "FACT", "evidence_ids": ["score:<date>"]},
+  {"text": "Scored day {num:sc.day_n} of the twenty-day window; nothing is PROVEN before day twenty", "type": "FACT", "evidence_ids": ["score:<date>"]}],
  "by_source": [{"source": "10_flows", "n": "{num:sc.flows.n}", "right": "{num:sc.flows.right}", "lift": "{num:sc.flows.lift}", "label": "NOT PROVEN"}],
  "misses": [{"symbol": "APOLLOHOSP", "side": "CE", "cause_found": "broker upgrade on TV and wires", "on_board_before": false}],
  "ideas": [], "winners": [], "losers": [],
  "evidence": [{"id": "score:<date>", "source": "GIR minute store + NSE bhavcopy", "first_seen": "<copied>", "grade": "OFFICIAL"}],
- "new_since_last": "-", "proof": "NOT PROVEN (day n of twenty)", "expires": "NEXT_OPEN", "linked_card_ids": [], "links": []}
+ "new_since_last": "-", "proof": "NOT PROVEN", "expires": "NEXT_OPEN", "linked_card_ids": [], "links": []}
 ```
+`proof` is only NOT PROVEN / PROVEN (CONTRACTS); the day count of the twenty-day window goes in a claim, never in `proof`.
 **One-line card texts (code fills the placeholders):**
 - "TODAY: right {num:r} of {num:n} · CE {num:ce_r}/{num:ce_n} (base {num:ce_base}) · PE {num:pe_r}/{num:pe_n} (base {num:pe_base}) · early {num:early}."
 - "BEST SOURCE: {source} {num:r}/{num:n} · WORST: {source} {num:r}/{num:n} · MISSED 3%+ {num:k} (biggest {SYMBOL} {num:pct}, {cause})."

@@ -52,9 +52,9 @@ Every link is IDEA - NOT PROVEN until the SECTOR_LINKS C3 proof rule passes. The
    who loses (EMS on AI-hardware selling, metals on risk-off). Always fill BOTH winners and losers, or write "none found + reason".
 4. **Analogy with counts.** Look up EVENT_MEMORY and LINK_BOOK B7 past cases (DeepSeek 27 Jan 2025: Nifty IT down, DIXON and
    KAYNES down hard next day; Feb 2026 Anthropic tool launch; 22 Sep 2026). Cite them by link id / story id; say the episode count.
-5. **New vs priced in.** Is this a first fact or a repeat? Did Indian IT already fall three days (oversold bounce risk)? Is the
+5. **New vs priced in.** Is this a first fact or a repeat? Did Indian IT already fall three days (bounce risk - say "down three days", not "oversold", unless RSI is at or below thirty)? Is the
    US move already in GIFT NIFTY? A repeat headline is not new - write QUIET.
-6. **Both sides.** Write the best case against your own lean in `against` (e.g. "IT oversold; cause is hardware, not services").
+6. **Both sides.** Write the best case against your own lean in `against` (e.g. "IT down three days, bounce risk; cause is hardware, not services").
 7. **Horizon and grade.** ADR / Nasdaq links act at the NEXT OPEN only; gap moves are not tradable - say "confirm after 09:20".
    Strength 1-5 from: size vs normal, cause clarity, ADR agreement, other seats agreeing. Conviction always ends "NOT PROVEN".
 8. **What confirms / kills it live:** IT holds VWAP and beats NIFTY on a red tape = the theme is live; ADRs flat or up at 07:15 or
@@ -68,20 +68,26 @@ Connections), ALERT (woken on a shock), CANCEL (your earlier card's driver rever
  "headline": "US tech fell on AI-capex doubt, not on Indian demand; India IT services and banks may gain, EMS loses",
  "strength": 3,
  "claims": [
-  {"text": "Nasdaq closed {num:world.NASDAQ.pct}; AI basket {num:world.AI_BASKET.pct}", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "Cause ranked first: AI spend and AI returns doubted; rates second", "type": "INFERENCE", "evidence_ids": ["<id>", "<id>"]}],
- "ideas": [{"symbol": "INFY", "side": "CE", "horizon": "TODAY", "why_ids": ["<id>"],
+  {"text": "Nasdaq closed {num:world.NASDAQ.pct}; AI basket {num:world.AI_BASKET.pct}", "type": "FACT", "evidence_ids": ["snap:us_close"]},
+  {"text": "Cause ranked first: AI spend and AI returns doubted; rates second", "type": "INFERENCE", "evidence_ids": ["fj:us_close", "r5:ai_capex_press"]}],
+ "ideas": [{"symbol": "INFY", "side": "CE", "horizon": "TODAY", "why_ids": ["fj:us_close"],
    "against": "IT fell three days; ADR {num:world.ADR.INFY.pct} could gap it lower first",
-   "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "<enum>", "conviction": "LOW - NOT PROVEN",
-   "link_ids": ["LB-B7-2026TRAP", "EM-G"], "story_id": "<open story id>"}],
+   "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "VWAP_LOST", "conviction": "LOW - NOT PROVEN",
+   "link_ids": ["LB-C7", "EM-G"], "story_id": "<open story id>"}],
  "winners": [{"target": "BANKS_PVT", "side": "CE", "strength": 3, "horizon": "TODAY", "role": "second order: money leaving AI-heavy Asia", "why": "low-AI market inside EM"},
              {"target": "IT", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "AI adopter, not chip seller", "why": "cause is hardware"}],
  "losers": [{"target": "DIXON", "side": "PE", "strength": 2, "horizon": "TODAY", "role": "AI-hardware link", "why": "AI-hardware selling hits EMS"},
             {"target": "METALS", "side": "PE", "strength": 2, "horizon": "TODAY", "role": "risk-off", "why": "producers fall on risk-off days"}],
+ "evidence": [{"id": "snap:us_close", "source": "GIR snapshot - US closes and AI basket (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"},
+              {"id": "fj:us_close", "source": "FinancialJuice US close wrap via R5", "first_seen": "<copied from input>", "grade": "ON RECORD"},
+              {"id": "r5:ai_capex_press", "source": "tech / AI press via R5", "first_seen": "<copied from input>", "grade": "OPINION"}],
  "new_since_last": "US close confirmed; cause moved from rates-first to AI-first",
- "expires": "NEXT_OPEN", "linked_card_ids": ["<seat 2 card>", "<seat 3 card>"]}
+ "proof": "NOT PROVEN", "expires": "NEXT_OPEN", "linked_card_ids": ["<seat 2 card>", "<seat 3 card>"]}
 ```
-- `trigger_ref` / `cancel_ref` must be values from the engine enum in your schema; "<enum>" and key names above are illustrative.
+- **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
+  (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
+  winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
+- `trigger_ref` / `cancel_ref` must be values from the engine enum in your schema; key names above are illustrative. `cancel_ref` is one of the CONTRACTS cancel codes (e.g. VWAP_LOST), never a placeholder.
 - **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,
   no "ten-year" written with digits, no clock times - say "the evening meeting". Link references go ONLY in `link_ids`.
 - Evidence ids point to input items that already carry source, first-seen time and grade (OFFICIAL / ON RECORD / SOURCES SAY /
@@ -92,7 +98,9 @@ Connections), ALERT (woken on a shock), CANCEL (your earlier card's driver rever
 ## 6. EXAMPLE (real 19-20 Nov facts from WATCH_20NOV_us_night.md, OUTSIDE_WATCH_2026-11-20.md, EVENT_MEMORY G)
 - 19 Nov 22:45 inputs: Anthropic (ANT) priced at $83 and opened at $111.50; S&P on its sixth straight loss; AMD down more than 10%
   on a short report; Nvidia down after beating earnings; hawkish Fed minutes, US 10y about 5.07-5.10%. ANT rose while the market
-  fell, so the listing was not the sole cause; the strategists put rates and "the AI trade fading" first.
+  fell, so the listing was not the sole cause; the strategists put rates and "the AI trade fading" first. But a new share rising while
+  other AI names fall is also the trader's first link - money chasing the record listing out of other AI shares - so note it as a
+  ranked candidate cause for seat 35, with that observation as its evidence.
 - Card a senior seat should write: VIEW strength 3, "US fall = rates + AI-capex doubt; read the cause before IT PE". Winners: private
   banks (money leaving AI-heavy Asia, with seat 5), IT services as AI adopters (WATCH both ways). Losers: EMS (DIXON, KAYNES) on
   AI-hardware selling, metals on risk-off. Against: IT down three days, ADRs may gap it lower. Analogy: DeepSeek Jan 2025 and the Feb

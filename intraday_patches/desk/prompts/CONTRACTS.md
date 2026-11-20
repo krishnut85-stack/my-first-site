@@ -97,10 +97,11 @@ carry these schemas; code validates again after the call. GIR never places order
      "state": {"enum": ["NEW", "CONFIRMING", "BROKEN"]},
      "chain": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/theme/properties/chain/items"}},
      "route_to": {"type": "array", "items": {"enum": ["10_flows", "35_connections"]}}}},
-  "second_read": {"type": "object", "required": ["for_card_id", "verdict", "side", "target", "reason"],
-   "description": "E12.4 independent second read. Written by seat 15 (filing / news items weight 4+) or by the linked sector seat 19-27 (theme ideas). The reader never saw the first card's side or conclusion.",
+  "second_read": {"type": "object", "required": ["for_card_id", "side", "target", "reason"],
+   "description": "E12.4 independent second read. Written by seat 15 (filing / news items weight 4+) or by the linked sector seat 19-27 (theme ideas). The seat is given the raw facts and the target, never the first card's side or conclusion; it writes its OWN side. `verdict` is set by CODE after the call.",
    "properties": {"for_card_id": {"type": "string", "description": "the card being re-read (code passes the id; the seat sees only the raw facts)"},
-     "verdict": {"enum": ["AGREE", "DISAGREE", "NO_SIDE"]}, "side": {"enum": ["CE", "PE", "NONE"]},
+     "verdict": {"enum": ["AGREE", "DISAGREE", "NO_SIDE"], "description": "CODE only: AGREE = same side as the first card, DISAGREE = the other side, NO_SIDE = side NONE. A seat never writes it."},
+     "side": {"enum": ["CE", "PE", "NONE"], "description": "the seat's own independent side on the target"},
      "target": {"type": "string", "description": "F&O symbol or sector key the verdict is about"},
      "novelty": {"enum": ["FIRST", "REPEAT-NO-NEW-FACT", "REPEAT-NEW-FACT", "DENIAL", "OFFICIAL"]},
      "event_type": {"type": "string", "description": "seat 15 list: order_win, result, guidance, block_or_promoter_sale, ... other"},
@@ -131,7 +132,7 @@ carry these schemas; code validates again after the call. GIR never places order
 ```
 Notes: `winners` and `losers` are REQUIRED (non-empty, or one `target: "none"` row with the reason) for world, commodity, money,
 Connections and sector seats (DESK_TEAM 2.3 rule 6). A seat never writes BUY NOW, contract, strike, lots, stop or target.
-The trigger enum mirrors brain.py's code enum (NOW ... DAY_LOW_BREAK); ORB5_HIGH / ORB5_LOW / GAP_HOLD are PROPOSED and must be added
+The trigger enum mirrors brain.py's code enum; ORB5_HIGH / ORB5_LOW / GAP_HOLD are PROPOSED and must be added
 to the engine enum before a seat may use them - until then code rejects them (and seat 32's rule says a first ORB5 / PDH fire loses
 after costs, so no example uses them). The cancel codes are the PROPOSED list too, so until the engine enum ships `cancel_ref` is an
 upper-case code checked against the list with a warning, not a rejection; use one of the listed codes, never a placeholder.
@@ -141,8 +142,9 @@ a seat block, never in `proof`.
 (R2, R5, R3) and every other seat may write kind THEME with the LIGHT form (`theme_id`, `state` NEW / CONFIRMING / BROKEN, a chain of
 two or more nodes, `route_to`): it proposes a chain for 10 / 35 and never starts an idea by itself.
 **Second read (E12.4).** When code calls a seat as the second reader it gets the raw facts and the target, never the first card's side.
-It must answer (never QUIET): AGREE -> kind FACT (seat 15) or VIEW (sector seat) with `second_read.verdict` AGREE and its side;
-DISAGREE -> seat 15 writes FACT, a sector seat writes OBJECTION, both with `second_read.verdict` DISAGREE; no view -> NO_SIDE.
+It must answer (never QUIET) with one card carrying `second_read`: seat 15 writes kind FACT, a sector seat writes kind VIEW, with its
+own `side` (CE / PE / NONE), target and one-line reason. Code then sets `second_read.verdict` (AGREE / DISAGREE / NO_SIDE) by comparing
+sides. A sector seat that also finds a blocking fact (a denial, an OFS week, EXTREME RSI on a breakout) adds it as an OBJECTION card.
 
 ## 2. HEAD ANALYST OUTPUT (one object per look or brief)
 ```json
@@ -210,8 +212,8 @@ DISAGREE -> seat 15 writes FACT, a sector seat writes OBJECTION, both with `seco
 ## 3. What code does after the head (never the model)
 - Fills `{code:contract}` (December monthly in expiry week, ATM / 1 ITM, from the live chain), `{code:lots}` (1% risk), `{code:stop}`
   and `{code:target}` (share levels), premium and quote age.
-- Sets the head's `buy_now.second_read`: AGREED only when a `second_read` card for the idea's source card says AGREE on the same side
-  and target; DISAGREED on DISAGREE, NO_SIDE or the other side; PENDING when none arrived (WAIT; a 25 s timeout leaves the idea ARMED /
+- Sets `second_read.verdict` on the reader's card, then the head's `buy_now.second_read`: AGREED only when a `second_read` card for the
+  idea's source card has verdict AGREE on the same target; DISAGREED on DISAGREE, NO_SIDE or the other side; PENDING when none arrived (WAIT; a 25 s timeout leaves the idea ARMED /
   WATCH). The second reader is never the seat that wrote the source card.
 - Gates, any failure = "WAIT: <reason>": ban / MWPL, quote age 60 s, spread, R:R, loss lock, 3 trades a day, one bet per sector, BUY NOW
   window 09:20-14:30, daily BUY NOW cap, `second_read` not AGREED, `answer` empty while a BLOCKING / MATERIAL objection is open, fewer than

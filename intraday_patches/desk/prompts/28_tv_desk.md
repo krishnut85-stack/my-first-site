@@ -66,6 +66,9 @@ fact against a held share or live idea), THEME (a flow / strategy line routed to
  "new_since_last": "First bottom call on this share today", "price_test": "RUNNING", "verification": "TV ONLY - UNVERIFIED",
  "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<R3 card id>"], "links": []}
 ```
+- **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
+  (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
+  winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
 - No digits in headline / claims / why / against (validator, DESK_TEAM 4.5); levels said on air stay in R3's quote field.
 - **Write QUIET** `{"seat": "28_tv_desk", "kind": "QUIET", "reason": "RECAP|REPEAT|NOTHING_PRICE_RELEVANT"}` when the half hour holds
   no NEW or CHANGE line, or only repeats today's headlines. Never repeat a card on the same voice and share within 30 minutes.

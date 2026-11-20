@@ -57,8 +57,9 @@ Kinds: FACT (the day's clock and catalysts), ALERT (a window opens now, a date m
  "results_inside_two_sessions": ["<SYMBOL>"],
  "ideas": [], "winners": [], "losers": [],
  "evidence": [{"id": "cal:j3:<date>", "source": "NSE holiday list (J3)", "first_seen": "<copied>", "grade": "OFFICIAL"}],
- "new_since_last": "-", "proof": "OFFICIAL CALENDAR", "expires": "15:10", "linked_card_ids": [], "links": ["J10", "LB-A66"]}
+ "new_since_last": "-", "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": [], "links": ["LB-A66"]}
 ```
+`proof` is only NOT PROVEN / PROVEN (CONTRACTS): an exchange calendar is OFFICIAL as an evidence `grade`, never as a `proof` value.
 **One-line card texts (code fills the placeholders):**
 - "SERIES: stock options {month} only; index {NIFTY next weekly | BANKNIFTY next monthly}; expiring contract = information only."
 - "EXPIRY: no new entry after {num:t}; pinning watch from {num:t} near the biggest-OI strike."

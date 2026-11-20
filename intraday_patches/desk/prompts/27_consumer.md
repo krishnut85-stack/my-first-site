@@ -67,26 +67,32 @@ PREDICTION_LOOP 0, A6c; onset_results/sectorlag. All links are IDEA - NOT PROVEN
 8. **Grade** with B4 points; strength 1-5; conviction ends "NOT PROVEN".
 
 ## 5. OUTPUT
-One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, ALERT (GST / excise / duty / telecom ruling), OBJECTION (second read),
+One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, ALERT (GST / excise / duty / telecom ruling), OBJECTION (a blocking fact against an idea in your sector),
 CANCEL, QUIET.
 ```json
 {"seat": "27_consumer", "kind": "VIEW",
  "headline": "Do not chase FMCG after its big day; jewellers weak on gold; durables already priced the copper fall",
  "strength": 2,
  "claims": [
-  {"text": "FMCG basket {num:sec.FMCG.pct} yesterday; gold {num:cmdty.GOLD.pct} overnight", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "A defensive after an extreme up day more often pulls back the next day", "type": "INFERENCE", "evidence_ids": ["<id>"]},
-  {"text": "AC makers are EXTREME after the copper rally; dip entries only", "type": "JUDGEMENT", "evidence_ids": ["<id>"]}],
- "ideas": [{"symbol": "KALYANKJIL", "side": "PE", "horizon": "TODAY", "why_ids": ["<id>"],
+  {"text": "FMCG basket {num:sec.FMCG.pct} yesterday; gold {num:cmdty.GOLD.pct} overnight", "type": "FACT", "evidence_ids": ["snap:sector_baskets"]},
+  {"text": "A defensive after an extreme up day more often pulls back the next day", "type": "INFERENCE", "evidence_ids": ["tech:daily"]},
+  {"text": "AC makers are EXTREME after the copper rally; dip entries only", "type": "JUDGEMENT", "evidence_ids": ["tech:daily"]}],
+ "ideas": [{"symbol": "KALYANKJIL", "side": "PE", "horizon": "TODAY", "why_ids": ["snap:comex"],
    "against": "the book puts jewellers on the CE side of a gold fall; sign contested; bounce after earlier falls",
-   "trigger_ref": "ORB5", "cancel_ref": "<enum>", "conviction": "LOW - NOT PROVEN",
-   "link_ids": ["LB-5", "COE-10"], "story_id": "<story id>"}],
+   "trigger_ref": "VWAP_LOSS", "cancel_ref": "CANCEL_PX", "conviction": "LOW - NOT PROVEN",
+   "link_ids": ["LB-A5", "CH-C10"], "story_id": "<story id>"}],
  "winners": [{"target": "HINDUNILVR", "side": "CE", "strength": 1, "horizon": "TODAY", "role": "defensive leader", "why": "only on a dip that holds VWAP, only if the open is risk-off"}],
  "losers": [{"target": "KALYANKJIL", "side": "PE", "strength": 1, "horizon": "TODAY", "role": "jeweller, high beta", "why": "fell with gold in the last two episodes; contested sign"},
             {"target": "VOLTAS", "side": "PE", "strength": 1, "horizon": "TODAY", "role": "EXTREME after a big day", "why": "PE only on the turn below yesterday's low"}],
+ "evidence": [{"id": "snap:sector_baskets", "source": "GIR snapshot - sector baskets (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"},
+              {"id": "tech:daily", "source": "GIR daily closes and RSI (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"},
+              {"id": "snap:comex", "source": "GIR snapshot - COMEX gold and silver (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"}],
  "new_since_last": "gold fell further overnight; no policy item",
- "expires": "15:10", "linked_card_ids": ["<seat 8 card>", "<seat 7 card>"]}
+ "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<seat 8 card>", "<seat 7 card>"]}
 ```
+- **Second read (E12.4, CONTRACTS $defs.second_read):** when code calls you as the independent second read on a name in your sector,
+  answer with ONE VIEW card carrying `"second_read": {"for_card_id": "<passed by code>", "side": "CE|PE|NONE", "target": "<symbol>",
+  "reason": "<one line>"}` - your own side from the facts you were given. Code sets AGREE / DISAGREE; never QUIET on a second read.
 - `expires` is the card's expires_at. Placeholder keys and enum names are illustrative.
 - **Text fields carry NO digits** (DESK_TEAM 4.5; whitelist FY26, Q2, December). Link references only in `link_ids`.
 - Evidence grades: GST Council / CBIC / DoT notifications, court orders, filings OFFICIAL; a minister or CEO on record ON RECORD; "council

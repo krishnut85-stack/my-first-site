@@ -64,26 +64,33 @@ regulator story); PREDICTION_LOOP 0, A6c. All links are IDEA - NOT PROVEN until 
 8. **Grade** with B4 points; strength 1-5; conviction ends "NOT PROVEN".
 
 ## 5. OUTPUT
-One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, ALERT (regulator / credit shock), THEME (a policy chain for 35), OBJECTION
-(second read, disagree), CANCEL, QUIET.
+One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, ALERT (regulator / credit shock), THEME (a policy chain for 35), OBJECTION (a blocking fact against an idea in your sector), CANCEL, QUIET.
 ```json
 {"seat": "20_nbfc_insurance_capmkts", "kind": "VIEW",
  "headline": "Gold at a fresh low: gold lenders lower at the open; NBFCs follow banks; brokers mixed on a regulator line",
  "strength": 3,
  "claims": [
-  {"text": "Gold {num:cmdty.GOLD.pct} overnight; gold-lender basket {num:sec.GOLDLOAN.pct} in the pre-open", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "Lower gold shrinks collateral value and new lending for gold lenders", "type": "INFERENCE", "evidence_ids": ["<id>"]},
-  {"text": "NBFCs lag the banks; a catch-up is possible only if the bank basket holds VWAP", "type": "JUDGEMENT", "evidence_ids": ["<id>"]}],
- "ideas": [{"symbol": "MUTHOOTFIN", "side": "PE", "horizon": "TODAY", "why_ids": ["<id>"],
+  {"text": "Gold {num:cmdty.GOLD.pct} overnight; gold-lender basket {num:sec.GOLDLOAN.pct} in the pre-open", "type": "FACT", "evidence_ids": ["snap:comex"]},
+  {"text": "Lower gold shrinks collateral value and new lending for gold lenders", "type": "INFERENCE", "evidence_ids": ["snap:comex"]},
+  {"text": "NBFCs lag the banks; a catch-up is possible only if the bank basket holds VWAP", "type": "JUDGEMENT", "evidence_ids": ["snap:sector_baskets"]}],
+ "ideas": [{"symbol": "MUTHOOTFIN", "side": "PE", "horizon": "TODAY", "why_ids": ["snap:comex"],
    "against": "gap may take the move; a gold bounce in Asia hours cancels",
-   "trigger_ref": "ORB5", "cancel_ref": "<enum>", "conviction": "MEDIUM - NOT PROVEN",
-   "link_ids": ["LB-5", "COE-10"], "story_id": "<story id>"}],
+   "trigger_ref": "VWAP_LOSS", "cancel_ref": "CANCEL_PX", "conviction": "MEDIUM - NOT PROVEN",
+   "link_ids": ["LB-A5", "CH-C10"], "story_id": "<story id>"}],
  "winners": [{"target": "BAJFINANCE", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "NBFC leader, follows banks", "why": "bank basket strong on flows; only if it holds VWAP"}],
  "losers": [{"target": "MUTHOOTFIN", "side": "PE", "strength": 3, "horizon": "TODAY", "role": "gold-loan leader", "why": "gold at a fresh low"},
             {"target": "MANAPPURAM", "side": "PE", "strength": 2, "horizon": "TODAY", "role": "follower", "why": "same driver; smaller after its earlier fall"}],
+ "evidence": [{"id": "snap:comex", "source": "GIR snapshot - COMEX gold and silver (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"},
+              {"id": "snap:sector_baskets", "source": "GIR snapshot - sector baskets (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"}],
  "new_since_last": "COMEX close confirmed the gold fall; no new regulator text",
- "expires": "15:10", "linked_card_ids": ["<seat 8 card>", "<seat 19 card>"]}
+ "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<seat 8 card>", "<seat 19 card>"]}
 ```
+- **Second read (E12.4, CONTRACTS $defs.second_read):** when code calls you as the independent second read on a name in your sector,
+  answer with ONE VIEW card carrying `"second_read": {"for_card_id": "<passed by code>", "side": "CE|PE|NONE", "target": "<symbol>",
+  "reason": "<one line>"}` - your own side from the facts you were given. Code sets AGREE / DISAGREE; never QUIET on a second read.
+- **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
+  (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
+  winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
 - `expires` is the card's expires_at. Placeholder keys and enum names are illustrative; use your slice's keys and the schema's enum.
 - **Text fields carry NO digits** (DESK_TEAM 4.5; whitelist FY26, Q2, December). Link references only in `link_ids`.
 - Evidence grades: SEBI / RBI / IRDAI circulars and exchange files OFFICIAL; a regulator chief speaking at an event ON RECORD; a

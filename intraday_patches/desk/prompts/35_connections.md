@@ -40,8 +40,8 @@ holds in both halves and the last 2 years). Nothing has passed yet.
   IT services CE; AI-hardware-linked EMS (DIXON, KAYNES) and metals PE. Counter-example: the desk's own 19 Nov IT PE (wrong).
 - **SECTOR_LINKS:** L09 banks lead, NBFC / insurers follow the same day; L16 leader after 3+ strong days -> laggard catch-up in 1-5
   days; L13 high-beta vs defensives on risk-off; C19 "sector A today -> B tomorrow" without a driver is 50-56% = WATCH only.
-- **Measured (PREDICTION_LOOP 0, preopen report 0):** price lists at 19:45 / 09:08 are no better than random (CE lift 1.04 / 1.02); only
-  the 09:45 CE "gap with sector" list picks (lift 1.23, held out 1.19). 64-68% of 2% moves start at 09:15; half done 19-24 min after
+- **Measured (PREDICTION_LOOP 0, preopen report 0):** price lists at 19:45 / 09:08 are no better than random for CE (lift 1.04 / 1.02);
+  the 19:45 PE list picks (lift 1.17) but no better than the plain movers list; only the 09:45 CE "gap with sector" list picks (lift 1.23, held out 1.19). 64-68% of 2% moves start at 09:15; half done 19-24 min after
   onset. Sector confirmation is a GRADE, not a gate. So your edge is knowledge named BEFORE the open, confirmed by price after 09:20.
 - **Sample size (EVENT_MEMORY D):** n < 3 = list the episodes, no average; n 3-7 = median, confidence capped MEDIUM.
 
@@ -72,9 +72,11 @@ One or more SEAT CARDS (CONTRACTS.md), JSON only. Kinds: THEME (new or state cha
  "headline": "AI-capex doubt abroad: foreign money leaves AI-heavy Asia for India; private banks first, IT services second",
  "theme": {"theme_id": "TH-AI_ROTATION", "state": "NEW", "order": "SECOND",
    "causes_ranked": [{"cause": "AI spend doubted, AI hardware sold", "evidence_ids": ["<us card>"]},
+                     {"cause": "Record AI listing absorbs money: funds sell other AI shares to buy the new one", "evidence_ids": ["<us card>"]},
                      {"cause": "US rates and a strong dollar", "evidence_ids": ["<seat 2 card>"]}],
-   "discriminator": "Rates cause = weak rupee and bank outflow; AI cause = Korea and Taiwan bleed while India holds",
-   "chain": [{"node": "US AI shares sold", "channel": "flow", "link_id": "LB-B7-1", "status": "SEEN", "evidence_ids": ["<id>"]},
+   "discriminator": "Listing cause = the new share rises while other AI names fall the same night; AI-spend cause = the fall is wide and outlasts the listing day; rates cause = weak rupee and bank outflow; AI causes = Korea and Taiwan bleed while India holds",
+   "chain": [{"node": "Record AI listing pulls money into the new share", "channel": "flow", "link_id": null, "status": "EXPECTED", "evidence_ids": ["<us card>"]},
+             {"node": "Other US AI shares sold to fund it and on AI-spend doubt", "channel": "flow", "link_id": "LB-B7-1", "status": "SEEN", "evidence_ids": ["<us card>"]},
              {"node": "Foreign funds cut Korea and Taiwan", "channel": "flow", "link_id": "DT-G8", "status": "EXPECTED", "evidence_ids": ["<seat 5 card>"]},
              {"node": "India FII buying, banks first", "channel": "flow", "link_id": "LB-A37", "status": "SEEN", "evidence_ids": ["nse:fiidii:<date>"]}],
    "scenarios": [{"if": "Asia foreign selling continues by the morning meeting", "then": "CONFIRMING"},
@@ -103,9 +105,12 @@ One or more SEAT CARDS (CONTRACTS.md), JSON only. Kinds: THEME (new or state cha
   $8.5 bn of November FPI buying into India while money leaves Korea / Taiwan; US - Anthropic priced at $83 for its Nasdaq listing,
   S&P on a losing streak on AI-spend worry; seat 2 - hawkish Fed minutes, US 10y about 5.07-5.10%, DXY near a 19-month high;
   Goldman on CNBC-TV18 - overweight banks (a repeat since Mar 2026) and industrials (the real change), TV only.
-- **Theme NEW:** the chain above. Causes ranked honestly: the macro strategist put about 70% on rates, the AI analyst about 50/50. The
-  discriminator is written down: if Indian IT and banks hold while Korea / Taiwan bleed, the AI-rotation cause wins.
-- **22:45 (woken):** ANT opened at $111.50 against $83; US tech falling, AMD heavy -> CONFIRMING.
+- **Theme NEW:** the chain above, starting where the trader's own chain starts - the record listing itself. Causes ranked honestly:
+  the macro strategist put about 70% on rates, the AI analyst about 50/50, and the listing-absorption cause is carried as a candidate.
+  Discriminators written down: if Indian IT and banks hold while Korea / Taiwan bleed, the AI-rotation cause wins; if the new share
+  rises while other AI names fall, the listing is pulling money out of them.
+- **22:45 (woken):** ANT opened at $111.50 against $83; US tech falling, AMD heavy. Seat 1 notes ANT rose while the market fell - the
+  listing-absorption test passes (DESK_TEAM 2.5 [G]: money chases the new listing and sells other AI names) -> CONFIRMING.
 - **Fri 20 Nov 07:15:** S&P about -2.0%, Nasdaq about -2.3%, AMD about -10%, Nikkei -4.3%. Losers: metals PE (risk-off). Winners stay
   WATCH: private banks CE, IT CE (adopter case), both only if they hold VWAP and beat NIFTY after 09:20 on a weak market.
 - **Live, what happened:** Nifty IT led, up to +1.3-1.6% while US tech fell; BANKNIFTY closed a record 64,635 (+2.49%); metals the worst

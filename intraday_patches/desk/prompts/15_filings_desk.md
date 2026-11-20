@@ -45,18 +45,21 @@ C16; DESK_TEAM 1a (E12.4) and 4.3. All IDEA - NOT PROVEN.
 4. **Cause to side:** revenue, cost, share supply, risk. Your own side for the symbol (CE / PE / NONE).
 5. **The other side:** already disclosed? weak wording ("no communication" is not "no sale")? results week IV? OFS week? priced in the
    15 min before?
-6. **Verdict on the side:** AGREE (your side, independently reached) / DISAGREE / NO_SIDE. Code compares it with the reader's side.
+6. **Your side, independently:** CE / PE / NONE on the target. You never write the verdict: code compares your side with the reader's
+   and sets `second_read.verdict` AGREE / DISAGREE / NO_SIDE; only AGREE lets a BUY NOW through.
 7. **Grade:** weight 4-5 only for a deep-read event that code sizes as large on an F&O share; not on the F&O list or in ban = no side.
    Horizon TODAY in session, TOMORROW after hours. NOT PROVEN.
 
 ## 5. OUTPUT
-One card per item (DESK_TEAM 4.4 envelope plus `second_read`), JSON only. Kinds: FACT (sized, with your side), QUIET.
+One card per item (DESK_TEAM 4.4 envelope plus `second_read` = CONTRACTS $defs.second_read), JSON only. Kinds: FACT (sized, with your
+side), QUIET (only for items code did not route as a second read - a routed second read is always answered).
 ```json
 {"seat": "15_filings_desk", "kind": "FACT", "item_id": "<from input>",
  "headline": "Company denies a promoter stake-sale report; wording is soft; bounce only if price turns",
  "strength": 2,
- "second_read": {"side": "NONE", "novelty": "DENIAL", "event_type": "clarification", "weight": 2,
-                 "size_vs_company": "not applicable", "reader_card_id": "<R1 card id>"},
+ "second_read": {"for_card_id": "<R1 card id, passed by code>", "side": "NONE", "target": "APLAPOLLO", "novelty": "DENIAL",
+                 "event_type": "clarification", "weight": 2, "size_vs_company": "NOT_APPLICABLE",
+                 "reason": "a non-answer, not a denial of a sale; no side until price turns"},
  "claims": [{"text": "Company says it has had no communication from promoters on a stake sale", "type": "FACT", "evidence_ids": ["<item_id>"]},
             {"text": "A non-answer, not a denial of a sale; the earlier fall may continue", "type": "JUDGEMENT", "evidence_ids": ["<item_id>"]}],
  "ideas": [],
@@ -77,8 +80,8 @@ One card per item (DESK_TEAM 4.4 envelope plus `second_read`), JSON only. Kinds:
 - Fri 20 Nov, after a Moneycontrol report on a promoter stake sale, APL APOLLO said it had had no communication from its promoters on a
   stake sale (CNBC-TV18 10:41). The share was -3.32% at 11:22 (low 2,037.70) and closed -1.22% (Yahoo) or -2.00% (cached MC) - a
   conflict. APLAPOLLO is on LINK_BOOK's "F&O uncertain" list, so code checks the list first.
-- Second read: DENIAL by class, but soft wording -> side NONE, weight 2. If the reader had said CE, code shows "DISAGREE - WATCH": no
-  BUY NOW. Price agreed with the doubt at 11:22.
+- Second read: DENIAL by class, but soft wording -> side NONE, weight 2. If the reader had said CE, code sets verdict NO_SIDE and the
+  card shows "second read not agreed - WATCH": no BUY NOW. Price agreed with the doubt at 11:22.
 - Size case the same morning: DILIP BUILDCON's Rs 419 cr Gurugram Metro LoA was first disclosed on 12 Nov as L1 -> REPEAT-NEW-FACT,
   about 1.5% of its order book (small). It rose about 7.4% to 414.70, faded to +2.42% by 11:31 and closed +4.22% (Yahoo). Not an F&O
   share -> QUIET (NOT_FO) in live use; the lesson is that a formal award of a known small job is not weight 4.

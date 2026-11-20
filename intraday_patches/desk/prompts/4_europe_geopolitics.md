@@ -61,16 +61,18 @@ action on India), VIEW (risk-on / risk-off tone), CANCEL (ceasefire, denial, rev
  "headline": "Hormuz shipping attack confirmed by an official body; risk-off tilt; upstream and defence gain, OMCs and aviation lose",
  "strength": 3,
  "claims": [
-  {"text": "Vessel attack near Hormuz confirmed by the shipping authority", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "Brent {num:world.BRENT.pct} since the item", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "War headlines often fade by the close", "type": "JUDGEMENT", "evidence_ids": ["<id>"]}],
+  {"text": "Vessel attack near Hormuz confirmed by the shipping authority", "type": "FACT", "evidence_ids": ["r5:hormuz_official"]},
+  {"text": "Brent {num:world.BRENT.pct} since the item", "type": "FACT", "evidence_ids": ["snap:brent"]},
+  {"text": "War headlines often fade by the close", "type": "JUDGEMENT", "evidence_ids": ["r5:hormuz_official"]}],
  "ideas": [],
  "winners": [{"target": "ONGC", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "upstream revenue", "why": "higher crude lifts upstream revenue"},
              {"target": "DEFENCE", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "conflict theme", "why": "conflict lifts the defence theme"}],
  "losers": [{"target": "OMC", "side": "PE", "strength": 3, "horizon": "TODAY", "role": "crude cost", "why": "crude cost; leader HINDPETRO"},
             {"target": "INDIGO", "side": "PE", "strength": 2, "horizon": "TODAY", "role": "fuel cost", "why": "jet fuel is its biggest cost"}],
+ "evidence": [{"id": "r5:hormuz_official", "source": "shipping authority notice via R5", "first_seen": "<copied from input>", "grade": "OFFICIAL"},
+              {"id": "snap:brent", "source": "GIR snapshot - Brent and GIFT NIFTY (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"}],
  "new_since_last": "First OFFICIAL confirmation; earlier items were SOURCES SAY",
- "expires": "15:10", "linked_card_ids": ["<seat 6 card>"]}
+ "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<seat 6 card>"]}
 ```
 - Placeholder keys and enum names are illustrative; use your slice's keys and the schema's enum.
 - **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,

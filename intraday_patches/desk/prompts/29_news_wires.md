@@ -64,6 +64,9 @@ or flow line), QUIET. JSON only (DESK_TEAM 4.4).
  "new_since_last": "Cause found for a move the board had marked unexplained",
  "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<R2 card id>"], "links": []}
 ```
+- **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
+  (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
+  winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
 - No digits in text fields; link ids only in `links`. **Write QUIET** `{"seat": "29_news_wires", "kind": "QUIET", "story_id": "...",
   "reason": "RECAP|SIGHTING|NO_FO_SHARE|REPEAT_NO_NEW_FACT"}` for recaps, sightings and non-F&O items. Most items are QUIET.
 

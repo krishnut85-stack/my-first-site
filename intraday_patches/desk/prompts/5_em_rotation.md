@@ -61,19 +61,24 @@ rotation chain for CONNECTIONS), CANCEL (streak broken, figures revised), QUIET.
  "headline": "EM money leaving AI-heavy Korea and Taiwan; India receiving it; FII-owned private banks first in line",
  "strength": 3,
  "claims": [
-  {"text": "FII net buy today {num:flows.FII.today_cr}; five-day sum {num:flows.FII.sum5_cr}; streak {num:flows.FII.streak}", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "Five-day sum above the flows-rule threshold: banks-first CE tilt", "type": "INFERENCE", "evidence_ids": ["<id>"]},
-  {"text": "Korea and Taiwan losing foreign money, inferred from index moves; flow feed not built", "type": "INFERENCE", "evidence_ids": ["<id>"]}],
- "ideas": [{"symbol": "ICICIBANK", "side": "CE", "horizon": "2-5D", "why_ids": ["<id>"],
+  {"text": "FII net buy today {num:flows.FII.today_cr}; five-day sum {num:flows.FII.sum5_cr}; streak {num:flows.FII.streak}", "type": "FACT", "evidence_ids": ["nse:fiidii"]},
+  {"text": "Five-day sum above the flows-rule threshold: banks-first CE tilt", "type": "INFERENCE", "evidence_ids": ["nse:fiidii"]},
+  {"text": "Korea and Taiwan losing foreign money, inferred from index moves; flow feed not built", "type": "INFERENCE", "evidence_ids": ["snap:asia_open"]}],
+ "ideas": [{"symbol": "ICICIBANK", "side": "CE", "horizon": "2-5D", "why_ids": ["nse:fiidii"],
    "against": "sector RSI EXTREME after a month-long run; enter only on a pullback or VWAP reclaim",
-   "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "<enum>", "conviction": "LOW - NOT PROVEN",
+   "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "VWAP_LOST", "conviction": "LOW - NOT PROVEN",
    "link_ids": ["LB-A37", "LB-B7-7", "DT-G8"], "story_id": "<open story id>"}],
  "winners": [{"target": "BANKS_PVT", "side": "CE", "strength": 3, "horizon": "2-5D", "role": "most FII-owned, bought first", "why": "five-day FII sum, flows rule"},
-             {"target": "FIN_SERVICE", "side": "CE", "strength": 2, "horizon": "2-5D", "role": "follows the banks", "why": "same flow"}],
+             {"target": "NBFC", "side": "CE", "strength": 2, "horizon": "2-5D", "role": "follows the banks", "why": "same flow"}],
  "losers": [{"target": "none", "side": "PE", "strength": 1, "horizon": "2-5D", "role": "-", "why": "none found: money leaves markets outside India, not Indian sectors"}],
+ "evidence": [{"id": "nse:fiidii", "source": "NSE FII / DII provisional figures", "first_seen": "<copied from input>", "grade": "OFFICIAL"},
+              {"id": "snap:asia_open", "source": "GIR snapshot - Asia index quotes (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"}],
  "new_since_last": "Streak extended; a global house cut Taiwan and raised India",
- "expires": "2D", "linked_card_ids": ["<seat 10 card>", "<seat 3 card>"]}
+ "proof": "NOT PROVEN", "expires": "2D", "linked_card_ids": ["<seat 10 card>", "<seat 3 card>"]}
 ```
+- **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
+  (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
+  winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
 - Placeholder keys and enum names are illustrative; use your slice's keys and the schema's enum.
 - **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,
   no "ten-year" written with digits, no clock times - say "the evening meeting". Link references go ONLY in `link_ids`.

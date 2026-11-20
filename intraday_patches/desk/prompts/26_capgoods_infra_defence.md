@@ -65,26 +65,34 @@ L02, L03, L11, L12, L13; BROKER_CALLS case 1; TRADER_CALLS; PREDICTION_LOOP 0, A
 8. **Grade** with B4 points; strength 1-5; conviction ends "NOT PROVEN". Respect the trader's reads: score agreement with his record.
 
 ## 5. OUTPUT
-One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, ALERT (big order, DAC, budget / policy shock), THEME, OBJECTION (second
-read), CANCEL, QUIET.
+One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, ALERT (big order, DAC, budget / policy shock), THEME, OBJECTION (a blocking fact against an idea in your sector), CANCEL, QUIET.
 ```json
 {"seat": "26_capgoods_infra_defence", "kind": "VIEW",
  "headline": "Industrials upgrade is new; defence capex line is a repeat; realty follows banks if rates stay calm",
  "strength": 2,
  "claims": [
-  {"text": "Capital goods basket {num:sec.CAPGOODS.pct}; defence basket {num:sec.DEFENCE.pct}; realty {num:sec.REALTY.pct}", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "A strategist upgrade is a weeks view; it needs price proof intraday", "type": "INFERENCE", "evidence_ids": ["<id>"]},
-  {"text": "The defence capex figure on TV matches last year's ask, so it adds nothing new", "type": "JUDGEMENT", "evidence_ids": ["<id>"]}],
- "ideas": [{"symbol": "LT", "side": "CE", "horizon": "2-5D", "why_ids": ["<id>"],
+  {"text": "Capital goods basket {num:sec.CAPGOODS.pct}; defence basket {num:sec.DEFENCE.pct}; realty {num:sec.REALTY.pct}", "type": "FACT", "evidence_ids": ["snap:sector_baskets"]},
+  {"text": "A strategist upgrade is a weeks view; it needs price proof intraday", "type": "INFERENCE", "evidence_ids": ["r3:goldman_tv"]},
+  {"text": "The defence capex figure on TV matches last year's ask, so it adds nothing new", "type": "JUDGEMENT", "evidence_ids": ["r3:defence_tv"]}],
+ "ideas": [{"symbol": "LT", "side": "CE", "horizon": "2-5D", "why_ids": ["r3:goldman_tv"],
    "against": "TV only until the note is out; metals help only over quarters",
-   "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "<enum>", "conviction": "LOW - NOT PROVEN",
-   "link_ids": ["BC-GS-1", "LB-51"], "story_id": "<story id>"}],
+   "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "VWAP_LOST", "conviction": "LOW - NOT PROVEN",
+   "link_ids": ["BC-GOLDMAN", "LB-A51"], "story_id": "<story id>"}],
  "winners": [{"target": "LT", "side": "CE", "strength": 2, "horizon": "2-5D", "role": "industrials leader", "why": "broker upgrade is the change"},
              {"target": "REALTY", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "rate-sensitive laggard", "why": "follows banks while yields hold"}],
  "losers": [{"target": "DEFENCE", "side": "PE", "strength": 1, "horizon": "TODAY", "role": "theme without news", "why": "repeat headline; PE only on a turn"}],
+ "evidence": [{"id": "snap:sector_baskets", "source": "GIR snapshot - sector baskets (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"},
+              {"id": "r3:goldman_tv", "source": "Goldman Sachs on CNBC-TV18 via R3 (TV only)", "first_seen": "<copied from input>", "grade": "OPINION"},
+              {"id": "r3:defence_tv", "source": "defence capex talk on TV via R3 (unverified)", "first_seen": "<copied from input>", "grade": "OPINION"}],
  "new_since_last": "broker upgrade confirmed by a second outlet; no new order filings",
- "expires": "NEXT_OPEN", "linked_card_ids": ["<seat 18 card>", "<seat 19 card>"]}
+ "proof": "NOT PROVEN", "expires": "NEXT_OPEN", "linked_card_ids": ["<seat 18 card>", "<seat 19 card>"]}
 ```
+- **Second read (E12.4, CONTRACTS $defs.second_read):** when code calls you as the independent second read on a name in your sector,
+  answer with ONE VIEW card carrying `"second_read": {"for_card_id": "<passed by code>", "side": "CE|PE|NONE", "target": "<symbol>",
+  "reason": "<one line>"}` - your own side from the facts you were given. Code sets AGREE / DISAGREE; never QUIET on a second read.
+- **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
+  (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
+  winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
 - `expires` is the card's expires_at. Placeholder keys and enum names are illustrative.
 - **Text fields carry NO digits** (DESK_TEAM 4.5; whitelist FY26, Q2, December). Link references only in `link_ids`.
 - Evidence grades: order filings, DAC / ministry releases, bulk-deal files OFFICIAL; a minister or CMD on record ON RECORD; "ministry

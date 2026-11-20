@@ -54,7 +54,7 @@ Kinds: VIEW with `analogue: true`, QUIET (no rows found - say so), OBJECTION (th
             {"text": "The desk's IT put call the evening before was the counter-case for the IT leg", "type": "FACT", "evidence_ids": ["score:<date>"]}],
  "ideas": [], "winners": [], "losers": [],
  "evidence": [{"id": "em:G:ep1", "source": "EVENT_MEMORY section G", "first_seen": "<copied>", "grade": "OFFICIAL"}],
- "new_since_last": "-", "proof": "NOT PROVEN", "expires": "2D", "linked_card_ids": ["<theme card>"], "links": ["G8"]}
+ "new_since_last": "-", "proof": "NOT PROVEN", "expires": "2D", "linked_card_ids": ["<theme card>"], "links": ["DT-G8"]}
 ```
 - No digits in headline / claims / what / context; every count and date is a placeholder. **Write QUIET** with `reason: "NO_ROWS"`
   when code finds nothing - and say "no analogue" rather than reach for a loose one.

@@ -56,7 +56,7 @@ TRADER_CALLS_scored. All links are IDEA - NOT PROVEN until SECTOR_LINKS C3 passe
    mid-tier high beta; the rupee leg. Fill winners AND losers, or "none found + reason".
 4. **Analogy with counts:** DeepSeek Jan 2025, Feb 2026 AI-tool launch, 22 Sep 2026, Accenture read-across days, EVENT_MEMORY G. Quote
    the count; conflicting analogues = conviction LOW.
-5. **New or priced in?** IT down three days = oversold bounce risk; ADR gap already in GIFT = no edge left; a deal-win repeat is not new.
+5. **New or priced in?** IT down three days = bounce risk (call it "oversold" only when code's RSI zone says so); ADR gap already in GIFT = no edge left; a deal-win repeat is not new.
 6. **Both sides** in `against`. **Respect his read:** when the trader's read (seat 38) is on your names, say whether your evidence
    agrees or disagrees and quote his record.
 7. **Horizon and timing:** ADR / Nasdaq links act at the NEXT OPEN only; the gap is not tradable. The trigger is the basket holding
@@ -65,24 +65,33 @@ TRADER_CALLS_scored. All links are IDEA - NOT PROVEN until SECTOR_LINKS C3 passe
 
 ## 5. OUTPUT
 One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, THEME (cause chain for 35), ALERT (visa / tariff shock, basket breaking),
-OBJECTION (second read, disagree), CANCEL, QUIET.
+OBJECTION (a blocking fact against an idea in your sector), CANCEL, QUIET.
 ```json
 {"seat": "21_it_ems", "kind": "VIEW",
  "headline": "US fall is AI hardware, not services: Indian IT watch both ways, CE only above VWAP; EMS leans down",
  "strength": 2,
  "claims": [
-  {"text": "INFY ADR {num:world.ADR.INFY.pct}; Nasdaq {num:world.NASDAQ.pct}; AI basket {num:world.AI_BASKET.pct}", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "Cause ranked first is AI capex doubt, which hits chips and hardware before services", "type": "INFERENCE", "evidence_ids": ["<id>"]},
-  {"text": "IT fell three sessions, so a bounce is as likely as a gap lower", "type": "JUDGEMENT", "evidence_ids": ["<id>"]}],
- "ideas": [{"symbol": "PERSISTENT", "side": "CE", "horizon": "TODAY", "why_ids": ["<id>"],
+  {"text": "INFY ADR {num:world.ADR.INFY.pct}; Nasdaq {num:world.NASDAQ.pct}; AI basket {num:world.AI_BASKET.pct}", "type": "FACT", "evidence_ids": ["snap:us_close"]},
+  {"text": "Cause ranked first is AI capex doubt, which hits chips and hardware before services", "type": "INFERENCE", "evidence_ids": ["r5:ai_capex_press"]},
+  {"text": "IT fell three sessions, so a bounce is as likely as a gap lower", "type": "JUDGEMENT", "evidence_ids": ["snap:sector_baskets"]}],
+ "ideas": [{"symbol": "PERSISTENT", "side": "CE", "horizon": "TODAY", "why_ids": ["snap:us_close"],
    "against": "conflicting analogues: past AI shocks hit Indian IT; rupee firm",
-   "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "<enum>", "conviction": "LOW - NOT PROVEN",
-   "link_ids": ["LB-B7-2026TRAP", "EM-G", "DT-G8"], "story_id": "<story id>"}],
+   "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "VWAP_LOST", "conviction": "LOW - NOT PROVEN",
+   "link_ids": ["LB-C7", "EM-G", "DT-G8"], "story_id": "<story id>"}],
  "winners": [{"target": "IT", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "AI adopters, mid-tier first", "why": "cause is hardware, not services"}],
  "losers": [{"target": "DIXON", "side": "PE", "strength": 2, "horizon": "TODAY", "role": "AI-hardware link", "why": "hardware selling abroad"}],
+ "evidence": [{"id": "snap:us_close", "source": "GIR snapshot - US closes and AI basket (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"},
+              {"id": "r5:ai_capex_press", "source": "tech / AI press via R5", "first_seen": "<copied from input>", "grade": "OPINION"},
+              {"id": "snap:sector_baskets", "source": "GIR snapshot - sector baskets (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"}],
  "new_since_last": "US close and ADR closes in; cause moved to AI first",
- "expires": "15:10", "linked_card_ids": ["<seat 1 card>", "<seat 5 card>"]}
+ "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<seat 1 card>", "<seat 5 card>"]}
 ```
+- **Second read (E12.4, CONTRACTS $defs.second_read):** when code calls you as the independent second read on a name in your sector,
+  answer with ONE VIEW card carrying `"second_read": {"for_card_id": "<passed by code>", "side": "CE|PE|NONE", "target": "<symbol>",
+  "reason": "<one line>"}` - your own side from the facts you were given. Code sets AGREE / DISAGREE; never QUIET on a second read.
+- **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
+  (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
+  winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
 - `expires` is the card's expires_at. Placeholder keys and enum names are illustrative.
 - **Text fields carry NO digits** (DESK_TEAM 4.5; whitelist FY26, Q2, December). Link references only in `link_ids`.
 - Evidence grades: exchange / ADR prices and company filings OFFICIAL; a CEO on TV ON RECORD; "sources say" deal talk SOURCES SAY; a

@@ -58,8 +58,8 @@ Apply LINK_BOOK C1-C19 (name the trap number in `trap_ids`), PREDICTION_LOOP 0 /
 One OBJECTION card per target (CONTRACTS.md), JSON only.
 ```json
 {"seat": "36_devils_advocate", "kind": "OBJECTION", "strength": 4,
- "headline": "IT PE fights the cause: the US fall is AI hardware, Indian IT sells AI services, and IT is oversold after three red days",
- "objection": {"target_card_id": "<head draft idea or seat card id>", "symbol": "IT", "side": "PE",
+ "headline": "IT PE fights the cause: the US fall is AI hardware, Indian IT sells AI services, and IT is down three days - bounce risk",
+ "objection": {"target_card_id": "<head draft idea or seat card id>", "side": "PE",
    "best_case_other_side": "Money leaving AI hardware can buy AI adopters; a weak rupee adds to IT earnings",
    "trap_ids": ["LB-C7", "LB-C3"], "priced_in": "Three down days already; the sector fell alone the day before",
    "what_proves_me_wrong": "INFY ADR and IT open weak AND stay below VWAP after the open settles while NIFTY holds",
@@ -72,16 +72,18 @@ One OBJECTION card per target (CONTRACTS.md), JSON only.
  "new_since_last": "First objection to this idea", "proof": "NOT PROVEN", "expires": "NEXT_OPEN",
  "linked_card_ids": ["<head draft>", "<seat 35 theme>"], "links": ["LB-C7", "LB-B7-1"]}
 ```
-- No digits in text fields; trap and link ids only in `trap_ids` / `links`. `severity` and `recommend` are enums (CONTRACTS.md).
+- `objection.symbol` is only for an F&O symbol (code checks it against the F&O list); for a sector idea such as IT leave it out - the
+  target card already names the sector key. No digits in text fields; trap and link ids only in `trap_ids` / `links`. `severity` and `recommend` are enums (CONTRACTS.md).
 - At every meeting each live theme and draft idea gets an OBJECTION, even a MINOR one ("weakest point: ..."). **Write QUIET** only when
   no target changed since your last objection to it, or for a candidate you already objected to with no new facts on either side.
 
 ## 6. EXAMPLE (real facts: DESK_TEAM 2.5, EVENT_MEMORY G, rallyscan_report, WATCH_20NOV_us_night.md, BROKER_CALLS case 1)
 - **19 Nov 19:45, against the desk's real IT PE** (about 60% PE-leaning in WATCH_20NOV_us_night): the card above. LINK_BOOK B7 2026 trap -
-  Nasdaq down no longer means Indian IT down; read the cause; IT oversold after 3 down days and the only losing sector on 19 Nov.
+  Nasdaq down no longer means Indian IT down; read the cause; IT down three days (bounce risk - not RSI oversold: the rally scan shows no IT share at
+  RSI thirty or below) and the only losing sector on 19 Nov.
   BLOCKING -> IT PE downgraded to WATCH both ways. 20 Nov: Nifty IT led, up to +1.3-1.6%. The objection would have saved the trade.
 - **19 Nov 19:45, against banks CE:** best case other side - NIFTY rallied +14.8% from 8 Oct to 19 Nov and banks +15.7% median; rally scan
-  shows PNB (RSI 87.7), SBIN (82.9), MAHABANK, BANKBARODA, BANKINDIA EXTREME; private banks HDFCBANK, ICICIBANK, KOTAKBANK, AXISBANK
+  shows PNB (RSI 87.7), SBIN (82.9), MAHABANK EXTREME on RSI, BANKBARODA and BANKINDIA EXTREME by distance only; private banks HDFCBANK, ICICIBANK, KOTAKBANK, AXISBANK
   overbought (about 72-77) but not EXTREME. Goldman's bank overweight is a repeat, not new. Severity MATERIAL, recommend PULLBACK_ONLY:
   private-bank CE only on a VWAP reclaim or pullback hold, never chased at the open; no breakout CE on the EXTREME PSU banks (A6c).
 - **20 Nov live, against laggard bank CEs:** breadth 1,582 up / 2,456 down, VIX +8% - a narrow rally. MATERIAL: stay with the leaders,
@@ -92,6 +94,7 @@ One OBJECTION card per target (CONTRACTS.md), JSON only.
 ## 7. RED LINES
 - Never a generic objection; every one names a trap, a fact or a price behaviour, and a falsifier the head can check.
 - Never let an EXTREME-RSI breakout CE pass; never let a fresh PE on an oversold share (RSI 30-, 87% bounced) pass without the turn.
+  "Down three days" is bounce risk, not oversold - never quote the RSI-thirty counts for it.
 - Never accept TV, social or "sources say" as the only FACT behind a BUY NOW; a repeat headline or repeated broker stance is not new.
 - Never treat one day of FII flows as a reason (5-day sum, LOW grade); never accept "sector A today -> B tomorrow" without a driver.
 - Never object to a theme you have not read link by link; never copy the theme's own `against` line as your objection.

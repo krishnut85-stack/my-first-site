@@ -67,24 +67,32 @@ PREDICTION_LOOP 0, A6b, A6c. All links are IDEA - NOT PROVEN until SECTOR_LINKS 
 
 ## 5. OUTPUT
 One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, ALERT (sales / GST / crude shock), THEME (a cost or policy chain for 35),
-OBJECTION (second read), CANCEL, QUIET.
+OBJECTION (a blocking fact against an idea in your sector), CANCEL, QUIET.
 ```json
 {"seat": "23_auto", "kind": "VIEW",
  "headline": "Autos already ran on cheaper metals; tomorrow is a pullback watch, not a chase; laggards and parts only on proof",
  "strength": 2,
  "claims": [
-  {"text": "Auto basket {num:sec.AUTO.pct} today vs NIFTY {num:idx.NIFTY.pct}; breadth {num:sec.AUTO.breadth}", "type": "FACT", "evidence_ids": ["<id>"]},
-  {"text": "Metal costs help margins over quarters, not tomorrow", "type": "INFERENCE", "evidence_ids": ["<id>"]},
-  {"text": "Leaders are EXTREME on RSI; laggards may catch up if the basket holds", "type": "JUDGEMENT", "evidence_ids": ["<id>"]}],
- "ideas": [{"symbol": "TVSMOTOR", "side": "CE", "horizon": "TODAY", "why_ids": ["<id>"],
+  {"text": "Auto basket {num:sec.AUTO.pct} today vs NIFTY {num:idx.NIFTY.pct}; breadth {num:sec.AUTO.breadth}", "type": "FACT", "evidence_ids": ["snap:sector_baskets"]},
+  {"text": "Metal costs help margins over quarters, not tomorrow", "type": "INFERENCE", "evidence_ids": ["snap:sector_baskets"]},
+  {"text": "Leaders are EXTREME on RSI; laggards may catch up if the basket holds", "type": "JUDGEMENT", "evidence_ids": ["tech:daily"]}],
+ "ideas": [{"symbol": "TVSMOTOR", "side": "CE", "horizon": "TODAY", "why_ids": ["snap:sector_baskets"],
    "against": "no measured next-day edge after a big auto day; risk-off open drags autos with metals",
-   "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "<enum>", "conviction": "LOW - NOT PROVEN",
-   "link_ids": ["SL-L01", "SL-L16", "SLAG-E3"], "story_id": "<story id>"}],
- "winners": [{"target": "AUTO_PARTS", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "laggards of the auto move", "why": "parts follow carmakers; catch-up only on proof"}],
+   "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "VWAP_LOST", "conviction": "LOW - NOT PROVEN",
+   "link_ids": ["SL-L01", "SL-L16", "OR-SLAG-E3"], "story_id": "<story id>"}],
+ "winners": [{"target": "AUTO_ANC", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "laggards of the auto move", "why": "parts follow carmakers; catch-up only on proof"}],
  "losers": [{"target": "MARUTI", "side": "PE", "strength": 1, "horizon": "TODAY", "role": "EXTREME leader", "why": "PE only on the turn; most often it keeps the gain"}],
+ "evidence": [{"id": "snap:sector_baskets", "source": "GIR snapshot - sector baskets (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"},
+              {"id": "tech:daily", "source": "GIR daily closes and RSI (code)", "first_seen": "<copied from input>", "grade": "OFFICIAL"}],
  "new_since_last": "metals bounced a little overnight; no crude or sales news",
- "expires": "15:10", "linked_card_ids": ["<seat 7 card>", "<seat 6 card>"]}
+ "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<seat 7 card>", "<seat 6 card>"]}
 ```
+- **Second read (E12.4, CONTRACTS $defs.second_read):** when code calls you as the independent second read on a name in your sector,
+  answer with ONE VIEW card carrying `"second_read": {"for_card_id": "<passed by code>", "side": "CE|PE|NONE", "target": "<symbol>",
+  "reason": "<one line>"}` - your own side from the facts you were given. Code sets AGREE / DISAGREE; never QUIET on a second read.
+- **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
+  (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
+  winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
 - `expires` is the card's expires_at. Placeholder keys and enum names are illustrative.
 - **Text fields carry NO digits** (DESK_TEAM 4.5; whitelist FY26, Q2, December). Link references only in `link_ids`.
 - Evidence grades: company sales filings, VAHAN and GST notifications OFFICIAL; a company executive on TV ON RECORD; dealer-check talk

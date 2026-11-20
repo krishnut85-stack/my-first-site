@@ -65,14 +65,17 @@ FACT (the NSDL sector file), CANCEL (streak broken, figure revised, block-deal d
   {"text": "Five-day sum past the LINK_BOOK row thirty-seven threshold on the buy side", "type": "INFERENCE", "evidence_ids": ["nse:fiidii:<date>"]}],
  "ideas": [{"symbol": "HDFCBANK", "side": "CE", "horizon": "2-5D", "why_ids": ["nse:fiidii:<date>"],
    "against": "sector RSI EXTREME after a month-long run; one bank leg only, needs CONNECTIONS and live price",
-   "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "<enum>", "conviction": "LOW - NOT PROVEN", "link_ids": ["LB-A37", "LB-B7-7"], "story_id": "<id>"}],
+   "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "VWAP_LOST", "conviction": "LOW - NOT PROVEN", "link_ids": ["LB-A37", "LB-B7-7"], "story_id": "<id>"}],
  "winners": [{"target": "BANKS_PVT", "side": "CE", "strength": 3, "horizon": "2-5D", "role": "most FII-owned, bought first", "why": "FII five-day-sum rule"},
-             {"target": "FIN_SERVICE", "side": "CE", "strength": 2, "horizon": "2-5D", "role": "banks-to-financials follower", "why": "same flow"}],
+             {"target": "NBFC", "side": "CE", "strength": 2, "horizon": "2-5D", "role": "banks-to-financials follower", "why": "same flow"}],
  "losers":  [{"target": "none", "side": "PE", "strength": 1, "horizon": "2-5D", "role": "-", "why": "none found: NSDL sector file not seen, so no funded-from sector"}],
  "evidence": [{"id": "nse:fiidii:<date>", "source": "NSE provisional FII/DII", "first_seen": "<copied>", "grade": "OFFICIAL"}],
  "new_since_last": "Five-day sum crossed the threshold this evening",
  "proof": "NOT PROVEN", "expires": "2D", "linked_card_ids": ["<seat 5 card>", "<seat 9 card>"], "links": ["LB-A37", "SL-L09"]}
 ```
+- **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
+  (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
+  winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
 - **No digits in text fields** (validator, DESK_TEAM 4.5): link ids such as LB-A23 go only in `links` / `link_ids` / `link_id`;
   in headline / claims / why / against write "the rupee link", "the supply-overhang trap", never a row number.
 - `expires` = expires_at. NSE / NSDL files are OFFICIAL; a strategist's flow line is OPINION (support only); "FIIs seen buying" on TV

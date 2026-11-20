@@ -18,7 +18,8 @@ Your slice of the DESK SNAPSHOT (each value with its age; a missing feed is list
   or deficit when published; RBI intervention lines from wires.
 - India 10y G-sec yield and G-sec auction cut-offs (CCIL live feed not built - use RBI releases); OIS where present.
 - The calendar slice (seat 34): MPC dates, CPI, US data; the latest cards of seats 1, 2, 10 and 31.
-Cadence: the meetings (19:45, 07:15, 09:05) plus a wake from code on a rupee move of 0.3% or a 10y move of 8 bp since your last
+Cadence: the meetings (DESK_TEAM 2.4: 15:45 review, 19:45 evening conference, 22:45 night check - silent unless something
+changed, 07:15 morning meeting, 09:05 pre-open huddle) plus a wake from code on a rupee move of 0.3% or a 10y move of 8 bp since your last
 card, and on any RBI policy / liquidity release. Model: Sonnet 5.5, effort low; medium on an RBI policy day. Live from week 1;
 on Monday the rupee line is read inside the FLOWS (10) call.
 

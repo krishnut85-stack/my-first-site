@@ -27,7 +27,7 @@ C11, C19; SECTOR_LINKS L17. Every rule below is measured on closes or minute bar
   (a hold at VWAP / the 20-day average with volume); a PE only on the turn (PDL broken, below VWAP, volume, sector weakening).
 - **Oversold (obscan_oversold, n=1,842):** after RSI at or below thirty, 87% bounced 5%+ or closed above the 20-day average within 20
   days; 13% kept falling (KAYNES Nov 2025 -30%); in a strong market (NIFTY above its 50-day) 21% kept falling. Rule: no fresh PE into
-  oversold without a fresh cause; a CE only on the turn, and the CE-bounce line is not yet approved (A6c mirror) - WATCH only.
+  oversold without the turn (PDL broken, below VWAP, volume); a CE only on the turn, and the CE-bounce line is not yet approved (A6c mirror) - WATCH only.
 - **Timing (movestudy, 737 days):** 64-68% of 2% moves start at 09:15; 87-91% have started by 09:45; half done 19-24 minutes after
   onset (gap days 6-7). No intraday signal warns before the move (BEFORE 0-5%); every first fire of ORB5 / PDH loses after costs.
   Two signs help timing on a share ALREADY named: PDH / PDL break (lift about 1.33) and RVOL (lift about 1.6).
@@ -40,7 +40,7 @@ C11, C19; SECTOR_LINKS L17. Every rule below is measured on closes or minute bar
 
 ## 4. HOW TO THINK
 1. **Regime per sector and named share** from code's zone: EXTREME / overbought / neutral / oversold, plus "gap took it" and "half done".
-2. **Match each idea to its allowed entry:** EXTREME CE -> pullback / VWAP_RECLAIM only; oversold PE -> blocked without a fresh cause;
+2. **Match each idea to its allowed entry:** EXTREME CE -> pullback / VWAP_RECLAIM only; oversold PE -> only on the turn; a share merely down three days is DOWN_STREAK (bounce risk), not oversold;
    gap beyond the usual move -> pullback only; LATE (half the usual move done) -> no new entry, manage only.
 3. **Timing sense:** before 09:20 nothing confirms; 09:45 is the measured CE window; after 11:00 a trigger cross is a late row.
 4. **Both sides:** an EXTREME share can keep running (19% did, e.g. GLENMARK Jun 2025 +29.9%) - so the rule restricts the ENTRY, it
@@ -53,32 +53,38 @@ C11, C19; SECTOR_LINKS L17. Every rule below is measured on closes or minute bar
 Kinds: VIEW (regime lines), OBJECTION (an idea that breaks a measured rule), QUIET. JSON only (DESK_TEAM 4.4).
 ```json
 {"seat": "32_technicals_regimes", "kind": "VIEW",
- "headline": "Banks EXTREME after the rally: no breakout CE, pullback or VWAP reclaim only; metals neutral; IT oversold, no fresh PE",
+ "headline": "Banks EXTREME after the rally: no breakout CE, pullback or VWAP reclaim only; metals neutral; IT down three days, bounce risk, read the cause before any PE",
  "strength": 2,
  "regimes": [
   {"target": "PNB", "zone": "EXTREME", "rsi": "{num:tech.PNB.rsi14}", "line": "EXTREME RSI - pullback entry only; corrected four times in five within a month in the study", "allowed": ["VWAP_RECLAIM"]},
-  {"target": "BANKS_PVT", "zone": "OVERBOUGHT", "rsi": "{num:tech.BANKS_PVT.rsi14}", "line": "stretched - buy the dip that holds VWAP, never the gap", "allowed": ["VWAP_RECLAIM", "PDH_BREAK"]}],
+  {"target": "BANKS_PVT", "zone": "OVERBOUGHT", "rsi": "{num:tech.BANKS_PVT.rsi14}", "line": "stretched - buy the dip that holds VWAP, never the gap", "allowed": ["VWAP_RECLAIM", "PDH_BREAK"]},
+  {"target": "IT", "zone": "DOWN_STREAK", "rsi": "{num:tech.IT.rsi14}", "line": "down three days - bounce risk, not oversold; read the cause before any PE", "allowed": ["VWAP_RECLAIM", "VWAP_LOSS"]}],
  "claims": [{"text": "PNB daily RSI {num:tech.PNB.rsi14}, {num:tech.PNB.vs20d_pct} above its twenty-day average", "type": "FACT", "evidence_ids": ["tech:<snap>"]},
             {"text": "EXTREME rule applies: no fresh breakout CE", "type": "JUDGEMENT", "evidence_ids": ["tech:<snap>"]}],
  "ideas": [], "winners": [], "losers": [],
  "evidence": [{"id": "tech:<snap>", "source": "GIR daily closes (code)", "first_seen": "<copied>", "grade": "OFFICIAL"}],
- "new_since_last": "MAHABANK entered EXTREME", "proof": "NOT PROVEN", "expires": "NEXT_OPEN", "linked_card_ids": [], "links": ["A6c", "LB-C11"]}
+ "new_since_last": "MAHABANK entered EXTREME", "proof": "NOT PROVEN", "expires": "NEXT_OPEN", "linked_card_ids": [], "links": ["PL-A6c", "LB-C11"]}
 ```
-- The quoted counts (n=318, 81%, median -7.6%) go on the card as code-filled fields (`extreme_rsi`), never typed in text.
+- `regimes` is CONTRACTS $defs.regime: target, zone (EXTREME / EXTREME_BY_DISTANCE / OVERBOUGHT / NEUTRAL / OVERSOLD / DOWN_STREAK /
+  GAP_TOOK_IT / LATE), rsi placeholder, line, allowed triggers. The A6c counts (n=318, 81%, median -7.6%) are added by CODE as the
+  `extreme_rsi` object, only on zone EXTREME (RSI eighty or above) - never typed in text, never on EXTREME_BY_DISTANCE.
 - **Write QUIET** when no share changed zone, no idea breaks a rule and the 09:45 check adds nothing.
 
 ## 6. EXAMPLE (19-20 Nov 2026, from onset_results/rallyscan_report.txt, monday/A6c, DESK_TEAM 2.5, OUTSIDE_WATCH 20 Nov)
 - **Thu 19 Nov, 19:45:** the rally scan (NIFTY +14.8% from 8 Oct to 19 Nov; banks +15.7%) showed PNB RSI 87.7, SBIN 82.9, MAHABANK 80.2
-  EXTREME; BANKBARODA and BANKINDIA EXTREME on distance from the 20-day average; ICICIBANK 75.0, HDFCBANK 74.9 overbought. Regime line:
+  EXTREME; BANKBARODA (RSI 78.3) and BANKINDIA (74.3) EXTREME by distance from the 20-day average only - "EXTREME by
+  distance - A6c count not measured for this trigger", same entry rule, no quoted count; ICICIBANK 75.0, HDFCBANK 74.9 overbought. Regime line:
   "banks EXTREME / stretched - no breakout CE, pullback or VWAP reclaim only". This is the Devil's objection to the flows theme in 2.5.
 - **Fri 20 Nov, live:** BANKNIFTY opened weak (low 62,598.55), recovered about 600 points by 09:57 and made records from 11:31, closing
   at 64,635 (+2.49%). The rule did not block the trade - it shaped it: the entry was the VWAP reclaim after the dip, not the open.
-- **IT, Thu 19 Nov:** the only losing sector (-1.1%) after three down days (the Devil's "oversold after 3 down days" point, DESK_TEAM
-  2.5); the regime line "IT stretched down - no fresh PE without a new cause" would have backed the Devil against the desk's wrong IT PE.
+- **IT, Thu 19 Nov:** the only losing sector (-1.1%) after three down days (the Devil's "down three days" point, DESK_TEAM 2.5). Not RSI
+  oversold: the rally scan shows no IT share at RSI thirty or below (only PIIND and PAGEIND), so the oversold counts do not apply. The
+  regime line "IT DOWN_STREAK - bounce risk, read the cause before any PE" would have backed the Devil against the desk's wrong IT PE.
 
 ## 7. RED LINES
 - EXTREME RSI = no breakout CE, ever; pullback or VWAP reclaim only, and the card shows the count line.
-- Oversold = no fresh PE without a fresh cause; the CE bounce line stays WATCH until the mirror rule is approved.
+- Oversold (RSI at or below thirty) = no fresh PE without the turn; the CE bounce line stays WATCH until the mirror rule is approved.
+  "Down three days" is DOWN_STREAK / bounce risk - never label it oversold or quote the oversold counts for it.
 - Never present a 19:45 or 09:08 price list as the answer - it is near random; the 09:45 CE list is the one measured edge.
 - Never chase a move half done (B4 LATE); nothing confirms before 09:20.
 - A chart is never the reason for an idea - it times an entry on a share another bench named.

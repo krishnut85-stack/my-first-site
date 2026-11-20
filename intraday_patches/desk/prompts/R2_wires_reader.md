@@ -64,6 +64,9 @@ PREDICTION_LOOP C2 / C3, LINK_BOOK (A37, B7.7, C3, C4, C15) and DESK_TEAM gap G1
  "proof": "NOT PROVEN", "expires": "15:10|NEXT_OPEN|2D", "linked_card_ids": [], "links": []}
 ```
 - `route_to` is "10" (FLOWS) and / or "35" (CONNECTIONS) for THEME cards; empty for FACT cards (code routes them to seat 29 / 15).
+- **A THEME card adds the LIGHT theme block** (CONTRACTS section 1): `"theme": {"theme_id": "<short name>", "state": "NEW|CONFIRMING|BROKEN",
+  "route_to": ["10_flows", "35_connections"], "chain": [two or more nodes, each {node, channel, link_id, status, evidence_ids}]}`, plus
+  winners and losers. Only seat 35 writes the full form; without the block code rejects the card.
 - **QUIET** `{"seat": "R2", "kind": "QUIET", "item_id": "...", "reason": "RECAP|DUPLICATE|JUNK|NOT_FO|OPINION_COLUMN"}`.
 - No digit in headline / claims / why / against (whitelist FY26, Q2, December); use `{num:item.nK}` or keep the figure in `quote`.
 - Link ids only from your input pack.
@@ -75,10 +78,13 @@ points by 09:57 (CNBC-TV18); breadth was still negative (1,318 up / 2,291 down a
 ```json
 {"seat": "R2", "kind": "THEME", "item_id": "mc:liveblog:1102", "headline": "Strategist: FIIs buying back Indian banks they sold to fund the AI trade",
  "strength": 2, "reader": {"novelty": "FIRST", "source_class": "B", "sightings": "<copied>", "moved_before_first_seen": "yes", "route_to": ["10", "35"]},
+ "theme": {"theme_id": "FII_BANKS_BUYBACK", "state": "NEW", "route_to": ["10_flows", "35_connections"],
+  "chain": [{"node": "foreign money that funded the AI trade comes back to India", "channel": "flow", "link_id": null, "status": "SEEN", "evidence_ids": ["mc:liveblog:1102"]},
+            {"node": "banking majors bought back first", "channel": "flow", "link_id": "LB-A37", "status": "EXPECTED", "evidence_ids": ["mc:liveblog:1102"]}]},
  "claims": [{"text": "Geojit says FII buying is going into the banking majors.", "type": "FACT", "evidence_ids": ["mc:liveblog:1102"]},
             {"text": "Money leaving the AI trade abroad is returning to Indian private banks.", "type": "INFERENCE", "evidence_ids": ["mc:liveblog:1102"]}],
  "evidence": [{"id": "mc:liveblog:1102", "source": "Moneycontrol", "first_seen": "<copied>", "grade": "OPINION", "quote": "<exact text>"}],
- "winners": [{"target": "PRIVATE_BANKS", "side": "CE", "strength": 2, "horizon": "2-5D", "link_id": "LB-A37", "why": "FII flow back into banking majors"},
+ "winners": [{"target": "BANKS_PVT", "side": "CE", "strength": 2, "horizon": "2-5D", "link_id": "LB-A37", "why": "FII flow back into banking majors"},
              {"target": "AUTO", "side": "CE", "strength": 1, "horizon": "TODAY", "link_id": null, "why": "Easing commodity costs, same note"}],
  "losers": [{"target": "METALS", "side": "PE", "strength": 1, "horizon": "TODAY", "link_id": null, "why": "Other side of easing commodities"}],
  "ideas": [], "against": "Opinion only; breadth negative and bank RSI extreme - a narrow rally",
