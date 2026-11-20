@@ -263,3 +263,21 @@ Last update: 20:55 IST
   (5) a fake-brain check of what the consensus list held on 20 Nov (INDUSINDBK, KALYANKJIL, the gold group?).
   The 20 Nov morning re-run waits for the trader's money decision. If (a), it runs after (2)-(3), as you asked.
   STILL BLOCKED: the Anthropic API credit (trader to top up before Sunday afternoon).
+- 02:46 - DESK 02:30 ORDERS DONE (desk tests 86, engine 126; gir-v2desk restarted after hours 02:39 / 02:45, login 0.04 s; BUILD_LOG 02:45 with undo; fake brains only):
+  1. FOOTER: "desk ON - next brief Sun 19:45" (+ LEAN / EVENTS ONLY / rules only when they apply; the P1 provider line replaces it on a refusal). "desk OFF" only when gir-v2desk is down or the head is switched off. Cause: the desk marked itself running only after a head look. Also fixed: the meter showed $2 for a $1.50 cap.
+  2. ROUTING - two silent cuts found and fixed (v2/analyst/consensus.py head_board):
+     (a) the head's board was "latest card per seat of TODAY", so the 07:15 / 09:08 briefs never saw the evening-before cards (e.g. AXISBANK 00:46, ANGELONE 16:46, CUB 17:01);
+     (b) only each reader's newest card survived.
+     Now: cards from the session window (15:40 the day before -> now); every strength >= 3 card since the head's last look; plus 15 / 35 / 36 cards of the last 2 h and each seat's latest. Over 60 cards, the weakest / oldest are listed "DROPPED FROM THIS INPUT: <reason>". Test: no silent drops.
+  3. SEAT CONSENSUS LIST at the top of every head input (2+ cards same side, or 1 OFFICIAL card + price agreement; ranked by benches, strength, freshness, with card ids). The validator rejects an answer that silently drops a top-5 name (each must be an idea, WATCH allowed, or in not_picked with a reason). FOR THE DESK - the not_picked field to add to CONTRACTS.md (code accepts it now):
+     "not_picked": array of {symbol (string), side (CE / PE), reason (string, why the consensus name is not an idea now), card_ids (array of strings, optional)}; required: symbol, side, reason; no other properties.
+  4. POST-MORTEMS re-run with the consensus list at every brief, each name PICKED / NOT picked with its day move ("price agrees" uses the bhavcopy move, said in the files).
+  5. FINDING - THE CONSENSUS LIST WOULD NOT HAVE CAUGHT 20 Nov's WINNERS:
+     - INDUSINDBK absent at 19:45 and 07:15, #31 of 44 at 09:08;
+     - KALYANKJIL #16 / #17 but as CE (wrong side);
+     - MANAPPURAM PE #2 / #5 / #5 (the rule would have forced the head to answer for it);
+     - MUTHOOTFIN PE #9 / #14;
+     - MCX / TITAN / IIFL absent.
+     The cards did not agree on them, so the gap is upstream of the head. DECISION FOR THE DESK: (a) rank strong single sources (an OFFICIAL / weight-4+ card, a lesson match) next to bench count; and / or (b) rely on the new lessons reaching seats 7 / 19 / 20 so more benches name them. Nothing changed in the ranking.
+  - Weekend day at $1.35 of $1.50 (past the 90% step): readers event-only until Sat 15:40, as the ladder is written; moot while the API credit is blocked.
+  - The builder's "pending restarts" (gir-v2testobs, gir-v2opt) were already done: gir-v2testobs at 01:06, gir-v2opt at 22:17 and again after the OI-base fix.

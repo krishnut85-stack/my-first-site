@@ -1,4 +1,4 @@
-# POST-MORTEM 2026-11-18 - run FULL2 (code only; FAKE / real as the run was) - made 21 Nov 01:36 IST
+# POST-MORTEM 2026-11-18 - run FULL2 (code only; FAKE / real as the run was) - made 21 Nov 02:38 IST
 
 Movers: the NSE CM bhavcopy, previous close -> close, F&O shares, >= 2%, top 10 each side (218 F&O shares priced). Card and look times are the replay's virtual IST times (the board day 2026-11-18 holds the evening before and the session). 'In the head's input' is reconstructed with the snapshot rule (latest card per seat up to the look + 15 / 35 / 36 of the last 2 hours); reader items reach the head as ranked knowledge rows, so for reader cards it says 'item in the store', not 'seen'.
 
@@ -72,6 +72,52 @@ Movers: the NSE CM bhavcopy, previous close -> close, F&O shares, >= 2%, top 10 
   - 2026-11-18 10:46 seat R2 THEME s2: Newsmap headline says RBI tightens lending rules, a policy hit to lenders if confirmed [loser gold-loan rules named in the policy row] - sources newsmap, newsmap - item in the store from 10:46 (reader card)
   - 2026-11-18 13:46 seat R2 THEME s2: Gold price fall hits jewellers and pressures gold lenders [loser Gold lenders lose collateral value as gold falls] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 13:46 (reader card)
   - verdict: NOT picked - cards named it but no head idea followed
+
+## SEAT CONSENSUS at each brief (what the code list WOULD have held - desk 02:30) and picked / not picked
+- **2026-11-17 19:47 brief 19:45** (price agreement = the 2026-11-17 session's close; top 5 enforced by the new rule):
+  - *1. BSE PE - 3 cards, 2 bench(es); benches India policy, Readers; strength 6; cards C:9d2801de,C:c097eff5,C:f19ac9b2 · NOT picked · day -2.83%
+  - *2. ANGELONE PE - 3 cards, 2 bench(es); benches India policy, Readers; strength 6; cards C:9d2801de,C:c097eff5,C:f19ac9b2 · NOT picked · day -3.29%
+  - *3. ONGC PE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:3db36a3a,C:2ad0a07a,C:c826a005 · NOT picked · day +0.66%
+  - *4. ASIANPAINT CE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:3db36a3a,C:0969615a · NOT picked · day -1.70%
+  - *5. COFORGE CE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:c5b23d24,C:9d42a2a3 · NOT picked · day +0.39%
+  -  6. ASHOKLEY PE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:18055c95,C:cfe35184 · NOT picked · day +1.21%
+  -  7. MAHABANK CE - 2 cards, 2 bench(es); benches Market, Sectors; strength 4; cards C:b6fd156d,C:567a7a0c · PICKED (NEW 19:47) · day +0.01%
+  -  8. LICHSGFIN CE - 2 cards, 2 bench(es); benches Reasoning, Sectors; strength 4; cards C:70fcc805,C:49ec1f49 · NOT picked · day -2.01%
+  -  9. YESBANK PE - one OFFICIAL card + the price agrees (-0.9%); benches Sectors; strength 2; cards C:b6fd156d · NOT picked · day -0.95%
+  -  10. MANAPPURAM PE - one OFFICIAL card + the price agrees (-2.4%); benches Sectors; strength 2; cards C:70fcc805 · NOT picked · day -4.59%
+- **2026-11-17 22:46 brief 22:45** (price agreement = the 2026-11-17 session's close; top 5 enforced by the new rule):
+  - *1. BSE PE - 5 cards, 2 bench(es); benches India policy, Readers; strength 10; cards C:9d2801de,C:c097eff5,C:f19ac9b2,C:aef3b659,C:fe5a43d9 · NOT picked · day -2.83%
+  - *2. ANGELONE PE - 5 cards, 2 bench(es); benches India policy, Readers; strength 10; cards C:9d2801de,C:c097eff5,C:f19ac9b2,C:aef3b659,C:fe5a43d9 · NOT picked · day -3.29%
+  - *3. ASHOKLEY PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 9; cards C:18055c95,C:cfe35184,C:ccecd94f,C:ad3cd70b · NOT picked · day +1.21%
+  - *4. ONGC PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 8; cards C:3db36a3a,C:2ad0a07a,C:c826a005,C:113ee1e3 · NOT picked · day +0.66%
+  - *5. CUMMINSIND PE - 2 cards, 2 bench(es); benches Readers, Reasoning; strength 4; cards C:49ec1f49,C:ad7cc1dd · NOT picked · day -1.48%
+  -  6. ASIANPAINT CE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:3db36a3a,C:0969615a · NOT picked · day -1.70%
+  -  7. COFORGE CE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:c5b23d24,C:9d42a2a3 · NOT picked · day +0.39%
+  -  8. MAHABANK CE - 2 cards, 2 bench(es); benches Market, Sectors; strength 4; cards C:b6fd156d,C:567a7a0c · PICKED (NEW 19:47) · day +0.01%
+  -  9. LICHSGFIN CE - 2 cards, 2 bench(es); benches Reasoning, Sectors; strength 4; cards C:70fcc805,C:49ec1f49 · NOT picked · day -2.01%
+  -  10. COALINDIA CE - 2 cards, 1 bench(es); benches Readers; strength 4; cards C:cb640619,C:882cccda · NOT picked · day -0.91%
+- **2026-11-18 07:17 brief 07:15 - this brief FAILED in the run** (price agreement = the 2026-11-17 session's close; top 5 enforced by the new rule):
+  - *1. ONGC PE - 7 cards, 2 bench(es); benches Readers, Sectors; strength 13; cards C:3db36a3a,C:2ad0a07a,C:c826a005,C:113ee1e3,C:7af38493 · NOT picked · day +0.66%
+  - *2. BSE PE - 5 cards, 2 bench(es); benches India policy, Readers; strength 10; cards C:9d2801de,C:c097eff5,C:f19ac9b2,C:aef3b659,C:fe5a43d9 · NOT picked · day -2.83%
+  - *3. ANGELONE PE - 5 cards, 2 bench(es); benches India policy, Readers; strength 10; cards C:9d2801de,C:c097eff5,C:f19ac9b2,C:aef3b659,C:fe5a43d9 · NOT picked · day -3.29%
+  - *4. ASHOKLEY PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 9; cards C:18055c95,C:cfe35184,C:ccecd94f,C:ad3cd70b · NOT picked · day +1.21%
+  - *5. VEDL PE - 2 cards, 2 bench(es); benches Readers, Reasoning; strength 4; cards C:15a10bc6,C:0e23c01a · NOT picked · day -3.78%
+  -  6. CUMMINSIND PE - 2 cards, 2 bench(es); benches Readers, Reasoning; strength 4; cards C:49ec1f49,C:ad7cc1dd · NOT picked · day -1.48%
+  -  7. ASIANPAINT CE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:3db36a3a,C:0969615a · NOT picked · day -1.70%
+  -  8. COFORGE CE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:c5b23d24,C:9d42a2a3 · NOT picked · day +0.39%
+  -  9. MAHABANK CE - 2 cards, 2 bench(es); benches Market, Sectors; strength 4; cards C:b6fd156d,C:567a7a0c · PICKED (NEW 19:47) · day +0.01%
+  -  10. LICHSGFIN CE - 2 cards, 2 bench(es); benches Reasoning, Sectors; strength 4; cards C:70fcc805,C:49ec1f49 · NOT picked · day -2.01%
+- **2026-11-18 09:10 brief 09:08 - this brief FAILED in the run** (price agreement = the 2026-11-17 session's close; top 5 enforced by the new rule):
+  - *1. ONGC PE - 7 cards, 2 bench(es); benches Readers, Sectors; strength 13; cards C:3db36a3a,C:2ad0a07a,C:c826a005,C:113ee1e3,C:7af38493 · NOT picked · day +0.66%
+  - *2. BSE PE - 5 cards, 2 bench(es); benches India policy, Readers; strength 10; cards C:9d2801de,C:c097eff5,C:f19ac9b2,C:aef3b659,C:fe5a43d9 · NOT picked · day -2.83%
+  - *3. ANGELONE PE - 5 cards, 2 bench(es); benches India policy, Readers; strength 10; cards C:9d2801de,C:c097eff5,C:f19ac9b2,C:aef3b659,C:fe5a43d9 · NOT picked · day -3.29%
+  - *4. ASHOKLEY PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 9; cards C:18055c95,C:cfe35184,C:ccecd94f,C:ad3cd70b · NOT picked · day +1.21%
+  - *5. CIPLA PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 8; cards C:8dd2c106,C:4e481d3d,C:cd89decd,C:01d408ee · NOT picked · day +2.09%
+  -  6. VEDL PE - 2 cards, 2 bench(es); benches Readers, Reasoning; strength 4; cards C:15a10bc6,C:0e23c01a · NOT picked · day -3.78%
+  -  7. CUMMINSIND PE - 2 cards, 2 bench(es); benches Readers, Reasoning; strength 4; cards C:49ec1f49,C:ad7cc1dd · NOT picked · day -1.48%
+  -  8. ASIANPAINT CE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:3db36a3a,C:0969615a · NOT picked · day -1.70%
+  -  9. COFORGE CE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:c5b23d24,C:9d42a2a3 · NOT picked · day +0.39%
+  -  10. MAHABANK CE - 2 cards, 2 bench(es); benches Market, Sectors; strength 4; cards C:b6fd156d,C:567a7a0c · PICKED (NEW 19:47) · day +0.01%
 
 ## The head's ideas (reasons and source card ids)
 - 2026-11-17 19:47 NEW POLYCAB PE · day -5.12% · source sector-chain · cards C:ed91e12f,C:567a7a0c,C:80f7e184,C:49ec1f49,C:1bc73aef,C:f45affe4 · Cables were the worst sector on the day (-2.38%) against a green NIFTY. POLYCAB fell -3.19% with short build-up, futures OI up +6.30% [SEC:cables & wires,MV:POLYCAB,C:567a7a0c,C:1bc73aef]; US chips -5.28%, LME copper -0.71% and aluminium -2.65%. Copper is both revenue and cost for cable makers, so t

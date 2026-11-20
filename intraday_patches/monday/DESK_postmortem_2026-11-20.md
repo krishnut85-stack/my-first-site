@@ -1,4 +1,4 @@
-# POST-MORTEM 2026-11-20 - run FULL3 (code only; FAKE / real as the run was) - made 21 Nov 01:36 IST
+# POST-MORTEM 2026-11-20 - run FULL3 (code only; FAKE / real as the run was) - made 21 Nov 02:38 IST
 
 Movers: the NSE CM bhavcopy, previous close -> close, F&O shares, >= 2%, top 10 each side (218 F&O shares priced). Card and look times are the replay's virtual IST times (the board day 2026-11-20 holds the evening before and the session). 'In the head's input' is reconstructed with the snapshot rule (latest card per seat up to the look + 15 / 35 / 36 of the last 2 hours); reader items reach the head as ranked knowledge rows, so for reader cards it says 'item in the store', not 'seen'.
 
@@ -94,6 +94,52 @@ Movers: the NSE CM bhavcopy, previous close -> close, F&O shares, >= 2%, top 10 
   - 2026-11-19 19:47 seat 26 VIEW s2: Capex baskets rallied with the market on broad breadth; rail and cable names led, news is order-book colour, s [named in text] - sources GIR snapshot - capital goods basket (code), GIR snapshot - cement basket (code), GIR snapshot - construction basket (code), Polycab investment plan via Google News, Titagarh order book via wire - in the head's input at brief 19:47, brief 22:46
   - 2026-11-20 11:16 seat 32 VIEW s2: regimes: EXTREME none; oversold RVNL [named in text] - sources - - in the head's input at heartbeat 11:41, trigger 12:05, heartbeat 12:50
   - verdict: NOT picked - cards named it but no head idea followed
+
+## SEAT CONSENSUS at each brief (what the code list WOULD have held - desk 02:30) and picked / not picked
+- **2026-11-19 19:47 brief 19:45** (price agreement = the 2026-11-19 session's close; top 5 enforced by the new rule):
+  - *1. HEROMOTOCO PE - 4 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 9; cards C:ef86da06,C:650d5144,C:7447dea9,C:ede87fbf · PICKED (NEW 19:47) · day -0.36%
+  - *2. MANAPPURAM PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 7; cards C:efd6aada,C:00fcba9a,C:a099d2ee,C:01520e0c · NOT picked · day -0.83%
+  - *3. POLYCAB CE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:6283012c,C:e8f9abc3,C:52ccc619 · NOT picked · day +0.26%
+  - *4. PAYTM PE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:6cd9ac6f,C:01520e0c · NOT picked · day +0.82%
+  - *5. BANKBARODA CE - 2 cards, 2 bench(es); benches Reasoning, Sectors; strength 4; cards C:3c75c921,C:ede87fbf · PICKED (NEW 19:47) · day +0.38%
+  -  6. ALKEM PE - 4 cards, 1 bench(es); benches Readers; strength 13; cards C:d997423f,C:00d29a2f,C:af314b41,C:cbd45eca · NOT picked · day +0.78%
+  -  7. VOLTAS CE - 4 cards, 1 bench(es); benches Readers; strength 8; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:941e86d6 · NOT picked · day -0.16%
+  -  8. HINDALCO PE - 3 cards, 1 bench(es); benches Readers; strength 6; cards C:6283012c,C:e8f9abc3,C:ab7bc390 · NOT picked · day +2.14%
+  -  9. MUTHOOTFIN PE - 3 cards, 1 bench(es); benches Readers; strength 5; cards C:efd6aada,C:00fcba9a,C:a099d2ee · NOT picked · day -2.58%
+  -  10. INOXWIND PE - 2 cards, 1 bench(es); benches Readers; strength 4; cards C:025534c0,C:618730b2 · NOT picked · day -2.65%
+- **2026-11-19 22:46 brief 22:45** (price agreement = the 2026-11-19 session's close; top 5 enforced by the new rule):
+  - *1. HEROMOTOCO PE - 4 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 9; cards C:ef86da06,C:650d5144,C:7447dea9,C:ede87fbf · PICKED (NEW 19:47) · day -0.36%
+  - *2. MANAPPURAM PE - 5 cards, 2 bench(es); benches Readers, Sectors; strength 9; cards C:efd6aada,C:00fcba9a,C:a099d2ee,C:01520e0c,C:8caabf55 · NOT picked · day -0.83%
+  - *3. TCS PE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:4796bd0a,C:78d14d08,C:a83bc8b4 · PICKED (NEW 19:47) · day +1.43%
+  - *4. POLYCAB CE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:6283012c,C:e8f9abc3,C:52ccc619 · NOT picked · day +0.26%
+  - *5. PAYTM PE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:6cd9ac6f,C:01520e0c · NOT picked · day +0.82%
+  -  6. BANKBARODA CE - 2 cards, 2 bench(es); benches Reasoning, Sectors; strength 4; cards C:3c75c921,C:ede87fbf · PICKED (NEW 19:47) · day +0.38%
+  -  7. ALKEM PE - 5 cards, 1 bench(es); benches Readers; strength 15; cards C:d997423f,C:00d29a2f,C:af314b41,C:cbd45eca,C:9248330c · NOT picked · day +0.78%
+  -  8. VOLTAS CE - 4 cards, 1 bench(es); benches Readers; strength 8; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:941e86d6 · NOT picked · day -0.16%
+  -  9. HINDALCO PE - 3 cards, 1 bench(es); benches Readers; strength 6; cards C:6283012c,C:e8f9abc3,C:ab7bc390 · NOT picked · day +2.14%
+  -  10. MUTHOOTFIN PE - 3 cards, 1 bench(es); benches Readers; strength 5; cards C:efd6aada,C:00fcba9a,C:a099d2ee · NOT picked · day -2.58%
+- **2026-11-20 07:17 brief 07:15** (price agreement = the 2026-11-19 session's close; top 5 enforced by the new rule):
+  - *1. HEROMOTOCO PE - 4 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 9; cards C:ef86da06,C:650d5144,C:7447dea9,C:ede87fbf · PICKED (NEW 19:47) · day -0.36%
+  - *2. BANKBARODA CE - 3 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 6; cards C:3c75c921,C:ede87fbf,C:dfa16c73 · PICKED (NEW 19:47) · day +0.38%
+  - *3. ALKEM PE - 9 cards, 2 bench(es); benches Readers, Sectors; strength 23; cards C:d997423f,C:00d29a2f,C:af314b41,C:cbd45eca,C:9248330c · PICKED (NEW 07:17) · day +0.78%
+  - *4. VOLTAS CE - 11 cards, 2 bench(es); benches Commodities, Readers; strength 22; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:941e86d6,C:0e8f5278 · NOT picked · day -0.16%
+  - *5. MANAPPURAM PE - 7 cards, 2 bench(es); benches Readers, Sectors; strength 14; cards C:efd6aada,C:00fcba9a,C:a099d2ee,C:01520e0c,C:8caabf55 · NOT picked · day -0.83%
+  -  6. INOXWIND PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 8; cards C:025534c0,C:618730b2,C:8e6f6b3f,C:308caa97 · NOT picked · day -2.65%
+  -  7. PAYTM PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 7; cards C:6cd9ac6f,C:01520e0c,C:110730fe,C:81513cff · NOT picked · day +0.82%
+  -  8. BEL CE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:fc8a80db,C:5022bd1d,C:308caa97 · NOT picked · day -0.54%
+  -  9. TCS PE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:4796bd0a,C:78d14d08,C:a83bc8b4 · PICKED (NEW 19:47) · day +1.43%
+  -  10. POLYCAB CE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:6283012c,C:e8f9abc3,C:52ccc619 · NOT picked · day +0.26%
+- **2026-11-20 09:10 brief 09:08 - this brief FAILED in the run** (price agreement = the 2026-11-19 session's close; top 5 enforced by the new rule):
+  - *1. HEROMOTOCO PE - 4 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 9; cards C:ef86da06,C:650d5144,C:7447dea9,C:ede87fbf · PICKED (NEW 19:47) · day -0.36%
+  - *2. BANKBARODA CE - 3 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 6; cards C:3c75c921,C:ede87fbf,C:dfa16c73 · PICKED (NEW 19:47) · day +0.38%
+  - *3. ALKEM PE - 9 cards, 2 bench(es); benches Readers, Sectors; strength 23; cards C:d997423f,C:00d29a2f,C:af314b41,C:cbd45eca,C:9248330c · PICKED (NEW 07:17) · day +0.78%
+  - *4. VOLTAS CE - 11 cards, 2 bench(es); benches Commodities, Readers; strength 22; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:941e86d6,C:0e8f5278 · NOT picked · day -0.16%
+  - *5. MANAPPURAM PE - 7 cards, 2 bench(es); benches Readers, Sectors; strength 14; cards C:efd6aada,C:00fcba9a,C:a099d2ee,C:01520e0c,C:8caabf55 · NOT picked · day -0.83%
+  -  6. BEL CE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 8; cards C:fc8a80db,C:5022bd1d,C:308caa97,C:19cb529e · NOT picked · day -0.54%
+  -  7. INOXWIND PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 8; cards C:025534c0,C:618730b2,C:8e6f6b3f,C:308caa97 · NOT picked · day -2.65%
+  -  8. PAYTM PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 7; cards C:6cd9ac6f,C:01520e0c,C:110730fe,C:81513cff · NOT picked · day +0.82%
+  -  9. TCS PE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:4796bd0a,C:78d14d08,C:a83bc8b4 · PICKED (NEW 19:47) · day +1.43%
+  -  10. POLYCAB CE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:6283012c,C:e8f9abc3,C:52ccc619 · NOT picked · day +0.26%
 
 ## The head's ideas (reasons and source card ids)
 - 2026-11-19 19:47 NEW HEROMOTOCO PE · day -0.36% · source results · cards C:650d5144,C:7447dea9,C:ede87fbf,C:b411c518 · Hero MotoCorp reported a sharp fall in net profit after the session [K:67b07670,C:650d5144]; The share rallied +5.77% with the full auto sector on no company news, so the weak print is not in today's price [MV:HEROMOTOCO,SEC:auto]; Auto seat says leaders are extended, with pullback entries only, and

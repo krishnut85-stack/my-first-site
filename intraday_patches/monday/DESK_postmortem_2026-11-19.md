@@ -1,4 +1,4 @@
-# POST-MORTEM 2026-11-19 - run FULL4 (code only; FAKE / real as the run was) - made 21 Nov 01:46 IST
+# POST-MORTEM 2026-11-19 - run FULL4 (code only; FAKE / real as the run was) - made 21 Nov 02:38 IST
 
 Movers: the NSE CM bhavcopy, previous close -> close, F&O shares, >= 2%, top 10 each side (218 F&O shares priced). Card and look times are the replay's virtual IST times (the board day 2026-11-19 holds the evening before and the session). 'In the head's input' is reconstructed with the snapshot rule (latest card per seat up to the look + 15 / 35 / 36 of the last 2 hours); reader items reach the head as ranked knowledge rows, so for reader cards it says 'item in the store', not 'seen'.
 
@@ -42,6 +42,52 @@ Movers: the NSE CM bhavcopy, previous close -> close, F&O shares, >= 2%, top 10 
   - 2026-11-19 09:30 seat 20 VIEW s3: Capital markets all lower on the STT rejig chatter; gold lenders weak on the gold fall; PAYTM and POLICYBZR se [named in text] - sources Desk board - seat 31 view, GIR driver - gold London, GIR mover tape - MCX, GIR mover tape - MOTILALOFS, GIR mover tape - MUTHOOTFIN, GIR mover tape - PAYTM, GIR mover tape - POLICYBZR, GIR sector tape - capital markets, Newsmap - STT / SEBI F&O curbs, Policy wire - Centre mulls STT rejig - NOT in any head look's input
   - 2026-11-19 11:46 seat 32 VIEW s2: regimes: EXTREME none; oversold PAYTM,INDUSTOWER [named in text] - sources - - NOT in any head look's input
   - verdict: NOT picked - cards named it but no head idea followed
+
+## SEAT CONSENSUS at each brief (what the code list WOULD have held - desk 02:30) and picked / not picked
+- **2026-11-18 19:47 brief 19:45** (price agreement = the 2026-11-18 session's close; top 5 enforced by the new rule):
+  - *1. MUTHOOTFIN PE - 5 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 12; cards C:cb48de34,C:d1859c36,C:87524e31,C:c5eaf1fd,C:f39f9781 · PICKED (NEW 19:47) · day -0.83%
+  - *2. HINDZINC PE - 4 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 10; cards C:01964f90,C:078694c0,C:90c2effe,C:f39f9781 · PICKED (NEW 19:47) · day +0.38%
+  - *3. MANAPPURAM PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 9; cards C:cb48de34,C:d1859c36,C:87524e31,C:c5eaf1fd · NOT picked · day -0.05%
+  - *4. POLYCAB PE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:078694c0,C:6d296073 · PICKED (NEW 19:47) · day +3.32%
+  - *5. TATASTEEL CE - 3 cards, 1 bench(es); benches Readers; strength 6; cards C:931de882,C:6679cfd7,C:2996f8b4 · NOT picked · day +1.06%
+  -  6. JSWSTEEL CE - 3 cards, 1 bench(es); benches Readers; strength 6; cards C:c6bb3b10,C:931de882,C:6679cfd7 · NOT picked · day +1.59%
+  -  7. MCX PE - 3 cards, 1 bench(es); benches Readers; strength 5; cards C:64529d5c,C:6ccbe722,C:bef258e8 · NOT picked · day +0.72%
+  -  8. BSE PE - 3 cards, 1 bench(es); benches Readers; strength 5; cards C:64529d5c,C:6ccbe722,C:bef258e8 · NOT picked · day +0.25%
+  -  9. SAIL CE - 2 cards, 1 bench(es); benches Readers; strength 4; cards C:c6bb3b10,C:6679cfd7 · NOT picked · day +0.26%
+  -  10. VEDL CE - 2 cards, 1 bench(es); benches Readers; strength 4; cards C:63800501,C:931de882 · NOT picked · day -0.69%
+- **2026-11-18 22:46 brief 22:45** (price agreement = the 2026-11-18 session's close; top 5 enforced by the new rule):
+  - *1. MUTHOOTFIN PE - 5 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 12; cards C:cb48de34,C:d1859c36,C:87524e31,C:c5eaf1fd,C:f39f9781 · PICKED (NEW 19:47) · day -0.83%
+  - *2. HINDZINC PE - 4 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 10; cards C:01964f90,C:078694c0,C:90c2effe,C:f39f9781 · PICKED (NEW 19:47) · day +0.38%
+  - *3. MANAPPURAM PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 9; cards C:cb48de34,C:d1859c36,C:87524e31,C:c5eaf1fd · NOT picked · day -0.05%
+  - *4. POLYCAB PE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:078694c0,C:6d296073 · PICKED (NEW 19:47) · day +3.32%
+  - *5. TATASTEEL CE - 5 cards, 1 bench(es); benches Readers; strength 10; cards C:931de882,C:6679cfd7,C:2996f8b4,C:1961b420,C:4740b958 · NOT picked · day +1.06%
+  -  6. JSWSTEEL CE - 3 cards, 1 bench(es); benches Readers; strength 6; cards C:c6bb3b10,C:931de882,C:6679cfd7 · NOT picked · day +1.59%
+  -  7. MCX PE - 3 cards, 1 bench(es); benches Readers; strength 5; cards C:64529d5c,C:6ccbe722,C:bef258e8 · NOT picked · day +0.72%
+  -  8. BSE PE - 3 cards, 1 bench(es); benches Readers; strength 5; cards C:64529d5c,C:6ccbe722,C:bef258e8 · NOT picked · day +0.25%
+  -  9. ANGELONE CE - 2 cards, 1 bench(es); benches Readers; strength 4; cards C:0bd49410,C:0c08c498 · NOT picked · day -0.55%
+  -  10. BSE CE - 2 cards, 1 bench(es); benches Readers; strength 4; cards C:0bd49410,C:0c08c498 · NOT picked · day +0.25%
+- **2026-11-19 07:17 brief 07:15** (price agreement = the 2026-11-18 session's close; top 5 enforced by the new rule):
+  - *1. MUTHOOTFIN PE - 6 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 15; cards C:cb48de34,C:d1859c36,C:87524e31,C:c5eaf1fd,C:f39f9781 · PICKED (NEW 19:47) · day -0.83%
+  - *2. HINDZINC PE - 4 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 10; cards C:01964f90,C:078694c0,C:90c2effe,C:f39f9781 · PICKED (NEW 19:47) · day +0.38%
+  - *3. MANAPPURAM PE - 5 cards, 2 bench(es); benches Readers, Sectors; strength 12; cards C:cb48de34,C:d1859c36,C:87524e31,C:c5eaf1fd,C:166974e8 · NOT picked · day -0.05%
+  - *4. NATIONALUM PE - 3 cards, 2 bench(es); benches Commodities, Sectors; strength 9; cards C:90c2effe,C:0fde105b,C:577248b1 · NOT picked · day -0.36%
+  - *5. POLYCAB PE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:078694c0,C:6d296073,C:4e70d5f3 · PICKED (NEW 19:47) · day +3.32%
+  -  6. TATASTEEL CE - 5 cards, 1 bench(es); benches Readers; strength 10; cards C:931de882,C:6679cfd7,C:2996f8b4,C:1961b420,C:4740b958 · NOT picked · day +1.06%
+  -  7. IREDA CE - 2 cards, 1 bench(es); benches Sectors; strength 6; cards C:c5eaf1fd,C:166974e8 · NOT picked · day +8.35%
+  -  8. VEDL PE - 2 cards, 1 bench(es); benches Sectors; strength 6; cards C:90c2effe,C:577248b1 · NOT picked · day -0.69%
+  -  9. SAIL PE - 2 cards, 1 bench(es); benches Sectors; strength 6; cards C:90c2effe,C:577248b1 · NOT picked · day +0.26%
+  -  10. JSWSTEEL CE - 3 cards, 1 bench(es); benches Readers; strength 6; cards C:c6bb3b10,C:931de882,C:6679cfd7 · NOT picked · day +1.59%
+- **2026-11-19 09:10 brief 09:08** (price agreement = the 2026-11-18 session's close; top 5 enforced by the new rule):
+  - *1. MUTHOOTFIN PE - 7 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 18; cards C:cb48de34,C:d1859c36,C:87524e31,C:c5eaf1fd,C:f39f9781 · PICKED (NEW 19:47) · day -0.83%
+  - *2. HINDZINC PE - 5 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 13; cards C:01964f90,C:078694c0,C:90c2effe,C:f39f9781,C:6998089b · PICKED (NEW 19:47) · day +0.38%
+  - *3. POLYCAB PE - 4 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 9; cards C:078694c0,C:6d296073,C:4e70d5f3,C:6998089b · PICKED (NEW 19:47) · day +3.32%
+  - *4. MANAPPURAM PE - 5 cards, 2 bench(es); benches Readers, Sectors; strength 12; cards C:cb48de34,C:d1859c36,C:87524e31,C:c5eaf1fd,C:166974e8 · NOT picked · day -0.05%
+  - *5. NATIONALUM PE - 3 cards, 2 bench(es); benches Commodities, Sectors; strength 9; cards C:90c2effe,C:0fde105b,C:577248b1 · NOT picked · day -0.36%
+  -  6. CIPLA CE - 3 cards, 2 bench(es); benches Reasoning, Sectors; strength 7; cards C:065ec79e,C:88692e0c,C:6998089b · PICKED (NEW 19:47) · day +0.11%
+  -  7. NATIONALUM CE - 2 cards, 2 bench(es); benches Readers, Reasoning; strength 4; cards C:a1846987,C:6998089b · NOT picked · day -0.36%
+  -  8. TATASTEEL CE - 5 cards, 1 bench(es); benches Readers; strength 10; cards C:931de882,C:6679cfd7,C:2996f8b4,C:1961b420,C:4740b958 · NOT picked · day +1.06%
+  -  9. POLICYBZR PE - 4 cards, 1 bench(es); benches Readers; strength 9; cards C:f47e475f,C:4146b3cf,C:fc3bd423,C:c9ba0e54 · NOT picked · day -1.95%
+  -  10. IREDA CE - 2 cards, 1 bench(es); benches Sectors; strength 6; cards C:c5eaf1fd,C:166974e8 · NOT picked · day +8.35%
 
 ## The head's ideas (reasons and source card ids)
 - 2026-11-18 19:47 NEW MUTHOOTFIN PE · day -0.83% · source THEME · cards C:c5eaf1fd,C:f39f9781 · London gold fell -2.18% [DRV:gold]; The gold-loan and jeweller sector fell -4.66% with no name up; MUTHOOTFIN fell -3.97% [SEC:jewellers & gold loans,MV:MUTHOOTFIN]; The finance desk and the connections desk both name the gold lenders as the weak leg; only an overnight follow-through earns a PE [C:c
