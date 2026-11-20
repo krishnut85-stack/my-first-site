@@ -185,3 +185,13 @@ Last update: 20:55 IST
     - Tests both sides.
     IN PROGRESS.
   - The F1 chart bars fix (pages builder): must be live before Monday. IN PROGRESS.
+- 00:34 - FULL3 (20 Nov, real brains; it started at 23:08, before the 23:35 fixes) LOST THE 09:08 BRIEF. Brief money by call (MEET):
+  - 19:47: Connections $0.42 ok; Devil $0.13 rejected (bare digits) then $0.07 ok; head $0.40 ok.
+  - 07:17: Connections $0.45 REJECTED (the model wrote the key " against" with a leading space); head $0.47 ok.
+  - 09:10: Devil $0.13 rejected (bare digits); head $0.45 REJECTED ("6 PE ideas would be open, max 5"); the retry was refused ($0.08 left).
+  Total MEET $2.52 by 09:10; $1.32 of it went on rejected answers. Code fixes asked of the desk builder:
+  (1) strip whitespace from JSON keys and enum values before validating, logged;
+  (2) over the per-side idea limit, code drops the lowest-ranked NEW ideas, logged, instead of rejecting the whole brief;
+  (3) every brief keeps a reserve for ONE head retry that Connections / Devil cannot spend.
+  The 23:35 morning-brief changes (no Devil in the morning, Connections only on new weight-3+ items) also apply from now on.
+- 00:34 - FOR THE DESK - BARE COUNTS: the Devil was rejected twice for plain counts ("3", "19", "17": numbers of cards, items, days) under the no-digits rule; each costs a retry (~$0.07-0.13). Allow small integer COUNTS (0-99) as text, keeping prices / % / levels as {num:key}? Or keep the rule and pay the retries? Nothing changed.
