@@ -1,5 +1,21 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 23:35 IST (hourly) - FULL2 (18 Nov) and PROOF_2220 verdicts - the new money rules still FAIL a Monday-shaped day
+- **FULL2 18 Nov: ACCEPTED as a run** (mostly price-only day by design; small sample; NOT PROVEN). It also confirms the old split fails.
+- **PROOF_2220 (Monday-shaped day on the 22:20 rules, fake brains): NOT ACCEPTABLE for Monday.** The 09:08 brief was REFUSED at 09:10
+  ($0.43 left), SEATS went event-only at 09:16 and the LIVE bucket was FULL at 11:38 - no BUY NOW checks after 11:38 on a real day.
+  Fixes, tonight, tests first:
+  a. **Lighter morning briefs.** 07:15 and 09:08 re-check the OPEN ideas only (STANDS / CHANGED / CANCELLED with the overnight or
+     pre-open delta). Connections runs only if a NEW weight-3+ item arrived since the last brief; the Devil only on a NEW idea,
+     never on a repeat. Targets: 07:15 <= $0.50, 09:08 <= $0.40 (the 09:08 brief is a confirm / kill list, not a new meeting).
+  b. **Floors are hard reservations:** a brief may use its own floor plus what EARLIER briefs left, never a later brief's floor.
+  c. **Re-split the $8:** READ 1.20 -> 0.80 (it used $0.53), LIVE 1.70 -> 2.10. MEET 2.60, SEATS 2.20, ASK 0.30 unchanged.
+  d. **Find the LIVE spend by caller** (head looks, second reads, seat wakes) and stop waste: seat 31 made 7 calls with 1 ok. Rule:
+     a seat rejected twice in a row goes QUIET for 30 minutes (logged), so retries cannot drain LIVE.
+  e. Run PROOF again with a-d: pass = 07:15 and 09:08 briefs both delivered, no LIVE refusal before 14:30, total <= $8.
+- **FULL3 (20 Nov, real brains, 22:20 rules) is the real test** - its cost per brief and LIVE by hour decide the final split; report
+  them with the EDGE score split by side (CE / PE), as asked at 23:10.
+
 ## 20 Nov 23:40 IST - KALYANKJIL settled: the trader checked Kite - the 19 Nov daily candle is GREEN (up). The page was right.
 - Items 1-2 of the 23:30 entry drop to LOW priority: one code-only bhavcopy check of all 218 shares for 18-20 Nov after the
   rehearsal, mismatches listed in STATUS (no rush).
