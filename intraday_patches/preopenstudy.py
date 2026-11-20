@@ -125,7 +125,9 @@ def eod(R, s):
     with np.errstate(all="ignore"):                                # O.prep's split / bonus rule: the open 20%+ off the last close
         lastc = np.r_[np.nan, c[:-1]]
         near = np.r_[False, (g[1:] - g[:-1] <= 5) & (g[1:] > g[:-1]) & (g[:-1] >= 0)]
-        seg = np.cumsum(near & (np.abs(np.asarray(R["o0"], np.float64) / lastc - 1) >= O.SPLIT_JUMP)).astype(np.float64)
+        jump = near & (np.abs(np.asarray(R["o0"], np.float64) / lastc - 1) >= O.SPLIT_JUMP)
+    seg = np.cumsum(jump).astype(np.float64)
+    p1 = p1 & ~jump                                                # the jump day is never compared with the pre-split day
 
     def rs(x, k, fn):                                              # a rolling window that would reach back across a jump -> NaN
         return np.where(roll(seg, k, np.min) == seg, roll(x, k, fn), np.nan)
@@ -1404,8 +1406,8 @@ def report(B):
             for lab_ in labs:
                 ta, tb = a[key][lab_], b.get(key, {}).get(lab_, {})
                 P("        %-10s %4d | %3d days · " % (lab_, ta["days"], tb.get("days", 0)) + " · ".join(
-                    "%s%% CE %s / PE %s | %s / %s" % ((X,) + tbl(a[key], lab_, "%s" % X) + (tbl(b.get(key, {}), lab_, "%s" % X) if tb.get("days", 0) >= THIN
-                                                                                       else ("(thin)", "-"))) for X in TIERS))
+                    "%s%% CE %s / PE %s | %s" % ((X,) + tbl(a[key], lab_, "%s" % X) + ("%s / %s" % tbl(b.get(key, {}), lab_, "%s" % X) if tb.get("days", 0) >= THIN
+                                                                                 else "(thin)",)) for X in TIERS))
 
     # ---- 3 SECTOR READ
     P("\n=== 3. THE SECTOR READ - the named top 3 per side vs the day's true top 3 (median member move from the open to 15:10) · tuning | held-out")
@@ -1745,11 +1747,14 @@ def answer(B, J):
         A("  !! the picks below until this is found")
     if J["sanity"].get("mismatch"):
         A("  !! the mover counts do not match movestudy (header) - read with care")
-    A("  READ: a VERDICT per level and side, one of four: PICKS = beats random shares (95% low > 1.1 on tuning, >= 1.1 held out) AND more")
-    A("  RIGHT-minus-WRONG than both the plain TOP-MOVERS list and the VOLATILE list · PICKS, BUT NO BETTER THAN THE PLAIN MOVERS LIST · PICKS,")
-    A("  BUT NO BETTER THAN THE VOLATILE LIST (beats random, but a simple list does as well) · NO BETTER THAN RANDOM. 'caught' = the share of")
-    A("  the day's real 2% moves (from the open) on the list. The intraday trigger is only the ENTRY on a named share; 'earliest safe")
-    A("  trigger' = section 6's rule (a trigger that seldom fires cannot pass: it must keep 70% of the RIGHT of entering on the card).")
+    A("  READ: a VERDICT per level and side, one of four:")
+    A("    PICKS = beats random shares (95% low > 1.1 on tuning, >= 1.1 held out) AND more RIGHT-minus-WRONG than both simple lists below")
+    A("    PICKS, BUT NO BETTER THAN THE PLAIN MOVERS LIST = beats random, but the shares already moving most do as well")
+    A("    PICKS, BUT NO BETTER THAN THE VOLATILE LIST = beats random, but the most volatile shares (on the right side) do as well")
+    A("    NO BETTER THAN RANDOM")
+    A("  'caught' = the share of the day's real 2% moves (from the open) on the list. The intraday trigger is only the ENTRY on a named")
+    A("  share; 'earliest safe trigger' = section 6's rule (a trigger that seldom fires cannot pass: it must keep 70% of the RIGHT of")
+    A("  entering on the card).")
     kinds = [("up", B.KIND == 0), ("down", B.KIND == 1), ("mixed", B.KIND == 2)]
     for li in range(5):
         L = LEV[li]
@@ -1819,8 +1824,9 @@ def answer(B, J):
                 pc(sc[0].get("random_share")), pc(sc[1].get("random_share"))))
         lr = J["rings"].get("lists", {}).get(L["key"], {}).get("both")
         if lr:
-            A("    rings for this level's two lists + their safe triggers: a day median %s, p90 %s · busiest 15 min median %s, p90 %s" % (
-                f1(lr["p50"], "%.0f"), f1(lr["p90"], "%.0f"), f1(lr["r15_p50"], "%.0f"), f1(lr["r15_p90"], "%.0f")))
+            A("    rings for this level's two lists + their safe triggers: a day median %s, p90 %s · busiest 15 min median %s, p90 %s%s" % (
+                f1(lr["p50"], "%.0f"), f1(lr["p90"], "%.0f"), f1(lr["r15_p50"], "%.0f"), f1(lr["r15_p90"], "%.0f"),
+                " (the evening card itself is outside the day count; E0 = enter on the card, no extra ring)" if li == 0 else ""))
         if opt:
             A("    option proxy (secondary, 60-min, 0.5 delta / 2.5%% premium): %s of the premium after 1.5%% / 3%% costs." % " · ".join(opt))
     pr = J["rings"].get("all")
