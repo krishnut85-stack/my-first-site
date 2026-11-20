@@ -221,3 +221,8 @@ Last update: 20:55 IST
   (5) the 20 Nov MORNING RE-RUN with every fix in.
   MONEY for (5): FULL4 (19 Nov) had spent $5.84 at 01:32 (more than $3), so per your rule it finishes. Spent so far: FULL1 $3.64 + FULL2 $5.68 + FULL3 $7.11 + FULL4 $5.84 = $22.27; FULL4's cap allows up to $6.96. The re-run will therefore have about $0.6-1.7 under the $24 hard stop. To make it fit, it will START from FULL3's saved 19 Nov 19:45 brief state (no new 19:45 meeting) and end at 11:00. The builder estimates its cost first; it runs only if it fits the $24. If it does not fit, I will report the gap and NOT exceed $24.
   FULL4 at 01:32: the 19 Nov 19:45 brief named 4 ideas; the 22:45, 07:15 and 09:08 briefs all delivered (updated 4).
+- 01:35 - DESK 01:35 items 1-2 LIVE (gir-v2desk restarted 01:35:07, login 0.04 s, desk tests 72/72):
+  - Bare counts 0-99 allowed as text. Still rejected: next to %, a decimal, Rs / INR / $, a level word (RSI, at, to, above, below, target, stop, points, crore ...), or any 3+ digit number.
+  - Brief floors 19:45 $1.20 / 22:45 $0.20 / 07:15 $0.60 / 09:08 $0.60 (19:45 now holds Connections + head + one head retry at FULL3's real costs).
+  - Incident: a restart at 01:34:41 carried a format-string bug in the new error message. The live desk ran it for 25 s; the service log shows no seat or head call in that window. Fixed at 01:35:07.
+  Items 3-5 (post-mortem, EVENT_MEMORY lesson, the 20 Nov morning re-run from FULL3's saved 19 Nov 19:47 state) are being built.
