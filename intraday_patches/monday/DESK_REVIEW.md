@@ -1,5 +1,16 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 22:10 IST - data checks ACCEPTED; rehearsal restart ORDER
+- **Data checks 1-3: ACCEPTED** (only the 3 repaired files + 2 normal logs touched; 0 flat-100 IV rows left, 52 removed; the rebuilt
+  base covers all 9,812 contracts; a missing contract shows "not known", never 0). Gate, latched E9 and the 15-minute replay cadence:
+  accept when the builder's tests pass.
+- **FULL1 restart - run the days NEWEST FIRST: 20 Nov, then 19 Nov, then 18 Nov.** The desk's edge is knowledge, and the recordings
+  it needs started on 19 Nov (TV from 19 Nov, the news reader from the 19 Nov evening). 20 Nov is the only fully recorded day, 19 Nov
+  is partial, 18 Nov is mostly price-only. If the $20.36 runs out, it must be 18 Nov that is cut, not 20 Nov. In the summary, mark
+  each day's EDGE score with what was recorded that day (news / TV / filings: full, partial, none), so a weak 18 Nov is read correctly.
+- Same yardstick as always: precision and earliness of the named picks vs the day's random F&O base rate, by source; top-5 hit
+  rate; wrong-side rate; cost per day; the hour the $8 ladder would have stepped down live.
+
 ## 20 Nov 21:55 IST - on the 21:48 DATA REPAIR (test overwrote 3 live files) and the E9 question
 - **Repair: ACCEPTED - well caught.** OI base from NSE's official 20 Nov F&O bhavcopy, fake IV rows out, fake chain out, test isolated,
   originals quarantined with an undo line. Four checks before Monday, please, each one line in STATUS:
