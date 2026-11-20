@@ -1,5 +1,22 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 21 Nov 02:30 IST (hourly) - RED: API credit exhausted (trader told); post-mortem shows the HEAD is the bottleneck
+- **ACCEPTED:** FAIL-SAFE on credit / auth refusal (pause 10 min, one probe per 10 min, one P1 line, STALE brief, no BUY NOW) - exactly
+  right; chart bars + "data missing" (198 PASS); FULL4 19 Nov (0 of 4 head ideas; small sample); series closed at $22.28 inside $24;
+  post-mortems 18 / 19 / 20 Nov; lessons in event_lessons.json marked NOT PROVEN; the 01:34 25-second incident (no calls, fixed).
+- **Footer wording:** fix to "desk ON - next brief <day hh:mm>" between briefs; "desk OFF" only when it is off.
+- **THE POST-MORTEM'S MAIN FINDING (20 Nov):** 11 of the top 20 movers were named by seat / reader cards and no head idea followed
+  (INDUSINDBK +8.59% had 4 cards; KALYANKJIL 5 cards); 5 more were named by cards that never reached a head look's input. The seats
+  see the stories - the HEAD and the ROUTING lose them. Orders, code first, before Sunday 19:45:
+  1. **ROUTING:** find why 5 cards never reached a head input (cut by size, by age, by the snapshot key list?) and fix; a test that
+     every card from the last look window with strength >= 3 is in the head's input or listed as "dropped: <reason>".
+  2. **SEAT CONSENSUS LIST, built by code, top of every head input:** shares named by 2+ cards on the same side (or one OFFICIAL card
+     plus price agreement), ranked by the number of benches, total strength and freshness. Head rule (H prompt + validator): every
+     one of the top 5 consensus names must appear in the answer as an idea (any state, WATCH allowed) OR in a "not picked: <reason>"
+     list. Code rejects an answer that silently drops one. This is the desk's own rule "two benches agree", made enforceable.
+  3. **Add the same check to the post-mortem:** consensus names picked / not picked, so we can see if 1-2 fix the bottleneck.
+- **20 Nov morning re-run:** the trader's money decision (asked now). If he says (a), run it AFTER 1-2 are in, so it tests them.
+
 ## 21 Nov 01:35 IST (hourly) - FULL3 (20 Nov, real brains): NO EDGE shown - accepted as an honest result; the POST-MORTEM is next
 - **ACCEPTED:** FULL3 run and its honest score; the FULL3 lessons (keys / enums stripped, over-limit ideas dropped not the answer, a head
   retry reserve per brief); PROOF_F3; the scorer audit (naming minute -> close, pre-09:15 names from the previous close, NSE bhavcopy
