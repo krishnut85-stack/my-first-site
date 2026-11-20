@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 13:37 IST
+Last update: 15:33 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -41,7 +41,7 @@ Last update: 13:37 IST
 | F3 Watchdog / exit monitor untouched; no FO/OI | IN PROGRESS | standing rule, checked at every change; final proof Sunday |  | 07:31 |
 | F4 Ring test to his phone | NOT STARTED |  |  |  |
 | F5 Logs, disk, memory, restart | IN PROGRESS | RISK: girtrader.com/login took 3.0-3.6 s once at 11:21:03 (0.05-0.5 s otherwise) - a burst of old timers at 11:20 (falcon, crosscheck, govwatch, raven-manage) on a box at load ~6 / 4 CPUs (dashserve and engine2 at 100 pct each). The new system's recorders use ~3.5 pct of one CPU, 0 errors, 214 MB disk so far. THE TRADER MUST DECIDE: the 8-core server resize recommended on 19 Nov (paid item, his yes) - otherwise Monday runs old + new on 4 CPUs; silencing the old system's heavy jobs on Monday (J6) also frees CPU; 12:37: load 15 on 4 CPUs (old engine2 68 pct, gircrypto window2_news 68 pct, falcon 48 pct - none of them GIR v2); live login answered 0.94 / 0.15 / 0.12 s; the new system's builders paused heavy work; both options prepared (A: pause gircrypto + falcon timers 08:55-15:36 with an automatic resume; B: resize steps) - NOTHING done, the trader decides | F5_load_options.md | 13:35 |
-| G1 preopenstudy.py | NOT STARTED | desk: preopenstudy.py READY TO RUN (09:15); run after 15:35 today |  | 09:29 |
+| G1 preopenstudy.py | IN PROGRESS | preopenstudy.py starts 15:36 on the minute store extended to Thu 19 Nov (girdata/hist_fresh); then seriesstudy.py (desk 15:00, December series starts Wed 25 Nov) - both pushed to onset_results/ when done |  | 15:33 |
 | G2 Score this week's evening watches | NOT STARTED |  |  |  |
 | I1 NSE + BSE filings | IN PROGRESS | interim 09:00-11:30: median 55 s / worst 61 s vs 15 s target - LATE. NSE: CDN cache ~40 s (cache-buster fix staged); BSE ~30 s late at source; circulars only every 5 min (60 s staged) | external_delays.md (after 15:35) | 11:18 |
 | I2 TV speech-to-text | IN PROGRESS | TV speech-to-text RUNNING today since 07:00:55 on BOTH CNBC-TV18 and ET Now (Deepgram), last transcript line 10:33:47 on each; yesterday's 'TV listening stopped' meant the OLD on-server listener (tvstt.py), replaced by Deepgram on 19 Nov - not a stop of TV listening; delay table in external_delays.md; delay median 32 s / worst 38 s vs 60 s target - OK; but no plain 'TV only - unverified' news line yet (only map ideas) and tvcalls junk matches (TVSMOTOR from 'selling') - fixes after 15:35 | external_delays.md | 11:18 |
