@@ -179,3 +179,21 @@ recorded, so F17 transcripts must be stored from today. Not investment advice.
 
 Sources (internal): BUILD_PLAN.md (1.2 F09, F15-F17, F25, F26, F30; 1.5 R10 / R11; 1.7; E3, E8, E12, E13), design_v3/
 POLITICAL_CYCLE.md (table A, POLICY CLOCK), CHAIN_OF_EVENTS.md (B1-B5, E9), DATA.md (D39), SECTOR_LINKS.md, LINK_BOOK.md (B10).
+
+## G. SECOND EXAMPLE - "US AI SHOCK -> MONEY INTO INDIAN IT" (story opened 20 Nov 2026, the trader's read)
+The trader, 20 Nov 10:45: "This Anthropic AI IPO listing shocked the US market tech wave. They pulled out the money and are putting
+it in Indian IT. So IT is coming up. This is one of the history."
+- **Episode 1, Thu 19 Nov (US) -> Fri 20 Nov (India):** Anthropic listed on Nasdaq (ANT, priced $83, opened $111.50); the S&P fell
+  ~2.0%, Nasdaq ~2.3%, AMD ~-10%, 6th straight S&P loss on AI-spend worries; Nikkei -4.3%. India opened lower, metals worst
+  (-1.8% to -2.5%), but **Nifty IT LED, up to +1.3-1.6% (TCS, Tech Mahindra, HCL Tech, Infosys)** - Indian IT went UP while US
+  tech fell (OUTSIDE_WATCH_2026-11-20.md). FIIs bought a 14th straight session (Rs 7,411 cr on 19 Nov); November FPI buying ~$8.5bn,
+  money moving out of Korea / Taiwan (AI-hardware markets) into India.
+- **Possible reasons, both sides (NOT PROVEN):** (1) rotation out of AI-hardware / AI-capex names into AI-ADOPTER services (Indian IT
+  sells the work, not the chips); (2) a weak rupee (dollar near a 19-month high) lifts IT exporters' earnings; (3) IT was
+  oversold after 3 down days (bounce). Against: US tech weakness usually hits Indian IT next day via ADRs; the desk's 19 Nov
+  evening call was IT PE - WRONG this morning (logged in the scorecard).
+- **Linked keys:** AI-IPO / AI-capex shock (US), Nasdaq vs Nifty IT, INFY / WIT ADR, USD-INR, FPI flows by country, Korea / Taiwan.
+- **To measure after the close (server, from its own NSE data):** Nifty IT and each IT F&O share from the 09:15 open and from Thu's
+  close; IT vs NIFTY; the 20 Nov FII / DII figures; next 1 / 2 / 5 days. If IT holds up again on the next US-tech-down day, the
+  link "US AI-hardware selloff -> Indian IT CE" earns its second episode; it becomes PROVEN only under the SECTOR_LINKS rule
+  (enough episodes, beats the base rate). Until then the card says "STORY: US AI shock -> Indian IT up (1 episode, NOT PROVEN)".
