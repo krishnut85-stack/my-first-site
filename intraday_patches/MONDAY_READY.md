@@ -20,7 +20,7 @@ strikes only** for stocks on Monday. GIR never places orders: he trades in Kite 
 - Hard limits stay on: 50 rings a day, 6 in any 15 minutes, the AI cost cap, the loss lock, no order button anywhere.
 
 ## A. Data and feeds (S) - by Sun 18:00
-- [ ] A1 Kite: the four keys carry their jobs (BUILD_PLAN 1.3); the Monday login flow as in J1; no job before 08:15 needs a Monday token.
+- [ ] A1 Kite: the four keys carry their jobs (BUILD_PLAN 1.3); the automatic login as in J1.
 - [ ] A2 Every feed F01-F31 (BUILD_PLAN 1.2) shows its source, last update and freshness; any feed that cannot be live on Monday is
       listed with what replaces it and what the page shows instead ("not known" is shown once, with the reason).
 - [ ] A3 NSE daily files for Fri 20 Nov downloaded and checked (F&O bhavcopy, OI, MWPL / ban list for Monday, FII/DII, sector
@@ -131,9 +131,10 @@ from Fri 20 Nov or the weekend: published at (source time) -> seen by GIR -> on 
       which source is down instead of showing nothing.
 
 ## J. Go-live traps (found by the go-live review, 20 Nov) - these override any time above that disagrees
-- [ ] J1 Kite login, one owner, one time: T logs in all four keys by Mon 08:15; S checks each key (one profile + one quote call) by
-      08:20; a missing key moves its lists to K4 and rings his phone. No 07:15 job may depend on a Monday token (use Friday closes /
-      non-Kite sources for the 07:15 run). (S + T, Mon 08:20)
+- [ ] J1 Kite login is AUTOMATIC (the trader does not log in by hand): the server's auto-login logs in all four keys on Monday at
+      its usual time (before 08:00); S checks each key (one profile + one quote call) by 08:20; a failed key retries, moves its lists
+      to K4, and rings his phone with the reason. Sunday: run the auto-login once for all four keys and push the result (key, login
+      time, profile OK, quote OK). No 07:15 job may depend on a Monday token. (S, Sun dry run, Mon 08:20)
 - [ ] J2 USE TODAY'S LIVE SESSION (Fri 20 Nov, the last one before Monday): run the v2 feed + engine read-only as its own service
       (no rings), record raw frames at least 09:00-09:30 and through the day; push tick rates per connection, FULL-mode proof,
       reconnects and the rings it WOULD have sent. (S, start by 12:00, push by 16:00 today)
@@ -167,7 +168,7 @@ from Fri 20 Nov or the weekend: published at (source time) -> seen by GIR -> on 
       OUTSIDE uptime check on /status.json and last-tick age, tested Sunday by stopping the heartbeat. (S, Sun 18:00)
 - [ ] J14 Rate limits at cold start: a request budget per key (Kite, NSE, Telegram); proof = peak requests/s from a cold start at
       08:30 with zero 429 / 403. (S, Sun 18:00)
-- [ ] J15 His Monday routine (T, the only manual part): logins by 08:15; at 08:25 open the page on laptop and phone and click once
+- [ ] J15 His Monday routine (T, the only manual part): at 08:25 open the page on laptop and phone and click once
       (browsers block sound until a click); test chime + Telegram test ping arrive; phone not on Do Not Disturb, channel not muted,
       battery saver not stopping Telegram. His order of 20 Nov IS the switch-on: the new system rings on the live address from
       Mon 09:15; S does not wait for another "switch on". If the Sun 21:00 status has a RED blocker, D tells him that evening with
@@ -180,7 +181,7 @@ from Fri 20 Nov or the weekend: published at (source time) -> seen by GIR -> on 
 - Sun 21:00  S pushes the status of every item (DONE with proof / NOT DONE / risk); D checks it and gives the trader one page.
             Any RED blocker is named with its fallback.
 - Mon 07:15  global run (no Monday Kite token needed); the prediction is updated.
-- Mon 08:15  he logs in the four Kite keys (J1); 08:20 S checks every key.
+- Mon 08:00  the automatic Kite login has run for all four keys (J1); 08:20 S checks every key.
 - Mon 08:00  every feed fresh (A2); ban list loaded (A3); health all green (F1).
 - Mon 08:30  READY: S posts "READY" with the health line. Any red item is named with its fallback.
 - Mon 09:08  pre-open update of the prediction lists.

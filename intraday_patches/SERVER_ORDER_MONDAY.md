@@ -64,7 +64,7 @@ The trader's order (20 Nov): "Monday we use the new system. Monday we use the fu
 
 **C. Sunday** (code freeze 16:00 for the engine and pages; data / ops fixes to 18:00)
 1. Fix round from the desk's review; replays again on the same days plus ONE held-out day the desk names after 16:00.
-2. A1-A8, F1-F5, I1-I8 (measured again on Sunday's filings and TV), J6 silence every old sender, J7 fallback switch the trader can flip
+2. J1 run the automatic Kite login once for all four keys and push the result · A1-A8, F1-F5, I1-I8 (measured again on Sunday's filings and TV), J6 silence every old sender, J7 fallback switch the trader can flip
    himself (no backlog dump), J11 AI budget split, J12 clock / Asia/Kolkata, J13 restart + outside uptime check, J14 rate limits.
 3. F4 ring test to his phone ~18:30: one CRITICAL, one GO NOW, one news call.
 4. 19:45 the evening prediction for Monday goes out (C1).
@@ -72,7 +72,7 @@ The trader's order (20 Nov): "Monday we use the new system. Monday we use the fu
 
 **D. Monday**
 - 07:15 global run and prediction update (no Monday Kite token needed) · 08:00 every feed fresh, ban list loaded, health green ·
-  08:15 the trader logs in the four Kite keys · 08:20 you check every key (profile + quote) · 08:25 test chime + Telegram test ping ·
+  before 08:00 the automatic Kite login runs for all four keys (the trader does NOT log in by hand) · 08:20 you check every key (profile + quote); a failed key retries, moves to K4 and rings him · 08:25 test chime + Telegram test ping ·
   **08:30 post READY with the health line** · 09:08 pre-open update · 09:15 live · 15:35 score the day (C5, E3) and push.
 
 ## 6. Decided defaults (do not ask the trader again)
