@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 09:22 IST
+Last update: 09:29 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -10,7 +10,7 @@ Last update: 09:22 IST
 | A2 Feeds F01-F31 source/freshness | NOT STARTED |  |  |  |
 | A3 NSE files Fri 20 Nov + Monday ban list | NOT STARTED |  |  |  |
 | A4 Minute store through Fri 20 Nov | IN PROGRESS | one-month minutes 16 Oct-19 Nov in girdata/minute; /root/hist store ends 13 Nov; Fri 20 Nov after 15:40 |  | 07:31 |
-| A5 December chains + current lots | NOT STARTED |  |  |  |
+| A5 December chains + current lots | IN PROGRESS | December chains read LIVE: 5-share check at 09:29 (29 Dec series, 11 strikes, ~30 s old, bid/ask/spread/IV/OI); December ATM +-2 recorder for all F&O shares every 15 min being added to J2 (desk 09:25); direct Kite cross-check to follow | A5_dec_chain_check.md | 09:29 |
 | A6 Global feeds for 07:15 | NOT STARTED |  |  |  |
 | A7 News feeds live + de-duplicated | NOT STARTED |  |  |  |
 | A8 Paid subscriptions tested | NOT STARTED |  |  |  |
@@ -41,7 +41,7 @@ Last update: 09:22 IST
 | F3 Watchdog / exit monitor untouched; no FO/OI | IN PROGRESS | standing rule, checked at every change; final proof Sunday |  | 07:31 |
 | F4 Ring test to his phone | NOT STARTED |  |  |  |
 | F5 Logs, disk, memory, restart | NOT STARTED |  |  |  |
-| G1 preopenstudy.py | NOT STARTED | preopenstudy.py on the branch but marked 'do not run yet' by the desk - waiting for the ready-to-run commit |  | 08:33 |
+| G1 preopenstudy.py | NOT STARTED | desk: preopenstudy.py READY TO RUN (09:15); run after 15:35 today |  | 09:29 |
 | G2 Score this week's evening watches | NOT STARTED |  |  |  |
 | I1 NSE + BSE filings | IN PROGRESS | measuring 5 real items today | external_delays.md | 07:31 |
 | I2 TV speech-to-text | IN PROGRESS | measuring | external_delays.md | 07:31 |
