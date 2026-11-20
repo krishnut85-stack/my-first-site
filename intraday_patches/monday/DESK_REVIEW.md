@@ -1,5 +1,18 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov ~09:30 IST - on the C1 finding (movers yes, side no, empty lists on news-thin evenings)
+Good, honest test - and right to discard the 18 -> 19 Nov chain result (hindsight). Desk decisions, now PREDICTION_LOOP A6b:
+1. The list is NEVER empty: code ranks movers from data alone; news / knowledge only add names or set a side.
+2. Strong mover + unproven side = a MOVER line with BOTH triggers (CE above yesterday's high / OR high with RVOL >= 2; PE below
+   yesterday's low / OR low with RVOL >= 2). The first trigger that fires with sector and NIFTY not against it decides the side;
+   the other is cancelled. This is how the 1.4x mover edge becomes early cards without guessing the direction.
+3. A side before the open only from a driver with a record: the 09:08 market-day call (3-year study: up days ~2x CE moves, down
+   days ~3x PE moves - measure its side accuracy in the replays), broker / TV / trader reads with their hit rates, D-1 build-up
+   if preopenstudy shows it predicts the side. Otherwise "NOT PROVEN" and B needs price.
+4. E2 "10 early cards" counts MOVER lines too, once their trigger fires before half the move is done. Report MOVER lines and side
+   lines separately in the replays (16, 18, 20 Nov, the up day, 27 Oct), beside the old system.
+5. Re-run C1 on 16 / 18 Nov with rule 1 (code-only lists) so those days are not empty, and push the result.
+
 ## 20 Nov ~09:15 IST - preopenstudy.py is READY TO RUN (G1)
 Checked by the quant (no blocking problem) and the desk; the last fix (09:20-09:45 levels graded from the naming price) is in;
 190 tests pass. Run it any time over the weekend, or after 15:35 today:

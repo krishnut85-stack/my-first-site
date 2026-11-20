@@ -205,6 +205,25 @@ present. Reject and retry once, then drop the line.
 - **Chips:** results tomorrow (IV crush), ban, MWPL, AT RISK, GAP TOOK.
 - The market-day call and the sector call it belongs to; made_at; version.
 
+### A6b. MOVER lines - when the side is not proven (desk decision 20 Nov, from the C1 test)
+The C1 test (16 / 18 / 19 Nov, as-of data) showed the code CAN name tomorrow's movers (held-out lift about 1.4x random) but CANNOT
+yet name the side (50.2%, a coin flip), and that a news-thin evening gives an empty list. So:
+1. **The list is never empty.** Code ranks movers from data alone (yesterday's range / volume / build-up, ATR compression, distance to
+   yesterday's high / low, sector state); news and knowledge only ADD to it or set a side. No news reader = still a list.
+2. **A share whose mover score is strong but whose side is unproven becomes a MOVER line with BOTH triggers:** CE above yesterday's
+   high (or the opening-range high on a gap) with RVOL >= 2, PE below yesterday's low (or the opening-range low) with RVOL >= 2.
+   The first trigger that fires with the sector and NIFTY not against it decides the side; the other trigger is then cancelled.
+   Card: "MOVER (side open): X · CE above 1,234 / PE below 1,198 · sector Y · NOT PROVEN". This turns "will move" into a tradable
+   early card without guessing the direction.
+3. **A side is set before the open only by a driver with its own record:** the market-day call at 09:08 (the 3-year study: NIFTY-up
+   days give about 2x more CE moves, NIFTY-down days about 3x more PE moves), a broker / TV / trader read with its hit rate (D5,
+   TRADER_CALLS), yesterday's futures build-up when preopenstudy shows it predicts the side. Until a driver is proven, its line
+   says "side from <driver> - NOT PROVEN" and B still needs the price to confirm.
+4. **The early-card count (E2 pass mark) counts MOVER lines and side lines alike** once their trigger fires before half the move
+   is done (B4). Scored per kind: MOVER lines vs side lines vs the old system.
+5. Hindsight check stays: a knowledge chain added after a move never scores that move (the 18 Nov -> 19 Nov AC / auto /
+   electronics result is not counted).
+
 ### A7. List size (both sides always computed and shown)
 - Up to 8 lines per side [S, PS] in the scored list: only lines with probability >= 1.6x the side's base rate (once calibrated) or
   grade MEDIUM+ (before), ordered by score.
