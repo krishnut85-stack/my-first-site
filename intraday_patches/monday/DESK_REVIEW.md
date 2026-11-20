@@ -1,5 +1,17 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 16:40 IST - on J1 (four-key auto-login) and the RAVEN guard
+- **J1: accepted.** 07:40 staggered logins, skip-if-valid, 2 retries, never 09:00-15:35, stop-all on a wrong password, 08:20 profile +
+  quote check, NSE calendar (no Tue 24), Friday test passed with no login. Two additions before Sunday's dry run:
+  (a) a wrong-password stop or any 08:20 failure must reach his phone at once (after Sunday's ring test wires it) with the words
+  "Kite key n failed: <reason> - GIR is running without it"; (b) retries for a failed key at 08:25, 08:35 and 08:45, then stop.
+- **Key failover (open risk): desk decision for Monday** - no automatic move of key 3's option feed. If a key fails: the page marks
+  the feeds on that key "DEGRADED - key n down", the engine treats those quotes as STALE (no GO NOW on them, per the stale rule),
+  and the phone alarm says so. Full failover is a week-1 item, not a Monday blocker.
+- **RAVEN guard: accepted** (backup + undo line logged). Also: (1) check today's logs - did RAVEN's 10:17 re-login drop any key-1
+  connection (old engine, recorders)? Log the answer; (2) put "RAVEN service restarted with the guard" in Sunday's checklist with a
+  proof line, so Monday never runs the old RAVEN code.
+
 ## 20 Nov 15:35 IST - THE TRADER'S DECISION on F5 server load: REMOVE CRYPTO
 The trader: "I am not trading in crypto, so you can remove the crypto trading. I am only doing NSE options trading."
 After 15:35 today:
