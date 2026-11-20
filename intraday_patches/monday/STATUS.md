@@ -2,11 +2,11 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: Fri 20 Nov 07:31 IST
+Last update: 07:38 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
-| A1 Kite four keys + auto-login | NOT STARTED |  |  |  |
+| A1 Kite four keys + auto-login | NOT STARTED | RISK found today: every websocket slot on keys 1-4 is used by the old system; the new system's feed must take over those slots when the old system goes silent (plan with J6 / J7) |  | 07:38 |
 | A2 Feeds F01-F31 source/freshness | NOT STARTED |  |  |  |
 | A3 NSE files Fri 20 Nov + Monday ban list | NOT STARTED |  |  |  |
 | A4 Minute store through Fri 20 Nov | IN PROGRESS | one-month minutes 16 Oct-19 Nov in girdata/minute; /root/hist store ends 13 Nov; Fri 20 Nov after 15:40 |  | 07:31 |
@@ -51,8 +51,8 @@ Last update: Fri 20 Nov 07:31 IST
 | I6 Sector data (R49) | IN PROGRESS | measuring (3 checks vs NSE indices today) | external_delays.md | 07:31 |
 | I7 Economic + results calendar | IN PROGRESS | measuring | external_delays.md | 07:31 |
 | I8 Source health + silence alarm | IN PROGRESS | measuring | external_delays.md | 07:31 |
-| J1 Automatic Kite login | NOT STARTED |  |  |  |
-| J2 Today's live session read-only | IN PROGRESS | read-only recorder + shadow engine on today's market (no rings, no Telegram); proof by 16:00 | J2_live_readonly.md | 07:31 |
+| J1 Automatic Kite login | NOT STARTED | RISK found today: keys 2/3/4 are logged in by the old engine itself at ~09:04 / ~09:21, not before 08:00; only key 1 has an early auto-login. Monday needs all four logged in before 08:00 (Sunday dry run) |  | 07:38 |
+| J2 Today's live session read-only | IN PROGRESS | recorder gir-v2wsrec on Kite REST quote() (same fields as FULL: 5-level depth, OI, avg price), 665 instruments every 3 s - NO websocket slot is free today (keys 1-4 all carry 3+ live connections of the old system); keys 2/3/4 get today's token only when the old engine logs them in (~09:04 / ~09:21), so 09:00-09:04 pre-open comes from the 10-30 s snapshots | J2_live_readonly.md (16:00) | 07:38 |
 | J3 One trading calendar (Tue 24 holiday) | NOT STARTED |  |  |  |
 | J4 Fake-clock Monday 08:00 / 08:45 | NOT STARTED |  |  |  |
 | J5 Monday instrument file vs Friday | NOT STARTED |  |  |  |
