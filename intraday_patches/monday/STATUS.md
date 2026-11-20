@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 07:38 IST
+Last update: 08:11 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -14,13 +14,13 @@ Last update: 07:38 IST
 | A6 Global feeds for 07:15 | NOT STARTED |  |  |  |
 | A7 News feeds live + de-duplicated | NOT STARTED |  |  |  |
 | A8 Paid subscriptions tested | NOT STARTED |  |  |  |
-| B1 Remove CONFIRMED gate | IN PROGRESS | coding in engine_next (live engine untouched in market hours); swap after 15:35 |  | 07:31 |
-| B2 CE equal to PE | IN PROGRESS | coding in engine_next (live engine untouched in market hours); swap after 15:35 |  | 07:31 |
-| B3 One ring per idea | IN PROGRESS | coding in engine_next (live engine untouched in market hours); swap after 15:35 |  | 07:31 |
-| B4 Entry signs from the study | IN PROGRESS | coding in engine_next (live engine untouched in market hours); swap after 15:35 |  | 07:31 |
-| B5 Real December plans, R:R<1 = 0 lots | IN PROGRESS | coding in engine_next (live engine untouched in market hours); swap after 15:35 |  | 07:31 |
-| B6 GO NOW on Opus 5.5 + reject rules | IN PROGRESS | coding in engine_next (live engine untouched in market hours); swap after 15:35 |  | 07:31 |
-| B7 Triage ranks | IN PROGRESS | coding in engine_next (live engine untouched in market hours); swap after 15:35 |  | 07:31 |
+| B1 Remove CONFIRMED gate | IN PROGRESS | coded in engine_next: CONFIRMED gate removed everywhere; sector_grade on every card; AGAINST-sector stays veto (d); 84 unit tests pass; live engine untouched until the swap after 15:35 | B-proof files after the swap | 08:11 |
+| B2 CE equal to PE | IN PROGRESS | coded: share-led CE/PE setups (yesterday high/low, day high/low, ORB5, VWAP reclaim/loss + a backing sign); mirror test identical with sides swapped; 84 unit tests pass; live engine untouched until the swap after 15:35 | B-proof files after the swap | 08:11 |
+| B3 One ring per idea | IN PROGRESS | coded: one ring per share/side/idea, no cancel <10 min, no re-issue <15 min, 50/day + 6/15 min, no ring on 0-lot cards; 19 Nov frames 32 -> 3 rings (AI off); 84 unit tests pass; live engine untouched until the swap after 15:35 | B-proof files after the swap | 08:11 |
+| B4 Entry signs from the study | IN PROGRESS | coded: time-of-day RVOL / RVOL5 (from 09:16), 09:15 print excluded (J9), GO NOW needs a volume sign, no GO NOW 20+ min after onset unless pullback; 84 unit tests pass; live engine untouched until the swap after 15:35 | B-proof files after the swap | 08:11 |
+| B5 Real December plans, R:R<1 = 0 lots | IN PROGRESS | coded: levels from real highs/lows/ranges/walls, R:R on share and premium after costs, 0 lots with reason (no premium / R:R<1 / 1 lot > 1R), December chain read from oc.exps; 84 unit tests pass; live engine untouched until the swap after 15:35 | B-proof files after the swap | 08:11 |
+| B6 GO NOW on Opus 5.5 + reject rules | IN PROGRESS | coded: GO NOW chain Opus 5.5 first, card carries premium/bid-ask/spread/IV/delta/OI/days to expiry; reject R1-R6 + wait W1-W4 in prompt and code; 13 bad cards -> 13 WAIT/REJECT, 2 clean -> CONFIRM by the rules; AI proof run after the 15:35 swap; 84 unit tests pass; live engine untouched until the swap after 15:35 | B-proof files after the swap | 08:11 |
+| B7 Triage ranks | IN PROGRESS | coded: triage priority 1-10; opening cap / rate limit keep the highest; ai_lane and final_lane logged apart; 84 unit tests pass; live engine untouched until the swap after 15:35 | B-proof files after the swap | 08:11 |
 | B8 News by company and context | IN PROGRESS | coding in engine_next (live engine untouched in market hours); swap after 15:35 |  | 07:31 |
 | B9 Fault test | IN PROGRESS | coding in engine_next (live engine untouched in market hours); swap after 15:35 |  | 07:31 |
 | C1 Evening prediction | NOT STARTED | waiting for PREDICTION_LOOP.md from the desk |  |  |
