@@ -203,3 +203,12 @@ it in Indian IT. So IT is coming up. This is one of the history."
   ~22% a year FY26-28) and IndusInd's Q2 turnaround (+8.6%, best day since Feb 2021); rate-hike margin argument (judgement only);
   expiry short covering NOT confirmed (no 20 Nov OI found). Against: RSI extreme, breadth 1,582 up / 2,456 down, VIX +8%, month +16-17%
   (biggest since Nov 2020). Measure: next 1 / 2 / 5 days, and whether 62,600-63,000 holds on Mon 23 Nov (expiry).
+
+## H. STORY OPENED 20 Nov 2026 (the trader's photo, 19:42): "Remove STT on the cash market?" - Anand Rathi's pitch, CII Summit 2026
+- What it is: an OPINION by a broker group's founder at an industry summit (Business Today clip), not a government proposal.
+  POLICY CLOCK: not even PENDING - a pre-budget wish (Union Budget due Feb 2027). Self-interest: brokers gain if it happens.
+- If it ever moved up the clock (Finance Ministry / budget signal): CE side - brokers and market infrastructure (ANGELONE,
+  MOTILALOFS, ANANDRATHI, 360ONE, BSE, CDSL, CAMS, KFINTECH - check each is in F&O that day); no clear PE side (government revenue,
+  not a listed company). Past episodes: STT / LTCG changes moved capital-market shares on budget day itself, not on summit talk.
+- Desk handling: THEME card, WATCH, strength 1, horizon = budget; never a BUY NOW on a speech (no lone voice, OPINION grade).
+  Note: ANANDRATHI was already overbought (RSI 70.6) in the 19 Nov scan. Re-score if any official line follows.
