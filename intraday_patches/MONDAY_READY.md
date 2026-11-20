@@ -109,6 +109,28 @@ Cost is within the AI budget (about $0.5-1 a replayed day). Each run pushes call
 - [ ] G2 Score this week's evening watches (SECTOR_MAP_20NOV, WATCH_20NOV_update, WATCH_20NOV_us_night) against the real moves of
       20 Nov.
 
+## I. External data - news, TV, filings, world, sectors (S) - by Sun 18:00, each with a MEASURED delay
+The trader, 20 Nov: "What about the external data, the world news and the live TV monitoring, the sector data - all will be ready,
+correct? Reading NSE filings." Status in BUILD_PLAN 1.2 was "partly" for all of these. Each item's proof = a table of 5 real items
+from Fri 20 Nov or the weekend: published at (source time) -> seen by GIR -> on the page / phone, in seconds.
+- [ ] I1 NSE + BSE filings (F15): polled every 3-5 s (was ~3 min late); attachments (PDF / XBRL) read for important filings;
+      target on screen <= 15 s. Includes results, board outcomes, orders won, pledges, SAST / insider, block / bulk deals, and
+      exchange circulars (F&O ban, lot changes, surveillance).
+- [ ] I2 Live TV speech-to-text (F17): CNBC-TV18 and ET Now at minimum (was one channel); Sansad TV, RBI / SEBI / PIB briefings when
+      live. A company or sector named on TV appears as a news line within ~60 s, marked "TV only - unverified" until a second source.
+- [ ] I3 News wires and publishers (F16): dead feeds removed (old Reuters RSS, Nitter); ET, Moneycontrol, CNBC-TV18, Business
+      Standard, NDTV Profit, Reuters sitemaps and today's live blogs; target <= 30 s; duplicates merged; junk ticker matches blocked.
+- [ ] I4 World news and cues (F23 + EXTERNAL_SOURCES_MISSING top items): real GIFT Nifty (not ^NSEI), real LME / COMEX copper and
+      aluminium (not the wrong proxies), US futures, US 10-year, dollar index, Brent, Asia; a free global headline squawk
+      (FinancialJuice free tier) and Trump posts RSS; any PAID upgrade only with his yes.
+- [ ] I5 Regulators / Parliament / PIB (F20): within 1 minute (was ~15 min): SEBI, RBI, IRDAI, TRAI, CCI, DGCA, PIB, sansad.in.
+- [ ] I6 Sector data (F03): every listed share of every mapped sector live (R49), sector %, breadth both ways, weights; checked
+      against the official NSE sector indices at 3 times on Friday (difference explained).
+- [ ] I7 Economic and results calendar (F22): built (was a hand-edited file): Monday's events with times and consensus; results and
+      board meetings of F&O shares for the week.
+- [ ] I8 Each source shows on the Health page with its last item time; a source silent too long raises one alarm, and the page says
+      which source is down instead of showing nothing.
+
 ## H. The Monday timeline
 - Sun 19:45  the evening prediction for Monday goes out (C1). D reviews it at once.
 - Sun 21:00  GO / NO-GO: D gives the trader a one-page status of every item above (DONE with proof / NOT DONE / risk). He decides.
