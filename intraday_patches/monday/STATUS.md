@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 19:34 IST
+Last update: 19:47 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -61,7 +61,7 @@ Last update: 19:34 IST
 | J8 Replay isolation | NOT STARTED |  |  |  |
 | J9 09:00-09:30 rules | IN PROGRESS | YESBANK '-10% pre-open' (desk 12:15) found: NSE's own pre-open at 09:00:49 / 09:01:44 showed IEP 16.06 (-9.98 pct, the band floor) with FINAL QTY 0 and a 56 M sell pile vs 1.1 M buy; back to 17.84 at 09:02:38; opened 17.68 (-0.9 pct), 469 k matched at 09:09. Not a GIR fault - an unmatched indicative price. New rule (engine + prediction): IEP with final qty 0, or at the band with buy/sell < 0.05 = 'thin pre-open - not a price', never feeds a card / gap / RVOL; built in engine_next (41 Monday tests): thin = final qty 0, one-sided book, or a row dated another day (09:00 still served 19 Nov rows); before ~09:08 nothing in the pre-open counts |  | 12:37 |
 | J10 Expiry-day mode | IN PROGRESS | coded: stock options December only; index options next expiry (NIFTY 1 Dec) with the expiring one info-only; expiry-week build-up from all months; PINNING flag from 13:30; 97 unit tests pass; swapped into the live shadow engine 15:38 (engine 0.3) | J10_expiry_day_mode.md | 15:42 |
-| J11 AI budget split | NOT STARTED | desk decision in PREDICTION_LOOP: one $5 AI cap replaces every $20 - to be set with the engine builder (the live cap is unchanged until then) |  | 08:33 |
+| J11 AI budget split | IN PROGRESS | the trader: the daily AI cap is $5 until he raises it. The new desk's own J11 gate is in code ($5 hard, buckets, counts the news reader). The OLD path still has $20: aispend.budget_for 20 -> 5 (budget day 16:00-15:59), the news reader's 6 / 9 / 12 ladder + SYSTEM_CAP 20, engine ai.py GO NOW cap, BUILD_PLAN text - switched together with J6 on Sunday (old AI off), so the old system is not starved mid-evening; tonight's 19:45 prediction run spent $0.14 |  | 19:47 |
 | J12 Clock / Asia/Kolkata | NOT STARTED |  |  |  |
 | J13 Restart proof + outside uptime | NOT STARTED |  |  |  |
 | J14 Rate limits at cold start | NOT STARTED |  |  |  |
