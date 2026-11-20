@@ -1,0 +1,41 @@
+=== EXTREME OVERBOUGHT - WHAT HAPPENED NEXT (obscan.py) · daily RSI(14) >= 80 · next 20 trading days · correction = a 5%+ pullback or a close below the 20-day average
+events: 318 (F&O shares in the store, each counted once until RSI falls back under 70)
+  KEPT GOING, NO CORRECTION: 60 (19%)   |   up after 20 days at all: 198 (62%)   |   CORRECTED: 258 (81%)
+  median move to day 20: +3.0% · median worst pullback: -7.6% · closed below the 20-day average at some point: 64%
+
+THE PROOF - the 15 strongest 'kept going, no correction' cases (check each on a daily chart):
+  GLENMARK     Fri 13 Jun 2025  RSI 81  close 1674.00 -> 2175.00 after 20 days = +29.9%  (best +29.9%)  worst pullback -2.9%  never below the 20-day avg
+  GVT&D        Tue 02 Jan 2024  RSI 81  close 554.90 -> 681.90 after 20 days = +22.9%  (best +22.9%)  worst pullback -4.3%  never below the 20-day avg
+  BHEL         Thu 23 Apr 2026  RSI 80  close 338.00 -> 408.85 after 20 days = +21.0%  (best +22.7%)  worst pullback -4.5%  never below the 20-day avg
+  SHRIRAMFIN   Tue 28 Oct 2025  RSI 80  close 724.00 -> 853.50 after 20 days = +17.9%  (best +17.9%)  worst pullback -2.7%  never below the 20-day avg
+  M&M          Fri 17 May 2024  RSI 84  close 2510.00 -> 2958.15 after 20 days = +17.9%  (best +17.9%)  worst pullback -4.2%  never below the 20-day avg
+  CROMPTON     Wed 08 May 2024  RSI 80  close 342.00 -> 399.95 after 20 days = +16.9%  (best +18.2%)  worst pullback -5.0%  never below the 20-day avg
+  PAYTM        Wed 23 Jul 2025  RSI 80  close 1068.30 -> 1246.70 after 20 days = +16.7%  (best +16.8%)  worst pullback -4.6%  never below the 20-day avg
+  BAJAJ-AUTO   Thu 29 Aug 2024  RSI 80  close 10542.00 -> 12288.50 after 20 days = +16.6%  (best +16.6%)  worst pullback -2.3%  never below the 20-day avg
+  PETRONET     Thu 04 Jan 2024  RSI 80  close 216.90 -> 251.70 after 20 days = +16.0%  (best +16.0%)  worst pullback -2.6%  never below the 20-day avg
+  CUMMINSIND   Wed 07 Feb 2024  RSI 81  close 2411.50 -> 2794.00 after 20 days = +15.9%  (best +15.9%)  worst pullback -3.1%  never below the 20-day avg
+  MOTHERSON    Fri 14 Jun 2024  RSI 80  close 116.63 -> 134.64 after 20 days = +15.4%  (best +18.1%)  worst pullback -4.5%  never below the 20-day avg
+  LAURUSLABS   Thu 03 Jul 2025  RSI 80  close 758.90 -> 875.20 after 20 days = +15.3%  (best +20.0%)  worst pullback -3.9%  never below the 20-day avg
+  ZYDUSLIFE    Mon 12 Feb 2024  RSI 81  close 855.00 -> 983.90 after 20 days = +15.1%  (best +16.7%)  worst pullback -2.2%  never below the 20-day avg
+  DIVISLAB     Fri 31 Jul 2026  RSI 81  close 8085.00 -> 9215.00 after 20 days = +14.0%  (best +14.0%)  worst pullback -1.6%  never below the 20-day avg
+  TATACONSUM   Tue 26 Dec 2023  RSI 83  close 994.15 -> 1131.05 after 20 days = +13.8%  (best +15.2%)  worst pullback -1.9%  never below the 20-day avg
+
+THE OTHER SIDE - the 15 sharpest corrections after an EXTREME reading:
+  NBCC         Mon 29 Jan 2024  RSI 84  worst pullback -26.2%  move to day 20 +9.1%  (closed below the 20-day avg)
+  DATAPATTNS   Mon 26 Feb 2024  RSI 85  worst pullback -25.8%  move to day 20 -6.2%  (closed below the 20-day avg)
+  KFINTECH     Thu 19 Dec 2024  RSI 83  worst pullback -24.8%  move to day 20 -14.5%  (closed below the 20-day avg)
+  IEX          Mon 23 Sep 2024  RSI 80  worst pullback -24.4%  move to day 20 -24.4%  (closed below the 20-day avg)
+  IRFC         Fri 12 Jan 2024  RSI 82  worst pullback -24.4%  move to day 20 +17.5%  (closed below the 20-day avg)
+  IREDA        Sat 20 Jan 2024  RSI 82  worst pullback -22.5%  move to day 20 +17.6%  (closed below the 20-day avg)
+  NHPC         Fri 02 Feb 2024  RSI 83  worst pullback -21.6%  move to day 20 -11.0%  (closed below the 20-day avg)
+  AMBER        Thu 26 Dec 2024  RSI 83  worst pullback -21.0%  move to day 20 -12.6%  (closed below the 20-day avg)
+  NATIONALUM   Thu 29 Jan 2026  RSI 82  worst pullback -20.8%  move to day 20 -15.7%  (closed below the 20-day avg)
+  ADANIENSOL   Thu 01 Aug 2024  RSI 83  worst pullback -20.7%  move to day 20 -20.5%  (closed below the 20-day avg)
+  MCX          Thu 14 May 2026  RSI 82  worst pullback -20.2%  move to day 20 -15.1%  (closed below the 20-day avg)
+  GODFRYPHLP   Wed 06 Mar 2024  RSI 81  worst pullback -20.0%  move to day 20 +3.4%  (closed below the 20-day avg)
+  AMBER        Thu 12 Feb 2026  RSI 80  worst pullback -19.9%  move to day 20 -17.4%  (closed below the 20-day avg)
+  BEL          Tue 21 May 2024  RSI 82  worst pullback -19.5%  move to day 20 +13.0%  (closed below the 20-day avg)
+  MAZDOCK      Fri 24 May 2024  RSI 80  worst pullback -19.1%  move to day 20 +25.5%  (closed below the 20-day avg)
+
+READ: both happen. The base rate above says how often an EXTREME share kept running without a real pullback - that is the
+honest answer to 'does overbought mean it must fall'. Closes only; intraday dips inside a day are not counted.
