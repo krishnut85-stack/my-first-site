@@ -433,8 +433,9 @@ SOURCES SAY / OPINION / SOCIAL). Code adds card id, time, seat version, snapshot
 
 **HEAD:** `{desk_view (<=80 words), market_lean UP|DOWN|MIXED + reason_ids, ideas_new (<=5 per side) with why / against /
 trigger_ref / cancel_ref / source card ids, ideas_update (STANDS|CHANGED|CANCELLED + reason), buy_now (<=1 per call; daily cap in
-code), manage (HOLD|BOOK_HALF|MOVE_STOP|EXIT), why_not (PRICE_ONLY|EXTREME_RSI|NO_REASON|AGAINST_SECTOR|GATE), ask_seats,
-nothing_new}`.
+code), manage (HOLD|BOOK_HALF|MOVE_STOP|EXIT), why_not (PRICE_ONLY|EXTREME_RSI|NO_REASON|AGAINST_SECTOR|GATE|LATE - LATE added 20 Nov in desk/prompts/CONTRACTS.md
+for a move already half done, PREDICTION_LOOP B4), ask_seats, nothing_new}`. The full JSON schemas, the light THEME form for
+non-35 seats and the E12.4 `second_read` block live in desk/prompts/CONTRACTS.md.
 
 ### 4.5 Validators (no invented numbers)
 - The AI never types a number. Numbers appear only as placeholders such as `{num:sec.BANK.pct}` that code fills from the snapshot.
