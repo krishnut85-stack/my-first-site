@@ -75,6 +75,12 @@ The trader's order (20 Nov): "Monday we use the new system. Monday we use the fu
   before 08:00 the automatic Kite login runs for all four keys (the trader does NOT log in by hand) · 08:20 you check every key (profile + quote); a failed key retries, moves to K4 and rings him · 08:25 test chime + Telegram test ping ·
   **08:30 post READY with the health line** · 09:08 pre-open update · 09:15 live · 15:35 score the day (C5, E3) and push.
 
+## 5b. The principle (the trader, 20 Nov)
+The new system never reads or copies the old system's alerts; the old system is only a yardstick in the after-close score. It
+predicts from data + knowledge: 19:45 prediction, 22:45 and 07:15 updates, MORNING TV (CNBC-TV18 live and ET Now from 07:00, the
+09:00-09:15 pre-open segment) and the 09:08 pre-open (PREDICTION_LOOP section 00 and A1). TV speech-to-text on CNBC-TV18 + ET Now
+from 07:00 on Monday is REQUIRED (I2); ET Prime morning pieces if his subscription is connected.
+
 ## 6. Decided defaults (do not ask the trader again)
 - The new system RINGS on the live address from Mon 09:15 - his order is the switch-on. The old system runs silent beside it
   (logging only, no rings, no Telegram, small fixed AI allowance or none). Fallback `gir mode old` / `gir mode new`, also flippable by

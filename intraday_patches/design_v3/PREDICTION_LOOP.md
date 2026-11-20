@@ -25,6 +25,13 @@ Earlier: find the RIGHT MOVE from the market day and the sector, CE and PE both,
 
 ---
 
+## 00. THE PRINCIPLE (the trader, 20 Nov - binding)
+GIR does NOT copy or chase another system's alerts. The old system is only a yardstick for the after-close score; the new system never
+reads the old system's calls and never "reacts fast because the old one reacted". It PREDICTS from real data and knowledge: the
+evening prediction (19:45), updated through the night (22:45) and in the morning (07:15) with world cues and overnight news, and above
+all from the MORNING TV - CNBC-TV18 live and ET Now pre-market and pre-open (07:00-09:15) - then the 09:08 pre-open. On the trading
+day the signal is "I predicted this, and now the sector and price confirm it".
+
 ## 0. WHAT THE EVIDENCE FORCES (read first)
 
 From onset_results/movestudy_report.txt (737 days, 218 shares, 127,279 share-days, about 173 shares a day on average; the store is
@@ -81,7 +88,8 @@ What cannot work, and what we do instead:
 | 19:45 | THE BRAIN (A3), then the red team, then code validation. Prediction version N19 published. | Opus, Sonnet, code |
 | 22:45 | Cancel check against the US open, DXY, US10y, LME. Pushes a line ONLY if a prediction is CANCELLED or changes grade. | code |
 | 07:15 | Update U07: US closes, ADRs, LME / SHFE, Brent, DXY / US10y, GIFT, Asia, overnight filings and gazette sweep (NEWS_TO_SECTOR C7). | code + Opus |
-| 09:08 | Pre-open version P09 (A5). **THE LIST FREEZES AT 09:08.** | code + one Sonnet call |
+| 07:00-09:15 | **MORNING TV - a main input, not a side feed** (the trader, 20 Nov: "In the morning, very important, CNBC TV and ET... they give you the update and pre-open. Yesterday I found out Paytm from there only."): CNBC-TV18 live (pre-market shows, stocks in focus, buzzing stocks, analyst picks, the pre-open segment 09:00-09:15) and ET Now, through F17 speech-to-text, plus ET Prime's morning pieces. Every share or sector named with a view becomes a row: voice, channel, time, words, side, NEW or REPEAT. Rows are added to the candidate table as a TV input with the voice's own hit rate (D5), shown in the 07:15 / 09:08 updates as "ON TV 08:12 (CNBC-TV18, <voice>): PAYTM - <view>", and can ADD a line at 09:08 (marked "ADDED 09:08 - TV") if price and pre-open agree. | F17 + Haiku per chunk, code |
+| 09:08 | Pre-open version P09 (A5): includes the morning TV rows and the pre-open TV segment. **THE LIST FREEZES AT 09:08.** | code + one Sonnet call |
 
 Weekend / holiday: the last trading day's 19:45 list is for the next trading day (holiday-aware, e.g. NSE closed 24 Nov), with a
 code re-check at the Sunday 21:00 digest and the normal 07:15 / 09:08. No Opus on non-trading days except that one 19:45 run.

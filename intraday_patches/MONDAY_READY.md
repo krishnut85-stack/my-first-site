@@ -115,7 +115,8 @@ from Fri 20 Nov or the weekend: published at (source time) -> seen by GIR -> on 
 - [ ] I1 NSE + BSE filings (F15): polled every 3-5 s (was ~3 min late); attachments (PDF / XBRL) read for important filings;
       target on screen <= 15 s. Includes results, board outcomes, orders won, pledges, SAST / insider, block / bulk deals, and
       exchange circulars (F&O ban, lot changes, surveillance).
-- [ ] I2 Live TV speech-to-text (F17): CNBC-TV18 and ET Now at minimum (was one channel); Sansad TV, RBI / SEBI / PIB briefings when
+- [ ] I2 Live TV speech-to-text (F17): CNBC-TV18 and ET Now at minimum (was one channel), FROM 07:00 - the morning shows and the
+      09:00-09:15 pre-open segment are a main input to the 07:15 / 09:08 prediction (PREDICTION_LOOP 00 and A1); Sansad TV, RBI / SEBI / PIB briefings when
       live. A company or sector named on TV appears as a news line within ~60 s, marked "TV only - unverified" until a second source.
 - [ ] I3 News wires and publishers (F16): dead feeds removed (old Reuters RSS, Nitter); ET, Moneycontrol, CNBC-TV18, Business
       Standard, NDTV Profit, Reuters sitemaps and today's live blogs; target <= 30 s; duplicates merged; junk ticker matches blocked.
