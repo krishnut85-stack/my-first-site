@@ -219,3 +219,19 @@ it in Indian IT. So IT is coming up. This is one of the history."
   ANGELONE toward the Budget), DIPAM, SEBI WTM Murty, NHB. IRDAI: two working groups in ~10 days (watch PBFINTECH / ICICIGI).
   Bank of Maharashtra: up to US$175 mn overseas borrowing by 31 Dec (MAHABANK is in the F&O list - the analyst's "not in F&O" was
   wrong). "AIF exits easier" was NOT confirmed by any report. Nothing is a Monday trigger; do not chase CE on the speeches.
+
+## I. RBI MPC 4 Dec 2026 - desk pre-read (20 Nov evening; facts from search results, re-check before the day)
+- Set-up: 7 Oct hike to 5.50% (first since Feb 2023), stance "calibrated tightening", Governor: only "hike or pause". October CPI 6.09%
+  (above the 6% band top; food 8.94%), WPI 12.29%. 10y about 7.34% (7.25% on 7 Oct). Liquidity in surplus (SDF use ~Rs 1.55 lakh cr,
+  13 Nov). Rupee ~94.2. Brent ~$92.6 (from >$104 on 8 Oct). Credit 19.3% vs deposits 16.8%. Q2 NIMs fell at HDFCBANK / ICICIBANK /
+  AXISBANK; SBIN NIM up. Repo-linked loans: private ~89%, PSU ~51%. Polls lean to a 25 bp hike in December.
+- Scenarios (opinion): plain 25 bp hike ~55% (mostly priced: dip then recover, NO TRADE on the day); hawkish hold ~30%; hold + liquidity
+  / softer tone ~8% (CE PNB, AUBANK, BANKBARODA next day, row 27); surprise ~7% (50 bp -> PE GODREJPROP, DLF, BAJFINANCE, CHOLAFIN; a cut
+  = trouble, C18).
+- Over 1-4 weeks after a hike: repo-linked private / small banks gain margin (KOTAKBANK, AUBANK, IDFCFIRSTB, BANDHANBNK, ICICIBANK,
+  HDFCBANK), SBIN over weeks; NBFC / HFC and realty lose; non-SBIN PSU banks soft on bond losses.
+- Rules: no position before 10:00; enter 10:15-10:30 only with price agreement; 12:00 press conference can flip it; IV falls after the
+  release - do not buy on 3 Dec to hold into it. Bank Nifty is stretched (+~13% in Nov): pullback entries only (desk judgement; A6c's
+  81% count is measured on shares, not the index).
+- Watch: 30 Nov GDP (strong = hike more likely), daily liquidity / call rate, 10y (7.45% hawkish line, 7.15% dovish), Brent > $100,
+  rupee 95, FX reserves 27 Nov / 4 Dec; then Fed 10 Dec 00:30 IST and CPI 14 Dec. Follow-up: score each scenario line on 4 Dec.
