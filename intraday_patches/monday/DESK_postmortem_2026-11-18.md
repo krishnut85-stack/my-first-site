@@ -1,4 +1,4 @@
-# POST-MORTEM 2026-11-18 - run FULL2 (code only; FAKE / real as the run was) - made 21 Nov 02:38 IST
+# POST-MORTEM 2026-11-18 - run FULL2 (code only; FAKE / real as the run was) - made 21 Nov 03:37 IST
 
 Movers: the NSE CM bhavcopy, previous close -> close, F&O shares, >= 2%, top 10 each side (218 F&O shares priced). Card and look times are the replay's virtual IST times (the board day 2026-11-18 holds the evening before and the session). 'In the head's input' is reconstructed with the snapshot rule (latest card per seat up to the look + 15 / 35 / 36 of the last 2 hours); reader items reach the head as ranked knowledge rows, so for reader cards it says 'item in the store', not 'seen'.
 
@@ -75,49 +75,69 @@ Movers: the NSE CM bhavcopy, previous close -> close, F&O shares, >= 2%, top 10 
 
 ## SEAT CONSENSUS at each brief (what the code list WOULD have held - desk 02:30) and picked / not picked
 - **2026-11-17 19:47 brief 19:45** (price agreement = the 2026-11-17 session's close; top 5 enforced by the new rule):
-  - *1. BSE PE - 3 cards, 2 bench(es); benches India policy, Readers; strength 6; cards C:9d2801de,C:c097eff5,C:f19ac9b2 · NOT picked · day -2.83%
-  - *2. ANGELONE PE - 3 cards, 2 bench(es); benches India policy, Readers; strength 6; cards C:9d2801de,C:c097eff5,C:f19ac9b2 · NOT picked · day -3.29%
-  - *3. ONGC PE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:3db36a3a,C:2ad0a07a,C:c826a005 · NOT picked · day +0.66%
-  - *4. ASIANPAINT CE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:3db36a3a,C:0969615a · NOT picked · day -1.70%
-  - *5. COFORGE CE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:c5b23d24,C:9d42a2a3 · NOT picked · day +0.39%
-  -  6. ASHOKLEY PE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:18055c95,C:cfe35184 · NOT picked · day +1.21%
-  -  7. MAHABANK CE - 2 cards, 2 bench(es); benches Market, Sectors; strength 4; cards C:b6fd156d,C:567a7a0c · PICKED (NEW 19:47) · day +0.01%
-  -  8. LICHSGFIN CE - 2 cards, 2 bench(es); benches Reasoning, Sectors; strength 4; cards C:70fcc805,C:49ec1f49 · NOT picked · day -2.01%
-  -  9. YESBANK PE - one OFFICIAL card + the price agrees (-0.9%); benches Sectors; strength 2; cards C:b6fd156d · NOT picked · day -0.95%
-  -  10. MANAPPURAM PE - one OFFICIAL card + the price agrees (-2.4%); benches Sectors; strength 2; cards C:70fcc805 · NOT picked · day -4.59%
+  - *1. LICHSGFIN CE - 3 card(s) (2.5 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 5.0; cards C:122e725a,C:70fcc805,C:49ec1f49 · via group NBFC -> GIR sector map 'nbfc & finance' · NOT picked · day -2.01%
+  - *2. MAHABANK CE - 3 card(s) (2.5 weighted), 3 bench(es); benches Market, Reasoning, Sectors; strength 5.0; cards C:b6fd156d,C:567a7a0c,C:49ec1f49 · via group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · PICKED (NEW 19:47) · day +0.01%
+  - *3. POLYCAB PE - 4 card(s) (2.5 weighted), 4 bench(es); benches Commodities, Market, Reasoning, Sectors; strength 5.0; cards C:80f7e184,C:ed91e12f,C:567a7a0c,C:49ec1f49 · via group CABLES -> sector board GROUPS 'cables & wires' · PICKED (NEW 19:47) · day -5.12%
+  - *4. KEI PE - 4 card(s) (2.5 weighted), 4 bench(es); benches Commodities, Market, Reasoning, Sectors; strength 5.0; cards C:80f7e184,C:ed91e12f,C:567a7a0c,C:49ec1f49 · via group CABLES -> sector board GROUPS 'cables & wires' · NOT picked · day -3.27%
+  - *5. ONGC PE - 3 card(s) (3.0 weighted), 2 bench(es); benches Readers, Sectors; strength 6.0; cards C:3db36a3a,C:2ad0a07a,C:c826a005 · NOT picked · day +0.66%
+  -  6. ASIANPAINT CE - 3 card(s) (2.5 weighted), 2 bench(es); benches Readers, Sectors; strength 5.0; cards C:3db36a3a,C:c826a005,C:0969615a · via group OMC -> sector board GROUPS 'oil marketers, paints, airlines' · NOT picked · day -1.70%
+  -  7. COFORGE CE - 2 card(s) (2.0 weighted), 2 bench(es); benches Readers, Sectors; strength 4.0; cards C:c5b23d24,C:9d42a2a3 · NOT picked · day +0.39%
+  -  8. ASHOKLEY PE - 2 card(s) (2.0 weighted), 2 bench(es); benches Readers, Sectors; strength 4.0; cards C:18055c95,C:cfe35184 · NOT picked · day +1.21%
+  -  9. CAMS CE - single source: C:70fcc805 OFFICIAL card + price agrees [single source]; benches Readers, Sectors; strength 3.0; cards C:122e725a,C:70fcc805 · via group CAPMKTS -> GIR sector map 'capital markets' · NOT picked · day -3.76%
+  -  10. YESBANK PE - single source: C:b6fd156d OFFICIAL card + price agrees [single source]; benches Readers, Sectors; strength 3.0; cards C:122e725a,C:b6fd156d · via group BANK -> GIR sector map 'banks' · NOT picked · day -0.95%
+  -  11. ADANIENSOL CE - single source: C:567a7a0c OFFICIAL card + price agrees [single source]; benches Market, Readers; strength 3.0; cards C:4c8b9aed,C:567a7a0c · via group POWER -> GIR sector map 'power' · NOT picked · day -0.25%
+  -  12. EICHERMOT CE - single source: C:cfe35184 OFFICIAL card + price agrees [single source]; benches Commodities, Sectors; strength 3.0; cards C:80f7e184,C:cfe35184 · via group AUTO -> GIR sector map 'auto' · NOT picked · day -1.64%
+  -  13. BANKINDIA CE - single source: C:49ec1f49 OFFICIAL card + price agrees [single source]; benches Reasoning, Sectors; strength 3.0; cards C:b6fd156d,C:49ec1f49 · via group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · NOT picked · day -0.80%
+  -  14. PRESTIGE CE - single source: C:ed91e12f OFFICIAL card + price agrees [single source]; benches Reasoning, Sectors; strength 3.0; cards C:ed91e12f,C:49ec1f49 · via group REALTY -> GIR sector map 'realty' · PICKED (NEW 19:47) · day -2.02%
+  -  15. CUMMINSIND PE - single source: C:49ec1f49 OFFICIAL card + price agrees [single source]; benches Market, Reasoning; strength 3.0; cards C:567a7a0c,C:49ec1f49 · via group CAPGOODS -> GIR sector map 'capital goods' · NOT picked · day -1.48%
 - **2026-11-17 22:46 brief 22:45** (price agreement = the 2026-11-17 session's close; top 5 enforced by the new rule):
-  - *1. BSE PE - 5 cards, 2 bench(es); benches India policy, Readers; strength 10; cards C:9d2801de,C:c097eff5,C:f19ac9b2,C:aef3b659,C:fe5a43d9 · NOT picked · day -2.83%
-  - *2. ANGELONE PE - 5 cards, 2 bench(es); benches India policy, Readers; strength 10; cards C:9d2801de,C:c097eff5,C:f19ac9b2,C:aef3b659,C:fe5a43d9 · NOT picked · day -3.29%
-  - *3. ASHOKLEY PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 9; cards C:18055c95,C:cfe35184,C:ccecd94f,C:ad3cd70b · NOT picked · day +1.21%
-  - *4. ONGC PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 8; cards C:3db36a3a,C:2ad0a07a,C:c826a005,C:113ee1e3 · NOT picked · day +0.66%
-  - *5. CUMMINSIND PE - 2 cards, 2 bench(es); benches Readers, Reasoning; strength 4; cards C:49ec1f49,C:ad7cc1dd · NOT picked · day -1.48%
-  -  6. ASIANPAINT CE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:3db36a3a,C:0969615a · NOT picked · day -1.70%
-  -  7. COFORGE CE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:c5b23d24,C:9d42a2a3 · NOT picked · day +0.39%
-  -  8. MAHABANK CE - 2 cards, 2 bench(es); benches Market, Sectors; strength 4; cards C:b6fd156d,C:567a7a0c · PICKED (NEW 19:47) · day +0.01%
-  -  9. LICHSGFIN CE - 2 cards, 2 bench(es); benches Reasoning, Sectors; strength 4; cards C:70fcc805,C:49ec1f49 · NOT picked · day -2.01%
-  -  10. COALINDIA CE - 2 cards, 1 bench(es); benches Readers; strength 4; cards C:cb640619,C:882cccda · NOT picked · day -0.91%
+  - *1. LICHSGFIN CE - 3 card(s) (2.5 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 5.0; cards C:122e725a,C:70fcc805,C:49ec1f49 · via group NBFC -> GIR sector map 'nbfc & finance' · NOT picked · day -2.01%
+  - *2. MAHABANK CE - 3 card(s) (2.5 weighted), 3 bench(es); benches Market, Reasoning, Sectors; strength 5.0; cards C:b6fd156d,C:567a7a0c,C:49ec1f49 · via group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · PICKED (NEW 19:47) · day +0.01%
+  - *3. CUMMINSIND PE - 3 card(s) (2.5 weighted), 3 bench(es); benches Market, Readers, Reasoning; strength 5.0; cards C:567a7a0c,C:49ec1f49,C:ad7cc1dd · via group CAPGOODS -> GIR sector map 'capital goods' · NOT picked · day -1.48%
+  - *4. POLYCAB PE - 4 card(s) (2.5 weighted), 4 bench(es); benches Commodities, Market, Reasoning, Sectors; strength 5.0; cards C:80f7e184,C:ed91e12f,C:567a7a0c,C:49ec1f49 · via group CABLES -> sector board GROUPS 'cables & wires' · PICKED (NEW 19:47) · day -5.12%
+  - *5. KEI PE - 4 card(s) (2.5 weighted), 4 bench(es); benches Commodities, Market, Reasoning, Sectors; strength 5.0; cards C:80f7e184,C:ed91e12f,C:567a7a0c,C:49ec1f49 · via group CABLES -> sector board GROUPS 'cables & wires' · NOT picked · day -3.27%
+  -  6. ASHOKLEY PE - 5 card(s) (4.5 weighted), 2 bench(es); benches Readers, Sectors; strength 10.0; cards C:18055c95,C:cfe35184,C:ccecd94f,C:141674b2,C:ad3cd70b · via group AUTO -> GIR sector map 'auto' · NOT picked · day +1.21%
+  -  7. ONGC PE - 4 card(s) (4.0 weighted), 2 bench(es); benches Readers, Sectors; strength 8.0; cards C:3db36a3a,C:2ad0a07a,C:c826a005,C:113ee1e3 · NOT picked · day +0.66%
+  -  8. ASIANPAINT CE - 3 card(s) (2.5 weighted), 2 bench(es); benches Readers, Sectors; strength 5.0; cards C:3db36a3a,C:c826a005,C:0969615a · via group OMC -> sector board GROUPS 'oil marketers, paints, airlines' · NOT picked · day -1.70%
+  -  9. EICHERMOT CE - 3 card(s) (2.0 weighted), 3 bench(es); benches Commodities, Readers, Sectors; strength 4.0; cards C:80f7e184,C:cfe35184,C:e5d4f079 · via group AUTO -> GIR sector map 'auto' · NOT picked · day -1.64%
+  -  10. COFORGE CE - 2 card(s) (2.0 weighted), 2 bench(es); benches Readers, Sectors; strength 4.0; cards C:c5b23d24,C:9d42a2a3 · NOT picked · day +0.39%
+  -  11. CAMS CE - single source: C:70fcc805 OFFICIAL card + price agrees [single source]; benches Readers, Sectors; strength 3.0; cards C:122e725a,C:70fcc805 · via group CAPMKTS -> GIR sector map 'capital markets' · NOT picked · day -3.76%
+  -  12. YESBANK PE - single source: C:b6fd156d OFFICIAL card + price agrees [single source]; benches Readers, Sectors; strength 3.0; cards C:122e725a,C:b6fd156d · via group BANK -> GIR sector map 'banks' · NOT picked · day -0.95%
+  -  13. ADANIENSOL CE - single source: C:567a7a0c OFFICIAL card + price agrees [single source]; benches Market, Readers; strength 3.0; cards C:4c8b9aed,C:567a7a0c · via group POWER -> GIR sector map 'power' · NOT picked · day -0.25%
+  -  14. BANKINDIA CE - single source: C:49ec1f49 OFFICIAL card + price agrees [single source]; benches Reasoning, Sectors; strength 3.0; cards C:b6fd156d,C:49ec1f49 · via group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · NOT picked · day -0.80%
+  -  15. PRESTIGE CE - single source: C:ed91e12f OFFICIAL card + price agrees [single source]; benches Reasoning, Sectors; strength 3.0; cards C:ed91e12f,C:49ec1f49 · via group REALTY -> GIR sector map 'realty' · PICKED (NEW 19:47) · day -2.02%
 - **2026-11-18 07:17 brief 07:15 - this brief FAILED in the run** (price agreement = the 2026-11-17 session's close; top 5 enforced by the new rule):
-  - *1. ONGC PE - 7 cards, 2 bench(es); benches Readers, Sectors; strength 13; cards C:3db36a3a,C:2ad0a07a,C:c826a005,C:113ee1e3,C:7af38493 · NOT picked · day +0.66%
-  - *2. BSE PE - 5 cards, 2 bench(es); benches India policy, Readers; strength 10; cards C:9d2801de,C:c097eff5,C:f19ac9b2,C:aef3b659,C:fe5a43d9 · NOT picked · day -2.83%
-  - *3. ANGELONE PE - 5 cards, 2 bench(es); benches India policy, Readers; strength 10; cards C:9d2801de,C:c097eff5,C:f19ac9b2,C:aef3b659,C:fe5a43d9 · NOT picked · day -3.29%
-  - *4. ASHOKLEY PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 9; cards C:18055c95,C:cfe35184,C:ccecd94f,C:ad3cd70b · NOT picked · day +1.21%
-  - *5. VEDL PE - 2 cards, 2 bench(es); benches Readers, Reasoning; strength 4; cards C:15a10bc6,C:0e23c01a · NOT picked · day -3.78%
-  -  6. CUMMINSIND PE - 2 cards, 2 bench(es); benches Readers, Reasoning; strength 4; cards C:49ec1f49,C:ad7cc1dd · NOT picked · day -1.48%
-  -  7. ASIANPAINT CE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:3db36a3a,C:0969615a · NOT picked · day -1.70%
-  -  8. COFORGE CE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:c5b23d24,C:9d42a2a3 · NOT picked · day +0.39%
-  -  9. MAHABANK CE - 2 cards, 2 bench(es); benches Market, Sectors; strength 4; cards C:b6fd156d,C:567a7a0c · PICKED (NEW 19:47) · day +0.01%
-  -  10. LICHSGFIN CE - 2 cards, 2 bench(es); benches Reasoning, Sectors; strength 4; cards C:70fcc805,C:49ec1f49 · NOT picked · day -2.01%
+  - *1. LICHSGFIN CE - 3 card(s) (2.5 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 5.0; cards C:122e725a,C:70fcc805,C:49ec1f49 · via group NBFC -> GIR sector map 'nbfc & finance' · NOT picked · day -2.01%
+  - *2. MAHABANK CE - 3 card(s) (2.5 weighted), 3 bench(es); benches Market, Reasoning, Sectors; strength 5.0; cards C:b6fd156d,C:567a7a0c,C:49ec1f49 · via group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · PICKED (NEW 19:47) · day +0.01%
+  - *3. CUMMINSIND PE - 3 card(s) (2.5 weighted), 3 bench(es); benches Market, Readers, Reasoning; strength 5.0; cards C:567a7a0c,C:49ec1f49,C:ad7cc1dd · via group CAPGOODS -> GIR sector map 'capital goods' · NOT picked · day -1.48%
+  - *4. POLYCAB PE - 4 card(s) (2.5 weighted), 4 bench(es); benches Commodities, Market, Reasoning, Sectors; strength 5.0; cards C:80f7e184,C:ed91e12f,C:567a7a0c,C:49ec1f49 · via group CABLES -> sector board GROUPS 'cables & wires' · PICKED (NEW 19:47) · day -5.12%
+  - *5. KEI PE - 4 card(s) (2.5 weighted), 4 bench(es); benches Commodities, Market, Reasoning, Sectors; strength 5.0; cards C:80f7e184,C:ed91e12f,C:567a7a0c,C:49ec1f49 · via group CABLES -> sector board GROUPS 'cables & wires' · NOT picked · day -3.27%
+  -  6. ONGC PE - 7 card(s) (7.0 weighted), 2 bench(es); benches Readers, Sectors; strength 13.0; cards C:3db36a3a,C:2ad0a07a,C:c826a005,C:113ee1e3,C:7af38493 · NOT picked · day +0.66%
+  -  7. ASHOKLEY PE - 5 card(s) (4.5 weighted), 2 bench(es); benches Readers, Sectors; strength 10.0; cards C:18055c95,C:cfe35184,C:ccecd94f,C:141674b2,C:ad3cd70b · via group AUTO -> GIR sector map 'auto' · NOT picked · day +1.21%
+  -  8. ASIANPAINT CE - 3 card(s) (2.5 weighted), 2 bench(es); benches Readers, Sectors; strength 5.0; cards C:3db36a3a,C:c826a005,C:0969615a · via group OMC -> sector board GROUPS 'oil marketers, paints, airlines' · NOT picked · day -1.70%
+  -  9. EICHERMOT CE - 3 card(s) (2.0 weighted), 3 bench(es); benches Commodities, Readers, Sectors; strength 4.0; cards C:80f7e184,C:cfe35184,C:e5d4f079 · via group AUTO -> GIR sector map 'auto' · NOT picked · day -1.64%
+  -  10. COFORGE CE - 2 card(s) (2.0 weighted), 2 bench(es); benches Readers, Sectors; strength 4.0; cards C:c5b23d24,C:9d42a2a3 · NOT picked · day +0.39%
+  -  11. CIPLA PE - 2 card(s) (2.0 weighted), 2 bench(es); benches Readers, Sectors; strength 3.0; cards C:8dd2c106,C:4e481d3d · NOT picked · day +2.09%
+  -  12. VEDL PE - 4 card(s) (3.0 weighted), 3 bench(es); benches Commodities, Readers, Reasoning; strength 6.0; cards C:3f5053b7,C:80f7e184,C:15a10bc6,C:0e23c01a · via group METALS -> GIR sector map 'metals & mining' · NOT picked · day -3.78%
+  -  13. TMPV CE - 4 card(s) (2.5 weighted), 4 bench(es); benches Commodities, Readers, Reasoning, Sectors; strength 5.0; cards C:80f7e184,C:cfe35184,C:e5d4f079,C:0e23c01a · via group AUTO -> GIR sector map 'auto'; group AUTO_ANC -> GIR sector map 'auto' · NOT picked · day -2.57%
+  -  14. CAMS CE - single source: C:70fcc805 OFFICIAL card + price agrees [single source]; benches Readers, Sectors; strength 3.0; cards C:122e725a,C:70fcc805 · via group CAPMKTS -> GIR sector map 'capital markets' · NOT picked · day -3.76%
+  -  15. YESBANK PE - single source: C:b6fd156d OFFICIAL card + price agrees [single source]; benches Readers, Sectors; strength 3.0; cards C:122e725a,C:b6fd156d · via group BANK -> GIR sector map 'banks' · NOT picked · day -0.95%
 - **2026-11-18 09:10 brief 09:08 - this brief FAILED in the run** (price agreement = the 2026-11-17 session's close; top 5 enforced by the new rule):
-  - *1. ONGC PE - 7 cards, 2 bench(es); benches Readers, Sectors; strength 13; cards C:3db36a3a,C:2ad0a07a,C:c826a005,C:113ee1e3,C:7af38493 · NOT picked · day +0.66%
-  - *2. BSE PE - 5 cards, 2 bench(es); benches India policy, Readers; strength 10; cards C:9d2801de,C:c097eff5,C:f19ac9b2,C:aef3b659,C:fe5a43d9 · NOT picked · day -2.83%
-  - *3. ANGELONE PE - 5 cards, 2 bench(es); benches India policy, Readers; strength 10; cards C:9d2801de,C:c097eff5,C:f19ac9b2,C:aef3b659,C:fe5a43d9 · NOT picked · day -3.29%
-  - *4. ASHOKLEY PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 9; cards C:18055c95,C:cfe35184,C:ccecd94f,C:ad3cd70b · NOT picked · day +1.21%
-  - *5. CIPLA PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 8; cards C:8dd2c106,C:4e481d3d,C:cd89decd,C:01d408ee · NOT picked · day +2.09%
-  -  6. VEDL PE - 2 cards, 2 bench(es); benches Readers, Reasoning; strength 4; cards C:15a10bc6,C:0e23c01a · NOT picked · day -3.78%
-  -  7. CUMMINSIND PE - 2 cards, 2 bench(es); benches Readers, Reasoning; strength 4; cards C:49ec1f49,C:ad7cc1dd · NOT picked · day -1.48%
-  -  8. ASIANPAINT CE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:3db36a3a,C:0969615a · NOT picked · day -1.70%
-  -  9. COFORGE CE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:c5b23d24,C:9d42a2a3 · NOT picked · day +0.39%
-  -  10. MAHABANK CE - 2 cards, 2 bench(es); benches Market, Sectors; strength 4; cards C:b6fd156d,C:567a7a0c · PICKED (NEW 19:47) · day +0.01%
+  - *1. LICHSGFIN CE - 3 card(s) (2.5 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 5.0; cards C:122e725a,C:70fcc805,C:49ec1f49 · via group NBFC -> GIR sector map 'nbfc & finance' · NOT picked · day -2.01%
+  - *2. MAHABANK CE - 3 card(s) (2.5 weighted), 3 bench(es); benches Market, Reasoning, Sectors; strength 5.0; cards C:b6fd156d,C:567a7a0c,C:49ec1f49 · via group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · PICKED (NEW 19:47) · day +0.01%
+  - *3. CUMMINSIND PE - 3 card(s) (2.5 weighted), 3 bench(es); benches Market, Readers, Reasoning; strength 5.0; cards C:567a7a0c,C:49ec1f49,C:ad7cc1dd · via group CAPGOODS -> GIR sector map 'capital goods' · NOT picked · day -1.48%
+  - *4. POLYCAB PE - 4 card(s) (2.5 weighted), 4 bench(es); benches Commodities, Market, Reasoning, Sectors; strength 5.0; cards C:80f7e184,C:ed91e12f,C:567a7a0c,C:49ec1f49 · via group CABLES -> sector board GROUPS 'cables & wires' · PICKED (NEW 19:47) · day -5.12%
+  - *5. KEI PE - 4 card(s) (2.5 weighted), 4 bench(es); benches Commodities, Market, Reasoning, Sectors; strength 5.0; cards C:80f7e184,C:ed91e12f,C:567a7a0c,C:49ec1f49 · via group CABLES -> sector board GROUPS 'cables & wires' · NOT picked · day -3.27%
+  -  6. ONGC PE - 7 card(s) (7.0 weighted), 2 bench(es); benches Readers, Sectors; strength 13.0; cards C:3db36a3a,C:2ad0a07a,C:c826a005,C:113ee1e3,C:7af38493 · NOT picked · day +0.66%
+  -  7. ASHOKLEY PE - 5 card(s) (4.5 weighted), 2 bench(es); benches Readers, Sectors; strength 10.0; cards C:18055c95,C:cfe35184,C:ccecd94f,C:141674b2,C:ad3cd70b · via group AUTO -> GIR sector map 'auto' · NOT picked · day +1.21%
+  -  8. CIPLA PE - 4 card(s) (4.0 weighted), 2 bench(es); benches Readers, Sectors; strength 8.0; cards C:8dd2c106,C:4e481d3d,C:cd89decd,C:01d408ee · NOT picked · day +2.09%
+  -  9. ASIANPAINT CE - 3 card(s) (2.5 weighted), 2 bench(es); benches Readers, Sectors; strength 5.0; cards C:3db36a3a,C:c826a005,C:0969615a · via group OMC -> sector board GROUPS 'oil marketers, paints, airlines' · NOT picked · day -1.70%
+  -  10. EICHERMOT CE - 3 card(s) (2.0 weighted), 3 bench(es); benches Commodities, Readers, Sectors; strength 4.0; cards C:80f7e184,C:cfe35184,C:e5d4f079 · via group AUTO -> GIR sector map 'auto' · NOT picked · day -1.64%
+  -  11. COFORGE CE - 2 card(s) (2.0 weighted), 2 bench(es); benches Readers, Sectors; strength 4.0; cards C:c5b23d24,C:9d42a2a3 · NOT picked · day +0.39%
+  -  12. VEDL PE - 4 card(s) (3.0 weighted), 3 bench(es); benches Commodities, Readers, Reasoning; strength 6.0; cards C:3f5053b7,C:80f7e184,C:15a10bc6,C:0e23c01a · via group METALS -> GIR sector map 'metals & mining' · NOT picked · day -3.78%
+  -  13. TMPV CE - 4 card(s) (2.5 weighted), 4 bench(es); benches Commodities, Readers, Reasoning, Sectors; strength 5.0; cards C:80f7e184,C:cfe35184,C:e5d4f079,C:0e23c01a · via group AUTO -> GIR sector map 'auto'; group AUTO_ANC -> GIR sector map 'auto' · NOT picked · day -2.57%
+  -  14. CAMS CE - single source: C:70fcc805 OFFICIAL card + price agrees [single source]; benches Readers, Sectors; strength 3.0; cards C:122e725a,C:70fcc805 · via group CAPMKTS -> GIR sector map 'capital markets' · NOT picked · day -3.76%
+  -  15. YESBANK PE - single source: C:b6fd156d OFFICIAL card + price agrees [single source]; benches Readers, Sectors; strength 3.0; cards C:122e725a,C:b6fd156d · via group BANK -> GIR sector map 'banks' · NOT picked · day -0.95%
 
 ## The head's ideas (reasons and source card ids)
 - 2026-11-17 19:47 NEW POLYCAB PE · day -5.12% · source sector-chain · cards C:ed91e12f,C:567a7a0c,C:80f7e184,C:49ec1f49,C:1bc73aef,C:f45affe4 · Cables were the worst sector on the day (-2.38%) against a green NIFTY. POLYCAB fell -3.19% with short build-up, futures OI up +6.30% [SEC:cables & wires,MV:POLYCAB,C:567a7a0c,C:1bc73aef]; US chips -5.28%, LME copper -0.71% and aluminium -2.65%. Copper is both revenue and cost for cable makers, so t

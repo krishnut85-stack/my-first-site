@@ -1,4 +1,4 @@
-# POST-MORTEM 2026-11-20 - run FULL3 (code only; FAKE / real as the run was) - made 21 Nov 02:38 IST
+# POST-MORTEM 2026-11-20 - run FULL3 (code only; FAKE / real as the run was) - made 21 Nov 03:37 IST
 
 Movers: the NSE CM bhavcopy, previous close -> close, F&O shares, >= 2%, top 10 each side (218 F&O shares priced). Card and look times are the replay's virtual IST times (the board day 2026-11-20 holds the evening before and the session). 'In the head's input' is reconstructed with the snapshot rule (latest card per seat up to the look + 15 / 35 / 36 of the last 2 hours); reader items reach the head as ranked knowledge rows, so for reader cards it says 'item in the store', not 'seen'.
 
@@ -97,49 +97,69 @@ Movers: the NSE CM bhavcopy, previous close -> close, F&O shares, >= 2%, top 10 
 
 ## SEAT CONSENSUS at each brief (what the code list WOULD have held - desk 02:30) and picked / not picked
 - **2026-11-19 19:47 brief 19:45** (price agreement = the 2026-11-19 session's close; top 5 enforced by the new rule):
-  - *1. HEROMOTOCO PE - 4 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 9; cards C:ef86da06,C:650d5144,C:7447dea9,C:ede87fbf · PICKED (NEW 19:47) · day -0.36%
-  - *2. MANAPPURAM PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 7; cards C:efd6aada,C:00fcba9a,C:a099d2ee,C:01520e0c · NOT picked · day -0.83%
-  - *3. POLYCAB CE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:6283012c,C:e8f9abc3,C:52ccc619 · NOT picked · day +0.26%
-  - *4. PAYTM PE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:6cd9ac6f,C:01520e0c · NOT picked · day +0.82%
-  - *5. BANKBARODA CE - 2 cards, 2 bench(es); benches Reasoning, Sectors; strength 4; cards C:3c75c921,C:ede87fbf · PICKED (NEW 19:47) · day +0.38%
-  -  6. ALKEM PE - 4 cards, 1 bench(es); benches Readers; strength 13; cards C:d997423f,C:00d29a2f,C:af314b41,C:cbd45eca · NOT picked · day +0.78%
-  -  7. VOLTAS CE - 4 cards, 1 bench(es); benches Readers; strength 8; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:941e86d6 · NOT picked · day -0.16%
-  -  8. HINDALCO PE - 3 cards, 1 bench(es); benches Readers; strength 6; cards C:6283012c,C:e8f9abc3,C:ab7bc390 · NOT picked · day +2.14%
-  -  9. MUTHOOTFIN PE - 3 cards, 1 bench(es); benches Readers; strength 5; cards C:efd6aada,C:00fcba9a,C:a099d2ee · NOT picked · day -2.58%
-  -  10. INOXWIND PE - 2 cards, 1 bench(es); benches Readers; strength 4; cards C:025534c0,C:618730b2 · NOT picked · day -2.65%
+  - *1. BANKBARODA CE - 2 card(s) (2.0 weighted), 2 bench(es); benches Reasoning, Sectors; strength 4.0; cards C:3c75c921,C:ede87fbf · PICKED (NEW 19:47) · day +0.38%
+  - *2. HEROMOTOCO PE - 4 card(s) (4.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 9.0; cards C:ef86da06,C:650d5144,C:7447dea9,C:ede87fbf · PICKED (NEW 19:47) · day -0.36%
+  - *3. MANAPPURAM PE - 4 card(s) (4.0 weighted), 2 bench(es); benches Readers, Sectors; strength 7.0; cards C:efd6aada,C:00fcba9a,C:a099d2ee,C:01520e0c · NOT picked · day -0.83%
+  - *4. POLYCAB CE - 3 card(s) (3.0 weighted), 2 bench(es); benches Readers, Sectors; strength 6.0; cards C:6283012c,C:e8f9abc3,C:52ccc619 · NOT picked · day +0.26%
+  - *5. PAYTM PE - 2 card(s) (2.0 weighted), 2 bench(es); benches Readers, Sectors; strength 4.0; cards C:6cd9ac6f,C:01520e0c · NOT picked · day +0.82%
+  -  6. TCS PE - single source: C:4796bd0a OFFICIAL card + price agrees [single source]; benches Reasoning, Sectors; strength 3.0; cards C:4796bd0a,C:ede87fbf · via group IT -> GIR sector map 'it' · PICKED (NEW 19:47) · day +1.43%
+  -  7. TVSMOTOR CE - single source: C:7447dea9 OFFICIAL card + price agrees [single source]; benches Reasoning, Sectors; strength 3.0; cards C:7447dea9,C:ede87fbf · via group AUTO_ANC -> GIR sector map 'auto' · NOT picked · day -0.25%
+  -  8. ALKEM PE - 4 card(s) (4.0 weighted), 1 bench(es); benches Readers; strength 13.0; cards C:d997423f,C:00d29a2f,C:af314b41,C:cbd45eca · NOT picked · day +0.78%
+  -  9. ATHERENERG CE - 3 card(s) (2.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 4.0; cards C:ef86da06,C:7447dea9,C:ede87fbf · via group AUTO_ANC -> GIR sector map 'auto' · NOT picked · day +0.55%
+  -  10. ADANIENSOL PE - single source: C:ddab279b OFFICIAL card + price agrees [single source]; benches Sectors; strength 2.0; cards C:ddab279b · NOT picked · day +1.25%
+  -  11. BHARTIARTL CE - single source: C:b3b50726 OFFICIAL card + price agrees [single source]; benches Sectors; strength 2.0; cards C:b3b50726 · NOT picked · day +0.83%
+  -  12. INFY PE - single source: C:ede87fbf OFFICIAL card + price agrees [single source]; benches Reasoning; strength 2.0; cards C:ede87fbf · NOT picked · day +0.56%
+  -  13. VOLTAS CE - 4 card(s) (4.0 weighted), 1 bench(es); benches Readers; strength 8.0; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:941e86d6 · NOT picked · day -0.16%
+  -  14. HINDALCO PE - 5 card(s) (4.0 weighted), 1 bench(es); benches Readers; strength 8.0; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:935d7b2f,C:941e86d6 · via group METAL -> GIR sector map 'metals & mining'; group METALS -> GIR sector map 'metals & mining' · NOT picked · day +2.14%
+  -  15. VEDL PE - 4 card(s) (3.0 weighted), 1 bench(es); benches Readers; strength 6.0; cards C:6283012c,C:e8f9abc3,C:935d7b2f,C:941e86d6 · via group METAL -> GIR sector map 'metals & mining'; group METALS -> GIR sector map 'metals & mining' · NOT picked · day -2.32%
 - **2026-11-19 22:46 brief 22:45** (price agreement = the 2026-11-19 session's close; top 5 enforced by the new rule):
-  - *1. HEROMOTOCO PE - 4 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 9; cards C:ef86da06,C:650d5144,C:7447dea9,C:ede87fbf · PICKED (NEW 19:47) · day -0.36%
-  - *2. MANAPPURAM PE - 5 cards, 2 bench(es); benches Readers, Sectors; strength 9; cards C:efd6aada,C:00fcba9a,C:a099d2ee,C:01520e0c,C:8caabf55 · NOT picked · day -0.83%
-  - *3. TCS PE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:4796bd0a,C:78d14d08,C:a83bc8b4 · PICKED (NEW 19:47) · day +1.43%
-  - *4. POLYCAB CE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:6283012c,C:e8f9abc3,C:52ccc619 · NOT picked · day +0.26%
-  - *5. PAYTM PE - 2 cards, 2 bench(es); benches Readers, Sectors; strength 4; cards C:6cd9ac6f,C:01520e0c · NOT picked · day +0.82%
-  -  6. BANKBARODA CE - 2 cards, 2 bench(es); benches Reasoning, Sectors; strength 4; cards C:3c75c921,C:ede87fbf · PICKED (NEW 19:47) · day +0.38%
-  -  7. ALKEM PE - 5 cards, 1 bench(es); benches Readers; strength 15; cards C:d997423f,C:00d29a2f,C:af314b41,C:cbd45eca,C:9248330c · NOT picked · day +0.78%
-  -  8. VOLTAS CE - 4 cards, 1 bench(es); benches Readers; strength 8; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:941e86d6 · NOT picked · day -0.16%
-  -  9. HINDALCO PE - 3 cards, 1 bench(es); benches Readers; strength 6; cards C:6283012c,C:e8f9abc3,C:ab7bc390 · NOT picked · day +2.14%
-  -  10. MUTHOOTFIN PE - 3 cards, 1 bench(es); benches Readers; strength 5; cards C:efd6aada,C:00fcba9a,C:a099d2ee · NOT picked · day -2.58%
+  - *1. BANKBARODA CE - 2 card(s) (2.0 weighted), 2 bench(es); benches Reasoning, Sectors; strength 4.0; cards C:3c75c921,C:ede87fbf · PICKED (NEW 19:47) · day +0.38%
+  - *2. TCS PE - 4 card(s) (3.5 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 7.0; cards C:4796bd0a,C:ede87fbf,C:78d14d08,C:a83bc8b4 · via group IT -> GIR sector map 'it' · PICKED (NEW 19:47) · day +1.43%
+  - *3. MANAPPURAM PE - 5 card(s) (5.0 weighted), 2 bench(es); benches Readers, Sectors; strength 9.0; cards C:efd6aada,C:00fcba9a,C:a099d2ee,C:01520e0c,C:8caabf55 · NOT picked · day -0.83%
+  - *4. HEROMOTOCO PE - 4 card(s) (4.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 9.0; cards C:ef86da06,C:650d5144,C:7447dea9,C:ede87fbf · PICKED (NEW 19:47) · day -0.36%
+  - *5. POLYCAB CE - 3 card(s) (3.0 weighted), 2 bench(es); benches Readers, Sectors; strength 6.0; cards C:6283012c,C:e8f9abc3,C:52ccc619 · NOT picked · day +0.26%
+  -  6. PNB CE - 3 card(s) (2.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 5.0; cards C:3c75c921,C:ede87fbf,C:2c4e5aa4 · via group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · NOT picked · day +0.31%
+  -  7. PAYTM PE - 2 card(s) (2.0 weighted), 2 bench(es); benches Readers, Sectors; strength 4.0; cards C:6cd9ac6f,C:01520e0c · NOT picked · day +0.82%
+  -  8. INFY PE - single source: C:ede87fbf OFFICIAL card + price agrees [single source]; benches Readers, Reasoning; strength 3.0; cards C:ede87fbf,C:78d14d08 · via group IT -> GIR sector map 'it' · NOT picked · day +0.56%
+  -  9. TVSMOTOR CE - single source: C:7447dea9 OFFICIAL card + price agrees [single source]; benches Reasoning, Sectors; strength 3.0; cards C:7447dea9,C:ede87fbf · via group AUTO_ANC -> GIR sector map 'auto' · NOT picked · day -0.25%
+  -  10. ALKEM PE - 5 card(s) (5.0 weighted), 1 bench(es); benches Readers; strength 15.0; cards C:d997423f,C:00d29a2f,C:af314b41,C:cbd45eca,C:9248330c · NOT picked · day +0.78%
+  -  11. ATHERENERG CE - 3 card(s) (2.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 4.0; cards C:ef86da06,C:7447dea9,C:ede87fbf · via group AUTO_ANC -> GIR sector map 'auto' · NOT picked · day +0.55%
+  -  12. ADANIENSOL PE - single source: C:ddab279b OFFICIAL card + price agrees [single source]; benches Sectors; strength 2.0; cards C:ddab279b · NOT picked · day +1.25%
+  -  13. BHARTIARTL CE - single source: C:b3b50726 OFFICIAL card + price agrees [single source]; benches Sectors; strength 2.0; cards C:b3b50726 · NOT picked · day +0.83%
+  -  14. VOLTAS CE - 4 card(s) (4.0 weighted), 1 bench(es); benches Readers; strength 8.0; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:941e86d6 · NOT picked · day -0.16%
+  -  15. HINDALCO PE - 5 card(s) (4.0 weighted), 1 bench(es); benches Readers; strength 8.0; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:935d7b2f,C:941e86d6 · via group METAL -> GIR sector map 'metals & mining'; group METALS -> GIR sector map 'metals & mining' · NOT picked · day +2.14%
 - **2026-11-20 07:17 brief 07:15** (price agreement = the 2026-11-19 session's close; top 5 enforced by the new rule):
-  - *1. HEROMOTOCO PE - 4 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 9; cards C:ef86da06,C:650d5144,C:7447dea9,C:ede87fbf · PICKED (NEW 19:47) · day -0.36%
-  - *2. BANKBARODA CE - 3 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 6; cards C:3c75c921,C:ede87fbf,C:dfa16c73 · PICKED (NEW 19:47) · day +0.38%
-  - *3. ALKEM PE - 9 cards, 2 bench(es); benches Readers, Sectors; strength 23; cards C:d997423f,C:00d29a2f,C:af314b41,C:cbd45eca,C:9248330c · PICKED (NEW 07:17) · day +0.78%
-  - *4. VOLTAS CE - 11 cards, 2 bench(es); benches Commodities, Readers; strength 22; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:941e86d6,C:0e8f5278 · NOT picked · day -0.16%
-  - *5. MANAPPURAM PE - 7 cards, 2 bench(es); benches Readers, Sectors; strength 14; cards C:efd6aada,C:00fcba9a,C:a099d2ee,C:01520e0c,C:8caabf55 · NOT picked · day -0.83%
-  -  6. INOXWIND PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 8; cards C:025534c0,C:618730b2,C:8e6f6b3f,C:308caa97 · NOT picked · day -2.65%
-  -  7. PAYTM PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 7; cards C:6cd9ac6f,C:01520e0c,C:110730fe,C:81513cff · NOT picked · day +0.82%
-  -  8. BEL CE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:fc8a80db,C:5022bd1d,C:308caa97 · NOT picked · day -0.54%
-  -  9. TCS PE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:4796bd0a,C:78d14d08,C:a83bc8b4 · PICKED (NEW 19:47) · day +1.43%
-  -  10. POLYCAB CE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:6283012c,C:e8f9abc3,C:52ccc619 · NOT picked · day +0.26%
+  - *1. BANKBARODA CE - 5 card(s) (4.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 8.0; cards C:3c75c921,C:ede87fbf,C:dfa16c73,C:40311e5f,C:af536ca8 · via group BANKS -> GIR sector map 'banks'; group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · PICKED (NEW 19:47) · day +0.38%
+  - *2. NATIONALUM PE - 4 card(s) (3.0 weighted), 3 bench(es); benches Commodities, Readers, Sectors; strength 6.0; cards C:935d7b2f,C:941e86d6,C:bf194899,C:04ba885a · via group METAL -> GIR sector map 'metals & mining'; group METALS -> GIR sector map 'metals & mining' · PICKED (NEW 07:17) · day -1.24%
+  - *3. ALKEM PE - 9 card(s) (9.0 weighted), 2 bench(es); benches Readers, Sectors; strength 23.0; cards C:d997423f,C:00d29a2f,C:af314b41,C:cbd45eca,C:9248330c · PICKED (NEW 07:17) · day +0.78%
+  - *4. VOLTAS CE - 11 card(s) (11.0 weighted), 2 bench(es); benches Commodities, Readers; strength 22.0; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:941e86d6,C:0e8f5278 · NOT picked · day -0.16%
+  - *5. TCS PE - 6 card(s) (4.5 weighted), 4 bench(es); benches Readers, Reasoning, Sectors, World; strength 9.0; cards C:4796bd0a,C:ede87fbf,C:78d14d08,C:a83bc8b4,C:87c391b2 · via group IT -> GIR sector map 'it' · PICKED (NEW 19:47) · day +1.43%
+  -  6. INFY PE - 5 card(s) (3.5 weighted), 4 bench(es); benches Readers, Reasoning, Sectors, World; strength 7.0; cards C:ede87fbf,C:78d14d08,C:6d15bf7a,C:87c391b2,C:b8496b18 · via group IT -> GIR sector map 'it' · NOT picked · day +0.56%
+  -  7. MANAPPURAM PE - 8 card(s) (7.5 weighted), 2 bench(es); benches Readers, Sectors; strength 15.0; cards C:efd6aada,C:00fcba9a,C:a099d2ee,C:01520e0c,C:8caabf55 · via group NBFC -> GIR sector map 'nbfc & finance' · NOT picked · day -0.83%
+  -  8. HEROMOTOCO PE - 4 card(s) (4.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 9.0; cards C:ef86da06,C:650d5144,C:7447dea9,C:ede87fbf · PICKED (NEW 19:47) · day -0.36%
+  -  9. PAYTM PE - 5 card(s) (4.5 weighted), 2 bench(es); benches Readers, Sectors; strength 8.0; cards C:6cd9ac6f,C:01520e0c,C:110730fe,C:40311e5f,C:81513cff · via group NBFC -> GIR sector map 'nbfc & finance' · NOT picked · day +0.82%
+  -  10. INOXWIND PE - 4 card(s) (4.0 weighted), 2 bench(es); benches Readers, Sectors; strength 8.0; cards C:025534c0,C:618730b2,C:8e6f6b3f,C:308caa97 · NOT picked · day -2.65%
+  -  11. PNB CE - 5 card(s) (3.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 7.0; cards C:3c75c921,C:ede87fbf,C:2c4e5aa4,C:40311e5f,C:af536ca8 · via group BANKS -> GIR sector map 'banks'; group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · PICKED (NEW 07:17) · day +0.31%
+  -  12. BEL CE - 3 card(s) (3.0 weighted), 2 bench(es); benches Readers, Sectors; strength 6.0; cards C:fc8a80db,C:5022bd1d,C:308caa97 · NOT picked · day -0.54%
+  -  13. POLYCAB CE - 3 card(s) (3.0 weighted), 2 bench(es); benches Readers, Sectors; strength 6.0; cards C:6283012c,C:e8f9abc3,C:52ccc619 · NOT picked · day +0.26%
+  -  14. CANBK CE - 4 card(s) (2.5 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 5.0; cards C:3c75c921,C:ede87fbf,C:40311e5f,C:af536ca8 · via group BANKS -> GIR sector map 'banks'; group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · NOT picked · day +2.12%
+  -  15. TVSMOTOR CE - 4 card(s) (2.5 weighted), 3 bench(es); benches Commodities, Reasoning, Sectors; strength 5.0; cards C:7447dea9,C:ede87fbf,C:bf194899,C:4f1b95d1 · via group AUTO -> GIR sector map 'auto'; group AUTO_ANC -> GIR sector map 'auto' · NOT picked · day -0.25%
 - **2026-11-20 09:10 brief 09:08 - this brief FAILED in the run** (price agreement = the 2026-11-19 session's close; top 5 enforced by the new rule):
-  - *1. HEROMOTOCO PE - 4 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 9; cards C:ef86da06,C:650d5144,C:7447dea9,C:ede87fbf · PICKED (NEW 19:47) · day -0.36%
-  - *2. BANKBARODA CE - 3 cards, 3 bench(es); benches Readers, Reasoning, Sectors; strength 6; cards C:3c75c921,C:ede87fbf,C:dfa16c73 · PICKED (NEW 19:47) · day +0.38%
-  - *3. ALKEM PE - 9 cards, 2 bench(es); benches Readers, Sectors; strength 23; cards C:d997423f,C:00d29a2f,C:af314b41,C:cbd45eca,C:9248330c · PICKED (NEW 07:17) · day +0.78%
-  - *4. VOLTAS CE - 11 cards, 2 bench(es); benches Commodities, Readers; strength 22; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:941e86d6,C:0e8f5278 · NOT picked · day -0.16%
-  - *5. MANAPPURAM PE - 7 cards, 2 bench(es); benches Readers, Sectors; strength 14; cards C:efd6aada,C:00fcba9a,C:a099d2ee,C:01520e0c,C:8caabf55 · NOT picked · day -0.83%
-  -  6. BEL CE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 8; cards C:fc8a80db,C:5022bd1d,C:308caa97,C:19cb529e · NOT picked · day -0.54%
-  -  7. INOXWIND PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 8; cards C:025534c0,C:618730b2,C:8e6f6b3f,C:308caa97 · NOT picked · day -2.65%
-  -  8. PAYTM PE - 4 cards, 2 bench(es); benches Readers, Sectors; strength 7; cards C:6cd9ac6f,C:01520e0c,C:110730fe,C:81513cff · NOT picked · day +0.82%
-  -  9. TCS PE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:4796bd0a,C:78d14d08,C:a83bc8b4 · PICKED (NEW 19:47) · day +1.43%
-  -  10. POLYCAB CE - 3 cards, 2 bench(es); benches Readers, Sectors; strength 6; cards C:6283012c,C:e8f9abc3,C:52ccc619 · NOT picked · day +0.26%
+  - *1. BANKBARODA CE - 5 card(s) (4.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 8.0; cards C:3c75c921,C:ede87fbf,C:dfa16c73,C:40311e5f,C:af536ca8 · via group BANKS -> GIR sector map 'banks'; group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · PICKED (NEW 19:47) · day +0.38%
+  - *2. NATIONALUM PE - 4 card(s) (3.0 weighted), 3 bench(es); benches Commodities, Readers, Sectors; strength 6.0; cards C:935d7b2f,C:941e86d6,C:bf194899,C:04ba885a · via group METAL -> GIR sector map 'metals & mining'; group METALS -> GIR sector map 'metals & mining' · PICKED (NEW 07:17) · day -1.24%
+  - *3. ALKEM PE - 9 card(s) (9.0 weighted), 2 bench(es); benches Readers, Sectors; strength 23.0; cards C:d997423f,C:00d29a2f,C:af314b41,C:cbd45eca,C:9248330c · PICKED (NEW 07:17) · day +0.78%
+  - *4. VOLTAS CE - 11 card(s) (11.0 weighted), 2 bench(es); benches Commodities, Readers; strength 22.0; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:941e86d6,C:0e8f5278 · NOT picked · day -0.16%
+  - *5. TCS PE - 6 card(s) (4.5 weighted), 4 bench(es); benches Readers, Reasoning, Sectors, World; strength 9.0; cards C:4796bd0a,C:ede87fbf,C:78d14d08,C:a83bc8b4,C:87c391b2 · via group IT -> GIR sector map 'it' · PICKED (NEW 19:47) · day +1.43%
+  -  6. INFY PE - 5 card(s) (3.5 weighted), 4 bench(es); benches Readers, Reasoning, Sectors, World; strength 7.0; cards C:ede87fbf,C:78d14d08,C:6d15bf7a,C:87c391b2,C:b8496b18 · via group IT -> GIR sector map 'it' · NOT picked · day +0.56%
+  -  7. MANAPPURAM PE - 9 card(s) (8.0 weighted), 2 bench(es); benches Readers, Sectors; strength 16.0; cards C:efd6aada,C:00fcba9a,C:a099d2ee,C:01520e0c,C:8caabf55 · via group GOLDLOAN -> sector board GROUPS 'jewellers & gold loans' (engine/config.py) + SECTOR_LINKS gold-loan / jewellers row; group NBFC -> GIR sector map 'nbfc & finance' · NOT picked · day -0.83%
+  -  8. HEROMOTOCO PE - 4 card(s) (4.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 9.0; cards C:ef86da06,C:650d5144,C:7447dea9,C:ede87fbf · PICKED (NEW 19:47) · day -0.36%
+  -  9. BEL CE - 4 card(s) (4.0 weighted), 2 bench(es); benches Readers, Sectors; strength 8.0; cards C:fc8a80db,C:5022bd1d,C:308caa97,C:19cb529e · NOT picked · day -0.54%
+  -  10. PAYTM PE - 5 card(s) (4.5 weighted), 2 bench(es); benches Readers, Sectors; strength 8.0; cards C:6cd9ac6f,C:01520e0c,C:110730fe,C:40311e5f,C:81513cff · via group NBFC -> GIR sector map 'nbfc & finance' · NOT picked · day +0.82%
+  -  11. INOXWIND PE - 4 card(s) (4.0 weighted), 2 bench(es); benches Readers, Sectors; strength 8.0; cards C:025534c0,C:618730b2,C:8e6f6b3f,C:308caa97 · NOT picked · day -2.65%
+  -  12. PNB CE - 5 card(s) (3.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 7.0; cards C:3c75c921,C:ede87fbf,C:2c4e5aa4,C:40311e5f,C:af536ca8 · via group BANKS -> GIR sector map 'banks'; group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · PICKED (NEW 07:17) · day +0.31%
+  -  13. POLYCAB CE - 3 card(s) (3.0 weighted), 2 bench(es); benches Readers, Sectors; strength 6.0; cards C:6283012c,C:e8f9abc3,C:52ccc619 · NOT picked · day +0.26%
+  -  14. CANBK CE - 4 card(s) (2.5 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 5.0; cards C:3c75c921,C:ede87fbf,C:40311e5f,C:af536ca8 · via group BANKS -> GIR sector map 'banks'; group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · NOT picked · day +2.12%
+  -  15. TVSMOTOR CE - 4 card(s) (2.5 weighted), 3 bench(es); benches Commodities, Reasoning, Sectors; strength 5.0; cards C:7447dea9,C:ede87fbf,C:bf194899,C:4f1b95d1 · via group AUTO -> GIR sector map 'auto'; group AUTO_ANC -> GIR sector map 'auto' · NOT picked · day -0.25%
 
 ## The head's ideas (reasons and source card ids)
 - 2026-11-19 19:47 NEW HEROMOTOCO PE · day -0.36% · source results · cards C:650d5144,C:7447dea9,C:ede87fbf,C:b411c518 · Hero MotoCorp reported a sharp fall in net profit after the session [K:67b07670,C:650d5144]; The share rallied +5.77% with the full auto sector on no company news, so the weak print is not in today's price [MV:HEROMOTOCO,SEC:auto]; Auto seat says leaders are extended, with pullback entries only, and

@@ -290,3 +290,17 @@ Last update: 20:55 IST
     - re-run the 20 Nov consensus check and the post-mortems.
     IN PROGRESS.
   - STILL BLOCKED: the Anthropic API credit. Waiting on the trader's choice for the 20 Nov morning re-run.
+- 03:38 - DESK 03:35 ORDERS DONE (desk tests 89; gir-v2desk + gir-v2newsread restarted after hours 03:38, login 0.04 s; BUILD_LOG 03:37 with undo; fake brains only):
+  1. KNOWLEDGE RELOAD: the head's pack and the seats' LINK_BOOK lookup now carry the corrected row 5. EVENT_MEMORY section G (US AI shock -> Indian IT) added to the pack (it took sections A-D only), visible from 20 Nov on. The news reader's frozen prefixes were rebuilt (its AI stays off by the flag). kb/chains.json (the engine's copy, built 20 Nov 10:14) is being rebuilt from the corrected LINK_BOOK, with a gir-v2engine restart after hours.
+  2. LESSON added (NOT PROVEN): on a SHARP gold fall the jewellers fall the same day with the gold lenders; jewellers CE only over weeks. Each lesson now names the side and the matching shares.
+  3. RANKING: (a) OFFICIAL + price / weight-4+ / a lesson match = two benches, flagged "[single source]", max 2 of the top 5; (b) seat 8 gets the lessons when switched on (tested); (c) GROUP EXPANSION at half weight per F&O member, the source printed "via group X". Members: GOLDLOAN / jewellers / gold-linked = TITAN, KALYANKJIL, MUTHOOTFIN, MANAPPURAM (+ the SECTOR_LINKS gold-loan row); BANKS_PVT = banks minus PSU; BANKS_PSU = SECTOR_LINKS L10 + the other PSU banks.
+  4. 20 Nov CHECK on FULL3's cards with (a) + (c) (rank among 85 names at 07:15 / 90 at 09:08):
+     | INDUSINDBK CE | #67 | #22 (3 benches via BANKS / BANKS_PVT) |
+     | AXISBANK CE | #68 | #25 |
+     | KALYANKJIL PE | absent | absent |
+     | MUTHOOTFIN PE | #72 | #74 (6 cards but 1 bench, the readers) |
+     | MANAPPURAM PE | #7 | #7 |
+     | IIFL PE / MCX PE / TITAN PE | absent | absent |
+     Top 5 at both times: BANKBARODA CE, NATIONALUM PE, ALKEM PE, VOLTAS CE, TCS PE.
+     WHY: the lessons start 20 Nov 15:40, so they rightly cannot help 20 Nov itself; the only group card (GOLDLOAN loser at 09:08) gives KALYANKJIL / TITAN half weight each; MCX and IIFL are not in the gold group list and no card named them; the readers count as ONE bench however many cards they write. Side effect: sector-wide cards spread onto many members, so the list grows from ~40 to ~90 names.
+  FOR THE DESK: (1) add MCX and IIFL to the gold-linked group (they fell -3.02% / -5.04% with it on 20 Nov)? (2) should reader cards on DIFFERENT sources (filings, wires, TV) count as separate benches? (3) a cap on group-expansion breadth (e.g. only the top 3 members by liquidity per group card) so the list does not swell to ~90? The post-mortems for 18 / 19 / 20 Nov are re-run with this ranking.
