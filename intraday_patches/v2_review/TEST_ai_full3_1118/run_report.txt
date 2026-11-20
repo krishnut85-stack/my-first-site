@@ -2,5 +2,5 @@ run <server>/girdata/replay/out/TEST_ai_full3_1118: 53 movers 2%+
   AI share of triage rows: 245 of 245 (100%); rules fallbacks: {}
   rings 50 (09:15-09:45: 12); by hour {'09': 14, '10': 9, '11': 9, '12': 7, '13': 6, '14': 5}
   early / late / missed / wrong - cards: 0 / 9 / 43 / 1 · cards + WATCH: 11 / 7 / 34 / 1 · old system: 35 / 18 / 0 / 0
-  AI: 115 calls, $0.180, {('triage', 'claude-haiku-5-5'): 92, ('second', 'claude-haiku-5-5'): 16, ('final', 'claude-fable-5-2'): 7}, stop reasons {'end_turn': 115}
+  AI: 115 calls, $0.180, {('triage', 'routine-tier model'): 92, ('second', 'routine-tier model'): 16, ('final', 'final-tier model'): 7}, stop reasons {'end_turn': 115}
   lanes: {'MUST SEE': 99, 'WATCH': 142, 'LOG': 4}

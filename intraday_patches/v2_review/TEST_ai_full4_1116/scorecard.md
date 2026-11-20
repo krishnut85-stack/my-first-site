@@ -48,7 +48,7 @@ Rules rows: 646 by design (gates, cancels, critical lane), 0 because the AI fail
 - by design: rule veto: (g) short covering below VWAP - an SC CE needs price above VWAP (145.69 vs VWAP  (1 rows)
 
 285 AI calls, $0.167 in all; the dearest single call $0.0406; 0 errors; stop reasons {'end_turn': 285}.
-Cost by kind: final $0.0554, rank $0.0044, second $0.0030, triage $0.1037. Cost by model: claude-fable-5-2 $0.0554, claude-haiku-5-5 $0.1111.
+Cost by kind: final $0.0554, rank $0.0044, second $0.0030, triage $0.1037. Cost by model: final-tier model $0.0554, routine-tier model $0.1111.
 Latency: p50 2715 ms, p95 6023 ms, max 8239 ms over 285 calls.
 
 ## Were the calls right? (share move the option's way after the call; FLAT = under 0.15%)

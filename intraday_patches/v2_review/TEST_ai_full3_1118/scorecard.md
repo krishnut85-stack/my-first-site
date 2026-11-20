@@ -48,7 +48,7 @@ Rules rows: 174 by design (gates, cancels, critical lane), 0 because the AI fail
 - by design: hard block: F&O ban (2 rows)
 
 115 AI calls, $0.179 in all; the dearest single call $0.0398; 0 errors; stop reasons {'end_turn': 115}.
-Cost by kind: final $0.1501, second $0.0039, triage $0.0255. Cost by model: claude-fable-5-2 $0.1501, claude-haiku-5-5 $0.0294.
+Cost by kind: final $0.1501, second $0.0039, triage $0.0255. Cost by model: final-tier model $0.1501, routine-tier model $0.0294.
 Latency: p50 1761 ms, p95 3996 ms, max 7334 ms over 115 calls.
 
 ## Were the calls right? (share move the option's way after the call; FLAT = under 0.15%)

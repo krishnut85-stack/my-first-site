@@ -2,7 +2,7 @@
 
 A playback (replay) of one past NSE trading day through the GIR v2 trading-ideas engine with the real AI. The engine gives ideas only
 (stock options, CE = call / PE = put, intraday); it never places orders. Times are the REPLAYED day's clock (IST), not the time the test ran,
-unless a field says "wall". Made by v2/testobs/review_export.py. Server paths are shown as `<server>/...`; long ids are replaced by
+unless a field says "wall". Made by v2/testobs/review_export.py. AI models are named by tier only (routine / middle / final tier). Server paths are shown as `<server>/...`; long ids are replaced by
 "[long id removed]". Nothing here is personal: no keys, no chat ids, no contact details and no data of the trader's own trading.
 
 ## Files

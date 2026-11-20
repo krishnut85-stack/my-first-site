@@ -47,7 +47,7 @@ Rules rows: 540 by design (gates, cancels, critical lane), 0 because the AI fail
 - by design: rule veto: (g) futures OI falling (15 min -0.06%, 3 min -0.43%, day -0.24%) - no CE without (1 rows)
 
 225 AI calls, $0.568 in all; the dearest single call $0.0290; 0 errors; stop reasons {'end_turn': 225}.
-Cost by kind: final $0.5060, second $0.0037, triage $0.0584. Cost by model: claude-fable-5-2 $0.5060, claude-haiku-5-5 $0.0621.
+Cost by kind: final $0.5060, second $0.0037, triage $0.0584. Cost by model: final-tier model $0.5060, routine-tier model $0.0621.
 Latency: p50 1840 ms, p95 5213 ms, max 6649 ms over 225 calls.
 
 ## Were the calls right? (share move the option's way after the call; FLAT = under 0.15%)

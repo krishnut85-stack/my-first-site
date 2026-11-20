@@ -37,7 +37,7 @@ Rules rows: 1058 by design (gates, cancels, critical lane), 0 because the AI fai
 - by design: rule veto: (d) its sector oil & gas is rising (+0.21%) - no PE against the sector unless DI (1 rows)
 
 338 AI calls, $0.537 in all; the dearest single call $0.0516; 0 errors; stop reasons {'end_turn': 338}.
-Cost by kind: final $0.3450, rank $0.0062, second $0.0035, triage $0.1819. Cost by model: claude-fable-5-2 $0.3450, claude-haiku-5-5 $0.1916.
+Cost by kind: final $0.3450, rank $0.0062, second $0.0035, triage $0.1819. Cost by model: final-tier model $0.3450, routine-tier model $0.1916.
 Latency: p50 3719 ms, p95 7796 ms, max 9645 ms over 338 calls.
 
 ## Were the calls right? (share move the option's way after the call; FLAT = under 0.15%)
@@ -48,7 +48,7 @@ Latency: p50 3719 ms, p95 7796 ms, max 9645 ms over 338 calls.
 ## Flags
 MISSED MOVER: 5, COST SPIKE: 1, NEWS DIRECTION WRONG: 26
 - 09:20 MISSED MOVER: ANGELONE crossed +3.0% at 09:20 (+3.20% vs the previous close) with no CE call by then · the engine said nothing on ANGELONE by then
-- 09:39 COST SPIKE: one AI call cost $0.052 (over $0.05): final claude-fable-5-2 at 21:59:55
+- 09:39 COST SPIKE: one AI call cost $0.052 (over $0.05): final final-tier model at 21:59:55
 - 09:40 NEWS DIRECTION WRONG: LUPIN CE GET READY at 09:10 was news-driven; the share went -1.01% against it in 30 min (worst -1.13%)
 - 09:45 NEWS DIRECTION WRONG: SYRMA CE GET READY at 09:15 was news-driven; the share went -1.71% against it in 30 min (worst -1.90%)
 - 09:45 NEWS DIRECTION WRONG: GODREJPROP PE GET READY at 09:15 was news-driven; the share went -0.64% against it in 30 min (worst -1.31%)
