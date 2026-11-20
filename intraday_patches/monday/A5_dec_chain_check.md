@@ -1,14 +1,53 @@
-# A5 quick check - December chains read LIVE (store oc.<SYM>, gir-v2opt on key 3)
+# A5 - December chains read LIVE? (5 shares, ATM CE + PE, 2026-11-20)
 
-Checked 09:29 IST on Fri 20 Nov from the live /preview store. exp2 = the December series; rows2 = its strikes around the money.
+Made 09:35 IST. Three readings of the same December (29 Dec) contracts: (1) the v2 store `oc.<SYM>` rows2 (gir-v2opt, Kite key 3 REST; per-contract time from v2/data/optquote.json exps[1]), (2) the new J2 December recorder gir-v2optdec (key 4, opt_dec.HH.jsonl.gz, last refresh), (3) one direct Kite quote() now (key 4, 09:35:36 IST). Read only.
 
-| share | exp2 | strikes | age s | ATM-ish CE bid / ask / spread % / IV / OI | ATM-ish PE bid / ask / spread % / IV / OI |
-|---|---|---|---|---|---|
-| SBIN | 2026-12-29 | 11 | 14 | 1150.0 34.05 / 34.25 / 0.59 / 21.86 / 1835250 | 30 / 30.2 / 0.66 / 21.82 / 948000 |
-| VOLTAS | 2026-12-29 | 11 | 15 | 1240.0 61.1 / 61.75 / 1.06 / 35.6 / 141000 | 49.8 / 50.25 / 0.9 / 34.45 / 100125 |
-| TATASTEEL | 2026-12-29 | 11 | 14 | 175.0 6.83 / 6.9 / 1.02 / 28.0 / 1267750 | 5.8 / 5.85 / 0.86 / 28.53 / 1977250 |
-| INFY | 2026-12-29 | 11 | 14 | 1100.0 49.6 / 50.05 / 0.9 / 31.48 / 1202800 | 39.15 / 39.5 / 0.89 / 31.5 / 850000 |
-| KALYANKJIL | 2026-12-29 | 11 | 14 | 630.0 43 / 47.15 / 9.21 / 49.15 / 6750 | 32.15 / 32.65 / 1.54 / 46.05 / 183600 |
+**Result: YES - December chains are read LIVE.** All 10 contracts (5 shares, ATM CE + PE) are in the store with bid / ask / OI; gir-v2opt's quote for them was 8-102 s old (median about 30 s) against a direct Kite quote at 09:35:35. Store bid / ask equal the direct quote on SBIN, TATASTEEL, RELIANCE PE; HDFCBANK / INFY differ by a few ticks where the price moved in the 50-100 s between readings. OI store vs direct within 0-1.5% (INFY CE 7.8%: 104,400 vs 113,200 - the store reading was 51 s older, during a fast move). Gap: the store's rows2 carry no time per row (the engine cannot tell a stale December row from a fresh one without optquote.json).
 
-Result: all 5 shares carry the 29 Dec 2026 series live, refreshed about every 30 s, with bid / ask / spread / IV / OI per strike.
-Not yet covered: a direct Kite comparison for the same contracts and the full-chain December recorder (ATM +-2 for every F&O share every 15 min) - both being added to the J2 recorder now.
+| share | contract | source | bid | ask | LTP | OI | time (IST) |
+|---|---|---|---|---|---|---|---|
+| RELIANCE | RELIANCE26DEC1370CE | store oc rows2 (key 3) | 41.6 | 41.9 | 42.05 | 1334000 | 09:35:13 (store seen 09:35:05, state LIVE) |
+| | | J2 recorder (key 4) | 41.3 | 41.7 | 41.6 | 1330000 | exch 09:34:17, rx 09:34:26 |
+| | | direct Kite now | 41.4 | 41.75 | 41.6 | 1335500 | exch 09:35:35 |
+| RELIANCE | RELIANCE26DEC1370PE | store oc rows2 (key 3) | 40.8 | 41 | 40.95 | 1102000 | 09:35:05 (store seen 09:35:05, state LIVE) |
+| | | J2 recorder (key 4) | 41 | 41.2 | 40.75 | 1100500 | exch 09:34:24, rx 09:34:26 |
+| | | direct Kite now | 41 | 41.2 | 41.15 | 1105500 | exch 09:35:35 |
+| HDFCBANK | HDFCBANK26DEC830CE | store oc rows2 (key 3) | 23 | 23.1 | 23.4 | 2462850 | 09:34:42 (store seen 09:35:05, state LIVE) |
+| | | J2 recorder (key 4) | 23 | 23.1 | 23.15 | 2420600 | exch 09:34:19, rx 09:34:21 |
+| | | direct Kite now | 23.15 | 23.35 | 24.2 | 2460250 | exch 09:35:34 |
+| HDFCBANK | HDFCBANK26DEC830PE | store oc rows2 (key 3) | 27.6 | 27.8 | 27.15 | 1023750 | 09:34:42 (store seen 09:35:05, state LIVE) |
+| | | J2 recorder (key 4) | 27.6 | 27.8 | 27.25 | 1026350 | exch 09:34:17, rx 09:34:21 |
+| | | direct Kite now | 27.2 | 27.4 | 26.3 | 1031550 | exch 09:35:34 |
+| SBIN | SBIN26DEC1150CE | store oc rows2 (key 3) | 34.55 | 34.95 | 34.7 | 1853250 | 09:35:16 (store seen 09:35:06, state LIVE) |
+| | | J2 recorder (key 4) | 34.55 | 34.7 | 34.45 | 1849500 | exch 09:34:20, rx 09:34:26 |
+| | | direct Kite now | 34.55 | 34.95 | 34.5 | 1857750 | exch 09:35:34 |
+| SBIN | SBIN26DEC1150PE | store oc rows2 (key 3) | 29.5 | 29.8 | 29.35 | 956250 | 09:35:16 (store seen 09:35:06, state LIVE) |
+| | | J2 recorder (key 4) | 29.85 | 30.05 | 29.7 | 945000 | exch 09:34:22, rx 09:34:26 |
+| | | direct Kite now | 29.5 | 29.8 | 29.45 | 956250 | exch 09:35:34 |
+| INFY | INFY26DEC1114CE | store oc rows2 (key 3) | 45.05 | 45.35 | 45.65 | 104400 | 09:34:45 (store seen 09:35:05, state LIVE) |
+| | | J2 recorder (key 4) | 45.05 | 45.35 | 45.7 | 101600 | exch 09:34:15, rx 09:34:21 |
+| | | direct Kite now | 46.25 | 46.7 | 47.4 | 113200 | exch 09:35:35 |
+| INFY | INFY26DEC1114PE | store oc rows2 (key 3) | 43.85 | 44.5 | 44.2 | 57200 | 09:33:54 (store seen 09:35:05, state LIVE) |
+| | | J2 recorder (key 4) | 43.85 | 44.5 | 44.2 | 57200 | exch 09:33:54, rx 09:34:21 |
+| | | direct Kite now | 42.9 | 43.45 | 43.15 | 58000 | exch 09:35:31 |
+| TATASTEEL | TATASTEEL26DEC177.5CE | store oc rows2 (key 3) | 6.01 | 6.12 | 6.07 | 525250 | 09:35:28 (store seen 09:35:35, state LIVE) |
+| | | J2 recorder (key 4) | 5.94 | 6.04 | 5.9 | 522500 | exch 09:34:18, rx 09:34:26 |
+| | | direct Kite now | 6.01 | 6.12 | 6.07 | 525250 | exch 09:35:34 |
+| TATASTEEL | TATASTEEL26DEC177.5PE | store oc rows2 (key 3) | 6.64 | 6.73 | 6.74 | 836000 | 09:35:24 (store seen 09:35:35, state LIVE) |
+| | | J2 recorder (key 4) | 6.73 | 6.82 | 6.86 | 825000 | exch 09:34:18, rx 09:34:26 |
+| | | direct Kite now | 6.64 | 6.73 | 6.74 | 836000 | exch 09:35:34 |
+
+## Verdict per contract
+
+- RELIANCE CE RELIANCE26DEC1370CE: store has the row (age 23 s), recorder has it, OI store/direct 1334000/1335500
+- RELIANCE PE RELIANCE26DEC1370PE: store has the row (age 31 s), recorder has it, OI store/direct 1102000/1105500
+- HDFCBANK CE HDFCBANK26DEC830CE: store has the row (age 54 s), recorder has it, OI store/direct 2462850/2460250
+- HDFCBANK PE HDFCBANK26DEC830PE: store has the row (age 54 s), recorder has it, OI store/direct 1023750/1031550
+- SBIN CE SBIN26DEC1150CE: store has the row (age 20 s), recorder has it, OI store/direct 1853250/1857750
+- SBIN PE SBIN26DEC1150PE: store has the row (age 20 s), recorder has it, OI store/direct 956250/956250
+- INFY CE INFY26DEC1114CE: store has the row (age 51 s), recorder has it, OI store/direct 104400/113200
+- INFY PE INFY26DEC1114PE: store has the row (age 102 s), recorder has it, OI store/direct 57200/58000
+- TATASTEEL CE TATASTEEL26DEC177.5CE: store has the row (age 8 s), recorder has it, OI store/direct 525250/525250
+- TATASTEEL PE TATASTEEL26DEC177.5PE: store has the row (age 12 s), recorder has it, OI store/direct 836000/836000
+
+Notes: the store's rows2 carry no per-row time; the time shown is gir-v2opt's own per-contract quote time (optquote.json, the file the store reads). The J2 recorder refreshes every 15 min, so its prices are up to 15 min older than the direct quote; OI changes slowly. ATM strike = the store's exp2_info.atm_k.

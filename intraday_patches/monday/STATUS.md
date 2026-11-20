@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 09:34 IST
+Last update: 09:36 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -10,7 +10,7 @@ Last update: 09:34 IST
 | A2 Feeds F01-F31 source/freshness | NOT STARTED |  |  |  |
 | A3 NSE files Fri 20 Nov + Monday ban list | NOT STARTED |  |  |  |
 | A4 Minute store through Fri 20 Nov | IN PROGRESS | one-month minutes 16 Oct-19 Nov in girdata/minute; /root/hist store ends 13 Nov; Fri 20 Nov after 15:40 |  | 07:31 |
-| A5 December chains + current lots | IN PROGRESS | December chains read LIVE (5-share check); NEW gir-v2optdec records December ATM +-2 CE/PE for 216 shares every 15 min since 09:34 (2,160 contracts, 5 calls, 0 errors; 2,131 with bid+ask, 2,002 with OI; IEX / IREDA have no December chain); direct Kite cross-check next | A5_dec_chain_check.md | 09:34 |
+| A5 December chains + current lots | IN PROGRESS | December chains read LIVE: 10 December ATM contracts on 5 shares checked 3 ways (store, new December recorder, direct Kite quote 09:35) - bid/ask equal or a few ticks apart, OI within 0-1.5 pct (one 7.8 pct on a 51 s older reading in a fast move); gir-v2optdec records 2,160 December contracts every 15 min. OPEN: store rows have no per-row quote time (stale rows cannot be told apart) - fix with B9 after 15:35; December lots checked with J5 | A5_dec_chain_check.md | 09:36 |
 | A6 Global feeds for 07:15 | NOT STARTED |  |  |  |
 | A7 News feeds live + de-duplicated | NOT STARTED |  |  |  |
 | A8 Paid subscriptions tested | NOT STARTED |  |  |  |
