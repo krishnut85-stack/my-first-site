@@ -1,0 +1,44 @@
+=== OVERSOLD - WHAT HAPPENED NEXT (obscan.py) · daily RSI(14) <= 30 · next 20 trading days · correction = a 5%+ bounce or a close above the 20-day average
+events: 1842 (F&O shares in the store, each counted once until RSI rises back over 30)
+  KEPT FALLING, NO BOUNCE: 235 (13%)   |   up after 20 days at all: 1056 (57%)   |   BOUNCED: 1607 (87%)
+  median move to day 20: +1.3% · median biggest bounce (shown negative): -8.9% · closed ABOVE the 20-day average at some point: 79%
+  NIFTY ABOVE its 50-day avg (strong market): 410 events · KEPT FALLING, NO BOUNCE 21% · up after 20 days 50% · median move +0.0%
+  NIFTY BELOW its 50-day avg (weak market): 1432 events · KEPT FALLING, NO BOUNCE 10% · up after 20 days 59% · median move +1.9%
+  (OVERSOLD MODE: 'biggest bounce' = the biggest BOUNCE from a low close shown as a negative; 'KEPT GOING' rows below = kept FALLING with no 5%+ bounce and never closed above the 20-day avg; 'corrections' below = the sharpest BOUNCES)
+
+THE PROOF - the 15 strongest 'kept falling, no bounce' cases (check each on a daily chart):
+  IDEA         Fri 06 Sep 2024  RSI 28  close 13.43 -> 9.15 after 20 days = -31.9%  (lowest -31.9%)  biggest bounce -4.0%  never above the 20-day avg
+  KAYNES       Fri 07 Nov 2025  RSI 29  close 6249.00 -> 4361.00 after 20 days = -30.2%  (lowest -30.2%)  biggest bounce -3.3%  never above the 20-day avg
+  IDEA         Wed 18 Sep 2024  RSI 29  close 12.90 -> 9.05 after 20 days = -29.8%  (lowest -29.8%)  biggest bounce -4.0%  never above the 20-day avg
+  IDEA         Wed 11 Sep 2024  RSI 29  close 13.19 -> 9.30 after 20 days = -29.5%  (lowest -30.6%)  biggest bounce -4.0%  never above the 20-day avg
+  YESBANK      Mon 28 Sep 2026  RSI 30  close 21.16 -> 15.59 after 20 days = -26.3%  (lowest -26.3%)  biggest bounce -3.7%  never above the 20-day avg
+  KPITTECH     Thu 29 Jan 2026  RSI 26  close 1049.60 -> 791.90 after 20 days = -24.6%  (lowest -27.6%)  biggest bounce -4.2%  never above the 20-day avg
+  COFORGE      Thu 12 Feb 2026  RSI 25  close 1420.00 -> 1092.00 after 20 days = -23.1%  (lowest -23.1%)  biggest bounce -2.8%  never above the 20-day avg
+  JIOFIN       Tue 31 Dec 2024  RSI 29  close 298.90 -> 234.50 after 20 days = -21.5%  (lowest -21.9%)  biggest bounce -5.0%  never above the 20-day avg
+  LODHA        Wed 04 Mar 2026  RSI 28  close 909.00 -> 713.65 after 20 days = -21.5%  (lowest -25.2%)  biggest bounce -5.0%  never above the 20-day avg
+  COLPAL       Mon 21 Oct 2024  RSI 30  close 3345.00 -> 2692.45 after 20 days = -19.5%  (lowest -19.5%)  biggest bounce -1.7%  never above the 20-day avg
+  LTM          Thu 12 Feb 2026  RSI 26  close 5186.00 -> 4200.40 after 20 days = -19.0%  (lowest -19.0%)  biggest bounce -1.0%  never above the 20-day avg
+  COLPAL       Thu 17 Oct 2024  RSI 29  close 3369.00 -> 2758.00 after 20 days = -18.1%  (lowest -19.5%)  biggest bounce -1.7%  never above the 20-day avg
+  PATANJALI    Thu 25 Jun 2026  RSI 30  close 410.10 -> 340.65 after 20 days = -16.9%  (lowest -18.3%)  biggest bounce -1.7%  never above the 20-day avg
+  DIXON        Fri 26 Dec 2025  RSI 29  close 12280.00 -> 10235.00 after 20 days = -16.7%  (lowest -16.7%)  biggest bounce -2.7%  never above the 20-day avg
+  DMART        Fri 04 Oct 2024  RSI 29  close 4725.00 -> 3948.00 after 20 days = -16.4%  (lowest -16.8%)  biggest bounce -4.8%  never above the 20-day avg
+
+THE OTHER SIDE - the 15 sharpest bounces after an EXTREME reading:
+  SYRMA        Wed 23 Oct 2024  RSI 29  biggest bounce -49.3%  move to day 20 +40.7%  (closed below the 20-day avg)
+  SYRMA        Fri 25 Oct 2024  RSI 24  biggest bounce -49.3%  move to day 20 +48.3%  (closed below the 20-day avg)
+  HINDZINC     Fri 15 Mar 2024  RSI 27  biggest bounce -49.3%  move to day 20 +40.5%  (closed below the 20-day avg)
+  COCHINSHIP   Mon 30 Mar 2026  RSI 29  biggest bounce -48.6%  move to day 20 +45.6%  (closed below the 20-day avg)
+  BSE          Mon 10 Mar 2025  RSI 29  biggest bounce -47.9%  move to day 20 +39.2%  (closed below the 20-day avg)
+  BSE          Tue 19 Mar 2024  RSI 28  biggest bounce -47.5%  move to day 20 +45.9%  (closed below the 20-day avg)
+  AMBER        Wed 21 Jan 2026  RSI 25  biggest bounce -42.6%  move to day 20 +36.2%  (closed below the 20-day avg)
+  POWERINDIA   Fri 16 Jan 2026  RSI 28  biggest bounce -39.9%  move to day 20 +38.2%  (closed below the 20-day avg)
+  INOXWIND     Thu 19 Mar 2026  RSI 27  biggest bounce -38.9%  move to day 20 +32.6%  (closed below the 20-day avg)
+  INOXWIND     Mon 23 Mar 2026  RSI 29  biggest bounce -38.9%  move to day 20 +31.4%  (closed below the 20-day avg)
+  BDL          Mon 18 Nov 2024  RSI 28  biggest bounce -38.7%  move to day 20 +36.0%  (closed below the 20-day avg)
+  BDL          Thu 21 Nov 2024  RSI 29  biggest bounce -38.7%  move to day 20 +32.6%  (closed below the 20-day avg)
+  ADANIENSOL   Thu 21 Nov 2024  RSI 26  biggest bounce -37.8%  move to day 20 +14.0%  (closed below the 20-day avg)
+  SYRMA        Tue 20 Jan 2026  RSI 27  biggest bounce -37.4%  move to day 20 +33.1%  (closed below the 20-day avg)
+  ADANIENT     Mon 30 Mar 2026  RSI 28  biggest bounce -36.9%  move to day 20 +36.7%  (closed below the 20-day avg)
+
+READ: both happen. The base rate above says how often an EXTREME share kept running without a real pullback - that is the
+honest answer to 'does overbought mean it must fall'. Closes only; intraday dips inside a day are not counted.
