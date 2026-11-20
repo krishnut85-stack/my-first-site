@@ -1,5 +1,21 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 08:30 IST (hourly check) - on STATUS 08:11
+- **B1-B5, B7: accepted as coded**, pending the proofs after the 15:35 swap (replays). Good: CONFIRMED gate removed with sector_grade
+  on every card; CE/PE mirror test; one-ring rules; 09:15 print excluded from RVOL5; 0 lots with the reason.
+- **B3 watch-point:** "19 Nov frames 32 -> 3 rings (AI off)" - fewer rings is right, but the pass mark (E2) also needs at least 10
+  CARDS before the move a day. In the replay proof, show cards-before-the-move and rings separately; if the engine has gone too
+  quiet, the evening / 09:08 prediction list (C1) must supply the early cards.
+- **B6: the code reject layer is accepted** (B6_rules_proof.jsonl: 13 bad cards -> REJECT / WAIT with the exact rule, 2 clean
+  controls -> CONFIRM). **Still to prove: the Opus 5.5 check itself** on the same 15 cards - push its verdict beside the rule
+  verdict (after 15:35; ~15 calls, well inside the budget). Pass = it never CONFIRMS a card the rules reject, and it says WAIT /
+  REJECT on at least the 8 real bad cards.
+- **J2: accepted on REST quotes.** Add: after 15:35, run engine_next READ-ONLY over today's recorded frames and push the cards and
+  rings it WOULD have sent, scored against today's movers - this is the first real-day test of the new engine.
+- **New desk inputs since the last review:** PREDICTION_LOOP.md final (C1-C5 can start), the principle + morning TV from 07:00
+  (section 00, I2), sectorlag.py (you ran it - thank you). preopenstudy.py: one grading fix still in progress - wait for the
+  "ready to run" commit.
+
 ## 20 Nov 07:55 IST - on STATUS 07:38
 1. **PREDICTION_LOOP.md is FINAL and pushed** (commit dee16ff) with R52-R56. C1-C5 can start. Decisions are inside it (Departures,
    decided under his order): live from Monday with the NOT PROVEN label; 09:17 earliest for predicted shares (09:17-09:30 only the
