@@ -30,3 +30,20 @@ J9, the 09:15 print:
     test_half_done_blocks_late_go_now ... ok
     test_no_volume_surge_no_go_now ... ok
     test_surge_gives_go_now_with_rvol ... ok
+
+## J9 - the thin pre-open (YESBANK, 20 Nov)
+`core.preopen_thin`: a pre-open row is "thin pre-open - not a price" when any of these holds:
+- final quantity 0;
+- a one-sided book (buy / sell below 0.05 or above 20);
+- the row is dated another day.
+
+A thin row never feeds the pre-open evidence, the 09:08 cards or the sector PRE-OPEN check. The gap, RVOL and high / low never use the pre-open at all. The state file lists every thin row (`preopen_thin`).
+
+Today's girdata/rec/2026-11-20/preopen_fast.jsonl.gz:
+- YESBANK IEP 16.06 (-9.98%) at 09:00:49 and 09:01:44 (final qty 0, buy / sell 0.02 and 0.10) = thin.
+- The 09:09:32 equilibrium (IEP 17.68, final qty 469,416) = a price (it opened 17.68).
+- The 19-Nov rows still served at 09:00:11 = thin.
+- In this feed every row has final qty 0 until the 09:08-09:09 equilibrium.
+
+    test_thin_never_seeds ... ok
+    test_yesbank_today ... ok

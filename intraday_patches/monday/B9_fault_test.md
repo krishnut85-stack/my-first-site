@@ -32,3 +32,24 @@ Even with the AI down, the written GO NOW rules (B6) still reject bad cards. Tha
 - Tests (engine_next):
     test_plan_lot_is_the_contracts_own ... ok
     test_stale_premium_blocks_go_now ... ok
+
+## The QUOTE AGE gate on today's frames (08:58-10:28 capture, engine 0.3, rules only)
+**Measured** (the chain's own fetch time oc.<S>.opt.ts; the per-leg q_ts exists only from 15:41 today):
+- 823 GO NOW candidate-steps; the gate held 765, on 179 ideas.
+- 09:10 held 57 age median 63495 s, max 63548 s · over 1 h (yesterday's quote): 57
+- 09:20 held 236 age median 63621 s, max 63731 s · over 1 h (yesterday's quote): 190
+- 09:30 held 57 age median 70 s, max 82 s · over 1 h (yesterday's quote): 0
+- 09:40 held 44 age median 71 s, max 86 s · over 1 h (yesterday's quote): 0
+- 09:50 held 29 age median 73 s, max 89 s · over 1 h (yesterday's quote): 0
+- 10:00 held 19 age median 69 s, max 84 s · over 1 h (yesterday's quote): 0
+- 10:10 held 25 age median 74 s, max 87 s · over 1 h (yesterday's quote): 0
+- 10:20 held 23 age median 68 s, max 90 s · over 1 h (yesterday's quote): 0
+
+**The finding for Monday's open:** from 09:15 to about 09:30 most December quotes in the store were still YESTERDAY's (63,300-63,700 s old). gir-v2opt's first sweep had not reached them. The gate kept the engine from using a 17-hour-old premium, but the first 15 minutes had almost no tradable GO NOW. From 09:30 the held quotes were 60-90 s old (the REST tier).
+
+**Simulated after the priority refresh** (v2/patches/optquote_priority.txt, not applied by me - gir-v2opt is not mine to restart):
+- every GO NOW / MUST SEE name is re-quoted within ~6-20 s, so the 586 held later steps clear;
+- an idea's first GO NOW step can still wait one pass (~20 s): 179 such steps on these frames;
+- the 09:15-09:30 yesterday-quote problem needs gir-v2opt to sweep the whole December band once before 09:15 (or at 09:15:00). That is a gir-v2opt change for its owner.
+
+Labels: the hold counts and ages are measured; the "after" is simulated. The real after-number comes from Monday's live run.
