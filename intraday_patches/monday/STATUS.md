@@ -138,3 +138,22 @@ Last update: 20:55 IST
   - MONEY: it confirms the problem the 22:20 decision fixes. The 19:45 meeting took SEATS to 70% at once (LEAN + event-only from 19:47), the 19:45 + 22:45 briefs used $1.40 of MEET, and the 07:15 brief ($0.42 spent, then refused at $1.82 of $1.80) and the 09:08 brief were REFUSED "head analyst over budget". The LIVE bucket ran out at 15:10 ($1.37 of $1.50). 229 of 477 calls refused. The live desk already runs the new split; 20 Nov (FULL3) and 19 Nov (FULL4) run on it.
   - EDGE (18 Nov, 12 names, 4 knowledge-driven; small sample, NOT PROVEN): top-5 by its own rank >=1% to the close 1 of 3 scored (33% vs a 19% random base, lift 1.76), >=2% 1 of 3 (33% vs 6%); all 12 names >=1% 25% vs 23% (lift 1.09), >=2% 25% vs 8% (lift 3.3); knowledge-driven >=2% 1 of 4 vs 5%; to the next close >=2% 17% vs 16% (no edge). The old system that day: >=2% 7% vs 8% (lift 0.88, 293 names).
   - NEXT: FULL3 = 20 Nov started 23:08 with $14.07 left for 20 Nov + 19 Nov ($0.60 margin kept under the $24).
+- 23:34 - HOURLY PULL (desk 23:00 / 23:10 / 23:30 / 23:35 / 23:40). No prompt or design files changed.
+  - KALYANKJIL (the trader's 23:30 dispute, settled 23:40): the NSE CM bhavcopy agrees with the store and the page on all four days:
+    - 17 Nov: O 707.45 H 714.90 L 676.20 C 682.75 (prev 708.15) -3.59%
+    - 18 Nov: O 682.75 H 687.40 L 645.80 C 650.00 -4.80%
+    - 19 Nov: O 644.90 H 663.00 L 638.60 C 661.00 (prev 650.00) +1.69%
+    - 20 Nov: O 648.90 H 648.90 L 617.00 C 638.70 -3.37%
+    On 19 Nov it OPENED below the previous close (644.90 vs 650.00) and was negative in the morning, then closed up.
+  - "NO INTRADAY BARS" (item 3, before Monday) - FOUND: a PAGE bug, not missing data. The F1 Desk level chart (desk-common.js D.levelChart, also desk-hunt) never asks the server for the bars and always prints "the store has no intraday bars" for every share. gir-preview serves them on request (ch.KALYANKJIL today: 377 one-minute / 77 five-minute bars). The v2 recorder held KALYANKJIL on 19 Nov for 234 minutes (11:40-15:30). Real gaps:
+    - 19 Nov 09:15-11:39 had no v2 recording for ANY share (the recorder started at 11:40 that day);
+    - 18 Nov has no v2 recording at all (history minute files only);
+    - 20 Nov is complete (09:15-15:30, all 218 shares; only the index names are recorded elsewhere).
+    Fix sent to the pages builder: draw the bars from ch.<SYM>; a real gap says "data missing <from>-<to>"; a % never from an old price. IN PROGRESS.
+  - Desk builder, in priority order:
+    1. Weekend readers one batch per 20 min (live before ~03:30, when tonight's $1.50 would run out).
+    2. PROOF_2220 fixes: light 07:15 / 09:08 briefs (open ideas only, targets $0.50 / $0.40); hard floor reservations; READ 0.80 / LIVE 2.10; LIVE spend by caller; a seat rejected twice goes quiet 30 min; re-run PROOF.
+    3. CE / PE: per-side scoring vs per-side base rates; a PE line in every brief (or "no PE today: reason"); live PE mirror rule.
+    4. Cost per brief + LIVE by hour in the rehearsal summary, re-scorable with --score-only.
+    IN PROGRESS.
+  - Rehearsal: FULL3 (20 Nov, the 22:20 rules) is running.
