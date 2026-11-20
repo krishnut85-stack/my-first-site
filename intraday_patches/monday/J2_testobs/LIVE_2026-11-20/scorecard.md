@@ -38,12 +38,12 @@ AI state: ON. AI decided 917 of 917 (100%) of the GO NOW / GET READY triage rows
 Rules rows: 1877 by design (gates, cancels, critical lane), 0 because the AI failed or gave no lane.
 - by design: cancel of an earlier idea (by design) (1284 rows)
 - by design: critical lane (by design) (66 rows)
-- by design: hard block: PROFIT LOCK: day P&L Rs -4,602 gave back 471% of today's peak Rs 1,239 (rule: stop at 40%) (24 rows)
-- by design: hard block: PROFIT LOCK: day P&L Rs -177 gave back 114% of today's peak Rs 1,239 (rule: stop at 40%) (19 rows)
+- by design: hard block: PROFIT LOCK: day P&L hidden (give-back of the peak; amounts not shown) (rule: stop at 40%) (24 rows)
+- by design: hard block: PROFIT LOCK: day P&L hidden (give-back of the peak; amounts not shown) (rule: stop at 40%) (19 rows)
 - by design: the idea left MUST SEE (by design) (18 rows)
-- by design: hard block: PROFIT LOCK: day P&L Rs -5,044 gave back 507% of today's peak Rs 1,239 (rule: stop at 40%) (17 rows)
-- by design: hard block: PROFIT LOCK: day P&L Rs -5,221 gave back 521% of today's peak Rs 1,239 (rule: stop at 40%) (14 rows)
-- by design: hard block: PROFIT LOCK: day P&L Rs -3,363 gave back 371% of today's peak Rs 1,239 (rule: stop at 40%) (12 rows)
+- by design: hard block: PROFIT LOCK: day P&L hidden (give-back of the peak; amounts not shown) (rule: stop at 40%) (17 rows)
+- by design: hard block: PROFIT LOCK: day P&L hidden (give-back of the peak; amounts not shown) (rule: stop at 40%) (14 rows)
+- by design: hard block: PROFIT LOCK: day P&L hidden (give-back of the peak; amounts not shown) (rule: stop at 40%) (12 rows)
 
 173 AI calls, $0.178 in all; the dearest single call $0.0463; 0 errors; stop reasons {'end_turn': 173}.
 Cost by kind: final $0.1227, rank $0.0023, second $0.0025, triage $0.0502. Cost by model: top-tier final model $0.1227, routine-tier model $0.0549.

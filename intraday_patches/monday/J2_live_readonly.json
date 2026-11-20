@@ -6159,7 +6159,7 @@
     "action": "NOTHING",
     "lane": "CRITICAL",
     "state": "new",
-    "why": "PROFIT LOCK: day P&L Rs -177 gave back 114% of today's peak Rs 1,239 (rule: stop at 40%)",
+    "why": "PROFIT LOCK: day P&L hidden (give-back of the peak; amounts not shown) (rule: stop at 40%)",
     "strike": null,
     "ring_rank": null
    },
@@ -6954,7 +6954,7 @@
     "action": "NOTHING",
     "lane": "CRITICAL",
     "state": "new",
-    "why": "PROFIT LOCK: day P&L Rs -177 gave back 114% of today's peak Rs 1,239 (rule: stop at 40%)",
+    "why": "PROFIT LOCK: day P&L hidden (give-back of the peak; amounts not shown) (rule: stop at 40%)",
     "strike": null,
     "ring_rank": null
    },

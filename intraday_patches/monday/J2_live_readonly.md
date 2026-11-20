@@ -107,7 +107,7 @@ Per 15 min: {'08:45': 4, '09:00': 3, '09:15': 3, '09:30': 4, '09:45': 2, '10:00'
 | 11:38 | MAXHEALTH | CE | GET READY | CRITICAL | OWN NEWS UP - Max Healthcare Jumps - Stock Stats / Max Healthcare Institute shares rose over 4.3% at market open.G (10:22) · LEADER (DIVERGENT on its  |
 | 11:41 | UNIONBANK | PE | EXIT | CRITICAL | stop hit: UNIONBANK 214.70 vs stop 209.17 (v2 call 09:21) · Kite: MODIFY SL-L -> LIMIT bid - 1 tick (fallback: cancel, then sell) |
 | 11:45 | PERSISTENT | CE | GET READY | MUST SEE | rings: best new idea of the 11:30 window (AI routine-tier model ranked it first of 2; 2 new) |
-| 11:47 | LOCK |  | NOTHING | CRITICAL | PROFIT LOCK: day P&L Rs -177 gave back 114% of today's peak Rs 1,239 (rule: stop at 40%) |
+| 11:47 | LOCK |  | NOTHING | CRITICAL | PROFIT LOCK: day P&L hidden (give-back of the peak; amounts not shown) (rule: stop at 40%) |
 | 12:06 | TATAELXSI | PE | NOTHING | CRITICAL | TV BUY call on TATAELXSI (Macquarie) at 12:05 - PE on it held off 60 min |
 | 12:06 | COFORGE | CE | NOTHING | CRITICAL | TV SELL call on COFORGE (Macquarie) at 12:06 - CE on it held off 60 min |
 | 12:10 | MAXHEALTH | PE | NOTHING | CRITICAL | TV BUY call on MAXHEALTH (Macquarie) at 12:10 - PE on it held off 60 min |
