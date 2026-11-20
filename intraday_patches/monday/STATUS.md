@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 15:43 IST
+Last update: 15:44 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -19,7 +19,7 @@ Last update: 15:43 IST
 | B3 One ring per idea | IN PROGRESS | coded: one ring per share/side/idea, no cancel <10 min, no re-issue <15 min, 50/day + 6/15 min, no ring on 0-lot cards; 19 Nov frames 32 -> 3 rings (AI off); 84 unit tests pass; live engine untouched until the swapped into the live shadow engine 15:38 (engine 0.3) | B3_one_ring_per_idea.md | 15:42 |
 | B4 Entry signs from the study | IN PROGRESS | coded: time-of-day RVOL / RVOL5 (from 09:16), 09:15 print excluded (J9), GO NOW needs a volume sign, no GO NOW 20+ min after onset unless pullback; 84 unit tests pass; live engine untouched until the swapped into the live shadow engine 15:38 (engine 0.3) | B4_entry_signs.md | 15:42 |
 | B5 Real December plans, R:R<1 = 0 lots | IN PROGRESS | coded: levels from real highs/lows/ranges/walls, R:R on share and premium after costs, 0 lots with reason (no premium / R:R<1 / 1 lot > 1R), December chain read from oc.exps; 84 unit tests pass; live engine untouched until the swapped into the live shadow engine 15:38 (engine 0.3) | B5_real_plans.md | 15:42 |
-| B6 GO NOW on Opus 5.5 + reject rules | IN PROGRESS | engine swapped 15:38 (engine 0.3, GO NOW chain Opus 5.5 first); AI proof on the 15 cards running now | B6_go_now_check.md, B6_rules_proof.jsonl | 15:42 |
+| B6 GO NOW on Opus 5.5 + reject rules | DONE | AI proof on 15 cards (engine 0.3, 30 calls, $0.19): with the rule line 13 of 13 bad cards WAIT / REJECT and both clean controls CONFIRM; the AI never confirmed a card the rules reject; all 7 real bad cards REJECT in every read; blind (no rule line) 12 of 13 - its one miss (synthetic OI 5 lots) is rejected by the code before the AI | B6_ai_proof.md, B6_ai_proof.jsonl, B6_rules_proof.jsonl | 15:44 |
 | B7 Triage ranks | IN PROGRESS | coded: triage priority 1-10; opening cap / rate limit keep the highest; ai_lane and final_lane logged apart; 84 unit tests pass; live engine untouched until the swapped into the live shadow engine 15:38 (engine 0.3) | B7_triage_ranks.md | 15:42 |
 | B8 News by company and context | IN PROGRESS | coded: newsmatch.py - company named in context only (no product codes, look-alike names, counterparties, baskets); KEI-01 / Ford-Stellantis class dropped; second reading AGREE / DIRECTION WRONG / EVIDENCE WEAK, DIRECTION WRONG blocks GO NOW; 97 unit tests pass; swapped into the live shadow engine 15:38 (engine 0.3) | B8_news_by_company.md, B8_news_drops_16-19nov.txt | 15:42 |
 | B9 Fault test | IN PROGRESS | coded: AI calls time-bounded with named fallback reasons, 3 failures = AI paused 5 min (rules decide), stale quote blocks at once, dead feed writes a FEED DEAD fault; 97 unit tests pass; swapped into the live shadow engine 15:38 (engine 0.3); + QUOTE AGE gate: December premium older than 60 s = STALE, no GO NOW (per-row quote time added to the store after 15:35, priority re-quote of card strikes) | B9_fault_test.md | 15:42 |
