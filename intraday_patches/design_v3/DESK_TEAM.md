@@ -23,11 +23,28 @@ EVENT_MEMORY G, LINK_BOOK, OUTSIDE_WATCH or STATUS. None is new. Not investment 
 
 ## 1. THE VERDICT
 
-**The desk confirms: yes, a large desk team will work for GIR, on the current 4-CPU server, inside about $5 a day.** All five
-panel members agree. The AI thinking happens at Anthropic, not on our CPUs; the server only builds snapshots and waits on the
-network, so no 8-core resize is needed (the recorders use about 3.5% of one CPU [F, F5]). "Look at each and every item" is
-cheap: cheap Haiku readers read every filing, wire, TV minute and world headline once, for under $1 a day. What costs money is
-how often Sonnet and Opus think, so those wake on events, not on a short clock. **The engineer's conditions are binding:**
+**The desk confirms: yes, a large desk team can work for GIR - with three honest conditions on that yes.**
+All five panel members agree on the design.
+
+- **Money: the Monday desk fits $5; the full week-1 roster does NOT yet fit with room to spare.** The Monday subset is estimated
+  at ~$3.84 a day + $0.30 Ask reserve = ~$4.14 (table 4.8a). The full week-1 roster (40 seats, benches sharing calls, seats
+  speaking only on change) is estimated at ~$4.72 + $0.30 = ~$5.02 (table 4.8b): at the cap, not under it. So at $5 the week-1
+  seats join only as far as the measured spend allows (the seat pool has its own sub-cap, 4.7); running all of them on every
+  meeting is his decision (about $6 a day). **Every figure is an estimate until F29 logs real token counts; the large team
+  fitting $5 is NOT PROVEN until then.** "Look at each and every item" is the cheap part: Haiku readers read every filing,
+  wire, TV minute and world headline once for under $1 a day. What costs money is how often Sonnet and Opus think, so they wake
+  on events and fixed meetings, not on a short clock.
+- **Server: a conditional yes on the 4-CPU box.** The AI thinking happens at Anthropic; gir-desk itself builds snapshots and
+  waits on the network, and the new recorders use about 3.5% of one CPU [F, F5]. But the same STATUS row F5 shows the box
+  already strained on Fri 20 Nov in market hours: load ~6 on 4 CPUs at 11:20 and 15 at 12:37, dashserve and engine2 at 100%
+  each, and girtrader.com/login took 3.0-3.6 s once at 11:21 (0.05-0.5 s otherwise) [F]. Most of that load was the OLD system
+  (engine2, falcon, timer bursts; crypto was removed at 15:42). Market-hours load with the old system silent AND gir-desk
+  added (one core of CPUQuota, snapshot.py every minute) has never been measured. **So the 4-CPU yes holds only if (a) J6
+  silences the old timers and old AI desks before Monday 09:00, and (b) Monday's load watch (5.8) stays under its limits.** If
+  either fails, gir-desk drops to readers + head (5.8), and the 8-core resize goes back to him with Monday's numbers.
+- **Proof: none yet** (see the honest limit at the end of this section).
+
+**The engineer's conditions are binding:**
 (1) the desk runs as its own service that the safety gates never wait for; (2) one hard $5 budget gate sits in code before
 every AI call (J11 is NOT STARTED, and on 18 Nov a "$5 cap" let $27.24 through [F]) - no seat goes live before it; (3) the old
 system's AI desks (deskteam.py, analyst.py) are OFF on Monday; (4) seats speak only when something changes; (5) world items that
@@ -37,6 +54,21 @@ today's Bank Nifty reason was published during the move (Geojit line 11:02, NSDL
 desk will often explain early rather than predict before. Price data alone cannot do it either: at 19:45 and 09:08 the price
 lists are "no better than random"; only the 09:45 CE list has an edge [F, preopen_report section 0]. So the edge must come from
 knowledge, and it is NOT PROVEN until the scorecard says so.
+
+### 1a. What this file overrides (BUILD_PLAN E12.4 / E13 / E14, SHELL R10, ANALYST.md)
+Where this file and BUILD_PLAN.md or SHELL.md disagree, the table says which one stands and why. Anything not listed here keeps
+BUILD_PLAN / SHELL as written.
+
+| Rule | BUILD_PLAN / SHELL says | This file says | Why |
+|---|---|---|---|
+| **E13 replay before shipping** | every prompt or model change passes a replay of 20-30 past days first | **Cannot be met yet:** recorded news / filings reading exists only from 19 Nov evening and TV text from 19 Nov [F, ANALYST.md 4], so at most 3 days (18-20 Nov, 18 Nov without news) can be replayed. Replaced, until 20 recorded trading days exist (about mid-December [G]), by: (1) the 3-day point-in-time replay before Monday (section 7); (2) every new seat or prompt change runs at least 1 trading day in SHADOW with its cards scored before it goes live; (3) a new bench's cards count only as support, never as one of the "two benches" for a BUY NOW (2.3 rule 1), for its first 5 live days; (4) every change is replayed over ALL recorded days so far, growing to 20-30; from the 20th recorded day E13 applies as written. Code seats (tape, technicals, calendar) keep being replayed on the years of minute data as today. | Only recorded days can be replayed; the gap is filled with shadow days and a lower vote weight, and the gap is labelled NOT PROVEN, not hidden. |
+| **E13 timeouts** | 2 / 8 / 25 s (small / mid / top) | Haiku ~5 s, Sonnet ~25 s, Opus ~45 s (5.6) | Haiku reads 8 items per call, not one; Opus 5.5 thinking cannot be switched off and B9 already allows 45 s. Fallback ladder unchanged (one tier down, then rules). |
+| **E13 schema** | the model returns strike, expiry, entry zone, stop, target | the model returns share, side, reasons and evidence ids only; **code** fills contract, lots, stop, target (4.4, 4.5) | ANALYST.md "no invented numbers": a model that types a level can invent one; code takes it from the snapshot. |
+| **E13 budget** | $20 / day hard cap; ladder 60% top model off / 85% / 100% | one $5 hard cap (J11, STATUS desk decision) with protected sub-budgets and a budget day of 15:40-15:40 (4.7) | the 18 Nov $27.24 overspend; the trader's $3-5 rule. |
+| **E12.4 second direction check** | every direction that can lead to a call is read twice by an independent model; if they disagree, GET READY at most | **Kept, and made explicit:** the head may START a look on a Haiku card while the Sonnet second read runs, but code holds any BUY NOW as "WAIT: second read" until a second model that did not see the first answer agrees on the side (news / filing: seat 15; theme: the linked sector seat). Disagree or 25 s timeout -> the idea stays ARMED / WATCH with the disagreement shown. The Devil is not the second read (it argues against by design). | 4.3 previously said "in parallel" without saying whether a BUY NOW could go out first. It cannot. |
+| **E14 / SHELL R10 sounds** | GO NOW one chime; GET READY on a sector call one soft tick, once; own exits two low notes | **Kept as written.** BUY NOW takes GO NOW's chime; an ARMED idea of the head on a sector call takes GET READY's one soft tick, once (M mutes it 10 min, R10); exits unchanged. Themes, seat cards, Ask answers never ring. | An earlier draft said GET READY never rings; that changed his spec without asking. Silencing the tick is offered to him as a choice (section 7, item 5), not done. |
+| **ANALYST.md sections 1b and 3** | 3 sector seats; "Opus every 5 minutes for $2-3" | the seat table (2.2); Opus on events + heartbeat (4.1) | cost of Opus thinking (4.1). |
+| **ANALYST.md section 4 (his Monday order)** | BUY NOW goes to him on Monday, NOT PROVEN | **NOT changed by this file without his answer:** see section 7 and item 5 of "What each owner must confirm" - the replay condition is a question to him, not a decision. | his order. |
 
 ---
 
@@ -141,7 +173,7 @@ sector VIEW and the 2-3 best F&O shares each way, with role and trigger.
 | 28 | TV desk | R3 lines, speaker records | live | H/S | context, bounce risk; never alone | Mon |
 | 29 | News and wires | R2 cards into stories | each item | H | FACT / STORY BACK | Mon |
 | 30 | Social and chatter | t.me/s public channels; X only when paid (F19 OFF) | W2-4 | H | "BUZZ, no fact yet"; never a reason to buy | W2-3 |
-| 31 | Derivatives | OI all months, December chains, IV, PCR, rollover, FII index positions | every 30 min (LEAN) + meetings | S | where fresh money is; IV traps; strikes | W1 (data exists) |
+| 31 | Derivatives | OI all months, December chains, IV, PCR, rollover, FII index positions | hourly in session + 1 meeting (LEAN, from W1) | S | where fresh money is; IV traps; strikes | W1 (data exists) |
 | 32 | Technicals and regimes | RSI regimes, levels, onset timing, 09:45 CE edge | meetings | C+S | regime line ("EXTREME - pullback entry only") | Mon (code) |
 | 33 | Live tape | R49 sector %, breadth, RVOL, VWAP side, relative strength vs NIFTY, F27 | every 5 min, code first | C | ALERT "sector X holds VWAP on a red NIFTY" = **live proof of a theme** | Mon (code) |
 | 34 | Calendar and event clock | econ calendar, results dates, expiry, holidays, MPC / Fed | 19:45, 07:15 | C | no-entry windows, catalysts | Mon (code) |
@@ -160,6 +192,9 @@ sector VIEW and the 2-3 best F&O shares each way, with role and trigger.
 
 Model choice for CONNECTIONS: the head of desk proposed Sonnet; the AI engineer proposed Opus and costed it (3 calls a day in
 LEAN, $0.44). **Settled: Opus at the fixed times, Sonnet for any extra live re-check.** It shares the head's cached prefix.
+
+
+> **FLOWS rule (checker fix, 20 Nov):** LINK_BOOK section 7 - one day of FII flows is noise; the FLOWS seat uses the **5-day sum** (net buy above Rs 5,000 cr over 5 days -> banks / heavyweights CE tilt) and grades it **LOW (a tilt, never a trigger)** per LINK_BOOK row 37. The 19 Nov call still holds: a 14-session buying streak puts the 5-day sum far above Rs 5,000 cr.
 
 ### 2.3 Rules for the head when it uses the board
 1. **Two benches must agree.** Two seats reading the same article count once. Or: one OFFICIAL fact plus price confirmation.
@@ -335,16 +370,21 @@ X credits; Telegram spare phone; more Deepgram channels; EPFR.
 ## 4. AI DESIGN AND COST
 
 ### 4.1 Tiers
-- **Haiku 5.5 readers:** effort low, thinking off; JSON via structured outputs; micro-batch (8 items or 20 s); TV one call a
-  minute for both channels. Prompts under 100K tokens (Haiku 5.5 counts about 30% more tokens than older models).
-- **Sonnet 5.5 seats:** routine notes with thinking off or effort low; effort medium only for event notes. One call covers the
-  seat's whole area, never one call per share.
+- **Haiku 5.5 readers:** effort low; thinking may be disabled (`thinking: {type: "disabled"}` is accepted on Haiku 5.5 only
+  at effort high or below, so fine at low); JSON via structured outputs; micro-batch (8 items or 20 s); TV one call a minute for
+  both channels. Prompts kept under 100K tokens because Haiku 5.5's $0.10 / $0.50 price applies only up to 100K ($0.50 / $2.50
+  above). The claim that Haiku 5.5 "counts about 30% more tokens than older models" has no source [G]: measure with
+  count_tokens on real reader prompts before Sunday.
+- **Sonnet 5.5 seats:** routine notes at effort low (adaptive thinking, the default); effort medium only for event notes.
+  **Do not send `thinking: {type: "disabled"}` to Sonnet 5.5 - it returns a 400.** Where a route must have thinking off, send
+  `thinking: {type: "between_tools"}` (no other thinking field; only at effort high or below; effort cannot change
+  mid-conversation with it). One call covers the seat's (or bench's) whole area, never one call per share.
 - **Opus 5.5 (head + Connections):** **thinking cannot be switched off and is billed as output ($20 / M).** Effort low for live
   looks, medium for briefs and Connections. max_tokens 16k for Opus, 8k for seats (the 20 Nov replay had answers cut at
   max_tokens, 9% rules fallback [F]).
 - **Correction to ANALYST.md section 3:** "Opus every 5 minutes for $2-3" is too low because of thinking. Estimate about $6.6 a
-  day for that part alone [E]. So in LEAN the head is **woken by events plus a heartbeat every 45-60 min**, capped at about 10
-  live calls. A 10-minute clock is FULL only (needs his yes).
+  day for that part alone [E]. So in LEAN the head is **woken by events plus a heartbeat every 45-60 min**, capped at 10 live
+  calls (rules in 4.3a). A 10-minute clock is FULL only (needs his yes).
 - API notes: forced tool_choice errors on Opus / Sonnet 5.5 - use structured outputs (output_config.format) and validate in code
   anyway. On stop_reason "refusal": fallback on Opus / Sonnet; Haiku retries once on Sonnet or drops and logs. Fast mode on Opus
   (2.5x faster, 2x price) only for event looks and only with his yes.
@@ -368,7 +408,20 @@ X credits; Telegram spare phone; more Deepgram channels; EPFR.
 - An idea's trigger met (code) -> Devil + head -> BUY NOW or WAIT.
 - Open position -> code every minute; Sonnet note only on stop / target / thesis change.
 - Minimum gaps: sector seat 10 min (except weight 5); head 3 min; at most one head event look per 60-90 s, one queued follow-up.
-- On weight 4-5 items, the head may wake on the Haiku card while Sonnet confirms in parallel; it still needs price agreement.
+- On weight 4-5 items, the head may wake on the Haiku card while Sonnet confirms in parallel; it still needs price agreement,
+  and **no BUY NOW leaves code until the Sonnet second read agrees on the side** (E12.4, section 1a). Until then the card reads
+  "WAIT: second read"; on disagreement or a 25 s timeout the idea stays ARMED / WATCH and shows the disagreement.
+
+### 4.3a Head live-call cap (LEAN)
+- 10 live head looks per session (09:15-15:10): **8 shared looks** (events and heartbeats) + **2 trigger slots** that only an
+  idea's trigger (BUY NOW candidate) or a manage note on his own open trade may use.
+- **A heartbeat fires only if the head has not looked in the last 45-60 min.** Event looks reset the heartbeat clock, so a busy
+  morning uses the shared looks on events and the heartbeats simply do not happen; a quiet day uses them as heartbeats.
+- **When all 10 are spent and a trigger fires:** if the protected LIVE money (4.7) still has room, the head gets up to 3 extra
+  trigger looks (the count cap is soft, the money cap is hard). If LIVE money is spent, the card reads "WAIT: AI live budget
+  used - rules view only" and no BUY NOW is issued; code still manages his open trade (stop / target / 15:10) and rings exits
+  as always. Never a BUY NOW without a head look.
+- Minimum gap 3 min between head looks; at most one event look per 60-90 s with one queued follow-up (unchanged).
 
 ### 4.4 Contracts (structured outputs, checked again in code)
 **SEAT CARD:** `{seat, kind: FACT|VIEW|THEME|OBJECTION|ALERT|QUIET|CANCEL, headline (<=25 words), strength 1-5,
@@ -401,41 +454,95 @@ nothing_new}`.
 - Keep / drop (E13): after 100 scored ideas a seat with lift <= 1.0 goes on probation (event-only, prompt reworked). A seat must
   earn at least 3x its cost.
 
-### 4.7 Budget ladder (checked in code BEFORE every call, plus a spend limit on the Anthropic console)
-- 70% of $5 -> sector seats event-only.
-- 85% -> head only on triggers; Connections off.
-- 100% -> code + Haiku only; rules only for the engine; one message to him.
-- Footer meter shows $ spent by Opus / Sonnet / Haiku and the ladder step.
-- Ask-the-desk uses a small reserve inside the $5 cap ([G] about $0.50 a day; his call).
+### 4.7 Budget day, protected sub-budgets and ladder (checked in code BEFORE every call, plus a spend limit on the Anthropic console)
+- **The budget day runs 15:40 to 15:40 of the next trading session** (after the 15:10 exit and the close). It opens with the
+  15:45 review, then the 19:45 conference, 22:45, 07:15, 09:05 and the live session. A weekend or holiday (Tue 24) belongs to
+  the budget day that ends at the next session's 15:40, so Fri 15:40 -> Mon 15:40 is ONE $5 day, including the Sunday 19:45
+  brief. The console spend limit is set as a monthly ceiling (about 21 x $5 + margin) because the console does not know our day.
+- **The $5 is split into sub-budgets; no bucket may spend another bucket's money:**
 
-### 4.8 LEAN cost table (target under $5; all token sizes [E] until F29 measures them)
+| Bucket | What it pays for | Sub-cap | Monday est. | Week-1 est. |
+|---|---|---|---|---|
+| MEET (protected) | 19:45 / 07:15 / 09:05 CONNECTIONS (Opus) + DEVIL at those meetings + head briefs 19:45 / 07:15 / 09:08 + 15:45 scorecard + the Opus 1-hour cache write; one 22:45 head update fits in the margin | $1.50 | $1.34 | $1.34 |
+| LIVE (protected) | head live looks (4.3a), DEVIL on each BUY NOW candidate, the second read (seat 15) on weight 4+ items, the Opus 5-minute cache write | $1.30 | $1.15 | $1.15 |
+| READ | Haiku readers R1-R6, trader-reads Haiku part | $1.00 | $0.70 | $0.92 |
+| SEATS | every other Sonnet seat or bench call + Sonnet / Haiku cache writes | $0.90 | $0.64 | $1.31 (trimmed to $0.90) |
+| ASK | Ask-the-desk answers (his call on the size) | $0.30 | - | - |
+| **Total** | | **$5.00** | **$3.84 + $0.30 = $4.14** | **$4.72 + $0.30 = $5.02** |
 
-| Seat | Model | Calls / day | $ / day |
-|---|---|---|---|
-| Filings reader (~1,200 items) | H | 150 | 0.20 |
-| Wires / blogs reader (~1,500) | H | 190 | 0.26 |
-| TV reader (2 channels) | H | 510 | 0.19 |
-| Policy reader (~300) | H | 40 | 0.05 |
-| World reader (~800) | H | 100 | 0.14 |
-| Story matcher + second read | H | 200 | 0.08 |
-| News confirm (weight >= 4) | S | 15 | 0.19 |
-| Global macro + FLOWS (one seat in LEAN) | S | 12 | 0.23 |
-| Sector seats x3 (hourly + events) | S | 33 | 0.59 |
-| Derivatives (every 30 min) | S | 13 | 0.26 |
-| Company / results (events) | S | 8 | 0.13 |
-| DEVIL'S ADVOCATE | S | 6 | 0.10 |
-| Risk notes (when holding) | S | 8 | 0.10 |
-| CONNECTIONS | O | 3 | 0.44 |
-| HEAD briefs | O | 3 | 0.50 |
-| HEAD live, woken (cap 10) | O | 10 | 0.74 |
-| HEAD 15:45 scorecard | O | 1 | 0.10 |
-| Cache writes | - | - | 0.55 |
-| **TOTAL** | | **~1,300** | **~$4.86** (Haiku 0.93 · Sonnet 1.76 · Opus 2.18) |
+- Protected means: when SEATS or READ run out, MEET and LIVE are untouched, so the 19:45 / 07:15 / 09:05 Connections + Devil +
+  head briefs (the runs that would have caught 20 Nov) always run, and the live BUY NOW chain still has money at 14:00. After
+  09:08 unspent MEET money may move to LIVE. Nothing carries over to the next budget day.
+- **Ladder (applies per bucket, so a normal day never degrades itself):**
+  - SEATS at 70% -> sector, world, derivatives and company seats event-only; at 100% -> seats stop until the next budget day
+    (code seats - tape, technicals, calendar, risk - keep running; they cost nothing).
+  - READ at 100% -> readers take items by weight; low-weight items are marked UNREAD and logged ("what I am not seeing").
+  - LIVE at 100% -> "WAIT: AI live budget used - rules view only"; no new BUY NOW; exits and stops are code and still ring.
+  - MEET at 100% -> the next brief is the code summary with "head analyst over budget" in grey.
+  - Total $5 reached (any mix) -> code + rules only; one message to him.
+- Footer meter shows $ spent by Opus / Sonnet / Haiku, each bucket and the ladder step.
+- Week 1 at $5: the SEATS cap means the full roster runs at reduced cadence (event-only once 70% is used). Running every
+  week-1 seat on every meeting needs about $6 a day (his yes) - and only after F29 shows the real numbers.
 
-Readers are under 10% of the bill: the "much larger pool of eyes" is nearly free. About $100 a month (21 trading days).
-The head-of-desk's 40-seat lean estimate ($4.3-5.5) and the intel lead's ($5-6) are in the same range; both depend on seats
-speaking only on change. **WIDE middle option (~$7.3, his yes):** head 16 live calls, sector seats every 30 min, a separate FLOWS
-seat, Sonnet confirm on weight-3 items.
+### 4.8 LEAN cost tables (all token sizes and call counts [E] until F29 measures them)
+Calculator in the repo: `intraday_patches/design_v3/desk_cost.py` (re-run it with F29's real median tokens per seat).
+
+**4.8a LEAN-MON - the Monday 23 Nov subset**
+
+| Seat | Model | Calls / day | $ / day | Bucket |
+|---|---|---|---|---|
+| R1 filings reader (~1,200 items, 8 per call) | H | 150 | 0.20 | READ |
+| R2 wires / blogs reader (~1,500) | H | 190 | 0.26 | READ |
+| R3 TV reader (2 channels, 1 call a minute) | H | 510 | 0.19 | READ |
+| R4 policy reader (~300) | H | 40 | 0.05 | READ |
+| 38 trader reads (Haiku part) | H | 10 | 0.005 | READ |
+| 35 CONNECTIONS 19:45 / 07:15 / 09:05 | O | 3 | 0.44 | MEET |
+| 36 DEVIL at the 3 meetings | S | 3 | 0.06 | MEET |
+| HEAD briefs 19:45 / 07:15 / 09:08 | O | 3 | 0.50 | MEET |
+| HEAD 15:45 scorecard | O | 1 | 0.10 | MEET |
+| HEAD live looks (8 shared + 2 trigger, 4.3a) | O | 10 | 0.74 | LIVE |
+| 36 DEVIL on BUY NOW candidates (up to 4) | S | 4 | 0.06 | LIVE |
+| 15 second read / news confirm (weight >= 4) | S | 15 | 0.19 | LIVE |
+| 35 CONNECTIONS Sonnet re-check on a world shock | S | 2 | 0.05 | SEATS |
+| Global macro + FLOWS + EM rotation (one call) | S | 5 | 0.10 | SEATS |
+| Sector seats x3 (19:45, 07:15 + events) | S | 12 | 0.22 | SEATS |
+| 39 risk notes (when holding) | S | 6 | 0.07 | SEATS |
+| 36 DEVIL 22:45 / 15:45 if a theme moved | S | 2 | 0.04 | SEATS |
+| Cache writes (Opus 1 h + 5 min, Sonnet, Haiku) | - | - | 0.55 | MEET / LIVE / SEATS |
+| **TOTAL** | | **~970** | **~$3.84** (Opus 2.18 · Sonnet 0.94 · Haiku 0.72) | + ASK $0.30 = **$4.14** |
+
+Compared with the earlier draft ($4.86): sector seats moved from hourly to meetings + events, the derivatives seat (31) moves
+to week 1 (it was not on the Monday list), Devil is costed for meetings AND candidates (7-9 calls, not 6), trader reads and
+Connections' Sonnet re-checks are added. Derivatives data still shows on the pages (code).
+
+**4.8b LEAN-W1 - the full week-1 roster (benches share one call; seats speak only on change)**
+
+| Seat / bench | Model | Calls / day | $ / day | Bucket |
+|---|---|---|---|---|
+| Readers R1-R4 + trader reads (as 4.8a) | H | 900 | 0.70 | READ |
+| R5 world reader (~800) | H | 100 | 0.14 | READ |
+| R6 story matcher + second read | H | 200 | 0.08 | READ |
+| Protected MEET + LIVE rows (as 4.8a, incl. their cache writes) | O / S | 39 | 2.49 | MEET / LIVE |
+| 35 CONNECTIONS Sonnet re-check | S | 2 | 0.05 | SEATS |
+| World bench 1-5 (19:45, 22:45 only if changed, 07:15 + shocks) | S | 5 | 0.19 | SEATS |
+| Commodities 6-7 (one call, meetings) | S | 2 | 0.04 | SEATS |
+| Money 9-10 (once after FII data lands, 07:15) | S | 3 | 0.07 | SEATS |
+| Policy 11-13 (each weight >= 3 item) | S | 5 | 0.09 | SEATS |
+| Company 16-17 (results, deals; events) | S | 6 | 0.10 | SEATS |
+| Sector bench: 9 seats in 3 calls x 2 meetings | S | 6 | 0.22 | SEATS |
+| Sector seat on events (R49 / F27) | S | 6 | 0.11 | SEATS |
+| 31 derivatives (hourly in session + 1) | S | 7 | 0.14 | SEATS |
+| 37 history (on demand) | S | 2 | 0.03 | SEATS |
+| 39 risk notes + 36 DEVIL theme re-checks | S | 8 | 0.11 | SEATS |
+| Sonnet / Haiku cache writes | - | - | 0.16 | SEATS |
+| **TOTAL** | | **~1,290** | **~$4.72** (Opus 2.18 · Sonnet 1.62 · Haiku 0.93) | + ASK $0.30 = **$5.02** |
+
+**Plain statement:** the large team fits $5 on Monday's subset (with ~$0.86 headroom). The full week-1 roster is AT the cap, not
+under it: at $5 the SEATS sub-cap trims it to meetings + events, or he says yes to about $6. Either way it is NOT PROVEN until
+F29 measures real tokens; Opus thinking and cache expiry could push every row up (Honest limits).
+The head-of-desk's 40-seat lean estimate ($4.3-5.5) and the intel lead's ($5-6) agree with this: both reach or pass the cap.
+**WIDE middle option (~$7.3, his yes):** head 16 live calls, sector seats every 30 min, a separate FLOWS seat, Sonnet confirm on
+weight-3 items.
 
 ### 4.9 FULL cost table (needs his yes)
 
@@ -459,10 +566,10 @@ seat, Sonnet confirm on weight-3 items.
 | Cache writes | - | - | 1.05 |
 | **TOTAL** | | | **~$20 a day ≈ $420 a month** |
 
-In FULL a third of the money is the head every 5 minutes. The calculator is
-/tmp/claude-0/-home-user-my-first-site/bfb12257-b1a2-591e-8991-5efda7c72538/scratchpad/cost.py (scratch; may be cleared). Change
-its guesses once F29 has real token counts. Prices used: Opus 5.5 $4 / $20 per M (cache read $0.20); Sonnet 5.5 $2 / $10
-($0.10); Haiku 5.5 $0.10 / $0.50 (cache read [G]); Batch API half price.
+In FULL a third of the money is the head every 5 minutes. FULL comes from the earlier panel calculator (same prices and token
+guesses); the LEAN tables come from `intraday_patches/design_v3/desk_cost.py`. Change its guesses once F29 has real token
+counts. Prices used: Opus 5.5 $4 / $20 per M (cache read $0.20); Sonnet 5.5 $2 / $10 ($0.10); Haiku 5.5 $0.10 / $0.50 under
+100K-token prompts (cache read [G]); Batch API half price.
 
 ---
 
@@ -540,8 +647,10 @@ its guesses once F29 has real token counts. Prices used: Opus 5.5 $4 / $20 per M
   cache write, cost, latency, validator result, fallback reason, request id.
 - Every card and decision records shares, side, time named and price at naming (from the snapshot), so C5 can score each seat
   and source.
-- Load watch Monday: pidstat every 60 s, load, /login time. Revisit the 8-core resize only if load stays above 4 for 10+ min in
-  market hours or /login goes over 1 s (a policy, not a measured number).
+- Load watch Monday (the condition on the 4-CPU yes, section 1): pidstat every 60 s, load, /login time, gir-desk CPU and
+  snapshot.py build time; baseline = Fri 20 Nov F5 (load 6-15, dashserve and engine2 at 100%, /login 3.0-3.6 s once). If load
+  stays above 4 for 10+ min or /login goes over 1 s, gir-desk first drops to readers + head (seats paused), then the 8-core
+  resize goes to him with the numbers. (The 4 / 10 min / 1 s limits are a policy, not a measured number.)
 
 ---
 
@@ -561,8 +670,9 @@ still very confined".
 ### 6.2 Conflicts settled
 - **Confidence grade:** none on the card. It shows the source record ("TV desk 3 of 7, too early") and a grey NOT PROVEN chip
   until n >= 30 and the lower bound beats the base rate.
-- **What rings:** only BUY NOW, manage notes on his own trades and the existing P1 alarms. GET READY, themes and seat notes never
-  ring.
+- **What rings (E14 / SHELL R10 kept, section 1a):** BUY NOW (GO NOW's chime), an ARMED idea of the head on a sector call
+  (GET READY's one soft tick, once, mutable with M), manage notes / exits on his own trades and the existing P1 alarms. Themes,
+  seat cards and Ask answers never ring. Whether to silence the soft tick is his choice (section 7, item 5).
 - **AI cap shown:** $5 (J11), not $20.
 - **Desk Room centre:** latest card per seat by default (no endless stream); a seat click or a "stream" toggle shows history.
 
@@ -637,7 +747,8 @@ Still a separate, small product: no board, no news feed.
   stop SBIN Y · 2 lots · why: FII buying banks"); MANAGE on his taken trades.
 - Rings P1 (unchanged): stop near / hit, NO STOP, 15:00-15:10 not flat, loss lock, stale data with a position, GIR down, Kite key down.
 - Silent push: the brief and the 22:45 / 07:15 / 09:08 updates only if something changed.
-- In-app only: idea changes on shares he does not hold, seat cards, themes, WHY NOT, ask answers, news.
+- Page only (E14 / R10): an ARMED idea on a sector call gives one soft tick on the laptop page; on the phone it is a silent push.
+- In-app only: other idea changes on shares he does not hold, seat cards, themes, WHY NOT, ask answers, news.
 - **Open decision for him:** "ring on basket / policy shock" (the ANGELONE case; he asked for an alarm on 18 Nov). Default silent blue.
 
 **Telegram:** decisions bot = BUY NOW, manage, exits, the brief per meeting with a "Themes" section (max 3), 15:45 scorecard
@@ -670,12 +781,22 @@ Prerequisites (nothing goes live without them):
 2. `gir-desk` service, DESK BOARD (SQLite WAL), `seats.yaml`, card validator, ai_calls log, ring ledger, restart rebuild.
 3. snapshot.py + board summary.
 
-Seats live:
-- HEAD ANALYST (Opus): briefs Sun 19:45, Mon 07:15, 09:08; live when woken + heartbeat; manage notes.
-- The existing readers/seats that use data GIR already has: filings, news, TV, policy readers; News confirm; Global macro (with
-  FLOWS and EM rotation folded in at 19:45 / 07:15 / 09:05); 3 sector seats (event-led); risk (code).
-- **The three seats that would have caught 20 Nov, prompt-only on existing data: CONNECTIONS, DEVIL'S ADVOCATE, FLOWS.**
-- Code seats: tape, technicals / regimes, calendar, trader reads, scorekeeper logging.
+Seats live, with a CUT LINE (about 1.5 days remain before the Sun 16:00 freeze, and STATUS still has A1, A2, A3, A6, A7, D4,
+E3, F1, F4, J4, J7, J8, J13 and J14 open besides J6, J11, J12):
+- **MINIMUM (Monday does not get a desk without all of these):** HEAD ANALYST (Opus: briefs Sun 19:45, Mon 07:15, 09:08; live
+  per 4.3a; manage notes) + **FLOWS** + **CONNECTIONS** + **DEVIL'S ADVOCATE** (the three seats that would have caught 20 Nov,
+  prompt-only on existing data) + **R1 filings reader** + its **second read (seat 15)**, which E12.4 needs before any
+  filing-led BUY NOW. Code risk gates (existing) are always on.
+- **THEN, in this order, as time allows:** (1) R3 TV + R2 wires readers (their news ideas also go through seat 15); (2) 3 sector
+  seats (event-led); (3) Global macro (world / EM rotation folded into FLOWS until then); (4) R4 policy reader; (5) code seats:
+  tape, technicals / regimes, calendar, scorekeeper logging; (6) trader-reads Haiku part; (7) Sonnet risk notes.
+- **If the weekend runs short, drop from the bottom up:** Sonnet risk notes -> trader-reads Haiku (his reads are still stored
+  and scored by code) -> code seats not yet built (the engine's existing tape / regime output stays on the page) -> policy
+  reader -> Global macro -> sector seats -> TV / wires readers. Never drop a MINIMUM seat to save a lower one; if a MINIMUM seat
+  is not ready, the analyst runs on the page only, with no ring, and says which seat is missing.
+- With only the MINIMUM, BUY NOW can come only from filings, flows or a confirmed theme; news / TV-led BUY NOW are off (no reader).
+- Web cut line, same rule: MINIMUM = 6.5 items 1 (BUY NOW card), 3 (phone + Telegram), 5 (footer) and 6 (checks); then 2
+  (Evening brief board - until then the Sunday brief shows in the existing Morning page); Desk Room v0 (item 4) drops first.
 
 Proof:
 - Replay 18 / 19 / 20 Nov with point-in-time data (knowledge pack as of the evening before; EVENT_MEMORY G excluded from the
@@ -683,16 +804,21 @@ Proof:
   days [G]; **one-off test spend above the daily rule, needs his yes**) -> 20 Nov head run 2-3 times for stability.
 - Pass bar: precision above base rate; named before the move; few wrong-side picks; zero unsourced numbers; cost extrapolates to
   <= $5; latency inside timeouts. Report whether Connections names banks / IT CE by 07:15 / 09:08 on 20 Nov - either way.
-- **BUY NOW rings on Monday (labelled NOT PROVEN, his order) only if the replay has run and been scored by Sunday 16:00.
-  Otherwise the analyst shows on the page with no ring, and the old system stays the safety net per his A / B / C choice.**
+- **His Monday order (ANALYST.md 4) is that BUY NOW goes to him, labelled NOT PROVEN. The desk asks him, it does not decide:**
+  the desk recommends that BUY NOW rings on Monday only if the replay has run and been scored by Sun 16:00, and the Sonnet +
+  Opus layer of that replay needs the one-off ~$15 he has not yet approved. So the chain is: **no yes to the $15 -> no full
+  replay -> by the desk's recommendation, no Monday ring** (the analyst would show on the page only, the old system staying the
+  safety net per his A / B / C choice). He may instead keep his order as given: BUY NOW rings Monday, NOT PROVEN, with only the
+  free stub + Haiku replay layers run. Both options are in item 5 below; until he answers, his order stands.
 
 Web / phone: section 6.5 items 1-6.
 
-### Week 1 (Wed 25 - Mon 30), one bench a day, each after a day in shadow with its cards scored
+### Week 1 (Wed 25 - Mon 30), one bench a day, each after a day in shadow with its cards scored (the interim rule that replaces E13's 20-30 day replay, section 1a; a new bench counts only as support for its first 5 live days)
 - Theme path G1 (B8 dropped lines -> Connections / Flows), feeds G2 NSDL, G3 KRX / TWSE, G4 tech / AI list + world reader,
   G5 ETF units; first check each is reachable from the server.
 - World seats 1-5 split out; commodities 6-7; 9 sector seats; policy 11-13; results 16; deals 17; derivatives 31; history 37.
-- Seat weights from the scorecard; Kite key failover (F2).
+- Seat weights from the scorecard; Kite key failover (F2). At $5 the week-1 roster runs inside the SEATS sub-cap (4.7, 4.8b);
+  every seat on every meeting needs about $6 (his yes, after F29 numbers).
 - Web: Desk Room full (roster, filters, minutes, themes, objections, coverage map), World drivers P15, Rotation / flows page,
   Health seat and source rows, Scorecard SEATS / SOURCES tabs, Ask / Tell the desk (laptop first), WHY NOT in drill-down, basket-
   shock ring setting. Add G8 to LINK_BOOK as PROPOSED.
@@ -707,9 +833,18 @@ Web / phone: section 6.5 items 1-6.
 ### What each owner must confirm (he asked the desk to confirm)
 1. Server builder: KRX / TWSE / NSDL / ETF CSVs reachable from the server, and when each publishes (times are guesses).
 2. Engine builder: B8-dropped items can be routed as THEME without touching share-news votes.
-3. Cost owner: the Monday seats fit the J11 single $5 cap with the ladder, measured on the replay.
+3. Cost owner: the Monday seats fit the J11 single $5 cap with the sub-budgets (4.7), measured on the replay and on Monday's
+   F29 log; the budget day (15:40-15:40) is the one J11 uses; `desk_cost.py` re-run with real tokens by Wed 25.
+3a. Server builder: J6 silences the old timers and old AI desks before Mon 09:00, and Monday's load watch (5.8) is reported -
+   the 4-CPU yes depends on both.
 4. Replay owner: 20 Nov replayed with the new sources, scored by source, before anything is labelled more than NOT PROVEN.
-5. The trader: CDS / MCX; whether the one-off ~$15 replay spend is OK; basket-shock ring; phone DESK tab.
+5. The trader:
+   - **The Monday ring.** (a) Is the one-off ~$15 replay spend OK? (b) If not: does BUY NOW still ring on Monday, NOT PROVEN,
+     as he ordered (only the free replay layers run), or page only until the replay is done? No yes to the $15 means no full
+     replay before Monday; the desk will not drop his order without his answer.
+   - Keep the GET READY soft tick on an ARMED idea (E14 / R10, default) or silence it.
+   - Week 1 at $5 with seats trimmed, or about $6 for the full roster (after F29 numbers); Ask reserve size ($0.30 default).
+   - CDS / MCX; basket-shock ring; phone DESK tab; the 8-core resize if Monday's load watch fails.
 
 ### Honest limits
 - One day of evidence. The 20 Nov chain is one episode; knowledge-led picks have been few (0-7 a day, C5). Nothing is PROVEN.

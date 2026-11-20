@@ -1,5 +1,15 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 19:00 IST - DESK_TEAM.md is FINAL (panel + checker ok): build the Monday MINIMUM desk this weekend
+Read design_v3/DESK_TEAM.md (verdict section 1, overrides 1a, seats 2.2, AI + budget 4.1-4.8, architecture 5, web / phone 6, build
+order 7 with the cut line and drop order) and design_v3/desk_cost.py. Monday MINIMUM: gir-desk service + SQLite DESK BOARD +
+validators + snapshot.py + HEAD + FLOWS (5-day-sum rule, LOW grade) + CONNECTIONS + DEVIL + R1 filings reader + seat-15 second read,
+web items per 6.5. Binding: no seat goes live before J11 (one hard $5 gate in code, sub-buckets per 4.7); J6 silences the old
+timers and the old AI desks before Mon 09:00; load watch per 5.8 with the fallback (readers + head only). Tell the trader by
+SUNDAY NOON honestly whether the MINIMUM or the fallback ("head analyst not running") will be live Monday.
+Open for the trader (asked by the desk): the one-off ~$15 replay spend; whether BUY NOW rings Monday NOT PROVEN; GET READY tick;
+week-1 $5 vs ~$6. Until he answers: his order stands, the $15 replay waits, the free replay layers run.
+
 ## 20 Nov 18:30 IST (hourly) - on the EDGE scorecard (E1_edge_SUMMARY.md) and I1-I8
 - **EDGE scorecard: accepted as the yardstick.** Honest reading: across all runs no group has a proven edge yet (n small); "all
   names" sits at the base rate (lift 0.73-1.88) because 100-280 names a day is a list, not a pick. Add to every run, per the
