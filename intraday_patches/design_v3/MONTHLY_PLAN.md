@@ -1,3 +1,7 @@
+# [SHELVED 20 Nov 2026 - the trader: "Ok, let's forget the monthly option" after seriesstudy.py found none of 93 CE / 93 PE first-days
+# signal sets beats random over 32 series; generic monthly spreads lost (median -43% to -100%). No series-plan card is built.
+# The study stays in the repo and can be re-run on new data later.]
+
 # MONTHLY F&O PLAN - holding options into the monthly expiry (2-6 weeks) - desk draft, 20 Nov 2026, NOT YET PROVEN
 
 The trader, 20 Nov: "For the F&O shares, how about a longer holding - targeting the monthly expiry? How to invest? Does the desk have
