@@ -1,0 +1,2028 @@
+{
+ "session": "2026-11-20",
+ "version": "U07",
+ "made_at": "2026-11-20T07:15:00+05:30",
+ "T": "2026-11-19",
+ "market": {
+  "call": "MIXED",
+  "p_up": 0.19,
+  "p_down": 0.21,
+  "p_mixed": 0.61,
+  "basis": "all-days base rate on the A4 definition, 1245 sessions to 2026-11-19 (no cue has a measured tilt yet)",
+  "cues": [],
+  "record": "market call record: not known yet (scored from the first live day)"
+ },
+ "computed_at": "2026-11-20T17:44:59+05:30",
+ "daily_row_note": null,
+ "lists": {
+  "CE": [
+   {
+    "session": "2026-11-20",
+    "version": "U07",
+    "made_at": "2026-11-20T07:15:00+05:30",
+    "side": "CE",
+    "dir": "UP",
+    "symbol": "KALYANKJIL",
+    "sector": "consumer durables",
+    "score": 2.938,
+    "points": 3,
+    "grade": "MEDIUM",
+    "p_cal": null,
+    "p_source": "NOT CALIBRATED",
+    "base_rate": 0.295,
+    "confidence": "MEDIUM (base 30%) - NOT CALIBRATED",
+    "expected_move_pct": 3.21,
+    "expected_move_src": "own median on 75 past 2%-move days",
+    "trigger_rule": "EXTREME - no breakout entry: pullback only - after 09:30 a 1-minute bar that dips to VWAP (within 0.2%) and closes back above it with RVOL >= 2 (yesterday's high 663.00 is information only)",
+    "trigger_px": 663.0,
+    "volume_rule": "RVOL >= 2.0 (section 0)",
+    "cancel_px": 655.71,
+    "cancel_final": false,
+    "cancel_note": "provisional (yesterday's close in place of the IEP); final at 09:08",
+    "cancel_facts": [
+     "an overnight driver reverses past its threshold",
+     "a denial or scope change of the news",
+     "a contrary broker stance change",
+     "GIFT against by more than 0.8% (beta > 1 shares)"
+    ],
+    "why": [
+     {
+      "id": "N:178bc1cf",
+      "text": "NEWS Thu 22:01 \u00b7 class B source \u00b7 (other side) Gold near 14-month low: Muthoot Finance, Manappuram, IIFL Finance shares fall; Kalyan Jewellers gains",
+      "counter": "other side: PE on its suppliers / rivals if the news is about share taken from them",
+      "proof": "NOT PROVEN (no record for this source yet)",
+      "unit": 0.6,
+      "src": "GOOGLE NEWS",
+      "kind": "news"
+     },
+     {
+      "id": "F02",
+      "text": "5-day return = -0.070 (measured: gap -2.25 pts, same sign 4 of 4 years)",
+      "counter": "the same feature on the other side has +2.25 pts - weak on its own",
+      "proof": "measured on 2022-2025, held-out side right 50% - NOT PROVEN",
+      "unit": null
+     },
+     {
+      "id": "F04",
+      "text": "return vs its sector (relative strength) = -0.036 (measured: gap -2.88 pts, same sign 4 of 4 years)",
+      "counter": "the same feature on the other side has +2.88 pts - weak on its own",
+      "proof": "measured on 2022-2025, held-out side right 50% - NOT PROVEN",
+      "unit": null
+     },
+     {
+      "id": "MOVE",
+      "text": "moves a lot: ATR14 5.1%, RVOL 2.3, day move +1.7%",
+      "counter": "the same size of move can come on either side",
+      "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+      "unit": null
+     }
+    ],
+    "against": [
+     {
+      "id": "BASE",
+      "text": "no evidence row against - and the side of the daily features is right only 50% held-out (coin)"
+     }
+    ],
+    "pdh": 663.0,
+    "pdl": 638.6,
+    "pclose": 661.0,
+    "atr": 33.95,
+    "role": "DEPENDENT",
+    "strike_plan": "ATM or 1 ITM, December monthly (E7) - premium: not known in this run",
+    "chips": [
+     "EXTREME +12.9% above its 20-day average (RSI 62) - the 81% / -7.6% record (n=318) is measured for RSI >= 80 only"
+    ],
+    "proof": "NOT PROVEN (day 0 of 20)",
+    "extreme": true,
+    "rsi14": 62.1,
+    "inputs_from": "2026-11-19T09:00+05:30",
+    "inputs_to": "2026-11-20T07:15+05:30",
+    "ai_grade_change": null,
+    "computed_at": "2026-11-20T17:44:59+05:30",
+    "list": "SCORED",
+    "code_rank": 1,
+    "id": "cdb6959d884f",
+    "status": "STANDS",
+    "source": "news",
+    "rank": 1
+   },
+   {
+    "session": "2026-11-20",
+    "version": "U07",
+    "made_at": "2026-11-20T07:15:00+05:30",
+    "side": "CE",
+    "dir": "UP",
+    "symbol": "TMPV",
+    "sector": "auto",
+    "score": 2.321,
+    "points": 3,
+    "grade": "MEDIUM",
+    "p_cal": null,
+    "p_source": "NOT CALIBRATED",
+    "base_rate": 0.295,
+    "confidence": "MEDIUM (base 30%) - NOT CALIBRATED",
+    "expected_move_pct": 2.65,
+    "expected_move_src": "own median on 50 past 2%-move days",
+    "trigger_rule": "first 1-minute close above yesterday's high 263.50 with RVOL >= 2.0 (day volume so far 2x a normal day's by that minute, price above VWAP)",
+    "trigger_px": 263.5,
+    "volume_rule": "RVOL >= 2.0 (section 0)",
+    "cancel_px": 261.39,
+    "cancel_final": false,
+    "cancel_note": "provisional (yesterday's close in place of the IEP); final at 09:08",
+    "cancel_facts": [
+     "an overnight driver reverses past its threshold",
+     "a denial or scope change of the news",
+     "a contrary broker stance change",
+     "GIFT against by more than 0.8% (beta > 1 shares)"
+    ],
+    "why": [
+     {
+      "id": "N:15d68945",
+      "text": "NEWS Thu 22:59 \u00b7 class C source \u00b7 Tata Motors Passenger Vehicles Posts Record \u20b920,000 Crore India Revenue",
+      "counter": "other side: PE on its suppliers / rivals if the news is about share taken from them",
+      "proof": "NOT PROVEN (no record for this source yet)",
+      "unit": 0.6,
+      "src": "GOOGLE NEWS",
+      "kind": "news"
+     },
+     {
+      "id": "F02",
+      "text": "5-day return = -0.114 (measured: gap -2.25 pts, same sign 4 of 4 years)",
+      "counter": "the same feature on the other side has +2.25 pts - weak on its own",
+      "proof": "measured on 2022-2025, held-out side right 50% - NOT PROVEN",
+      "unit": null
+     },
+     {
+      "id": "F05",
+      "text": "sector median return today = +0.026 (measured: gap +2.02 pts, same sign 4 of 4 years)",
+      "counter": "the same feature on the other side has -2.02 pts - weak on its own",
+      "proof": "measured on 2022-2025, held-out side right 50% - NOT PROVEN",
+      "unit": null
+     },
+     {
+      "id": "MOVE",
+      "text": "moves a lot: ATR14 3.7%, RVOL 2.7, day move +4.3%",
+      "counter": "the same size of move can come on either side",
+      "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+      "unit": null
+     }
+    ],
+    "against": [
+     {
+      "id": "F04",
+      "text": "return vs its sector (relative strength) = +0.017 points the other way"
+     }
+    ],
+    "pdh": 263.5,
+    "pdl": 251.5,
+    "pclose": 263.5,
+    "atr": 9.75,
+    "role": "LEADER",
+    "strike_plan": "ATM or 1 ITM, December monthly (E7) - premium: not known in this run",
+    "chips": [],
+    "proof": "NOT PROVEN (day 0 of 20)",
+    "extreme": false,
+    "rsi14": 40.3,
+    "inputs_from": "2026-11-19T09:00+05:30",
+    "inputs_to": "2026-11-20T07:15+05:30",
+    "ai_grade_change": null,
+    "computed_at": "2026-11-20T17:44:59+05:30",
+    "list": "SCORED",
+    "code_rank": 2,
+    "id": "c0df8cc8eec7",
+    "status": "ADDED",
+    "change_note": "NEW U07",
+    "source": "results",
+    "rank": 2
+   },
+   {
+    "session": "2026-11-20",
+    "version": "U07",
+    "made_at": "2026-11-20T07:15:00+05:30",
+    "side": "CE",
+    "dir": "UP",
+    "symbol": "WAAREEENER",
+    "sector": "capital goods",
+    "score": 1.737,
+    "points": 3,
+    "grade": "MEDIUM",
+    "p_cal": null,
+    "p_source": "NOT CALIBRATED",
+    "base_rate": 0.295,
+    "confidence": "MEDIUM (base 30%) - NOT CALIBRATED",
+    "expected_move_pct": 2.99,
+    "expected_move_src": "own median on 51 past 2%-move days",
+    "trigger_rule": "first 1-minute close above yesterday's high 2447.50 with RVOL >= 2.0 (day volume so far 2x a normal day's by that minute, price above VWAP)",
+    "trigger_px": 2447.5,
+    "volume_rule": "RVOL >= 2.0 (section 0)",
+    "cancel_px": 2413.54,
+    "cancel_final": false,
+    "cancel_note": "provisional (yesterday's close in place of the IEP); final at 09:08",
+    "cancel_facts": [
+     "an overnight driver reverses past its threshold",
+     "a denial or scope change of the news",
+     "a contrary broker stance change",
+     "GIFT against by more than 0.8% (beta > 1 shares)"
+    ],
+    "why": [
+     {
+      "id": "N:b3ca9ac6",
+      "text": "NEWS Thu 23:43 \u00b7 class B source \u00b7 Waaree Energies arm bags over \u20b9100 crore NTPC order for battery storage project",
+      "counter": "other side: PE on its suppliers / rivals if the news is about share taken from them",
+      "proof": "NOT PROVEN (no record for this source yet)",
+      "unit": 0.6,
+      "src": "GOOGLE NEWS",
+      "kind": "news"
+     },
+     {
+      "id": "N:82e97f68",
+      "text": "NEWS Thu 23:43 \u00b7 class C source \u00b7 Waaree Transpower Secures INR 100 Crore-Plus Transformer Order from NTPC",
+      "counter": "other side: PE on its suppliers / rivals if the news is about share taken from them",
+      "proof": "NOT PROVEN (no record for this source yet)",
+      "unit": 0.6,
+      "src": "GOOGLE NEWS",
+      "kind": "news"
+     },
+     {
+      "id": "F02",
+      "text": "5-day return = -0.054 (measured: gap -2.25 pts, same sign 4 of 4 years)",
+      "counter": "the same feature on the other side has +2.25 pts - weak on its own",
+      "proof": "measured on 2022-2025, held-out side right 50% - NOT PROVEN",
+      "unit": null
+     },
+     {
+      "id": "F04",
+      "text": "return vs its sector (relative strength) = -0.001 (measured: gap -2.88 pts, same sign 4 of 4 years)",
+      "counter": "the same feature on the other side has +2.88 pts - weak on its own",
+      "proof": "measured on 2022-2025, held-out side right 50% - NOT PROVEN",
+      "unit": null
+     },
+     {
+      "id": "MOVE",
+      "text": "moves a lot: ATR14 3.5%, RVOL 0.7, day move +1.7%",
+      "counter": "the same size of move can come on either side",
+      "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+      "unit": null
+     }
+    ],
+    "against": [
+     {
+      "id": "F06",
+      "text": "sector 3-day run = -0.006 points the other way"
+     }
+    ],
+    "pdh": 2447.5,
+    "pdl": 2375.1,
+    "pclose": 2433.0,
+    "atr": 83.83,
+    "role": "DEPENDENT",
+    "strike_plan": "ATM or 1 ITM, December monthly (E7) - premium: not known in this run",
+    "chips": [],
+    "proof": "NOT PROVEN (day 0 of 20)",
+    "extreme": false,
+    "rsi14": 50.0,
+    "inputs_from": "2026-11-19T09:00+05:30",
+    "inputs_to": "2026-11-20T07:15+05:30",
+    "ai_grade_change": null,
+    "computed_at": "2026-11-20T17:44:59+05:30",
+    "list": "SCORED",
+    "code_rank": 3,
+    "id": "cdfb84a7ee18",
+    "status": "ADDED",
+    "change_note": "NEW U07",
+    "source": "news",
+    "rank": 3
+   }
+  ],
+  "PE": []
+ },
+ "watch": {
+  "CE": [],
+  "PE": []
+ },
+ "movers": [
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "AMBER",
+   "sector": "electronics & hardware",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 1.633,
+   "mover_rank": 1,
+   "score": 1.633,
+   "pdh": 6755.0,
+   "pdl": 6241.0,
+   "pclose": 6697.0,
+   "atr": 321.18,
+   "expected_move_pct": 2.99,
+   "ce": {
+    "trigger_px": 6755.0,
+    "cancel_px": 6643.42,
+    "expected_move_pct": 2.82,
+    "trigger_rule": "first 1-minute close above yesterday's high 6755.00 with RVOL >= 2.0 (day volume so far 2x a normal day's by that minute, price above VWAP)"
+   },
+   "pe": {
+    "trigger_px": 6241.0,
+    "cancel_px": 6750.58,
+    "expected_move_pct": 2.99,
+    "trigger_rule": "first 1-minute close below yesterday's low 6241.00 with RVOL >= 2.0 (price below VWAP)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 4.8%, RVOL 5.1, day move +7.4%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "LEADER",
+   "chips": [],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": false,
+   "rsi14": 56.0,
+   "text": "MOVER (side open): AMBER \u00b7 CE above 6755.00 / PE below 6241.00 (RVOL 2) \u00b7 sector electronics & hardware \u00b7 NOT PROVEN",
+   "id": "ef44a555d91b",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 5,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "BLUESTARCO",
+   "sector": "consumer durables",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 1.457,
+   "mover_rank": 2,
+   "score": 1.457,
+   "pdh": 1775.2,
+   "pdl": 1621.8,
+   "pclose": 1764.0,
+   "atr": 59.37,
+   "expected_move_pct": 2.99,
+   "ce": {
+    "trigger_px": 1775.2,
+    "cancel_px": 1749.89,
+    "expected_move_pct": 2.99,
+    "trigger_rule": "EXTREME - no breakout entry: pullback only - after 09:30 a 1-minute bar that dips to VWAP (within 0.2%) and closes back above it with RVOL >= 2 (yesterday's high 1775.20 is information only)"
+   },
+   "pe": {
+    "trigger_px": 1621.8,
+    "cancel_px": 1775.2,
+    "expected_move_pct": 2.89,
+    "trigger_rule": "first 1-minute close below yesterday's low 1621.80 with RVOL >= 2.0 (price below VWAP) - EXTREME: PE only on the turn (yesterday's low broken, below VWAP, volume, sector weakening)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 3.4%, RVOL 8.1, day move +8.8%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "LEADER",
+   "chips": [
+    "EXTREME +11.0% above its 20-day average (RSI 71) - the 81% / -7.6% record (n=318) is measured for RSI >= 80 only"
+   ],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": true,
+   "rsi14": 71.1,
+   "text": "MOVER (side open): BLUESTARCO \u00b7 CE above 1775.20 / PE below 1621.80 (RVOL 2) \u00b7 sector consumer durables \u00b7 NOT PROVEN",
+   "id": "a76ac88a025e",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 6,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "IREDA",
+   "sector": "nbfc & finance",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 1.4,
+   "mover_rank": 3,
+   "score": 1.4,
+   "pdh": 133.6,
+   "pdl": 119.7,
+   "pclose": 129.8,
+   "atr": 5.23,
+   "expected_move_pct": 3.36,
+   "ce": {
+    "trigger_px": 133.6,
+    "cancel_px": 128.76,
+    "expected_move_pct": 3.36,
+    "trigger_rule": "EXTREME - no breakout entry: pullback only - after 09:30 a 1-minute bar that dips to VWAP (within 0.2%) and closes back above it with RVOL >= 2 (yesterday's high 133.60 is information only)"
+   },
+   "pe": {
+    "trigger_px": 119.7,
+    "cancel_px": 130.84,
+    "expected_move_pct": 2.7,
+    "trigger_rule": "first 1-minute close below yesterday's low 119.70 with RVOL >= 2.0 (price below VWAP) - EXTREME: PE only on the turn (yesterday's low broken, below VWAP, volume, sector weakening)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 4.0%, RVOL 20.2, day move +8.3%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "LEADER",
+   "chips": [
+    "EXTREME +17.6% above its 20-day average (RSI 76) - the 81% / -7.6% record (n=318) is measured for RSI >= 80 only"
+   ],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": true,
+   "rsi14": 76.3,
+   "text": "MOVER (side open): IREDA \u00b7 CE above 133.60 / PE below 119.70 (RVOL 2) \u00b7 sector nbfc & finance \u00b7 NOT PROVEN",
+   "id": "da9864cb6036",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 7,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "ASHOKLEY",
+   "sector": "auto",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 1.196,
+   "mover_rank": 4,
+   "score": 1.196,
+   "pdh": 167.7,
+   "pdl": 160.96,
+   "pclose": 166.15,
+   "atr": 6.9,
+   "expected_move_pct": 3.02,
+   "ce": {
+    "trigger_px": 167.7,
+    "cancel_px": 164.82,
+    "expected_move_pct": 3.02,
+    "trigger_rule": "first 1-minute close above yesterday's high 167.70 with RVOL >= 2.0 (day volume so far 2x a normal day's by that minute, price above VWAP)"
+   },
+   "pe": {
+    "trigger_px": 160.96,
+    "cancel_px": 167.48,
+    "expected_move_pct": 2.86,
+    "trigger_rule": "first 1-minute close below yesterday's low 160.96 with RVOL >= 2.0 (price below VWAP)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 4.2%, RVOL 1.7, day move +2.3%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "DEPENDENT",
+   "chips": [],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": false,
+   "rsi14": 56.9,
+   "text": "MOVER (side open): ASHOKLEY \u00b7 CE above 167.70 / PE below 160.96 (RVOL 2) \u00b7 sector auto \u00b7 NOT PROVEN",
+   "id": "3ff529e9b6a0",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 8,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "VOLTAS",
+   "sector": "consumer durables",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 1.167,
+   "mover_rank": 5,
+   "score": 1.167,
+   "pdh": 1243.7,
+   "pdl": 1131.0,
+   "pclose": 1237.0,
+   "atr": 44.78,
+   "expected_move_pct": 2.94,
+   "ce": {
+    "trigger_px": 1243.7,
+    "cancel_px": 1227.1,
+    "expected_move_pct": 2.94,
+    "trigger_rule": "EXTREME - no breakout entry: pullback only - after 09:30 a 1-minute bar that dips to VWAP (within 0.2%) and closes back above it with RVOL >= 2 (yesterday's high 1243.70 is information only)"
+   },
+   "pe": {
+    "trigger_px": 1131.0,
+    "cancel_px": 1243.7,
+    "expected_move_pct": 2.94,
+    "trigger_rule": "first 1-minute close below yesterday's low 1131.00 with RVOL >= 2.0 (price below VWAP) - EXTREME: PE only on the turn (yesterday's low broken, below VWAP, volume, sector weakening)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 3.6%, RVOL 6.9, day move +9.0%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "LEADER",
+   "chips": [
+    "EXTREME +15.2% above its 20-day average (RSI 71) - the 81% / -7.6% record (n=318) is measured for RSI >= 80 only"
+   ],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": true,
+   "rsi14": 71.1,
+   "text": "MOVER (side open): VOLTAS \u00b7 CE above 1243.70 / PE below 1131.00 (RVOL 2) \u00b7 sector consumer durables \u00b7 NOT PROVEN",
+   "id": "2e62dbf2f6cb",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 9,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "PAYTM",
+   "sector": "nbfc & finance",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 1.161,
+   "mover_rank": 6,
+   "score": 1.161,
+   "pdh": 1808.9,
+   "pdl": 1664.3,
+   "pclose": 1725.9,
+   "atr": 71.98,
+   "expected_move_pct": 3.11,
+   "ce": {
+    "trigger_px": 1808.9,
+    "cancel_px": 1712.09,
+    "expected_move_pct": 3.11,
+    "trigger_rule": "first 1-minute close above yesterday's high 1808.90 with RVOL >= 2.0 (day volume so far 2x a normal day's by that minute, price above VWAP)"
+   },
+   "pe": {
+    "trigger_px": 1664.3,
+    "cancel_px": 1739.71,
+    "expected_move_pct": 2.82,
+    "trigger_rule": "first 1-minute close below yesterday's low 1664.30 with RVOL >= 2.0 (price below VWAP)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 4.2%, RVOL 7.9, day move -8.7%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "DEPENDENT",
+   "chips": [],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": false,
+   "rsi14": 46.0,
+   "text": "MOVER (side open): PAYTM \u00b7 CE above 1808.90 / PE below 1664.30 (RVOL 2) \u00b7 sector nbfc & finance \u00b7 NOT PROVEN",
+   "id": "2f49ae283cbc",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 10,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "EICHERMOT",
+   "sector": "auto",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 1.042,
+   "mover_rank": 7,
+   "score": 1.042,
+   "pdh": 8072.5,
+   "pdl": 7675.0,
+   "pclose": 8058.5,
+   "atr": 229.18,
+   "expected_move_pct": 2.83,
+   "ce": {
+    "trigger_px": 8072.5,
+    "cancel_px": 7994.03,
+    "expected_move_pct": 2.48,
+    "trigger_rule": "first 1-minute close above yesterday's high 8072.50 with RVOL >= 2.0 (day volume so far 2x a normal day's by that minute, price above VWAP)"
+   },
+   "pe": {
+    "trigger_px": 7675.0,
+    "cancel_px": 8072.5,
+    "expected_move_pct": 2.83,
+    "trigger_rule": "first 1-minute close below yesterday's low 7675.00 with RVOL >= 2.0 (price below VWAP)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 2.8%, RVOL 2.2, day move +4.7%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "LEADER",
+   "chips": [],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": false,
+   "rsi14": 69.1,
+   "text": "MOVER (side open): EICHERMOT \u00b7 CE above 8072.50 / PE below 7675.00 (RVOL 2) \u00b7 sector auto \u00b7 NOT PROVEN",
+   "id": "2ad3d0bda94e",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 11,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "CROMPTON",
+   "sector": "consumer durables",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.956,
+   "mover_rank": 8,
+   "score": 0.956,
+   "pdh": 220.0,
+   "pdl": 207.21,
+   "pclose": 220.0,
+   "atr": 7.45,
+   "expected_move_pct": 2.93,
+   "ce": {
+    "trigger_px": 220.0,
+    "cancel_px": 218.24,
+    "expected_move_pct": 2.82,
+    "trigger_rule": "first 1-minute close above yesterday's high 220.00 with RVOL >= 2.0 (day volume so far 2x a normal day's by that minute, price above VWAP)"
+   },
+   "pe": {
+    "trigger_px": 207.21,
+    "cancel_px": 220.0,
+    "expected_move_pct": 2.93,
+    "trigger_rule": "first 1-minute close below yesterday's low 207.21 with RVOL >= 2.0 (price below VWAP)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 3.4%, RVOL 2.4, day move +6.1%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "DEPENDENT",
+   "chips": [],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": false,
+   "rsi14": 58.8,
+   "text": "MOVER (side open): CROMPTON \u00b7 CE above 220.00 / PE below 207.21 (RVOL 2) \u00b7 sector consumer durables \u00b7 NOT PROVEN",
+   "id": "94387008f6e5",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 12,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "DELHIVERY",
+   "sector": "services",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.947,
+   "mover_rank": 9,
+   "score": 0.947,
+   "pdh": 459.2,
+   "pdl": 439.2,
+   "pclose": 456.7,
+   "atr": 15.02,
+   "expected_move_pct": 2.78,
+   "ce": {
+    "trigger_px": 459.2,
+    "cancel_px": 453.05,
+    "expected_move_pct": 2.78,
+    "trigger_rule": "first 1-minute close above yesterday's high 459.20 with RVOL >= 2.0 (day volume so far 2x a normal day's by that minute, price above VWAP)"
+   },
+   "pe": {
+    "trigger_px": 439.2,
+    "cancel_px": 459.2,
+    "expected_move_pct": 2.6,
+    "trigger_rule": "first 1-minute close below yesterday's low 439.20 with RVOL >= 2.0 (price below VWAP)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 3.3%, RVOL 3.1, day move +1.6%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "DEPENDENT",
+   "chips": [],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": false,
+   "rsi14": 66.6,
+   "text": "MOVER (side open): DELHIVERY \u00b7 CE above 459.20 / PE below 439.20 (RVOL 2) \u00b7 sector services \u00b7 NOT PROVEN",
+   "id": "820cfece76b4",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 13,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "HYUNDAI",
+   "sector": "auto",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.943,
+   "mover_rank": 10,
+   "score": 0.943,
+   "pdh": 2235.6,
+   "pdl": 2082.6,
+   "pclose": 2219.2,
+   "atr": 63.76,
+   "expected_move_pct": 2.8,
+   "ce": {
+    "trigger_px": 2235.6,
+    "cancel_px": 2201.45,
+    "expected_move_pct": 2.8,
+    "trigger_rule": "first 1-minute close above yesterday's high 2235.60 with RVOL >= 2.0 (day volume so far 2x a normal day's by that minute, price above VWAP)"
+   },
+   "pe": {
+    "trigger_px": 2082.6,
+    "cancel_px": 2235.6,
+    "expected_move_pct": 2.69,
+    "trigger_rule": "first 1-minute close below yesterday's low 2082.60 with RVOL >= 2.0 (price below VWAP)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 2.9%, RVOL 2.6, day move +5.8%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "LEADER",
+   "chips": [],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": false,
+   "rsi14": 66.8,
+   "text": "MOVER (side open): HYUNDAI \u00b7 CE above 2235.60 / PE below 2082.60 (RVOL 2) \u00b7 sector auto \u00b7 NOT PROVEN",
+   "id": "f146352805b7",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 14,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "BANKBARODA",
+   "sector": "banks",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.931,
+   "mover_rank": 11,
+   "score": 0.931,
+   "pdh": 285.9,
+   "pdl": 272.5,
+   "pclose": 285.9,
+   "atr": 7.23,
+   "expected_move_pct": 2.82,
+   "ce": {
+    "trigger_px": 285.9,
+    "cancel_px": 283.61,
+    "expected_move_pct": 2.36,
+    "trigger_rule": "EXTREME - no breakout entry: pullback only - after 09:30 a 1-minute bar that dips to VWAP (within 0.2%) and closes back above it with RVOL >= 2 (yesterday's high 285.90 is information only)"
+   },
+   "pe": {
+    "trigger_px": 272.5,
+    "cancel_px": 285.9,
+    "expected_move_pct": 2.82,
+    "trigger_rule": "first 1-minute close below yesterday's low 272.50 with RVOL >= 2.0 (price below VWAP) - EXTREME: PE only on the turn (yesterday's low broken, below VWAP, volume, sector weakening)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 2.5%, RVOL 2.9, day move +4.2%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    },
+    {
+     "id": "N:35464b7f",
+     "text": "NEWS Thu 21:49 \u00b7 class C source \u00b7 CBI arrests Bank of Baroda manager, two agents in Rs 9 lakh bribery case in Dehradun \u00b7 SIZE: an amount in lakhs - too small for an F&O share (E12: a small fine never)",
+     "counter": "other side: CE on rivals that gain what it loses",
+     "proof": "NOT PROVEN (no record for this source yet)",
+     "unit": 0.075,
+     "src": "GOOGLE NEWS",
+     "kind": "news"
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": "lean DOWN from news - NOT PROVEN (side still decided by price)",
+   "role": "LEADER",
+   "chips": [
+    "EXTREME +12.5% above its 20-day average (RSI 77) - the 81% / -7.6% record (n=318) is measured for RSI >= 80 only"
+   ],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": true,
+   "rsi14": 77.8,
+   "text": "MOVER (side open): BANKBARODA \u00b7 CE above 285.90 / PE below 272.50 (RVOL 2) \u00b7 sector banks \u00b7 NOT PROVEN",
+   "id": "2dec8b721351",
+   "source": "price-only",
+   "lean_source": "lean DOWN from news - NOT PROVEN (side still decided by pric",
+   "rank": 15,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "INOXWIND",
+   "sector": "capital goods",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.921,
+   "mover_rank": 12,
+   "score": 0.921,
+   "pdh": 58.56,
+   "pdl": 56.66,
+   "pclose": 56.97,
+   "atr": 3.26,
+   "expected_move_pct": 3.19,
+   "ce": {
+    "trigger_px": 58.56,
+    "cancel_px": 56.66,
+    "expected_move_pct": 3.08,
+    "trigger_rule": "first 1-minute close above yesterday's high 58.56 with RVOL >= 2.0 (day volume so far 2x a normal day's by that minute, price above VWAP)"
+   },
+   "pe": {
+    "trigger_px": 56.66,
+    "cancel_px": 57.43,
+    "expected_move_pct": 3.19,
+    "trigger_rule": "first 1-minute close below yesterday's low 56.66 with RVOL >= 2.0 (price below VWAP)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 5.7%, RVOL 1.7, day move -0.9%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    },
+    {
+     "id": "N:bc3fd12b",
+     "text": "NEWS Fri 07:12 \u00b7 class C source \u00b7 Inox Wind Share Price Crashes 10% to \u20b958 After Q2 Profit Falls 36%, CEO Resigns; Why Is the Stock Falling?",
+     "counter": "other side: CE on rivals that gain what it loses",
+     "proof": "NOT PROVEN (no record for this source yet)",
+     "unit": 0.6,
+     "src": "GOOGLE NEWS",
+     "kind": "news"
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": "lean DOWN from news - NOT PROVEN (side still decided by price)",
+   "role": "DEPENDENT",
+   "chips": [],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": false,
+   "rsi14": 35.0,
+   "text": "MOVER (side open): INOXWIND \u00b7 CE above 58.56 / PE below 56.66 (RVOL 2) \u00b7 sector capital goods \u00b7 NOT PROVEN",
+   "id": "5a3b6493550d",
+   "source": "price-only",
+   "lean_source": "lean DOWN from news - NOT PROVEN (side still decided by pric",
+   "rank": 16,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "BANKINDIA",
+   "sector": "banks",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.867,
+   "mover_rank": 13,
+   "score": 0.867,
+   "pdh": 162.9,
+   "pdl": 157.7,
+   "pclose": 161.9,
+   "atr": 4.34,
+   "expected_move_pct": 2.66,
+   "ce": {
+    "trigger_px": 162.9,
+    "cancel_px": 160.6,
+    "expected_move_pct": 2.66,
+    "trigger_rule": "EXTREME - no breakout entry: pullback only - after 09:30 a 1-minute bar that dips to VWAP (within 0.2%) and closes back above it with RVOL >= 2 (yesterday's high 162.90 is information only)"
+   },
+   "pe": {
+    "trigger_px": 157.7,
+    "cancel_px": 162.9,
+    "expected_move_pct": 2.5,
+    "trigger_rule": "first 1-minute close below yesterday's low 157.70 with RVOL >= 2.0 (price below VWAP) - EXTREME: PE only on the turn (yesterday's low broken, below VWAP, volume, sector weakening)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 2.7%, RVOL 1.5, day move +2.5%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "LEADER",
+   "chips": [
+    "EXTREME +13.9% above its 20-day average (RSI 75) - the 81% / -7.6% record (n=318) is measured for RSI >= 80 only"
+   ],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": true,
+   "rsi14": 75.6,
+   "text": "MOVER (side open): BANKINDIA \u00b7 CE above 162.90 / PE below 157.70 (RVOL 2) \u00b7 sector banks \u00b7 NOT PROVEN",
+   "id": "f504ca4de915",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 17,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "M&M",
+   "sector": "auto",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.816,
+   "mover_rank": 14,
+   "score": 0.816,
+   "pdh": 3525.9,
+   "pdl": 3333.1,
+   "pclose": 3509.0,
+   "atr": 98.78,
+   "expected_move_pct": 2.63,
+   "ce": {
+    "trigger_px": 3525.9,
+    "cancel_px": 3480.93,
+    "expected_move_pct": 2.63,
+    "trigger_rule": "EXTREME - no breakout entry: pullback only - after 09:30 a 1-minute bar that dips to VWAP (within 0.2%) and closes back above it with RVOL >= 2 (yesterday's high 3525.90 is information only)"
+   },
+   "pe": {
+    "trigger_px": 3333.1,
+    "cancel_px": 3525.9,
+    "expected_move_pct": 2.57,
+    "trigger_rule": "first 1-minute close below yesterday's low 3333.10 with RVOL >= 2.0 (price below VWAP) - EXTREME: PE only on the turn (yesterday's low broken, below VWAP, volume, sector weakening)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 2.8%, RVOL 2.3, day move +4.5%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "LEADER",
+   "chips": [
+    "EXTREME +11.9% above its 20-day average (RSI 72) - the 81% / -7.6% record (n=318) is measured for RSI >= 80 only"
+   ],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": true,
+   "rsi14": 72.4,
+   "text": "MOVER (side open): M&M \u00b7 CE above 3525.90 / PE below 3333.10 (RVOL 2) \u00b7 sector auto \u00b7 NOT PROVEN",
+   "id": "e25eadcea6b5",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 18,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "IDFCFIRSTB",
+   "sector": "banks",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.806,
+   "mover_rank": 15,
+   "score": 0.806,
+   "pdh": 86.73,
+   "pdl": 82.41,
+   "pclose": 86.05,
+   "atr": 2.23,
+   "expected_move_pct": 2.79,
+   "ce": {
+    "trigger_px": 86.73,
+    "cancel_px": 85.36,
+    "expected_move_pct": 2.79,
+    "trigger_rule": "EXTREME - no breakout entry: pullback only - after 09:30 a 1-minute bar that dips to VWAP (within 0.2%) and closes back above it with RVOL >= 2 (yesterday's high 86.73 is information only)"
+   },
+   "pe": {
+    "trigger_px": 82.41,
+    "cancel_px": 86.73,
+    "expected_move_pct": 2.6,
+    "trigger_rule": "first 1-minute close below yesterday's low 82.41 with RVOL >= 2.0 (price below VWAP) - EXTREME: PE only on the turn (yesterday's low broken, below VWAP, volume, sector weakening)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 2.6%, RVOL 2.6, day move +4.4%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "LEADER",
+   "chips": [
+    "EXTREME +11.8% above its 20-day average (RSI 68) - the 81% / -7.6% record (n=318) is measured for RSI >= 80 only"
+   ],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": true,
+   "rsi14": 68.5,
+   "text": "MOVER (side open): IDFCFIRSTB \u00b7 CE above 86.73 / PE below 82.41 (RVOL 2) \u00b7 sector banks \u00b7 NOT PROVEN",
+   "id": "7be3c1e1be00",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 19,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "PNB",
+   "sector": "banks",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.793,
+   "mover_rank": 16,
+   "score": 0.793,
+   "pdh": 156.49,
+   "pdl": 149.75,
+   "pclose": 154.85,
+   "atr": 4.55,
+   "expected_move_pct": 2.74,
+   "ce": {
+    "trigger_px": 156.49,
+    "cancel_px": 153.61,
+    "expected_move_pct": 2.71,
+    "trigger_rule": "EXTREME - no breakout entry: pullback only - after 09:30 a 1-minute bar that dips to VWAP (within 0.2%) and closes back above it with RVOL >= 2 (yesterday's high 156.49 is information only)"
+   },
+   "pe": {
+    "trigger_px": 149.75,
+    "cancel_px": 156.09,
+    "expected_move_pct": 2.74,
+    "trigger_rule": "first 1-minute close below yesterday's low 149.75 with RVOL >= 2.0 (price below VWAP) - EXTREME: PE only on the turn (yesterday's low broken, below VWAP, volume, sector weakening)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 2.9%, RVOL 2.9, day move +3.5%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    },
+    {
+     "id": "N:a35dc7f2",
+     "text": "NEWS Thu 20:05 \u00b7 VERIFIED (class A) \u00b7 Punjab National Bank - 532461 - Announcement Under Regulation 30 (LODR) - Credit Rating | Upgradation of Bank''s ratings",
+     "counter": "other side: PE on its suppliers / rivals if the news is about share taken from them",
+     "proof": "NOT PROVEN (no record for this source yet)",
+     "unit": 0.6,
+     "src": "filing BSE",
+     "kind": "news"
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": "lean UP from news - NOT PROVEN (side still decided by price)",
+   "role": "LEADER",
+   "chips": [
+    "EXTREME RSI 86 - 81% corrected within 20 days (median -7.6%), n=318"
+   ],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": true,
+   "rsi14": 86.1,
+   "text": "MOVER (side open): PNB \u00b7 CE above 156.49 / PE below 149.75 (RVOL 2) \u00b7 sector banks \u00b7 NOT PROVEN",
+   "id": "87e21bb71354",
+   "source": "price-only",
+   "lean_source": "lean UP from news - NOT PROVEN (side still decided by price)",
+   "rank": 20,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "POLYCAB",
+   "sector": "capital goods",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.774,
+   "mover_rank": 17,
+   "score": 0.774,
+   "pdh": 7571.0,
+   "pdl": 7238.0,
+   "pclose": 7550.0,
+   "atr": 235.39,
+   "expected_move_pct": 3.01,
+   "ce": {
+    "trigger_px": 7571.0,
+    "cancel_px": 7489.6,
+    "expected_move_pct": 2.79,
+    "trigger_rule": "first 1-minute close above yesterday's high 7571.00 with RVOL >= 2.0 (day volume so far 2x a normal day's by that minute, price above VWAP)"
+   },
+   "pe": {
+    "trigger_px": 7238.0,
+    "cancel_px": 7571.0,
+    "expected_move_pct": 3.01,
+    "trigger_rule": "first 1-minute close below yesterday's low 7238.00 with RVOL >= 2.0 (price below VWAP)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 3.1%, RVOL 3.2, day move +3.3%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    },
+    {
+     "id": "L:EXPOSURE",
+     "text": "IDEA - NOT PROVEN: PE CABLES via EXPOSURE (KB WEAK, 3 pts) \u00b7 other side: no other-side row in the map",
+     "counter": "no other-side row in the map",
+     "proof": "IDEA - NOT PROVEN (weight 0)",
+     "unit": 0
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "LEADER",
+   "chips": [],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": false,
+   "rsi14": 40.7,
+   "text": "MOVER (side open): POLYCAB \u00b7 CE above 7571.00 / PE below 7238.00 (RVOL 2) \u00b7 sector capital goods \u00b7 NOT PROVEN",
+   "id": "76c9f4fd6981",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 21,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "MUTHOOTFIN",
+   "sector": "nbfc & finance",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.771,
+   "mover_rank": 18,
+   "score": 0.771,
+   "pdh": 2635.2,
+   "pdl": 2553.8,
+   "pclose": 2618.0,
+   "atr": 109.9,
+   "expected_move_pct": 2.89,
+   "ce": {
+    "trigger_px": 2635.2,
+    "cancel_px": 2597.06,
+    "expected_move_pct": 2.89,
+    "trigger_rule": "first 1-minute close above yesterday's high 2635.20 with RVOL >= 2.0 (day volume so far 2x a normal day's by that minute, price above VWAP)"
+   },
+   "pe": {
+    "trigger_px": 2553.8,
+    "cancel_px": 2635.2,
+    "expected_move_pct": 2.89,
+    "trigger_rule": "first 1-minute close below yesterday's low 2553.80 with RVOL >= 2.0 (price below VWAP)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 4.2%, RVOL 2.4, day move -0.8%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    },
+    {
+     "id": "N:178bc1cf",
+     "text": "NEWS Thu 22:01 \u00b7 class B source \u00b7 Gold near 14-month low: Muthoot Finance, Manappuram, IIFL Finance shares fall; Kalyan Jewellers gains",
+     "counter": "other side: CE on rivals that gain what it loses",
+     "proof": "NOT PROVEN (no record for this source yet)",
+     "unit": 0.6,
+     "src": "GOOGLE NEWS",
+     "kind": "news"
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": "lean DOWN from news - NOT PROVEN (side still decided by price)",
+   "role": "DEPENDENT",
+   "chips": [],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": false,
+   "rsi14": 44.1,
+   "text": "MOVER (side open): MUTHOOTFIN \u00b7 CE above 2635.20 / PE below 2553.80 (RVOL 2) \u00b7 sector nbfc & finance \u00b7 NOT PROVEN",
+   "id": "f302f1919cc1",
+   "source": "price-only",
+   "lean_source": "lean DOWN from news - NOT PROVEN (side still decided by pric",
+   "rank": 22,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "MAHABANK",
+   "sector": "banks",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.768,
+   "mover_rank": 19,
+   "score": 0.768,
+   "pdh": 98.72,
+   "pdl": 95.81,
+   "pclose": 97.98,
+   "atr": 2.73,
+   "expected_move_pct": 2.84,
+   "ce": {
+    "trigger_px": 98.72,
+    "cancel_px": 97.2,
+    "expected_move_pct": 2.84,
+    "trigger_rule": "EXTREME - no breakout entry: pullback only - after 09:30 a 1-minute bar that dips to VWAP (within 0.2%) and closes back above it with RVOL >= 2 (yesterday's high 98.72 is information only)"
+   },
+   "pe": {
+    "trigger_px": 95.81,
+    "cancel_px": 98.72,
+    "expected_move_pct": 2.78,
+    "trigger_rule": "first 1-minute close below yesterday's low 95.81 with RVOL >= 2.0 (price below VWAP) - EXTREME: PE only on the turn (yesterday's low broken, below VWAP, volume, sector weakening)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 2.8%, RVOL 1.6, day move +2.1%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "DEPENDENT",
+   "chips": [
+    "EXTREME +14.3% above its 20-day average (RSI 77) - the 81% / -7.6% record (n=318) is measured for RSI >= 80 only"
+   ],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": true,
+   "rsi14": 77.2,
+   "text": "MOVER (side open): MAHABANK \u00b7 CE above 98.72 / PE below 95.81 (RVOL 2) \u00b7 sector banks \u00b7 NOT PROVEN",
+   "id": "38039009de72",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 23,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "BDL",
+   "sector": "capital goods",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.758,
+   "mover_rank": 20,
+   "score": 0.758,
+   "pdh": 1043.2,
+   "pdl": 1013.35,
+   "pclose": 1032.45,
+   "atr": 41.59,
+   "expected_move_pct": 3.17,
+   "ce": {
+    "trigger_px": 1043.2,
+    "cancel_px": 1024.19,
+    "expected_move_pct": 3.17,
+    "trigger_rule": "first 1-minute close above yesterday's high 1043.20 with RVOL >= 2.0 (day volume so far 2x a normal day's by that minute, price above VWAP)"
+   },
+   "pe": {
+    "trigger_px": 1013.35,
+    "cancel_px": 1040.71,
+    "expected_move_pct": 2.92,
+    "trigger_rule": "first 1-minute close below yesterday's low 1013.35 with RVOL >= 2.0 (price below VWAP)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 4.0%, RVOL 1.2, day move +1.9%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    },
+    {
+     "id": "N:7d75b925",
+     "text": "NEWS Fri 07:04 \u00b7 class C source \u00b7 BEL, BDL Share Prices in Focus Today After India Signs \u20b91,976 Crore Barak Missile Upgrade Deal With Israel",
+     "counter": "other side: PE on its suppliers / rivals if the news is about share taken from them",
+     "proof": "NOT PROVEN (no record for this source yet)",
+     "unit": 0.6,
+     "src": "GOOGLE NEWS",
+     "kind": "news"
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": "lean UP from news - NOT PROVEN (side still decided by price)",
+   "role": "DEPENDENT",
+   "chips": [],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": false,
+   "rsi14": 44.5,
+   "text": "MOVER (side open): BDL \u00b7 CE above 1043.20 / PE below 1013.35 (RVOL 2) \u00b7 sector capital goods \u00b7 NOT PROVEN",
+   "id": "c8863c7bbfea",
+   "source": "price-only",
+   "lean_source": "lean UP from news - NOT PROVEN (side still decided by price)",
+   "rank": 24,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "BHARATFORG",
+   "sector": "auto",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.746,
+   "mover_rank": 21,
+   "score": 0.746,
+   "pdh": 1734.5,
+   "pdl": 1688.0,
+   "pclose": 1729.2,
+   "atr": 53.41,
+   "expected_move_pct": 2.8,
+   "ce": {
+    "trigger_px": 1734.5,
+    "cancel_px": 1715.37,
+    "expected_move_pct": 2.8,
+    "trigger_rule": "first 1-minute close above yesterday's high 1734.50 with RVOL >= 2.0 (day volume so far 2x a normal day's by that minute, price above VWAP)"
+   },
+   "pe": {
+    "trigger_px": 1688.0,
+    "cancel_px": 1734.5,
+    "expected_move_pct": 2.76,
+    "trigger_rule": "first 1-minute close below yesterday's low 1688.00 with RVOL >= 2.0 (price below VWAP)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 3.1%, RVOL 2.0, day move +2.6%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "DEPENDENT",
+   "chips": [],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": false,
+   "rsi14": 43.6,
+   "text": "MOVER (side open): BHARATFORG \u00b7 CE above 1734.50 / PE below 1688.00 (RVOL 2) \u00b7 sector auto \u00b7 NOT PROVEN",
+   "id": "fb648f5634ab",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 25,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "FORCEMOT",
+   "sector": "auto",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.736,
+   "mover_rank": 22,
+   "score": 0.736,
+   "pdh": 20497.0,
+   "pdl": 19950.0,
+   "pclose": 20443.0,
+   "atr": 722.71,
+   "expected_move_pct": 3.34,
+   "ce": {
+    "trigger_px": 20497.0,
+    "cancel_px": 20279.46,
+    "expected_move_pct": 3.34,
+    "trigger_rule": "EXTREME - no breakout entry: pullback only - after 09:30 a 1-minute bar that dips to VWAP (within 0.2%) and closes back above it with RVOL >= 2 (yesterday's high 20497.00 is information only)"
+   },
+   "pe": {
+    "trigger_px": 19950.0,
+    "cancel_px": 20497.0,
+    "expected_move_pct": 3.15,
+    "trigger_rule": "first 1-minute close below yesterday's low 19950.00 with RVOL >= 2.0 (price below VWAP) - EXTREME: PE only on the turn (yesterday's low broken, below VWAP, volume, sector weakening)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 3.5%, RVOL 1.4, day move +1.8%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "DEPENDENT",
+   "chips": [
+    "EXTREME +10.6% above its 20-day average (RSI 73) - the 81% / -7.6% record (n=318) is measured for RSI >= 80 only"
+   ],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": true,
+   "rsi14": 73.6,
+   "text": "MOVER (side open): FORCEMOT \u00b7 CE above 20497.00 / PE below 19950.00 (RVOL 2) \u00b7 sector auto \u00b7 NOT PROVEN",
+   "id": "5794e9748d66",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 26,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "CUMMINSIND",
+   "sector": "capital goods",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.733,
+   "mover_rank": 23,
+   "score": 0.733,
+   "pdh": 4141.5,
+   "pdl": 3985.9,
+   "pclose": 4141.5,
+   "atr": 188.66,
+   "expected_move_pct": 2.97,
+   "ce": {
+    "trigger_px": 4141.5,
+    "cancel_px": 4108.37,
+    "expected_move_pct": 2.56,
+    "trigger_rule": "first 1-minute close above yesterday's high 4141.50 with RVOL >= 2.0 (day volume so far 2x a normal day's by that minute, price above VWAP)"
+   },
+   "pe": {
+    "trigger_px": 3985.9,
+    "cancel_px": 4141.5,
+    "expected_move_pct": 2.97,
+    "trigger_rule": "first 1-minute close below yesterday's low 3985.90 with RVOL >= 2.0 (price below VWAP)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 4.6%, RVOL 0.8, day move +3.4%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    },
+    {
+     "id": "B:Goldman Sachs",
+     "text": "BROKER Thu 12:44 \u00b7 UNVERIFIED - TV only \u00b7 Goldman Sachs UP OVERWEIGHT INDUSTRIALS (strengthening growth) (house 6 of 7, shrunk 0.65)",
+     "counter": "other side: PE on its suppliers / rivals if the news is about share taken from them",
+     "proof": "NOT PROVEN (no record for this source yet)",
+     "unit": 0.147,
+     "src": "Goldman Sachs",
+     "kind": "broker"
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": "lean UP from broker - NOT PROVEN (side still decided by price)",
+   "role": "LEADER",
+   "chips": [],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": false,
+   "rsi14": 40.9,
+   "text": "MOVER (side open): CUMMINSIND \u00b7 CE above 4141.50 / PE below 3985.90 (RVOL 2) \u00b7 sector capital goods \u00b7 NOT PROVEN",
+   "id": "7fced1c7549f",
+   "source": "price-only",
+   "lean_source": "lean UP from broker - NOT PROVEN (side still decided by pric",
+   "rank": 27,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "MARUTI",
+   "sector": "auto",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.726,
+   "mover_rank": 24,
+   "score": 0.726,
+   "pdh": 13617.0,
+   "pdl": 12602.0,
+   "pclose": 13589.0,
+   "atr": 362.86,
+   "expected_move_pct": 2.74,
+   "ce": {
+    "trigger_px": 13617.0,
+    "cancel_px": 13480.29,
+    "expected_move_pct": 2.61,
+    "trigger_rule": "EXTREME - no breakout entry: pullback only - after 09:30 a 1-minute bar that dips to VWAP (within 0.2%) and closes back above it with RVOL >= 2 (yesterday's high 13617.00 is information only)"
+   },
+   "pe": {
+    "trigger_px": 12602.0,
+    "cancel_px": 13617.0,
+    "expected_move_pct": 2.74,
+    "trigger_rule": "first 1-minute close below yesterday's low 12602.00 with RVOL >= 2.0 (price below VWAP) - EXTREME: PE only on the turn (yesterday's low broken, below VWAP, volume, sector weakening)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 2.7%, RVOL 2.8, day move +7.6%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "LEADER",
+   "chips": [
+    "EXTREME +10.7% above its 20-day average (RSI 72) - the 81% / -7.6% record (n=318) is measured for RSI >= 80 only"
+   ],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": true,
+   "rsi14": 72.5,
+   "text": "MOVER (side open): MARUTI \u00b7 CE above 13617.00 / PE below 12602.00 (RVOL 2) \u00b7 sector auto \u00b7 NOT PROVEN",
+   "id": "f8fe2bbd6d0c",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 28,
+   "status": "NEW"
+  },
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "side": "BOTH",
+   "dir": "SIDE OPEN",
+   "symbol": "RVNL",
+   "sector": "construction",
+   "list": "MOVER (side open)",
+   "grade": "MOVER",
+   "M": 0.723,
+   "mover_rank": 25,
+   "score": 0.723,
+   "pdh": 195.85,
+   "pdl": 187.23,
+   "pclose": 195.0,
+   "atr": 8.19,
+   "expected_move_pct": 3.16,
+   "ce": {
+    "trigger_px": 195.85,
+    "cancel_px": 193.44,
+    "expected_move_pct": 3.16,
+    "trigger_rule": "first 1-minute close above yesterday's high 195.85 with RVOL >= 2.0 (day volume so far 2x a normal day's by that minute, price above VWAP)"
+   },
+   "pe": {
+    "trigger_px": 187.23,
+    "cancel_px": 195.85,
+    "expected_move_pct": 2.88,
+    "trigger_rule": "first 1-minute close below yesterday's low 187.23 with RVOL >= 2.0 (price below VWAP)"
+   },
+   "why": [
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 4.2%, RVOL 1.5, day move +3.2%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "SIDE",
+     "text": "the side is NOT known before the open (daily-data side test 50% held-out) - the first trigger decides"
+    }
+   ],
+   "lean": null,
+   "role": "DEPENDENT",
+   "chips": [],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "cancel_final": false,
+   "extreme": false,
+   "rsi14": 50.1,
+   "text": "MOVER (side open): RVNL \u00b7 CE above 195.85 / PE below 187.23 (RVOL 2) \u00b7 sector construction \u00b7 NOT PROVEN",
+   "id": "41670a6c621d",
+   "source": "price-only",
+   "lean_source": null,
+   "rank": 29,
+   "status": "NEW"
+  }
+ ],
+ "bounces": [
+  {
+   "session": "2026-11-20",
+   "version": "U07",
+   "made_at": "2026-11-20T07:15:00+05:30",
+   "side": "CE",
+   "dir": "UP",
+   "symbol": "PIIND",
+   "sector": "chemicals",
+   "score": 1.007,
+   "points": 1,
+   "grade": "BOUNCE",
+   "p_cal": null,
+   "p_source": "NOT CALIBRATED",
+   "base_rate": 0.295,
+   "confidence": "WEAK (base 30%) - NOT CALIBRATED",
+   "expected_move_pct": 2.64,
+   "expected_move_src": "own median on 48 past 2%-move days",
+   "trigger_rule": "BOUNCE on the turn: a 1-minute close above yesterday's high 1653.70 AND above VWAP with RVOL >= 2, its sector not falling",
+   "trigger_px": 1653.7,
+   "volume_rule": "RVOL >= 2.0 (section 0)",
+   "cancel_px": 1616.96,
+   "cancel_final": false,
+   "cancel_note": "provisional (yesterday's close in place of the IEP); final at 09:08",
+   "cancel_facts": [
+    "an overnight driver reverses past its threshold",
+    "a denial or scope change of the news",
+    "a contrary broker stance change",
+    "GIFT against by more than 0.8% (beta > 1 shares)"
+   ],
+   "why": [
+    {
+     "id": "F02",
+     "text": "5-day return = -0.063 (measured: gap -2.25 pts, same sign 4 of 4 years)",
+     "counter": "the same feature on the other side has +2.25 pts - weak on its own",
+     "proof": "measured on 2022-2025, held-out side right 50% - NOT PROVEN",
+     "unit": null
+    },
+    {
+     "id": "F04",
+     "text": "return vs its sector (relative strength) = -0.014 (measured: gap -2.88 pts, same sign 4 of 4 years)",
+     "counter": "the same feature on the other side has +2.88 pts - weak on its own",
+     "proof": "measured on 2022-2025, held-out side right 50% - NOT PROVEN",
+     "unit": null
+    },
+    {
+     "id": "MOVE",
+     "text": "moves a lot: ATR14 4.7%, RVOL 0.8, day move +0.4%",
+     "counter": "the same size of move can come on either side",
+     "proof": "measured (magnitude): lift 1.4 over the base rate held-out",
+     "unit": null
+    }
+   ],
+   "against": [
+    {
+     "id": "BASE",
+     "text": "no evidence row against - and the side of the daily features is right only 50% held-out (coin)"
+    }
+   ],
+   "pdh": 1653.7,
+   "pdl": 1612.5,
+   "pclose": 1630.0,
+   "atr": 76.91,
+   "role": "DEPENDENT",
+   "strike_plan": "ATM or 1 ITM, December monthly (E7) - premium: not known in this run",
+   "chips": [
+    "OVERSOLD RSI 25 - 87% bounced within 20 days, n=1,842 (the RSI <= 30 scan) \u00b7 strong market (NIFTY above its 50-day average): 21% kept falling (RSI <= 30 scan, n=410) \u00b7 NOT PROVEN"
+   ],
+   "proof": "NOT PROVEN (day 0 of 20)",
+   "extreme": false,
+   "rsi14": 25.1,
+   "inputs_from": "2026-11-19T09:00+05:30",
+   "inputs_to": "2026-11-20T07:15+05:30",
+   "ai_grade_change": null,
+   "computed_at": "2026-11-20T17:44:59+05:30",
+   "list": "CE BOUNCE (on the turn)",
+   "id": "2c19cbb92592",
+   "source": "price-only",
+   "rank": 4,
+   "status": "NEW"
+  }
+ ],
+ "bounce_skipped": [],
+ "market_state": "strong market (NIFTY above its 50-day average): 21% kept falling (RSI <= 30 scan, n=410)",
+ "ideas": [
+  {
+   "side": "PE",
+   "sector": "METALS",
+   "shares": [
+    "HINDALCO",
+    "NATIONALUM",
+    "HINDZINC"
+   ],
+   "grade_kb": "WEAK",
+   "points": 3,
+   "chains": [
+    "EXPOSURE"
+   ],
+   "why": "",
+   "other_side": "no other-side row in the map",
+   "trigger_kb": "09:20 sector confirmation (opening gap + futures OI), then the first pullback to VWAP that holds; no chasing a gap",
+   "labels": null,
+   "proof": "IDEA - NOT PROVEN (no chain row passes the PROVEN bar; blind test 221 of 459 = 48%)"
+  },
+  {
+   "side": "PE",
+   "sector": "CABLES",
+   "shares": [
+    "POLYCAB",
+    "KEI"
+   ],
+   "grade_kb": "WEAK",
+   "points": 3,
+   "chains": [
+    "EXPOSURE"
+   ],
+   "why": "",
+   "other_side": "no other-side row in the map",
+   "trigger_kb": "09:20 sector confirmation (opening gap + futures OI), then the first pullback to VWAP that holds; no chasing a gap",
+   "labels": null,
+   "proof": "IDEA - NOT PROVEN (no chain row passes the PROVEN bar; blind test 221 of 459 = 48%)"
+  }
+ ],
+ "ideas_err": null,
+ "base": {
+  "CE": 0.295,
+  "PE": 0.217
+ },
+ "n_candidates": 217,
+ "proof": "NOT PROVEN (day 0 of 20)",
+ "empty_why": {
+  "PE": "No PE side line tonight - no driver with a record sets a side (A6b); the MOVER lines below carry both triggers. Best IREDA at 2.56."
+ },
+ "drivers_seen": 45,
+ "changes": [],
+ "by_source": {
+  "news": 2,
+  "results": 1,
+  "price-only": 26
+ }
+}

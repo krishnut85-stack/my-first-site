@@ -1,0 +1,2617 @@
+{
+ "session": "2026-11-18",
+ "versions": {
+  "N19": {
+   "text": "(rank \u00b7 source on every line; the top 5 = the best-reasoned)\nPREDICTION N19 for 2026-11-18 (made 19:45) \u00b7 market MIXED 19/21/61 (up/down/mixed, base rate - no measured tilt) \u00b7 NOT PROVEN (day 0 of 20)\nWILL GO UP (CE):\n  No CE side line tonight - no driver with a record sets a side (A6b); the MOVER lines below carry both triggers. Best ASHOKLEY at 2.49.\n  WATCH ONLY - below the bar: TMPV (auto)\nWILL GO DOWN (PE):\n  No PE side line tonight - no driver with a record sets a side (A6b); the MOVER lines below carry both triggers. Best LICHSGFIN at 1.84.\n  WATCH ONLY - below the bar: DIXON (electronics & hardware)\nKNOWLEDGE CHAINS - IDEA, NOT PROVEN (weight 0, never rings): PE METALS HINDZINC/NATIONALUM/HINDALCO/JINDALSTEL \u00b7 CE AUTOS ASHOKLEY/HEROMOTOCO/MARUTI/BAJAJ-AUTO \u00b7 CE PAINTS ASIANPAINT/PIDILITIND \u00b7 CE ELECTRONICS AMBER/PGEL \u00b7 CE AC MAKERS VOLTAS/BLUESTARCO/CROMPTON \u00b7 CE OIL MARKETERS BPCL/HINDPETRO/IOC \u00b7 PE IT INFY/COFORGE/HCLTECH/LTM \u00b7 CE OIL & GAS PETRONET\nCE BOUNCE (on the turn) - oversold, only above yesterday's high AND VWAP with RVOL 2, sector not falling, NOT PROVEN:\n  #3 [price-only] \u21ba PIIND \u00b7 chemicals \u00b7 trigger > 1696.00 \u00b7 OVERSOLD RSI 26 - 87% bounced within 20 days, n=1,842 (the RSI <= 30 scan) \u00b7 strong market (NIFTY above its 50-day average): 21% kept falling (RSI <= 30 scan, n=410) \u00b7 NOT PROVEN\nMOVER (side open) - will likely move, the first trigger decides the side, NOT PROVEN:\n  #4 [price-only] \u25c6 ASHOKLEY \u00b7 auto \u00b7 CE above 172.80 / PE below 160.50 (RVOL 2)\n  #5 [price-only] \u25c6 KAYNES \u00b7 electronics & hardware \u00b7 CE above 3024.60 / PE below 2850.00 (RVOL 2)\n  #6 [price-only] \u25c6 KALYANKJIL \u00b7 consumer durables \u00b7 CE above 714.90 / PE below 676.20 (RVOL 2)\n  #7 [price-only] \u25c6 CAMS \u00b7 capital markets \u00b7 CE above 772.00 / PE below 720.25 (RVOL 2)\n  #8 [price-only] \u25c6 360ONE \u00b7 capital markets \u00b7 CE above 1220.50 / PE below 1170.05 (RVOL 2)\n  #9 [price-only] \u25c6 DELHIVERY \u00b7 services \u00b7 CE above 465.80 / PE below 439.05 (RVOL 2)\n  #10 [price-only] \u25c6 BANKINDIA \u00b7 banks \u00b7 CE above 159.96 / PE below 153.21 (RVOL 2)\n  #11 [price-only] \u25c6 FORCEMOT \u00b7 auto \u00b7 CE above 20239.00 / PE below 19280.00 (RVOL 2)\n  #12 [price-only] \u25c6 LAURUSLABS \u00b7 pharma \u00b7 CE above 2348.80 / PE below 2214.80 (RVOL 2)\n  #13 [price-only] \u25c6 KFINTECH \u00b7 capital markets \u00b7 CE above 985.00 / PE below 932.75 (RVOL 2)\n  #14 [price-only] \u25c6 KEI \u00b7 capital goods \u00b7 CE above 4020.00 / PE below 3835.30 (RVOL 2)\n  #15 [price-only] \u25c6 MOTILALOFS \u00b7 capital markets \u00b7 CE above 1277.80 / PE below 1201.20 (RVOL 2)\n  #16 [price-only] \u25c6 COCHINSHIP \u00b7 capital goods \u00b7 CE above 1173.00 / PE below 1141.40 (RVOL 2)\n  #17 [price-only] \u25c6 CUMMINSIND \u00b7 capital goods \u00b7 CE above 4199.00 / PE below 4042.20 (RVOL 2)\n  #18 [price-only] \u25c6 ADANIENSOL \u00b7 power \u00b7 CE above 1493.70 / PE below 1443.70 (RVOL 2)\n  #19 [price-only] \u25c6 LICHSGFIN \u00b7 nbfc & finance \u00b7 CE above 623.30 / PE below 596.15 (RVOL 2)\n  #20 [price-only] \u25c6 GMRAIRPORT \u00b7 services \u00b7 CE above 105.26 / PE below 101.50 (RVOL 2)\n  #21 [price-only] \u25c6 AUBANK \u00b7 banks \u00b7 CE above 1000.00 / PE below 966.90 (RVOL 2)\n  #22 [price-only] \u25c6 ASIANPAINT \u00b7 consumer durables \u00b7 CE above 2665.50 / PE below 2598.00 (RVOL 2)\n  #23 [price-only] \u25c6 PAGEIND \u00b7 textiles \u00b7 CE above 31825.00 / PE below 30855.00 (RVOL 2)\n  #24 [price-only] \u25c6 POLICYBZR \u00b7 nbfc & finance \u00b7 CE above 1094.90 / PE below 1037.30 (RVOL 2)\n  #25 [price-only] \u25c6 MAHABANK \u00b7 banks \u00b7 CE above 96.10 / PE below 92.00 (RVOL 2)\n  #26 [price-only] \u25c6 ANGELONE \u00b7 capital markets \u00b7 CE above 379.15 / PE below 344.45 (RVOL 2)\n  #27 [price-only] \u25c6 ENRIN \u00b7 capital goods \u00b7 CE above 3092.20 / PE below 3021.50 (RVOL 2)\n  #28 [price-only] \u25c6 BANKBARODA \u00b7 banks \u00b7 CE above 276.20 / PE below 269.46 (RVOL 2)",
+   "made_at": "2026-11-17T19:45:00+05:30",
+   "changes": null,
+   "armed": null,
+   "drivers_seen": 71
+  },
+  "C22": {
+   "text": "(rank \u00b7 source on every line; the top 5 = the best-reasoned)\nPREDICTION C22 for 2026-11-18 (made 22:45) \u00b7 market MIXED 19/21/61 (up/down/mixed, base rate - no measured tilt) \u00b7 NOT PROVEN (day 0 of 20)\nWILL GO UP (CE):\n  No CE side line tonight - no driver with a record sets a side (A6b); the MOVER lines below carry both triggers. Best ASHOKLEY at 2.49.\n  WATCH ONLY - below the bar: TMPV (auto)\nWILL GO DOWN (PE):\n  No PE side line tonight - no driver with a record sets a side (A6b); the MOVER lines below carry both triggers. Best LICHSGFIN at 1.84.\n  WATCH ONLY - below the bar: DIXON (electronics & hardware)\nKNOWLEDGE CHAINS - IDEA, NOT PROVEN (weight 0, never rings): PE METALS HINDZINC/NATIONALUM/HINDALCO/JINDALSTEL \u00b7 CE AUTOS ASHOKLEY/HEROMOTOCO/MARUTI/BAJAJ-AUTO \u00b7 CE PAINTS ASIANPAINT/PIDILITIND \u00b7 CE ELECTRONICS AMBER/PGEL \u00b7 CE AC MAKERS VOLTAS/BLUESTARCO/CROMPTON \u00b7 CE OIL MARKETERS BPCL/HINDPETRO/IOC \u00b7 PE IT INFY/COFORGE/HCLTECH/LTM \u00b7 CE OIL & GAS PETRONET\nCE BOUNCE (on the turn) - oversold, only above yesterday's high AND VWAP with RVOL 2, sector not falling, NOT PROVEN:\n  #3 [price-only] \u21ba PIIND \u00b7 chemicals \u00b7 trigger > 1696.00 \u00b7 OVERSOLD RSI 26 - 87% bounced within 20 days, n=1,842 (the RSI <= 30 scan) \u00b7 strong market (NIFTY above its 50-day average): 21% kept falling (RSI <= 30 scan, n=410) \u00b7 NOT PROVEN\nMOVER (side open) - will likely move, the first trigger decides the side, NOT PROVEN:\n  #4 [price-only] \u25c6 ASHOKLEY \u00b7 auto \u00b7 CE above 172.80 / PE below 160.50 (RVOL 2)\n  #5 [price-only] \u25c6 KAYNES \u00b7 electronics & hardware \u00b7 CE above 3024.60 / PE below 2850.00 (RVOL 2)\n  #6 [price-only] \u25c6 KALYANKJIL \u00b7 consumer durables \u00b7 CE above 714.90 / PE below 676.20 (RVOL 2)\n  #7 [price-only] \u25c6 CAMS \u00b7 capital markets \u00b7 CE above 772.00 / PE below 720.25 (RVOL 2)\n  #8 [price-only] \u25c6 360ONE \u00b7 capital markets \u00b7 CE above 1220.50 / PE below 1170.05 (RVOL 2)\n  #9 [price-only] \u25c6 DELHIVERY \u00b7 services \u00b7 CE above 465.80 / PE below 439.05 (RVOL 2)\n  #10 [price-only] \u25c6 BANKINDIA \u00b7 banks \u00b7 CE above 159.96 / PE below 153.21 (RVOL 2)\n  #11 [price-only] \u25c6 FORCEMOT \u00b7 auto \u00b7 CE above 20239.00 / PE below 19280.00 (RVOL 2)\n  #12 [price-only] \u25c6 LAURUSLABS \u00b7 pharma \u00b7 CE above 2348.80 / PE below 2214.80 (RVOL 2)\n  #13 [price-only] \u25c6 KFINTECH \u00b7 capital markets \u00b7 CE above 985.00 / PE below 932.75 (RVOL 2)\n  #14 [price-only] \u25c6 KEI \u00b7 capital goods \u00b7 CE above 4020.00 / PE below 3835.30 (RVOL 2)\n  #15 [price-only] \u25c6 MOTILALOFS \u00b7 capital markets \u00b7 CE above 1277.80 / PE below 1201.20 (RVOL 2)\n  #16 [price-only] \u25c6 COCHINSHIP \u00b7 capital goods \u00b7 CE above 1173.00 / PE below 1141.40 (RVOL 2)\n  #17 [price-only] \u25c6 CUMMINSIND \u00b7 capital goods \u00b7 CE above 4199.00 / PE below 4042.20 (RVOL 2)\n  #18 [price-only] \u25c6 ADANIENSOL \u00b7 power \u00b7 CE above 1493.70 / PE below 1443.70 (RVOL 2)\n  #19 [price-only] \u25c6 LICHSGFIN \u00b7 nbfc & finance \u00b7 CE above 623.30 / PE below 596.15 (RVOL 2)\n  #20 [price-only] \u25c6 GMRAIRPORT \u00b7 services \u00b7 CE above 105.26 / PE below 101.50 (RVOL 2)\n  #21 [price-only] \u25c6 AUBANK \u00b7 banks \u00b7 CE above 1000.00 / PE below 966.90 (RVOL 2)\n  #22 [price-only] \u25c6 ASIANPAINT \u00b7 consumer durables \u00b7 CE above 2665.50 / PE below 2598.00 (RVOL 2)\n  #23 [price-only] \u25c6 PAGEIND \u00b7 textiles \u00b7 CE above 31825.00 / PE below 30855.00 (RVOL 2)\n  #24 [price-only] \u25c6 POLICYBZR \u00b7 nbfc & finance \u00b7 CE above 1094.90 / PE below 1037.30 (RVOL 2)\n  #25 [price-only] \u25c6 MAHABANK \u00b7 banks \u00b7 CE above 96.10 / PE below 92.00 (RVOL 2)\n  #26 [price-only] \u25c6 ANGELONE \u00b7 capital markets \u00b7 CE above 379.15 / PE below 344.45 (RVOL 2)\n  #27 [price-only] \u25c6 ENRIN \u00b7 capital goods \u00b7 CE above 3092.20 / PE below 3021.50 (RVOL 2)\n  #28 [price-only] \u25c6 BANKBARODA \u00b7 banks \u00b7 CE above 276.20 / PE below 269.46 (RVOL 2)",
+   "made_at": "2026-11-17T22:45:00+05:30",
+   "changes": [],
+   "armed": null,
+   "drivers_seen": 71
+  },
+  "U07": {
+   "text": "(rank \u00b7 source on every line; the top 5 = the best-reasoned)\nPREDICTION U07 for 2026-11-18 (made 07:15) \u00b7 market MIXED 19/21/61 (up/down/mixed, base rate - no measured tilt) \u00b7 NOT PROVEN (day 0 of 20)\nWILL GO UP (CE):\n  No CE side line tonight - no driver with a record sets a side (A6b); the MOVER lines below carry both triggers. Best ASHOKLEY at 2.49.\n  WATCH ONLY - below the bar: TMPV (auto)\nWILL GO DOWN (PE):\n  No PE side line tonight - no driver with a record sets a side (A6b); the MOVER lines below carry both triggers. Best LICHSGFIN at 1.84.\n  WATCH ONLY - below the bar: DIXON (electronics & hardware)\nKNOWLEDGE CHAINS - IDEA, NOT PROVEN (weight 0, never rings): PE METALS HINDZINC/NATIONALUM/HINDALCO/VEDL \u00b7 CE ELECTRONICS AMBER/DIXON/PGEL \u00b7 CE AUTOS ASHOKLEY/HEROMOTOCO/MARUTI/BAJAJ-AUTO \u00b7 CE AC MAKERS VOLTAS/BLUESTARCO/CROMPTON \u00b7 CE JEWELLERS TITAN/KALYANKJIL \u00b7 PE PHARMA AUROPHARMA/CIPLA/DRREDDY/LUPIN \u00b7 PE ELECTRONICS KAYNES/SYRMA \u00b7 PE OIL PRODUCERS ONGC\nCE BOUNCE (on the turn) - oversold, only above yesterday's high AND VWAP with RVOL 2, sector not falling, NOT PROVEN:\n  #3 [price-only] \u21ba PIIND \u00b7 chemicals \u00b7 trigger > 1696.00 \u00b7 OVERSOLD RSI 26 - 87% bounced within 20 days, n=1,842 (the RSI <= 30 scan) \u00b7 strong market (NIFTY above its 50-day average): 21% kept falling (RSI <= 30 scan, n=410) \u00b7 NOT PROVEN\nMOVER (side open) - will likely move, the first trigger decides the side, NOT PROVEN:\n  #4 [price-only] \u25c6 ASHOKLEY \u00b7 auto \u00b7 CE above 172.80 / PE below 160.50 (RVOL 2)\n  #5 [price-only] \u25c6 KAYNES \u00b7 electronics & hardware \u00b7 CE above 3024.60 / PE below 2850.00 (RVOL 2)\n  #6 [price-only] \u25c6 KALYANKJIL \u00b7 consumer durables \u00b7 CE above 714.90 / PE below 676.20 (RVOL 2)\n  #7 [price-only] \u25c6 CAMS \u00b7 capital markets \u00b7 CE above 772.00 / PE below 720.25 (RVOL 2)\n  #8 [price-only] \u25c6 360ONE \u00b7 capital markets \u00b7 CE above 1220.50 / PE below 1170.05 (RVOL 2)\n  #9 [price-only] \u25c6 DELHIVERY \u00b7 services \u00b7 CE above 465.80 / PE below 439.05 (RVOL 2)\n  #10 [price-only] \u25c6 BANKINDIA \u00b7 banks \u00b7 CE above 159.96 / PE below 153.21 (RVOL 2)\n  #11 [price-only] \u25c6 FORCEMOT \u00b7 auto \u00b7 CE above 20239.00 / PE below 19280.00 (RVOL 2)\n  #12 [price-only] \u25c6 LAURUSLABS \u00b7 pharma \u00b7 CE above 2348.80 / PE below 2214.80 (RVOL 2)\n  #13 [price-only] \u25c6 KFINTECH \u00b7 capital markets \u00b7 CE above 985.00 / PE below 932.75 (RVOL 2)\n  #14 [price-only] \u25c6 KEI \u00b7 capital goods \u00b7 CE above 4020.00 / PE below 3835.30 (RVOL 2)\n  #15 [price-only] \u25c6 MOTILALOFS \u00b7 capital markets \u00b7 CE above 1277.80 / PE below 1201.20 (RVOL 2)\n  #16 [price-only] \u25c6 COCHINSHIP \u00b7 capital goods \u00b7 CE above 1173.00 / PE below 1141.40 (RVOL 2)\n  #17 [price-only] \u25c6 CUMMINSIND \u00b7 capital goods \u00b7 CE above 4199.00 / PE below 4042.20 (RVOL 2)\n  #18 [price-only] \u25c6 ADANIENSOL \u00b7 power \u00b7 CE above 1493.70 / PE below 1443.70 (RVOL 2)\n  #19 [price-only] \u25c6 LICHSGFIN \u00b7 nbfc & finance \u00b7 CE above 623.30 / PE below 596.15 (RVOL 2)\n  #20 [price-only] \u25c6 GMRAIRPORT \u00b7 services \u00b7 CE above 105.26 / PE below 101.50 (RVOL 2)\n  #21 [price-only] \u25c6 AUBANK \u00b7 banks \u00b7 CE above 1000.00 / PE below 966.90 (RVOL 2)\n  #22 [price-only] \u25c6 ASIANPAINT \u00b7 consumer durables \u00b7 CE above 2665.50 / PE below 2598.00 (RVOL 2)\n  #23 [price-only] \u25c6 PAGEIND \u00b7 textiles \u00b7 CE above 31825.00 / PE below 30855.00 (RVOL 2)\n  #24 [price-only] \u25c6 POLICYBZR \u00b7 nbfc & finance \u00b7 CE above 1094.90 / PE below 1037.30 (RVOL 2)\n  #25 [price-only] \u25c6 MAHABANK \u00b7 banks \u00b7 CE above 96.10 / PE below 92.00 (RVOL 2)\n  #26 [price-only] \u25c6 ANGELONE \u00b7 capital markets \u00b7 CE above 379.15 / PE below 344.45 (RVOL 2)\n  #27 [price-only] \u25c6 ENRIN \u00b7 capital goods \u00b7 CE above 3092.20 / PE below 3021.50 (RVOL 2)\n  #28 [price-only] \u25c6 BANKBARODA \u00b7 banks \u00b7 CE above 276.20 / PE below 269.46 (RVOL 2)",
+   "made_at": "2026-11-18T07:15:00+05:30",
+   "changes": [],
+   "armed": null,
+   "drivers_seen": 52
+  },
+  "P09": {
+   "text": "(rank \u00b7 source on every line; the top 5 = the best-reasoned)\nPREDICTION P09 for 2026-11-18 (made 09:08) \u00b7 market MIXED 19/21/61 (up/down/mixed, base rate - no measured tilt) \u00b7 NOT PROVEN (day 0 of 20)\nWILL GO UP (CE):\n  No CE side line tonight - no driver with a record sets a side (A6b); the MOVER lines below carry both triggers. Best ASHOKLEY at 2.49.\n  WATCH ONLY - below the bar: TMPV (auto)\nWILL GO DOWN (PE):\n  No PE side line tonight - no driver with a record sets a side (A6b); the MOVER lines below carry both triggers. Best LICHSGFIN at 1.84.\n  WATCH ONLY - below the bar: DIXON (electronics & hardware)\nKNOWLEDGE CHAINS - IDEA, NOT PROVEN (weight 0, never rings): PE METALS HINDZINC/NATIONALUM/HINDALCO/VEDL \u00b7 CE ELECTRONICS AMBER/DIXON/PGEL \u00b7 CE AUTOS ASHOKLEY/HEROMOTOCO/MARUTI/BAJAJ-AUTO \u00b7 CE AC MAKERS VOLTAS/BLUESTARCO/CROMPTON \u00b7 CE JEWELLERS TITAN/KALYANKJIL \u00b7 PE PHARMA AUROPHARMA/CIPLA/DRREDDY/LUPIN \u00b7 PE ELECTRONICS KAYNES/SYRMA \u00b7 PE OIL PRODUCERS ONGC\nCE BOUNCE (on the turn) - oversold, only above yesterday's high AND VWAP with RVOL 2, sector not falling, NOT PROVEN:\n  #3 [price-only] \u21ba PIIND \u00b7 chemicals \u00b7 trigger > 1696.00 \u00b7 OVERSOLD RSI 26 - 87% bounced within 20 days, n=1,842 (the RSI <= 30 scan) \u00b7 strong market (NIFTY above its 50-day average): 21% kept falling (RSI <= 30 scan, n=410) \u00b7 NOT PROVEN\nMOVER (side open) - will likely move, the first trigger decides the side, NOT PROVEN:\n  #4 [price-only] \u25c6 ASHOKLEY \u00b7 auto \u00b7 CE above 172.80 / PE below 158.03 (RVOL 2) \u00b7 GAP DOWN -0.3% - PE trigger = the opening-range low\n  #5 [price-only] \u25c6 KAYNES \u00b7 electronics & hardware \u00b7 CE above 3024.60 / PE below 2850.00 (RVOL 2) \u00b7 ARMED (both triggers)\n  #6 [price-only] \u25c6 KALYANKJIL \u00b7 consumer durables \u00b7 CE above 714.90 / PE below 676.20 (RVOL 2) \u00b7 ARMED (both triggers)\n  #7 [price-only] \u25c6 CAMS \u00b7 capital markets \u00b7 CE above 772.00 / PE below 720.25 (RVOL 2) \u00b7 ARMED (both triggers)\n  #8 [price-only] \u25c6 360ONE \u00b7 capital markets \u00b7 CE above 1220.50 / PE below 1170.05 (RVOL 2) \u00b7 ARMED (both triggers)\n  #9 [price-only] \u25c6 DELHIVERY \u00b7 services \u00b7 CE above 465.80 / PE below 439.05 (RVOL 2) \u00b7 ARMED (both triggers)\n  #10 [price-only] \u25c6 BANKINDIA \u00b7 banks \u00b7 CE above 159.96 / PE below 153.21 (RVOL 2) \u00b7 ARMED (both triggers)\n  #11 [price-only] \u25c6 FORCEMOT \u00b7 auto \u00b7 CE above 20239.00 / PE below 19280.00 (RVOL 2) \u00b7 ARMED (both triggers)\n  #12 [price-only] \u25c6 LAURUSLABS \u00b7 pharma \u00b7 CE above 2348.80 / PE below 2214.80 (RVOL 2) \u00b7 ARMED (both triggers)\n  #13 [price-only] \u25c6 KFINTECH \u00b7 capital markets \u00b7 CE above 985.00 / PE below 932.75 (RVOL 2) \u00b7 ARMED (both triggers)\n  #14 [price-only] \u25c6 KEI \u00b7 capital goods \u00b7 CE above 4020.00 / PE below 3788.10 (RVOL 2) \u00b7 GAP DOWN -0.7% - PE trigger = the opening-range low\n  #15 [price-only] \u25c6 MOTILALOFS \u00b7 capital markets \u00b7 CE above 1277.80 / PE below 1201.20 (RVOL 2) \u00b7 ARMED (both triggers)\n  #16 [price-only] \u25c6 COCHINSHIP \u00b7 capital goods \u00b7 CE above 1173.00 / PE below 1141.40 (RVOL 2) \u00b7 ARMED (both triggers)\n  #17 [price-only] \u25c6 CUMMINSIND \u00b7 capital goods \u00b7 CE above 4199.00 / PE below 4042.20 (RVOL 2) \u00b7 ARMED (both triggers)\n  #18 [price-only] \u25c6 ADANIENSOL \u00b7 power \u00b7 CE above 1508.60 / PE below 1443.70 (RVOL 2) \u00b7 GAP UP 0.1% - CE trigger = the opening-range high\n  #19 [price-only] \u25c6 LICHSGFIN \u00b7 nbfc & finance \u00b7 CE above 623.30 / PE below 596.15 (RVOL 2) \u00b7 ARMED (both triggers)\n  #20 [price-only] \u25c6 GMRAIRPORT \u00b7 services \u00b7 CE above 105.26 / PE below 101.50 (RVOL 2) \u00b7 ARMED (both triggers)\n  #21 [price-only] \u25c6 AUBANK \u00b7 banks \u00b7 CE above 1000.00 / PE below 966.90 (RVOL 2) \u00b7 ARMED (both triggers)\n  #22 [price-only] \u25c6 ASIANPAINT \u00b7 consumer durables \u00b7 CE above 2665.50 / PE below 2598.00 (RVOL 2) \u00b7 ARMED (both triggers)\n  #23 [price-only] \u25c6 PAGEIND \u00b7 textiles \u00b7 CE above 31825.00 / PE below 30855.00 (RVOL 2) \u00b7 ARMED (both triggers)\n  #24 [price-only] \u25c6 POLICYBZR \u00b7 nbfc & finance \u00b7 CE above 1094.90 / PE below 1037.30 (RVOL 2) \u00b7 ARMED (both triggers)\n  #25 [price-only] \u25c6 MAHABANK \u00b7 banks \u00b7 CE above 96.10 / PE below 92.00 (RVOL 2) \u00b7 ARMED (both triggers)\n  #26 [price-only] \u25c6 ANGELONE \u00b7 capital markets \u00b7 CE above 379.15 / PE below 344.45 (RVOL 2) \u00b7 ARMED (both triggers)\n  #27 [price-only] \u25c6 ENRIN \u00b7 capital goods \u00b7 CE above 3092.20 / PE below 3011.50 (RVOL 2) \u00b7 GAP DOWN -0.0% - PE trigger = the opening-range low\n  #28 [price-only] \u25c6 BANKBARODA \u00b7 banks \u00b7 CE above 276.20 / PE below 269.46 (RVOL 2) \u00b7 ARMED (both triggers)",
+   "made_at": "2026-11-18T09:08:00+05:30",
+   "changes": [],
+   "armed": "ARMED: 0 UP / 0 DOWN / 25 MOVER (side open) \u00b7 market MIXED",
+   "drivers_seen": 62
+  }
+ },
+ "preopen": "09:15 open of the minute store (= the matched pre-open price; the stored pre-open file is from before 09:08 or missing)",
+ "events": [
+  {
+   "k": 0,
+   "at": "09:16",
+   "sym": "TMPV",
+   "side": "CE",
+   "kind": "FAILED",
+   "text": "\u2717 PREDICTION FAILED \u00b7 TMPV - I predicted UP; it is -0.4%, below the cancel 259.00 \u00b7 AUTO +0.0% \u00b7 I was wrong on this one. No CE on it today.",
+   "ring": false,
+   "pred_id": "16510ea82696",
+   "px": 258.2
+  },
+  {
+   "k": 0,
+   "at": "09:16",
+   "sym": "PIIND",
+   "side": "CE",
+   "kind": "FAILED",
+   "text": "\u2717 PREDICTION FAILED \u00b7 PIIND - I predicted UP; it is -0.8%, below the cancel 1667.60 \u00b7 CHEMICALS -0.0% \u00b7 I was wrong on this one. No CE on it today.",
+   "ring": false,
+   "pred_id": "71ad80c9ebf2",
+   "px": 1663.1
+  },
+  {
+   "k": 2,
+   "at": "09:18",
+   "sym": "PAGEIND",
+   "side": "PE",
+   "kind": "MOVER SIDE SET",
+   "text": "\u25c6 MOVER PAGEIND fired DOWN: below 30855.00 with volume 4.3x \u00b7 sector TEXTILES -0.4% \u00b7 the CE trigger is cancelled \u00b7 NOT PROVEN",
+   "ring": false,
+   "pred_id": "92197ccbe7d2",
+   "px": 30820.0
+  },
+  {
+   "k": 2,
+   "at": "09:18",
+   "sym": "PAGEIND",
+   "side": "PE",
+   "kind": "CONFIRMED",
+   "text": "\u2713 MOVER (side open, set by price): PAGEIND DOWN \u00b7 sector TEXTILES down -0.4% (breadth 8/12) \u00b7 NIFTY +0.1% \u00b7 trigger 30855.00 crossed 09:18 with volume 4.3x \u00b7 move left ~76% of usual \u00b7 FRESH till 09:23 \u00b7 grade B \u00b7 MOVER \u00b7 silent: 09:17-09:30 only the 09:08 top 5 ring \u00b7 NOT PROVEN (day 0 of 20)",
+   "ring": false,
+   "pred_id": "92197ccbe7d2",
+   "px": 30820.0
+  },
+  {
+   "k": 3,
+   "at": "09:19",
+   "sym": "ASHOKLEY",
+   "side": "PE",
+   "kind": "MOVER SIDE SET",
+   "text": "\u25c6 MOVER ASHOKLEY fired DOWN: below 158.03 with volume 2.7x \u00b7 sector AUTO -0.1% \u00b7 the CE trigger is cancelled \u00b7 NOT PROVEN",
+   "ring": false,
+   "pred_id": "37522bb14feb",
+   "px": 157.97
+  },
+  {
+   "k": 3,
+   "at": "09:19",
+   "sym": "ASHOKLEY",
+   "side": "PE",
+   "kind": "SILENT CARD",
+   "text": "MOVER (side open, set by price): ASHOKLEY DOWN \u00b7 sector AUTO down -0.1% (breadth 30/50) \u00b7 NIFTY +0.0% \u00b7 trigger 158.03 crossed 09:19 with volume 2.7x \u00b7 move left ~54% of usual \u00b7 FRESH till 09:24 \u00b7 not a GO NOW: sector not with it (grade C) - silent",
+   "ring": false,
+   "pred_id": "37522bb14feb",
+   "px": 157.97
+  },
+  {
+   "k": 5,
+   "at": "09:21",
+   "sym": "ASHOKLEY",
+   "side": "PE",
+   "kind": "TOO LATE",
+   "text": "\u25d0 TOO LATE \u00b7 ASHOKLEY -1.5% of the usual ~2.9% done - pullback only: VWAP 158.65 / first lower high, 1 lot",
+   "ring": false,
+   "pred_id": "37522bb14feb",
+   "px": 157.73
+  },
+  {
+   "k": 7,
+   "at": "09:23",
+   "sym": "ADANIENSOL",
+   "side": "CE",
+   "kind": "MOVER SIDE SET",
+   "text": "\u25c6 MOVER ADANIENSOL fired UP: above 1508.60 with volume 3.3x \u00b7 sector POWER +0.6% \u00b7 the PE trigger is cancelled \u00b7 NOT PROVEN",
+   "ring": false,
+   "pred_id": "50574c794c94",
+   "px": 1511.9
+  },
+  {
+   "k": 7,
+   "at": "09:23",
+   "sym": "ADANIENSOL",
+   "side": "CE",
+   "kind": "TOO LATE",
+   "text": "\u25d0 TOO LATE \u00b7 ADANIENSOL +1.6% of the usual ~3.1% done - pullback only: VWAP 1503.74 / first higher low, 1 lot",
+   "ring": false,
+   "pred_id": "50574c794c94",
+   "px": 1511.9
+  },
+  {
+   "k": 10,
+   "at": "09:26",
+   "sym": "KALYANKJIL",
+   "side": "PE",
+   "kind": "MOVER SIDE SET",
+   "text": "\u25c6 MOVER KALYANKJIL fired DOWN: below 676.20 with volume 2.6x \u00b7 sector CONSUMER DURABLES -0.4% \u00b7 the CE trigger is cancelled \u00b7 NOT PROVEN",
+   "ring": false,
+   "pred_id": "1efa788b9a48",
+   "px": 674.3
+  },
+  {
+   "k": 10,
+   "at": "09:26",
+   "sym": "KALYANKJIL",
+   "side": "PE",
+   "kind": "TOO LATE",
+   "text": "\u25d0 TOO LATE \u00b7 KALYANKJIL -1.9% of the usual ~3.0% done - pullback only: VWAP 680.71 / first lower high, 1 lot",
+   "ring": false,
+   "pred_id": "1efa788b9a48",
+   "px": 674.3
+  },
+  {
+   "k": 11,
+   "at": "09:27",
+   "sym": "CUMMINSIND",
+   "side": "PE",
+   "kind": "MOVER SIDE SET",
+   "text": "\u25c6 MOVER CUMMINSIND fired DOWN: below 4042.20 with volume 2.4x \u00b7 sector CAPITAL GOODS -0.4% \u00b7 the CE trigger is cancelled \u00b7 NOT PROVEN",
+   "ring": false,
+   "pred_id": "c1d4392b9b5e",
+   "px": 3999.0
+  },
+  {
+   "k": 11,
+   "at": "09:27",
+   "sym": "CUMMINSIND",
+   "side": "PE",
+   "kind": "CONFIRMED",
+   "text": "\u2713 MOVER (side open, set by price): CUMMINSIND DOWN \u00b7 sector CAPITAL GOODS down -0.4% (breadth 78/112) \u00b7 NIFTY -0.0% \u00b7 trigger 4042.20 crossed 09:27 with volume 2.4x \u00b7 move left ~53% of usual \u00b7 FRESH till 09:32 \u00b7 grade B \u00b7 MOVER \u00b7 silent: 09:17-09:30 only the 09:08 top 5 ring \u00b7 NOT PROVEN (day 0 of 20)",
+   "ring": false,
+   "pred_id": "c1d4392b9b5e",
+   "px": 3999.0
+  },
+  {
+   "k": 11,
+   "at": "09:27",
+   "sym": "MANAPPURAM",
+   "side": "PE",
+   "kind": "NOT PREDICTED",
+   "text": "\u2022 NOT PREDICTED \u00b7 MANAPPURAM -2.2% \u00b7 NBFC & FINANCE -0.4% \u00b7 RVOL 3.4 \u00b7 reason: not found by the prediction lane \u00b7 LATE rules apply",
+   "ring": false,
+   "px": 285.05
+  },
+  {
+   "k": 11,
+   "at": "09:27",
+   "sym": "MUTHOOTFIN",
+   "side": "PE",
+   "kind": "NOT PREDICTED",
+   "text": "\u2022 NOT PREDICTED \u00b7 MUTHOOTFIN -2.0% \u00b7 NBFC & FINANCE -0.4% \u00b7 RVOL 2.4 \u00b7 reason: not found by the prediction lane \u00b7 LATE rules apply",
+   "ring": false,
+   "px": 2656.0
+  },
+  {
+   "k": 12,
+   "at": "09:28",
+   "sym": "DIXON",
+   "side": "PE",
+   "kind": "NEAR",
+   "text": "DIXON within 0.3 ATR of the trigger 12800.00 (silent)",
+   "ring": false,
+   "pred_id": "4ee3712a6466",
+   "px": 12925.0
+  },
+  {
+   "k": 12,
+   "at": "09:28",
+   "sym": "UPL",
+   "side": "PE",
+   "kind": "NOT PREDICTED",
+   "text": "\u2022 NOT PREDICTED \u00b7 UPL -2.1% \u00b7 CHEMICALS -0.9% \u00b7 RVOL 4.0 \u00b7 reason: not found by the prediction lane \u00b7 LATE rules apply",
+   "ring": false,
+   "px": 537.5
+  },
+  {
+   "k": 13,
+   "at": "09:29",
+   "sym": "CUMMINSIND",
+   "side": "PE",
+   "kind": "LATE AFTER RING",
+   "text": "CUMMINSIND half the move done - no new entry; manage only",
+   "ring": false,
+   "pred_id": "c1d4392b9b5e",
+   "px": 3994.5
+  },
+  {
+   "k": 15,
+   "at": "09:31",
+   "sym": "ANGELONE",
+   "side": "CE",
+   "kind": "MOVER SIDE SET",
+   "text": "\u25c6 MOVER ANGELONE fired UP: above 359.16 with volume 8.2x \u00b7 sector CAPITAL MARKETS +0.7% \u00b7 the PE trigger is cancelled \u00b7 NOT PROVEN",
+   "ring": false,
+   "pred_id": "1360a9704bf2",
+   "px": 360.0
+  },
+  {
+   "k": 15,
+   "at": "09:31",
+   "sym": "ANGELONE",
+   "side": "CE",
+   "kind": "TOO LATE",
+   "text": "\u25d0 TOO LATE \u00b7 ANGELONE +2.4% of the usual ~3.1% done - pullback only: VWAP 359.16 / first higher low, 1 lot",
+   "ring": false,
+   "pred_id": "1360a9704bf2",
+   "px": 360.0
+  },
+  {
+   "k": 15,
+   "at": "09:31",
+   "sym": "GAIL",
+   "side": "CE",
+   "kind": "NOT PREDICTED",
+   "text": "\u2022 NOT PREDICTED \u00b7 GAIL +2.5% \u00b7 OIL & GAS -0.0% \u00b7 RVOL 2.1 \u00b7 reason: not found by the prediction lane \u00b7 LATE rules apply",
+   "ring": false,
+   "px": 190.53
+  },
+  {
+   "k": 17,
+   "at": "09:33",
+   "sym": "PIIND",
+   "side": "PE",
+   "kind": "AGAINST PREDICTION",
+   "text": "\u2022 PRED \u25b2 09:08 \u00b7 PIIND -2.1% \u00b7 CHEMICALS -0.8% \u00b7 RVOL 3.0 \u00b7 reason: not found by the prediction lane \u00b7 LATE rules apply",
+   "ring": false,
+   "px": 1641.0
+  },
+  {
+   "k": 22,
+   "at": "09:38",
+   "sym": "PAGEIND",
+   "side": "PE",
+   "kind": "LATE AFTER RING",
+   "text": "PAGEIND half the move done - no new entry; manage only",
+   "ring": false,
+   "pred_id": "92197ccbe7d2",
+   "px": 30620.0
+  },
+  {
+   "k": 23,
+   "at": "09:39",
+   "sym": "POLYCAB",
+   "side": "PE",
+   "kind": "NOT PREDICTED",
+   "text": "\u2022 NOT PREDICTED \u00b7 POLYCAB -2.1% \u00b7 CAPITAL GOODS -0.6% \u00b7 RVOL 5.1 \u00b7 reason: not found by the prediction lane \u00b7 LATE rules apply",
+   "ring": false,
+   "px": 7492.0
+  },
+  {
+   "k": 28,
+   "at": "09:44",
+   "sym": "INOXWIND",
+   "side": "PE",
+   "kind": "NOT PREDICTED",
+   "text": "\u2022 NOT PREDICTED \u00b7 INOXWIND -2.4% \u00b7 CAPITAL GOODS -0.8% \u00b7 RVOL 2.1 \u00b7 reason: not found by the prediction lane \u00b7 LATE rules apply",
+   "ring": false,
+   "px": 58.1
+  },
+  {
+   "k": 30,
+   "at": "09:46",
+   "sym": "DIXON",
+   "side": "PE",
+   "kind": "STALE",
+   "text": "DIXON not triggered by 09:45 - grade down to WEAK",
+   "ring": false,
+   "pred_id": "4ee3712a6466",
+   "px": 12854.0
+  },
+  {
+   "k": 39,
+   "at": "09:55",
+   "sym": "IREDA",
+   "side": "CE",
+   "kind": "NOT PREDICTED",
+   "text": "\u2022 NOT PREDICTED \u00b7 IREDA +3.4% \u00b7 NBFC & FINANCE -0.6% \u00b7 RVOL 2.1 \u00b7 reason: not found by the prediction lane \u00b7 LATE rules apply",
+   "ring": false,
+   "px": 119.91
+  },
+  {
+   "k": 41,
+   "at": "09:57",
+   "sym": "SAGILITY",
+   "side": "CE",
+   "kind": "NOT PREDICTED",
+   "text": "\u2022 NOT PREDICTED \u00b7 SAGILITY +2.2% \u00b7 IT -0.5% \u00b7 RVOL 3.9 \u00b7 reason: not found by the prediction lane \u00b7 LATE rules apply",
+   "ring": false,
+   "px": 45.18
+  },
+  {
+   "k": 65,
+   "at": "10:21",
+   "sym": "TITAN",
+   "side": "PE",
+   "kind": "NOT PREDICTED",
+   "text": "\u2022 NOT PREDICTED \u00b7 TITAN -2.5% \u00b7 CONSUMER DURABLES -0.9% \u00b7 RVOL 2.0 \u00b7 reason: not found by the prediction lane \u00b7 LATE rules apply",
+   "ring": false,
+   "px": 4759.4
+  },
+  {
+   "k": 69,
+   "at": "10:25",
+   "sym": "DIXON",
+   "side": "PE",
+   "kind": "CROSS, NO VOLUME",
+   "text": "DIXON crossed 12800.00 but RVOL 0.8 / VWAP ok - not a trigger yet",
+   "ring": false,
+   "pred_id": "4ee3712a6466",
+   "px": 12795.0
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "KAYNES",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER KAYNES - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "e02cddcd9f60",
+   "px": 2929.5
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "CAMS",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER CAMS - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "b005463b15d8",
+   "px": 731.5
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "360ONE",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER 360ONE - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "4e02704ef763",
+   "px": 1210.4
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "DELHIVERY",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER DELHIVERY - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "3987381571e7",
+   "px": 450.1
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "BANKINDIA",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER BANKINDIA - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "880d85008a7c",
+   "px": 158.1
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "FORCEMOT",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER FORCEMOT - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "9d964538f012",
+   "px": 19750.0
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "LAURUSLABS",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER LAURUSLABS - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "f81de5d001a7",
+   "px": 2335.8
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "KFINTECH",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER KFINTECH - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "5ec027487743",
+   "px": 944.0
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "KEI",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER KEI - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "c82adcbcdce1",
+   "px": 3810.5
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "MOTILALOFS",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER MOTILALOFS - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "cd04c1e4efea",
+   "px": 1249.2
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "COCHINSHIP",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER COCHINSHIP - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "f02c35031fae",
+   "px": 1139.2
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "LICHSGFIN",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER LICHSGFIN - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "5fb15130d2ad",
+   "px": 611.75
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "GMRAIRPORT",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER GMRAIRPORT - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "0415ad46e992",
+   "px": 104.87
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "AUBANK",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER AUBANK - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "0d602b473b6c",
+   "px": 979.1
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "ASIANPAINT",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER ASIANPAINT - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "34c59eea4c2a",
+   "px": 2571.2
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "POLICYBZR",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER POLICYBZR - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "5130b3445726",
+   "px": 1038.4
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "MAHABANK",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER MAHABANK - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "bb64139c2a23",
+   "px": 96.0
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "ENRIN",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER ENRIN - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "f41eabfc6dcb",
+   "px": 3021.8
+  },
+  {
+   "k": 105,
+   "at": "11:01",
+   "sym": "BANKBARODA",
+   "side": "BOTH",
+   "kind": "MOVER EXPIRED",
+   "text": "\u25c6 MOVER BANKBARODA - neither trigger fired by 11:00",
+   "ring": false,
+   "pred_id": "6a9e9a1ce040",
+   "px": 274.39
+  },
+  {
+   "k": 106,
+   "at": "11:02",
+   "sym": "ANGELONE",
+   "side": "CE",
+   "kind": "FAILED",
+   "text": "\u2717 PREDICTION FAILED \u00b7 ANGELONE - I predicted UP; it is -0.8%, below the cancel 350.42 \u00b7 CAPITAL MARKETS -0.6% \u00b7 I was wrong on this one. No CE on it today.",
+   "ring": false,
+   "pred_id": "1360a9704bf2",
+   "px": 350.3
+  },
+  {
+   "k": 118,
+   "at": "11:14",
+   "sym": "CIPLA",
+   "side": "CE",
+   "kind": "NOT PREDICTED",
+   "text": "\u2022 NOT PREDICTED \u00b7 CIPLA +2.1% \u00b7 PHARMA +0.2% \u00b7 RVOL 2.2 \u00b7 reason: not found by the prediction lane \u00b7 LATE rules apply",
+   "ring": false,
+   "px": 1419.0
+  },
+  {
+   "k": 120,
+   "at": "11:16",
+   "sym": "ASHOKLEY",
+   "side": "PE",
+   "kind": "FAILED",
+   "text": "\u2717 PREDICTION FAILED \u00b7 ASHOKLEY - I predicted DOWN; it is +0.8%, above the cancel 161.28 \u00b7 AUTO -0.7% \u00b7 I was wrong on this one. No PE on it today.",
+   "ring": false,
+   "pred_id": "37522bb14feb",
+   "px": 161.3
+  },
+  {
+   "k": 135,
+   "at": "11:31",
+   "sym": "ADANIENSOL",
+   "side": "CE",
+   "kind": "FAILED",
+   "text": "\u2717 PREDICTION FAILED \u00b7 ADANIENSOL - I predicted UP; it is -0.9%, below the cancel 1482.84 \u00b7 POWER -0.3% \u00b7 I was wrong on this one. No CE on it today.",
+   "ring": false,
+   "pred_id": "50574c794c94",
+   "px": 1482.0
+  },
+  {
+   "k": 195,
+   "at": "12:31",
+   "sym": "IEX",
+   "side": "CE",
+   "kind": "NOT PREDICTED",
+   "text": "\u2022 NOT PREDICTED \u00b7 IEX +2.2% \u00b7 POWER -0.6% \u00b7 RVOL 2.0 \u00b7 reason: not found by the prediction lane \u00b7 LATE rules apply",
+   "ring": false,
+   "px": 116.95
+  },
+  {
+   "k": 277,
+   "at": "13:53",
+   "sym": "TVSMOTOR",
+   "side": "PE",
+   "kind": "NOT PREDICTED",
+   "text": "\u2022 NOT PREDICTED \u00b7 TVSMOTOR -2.1% \u00b7 AUTO -1.0% \u00b7 RVOL 2.0 \u00b7 reason: not found by the prediction lane \u00b7 LATE rules apply",
+   "ring": false,
+   "px": 4372.9
+  },
+  {
+   "k": 304,
+   "at": "14:20",
+   "sym": "SBIN",
+   "side": "CE",
+   "kind": "NOT PREDICTED",
+   "text": "\u2022 NOT PREDICTED \u00b7 SBIN +2.2% \u00b7 BANKS -0.5% \u00b7 RVOL 2.1 \u00b7 reason: not found by the prediction lane \u00b7 LATE rules apply",
+   "ring": false,
+   "px": 1134.2
+  },
+  {
+   "k": 315,
+   "at": "14:31",
+   "sym": "DIXON",
+   "side": "PE",
+   "kind": "EXPIRED",
+   "text": "DIXON DOWN \u00b7 14:30 - expired, manage only",
+   "ring": false,
+   "pred_id": "4ee3712a6466",
+   "px": 12695.0
+  },
+  {
+   "k": 315,
+   "at": "14:31",
+   "sym": "KALYANKJIL",
+   "side": "PE",
+   "kind": "EXPIRED",
+   "text": "KALYANKJIL DOWN \u00b7 14:30 - expired, manage only",
+   "ring": false,
+   "pred_id": "1efa788b9a48",
+   "px": 651.7
+  },
+  {
+   "k": 315,
+   "at": "14:31",
+   "sym": "CUMMINSIND",
+   "side": "PE",
+   "kind": "EXPIRED",
+   "text": "CUMMINSIND DOWN \u00b7 14:30 - expired, manage only",
+   "ring": false,
+   "pred_id": "c1d4392b9b5e",
+   "px": 3990.7
+  },
+  {
+   "k": 315,
+   "at": "14:31",
+   "sym": "PAGEIND",
+   "side": "PE",
+   "kind": "EXPIRED",
+   "text": "PAGEIND DOWN \u00b7 14:30 - expired, manage only",
+   "ring": false,
+   "pred_id": "92197ccbe7d2",
+   "px": 30880.0
+  }
+ ],
+ "score": {
+  "session": "2026-11-18",
+  "universe": 218,
+  "base": {
+   "CE": 0.087,
+   "PE": 0.257
+  },
+  "versions": {
+   "N19": {
+    "by": {
+     "CE watch": {
+      "n": 1,
+      "big_right": 0,
+      "wrong_side": 1,
+      "flat": 0,
+      "tradable": 0,
+      "precision": 0.0,
+      "beat_base_pts": -8.7
+     },
+     "CE bounce": {
+      "n": 1,
+      "big_right": 0,
+      "wrong_side": 1,
+      "flat": 0,
+      "tradable": 0,
+      "precision": 0.0,
+      "beat_base_pts": -8.7
+     },
+     "PE watch": {
+      "n": 1,
+      "big_right": 1,
+      "wrong_side": 0,
+      "flat": 0,
+      "tradable": 0,
+      "precision": 1.0,
+      "beat_base_pts": 74.3
+     },
+     "MOVER": {
+      "n": 25,
+      "fired": 0,
+      "big_right": 0,
+      "wrong_side": 0,
+      "tradable": 0,
+      "early": 0,
+      "moved_2pct_either": 13,
+      "flat": 0,
+      "precision": 0.0,
+      "beat_base_pts": null
+     }
+    },
+    "rows": [
+     {
+      "sym": "TMPV",
+      "side": "CE",
+      "version": "N19",
+      "list": "WATCH ONLY - below the bar",
+      "grade": "WEAK",
+      "sector": "auto",
+      "open": 259.2,
+      "gap_its_way": 0.0,
+      "best_its_way": 0.04,
+      "worst_against": 2.58,
+      "close_1510_its_way": -2.45,
+      "k_2pct": null,
+      "half_done_at": "09:15",
+      "label": "WRONG SIDE"
+     },
+     {
+      "sym": "DIXON",
+      "side": "PE",
+      "version": "N19",
+      "list": "WATCH ONLY - below the bar",
+      "grade": "WEAK",
+      "sector": "electronics & hardware",
+      "open": 13087.0,
+      "gap_its_way": -0.05,
+      "best_its_way": 3.68,
+      "worst_against": 0.08,
+      "close_1510_its_way": 3.39,
+      "k_2pct": 45,
+      "half_done_at": "09:44",
+      "label": "BIG RIGHT",
+      "tradable": "RIGHT-NOT-TRADABLE (no trigger)"
+     },
+     {
+      "sym": "ASHOKLEY",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "auto",
+      "label": "SIDE OPEN",
+      "best_up": 1.47,
+      "best_down": 2.4,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "KAYNES",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "electronics & hardware",
+      "label": "SIDE OPEN",
+      "best_up": 2.55,
+      "best_down": 0.29,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "KALYANKJIL",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "consumer durables",
+      "label": "SIDE OPEN",
+      "best_up": 0.68,
+      "best_down": 5.41,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "CAMS",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "SIDE OPEN",
+      "best_up": 0.27,
+      "best_down": 3.14,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "360ONE",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "SIDE OPEN",
+      "best_up": 1.17,
+      "best_down": 0.33,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "DELHIVERY",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "services",
+      "label": "SIDE OPEN",
+      "best_up": 0.27,
+      "best_down": 2.49,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "BANKINDIA",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "banks",
+      "label": "SIDE OPEN",
+      "best_up": 0.26,
+      "best_down": 1.04,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "FORCEMOT",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "auto",
+      "label": "SIDE OPEN",
+      "best_up": 0.33,
+      "best_down": 1.83,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "LAURUSLABS",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "pharma",
+      "label": "SIDE OPEN",
+      "best_up": 0.75,
+      "best_down": 1.19,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "KFINTECH",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "SIDE OPEN",
+      "best_up": 0.22,
+      "best_down": 3.37,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "KEI",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "capital goods",
+      "label": "SIDE OPEN",
+      "best_up": 0.38,
+      "best_down": 1.92,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "MOTILALOFS",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "SIDE OPEN",
+      "best_up": 2.39,
+      "best_down": 2.19,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "COCHINSHIP",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "capital goods",
+      "label": "SIDE OPEN",
+      "best_up": 0.13,
+      "best_down": 1.36,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "CUMMINSIND",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "capital goods",
+      "label": "SIDE OPEN",
+      "best_up": 0.17,
+      "best_down": 2.07,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "ADANIENSOL",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "power",
+      "label": "SIDE OPEN",
+      "best_up": 1.35,
+      "best_down": 2.39,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "LICHSGFIN",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "nbfc & finance",
+      "label": "SIDE OPEN",
+      "best_up": 1.25,
+      "best_down": 1.24,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "GMRAIRPORT",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "services",
+      "label": "SIDE OPEN",
+      "best_up": 2.27,
+      "best_down": 0.88,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "AUBANK",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "banks",
+      "label": "SIDE OPEN",
+      "best_up": 0.27,
+      "best_down": 2.36,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "ASIANPAINT",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "consumer durables",
+      "label": "SIDE OPEN",
+      "best_up": 0.3,
+      "best_down": 1.48,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "PAGEIND",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "textiles",
+      "label": "SIDE OPEN",
+      "best_up": 0.05,
+      "best_down": 1.66,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "POLICYBZR",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "nbfc & finance",
+      "label": "SIDE OPEN",
+      "best_up": 0.53,
+      "best_down": 1.62,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "MAHABANK",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "banks",
+      "label": "SIDE OPEN",
+      "best_up": 1.12,
+      "best_down": 0.78,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "ANGELONE",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "SIDE OPEN",
+      "best_up": 2.42,
+      "best_down": 5.68,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "ENRIN",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "capital goods",
+      "label": "SIDE OPEN",
+      "best_up": 2.59,
+      "best_down": 1.87,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "BANKBARODA",
+      "side": "BOTH",
+      "version": "N19",
+      "list": "MOVER (side open)",
+      "sector": "banks",
+      "label": "SIDE OPEN",
+      "best_up": 0.47,
+      "best_down": 0.81,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "PIIND",
+      "side": "CE",
+      "version": "N19",
+      "list": "CE BOUNCE (on the turn)",
+      "grade": "BOUNCE",
+      "sector": "chemicals",
+      "open": 1676.0,
+      "gap_its_way": 0.24,
+      "best_its_way": 0.0,
+      "worst_against": 3.36,
+      "close_1510_its_way": -2.82,
+      "k_2pct": null,
+      "half_done_at": null,
+      "label": "WRONG SIDE"
+     }
+    ]
+   },
+   "C22": {
+    "by": {
+     "CE watch": {
+      "n": 1,
+      "big_right": 0,
+      "wrong_side": 1,
+      "flat": 0,
+      "tradable": 0,
+      "precision": 0.0,
+      "beat_base_pts": -8.7
+     },
+     "CE bounce": {
+      "n": 1,
+      "big_right": 0,
+      "wrong_side": 1,
+      "flat": 0,
+      "tradable": 0,
+      "precision": 0.0,
+      "beat_base_pts": -8.7
+     },
+     "PE watch": {
+      "n": 1,
+      "big_right": 1,
+      "wrong_side": 0,
+      "flat": 0,
+      "tradable": 0,
+      "precision": 1.0,
+      "beat_base_pts": 74.3
+     },
+     "MOVER": {
+      "n": 25,
+      "fired": 0,
+      "big_right": 0,
+      "wrong_side": 0,
+      "tradable": 0,
+      "early": 0,
+      "moved_2pct_either": 13,
+      "flat": 0,
+      "precision": 0.0,
+      "beat_base_pts": null
+     }
+    },
+    "rows": [
+     {
+      "sym": "TMPV",
+      "side": "CE",
+      "version": "C22",
+      "list": "WATCH ONLY - below the bar",
+      "grade": "WEAK",
+      "sector": "auto",
+      "open": 259.2,
+      "gap_its_way": 0.0,
+      "best_its_way": 0.04,
+      "worst_against": 2.58,
+      "close_1510_its_way": -2.45,
+      "k_2pct": null,
+      "half_done_at": "09:15",
+      "label": "WRONG SIDE"
+     },
+     {
+      "sym": "DIXON",
+      "side": "PE",
+      "version": "C22",
+      "list": "WATCH ONLY - below the bar",
+      "grade": "WEAK",
+      "sector": "electronics & hardware",
+      "open": 13087.0,
+      "gap_its_way": -0.05,
+      "best_its_way": 3.68,
+      "worst_against": 0.08,
+      "close_1510_its_way": 3.39,
+      "k_2pct": 45,
+      "half_done_at": "09:44",
+      "label": "BIG RIGHT",
+      "tradable": "RIGHT-NOT-TRADABLE (no trigger)"
+     },
+     {
+      "sym": "ASHOKLEY",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "auto",
+      "label": "SIDE OPEN",
+      "best_up": 1.47,
+      "best_down": 2.4,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "KAYNES",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "electronics & hardware",
+      "label": "SIDE OPEN",
+      "best_up": 2.55,
+      "best_down": 0.29,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "KALYANKJIL",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "consumer durables",
+      "label": "SIDE OPEN",
+      "best_up": 0.68,
+      "best_down": 5.41,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "CAMS",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "SIDE OPEN",
+      "best_up": 0.27,
+      "best_down": 3.14,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "360ONE",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "SIDE OPEN",
+      "best_up": 1.17,
+      "best_down": 0.33,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "DELHIVERY",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "services",
+      "label": "SIDE OPEN",
+      "best_up": 0.27,
+      "best_down": 2.49,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "BANKINDIA",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "banks",
+      "label": "SIDE OPEN",
+      "best_up": 0.26,
+      "best_down": 1.04,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "FORCEMOT",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "auto",
+      "label": "SIDE OPEN",
+      "best_up": 0.33,
+      "best_down": 1.83,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "LAURUSLABS",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "pharma",
+      "label": "SIDE OPEN",
+      "best_up": 0.75,
+      "best_down": 1.19,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "KFINTECH",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "SIDE OPEN",
+      "best_up": 0.22,
+      "best_down": 3.37,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "KEI",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "capital goods",
+      "label": "SIDE OPEN",
+      "best_up": 0.38,
+      "best_down": 1.92,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "MOTILALOFS",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "SIDE OPEN",
+      "best_up": 2.39,
+      "best_down": 2.19,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "COCHINSHIP",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "capital goods",
+      "label": "SIDE OPEN",
+      "best_up": 0.13,
+      "best_down": 1.36,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "CUMMINSIND",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "capital goods",
+      "label": "SIDE OPEN",
+      "best_up": 0.17,
+      "best_down": 2.07,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "ADANIENSOL",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "power",
+      "label": "SIDE OPEN",
+      "best_up": 1.35,
+      "best_down": 2.39,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "LICHSGFIN",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "nbfc & finance",
+      "label": "SIDE OPEN",
+      "best_up": 1.25,
+      "best_down": 1.24,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "GMRAIRPORT",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "services",
+      "label": "SIDE OPEN",
+      "best_up": 2.27,
+      "best_down": 0.88,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "AUBANK",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "banks",
+      "label": "SIDE OPEN",
+      "best_up": 0.27,
+      "best_down": 2.36,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "ASIANPAINT",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "consumer durables",
+      "label": "SIDE OPEN",
+      "best_up": 0.3,
+      "best_down": 1.48,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "PAGEIND",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "textiles",
+      "label": "SIDE OPEN",
+      "best_up": 0.05,
+      "best_down": 1.66,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "POLICYBZR",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "nbfc & finance",
+      "label": "SIDE OPEN",
+      "best_up": 0.53,
+      "best_down": 1.62,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "MAHABANK",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "banks",
+      "label": "SIDE OPEN",
+      "best_up": 1.12,
+      "best_down": 0.78,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "ANGELONE",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "SIDE OPEN",
+      "best_up": 2.42,
+      "best_down": 5.68,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "ENRIN",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "capital goods",
+      "label": "SIDE OPEN",
+      "best_up": 2.59,
+      "best_down": 1.87,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "BANKBARODA",
+      "side": "BOTH",
+      "version": "C22",
+      "list": "MOVER (side open)",
+      "sector": "banks",
+      "label": "SIDE OPEN",
+      "best_up": 0.47,
+      "best_down": 0.81,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "PIIND",
+      "side": "CE",
+      "version": "C22",
+      "list": "CE BOUNCE (on the turn)",
+      "grade": "BOUNCE",
+      "sector": "chemicals",
+      "open": 1676.0,
+      "gap_its_way": 0.24,
+      "best_its_way": 0.0,
+      "worst_against": 3.36,
+      "close_1510_its_way": -2.82,
+      "k_2pct": null,
+      "half_done_at": null,
+      "label": "WRONG SIDE"
+     }
+    ]
+   },
+   "U07": {
+    "by": {
+     "CE watch": {
+      "n": 1,
+      "big_right": 0,
+      "wrong_side": 1,
+      "flat": 0,
+      "tradable": 0,
+      "precision": 0.0,
+      "beat_base_pts": -8.7
+     },
+     "CE bounce": {
+      "n": 1,
+      "big_right": 0,
+      "wrong_side": 1,
+      "flat": 0,
+      "tradable": 0,
+      "precision": 0.0,
+      "beat_base_pts": -8.7
+     },
+     "PE watch": {
+      "n": 1,
+      "big_right": 1,
+      "wrong_side": 0,
+      "flat": 0,
+      "tradable": 0,
+      "precision": 1.0,
+      "beat_base_pts": 74.3
+     },
+     "MOVER": {
+      "n": 25,
+      "fired": 0,
+      "big_right": 0,
+      "wrong_side": 0,
+      "tradable": 0,
+      "early": 0,
+      "moved_2pct_either": 13,
+      "flat": 0,
+      "precision": 0.0,
+      "beat_base_pts": null
+     }
+    },
+    "rows": [
+     {
+      "sym": "TMPV",
+      "side": "CE",
+      "version": "U07",
+      "list": "WATCH ONLY - below the bar",
+      "grade": "WEAK",
+      "sector": "auto",
+      "open": 259.2,
+      "gap_its_way": 0.0,
+      "best_its_way": 0.04,
+      "worst_against": 2.58,
+      "close_1510_its_way": -2.45,
+      "k_2pct": null,
+      "half_done_at": "09:15",
+      "label": "WRONG SIDE"
+     },
+     {
+      "sym": "DIXON",
+      "side": "PE",
+      "version": "U07",
+      "list": "WATCH ONLY - below the bar",
+      "grade": "WEAK",
+      "sector": "electronics & hardware",
+      "open": 13087.0,
+      "gap_its_way": -0.05,
+      "best_its_way": 3.68,
+      "worst_against": 0.08,
+      "close_1510_its_way": 3.39,
+      "k_2pct": 45,
+      "half_done_at": "09:44",
+      "label": "BIG RIGHT",
+      "tradable": "RIGHT-NOT-TRADABLE (no trigger)"
+     },
+     {
+      "sym": "ASHOKLEY",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "auto",
+      "label": "SIDE OPEN",
+      "best_up": 1.47,
+      "best_down": 2.4,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "KAYNES",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "electronics & hardware",
+      "label": "SIDE OPEN",
+      "best_up": 2.55,
+      "best_down": 0.29,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "KALYANKJIL",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "consumer durables",
+      "label": "SIDE OPEN",
+      "best_up": 0.68,
+      "best_down": 5.41,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "CAMS",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "SIDE OPEN",
+      "best_up": 0.27,
+      "best_down": 3.14,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "360ONE",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "SIDE OPEN",
+      "best_up": 1.17,
+      "best_down": 0.33,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "DELHIVERY",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "services",
+      "label": "SIDE OPEN",
+      "best_up": 0.27,
+      "best_down": 2.49,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "BANKINDIA",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "banks",
+      "label": "SIDE OPEN",
+      "best_up": 0.26,
+      "best_down": 1.04,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "FORCEMOT",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "auto",
+      "label": "SIDE OPEN",
+      "best_up": 0.33,
+      "best_down": 1.83,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "LAURUSLABS",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "pharma",
+      "label": "SIDE OPEN",
+      "best_up": 0.75,
+      "best_down": 1.19,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "KFINTECH",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "SIDE OPEN",
+      "best_up": 0.22,
+      "best_down": 3.37,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "KEI",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "capital goods",
+      "label": "SIDE OPEN",
+      "best_up": 0.38,
+      "best_down": 1.92,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "MOTILALOFS",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "SIDE OPEN",
+      "best_up": 2.39,
+      "best_down": 2.19,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "COCHINSHIP",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "capital goods",
+      "label": "SIDE OPEN",
+      "best_up": 0.13,
+      "best_down": 1.36,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "CUMMINSIND",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "capital goods",
+      "label": "SIDE OPEN",
+      "best_up": 0.17,
+      "best_down": 2.07,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "ADANIENSOL",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "power",
+      "label": "SIDE OPEN",
+      "best_up": 1.35,
+      "best_down": 2.39,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "LICHSGFIN",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "nbfc & finance",
+      "label": "SIDE OPEN",
+      "best_up": 1.25,
+      "best_down": 1.24,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "GMRAIRPORT",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "services",
+      "label": "SIDE OPEN",
+      "best_up": 2.27,
+      "best_down": 0.88,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "AUBANK",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "banks",
+      "label": "SIDE OPEN",
+      "best_up": 0.27,
+      "best_down": 2.36,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "ASIANPAINT",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "consumer durables",
+      "label": "SIDE OPEN",
+      "best_up": 0.3,
+      "best_down": 1.48,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "PAGEIND",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "textiles",
+      "label": "SIDE OPEN",
+      "best_up": 0.05,
+      "best_down": 1.66,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "POLICYBZR",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "nbfc & finance",
+      "label": "SIDE OPEN",
+      "best_up": 0.53,
+      "best_down": 1.62,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "MAHABANK",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "banks",
+      "label": "SIDE OPEN",
+      "best_up": 1.12,
+      "best_down": 0.78,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "ANGELONE",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "SIDE OPEN",
+      "best_up": 2.42,
+      "best_down": 5.68,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "ENRIN",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "capital goods",
+      "label": "SIDE OPEN",
+      "best_up": 2.59,
+      "best_down": 1.87,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "BANKBARODA",
+      "side": "BOTH",
+      "version": "U07",
+      "list": "MOVER (side open)",
+      "sector": "banks",
+      "label": "SIDE OPEN",
+      "best_up": 0.47,
+      "best_down": 0.81,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "PIIND",
+      "side": "CE",
+      "version": "U07",
+      "list": "CE BOUNCE (on the turn)",
+      "grade": "BOUNCE",
+      "sector": "chemicals",
+      "open": 1676.0,
+      "gap_its_way": 0.24,
+      "best_its_way": 0.0,
+      "worst_against": 3.36,
+      "close_1510_its_way": -2.82,
+      "k_2pct": null,
+      "half_done_at": null,
+      "label": "WRONG SIDE"
+     }
+    ]
+   },
+   "P09": {
+    "by": {
+     "CE watch": {
+      "n": 1,
+      "big_right": 0,
+      "wrong_side": 1,
+      "flat": 0,
+      "tradable": 0,
+      "precision": 0.0,
+      "beat_base_pts": -8.7
+     },
+     "CE bounce": {
+      "n": 1,
+      "big_right": 0,
+      "wrong_side": 1,
+      "flat": 0,
+      "tradable": 0,
+      "precision": 0.0,
+      "beat_base_pts": -8.7
+     },
+     "PE watch": {
+      "n": 1,
+      "big_right": 1,
+      "wrong_side": 0,
+      "flat": 0,
+      "tradable": 0,
+      "precision": 1.0,
+      "beat_base_pts": 74.3
+     },
+     "MOVER": {
+      "n": 25,
+      "fired": 6,
+      "big_right": 4,
+      "wrong_side": 1,
+      "tradable": 2,
+      "early": 1,
+      "moved_2pct_either": 12,
+      "flat": 1,
+      "precision": 0.667,
+      "beat_base_pts": null
+     }
+    },
+    "rows": [
+     {
+      "sym": "TMPV",
+      "side": "CE",
+      "version": "P09",
+      "list": "WATCH ONLY - below the bar",
+      "grade": "WEAK",
+      "sector": "auto",
+      "open": 259.2,
+      "gap_its_way": 0.0,
+      "best_its_way": 0.04,
+      "worst_against": 2.58,
+      "close_1510_its_way": -2.45,
+      "k_2pct": null,
+      "half_done_at": "09:15",
+      "label": "WRONG SIDE"
+     },
+     {
+      "sym": "DIXON",
+      "side": "PE",
+      "version": "P09",
+      "list": "WATCH ONLY - below the bar",
+      "grade": "WEAK",
+      "sector": "electronics & hardware",
+      "open": 13087.0,
+      "gap_its_way": -0.05,
+      "best_its_way": 3.68,
+      "worst_against": 0.08,
+      "close_1510_its_way": 3.39,
+      "k_2pct": 45,
+      "half_done_at": "09:44",
+      "label": "BIG RIGHT",
+      "tradable": "RIGHT-NOT-TRADABLE (no trigger)"
+     },
+     {
+      "sym": "ASHOKLEY",
+      "side": "PE",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "grade": "MOVER",
+      "sector": "auto",
+      "fired": true,
+      "open": 160.0,
+      "gap_its_way": 0.31,
+      "best_its_way": 2.4,
+      "worst_against": 1.47,
+      "close_1510_its_way": -0.21,
+      "k_2pct": 8,
+      "half_done_at": "09:17",
+      "label": "BIG RIGHT",
+      "tradable": "RIGHT-TRADABLE",
+      "move_left_pct": 1.15,
+      "move_left_share": 48.0,
+      "how_early": "LATE (after half done)"
+     },
+     {
+      "sym": "KAYNES",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "electronics & hardware",
+      "label": "NOT TRIGGERED",
+      "best_up": 2.55,
+      "best_down": 0.29,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "KALYANKJIL",
+      "side": "PE",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "grade": "MOVER",
+      "sector": "consumer durables",
+      "fired": true,
+      "open": 682.75,
+      "gap_its_way": -0.0,
+      "best_its_way": 5.41,
+      "worst_against": 0.68,
+      "close_1510_its_way": 4.39,
+      "k_2pct": 27,
+      "half_done_at": "10:00",
+      "label": "BIG RIGHT",
+      "tradable": "STOPPED -0.6%",
+      "move_left_pct": 4.23,
+      "move_left_share": 78.0,
+      "how_early": "EARLY (before half done)"
+     },
+     {
+      "sym": "CAMS",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "NOT TRIGGERED",
+      "best_up": 0.27,
+      "best_down": 3.14,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "360ONE",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "NOT TRIGGERED",
+      "best_up": 1.17,
+      "best_down": 0.33,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "DELHIVERY",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "services",
+      "label": "NOT TRIGGERED",
+      "best_up": 0.27,
+      "best_down": 2.49,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "BANKINDIA",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "banks",
+      "label": "NOT TRIGGERED",
+      "best_up": 0.26,
+      "best_down": 1.04,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "FORCEMOT",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "auto",
+      "label": "NOT TRIGGERED",
+      "best_up": 0.33,
+      "best_down": 1.83,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "LAURUSLABS",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "pharma",
+      "label": "NOT TRIGGERED",
+      "best_up": 0.75,
+      "best_down": 1.19,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "KFINTECH",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "NOT TRIGGERED",
+      "best_up": 0.22,
+      "best_down": 3.37,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "KEI",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "capital goods",
+      "label": "NOT TRIGGERED",
+      "best_up": 0.38,
+      "best_down": 1.92,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "MOTILALOFS",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "capital markets",
+      "label": "NOT TRIGGERED",
+      "best_up": 2.39,
+      "best_down": 2.19,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "COCHINSHIP",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "capital goods",
+      "label": "NOT TRIGGERED",
+      "best_up": 0.13,
+      "best_down": 1.36,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "CUMMINSIND",
+      "side": "PE",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "grade": "MOVER",
+      "sector": "capital goods",
+      "fired": true,
+      "open": 4049.0,
+      "gap_its_way": 0.39,
+      "best_its_way": 2.07,
+      "worst_against": 0.17,
+      "close_1510_its_way": 1.67,
+      "k_2pct": 225,
+      "half_done_at": "09:26",
+      "label": "BIG RIGHT",
+      "tradable": "NO +1% IN 60 MIN",
+      "move_left_pct": 0.85,
+      "move_left_share": 41.0,
+      "how_early": "LATE (after half done)"
+     },
+     {
+      "sym": "ADANIENSOL",
+      "side": "CE",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "grade": "MOVER",
+      "sector": "power",
+      "fired": true,
+      "open": 1494.8,
+      "gap_its_way": 0.07,
+      "best_its_way": 1.35,
+      "worst_against": 2.39,
+      "close_1510_its_way": -2.07,
+      "k_2pct": null,
+      "half_done_at": "09:15",
+      "label": "WRONG SIDE",
+      "tradable": "STOPPED -0.6%",
+      "move_left_pct": 0.21,
+      "move_left_share": 15.0,
+      "how_early": "LATE (after half done)"
+     },
+     {
+      "sym": "LICHSGFIN",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "nbfc & finance",
+      "label": "NOT TRIGGERED",
+      "best_up": 1.25,
+      "best_down": 1.24,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "GMRAIRPORT",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "services",
+      "label": "NOT TRIGGERED",
+      "best_up": 2.27,
+      "best_down": 0.88,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "AUBANK",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "banks",
+      "label": "NOT TRIGGERED",
+      "best_up": 0.27,
+      "best_down": 2.36,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "ASIANPAINT",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "consumer durables",
+      "label": "NOT TRIGGERED",
+      "best_up": 0.3,
+      "best_down": 1.48,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "PAGEIND",
+      "side": "PE",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "grade": "MOVER",
+      "sector": "textiles",
+      "fired": true,
+      "open": 31000.0,
+      "gap_its_way": 0.34,
+      "best_its_way": 1.66,
+      "worst_against": 0.05,
+      "close_1510_its_way": 0.73,
+      "k_2pct": null,
+      "half_done_at": "09:15",
+      "label": "FLAT",
+      "tradable": "RIGHT-TRADABLE",
+      "move_left_pct": 1.09,
+      "move_left_share": 65.0,
+      "how_early": "LATE (after half done)"
+     },
+     {
+      "sym": "POLICYBZR",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "nbfc & finance",
+      "label": "NOT TRIGGERED",
+      "best_up": 0.53,
+      "best_down": 1.62,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "MAHABANK",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "banks",
+      "label": "NOT TRIGGERED",
+      "best_up": 1.12,
+      "best_down": 0.78,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "ANGELONE",
+      "side": "CE",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "grade": "MOVER",
+      "sector": "capital markets",
+      "fired": true,
+      "open": 353.25,
+      "gap_its_way": 0.99,
+      "best_its_way": 2.42,
+      "worst_against": 5.68,
+      "close_1510_its_way": -2.96,
+      "k_2pct": 2,
+      "half_done_at": "09:16",
+      "label": "BIG RIGHT",
+      "tradable": "STOPPED -0.6%",
+      "move_left_pct": 0.5,
+      "move_left_share": 21.0,
+      "how_early": "LATE (after half done)"
+     },
+     {
+      "sym": "ENRIN",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "capital goods",
+      "label": "NOT TRIGGERED",
+      "best_up": 2.59,
+      "best_down": 1.87,
+      "moved_2pct_either": true
+     },
+     {
+      "sym": "BANKBARODA",
+      "side": "BOTH",
+      "version": "P09",
+      "list": "MOVER (side open)",
+      "sector": "banks",
+      "label": "NOT TRIGGERED",
+      "best_up": 0.47,
+      "best_down": 0.81,
+      "moved_2pct_either": false
+     },
+     {
+      "sym": "PIIND",
+      "side": "CE",
+      "version": "P09",
+      "list": "CE BOUNCE (on the turn)",
+      "grade": "BOUNCE",
+      "sector": "chemicals",
+      "open": 1676.0,
+      "gap_its_way": 0.24,
+      "best_its_way": 0.0,
+      "worst_against": 3.36,
+      "close_1510_its_way": -2.82,
+      "k_2pct": null,
+      "half_done_at": null,
+      "label": "WRONG SIDE"
+     }
+    ]
+   }
+  },
+  "early_cards": {
+   "side_lines": 0,
+   "mover_lines": 1
+  },
+  "baselines": {
+   "yesterdays_movers_CE": {
+    "n": 8,
+    "big_right": 0,
+    "precision": 0.0
+   },
+   "yesterdays_movers_PE": {
+    "n": 8,
+    "big_right": 4,
+    "precision": 0.5
+   },
+   "volatility_only_8": {
+    "CE_right": 1,
+    "PE_right": 5,
+    "n": 8,
+    "note": "the same 8 names on both sides"
+   }
+  },
+  "ideas": {
+   "CE": {
+    "n": 24,
+    "big_right": 1,
+    "moved_against": 6,
+    "precision": 0.042,
+    "right_names": [
+     "PGEL"
+    ]
+   },
+   "PE": {
+    "n": 32,
+    "big_right": 5,
+    "moved_against": 1,
+    "precision": 0.156,
+    "right_names": [
+     "DIXON",
+     "NATIONALUM",
+     "POLYCAB",
+     "SAIL",
+     "VEDL"
+    ]
+   }
+  },
+  "base_either_way": 0.33,
+  "missed_2pct": 71,
+  "missed_3pct": [
+   [
+    "ANGELONE",
+    "PE",
+    5.7
+   ],
+   [
+    "IREDA",
+    "CE",
+    5.0
+   ],
+   [
+    "SWIGGY",
+    "PE",
+    5.0
+   ],
+   [
+    "SAIL",
+    "PE",
+    4.4
+   ],
+   [
+    "TITAN",
+    "PE",
+    4.2
+   ],
+   [
+    "BSE",
+    "PE",
+    4.1
+   ],
+   [
+    "POLYCAB",
+    "PE",
+    4.0
+   ],
+   [
+    "NAVINFLUOR",
+    "CE",
+    3.8
+   ],
+   [
+    "MANAPPURAM",
+    "PE",
+    3.8
+   ],
+   [
+    "DIXON",
+    "PE",
+    3.7
+   ],
+   [
+    "KFINTECH",
+    "PE",
+    3.4
+   ],
+   [
+    "PIIND",
+    "PE",
+    3.4
+   ],
+   [
+    "DATAPATTNS",
+    "PE",
+    3.3
+   ],
+   [
+    "CIPLA",
+    "CE",
+    3.2
+   ],
+   [
+    "CAMS",
+    "PE",
+    3.1
+   ],
+   [
+    "HAVELLS",
+    "PE",
+    3.1
+   ],
+   [
+    "INOXWIND",
+    "PE",
+    3.1
+   ],
+   [
+    "MUTHOOTFIN",
+    "PE",
+    3.1
+   ],
+   [
+    "BIOCON",
+    "CE",
+    3.0
+   ],
+   [
+    "GAIL",
+    "CE",
+    3.0
+   ],
+   [
+    "MOTHERSON",
+    "PE",
+    3.0
+   ]
+  ],
+  "day_movers_2pct": {
+   "CE": 19,
+   "PE": 56
+  },
+  "confirmations": {
+   "confirmed": 2,
+   "rung": 0,
+   "late": 4,
+   "failed": 5,
+   "not_predicted_rows": 13,
+   "silent_cards": 1
+  },
+  "market": {
+   "called": "MIXED",
+   "real": "DOWN",
+   "nifty_open_to_1510": -0.6,
+   "right": false
+  },
+  "text": "MARKET CALL: MIXED - wrong (NIFTY open->15:10 -0.60%, real DOWN)\nPREDICTED N19 \u00b7 CE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 PE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +74 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 33%)\nPREDICTED C22 \u00b7 CE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 PE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +74 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 33%)\nPREDICTED U07 \u00b7 CE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 PE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +74 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 33%)\nPREDICTED P09 \u00b7 CE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 PE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +74 pts \u00b7 MOVER (side open) 25: fired 6 (early 1), right side 4 (2 tradable), wrong 1, flat 1 \u00b7 moved 2% either way 12 (all names 33%)\nEARLY CARDS (trigger before half the move): side lines 0 \u00b7 MOVER lines 1 \u00b7 total 1 (E2 pass mark 10)\nCONFIRMATIONS 2 (rung 0) \u00b7 too late 4 \u00b7 failed 5 \u00b7 silent cards 1 \u00b7 NOT PREDICTED movers shown 13\nBASE RATE: CE 9% / PE 26% of 218 F&O names moved 2% its way \u00b7 day movers CE 19 / PE 56\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 24 named, 1 moved 2% its way, 6 2% against \u00b7 PE 32 named, 5 its way, 1 against\nMISSED 2%+ movers 71 \u00b7 3%+: ANGELONE PE 5.7%, IREDA CE 5.0%, SWIGGY PE 5.0%, SAIL PE 4.4%, TITAN PE 4.2%, BSE PE 4.1%, POLYCAB PE 4.0%, NAVINFLUOR CE 3.8%, MANAPPURAM PE 3.8%, DIXON PE 3.7%\nBASELINES: yesterday's movers CE 0 / PE 4 \u00b7 volatility-only 8: CE 1 / PE 5 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)\nEDGE (desk 18:00) 2026-11-18 \u00b7 names 9 (with a reason 1, price-only 8) \u00b7 base CE 1%/2%: 5%/3% \u00b7 PE: 45%/18%\n  price-only   n  8 \u00b7 its way >=1%  25% \u00b7 >=2%  25% (base 12%, lift 2.05) \u00b7 wrong side  38% \u00b7 next close >=1%: 12% \u00b7 move left 1.0% \u00b7 ahead of the half move -1 min\n  sector-chain n  1 \u00b7 its way >=1%   0% \u00b7 >=2%   0% (base  3%, lift 0.0) \u00b7 wrong side 100% \u00b7 next close >=1%: 100% \u00b7 move left 0.0% \u00b7 ahead of the half move 0 min\n  TOP 5 by rank: >=1% 40% \u00b7 >=2% 40% (base 12%) \u00b7 wrong 40%",
+  "news": [],
+  "bottom_top": [],
+  "bt_episodes": [],
+  "edge": {
+   "session": "2026-11-18",
+   "rows": [
+    {
+     "sym": "TMPV",
+     "side": "CE",
+     "list": "WATCH ONLY - below the bar",
+     "source": "sector-chain",
+     "rank": 1,
+     "named_at": "evening / 09:08 (09:15 open)",
+     "move_1510": -2.45,
+     "move_next_close": 1.66,
+     "hit1": false,
+     "hit2": false,
+     "wrong": true,
+     "move_left_pct": 0.04,
+     "minutes_ahead_of_half_move": 0
+    },
+    {
+     "sym": "DIXON",
+     "side": "PE",
+     "list": "WATCH ONLY - below the bar",
+     "source": "price-only",
+     "rank": 2,
+     "named_at": "evening / 09:08 (09:15 open)",
+     "move_1510": 3.39,
+     "move_next_close": 0.25,
+     "hit1": true,
+     "hit2": true,
+     "wrong": false,
+     "move_left_pct": 3.68,
+     "minutes_ahead_of_half_move": 29
+    },
+    {
+     "sym": "ASHOKLEY",
+     "side": "PE",
+     "list": "MOVER (side open)",
+     "source": "price-only",
+     "rank": 4,
+     "named_at": "09:19",
+     "move_1510": -1.49,
+     "move_next_close": -5.18,
+     "hit1": false,
+     "hit2": false,
+     "wrong": false,
+     "move_left_pct": 1.15,
+     "minutes_ahead_of_half_move": -1
+    },
+    {
+     "sym": "KALYANKJIL",
+     "side": "PE",
+     "list": "MOVER (side open)",
+     "source": "price-only",
+     "rank": 6,
+     "named_at": "09:26",
+     "move_1510": 3.2,
+     "move_next_close": 1.97,
+     "hit1": true,
+     "hit2": true,
+     "wrong": false,
+     "move_left_pct": 4.23,
+     "minutes_ahead_of_half_move": 35
+    },
+    {
+     "sym": "CUMMINSIND",
+     "side": "PE",
+     "list": "MOVER (side open)",
+     "source": "price-only",
+     "rank": 17,
+     "named_at": "09:27",
+     "move_1510": 0.44,
+     "move_next_close": -3.56,
+     "hit1": false,
+     "hit2": false,
+     "wrong": false,
+     "move_left_pct": 0.85,
+     "minutes_ahead_of_half_move": 0
+    },
+    {
+     "sym": "ADANIENSOL",
+     "side": "CE",
+     "list": "MOVER (side open)",
+     "source": "price-only",
+     "rank": 18,
+     "named_at": "09:23",
+     "move_1510": -3.18,
+     "move_next_close": -2.55,
+     "hit1": false,
+     "hit2": false,
+     "wrong": true,
+     "move_left_pct": 0.21,
+     "minutes_ahead_of_half_move": -7
+    },
+    {
+     "sym": "PAGEIND",
+     "side": "PE",
+     "list": "MOVER (side open)",
+     "source": "price-only",
+     "rank": 23,
+     "named_at": "09:18",
+     "move_1510": 0.15,
+     "move_next_close": -0.79,
+     "hit1": false,
+     "hit2": false,
+     "wrong": false,
+     "move_left_pct": 1.09,
+     "minutes_ahead_of_half_move": -2
+    },
+    {
+     "sym": "ANGELONE",
+     "side": "CE",
+     "list": "MOVER (side open)",
+     "source": "price-only",
+     "rank": 26,
+     "named_at": "09:31",
+     "move_1510": -4.78,
+     "move_next_close": -6.54,
+     "hit1": false,
+     "hit2": false,
+     "wrong": true,
+     "move_left_pct": 0.1,
+     "minutes_ahead_of_half_move": -14
+    },
+    {
+     "sym": "PIIND",
+     "side": "CE",
+     "list": "CE BOUNCE (on the turn)",
+     "source": "price-only",
+     "rank": 3,
+     "named_at": "evening / 09:08 (09:15 open)",
+     "move_1510": -2.82,
+     "move_next_close": -2.74,
+     "hit1": false,
+     "hit2": false,
+     "wrong": true,
+     "move_left_pct": 0.0,
+     "minutes_ahead_of_half_move": null
+    }
+   ],
+   "by_source": {
+    "sector-chain": {
+     "n": 1,
+     "hit1": 0.0,
+     "hit2": 0.0,
+     "base1": 0.05,
+     "base2": 0.028,
+     "lift2": 0.0,
+     "wrong": 1.0,
+     "next_close_its_way_1pct": 1.0,
+     "median_move_left": 0.04,
+     "median_minutes_ahead_of_half_move": 0
+    },
+    "price-only": {
+     "n": 8,
+     "hit1": 0.25,
+     "hit2": 0.25,
+     "base1": 0.303,
+     "base2": 0.122,
+     "lift2": 2.05,
+     "wrong": 0.375,
+     "next_close_its_way_1pct": 0.125,
+     "median_move_left": 0.97,
+     "median_minutes_ahead_of_half_move": -1
+    }
+   },
+   "reasoned": {
+    "n": 1,
+    "hit1": 0.0,
+    "hit2": 0.0,
+    "base1": 0.05,
+    "base2": 0.028,
+    "lift2": 0.0,
+    "wrong": 1.0,
+    "next_close_its_way_1pct": 1.0,
+    "median_move_left": 0.04,
+    "median_minutes_ahead_of_half_move": 0
+   },
+   "price_only": {
+    "n": 8,
+    "hit1": 0.25,
+    "hit2": 0.25,
+    "base1": 0.303,
+    "base2": 0.122,
+    "lift2": 2.05,
+    "wrong": 0.375,
+    "next_close_its_way_1pct": 0.125,
+    "median_move_left": 0.97,
+    "median_minutes_ahead_of_half_move": -1
+   },
+   "top5": {
+    "n": 5,
+    "hit1": 0.4,
+    "hit2": 0.4,
+    "base1": 0.293,
+    "base2": 0.118,
+    "lift2": 3.38,
+    "wrong": 0.4,
+    "next_close_its_way_1pct": 0.4,
+    "median_move_left": 1.15,
+    "median_minutes_ahead_of_half_move": 14
+   },
+   "names_a_day": 9,
+   "base": {
+    "CE1": 0.05,
+    "CE2": 0.028,
+    "PE1": 0.454,
+    "PE2": 0.179
+   },
+   "text": "EDGE (desk 18:00) 2026-11-18 \u00b7 names 9 (with a reason 1, price-only 8) \u00b7 base CE 1%/2%: 5%/3% \u00b7 PE: 45%/18%\n  price-only   n  8 \u00b7 its way >=1%  25% \u00b7 >=2%  25% (base 12%, lift 2.05) \u00b7 wrong side  38% \u00b7 next close >=1%: 12% \u00b7 move left 1.0% \u00b7 ahead of the half move -1 min\n  sector-chain n  1 \u00b7 its way >=1%   0% \u00b7 >=2%   0% (base  3%, lift 0.0) \u00b7 wrong side 100% \u00b7 next close >=1%: 100% \u00b7 move left 0.0% \u00b7 ahead of the half move 0 min\n  TOP 5 by rank: >=1% 40% \u00b7 >=2% 40% (base 12%) \u00b7 wrong 40%"
+  }
+ },
+ "news_calls": [],
+ "bottom_top": []
+}

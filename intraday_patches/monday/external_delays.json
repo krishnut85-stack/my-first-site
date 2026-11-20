@@ -1,0 +1,3471 @@
+{
+ "day": "2026-11-20",
+ "made_note": "source time -> GIR first seen -> page (SSE) seen, seconds; phone not measured (v2 shadow, no Telegram)",
+ "monday_targets_s": {
+  "I1": 20,
+  "I2": 60,
+  "I3": 60,
+  "I4": 60,
+  "I5": 120
+ },
+ "A_market_0900_1535_before_fixes": {
+  "day": "2026-11-20",
+  "window": [
+   "09:00",
+   "15:35"
+  ],
+  "made": "2026-11-20T17:41:46+05:30",
+  "tag": "market",
+  "sources": {
+   "I1 filings (NSE + BSE)": {
+    "target_s": 15,
+    "items": [
+     {
+      "src_t": 1795148468.0,
+      "source": "NSE filing",
+      "item": "HYUNDAI - Analysts/Institutional Investor Meet/Con. Call Updates",
+      "source_time": "09:51:08",
+      "gir_seen": "09:51:24",
+      "page_seen": "09:51:28",
+      "gir_lag_s": 16.7,
+      "page_after_gir_s": 3.3,
+      "delay_s": 20.0,
+      "time_from": "exchange dissemination time (exchdisstime / DissemDT)",
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795148496.0,
+      "source": "BSE filing",
+      "item": "HYUNDAI - Hyundai Motor India Ltd - 544274 - Announcement under Regulation 30 (L",
+      "source_time": "09:51:36",
+      "gir_seen": "09:52:35",
+      "page_seen": "09:52:37",
+      "gir_lag_s": 59.0,
+      "page_after_gir_s": 2.0,
+      "delay_s": 61.0,
+      "time_from": "exchange dissemination time (exchdisstime / DissemDT)",
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795159195.0,
+      "source": "NSE filing",
+      "item": "GODREJCP - General Updates",
+      "source_time": "12:49:55",
+      "gir_seen": "12:50:14",
+      "page_seen": "12:50:17",
+      "gir_lag_s": 19.2,
+      "page_after_gir_s": 2.8,
+      "delay_s": 22.0,
+      "time_from": "exchange dissemination time (exchdisstime / DissemDT)",
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795168642.0,
+      "source": "NSE filing",
+      "item": "KAYNES - Analysts/Institutional Investor Meet/Con. Call Updates",
+      "source_time": "15:27:22",
+      "gir_seen": "15:27:53",
+      "page_seen": "15:27:57",
+      "gir_lag_s": 31.7,
+      "page_after_gir_s": 3.3,
+      "delay_s": 35.0,
+      "time_from": "exchange dissemination time (exchdisstime / DissemDT)",
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795168925.0,
+      "source": "BSE filing",
+      "item": "KAYNES - Kaynes Technology India Ltd - 543664 - Announcement under Regulation 3",
+      "source_time": "15:32:05",
+      "gir_seen": "15:33:05",
+      "page_seen": "15:33:07",
+      "gir_lag_s": 60.1,
+      "page_after_gir_s": 2.0,
+      "delay_s": 62.0,
+      "time_from": "exchange dissemination time (exchdisstime / DissemDT)",
+      "verdict": "LATE"
+     }
+    ],
+    "stats5": {
+     "n": 5,
+     "median": 35.0,
+     "p90": 62.0,
+     "worst": 62.0
+    },
+    "by_exchange": {
+     "NSE": {
+      "all_filings_gir_lag": {
+       "n": 147,
+       "median": 34.4,
+       "p90": 52.9,
+       "worst": 70.6
+      },
+      "fo_filings_page_delay": {
+       "n": 21,
+       "median": 45.1,
+       "p90": 59.0,
+       "worst": 62.1
+      },
+      "fo_filings_gir_lag": {
+       "n": 21,
+       "median": 42.5,
+       "p90": 57.1,
+       "worst": 61.1
+      }
+     },
+     "BSE": {
+      "all_filings_gir_lag": {
+       "n": 239,
+       "median": 33.6,
+       "p90": 53.4,
+       "worst": 64.1
+      },
+      "fo_filings_page_delay": {
+       "n": 22,
+       "median": 47.0,
+       "p90": 58.1,
+       "worst": 62.0
+      },
+      "fo_filings_gir_lag": {
+       "n": 22,
+       "median": 45.8,
+       "p90": 57.0,
+       "worst": 60.1
+      }
+     }
+    },
+    "fo_rows": 43,
+    "all_rows": 386,
+    "state": {
+     "NSE": {
+      "ok_t": 1795176704.8540123,
+      "status": 200,
+      "items": 20,
+      "requests": 460,
+      "errors": 0,
+      "blocked": 0,
+      "back_s": 0.0,
+      "why": "",
+      "new": 108,
+      "overflow": 0
+     },
+     "BSE": {
+      "ok_t": 1795171554.2797194,
+      "status": 403,
+      "items": 50,
+      "requests": 155,
+      "errors": 0,
+      "blocked": 10,
+      "back_s": 900.0,
+      "why": "HTTP 403 - waiting 900 s",
+      "new": 42,
+      "overflow": 0
+     }
+    }
+   },
+   "I3 wires / publishers": {
+    "target_s": 30,
+    "items": [
+     {
+      "src_t": 1795142890.0,
+      "source": "wire NDTV Profit",
+      "pub": "NDTV Profit",
+      "item": "MAXHEALTH - MCX, Max Healthcare, CarTrade, Dr Lal Among UBS' 8 Midcap Bets. The 45% Upside C",
+      "source_time": "08:18:10",
+      "gir_seen": "09:02:29",
+      "page_seen": "09:02:36",
+      "gir_lag_s": 2659.0,
+      "page_after_gir_s": 7.0,
+      "delay_s": 2666.0,
+      "live_blog": false,
+      "rss_time": "08:18:10",
+      "sitemap_time": null,
+      "time_from": "the publisher's RSS pubDate (no sitemap time for this URL)",
+      "link": "https://www.ndtvprofit.com/markets/mcx-max-healthcare-cartrade-dr-lal-pathlabs-among-ubs-8-midcap-bets-the-45-upside-comes-with-a-catch-12352228#publisher=newsstand",
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795156729.0,
+      "source": "wire Business Standard",
+      "pub": "Business Standard",
+      "item": "HDFCBANK - Nifty Bank hits new high; HDFC Bank, ICICI Bank rally up to 21% in November",
+      "source_time": "12:08:49",
+      "gir_seen": "12:20:51",
+      "page_seen": "12:20:55",
+      "gir_lag_s": 722.7,
+      "page_after_gir_s": 3.3,
+      "delay_s": 726.1,
+      "live_blog": false,
+      "rss_time": "12:08:30",
+      "sitemap_time": "12:08:49",
+      "time_from": "the publisher's news sitemap publication time",
+      "link": "https://www.business-standard.com/markets/news/nifty-bank-hits-new-high-hdfc-bank-icici-bank-rally-up-to-21-in-november-126112000367_1.html",
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795157890.0,
+      "source": "wire CNBC-TV18",
+      "pub": "CNBC-TV18",
+      "item": "AMBUJACEM - Ambuja Cements Share Price: Jefferies sees 20% upside on volume recovery and cos",
+      "source_time": "12:28:10",
+      "gir_seen": "12:29:25",
+      "page_seen": "12:29:38",
+      "gir_lag_s": 75.6,
+      "page_after_gir_s": 12.5,
+      "delay_s": 88.1,
+      "live_blog": false,
+      "rss_time": "12:28:10",
+      "sitemap_time": "12:28:10",
+      "time_from": "the publisher's news sitemap publication time",
+      "link": "https://www.cnbctv18.com/market/ambuja-cements-share-price-jefferies-sees-20-percent-upside-volume-growth-cost-savings-acc-merger-timeline-20038447.htm",
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795160301.0,
+      "source": "wire (market headline) Moneycontrol Live Blog",
+      "pub": "Moneycontrol Live Blog",
+      "item": "Markets@1 | Sensex up 775 points, Nifty above 25700 | The Sensex was up 775.26 points or 0",
+      "source_time": "13:08:21",
+      "gir_seen": "13:09:33",
+      "page_seen": "13:09:39",
+      "gir_lag_s": 72.5,
+      "page_after_gir_s": 5.6,
+      "delay_s": 78.1,
+      "time_from": "the publisher's RSS pubDate",
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795167277.0,
+      "source": "wire ET",
+      "pub": "ET",
+      "item": "TRENT - Trent eyes 200 stores annually, MD P Venkatesalu says offline expansion is \"cons",
+      "source_time": "15:04:37",
+      "gir_seen": "15:05:27",
+      "page_seen": "15:05:33",
+      "gir_lag_s": 50.8,
+      "page_after_gir_s": 5.2,
+      "delay_s": 56.0,
+      "live_blog": false,
+      "rss_time": "15:04:37",
+      "sitemap_time": null,
+      "time_from": "the publisher's RSS pubDate (no sitemap time for this URL)",
+      "link": "https://www.etnownews.com/companies/trent-eyes-200-stores-annually-md-p-venkatesalu-says-offline-expansion-is-conscious-choice-exclusive-article-156541646",
+      "verdict": "LATE"
+     }
+    ],
+    "stats5": {
+     "n": 5,
+     "median": 88.1,
+     "p90": 2666.0,
+     "worst": 2666.0
+    },
+    "wire_fo_by_publisher_gir_lag": {
+     "ET": {
+      "n": 5,
+      "median": 104.8,
+      "p90": 1917.3,
+      "worst": 1917.3
+     },
+     "NDTV Profit": {
+      "n": 1,
+      "median": 2659.0,
+      "p90": 2659.0,
+      "worst": 2659.0
+     },
+     "TradingView": {
+      "n": 5,
+      "median": 306.1,
+      "p90": 896.8,
+      "worst": 896.8
+     },
+     "Business Today": {
+      "n": 4,
+      "median": 726.6,
+      "p90": 845.6,
+      "worst": 845.6
+     },
+     "CNBC-TV18": {
+      "n": 24,
+      "median": 67.6,
+      "p90": 401.0,
+      "worst": 5936.1
+     },
+     "Moneycontrol": {
+      "n": 76,
+      "median": 54.1,
+      "p90": 76.0,
+      "worst": 920.6
+     },
+     "news.google.com": {
+      "n": 31,
+      "median": 699.6,
+      "p90": 2827.7,
+      "worst": 3048.3
+     },
+     "Business Standard": {
+      "n": 6,
+      "median": 539.3,
+      "p90": 1705.8,
+      "worst": 1705.8
+     },
+     "Mint": {
+      "n": 2,
+      "median": 76.0,
+      "p90": 87.4,
+      "worst": 87.4
+     },
+     "BusinessLine / Hindu": {
+      "n": 3,
+      "median": 208.0,
+      "p90": 246.0,
+      "worst": 246.0
+     }
+    },
+    "wire_fo_page_delay": {
+     "n": 152,
+     "median": 77.0,
+     "p90": 929.0,
+     "worst": 3059.1
+    },
+    "wire_fo_gir_lag": {
+     "n": 157,
+     "median": 70.9,
+     "p90": 981.4,
+     "worst": 5936.1
+    },
+    "wire_fo_gir_lag_sitemap_timed": {
+     "n": 17,
+     "median": 277.6,
+     "p90": 1669.8,
+     "worst": 5936.1
+    },
+    "wire_fo_gir_lag_by_pub_sitemap_timed": {
+     "NDTV Profit": {
+      "n": 0,
+      "median": null,
+      "p90": null,
+      "worst": null
+     },
+     "BusinessLine / Hindu": {
+      "n": 0,
+      "median": null,
+      "p90": null,
+      "worst": null
+     },
+     "Business Today": {
+      "n": 0,
+      "median": null,
+      "p90": null,
+      "worst": null
+     },
+     "news.google.com": {
+      "n": 0,
+      "median": null,
+      "p90": null,
+      "worst": null
+     },
+     "ET": {
+      "n": 0,
+      "median": null,
+      "p90": null,
+      "worst": null
+     },
+     "Mint": {
+      "n": 0,
+      "median": null,
+      "p90": null,
+      "worst": null
+     },
+     "CNBC-TV18": {
+      "n": 11,
+      "median": 271.9,
+      "p90": 468.0,
+      "worst": 5936.1
+     },
+     "Moneycontrol": {
+      "n": 0,
+      "median": null,
+      "p90": null,
+      "worst": null
+     },
+     "TradingView": {
+      "n": 0,
+      "median": null,
+      "p90": null,
+      "worst": null
+     },
+     "Business Standard": {
+      "n": 6,
+      "median": 533.2,
+      "p90": 1669.8,
+      "worst": 1669.8
+     }
+    },
+    "market_headline_page_delay": {
+     "n": 131,
+     "median": 247.0,
+     "p90": 1004.0,
+     "worst": 3614.0
+    },
+    "market_headline_gir_lag": {
+     "n": 163,
+     "median": 342.1,
+     "p90": 12361.2,
+     "worst": 62342.8
+    },
+    "google_news_gir_lag": {
+     "n": 236,
+     "median": 4677.7,
+     "p90": 161053.4,
+     "worst": 339728.4
+    },
+    "feed_status": {
+     "Economic Times": {
+      "code": 200,
+      "n": 50
+     },
+     "ET Economy": {
+      "code": 200,
+      "n": 50
+     },
+     "Moneycontrol": {
+      "code": 200,
+      "n": 15
+     },
+     "Moneycontrol Markets": {
+      "code": 200,
+      "n": 4
+     },
+     "Mint": {
+      "code": 200,
+      "n": 35
+     },
+     "Mint Economy": {
+      "code": 200,
+      "n": 35
+     },
+     "Business Standard": {
+      "code": 200,
+      "n": 35
+     },
+     "RBI": {
+      "code": 200,
+      "n": 0
+     },
+     "SEBI": {
+      "code": 200,
+      "n": 30
+     },
+     "Google News · policy": {
+      "code": 200,
+      "n": 100
+     },
+     "Google News · RBI SEBI": {
+      "code": 200,
+      "n": 28
+     },
+     "Google News · markets": {
+      "code": 200,
+      "n": 65
+     },
+     "Google News · global": {
+      "code": 200,
+      "n": 29
+     },
+     "Economic Times Stocks": {
+      "code": 200,
+      "n": 50
+     },
+     "Moneycontrol Business": {
+      "code": 200,
+      "n": 15
+     },
+     "Moneycontrol Results": {
+      "code": 200,
+      "n": 15
+     },
+     "Business Standard Companies": {
+      "code": 200,
+      "n": 35
+     },
+     "Mint Companies": {
+      "code": 200,
+      "n": 35
+     },
+     "CNBC-TV18 Market": {
+      "code": 200,
+      "n": 200
+     },
+     "CNBC-TV18 Business": {
+      "code": 200,
+      "n": 200
+     },
+     "CNBC-TV18 Latest": {
+      "code": 200,
+      "n": 200
+     },
+     "BusinessLine Markets": {
+      "code": 200,
+      "n": 60
+     },
+     "BusinessLine Companies": {
+      "code": 200,
+      "n": 60
+     },
+     "BusinessLine Economy": {
+      "code": 200,
+      "n": 60
+     },
+     "NDTV Profit": {
+      "code": 200,
+      "n": 20
+     },
+     "Business Today Markets": {
+      "code": 200,
+      "n": 120
+     },
+     "Business Today": {
+      "code": 200,
+      "n": 120
+     },
+     "Mint Latest": {
+      "code": 200,
+      "n": 35
+     },
+     "Business Standard Latest": {
+      "code": 200,
+      "n": 115
+     },
+     "Business Standard Economy": {
+      "code": 200,
+      "n": 35
+     },
+     "ET Industry": {
+      "code": 200,
+      "n": 50
+     },
+     "ET Now": {
+      "code": 200,
+      "n": 99
+     },
+     "Hindu Business": {
+      "code": 200,
+      "n": 60
+     },
+     "TOI Business": {
+      "code": 200,
+      "n": 20
+     },
+     "ET Earnings": {
+      "code": 200,
+      "n": 49
+     },
+     "TradingView News": {
+      "code": 200,
+      "n": 200
+     },
+     "Google News · Moneycontrol": {
+      "code": 200,
+      "n": 49
+     },
+     "Google News · Financial Express": {
+      "code": 200,
+      "n": 0
+     },
+     "Google News · Zee Business": {
+      "code": 200,
+      "n": 1
+     },
+     "Google News · ScanX": {
+      "code": 200,
+      "n": 31
+     },
+     "Google News · ETMarkets": {
+      "code": 200,
+      "n": 10
+     },
+     "CNBC-TV18 Live Blog": {
+      "code": 200,
+      "n": 30
+     },
+     "ET Live Blog": {
+      "code": 200,
+      "n": 5
+     },
+     "Moneycontrol Live Blog": {
+      "code": 200,
+      "n": 100
+     },
+     "Google News · Livemint": {
+      "code": 200,
+      "n": 100
+     },
+     "Google News · Business Today": {
+      "code": 200,
+      "n": 61
+     },
+     "Google News · ET Auto": {
+      "code": 200,
+      "n": 1
+     },
+     "Google News · Rediff Money": {
+      "code": 200,
+      "n": 35
+     }
+    },
+    "n_wire_fo": 157,
+    "n_market": 163,
+    "dead_or_missing": [
+     "feed returns 0 items or an error: Google News · Financial Express, RBI"
+    ]
+   },
+   "I2 TV speech-to-text": {
+    "target_s": 60,
+    "items": [
+     {
+      "src_t": 1795146255.0,
+      "source": "TV CNBC-TV18 (speech-to-text)",
+      "item": "Adding. I think the biggest delta has come from foreign long only who  -> TECHM,COFORGE,INFY,TCS",
+      "source_time": "09:14:13-09:14:27 (spoken in this 10 s segment)",
+      "gir_seen": "09:14:37",
+      "page_seen": "09:14:47",
+      "tv_text_at": "09:14:27",
+      "gir_lag_s": 22.0,
+      "page_after_gir_s": 10.0,
+      "delay_s": 32.0,
+      "named": true,
+      "time_from": "speech segment (tv.db ts = segment read start; speech = ts-14..ts); YouTube's own delay behind the broadcast not measurable",
+      "label_on_page": "IDEA - NOT PROVEN",
+      "verdict": "OK"
+     },
+     {
+      "src_t": 1795150166.0,
+      "source": "TV CNBC-TV18 (speech-to-text)",
+      "item": "In the burst scenario, it goes to 30% from here down. Still, it will b -> SBICARD,BAJFINANCE,MUTHOOTFIN,MANAPPURAM",
+      "source_time": "10:19:24-10:19:38 (spoken in this 10 s segment)",
+      "gir_seen": "10:19:45",
+      "page_seen": "10:19:50",
+      "tv_text_at": "10:19:38",
+      "gir_lag_s": 19.0,
+      "page_after_gir_s": 5.1,
+      "delay_s": 24.1,
+      "named": true,
+      "time_from": "speech segment (tv.db ts = segment read start; speech = ts-14..ts); YouTube's own delay behind the broadcast not measurable",
+      "label_on_page": "IDEA - NOT PROVEN",
+      "verdict": "OK"
+     },
+     {
+      "src_t": 1795154767.0,
+      "source": "TV CNBC-TV18 (speech-to-text)",
+      "item": "It's a little more because of the expected MSCI rebalancing by the end -> COFORGE",
+      "source_time": "11:36:05-11:36:19 (spoken in this 10 s segment)",
+      "gir_seen": "11:36:22",
+      "page_seen": "11:36:24",
+      "tv_text_at": "11:36:19",
+      "gir_lag_s": 15.0,
+      "page_after_gir_s": 2.1,
+      "delay_s": 17.1,
+      "named": true,
+      "time_from": "speech segment (tv.db ts = segment read start; speech = ts-14..ts); YouTube's own delay behind the broadcast not measurable",
+      "label_on_page": "IDEA - NOT PROVEN (story n=4, priced 4: up 1 / down 3, median 2-day -0.73% vs NIFTY)",
+      "verdict": "OK"
+     },
+     {
+      "src_t": 1795159446.0,
+      "source": "TV CNBC-TV18 (speech-to-text)",
+      "item": "Month lows onto this 1, and zinc is trading at a 4 month lows as well. -> HINDZINC,VEDL,MUTHOOTFIN,MANAPPURAM",
+      "source_time": "12:54:04-12:54:18 (spoken in this 10 s segment)",
+      "gir_seen": "12:54:28",
+      "page_seen": "12:54:44",
+      "tv_text_at": "12:54:18",
+      "gir_lag_s": 22.0,
+      "page_after_gir_s": 16.0,
+      "delay_s": 38.0,
+      "named": true,
+      "time_from": "speech segment (tv.db ts = segment read start; speech = ts-14..ts); YouTube's own delay behind the broadcast not measurable",
+      "label_on_page": "IDEA - NOT PROVEN",
+      "verdict": "OK"
+     },
+     {
+      "src_t": 1795165806.0,
+      "source": "TV CNBC-TV18 (speech-to-text)",
+      "item": "Right? So this is a bit of a counter move to that. Exactly. In fact, i -> INFY,TCS,SBIN,HDFCBANK",
+      "source_time": "14:40:04-14:40:18 (spoken in this 10 s segment)",
+      "gir_seen": "14:40:26",
+      "page_seen": "14:40:41",
+      "tv_text_at": "14:40:18",
+      "gir_lag_s": 20.0,
+      "page_after_gir_s": 15.1,
+      "delay_s": 35.1,
+      "named": true,
+      "time_from": "speech segment (tv.db ts = segment read start; speech = ts-14..ts); YouTube's own delay behind the broadcast not measurable",
+      "label_on_page": "IDEA - NOT PROVEN",
+      "verdict": "OK"
+     }
+    ],
+    "stats5": {
+     "n": 5,
+     "median": 32.0,
+     "p90": 38.0,
+     "worst": 38.0
+    },
+    "channels": {
+     "ET NOW": {
+      "chunks": 2370,
+      "empty_text": 1,
+      "reader_s": {
+       "n": 2370,
+       "median": 1.7,
+       "p90": 2.1,
+       "worst": 3.6
+      },
+      "holes_over_60s": [],
+      "n_holes": 0,
+      "first": "09:00:00",
+      "last": "15:34:51"
+     },
+     "CNBC-TV18": {
+      "chunks": 2368,
+      "empty_text": 302,
+      "reader_s": {
+       "n": 2368,
+       "median": 1.7,
+       "p90": 2.1,
+       "worst": 23.8
+      },
+      "holes_over_60s": [],
+      "n_holes": 0,
+      "first": "09:00:04",
+      "last": "15:34:50"
+     }
+    },
+    "tv_lines_on_news_list": 0,
+    "tv_line_page_delay": {
+     "n": 0,
+     "median": null,
+     "p90": null,
+     "worst": null
+    },
+    "newsmap_tv_signals": 46,
+    "newsmap_tv_page_delay": {
+     "n": 46,
+     "median": 27.6,
+     "p90": 35.3,
+     "worst": 41.0
+    },
+    "newsread_tv_readings": 984,
+    "newsread_tv_lag": {
+     "n": 984,
+     "median": 12.0,
+     "p90": 30.0,
+     "worst": 4446.0
+    },
+    "tvcalls_rows": 44,
+    "tvcalls_sample": [
+     {
+      "at": "09:08:26",
+      "ch": "CNBC-TV18",
+      "sym": "RELIANCE",
+      "call": "BUY",
+      "house": "Motilal",
+      "words": "O 2, PSU banks, and selective cement name. So 1st, is buy on Mahindra and Mahindra. 1 of the strongest counter in the recent past, given a consolidation breakout on"
+     },
+     {
+      "at": "09:09:09",
+      "ch": "CNBC-TV18",
+      "sym": "BANKBARODA",
+      "call": "BUY",
+      "house": "Motilal",
+      "words": "$2.76, $2.77. And the price button suggests an up move to us $2.99 300. 1 can buy with support of 2 78 for target to us"
+     },
+     {
+      "at": "09:09:57",
+      "ch": "CNBC-TV18",
+      "sym": "BANKBARODA",
+      "call": "SELL",
+      "house": null,
+      "words": "High, closer about 1,800,000,000,000. That's trillion with a t. So, you know, as the AI trade goes through this wrenching sell-off and, you know, cleansing in that sense"
+     },
+     {
+      "at": "10:31:25",
+      "ch": "CNBC-TV18",
+      "sym": "APOLLOHOSP",
+      "call": "BUY",
+      "house": "Macquarie",
+      "words": "Upgrades to outperform and racing the target price. The optimism comes despite looming headwinds from cancer drug margin caps and intensifying"
+     },
+     {
+      "at": "10:31:35",
+      "ch": "CNBC-TV18",
+      "sym": "APOLLOHOSP",
+      "call": "SELL",
+      "house": "Macquarie",
+      "words": "The sell off in metals sees no respite. Gold and silver prices linger around 14 month lows. AI infra favorites"
+     },
+     {
+      "at": "10:31:45",
+      "ch": "CNBC-TV18",
+      "sym": "VEDL",
+      "call": "SELL",
+      "house": "Macquarie",
+      "words": "Copper and aluminum too not immune as the selling spreads across the back stocks of gold financiers, Hindustan Zinc, Vedanta, Hindustan Copper among the top lagger."
+     },
+     {
+      "at": "10:32:05",
+      "ch": "CNBC-TV18",
+      "sym": "VEDL",
+      "call": "BUY",
+      "house": "HSBC",
+      "words": "Around 846 crore rupees. HSBC issues a bullish note on 1 EMI. Tech initiates coverage with a buy rating and a"
+     },
+     {
+      "at": "10:42:14",
+      "ch": "CNBC-TV18",
+      "sym": "APOLLOHOSP",
+      "call": "BUY",
+      "house": "Macquarie",
+      "words": "Testing note which has come out from Macquarie, which is double upgraded Max Healthcare and Apollo Hospitals to outperform. They believe that that the consensus earnings have bottomed out and"
+     }
+    ]
+   },
+   "I4 world news + cues": {
+    "target_s": 60,
+    "items": [
+     {
+      "src_t": 1795140819.0,
+      "source": "FinancialJuice free RSS",
+      "item": "China's Xi meets Australian prime minister: state media",
+      "source_time": "07:43:39",
+      "gir_seen": "07:44:28",
+      "page_seen": "07:44:30",
+      "gir_lag_s": 49.0,
+      "page_after_gir_s": 2.0,
+      "delay_s": 51.0,
+      "verdict": "OK"
+     },
+     {
+      "src_t": 1795158002.0,
+      "source": "FinancialJuice free RSS",
+      "item": "UK Core Retail Sales MoM Actual 0.9% (Forecast 0.1%, Previous -0.7%)",
+      "source_time": "12:30:02",
+      "gir_seen": "12:30:29",
+      "page_seen": "12:30:36",
+      "gir_lag_s": 27.0,
+      "page_after_gir_s": 7.0,
+      "delay_s": 34.0,
+      "verdict": "OK"
+     },
+     {
+      "src_t": 1795168007.0,
+      "source": "FinancialJuice free RSS",
+      "item": "ECB's Pereira: Key question is whether energy price pressures spread to rest of economy.",
+      "source_time": "15:16:47",
+      "gir_seen": "15:18:29",
+      "page_seen": "15:18:30",
+      "gir_lag_s": 102.0,
+      "page_after_gir_s": 1.1,
+      "delay_s": 103.1,
+      "verdict": "LATE"
+     }
+    ],
+    "stats5": {
+     "n": 3,
+     "median": 51.0,
+     "p90": 103.1,
+     "worst": 103.1
+    },
+    "trump": {
+     "n": 14,
+     "gir_lag": {
+      "n": 14,
+      "median": 78.5,
+      "p90": 115.0,
+      "worst": 125.0
+     },
+     "page_delay": {
+      "n": 0,
+      "median": null,
+      "p90": null,
+      "worst": null
+     }
+    },
+    "fjuice": {
+     "n": 175,
+     "gir_lag": {
+      "n": 175,
+      "median": 69.0,
+      "p90": 119.0,
+      "worst": 140.0
+     },
+     "page_delay": {
+      "n": 69,
+      "median": 66.0,
+      "p90": 123.0,
+      "worst": 133.1
+     }
+    },
+    "fedreg": {
+     "n": 0,
+     "gir_lag": {
+      "n": 0,
+      "median": null,
+      "p90": null,
+      "worst": null
+     }
+    },
+    "investinglive": {
+     "n": 0,
+     "gir_lag": {
+      "n": 0,
+      "median": null,
+      "p90": null,
+      "worst": null
+     },
+     "page_delay": {
+      "n": 0,
+      "median": null,
+      "p90": null,
+      "worst": null
+     }
+    },
+    "quotes": {
+     "yahoo_quote_age_s (source time vs fetch; free Yahoo is delayed by the exchange)": {
+      "BZ=F": {
+       "n": 32,
+       "median": 646.0,
+       "p90": 951.9,
+       "worst": 1781.8
+      },
+      "ES=F": {
+       "n": 32,
+       "median": 604.0,
+       "p90": 604.9,
+       "worst": 610.0
+      },
+      "NQ=F": {
+       "n": 32,
+       "median": 603.1,
+       "p90": 605.2,
+       "worst": 606.3
+      },
+      "HG=F": {
+       "n": 32,
+       "median": 606.3,
+       "p90": 613.6,
+       "worst": 624.4
+      },
+      "ALI=F": {
+       "n": 32,
+       "median": 7869.4,
+       "p90": 19119.3,
+       "worst": 23239.3
+      },
+      "GC=F": {
+       "n": 32,
+       "median": 602.5,
+       "p90": 607.3,
+       "worst": 607.7
+      },
+      "^TNX": {
+       "n": 32,
+       "median": 36022.5,
+       "p90": 47272.9,
+       "worst": 49972.5
+      },
+      "DX-Y.NYB": {
+       "n": 32,
+       "median": 602.9,
+       "p90": 608.9,
+       "worst": 610.9
+      },
+      "^N225": {
+       "n": 32,
+       "median": 1216.8,
+       "p90": 8567.0,
+       "worst": 11266.8
+      },
+      "^KS11": {
+       "n": 32,
+       "median": 1211.1,
+       "p90": 9301.1,
+       "worst": 12000.9
+      },
+      "^HSI": {
+       "n": 32,
+       "median": 904.0,
+       "p90": 3772.0,
+       "worst": 6238.0
+      }
+     },
+     "gift_nifty_kite_age_s (market hours)": {
+      "n": 395,
+      "median": 4.7,
+      "p90": 6.8,
+      "worst": 33723.7
+     },
+     "gift_nifty_before_09_00": {
+      "samples": 83,
+      "first_fresh_at": null,
+      "stale_samples": 83
+     },
+     "page COMEX copper (Yahoo HG=F) age_s (page time - the value's own time)": {
+      "n": 394,
+      "median": 116.7,
+      "p90": 196.7,
+      "worst": 63994.7
+     },
+     "page Brent (Yahoo BZ=F) age_s (page time - the value's own time)": {
+      "n": 394,
+      "median": 116.7,
+      "p90": 196.7,
+      "worst": 63994.7
+     },
+     "page Nasdaq futures (Yahoo NQ=F) age_s (page time - the value's own time)": {
+      "n": 394,
+      "median": 116.7,
+      "p90": 196.7,
+      "worst": 63994.7
+     },
+     "page US 10y (Yahoo ^TNX) age_s (page time - the value's own time)": {
+      "n": 394,
+      "median": 116.7,
+      "p90": 196.7,
+      "worst": 63994.7
+     },
+     "page MCX copper (Kite) age_s (page time - the value's own time)": {
+      "n": 388,
+      "median": 15.7,
+      "p90": 38.7,
+      "worst": 33582.7
+     },
+     "page MCX aluminium (Kite) age_s (page time - the value's own time)": {
+      "n": 388,
+      "median": 70.2,
+      "p90": 272.7,
+      "worst": 33590.7
+     }
+    }
+   },
+   "I5 regulators / Parliament / PIB": {
+    "target_s": 60,
+    "items": [
+     {
+      "src_t": 1795147221.0,
+      "source": "exchange circular (v2 circulars)",
+      "item": "BSE notice: Review of Margin Framework for Commodity Derivatives Segment (time corrected: BSE's GMT had been read as IST)",
+      "source_time": "09:30:21",
+      "gir_seen": "09:33:18",
+      "page_seen": "09:33:31",
+      "gir_lag_s": 177.0,
+      "page_after_gir_s": 13.1,
+      "delay_s": 190.1,
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795154447.0,
+      "source": "exchange circular (v2 circulars)",
+      "item": "BSE notice: SUVIDHAA INFOSERVE LIMITED - Extension of Rights issue up to Monday, November  (time corrected: BSE's GMT had been read as IST)",
+      "source_time": "11:30:47",
+      "gir_seen": "11:33:18",
+      "page_seen": "11:33:35",
+      "gir_lag_s": 151.0,
+      "page_after_gir_s": 17.0,
+      "delay_s": 168.0,
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795160334.0,
+      "source": "exchange circular (v2 circulars)",
+      "item": "BSE notice: Suspension of Trading in T-bills/Government Securities (time corrected: BSE's GMT had been read as IST)",
+      "source_time": "13:08:54",
+      "gir_seen": "13:13:18",
+      "page_seen": "13:13:37",
+      "gir_lag_s": 264.0,
+      "page_after_gir_s": 19.1,
+      "delay_s": 283.1,
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795162200.0,
+      "source": "RBI press release (v2 bonds, RSS)",
+      "item": "RBI: Result of the Second 3-day Variable Rate Repo (VRR) auction held on November 20, 2026",
+      "source_time": "13:40:00",
+      "gir_seen": "13:43:56",
+      "page_seen": "13:43:59",
+      "gir_lag_s": 236.0,
+      "page_after_gir_s": 3.1,
+      "delay_s": 239.1,
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795166268.0,
+      "source": "exchange circular (v2 circulars)",
+      "item": "BSE notice: Change of Name on account of Amalgamation (time corrected: BSE's GMT had been read as IST)",
+      "source_time": "14:47:48",
+      "gir_seen": "14:48:22",
+      "page_seen": "14:48:40",
+      "gir_lag_s": 34.0,
+      "page_after_gir_s": 18.0,
+      "delay_s": 52.0,
+      "verdict": "OK"
+     }
+    ],
+    "stats5": {
+     "n": 5,
+     "median": 190.1,
+     "p90": 283.1,
+     "worst": 283.1
+    },
+    "v2_rows": 20,
+    "old_engine_new_ids": {
+     "IRDAI": 14,
+     "POLICY": 50,
+     "RBI": 29,
+     "PIB": 24,
+     "SEBI": 88
+    },
+    "old_engine_rows": [
+     {
+      "file": "govwatch.json",
+      "id": "IRDAI:https://news.google.com/rss/articles/CBMi4gFBVV95cUxOSHJmWlFEWjJiQ0pfc2d2eHJnMFBFME83aGhPS1VsWUlkTmdJdUZOQmpNQktaU1B5c002a204ZU5BOWUwcW1zU2Z6RmgydHJTN3FpZ",
+      "gir_seen_old": "09:00:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMivwFBVV95cUxOeWxjNUhCZGttSUh1MXM4c1ZFSng4eTBnWkxmakpMY1NreVhxZ05YQWdKUjRqZ3BCd0ZTSk1pQlpJVnlhRFVIdmR6RWliSkZ6NldF",
+      "gir_seen_old": "09:00:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:t:k taka cabinet approves waiving interest on loans to backward communities with condition",
+      "gir_seen_old": "09:00:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "IRDAI:https://news.google.com/rss/articles/CBMi8AFBVV95cUxPU1BuRmF3RDhfZjYzVTcwZG83TTdwbDVFYVZGVF9VWkgyTTlMRXphdnFmbGFxTk1tOTNjSjBsMnktQkFHVmltSS1NMk4zVy1wcjRiZ",
+      "gir_seen_old": "09:12:03"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "IRDAI:t:irdai to set up industry working groups to improve health insurance claim transparency",
+      "gir_seen_old": "09:12:03"
+     },
+     {
+      "file": "regwatch.json",
+      "id": "RBI:Money Market Operations as on November 19, 2026 443 kb",
+      "gir_seen_old": "09:21:35"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "RBI:https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=64005",
+      "gir_seen_old": "09:22:03"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "RBI:t:money market operations as on november 19 2026",
+      "gir_seen_old": "09:22:03"
+     },
+     {
+      "file": "regwatch.json",
+      "id": "RBI:https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=64005",
+      "gir_seen_old": "09:23:35"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMitwFBVV95cUxNeGtMYllIT2JhZkVqNVAxQndMWmFlYk9udVhncXp3R2xfRkc0RTRHcGlROExBWUUtRWtORjMxWGUyc25PX0xZT0tza2VWMVg5N1hC",
+      "gir_seen_old": "09:26:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:t:pli amplifies legal innovation insights with pearls on gloves off podcast sponsorship carroll county mirror democrat",
+      "gir_seen_old": "09:26:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "IRDAI:https://news.google.com/rss/articles/CBMizwFBVV95cUxNTEREeWpLM25iZmRmeENHZUhBMGpYeTlBdzc4MUVJSG4zdFpTdXp5U0VUZjF4ZWZMQjVnMFFON1RBZHh5NGdsV2NyZ1U5SnBVa0t5R",
+      "gir_seen_old": "09:28:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2338842",
+      "gir_seen_old": "09:34:03"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2338852",
+      "gir_seen_old": "09:38:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2338853",
+      "gir_seen_old": "09:38:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMi5AFBVV95cUxQLUxwZFhVT2NkZXVTQ3J2MVRrVU1sSGxhcnV5bnFaTjVoaW1xX0docUZvMml1NlRLQmhWSkdCc0FUaEt1XzVfOVRsazcwOGR2VG5M",
+      "gir_seen_old": "09:40:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:t:karnataka cabinet approves waiving interest on loans to backward communities but there s a catch",
+      "gir_seen_old": "09:40:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2338854",
+      "gir_seen_old": "09:42:03"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2338855",
+      "gir_seen_old": "09:42:03"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2338856",
+      "gir_seen_old": "09:46:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2338857",
+      "gir_seen_old": "09:52:04"
+     },
+     {
+      "file": "regwatch.json",
+      "id": "RBI:Result of Underwriting Auction conducted on November 20, 2026 290 kb",
+      "gir_seen_old": "09:53:36"
+     },
+     {
+      "file": "regwatch.json",
+      "id": "RBI:https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=64006",
+      "gir_seen_old": "09:57:35"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "RBI:https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=64006",
+      "gir_seen_old": "09:58:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "RBI:t:result of underwriting auction conducted on november 20 2026",
+      "gir_seen_old": "09:58:04"
+     },
+     {
+      "file": "regwatch.json",
+      "id": "RBI:Result of Underwriting Auction conducted on November 20, 2026 288 kb",
+      "gir_seen_old": "09:59:34"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMifEFVX3lxTFBCQjJrbkdrRm93M05QTklaUS11bWFGNllMQk5mRFBaXzdvZWJHOUZMRi1ET3A3RGxGQlR2QTN0eG1hbmV6WVNXRDRsai16SU5NYjVR",
+      "gir_seen_old": "10:14:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:t:andhra pradesh cabinet approves draft ppp policy",
+      "gir_seen_old": "10:14:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMixAFBVV95cUxQb1FrTGtnZHNob2RkancwZ3VoM3ZzME53bWxFZ2ZkYl9HX0hPdldMRVdwMTFWc1Ridl9NcV82Y3dPaWFHeks3S0lCTXhjMlI1TWlh",
+      "gir_seen_old": "10:16:04"
+     },
+     {
+      "file": "regwatch.json",
+      "id": "RBI:Result of the 3-day Variable Rate Repo (VRR) auction held on November 20, 2026 306 kb",
+      "gir_seen_old": "10:27:40"
+     },
+     {
+      "file": "regwatch.json",
+      "id": "RBI:https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=64007",
+      "gir_seen_old": "10:27:40"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "RBI:https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=64007",
+      "gir_seen_old": "10:28:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "RBI:t:result of the 3 day variable rate repo vrr auction held on november 20 2026",
+      "gir_seen_old": "10:28:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMi3AFBVV95cUxOMlVFZHRvcU1NRWVqUUE0SGZrWmZhdGRYSWNoWTFrTmY3UWowNmxLM2JoSEE1R05iTzBlOVpzcW5XYXRLb1JNY3pGRU9VLWFlcHFN",
+      "gir_seen_old": "11:16:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:t:karnataka cabinet approves confiscation of basava mantapa book legal action against author ravi hanj eshwar khandre",
+      "gir_seen_old": "11:16:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "IRDAI:https://news.google.com/rss/articles/CBMioAJBVV95cUxOaFltUVlxTjd5alRyVmMzU2trc3Rhc3NzOEgwTm1OVXNRRXJnczgtTVBPVHhvMXZZM3czcE56bWdzVVdUZTFPOTZkTWZ5QXhBTEJMS",
+      "gir_seen_old": "11:28:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMimAFBVV95cUxPMjV2elpkYmVYNTZwLWM5RzRMekpOM3ExSnltLThkYVZ5dm44dDZUNE9oaU9CSmlRZWxNT3lMRGpwV3ZNUXZjTnRZTXZrNEc3RFZT",
+      "gir_seen_old": "11:34:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:t:jharkhand cabinet approves 44 52 crore for 8 3 km pakur road",
+      "gir_seen_old": "11:34:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMikAFBVV95cUxQcjNZNWdMYnRiVW1reDF4ZWNWYk9MdjAtN3JZb2IzaWNzWXNkRDZ5b0lpelFGQkFHOVFic2dZNVl4V0xMTzNmZ0V2UVNtam54UzFi",
+      "gir_seen_old": "11:54:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:t:uttarakhand cabinet approves forest service recruitment changes",
+      "gir_seen_old": "11:54:05"
+     }
+    ],
+    "dead_or_missing": [
+     "no v2 poller (page shows nothing) for: SEBI, IRDAI, TRAI, CCI, DGCA, PIB, sansad.in - only the OLD regwatch / govwatch (every 2 min, Telegram, no page)",
+     "SEBI RSS sebirss.xml returns 0 items (checked 20 Nov 07:40)"
+    ]
+   }
+  }
+ },
+ "B_after_fixes_1537_1750": {
+  "day": "2026-11-20",
+  "window": [
+   "15:37",
+   "17:50"
+  ],
+  "made": "2026-11-20T17:41:32+05:30",
+  "tag": "after",
+  "sources": {
+   "I1 filings (NSE + BSE)": {
+    "target_s": 15,
+    "items": [
+     {
+      "src_t": 1795169510.0,
+      "source": "NSE filing",
+      "item": "ABCAPITAL - Shareholders meeting",
+      "source_time": "15:41:50",
+      "gir_seen": "15:41:55",
+      "page_seen": "15:41:59",
+      "gir_lag_s": 5.4,
+      "page_after_gir_s": 3.6,
+      "delay_s": 9.0,
+      "time_from": "exchange dissemination time (exchdisstime / DissemDT)",
+      "verdict": "OK"
+     },
+     {
+      "src_t": 1795169680.0,
+      "source": "BSE filing",
+      "item": "FEDERALBNK - Federal Bank Ltd - 500469 - Announcement under Regulation 30 (LODR)-An",
+      "source_time": "15:44:40",
+      "gir_seen": "15:45:43",
+      "page_seen": "15:45:45",
+      "gir_lag_s": 63.3,
+      "page_after_gir_s": 1.8,
+      "delay_s": 65.0,
+      "time_from": "exchange dissemination time (exchdisstime / DissemDT)",
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795171251.0,
+      "source": "BSE filing",
+      "item": "WAAREEENER - Waaree Energies Ltd - 544277 - Execution Of Power Purchase Agreement B",
+      "source_time": "16:10:51",
+      "gir_seen": "16:11:34",
+      "page_seen": "16:11:37",
+      "gir_lag_s": 43.0,
+      "page_after_gir_s": 3.0,
+      "delay_s": 46.1,
+      "time_from": "exchange dissemination time (exchdisstime / DissemDT)",
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795173405.0,
+      "source": "NSE filing",
+      "item": "INDUSINDBK - General Updates",
+      "source_time": "16:46:45",
+      "gir_seen": "16:46:53",
+      "page_seen": "16:46:56",
+      "gir_lag_s": 8.2,
+      "page_after_gir_s": 2.8,
+      "delay_s": 11.1,
+      "time_from": "exchange dissemination time (exchdisstime / DissemDT)",
+      "verdict": "OK"
+     },
+     {
+      "src_t": 1795176367.0,
+      "source": "NSE filing",
+      "item": "TITAN - Analysts/Institutional Investor Meet/Con. Call Updates",
+      "source_time": "17:36:07",
+      "gir_seen": "17:36:18",
+      "page_seen": "17:36:20",
+      "gir_lag_s": 11.5,
+      "page_after_gir_s": 1.5,
+      "delay_s": 13.0,
+      "time_from": "exchange dissemination time (exchdisstime / DissemDT)",
+      "verdict": "OK"
+     }
+    ],
+    "stats5": {
+     "n": 5,
+     "median": 13.0,
+     "p90": 65.0,
+     "worst": 65.0
+    },
+    "by_exchange": {
+     "NSE": {
+      "all_filings_gir_lag": {
+       "n": 108,
+       "median": 10.9,
+       "p90": 17.5,
+       "worst": 19.1
+      },
+      "fo_filings_page_delay": {
+       "n": 19,
+       "median": 14.0,
+       "p90": 20.0,
+       "worst": 21.0
+      },
+      "fo_filings_gir_lag": {
+       "n": 19,
+       "median": 12.0,
+       "p90": 18.5,
+       "worst": 19.0
+      }
+     },
+     "BSE": {
+      "all_filings_gir_lag": {
+       "n": 42,
+       "median": 44.4,
+       "p90": 64.1,
+       "worst": 69.7
+      },
+      "fo_filings_page_delay": {
+       "n": 7,
+       "median": 49.0,
+       "p90": 71.0,
+       "worst": 71.0
+      },
+      "fo_filings_gir_lag": {
+       "n": 7,
+       "median": 47.8,
+       "p90": 69.7,
+       "worst": 69.7
+      }
+     }
+    },
+    "fo_rows": 26,
+    "all_rows": 150,
+    "state": {
+     "NSE": {
+      "ok_t": 1795176688.5542946,
+      "status": 200,
+      "items": 20,
+      "requests": 459,
+      "errors": 0,
+      "blocked": 0,
+      "back_s": 0.0,
+      "why": "",
+      "new": 108,
+      "overflow": 0
+     },
+     "BSE": {
+      "ok_t": 1795171554.2797194,
+      "status": 403,
+      "items": 50,
+      "requests": 155,
+      "errors": 0,
+      "blocked": 10,
+      "back_s": 900.0,
+      "why": "HTTP 403 - waiting 900 s",
+      "new": 42,
+      "overflow": 0
+     }
+    }
+   },
+   "I3 wires / publishers": {
+    "target_s": 30,
+    "items": [
+     {
+      "src_t": 1795168879.0,
+      "source": "fast path cnbctv18",
+      "pub": "cnbctv18",
+      "item": "HDFCBANK - HDFC Bank changes BizBlack Metal rewards: How much must cardholders spend to ear",
+      "source_time": "15:31:19",
+      "gir_seen": "15:40:27",
+      "page_seen": "15:40:30",
+      "gir_lag_s": 548.0,
+      "page_after_gir_s": 3.0,
+      "delay_s": 551.0,
+      "on": "ext.recent",
+      "time_from": "the publisher's sitemap / RSS publication time",
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795170771.0,
+      "source": "fast path cnbctv18",
+      "pub": "cnbctv18",
+      "item": "market - Rupee could strengthen to 92 against dollar, may test 91 if RBI does not interve",
+      "source_time": "16:02:51",
+      "gir_seen": "16:07:57",
+      "page_seen": "16:07:58",
+      "gir_lag_s": 306.0,
+      "page_after_gir_s": 1.0,
+      "delay_s": 307.0,
+      "on": "ext.recent",
+      "time_from": "the publisher's sitemap / RSS publication time",
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795173118.0,
+      "source": "fast path et",
+      "pub": "et",
+      "item": "market - SEBI explores its own AI model, plans framework to boost bond trading; Simplifie",
+      "source_time": "16:41:58",
+      "gir_seen": "16:43:24",
+      "page_seen": "16:43:29",
+      "gir_lag_s": 86.0,
+      "page_after_gir_s": 5.0,
+      "delay_s": 91.0,
+      "on": "ext.recent",
+      "time_from": "the publisher's sitemap / RSS publication time",
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795173177.0,
+      "source": "fast path mc",
+      "pub": "mc",
+      "item": "market - Rupee surges 76 paise to seven-month high of 92.68 against US dollar on equity i",
+      "source_time": "16:42:57",
+      "gir_seen": "16:43:55",
+      "page_seen": "16:43:59",
+      "gir_lag_s": 58.0,
+      "page_after_gir_s": 4.0,
+      "delay_s": 62.0,
+      "on": "ext.recent",
+      "time_from": "the publisher's sitemap / RSS publication time",
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795175231.0,
+      "source": "fast path bs",
+      "pub": "bs",
+      "item": "market - RBI clarifies ₹10 lakh EDF threshold applies to each inward remittance",
+      "source_time": "17:17:11",
+      "gir_seen": "17:19:10",
+      "page_seen": "17:19:14",
+      "gir_lag_s": 119.0,
+      "page_after_gir_s": 4.1,
+      "delay_s": 123.1,
+      "on": "ext.recent",
+      "time_from": "the publisher's sitemap / RSS publication time",
+      "verdict": "LATE"
+     }
+    ],
+    "stats5": {
+     "n": 5,
+     "median": 123.1,
+     "p90": 551.0,
+     "worst": 551.0
+    },
+    "fast_path_gir_lag": {
+     "n": 24,
+     "median": 128.5,
+     "p90": 306.0,
+     "worst": 564.0
+    },
+    "fast_path_page_delay": {
+     "n": 24,
+     "median": 132.6,
+     "p90": 307.0,
+     "worst": 565.1
+    },
+    "fast_path_by_pub": {
+     "bs": {
+      "n": 2,
+      "median": 191.5,
+      "p90": 264.0,
+      "worst": 264.0
+     },
+     "mc": {
+      "n": 11,
+      "median": 147.0,
+      "p90": 178.0,
+      "worst": 242.0
+     },
+     "cnbctv18": {
+      "n": 6,
+      "median": 234.5,
+      "p90": 564.0,
+      "worst": 564.0
+     },
+     "et": {
+      "n": 5,
+      "median": 79.0,
+      "p90": 105.0,
+      "worst": 105.0
+     }
+    },
+    "n_fast": 24,
+    "old_path_wire_fo_gir_lag": {
+     "n": 22,
+     "median": 205.4,
+     "p90": 2048.6,
+     "worst": 2309.9
+    },
+    "old_path_wire_fo_gir_lag_sitemap_timed": {
+     "n": 2,
+     "median": 304.6,
+     "p90": 559.1,
+     "worst": 559.1
+    }
+   },
+   "I2 TV speech-to-text": {
+    "target_s": 60,
+    "items": [
+     {
+      "src_t": 1795169500.0,
+      "source": "TV line (news.list)",
+      "item": "HDFCBANK -  TV CNBC-TV18: Some upside from here. Absolutely. And I know that pain that Ni",
+      "source_time": "15:41:38-15:41:52 (spoken in this 10 s segment)",
+      "gir_seen": null,
+      "page_seen": "15:42:04",
+      "gir_lag_s": null,
+      "page_after_gir_s": null,
+      "delay_s": 24.0,
+      "named": true,
+      "time_from": "speech segment (tv.db ts); YouTube's own delay behind the broadcast not measurable",
+      "label_on_page": "TV only - unverified",
+      "verdict": "OK"
+     },
+     {
+      "src_t": 1795169792.0,
+      "source": "TV line (news.list)",
+      "item": "MOTILALOFS -  TV CNBC-TV18: A bunch of people, right, looking at what they are, and these a",
+      "source_time": "15:46:30-15:46:44 (spoken in this 10 s segment)",
+      "gir_seen": null,
+      "page_seen": "15:47:08",
+      "gir_lag_s": null,
+      "page_after_gir_s": null,
+      "delay_s": 36.0,
+      "named": true,
+      "time_from": "speech segment (tv.db ts); YouTube's own delay behind the broadcast not measurable",
+      "label_on_page": "TV only - unverified",
+      "verdict": "OK"
+     },
+     {
+      "src_t": 1795170243.0,
+      "source": "TV line (news.list)",
+      "item": "AXISBANK -  TV CNBC-TV18: Banks at 20%. So between 20 to 40% is the kind of rally we've s",
+      "source_time": "15:54:01-15:54:15 (spoken in this 10 s segment)",
+      "gir_seen": null,
+      "page_seen": "15:54:38",
+      "gir_lag_s": null,
+      "page_after_gir_s": null,
+      "delay_s": 35.0,
+      "named": true,
+      "time_from": "speech segment (tv.db ts); YouTube's own delay behind the broadcast not measurable",
+      "label_on_page": "TV only - unverified",
+      "verdict": "OK"
+     },
+     {
+      "src_t": 1795171211.0,
+      "source": "TV line (news.list)",
+      "item": "IREDA -  TV CNBC-TV18: Through the course of the week. The other big winners in the br",
+      "source_time": "16:10:09-16:10:23 (spoken in this 10 s segment)",
+      "gir_seen": null,
+      "page_seen": "16:10:32",
+      "gir_lag_s": null,
+      "page_after_gir_s": null,
+      "delay_s": 21.0,
+      "named": true,
+      "time_from": "speech segment (tv.db ts); YouTube's own delay behind the broadcast not measurable",
+      "label_on_page": "TV only - unverified",
+      "verdict": "OK"
+     },
+     {
+      "src_t": 1795172033.0,
+      "source": "TV line (news.list)",
+      "item": "INDIGO -  TV CNBC-TV18: Nonpayment of penalty imposed by DGC in May this year. 7th conc",
+      "source_time": "16:23:51-16:24:05 (spoken in this 10 s segment)",
+      "gir_seen": null,
+      "page_seen": "16:24:27",
+      "gir_lag_s": null,
+      "page_after_gir_s": null,
+      "delay_s": 34.0,
+      "named": true,
+      "time_from": "speech segment (tv.db ts); YouTube's own delay behind the broadcast not measurable",
+      "label_on_page": "TV only - unverified",
+      "verdict": "OK"
+     }
+    ],
+    "stats5": {
+     "n": 5,
+     "median": 34.0,
+     "p90": 36.0,
+     "worst": 36.0
+    },
+    "channels": {
+     "CNBC-TV18": {
+      "chunks": 747,
+      "empty_text": 21,
+      "reader_s": {
+       "n": 747,
+       "median": 1.7,
+       "p90": 2.2,
+       "worst": 8.6
+      },
+      "holes_over_60s": [],
+      "n_holes": 0,
+      "first": "15:37:05",
+      "last": "17:41:25"
+     },
+     "ET NOW": {
+      "chunks": 743,
+      "empty_text": 12,
+      "reader_s": {
+       "n": 743,
+       "median": 1.7,
+       "p90": 2.1,
+       "worst": 6.3
+      },
+      "holes_over_60s": [],
+      "n_holes": 0,
+      "first": "15:37:06",
+      "last": "17:41:27"
+     }
+    },
+    "tv_lines_on_news_list": 21,
+    "tv_line_page_delay": {
+     "n": 21,
+     "median": 29.0,
+     "p90": 35.0,
+     "worst": 36.0
+    },
+    "newsmap_tv_signals": 29,
+    "newsmap_tv_page_delay": {
+     "n": 28,
+     "median": 28.0,
+     "p90": 35.0,
+     "worst": 87.0
+    },
+    "newsread_tv_readings": 258,
+    "newsread_tv_lag": {
+     "n": 258,
+     "median": 13.0,
+     "p90": 21.0,
+     "worst": 130.0
+    },
+    "tvcalls_rows": 1,
+    "tvcalls_sample": [
+     {
+      "at": "15:42:13",
+      "ch": "CNBC-TV18",
+      "sym": "HDFCBANK",
+      "call": "BUY",
+      "house": null,
+      "words": "You are absolutely right. So there has not been any major change in the outlook of the bank. Yep. There will be some earnings upgrades, downgrades"
+     }
+    ]
+   },
+   "I4 world news + cues": {
+    "target_s": 60,
+    "items": [
+     {
+      "src_t": 1795140819.0,
+      "source": "FinancialJuice free RSS",
+      "item": "China's Xi meets Australian prime minister: state media",
+      "source_time": "07:43:39",
+      "gir_seen": "07:44:28",
+      "page_seen": "07:44:30",
+      "gir_lag_s": 49.0,
+      "page_after_gir_s": 2.0,
+      "delay_s": 51.0,
+      "verdict": "OK"
+     },
+     {
+      "src_t": 1795175898.0,
+      "source": "FinancialJuice free RSS",
+      "item": "Yemen's Houthis: Saudi Arabia's Shugaiq power plant will be targeted in coming hours in re",
+      "source_time": "17:28:18",
+      "gir_seen": "17:29:11",
+      "page_seen": "17:29:16",
+      "gir_lag_s": 53.0,
+      "page_after_gir_s": 5.0,
+      "delay_s": 58.0,
+      "verdict": "OK"
+     },
+     {
+      "src_t": 1795172915.0,
+      "source": "investingLive RSS (v2 world)",
+      "item": "investingLive: Is Nvidia stock a buy or sell? My opinion and 'buy the dip' trade plan",
+      "source_time": "16:38:35",
+      "gir_seen": "17:33:19",
+      "page_seen": "17:33:20",
+      "gir_lag_s": 3284.0,
+      "page_after_gir_s": 1.0,
+      "delay_s": 3285.0,
+      "verdict": "LATE"
+     }
+    ],
+    "stats5": {
+     "n": 3,
+     "median": 58.0,
+     "p90": 3285.0,
+     "worst": 3285.0
+    },
+    "trump": {
+     "n": 0,
+     "gir_lag": {
+      "n": 0,
+      "median": null,
+      "p90": null,
+      "worst": null
+     },
+     "page_delay": {
+      "n": 0,
+      "median": null,
+      "p90": null,
+      "worst": null
+     }
+    },
+    "fjuice": {
+     "n": 88,
+     "gir_lag": {
+      "n": 88,
+      "median": 58.0,
+      "p90": 121.0,
+      "worst": 2305.0
+     },
+     "page_delay": {
+      "n": 88,
+      "median": 63.0,
+      "p90": 124.0,
+      "worst": 2310.0
+     }
+    },
+    "fedreg": {
+     "n": 0,
+     "gir_lag": {
+      "n": 0,
+      "median": null,
+      "p90": null,
+      "worst": null
+     }
+    },
+    "investinglive": {
+     "n": 5,
+     "gir_lag": {
+      "n": 5,
+      "median": 1297.0,
+      "p90": 3284.0,
+      "worst": 3284.0
+     },
+     "page_delay": {
+      "n": 5,
+      "median": 1298.0,
+      "p90": 3285.0,
+      "worst": 3285.0
+     }
+    },
+    "quotes": {
+     "yahoo_quote_age_s (source time vs fetch; free Yahoo is delayed by the exchange)": {
+      "BZ=F": {
+       "n": 22,
+       "median": 616.4,
+       "p90": 647.9,
+       "worst": 759.1
+      },
+      "ES=F": {
+       "n": 22,
+       "median": 603.3,
+       "p90": 605.0,
+       "worst": 609.3
+      },
+      "NQ=F": {
+       "n": 22,
+       "median": 602.8,
+       "p90": 604.5,
+       "worst": 606.1
+      },
+      "HG=F": {
+       "n": 22,
+       "median": 606.0,
+       "p90": 611.4,
+       "worst": 619.2
+      },
+      "ALI=F": {
+       "n": 22,
+       "median": 16869.5,
+       "p90": 23668.7,
+       "worst": 25468.7
+      },
+      "GC=F": {
+       "n": 22,
+       "median": 603.9,
+       "p90": 607.6,
+       "worst": 608.7
+      },
+      "^TNX": {
+       "n": 22,
+       "median": 49522.5,
+       "p90": 56321.9,
+       "worst": 58121.8
+      },
+      "DX-Y.NYB": {
+       "n": 22,
+       "median": 602.8,
+       "p90": 608.9,
+       "worst": 610.9
+      },
+      "^N225": {
+       "n": 22,
+       "median": 10816.8,
+       "p90": 17616.4,
+       "worst": 19416.0
+      },
+      "^KS11": {
+       "n": 22,
+       "median": 8851.0,
+       "p90": 15650.5,
+       "worst": 17450.2
+      },
+      "^HSI": {
+       "n": 22,
+       "median": 5788.1,
+       "p90": 12587.6,
+       "worst": 14387.3
+      }
+     },
+     "gift_nifty_kite_age_s (market hours)": {
+      "n": 125,
+      "median": 12.0,
+      "p90": 200.9,
+      "worst": 510.9
+     },
+     "gift_nifty_before_09_00": {
+      "samples": 0,
+      "first_fresh_at": null,
+      "stale_samples": 0
+     },
+     "page COMEX copper (Yahoo HG=F) age_s (page time - the value's own time)": {
+      "n": 116,
+      "median": 3963.0,
+      "p90": 7173.0,
+      "worst": 7893.0
+     },
+     "page Brent (Yahoo BZ=F) age_s (page time - the value's own time)": {
+      "n": 116,
+      "median": 3963.0,
+      "p90": 7173.0,
+      "worst": 7893.0
+     },
+     "page Nasdaq futures (Yahoo NQ=F) age_s (page time - the value's own time)": {
+      "n": 116,
+      "median": 3963.0,
+      "p90": 7173.0,
+      "worst": 7893.0
+     },
+     "page US 10y (Yahoo ^TNX) age_s (page time - the value's own time)": {
+      "n": 116,
+      "median": 3963.0,
+      "p90": 7173.0,
+      "worst": 7893.0
+     },
+     "page MCX copper (Kite) age_s (page time - the value's own time)": {
+      "n": 125,
+      "median": 25.0,
+      "p90": 76.9,
+      "worst": 139.0
+     },
+     "page MCX aluminium (Kite) age_s (page time - the value's own time)": {
+      "n": 125,
+      "median": 111.9,
+      "p90": 335.0,
+      "worst": 605.0
+     }
+    }
+   },
+   "I5 regulators / Parliament / PIB": {
+    "target_s": 60,
+    "items": [
+     {
+      "src_t": 1795168800.0,
+      "source": "RBI press release (v2 bonds, RSS)",
+      "item": "RBI: Government Stock - Full Auction Results",
+      "source_time": "15:30:00",
+      "gir_seen": "15:37:04",
+      "page_seen": "15:37:12",
+      "gir_lag_s": 424.0,
+      "page_after_gir_s": 8.1,
+      "delay_s": 432.1,
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795171980.0,
+      "source": "pib (v2 regs)",
+      "item": "PIB: 16th Round of Commercial Coal Mine Auctions Draws Overwhelming Response; 85 Bids Rece",
+      "source_time": "16:23:00",
+      "gir_seen": "16:25:04",
+      "page_seen": "16:25:19",
+      "gir_lag_s": 124.0,
+      "page_after_gir_s": 15.0,
+      "delay_s": 139.0,
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795174678.0,
+      "source": "exchange circular (v2 circulars)",
+      "item": "BSE notice: Discontinuation of Market Making for SME Scrip",
+      "source_time": "17:07:58",
+      "gir_seen": "17:12:01",
+      "page_seen": "17:12:07",
+      "gir_lag_s": 243.0,
+      "page_after_gir_s": 6.1,
+      "delay_s": 249.1,
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795175688.0,
+      "source": "exchange circular (v2 circulars)",
+      "item": "BSE notice: Listing of New Securities of Virtuoso Optoelectronics Limited.",
+      "source_time": "17:24:48",
+      "gir_seen": "17:27:08",
+      "page_seen": "17:27:11",
+      "gir_lag_s": 140.0,
+      "page_after_gir_s": 3.1,
+      "delay_s": 143.1,
+      "verdict": "LATE"
+     },
+     {
+      "src_t": 1795176327.0,
+      "source": "exchange circular (v2 circulars)",
+      "item": "BSE notice: Enabling of SMART Switch Feature under BANDHAN NIFTY COMMODITIES INDEX FUND - ",
+      "source_time": "17:35:27",
+      "gir_seen": "17:37:11",
+      "page_seen": "17:37:14",
+      "gir_lag_s": 104.0,
+      "page_after_gir_s": 3.0,
+      "delay_s": 107.0,
+      "verdict": "LATE"
+     }
+    ],
+    "stats5": {
+     "n": 5,
+     "median": 143.1,
+     "p90": 432.1,
+     "worst": 432.1
+    },
+    "v2_rows": 66,
+    "old_engine_new_ids": {
+     "RBI": 13,
+     "POLICY": 25,
+     "SEBI": 1,
+     "PIB": 16,
+     "IRDAI": 14
+    },
+    "old_engine_rows": [
+     {
+      "file": "regwatch.json",
+      "id": "RBI:https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=64012",
+      "gir_seen_old": "15:37:36"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "RBI:https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=64012",
+      "gir_seen_old": "15:38:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMipAFBVV95cUxPSXBqVE1QWENTQTRtOVpES0l1WUwxZXI5cl9wWFV6dlNNNlVWTVY3OWR1NGd3SjR4bi0tLWQwcTUtWjhVRFV5WEV4TnNxOUhqdmV3",
+      "gir_seen_old": "15:38:05"
+     },
+     {
+      "file": "regwatch.json",
+      "id": "SEBI:https://www.sebi.gov.in/enforcement/orders/nov-2026/adjudication-order-in-the-matter-of-intelligent-money-managers-private-limited_105879.html",
+      "gir_seen_old": "15:43:38"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMiygFBVV95cUxPTU5sNkEzMC1LczYtcTN3U0xOdVVHeDJBeTNLdkpLeGFYcFAxYTAxUy1EMnRjalFoWGwtZDhpemhNNmIwcUVjQ3ZlN3MwWkdiYnZ1",
+      "gir_seen_old": "15:50:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMisgFBVV95cUxORk4xS19UWDYxZVZBelk4clNVLXFNV1k3VW1kbnROT0ItWkc4Ym5HY3U5UVJSWEFZMTQxZ09nNFVlX1QwUmwyUkVBTVNNRTFtaXl2",
+      "gir_seen_old": "15:52:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:t:zimbabwean cabinet approves charter to establish ethical rules for ai",
+      "gir_seen_old": "15:52:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2339038",
+      "gir_seen_old": "15:54:06"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:t:21 22",
+      "gir_seen_old": "15:54:06"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "IRDAI:https://news.google.com/rss/articles/CBMi1wJBVV95cUxQamdtbGJqazR5dFo4ZTBFQUNDd0t5aldsQkotSFp2eTR2UlB3bG1sVkpta1phUFhDLVVJMGY4UElnR2RFOFZhMHUzbFRFaEN0anlLb",
+      "gir_seen_old": "15:58:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "IRDAI:t:irdai chief warns of conflict risks in bank auto dealer insurance model",
+      "gir_seen_old": "15:58:05"
+     },
+     {
+      "file": "regwatch.json",
+      "id": "RBI:?????? ??????? ???? 20 ????? 2026 ?? ?????? ??????? ?????? ?? ??????? 3-?????? ???????? ?? ?????????? ???? (????????) ?????? ?????? ????? 336 kb",
+      "gir_seen_old": "16:07:42"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMidkFVX3lxTFAtbGxnaXdaSHM0U3NOYjRROF9zWEN4eGFvUi1vY2lwVFJ2RHF5M2RPNXNhR2J5eERiMVM2Y3RXazJ2bUxWTk82c0szdUxkd3hzMjNR",
+      "gir_seen_old": "16:08:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:t:zimbabwe s cabinet approves national ai charter",
+      "gir_seen_old": "16:08:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMiugFBVV95cUxQSW1LYjhqNXJ1N1VZd2trdXJvM19GMFhNbENSTkdlVWMzUWdFUWRzR29vVkZHckR5VzRpSld6b01feWV2ZnlDcUVEcnNiSGIwNG4w",
+      "gir_seen_old": "16:10:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:t:cabinet approves pm shah s india visit for november 22 23 mofa issues official statement",
+      "gir_seen_old": "16:10:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMilAFBVV95cUxNSldqR0NLNW9kdTlOVHp0OUYzQzBNREN2MDFaaXVCSDdGZWpUM1VfeXZtZFBibG00Vy10RHRVZXdPUF9PRDQ4T3l0VThsZWFBY3ZF",
+      "gir_seen_old": "16:12:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:t:fm chairs eighth pre budget meet with labour sector",
+      "gir_seen_old": "16:12:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMiogFBVV95cUxQZG42eHZ3VTNwdUg5STdaOUlxQ08zejVveEdwOHd5WkZsWTNtT25tZFRFMDBUREo2RVF2M2lYRDBqMWZ4WU9qUFh6SDNCa0FXT0lQ",
+      "gir_seen_old": "16:14:03"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:t:odisha cabinet approves agriculture scheme extension and irrigation projects",
+      "gir_seen_old": "16:14:03"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMiwgFBVV95cUxOdmlETnVkdkRTVl9RdzFFNjEtLUxhLWVLUnlVQ1JTendpQ0QxRDFMMXdpQjRMWDgxY2oyYW5kbU5UTHlYUkRSb0dZNElmdVlfbzFT",
+      "gir_seen_old": "16:14:03"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:t:goa cabinet approves goa ai policy 2026 and five flagship schemes",
+      "gir_seen_old": "16:14:03"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "IRDAI:https://news.google.com/rss/articles/CBMiywFBVV95cUxPTk1pTG5sZkt5TGVGbnhQRVhRVnY4cUk4VE5PQnNvblZNT0ppb25qV1ctWVVxMzJSaDU0OEhSTFR4a3czMUlTbkdsTTRkMWxfdWZBY",
+      "gir_seen_old": "16:28:03"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "IRDAI:t:can fin homes says irdai renews corporate agent license of co",
+      "gir_seen_old": "16:28:03"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMipAFBVV95cUxQZHJpRENsZGt2MkFFQWxrSTBObXNINFdFQXNEaTcwUHM1dFNvTFpCRlZhdG1OWTJvMGpmNjlpbklSSHNjRkw0UThPRnBZeDZ0S2FZ",
+      "gir_seen_old": "16:28:03"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2339074",
+      "gir_seen_old": "16:30:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2339083",
+      "gir_seen_old": "16:36:03"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2339090",
+      "gir_seen_old": "16:40:02"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:t:2 0 11",
+      "gir_seen_old": "16:40:02"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2339092",
+      "gir_seen_old": "16:40:02"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMi6AFBVV95cUxPenloa0dFdFlGQkNsNWZEMUNab1FkYk91NmoyUE1QUjhaaURldXJ1R2VSbk90MEpCRzNtWUVWdTVjTThPcWpRTHV0cXNnRjNyQ2FS",
+      "gir_seen_old": "16:42:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "POLICY:https://news.google.com/rss/articles/CBMi9AFBVV95cUxNeHRpQWRCa0g3YUZnYTRRb0J0Mm9yQ2RUWDVPMUg5VkluQ3dvSW40WXM0SUxHejF5U1JXeTB6YnBTQnFfSFlrcWxEOGs3T19pd29v",
+      "gir_seen_old": "16:44:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2339099",
+      "gir_seen_old": "16:46:03"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:t:2026 12 189",
+      "gir_seen_old": "16:46:03"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2339102",
+      "gir_seen_old": "16:50:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:t:26",
+      "gir_seen_old": "16:50:04"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2339111",
+      "gir_seen_old": "16:54:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2339116",
+      "gir_seen_old": "16:58:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "PIB:https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2339118",
+      "gir_seen_old": "16:58:05"
+     },
+     {
+      "file": "govwatch.json",
+      "id": "IRDAI:https://news.google.com/rss/articles/CBMi3AFBVV95cUxPbWxyejNIVENZMF9PdDhURWhBbk5Wd1ZRUUFma0hMM3VzRkN5V1dhT1lEdGc4cmZMMmZBNzV4MFlKNlhHa1B2WE1ZS1JvMURYT2cxO",
+      "gir_seen_old": "17:00:03"
+     }
+    ],
+    "dead_or_missing": [
+     null,
+     "SEBI RSS sebirss.xml returns 0 items (checked 20 Nov 07:40)"
+    ]
+   }
+  }
+ },
+ "I6_sector_checks": {
+  "1030": {
+   "tag": "1030",
+   "gir_t": 1795150807.2312021,
+   "gir_at": "10:30:07",
+   "gir_weights": "NSE market cap 19 Nov",
+   "nse_t": 1795150812.5,
+   "nse_timestamp": "20-Nov-2026 10:28",
+   "rows": [
+    {
+     "sector": "hospitals & diagnostics",
+     "gir_pct_size_wt": 2.89,
+     "gir_pct_equal_wt": 2.35,
+     "gir_up": 14,
+     "gir_dn": 1,
+     "gir_n_listed": 15,
+     "gir_n_fo": 3,
+     "official": "NIFTY HEALTHCARE INDEX",
+     "official_pct": 0.39,
+     "official_adv": "11",
+     "official_dec": "9",
+     "diff_pp": 2.5
+    },
+    {
+     "sector": "it",
+     "gir_pct_size_wt": 2.54,
+     "gir_pct_equal_wt": 1.25,
+     "gir_up": 25,
+     "gir_dn": 14,
+     "gir_n_listed": 39,
+     "gir_n_fo": 13,
+     "official": "NIFTY IT",
+     "official_pct": 2.9,
+     "official_adv": "10",
+     "official_dec": "0",
+     "diff_pp": -0.36
+    },
+    {
+     "sector": "cement & materials",
+     "gir_pct_size_wt": 0.66,
+     "gir_pct_equal_wt": 1.04,
+     "gir_up": 9,
+     "gir_dn": 3,
+     "gir_n_listed": 12,
+     "gir_n_fo": 4,
+     "official": "NIFTY CEMENT",
+     "official_pct": 0.7,
+     "official_adv": "10",
+     "official_dec": "2",
+     "diff_pp": -0.04
+    },
+    {
+     "sector": "realty",
+     "gir_pct_size_wt": 0.37,
+     "gir_pct_equal_wt": -0.04,
+     "gir_up": 9,
+     "gir_dn": 8,
+     "gir_n_listed": 17,
+     "gir_n_fo": 6,
+     "official": "NIFTY REALTY",
+     "official_pct": 0.46,
+     "official_adv": "6",
+     "official_dec": "4",
+     "diff_pp": -0.09
+    },
+    {
+     "sector": "insurance",
+     "gir_pct_size_wt": 0.11,
+     "gir_pct_equal_wt": -0.33,
+     "gir_up": 5,
+     "gir_dn": 7,
+     "gir_n_listed": 12,
+     "gir_n_fo": 7,
+     "official": "NIFTY FINANCIAL SERVICES 25/50",
+     "official_pct": -0.03,
+     "official_adv": "7",
+     "official_dec": "13",
+     "diff_pp": 0.14
+    },
+    {
+     "sector": "banks",
+     "gir_pct_size_wt": 0.02,
+     "gir_pct_equal_wt": -0.69,
+     "gir_up": 9,
+     "gir_dn": 25,
+     "gir_n_listed": 34,
+     "gir_n_fo": 22,
+     "official": "NIFTY BANK",
+     "official_pct": 0.16,
+     "official_adv": "6",
+     "official_dec": "8",
+     "diff_pp": -0.14
+    },
+    {
+     "sector": "services",
+     "gir_pct_size_wt": -0.02,
+     "gir_pct_equal_wt": -0.56,
+     "gir_up": 7,
+     "gir_dn": 17,
+     "gir_n_listed": 24,
+     "gir_n_fo": 5,
+     "official": "NIFTY SERVICES SECTOR",
+     "official_pct": 0.73,
+     "official_adv": "16",
+     "official_dec": "14",
+     "diff_pp": -0.75
+    },
+    {
+     "sector": "telecom services",
+     "gir_pct_size_wt": -0.04,
+     "gir_pct_equal_wt": -0.71,
+     "gir_up": 2,
+     "gir_dn": 6,
+     "gir_n_listed": 8,
+     "gir_n_fo": 3,
+     "official": "NIFTY MIDSMALL IT & TELECOM",
+     "official_pct": 2.34,
+     "official_adv": "14",
+     "official_dec": "6",
+     "diff_pp": -2.38
+    },
+    {
+     "sector": "consumer services",
+     "gir_pct_size_wt": -0.06,
+     "gir_pct_equal_wt": -0.46,
+     "gir_up": 17,
+     "gir_dn": 26,
+     "gir_n_listed": 43,
+     "gir_n_fo": 9,
+     "official": "NIFTY INDIA NEW AGE CONSUMPTION",
+     "official_pct": 0.06,
+     "official_adv": "38",
+     "official_dec": "36",
+     "diff_pp": -0.12
+    },
+    {
+     "sector": "auto",
+     "gir_pct_size_wt": -0.07,
+     "gir_pct_equal_wt": -0.38,
+     "gir_up": 13,
+     "gir_dn": 35,
+     "gir_n_listed": 50,
+     "gir_n_fo": 17,
+     "official": "NIFTY AUTO",
+     "official_pct": -0.06,
+     "official_adv": "5",
+     "official_dec": "9",
+     "diff_pp": -0.01
+    },
+    {
+     "sector": "chemicals",
+     "gir_pct_size_wt": -0.22,
+     "gir_pct_equal_wt": -0.36,
+     "gir_up": 12,
+     "gir_dn": 32,
+     "gir_n_listed": 44,
+     "gir_n_fo": 7,
+     "official": "NIFTY CHEMICALS",
+     "official_pct": -0.06,
+     "official_adv": "6",
+     "official_dec": "14",
+     "diff_pp": -0.16
+    },
+    {
+     "sector": "electronics & hardware",
+     "gir_pct_size_wt": -0.27,
+     "gir_pct_equal_wt": -0.7,
+     "gir_up": 3,
+     "gir_dn": 6,
+     "gir_n_listed": 9,
+     "gir_n_fo": 6,
+     "official": null,
+     "official_pct": null,
+     "official_adv": null,
+     "official_dec": null,
+     "diff_pp": null
+    },
+    {
+     "sector": "textiles",
+     "gir_pct_size_wt": -0.32,
+     "gir_pct_equal_wt": -0.4,
+     "gir_up": 4,
+     "gir_dn": 8,
+     "gir_n_listed": 12,
+     "gir_n_fo": 1,
+     "official": null,
+     "official_pct": null,
+     "official_adv": null,
+     "official_dec": null,
+     "diff_pp": null
+    },
+    {
+     "sector": "pharma",
+     "gir_pct_size_wt": -0.38,
+     "gir_pct_equal_wt": -0.55,
+     "gir_up": 18,
+     "gir_dn": 35,
+     "gir_n_listed": 53,
+     "gir_n_fo": 13,
+     "official": "NIFTY PHARMA",
+     "official_pct": -0.37,
+     "official_adv": "9",
+     "official_dec": "11",
+     "diff_pp": -0.01
+    },
+    {
+     "sector": "capital markets",
+     "gir_pct_size_wt": -0.41,
+     "gir_pct_equal_wt": -0.31,
+     "gir_up": 8,
+     "gir_dn": 10,
+     "gir_n_listed": 18,
+     "gir_n_fo": 11,
+     "official": "NIFTY CAPITAL MARKETS",
+     "official_pct": -0.66,
+     "official_adv": "8",
+     "official_dec": "9",
+     "diff_pp": 0.25
+    },
+    {
+     "sector": "fmcg",
+     "gir_pct_size_wt": -0.43,
+     "gir_pct_equal_wt": -0.49,
+     "gir_up": 16,
+     "gir_dn": 28,
+     "gir_n_listed": 44,
+     "gir_n_fo": 14,
+     "official": "NIFTY FMCG",
+     "official_pct": -0.44,
+     "official_adv": "6",
+     "official_dec": "9",
+     "diff_pp": 0.01
+    },
+    {
+     "sector": "nbfc & finance",
+     "gir_pct_size_wt": -0.49,
+     "gir_pct_equal_wt": -0.8,
+     "gir_up": 11,
+     "gir_dn": 41,
+     "gir_n_listed": 52,
+     "gir_n_fo": 17,
+     "official": "NIFTY FINANCIAL SERVICES EX-BANK",
+     "official_pct": -0.32,
+     "official_adv": "11",
+     "official_dec": "19",
+     "diff_pp": -0.17
+    },
+    {
+     "sector": "construction",
+     "gir_pct_size_wt": -0.67,
+     "gir_pct_equal_wt": -0.56,
+     "gir_up": 5,
+     "gir_dn": 18,
+     "gir_n_listed": 23,
+     "gir_n_fo": 3,
+     "official": "NIFTY INFRASTRUCTURE",
+     "official_pct": -0.33,
+     "official_adv": "9",
+     "official_dec": "21",
+     "diff_pp": -0.34
+    },
+    {
+     "sector": "power",
+     "gir_pct_size_wt": -0.75,
+     "gir_pct_equal_wt": -0.76,
+     "gir_up": 4,
+     "gir_dn": 20,
+     "gir_n_listed": 24,
+     "gir_n_fo": 9,
+     "official": "NIFTY ENERGY",
+     "official_pct": -1.04,
+     "official_adv": "5",
+     "official_dec": "35",
+     "diff_pp": 0.29
+    },
+    {
+     "sector": "capital goods",
+     "gir_pct_size_wt": -0.91,
+     "gir_pct_equal_wt": -1.0,
+     "gir_up": 23,
+     "gir_dn": 89,
+     "gir_n_listed": 112,
+     "gir_n_fo": 21,
+     "official": "NIFTY INDIA MANUFACTURING",
+     "official_pct": -0.68,
+     "official_adv": "23",
+     "official_dec": "53",
+     "diff_pp": -0.23
+    },
+    {
+     "sector": "media",
+     "gir_pct_size_wt": -0.93,
+     "gir_pct_equal_wt": -0.95,
+     "gir_up": 1,
+     "gir_dn": 7,
+     "gir_n_listed": 8,
+     "gir_n_fo": 0,
+     "official": "NIFTY MEDIA",
+     "official_pct": -0.83,
+     "official_adv": "1",
+     "official_dec": "9",
+     "diff_pp": -0.1
+    },
+    {
+     "sector": "oil & gas",
+     "gir_pct_size_wt": -0.95,
+     "gir_pct_equal_wt": -0.82,
+     "gir_up": 2,
+     "gir_dn": 17,
+     "gir_n_listed": 19,
+     "gir_n_fo": 9,
+     "official": "NIFTY OIL & GAS",
+     "official_pct": -0.83,
+     "official_adv": "1",
+     "official_dec": "14",
+     "diff_pp": -0.12
+    },
+    {
+     "sector": "telecom equipment",
+     "gir_pct_size_wt": -0.97,
+     "gir_pct_equal_wt": -0.96,
+     "gir_up": 0,
+     "gir_dn": 2,
+     "gir_n_listed": 2,
+     "gir_n_fo": 0,
+     "official": null,
+     "official_pct": null,
+     "official_adv": null,
+     "official_dec": null,
+     "diff_pp": null
+    },
+    {
+     "sector": "consumer durables",
+     "gir_pct_size_wt": -1.17,
+     "gir_pct_equal_wt": -0.95,
+     "gir_up": 12,
+     "gir_dn": 25,
+     "gir_n_listed": 37,
+     "gir_n_fo": 7,
+     "official": "NIFTY CONSUMER DURABLES",
+     "official_pct": -0.96,
+     "official_adv": "7",
+     "official_dec": "7",
+     "diff_pp": -0.21
+    },
+    {
+     "sector": "utilities",
+     "gir_pct_size_wt": -1.4,
+     "gir_pct_equal_wt": -1.43,
+     "gir_up": 0,
+     "gir_dn": 4,
+     "gir_n_listed": 4,
+     "gir_n_fo": 0,
+     "official": null,
+     "official_pct": null,
+     "official_adv": null,
+     "official_dec": null,
+     "diff_pp": null
+    },
+    {
+     "sector": "metals & mining",
+     "gir_pct_size_wt": -1.74,
+     "gir_pct_equal_wt": -1.2,
+     "gir_up": 3,
+     "gir_dn": 25,
+     "gir_n_listed": 28,
+     "gir_n_fo": 11,
+     "official": "NIFTY METAL",
+     "official_pct": -1.96,
+     "official_adv": "0",
+     "official_dec": "15",
+     "diff_pp": 0.22
+    }
+   ],
+   "extra": {
+    "NIFTY PSU BANK": {
+     "pct": -0.92,
+     "adv": "1",
+     "dec": "11"
+    },
+    "NIFTY PRIVATE BANK": {
+     "pct": 0.54,
+     "adv": "5",
+     "dec": "5"
+    },
+    "NIFTY INDIA DEFENCE": {
+     "pct": -0.51,
+     "adv": "2",
+     "dec": "20"
+    },
+    "NIFTY 50": {
+     "pct": 0.06,
+     "adv": "20",
+     "dec": "29"
+    }
+   }
+  },
+  "1230": {
+   "tag": "1230",
+   "gir_t": 1795158012.3452995,
+   "gir_at": "12:30:12",
+   "gir_weights": "NSE market cap 19 Nov",
+   "nse_t": 1795158016.1,
+   "nse_timestamp": "20-Nov-2026 12:28",
+   "rows": [
+    {
+     "sector": "hospitals & diagnostics",
+     "gir_pct_size_wt": 3.33,
+     "gir_pct_equal_wt": 2.95,
+     "gir_up": 14,
+     "gir_dn": 1,
+     "gir_n_listed": 15,
+     "gir_n_fo": 3,
+     "official": "NIFTY HEALTHCARE INDEX",
+     "official_pct": 0.67,
+     "official_adv": "12",
+     "official_dec": "8",
+     "diff_pp": 2.66
+    },
+    {
+     "sector": "it",
+     "gir_pct_size_wt": 1.9,
+     "gir_pct_equal_wt": 1.03,
+     "gir_up": 29,
+     "gir_dn": 10,
+     "gir_n_listed": 39,
+     "gir_n_fo": 13,
+     "official": "NIFTY IT",
+     "official_pct": 2.03,
+     "official_adv": "9",
+     "official_dec": "1",
+     "diff_pp": -0.13
+    },
+    {
+     "sector": "banks",
+     "gir_pct_size_wt": 1.35,
+     "gir_pct_equal_wt": 0.73,
+     "gir_up": 24,
+     "gir_dn": 10,
+     "gir_n_listed": 34,
+     "gir_n_fo": 22,
+     "official": "NIFTY BANK",
+     "official_pct": 1.69,
+     "official_adv": "13",
+     "official_dec": "1",
+     "diff_pp": -0.34
+    },
+    {
+     "sector": "insurance",
+     "gir_pct_size_wt": 1.17,
+     "gir_pct_equal_wt": 0.24,
+     "gir_up": 7,
+     "gir_dn": 5,
+     "gir_n_listed": 12,
+     "gir_n_fo": 7,
+     "official": "NIFTY FINANCIAL SERVICES 25/50",
+     "official_pct": 1.01,
+     "official_adv": "13",
+     "official_dec": "6",
+     "diff_pp": 0.16
+    },
+    {
+     "sector": "realty",
+     "gir_pct_size_wt": 0.91,
+     "gir_pct_equal_wt": 0.25,
+     "gir_up": 9,
+     "gir_dn": 8,
+     "gir_n_listed": 17,
+     "gir_n_fo": 6,
+     "official": "NIFTY REALTY",
+     "official_pct": 1.02,
+     "official_adv": "6",
+     "official_dec": "4",
+     "diff_pp": -0.11
+    },
+    {
+     "sector": "cement & materials",
+     "gir_pct_size_wt": 0.8,
+     "gir_pct_equal_wt": 0.95,
+     "gir_up": 9,
+     "gir_dn": 3,
+     "gir_n_listed": 12,
+     "gir_n_fo": 4,
+     "official": "NIFTY CEMENT",
+     "official_pct": 0.76,
+     "official_adv": "9",
+     "official_dec": "3",
+     "diff_pp": 0.04
+    },
+    {
+     "sector": "telecom services",
+     "gir_pct_size_wt": 0.74,
+     "gir_pct_equal_wt": -0.37,
+     "gir_up": 4,
+     "gir_dn": 4,
+     "gir_n_listed": 8,
+     "gir_n_fo": 3,
+     "official": "NIFTY MIDSMALL IT & TELECOM",
+     "official_pct": 1.84,
+     "official_adv": "14",
+     "official_dec": "5",
+     "diff_pp": -1.1
+    },
+    {
+     "sector": "textiles",
+     "gir_pct_size_wt": 0.53,
+     "gir_pct_equal_wt": 0.21,
+     "gir_up": 6,
+     "gir_dn": 6,
+     "gir_n_listed": 12,
+     "gir_n_fo": 1,
+     "official": null,
+     "official_pct": null,
+     "official_adv": null,
+     "official_dec": null,
+     "diff_pp": null
+    },
+    {
+     "sector": "nbfc & finance",
+     "gir_pct_size_wt": 0.45,
+     "gir_pct_equal_wt": -0.32,
+     "gir_up": 20,
+     "gir_dn": 32,
+     "gir_n_listed": 52,
+     "gir_n_fo": 17,
+     "official": "NIFTY FINANCIAL SERVICES EX-BANK",
+     "official_pct": 0.69,
+     "official_adv": "20",
+     "official_dec": "9",
+     "diff_pp": -0.24
+    },
+    {
+     "sector": "capital markets",
+     "gir_pct_size_wt": 0.37,
+     "gir_pct_equal_wt": 0.32,
+     "gir_up": 11,
+     "gir_dn": 7,
+     "gir_n_listed": 18,
+     "gir_n_fo": 11,
+     "official": "NIFTY CAPITAL MARKETS",
+     "official_pct": -0.01,
+     "official_adv": "10",
+     "official_dec": "6",
+     "diff_pp": 0.38
+    },
+    {
+     "sector": "power",
+     "gir_pct_size_wt": 0.37,
+     "gir_pct_equal_wt": -0.11,
+     "gir_up": 11,
+     "gir_dn": 13,
+     "gir_n_listed": 24,
+     "gir_n_fo": 9,
+     "official": "NIFTY ENERGY",
+     "official_pct": -0.27,
+     "official_adv": "16",
+     "official_dec": "23",
+     "diff_pp": 0.64
+    },
+    {
+     "sector": "auto",
+     "gir_pct_size_wt": 0.34,
+     "gir_pct_equal_wt": -0.13,
+     "gir_up": 22,
+     "gir_dn": 28,
+     "gir_n_listed": 50,
+     "gir_n_fo": 17,
+     "official": "NIFTY AUTO",
+     "official_pct": 0.41,
+     "official_adv": "9",
+     "official_dec": "6",
+     "diff_pp": -0.07
+    },
+    {
+     "sector": "consumer services",
+     "gir_pct_size_wt": 0.2,
+     "gir_pct_equal_wt": -0.36,
+     "gir_up": 16,
+     "gir_dn": 27,
+     "gir_n_listed": 43,
+     "gir_n_fo": 9,
+     "official": "NIFTY INDIA NEW AGE CONSUMPTION",
+     "official_pct": 0.44,
+     "official_adv": "46",
+     "official_dec": "28",
+     "diff_pp": -0.24
+    },
+    {
+     "sector": "services",
+     "gir_pct_size_wt": 0.19,
+     "gir_pct_equal_wt": -0.56,
+     "gir_up": 10,
+     "gir_dn": 14,
+     "gir_n_listed": 24,
+     "gir_n_fo": 5,
+     "official": "NIFTY SERVICES SECTOR",
+     "official_pct": 1.2,
+     "official_adv": "25",
+     "official_dec": "4",
+     "diff_pp": -1.01
+    },
+    {
+     "sector": "pharma",
+     "gir_pct_size_wt": -0.0,
+     "gir_pct_equal_wt": -0.32,
+     "gir_up": 21,
+     "gir_dn": 32,
+     "gir_n_listed": 53,
+     "gir_n_fo": 13,
+     "official": "NIFTY PHARMA",
+     "official_pct": -0.03,
+     "official_adv": "10",
+     "official_dec": "10",
+     "diff_pp": 0.03
+    },
+    {
+     "sector": "electronics & hardware",
+     "gir_pct_size_wt": -0.07,
+     "gir_pct_equal_wt": -0.57,
+     "gir_up": 5,
+     "gir_dn": 4,
+     "gir_n_listed": 9,
+     "gir_n_fo": 6,
+     "official": null,
+     "official_pct": null,
+     "official_adv": null,
+     "official_dec": null,
+     "diff_pp": null
+    },
+    {
+     "sector": "chemicals",
+     "gir_pct_size_wt": -0.16,
+     "gir_pct_equal_wt": -0.4,
+     "gir_up": 13,
+     "gir_dn": 31,
+     "gir_n_listed": 44,
+     "gir_n_fo": 7,
+     "official": "NIFTY CHEMICALS",
+     "official_pct": 0.02,
+     "official_adv": "6",
+     "official_dec": "14",
+     "diff_pp": -0.18
+    },
+    {
+     "sector": "fmcg",
+     "gir_pct_size_wt": -0.3,
+     "gir_pct_equal_wt": -0.37,
+     "gir_up": 15,
+     "gir_dn": 29,
+     "gir_n_listed": 44,
+     "gir_n_fo": 14,
+     "official": "NIFTY FMCG",
+     "official_pct": -0.31,
+     "official_adv": "6",
+     "official_dec": "9",
+     "diff_pp": 0.01
+    },
+    {
+     "sector": "construction",
+     "gir_pct_size_wt": -0.47,
+     "gir_pct_equal_wt": -0.44,
+     "gir_up": 7,
+     "gir_dn": 16,
+     "gir_n_listed": 23,
+     "gir_n_fo": 3,
+     "official": "NIFTY INFRASTRUCTURE",
+     "official_pct": 0.2,
+     "official_adv": "16",
+     "official_dec": "14",
+     "diff_pp": -0.67
+    },
+    {
+     "sector": "capital goods",
+     "gir_pct_size_wt": -0.48,
+     "gir_pct_equal_wt": -0.8,
+     "gir_up": 30,
+     "gir_dn": 82,
+     "gir_n_listed": 112,
+     "gir_n_fo": 21,
+     "official": "NIFTY INDIA MANUFACTURING",
+     "official_pct": -0.13,
+     "official_adv": "36",
+     "official_dec": "41",
+     "diff_pp": -0.35
+    },
+    {
+     "sector": "oil & gas",
+     "gir_pct_size_wt": -0.6,
+     "gir_pct_equal_wt": -0.41,
+     "gir_up": 5,
+     "gir_dn": 13,
+     "gir_n_listed": 19,
+     "gir_n_fo": 9,
+     "official": "NIFTY OIL & GAS",
+     "official_pct": -0.51,
+     "official_adv": "4",
+     "official_dec": "10",
+     "diff_pp": -0.09
+    },
+    {
+     "sector": "metals & mining",
+     "gir_pct_size_wt": -0.71,
+     "gir_pct_equal_wt": -0.59,
+     "gir_up": 5,
+     "gir_dn": 22,
+     "gir_n_listed": 28,
+     "gir_n_fo": 11,
+     "official": "NIFTY METAL",
+     "official_pct": -0.78,
+     "official_adv": "2",
+     "official_dec": "12",
+     "diff_pp": 0.07
+    },
+    {
+     "sector": "media",
+     "gir_pct_size_wt": -0.86,
+     "gir_pct_equal_wt": -0.9,
+     "gir_up": 2,
+     "gir_dn": 6,
+     "gir_n_listed": 8,
+     "gir_n_fo": 0,
+     "official": "NIFTY MEDIA",
+     "official_pct": -1.01,
+     "official_adv": "2",
+     "official_dec": "8",
+     "diff_pp": 0.15
+    },
+    {
+     "sector": "telecom equipment",
+     "gir_pct_size_wt": -0.89,
+     "gir_pct_equal_wt": -0.87,
+     "gir_up": 0,
+     "gir_dn": 2,
+     "gir_n_listed": 2,
+     "gir_n_fo": 0,
+     "official": null,
+     "official_pct": null,
+     "official_adv": null,
+     "official_dec": null,
+     "diff_pp": null
+    },
+    {
+     "sector": "consumer durables",
+     "gir_pct_size_wt": -0.94,
+     "gir_pct_equal_wt": -0.92,
+     "gir_up": 17,
+     "gir_dn": 20,
+     "gir_n_listed": 37,
+     "gir_n_fo": 7,
+     "official": "NIFTY CONSUMER DURABLES",
+     "official_pct": -0.75,
+     "official_adv": "9",
+     "official_dec": "5",
+     "diff_pp": -0.19
+    },
+    {
+     "sector": "utilities",
+     "gir_pct_size_wt": -1.37,
+     "gir_pct_equal_wt": -1.37,
+     "gir_up": 0,
+     "gir_dn": 4,
+     "gir_n_listed": 4,
+     "gir_n_fo": 0,
+     "official": null,
+     "official_pct": null,
+     "official_adv": null,
+     "official_dec": null,
+     "diff_pp": null
+    }
+   ],
+   "extra": {
+    "NIFTY PSU BANK": {
+     "pct": 0.38,
+     "adv": "7",
+     "dec": "5"
+    },
+    "NIFTY PRIVATE BANK": {
+     "pct": 2.19,
+     "adv": "10",
+     "dec": "0"
+    },
+    "NIFTY INDIA DEFENCE": {
+     "pct": -0.23,
+     "adv": "5",
+     "dec": "17"
+    },
+    "NIFTY 50": {
+     "pct": 0.69,
+     "adv": "31",
+     "dec": "18"
+    }
+   }
+  },
+  "1430": {
+   "tag": "1430",
+   "gir_t": 1795165213.5263126,
+   "gir_at": "14:30:13",
+   "gir_weights": "NSE market cap 19 Nov",
+   "nse_t": 1795165220.1,
+   "nse_timestamp": "20-Nov-2026 14:28",
+   "rows": [
+    {
+     "sector": "hospitals & diagnostics",
+     "gir_pct_size_wt": 3.44,
+     "gir_pct_equal_wt": 2.5,
+     "gir_up": 14,
+     "gir_dn": 1,
+     "gir_n_listed": 15,
+     "gir_n_fo": 3,
+     "official": "NIFTY HEALTHCARE INDEX",
+     "official_pct": 0.59,
+     "official_adv": "11",
+     "official_dec": "9",
+     "diff_pp": 2.85
+    },
+    {
+     "sector": "banks",
+     "gir_pct_size_wt": 2.15,
+     "gir_pct_equal_wt": 1.21,
+     "gir_up": 25,
+     "gir_dn": 9,
+     "gir_n_listed": 34,
+     "gir_n_fo": 22,
+     "official": "NIFTY BANK",
+     "official_pct": 2.41,
+     "official_adv": "13",
+     "official_dec": "1",
+     "diff_pp": -0.26
+    },
+    {
+     "sector": "realty",
+     "gir_pct_size_wt": 1.91,
+     "gir_pct_equal_wt": 0.84,
+     "gir_up": 11,
+     "gir_dn": 6,
+     "gir_n_listed": 17,
+     "gir_n_fo": 6,
+     "official": "NIFTY REALTY",
+     "official_pct": 1.95,
+     "official_adv": "7",
+     "official_dec": "3",
+     "diff_pp": -0.04
+    },
+    {
+     "sector": "textiles",
+     "gir_pct_size_wt": 1.1,
+     "gir_pct_equal_wt": 0.72,
+     "gir_up": 7,
+     "gir_dn": 5,
+     "gir_n_listed": 12,
+     "gir_n_fo": 1,
+     "official": null,
+     "official_pct": null,
+     "official_adv": null,
+     "official_dec": null,
+     "diff_pp": null
+    },
+    {
+     "sector": "cement & materials",
+     "gir_pct_size_wt": 1.05,
+     "gir_pct_equal_wt": 1.15,
+     "gir_up": 11,
+     "gir_dn": 1,
+     "gir_n_listed": 12,
+     "gir_n_fo": 4,
+     "official": "NIFTY CEMENT",
+     "official_pct": 1.01,
+     "official_adv": "11",
+     "official_dec": "1",
+     "diff_pp": 0.04
+    },
+    {
+     "sector": "it",
+     "gir_pct_size_wt": 1.03,
+     "gir_pct_equal_wt": 0.48,
+     "gir_up": 26,
+     "gir_dn": 13,
+     "gir_n_listed": 39,
+     "gir_n_fo": 13,
+     "official": "NIFTY IT",
+     "official_pct": 1,
+     "official_adv": "9",
+     "official_dec": "1",
+     "diff_pp": 0.03
+    },
+    {
+     "sector": "insurance",
+     "gir_pct_size_wt": 1.01,
+     "gir_pct_equal_wt": 0.51,
+     "gir_up": 8,
+     "gir_dn": 4,
+     "gir_n_listed": 12,
+     "gir_n_fo": 7,
+     "official": "NIFTY FINANCIAL SERVICES 25/50",
+     "official_pct": 1.64,
+     "official_adv": "15",
+     "official_dec": "5",
+     "diff_pp": -0.63
+    },
+    {
+     "sector": "auto",
+     "gir_pct_size_wt": 0.62,
+     "gir_pct_equal_wt": -0.11,
+     "gir_up": 22,
+     "gir_dn": 28,
+     "gir_n_listed": 50,
+     "gir_n_fo": 17,
+     "official": "NIFTY AUTO",
+     "official_pct": 0.86,
+     "official_adv": "7",
+     "official_dec": "8",
+     "diff_pp": -0.24
+    },
+    {
+     "sector": "nbfc & finance",
+     "gir_pct_size_wt": 0.42,
+     "gir_pct_equal_wt": -0.31,
+     "gir_up": 22,
+     "gir_dn": 30,
+     "gir_n_listed": 52,
+     "gir_n_fo": 17,
+     "official": "NIFTY FINANCIAL SERVICES EX-BANK",
+     "official_pct": 0.69,
+     "official_adv": "22",
+     "official_dec": "8",
+     "diff_pp": -0.27
+    },
+    {
+     "sector": "telecom services",
+     "gir_pct_size_wt": 0.3,
+     "gir_pct_equal_wt": -0.67,
+     "gir_up": 1,
+     "gir_dn": 7,
+     "gir_n_listed": 8,
+     "gir_n_fo": 3,
+     "official": "NIFTY MIDSMALL IT & TELECOM",
+     "official_pct": 1.16,
+     "official_adv": "13",
+     "official_dec": "7",
+     "diff_pp": -0.86
+    },
+    {
+     "sector": "power",
+     "gir_pct_size_wt": 0.24,
+     "gir_pct_equal_wt": -0.07,
+     "gir_up": 11,
+     "gir_dn": 13,
+     "gir_n_listed": 24,
+     "gir_n_fo": 9,
+     "official": "NIFTY ENERGY",
+     "official_pct": -0.49,
+     "official_adv": "19",
+     "official_dec": "21",
+     "diff_pp": 0.73
+    },
+    {
+     "sector": "services",
+     "gir_pct_size_wt": 0.21,
+     "gir_pct_equal_wt": -0.66,
+     "gir_up": 7,
+     "gir_dn": 17,
+     "gir_n_listed": 24,
+     "gir_n_fo": 5,
+     "official": "NIFTY SERVICES SECTOR",
+     "official_pct": 1.14,
+     "official_adv": "25",
+     "official_dec": "5",
+     "diff_pp": -0.93
+    },
+    {
+     "sector": "capital markets",
+     "gir_pct_size_wt": 0.2,
+     "gir_pct_equal_wt": 0.1,
+     "gir_up": 10,
+     "gir_dn": 8,
+     "gir_n_listed": 18,
+     "gir_n_fo": 11,
+     "official": "NIFTY CAPITAL MARKETS",
+     "official_pct": -0.13,
+     "official_adv": "10",
+     "official_dec": "7",
+     "diff_pp": 0.33
+    },
+    {
+     "sector": "consumer services",
+     "gir_pct_size_wt": 0.08,
+     "gir_pct_equal_wt": -0.45,
+     "gir_up": 18,
+     "gir_dn": 25,
+     "gir_n_listed": 43,
+     "gir_n_fo": 9,
+     "official": "NIFTY INDIA NEW AGE CONSUMPTION",
+     "official_pct": 0.62,
+     "official_adv": "43",
+     "official_dec": "32",
+     "diff_pp": -0.54
+    },
+    {
+     "sector": "electronics & hardware",
+     "gir_pct_size_wt": 0.05,
+     "gir_pct_equal_wt": -0.36,
+     "gir_up": 5,
+     "gir_dn": 4,
+     "gir_n_listed": 9,
+     "gir_n_fo": 6,
+     "official": null,
+     "official_pct": null,
+     "official_adv": null,
+     "official_dec": null,
+     "diff_pp": null
+    },
+    {
+     "sector": "fmcg",
+     "gir_pct_size_wt": -0.11,
+     "gir_pct_equal_wt": -0.22,
+     "gir_up": 17,
+     "gir_dn": 27,
+     "gir_n_listed": 44,
+     "gir_n_fo": 14,
+     "official": "NIFTY FMCG",
+     "official_pct": -0.18,
+     "official_adv": "7",
+     "official_dec": "8",
+     "diff_pp": 0.07
+    },
+    {
+     "sector": "pharma",
+     "gir_pct_size_wt": -0.15,
+     "gir_pct_equal_wt": -0.51,
+     "gir_up": 20,
+     "gir_dn": 33,
+     "gir_n_listed": 53,
+     "gir_n_fo": 13,
+     "official": "NIFTY PHARMA",
+     "official_pct": -0.19,
+     "official_adv": "9",
+     "official_dec": "11",
+     "diff_pp": 0.04
+    },
+    {
+     "sector": "chemicals",
+     "gir_pct_size_wt": -0.18,
+     "gir_pct_equal_wt": -0.29,
+     "gir_up": 17,
+     "gir_dn": 27,
+     "gir_n_listed": 44,
+     "gir_n_fo": 7,
+     "official": "NIFTY CHEMICALS",
+     "official_pct": -0.07,
+     "official_adv": "6",
+     "official_dec": "14",
+     "diff_pp": -0.11
+    },
+    {
+     "sector": "construction",
+     "gir_pct_size_wt": -0.25,
+     "gir_pct_equal_wt": -0.4,
+     "gir_up": 8,
+     "gir_dn": 15,
+     "gir_n_listed": 23,
+     "gir_n_fo": 3,
+     "official": "NIFTY INFRASTRUCTURE",
+     "official_pct": 0.24,
+     "official_adv": "18",
+     "official_dec": "12",
+     "diff_pp": -0.49
+    },
+    {
+     "sector": "oil & gas",
+     "gir_pct_size_wt": -0.44,
+     "gir_pct_equal_wt": -0.25,
+     "gir_up": 6,
+     "gir_dn": 13,
+     "gir_n_listed": 19,
+     "gir_n_fo": 9,
+     "official": "NIFTY OIL & GAS",
+     "official_pct": -0.36,
+     "official_adv": "7",
+     "official_dec": "8",
+     "diff_pp": -0.08
+    },
+    {
+     "sector": "capital goods",
+     "gir_pct_size_wt": -0.64,
+     "gir_pct_equal_wt": -1.04,
+     "gir_up": 30,
+     "gir_dn": 82,
+     "gir_n_listed": 112,
+     "gir_n_fo": 21,
+     "official": "NIFTY INDIA MANUFACTURING",
+     "official_pct": -0.04,
+     "official_adv": "35",
+     "official_dec": "41",
+     "diff_pp": -0.6
+    },
+    {
+     "sector": "consumer durables",
+     "gir_pct_size_wt": -0.66,
+     "gir_pct_equal_wt": -0.65,
+     "gir_up": 15,
+     "gir_dn": 22,
+     "gir_n_listed": 37,
+     "gir_n_fo": 7,
+     "official": "NIFTY CONSUMER DURABLES",
+     "official_pct": -0.6,
+     "official_adv": "8",
+     "official_dec": "6",
+     "diff_pp": -0.06
+    },
+    {
+     "sector": "metals & mining",
+     "gir_pct_size_wt": -0.67,
+     "gir_pct_equal_wt": -0.44,
+     "gir_up": 7,
+     "gir_dn": 20,
+     "gir_n_listed": 28,
+     "gir_n_fo": 11,
+     "official": "NIFTY METAL",
+     "official_pct": -0.7,
+     "official_adv": "3",
+     "official_dec": "11",
+     "diff_pp": 0.03
+    },
+    {
+     "sector": "telecom equipment",
+     "gir_pct_size_wt": -1.05,
+     "gir_pct_equal_wt": -0.98,
+     "gir_up": 0,
+     "gir_dn": 2,
+     "gir_n_listed": 2,
+     "gir_n_fo": 0,
+     "official": null,
+     "official_pct": null,
+     "official_adv": null,
+     "official_dec": null,
+     "diff_pp": null
+    },
+    {
+     "sector": "utilities",
+     "gir_pct_size_wt": -1.6,
+     "gir_pct_equal_wt": -1.64,
+     "gir_up": 0,
+     "gir_dn": 4,
+     "gir_n_listed": 4,
+     "gir_n_fo": 0,
+     "official": null,
+     "official_pct": null,
+     "official_adv": null,
+     "official_dec": null,
+     "diff_pp": null
+    },
+    {
+     "sector": "media",
+     "gir_pct_size_wt": -1.65,
+     "gir_pct_equal_wt": -1.48,
+     "gir_up": 0,
+     "gir_dn": 8,
+     "gir_n_listed": 8,
+     "gir_n_fo": 0,
+     "official": "NIFTY MEDIA",
+     "official_pct": -1.51,
+     "official_adv": "0",
+     "official_dec": "10",
+     "diff_pp": -0.14
+    }
+   ],
+   "extra": {
+    "NIFTY PSU BANK": {
+     "pct": 1.49,
+     "adv": "12",
+     "dec": "0"
+    },
+    "NIFTY PRIVATE BANK": {
+     "pct": 2.8,
+     "adv": "10",
+     "dec": "0"
+    },
+    "NIFTY INDIA DEFENCE": {
+     "pct": -0.27,
+     "adv": "5",
+     "dec": "17"
+    },
+    "NIFTY 50": {
+     "pct": 0.97,
+     "adv": "30",
+     "dec": "20"
+    }
+   }
+  }
+ }
+}
