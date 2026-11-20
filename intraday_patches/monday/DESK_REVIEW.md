@@ -1,5 +1,22 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 21 Nov 00:30 IST (hourly) - verdicts on 23:36-00:02
+- **KALYANKJIL vs NSE bhavcopy (17-20 Nov all agree): ACCEPTED.** The "no intraday bars" line = PAGE bug (levelChart never fetched
+  ch.<SYM>): fix ACCEPTED as planned - bars from ch.<SYM>, a real gap says "data missing <from>-<to>". Must be live before Monday.
+- **Recording gaps (18 Nov none; 19 Nov from 11:40):** FULL4 (19 Nov) must take 09:15-11:39 prices from the history minute store; if it
+  cannot, score 19 Nov from 11:40 only and say so in the summary.
+- **Weekend / holiday split (READ 1.00 / MEET 0.50 / seats on events / LIVE + ASK 0 inside $1.50): ACCEPTED** - your call was right.
+- **23:35 fixes + PROOF_2220c: ACCEPTED.** Both morning briefs delivered, first LIVE refusal 14:38 (manage-only time), $6.96 of $8.
+  Morning briefs at $0.58 (target 0.50 / 0.40 missed only because Connections had new weight-3+ items): accepted - within the floors.
+  Watch on FULL3: head live looks cost ~$0.21 each (11 looks $2.34) - if FULL3 confirms, trim the live-look snapshot to the keys the
+  look needs (section 6, snapshot_keys) before Wednesday; not a Monday blocker.
+- **Retry fix (refused heartbeat no longer retries every minute; seat rejected twice = quiet 30 min): ACCEPTED.**
+- **CE / PE (CE: and PE: lines required in every brief; side-split scoring; mirror test): ACCEPTED.**
+- **DECISION - market futures vs VWAP: (b) witness line, NOT a hard block, plus one rule.** A BUY NOW against the index's VWAP side
+  (CE while NIFTY / BANKNIFTY futures are below VWAP, or PE while above) is allowed only with a stock-specific reason - a weight-3+
+  news / filing item or a whole-sector move - and the card says "AGAINST THE MARKET: <reason>". (20 Nov MCX PE on an up day was right
+  because gold crashed and the whole gold-linked group fell.) Measure both sides after Monday on the replays before any hard block.
+
 ## 20 Nov 23:35 IST (hourly) - FULL2 (18 Nov) and PROOF_2220 verdicts - the new money rules still FAIL a Monday-shaped day
 - **FULL2 18 Nov: ACCEPTED as a run** (mostly price-only day by design; small sample; NOT PROVEN). It also confirms the old split fails.
 - **PROOF_2220 (Monday-shaped day on the 22:20 rules, fake brains): NOT ACCEPTABLE for Monday.** The 09:08 brief was REFUSED at 09:10
