@@ -1,0 +1,79 @@
+# POST-MORTEM 2026-11-18 - run FULL2 (code only; FAKE / real as the run was) - made 21 Nov 01:36 IST
+
+Movers: the NSE CM bhavcopy, previous close -> close, F&O shares, >= 2%, top 10 each side (218 F&O shares priced). Card and look times are the replay's virtual IST times (the board day 2026-11-18 holds the evening before and the session). 'In the head's input' is reconstructed with the snapshot rule (latest card per seat up to the look + 15 / 35 / 36 of the last 2 hours); reader items reach the head as ranked knowledge rows, so for reader cards it says 'item in the store', not 'seen'.
+
+## UP movers (a CE would have worked)
+- **NAVINFLUOR +4.72%** - NO card named it
+  - verdict: NOT picked - no card named it (nothing in the desk's knowledge led to it)
+- **SAGILITY +2.87%** - NO card named it
+  - verdict: NOT picked - no card named it (nothing in the desk's knowledge led to it)
+- **SYRMA +2.87%** - NO card named it
+  - verdict: NOT picked - no card named it (nothing in the desk's knowledge led to it)
+- **SBIN +2.38%** - NO card named it
+  - verdict: NOT picked - no card named it (nothing in the desk's knowledge led to it)
+- **CIPLA +2.09%** - named by 8 card(s)
+  - 2026-11-17 19:47 seat 22 VIEW s1: Pharma mixed and only slightly up; LAURUSLABS runs on its own with no cause seen. Hospitals led by MAXHEALTH.  [loser DRI line is a single unverified source; weak, watch only] - sources Exchange press release - Glenmark Ichnos IND submission, GIR mover list, GIR sector snapshot - hospitals and diagnostics, GIR world drivers - Nasdaq, GIR world drivers - US chips, GIR world drivers - rupee, Google News headline on Cipla DRI scrutiny - in the head's input at brief 19:47, brief 22:46
+  - 2026-11-18 00:16 seat R2 FACT s2: Cipla reportedly faces a customs search at its Mumbai facilities; no official filing seen yet [loser A customs search is a company-specific overhang until the scope and outcom] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 00:16 (reader card)
+  - 2026-11-18 03:46 seat R2 FACT s2: Cipla's InvaGen New York plant gets USFDA No Action Indicated classification [winner A clean US plant classification is a company-level positive for Cipla's U] - sources WIRE, WIRE - item in the store from 03:46 (reader card)
+  - 2026-11-18 07:46 seat R6 FACT s3: DRI searches Cipla offices over imported drug classification, a new story with no charge yet [loser A raid on the company is a new negative cause; no duty or charge is yet re] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 07:46 (reader card)
+  - 2026-11-18 08:16 seat R2 FACT s2: DRI searches Cipla offices over imported drug classification [loser a customs search adds an open regulatory overhang until the scope is known] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 08:16 (reader card)
+  - 2026-11-18 09:46 seat R2 FACT s3: CIPLA discloses an update on a USFDA inspection at its InvaGen manufacturing facility in Hauppauge, New York [named in text] - sources EXCHANGE, EXCHANGE - item in the store from 09:46 (reader card)
+  - ... 2 more cards
+  - verdict: NOT picked - cards named it but no head idea followed
+- **IREDA +2.04%** - NO card named it
+  - verdict: NOT picked - no card named it (nothing in the desk's knowledge led to it)
+
+## DOWN movers (a PE would have worked)
+- **TITAN -5.30%** - named by 2 card(s)
+  - 2026-11-18 10:31 seat R2 THEME s2: Gold slides to a fourteen-month low, pressuring Muthoot and Manappuram shares [winner jewellers gain on cheaper gold, with a lag of weeks] - sources WIRE, WIRE - item in the store from 10:31 (reader card)
+  - 2026-11-18 13:46 seat R2 THEME s2: Gold price fall hits jewellers and pressures gold lenders [winner Cheaper gold helps jewellers margins, weeks horizon] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 13:46 (reader card)
+  - verdict: NOT picked - cards named it but no head idea followed (and none of them was in a head look's input)
+- **POLYCAB -5.12%** - named by 6 card(s)
+  - 2026-11-17 19:47 seat 26 VIEW s2: Realty leads on a broad bank-led tape; capital goods and cables are weak with short build-up in cable names. N [named in text] - sources Desk board - seat 19 banks card, Desk board - seat 33 tape alert, EVENT_MEMORY - BEL order wins, Exchange filing - PRESTIGE board acquisition, GIR snapshot - capital goods sector row, GIR snapshot - mover row, GIR snapshot - realty sector row, Google News - COCHINSHIP CVO extension, Google News - RVNL Q2FY27 results - in the head's input at brief 19:47, brief 22:46
+  - 2026-11-17 19:47 seat 31 VIEW s2: Fresh long build-up in a few PSU banks and power; short build-up piling into cables and capital goods. PSU ban [named in text] - sources Futures build-up, all months - in the head's input at brief 19:47, brief 22:46
+  - 2026-11-17 19:47 seat 35 THEME s2: Money rotated inside India: out of AI and data-centre build names (cables, gensets, EMS, IT) into rate-sensiti [idea PE OPEN_CONFIRM] - sources LME aluminium, LME copper, NSE mover, NSE sector basket, Nasdaq close, US chip index close, US ten-year yield, USDINR, seat 19 banks card, seat 26 capital goods card, seat 31 derivatives card, seat 7 base metals card - in the head's input at brief 19:47, brief 22:46
+  - 2026-11-18 09:20 seat 36 OBJECTION s3: POLYCAB PE: the move is already made on the evening tape, copper is a mild fall, and a share down {num:px.poly [named in text] - sources desk board - in the head's input at trigger 09:20, trigger 09:23, heartbeat 10:08, trigger 10:13
+  - 2026-11-18 11:16 seat R2 THEME s2: Copper price fall could leave cable makers KEI and Polycab with inventory losses [loser named cable maker that the piece says faces inventory losses] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 11:16 (reader card)
+  - 2026-11-18 12:31 seat R2 THEME s2: Copper falls for a fifth straight day; cable makers are the PE leg [loser Cable maker on the copper-link list, falling with copper] - sources newsmap, newsmap - item in the store from 12:31 (reader card)
+  - head: NEW POLYCAB PE T:9932c94e at 2026-11-17 19:47 - Cables were the worst sector on the day (-2.38%) against a green NIFTY. POLYCAB fell -3.19% with short build-up, futures OI up +6.30% · US c
+  - head: STANDS POLYCAB PE T:9932c94e at 2026-11-17 22:46 - The chip fall that drives this idea is the prior US session, already in today's cables price, so it is not a fresh push. The cancel is a str
+  - head: STANDS POLYCAB PE T:9932c94e at 2026-11-18 09:15 - Cables opened down with no share up and POLYCAB lower, consistent with the idea. No gap that rules out the trigger. Wait until after nine-tw
+  - head: STANDS POLYCAB PE T:9932c94e at 2026-11-18 09:20 - Cables are below VWAP and lagging NIFTY, but POLYCAB is already well down by the open settle and the Devil's half-done objection is unanswer
+  - head: STANDS POLYCAB PE T:9932c94e at 2026-11-18 09:23 - Trigger conditions are forming: cables are below VWAP and lag NIFTY. This is WAIT, not BUY NOW. There is a single sector-chain bench, no sec
+  - head: STANDS POLYCAB PE T:9932c94e at 2026-11-18 10:08 - Cables are down with the whole group below, but the sector is now fading off the low and the Devil's half-done objection is not answered. It
+  - verdict: picked (first card 19:47, head idea 19:47)
+- **KALYANKJIL -4.80%** - named by 2 card(s)
+  - 2026-11-17 19:47 seat 27 VIEW s2: Consumer mixed: telecom weak across all three names, jewellers and gold lenders soft with sign contested, FMCG [loser Falls with the jeweller basket but the sign is contested and RSI is overbo] - sources Desk board seat 33 tape alert, GIR mover KALYANKJIL, GIR sector row consumer durables, GIR sector row telecom services, LINK_BOOK Brent crude row - in the head's input at brief 19:47, brief 22:46
+  - 2026-11-18 10:31 seat R2 THEME s2: Gold slides to a fourteen-month low, pressuring Muthoot and Manappuram shares [winner jewellers gain on cheaper gold, with a lag of weeks] - sources WIRE, WIRE - item in the store from 10:31 (reader card)
+  - verdict: NOT picked - cards named it but no head idea followed
+- **MANAPPURAM -4.59%** - named by 5 card(s)
+  - 2026-11-17 19:47 seat 20 VIEW s2: Capital markets up on the day, but an unconfirmed SEBI margin-funding report capped brokers and exchanges; gol [loser whole gold-loan basket is down with no name up; idea PE VWAP_LOSS] - sources GIR snapshot - movers, GIR snapshot - world drivers, LINK_BOOK pack, desk board seat 12 card, desk board seat 19 card, desk board seat 33 card, newsmap - SEBI margin funding report - in the head's input at brief 19:47, brief 22:46
+  - 2026-11-18 10:31 seat R2 THEME s2: Gold slides to a fourteen-month low, pressuring Muthoot and Manappuram shares [loser lender collateral value falls with gold] - sources WIRE, WIRE - item in the store from 10:31 (reader card)
+  - 2026-11-18 10:46 seat R2 THEME s2: Newsmap headline says RBI tightens lending rules, a policy hit to lenders if confirmed [loser gold-loan rules named in the policy row] - sources newsmap, newsmap - item in the store from 10:46 (reader card)
+  - 2026-11-18 13:46 seat R2 THEME s2: Gold price fall hits jewellers and pressures gold lenders [loser Gold lenders lose collateral value as gold falls] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 13:46 (reader card)
+  - 2026-11-18 14:31 seat R2 FACT s2: Manappuram expects gold loan asset quality to improve after repayment rule changes [winner company guides better gold loan asset quality] - sources WIRE, WIRE - item in the store from 14:31 (reader card)
+  - verdict: NOT picked - cards named it but no head idea followed
+- **MOTHERSON -4.35%** - NO card named it
+  - verdict: NOT picked - no card named it (nothing in the desk's knowledge led to it)
+- **SAIL -4.27%** - named by 1 card(s)
+  - 2026-11-17 21:01 seat R2 THEME s2: Steel price rise framed as a metal-producer revenue theme; source is an expert stock-pick article, no producer [winner Domestic steel producer with the same HRC price channel] - sources newsmap, newsmap - item in the store from 21:01 (reader card)
+  - verdict: NOT picked - cards named it but no head idea followed (and none of them was in a head look's input)
+- **SWIGGY -4.25%** - NO card named it
+  - verdict: NOT picked - no card named it (nothing in the desk's knowledge led to it)
+- **HINDZINC -4.18%** - named by 1 card(s)
+  - 2026-11-18 14:16 seat R2 THEME s2: Silver at one-year low; Hindustan Zinc seen exposed as silver falls, solar named as gainer [loser silver falls reverse the silver rise link, which hits zinc and silver-link] - sources newsmap, newsmap - item in the store from 14:16 (reader card)
+  - verdict: NOT picked - cards named it but no head idea followed (and none of them was in a head look's input)
+- **NATIONALUM -3.99%** - named by 1 card(s)
+  - 2026-11-18 07:17 seat 35 THEME s2: Aluminium slide overnight with a firmer rupee: NATIONALUM leads a producer PE watch at the open; auto users on [loser Most direct earnings link to the LME aluminium price, and the firmer rupee] - sources desk snapshot market block, prediction loop code list, snapshot world driver, DXY ECB, snapshot world driver, LME aluminium, snapshot world driver, LME copper, snapshot world driver, US ten-year, snapshot world driver, USDINR - in the head's input at heartbeat 09:15, trigger 09:20, trigger 09:23, heartbeat 10:08
+  - verdict: NOT picked - cards named it but no head idea followed
+- **MUTHOOTFIN -3.97%** - named by 4 card(s)
+  - 2026-11-17 17:31 seat R2 FACT s2: Muthoot Finance's George Alexander Muthoot says India's gold loan market is barely tapped [winner Management upbeat on the gold loan runway; a sentiment line with no new b] - sources Google News, GOOGLE NEWS - item in the store from 17:31 (reader card)
+  - 2026-11-18 10:31 seat R2 THEME s2: Gold slides to a fourteen-month low, pressuring Muthoot and Manappuram shares [loser lender collateral value falls with gold] - sources WIRE, WIRE - item in the store from 10:31 (reader card)
+  - 2026-11-18 10:46 seat R2 THEME s2: Newsmap headline says RBI tightens lending rules, a policy hit to lenders if confirmed [loser gold-loan rules named in the policy row] - sources newsmap, newsmap - item in the store from 10:46 (reader card)
+  - 2026-11-18 13:46 seat R2 THEME s2: Gold price fall hits jewellers and pressures gold lenders [loser Gold lenders lose collateral value as gold falls] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 13:46 (reader card)
+  - verdict: NOT picked - cards named it but no head idea followed
+
+## The head's ideas (reasons and source card ids)
+- 2026-11-17 19:47 NEW POLYCAB PE · day -5.12% · source sector-chain · cards C:ed91e12f,C:567a7a0c,C:80f7e184,C:49ec1f49,C:1bc73aef,C:f45affe4 · Cables were the worst sector on the day (-2.38%) against a green NIFTY. POLYCAB fell -3.19% with short build-up, futures OI up +6.30% [SEC:cables & wires,MV:POLYCAB,C:567a7a0c,C:1bc73aef]; US chips -5.28%, LME copper -0.71% and aluminium -2.65%. Copper is both revenue and cost for cable makers, so t
+- 2026-11-17 19:47 NEW MAHABANK CE · day +0.01% · source sector-chain · cards C:b6fd156d,C:567a7a0c,C:49ec1f49,C:f45affe4 · Banks were broad and ahead of NIFTY (+1.55%). MAHABANK led at +4.34% with long build-up, OI up +2.20% [SEC:banks,MV:MAHABANK,C:567a7a0c,C:b6fd156d]; US ten-year yield fell (-0.58%), a tailwind for rate-sensitive lenders [DRV:us10y]; The connections seat names PSU banks as the receiving leg of the ro
+- 2026-11-17 19:47 NEW PRESTIGE CE · day -2.02% · source filing · cards C:ed91e12f,C:49ec1f49,C:f45affe4 · Exchange filing: the board approved raising its holding in an entity it already held in part [K:7b53d940]; Realty was the best F&O sector (+2.02%, breadth 6 of 6); PRESTIGE led at +3.22% [SEC:realty,MV:PRESTIGE,C:ed91e12f]; Lower US yields and the rotation into rate-sensitives favour realty [DRV:us1

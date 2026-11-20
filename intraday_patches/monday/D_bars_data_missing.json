@@ -1,0 +1,1618 @@
+[
+ {
+  "control": "F1 chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (137px of 416px) · under the levels True"
+ },
+ {
+  "control": "F1 chart: the chart line fits the plot (ITC)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "137px of 416px"
+ },
+ {
+  "control": "F1 chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F1 chart head: ITC %% from today's quote",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "CHART ITC 299.10 −0.63% 1m 5m 15m VWAP OR LVL 10h"
+ },
+ {
+  "control": "no cut text (F1 desk, ITC)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "F1 chart KALYANKJIL (no samples 09:15-11:39): bars from 11:40, \"data missing 09:15-11:39\", grey band over the gap",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 47 · line 0 · gaps [[34, 164]] · note \"data missing 09:15-11:39 · 5-min bars · Fri 20 Nov\" (302px of 416px) · under the levels True"
+ },
+ {
+  "control": "F1 chart head: KALYANKJIL % stays (its quote is from 15:30 today; the gap is in the bars only)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "CHART KALYANKJIL 638.70 −3.37% 1m 5m 15m VWAP OR LVL 10h"
+ },
+ {
+  "control": "no cut text (F1 desk, KALYANKJIL)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "F1 chart MCX (no samples): \"data missing 09:15-15:30\", the gap band over the whole plot, no candles",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 0 · line 0 · gaps [[34, 453]] · note \"data missing 09:15-15:30 · no samples\" (234px of 445px) · under the levels None · tooltip: data missing 09:15-15:30 · no MCX samples in the v2 recorder for Fri 20 Nov"
+ },
+ {
+  "control": "F1 chart head: MCX price first seen 08:50 (before the open) -> \"data missing\", no %, no prev close line",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "CHART MCX 3,535.00 data missing 1m 5m 15m VWAP OR LVL 16h | data missing: the last price 3,535.00 is from 08:50 IST, before Fri 20 Nov's open - no % from an old price"
+ },
+ {
+  "control": "F1 MOVERS: MCX not ranked in DOWN; in ALL its row says \"data missing\" (tooltip: the time of the old price)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "DOWN 84 · MCX in DOWN False · ALL row ['MCX data missing SB +24.1%', \"data missing: the last price 3,535.00 is from 08:50 IST, before Fri 20 Nov's open - no % from an old price\"]"
+ },
+ {
+  "control": "no cut text (F1 desk, MCX + MOVERS ALL)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "F7 share chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F7 share (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (125px of 352px) · under the levels True"
+ },
+ {
+  "control": "F7 share chart: the chart line fits the plot (ITC)",
+  "page": "F7 share (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "125px of 352px"
+ },
+ {
+  "control": "F7 share chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F7 share (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F7 share hero: ITC %% from today's quote",
+  "page": "F7 share (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "299.10 ▼ −1.90 −0.63% 10h"
+ },
+ {
+  "control": "no cut text (F7 share, ITC)",
+  "page": "F7 share (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "F7 share chart KALYANKJIL: \"data missing 09:15-11:39\" + bars from 11:40",
+  "page": "F7 share (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 47 · line 0 · gaps [[34, 139]] · note \"data missing 09:15-11:39 · 5-min bars · Fri 20 Nov\" (277px of 352px) · under the levels True"
+ },
+ {
+  "control": "F7 share MCX: chart \"data missing 09:15-15:30\"; hero \"data missing\" in place of the %",
+  "page": "F7 share (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 0 · line 0 · gaps [[34, 389]] · note \"data missing 09:15-15:30 · no samples\" (215px of 381px) · under the levels None · hero 3,535.00 data missing 16h · data missing: the last price 3,535.00 is from 08:50 IST, before Fri 20 Nov's open - no % from an old price"
+ },
+ {
+  "control": "no cut text (F7 share, MCX)",
+  "page": "F7 share (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F7 share (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F7 share (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "desk-trade chart: the open position's 5-min bars under its levels, never \"not known\"",
+  "page": "desk-trade (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "HDFCBANK 820 PE · candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (161px of 365px) · under the levels True"
+ },
+ {
+  "control": "no cut text (desk-trade)",
+  "page": "desk-trade (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "desk-trade F&O MOVERS ALL: MCX row \"data missing\", not -3.02%",
+  "page": "desk-trade (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "▼ DN 84 · ▲ UP 133 · ALL 218 · 218 MCX capital markets data missing +24.1% SB"
+ },
+ {
+  "control": "no cut text (desk-trade F&O MOVERS ALL)",
+  "page": "desk-trade (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk-trade (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk-trade (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "F1 chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F1 desk-hunt",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (137px of 416px) · under the levels True"
+ },
+ {
+  "control": "F1 chart: the chart line fits the plot (ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "137px of 416px"
+ },
+ {
+  "control": "F1 chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F1 chart head: ITC %% from today's quote",
+  "page": "F1 desk-hunt",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "CHART ITC 299.10 −0.63% 1m 5m 15m VWAP OR LVL 10h"
+ },
+ {
+  "control": "no cut text (F1 desk, ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 desk-hunt",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 desk-hunt",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "F7 share chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F7 share",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (125px of 352px) · under the levels True"
+ },
+ {
+  "control": "F7 share chart: the chart line fits the plot (ITC)",
+  "page": "F7 share",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "125px of 352px"
+ },
+ {
+  "control": "F7 share chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F7 share",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F7 share hero: ITC %% from today's quote",
+  "page": "F7 share",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "299.10 ▼ −1.90 −0.63% 10h"
+ },
+ {
+  "control": "no cut text (F7 share, ITC)",
+  "page": "F7 share",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F7 share",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F7 share",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "desk-trade chart: the open position's 5-min bars under its levels, never \"not known\"",
+  "page": "desk-trade",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "HDFCBANK 820 PE · candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (161px of 365px) · under the levels True"
+ },
+ {
+  "control": "no cut text (desk-trade)",
+  "page": "desk-trade",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk-trade",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk-trade",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "F1 chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (137px of 532px) · under the levels True"
+ },
+ {
+  "control": "F1 chart: the chart line fits the plot (ITC)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "137px of 532px"
+ },
+ {
+  "control": "F1 chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F1 chart head: ITC %% from today's quote",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "CHART ITC 299.10 −0.63% 1m 5m 15m VWAP OR LVL 10h"
+ },
+ {
+  "control": "no cut text (F1 desk, ITC)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "F1 chart KALYANKJIL (no samples 09:15-11:39): bars from 11:40, \"data missing 09:15-11:39\", grey band over the gap",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 47 · line 0 · gaps [[34, 209]] · note \"data missing 09:15-11:39 · 5-min bars · Fri 20 Nov\" (302px of 532px) · under the levels True"
+ },
+ {
+  "control": "F1 chart head: KALYANKJIL % stays (its quote is from 15:30 today; the gap is in the bars only)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "CHART KALYANKJIL 638.70 −3.37% 1m 5m 15m VWAP OR LVL 10h"
+ },
+ {
+  "control": "no cut text (F1 desk, KALYANKJIL)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "F1 chart MCX (no samples): \"data missing 09:15-15:30\", the gap band over the whole plot, no candles",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 0 · line 0 · gaps [[34, 569]] · note \"data missing 09:15-15:30 · no MCX samples in the v2 recorder for Fri 20 Nov\" (461px of 561px) · under the levels None · tooltip: data missing 09:15-15:30 · no MCX samples in the v2 recorder for Fri 20 Nov"
+ },
+ {
+  "control": "F1 chart head: MCX price first seen 08:50 (before the open) -> \"data missing\", no %, no prev close line",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "CHART MCX 3,535.00 data missing 1m 5m 15m VWAP OR LVL 17h | data missing: the last price 3,535.00 is from 08:50 IST, before Fri 20 Nov's open - no % from an old price"
+ },
+ {
+  "control": "F1 MOVERS: MCX not ranked in DOWN; in ALL its row says \"data missing\" (tooltip: the time of the old price)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "DOWN 84 · MCX in DOWN False · ALL row ['MCX data missing SB +24.1% capital markets', \"data missing: the last price 3,535.00 is from 08:50 IST, before Fri 20 Nov's open - no % from an old price\"]"
+ },
+ {
+  "control": "no cut text (F1 desk, MCX + MOVERS ALL)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "F7 share chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F7 share (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (125px of 502px) · under the levels True"
+ },
+ {
+  "control": "F7 share chart: the chart line fits the plot (ITC)",
+  "page": "F7 share (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "125px of 502px"
+ },
+ {
+  "control": "F7 share chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F7 share (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F7 share hero: ITC %% from today's quote",
+  "page": "F7 share (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "299.10 ▼ −1.90 −0.63% 10h"
+ },
+ {
+  "control": "no cut text (F7 share, ITC)",
+  "page": "F7 share (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "F7 share chart KALYANKJIL: \"data missing 09:15-11:39\" + bars from 11:40",
+  "page": "F7 share (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 47 · line 0 · gaps [[34, 197]] · note \"data missing 09:15-11:39 · 5-min bars · Fri 20 Nov\" (277px of 502px) · under the levels True"
+ },
+ {
+  "control": "F7 share MCX: chart \"data missing 09:15-15:30\"; hero \"data missing\" in place of the %",
+  "page": "F7 share (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 0 · line 0 · gaps [[34, 539]] · note \"data missing 09:15-15:30 · no MCX samples in the v2 recorder for Fri 20 Nov\" (423px of 531px) · under the levels None · hero 3,535.00 data missing 17h · data missing: the last price 3,535.00 is from 08:50 IST, before Fri 20 Nov's open - no % from an old price"
+ },
+ {
+  "control": "no cut text (F7 share, MCX)",
+  "page": "F7 share (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F7 share (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F7 share (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "desk-trade chart: the open position's 5-min bars under its levels, never \"not known\"",
+  "page": "desk-trade (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "HDFCBANK 820 PE · candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (161px of 426px) · under the levels True"
+ },
+ {
+  "control": "no cut text (desk-trade)",
+  "page": "desk-trade (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "desk-trade F&O MOVERS ALL: MCX row \"data missing\", not -3.02%",
+  "page": "desk-trade (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "▼ DN 84 · ▲ UP 133 · ALL 218 · 218 MCX capital markets data missing +24.1% SB"
+ },
+ {
+  "control": "no cut text (desk-trade F&O MOVERS ALL)",
+  "page": "desk-trade (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk-trade (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk-trade (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "F1 chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F1 desk-hunt",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (137px of 532px) · under the levels True"
+ },
+ {
+  "control": "F1 chart: the chart line fits the plot (ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "137px of 532px"
+ },
+ {
+  "control": "F1 chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F1 chart head: ITC %% from today's quote",
+  "page": "F1 desk-hunt",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "CHART ITC 299.10 −0.63% 1m 5m 15m VWAP OR LVL 10h"
+ },
+ {
+  "control": "no cut text (F1 desk, ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 desk-hunt",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 desk-hunt",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "F7 share chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F7 share",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (125px of 502px) · under the levels True"
+ },
+ {
+  "control": "F7 share chart: the chart line fits the plot (ITC)",
+  "page": "F7 share",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "125px of 502px"
+ },
+ {
+  "control": "F7 share chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F7 share",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F7 share hero: ITC %% from today's quote",
+  "page": "F7 share",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "299.10 ▼ −1.90 −0.63% 10h"
+ },
+ {
+  "control": "no cut text (F7 share, ITC)",
+  "page": "F7 share",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F7 share",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F7 share",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "desk-trade chart: the open position's 5-min bars under its levels, never \"not known\"",
+  "page": "desk-trade",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "HDFCBANK 820 PE · candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (161px of 426px) · under the levels True"
+ },
+ {
+  "control": "no cut text (desk-trade)",
+  "page": "desk-trade",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk-trade",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk-trade",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "F1 chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (137px of 190px) · under the levels True"
+ },
+ {
+  "control": "F1 chart: the chart line fits the plot (ITC)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "137px of 190px"
+ },
+ {
+  "control": "F1 chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F1 chart head: ITC %% from today's quote",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "CHART ITC 299.10 −0.63% 1m 5m 15m VWAP OR LVL 10h"
+ },
+ {
+  "control": "no cut text (F1 desk, ITC)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "F1 chart KALYANKJIL (no samples 09:15-11:39): bars from 11:40, \"data missing 09:15-11:39\", grey band over the gap",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 47 · line 0 · gaps [[34, 77]] · note \"data missing 09:15-11:39\" (154px of 190px) · under the levels True"
+ },
+ {
+  "control": "F1 chart head: KALYANKJIL % stays (its quote is from 15:30 today; the gap is in the bars only)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "CHART KALYANKJIL 638.70 −3.37% 1m 5m 15m VWAP OR LVL 10h"
+ },
+ {
+  "control": "no cut text (F1 desk, KALYANKJIL)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "F1 chart MCX (no samples): \"data missing 09:15-15:30\", the gap band over the whole plot, no candles",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 0 · line 0 · gaps [[34, 227]] · note \"data missing 09:15-15:30\" (154px of 219px) · under the levels None · tooltip: data missing 09:15-15:30 · no MCX samples in the v2 recorder for Fri 20 Nov"
+ },
+ {
+  "control": "F1 chart head: MCX price first seen 08:50 (before the open) -> \"data missing\", no %, no prev close line",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "CHART MCX 3,535.00 data missing 1m 5m 15m VWAP OR LVL 17h | data missing: the last price 3,535.00 is from 08:50 IST, before Fri 20 Nov's open - no % from an old price"
+ },
+ {
+  "control": "F1 MOVERS: MCX not ranked in DOWN; in ALL its row says \"data missing\" (tooltip: the time of the old price)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "DOWN 84 · MCX in DOWN False · ALL row ['MCX data missing SB +24.1%', \"data missing: the last price 3,535.00 is from 08:50 IST, before Fri 20 Nov's open - no % from an old price\"]"
+ },
+ {
+  "control": "no cut text (F1 desk, MCX + MOVERS ALL)",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 desk-hunt (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "F7 share chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F7 share (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (125px of 190px) · under the levels True"
+ },
+ {
+  "control": "F7 share chart: the chart line fits the plot (ITC)",
+  "page": "F7 share (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "125px of 190px"
+ },
+ {
+  "control": "F7 share chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F7 share (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F7 share hero: ITC %% from today's quote",
+  "page": "F7 share (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "299.10 ▼ −1.90 −0.63% 10h"
+ },
+ {
+  "control": "sideways scroll strips, not cut text (F7 share, ITC)",
+  "page": "F7 share (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "NOTE",
+  "evidence": "#tbar2 \"1m 5m 15m VWAP OR LEVELS PREMIUM vs NIFT\" 513>372 (overflow-x auto, unchanged by this job)"
+ },
+ {
+  "control": "no cut text (F7 share, ITC)",
+  "page": "F7 share (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "F7 share chart KALYANKJIL: \"data missing 09:15-11:39\" + bars from 11:40",
+  "page": "F7 share (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 47 · line 0 · gaps [[34, 77]] · note \"data missing 09:15-11:39\" (141px of 190px) · under the levels True"
+ },
+ {
+  "control": "F7 share MCX: chart \"data missing 09:15-15:30\"; hero \"data missing\" in place of the %",
+  "page": "F7 share (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 0 · line 0 · gaps [[34, 227]] · note \"data missing 09:15-15:30\" (141px of 219px) · under the levels None · hero 3,535.00 data missing 17h · data missing: the last price 3,535.00 is from 08:50 IST, before Fri 20 Nov's open - no % from an old price"
+ },
+ {
+  "control": "sideways scroll strips, not cut text (F7 share, MCX)",
+  "page": "F7 share (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "NOTE",
+  "evidence": "#tbar2 \"1m 5m 15m VWAP OR LEVELS PREMIUM vs NIFT\" 513>372 (overflow-x auto, unchanged by this job)"
+ },
+ {
+  "control": "no cut text (F7 share, MCX)",
+  "page": "F7 share (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F7 share (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F7 share (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "desk-trade chart: the open position's 5-min bars under its levels, never \"not known\"",
+  "page": "desk-trade (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "HDFCBANK 820 PE · candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (161px of 242px) · under the levels True"
+ },
+ {
+  "control": "no cut text (desk-trade)",
+  "page": "desk-trade (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "desk-trade F&O MOVERS ALL: MCX row \"data missing\", not -3.02%",
+  "page": "desk-trade (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "▼ DN 84 · ▲ UP 133 · ALL 218 · 218 MCX capital markets data missing +24.1% SB"
+ },
+ {
+  "control": "no cut text (desk-trade F&O MOVERS ALL)",
+  "page": "desk-trade (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk-trade (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk-trade (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "F1 chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F1 desk-hunt",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (137px of 190px) · under the levels True"
+ },
+ {
+  "control": "F1 chart: the chart line fits the plot (ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "137px of 190px"
+ },
+ {
+  "control": "F1 chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F1 chart head: ITC %% from today's quote",
+  "page": "F1 desk-hunt",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "CHART ITC 299.10 −0.63% 1m 5m 15m VWAP OR LVL 10h"
+ },
+ {
+  "control": "no cut text (F1 desk, ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 desk-hunt",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 desk-hunt",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "F7 share chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F7 share",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (125px of 190px) · under the levels True"
+ },
+ {
+  "control": "F7 share chart: the chart line fits the plot (ITC)",
+  "page": "F7 share",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "125px of 190px"
+ },
+ {
+  "control": "F7 share chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F7 share",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F7 share hero: ITC %% from today's quote",
+  "page": "F7 share",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "299.10 ▼ −1.90 −0.63% 10h"
+ },
+ {
+  "control": "sideways scroll strips, not cut text (F7 share, ITC)",
+  "page": "F7 share",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "NOTE",
+  "evidence": "#tbar2 \"1m 5m 15m VWAP OR LEVELS PREMIUM vs NIFT\" 513>372 (overflow-x auto, unchanged by this job)"
+ },
+ {
+  "control": "no cut text (F7 share, ITC)",
+  "page": "F7 share",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F7 share",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F7 share",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "desk-trade chart: the open position's 5-min bars under its levels, never \"not known\"",
+  "page": "desk-trade",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "HDFCBANK 820 PE · candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (161px of 242px) · under the levels True"
+ },
+ {
+  "control": "no cut text (desk-trade)",
+  "page": "desk-trade",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk-trade",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk-trade",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "F1 chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F1 desk-hunt",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (137px of 416px) · under the levels True"
+ },
+ {
+  "control": "F1 chart: the chart line fits the plot (ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "137px of 416px"
+ },
+ {
+  "control": "F1 chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F1 chart head: ITC %% from today's quote",
+  "page": "F1 desk-hunt",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "CHART ITC 299.10 −0.63% 1m 5m 15m VWAP OR LVL 10h"
+ },
+ {
+  "control": "no cut text (F1 desk, ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 desk-hunt",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 desk-hunt",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "F7 share chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F7 share",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (125px of 352px) · under the levels True"
+ },
+ {
+  "control": "F7 share chart: the chart line fits the plot (ITC)",
+  "page": "F7 share",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "125px of 352px"
+ },
+ {
+  "control": "F7 share chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F7 share",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F7 share hero: ITC %% from today's quote",
+  "page": "F7 share",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "299.10 ▼ −1.90 −0.63% 10h"
+ },
+ {
+  "control": "no cut text (F7 share, ITC)",
+  "page": "F7 share",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F7 share",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F7 share",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "desk-trade chart: the open position's 5-min bars under its levels, never \"not known\"",
+  "page": "desk-trade",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "HDFCBANK 820 PE · candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (161px of 365px) · under the levels True"
+ },
+ {
+  "control": "no cut text (desk-trade)",
+  "page": "desk-trade",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk-trade",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk-trade",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "F1 chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F1 desk-hunt",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (137px of 532px) · under the levels True"
+ },
+ {
+  "control": "F1 chart: the chart line fits the plot (ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "137px of 532px"
+ },
+ {
+  "control": "F1 chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F1 chart head: ITC %% from today's quote",
+  "page": "F1 desk-hunt",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "CHART ITC 299.10 −0.63% 1m 5m 15m VWAP OR LVL 10h"
+ },
+ {
+  "control": "no cut text (F1 desk, ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 desk-hunt",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 desk-hunt",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "F7 share chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F7 share",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (125px of 502px) · under the levels True"
+ },
+ {
+  "control": "F7 share chart: the chart line fits the plot (ITC)",
+  "page": "F7 share",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "125px of 502px"
+ },
+ {
+  "control": "F7 share chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F7 share",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F7 share hero: ITC %% from today's quote",
+  "page": "F7 share",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "299.10 ▼ −1.90 −0.63% 10h"
+ },
+ {
+  "control": "no cut text (F7 share, ITC)",
+  "page": "F7 share",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F7 share",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F7 share",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "desk-trade chart: the open position's 5-min bars under its levels, never \"not known\"",
+  "page": "desk-trade",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "HDFCBANK 820 PE · candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (161px of 426px) · under the levels True"
+ },
+ {
+  "control": "no cut text (desk-trade)",
+  "page": "desk-trade",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk-trade",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk-trade",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "F1 chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F1 desk-hunt",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (137px of 190px) · under the levels True"
+ },
+ {
+  "control": "F1 chart: the chart line fits the plot (ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "137px of 190px"
+ },
+ {
+  "control": "F1 chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F1 chart head: ITC %% from today's quote",
+  "page": "F1 desk-hunt",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "CHART ITC 299.10 −0.63% 1m 5m 15m VWAP OR LVL 10h"
+ },
+ {
+  "control": "no cut text (F1 desk, ITC)",
+  "page": "F1 desk-hunt",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 desk-hunt",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 desk-hunt",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "F7 share chart: ITC 5-min bars drawn under the level lines, never \"not known\"",
+  "page": "F7 share",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (125px of 190px) · under the levels True"
+ },
+ {
+  "control": "F7 share chart: the chart line fits the plot (ITC)",
+  "page": "F7 share",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "125px of 190px"
+ },
+ {
+  "control": "F7 share chart: 1m / 5m / 15m toggle redraws the bars (ITC)",
+  "page": "F7 share",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "5m 76 · 15m 26 · 1m line 1 · back to 5m 76"
+ },
+ {
+  "control": "F7 share hero: ITC %% from today's quote",
+  "page": "F7 share",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "299.10 ▼ −1.90 −0.63% 10h"
+ },
+ {
+  "control": "sideways scroll strips, not cut text (F7 share, ITC)",
+  "page": "F7 share",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "NOTE",
+  "evidence": "#tbar2 \"1m 5m 15m VWAP OR LEVELS PREMIUM vs NIFT\" 513>372 (overflow-x auto, unchanged by this job)"
+ },
+ {
+  "control": "no cut text (F7 share, ITC)",
+  "page": "F7 share",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F7 share",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F7 share",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "desk-trade chart: the open position's 5-min bars under its levels, never \"not known\"",
+  "page": "desk-trade",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "HDFCBANK 820 PE · candles 76 · line 0 · gaps [] · note \"5-min bars · Fri 20 Nov\" (161px of 242px) · under the levels True"
+ },
+ {
+  "control": "no cut text (desk-trade)",
+  "page": "desk-trade",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "0 cut cells"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk-trade",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk-trade",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "390 px"
+ }
+]
