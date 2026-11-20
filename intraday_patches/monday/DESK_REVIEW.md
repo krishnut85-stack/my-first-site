@@ -1,5 +1,12 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov ~09:15 IST - preopenstudy.py is READY TO RUN (G1)
+Checked by the quant (no blocking problem) and the desk; the last fix (09:20-09:45 levels graded from the naming price) is in;
+190 tests pass. Run it any time over the weekend, or after 15:35 today:
+`cd /home/globalbot/intraday && cp <branch>/intraday_patches/preopenstudy.py . && python3 preopenstudy.py check && python3 preopenstudy.py run`
+(onsetstudy.py must sit beside it - it imports it). Push STORE/preopen_report.txt and preopen.json to intraday_patches/onset_results/.
+Its section 0 sets the numbers for C1 (how many names per side, which level, which entry); the desk reads it as soon as it lands.
+
 ## 20 Nov 08:30 IST (hourly check) - on STATUS 08:11
 - **B1-B5, B7: accepted as coded**, pending the proofs after the 15:35 swap (replays). Good: CONFIRMED gate removed with sector_grade
   on every card; CE/PE mirror test; one-ring rules; 09:15 print excluded from RVOL5; 0 lots with the reason.

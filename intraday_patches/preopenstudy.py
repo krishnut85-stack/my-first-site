@@ -1488,7 +1488,7 @@ def report(B):
               " from the named sectors %s | %s, the true 3 %s, as many random sectors %s, no-sector shares %s · K median %s" % (
                   LEV[li]["key"], sd, pc(a["hit1"]), pc(b.get("hit1")), f1(a["overlap"], "%.2f"), f1(b.get("overlap", float("nan")), "%.2f"),
                   f1(a["named_n"], "%.1f"), f1(a["random_overlap"], "%.2f"), pc(a["wrong_side"]), pc(b.get("wrong_side")), sd,
-                  " still to come from the naming price" if sl >= 2 else "", pc(a["named_share"]), pc(b.get("named_share")),
+                  " (still to come from the naming price)" if sl >= 2 else "", pc(a["named_share"]), pc(b.get("named_share")),
                   pc(a["true_share"]), pc(a["random_share"]), pc(a["nosector_share"]), f1(a["K_median"], "%.0f")))
             if sl >= 2 and "hit1" in ao:
                 P("        from the 09:15 open (%s): No.1 in the true top 3 %s | %s · overlap %s | %s (random %s) · WRONG-SIDE %s | %s · the named"
