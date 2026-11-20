@@ -195,3 +195,11 @@ Last update: 20:55 IST
   (3) every brief keeps a reserve for ONE head retry that Connections / Devil cannot spend.
   The 23:35 morning-brief changes (no Devil in the morning, Connections only on new weight-3+ items) also apply from now on.
 - 00:34 - FOR THE DESK - BARE COUNTS: the Devil was rejected twice for plain counts ("3", "19", "17": numbers of cards, items, days) under the no-digits rule; each costs a retry (~$0.07-0.13). Allow small integer COUNTS (0-99) as text, keeping prices / % / levels as {num:key}? Or keep the rule and pay the retries? Nothing changed.
+- 00:42 - REHEARSAL 20 Nov DONE (FULL3, real brains, the 22:20 money rules; the only fully recorded day: news + TV + filings full). $7.11 of the day's $8. DESK_rehearsal_FULL3.md.
+  - MONEY: LEAN from 07:17; SEATS event-only 09:37; LIVE bucket FULL at 13:43. LIVE by caller: head 105 calls $1.15 (96 refused: the heartbeat retry loop, fixed at 23:42), Devil 8 calls $0.60. The 09:08 brief was LOST (causes and fixes in the row above). Cost per brief (MEET + SEATS within 20 min): 19:45 $1.62, 07:15 $1.58, 09:08 $0.77.
+  - RESULT ON THE NAMED IDEAS (honest, NOT PROVEN, one day): the head named 6 ideas; checked against NSE's own closes (previous close -> close):
+    - CE BANKBARODA +0.38%, CE PNB +0.31% (flat; up-day base: 34% of F&O shares rose >= 1%, 15% >= 2%);
+    - PE ALKEM +0.78%, PE HEROMOTOCO -0.36%, PE NATIONALUM -1.24% (the one hit), PE TCS +1.43% (wrong side; down-day base: 14% fell >= 1%, 5% >= 2%).
+    = 1 of 6 right side by >= 1%, 0 of 6 by >= 2%. The wider list (41 names incl. theme / seat names) scored >= 1% 20% vs a 26% base (lift 0.75): NO EDGE shown on 20 Nov. The old system that day: >= 2% 7% vs 7%.
+  - SCORER FAULT found: edge.py's PE base read "fell >= 1% 4%, >= 2% 0%" vs NSE 14% / 5%, and it scored NATIONALUM PE as a miss. The desk builder is auditing edge.py against the NSE bhavcopy (same window for names and base; a test against NSE), then re-scoring FULL2 and FULL3. Until then, read the EDGE lines as provisional. The 18 Nov numbers reported at 23:10 are under the same doubt.
+  - FULL4 (19 Nov) running since 00:41 with $6.96 left (total stays under $24).
