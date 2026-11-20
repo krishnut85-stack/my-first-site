@@ -1,5 +1,17 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 23:30 IST - THE TRADER disputes a price: "KALYANKJIL was negative on 19 Nov, the page showed +1.69% (661.00)"
+Our own files: daily store 19 Nov close 661.0 (rallyscan.csv); 17 Nov evening levels ~700 (CE above 718.05 / PE below 685.10);
+OUTSIDE_WATCH 20 Nov: 638.70 at -3.37% today (= 661 base). So the store implies 18 Nov close ~650 (about -7% on 18 Nov) and 19 Nov
++1.69%. Prove it against the exchange, tonight, code only:
+1. NSE CM bhavcopy for 17, 18, 19, 20 Nov: KALYANKJIL OPEN / HIGH / LOW / CLOSE / PREVCLOSE, and the % each day. Compare with the
+   store and with what the page showed on 19 Nov evening (661.00, +1.69%).
+2. If the store differs from NSE by more than 0.1% on any day: find why (wrong previous close, a stale quote, a missed day) and check
+   ALL 218 shares the same way for 18-20 Nov; list every mismatch.
+3. The 19 Nov page said "no intraday bars in the store for KALYANKJIL": why were its minute bars missing, and which other F&O shares
+   had no bars on 18-20 Nov? A share without bars must show "data missing", never a % from an old price.
+Report in STATUS with the four days' NSE numbers.
+
 ## 20 Nov 23:10 IST - THE TRADER: "work both CE and PE" - check the PE side is really produced
 The design is two-sided (head: up to 5 ideas PER SIDE; VWAP_LOSS / PDL_BREAK / DAY_LOW_BREAK triggers; seats fill winners AND losers).
 Prove it in the output:
