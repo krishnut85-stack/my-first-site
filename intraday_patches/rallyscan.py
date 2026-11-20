@@ -1,0 +1,117 @@
+#!/usr/bin/env python3
+"""rallyscan.py - READ ONLY. The trader, 20 Nov: "NIFTY went from about 22,000 to 25,500. Which sectors pushed it from the bottom to the
+top, and which F&O shares are now overbought / extremely overbought?" From the minute store (/root/hist or GIR_HIST):
+
+  1 THE RALLY   NIFTY's lowest close in the last 365 days (or --from YYYY-MM-DD) to the last day in the store
+  2 SECTORS     every sector's move over the rally (median of its F&O shares), breadth (how many members rose), its top 3 shares -
+                ranked; the top 5 are "who pushed it" (no index weights in the store, so this is the sector's own move, not points)
+  3 OVERBOUGHT  every F&O share with daily RSI(14) >= 70, EXTREMELY OVERBOUGHT at RSI >= 80 or >= 10% above its 20-day average;
+                with % above the 20 / 50-day averages and distance from its 52-week high - the CE side's "late / don't chase" list
+                and the PE side's "watch for a turn" list
+  4 OVERSOLD    the mirror (RSI <= 30), for balance
+  python3 rallyscan.py [--from 2026-03-02] [--force]      light, one pass, nice 19; --force to run in market hours
+Writes only STORE/rallyscan_report.txt. numpy only. Not advice: RSI says how far it ran, not when it turns - confirm with price."""
+import os, sys, json, datetime as dt
+import numpy as np
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from sectorlag import daily, fmtd, STORE, IST, NOT_SHARES
+
+
+def rsi(c, n=14):
+    d = np.diff(c)
+    if len(d) < n + 1:
+        return np.nan
+    up = np.where(d > 0, d, 0.0); dn = np.where(d < 0, -d, 0.0)
+    au, ad = up[:n].mean(), dn[:n].mean()
+    for i in range(n, len(d)):
+        au = (au * (n - 1) + up[i]) / n; ad = (ad * (n - 1) + dn[i]) / n
+    return 100.0 if ad == 0 else 100 - 100 / (1 + au / ad)
+
+
+def main():
+    now = dt.datetime.now(IST)
+    if now.weekday() < 5 and (9, 0) <= (now.hour, now.minute) <= (15, 35) and "--force" not in sys.argv:
+        print("market hours: add --force (it is light)"); return
+    try:
+        os.nice(19)
+    except Exception:
+        pass
+    mdir = os.path.join(STORE, "min")
+    nif = daily(os.path.join(mdir, "NIFTY.npz"))
+    nd = sorted(nif)
+    last = nd[-1]
+    if "--from" in sys.argv:
+        f = dt.date.fromisoformat(sys.argv[sys.argv.index("--from") + 1])
+        start = min((d for d in nd if d >= (f - dt.date(1970, 1, 1)).days), default=nd[0])
+    else:
+        win = [d for d in nd if d >= last - 365]
+        start = min(win, key=lambda d: nif[d][1])
+    n0, n1 = nif[start][1], nif[last][1]
+    sec = json.load(open(os.path.join(STORE, "sectors.json")))
+    OF = {x: k for k, v in sec.items() for x in v}
+    names = sorted(f[:-4] for f in os.listdir(mdir) if f.endswith(".npz") and f[:-4] not in NOT_SHARES)
+    rows = []
+    for s in names:
+        try:
+            D = daily(os.path.join(mdir, s + ".npz"))
+        except Exception:
+            continue
+        ds = sorted(D)
+        if not ds or ds[-1] < last - 5:
+            continue
+        c = np.array([D[d][1] for d in ds])
+        j = [i for i, d in enumerate(ds) if d >= start]
+        if not j:
+            continue
+        r = (c[-1] / c[j[0]] - 1) * 100 if len(j) else np.nan
+        sma20 = c[-20:].mean() if len(c) >= 20 else np.nan
+        sma50 = c[-50:].mean() if len(c) >= 50 else np.nan
+        hi52 = c[-250:].max()
+        rows.append(dict(s=s, sec=OF.get(s, "-"), ret=r, rsi=rsi(c[-120:]), e20=(c[-1] / sma20 - 1) * 100, e50=(c[-1] / sma50 - 1) * 100,
+                         off=(c[-1] / hi52 - 1) * 100, last=c[-1]))
+    L = []
+    P = L.append
+    P("=== RALLY SCAN (rallyscan.py) · data to %s · %d F&O shares" % (fmtd(last), len(rows)))
+    P("1 THE RALLY: NIFTY %s close %.0f -> %s close %.0f = %+.1f%%" % (fmtd(start), n0, fmtd(last), n1, (n1 / n0 - 1) * 100))
+    P("")
+    P("2 SECTORS over the rally (median move of the sector's F&O shares · members up / all · top 3 shares) - ranked:")
+    bys = {}
+    for r in rows:
+        if r["sec"] != "-" and np.isfinite(r["ret"]):
+            bys.setdefault(r["sec"], []).append(r)
+    st = []
+    for k, v in bys.items():
+        if len(v) < 3:
+            continue
+        rs = np.array([x["ret"] for x in v])
+        top = sorted(v, key=lambda x: -x["ret"])[:3]
+        st.append((k, np.median(rs), (rs > 0).sum(), len(v), top))
+    st.sort(key=lambda t: -t[1])
+    for i, (k, med, up, n, top) in enumerate(st):
+        P("  %s%-22s %+6.1f%%  up %2d/%-2d  top: %s" % ("*" if i < 5 else " ", k[:22], med, up, n,
+                                                       ", ".join("%s %+.0f%%" % (x["s"], x["ret"]) for x in top)))
+    P("  (* = the top 5 that pushed hardest by their own move; the store has no index weights, so banks' big NIFTY weight is not")
+    P("   counted here - a bank move of +15% adds far more NIFTY points than a small sector's +40%)")
+    P("")
+    ob = sorted([r for r in rows if np.isfinite(r["rsi"]) and r["rsi"] >= 70], key=lambda r: -r["rsi"])
+    P("3 OVERBOUGHT F&O shares (daily RSI14 >= 70) - %d shares; EXTREME = RSI >= 80 or >= 10%% above the 20-day average:" % len(ob))
+    P("  %-12s %-18s %5s %7s %7s %8s %9s %s" % ("share", "sector", "RSI", ">20dma", ">50dma", "off 52wH", "rally", ""))
+    for r in ob:
+        ex = "EXTREME" if (r["rsi"] >= 80 or r["e20"] >= 10) else ""
+        P("  %-12s %-18s %5.1f %+6.1f%% %+6.1f%% %+7.1f%% %+8.1f%% %s" % (r["s"], r["sec"][:18], r["rsi"], r["e20"], r["e50"], r["off"], r["ret"], ex))
+    os_ = sorted([r for r in rows if np.isfinite(r["rsi"]) and r["rsi"] <= 30], key=lambda r: r["rsi"])
+    P("")
+    P("4 OVERSOLD F&O shares (RSI14 <= 30) - %d: " % len(os_) + ", ".join("%s %.0f (%s)" % (r["s"], r["rsi"], r["sec"]) for r in os_))
+    P("")
+    P("READ: overbought is not a sell signal by itself - strong shares stay overbought in a rally. CE: avoid chasing EXTREME names; buy")
+    P("pullbacks to VWAP / the 20-day average. PE: only when an overbought share breaks yesterday's low below VWAP with volume.")
+    txt = "\n".join(L)
+    print(txt)
+    try:
+        open(os.path.join(STORE, "rallyscan_report.txt"), "w").write(txt + "\n")
+    except Exception as e:
+        print("could not write the report:", e)
+
+
+if __name__ == "__main__":
+    main()
