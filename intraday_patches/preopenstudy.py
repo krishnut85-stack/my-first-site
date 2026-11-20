@@ -79,7 +79,8 @@ SDESC = {"S1": "CLOSE-STRENGTH (D-1): close in its range, last hour, last-hour v
          "S8": "LAGGARD CATCH-UP (intraday): RVOL, 5-min momentum, near the edge, build-up - followers / laggards above VWAP",
          "S9": "AGAINST / ALONE (intraday): vs sector, RVOL, vs NIFTY, own gap - moving against or without its sector",
          "S10": "SHARE-ONLY BLEND (intraday): vs NIFTY, RVOL, VWAP, beyond, gap, build-up - no sector gate"}
-GDESC = {"G0": "no gate", "G1": "sector in the named top 3", "G2": "market lean sets the list size", "G3": "G1 + G2"}
+GDESC = {"G0": "no gate", "G1": "only shares in the 3 named sectors", "G2": "list size set by the market lean",
+         "G3": "only shares in the 3 named sectors, list size set by the market lean"}
 ROLEN = ("NONE", "LEADER", "FOLLOWER", "LAGGARD", "AGAINST", "ALONE")
 TYPEN = ("TREND-UP", "TREND-DOWN", "REVERSAL-UP", "REVERSAL-DOWN", "RANGE")
 KINDN = ("up", "down", "mixed")
@@ -121,6 +122,13 @@ def eod(R, s):
     p1 = np.r_[False, (g[1:] == g[:-1] + 1) & (g[:-1] >= 0)]
     c = C[:, -1]; hi = H.max(1); lo = L.min(1); vol = V.sum(1)
     E = {"g": g}
+    with np.errstate(all="ignore"):                                # O.prep's split / bonus rule: the open 20%+ off the last close
+        lastc = np.r_[np.nan, c[:-1]]
+        near = np.r_[False, (g[1:] - g[:-1] <= 5) & (g[1:] > g[:-1]) & (g[:-1] >= 0)]
+        seg = np.cumsum(near & (np.abs(np.asarray(R["o0"], np.float64) / lastc - 1) >= O.SPLIT_JUMP)).astype(np.float64)
+
+    def rs(x, k, fn):                                              # a rolling window that would reach back across a jump -> NaN
+        return np.where(roll(seg, k, np.min) == seg, roll(x, k, fn), np.nan)
     with np.errstate(all="ignore"):
         prevc = np.where(p1, np.r_[np.nan, c[:-1]], np.nan)
         E["ret1"] = (c / prevc - 1) * 100
@@ -133,20 +141,20 @@ def eod(R, s):
         m_ = O.prior_median(vol[:, None])[:, 0].astype(np.float64)
         E["rvol1"] = np.where(m_ > 0, vol / m_, np.nan)
         tr = np.where(np.isfinite(prevc), np.maximum(hi, prevc) - np.minimum(lo, prevc), rg)
-        a5 = roll(tr, 5, np.mean); a20 = roll(tr, 20, np.mean)
+        a5 = rs(tr, 5, np.mean); a20 = rs(tr, 20, np.mean)
         E["atrc"] = np.where(a20 > 0, a5 / a20, np.nan)
         E["atr20abs"] = a20
         E["atr20p"] = a20 / c * 100
-        mn7 = roll(rg, 7, np.min)
+        mn7 = rs(rg, 7, np.min)
         E["nr7"] = np.where(np.isfinite(mn7), (rg <= mn7 + 1e-12).astype(float), np.nan)
         ph = np.r_[np.nan, hi[:-1]]; pl = np.r_[np.nan, lo[:-1]]
         E["inside1"] = np.where(p1, ((hi <= ph) & (lo >= pl)).astype(float), np.nan)
         E["coil"] = E["nr7"] + np.nan_to_num(E["inside1"])
         for k in (5, 20, 60):
-            E["dh%d" % k] = np.where(a20 > 0, (c - roll(hi, k, np.max)) / a20, np.nan)
-            E["dl%d" % k] = np.where(a20 > 0, (c - roll(lo, k, np.min)) / a20, np.nan)
+            E["dh%d" % k] = np.where(a20 > 0, (c - rs(hi, k, np.max)) / a20, np.nan)
+            E["dl%d" % k] = np.where(a20 > 0, (c - rs(lo, k, np.min)) / a20, np.nan)
         c5 = np.r_[np.full(5, np.nan), c[:-5]] if n > 5 else np.full(n, np.nan)
-        E["r5"] = (c / c5 - 1) * 100
+        E["r5"] = np.where(roll(seg, 6, np.min) == seg, (c / c5 - 1) * 100, np.nan)
     st = np.zeros(n); sg = np.sign(np.nan_to_num(E["ret1"]))
     for i in range(n):
         if sg[i] == 0:
@@ -233,6 +241,117 @@ def trig_conds(P, d):
     return [x & tr for x in (c1, c2, c3, c4, c5)]
 
 
+def c6(C, o0, t):
+    """the 5-minute-earlier price for the snapshot at minute t: C[t-6], or the 09:15 open when t < 6. Never a negative index: C[:, -1]
+    is the day's 15:29 close (the c5@5 look-ahead found in the 20 Nov review)."""
+    return C[:, t - 6] if t >= 6 else np.asarray(o0, np.float64)
+
+
+C1K = EODK + ("oi", "pc", "pdh", "pdl")                              # the 19:45 inputs (day D-1 and before)
+C2K = C1K + ("o0",)                                                   # + the 09:08 open (the 09:15 open stands in)
+SNK = ("C%d", "VW%d", "RV%d", "C6_%d", "HM%d", "LM%d")              # the intraday snapshot inputs at minute t (candles 0..t-1)
+
+
+def cut_keys(t):
+    """the share inputs a list may read at a naming point: t = None (19:45), 0 (09:08) or 5 / 15 / 30"""
+    if t is None:
+        return C1K
+    return C2K + tuple(k % u for u in TS if u <= t for k in SNK)
+
+
+def inputs(R, s, P=None):
+    """every per-share number a list may read, per valid share-day of P: the 19:45 numbers (day D-1, from eod() shifted one market day),
+    D's open, and the snapshots at 09:20 / 09:30 / 09:45 from candles 0..t-1 only. A share-day with no real candle by minute t gets NaN
+    snapshots (grid() holds the first real candle's open there - a later price). share_rec() and the look-ahead probe both use this."""
+    if P is None:
+        P = O.prep(s, R, full=True)
+    E = eod(R, s)
+    idx = np.searchsorted(E["g"], P["g"]); prv = idx - 1          # every valid day has its previous market day as the row before
+    F = {k: E[k][prv] for k in EODK}
+    F["oi"] = P["oi"]                                               # D-1's build-up, exactly O.prep's (1 LB 2 SB 3 SC 4 LU 0 none)
+    for k in ("o0", "pc", "pdh", "pdl", "first"):
+        F[k] = np.asarray(P[k], np.float64)
+    C, H, L, VW, o0 = P["C"], P["H"], P["L"], P["VW"], P["o0"]
+    late = np.asarray(P["first"], np.int64)
+    for t in TS:
+        nr = late >= t
+        for k, v in (("C%d", C[:, t - 1]), ("VW%d", VW[:, t - 1]), ("RV%d", P["rc"][:, t - 1]), ("C6_%d", c6(C, o0, t)),
+                     ("HM%d", H[:, :t].max(1)), ("LM%d", L[:, :t].min(1))):
+            F[k % t] = np.where(nr, np.nan, np.asarray(v, np.float64))
+    return P, F
+
+
+PROBE_CUTS = (("19:45", None), ("09:08", 0), ("09:20", 5), ("09:30", 15), ("09:45", 30), ("next day", "next"))
+PROBE_DAYS = 2
+
+
+def _pert(R, row, m0, move_open, seed):
+    """a copy of the rows R with row `row`'s candles from minute m0 on replaced by a different walk (and its open moved if move_open)"""
+    rng = np.random.default_rng(seed)
+    Q = {k: (v.copy() if isinstance(v, np.ndarray) else v) for k, v in R.items()}
+    n = NM - m0
+    fac = np.exp(np.cumsum(rng.normal(0, 0.002, n))) * rng.uniform(0.97, 1.03)
+    for k in ("C", "H", "L"):
+        Q[k][row, m0:] = Q[k][row, m0:] * fac
+    Q["V"][row, m0:] = Q["V"][row, m0:] * rng.uniform(0.2, 5.0, n)
+    if move_open:
+        Q["o0"][row] = Q["o0"][row] * rng.uniform(0.97, 1.03)
+    return Q
+
+
+def probe(R, s, P, ndays=PROBE_DAYS):
+    """THE LOOK-AHEAD PROBE (in every run, on the real store): on `ndays` of the share's valid days D, day D's candles from the naming minute
+    on are replaced by a different walk (19:45: all of day D and its open; 09:08: all of D's candles, the open kept; 09:20 / 09:30 /
+    09:45: from minute 5 / 15 / 30 on; 'next day': all of day D+1) and every input the lists may read at that level (inputs(), and the
+    entry-trigger states on candles before the naming minute) is recomputed with the same code. Any change is look-ahead.
+    The cross-share steps (sector medians, ranks, the market and sector reads, the roles) are checked by preopen_test's store scramble.
+    -> (checks, [failures])"""
+    nv = len(P["g"])
+    if nv < 3:
+        return (0, [])
+    Rg = np.array([O.GIDX.get(int(x), -1) for x in R["day"]], np.int64)
+    checks = 0; bad = []
+    for q_ in range(1, ndays + 1):
+        gD = int(P["g"][q_ * nv // (ndays + 1)])
+        i = int(np.searchsorted(Rg, gD))
+        if i >= len(Rg) or Rg[i] != gD:
+            continue
+        lo, hi = max(0, i - 90), min(len(Rg), i + 2)
+        Rt = {k: (v[lo:hi] if isinstance(v, np.ndarray) else v) for k, v in R.items()}
+        row = i - lo
+        Pb, Fb = inputs(Rt, s)
+        jb = int(np.searchsorted(Pb["g"], gD))
+        if jb >= len(Pb["g"]) or Pb["g"][jb] != gD:
+            continue
+        cb = {d: trig_conds(Pb, d) for d in (1, -1)}
+        for ci, (cut, t) in enumerate(PROBE_CUTS):
+            if t == "next":
+                if row + 1 >= len(Rt["day"]):
+                    continue
+                Rp = _pert(Rt, row + 1, 0, True, 101 + q_ * 7 + ci)
+            else:
+                Rp = _pert(Rt, row, t or 0, t is None, 101 + q_ * 7 + ci)
+            Pp, Fp = inputs(Rp, s)
+            jp = int(np.searchsorted(Pp["g"], gD))
+            if jp >= len(Pp["g"]) or Pp["g"][jp] != gD:
+                continue
+            keys = cut_keys(30) if t == "next" else cut_keys(t)
+            for k in keys:
+                a, b = float(Fb[k][jb]), float(Fp[k][jp])
+                checks += 1
+                if not ((np.isnan(a) and np.isnan(b)) or abs(a - b) <= 1e-6 * (1 + abs(a))):
+                    bad.append("%s %s %s %s" % (s, O.dday(O.CAL[gD]), cut, k))
+            m0 = NM if t == "next" else (t if t in TS else 0)
+            if m0:
+                cp = {d: trig_conds(Pp, d) for d in (1, -1)}
+                for d in (1, -1):
+                    for e in range(5):
+                        checks += 1
+                        if not np.array_equal(cb[d][e][jb, :min(m0, T)], cp[d][e][jp, :min(m0, T)]):
+                            bad.append("%s %s %s trigger E%d %s" % (s, O.dday(O.CAL[gD]), cut, e + 1, "CE" if d > 0 else "PE"))
+    return (checks, bad)
+
+
 def share_rec(s):
     """pass A for one share -> one record per valid share-day (the days O.prep keeps), keyed by the day index g"""
     R = O.load_rows(s)
@@ -244,19 +363,13 @@ def share_rec(s):
             [0] * len(O.HNAME), P.get("unlisted", 0), P.get("base_n", nv), P.get("splits", []), P.get("split_drop", 0))
     if nv == 0:
         return {"s": s, "n": 0, "meta": meta}
-    E = eod(R, s)
-    idx = np.searchsorted(E["g"], P["g"]); prv = idx - 1          # every valid day has its previous market day as the row before
+    _, F = inputs(R, s, P)
     rec = {"s": s, "n": nv, "meta": meta, "g": P["g"].astype(np.int64)}
-    for k in EODK:
-        rec[k] = E[k][prv].astype(np.float32)
-    rec["oi"] = P["oi"].astype(np.float32)                         # D-1's build-up, exactly O.prep's (1 LB 2 SB 3 SC 4 LU 0 none)
-    C, H, L, VW, o0, pc = P["C"], P["H"], P["L"], P["VW"], P["o0"], P["pc"]
-    for k, v in (("o0", o0), ("pc", pc), ("pdh", P["pdh"]), ("pdl", P["pdl"]), ("c0", C[:, 0]), ("c355", C[:, END])):
+    for k, v in F.items():
         rec[k] = np.asarray(v, np.float32)
-    for t in TS:
-        rec["C%d" % t] = C[:, t - 1].astype(np.float32); rec["VW%d" % t] = VW[:, t - 1].astype(np.float32)
-        rec["RV%d" % t] = P["rc"][:, t - 1].astype(np.float32); rec["C6_%d" % t] = C[:, t - 6].astype(np.float32)
-        rec["HM%d" % t] = H[:, :t].max(1).astype(np.float32); rec["LM%d" % t] = L[:, :t].min(1).astype(np.float32)
+    C, H, L, VW, o0, pc = P["C"], P["H"], P["L"], P["VW"], P["o0"], P["pc"]
+    rec["c0"] = C[:, 0].astype(np.float32); rec["c355"] = C[:, END].astype(np.float32)   # the 09:16 robustness price; a label
+    rec["probe"] = probe(R, s, P)
     lab = np.zeros((2, len(LABK), nv), np.float32)
     ref = np.zeros((2, len(REFK), 5, nv), np.float32)
     trg = np.full((2, 4, 6, len(TRGK), nv), np.nan, np.float32)
@@ -359,8 +472,10 @@ def assemble(recs):
             X[..., r["g"], j] = r[key]
         return X
     B.X = {}
-    for k in EODK + ("oi", "o0", "pc", "pdh", "pdl", "c0", "c355"):
+    for k in EODK + ("oi", "o0", "pc", "pdh", "pdl", "first", "c0", "c355"):
         B.X[k] = mat(k)
+    B.probe_n = int(sum(r["probe"][0] for r in rr if "probe" in r))
+    B.probe_bad = [x for r in rr if "probe" in r for x in r["probe"][1]]
     for t in TS:
         for k in ("C%d", "VW%d", "RV%d", "C6_%d", "HM%d", "LM%d"):
             B.X[k % t] = mat(k % t)
@@ -515,11 +630,12 @@ def features(B):
         X["rs1"] = X["ret1"] - X["sec1"]
         X["rs5"] = X["r5"] - sec_loo(B, X["r5"])
         X["prox20"] = np.stack([X["dh20"], -X["dl20"]])
-        X["gap"] = (X["o0"] / X["pc"] - 1) * 100
+        late0 = X["first"] > 0                                     # no real 09:15 candle: the 'open' is a later minute's price
+        X["gap"] = np.where(late0, np.nan, (X["o0"] / X["pc"] - 1) * 100)
         X["gapA"] = X["gap"] / X["atr20p"]
         X["secgap"] = sec_loo(B, X["gap"]); X["gaprs"] = X["gap"] - X["secgap"]
         X["gapx"] = np.stack([(X["o0"] > X["pdh"]).astype(float), (X["o0"] < X["pdl"]).astype(float)])
-        X["gapx"] = np.where(V[None], X["gapx"], np.nan)
+        X["gapx"] = np.where(V[None] & ~late0[None], X["gapx"], np.nan)
         X["nif1"] = np.broadcast_to(B.N["nif1"][:, None], (B.G, B.S)); X["nifcpos1"] = np.broadcast_to(B.N["nifcpos1"][:, None], (B.G, B.S))
         X["nifgap"] = np.broadcast_to(B.N["gap"][:, None], (B.G, B.S)); X["bnfgap"] = np.broadcast_to(B.BN["gap"][:, None], (B.G, B.S))
         X["dte"] = np.broadcast_to(B.dte[:, None], (B.G, B.S))
@@ -654,6 +770,14 @@ def market_measures(B, li, dm):
         for X in TIERS:
             mv[lab_]["%s" % X] = (float(B.nmov[(0, X, 0)][mk].mean()) if k else float("nan"), float(B.nmov[(1, X, 0)][mk].mean()) if k else float("nan"))
     out["movers_by_lean"] = mv
+    if sl >= 2:
+        mc = {}
+        for nm_, c in zip(names, codes):
+            mk = dm & (cl == c); k = int(mk.sum())
+            mc[nm_] = {"days": k}
+            for X in TIERS:
+                mc[nm_]["%s" % X] = (float(B.nmov[(0, X, 0)][mk].mean()) if k else float("nan"), float(B.nmov[(1, X, 0)][mk].mean()) if k else float("nan"))
+        out["movers_by_class"] = mc
     t = LEV[li]["t"]
     with np.errstate(all="ignore"):
         refp = B.N["o"] if t is None else B.N["C"][:, t - 1]
@@ -716,7 +840,9 @@ def sector_measures(B, sl, si, dm):
     n1 = nm & (pos == 0)
     out["hit1"] = float(((n1 & tr3).sum(1) > 0)[has].mean())
     out["overlap"] = float((nm & tr3).sum(1)[has].mean())
-    out["random_overlap"] = float((9.0 / np.maximum(B.nvs, 1))[has].mean())
+    nnam = nm.sum(1).astype(float); ntru = tr3.sum(1).astype(float)          # a sector is never on both sides: with < 6 valid sectors
+    out["random_overlap"] = float((nnam * ntru / np.maximum(B.nvs, 1))[has].mean())   # one side gets fewer than 3 named
+    out["named_n"] = float(nnam[has].mean())
     with np.errstate(all="ignore"):
         wrong = nm & ((opp3 & ~tr3) | (d * B.sret <= -1.0))          # the true bottom 3 without the top 3 (they overlap when K < 6)
     out["wrong_side"] = O.rt(wrong[has].sum(), nm[has].sum())
@@ -728,7 +854,7 @@ def sector_measures(B, sl, si, dm):
     nosec = (mv & ~B.SV).sum(1)
     den = tot[has].sum()
     out.update({"moves": int(den), "named_share": O.rt(in_named[has].sum(), den), "true_share": O.rt(in_true[has].sum(), den),
-                "random_share": O.rt((3.0 / np.maximum(B.nvs, 1) * in_valid)[has].sum(), den), "nosector_share": O.rt(nosec[has].sum(), den),
+                "random_share": O.rt((nnam / np.maximum(B.nvs, 1) * in_valid)[has].sum(), den), "nosector_share": O.rt(nosec[has].sum(), den),
                 "K_median": float(np.median(B.nvs[has]))})
     return out
 
@@ -951,12 +1077,13 @@ def trig_table(B, P1, si, li, dm):
         nf = int(fired.sum())
         rows.append({"trigger": TRN[e], "picks": n, "fired": O.rt(nf, n), "em_med": O.q(em[fired], 50),
                      "r2": O.rt((fired & (Tg[1] == 1)).sum(), n), "w2": O.rt((fired & (Tg[2] == 1)).sum(), n),
+                     "w2f": O.rt((fired & (Tg[2] == 1)).sum(), nf),
                      "ml_med": O.q(Tg[3][fired], 50), "ml_p25": O.q(Tg[3][fired], 25), "hit60": O.rt((fired & (Tg[4] == 1)).sum(), nf),
                      "mfe60": O.q(Tg[5][fired], 50), "chase": O.rt((fired & (Tg[7] == 1)).sum(), nf),
                      "opt15": float(np.nanmean(DELTA * Tg[6][fired] / PREM * 100) - COSTS[0]) if nf else float("nan"),
                      "opt3": float(np.nanmean(DELTA * Tg[6][fired] / PREM * 100) - COSTS[1]) if nf else float("nan")})
     w2rand = O.rt((B.rate[("W2", si, r)] * m.sum(1)).sum(), n)
-    return rows, safe_trigger(rows, w2rand), w2rand
+    return rows, safe_trigger(rows, w2rand), w2rand, safe_trigger_old(rows, w2rand)
 
 
 def rare_note(rows, safe):
@@ -967,9 +1094,30 @@ def rare_note(rows, safe):
             % (pc(rows[safe]["fired"]), pc(rows[safe]["r2"]), pc(rows[0]["r2"])))
 
 
+SAFE_WRONG, SAFE_KEEP, SAFE_LEFT = 0.75, 0.70, 0.70
+
+
 def safe_trigger(rows, w2rand):
-    """the pre-declared rule: among triggers with WRONG2 <= 0.75 x E0's and a median move left >= 70% of E0's, the earliest median entry;
-    else E0 if its WRONG2 <= RANDOM's; else none"""
+    """THE EARLIEST SAFE TRIGGER (rule tightened 20 Nov after review, pending the chair's sign-off; the agreed rule's answer stays in the
+    json as 'safe_old_rule'): among E1..E5 whose WRONG per trade that FIRED <= 0.75 x E0's, whose RIGHT over ALL picks >= 70% of E0's
+    (a pick that never fires catches nothing, so a trigger that seldom trades cannot pass) and whose median move left >= 70% of E0's:
+    the earliest median entry; else E0 (enter on the card) if its WRONG <= random; else none"""
+    e0 = rows[0]
+    if not e0["picks"]:
+        return None
+    fin = lambda *v: all(x is not None and np.isfinite(x) for x in v)
+    ok = [i for i, x in enumerate(rows[1:], 1) if x["fired"] and fin(x["w2f"], x["r2"], x["ml_med"], e0["w2"], e0["r2"], e0["ml_med"])
+          and x["w2f"] <= SAFE_WRONG * e0["w2"] and x["r2"] >= SAFE_KEEP * e0["r2"] and x["ml_med"] >= SAFE_LEFT * e0["ml_med"]]
+    if ok:
+        return min(ok, key=lambda i: (rows[i]["em_med"], rows[i]["w2f"]))
+    if np.isfinite(e0["w2"]) and np.isfinite(w2rand) and e0["w2"] <= w2rand:
+        return 0
+    return None
+
+
+def safe_trigger_old(rows, w2rand):
+    """the rule as first agreed (kept for comparison only): WRONG over ALL picks <= 0.75 x E0's (a pick that never fires counts as never
+    wrong) and a median move left >= 70% of E0's: the earliest median entry; else E0 if its WRONG2 <= RANDOM's; else none"""
     e0 = rows[0]
     if not e0["picks"]:
         return None
@@ -980,28 +1128,6 @@ def safe_trigger(rows, w2rand):
     if np.isfinite(e0["w2"]) and np.isfinite(w2rand) and e0["w2"] <= w2rand:
         return 0
     return None
-
-
-def leak_test(B, P1, si, li, dm):
-    """the configuration re-run with the day labels shuffled across days within each share (seed 11). The baseline is each picked share's
-    own rate over all its days (a shuffle within the share keeps every share's base rate, so a lift here can only come from the code
-    reading the labels or a misaligned join - never from which shares the score likes)."""
-    r = LEV[li]["ref"]
-    key = (si, r)
-    if key not in B.shuf:
-        rng = np.random.default_rng(11)
-        R = B.R2[si, r]; out = np.zeros_like(R)
-        own = np.full(B.S, np.nan)
-        for j in range(B.S):
-            idx = np.nonzero(B.V[:, j])[0]
-            if len(idx):
-                out[idx, j] = R[rng.permutation(idx), j]
-                own[j] = R[idx, j].mean()
-        B.shuf[key] = (out, own)
-    Rs, own = B.shuf[key]
-    m = P1 & dm[:, None]
-    num = (m & Rs).sum(1).astype(float); den = np.where(m, own[None, :], 0.0).sum(1)
-    return {"lift": O.rt(num.sum(), den.sum()), "ci": O.boot(num * dm, den * dm, B.W)}
 
 
 # ------------------------------------------------------------------ the whole study ------------------------------------------------------------------
@@ -1032,12 +1158,12 @@ def prepare(args):
     B = assemble(recs)
     B.names = names; B.args = args; B.t0 = t0
     index_days(B); sectors(B); features(B); market(B); sector_reads(B); rates(B)
-    B.sc_cache = {}; B.list_cache = {}; B.shuf = {}
+    B.sc_cache = {}; B.list_cache = {}
     return B
 
 
 def select(B):
-    """every configuration on the tuning days; the winner per (level, side, N); held-out unchanged; selection luck; the leak test"""
+    """every configuration on the tuning days; the winner per (level, side, N); held-out unchanged; selection luck"""
     tr, te = B.tr, B.te
     B.grid = {}; B.win = {}
     cfgs = grid_configs()
@@ -1061,10 +1187,6 @@ def select(B):
                 w = {"cfg": best, "qualified": bool(qual), "n_qualified": len(qual), "top5": top5,
                      "luck": {"heldout_no1": B.grid[(best, N, si)]["te"]["net2"] if best and B.grid[(best, N, si)]["te"] else float("nan"),
                               "heldout_top5_median": float(np.median(te_net)) if te_net else float("nan")}}
-                if best is not None:
-                    P = make_list(B, best, N)[0][si]
-                    w["leak"] = leak_test(B, P, si, li, tr)
-                    w["leak_bad"] = bool(qual) and not (np.isfinite(w["leak"]["ci"][0]) and w["leak"]["ci"][0] <= 1.0 <= w["leak"]["ci"][1])
                 B.win[(li, si, N)] = w
 
 
@@ -1099,6 +1221,26 @@ def f1(x, f="%.1f"):
 
 def cfgname(c):
     return "-" if not c else "%s %s %s" % (LEV[c[0]]["key"], c[1], c[2])
+
+
+def sname(k):
+    """the score's plain name: 'GAP WITH SECTOR (09:08+)' (cut at ': ', never at the colon in 09:08)"""
+    return SDESC[k].split(": ", 1)[0]
+
+
+def plain(c):
+    """a list in words: 'CLOSE-STRENGTH (D-1), no gate'"""
+    return "-" if not c else "%s, %s" % (sname(c[1]), GDESC[c[2]])
+
+
+def halfway(x, li):
+    """'named 12 min before the move is half done' / 'named 2 min AFTER the move was half done' (median)"""
+    if x is None or not np.isfinite(x):
+        return "named - min before the move is half done"
+    tail = " + the night / 7 min" if li < 2 else ""
+    if x >= 0:
+        return "named %.0f min%s before the move is half done (median)" % (x, tail)
+    return "named %.0f min AFTER the move was half done (median)" % -x
 
 
 def splits(B):
@@ -1196,14 +1338,12 @@ def report(B):
         P("    renamed shares read with their old NSE symbol too: %s" % ", ".join(O.ALIAS_USED))
     if O.LOOSE_SEC:
         P("    sectors.json buckets treated as no sector: %s" % ", ".join(O.LOOSE_SEC))
-    leak = [(k, w) for k, w in B.win.items() if w.get("leak_bad")]
-    nl = sum(1 for w in B.win.values() if w.get("qualified"))
-    P("    LEAK TEST (every winning list re-run with the day labels shuffled within each share, seed 11; its lift must hold 1.0): %d winners"
-      " tested, %d fail%s" % (nl, len(leak), "" if not leak else " - %s" % ", ".join("%s %s N=%d" % (LEV[k[0]]["key"], SIDES[k[1]][2], k[2])
-                                                                                  for k, w in leak[:8])))
+    pb = B.probe_bad
+    P("    LOOK-AHEAD PROBE (this run, %d per share: day D's minutes from the naming minute on - and all of day D+1 - replaced, every input"
+      " re-read): %d checks, %d moved%s" % (PROBE_DAYS * len(PROBE_CUTS), B.probe_n, len(pb), "" if not pb else " - e.g. %s" % "; ".join(pb[:6])))
     J["meta"] = {"from": str(d0), "to": str(d1), "days": nd, "shares": B.S, "share_days": nsd, "train_days": int(tr.sum()),
                  "heldout_days": int(te.sum()), "valid_sectors_median": float(np.median(vsd)) if len(vsd) else None, "sectors": B.secn,
-                 "universe_by_half": uni, "coverage": cov, "mixed_store": mixed, "leak_fail": [list(map(str, k)) for k, _ in leak],
+                 "universe_by_half": uni, "coverage": cov, "mixed_store": mixed, "probe_checks": B.probe_n, "probe_fail": pb[:200],
                  "scores": SDESC, "gates": GDESC, "triggers": dict(zip(TRN, TRD))}
     P("READ: CE = the share going UP, PE = the share going DOWN - always side by side, equal weight. RIGHT = +2% its way before -1% against;")
     P("WRONG SIDE = -2% against before +1% its way (a CE pick that fell 2%, a PE pick that rose 2%). Both read from the naming price to 15:10.")
@@ -1248,15 +1388,24 @@ def report(B):
               pc(b.get("neutral_pct")) if b.get("days", 0) >= THIN else "(thin)", f1(a["nifty_after"], "%+.2f"), f1(b.get("nifty_after", float("nan")), "%+.2f"),
               *baseline(B)))
         cls_names = list(a["confusion_type"].keys())
-        P("      predicted vs TYPE (tuning days)     %s" % " · ".join("%s: %s" % (c, "/".join(str(x) for x in a["confusion_type"][c])) for c in cls_names)
-          + "   (TREND-UP/TREND-DOWN/REV-UP/REV-DOWN/RANGE)")
-        P("      predicted vs KIND (tuning days)     %s" % " · ".join("%s: %s" % (c, "/".join(str(x) for x in a["confusion_kind"][c])) for c in cls_names)
-          + "   (up/down/mixed)")
-        P("      THE TRADER'S TABLE - the read says ... expect a day (tuning | held-out): " + " · ".join(
-            "%s (%d|%d days) CE %s / PE %s at 2%%, CE %s / PE %s at 3%%" % (
-                lab_, a["movers_by_lean"][lab_]["days"], b.get("movers_by_lean", {}).get(lab_, {}).get("days", 0),
-                f1(a["movers_by_lean"][lab_]["2.0"][0], "%.0f"), f1(a["movers_by_lean"][lab_]["2.0"][1], "%.0f"),
-                f1(a["movers_by_lean"][lab_]["3.0"][0], "%.0f"), f1(a["movers_by_lean"][lab_]["3.0"][1], "%.0f")) for lab_ in ("UP", "DOWN", "NEUTRAL")))
+        for lab_, mm_ in (("tuning", a), ("held-out", b)):
+            if not mm_.get("days"):
+                continue
+            P("      predicted vs TYPE (%-8s days)  %s" % (lab_, " · ".join("%s: %s" % (c, "/".join(str(x) for x in mm_["confusion_type"][c])) for c in cls_names))
+              + "   (TREND-UP/TREND-DOWN/REV-UP/REV-DOWN/RANGE)")
+            P("      predicted vs KIND (%-8s days)  %s" % (lab_, " · ".join("%s: %s" % (c, "/".join(str(x) for x in mm_["confusion_kind"][c])) for c in cls_names))
+              + "   (up/down/mixed)")
+        tbl = lambda mm_, lab_, X: (f1(mm_.get(lab_, {}).get(X, (np.nan, np.nan))[0], "%.0f"), f1(mm_.get(lab_, {}).get(X, (np.nan, np.nan))[1], "%.0f"))
+        for title, key, labs in (("the read says", "movers_by_lean", ("UP", "DOWN", "NEUTRAL")),
+                                 ("the day class says", "movers_by_class", cls_names if "movers_by_class" in a else ())):
+            if not labs:
+                continue
+            P("      THE TRADER'S TABLE - %s ... expect a day, CE / PE moves from the open (tuning | held-out):" % title)
+            for lab_ in labs:
+                ta, tb = a[key][lab_], b.get(key, {}).get(lab_, {})
+                P("        %-10s %4d | %3d days · " % (lab_, ta["days"], tb.get("days", 0)) + " · ".join(
+                    "%s%% CE %s / PE %s | %s / %s" % ((X,) + tbl(a[key], lab_, "%s" % X) + (tbl(b.get(key, {}), lab_, "%s" % X) if tb.get("days", 0) >= THIN
+                                                                                       else ("(thin)", "-"))) for X in TIERS))
 
     # ---- 3 SECTOR READ
     P("\n=== 3. THE SECTOR READ - the named top 3 per side vs the day's true top 3 (median member move from the open to 15:10) · tuning | held-out")
@@ -1265,18 +1414,30 @@ def report(B):
         sl = LEV[li]["sl"]
         for si, d, sd in SIDES:
             a = sector_measures(B, sl, si, tr); b = sector_measures(B, sl, si, te)
-            J["sector"]["%s %s" % (LEV[li]["key"], sd)] = {"tuning": a, "heldout": b,
-                                                          "split": {lab_: sector_measures(B, sl, si, tr & mk) for lab_, mk in SPL[1:]}}
+            spl_ = {lab_: sector_measures(B, sl, si, tr & mk) for lab_, mk in SPL[1:]}
+            spl_.update({"lean " + LEANN[v]: sector_measures(B, sl, si, tr & (B.lean[sl] == v)) for v in (1, -1, 0)})
+            J["sector"]["%s %s" % (LEV[li]["key"], sd)] = {"tuning": a, "heldout": b, "split": spl_}
             if "hit1" not in a:
                 continue
-            P("  %-5s %s: No.1 in the true top 3 %s | %s · overlap %s | %s of 3 (random %s) · WRONG-SIDE sectors %s | %s · the day's 2%% %s moves"
-              " from the named 3 %s | %s, the true 3 %s, a random 3 %s, no-sector shares %s · K median %s" % (
+            P("  %-5s %s: No.1 in the true top 3 %s | %s · overlap %s | %s of %s named (random %s) · WRONG-SIDE sectors %s | %s · the day's 2%% %s moves"
+              " from the named sectors %s | %s, the true 3 %s, as many random sectors %s, no-sector shares %s · K median %s" % (
                   LEV[li]["key"], sd, pc(a["hit1"]), pc(b.get("hit1")), f1(a["overlap"], "%.2f"), f1(b.get("overlap", float("nan")), "%.2f"),
-                  f1(a["random_overlap"], "%.2f"), pc(a["wrong_side"]), pc(b.get("wrong_side")), sd, pc(a["named_share"]), pc(b.get("named_share")),
+                  f1(a["named_n"], "%.1f"), f1(a["random_overlap"], "%.2f"), pc(a["wrong_side"]), pc(b.get("wrong_side")), sd, pc(a["named_share"]), pc(b.get("named_share")),
                   pc(a["true_share"]), pc(a["random_share"]), pc(a["nosector_share"]), f1(a["K_median"], "%.0f")))
         sp = J["sector"]["%s CE" % LEV[li]["key"]]["split"]; sq = J["sector"]["%s PE" % LEV[li]["key"]]["split"]
-        P("        by day (tuning, named-3 share of moves CE / PE): " + " · ".join(
-            "%s %s/%s" % (lab_, pc(sp[lab_].get("named_share")), pc(sq[lab_].get("named_share"))) for lab_, _ in SPL[1:]))
+        P("        by day and by the predicted lean (tuning, named sectors' share of moves CE / PE, random in brackets): " + " · ".join(
+            "%s %s/%s (%s/%s)" % (lab_, pc(sp[lab_].get("named_share")), pc(sq[lab_].get("named_share")), pc(sp[lab_].get("random_share")),
+                                  pc(sq[lab_].get("random_share"))) for lab_ in sp))
+    msec = {}
+    for k, nm_ in enumerate(B.secn):
+        row = {}
+        for si, d, sd in SIDES:
+            for lab_, dm_ in (("tuning", tr), ("heldout", te)):
+                mk = dm_ & B.VS[:, k]
+                row["%s %s" % (sd, lab_)] = float(B.secmov[si][mk, k].mean()) if mk.any() else None
+        row["valid_days"] = int((days & B.VS[:, k]).sum())
+        msec[nm_] = row
+    J["sector"]["movers_by_sector"] = msec
 
     # ---- 4 SHARE PICK
     P("\n=== 4. THE SHARE PICK - the winner per level x side x N (picked on the tuning days by NET2, WRONG <= random, lift 95% low > 1.0),")
@@ -1303,7 +1464,7 @@ def report(B):
                 vt = {k: measure(B, P_, si, li, tr) for k, P_ in bench.items()}
                 J["picks"]["%s %s N=%d" % (L["key"], sd, N)] = {"cfg": cfgname(c), "qualified": w["qualified"], "tuning": a, "heldout": b,
                                                               "split_tuning": spl, "split_heldout": splh, "luck": w["luck"],
-                                                              "leak": w.get("leak"), "bench_tuning": vt}
+                                                              "bench_tuning": vt}
                 if N != 10 and not B.args.get("full_report"):
                     P("    %s N=%-2d %-16s%s · recall 2%% %s | %s (live %s) · WRONG %s | %s · NET2 %s | %s a day · lift %s | %s" % (
                         sd, N, "%s %s" % (c[1], c[2]), "" if w["qualified"] else " (no config qualified - best NET2 shown)",
@@ -1311,7 +1472,7 @@ def report(B):
                         pc(a["recall"]["2.0 open"]["live"]), pc(a["w2rate"]), pc(b.get("w2rate")), f1(a["net2"], "%+.2f"), f1(b.get("net2", float("nan")), "%+.2f"),
                         f1(a["lift"], "%.2f"), f1(b.get("lift", float("nan")), "%.2f")))
                     continue
-                P("    %s N=%d  %s %s (%s; %s)%s · %d configs qualified" % (sd, N, c[1], c[2], SDESC[c[1]].split(":")[0], GDESC[c[2]],
+                P("    %s N=%d  %s %s (%s; %s)%s · %d configs qualified" % (sd, N, c[1], c[2], sname(c[1]), GDESC[c[2]],
                                                                          "" if w["qualified"] else " - NO configuration qualified, the best NET2 is shown",
                                                                          w["n_qualified"]))
                 P("      mean list %s names (%s of the universe) · NET2 %s | %s a day · RIGHT %s | %s · WRONG SIDE %s | %s (random %s) · -2%% any time %s (random %s)" % (
@@ -1328,8 +1489,8 @@ def report(B):
                       " · mean best %s%% / worst %s%% over all picks" % (
                           pc(a["prec_label"]), pc(a["prec_label_random"]), pc(a["prec_live"]), f1(a["left_med"], "%.2f"), f1(a["left_p25"], "%.2f"),
                           pc(a["left_frac_med"]), pc(a["left_frac_p25"]), f1(a["fav_mean"], "%.2f"), f1(a["adv_mean"], "%.2f")))
-                    P("      named %s min before the move is half done (median)%s · named before half-way %s, before a quarter %s" % (
-                        f1(a["to_p50_med"], "%.0f"), " + the night / 7 min" if li < 2 else "", pc(a["before_p50"]), pc(a["before_p25"])))
+                    P("      %s · named before half-way %s, before a quarter %s" % (
+                        halfway(a["to_p50_med"], li), pc(a["before_p50"]), pc(a["before_p25"])))
                     P("      LIFT vs random %s (95%% %s-%s) | %s · vs random from the picked sectors %s (%s-%s) · vs VOLATILE %s (%s-%s) · vs TOP-MOVERS %s (%s-%s)" % (
                         f1(a["lift"], "%.2f"), f1(a["lift_ci"][0], "%.2f"), f1(a["lift_ci"][1], "%.2f"), f1(b.get("lift", float("nan")), "%.2f"),
                         f1(a["lift_sec"], "%.2f"), f1(a["lift_sec_ci"][0], "%.2f"), f1(a["lift_sec_ci"][1], "%.2f"),
@@ -1345,9 +1506,8 @@ def report(B):
                         P("      ROBUSTNESS from the 09:16 price C[0] (the 09:15 print is hard to get): NET2 %s | %s · RIGHT %s · WRONG %s (random %s) · lift %s (95%% %s-%s) | %s" % (
                             f1(ra["net2"], "%+.2f"), f1(rb.get("net2", float("nan")), "%+.2f"), pc(ra["r2rate"]), pc(ra["w2rate"]), pc(ra["w2rand"]),
                             f1(ra["lift"], "%.2f"), f1(ra["lift_ci"][0], "%.2f"), f1(ra["lift_ci"][1], "%.2f"), f1(rb.get("lift", float("nan")), "%.2f")))
-                    P("      SELECTION LUCK: held-out NET2 of the tuning No.1 %s vs the median of the tuning top 5 %s · leak test lift %s (95%% %s-%s)" % (
-                        f1(w["luck"]["heldout_no1"], "%+.2f"), f1(w["luck"]["heldout_top5_median"], "%+.2f"), f1(w["leak"]["lift"], "%.2f"),
-                        f1(w["leak"]["ci"][0], "%.2f"), f1(w["leak"]["ci"][1], "%.2f")))
+                    P("      SELECTION LUCK: held-out NET2 of the tuning No.1 %s vs the median of the tuning top 5 %s" % (
+                        f1(w["luck"]["heldout_no1"], "%+.2f"), f1(w["luck"]["heldout_top5_median"], "%+.2f")))
                     P("      by day, recall 2% / WRONG / NET2 (tuning | held-out): " + " · ".join(
                         "%s %s/%s/%s | %s" % (lab_, pc(spl[lab_].get("recall", {}).get("2.0 open", {}).get("caught")), pc(spl[lab_].get("w2rate")),
                                               f1(spl[lab_].get("net2", float("nan")), "%+.1f"),
@@ -1364,8 +1524,11 @@ def report(B):
 
     # ---- 6 TRIGGERS
     P("\n=== 6. THE ENTRY TRIGGER on each winning list's picks (N=10; tuning days) - a pick that never fires is no trade: not caught, never wrong")
-    P("    EARLIEST SAFE = among triggers with WRONG <= 0.75 x E0's and a median move left >= 70% of E0's, the earliest median entry;")
-    P("    else E0 if its WRONG <= random; else no safe trigger. " + " · ".join("%s = %s" % (a, b) for a, b in zip(TRN, TRD)))
+    P("    EARLIEST SAFE = among E1..E5 with WRONG per trade that fired <= 0.75 x E0's, RIGHT over ALL picks >= 70% of E0's (a trigger that")
+    P("    seldom trades catches little and cannot pass) and a median move left >= 70% of E0's: the earliest median entry; else E0 (enter on")
+    P("    the card) if its WRONG <= random; else no safe trigger. (Tightened on 20 Nov after review, pending sign-off: the first rule judged")
+    P("    WRONG over all picks, so a trigger that seldom fired passed by default; its answer is in preopen.json as safe_old_rule.)")
+    P("    " + " · ".join("%s = %s" % (a, b) for a, b in zip(TRN, TRD)))
     B.safe = {}
     for li in range(5):
         for si, d, sd in SIDES:
@@ -1373,17 +1536,18 @@ def report(B):
             if not w["cfg"]:
                 continue
             Pk = make_list(B, w["cfg"], 10)[0][si]
-            rows, safe, w2r = trig_table(B, Pk, si, li, tr)
-            rh, sh_, _ = trig_table(B, Pk, si, li, te) if te.any() else (None, None, None)
+            rows, safe, w2r, old = trig_table(B, Pk, si, li, tr)
+            rh, sh_, _, _ = trig_table(B, Pk, si, li, te) if te.any() else (None, None, None, None)
             B.safe[(li, si)] = safe
             J["triggers"]["%s %s" % (LEV[li]["key"], sd)] = {"tuning": rows, "heldout": rh, "safe": TRN[safe] if safe is not None else None,
-                                                            "random_w2": w2r}
+                                                            "safe_heldout_check": TRN[sh_] if sh_ is not None else None,
+                                                            "safe_old_rule": TRN[old] if old is not None else None, "random_w2": w2r}
             P("  %s %s (%s): EARLIEST SAFE %s%s" % (LEV[li]["key"], sd, cfgname(w["cfg"]), "%s, median entry %s" % (
                 TRN[safe], O.hm(rows[safe]["em_med"]) if np.isfinite(rows[safe]["em_med"]) else "-") if safe is not None else "NO SAFE TRIGGER",
-                rare_note(rows, safe)))
+                rare_note(rows, safe)) + ("" if old == safe else " (the first rule said %s)" % (TRN[old] if old is not None else "none")))
             for x in rows:
-                P("      %-14s fired %4s · entry %s · RIGHT %4s · WRONG %4s · left median %s%% (p25 %s%%) · HIT60 %4s · MFE60 %s%% · CHASE %4s" % (
-                    x["trigger"], pc(x["fired"]), O.hm(x["em_med"]) if np.isfinite(x["em_med"]) else "  -  ", pc(x["r2"]), pc(x["w2"]),
+                P("      %-14s fired %4s · entry %s · RIGHT %4s · WRONG %4s (per trade fired %4s) · left median %s%% (p25 %s%%) · HIT60 %4s · MFE60 %s%% · CHASE %4s" % (
+                    x["trigger"], pc(x["fired"]), O.hm(x["em_med"]) if np.isfinite(x["em_med"]) else "  -  ", pc(x["r2"]), pc(x["w2"]), pc(x["w2f"]),
                     f1(x["ml_med"], "%.2f"), f1(x["ml_p25"], "%.2f"), pc(x["hit60"]), f1(x["mfe60"], "%.2f"), pc(x["chase"])))
 
     # ---- 7 ROLES
@@ -1495,6 +1659,26 @@ def plan_lists(B):
     return out
 
 
+def list_rings(B, li, sis):
+    """rings of one level's winning N=10 list(s) on the sides `sis`: the card (09:08 at 09:15, intraday at the naming minute; the 19:45
+    card is outside the day) + each pick's safe-trigger first fire (E0 = the card itself)"""
+    X = np.zeros((B.G, 400)); card = np.zeros(B.G, bool)
+    for si in sis:
+        w = B.win[(li, si, 10)]
+        if not w["cfg"]:
+            continue
+        Pk = make_list(B, w["cfg"], 10)[0][si]
+        card |= Pk.any(1)
+        e = B.safe.get((li, si))
+        if e is not None and e > 0:
+            em = B.trg[si, LEV[li]["npi"], e, 0]
+            gi, sj = np.nonzero(Pk & (em >= 0))
+            np.add.at(X, (gi, em[gi, sj].astype(int)), 1)
+    if li >= 1:
+        X[card, LEV[li]["nm"]] += 1
+    return O.ring_stats(X, B.days)
+
+
 def rings(B, P):
     plan = plan_lists(B)
     G = B.G
@@ -1541,6 +1725,14 @@ def rings(B, P):
             sd, cfgname(pre[1]["cfg"]) if pre else "none", TRN[B.safe[(pre[0], si)]] if pre and B.safe.get((pre[0], si)) is not None else "none",
             cfgname(mid["cfg"]) if mid else "none", TRN[B.safe[(3, si)]] if mid and B.safe.get((3, si)) is not None else "none"))
         Jr[sd] = {"pre": cfgname(pre[1]["cfg"]) if pre else None, "mid": cfgname(mid["cfg"]) if mid else None}
+    P("  EACH LIST ON ITS OWN (the winning N=10 list + its safe trigger; a day median / p90 · busiest 15 min median / p90):")
+    Jr["lists"] = {}
+    for li in range(5):
+        row = {sd: list_rings(B, li, (si,)) for si, d, sd in SIDES}
+        row["both"] = list_rings(B, li, (0, 1))
+        Jr["lists"][LEV[li]["key"]] = row
+        P("    %-5s " % LEV[li]["key"] + " · ".join("%s %s / %s · %s / %s" % (k, f1(v["p50"], "%.0f"), f1(v["p90"], "%.0f"), f1(v["r15_p50"], "%.0f"),
+                                                                           f1(v["r15_p90"], "%.0f")) for k, v in row.items()))
     return Jr
 
 
@@ -1548,15 +1740,16 @@ def answer(B, J):
     top = []
     A = lambda *a: top.append(" ".join(str(x) for x in a))
     A("\n=== 0. THE ANSWER IN PLAIN WORDS - CE and PE apart, for up / down / mixed days, tuning | held-out (picked on the tuning days only)")
-    leak = [k for k, w in B.win.items() if w.get("leak_bad")]
-    if leak:
-        A("  !! LOOK-AHEAD SUSPECTED: %d winning list(s) still beat their own shares' base rate with the labels shuffled - do not trust the" % len(leak))
-        A("  !! picks below until this is found (header, leak test)")
+    if B.probe_bad:
+        A("  !! LOOK-AHEAD SUSPECTED: %d input(s) moved when day D's later minutes were replaced (header, look-ahead probe) - do not trust" % len(B.probe_bad))
+        A("  !! the picks below until this is found")
     if J["sanity"].get("mismatch"):
         A("  !! the mover counts do not match movestudy (header) - read with care")
-    A("  READ: a VERDICT per level and side. PICKS = beats random shares (95% low > 1.1 on tuning, >= 1.1 held out) AND more RIGHT-minus-WRONG")
-    A("  than both the VOLATILE list and the plain TOP-MOVERS list. 'caught' = the share of the day's real 2% moves (from the open) on the list.")
-    A("  The intraday trigger is only the ENTRY on a named share; 'earliest safe trigger' = section 6's pre-declared rule.")
+    A("  READ: a VERDICT per level and side, one of four: PICKS = beats random shares (95% low > 1.1 on tuning, >= 1.1 held out) AND more")
+    A("  RIGHT-minus-WRONG than both the plain TOP-MOVERS list and the VOLATILE list · PICKS, BUT NO BETTER THAN THE PLAIN MOVERS LIST · PICKS,")
+    A("  BUT NO BETTER THAN THE VOLATILE LIST (beats random, but a simple list does as well) · NO BETTER THAN RANDOM. 'caught' = the share of")
+    A("  the day's real 2% moves (from the open) on the list. The intraday trigger is only the ENTRY on a named share; 'earliest safe")
+    A("  trigger' = section 6's rule (a trigger that seldom fires cannot pass: it must keep 70% of the RIGHT of entering on the card).")
     kinds = [("up", B.KIND == 0), ("down", B.KIND == 1), ("mixed", B.KIND == 2)]
     for li in range(5):
         L = LEV[li]
@@ -1579,19 +1772,24 @@ def answer(B, J):
                     alt[N] = m_.get("recall", {}).get("2.0 open", {}).get("caught")
             safe = B.safe.get((li, si))
             rows = J["triggers"].get("%s %s" % (L["key"], sd), {}).get("tuning")
-            st = ("%s, median entry %s" % (TRN[safe], O.hm(rows[safe]["em_med"]) if rows and np.isfinite(rows[safe]["em_med"]) else "-")
-                  if safe is not None else "NO SAFE TRIGGER")
+            st = ("%s (%s), median entry %s" % (TRN[safe], TRD[safe], O.hm(rows[safe]["em_med"]) if rows and np.isfinite(rows[safe]["em_med"]) else "-")
+                  if safe is not None else "NO SAFE TRIGGER (entering on the card picks the wrong side as often as random shares)")
             if rows and safe:
                 st += " (fires on %s of the picks, RIGHT %s vs %s entering at once)" % (pc(rows[safe]["fired"]), pc(rows[safe]["r2"]), pc(rows[0]["r2"]))
             rc = lambda m_: m_.get("recall", {}).get("2.0 open", {})
             A("    %s (the share going %s): %s" % (sd, "UP" if d > 0 else "DOWN", v))
-            A("      best N=10 list %s %s%s: catches %s | %s of the day's 2%% %s moves (live %s | %s) [N=5 %s · N=15 %s] · WRONG SIDE %s | %s (random %s)" % (
-                w["cfg"][1], w["cfg"][2], "" if w["qualified"] else " (nothing qualified - best NET2)", pc(rc(a).get("caught")), pc(rc(b).get("caught")), sd,
+            A("      the list to name: %s, top 10 %s%s  [%s %s]" % (sname(w["cfg"][1]), "by the score" if w["cfg"][2] == "G0" else "- " + GDESC[w["cfg"][2]],
+                                                                 "" if w["qualified"] else " (nothing qualified - the best RIGHT-minus-WRONG is shown)",
+                                                                 w["cfg"][1], w["cfg"][2]))
+            A("        what it reads: %s" % SDESC[w["cfg"][1]].split(": ", 1)[1])
+            A("      it catches %s | %s of the day's 2%% %s moves (live %s | %s) [5 names %s · 15 names %s] · WRONG SIDE %s | %s (random %s)" % (
+                pc(rc(a).get("caught")), pc(rc(b).get("caught")), sd,
                 pc(rc(a).get("live")), pc(rc(b).get("live")), pc(alt.get(5)), pc(alt.get(15)), pc(a.get("w2rate")), pc(b.get("w2rate")), pc(a.get("w2rand"))))
-            A("      lift vs random %s (95%% %s-%s) | %s · move left median %s%% (p25 %s%%) · named %s min before half-way%s · earliest safe trigger: %s" % (
+            A("      lift vs random %s (95%% %s-%s) | %s · move left median %s%% (p25 %s%%) · %s" % (
                 f1(a.get("lift", float("nan")), "%.2f"), f1(a.get("lift_ci", (np.nan,))[0], "%.2f"), f1(a.get("lift_ci", (np.nan, np.nan))[1], "%.2f"),
                 f1(b.get("lift", float("nan")), "%.2f"), f1(a.get("left_med", float("nan")), "%.2f"), f1(a.get("left_p25", float("nan")), "%.2f"),
-                f1(a.get("to_p50_med", float("nan")), "%.0f"), " (+ the night / 7 min)" if li < 2 else "", st))
+                halfway(a.get("to_p50_med", float("nan")), li)))
+            A("      earliest safe trigger: %s" % st)
             cells = []
             for kn, km in kinds:
                 ma = measure(B, Pk, si, li, B.tr & km)
@@ -1600,7 +1798,7 @@ def answer(B, J):
                                                    "(thin)" if mb is None else pc(rc(mb).get("caught"))))
                 Ja[sd][kn] = {"tuning": rc(ma).get("caught"), "heldout": rc(mb).get("caught") if mb else None, "wrong_tuning": ma.get("w2rate")}
             A("      caught by NIFTY day: " + " · ".join(cells))
-            Ja[sd].update({"cfg": cfgname(w["cfg"]), "qualified": w["qualified"], "caught": rc(a).get("caught"), "caught_heldout": rc(b).get("caught"),
+            Ja[sd].update({"cfg": cfgname(w["cfg"]), "list": plain(w["cfg"]), "qualified": w["qualified"], "caught": rc(a).get("caught"), "caught_heldout": rc(b).get("caught"),
                            "live": rc(a).get("live"), "wrong": a.get("w2rate"), "wrong_heldout": b.get("w2rate"), "lift": a.get("lift"),
                            "lift_ci": a.get("lift_ci"), "lift_heldout": b.get("lift"), "left_med": a.get("left_med"), "left_p25": a.get("left_p25"),
                            "to_p50": a.get("to_p50_med"), "safe_trigger": TRN[safe] if safe is not None else None, "n5": alt.get(5), "n15": alt.get(15),
@@ -1616,11 +1814,20 @@ def answer(B, J):
                 pc(b.get("wrong_side_pct_called")) if b.get("days", 0) >= THIN else "(thin)", pc(a["neutral_pct"])))
         sc = [J["sector"].get("%s %s" % (L["key"], sd), {}).get("tuning", {}) for _, _, sd in SIDES]
         if sc[0].get("named_share") is not None:
-            A("    sector read: the named top 3 hold %s (CE) / %s (PE) of the day's 2%% moves; the true top 3 hold %s / %s; a random 3 %s / %s" % (
+            A("    sector read: the named sectors hold %s (CE) / %s (PE) of the day's 2%% moves; the true top 3 hold %s / %s; as many random sectors %s / %s" % (
                 pc(sc[0].get("named_share")), pc(sc[1].get("named_share")), pc(sc[0].get("true_share")), pc(sc[1].get("true_share")),
                 pc(sc[0].get("random_share")), pc(sc[1].get("random_share"))))
+        lr = J["rings"].get("lists", {}).get(L["key"], {}).get("both")
+        if lr:
+            A("    rings for this level's two lists + their safe triggers: a day median %s, p90 %s · busiest 15 min median %s, p90 %s" % (
+                f1(lr["p50"], "%.0f"), f1(lr["p90"], "%.0f"), f1(lr["r15_p50"], "%.0f"), f1(lr["r15_p90"], "%.0f")))
         if opt:
             A("    option proxy (secondary, 60-min, 0.5 delta / 2.5%% premium): %s of the premium after 1.5%% / 3%% costs." % " · ".join(opt))
+    pr = J["rings"].get("all")
+    if pr:
+        A("  RINGS for the recommended plan (section 8: the best pre-open list + the 09:30 list, both sides, with their safe triggers): a day median")
+        A("  %s, p90 %s · the busiest 15 minutes median %s, p90 %s (limits 50 a day, 6 in 15 min)" % (
+            f1(pr["p50"], "%.0f"), f1(pr["p90"], "%.0f"), f1(pr["r15_p50"], "%.0f"), f1(pr["r15_p90"], "%.0f")))
     return top
 
 
@@ -1629,10 +1836,12 @@ BIASES = (
     "MIXED STORE / GROWING UNIVERSE: early half-years have fewer shares (the header shows the universe per half-year). Recall at a fixed N is",
     "  easier on thin days, so N as a % of the universe is shown; lift against same-day random shares is not biased by it.",
     "MULTIPLE TESTING: 90 configurations x 5 levels x 2 sides x 3 N. Limited by the fixed formulas (no fitted weights), selection on the",
-    "  tuning days only, the unchanged held-out view, the selection-luck line and the leak test. Some optimism remains in every winner.",
-    "THE LEAK TEST shuffles the labels across days within each share and compares the winner with its own shares' base rate: it catches code",
-    "  that reads the outcome or joins it to the wrong day. The real look-ahead guard is the test that scrambles day D's minutes and checks",
-    "  that D's 19:45 features and scores do not move (preopen_test).",
+    "  tuning days only, the unchanged held-out view and the selection-luck line. Some optimism remains in every winner.",
+    "LOOK-AHEAD GUARD, two parts. (1) In every run (header): on 2 valid days of every share, day D's minutes from the naming minute on (all",
+    "  of D for 19:45, all of D+1 as well) are replaced and every per-share input and trigger state is re-read - any change is reported and",
+    "  section 0 is flagged. (2) preopen_test (fake stores): day D's minutes are replaced from 09:15 / 09:20 / 09:30 / 09:45 on for EVERY",
+    "  symbol and the whole study is rebuilt; every feature, score, market lean, sector read, role, list and trigger fire at that level",
+    "  must stay the same (it found the c5@5 bug of 20 Nov). Part (2) covers the cross-share steps that part (1) cannot.",
     "REGIME: about 3 years is mostly one regime. The held-out half-year gives wide intervals; its up / down day splits are thin.",
     "NO NEWS, NO GLOBAL CUES, NO ORDER BOOK: the 19:45 level cannot see overnight news, so it is expected to be weak. 09:08 is the first level",
     "  that sees news, and only through the gap.",
@@ -1646,7 +1855,8 @@ BIASES = (
     "  grid() smooths illiquid shares. Circuit days are included.",
     "The OPTION PROXY ignores IV, skew, gap-day premiums and liquidity - that is why it is one secondary line and never the verdict.",
     "SECTOR BREADTH in small sectors (4-6 members) moves in big steps; a sector-day needs 4+ listed members to be valid.",
-    "E0 rings are the card itself (no extra ring); a pick that never fires its trigger counts as not caught, never as wrong.")
+    "E0 rings are the card itself (no extra ring); a pick that never fires its trigger counts as not caught. The safe-trigger rule judges",
+    "  WRONG per trade that fired and needs 70% of E0's RIGHT kept (tightened 20 Nov, pending sign-off).")
 
 
 # ------------------------------------------------------------------ commands ------------------------------------------------------------------
