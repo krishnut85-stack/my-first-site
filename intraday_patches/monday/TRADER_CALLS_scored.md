@@ -62,7 +62,7 @@ Move % = from the price when he said it (in market hours: that minute's price; b
 | 20N-c | Fri 20 Nov 07:45 (photo) | AZAD | CE | 11-20 open | - | - | - / - | +1.71 / - | - / - | capital-goods | - / - | - / - | yes | AZAD (Azad Engineering, not F&O). NSE bulk deals of Wed 18 Nov: buyers Norges Bank (FII) 473,088 + ValueQuest funds 1,147,000 = 1,620,088 shares at 2,286 (the headline's 2.51% fits an equity of ~6.45 crore shares; share count not checked here); the promoter sold 3,500,000. Thu 19 Nov close 2,410.2, +3.94% (the 'jumps 4%'). Thursday's own NSE bulk / block files (19 Nov) hold no aerospace / defence share. |
 
 ## Pending
-- **AZAD (20N-c)**: not F&O, so it is not in the 20 Nov minute fetch (463 F&O instruments) or the Kite daily top-up, and the NSE bhavcopy for 20 Nov was not yet posted (404 at 15:56 IST). Its row fills when the 20 Nov bhavcopy is read. Its 19 Nov jump is verified: 2,318.9 -> 2,410.2 (+3.94%).
+- **AZAD (20N-c)**: not F&O, so it is not in the 20 Nov minute fetch (463 F&O instruments) or the Kite daily top-up, and the NSE bhavcopy for 20 Nov was still not posted (polled every 5 min until 17:02 IST, 404). Its row fills when the 20 Nov bhavcopy is read. Its 19 Nov jump is verified: 2,318.9 -> 2,410.2 (+3.94%).
 - **Next-day column of the 20 Nov reads**: Mon 23 Nov close.
 
 ## Not scored
