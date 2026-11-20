@@ -1,5 +1,16 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 15:35 IST - THE TRADER'S DECISION on F5 server load: REMOVE CRYPTO
+The trader: "I am not trading in crypto, so you can remove the crypto trading. I am only doing NSE options trading."
+After 15:35 today:
+1. List every crypto unit, timer and cron entry (gircrypto*, window2_news and anything else crypto-only) with what each does.
+2. Check nothing GIR uses depends on them (shared files, .env entries, Telegram channels, ports, the dashboard). Report any link.
+3. STOP and DISABLE all of them (systemctl disable --now; remove their cron lines). Do NOT delete their code or data: move them to
+   an archive folder (e.g. /home/globalbot/archive/crypto_2026-11-20/) so it can be restored; disk space can be freed later on his word.
+4. Never touch gir-watchdog or paper_exit_monitor; do not copy .env; keys stay where they are (he can revoke exchange API keys himself).
+5. Measure the load after (load average at 15:45 and the CPU of the remaining jobs) and log it in STATUS.md F5. The 8-core resize is
+   NOT approved; falcon / old timers stay, handled by J6 on Monday.
+
 ## 20 Nov ~15:00 IST - seriesstudy.py READY TO RUN (monthly expiry study, the trader's request)
 Built, checked by an independent quant, all fixes in, 56 tests pass (planted edge found, pure noise "none does").
 Run AFTER 15:35 today (or any time this weekend), light:
