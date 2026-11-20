@@ -243,3 +243,15 @@ Last update: 20:55 IST
   - Head ideas over the three days: 18 Nov 1 of 3, 19 Nov 0 of 4, 20 Nov 1 of 6 moved >= 1% the named way = 2 of 13.
   - NO EDGE SHOWN on any day (small samples, NOT PROVEN either way). The main fault read by the desk: the head missed the day's two big knowable stories on 20 Nov (gold low, FII into private banks), and the 09:08 brief was lost.
   - Post-mortems for 18 and 20 Nov written (DESK_postmortem_2026-11-18.md / -20.md); 19 Nov follows.
+- 01:56 - DESK 01:35 ORDER DONE + FAIL-SAFE (desk tests 79, engine 126, engine_next 126; restarts after hours gir-v2engine / gir-v2desk / gir-v2newsread 01:43-01:44, login 0.04 s; BUILD_LOG rows 01:35 / 01:39 / 01:56 with undo; no real-API calls):
+  - FAIL-SAFE on a credit / auth refusal, in the desk, gir-v2engine and the news reader:
+    - The first refusal pauses that process's AI for 10 min, then one probe per 10 min (the other models are not tried).
+    - One "P1 AI PROVIDER REFUSED" line and one "P1 cleared" line (no flood, no Telegram).
+    - Footer: "P1 AI provider refused: credit - AI OFF, rules only (next probe hh:mm)".
+    - A failed brief shows the last good one as STALE "AI provider refused: credit"; no BUY NOW can be issued.
+    - Tests in test_failsafe.py. Before this, the desk's streamed head calls had no back-off at all.
+  - POST-MORTEMS (code only, no P&L): DESK_postmortem_2026-11-18.md / -19.md / -20.md (tool v2/analyst/postmortem.py). 20 Nov top-10 movers each side: 11 were named by a seat / reader card but no head idea followed; 5 were named only by cards that never reached a head look's input; 4 were named by no card. E.g. INDUSINDBK +8.59% had 4 cards and no idea; KALYANKJIL -3.37% had 5 cards. 18 Nov: 1 mover picked; 19 Nov: none.
+  - LESSONS: a new file v2/data/event_lessons.json in the EVENT_MEMORY shape (event_memory.json is rebuilt by the news map, so it would be overwritten), each marked "lesson - NOT PROVEN", visible from 20 Nov 15:40 to the head ("LESSONS FROM PAST REPLAYS") and seats 19 / 20 / 7 / 8:
+    - gold 2026 low before the open -> PE on the gold-linked group (IIFL -5.04%, KALYANKJIL -3.37%, MCX -3.02%, MUTHOOTFIN -2.58%, TITAN -1.70%, MANAPPURAM -0.83%);
+    - FII into banks -> private banks first (INDUSINDBK +8.59%, AXISBANK +4.72%, HDFCBANK +2.94%); PSU banks on policy.
+  - 20 Nov MORNING RE-RUN option built (--from-state FULL3 --to 11:00; fake trial passed: 22:45 no call, 07:15 ok, 09:08 ok, live to 11:00). It does NOT fit the $24: estimated new spend $3.79 (night readers 0.32, 07:15 1.19, 09:08 1.19, live 09:20-11:00 1.09); briefs only about $2.70; about $1.72 is left under $24. The estimate uses the pre-23:35 morning brief cost, so the light briefs may cost less. NEEDS THE TRADER: (a) allow about $2.5 above the $24 for this one re-run (after the credit top-up); or (b) skip it and let Sunday's real 19:45 / Monday's 07:15 / 09:08 be the first test of the fixes; or (c) run briefs only up to the $24 (07:15 delivered, 09:08 likely not).
