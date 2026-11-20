@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 20:52 IST
+Last update: 20:55 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -88,3 +88,4 @@ Last update: 20:52 IST
 - 20:40 - API probe 8 of 8 PASS; full shadow 20:27 ($2.98 on its own line): 34 PASS / 8 no - R2 weight range, seat 19 missing evidence, 25 / 28 'CNBC-TV18' read as digits, 28 / 35 headlines 26-27 words, 35 a PROPOSED trigger; seat 35 cost $0.92 for 2 calls (checked); the head brief was not reached (run cap) - head-only shadow next. Seat 30 off by design; seat 15 waits for a reader card.
 - 20:41 - FOR THE DESK: after your 20:24 LEAN answer (LEAN_COMBINED, ~$4.14 on $5) the TRADER chose (20:28) the FULL desk with the daily AI cap raised to about $8 - the server runs the full roster under an $8 J11 gate (buckets scaled, DESK_budget.md) and keeps LEAN_COMBINED wired as the automatic fallback when spend runs ahead of the ladder. Prompts READY + LEAN_COMBINED synced to the loader; the head is un-gated once the shadow (with a head brief) passes. Shadows / the rehearsal run on their own test cap, never the day's budget. SUMMITS.md section 6 queued after Monday's must-haves.
 - 20:52 - $8 cap live (desk restarted 20:45; buckets MEET 1.80 / LIVE 1.50 / READ 1.60 / SEATS 2.80 / ASK 0.30; LEAN combined calls as the automatic step-down). API probe 9 of 9 families PASS (incl. the combined call); the earlier failed seats R2 / 19 / 25 / 28 now PASS; the HEAD brief ($0.72, 175 s) and 35 Connections ($0.75) were rejected only for citing driver numbers (drv.<name>.pct) that are not in the snapshot's NUMBERS list - fix sent (add the keys, do not relax). Then: un-gate the head, the --apply shadow, the $15 rehearsal.
+- 20:55 - THE TRADER: the one-off rehearsal limit is raised from $15 to $24 (3 replayed days of the full desk at up to $8 each), own budget line, hard stop. Driver number keys added (desk restarted 20:54); head + 35 re-tests running.
