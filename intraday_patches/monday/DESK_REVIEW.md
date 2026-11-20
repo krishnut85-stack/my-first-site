@@ -1,5 +1,12 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 18:15 IST - TOP PRIORITY FROM THE TRADER: build the GIR ANALYST (design_v3/ANALYST.md)
+"I want a complete new system - a senior F&O analyst inside GIR monitoring everything and telling me what to buy."
+ANALYST.md makes the ANALYST the product (Opus 5.5 every 5 min + on events, a code-built DESK SNAPSHOT, cached knowledge pack, JSON
+contract + code gates, thesis book, <= 5 ideas a side in the evening brief, <= 3-4 BUY NOW a day, manage notes, scored by
+precision + earliness by source, $5 cap). Everything built so far becomes its eyes and gates. Weekend order is in its section 5;
+it goes AHEAD of the remaining engine replays. Replays of 18 / 19 / 20 Nov are run on the ANALYST with the new yardstick.
+
 ## 20 Nov 18:00 IST - THE TRADER CORRECTS THE GOAL (supersedes the 17:35 entry's fixes 1, 2 and 4)
 The trader: "My intention is not to catch all the 2% moves. My intention is the EDGE - the knowledge, the brain should catch the
 CORRECT F&O shares based on the news, sectors, external news, internal news, companies' performance. It has to PREDICT BEFORE."
