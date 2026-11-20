@@ -1,0 +1,1898 @@
+[
+ {
+  "control": "F3 sector-list scrollbar (no sector open) - slow mouse drag of the thumb",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 205 -> 1 (max 612)"
+ },
+ {
+  "control": "F3 sector-list scrollbar (no sector open) - fast drag (one 120 px jerk)",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1 -> 410"
+ },
+ {
+  "control": "F3 sector-list scrollbar (no sector open) - drag past the end, off the rail",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "top 612 of max 612 (a page that snaps to whole rows may stop one row short)"
+ },
+ {
+  "control": "F3 sector-list scrollbar (no sector open) - drag past the top, off the rail",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "top 0"
+ },
+ {
+  "control": "F3 sector-list scrollbar (no sector open) - track click below, then above the thumb",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 267 -> 159"
+ },
+ {
+  "control": "F3 sector-list scrollbar (no sector open) - \u25bc then \u25b2 buttons",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "159 -> 272 -> 170"
+ },
+ {
+  "control": "F3 sector-list scrollbar (no sector open) - mouse wheel over the list, then over the bar",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "-> 370 -> 170"
+ },
+ {
+  "control": "F3 sector-list scrollbar (no sector open) - thumb visible",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "thumb 11 px wide, colour rgb(107, 118, 134)"
+ },
+ {
+  "control": "F3 table row click opens the sector",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open banks in 9 ms (from the cached store)"
+ },
+ {
+  "control": "opens under 100 ms",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "9 ms"
+ },
+ {
+  "control": "the open list pushes the rows below (no overprint)",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "list bottom 721 \u00b7 next sector row top 727"
+ },
+ {
+  "control": "row cap: whole share rows in the first view + \"+n more\"",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "8 whole rows (need 8) of 22 members \u00b7 +n more bar: True"
+ },
+ {
+  "control": "every visible share name - click loads the pane, the list stays",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "8 names clicked, wrong: [] \u00b7 list visible: True"
+ },
+ {
+  "control": "J through the whole list (pane follows)",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "J x7 -> SBIN (last row SBIN)"
+ },
+ {
+  "control": "K back up",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "K x7 -> IDFCFIRSTB"
+ },
+ {
+  "control": "\u2193 / \u2191 move share to share",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "\u2193 PNB \u00b7 \u2191 IDFCFIRSTB"
+ },
+ {
+  "control": "J / K after a click in the pane",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "J PNB \u00b7 K IDFCFIRSTB"
+ },
+ {
+  "control": "pane share name - single click",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "still IDFCFIRSTB on rotation#sd=banks&r=IDFCFIRSTB&y=206"
+ },
+ {
+  "control": "pane scrollbar - slow mouse drag of the thumb",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 293 -> 0 (max 743)"
+ },
+ {
+  "control": "pane scrollbar - fast drag (one 120 px jerk)",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 587"
+ },
+ {
+  "control": "pane scrollbar - drag past the end, off the rail",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "top 743 of max 743 (a page that snaps to whole rows may stop one row short)"
+ },
+ {
+  "control": "pane scrollbar - drag past the top, off the rail",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "top 0"
+ },
+ {
+  "control": "pane scrollbar - track click below, then above the thumb",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 211 -> 0"
+ },
+ {
+  "control": "pane scrollbar - \u25bc then \u25b2 buttons",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 66 -> 0"
+ },
+ {
+  "control": "pane scrollbar - mouse wheel over the list, then over the bar",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "-> 200 -> 0"
+ },
+ {
+  "control": "pane scrollbar - thumb visible",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "thumb 11 px wide, colour rgb(107, 118, 134)"
+ },
+ {
+  "control": "W why + Esc",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True \u00b7 after Esc open False \u00b7 share still IDFCFIRSTB"
+ },
+ {
+  "control": "Space plan card + Esc",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True \u00b7 after Esc False"
+ },
+ {
+  "control": "pane button W why, then \u2715",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True \u00b7 closed True"
+ },
+ {
+  "control": "pane button Space plan, then \u2715",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True"
+ },
+ {
+  "control": "P pin (toggle)",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "pins 0 -> 1 -> 0"
+ },
+ {
+  "control": "Pin toast sits above the action bar, below the share name",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "toast 600-648 \u00b7 action bar top 654 \u00b7 name bottom 419"
+ },
+ {
+  "control": "Pin button (action bar)",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "pins 0 -> 1 -> 0"
+ },
+ {
+  "control": "Copy contract (clipboard only)",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "clipboard \"IDFCFIRSTB26DEC86CE\" \u00b7 button \"Copy 86 CE \u00b7 0 lots\" \u00b7 toast \"Copied IDFCFIRSTB26DEC86CE \u00b7 0 lots - you place the order in Kite\""
+ },
+ {
+  "control": "Copy button shows the size",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Copy 86 CE \u00b7 0 lots"
+ },
+ {
+  "control": "signal only: no order / buy button, the Kite line shown",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "line shown True \u00b7 order-like buttons []"
+ },
+ {
+  "control": "December strikes only (rows + trade box)",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "8 strike chips, 0 not December \u00b7 trade box \"TRADE BOX \u00b7 2026-12-29 (December only)\" \u00b7 November date shown: False"
+ },
+ {
+  "control": "\"Expiry week \u00b7 physical settlement - December only\" warning",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "sector line True \u00b7 pane True"
+ },
+ {
+  "control": "ATM \u2605 only on a strike he could take",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "mismatches [] \u00b7 takeable now 0 (market closed: pre-open block, 0 lots everywhere)"
+ },
+ {
+  "control": "EXTENDED: one rule in the group, the gate cell and the pane",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "checked rows \u00b7 mismatches []"
+ },
+ {
+  "control": "no repeated dashes; the reason shown once",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 lone dashes \u00b7 \"not known\" x1 in the list"
+ },
+ {
+  "control": "sector line stays pinned at the top while the list scrolls",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "pin line (list top under the sticky table head) 387 \u00b7 [line y, first row y] after each 40 px wheel [[468, 537], [428, 497], [388, 457], [387, 417], [387, 377], [387, 337]]"
+ },
+ {
+  "control": "F3 sector-list scrollbar (Banks open) - slow mouse drag of the thumb",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "326 -> 544 -> 326 (max 905)"
+ },
+ {
+  "control": "F3 sector-list scrollbar (Banks open) - fast drag (one 120 px jerk)",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "326 -> 762"
+ },
+ {
+  "control": "F3 sector-list scrollbar (Banks open) - drag past the end, off the rail",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "top 877 of max 905 (a page that snaps to whole rows may stop one row short)"
+ },
+ {
+  "control": "F3 sector-list scrollbar (Banks open) - drag past the top, off the rail",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "top 0"
+ },
+ {
+  "control": "F3 sector-list scrollbar (Banks open) - track click below, then above the thumb",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 337 -> 205"
+ },
+ {
+  "control": "F3 sector-list scrollbar (Banks open) - mouse wheel over the list, then over the bar",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "-> 405 -> 205"
+ },
+ {
+  "control": "F3 sector-list scrollbar (Banks open) - thumb visible",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "thumb 11 px wide, colour rgb(107, 118, 134)"
+ },
+ {
+  "control": "\"+n more \u25be\" then \"show fewer \u25b4\"",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "rows 8 -> 22 -> 8"
+ },
+ {
+  "control": "basis \u203a (the basis in full, R49)",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "\"basis (R49) whole sector: 34 listed shares, market-cap weighted (NSE market cap 19 Nov) br\" \u00b7 closed True"
+ },
+ {
+  "control": "\"n more listed, not F&O\" fold line",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "\"\u25b8 12 more listed, not F&O \u00b7 \u25b28 \u25bc4 \u00b7 wt 5% \u00b7 context only, no strike\" -> open, then closed"
+ },
+ {
+  "control": "double-click a share row -> F7, Back returns to the same sector, list, row",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "went share?s=AXISBANK \u00b7 back: open banks, row AXISBANK, expanded True"
+ },
+ {
+  "control": "after Back, J still moves",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "AXISBANK -> INDUSINDBK"
+ },
+ {
+  "control": "O opens the option chain at the December strike; Back",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "chain?s=INDUSINDBK&exp=2026-12-29&k=920&side=CE \u00b7 back on INDUSINDBK"
+ },
+ {
+  "control": "double-click the pane share name -> F7, Back",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "share?s=INDUSINDBK"
+ },
+ {
+  "control": "Enter on a share row -> F7",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "share?s=INDUSINDBK"
+ },
+ {
+  "control": "Esc closes step by step",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "why w -> Esc drawer closed -> Esc share cleared -> Esc list collapsed -> Esc open None"
+ },
+ {
+  "control": "O / W with no share selected",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "url unchanged True \u00b7 toast \"pick a share first (click a row)\""
+ },
+ {
+  "control": "keys 1-9 pick a sector",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "3 -> fmcg (row 3 = fmcg) \u00b7 1 -> auto (row 1 = auto)"
+ },
+ {
+  "control": "Tab to a sector row + Enter opens it",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "focused auto after 2 Tab \u00b7 open auto"
+ },
+ {
+  "control": "R key (apply re-rank)",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "order unchanged with no new ranks (market closed, no ticks)"
+ },
+ {
+  "control": "\"re-ranked \u00b7 R to apply\" chip, \u25b2n / \u25bcn, NEW entrant, live ticks",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "NOT RUN",
+  "evidence": "needs live ticks: the market is closed (store holds the 19 Nov close); code path in sector-drill.js listHtml (frozen order under pointer / focus, 30 s, pointer leave, R)"
+ },
+ {
+  "control": "money-flow band: a sector name opens it in the table below",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "clicked it -> open it, list visible True"
+ },
+ {
+  "control": "\"moving, but not this rotation\" row opens that sector",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "clicked consumer durables -> open consumer durables"
+ },
+ {
+  "control": "BAN: NOT TRADABLE, plan dimmed, Copy disabled",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "KAYNES (electronics & hardware): group nt \u00b7 Copy disabled True \u00b7 \"BAN - only close existing\" True \u00b7 plan opacity 0.45 \u00b7 clipboard untouched True"
+ },
+ {
+  "control": "STALE quote: Copy disabled, \"STALE ns\", no GO NOW",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "NOT RUN",
+  "evidence": "0 stale share quotes in the store now (closed market: quotes are CLOSED, not STALE); rule checked in the rules table"
+ },
+ {
+  "control": "LOCKED: plan dimmed + reason on a second line",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "NOT RUN",
+  "evidence": "pos.day.lock.locked = False today; rule checked in the rules table"
+ },
+ {
+  "control": "up-side shown: a rising sector shows CE strikes on its groups",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "electronics & hardware dir 1 \u00b7 every row CE: True"
+ },
+ {
+  "control": "page errors",
+  "page": "F3 rotation",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "F2 board scrollbar - slow mouse drag of the thumb",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 266 -> 0 (max 798)"
+ },
+ {
+  "control": "F2 board scrollbar - fast drag (one 120 px jerk)",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 532"
+ },
+ {
+  "control": "F2 board scrollbar - drag past the end, off the rail",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "top 798 of max 798 (a page that snaps to whole rows may stop one row short)"
+ },
+ {
+  "control": "F2 board scrollbar - drag past the top, off the rail",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "top 0"
+ },
+ {
+  "control": "F2 board scrollbar - track click below, then above the thumb",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 386 -> 0"
+ },
+ {
+  "control": "F2 board scrollbar - mouse wheel over the list, then over the bar",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "-> 200 -> 0"
+ },
+ {
+  "control": "F2 board scrollbar - thumb visible",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "thumb 11 px wide, colour rgb(142, 151, 163)"
+ },
+ {
+  "control": "F2 board row click opens the sector in place",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open auto \u00b7 list bottom 564 \u00b7 next row top 570"
+ },
+ {
+  "control": "row cap: whole share rows in the first view + \"+n more\"",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "8 whole rows (need 8) of 17 members \u00b7 +n more bar: True"
+ },
+ {
+  "control": "every visible share name - click loads the pane, the list stays",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "8 names clicked, wrong: [] \u00b7 list visible: True"
+ },
+ {
+  "control": "J through the whole list (pane follows)",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "J x7 -> MOTHERSON (last row MOTHERSON)"
+ },
+ {
+  "control": "K back up",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "K x7 -> M&M"
+ },
+ {
+  "control": "\u2193 / \u2191 move share to share",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "\u2193 MARUTI \u00b7 \u2191 M&M"
+ },
+ {
+  "control": "J / K after a click in the pane",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "J MARUTI \u00b7 K M&M"
+ },
+ {
+  "control": "pane share name - single click",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "still M&M on sectors#sd=auto&r=M%26M&y=180"
+ },
+ {
+  "control": "pane scrollbar - slow mouse drag of the thumb",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 157 -> 0 (max 546)"
+ },
+ {
+  "control": "pane scrollbar - fast drag (one 120 px jerk)",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 313"
+ },
+ {
+  "control": "pane scrollbar - drag past the end, off the rail",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "top 546 of max 546 (a page that snaps to whole rows may stop one row short)"
+ },
+ {
+  "control": "pane scrollbar - drag past the top, off the rail",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "top 0"
+ },
+ {
+  "control": "pane scrollbar - track click below, then above the thumb",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 355 -> 0"
+ },
+ {
+  "control": "pane scrollbar - \u25bc then \u25b2 buttons",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 66 -> 0"
+ },
+ {
+  "control": "pane scrollbar - mouse wheel over the list, then over the bar",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "-> 200 -> 0"
+ },
+ {
+  "control": "pane scrollbar - thumb visible",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "thumb 11 px wide, colour rgb(107, 118, 134)"
+ },
+ {
+  "control": "W why + Esc",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True \u00b7 after Esc open False \u00b7 share still M&M"
+ },
+ {
+  "control": "Space plan card + Esc",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True \u00b7 after Esc False"
+ },
+ {
+  "control": "pane button W why, then \u2715",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True \u00b7 closed True"
+ },
+ {
+  "control": "pane button Space plan, then \u2715",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True"
+ },
+ {
+  "control": "P pin (toggle)",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "pins 0 -> 1 -> 0"
+ },
+ {
+  "control": "Pin toast sits above the action bar, below the share name",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "toast 599-647 \u00b7 action bar top 653 \u00b7 name bottom 287"
+ },
+ {
+  "control": "Pin button (action bar)",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "pins 0 -> 1 -> 0"
+ },
+ {
+  "control": "Copy contract (clipboard only)",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "clipboard \"M&M26DEC3500CE\" \u00b7 button \"Copy 3,500 CE \u00b7 0 lots\" \u00b7 toast \"Copied M&M26DEC3500CE \u00b7 0 lots - you place the order in Kite\""
+ },
+ {
+  "control": "Copy button shows the size",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Copy 3,500 CE \u00b7 0 lots"
+ },
+ {
+  "control": "signal only: no order / buy button, the Kite line shown",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "line shown True \u00b7 order-like buttons []"
+ },
+ {
+  "control": "December strikes only (rows + trade box)",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "8 strike chips, 0 not December \u00b7 trade box \"TRADE BOX \u00b7 2026-12-29 (December only)\" \u00b7 November date shown: False"
+ },
+ {
+  "control": "\"Expiry week \u00b7 physical settlement - December only\" warning",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "sector line True \u00b7 pane True"
+ },
+ {
+  "control": "ATM \u2605 only on a strike he could take",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "mismatches [] \u00b7 takeable now 0 (market closed: pre-open block, 0 lots everywhere)"
+ },
+ {
+  "control": "EXTENDED: one rule in the group, the gate cell and the pane",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "checked rows \u00b7 mismatches []"
+ },
+ {
+  "control": "no repeated dashes; the reason shown once",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 lone dashes \u00b7 \"not known\" x1 in the list"
+ },
+ {
+  "control": "F2 heat-map tile opens that sector in the board",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "tile consumer durables -> open consumer durables \u00b7 in view True"
+ },
+ {
+  "control": "F2: the share pane sits in the right column",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "pane host #call"
+ },
+ {
+  "control": "F2 keys 1-9",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "2 -> cables & wires (row 2 = cables & wires)"
+ },
+ {
+  "control": "page errors",
+  "page": "F2 sectors",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "F1 Desk sector chip opens the sector (same component)",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "chip auto -> open auto"
+ },
+ {
+  "control": "row cap: whole share rows in the first view + \"+n more\"",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "8 whole rows (need 8) of 17 members \u00b7 +n more bar: True"
+ },
+ {
+  "control": "every visible share name - click loads the pane, the list stays",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "8 names clicked, wrong: [] \u00b7 list visible: True"
+ },
+ {
+  "control": "J through the whole list (pane follows)",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "J x7 -> MOTHERSON (last row MOTHERSON)"
+ },
+ {
+  "control": "K back up",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "K x7 -> M&M"
+ },
+ {
+  "control": "\u2193 / \u2191 move share to share",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "\u2193 MARUTI \u00b7 \u2191 M&M"
+ },
+ {
+  "control": "J / K after a click in the pane",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "J MARUTI \u00b7 K M&M"
+ },
+ {
+  "control": "pane share name - single click",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "still M&M on desk-hunt#sd=auto&r=M%26M&y=0"
+ },
+ {
+  "control": "pane scrollbar - slow mouse drag of the thumb",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 135 -> 0 (max 449)"
+ },
+ {
+  "control": "pane scrollbar - fast drag (one 120 px jerk)",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 271"
+ },
+ {
+  "control": "pane scrollbar - drag past the end, off the rail",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "top 449 of max 449 (a page that snaps to whole rows may stop one row short)"
+ },
+ {
+  "control": "pane scrollbar - drag past the top, off the rail",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "top 0"
+ },
+ {
+  "control": "pane scrollbar - track click below, then above the thumb",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 376 -> 0"
+ },
+ {
+  "control": "pane scrollbar - \u25bc then \u25b2 buttons",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 66 -> 0"
+ },
+ {
+  "control": "pane scrollbar - mouse wheel over the list, then over the bar",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "-> 200 -> 0"
+ },
+ {
+  "control": "pane scrollbar - thumb visible",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "thumb 11 px wide, colour rgb(107, 118, 134)"
+ },
+ {
+  "control": "W why + Esc",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True \u00b7 after Esc open False \u00b7 share still M&M"
+ },
+ {
+  "control": "Space plan card + Esc",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True \u00b7 after Esc False"
+ },
+ {
+  "control": "pane button W why, then \u2715",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True \u00b7 closed True"
+ },
+ {
+  "control": "pane button Space plan, then \u2715",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True"
+ },
+ {
+  "control": "P pin (toggle)",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "pins 0 -> 1 -> 0"
+ },
+ {
+  "control": "Pin toast sits above the action bar, below the share name",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "toast 629-677 \u00b7 action bar top 683 \u00b7 name bottom 289"
+ },
+ {
+  "control": "Pin button (action bar)",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "pins 0 -> 1 -> 0"
+ },
+ {
+  "control": "Copy contract (clipboard only)",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "clipboard \"M&M26DEC3500CE\" \u00b7 button \"Copy 3,500 CE \u00b7 0 lots\" \u00b7 toast \"Copied M&M26DEC3500CE \u00b7 0 lots - you place the order in Kite\""
+ },
+ {
+  "control": "Copy button shows the size",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Copy 3,500 CE \u00b7 0 lots"
+ },
+ {
+  "control": "signal only: no order / buy button, the Kite line shown",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "line shown True \u00b7 order-like buttons []"
+ },
+ {
+  "control": "December strikes only (rows + trade box)",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "8 strike chips, 0 not December \u00b7 trade box \"TRADE BOX \u00b7 2026-12-29 (December only)\" \u00b7 November date shown: False"
+ },
+ {
+  "control": "\"Expiry week \u00b7 physical settlement - December only\" warning",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "sector line True \u00b7 pane True"
+ },
+ {
+  "control": "ATM \u2605 only on a strike he could take",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "mismatches [] \u00b7 takeable now 0 (market closed: pre-open block, 0 lots everywhere)"
+ },
+ {
+  "control": "EXTENDED: one rule in the group, the gate cell and the pane",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "checked rows \u00b7 mismatches []"
+ },
+ {
+  "control": "no repeated dashes; the reason shown once",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 lone dashes \u00b7 \"not known\" x1 in the list"
+ },
+ {
+  "control": "F1 sector list scrollbar (dock) - slow mouse drag of the thumb",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 33 -> 0 (max 33)"
+ },
+ {
+  "control": "F1 sector list scrollbar (dock) - fast drag (one 120 px jerk)",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 33"
+ },
+ {
+  "control": "F1 sector list scrollbar (dock) - drag past the end, off the rail",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "top 33 of max 33 (a page that snaps to whole rows may stop one row short)"
+ },
+ {
+  "control": "F1 sector list scrollbar (dock) - drag past the top, off the rail",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "top 0"
+ },
+ {
+  "control": "F1 sector list scrollbar (dock) - track click below, then above the thumb",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 33 -> 0"
+ },
+ {
+  "control": "F1 sector list scrollbar (dock) - \u25bc then \u25b2 buttons",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 33 -> 0"
+ },
+ {
+  "control": "F1 sector list scrollbar (dock) - mouse wheel over the list, then over the bar",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "-> 33 -> 0"
+ },
+ {
+  "control": "F1 sector list scrollbar (dock) - thumb visible",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "thumb 11 px wide, colour rgb(138, 150, 168)"
+ },
+ {
+  "control": "F1 Esc closes back to the Desk",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open None \u00b7 members panel back"
+ },
+ {
+  "control": "page errors",
+  "page": "F1 desk",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "Morning sector card opens the same component",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "card cables & wires -> open cables & wires"
+ },
+ {
+  "control": "Morning: \"pre-open - not live\" with the session date (not shown as today)",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['pre-open - not live \u00b7 19 Nov 15:30 close', True, True]"
+ },
+ {
+  "control": "every visible share name - click loads the pane, the list stays",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "3 names clicked, wrong: [] \u00b7 list visible: True"
+ },
+ {
+  "control": "J through the whole list (pane follows)",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "J x2 -> KEI (last row KEI)"
+ },
+ {
+  "control": "K back up",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "K x2 -> HAVELLS"
+ },
+ {
+  "control": "\u2193 / \u2191 move share to share",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "\u2193 POLYCAB \u00b7 \u2191 HAVELLS"
+ },
+ {
+  "control": "J / K after a click in the pane",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "J POLYCAB \u00b7 K HAVELLS"
+ },
+ {
+  "control": "pane share name - single click",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "still HAVELLS on morning#sd=cables%20%26%20wires&r=HAVELL"
+ },
+ {
+  "control": "pane scrollbar - slow mouse drag of the thumb",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 193 -> 0 (max 626)"
+ },
+ {
+  "control": "pane scrollbar - fast drag (one 120 px jerk)",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 385"
+ },
+ {
+  "control": "pane scrollbar - drag past the end, off the rail",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "top 626 of max 626 (a page that snaps to whole rows may stop one row short)"
+ },
+ {
+  "control": "pane scrollbar - drag past the top, off the rail",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "top 0"
+ },
+ {
+  "control": "pane scrollbar - track click below, then above the thumb",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 300 -> 0"
+ },
+ {
+  "control": "pane scrollbar - \u25bc then \u25b2 buttons",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 66 -> 0"
+ },
+ {
+  "control": "pane scrollbar - mouse wheel over the list, then over the bar",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "-> 200 -> 0"
+ },
+ {
+  "control": "pane scrollbar - thumb visible",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "thumb 11 px wide, colour rgb(107, 118, 134)"
+ },
+ {
+  "control": "W why + Esc",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True \u00b7 after Esc open False \u00b7 share still HAVELLS"
+ },
+ {
+  "control": "Space plan card + Esc",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True \u00b7 after Esc False"
+ },
+ {
+  "control": "pane button W why, then \u2715",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True \u00b7 closed True"
+ },
+ {
+  "control": "pane button Space plan, then \u2715",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True"
+ },
+ {
+  "control": "P pin (toggle)",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "pins 0 -> 1 -> 0"
+ },
+ {
+  "control": "Pin toast sits above the action bar, below the share name",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "toast 599-647 \u00b7 action bar top 653 \u00b7 name bottom 348"
+ },
+ {
+  "control": "Pin button (action bar)",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "pins 0 -> 1 -> 0"
+ },
+ {
+  "control": "Copy contract (clipboard only)",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "clipboard \"HAVELLS26DEC1200CE\" \u00b7 button \"Copy 1,200 CE \u00b7 0 lots\" \u00b7 toast \"Copied HAVELLS26DEC1200CE \u00b7 0 lots - you place the order in Kite\""
+ },
+ {
+  "control": "Copy button shows the size",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Copy 1,200 CE \u00b7 0 lots"
+ },
+ {
+  "control": "signal only: no order / buy button, the Kite line shown",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "line shown True \u00b7 order-like buttons []"
+ },
+ {
+  "control": "December strikes only (rows + trade box)",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "3 strike chips, 0 not December \u00b7 trade box \"TRADE BOX \u00b7 2026-12-29 (December only)\" \u00b7 November date shown: False"
+ },
+ {
+  "control": "\"Expiry week \u00b7 physical settlement - December only\" warning",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "sector line True \u00b7 pane True"
+ },
+ {
+  "control": "ATM \u2605 only on a strike he could take",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "mismatches [] \u00b7 takeable now 0 (market closed: pre-open block, 0 lots everywhere)"
+ },
+ {
+  "control": "EXTENDED: one rule in the group, the gate cell and the pane",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "checked rows \u00b7 mismatches []"
+ },
+ {
+  "control": "no repeated dashes; the reason shown once",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 lone dashes \u00b7 \"not known\" x2 in the list"
+ },
+ {
+  "control": "page errors",
+  "page": "Morning",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "tap a sector row opens the full-screen list sheet",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open banks \u00b7 built in 32 ms \u00b7 tap-to-sheet 110 ms"
+ },
+ {
+  "control": "sheet header (sector line) <= 2 lines + WHY",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "line 1 46 px, whole header 179 px"
+ },
+ {
+  "control": "sheet rail size (touch target >= 24, track and thumb >= 10)",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "target 26 \u00b7 track 13 \u00b7 thumb 13 px"
+ },
+ {
+  "control": "list sheet - finger swipe",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 442 -> 200"
+ },
+ {
+  "control": "list sheet - rail thumb, finger drag",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "200 -> 412 \u00b7 share opened: None"
+ },
+ {
+  "control": "list sheet - rail drag, 8 px contact",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "412 -> 200"
+ },
+ {
+  "control": "list sheet - rail drag at its right edge",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "200 -> 377"
+ },
+ {
+  "control": "list sheet - rail track tap",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "377 -> 311"
+ },
+ {
+  "control": "list sheet - rail, mouse drag (one mouse check)",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "311 -> 452"
+ },
+ {
+  "control": "fast flick, then a tap still opens the row",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "flick then tap KOTAKBANK -> share sheet True (KOTAKBANK)"
+ },
+ {
+  "control": "\"n more listed, not F&O\" (finger)",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True \u00b7 closed True"
+ },
+ {
+  "control": "basis \u203a (finger)",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "basis (R49) whole sector: 34 listed shares, market-cap weighted (NSE m"
+ },
+ {
+  "control": "tap a share opens the share sheet",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "IDFCFIRSTB -> sheet True"
+ },
+ {
+  "control": "share sheet - finger swipe",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 203"
+ },
+ {
+  "control": "share sheet - action bar sticky, shows the size",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "bar 776-844 at scroll 0 and 776-844 after the swipe \u00b7 \"Copy 86 CE \u00b7 0 lots\""
+ },
+ {
+  "control": "share sheet - rail thumb, finger drag",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 196"
+ },
+ {
+  "control": "share sheet - rail track tap",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "196 -> 130"
+ },
+ {
+  "control": "WHY \u203a (share sheet)",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True \u00b7 closed True"
+ },
+ {
+  "control": "Copy contract (finger, first view)",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "clipboard \"IDFCFIRSTB26DEC86CE\" \u00b7 \"Copied IDFCFIRSTB26DEC86CE \u00b7 0 lots - you place the order in\""
+ },
+ {
+  "control": "Pin (toggle, n/5) (finger)",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 1 -> 0"
+ },
+ {
+  "control": "Pin toast above the action bar, not over the share name",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "toast 679-727 \u00b7 bar top 733 \u00b7 name bottom 76"
+ },
+ {
+  "control": "\u2039 Sector (Back button on the share sheet)",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "list sheet True \u00b7 share sheet False"
+ },
+ {
+  "control": "device / browser Back (share sheet -> list)",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "list True \u00b7 share False"
+ },
+ {
+  "control": "device / browser Back (list -> page)",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "sheet False \u00b7 open None"
+ },
+ {
+  "control": "\u2039 Sectors (Back button on the list sheet)",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "sheet closed True"
+ },
+ {
+  "control": "page errors",
+  "page": "F3 rotation",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "tap a sector row opens the full-screen list sheet",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open auto \u00b7 built in 24 ms \u00b7 tap-to-sheet 88 ms"
+ },
+ {
+  "control": "sheet header (sector line) <= 2 lines + WHY",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "line 1 46 px, whole header 179 px"
+ },
+ {
+  "control": "sheet rail size (touch target >= 24, track and thumb >= 10)",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "target 26 \u00b7 track 13 \u00b7 thumb 13 px"
+ },
+ {
+  "control": "list sheet - finger swipe",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 299 -> 47"
+ },
+ {
+  "control": "list sheet - rail thumb, finger drag",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "47 -> 224 \u00b7 share opened: None"
+ },
+ {
+  "control": "list sheet - rail drag, 8 px contact",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "224 -> 47"
+ },
+ {
+  "control": "list sheet - rail drag at its right edge",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "47 -> 194"
+ },
+ {
+  "control": "list sheet - rail track tap",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "194 -> 128"
+ },
+ {
+  "control": "list sheet - rail, mouse drag (one mouse check)",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "128 -> 246"
+ },
+ {
+  "control": "fast flick, then a tap still opens the row",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "flick then tap TVSMOTOR -> share sheet True (TVSMOTOR)"
+ },
+ {
+  "control": "\"n more listed, not F&O\" (finger)",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True \u00b7 closed True"
+ },
+ {
+  "control": "basis \u203a (finger)",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "basis (R49) whole sector: 50 listed shares, market-cap weighted (NSE m"
+ },
+ {
+  "control": "tap a share opens the share sheet",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "M&M -> sheet True"
+ },
+ {
+  "control": "share sheet - finger swipe",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 184"
+ },
+ {
+  "control": "share sheet - action bar sticky, shows the size",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "bar 776-844 at scroll 0 and 776-844 after the swipe \u00b7 \"Copy 3,500 CE \u00b7 0 lots\""
+ },
+ {
+  "control": "share sheet - rail thumb, finger drag",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 185"
+ },
+ {
+  "control": "share sheet - rail track tap",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "185 -> 119"
+ },
+ {
+  "control": "WHY \u203a (share sheet)",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "open True \u00b7 closed True"
+ },
+ {
+  "control": "Copy contract (finger, first view)",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "clipboard \"M&M26DEC3500CE\" \u00b7 \"Copied M&M26DEC3500CE \u00b7 0 lots - you place the order in Kite\""
+ },
+ {
+  "control": "Pin (toggle, n/5) (finger)",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 -> 1 -> 0"
+ },
+ {
+  "control": "Pin toast above the action bar, not over the share name",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "toast 679-727 \u00b7 bar top 733 \u00b7 name bottom 76"
+ },
+ {
+  "control": "\u2039 Sector (Back button on the share sheet)",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "list sheet True \u00b7 share sheet False"
+ },
+ {
+  "control": "device / browser Back (share sheet -> list)",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "list True \u00b7 share False"
+ },
+ {
+  "control": "device / browser Back (list -> page)",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "sheet False \u00b7 open None"
+ },
+ {
+  "control": "\u2039 Sectors (Back button on the list sheet)",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "sheet closed True"
+ },
+ {
+  "control": "page errors",
+  "page": "F2 sectors",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ }
+]
