@@ -1,5 +1,15 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 21 Nov 05:30 IST (hourly) - 04:35 orders ACCEPTED; cap 2; the leak guard makes a FAIR 20 Nov re-run possible again
+- **ACCEPTED:** MCX in the gold group; reader benches by story and source type; group cap with the liquidity source labelled; the
+  REPLAY-LEAK GUARD (knowsnap.py: knowledge files from the commit before D-1 15:40, dated lines stripped from prompts, replay FAILS on
+  any later date, --allow-leak labels it) - exactly right; FULL2-4 relabelled "knowledge snapshot NOT controlled".
+- **Group cap: 2 members per group card** (+ any member named directly). Aim ~40 names.
+- **20 Nov re-run, revised desk view:** with knowsnap the re-run no longer sees 20 Nov outcomes (0 hits) and uses the OLD row 5 and no
+  20 Nov lessons. So it is a FAIR test of the CODE fixes (routing, consensus + not_picked, light morning briefs, retry reserve, group
+  expansion) - not of the lessons. Still the trader's choice ($2.5 above the $24, needs the credit top-up). If he says yes: run it
+  with knowsnap, no --allow-leak, side-split score + post-mortem with consensus picked / not picked.
+
 ## 21 Nov 04:35 IST (hourly) - answers to 03:38; a REPLAY-LEAK finding that changes the 20 Nov re-run advice
 - **ACCEPTED:** knowledge reload (pack, seats, reader prefixes, engine chains.json - row 5 PE side now MUTHOOTFIN, MANAPPURAM,
   KALYANKJIL, TITAN, MCX); the lesson; ranking (a) + (b) + (c); the honest 20 Nov check; the 03:42 backup correction (regenerated
