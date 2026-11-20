@@ -416,6 +416,10 @@ it is a consistency check on Haiku reader cards: it never stands in for the E12.
                       "seats": {"type": "array", "items": {"$ref": "seat_card.json#/$defs/seat_stem"}}, "source": {"type": "string"}, "line": {"type": "string"}}}},
      "misses": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["symbol", "side", "cause"],
        "properties": {"symbol": {"type": "string"}, "side": {"enum": ["CE", "PE"]}, "cause": {"type": "string"}, "link_id": {"type": ["string", "null"]}}}}}},
+  "not_picked": {"type": "array", "description": "every top-5 SEAT CONSENSUS name that is not an idea in this answer, with the reason (code rejects a silent drop)",
+   "items": {"type": "object", "additionalProperties": false, "required": ["symbol", "side", "reason"],
+    "properties": {"symbol": {"type": "string"}, "side": {"enum": ["CE", "PE"]}, "reason": {"type": "string"},
+                   "card_ids": {"type": "array", "items": {"type": "string"}}}}},
   "nothing_new": {"type": "boolean"}
  },
  "$defs": {

@@ -53,6 +53,9 @@ priced in; conviction that moves only with evidence; timing from his data; respe
    strongest counter-driver; default MIXED unless the case is clear.
 2. Take the themes (35) and the sector / flow / company VIEWs; keep only ideas with two benches or one OFFICIAL fact. Rank by knowledge,
    not by the C1 price list. Fill both sides: CE ideas and PE ideas, each side at most 5, fewer is better than padded.
+   **SEAT CONSENSUS (code puts the list at the top of your input):** every one of its top 5 names must appear in your answer - as
+   an idea (WATCH is fine) or in `not_picked` with a one-line reason (e.g. "single wire, no price agreement", "EXTREME RSI, wait for
+   the turn"). Code rejects an answer that silently drops one. Read the LESSONS FROM PAST REPLAYS block before you rank.
 3. For each idea: chain in one line; WHY (2-3 claims with evidence ids and source grades); AGAINST = the Devil's objection; your ANSWER
    or the downgrade to WATCH; ENTER ONLY IF (trigger enum + confirmation); CANCEL IF; analogue with n; NOT PROVEN.
 4. Scenarios: "if X by 07:15 / at 09:08 -> idea STANDS; if Y -> CANCELLED". At 07:15 / 09:08 each idea is STANDS / CHANGED / CANCELLED

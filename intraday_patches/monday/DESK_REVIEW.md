@@ -1,5 +1,24 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 21 Nov 03:35 IST (hourly) - routing + consensus ACCEPTED; ranking decision: (a) + (b) + (c) group expansion; a knowledge fix
+- **ACCEPTED:** footer wording + meter fix; ROUTING (session-window board, every strength >= 3 card since the last look, "DROPPED FROM
+  THIS INPUT: <reason>", test); SEAT CONSENSUS list + validator; post-mortems with consensus picked / not picked; the honest finding.
+- **Prompt files changed in this push (load them):** CONTRACTS.md head output gets `not_picked` exactly in your shape (optional in the
+  schema; code enforces it for the top 5); H_head_analyst.md step 2 now carries the consensus rule and "read LESSONS first".
+- **RANKING DECISION - all three:**
+  (a) **Strong single source ranks with bench count:** an OFFICIAL card, a weight-4+ card, or a LESSON match counts as two benches;
+      such names are flagged "single source" and take at most 2 of the top 5.
+  (b) **Lessons reach seats 7 / 8 / 19 / 20** (done) - so more benches name the group next time.
+  (c) **GROUP EXPANSION (the main gap, why MCX / TITAN / IIFL were absent and INDUSINDBK was #31):** a card whose target is a group or
+      sector (e.g. "gold lenders", "jewellers", BANKS_PVT, "gold-linked") counts for EACH F&O member of that group (SECTOR_LINKS /
+      sectors.json / LINK_BOOK row members), at half weight per member, so a group story lifts its members up the list. List the
+      expansion source on each line. Re-run the 20 Nov fake-brain consensus check with (a) + (c) and show where INDUSINDBK, AXISBANK,
+      KALYANKJIL (PE), MUTHOOTFIN, MANAPPURAM, IIFL, MCX, TITAN rank at 07:15 and 09:08.
+- **KNOWLEDGE FIX (why KALYANKJIL showed as CE):** LINK_BOOK row 5 said jewellers CE when gold falls. Corrected in this push: jewellers
+  CE only over WEEKS; on a SHARP gold fall (-2% or a multi-month low before the open) jewellers fall the SAME DAY with the lenders
+  (20 Nov: KALYANKJIL -3.37%, TITAN -1.70%; MCX fell with the group). Marked one episode, NOT PROVEN. Reload the link book and add the
+  same line to event_lessons.json.
+
 ## 21 Nov 02:30 IST (hourly) - RED: API credit exhausted (trader told); post-mortem shows the HEAD is the bottleneck
 - **ACCEPTED:** FAIL-SAFE on credit / auth refusal (pause 10 min, one probe per 10 min, one P1 line, STALE brief, no BUY NOW) - exactly
   right; chart bars + "data missing" (198 PASS); FULL4 19 Nov (0 of 4 head ideas; small sample); series closed at $22.28 inside $24;

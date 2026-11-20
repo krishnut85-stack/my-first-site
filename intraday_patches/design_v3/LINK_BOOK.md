@@ -55,7 +55,7 @@ All rows are IDEA - NOT PROVEN until the history database tests them.
 | 2 | Brent crude | rises sharply (war, supply) | ONGC, OIL; war: HAL, BEL, BDL | HINDPETRO, BPCL, IOC, INDIGO, ASIANPAINT, tyres, autos, BAJFINANCE, banks, NIFTY | same day | HIGH, about 1.5x the fall [E] |
 | 3 | Fuel policy | excise / retail price cut, OMCs told to absorb | - | HINDPETRO, BPCL, IOC, whatever crude does | same day | HIGH |
 | 4 | Windfall tax on crude | imposed (removal: rev.) | - | ONGC, OIL, RELIANCE | same day | HIGH |
-| 5 | Gold (world) | falls | jewellers TITAN, KALYANKJIL (low, weeks) | gold lenders MUTHOOTFIN, MANAPPURAM, IIFL; MCX only if volume fades | same day (gap at open) | HIGH lenders |
+| 5 | Gold (world) | falls | jewellers TITAN, KALYANKJIL - CE only over WEEKS, never on the day of a sharp fall | gold lenders MUTHOOTFIN, MANAPPURAM, IIFL; **on a SHARP fall (gold -2% or a multi-month low before the open) the jewellers fall THE SAME DAY too (inventory / sentiment: 20 Nov 2026 KALYANKJIL -3.37%, low about -5.8%; TITAN -1.70%)**; MCX fell with the group on 20 Nov (-3.02%) | same day (gap at open) | HIGH lenders; jewellers same-day PE = 1 episode, NOT PROVEN |
 | 6 | Gold (world) | rises | MUTHOOTFIN, MANAPPURAM, IIFL, MCX; TITAN, KALYANKJIL (low) | jewellers on demand (weeks) | same day | HIGH lenders |
 | 7 | Gold import duty | cut (hike / "don't buy gold" appeal: rev., KALYANKJIL leads) | TITAN, KALYANKJIL | MUTHOOTFIN, MANAPPURAM | same day | HIGH |
 | 8 | Silver | rises (falls: rev.) | HINDZINC, VEDL, MCX | (solar, electronics: too weak to trade) | same day / next open | HIGH HINDZINC |
