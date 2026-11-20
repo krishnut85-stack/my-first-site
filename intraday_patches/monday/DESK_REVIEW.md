@@ -1,5 +1,31 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 21 Nov 01:35 IST (hourly) - FULL3 (20 Nov, real brains): NO EDGE shown - accepted as an honest result; the POST-MORTEM is next
+- **ACCEPTED:** FULL3 run and its honest score; the FULL3 lessons (keys / enums stripped, over-limit ideas dropped not the answer, a head
+  retry reserve per brief); PROOF_F3; the scorer audit (naming minute -> close, pre-09:15 names from the previous close, NSE bhavcopy
+  closes, NSE-equal bases, 5-share test) and the re-score; the rebuilt 19 Nov observer file and the separate rehearsal folder;
+  MARKET vs VWAP (index day VWAP as the proxy, said on the card; tests incl. the gold group).
+- **Bare counts: ALLOW** whole numbers 0-99 as counts in text ("3 cards", "19 items") - never with %, a decimal, Rs or a level word next
+  to it. Prices / % / levels stay {num:key}.
+- **19:45 floor: (a)** 19:45 $1.20, 22:45 $0.20.
+- **THE MISS, read by the desk (20 Nov):**
+  - The two biggest knowable stories were (1) GOLD at a 2026 low before the open (spot -1.9% by 08:27 IST, pre-open reports) -> PE on
+    the gold-linked group (Kalyan -5.8% at the low, IIFL Finance, MCX, Muthoot, Titan, Manappuram); (2) FII money into banks -> CE on
+    PRIVATE banks (IndusInd +10%, Axis +5%, HDFC Bank +2.7%). The head named PSU banks (BANKBARODA, PNB: flat) and TCS PE (wrong side).
+  - Seat 19's own rule B11 says FII-flow news moves PRIVATE names more, PSU names on policy: the head did not apply it.
+  - The 09:08 brief - the one that would have seen the overnight gold fall - was LOST (rejected answers). So the edge was never tested
+    at the moment it mattered.
+- **ORDERS (code first, then a small re-run inside the $24):**
+  1. **POST-MORTEM table, code only, every replayed day:** the day's top 10 movers each side (NSE, >= 2%): did any seat card or reader
+     card name it, when, with what reason and source; did the head see that card; why it was not picked (or picked late). Plus each
+     head idea with its reasons and source card ids. File DESK_postmortem_<date>.md. This is how the desk learns - it feeds the
+     scorecard weights and EVENT_MEMORY.
+  2. **20 Nov MORNING RE-RUN with every fix in** (state from the 19:45 brief, then 22:45, 07:15, 09:08 and live to 11:00), side-split
+     score from the naming minute. If FULL4 (19 Nov, partial recordings) has spent under $3 now, stop it and use its money for this;
+     otherwise let it finish and run this with what is left. The $24 total stays a hard stop.
+  3. **Head prompt, knowledge pack:** add the 20 Nov lesson to EVENT_MEMORY (gold-low -> gold-linked PE group; FII-into-banks ->
+     private banks first, rule B11), so the head and seats 19 / 20 / 7 / 8 see it as a past episode.
+
 ## 21 Nov 00:30 IST (hourly) - verdicts on 23:36-00:02
 - **KALYANKJIL vs NSE bhavcopy (17-20 Nov all agree): ACCEPTED.** The "no intraday bars" line = PAGE bug (levelChart never fetched
   ch.<SYM>): fix ACCEPTED as planned - bars from ch.<SYM>, a real gap says "data missing <from>-<to>". Must be live before Monday.

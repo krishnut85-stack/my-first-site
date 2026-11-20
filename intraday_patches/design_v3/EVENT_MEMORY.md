@@ -235,3 +235,11 @@ it in Indian IT. So IT is coming up. This is one of the history."
   81% count is measured on shares, not the index).
 - Watch: 30 Nov GDP (strong = hike more likely), daily liquidity / call rate, 10y (7.45% hawkish line, 7.15% dovish), Brent > $100,
   rupee 95, FX reserves 27 Nov / 4 Dec; then Fed 10 Dec 00:30 IST and CPI 14 Dec. Follow-up: score each scenario line on 4 Dec.
+
+## J. 20 Nov 2026 - two knowable stories the desk's rehearsal missed (lesson for the head and seats 7, 8, 19, 20)
+- GOLD at a 2026 low BEFORE the open (spot about -1.9% by 08:27 IST; MCX gold later -4.7%, silver -6.3%): the whole gold-linked group
+  fell all day - KALYANKJIL (about -5.8% at the low, -3.37% close), IIFL FINANCE, MCX (-3.02%), MUTHOOTFIN (-2.58%), TITAN, MANAPPURAM.
+  A PE group, valid even on an up day (whole-sector move + news). Watch first at the 07:15 / 09:08 briefs.
+- FII money into banks + Bank Nifty record: the CE leaders were PRIVATE banks (INDUSINDBK about +10%, AXISBANK +5%, HDFCBANK +2.7%);
+  PSU banks were flat to soft (BANKBARODA +0.38%, PNB +0.31%). Rule B11: flow news -> private names first; policy news -> PSU names.
+- Follow-up: score whether the 09:08 brief names these on a re-run (DESK_REVIEW 21 Nov 01:35).
