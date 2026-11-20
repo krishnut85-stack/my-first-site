@@ -1,0 +1,1 @@
+{"folder": "/home/globalbot/girdata/rec/2026-11-20/live_engine_src/LIVE_2026-11-20", "sig": {"calls.jsonl": [578853, 1795169542], "calls_log.jsonl": [7825633, 1795169542], "ai_raw.jsonl": [149713, 1795169542]}, "done": "scored once on demand (observer.py --once)", "at": "2026-11-20 15:42:26"}
