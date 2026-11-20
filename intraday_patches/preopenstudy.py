@@ -26,6 +26,8 @@ This study measures how well such a list can be named, CE (the share going UP) a
   7 ROLE IN SECTOR    LEADER / FOLLOWER / LAGGARD / AGAINST its sector / ALONE - which become the big moves
   8 RINGS             how often the phone would ring for the recommended plan
   0 THE ANSWER        at the top, in plain words, per level and per side, for up / down / mixed days, tuning | held-out
+At 09:20 / 09:30 / 09:45 the recall, the sector read and the market read's side are graded from the NAMING PRICE (the moves still to
+come), never from the 09:15 open: those reads are made from the first minutes of that same move. From-the-open numbers are secondary.
 "After option costs" is NEVER the verdict: the option proxy is one secondary line.
 
   python3 preopenstudy.py check                       what is in the store (as onsetstudy.py check) plus how many valid sectors a day
@@ -93,6 +95,13 @@ LABK = ("ampo", "amppc", "onset", "p25", "p50", "tp", "tb", "bp")
 REFK = ("R2", "W2", "WA", "FAV", "ADV")
 TRGK = ("em", "R2", "W2", "ml", "h1", "mfe", "r60", "ch")
 BSC = {0: {1: 2, 3: 1, 0: 0, 4: -1, 2: -2}, 1: {2: 2, 4: 1, 0: 0, 3: -1, 1: -2}}   # build-up class -> score, CE / PE
+SEEN = "includes the minutes already seen"   # the label of every from-the-open number at 09:20 / 09:30 / 09:45 (secondary only)
+
+
+def rk(li):
+    """the recall key a level is graded on: 19:45 / 09:08 the moves from the open, 09:20 / 09:30 / 09:45 the moves still to come from the
+    naming price (graded from the open, a read made from the first 5 / 15 / 30 minutes would be graded on the move it has already seen)"""
+    return "ref" if li >= 2 else "open"
 
 
 def set_store(path):
@@ -706,9 +715,14 @@ def market(B):
     B.TYPE = typ; B.KIND = O.NKIND.astype(np.int8); B.ncc = cc
     mv = [((B.A[si] >= 2.0) & B.V).sum(1) for si in (0, 1)]
     B.nmov = {(si, X, f): (((B.A if f == 0 else B.APC)[si] >= X) & B.V).sum(1) for si in (0, 1) for X in TIERS for f in (0, 1)}
-    sd = np.full(G, 2, np.int8)
-    sd[(mv[0] >= 1.5 * mv[1]) & (mv[0] > 0)] = 0; sd[(mv[1] >= 1.5 * mv[0]) & (mv[1] > 0)] = 1
-    B.SIDED = sd
+    def sided(mv):
+        sd = np.full(G, 2, np.int8)
+        sd[(mv[0] >= 1.5 * mv[1]) & (mv[0] > 0)] = 0; sd[(mv[1] >= 1.5 * mv[0]) & (mv[1] > 0)] = 1
+        return sd
+    B.SIDED = sided(mv)                                            # the whole day from the 09:15 open (19:45, 09:08 and section 1)
+    # the moves still to come from each intraday naming price C[t-1]: best move from it >= X (09:20 / 09:30 / 09:45 are graded on these)
+    B.nmovr = {(si, X, r): ((B.FAV[si, r] >= X) & B.V).sum(1) for si in (0, 1) for X in TIERS for r in (2, 3, 4)}
+    B.SIDEDL = [B.SIDED, B.SIDED] + [sided([B.nmovr[(si, 2.0, LEV[sl]["ref"])] for si in (0, 1)]) for sl in (2, 3, 4)]
     # L0 at 19:45 (D-1 data only)
     X, V = B.X, B.V
     with np.errstate(all="ignore"):
@@ -760,26 +774,40 @@ def market_measures(B, li, dm):
         conf_k[nm_] = [int((mk & (B.KIND == k)).sum()) for k in range(3)]
     out["confusion_type"] = conf_t; out["confusion_kind"] = conf_k
     pu = dm & (ln == 1); pd = dm & (ln == -1); nn = dm & (ln == 0)
-    ok = int((pu & (B.SIDED == 0)).sum() + (pd & (B.SIDED == 1)).sum())
-    wr = int((pu & (B.SIDED == 1)).sum() + (pd & (B.SIDED == 0)).sum())
-    out.update({"pred_up": int(pu.sum()), "pred_down": int(pd.sum()), "neutral": int(nn.sum()), "neutral_pct": nn.sum() / n,
-                "side_acc": O.rt(ok, pu.sum() + pd.sum()), "wrong_side_days": wr, "wrong_side_pct_called": O.rt(wr, pu.sum() + pd.sum()),
-                "wrong_side_pct_all": wr / n, "up_acc": O.rt((pu & (B.SIDED == 0)).sum(), pu.sum()), "down_acc": O.rt((pd & (B.SIDED == 1)).sum(), pd.sum())})
-    mv = {}
-    for lab_, mk in (("UP", pu), ("DOWN", pd), ("NEUTRAL", nn)):
-        k = int(mk.sum())
-        mv[lab_] = {"days": k}
-        for X in TIERS:
-            mv[lab_]["%s" % X] = (float(B.nmov[(0, X, 0)][mk].mean()) if k else float("nan"), float(B.nmov[(1, X, 0)][mk].mean()) if k else float("nan"))
-    out["movers_by_lean"] = mv
+    out.update({"pred_up": int(pu.sum()), "pred_down": int(pd.sum()), "neutral": int(nn.sum()), "neutral_pct": nn.sum() / n})
+
+    def side(SD, sfx):                                             # graded against one side-day truth
+        ok = int((pu & (SD == 0)).sum() + (pd & (SD == 1)).sum())
+        wr = int((pu & (SD == 1)).sum() + (pd & (SD == 0)).sum())
+        out.update({"side_acc" + sfx: O.rt(ok, pu.sum() + pd.sum()), "wrong_side_days" + sfx: wr, "wrong_side_pct_called" + sfx: O.rt(wr, pu.sum() + pd.sum()),
+                    "wrong_side_pct_all" + sfx: wr / n, "up_acc" + sfx: O.rt((pu & (SD == 0)).sum(), pu.sum()),
+                    "down_acc" + sfx: O.rt((pd & (SD == 1)).sum(), pd.sum())})
+    side(B.SIDEDL[sl], "")                                         # 09:20 / 09:30 / 09:45: the day's 2% movers FROM THE NAMING PRICE
     if sl >= 2:
+        side(B.SIDED, "_open")                                     # secondary: from the 09:15 open (includes the minutes already seen)
+    out["graded_from"] = "the naming price" if sl >= 2 else "the 09:15 open"
+
+    def tables(cnt):
+        mv = {}
+        for lab_, mk in (("UP", pu), ("DOWN", pd), ("NEUTRAL", nn)):
+            k = int(mk.sum())
+            mv[lab_] = {"days": k}
+            for X in TIERS:
+                mv[lab_]["%s" % X] = tuple(float(cnt(si, X)[mk].mean()) if k else float("nan") for si in (0, 1))
         mc = {}
         for nm_, c in zip(names, codes):
             mk = dm & (cl == c); k = int(mk.sum())
             mc[nm_] = {"days": k}
             for X in TIERS:
-                mc[nm_]["%s" % X] = (float(B.nmov[(0, X, 0)][mk].mean()) if k else float("nan"), float(B.nmov[(1, X, 0)][mk].mean()) if k else float("nan"))
-        out["movers_by_class"] = mc
+                mc[nm_]["%s" % X] = tuple(float(cnt(si, X)[mk].mean()) if k else float("nan") for si in (0, 1))
+        return mv, mc
+    op = lambda si, X: B.nmov[(si, X, 0)]
+    if sl >= 2:
+        r = LEV[li]["ref"]
+        out["movers_by_lean"], out["movers_by_class"] = tables(lambda si, X: B.nmovr[(si, X, r)])
+        out["movers_by_lean_open"], out["movers_by_class_open"] = tables(op)
+    else:
+        out["movers_by_lean"] = tables(op)[0]
     t = LEV[li]["t"]
     with np.errstate(all="ignore"):
         refp = B.N["o"] if t is None else B.N["C"][:, t - 1]
@@ -816,11 +844,12 @@ def sector_reads(B):
     with np.errstate(all="ignore"):
         B.sret = sec_med(B, (X["c355"] / X["o0"] - 1) * 100)
         B.sret_pc = sec_med(B, (X["c355"] / X["pc"] - 1) * 100)
-    if K:
-        # the truth lists: the 3 best and the 3 worst valid sectors by the median member move from the open
-        B.true3 = np.stack([top_k(B.sret, B.VS, 3), top_k(-B.sret, B.VS, 3)])
-    else:
-        B.true3 = np.zeros((2, G, 0), bool)
+        # 09:20 / 09:30 / 09:45 are graded from the naming price: the median member move from C[t-1] to C[355] (15:10)
+        B.sretl = [B.sret, B.sret] + [sec_med(B, (X["c355"] / X["C%d" % t] - 1) * 100) for t in TS]
+    t3 = lambda sr: np.stack([top_k(sr, B.VS, 3), top_k(-sr, B.VS, 3)]) if K else np.zeros((2, G, 0), bool)
+    # the truth lists: the 3 best and the 3 worst valid sectors by the median member move (from the open; intraday from the naming price)
+    B.true3 = t3(B.sret)
+    B.true3l = [B.true3, B.true3] + [t3(B.sretl[sl]) for sl in (2, 3, 4)]
     B.secmov = np.stack([np.stack([((B.A[si] >= 2.0) & B.V)[:, m].sum(1) for m in B.mem], 1) if K else np.zeros((G, 0))
                          for si in (0, 1)])
 
@@ -832,10 +861,16 @@ def top_k(sc, el, k):
     return el & np.isfinite(sc) & (ps < k)
 
 
-def sector_measures(B, sl, si, dm):
+def sector_measures(B, sl, si, dm, frm=None):
+    """the sector read of level sl, side si, on the days dm. 19:45 / 09:08 are graded on the whole day from the 09:15 open; 09:20 / 09:30 /
+    09:45 from the naming price (truth = median member move C[t-1] -> C[355], moves = best move from C[t-1] >= 2%). frm="open" grades an
+    intraday level from the open instead (the secondary line that includes the minutes already seen)."""
     d = 1 if si == 0 else -1
-    nm = B.named[sl][si]; pos = B.npos[sl][si]; tr3 = B.true3[si]; opp3 = B.true3[1 - si]
-    out = {"days": int(dm.sum())}
+    ref = sl >= 2 and frm != "open"
+    T3 = B.true3l[sl] if ref else B.true3
+    sret = B.sretl[sl] if ref else B.sret
+    nm = B.named[sl][si]; pos = B.npos[sl][si]; tr3 = T3[si]; opp3 = T3[1 - si]
+    out = {"days": int(dm.sum()), "graded_from": "the naming price" if ref else "the 09:15 open"}
     has = dm & (nm.sum(1) > 0)
     if not has.any():
         return out
@@ -846,9 +881,9 @@ def sector_measures(B, sl, si, dm):
     out["random_overlap"] = float((nnam * ntru / np.maximum(B.nvs, 1))[has].mean())   # one side gets fewer than 3 named
     out["named_n"] = float(nnam[has].mean())
     with np.errstate(all="ignore"):
-        wrong = nm & ((opp3 & ~tr3) | (d * B.sret <= -1.0))          # the true bottom 3 without the top 3 (they overlap when K < 6)
+        wrong = nm & ((opp3 & ~tr3) | (d * sret <= -1.0))            # the true bottom 3 without the top 3 (they overlap when K < 6)
     out["wrong_side"] = O.rt(wrong[has].sum(), nm[has].sum())
-    mv = (B.A[si] >= 2.0) & B.V
+    mv = ((B.FAV[si, LEV[sl]["ref"]] >= 2.0) if ref else (B.A[si] >= 2.0)) & B.V
     tot = mv.sum(1).astype(float)
     in_named = (mv & B.shnamed[sl][si]).sum(1)
     in_true = (mv & B.SV & (tr3[:, np.clip(B.secid, 0, None)] if B.K else False)).sum(1)
@@ -997,6 +1032,8 @@ def rates(B):
         for X in TIERS:
             for f in (0, 1):
                 B.rate[("mv", si, X, f)] = day_rate(B, (B.A if f == 0 else B.APC)[si] >= X)
+            for r in (2, 3, 4):                                    # a move still to come: the best move from the naming price >= X
+                B.rate[("fv", si, X, r)] = day_rate(B, B.FAV[si, r] >= X)
 
 
 def quick(B, P1, si, li, dm, r=None):
@@ -1037,9 +1074,19 @@ def measure(B, P1, si, li, dm, bench=None):
             den = int(mv.sum())
             rec["%s %s" % (X, lab_)] = {"moves": den, "caught": O.rt((mv & m).sum(), den), "live": O.rt((mv & m & (fav >= 1.0)).sum(), den),
                                         "random": O.rt((B.rate[("mv", si, X, f)] * m.sum(1)).sum(), (mv.sum(1)).sum())}
+        if li >= 2:                                                # the moves still to come: best move from the naming price >= X
+            mv = (fav >= X) & B.V & dm[:, None]
+            den = int(mv.sum())
+            rec["%s ref" % X] = {"moves": den, "caught": O.rt((mv & m).sum(), den), "live": O.rt((mv & m).sum(), den),
+                                 "random": O.rt((B.rate[("fv", si, X, r)] * m.sum(1)).sum(), (mv.sum(1)).sum())}
     out["recall"] = rec
-    out["prec_label"] = O.rt((m & (A >= 2.0)).sum(), n)
-    out["prec_label_random"] = O.rt((B.rate[("mv", si, 2.0, 0)] * m.sum(1)).sum(), n)
+    out["prec_label_open"] = O.rt((m & (A >= 2.0)).sum(), n)
+    if li >= 2:                                                    # a 2% move still to come from the naming price
+        out["prec_label"] = O.rt((m & (fav >= 2.0)).sum(), n)
+        out["prec_label_random"] = O.rt((B.rate[("fv", si, 2.0, r)] * m.sum(1)).sum(), n)
+    else:
+        out["prec_label"] = out["prec_label_open"]
+        out["prec_label_random"] = O.rt((B.rate[("mv", si, 2.0, 0)] * m.sum(1)).sum(), n)
     out["prec_live"] = q["r2rate"]
     out["wa_rate"] = O.rt((m & B.WA[si, r]).sum(), n)
     out["wa_rand"] = O.rt((B.rate[("WA", si, r)] * m.sum(1)).sum(), n)
@@ -1100,8 +1147,8 @@ SAFE_WRONG, SAFE_KEEP, SAFE_LEFT = 0.75, 0.70, 0.70
 
 
 def safe_trigger(rows, w2rand):
-    """THE EARLIEST SAFE TRIGGER (rule tightened 20 Nov after review, pending the chair's sign-off; the agreed rule's answer stays in the
-    json as 'safe_old_rule'): among E1..E5 whose WRONG per trade that FIRED <= 0.75 x E0's, whose RIGHT over ALL picks >= 70% of E0's
+    """THE EARLIEST SAFE TRIGGER (rule tightened 20 Nov after review, signed off by the chair as the primary rule; the agreed first rule's
+    answer is printed beside it and stays in the json as 'safe_old_rule'): among E1..E5 whose WRONG per trade that FIRED <= 0.75 x E0's, whose RIGHT over ALL picks >= 70% of E0's
     (a pick that never fires catches nothing, so a trigger that seldom trades cannot pass) and whose median move left >= 70% of E0's:
     the earliest median entry; else E0 (enter on the card) if its WRONG <= random; else none"""
     e0 = rows[0]
@@ -1377,6 +1424,8 @@ def report(B):
     P("\n=== 2. THE MARKET-DAY READ - fixed rules, nothing tuned, data up to the naming minute only · tuning | held-out")
     P("    19:45: five votes (NIFTY D-1 return, close in range, F&O breadth, build-up ratio, NIFTY 5-day); 09:08: NIFTY gap + gap breadth,")
     P("    else the 19:45 lean; 09:20 / 09:30 / 09:45: TREND / FADE / MIXED from NIFTY vs yesterday and the open, breadth above VWAP, BANKNIFTY")
+    P("    GRADED: 19:45 / 09:08 against the day's 2% movers from the 09:15 open; 09:20 / 09:30 / 09:45 against the 2% movers STILL TO COME")
+    P("    from the naming price (best move from C[t-1] >= 2%% its way by 15:10) - the from-the-open grade there is a secondary line (%s)" % SEEN)
     J["market"] = {}
     for li in range(5):
         a = market_measures(B, li, tr); b = market_measures(B, li, te)
@@ -1388,7 +1437,11 @@ def report(B):
               LEV[li]["name"], pc(a["side_acc"]), pc(b.get("side_acc")) if b.get("days", 0) >= THIN else "(thin)", pc(a["up_acc"]), pc(a["down_acc"]),
               pc(a["wrong_side_pct_called"]), pc(b.get("wrong_side_pct_called")) if b.get("days", 0) >= THIN else "(thin)", pc(a["neutral_pct"]),
               pc(b.get("neutral_pct")) if b.get("days", 0) >= THIN else "(thin)", f1(a["nifty_after"], "%+.2f"), f1(b.get("nifty_after", float("nan")), "%+.2f"),
-              *baseline(B)))
+              *baseline(B, LEV[li]["sl"])))
+        if "side_acc_open" in a:
+            P("      from the 09:15 open (%s): side accuracy %s | %s · WRONG-SIDE days %s | %s of the called days" % (
+                SEEN, pc(a["side_acc_open"]), pc(b.get("side_acc_open")) if b.get("days", 0) >= THIN else "(thin)", pc(a["wrong_side_pct_called_open"]),
+                pc(b.get("wrong_side_pct_called_open")) if b.get("days", 0) >= THIN else "(thin)"))
         cls_names = list(a["confusion_type"].keys())
         for lab_, mm_ in (("tuning", a), ("held-out", b)):
             if not mm_.get("days"):
@@ -1402,15 +1455,22 @@ def report(B):
                                  ("the day class says", "movers_by_class", cls_names if "movers_by_class" in a else ())):
             if not labs:
                 continue
-            P("      THE TRADER'S TABLE - %s ... expect a day, CE / PE moves from the open (tuning | held-out):" % title)
+            P("      THE TRADER'S TABLE - %s ... expect a day, CE / PE moves %s (tuning | held-out):" % (
+                title, "STILL TO COME from the naming price" if li >= 2 else "from the open"))
             for lab_ in labs:
                 ta, tb = a[key][lab_], b.get(key, {}).get(lab_, {})
                 P("        %-10s %4d | %3d days · " % (lab_, ta["days"], tb.get("days", 0)) + " · ".join(
                     "%s%% CE %s / PE %s | %s" % ((X,) + tbl(a[key], lab_, "%s" % X) + ("%s / %s" % tbl(b.get(key, {}), lab_, "%s" % X) if tb.get("days", 0) >= THIN
                                                                                  else "(thin)",)) for X in TIERS))
+            if key + "_open" in a:
+                P("        from the 09:15 open (%s), 2%% CE / PE: " % SEEN + " · ".join("%s %s / %s" % ((lab_,) + tbl(a[key + "_open"], lab_, "2.0"))
+                                                                                       for lab_ in labs))
 
     # ---- 3 SECTOR READ
-    P("\n=== 3. THE SECTOR READ - the named top 3 per side vs the day's true top 3 (median member move from the open to 15:10) · tuning | held-out")
+    P("\n=== 3. THE SECTOR READ - the named top 3 per side vs the day's true top 3 · tuning | held-out")
+    P("    TRUTH: 19:45 / 09:08 the median member move from the 09:15 open to 15:10 and the day's 2%% moves from the open; 09:20 / 09:30 / 09:45")
+    P("    the median member move FROM THE NAMING PRICE C[t-1] to 15:10 and the 2%% moves still to come from it (best move >= 2%%). The intraday")
+    P("    read from the open is a secondary line (%s: the read is made from the first minutes of that same move)" % SEEN)
     J["sector"] = {}
     for li in range(5):
         sl = LEV[li]["sl"]
@@ -1419,13 +1479,23 @@ def report(B):
             spl_ = {lab_: sector_measures(B, sl, si, tr & mk) for lab_, mk in SPL[1:]}
             spl_.update({"lean " + LEANN[v]: sector_measures(B, sl, si, tr & (B.lean[sl] == v)) for v in (1, -1, 0)})
             J["sector"]["%s %s" % (LEV[li]["key"], sd)] = {"tuning": a, "heldout": b, "split": spl_}
+            if sl >= 2:
+                ao = sector_measures(B, sl, si, tr, "open"); bo = sector_measures(B, sl, si, te, "open")
+                J["sector"]["%s %s" % (LEV[li]["key"], sd)].update({"tuning_open": ao, "heldout_open": bo})
             if "hit1" not in a:
                 continue
-            P("  %-5s %s: No.1 in the true top 3 %s | %s · overlap %s | %s of %s named (random %s) · WRONG-SIDE sectors %s | %s · the day's 2%% %s moves"
+            P("  %-5s %s: No.1 in the true top 3 %s | %s · overlap %s | %s of %s named (random %s) · WRONG-SIDE sectors %s | %s · the day's 2%% %s moves%s"
               " from the named sectors %s | %s, the true 3 %s, as many random sectors %s, no-sector shares %s · K median %s" % (
                   LEV[li]["key"], sd, pc(a["hit1"]), pc(b.get("hit1")), f1(a["overlap"], "%.2f"), f1(b.get("overlap", float("nan")), "%.2f"),
-                  f1(a["named_n"], "%.1f"), f1(a["random_overlap"], "%.2f"), pc(a["wrong_side"]), pc(b.get("wrong_side")), sd, pc(a["named_share"]), pc(b.get("named_share")),
+                  f1(a["named_n"], "%.1f"), f1(a["random_overlap"], "%.2f"), pc(a["wrong_side"]), pc(b.get("wrong_side")), sd,
+                  " still to come from the naming price" if sl >= 2 else "", pc(a["named_share"]), pc(b.get("named_share")),
                   pc(a["true_share"]), pc(a["random_share"]), pc(a["nosector_share"]), f1(a["K_median"], "%.0f")))
+            if sl >= 2 and "hit1" in ao:
+                P("        from the 09:15 open (%s): No.1 in the true top 3 %s | %s · overlap %s | %s (random %s) · WRONG-SIDE %s | %s · the named"
+                  " sectors hold %s | %s of the day's 2%% moves (random %s)" % (
+                      SEEN, pc(ao["hit1"]), pc(bo.get("hit1")), f1(ao["overlap"], "%.2f"), f1(bo.get("overlap", float("nan")), "%.2f"),
+                      f1(ao["random_overlap"], "%.2f"), pc(ao["wrong_side"]), pc(bo.get("wrong_side")), pc(ao["named_share"]), pc(bo.get("named_share")),
+                      pc(ao["random_share"])))
         sp = J["sector"]["%s CE" % LEV[li]["key"]]["split"]; sq = J["sector"]["%s PE" % LEV[li]["key"]]["split"]
         P("        by day and by the predicted lean (tuning, named sectors' share of moves CE / PE, random in brackets): " + " · ".join(
             "%s %s/%s (%s/%s)" % (lab_, pc(sp[lab_].get("named_share")), pc(sq[lab_].get("named_share")), pc(sp[lab_].get("random_share")),
@@ -1444,7 +1514,9 @@ def report(B):
     # ---- 4 SHARE PICK
     P("\n=== 4. THE SHARE PICK - the winner per level x side x N (picked on the tuning days by NET2, WRONG <= random, lift 95% low > 1.0),")
     P("    shown UNCHANGED on the held-out days. Recall = the share of the day's real moves the list caught (live = with 1%+ still left from")
-    P("    the naming price). From-close moves at 19:45 / 09:08 include the gap, which the trader cannot buy before 09:15.")
+    P("    the naming price). From-close moves at 19:45 / 09:08 include the gap, which the trader cannot buy before 09:15. At 09:20 / 09:30 /")
+    P("    09:45 recall is graded on the moves STILL TO COME (best move from the naming price >= 1.5 / 2 / 3%% its way by 15:10); recall from the")
+    P("    open and from yesterday's close there are secondary lines (%s)." % SEEN)
     J["picks"] = {}
     for li in range(5):
         L = LEV[li]
@@ -1467,11 +1539,12 @@ def report(B):
                 J["picks"]["%s %s N=%d" % (L["key"], sd, N)] = {"cfg": cfgname(c), "qualified": w["qualified"], "tuning": a, "heldout": b,
                                                               "split_tuning": spl, "split_heldout": splh, "luck": w["luck"],
                                                               "bench_tuning": vt}
+                k2 = "2.0 %s" % rk(li)
                 if N != 10 and not B.args.get("full_report"):
-                    P("    %s N=%-2d %-16s%s · recall 2%% %s | %s (live %s) · WRONG %s | %s · NET2 %s | %s a day · lift %s | %s" % (
+                    P("    %s N=%-2d %-16s%s · recall 2%%%s %s | %s (live %s, random %s) · WRONG %s | %s · NET2 %s | %s a day · lift %s | %s" % (
                         sd, N, "%s %s" % (c[1], c[2]), "" if w["qualified"] else " (no config qualified - best NET2 shown)",
-                        pc(a["recall"]["2.0 open"]["caught"]), pc(b.get("recall", {}).get("2.0 open", {}).get("caught")),
-                        pc(a["recall"]["2.0 open"]["live"]), pc(a["w2rate"]), pc(b.get("w2rate")), f1(a["net2"], "%+.2f"), f1(b.get("net2", float("nan")), "%+.2f"),
+                        " still to come" if li >= 2 else "", pc(a["recall"][k2]["caught"]), pc(b.get("recall", {}).get(k2, {}).get("caught")),
+                        pc(a["recall"][k2]["live"]), pc(a["recall"][k2]["random"]), pc(a["w2rate"]), pc(b.get("w2rate")), f1(a["net2"], "%+.2f"), f1(b.get("net2", float("nan")), "%+.2f"),
                         f1(a["lift"], "%.2f"), f1(b.get("lift", float("nan")), "%.2f")))
                     continue
                 P("    %s N=%d  %s %s (%s; %s)%s · %d configs qualified" % (sd, N, c[1], c[2], sname(c[1]), GDESC[c[2]],
@@ -1481,15 +1554,22 @@ def report(B):
                     f1(a["len"], "%.1f"), pc(a.get("univ_pct"), "%.1f%%"), f1(a["net2"], "%+.2f"), f1(b.get("net2", float("nan")), "%+.2f"),
                     pc(a["r2rate"]), pc(b.get("r2rate")), pc(a["w2rate"]), pc(b.get("w2rate")), pc(a["w2rand"]), pc(a.get("wa_rate")), pc(a.get("wa_rand"))))
                 if "recall" in a:
+                    if li >= 2:
+                        P("      recall STILL TO COME from the naming price  " + " · ".join("%s%% %s (random %s) | %s" % (
+                            X, pc(a["recall"]["%s ref" % X]["caught"]), pc(a["recall"]["%s ref" % X]["random"]),
+                            pc(b.get("recall", {}).get("%s ref" % X, {}).get("caught"))) for X in TIERS))
                     P("      recall from the open  " + " · ".join("%s%% %s (live %s, random %s) | %s" % (
                         X, pc(a["recall"]["%s open" % X]["caught"]), pc(a["recall"]["%s open" % X]["live"]), pc(a["recall"]["%s open" % X]["random"]),
-                        pc(b.get("recall", {}).get("%s open" % X, {}).get("caught"))) for X in TIERS))
-                    P("      recall from yday close" + " · ".join(" %s%% %s | %s" % (
-                        X, pc(a["recall"]["%s close" % X]["caught"]), pc(b.get("recall", {}).get("%s close" % X, {}).get("caught"))) for X in TIERS)
-                      + ("   (includes the gap)" if li < 2 else ""))
-                    P("      precision: a 2%% mover %s (random %s) · RIGHT %s · move left on caught movers median %s%% (p25 %s%%) = %s of base->peak (p25 %s)"
+                        pc(b.get("recall", {}).get("%s open" % X, {}).get("caught"))) for X in TIERS) + ("   (%s)" % SEEN if li >= 2 else ""))
+                    P("      recall from yday close" + " · ".join(" %s%% %s (random %s) | %s" % (
+                        X, pc(a["recall"]["%s close" % X]["caught"]), pc(a["recall"]["%s close" % X]["random"]),
+                        pc(b.get("recall", {}).get("%s close" % X, {}).get("caught"))) for X in TIERS)
+                      + ("   (includes the gap)" if li < 2 else "   (includes the gap and %s)" % SEEN.replace("includes ", "")))
+                    P("      precision: a 2%% mover%s %s (random %s)%s · RIGHT %s · move left on caught movers median %s%% (p25 %s%%) = %s of base->peak (p25 %s)"
                       " · mean best %s%% / worst %s%% over all picks" % (
-                          pc(a["prec_label"]), pc(a["prec_label_random"]), pc(a["prec_live"]), f1(a["left_med"], "%.2f"), f1(a["left_p25"], "%.2f"),
+                          " still to come" if li >= 2 else "", pc(a["prec_label"]), pc(a["prec_label_random"]),
+                          " [from the open %s, %s]" % (pc(a["prec_label_open"]), SEEN) if li >= 2 else "",
+                          pc(a["prec_live"]), f1(a["left_med"], "%.2f"), f1(a["left_p25"], "%.2f"),
                           pc(a["left_frac_med"]), pc(a["left_frac_p25"]), f1(a["fav_mean"], "%.2f"), f1(a["adv_mean"], "%.2f")))
                     P("      %s · named before half-way %s, before a quarter %s" % (
                         halfway(a["to_p50_med"], li), pc(a["before_p50"]), pc(a["before_p25"])))
@@ -1498,9 +1578,9 @@ def report(B):
                         f1(a["lift_sec"], "%.2f"), f1(a["lift_sec_ci"][0], "%.2f"), f1(a["lift_sec_ci"][1], "%.2f"),
                         f1(a.get("lift_VOLATILE", float("nan")), "%.2f"), f1(a["lift_VOLATILE_ci"][0], "%.2f"), f1(a["lift_VOLATILE_ci"][1], "%.2f"),
                         f1(a.get("lift_TOP-MOVERS", float("nan")), "%.2f"), f1(a["lift_TOP-MOVERS_ci"][0], "%.2f"), f1(a["lift_TOP-MOVERS_ci"][1], "%.2f")))
-                    P("      benchmarks (tuning) NET2: VOLATILE %s · TOP-MOVERS %s · recall 2%%: VOLATILE %s · TOP-MOVERS %s · WRONG: VOLATILE %s · TOP-MOVERS %s" % (
-                        f1(vt["VOLATILE"]["net2"], "%+.2f"), f1(vt["TOP-MOVERS"]["net2"], "%+.2f"),
-                        pc(vt["VOLATILE"].get("recall", {}).get("2.0 open", {}).get("caught")), pc(vt["TOP-MOVERS"].get("recall", {}).get("2.0 open", {}).get("caught")),
+                    P("      benchmarks (tuning) NET2: VOLATILE %s · TOP-MOVERS %s · recall 2%%%s: VOLATILE %s · TOP-MOVERS %s · WRONG: VOLATILE %s · TOP-MOVERS %s" % (
+                        f1(vt["VOLATILE"]["net2"], "%+.2f"), f1(vt["TOP-MOVERS"]["net2"], "%+.2f"), " still to come" if li >= 2 else "",
+                        pc(vt["VOLATILE"].get("recall", {}).get(k2, {}).get("caught")), pc(vt["TOP-MOVERS"].get("recall", {}).get(k2, {}).get("caught")),
                         pc(vt["VOLATILE"]["w2rate"]), pc(vt["TOP-MOVERS"]["w2rate"])))
                     if li < 2:
                         ra = quick(B, Pk, si, li, tr, r=1); rb = quick(B, Pk, si, li, te, r=1) if te.any() else {}
@@ -1510,26 +1590,28 @@ def report(B):
                             f1(ra["lift"], "%.2f"), f1(ra["lift_ci"][0], "%.2f"), f1(ra["lift_ci"][1], "%.2f"), f1(rb.get("lift", float("nan")), "%.2f")))
                     P("      SELECTION LUCK: held-out NET2 of the tuning No.1 %s vs the median of the tuning top 5 %s" % (
                         f1(w["luck"]["heldout_no1"], "%+.2f"), f1(w["luck"]["heldout_top5_median"], "%+.2f")))
-                    P("      by day, recall 2% / WRONG / NET2 (tuning | held-out): " + " · ".join(
-                        "%s %s/%s/%s | %s" % (lab_, pc(spl[lab_].get("recall", {}).get("2.0 open", {}).get("caught")), pc(spl[lab_].get("w2rate")),
+                    P("      by day, recall 2%s / WRONG / NET2 (tuning | held-out): " % ("% still to come" if li >= 2 else "%") + " · ".join(
+                        "%s %s/%s/%s | %s" % (lab_, pc(spl[lab_].get("recall", {}).get(k2, {}).get("caught")), pc(spl[lab_].get("w2rate")),
                                               f1(spl[lab_].get("net2", float("nan")), "%+.1f"),
-                                              "(thin)" if splh[lab_].get("days", 0) < THIN else pc(splh[lab_].get("recall", {}).get("2.0 open", {}).get("caught")))
+                                              "(thin)" if splh[lab_].get("days", 0) < THIN else pc(splh[lab_].get("recall", {}).get(k2, {}).get("caught")))
                         for lab_ in list(spl.keys())))
     # the full grid in the json
     for (cfg, N, si), v in B.grid.items():
         J["grid"]["%s %s N=%d" % (cfgname(cfg), SIDES[si][2], N)] = v
 
     # ---- 5 FEATURES
-    P("\n=== 5. FEATURE TABLE (tuning days, descriptive only - never used to pick): by quintile, P(2% CE move) / P(2% PE move) from the open,")
-    P("    median best move CE / PE from the naming price, WRONG-SIDE rate CE / PE")
+    P("\n=== 5. FEATURE TABLE (tuning days, descriptive only - never used to pick): by quintile, P(2% CE move) / P(2% PE move) from the open")
+    P("    (for the @5 / @15 / @30 features: a 2% move STILL TO COME from the naming price), median best move CE / PE from the naming price,")
+    P("    WRONG-SIDE rate CE / PE")
     J["features"] = feature_tables(B, P)
 
     # ---- 6 TRIGGERS
     P("\n=== 6. THE ENTRY TRIGGER on each winning list's picks (N=10; tuning days) - a pick that never fires is no trade: not caught, never wrong")
     P("    EARLIEST SAFE = among E1..E5 with WRONG per trade that fired <= 0.75 x E0's, RIGHT over ALL picks >= 70% of E0's (a trigger that")
     P("    seldom trades catches little and cannot pass) and a median move left >= 70% of E0's: the earliest median entry; else E0 (enter on")
-    P("    the card) if its WRONG <= random; else no safe trigger. (Tightened on 20 Nov after review, pending sign-off: the first rule judged")
-    P("    WRONG over all picks, so a trigger that seldom fired passed by default; its answer is in preopen.json as safe_old_rule.)")
+    P("    the card) if its WRONG <= random; else no safe trigger. (Tightened on 20 Nov after review and signed off by the chair as THE rule;")
+    P("    the agreed first rule judged WRONG over all picks, so a trigger that seldom fired passed by default - its answer is printed beside")
+    P("    each one below and kept in preopen.json as safe_old_rule.)")
     P("    " + " · ".join("%s = %s" % (a, b) for a, b in zip(TRN, TRD)))
     B.safe = {}
     for li in range(5):
@@ -1546,14 +1628,16 @@ def report(B):
                                                             "safe_old_rule": TRN[old] if old is not None else None, "random_w2": w2r}
             P("  %s %s (%s): EARLIEST SAFE %s%s" % (LEV[li]["key"], sd, cfgname(w["cfg"]), "%s, median entry %s" % (
                 TRN[safe], O.hm(rows[safe]["em_med"]) if np.isfinite(rows[safe]["em_med"]) else "-") if safe is not None else "NO SAFE TRIGGER",
-                rare_note(rows, safe)) + ("" if old == safe else " (the first rule said %s)" % (TRN[old] if old is not None else "none")))
+                rare_note(rows, safe)) + " · the agreed first rule: %s%s" % (TRN[old] if old is not None else "NO SAFE TRIGGER",
+                                                                              " (the same)" if old == safe else " (differs)"))
             for x in rows:
                 P("      %-14s fired %4s · entry %s · RIGHT %4s · WRONG %4s (per trade fired %4s) · left median %s%% (p25 %s%%) · HIT60 %4s · MFE60 %s%% · CHASE %4s" % (
                     x["trigger"], pc(x["fired"]), O.hm(x["em_med"]) if np.isfinite(x["em_med"]) else "  -  ", pc(x["r2"]), pc(x["w2"]), pc(x["w2f"]),
                     f1(x["ml_med"], "%.2f"), f1(x["ml_p25"], "%.2f"), pc(x["hit60"]), f1(x["mfe60"], "%.2f"), pc(x["chase"])))
 
     # ---- 7 ROLES
-    P("\n=== 7. ROLE IN THE SECTOR at 09:20 / 09:30 / 09:45 (tuning days): share-days, become a 2% mover its way, RIGHT, WRONG, move left")
+    P("\n=== 7. ROLE IN THE SECTOR at 09:20 / 09:30 / 09:45 (tuning days): share-days, a 2% move its way STILL TO COME from the naming price,")
+    P("    RIGHT, WRONG, move left (all from the naming price; the move from the open would include the minutes the role was read from)")
     J["roles"] = {}
     for t, ri in zip(TS, (2, 3, 4)):
         for si, d, sd in SIDES:
@@ -1561,7 +1645,8 @@ def report(B):
             for rc_, rn in enumerate(ROLEN):
                 mk = (B.roles[t][si] == rc_) & B.V & tr[:, None]
                 n = int(mk.sum())
-                row = {"n": n, "mover2": O.rt((mk & (B.A[si] >= 2)).sum(), n), "right": O.rt((mk & B.R2[si, ri]).sum(), n),
+                row = {"n": n, "mover2": O.rt((mk & (B.FAV[si, ri] >= 2)).sum(), n), "mover2_open": O.rt((mk & (B.A[si] >= 2)).sum(), n),
+                       "right": O.rt((mk & B.R2[si, ri]).sum(), n),
                        "wrong": O.rt((mk & B.W2[si, ri]).sum(), n), "left_med": O.q(B.FAV[si, ri][mk], 50)}
                 J["roles"]["%d %s %s" % (t, sd, rn)] = row
                 cells.append("%s %d: %s / %s / %s / %s%%" % (rn, n, pc(row["mover2"]), pc(row["right"]), pc(row["wrong"]), f1(row["left_med"], "%.2f")))
@@ -1585,12 +1670,12 @@ def report(B):
     return "\n".join(out), J
 
 
-def baseline(B):
-    """always predict the tuning days' majority side-day"""
-    tr = B.tr
-    ce = int((tr & (B.SIDED == 0)).sum()); pe = int((tr & (B.SIDED == 1)).sum())
+def baseline(B, sl=0):
+    """always predict the tuning days' majority side-day (graded on the level's own side-day truth)"""
+    tr = B.tr; SD = B.SIDEDL[sl]
+    ce = int((tr & (SD == 0)).sum()); pe = int((tr & (SD == 1)).sum())
     k = 0 if ce >= pe else 1
-    a = O.rt((tr & (B.SIDED == k)).sum(), tr.sum()); b = O.rt((B.te & (B.SIDED == k)).sum(), B.te.sum())
+    a = O.rt((tr & (SD == k)).sum(), tr.sum()); b = O.rt((B.te & (SD == k)).sum(), B.te.sum())
     return ("UP" if k == 0 else "DOWN", "%s | %s of days" % (pc(a), pc(b)))
 
 
@@ -1608,7 +1693,8 @@ def feature_tables(B, P):
 
     def row(mk, ri):
         n = int(mk.sum())
-        return {"n": n, "p_ce": O.rt((mk & (B.A[0] >= 2)).sum(), n), "p_pe": O.rt((mk & (B.A[1] >= 2)).sum(), n),
+        mv = [(B.FAV[si, ri] >= 2) if ri >= 2 else (B.A[si] >= 2) for si in (0, 1)]   # intraday: the move still to come, not the one seen
+        return {"n": n, "p_ce": O.rt((mk & mv[0]).sum(), n), "p_pe": O.rt((mk & mv[1]).sum(), n),
                 "fav_ce": O.q(B.FAV[0, ri][mk], 50), "fav_pe": O.q(B.FAV[1, ri][mk], 50),
                 "w2_ce": O.rt((mk & B.W2[0, ri]).sum(), n), "w2_pe": O.rt((mk & B.W2[1, ri]).sum(), n)}
 
@@ -1752,9 +1838,12 @@ def answer(B, J):
     A("    PICKS, BUT NO BETTER THAN THE PLAIN MOVERS LIST = beats random, but the shares already moving most do as well")
     A("    PICKS, BUT NO BETTER THAN THE VOLATILE LIST = beats random, but the most volatile shares (on the right side) do as well")
     A("    NO BETTER THAN RANDOM")
-    A("  'caught' = the share of the day's real 2% moves (from the open) on the list. The intraday trigger is only the ENTRY on a named")
-    A("  share; 'earliest safe trigger' = section 6's rule (a trigger that seldom fires cannot pass: it must keep 70% of the RIGHT of")
-    A("  entering on the card).")
+    A("  'caught' = the share of the day's real 2% moves on the list, next to what as many RANDOM shares catch: at 19:45 / 09:08 the moves")
+    A("  from the 09:15 open; at 09:20 / 09:30 / 09:45 the moves STILL TO COME from the naming price (best move from C[t-1] >= 2% its way by")
+    A("  15:10) - and the market and sector reads there are graded from the naming price too. The intraday numbers from the open are")
+    A("  secondary lines marked '%s' (the read is made from the first minutes of that same move)." % SEEN)
+    A("  The intraday trigger is only the ENTRY on a named share; 'earliest safe trigger' = section 6's rule (a trigger that seldom fires")
+    A("  cannot pass: it must keep 70% of the RIGHT of entering on the card).")
     kinds = [("up", B.KIND == 0), ("down", B.KIND == 1), ("mixed", B.KIND == 2)]
     for li in range(5):
         L = LEV[li]
@@ -1769,27 +1858,39 @@ def answer(B, J):
                 A("    %s: %s (no list)" % (sd, v)); continue
             Pk = make_list(B, w["cfg"], 10)[0][si]
             a = measure(B, Pk, si, li, B.tr); b = measure(B, Pk, si, li, B.te) if B.te.any() else {}
-            alt = {}
+            k2 = "2.0 %s" % rk(li)
+            alt = {}; altr = {}
             for N in (5, 15):
                 c = B.win[(li, si, N)]["cfg"]
                 if c:
                     m_ = measure(B, make_list(B, c, N)[0][si], si, li, B.tr)
-                    alt[N] = m_.get("recall", {}).get("2.0 open", {}).get("caught")
+                    alt[N] = m_.get("recall", {}).get(k2, {}).get("caught"); altr[N] = m_.get("recall", {}).get(k2, {}).get("random")
             safe = B.safe.get((li, si))
             rows = J["triggers"].get("%s %s" % (L["key"], sd), {}).get("tuning")
             st = ("%s (%s), median entry %s" % (TRN[safe], TRD[safe], O.hm(rows[safe]["em_med"]) if rows and np.isfinite(rows[safe]["em_med"]) else "-")
                   if safe is not None else "NO SAFE TRIGGER (entering on the card picks the wrong side as often as random shares)")
             if rows and safe:
                 st += " (fires on %s of the picks, RIGHT %s vs %s entering at once)" % (pc(rows[safe]["fired"]), pc(rows[safe]["r2"]), pc(rows[0]["r2"]))
-            rc = lambda m_: m_.get("recall", {}).get("2.0 open", {})
+            rc = lambda m_, k=k2: m_.get("recall", {}).get(k, {})
             A("    %s (the share going %s): %s" % (sd, "UP" if d > 0 else "DOWN", v))
             A("      the list to name: %s, top 10 %s%s  [%s %s]" % (sname(w["cfg"][1]), "by the score" if w["cfg"][2] == "G0" else "- " + GDESC[w["cfg"][2]],
                                                                  "" if w["qualified"] else " (nothing qualified - the best RIGHT-minus-WRONG is shown)",
                                                                  w["cfg"][1], w["cfg"][2]))
             A("        what it reads: %s" % SDESC[w["cfg"][1]].split(": ", 1)[1])
-            A("      it catches %s | %s of the day's 2%% %s moves (live %s | %s) [5 names %s · 15 names %s] · WRONG SIDE %s | %s (random %s)" % (
-                pc(rc(a).get("caught")), pc(rc(b).get("caught")), sd,
-                pc(rc(a).get("live")), pc(rc(b).get("live")), pc(alt.get(5)), pc(alt.get(15)), pc(a.get("w2rate")), pc(b.get("w2rate")), pc(a.get("w2rand"))))
+            if li >= 2:
+                A("      it catches %s | %s of the day's 2%% %s moves STILL TO COME from the naming price (random %s) [5 names %s (random %s) · 15 names %s"
+                  " (random %s)] · WRONG SIDE %s | %s (random %s)" % (
+                      pc(rc(a).get("caught")), pc(rc(b).get("caught")), sd, pc(rc(a).get("random")), pc(alt.get(5)), pc(altr.get(5)), pc(alt.get(15)),
+                      pc(altr.get(15)), pc(a.get("w2rate")), pc(b.get("w2rate")), pc(a.get("w2rand"))))
+                ro, rcl = rc(a, "2.0 open"), rc(a, "2.0 close")
+                A("        from the 09:15 open (%s): it catches %s | %s of the day's 2%% %s moves (random %s) · from yesterday's close %s | %s"
+                  " (random %s)" % (SEEN, pc(ro.get("caught")), pc(rc(b, "2.0 open").get("caught")), sd, pc(ro.get("random")), pc(rcl.get("caught")),
+                                    pc(rc(b, "2.0 close").get("caught")), pc(rcl.get("random"))))
+            else:
+                A("      it catches %s | %s of the day's 2%% %s moves (random %s; live %s | %s) [5 names %s (random %s) · 15 names %s (random %s)] · WRONG"
+                  " SIDE %s | %s (random %s)" % (
+                      pc(rc(a).get("caught")), pc(rc(b).get("caught")), sd, pc(rc(a).get("random")), pc(rc(a).get("live")), pc(rc(b).get("live")),
+                      pc(alt.get(5)), pc(altr.get(5)), pc(alt.get(15)), pc(altr.get(15)), pc(a.get("w2rate")), pc(b.get("w2rate")), pc(a.get("w2rand"))))
             A("      lift vs random %s (95%% %s-%s) | %s · move left median %s%% (p25 %s%%) · %s" % (
                 f1(a.get("lift", float("nan")), "%.2f"), f1(a.get("lift_ci", (np.nan,))[0], "%.2f"), f1(a.get("lift_ci", (np.nan, np.nan))[1], "%.2f"),
                 f1(b.get("lift", float("nan")), "%.2f"), f1(a.get("left_med", float("nan")), "%.2f"), f1(a.get("left_p25", float("nan")), "%.2f"),
@@ -1803,6 +1904,10 @@ def answer(B, J):
                                                    "(thin)" if mb is None else pc(rc(mb).get("caught"))))
                 Ja[sd][kn] = {"tuning": rc(ma).get("caught"), "heldout": rc(mb).get("caught") if mb else None, "wrong_tuning": ma.get("w2rate")}
             A("      caught by NIFTY day: " + " · ".join(cells))
+            Ja[sd].update({"graded_from": "the naming price" if li >= 2 else "the 09:15 open", "caught_random": rc(a).get("random"),
+                           "caught_open": rc(a, "2.0 open").get("caught"), "caught_open_heldout": rc(b, "2.0 open").get("caught"),
+                           "caught_open_random": rc(a, "2.0 open").get("random"), "caught_close": rc(a, "2.0 close").get("caught"),
+                           "n5_random": altr.get(5), "n15_random": altr.get(15)})
             Ja[sd].update({"cfg": cfgname(w["cfg"]), "list": plain(w["cfg"]), "qualified": w["qualified"], "caught": rc(a).get("caught"), "caught_heldout": rc(b).get("caught"),
                            "live": rc(a).get("live"), "wrong": a.get("w2rate"), "wrong_heldout": b.get("w2rate"), "lift": a.get("lift"),
                            "lift_ci": a.get("lift_ci"), "lift_heldout": b.get("lift"), "left_med": a.get("left_med"), "left_p25": a.get("left_p25"),
@@ -1813,15 +1918,29 @@ def answer(B, J):
                 opt.append("%s %s / %s" % (sd, f1(e0["opt15"], "%+.1f%%"), f1(e0["opt3"], "%+.1f%%")))
         mm = J["market"][L["key"]]
         a, b = mm["tuning"], mm["heldout"]
+        th = lambda k, x=b: pc(x.get(k)) if x.get("days", 0) >= THIN else "(thin)"
         if a.get("days"):
-            A("    market read: side accuracy %s | %s · wrong-side days %s | %s of the days it called · NEUTRAL %s of days" % (
-                pc(a["side_acc"]), pc(b.get("side_acc")) if b.get("days", 0) >= THIN else "(thin)", pc(a["wrong_side_pct_called"]),
-                pc(b.get("wrong_side_pct_called")) if b.get("days", 0) >= THIN else "(thin)", pc(a["neutral_pct"])))
-        sc = [J["sector"].get("%s %s" % (L["key"], sd), {}).get("tuning", {}) for _, _, sd in SIDES]
+            A("    market read: side accuracy %s | %s · wrong-side days %s | %s of the days it called · NEUTRAL %s of days%s" % (
+                pc(a["side_acc"]), th("side_acc"), pc(a["wrong_side_pct_called"]), th("wrong_side_pct_called"), pc(a["neutral_pct"]),
+                " (the side-day from the 2% movers still to come from the naming price)" if li >= 2 else ""))
+            if "side_acc_open" in a:
+                A("      from the 09:15 open (%s): side accuracy %s | %s · wrong-side days %s | %s of the days it called" % (
+                    SEEN, pc(a["side_acc_open"]), th("side_acc_open"), pc(a["wrong_side_pct_called_open"]), th("wrong_side_pct_called_open")))
+        sj = [J["sector"].get("%s %s" % (L["key"], sd), {}) for _, _, sd in SIDES]
+        sc = [x.get("tuning", {}) for x in sj]
         if sc[0].get("named_share") is not None:
-            A("    sector read: the named sectors hold %s (CE) / %s (PE) of the day's 2%% moves; the true top 3 hold %s / %s; as many random sectors %s / %s" % (
-                pc(sc[0].get("named_share")), pc(sc[1].get("named_share")), pc(sc[0].get("true_share")), pc(sc[1].get("true_share")),
-                pc(sc[0].get("random_share")), pc(sc[1].get("random_share"))))
+            A("    sector read: the named sectors hold %s (CE) / %s (PE) of the day's 2%% moves%s; the true top 3 hold %s / %s; as many random sectors %s / %s"
+              " · overlap with the true top 3 %s / %s (random %s / %s)" % (
+                  pc(sc[0].get("named_share")), pc(sc[1].get("named_share")), " still to come from the naming price" if li >= 2 else "",
+                  pc(sc[0].get("true_share")), pc(sc[1].get("true_share")), pc(sc[0].get("random_share")), pc(sc[1].get("random_share")),
+                  f1(sc[0].get("overlap", float("nan")), "%.2f"), f1(sc[1].get("overlap", float("nan")), "%.2f"),
+                  f1(sc[0].get("random_overlap", float("nan")), "%.2f"), f1(sc[1].get("random_overlap", float("nan")), "%.2f")))
+            so = [x.get("tuning_open", {}) for x in sj]
+            if so[0].get("named_share") is not None:
+                A("      from the 09:15 open (%s): the named sectors hold %s / %s of the day's 2%% moves (random %s / %s) · overlap %s / %s (random %s / %s)" % (
+                    SEEN, pc(so[0].get("named_share")), pc(so[1].get("named_share")), pc(so[0].get("random_share")), pc(so[1].get("random_share")),
+                    f1(so[0].get("overlap", float("nan")), "%.2f"), f1(so[1].get("overlap", float("nan")), "%.2f"),
+                    f1(so[0].get("random_overlap", float("nan")), "%.2f"), f1(so[1].get("random_overlap", float("nan")), "%.2f")))
         lr = J["rings"].get("lists", {}).get(L["key"], {}).get("both")
         if lr:
             A("    rings for this level's two lists + their safe triggers: a day median %s, p90 %s · busiest 15 min median %s, p90 %s%s" % (
@@ -1843,11 +1962,18 @@ BIASES = (
     "  easier on thin days, so N as a % of the universe is shown; lift against same-day random shares is not biased by it.",
     "MULTIPLE TESTING: 90 configurations x 5 levels x 2 sides x 3 N. Limited by the fixed formulas (no fitted weights), selection on the",
     "  tuning days only, the unchanged held-out view and the selection-luck line. Some optimism remains in every winner.",
-    "LOOK-AHEAD GUARD, two parts. (1) In every run (header): on 1 valid day of every share, day D's minutes from the naming minute on (all",
-    "  of D for 19:45, all of D+1 as well) are replaced and every per-share input and trigger state is re-read - any change is reported and",
-    "  section 0 is flagged. (2) preopen_test (fake stores): day D's minutes are replaced from 09:15 / 09:20 / 09:30 / 09:45 on for EVERY",
-    "  symbol and the whole study is rebuilt; every feature, score, market lean, sector read, role, list and trigger fire at that level",
-    "  must stay the same (it found the c5@5 bug of 20 Nov). Part (2) covers the cross-share steps that part (1) cannot.",
+    "LOOK-AHEAD GUARD (signed off by the chair): the shuffled-label 'leak test' is REPLACED by two parts. (1) The in-run probe (header): on",
+    "  1 valid day of every share, day D's minutes from the naming minute on (all of D for 19:45, all of D+1 as well) are replaced and every",
+    "  input re-read - any change is reported and section 0 is flagged. On the real store this checks the PER-SHARE INPUTS AND TRIGGER STATES",
+    "  ONLY. (2) The fake-store scramble in preopen_test: day D's minutes are replaced from 09:15 / 09:20 / 09:30 / 09:45 on for EVERY symbol",
+    "  and the whole study is rebuilt; every feature, score, market lean, sector read, role, list and trigger fire at that level must stay",
+    "  the same (it found the c5@5 bug of 20 Nov). Part (2) covers the cross-share steps (sector medians, ranks, the market and sector reads,",
+    "  the roles) that part (1) cannot - and it runs on the fake stores only, never on the real one.",
+    "GRADED FROM THE NAMING PRICE: 09:20 / 09:30 / 09:45 are read from the first 5 / 15 / 30 minutes, so they are graded on what is STILL TO",
+    "  COME: recall on the moves whose best move from the naming price C[t-1] is >= 1.5 / 2 / 3% its way, the sector truth from C[t-1] to",
+    "  15:10, the market read's side-day from the 2% movers from C[t-1]. Graded from the 09:15 open the same read scores itself on the move",
+    "  it has already seen (on a pure-noise store the named sectors overlap the true top 3 by ~0.95 from the open, 0.50 = random from the",
+    "  naming price). The from-the-open numbers there are secondary lines marked '" + SEEN + "'. 19:45 and 09:08 are graded from the open.",
     "REGIME: about 3 years is mostly one regime. The held-out half-year gives wide intervals; its up / down day splits are thin.",
     "NO NEWS, NO GLOBAL CUES, NO ORDER BOOK: the 19:45 level cannot see overnight news, so it is expected to be weak. 09:08 is the first level",
     "  that sees news, and only through the gap.",
@@ -1861,8 +1987,12 @@ BIASES = (
     "  grid() smooths illiquid shares. Circuit days are included.",
     "The OPTION PROXY ignores IV, skew, gap-day premiums and liquidity - that is why it is one secondary line and never the verdict.",
     "SECTOR BREADTH in small sectors (4-6 members) moves in big steps; a sector-day needs 4+ listed members to be valid.",
-    "E0 rings are the card itself (no extra ring); a pick that never fires its trigger counts as not caught. The safe-trigger rule judges",
-    "  WRONG per trade that fired and needs 70% of E0's RIGHT kept (tightened 20 Nov, pending sign-off).")
+    "E0 rings are the card itself (no extra ring); a pick that never fires its trigger counts as not caught.",
+    "THE EARLIEST SAFE TRIGGER (signed off by the chair): the TIGHTENED rule is the primary one - WRONG per trade that fired, and 70% of",
+    "  E0's RIGHT kept, so a trigger that seldom fires cannot pass. The agreed first rule (WRONG over all picks) is printed beside it in",
+    "  section 6 and kept in preopen.json as safe_old_rule.",
+    "THE VERDICT WORDS (signed off by the chair, no change): the fourth verdict word stays - all four stay as they are: PICKS / NO BETTER",
+    "  THAN RANDOM / PICKS, BUT NO BETTER THAN THE PLAIN MOVERS LIST / and the fourth, PICKS, BUT NO BETTER THAN THE VOLATILE LIST.")
 
 
 # ------------------------------------------------------------------ commands ------------------------------------------------------------------
