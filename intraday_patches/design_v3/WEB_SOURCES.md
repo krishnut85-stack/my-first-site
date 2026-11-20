@@ -257,3 +257,311 @@ request per host per interval, stop on 403 / 429 and log (standing rule: never e
 
 Also for the server, cheap and found today: switch Moneycontrol from the dead RSS to `news/news-sitemap.xml`, and use the
 CNBC-TV18 Google-News sitemap and the ET / Business Standard market RSS listed in section 0 (all fresh at 11:00 IST).
+
+---
+
+## 5. REGULATORS, PARLIAMENT, GOVERNMENT, COURTS - detailed
+
+What this is: the policy-and-regulation source map for F20 (watchers) and F21 (07:00 day policy watch list + PENDING ->
+ANNOUNCED -> NOTIFIED pipeline), body by body and sub-division by sub-division, with the exact page / RSS / JSON that lists
+new items. Builds on POLITICAL_CYCLE.md (POLICY CLOCK, section D calendar) and BUILD_PLAN F20 / F21.
+
+**Tested** 20 Nov 2026, 11:00-11:30 IST, from this session, same curl as above. **The allowlist has grown since 10:50:**
+all 40 hosts of block (2) now pass the proxy (sansad.in, www.sebi.gov.in, rbi.org.in, www.sci.gov.in, dipam.gov.in,
+www.livelaw.in answer `200`). Every **new** host in this section returned `000 proxy` (125 of 125 tested), so the
+`Reach` column says `000 proxy` unless shown otherwise. [V] = confirmed by a live fetch here or by the page itself in web
+search today; [E] = path expected / seen only in secondary sources, confirm once the host is allowed.
+
+### 5.0 Found while testing (act on these first)
+
+1. **PIB is still unreachable even though pib.gov.in is allowed.** `pib.gov.in/...` answers `301` to
+   **www.pib.gov.in**, which is `000 proxy`. Every PIB page and RSS (`RssMain.aspx`, `ViewRss.aspx`, the CCEA page) lives
+   on www.pib.gov.in. Add **www.pib.gov.in** (and static.pib.gov.in for the PDFs) or PIB, Cabinet, DAC, MSP, NBS all stay dark.
+2. **SEBI's RSS is empty today.** `www.sebi.gov.in/sebirss.xml` answers `200` but has **0 items** (only a channel header,
+   lastBuildDate 20 Nov 10:00) [V]. Poll the listing pages instead (all `200`, newest item 19 Nov) [V]:
+   What's New `sebiweb/home/HomeAction.do?doListingAll=yes`; Circulars `...doListing=yes&sid=1&ssid=7&smid=0`;
+   Master circulars `sid=1&ssid=6`; Orders `sid=2&ssid=9&smid=6`; Press releases `sid=6&ssid=23&smid=0`;
+   Reports / consultation papers ("Reports for Public Comments") `sid=4&ssid=38&smid=35`; Regulations `sid=1&ssid=3`;
+   Public issues (DRHPs) `sid=3&ssid=15`; Informal guidance `sid=2&ssid=10`. Category filter `doListingAll=yes&cid=10`
+   = Derivatives only (the F&O rule-change stream).
+3. **RBI RSS is live** [V]: `rbi.org.in/pressreleases_rss.xml` newest 20 Nov 10:20 IST; `notifications_rss.xml` newest
+   11 Nov; feed index `rbi.org.in/Scripts/rss.aspx` also lists `speeches_rss.xml`, `Publication_rss.xml`, `Bulletin_rss.xml`,
+   `tenders_rss.xml`.
+4. **Parliament has a clean public JSON API on sansad.in** (no key, answers here) [V, all fetched today]:
+   - one call per day for everything the Lok Sabha issues: `https://sansad.in/api_ls/ppHome/DailyCalendar?day=D&month=M&year=YYYY&locale=en`
+     (returns List of Business + revised / supplementary lists, Bulletin-I, Bulletin-II, Questions list, Synopsis URLs);
+   - LS List of Business: `api_ls/business/listOfBusinessUrls?lobDay=12&lobMonth=8&lobYear=2026&locale=en` (gave LoB,
+     Revised LoB, Supplementary LoB-1 PDFs); Bulletin-II (government notice of bills / business):
+     `api_ls/business/bulletin2Url?bull2Day=..&bull2Month=..&bull2Year=..`; Questions list `api_ls/question/questionListUrl?quesDay=..`;
+     Synopsis `api_ls/business/synopsisUrl?synDay=..`;
+   - LS questions with ministry, subject, STARRED / UNSTARRED and answer PDF:
+     `api_ls/question/qetFilteredQuestionsAns?loksabhaNo=18&sessionNumber=8&pageNo=1&pageSize=50&locale=en` (gave 12 Aug 2026
+     Q360 "Nuclear Power Generation", Q359 "Rare Earth Elements" with PDF links);
+   - **all bills, both Houses, newest first**: `api_rs/legislation/getBills?...&page=1&size=20&locale=en&sortOn=billIntroducedDate&sortBy=desc`
+     (10,099 records; gives ministry, category, introduced / passed LS / passed RS / assent dates and PDFs; statuses
+     Pending / Passed / Assented / Withdrawn / Lapsed...);
+   - Rajya Sabha List of Business: `api_rs/business/listOfBusinessUrls?lobDay=..&lobMonth=..&lobYear=..&locale=en` (same keys);
+   - session dates: `api_ls/business/getAllLoksabhaAndSession?locale=en` (18th LS, session 8 = 20 Jul-13 Aug 2026 is the
+     latest; the **Winter Session 2026 is not yet in the data or announced** - reports of 15-16 Nov say "likely first week
+     of December");
+   - LS press releases `api_ls/public/ppr/press-release?sortOn&sortBy&locale=en` (newest 19 Nov 14:28) and notices
+     `api_ls/public/updates?locale=en&page=1&size=10` (party position, resignations).
+5. **Supreme Court**: the www.sci.gov.in **home page lists the latest judgments** as `view-pdf/?diary_no=...&type=j&order_date=2026-11-19`
+   links [V, 19 Nov items today] - poll it. The daily cause-list PDFs live on another host, **api.sci.gov.in**
+   (`api.sci.gov.in/jonew/cl/YYYY-MM-DD/F_J_1.pdf`, newest seen 18 Nov 2026) [V], which is `000 proxy`; the
+   `/cause-list/` page itself is a WordPress form (admin-ajax) [V].
+6. **LiveLaw**: `www.livelaw.in/feed` returns `500`; use `www.livelaw.in/news-sitemap-daily.xml` (newest 11:25 IST today) or
+   `google_feeds.xml` (05:43 GMT) [V].
+7. **Many ministry sites (S3WaaS platform) keep their PDFs on `cdnbbsr.s3waas.gov.in`** (e.g. MNRE ALMM orders) [V] - one host
+   that unlocks attachments for several ministries.
+8. **Sansad TV live** is an HLS stream on `hls.media.nic.in/hls/live/rstv/rstv.m3u8` (linked from sansad.in/ls) [V] - a
+   cleaner source for F17 speech-to-text than YouTube.
+
+### 5.1 PARLIAMENT
+
+| Host | Exact list page / feed / JSON | What it moves (CE / PE examples) | Speed | Reach | Who |
+|---|---|---|---|---|---|
+| sansad.in (LS) | JSON in 5.0 #4; pages `sansad.in/ls/business/agenda` (List of Business), `/ls/legislation/bills`, `/ls/questions/questions-and-answers`, `/ls/business/provisional-calendar`, `/ls/business/papers-laid`, `/ls/committee/subjects-reports`, `/ls/debates/text-of-debates` (uncorrected debates) [V all 200] | Bill listed in LoB / Bulletin-II -> policy basket (e.g. Mines & Minerals amendment -> NMDC, VEDL, HINDZINC; Insurance laws -> LICI, HDFCLIFE, SBILIFE; telecom / shipping / power bills). A minister's written answer (FDI cap, PLI, duty) moves names in the 12:00-13:00 window when answers are laid. Committee reports (e.g. Finance committee on crypto, F&O) -> BSE, ANGELONE | LoB for tomorrow out the **evening before** (~18:00-21:00); Bulletin-II same day; answers PDF on the day; debates by evening | `302` -> 200 | BOTH |
+| sansad.in (RS) | `/rs/house-business/items-of-business`, `/rs/legislation/bills`, `/rs/legislation/bills-with-committees`, `/rs/questions/questions-and-answers`, `/rs/house-business/provisional-calendar`, `/rs/debates/verbatim`, `/rs/committees/committee-meetings`, `/rs/pressRelease` [V all 200]; JSON `api_rs/business/listOfBusinessUrls`, `api_rs/business/bulletin2/years`, `api_rs/legislation/getBillStatus` [V] | Same as LS; bill "passed by RS" = last step before assent -> the day's CE / PE on the basket | same | `200` | BOTH |
+| rsdoc.nic.in | Back end the RS pages call for questions / members (`rsdoc.nic.in/question/GetAllministary`, `rsdoc.nic.in/Memberweb/...`) [V in sansad.in JS] | RS starred / unstarred answers (needed for full RS question text) | on the day | `000 proxy` | SERVER |
+| rsdebate.nic.in | RS debates / question archive PDFs (`rsdebate.nic.in/bitstream/...`) [V in search] | Scoring / evidence (what the minister said) | next day | `000 proxy` | SERVER |
+| eparlib.sansad.in (also eparlib.nic.in) | Parliament Digital Library, LS debates 1952-2025, Q&A PDFs (`eparlib.sansad.in/handle/123456789/7`) [V] | Background, past answers on a subject (e.g. AGR, royalty) | days | `000 proxy` | SERVER |
+| elibrary.sansad.in | DSpace API `elibrary.sansad.in/server/api/discover/search/objects?...sort=dc.date.issued,DESC` (called by sansad.in) [V in JS] | Newest committee reports / papers | days | `000 proxy` | SERVER |
+| sansadtv.nic.in + hls.media.nic.in | `sansadtv.nic.in/show/live-recorded`; live HLS `hls.media.nic.in/hls/live/rstv/rstv.m3u8` [V] | Minister speaking in the House / Question Hour, live -> PSU / policy names (F17) | live | `000 proxy` | SERVER (F17) |
+| prsindia.org | Bill track `prsindia.org/billtrack` (status: Pending / Passed / Draft), `/billtrack/category/finance-industry-and-labour`, `/billtrack/category/infrastructure-and-environment`, session track `/sessiontrack/<session>/session-alert` and `/bill-legislation`, `/policy/monthly-policy-review` [V] | Pre-session list of bills likely to be taken up (Session Alert, out ~1 week before) = F21 PENDING list; draft bills open for comment | session alert ~a week before; bill pages same / next day | `000 proxy` | BOTH |
+| loksabha.nic.in, rajyasabha.nic.in, loksabhaph.nic.in | Legacy; sansad.in replaced them (other govt sites still link rajyasabha.nic.in) [E] | - | - | `000 proxy` | neither (not needed) |
+
+### 5.2 GOVERNMENT (Cabinet, PIB, Gazette, ministries)
+
+| Host | Exact list page / feed | What it moves | Speed | Reach | Who |
+|---|---|---|---|---|---|
+| www.pib.gov.in | RSS `www.pib.gov.in/RssMain.aspx?ModId=6&Lang=2&Regid=3` [V on ViewRss.aspx; English is expected at `Lang=1`, confirm]; feed index `ViewRss.aspx?reg=3`; Cabinet / CCEA `www.pib.gov.in/Content/123_8_CCEADecisions.aspx` [V]; ministry filter via archive `archive.pib.gov.in/archive2/AdvSearch.aspx` | Cabinet (usually Wednesday) / CCEA: MSP (CHAMBLFERT, COROMANDEL, sugar), NBS subsidy (Rabi 2026-27 approved 11 Nov 2026), energy-storage scheme (4 Nov: Rs 14,500 cr -> EXIDEIND, TATAPOWER, NTPC), rail / metro projects (RVNL, IRCON, RAILTEL), DAC AoNs (HAL, BEL, BDL, MAZDOCK, COCHINSHIP, BEML) | Minister's briefing ~15:00-16:30, release within minutes; evening releases 17:00-22:00 (J25) | 301 -> `000 proxy` | BOTH |
+| static.pib.gov.in | PDFs / factsheets behind PIB releases [V] | same | same | `000 proxy` | SERVER |
+| newsonair.gov.in | All India Radio news: Cabinet, DAC, auction launches often posted first by AIR [V in search] | second witness for PIB | minutes | `000 proxy` | BOTH |
+| www.pmindia.gov.in | `news_updates` (Cabinet decisions mirrored) [V] | witness | minutes-hours | `000 proxy` | SERVER |
+| egazette.gov.in | Home page lists newest Extraordinary and Weekly gazettes (Directorate of Printing) [V]; search by ministry / subject | NOTIFIED step of the pipeline: customs ADD / safeguard duty, GST rate notifications, rules (IT Rules, Electricity Rules), price orders | Extraordinary same day, often late evening | `000 proxy` | SERVER (F20) |
+| financialservices.gov.in (DFS) | `financialservices.gov.in/beta/en/whats-new`, `/beta/en/press-releases` [V] | UPI MDR (15 Sep 2026 release -> PAYTM), PSU bank / insurance (LICI, GICRE, NIACL) capital, bank mergers | hours | `000 proxy` | BOTH |
+| dea.gov.in (DEA) | Press releases, G-sec / sovereign gold bond notices [E] | Borrowing calendar -> banks; FDI policy | hours | `000 proxy` | SERVER |
+| cbic-gst.gov.in, taxinformation.cbic.gov.in (CBIC) | `cbic-gst.gov.in/central-tax-notifications.html` (GST central tax, rate) [V]; customs tariff / ADD / safeguard notifications on taxinformation.cbic.gov.in [E] | GST rate change -> autos, FMCG, cement, insurance; ADD / safeguard on steel (TATASTEEL, JSWSTEEL, SAIL, JINDALSTEL), chemicals (SRF, NAVINFLUOR, DEEPAKNTR, AARTIIND), solar glass | often late evening | `000 proxy` | SERVER (F20) |
+| incometaxindia.gov.in (CBDT) | `incometaxindia.gov.in/Pages/communications/notifications.aspx`, `/circulars.aspx` [V] | STT / buy-back / capital-gains rules -> BSE, ANGELONE, CDSL; safe-harbour rules -> IT | hours | `000 proxy` | SERVER |
+| www.gstcouncil.gov.in | `www.gstcouncil.gov.in/en/press-release`, `/what-s-new` [V; 57th meeting recommendations 08-10-2026] | Council meeting outcome -> autos, cement, insurance, FMCG, online gaming (NAZARA, DELTACORP) | release same evening; date of next (58th) meeting not announced | `000 proxy` | BOTH |
+| dipam.gov.in | `dipam.gov.in/disinvestmentReceiptsDtls` (OFS / stake-sale receipts), `/circular`; fastest is @SecyDIPAM on X [V] | OFS floor price the evening before -> PE on the PSU at the open (COALINDIA, LICI, NHPC, IRFC, BANKINDIA, IOB) | X post ~18:00-21:00 the day before | `200` (allowed) | BOTH |
+| www.mca.gov.in | RSS index `www.mca.gov.in/content/mca/global/en/notifications-tender/rss-feeds.html` (press releases, notices and circulars) [V] | Companies Act / CSR / merger rules; inspection orders | hours | `000 proxy` | SERVER |
+| www.dgft.gov.in | `www.dgft.gov.in/CP/?opt=notification`, `?opt=public-notice`, `?opt=trade-notice` [V] | Export bans / MEP on rice, sugar, onion (BALRAMCHIN for sugar), iron-ore / steel export duty (NMDC, JSWSTEEL, TATASTEEL) | often evening | `000 proxy` | SERVER (F20) |
+| www.dgtr.gov.in (and dgtr.gov.in) | Initiations, final findings, sunset reviews (AD(OI)-.., AD(SSR)-..) [E path; findings seen 24-25 Sep, 23 Oct 2026 via secondary sources] | Final finding = duty likely in ~3 months (finance ministry notifies) -> CE on the domestic maker (steel pipes, aluminium foil HINDALCO, chemicals SRF / AARTIIND, solar glass), PE on users | daily during busy weeks (last working days of a quarter are heavy) | `000 proxy` | SERVER (F20) |
+| www.meity.gov.in | Notifications (IT Rules amendments, e.g. AI-content rules Feb 2026), semiconductor / ECMS approvals [E] | DIXON, KAYNES, TATAELXSI (electronics / semiconductor approvals); social-media rules | hours | `000 proxy` | SERVER |
+| mod.gov.in | MoD releases (DAC mostly mirrored on PIB; last DAC 26 Oct 2026 ~Rs 2.12 trn) | HAL, BEL, BDL, MAZDOCK, COCHINSHIP, BEML, SOLARINDS, DATAPATTNS CE | DAC release evening | `000 proxy` | SERVER |
+| powermin.gov.in | `powermin.gov.in/en/announcements` (rules, guidelines, orders) [V] | Electricity (Amendment) Rules, fuel-cost pass-through, ISTS waiver -> NTPC, POWERGRID, TATAPOWER, ADANIPOWER, JSWENERGY, IEX, PFC, RECLTD | hours | `000 proxy` | SERVER |
+| mnre.gov.in + cdnbbsr.s3waas.gov.in | ALMM List-I / II / III orders and OMs (PDFs on cdnbbsr.s3waas.gov.in) [V] | Solar makers (WAAREEENER, PREMIERENE, INOXWIND, SUZLON) | hours | `000 proxy` | SERVER |
+| cea.nic.in + npp.gov.in | `cea.nic.in/notification/?lang=en`, `/monthly-installed-capacity-report/`; daily generation PDF `npp.gov.in/public-reports/cea/daily/dgr/DD-MM-YYYY/dgr1-YYYY-MM-DD.pdf` [V] | Demand / coal stock stress -> COALINDIA, NTPC, power names | daily ~morning | `000 proxy` | SERVER (F24) |
+| grid-india.in, report.grid-india.in | Reports index; daily NLDC PSP PDFs (see row #56-57 above) | peak demand / shortage | daily | `000 proxy` | SERVER (F24) |
+| mopng.gov.in | MoPNG releases / orders (windfall tax, APM gas, LPG) [E] | ONGC, OIL, RELIANCE, BPCL, HINDPETRO, IOC, GAIL, IGL, MGL | hours | `000 proxy` | SERVER |
+| ppac.gov.in | `ppac.gov.in/archives/impnews` (Indian basket, RSP, gas price), `/prices` [V] | OMC margins, APM gas price (1st of month) -> IGL, MGL, GUJGASLTD, ONGC | daily / monthly | `000 proxy` | SERVER (F24) |
+| morth.gov.in, morth.nic.in | `morth.gov.in/toll` (toll notifications), circular PDFs on morth.nic.in [V] | Toll-fee rules and HAM / EPC policy -> road EPC order flow (LT); low direct F&O impact | days | `000 proxy` | SERVER |
+| nhai.gov.in, tis.nhai.gov.in | Tenders / awards, toll info system [V] | Order wins for road EPC names; toll-rate revisions 1 Apr | days | `000 proxy` | SERVER |
+| indianrailways.gov.in | Railway Board freight rate circulars `indianrailways.gov.in/railwayboard/uploads/directorate/traffic_comm/...` [V] | Freight rate changes -> CONCOR, coal / cement freight; projects -> RVNL, IRCON, IRFC | days | `000 proxy` | SERVER |
+| steel.gov.in | Releases, PQ answers [V] | Safeguard duty push (final 3-yr duty notified 31 Dec 2025) -> TATASTEEL, JSWSTEEL, SAIL, JINDALSTEL | days | `000 proxy` | SERVER |
+| mines.gov.in | Critical-mineral auction tranches (9th tranche 5 Nov 2026, 20 blocks) [E path; facts via PIB / AIR] | NMDC, VEDL, HINDZINC, HINDCOPPER, NATIONALUM, COALINDIA | event days | `000 proxy` | SERVER |
+| coal.gov.in, coal.nic.in | Nominated Authority `coal.gov.in/nominated-authority/auction-allotment`; press PDFs `coal.nic.in/sites/default/files/YYYY-MM/Press*.pdf` [V] | Commercial coal auctions (16th round 17 Sep 2026) -> COALINDIA PE / private miners CE | event days | `000 proxy` | SERVER |
+| dot.gov.in | `dot.gov.in/whats-new` [V] | AGR / spectrum / bank-guarantee relief -> IDEA, BHARTIARTL, INDUSTOWER | hours | `000 proxy` | SERVER |
+| www.civilaviation.gov.in | Releases / orders [V] | INDIGO, GMRAIRPORT (airport policy, ATF) | hours | `000 proxy` | SERVER |
+| cdsco.gov.in | `cdsco.gov.in/opencms/opencms/en/Notifications/Public-Notices/`, `/en/Notifications/Alerts` (monthly NSQ / spurious), `/en/Notifications/Gazette-Notifications` [V] | FDC bans, NSQ alerts naming makers, approvals -> pharma PE / CE | days | `000 proxy` | SERVER (F20) |
+| nppaindia.nic.in | Price notifications / ceiling-price orders (S.O. numbers) [V mention] | Price caps -> pharma (SUNPHARMA, CIPLA, LUPIN, ALKEM, TORNTPHARM, GLENMARK, ABBOTINDIA) | monthly-ish; WPI revision 1 Apr | `000 proxy` | SERVER (F20) |
+| fert.gov.in | NBS rate notifications [E] (decision itself comes via Cabinet / PIB) | CHAMBLFERT, COROMANDEL (subsidy rates per tonne) | after Cabinet | `000 proxy` | SERVER |
+| chemicals.gov.in | Dept of Chemicals & Petrochemicals orders (QCOs) [E] | SRF, PIDILITIND, chemicals basket | days | `000 proxy` | SERVER |
+| www.fssai.gov.in | `www.fssai.gov.in/advisories.php`, `/all-whatnew.php` [V] | Labelling / ban orders -> NESTLEIND, BRITANNIA, TATACONSUM, VBL, JUBLFOOD | days | `000 proxy` | SERVER (F20) |
+
+### 5.3 REGULATORS and their sub-divisions
+
+| Host | Exact list page / feed | What it moves | Speed | Reach | Who |
+|---|---|---|---|---|---|
+| www.sebi.gov.in | Listings in 5.0 #2 (circulars, master circulars, orders, consultation papers, board meeting press releases "Key decisions taken in the SEBI Board meeting dated ..."), SEBI hearing cause list `sebiweb/home/cause-list.jsp` [V]; last board meeting 215th on 24 Sep 2026, next not announced | F&O rules (lot size, weekly expiry, position limits) -> BSE, ANGELONE, CDSL, CAMS, KFINTECH, MCX, NUVAMA; orders against companies / promoters -> PE on that share; MF rules -> HDFCAMC, NAM-INDIA, ABSLAMC | circulars any time, often 17:00-21:00; board decisions same evening | `200` | BOTH |
+| rbi.org.in | RSS in 5.0 #3; MPC statement page; daily money-market ops | Policy, liquidity, bank / NBFC restrictions (business embargo = PE: e.g. NBFC gold-loan bans MUTHOOTFIN, MANAPPURAM), PCA, digital lending | real time | `200` | BOTH |
+| irdai.gov.in (www.irdai.gov.in) + policyholder.gov.in | Circulars, regulations, exposure drafts on irdai.gov.in [E paths]; mirror lists `policyholder.gov.in/web/guest/circulars`, `/web/guest/exposure-drafts` [V] | LICI, HDFCLIFE, SBILIFE, ICICIPRULI, ICICIGI, POLICYBZR - commission caps, surrender value, Bima Sugam, FDI 100% | exposure drafts appear quietly, often evening; comments windows ~21-30 days (one due 23 Nov 2026) | `000 proxy` | BOTH |
+| www.pfrda.org.in | `www.pfrda.org.in/web/pfrda/regulatory-framework/circulars` (active / inoperative), `/master-circulars/active-master-circulars`, exposure drafts [V] | NPS scheme rules / fund-manager fees -> HDFCAMC (pension arm), low overall | days | `000 proxy` | SERVER |
+| www.ifsca.gov.in | Legal framework (circulars, regulations) `www.ifsca.gov.in/Legal/Index/...`, news `www.ifsca.gov.in/Home/NewSection` [V] | GIFT City rules (NSE IX, ship leasing) - low for F&O | days | `000 proxy` | SERVER |
+| www.trai.gov.in (trai.gov.in) | `www.trai.gov.in/whats-new`, consultations `trai.gov.in/release-publication/consultation`, recommendations `trai.gov.in/release-publication/recommendation`, press releases `trai.gov.in/notifications/archived-press-release` [V] | Tariff orders, spectrum pricing recommendations (IMT auction Feb 2026), monthly subscriber data (~27th-28th) -> BHARTIARTL, IDEA, INDUSTOWER; broadcasting -> ZEEL, SUNTV | releases 16:00-20:00 | `000 proxy` | BOTH |
+| cercind.gov.in | Orders `cercind.gov.in/recent_orders.html` (English page showed 2025 in cache; Hindi `recent_orders_hin.html` showed 2026 orders), RoPs `recent_rops.html`, petitions status `Current_petitions_status_active.html`, draft regulations [V] | Market coupling / trading margins -> IEX PE / CE; transmission tariff -> POWERGRID; generation tariff -> NTPC, NHPC, SJVN, TATAPOWER | order posting lags hearing by days-weeks | `000 proxy` | SERVER (F20) |
+| pngrb.gov.in | `pngrb.gov.in/eng-web/site.html`; PDFs `pngrb.gov.in/pdf/public-notice/YYYYMMDD_PN.pdf`, `/pdf/orders/YYYYMMDD_TariffOrder.pdf`, `/pdf/press-note/YYYYMMDD_PR.pdf` [V] | Unified pipeline tariff -> GAIL; CGD authorisations / exclusivity -> IGL, MGL, GUJGASLTD; PETRONET | days | `000 proxy` | SERVER (F20) |
+| www.cci.gov.in (cci.gov.in) | Combination orders (Section 31) `www.cci.gov.in/combination/order/details/order/<id>/0/orders-section31` [V pattern]; list page `.../combination/orders-section31` [E]; antitrust orders [E]; CCI also posts approvals on X | Deal approvals (acquirer CE / unblock), antitrust penalties (PE: e.g. tyre, cement, digital) | approvals weekly (Tue / Wed board), tweet same day | `000 proxy` | BOTH |
+| ibbi.gov.in | `ibbi.gov.in/en/orders/ibbi` (orders, paginated), regulations, What's New (resolution plans, auctions) [V] | Insolvency rule changes -> lenders, ARCs; IBC timelines | days | `000 proxy` | SERVER |
+| nppaindia.nic.in, cdsco.gov.in, www.fssai.gov.in | see 5.2 | | | | |
+| www.dgca.gov.in | Monthly domestic traffic (Domestic Traffic / Air Traffic reports) [E path]; safety orders | INDIGO (traffic, share ~mid-month), grounding / safety orders PE | monthly ~15th-20th | `000 proxy` | SERVER (F24) |
+| aera.gov.in | `aera.gov.in/tariff-orders` (paginated), `/public-notices`, `/courttribunal-orders` [V] | Airport tariff (DIAL, MIAL, Adani airports) -> GMRAIRPORT, ADANIENT | days | `000 proxy` | SERVER |
+| nhai.gov.in, cea.nic.in, grid-india.in | see 5.2 | | | | |
+| npci.org.in (www.npci.org.in) | UPI circulars `npci.org.in/what-we-do/upi/circular` (OC numbers), UPI steering-committee minutes, consolidated circular v1.0 (18 Sep 2026) [V] | Market-share cap deadline (31 Dec 2026), MDR, UPI features -> PAYTM (and Pine Labs / MobiKwik not F&O), banks | circular PDFs any time; often found first via news | `000 proxy` | BOTH (POLITICAL_CYCLE POLICY CLOCK) |
+| www.amfiindia.com | `www.amfiindia.com/research-information/amfi-monthly` (monthly note, flows; Oct 2026 note out) [V] | HDFCAMC, NAM-INDIA, CAMS, KFINTECH; SIP flows = market tide | ~10th of month | `000 proxy` | SERVER (F24) |
+| State ERCs | see 5.5 | | | | |
+
+### 5.4 COURTS and TRIBUNALS
+
+| Host | Exact list page / feed | What it moves | Speed | Reach | Who |
+|---|---|---|---|---|---|
+| www.sci.gov.in | Home page "latest judgements" `view-pdf/?diary_no=...&type=j&order_date=...` [V]; `/cause-list/`, `/daily-order-case-no/`, `/judgements-case-no/`, `/press-release/`, `/notices-and-circulars/`, `/calendar/` [V] | AGR / spectrum (IDEA, BHARTIARTL), mining royalty (NMDC, COALINDIA, VEDL), gaming (NAZARA, DELTACORP), tax (BHARTIARTL, VEDL), environment closures | judgments uploaded same day; cause list evening before | `200` | BOTH |
+| api.sci.gov.in | Daily cause-list PDFs `api.sci.gov.in/jonew/cl/YYYY-MM-DD/F_J_1.pdf` (F_J_2 ...) [V] | Tag F&O names listed tomorrow (F21 watch item) | ~20:00-23:00 day before | `000 proxy` | BOTH |
+| www.livelaw.in | `www.livelaw.in/news-sitemap-daily.xml` [V fresh]; live threads on the article pages | First text of a ruling within minutes | minutes | `200` | BOTH |
+| www.barandbench.com | RSS `www.barandbench.com/feed` [V in search]; daily sitemaps `/sitemap/sitemap-daily-YYYY-MM-DD.xml` [V] | second witness | minutes | `000 proxy` | BOTH |
+| www.scobserver.in | Supreme Court Observer case pages (tracks big pending matters) [V] | F21 PENDING court items (what is listed, what is reserved) | days | `000 proxy` | SERVER |
+| delhihighcourt.nic.in | `delhihighcourt.nic.in/web/cause-lists/cause-list` (PDF cause lists incl. "Pronouncement of Judgment") [V]; new site since 21 Apr 2025 | Patent / pharma (DRREDDY, GLENMARK, ZYDUSLIFE), tax, arbitration awards (e.g. DMRC-type), telecom | cause list evening before | `000 proxy` | SERVER |
+| bombayhighcourt.nic.in | Cause lists / judgments (e.g. `ordfbench.php`) [V] | Tax, corporate (SEBI-related writs), Maharashtra policy | evening before | `000 proxy` | SERVER |
+| nclt.gov.in | `nclt.gov.in/order-judgement-date-wise` (captcha), `nclt.gov.in/circulars` (dated order notes), Cause List menu [V] | Insolvency admission / resolution approval -> the debtor PE / acquirer CE; lenders | orders uploaded days later; LiveLaw / IBC press faster | `000 proxy` | SERVER |
+| nclat.nic.in | `nclat.nic.in/daily-order-data`; cause list PDFs `nclat.nic.in/sites/default/files/YYYY-MM/Causelist_ch_DD.MM.YYYY.pdf` [V] | IBC appeals, CCI appeals (penalty relief CE) | cause list day before | `000 proxy` | SERVER |
+| greentribunal.gov.in | Cause list (benches), Judgement / Orders menu, `/important-orders` [V] | Plant closure / environment fines -> cement, chemicals, power, mining | days | `000 proxy` | SERVER |
+| aptel.gov.in | Daily orders `aptel.gov.in/en/dailyorder/tab3`, cause list `aptel.gov.in/causelist/tab3`, `/en/latest-updates` (finals lists) [V] | CERC / SERC appeals: IEX coupling, discom dues, tariff -> IEX, TATAPOWER, ADANIPOWER, JSWENERGY, POWERGRID | daily | `000 proxy` | SERVER |
+| satweb.sat.gov.in | Securities Appellate Tribunal: Cause List and Order menus [V] | Stay / reversal of SEBI orders -> that share CE (e.g. promoter bans) | orders same / next day | `000 proxy` | SERVER |
+| tdsat.gov.in | Daily cause list PDFs `tdsat.gov.in/daily_causelist/YYYY-MM-DD_*.pdf`; orders `tdsat.gov.in/order_files/final/YYYY/Month/...pdf` [V] | Telecom / broadcasting disputes -> IDEA, BHARTIARTL, ZEEL, SUNTV | day before | `000 proxy` | SERVER |
+| cestat.gov.in | `cestat.gov.in/viewcauselist`, Final Orders / Daily Orders menus, `openfile/2/<id>` [V] | Big customs / excise / service-tax demands -> the named share | days | `000 proxy` | SERVER |
+
+### 5.5 STATES that move F&O shares
+
+| State / host | Exact list page | What it moves | Speed | Reach | Who |
+|---|---|---|---|---|---|
+| Maharashtra - merc.gov.in | Orders as `merc.gov.in/wp-content/uploads/YYYY/MM/<order>.pdf` (MYT orders Mar 2025, MSEDCL review 2026) [V]; listing page [E] | TATAPOWER (Mumbai licence), ADANIENSOL (Mumbai distribution), JSWENERGY; Maharashtra excise hikes (Jun 2025: IMFL +50-60%) -> UNITDSPR, RADICO (from news, excise site not verified) | orders late Mar (tariff) + petitions | `000 proxy` | SERVER |
+| Gujarat - gercin.org | `gercin.org/order/` (tariff, RE, petition orders; FY27 orders 25 Mar 2026) [V] | TORNTPOWER (Ahmedabad / Surat), ADANIPOWER, GUJGASLTD (via state gas policy) | late Mar + RE orders | `000 proxy` | SERVER |
+| Tamil Nadu - www.tnerc.tn.gov.in | `www.tnerc.tn.gov.in/website/TariffOrders.aspx`, orders `/Orders/files/...pdf` [V] | Discom tariff; wind / solar (SUZLON, INOXWIND); state liquor (TASMAC) -> spirits | yearly (Jul) | `000 proxy` | SERVER |
+| Uttar Pradesh - uperc.org | Tariff orders (FY27 retail tariffs retained; UPPTCL / UPSLDC orders Apr 2026 via news) [V older PDFs]; UP power privatisation (PURVANCHAL / DAKSHINANCHAL) and excise policy 2026-27 (Feb) via news / state sites | PFC, RECLTD (privatisation), TATAPOWER, TORNTPOWER (bidders); UNITDSPR, RADICO (excise) | yearly + event days | `000 proxy` | SERVER |
+| Karnataka - kerc.karnataka.gov.in | KERC orders (true-up Apr 2026, solar tariff 25 Aug 2026; seen via discom / news) [E host] | BESCOM-area industry; liquor excise (state budget) -> UNITDSPR, RADICO; mining (iron ore) -> JSWSTEEL, NMDC | yearly + event | `000 proxy` | SERVER (not added: host not verified) |
+| All states | Budgets (Feb-Mar), excise policies (Feb-Apr), mining auctions, power purchase / privatisation decisions | as above | POLITICAL_CYCLE section D: state excise Feb-Mar 2027 | - | OUTSIDE reads via ET / BS / Mint (already allowed) |
+
+### 5.6 How fast each body usually publishes (for alert routing)
+
+- **Seconds-minutes (live alert path):** RBI RSS, SEBI What's New, PIB (once www.pib.gov.in is allowed), Sansad TV, LiveLaw /
+  Bar & Bench, sansad.in LoB / Bulletin-II JSON, Cabinet briefing, DIPAM secretary on X, CCI on X.
+- **Same evening (19:45 note / 07:15 note):** SEBI circulars and board outcomes, TRAI, GST Council, Gazette Extraordinary,
+  DGFT, DGTR findings, SC cause list (api.sci.gov.in), NCLAT / TDSAT / APTEL cause lists, NPCI circulars, DAC.
+- **Days (pipeline / scoring, not alerts):** CERC / SERC orders, NCLT orders, NGT, CESTAT, CDSCO, NPPA, FSSAI, IBBI,
+  AERA, PNGRB orders, ministry "what's new" pages.
+
+---
+
+### ADD TO ALLOWED DOMAINS (regulatory)
+
+New hosts only (none is in block 2). Most useful first. All returned `000 proxy` today; none is known to block cloud
+machines; all were seen as real hosts today (live link, page in web search, or linked from an official site). Left out on
+purpose: legacy loksabha.nic.in / rajyasabha.nic.in / loksabhaph.nic.in (replaced by sansad.in), and kerc.karnataka.gov.in,
+mopng.gov.in, mines.gov.in, dea.gov.in, fert.gov.in, chemicals.gov.in, www.meity.gov.in, taxinformation.cbic.gov.in,
+cabsec.gov.in (real sites but not confirmed by a page today; add later if F20 needs them). After adding, re-run the curl;
+drop any that answers `403 site`.
+
+```
+www.pib.gov.in
+api.sci.gov.in
+static.pib.gov.in
+egazette.gov.in
+npci.org.in
+www.npci.org.in
+www.trai.gov.in
+trai.gov.in
+irdai.gov.in
+www.irdai.gov.in
+www.cci.gov.in
+cci.gov.in
+www.barandbench.com
+www.dgft.gov.in
+www.dgtr.gov.in
+dgtr.gov.in
+cbic-gst.gov.in
+www.gstcouncil.gov.in
+cercind.gov.in
+www.cercind.gov.in
+pngrb.gov.in
+newsonair.gov.in
+prsindia.org
+financialservices.gov.in
+incometaxindia.gov.in
+www.mca.gov.in
+cdsco.gov.in
+nppaindia.nic.in
+www.fssai.gov.in
+dot.gov.in
+powermin.gov.in
+satweb.sat.gov.in
+nclat.nic.in
+nclt.gov.in
+aptel.gov.in
+tdsat.gov.in
+delhihighcourt.nic.in
+bombayhighcourt.nic.in
+greentribunal.gov.in
+cestat.gov.in
+ibbi.gov.in
+www.amfiindia.com
+www.dgca.gov.in
+aera.gov.in
+policyholder.gov.in
+www.pfrda.org.in
+www.ifsca.gov.in
+mnre.gov.in
+cdnbbsr.s3waas.gov.in
+cea.nic.in
+npp.gov.in
+grid-india.in
+report.grid-india.in
+ppac.gov.in
+coal.gov.in
+coal.nic.in
+steel.gov.in
+www.civilaviation.gov.in
+mod.gov.in
+indianrailways.gov.in
+nhai.gov.in
+morth.gov.in
+morth.nic.in
+rsdoc.nic.in
+rsdebate.nic.in
+eparlib.sansad.in
+elibrary.sansad.in
+sansadtv.nic.in
+www.pmindia.gov.in
+archive.pib.gov.in
+www.scobserver.in
+merc.gov.in
+gercin.org
+www.tnerc.tn.gov.in
+uperc.org
+```
+
+Count: **75 new hosts.** Server-only extra (not needed in this session): hls.media.nic.in (Sansad TV live HLS for F17).
+
+### FOR THE SERVER (F20 / F21)
+
+Gentle polling: one request per host per interval, honour robots.txt, back off on 403 / 429 and log (never evade a block).
+"Page hash" = fetch, strip boilerplate, diff the item list, alert on new rows only.
+
+```
+EVERY 60 s (09:00-23:00 IST), RSS / JSON / small pages:
+  rbi.org.in/pressreleases_rss.xml + notifications_rss.xml
+  www.sebi.gov.in/sebiweb/home/HomeAction.do?doListingAll=yes   (RSS is empty - use this; also cid=10 Derivatives)
+  www.pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3  (+ Lang=2)  once www.pib.gov.in is allowed
+  www.livelaw.in/news-sitemap-daily.xml, www.barandbench.com/feed  (filter on F&O names / regulators)
+  www.sci.gov.in/  home page "latest judgements" links   (court hours 10:30-16:30, then every 15 min)
+WHILE PARLIAMENT SITS (Winter Session 2026 dates not announced yet; poll session list daily to detect it):
+  every 2 min 10:00-20:00: sansad.in/api_ls/ppHome/DailyCalendar?day=..&month=..&year=..&locale=en (today AND tomorrow)
+                           sansad.in/api_rs/business/listOfBusinessUrls?lobDay=..&lobMonth=..&lobYear=..&locale=en
+  every 10 min: sansad.in/api_rs/legislation/getBills?...&sortOn=billIntroducedDate&sortBy=desc&size=20  (status changes)
+                sansad.in/api_ls/question/qetFilteredQuestionsAns?loksabhaNo=18&sessionNumber=<n>&pageSize=50  (match ministries
+                to the sector map: Mines, Power, Petroleum, Telecom, Finance, Civil Aviation, Steel, Coal, Defence, Railways)
+  live: hls.media.nic.in/hls/live/rstv/rstv.m3u8 into the F17 speech-to-text
+  daily 07:00: sansad.in/api_ls/business/getAllLoksabhaAndSession?locale=en; prsindia.org session-alert / billtrack
+EVERY 5 min 09:00-23:00, page hash:
+  npci.org.in/what-we-do/upi/circular        www.trai.gov.in/whats-new        www.gstcouncil.gov.in/en/press-release
+  www.cci.gov.in combination orders list     dipam.gov.in (+ DIPAM secretary on X)   www.dgft.gov.in/CP/?opt=notification
+  egazette.gov.in home (Extraordinary list)  cbic-gst.gov.in/central-tax-notifications.html   financialservices.gov.in/beta/en/whats-new
+  irdai.gov.in circulars / exposure drafts (or policyholder.gov.in lists)
+EVERY 15 min 09:00-23:00, page hash:
+  www.dgtr.gov.in   cercind.gov.in/recent_orders.html (+ _hin)   pngrb.gov.in public notices / orders   powermin.gov.in/en/announcements
+  dot.gov.in/whats-new   cdsco.gov.in Public-Notices + Alerts   www.fssai.gov.in/advisories.php   ibbi.gov.in/en/orders/ibbi
+  aera.gov.in/tariff-orders   www.mca.gov.in RSS   incometaxindia.gov.in notifications + circulars   mnre.gov.in
+  aptel.gov.in/en/latest-updates   satweb.sat.gov.in orders   nclat.nic.in/daily-order-data   newsonair.gov.in (cabinet / DAC words)
+CAUSE LISTS (F21 court watch items, tag every F&O name / counterparty, then poll LiveLaw every 60 s when the item is called):
+  20:00 and 23:00: api.sci.gov.in/jonew/cl/<tomorrow>/F_J_1.pdf ...   nclat.nic.in cause list PDF   tdsat.gov.in/daily_causelist
+                   aptel.gov.in/causelist/tab3   delhihighcourt.nic.in/web/cause-lists/cause-list   cestat.gov.in/viewcauselist
+DAILY / MONTHLY:
+  08:00 cea.nic.in + npp.gov.in daily generation; ppac.gov.in/archives/impnews; 1st of month PPAC gas price
+  ~10th www.amfiindia.com AMFI monthly; ~15th-20th www.dgca.gov.in traffic; ~27th-28th TRAI subscriber data
+  weekly: state ERC order pages (merc.gov.in, gercin.org, www.tnerc.tn.gov.in, uperc.org); coal.gov.in / mines.gov.in auctions
+F21 07:00 BUILD (and 12:00 refresh): bills in today's LS / RS List of Business + Bulletin-II; open consultation papers with
+  close dates (SEBI sid=4 ssid=38, TRAI consultation, IRDAI / PFRDA exposure drafts, DGTR open cases); board / council
+  meetings announced (SEBI, GST Council, RBI MPC, CCI); court items listed today; each mapped to F&O shares + direction ->
+  PENDING / ANNOUNCED / NOTIFIED (Gazette) in the policy pipeline; RED when a deadline in POLITICAL_CYCLE's POLICY CLOCK passes.
+```
