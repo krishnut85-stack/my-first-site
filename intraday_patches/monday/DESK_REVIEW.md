@@ -1,5 +1,32 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 21:55 IST - on the 21:48 DATA REPAIR (test overwrote 3 live files) and the E9 question
+- **Repair: ACCEPTED - well caught.** OI base from NSE's official 20 Nov F&O bhavcopy, fake IV rows out, fake chain out, test isolated,
+  originals quarantined with an undo line. Four checks before Monday, please, each one line in STATUS:
+  1. **Full damage list:** every file under the live data folders modified between 17:03 and 17:10 today (find -newermt). Confirm
+     nothing else (quotes store, fo_daily, premium recordings, the desk board) was touched; restore from quarantine / source if so.
+  2. **IV rows by VALUE, not only by time:** you stripped rows after 15:45; a fake row stamped inside market hours would survive.
+     Also drop any row for the test's 5 symbols whose prices were the test's flat 100, whatever its time. Show the counts.
+  3. **The 22 contracts** in Thursday's base but not in the bhavcopy: Monday's OI change for them shows "n/a", never 0 or a huge %.
+  4. **A permanent CHAIN SANITY GATE in code** (the real lesson): a chain is INVALID - not shown, not given to the desk, flagged
+     STALE on the page - if its ATM strike is more than 3% from the live spot / future, if more than half its premiums are equal, or if
+     it is older than 3 minutes in market hours. Same gate for the OI base (contract count < 50% of the previous day's = INVALID).
+     Plus your new rule: every test redirects all outputs and asserts the live files are unchanged.
+- **E9 give-back - the desk's 21:28 wording was WRONG; corrected rule:**
+  - The give-back lock is LATCHED: once the day's peak reached the floor (setting, default five thousand rupees) and he has given back
+    the set share of it, the PROFIT LOCK fires and STAYS on for the rest of the day, even if the day then turns negative.
+  - If the peak reached the floor and the day falls from it straight into the red between two checks (a fast drop), the give-back
+    lock fires at once, latched, with the reason "peak given back".
+  - Peak below the floor: no give-back lock; only the LOSS lock at its own limit.
+  - The LOSS lock is independent; if both fire, the page shows both. Label from what fired, never from the sign of the day.
+  - Unit tests: (a) small peak then loss -> LOSS only at its limit; (b) big peak, give-back hit while positive, day ends negative ->
+    PROFIT LOCK stays; (c) big peak, one-step drop into the red -> PROFIT LOCK fires at once. GIR only blocks BUY NOW; he decides.
+- **Rehearsal cost (FULL1, $3.59 after the first 18 Nov brief):** keep the $24 hard stop - do not raise it. So all three days fit:
+  in the REPLAY only, run the live looks event-driven plus every 15 minutes (not every 5), keep every brief (19:45 / 22:45 / 07:15 /
+  09:08) and every BUY NOW check in full. The EDGE yardstick scores the named picks and their earliness; it does not need 5-minute
+  looks. Report the cost per replayed day and the hour the $8 ladder would have stepped down live - that number tells us whether
+  Monday's full desk reaches the afternoon on $8.
+
 ## 20 Nov 21:28 IST (hourly) - MILESTONE: desk fully on (39 seats, head PASS), FULL1 rehearsal running - verdicts
 - **ACCEPTED:** the go-live shadow (head brief PASS 21:10, 35 / 37 seats PASS, readers R1-R6 PASS), 21 and 31 re-tested PASS, seats.json
   39 on (8 / 30 out by plan), Telegram WOULD SEND only. The $8 cap with LEAN_COMBINED as the automatic step-down and the $24 rehearsal
@@ -13,7 +40,7 @@
      the enum; it now equals brain.py's code enum. Keep sending the head the exact allowed list.
   4. **Index ideas (BANKNIFTY):** ALLOW index options (SERVER_ORDER 6). NIFTY on its own expiry day -> the next weekly; BANKNIFTY has
      monthly only -> December (29 Dec). Same gates (spread, stale quote, R:R, lots for 1% risk).
-- **E9 give-back (21:03): NOT intended - fix.** Give-back ("PROFIT LOCK") applies only when the day's peak P&L reached a floor
+- **E9 give-back (21:03): NOT intended - fix.** (SUPERSEDED by the 21:55 entry: the lock is latched.) Give-back ("PROFIT LOCK") applies only when the day's peak P&L reached a floor
   (default Rs 5,000, a setting he can change); below the floor, or once the day P&L is negative, only the LOSS lock rules apply and the
   label says LOSS, never PROFIT. Add a unit test for "small peak then loss". Do not print his P&L amounts in STATUS (public repo) -
   write "peak below floor, day negative" instead.
