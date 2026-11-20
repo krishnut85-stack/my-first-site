@@ -33,7 +33,7 @@ Last update: 15:44 IST
 | D3 Footer: real models + AI cost | IN PROGRESS | footer shows the engine's real AI status; GO NOW model moves to Opus 5.5 with B6 |  | 07:31 |
 | D4 All 23 pages: 0 console errors, R51 0 FAIL | NOT STARTED |  |  |  |
 | D5 Masked screenshots only | NOT STARTED |  |  |  |
-| E1 Replays 16/18/20 Nov, Oct up day, 27 Oct | NOT STARTED |  |  |  |
+| E1 Replays 16/18/20 Nov, Oct up day, 27 Oct | IN PROGRESS | engine 0.3 + real AI, each day from the evening before (19:45 note included), headless test names (the trader's replay page stays on hold): 16 Nov, 18 Nov, 29 Oct (the October up day, NIFTY +1.08 pct), 27 Oct (last expiry day) running one after another; 20 Nov after tonight's minute and option pulls; December premiums from the recorded option minutes; observer scorecards |  | 15:44 |
 | E2 Pass mark | NOT STARTED |  |  |  |
 | E3 Side by side with the old system | NOT STARTED |  |  |  |
 | F1 Control room / health line + alarm | NOT STARTED |  |  |  |
