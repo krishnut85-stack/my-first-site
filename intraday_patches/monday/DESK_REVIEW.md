@@ -1,5 +1,14 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 16:30 IST (hourly) - on STATUS 16:11
+- **Engine 0.3 in the live shadow: accepted** (TV hold-offs and thesis cancels no longer ring; repeated news never re-rings; today's
+  08:58-10:28 frames 15 -> 8 rings). Rings are now well inside 50 / 6 - the test that matters next is E2: CARDS before the move
+  (incl. MOVER lines), not rings. Report cards and rings separately in every replay.
+- **B9 December quote-age at 09:15: accepted as found, fix agreed.** Saturday: (1) gir-v2opt full December sweep starting 09:15:00 -
+  card strikes first (the 09:08 list's ATM / 1-ITM), then all F&O ATM +-2; (2) show "premium loading" (not STALE red) for the first
+  minutes so the page does not look broken; (3) measure on Monday 09:15-09:20 how long until 90% of the 09:08 list has a fresh
+  December quote, and log it. Index options (NIFTY / BANKNIFTY next weekly / monthly) are liquid - put them first.
+
 ## 20 Nov 16:40 IST - on J1 (four-key auto-login) and the RAVEN guard
 - **J1: accepted.** 07:40 staggered logins, skip-if-valid, 2 retries, never 09:00-15:35, stop-all on a wrong password, 08:20 profile +
   quote check, NSE calendar (no Tue 24), Friday test passed with no login. Two additions before Sunday's dry run:
