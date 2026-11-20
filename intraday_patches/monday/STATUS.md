@@ -160,3 +160,20 @@ Last update: 20:55 IST
 - 23:36 - WEEKEND READERS LIVE (desk 23:00 (a)): gir-v2desk restarted 23:36:26 (tests 58/58); on weekend / holiday budget days each reader runs one batch per 20 min; Monday's $8 day (from Sun 15:40) is back to the normal cadence; the 22:46 night check is unchanged. Tonight's day: $1.19 of $1.50 at 23:36 (READ $0.76, MEET $0.43, SEATS $0.004).
   MY CALL, for the desk to confirm: the 23:35 re-split (READ 0.80) is for the full $8 days. On $1.50 weekend / holiday days READ would be almost spent at once (tonight $0.76) and news would go unread overnight, against your 23:00 intent. So weekend / holiday days get their own split inside $1.50: READ up to $1.00, MEET $0.50 (one head check on a real break), seats only on a weight-5 event from what is left, no LIVE / ASK. Say if you want it otherwise.
   PROOF_2220b (fake brains, the head keeps its brief money before 35 / 36): 07:15 ok and 09:08 ok, $6.51 in total, BUT SEATS went event-only at 09:16 and there were many LIVE refusals. MEET by brief: 19:45 $0.87 / 1.10, 07:15 $0.87 (vs 0.60, using earlier briefs' unused money), 09:08 $0.77 (vs 0.60). The 23:35 fixes (light morning briefs, LIVE 2.10, the quiet rule for rejected seats) are being built; then PROOF runs again.
+- 00:02 - DESK 23:35 FIXES DONE (desk tests 63/63; engine / engine_next 122; gir-v2desk restarts after hours 22:59, 23:36, 23:39, 23:42; BUILD_LOG rows with undo):
+  - LIGHT MORNING BRIEFS: 07:15 "MORNING RE-CHECK" and 09:08 "CONFIRM / KILL LIST" re-check open ideas only (head output capped); no Devil at morning meetings; Connections only if a new weight-3+ item arrived.
+  - HARD FLOORS: own floor + earlier briefs' leftovers, never a later brief's; inside a brief the head goes first ($0.45 kept for it).
+  - BUCKETS: READ 0.80 and LIVE 2.10 on $8 days; weekend / holiday $1.50 days: READ 1.00 / MEET 0.50 / seats on events only / LIVE and ASK 0. Tonight at 00:02: $1.21 of $1.50; readers keep going for several hours.
+  - RETRIES: a seat rejected twice in a row goes QUIET 30 min (logged). The refused head heartbeat used to retry every minute (213 refused calls in PROOF_2220b); it now waits a full heartbeat. Seat 31's failures were budget refusals, not bad cards.
+  - PROOF_2220c PASSES (fake brains, costs simulated from FULL1's real averages, recorded 19 Nov 15:40 -> 20 Nov 15:40, a Monday-shaped day; DESK_rehearsal_PROOF_2220c.md):
+    - 07:15 and 09:08 both delivered.
+    - First LIVE refusal 14:38 (after 14:30).
+    - Total $6.96 (LIVE 2.60, MEET 2.03, SEATS 1.80, READ 0.53).
+    - Brief money: 19:45 $0.87, 22:45 $0, 07:15 $0.58, 09:08 $0.58.
+    - Steps: LEAN 07:17, SEATS event-only 09:16.
+    - LIVE by caller: head looks 11 / $2.34, Devil 3 / $0.20, seat-15 second reads 6 / $0.06.
+    - Missed targets: 07:15 <= $0.50 and 09:08 <= $0.40 (Connections ran both times because new weight-3+ items had arrived, ~$0.33).
+  - CE / PE: every brief must end with a "CE:" and a "PE:" line (candidates with a reason, or "no CE / PE today: reason"); code rejects a brief without them. Rehearsal summaries now split ideas, BUY NOW, WAIT, hits, wrong-side rate and earliness by side, each against its own base rate (rose vs fell). The engine's CE / PE mirror test passes.
+  - FOR THE DESK: "NIFTY / BANKNIFTY futures below VWAP" is on NEITHER side in the engine today (only a CE kill switch exists). Adding it as a hard block changes Monday's calls on both sides without a replay. Decide: (a) a block on both sides (mirror: futures above VWAP for CE); or (b) a witness line only. Nothing changed.
+  - REPORTING: cost per brief, LIVE by hour, LIVE by caller and the side-split EDGE are in the summary; --score-only re-scores old runs.
+- 00:02 - REHEARSAL FULL3 (20 Nov, the 22:20 rules, real brains) at 00:02: 19:45 brief 3 new ideas; 22:45 nothing broke (no AI call); 07:15 re-check 3 new + 3 updated; $3.83 so far. It started before the 23:35 fixes, so its morning briefs are the older (heavier) kind.
