@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 19:49 IST
+Last update: 19:50 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -82,3 +82,4 @@ Last update: 19:49 IST
 - 19:32 - shadow fixes in (gir-v2desk restarted 19:32, 16 tests): R2 wires reader now 45 s / 90 s with batches of 6 and a half-batch retry, then UNREAD with the reason; every time shown in IST; empty reader cards confirmed as 'nothing worth a card' (routine filings, no F&O link) and now logged with counts + reasons; routine filings stripped before the AI read (saves money). Measured: readers $0.001-0.003 a batch, global seats $0.027-0.035 a call.
 - 19:34 - ALL desk prompts landed (48 files: H head analyst, CONTRACTS.md, seats 1-40, readers R1-R6) and copied to the loader; seats switch on only after the desk's reviewer pass + a shadow. Desk 19:30: everything AI counts in the $5 incl. the v2 news reader, whose AI goes OFF once R1-R6 run live (one config flag). Desk 20:15: NO Desk Room page - DESK_WEB_CHANGES.md replaces DESK_TEAM section 6; the desk speaks through the existing F1 GO NOW card, desk-trade GIR row, Morning band + 19:45 ideas table, F8 Analyst tabs and the Ask box (Monday minimum items 1-4 + 8, then 5, 6; 7 drops first) - pages builder redirected.
 - 19:49 - FOR THE DESK (DESK_TEAM 4.7 conflict): the desk's budget day was Fri 15:40 -> Mon 15:40 as ONE $5, so weekend news reading (the v2 reader, $0.28 by 19:55) ate Monday's READ money before the open. The server changed it (live 19:55, 17 tests): every budget day is 15:40 -> 15:40, each with its own $5 and buckets; Sun 15:40 -> Mon 15:40 is Monday's day (holds the Sunday 19:45 brief); Fri->Sat and Sat->Sun are weekend days (readers in slow mode, one batch per 5 min); Mon->Tue is the holiday day. Please confirm or overrule, and update 4.7. Also: the desk HEAD is gated (seats.json 'H' off) until the desk's reviewer marks the prompts reviewed - tonight's 19:47 head slot did not run, no spend. Full shadow of all prompted seats + one head brief running now (test only, no --apply, cap $3).
+- 19:50 - FULL DESK SHADOW (all prompted seats + one head brief, 19:50, ~$0.02) FAILED: every Sonnet / Opus seat and the HEAD were refused by the API (400: the CONTRACTS schema has too many optional parameters for structured outputs); readers R2 / R5 rejected by the validator ('proof' / 'theme' required), R1 / R3 passed with strength-0 warnings, R4 / R6 passed. Fix sent (all-required nullable schema + a no-API schema-limit unit test). The $15 rehearsal waits until this shadow passes. File DESK_shadow_20261120-1950.md.
