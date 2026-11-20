@@ -212,3 +212,10 @@ it in Indian IT. So IT is coming up. This is one of the history."
   not a listed company). Past episodes: STT / LTCG changes moved capital-market shares on budget day itself, not on summit talk.
 - Desk handling: THEME card, WATCH, strength 1, horizon = budget; never a BUY NOW on a speech (no lone voice, OPINION grade).
   Note: ANANDRATHI was already overbought (RSI 70.6) in the 19 Nov scan. Re-score if any official line follows.
+- **The whole CII Financing Summit 2026 (CII-DFS, Mumbai, 19-20 Nov; ended 20 Nov) - desk read:** the one real trigger to watch is
+  SEBI's FPI consultation paper ("very soon"; FPI KYC review moves to every 2 / 8 years from 1 Dec; 5-day onboarding; SEBI-RBI
+  common form) - if it lands: CE tilt CDSL, BSE, CAMS, KFINTECH, HDFCAMC; banks / NIFTY indirectly via FPI flows. Opinion only:
+  the STT pitch, CEA Nageswaran's warning on F&O speculation (93% of individual F&O traders lost money - small PE tilt on BSE /
+  ANGELONE toward the Budget), DIPAM, SEBI WTM Murty, NHB. IRDAI: two working groups in ~10 days (watch PBFINTECH / ICICIGI).
+  Bank of Maharashtra: up to US$175 mn overseas borrowing by 31 Dec (MAHABANK is in the F&O list - the analyst's "not in F&O" was
+  wrong). "AIF exits easier" was NOT confirmed by any report. Nothing is a Monday trigger; do not chase CE on the speeches.
