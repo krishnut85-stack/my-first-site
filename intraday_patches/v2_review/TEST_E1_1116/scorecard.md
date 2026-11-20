@@ -3,7 +3,7 @@
 Made 2026-11-20 16:48:17 IST by v2/testobs/observer.py. Run folder: `<server>/girdata/replay/out/TEST_E1_1116`. Done because: run.json written by the player (the day's end).
 
 ## In one line
-EDGE TEST_E1_1116 2026-11-16: 201 names (60 knowledge-driven) · 2% to close: all 13/201 = 6% vs base 6% → lift 1.15; knowledge 6/60 = 10% vs base 8% → lift 1.25 · old system 16/167 = 10% vs base 7% → lift 1.42 (167 names) || coverage (not the goal): TEST_E1_1116 2026-11-16: catch cards 1 / 19 / 34 / 0 · cards+WATCH 3 / 44 / 6 / 1 · old 22 / 21 / 10 / 1 (before/late/missed/wrong, 2%+) · 3% movers 37: in time 29, late 5, missed 3 · rings 15 (09:15-09:45 1) · AI 723 of 723 (100%), $0.881, 359 calls · flags MISSED MOVER 8, NEWS DIRECTION WRONG 17
+EDGE TEST_E1_1116 2026-11-16: 201 names a day (60 knowledge-driven) · TOP-5 by the engine's own rank (no analyst ideas in this run): >=1% 1/5 20% vs 16% lift 1.23, >=2% 0/5 0% vs 6% lift 0.0 · all names >=1% 36/201 18% vs 16% lift 1.12, >=2% 13/201 6% vs 6% lift 1.15 · knowledge >=2% 6/60 10% vs 8% lift 1.25 · all names >=2% to the next close 26/201 13% vs 13% lift 1.03 · old system >=2% 16/167 10% vs 7% lift 1.42 (167 names) || coverage (not the goal): TEST_E1_1116 2026-11-16: catch cards 1 / 19 / 34 / 0 · cards+WATCH 3 / 44 / 6 / 1 · old 22 / 21 / 10 / 1 (before/late/missed/wrong, 2%+) · 3% movers 37: in time 29, late 5, missed 3 · rings 15 (09:15-09:45 1) · AI 723 of 723 (100%), $0.881, 359 calls · flags MISSED MOVER 8, NEWS DIRECTION WRONG 17
 
 ## EDGE - precision and earliness of GIR's names (the goal)
 
@@ -61,13 +61,14 @@ Every share + side GIR named on 2026-11-16, scored from the price when it was na
 
 ### Names a day and the TOP-5
 
-- card (MUST SEE / CRITICAL): 38 names; top-5 by AI priority: SBIN CE 09:30, ASIANPAINT CE 09:17, PREMIERENE PE 10:32, KARURVYSYA CE 09:19, MAXHEALTH CE 09:45 → 3 of 5 moved 1%+ its way, 2 moved 2%+ (NOT PROVEN (n = 5))
-- engine note 0715: 33 names; top-5 by score / points: BAJFINANCE PE 07:15, HDFCBANK PE 07:15, SBIN PE 07:15, AXISBANK PE 07:15, ICICIBANK PE 07:15 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- engine note 1945: 33 names; top-5 by score / points: BAJFINANCE PE 19:45, HDFCBANK PE 19:45, SBIN PE 19:45, AXISBANK PE 19:45, ICICIBANK PE 19:45 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- go now / get ready (any lane): 182 names; top-5 by AI priority: SBIN CE 09:30, ASIANPAINT CE 09:17, KARURVYSYA CE 09:19, BHARTIARTL CE 09:33, EICHERMOT CE 09:18 → 1 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- prediction loop (lists, fired movers): 6 names; top-5 by list order: PIIND CE 19:45, CUMMINSIND PE 10:41, MANAPPURAM PE 09:18, ABB PE 09:26, COCHINSHIP PE 09:18 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- ALL: 201 names; top-5 by AI priority: SBIN CE 09:30, ASIANPAINT CE 09:17, KARURVYSYA CE 09:19, BHARTIARTL CE 09:33, EICHERMOT CE 09:18 → 1 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- OLD system: 167 names; top-5 by list order: NATIONALUM PE 09:16, AXISBANK CE 09:16, PNB CE 09:16, TMPV PE 09:16, ABB PE 09:16 → 1 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
+- **THE DAY'S TOP-5 (the engine's own rank (no analyst ideas in this run), by AI priority): SBIN CE 09:30, ASIANPAINT CE 09:17, KARURVYSYA CE 09:19, BHARTIARTL CE 09:33, EICHERMOT CE 09:18 → >=1% 1/5 20% vs 16% lift 1.23 · >=2% 0/5 0% vs 6% lift 0.0 · next close >=2% 1/5 20% vs 13% lift 1.58 (NOT PROVEN (n = 5))**
+- card (MUST SEE / CRITICAL): 38 names a day; top-5 by AI priority: SBIN CE 09:30, ASIANPAINT CE 09:17, PREMIERENE PE 10:32, KARURVYSYA CE 09:19, MAXHEALTH CE 09:45 → >=1% 3/5 60% vs 15% lift 3.92 · >=2% 2/5 40% vs 5% lift 8.07 (NOT PROVEN (n = 5))
+- engine note 0715: 33 names a day; top-5 by score / points: BAJFINANCE PE 07:15, HDFCBANK PE 07:15, SBIN PE 07:15, AXISBANK PE 07:15, ICICIBANK PE 07:15 → >=1% 0/5 0% vs 30% lift 0.0 · >=2% 0/5 0% vs 12% lift 0.0 (NOT PROVEN (n = 5))
+- engine note 1945: 33 names a day; top-5 by score / points: BAJFINANCE PE 19:45, HDFCBANK PE 19:45, SBIN PE 19:45, AXISBANK PE 19:45, ICICIBANK PE 19:45 → >=1% 0/5 0% vs 30% lift 0.0 · >=2% 0/5 0% vs 12% lift 0.0 (NOT PROVEN (n = 5))
+- go now / get ready (any lane): 182 names a day; top-5 by AI priority: SBIN CE 09:30, ASIANPAINT CE 09:17, KARURVYSYA CE 09:19, BHARTIARTL CE 09:33, EICHERMOT CE 09:18 → >=1% 1/5 20% vs 16% lift 1.23 · >=2% 0/5 0% vs 6% lift 0.0 (NOT PROVEN (n = 5))
+- prediction loop (lists, fired movers): 6 names a day; top-5 by list order: PIIND CE 19:45, CUMMINSIND PE 10:41, MANAPPURAM PE 09:18, ABB PE 09:26, COCHINSHIP PE 09:18 → >=1% 0/5 0% vs 21% lift 0.0 · >=2% 0/5 0% vs 8% lift 0.0 (NOT PROVEN (n = 5))
+- ALL: 201 names a day; top-5 by AI priority: SBIN CE 09:30, ASIANPAINT CE 09:17, KARURVYSYA CE 09:19, BHARTIARTL CE 09:33, EICHERMOT CE 09:18 → >=1% 1/5 20% vs 16% lift 1.23 · >=2% 0/5 0% vs 6% lift 0.0 (NOT PROVEN (n = 5))
+- OLD system: 167 names a day; top-5 by list order: NATIONALUM PE 09:16, AXISBANK CE 09:16, PNB CE 09:16, TMPV PE 09:16, ABB PE 09:16 → >=1% 1/5 20% vs 24% lift 0.84 · >=2% 0/5 0% vs 10% lift 0.0 (NOT PROVEN (n = 5))
 
 ### The engine note: leakage and the honest check
 

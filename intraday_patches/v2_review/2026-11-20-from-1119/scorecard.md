@@ -3,7 +3,7 @@
 Made 2026-11-20 18:08:24 IST by v2/testobs/observer.py. Run folder: `<server>/girdata/replay/out/2026-11-20-from-1119`. Done because: run.json written by the player (the day's end).
 
 ## In one line
-EDGE 2026-11-20-from-1119 2026-11-20: 277 names (92 knowledge-driven) · 2% to close: all 11/277 = 4% vs base 5% → lift 0.78; knowledge 3/92 = 3% vs base 6% → lift 0.59 · old system 21/288 = 7% vs base 7% → lift 1.07 (288 names) || coverage (not the goal): 2026-11-20-from-1119 2026-11-20: catch cards 0 / 14 / 27 / 1 · cards+WATCH 4 / 36 / 0 / 2 · old 20 / 22 / 0 / 0 (before/late/missed/wrong, 2%+) · 3% movers 40: in time 40, late 0, missed 0 · rings 19 (09:15-09:45 4) · AI 1126 of 1241 (91%), $1.969, 387 calls · flags AI FALLBACK 18, COST SPIKE 1, NEWS DIRECTION WRONG 47
+EDGE 2026-11-20-from-1119 2026-11-20: 277 names a day (92 knowledge-driven) · TOP-5 by the engine's own rank (no analyst ideas in this run): >=1% 0/5 0% vs 23% lift 0.0, >=2% 0/5 0% vs 8% lift 0.0 · all names >=1% 38/277 14% vs 16% lift 0.86, >=2% 11/277 4% vs 5% lift 0.78 · knowledge >=2% 3/92 3% vs 6% lift 0.59 · all names >=2% to the next close not known yet (2026-11-23 has not closed / no data) · old system >=2% 21/288 7% vs 7% lift 1.07 (288 names) || coverage (not the goal): 2026-11-20-from-1119 2026-11-20: catch cards 0 / 14 / 27 / 1 · cards+WATCH 4 / 36 / 0 / 2 · old 20 / 22 / 0 / 0 (before/late/missed/wrong, 2%+) · 3% movers 40: in time 40, late 0, missed 0 · rings 19 (09:15-09:45 4) · AI 1126 of 1241 (91%), $1.969, 387 calls · flags AI FALLBACK 18, COST SPIKE 1, NEWS DIRECTION WRONG 47
 
 ## EDGE - precision and earliness of GIR's names (the goal)
 
@@ -64,14 +64,15 @@ Every share + side GIR named on 2026-11-20, scored from the price when it was na
 
 ### Names a day and the TOP-5
 
-- card (MUST SEE / CRITICAL): 45 names; top-5 by AI priority: APLAPOLLO PE 09:17, ENRIN PE 09:17, CAMS CE 09:58, SAIL PE 09:17, CUB CE 12:30 → 1 of 5 moved 1%+ its way, 1 moved 2%+ (NOT PROVEN (n = 5))
-- engine note 0715: 5 names; top-5 by score / points: HINDALCO PE 07:15, NATIONALUM PE 07:15, HINDZINC PE 07:15, POLYCAB PE 07:15, KEI PE 07:15 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- engine note 1945: 22 names; top-5 by score / points: AUROPHARMA PE 19:45, CIPLA PE 19:45, DRREDDY PE 19:45, LUPIN PE 19:45, SUNPHARMA PE 19:45 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- go now / get ready (any lane): 257 names; top-5 by AI priority: APLAPOLLO PE 09:17, ENRIN PE 09:17, MANKIND CE 09:42, CAMS CE 09:58, TRENT CE 09:45 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- news row (C3, silent): 22 names; top-5 by score / points: VEDL PE 09:00, SYRMA CE 09:20, AMBER CE 09:20, KAYNES PE 09:20, MUTHOOTFIN PE 10:08 → 1 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- prediction loop (lists, fired movers): 18 names; top-5 by list order: WAAREEENER CE 07:15, KALYANKJIL CE 22:45, TMPV CE 07:15, MUTHOOTFIN PE 09:08, ALKEM PE 09:08 → 2 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- ALL: 277 names; top-5 by AI priority: APLAPOLLO PE 09:17, ENRIN PE 09:17, MANKIND CE 09:42, CAMS CE 09:58, TRENT CE 09:45 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- OLD system: 288 names; top-5 by list order: ADANIENSOL PE 09:15, APLAPOLLO PE 09:15, BAJAJ-AUTO CE 09:15, BEL PE 09:15, BLUESTARCO CE 09:15 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
+- **THE DAY'S TOP-5 (the engine's own rank (no analyst ideas in this run), by AI priority): APLAPOLLO PE 09:17, ENRIN PE 09:17, MANKIND CE 09:42, CAMS CE 09:58, TRENT CE 09:45 → >=1% 0/5 0% vs 23% lift 0.0 · >=2% 0/5 0% vs 8% lift 0.0 · next close >=2% not known (NOT PROVEN (n = 5))**
+- card (MUST SEE / CRITICAL): 45 names a day; top-5 by AI priority: APLAPOLLO PE 09:17, ENRIN PE 09:17, CAMS CE 09:58, SAIL PE 09:17, CUB CE 12:30 → >=1% 1/5 20% vs 10% lift 2.02 · >=2% 1/5 20% vs 2% lift 8.72 (NOT PROVEN (n = 5))
+- engine note 0715: 5 names a day; top-5 by score / points: HINDALCO PE 07:15, NATIONALUM PE 07:15, HINDZINC PE 07:15, POLYCAB PE 07:15, KEI PE 07:15 → >=1% 0/5 0% vs 2% lift 0.0 · >=2% 0/5 0% vs 0% lift ? (NOT PROVEN (n = 5))
+- engine note 1945: 22 names a day; top-5 by score / points: AUROPHARMA PE 19:45, CIPLA PE 19:45, DRREDDY PE 19:45, LUPIN PE 19:45, SUNPHARMA PE 19:45 → >=1% 0/5 0% vs 2% lift 0.0 · >=2% 0/5 0% vs 0% lift ? (NOT PROVEN (n = 5))
+- go now / get ready (any lane): 257 names a day; top-5 by AI priority: APLAPOLLO PE 09:17, ENRIN PE 09:17, MANKIND CE 09:42, CAMS CE 09:58, TRENT CE 09:45 → >=1% 0/5 0% vs 23% lift 0.0 · >=2% 0/5 0% vs 8% lift 0.0 (NOT PROVEN (n = 5))
+- news row (C3, silent): 22 names a day; top-5 by score / points: VEDL PE 09:00, SYRMA CE 09:20, AMBER CE 09:20, KAYNES PE 09:20, MUTHOOTFIN PE 10:08 → >=1% 1/5 20% vs 20% lift 1.0 · >=2% 0/5 0% vs 8% lift 0.0 (NOT PROVEN (n = 5))
+- prediction loop (lists, fired movers): 18 names a day; top-5 by list order: WAAREEENER CE 07:15, KALYANKJIL CE 22:45, TMPV CE 07:15, MUTHOOTFIN PE 09:08, ALKEM PE 09:08 → >=1% 2/5 40% vs 33% lift 1.2 · >=2% 0/5 0% vs 16% lift 0.0 (NOT PROVEN (n = 5))
+- ALL: 277 names a day; top-5 by AI priority: APLAPOLLO PE 09:17, ENRIN PE 09:17, MANKIND CE 09:42, CAMS CE 09:58, TRENT CE 09:45 → >=1% 0/5 0% vs 23% lift 0.0 · >=2% 0/5 0% vs 8% lift 0.0 (NOT PROVEN (n = 5))
+- OLD system: 288 names a day; top-5 by list order: ADANIENSOL PE 09:15, APLAPOLLO PE 09:15, BAJAJ-AUTO CE 09:15, BEL PE 09:15, BLUESTARCO CE 09:15 → >=1% 0/5 0% vs 23% lift 0.0 · >=2% 0/5 0% vs 11% lift 0.0 (NOT PROVEN (n = 5))
 
 ### The engine note: leakage and the honest check
 

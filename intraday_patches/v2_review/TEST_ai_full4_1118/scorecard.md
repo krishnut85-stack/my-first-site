@@ -3,7 +3,7 @@
 Made 2026-11-19 22:25:52 IST by v2/testobs/observer.py. Run folder: `<server>/girdata/replay/out/TEST_ai_full4_1118`. Done because: run.json written by the player (the day's end).
 
 ## In one line
-EDGE TEST_ai_full4_1118 2026-11-18: 216 names (116 knowledge-driven) · 2% to close: all 15/216 = 7% vs base 8% → lift 0.88; knowledge 9/116 = 8% vs base 8% → lift 0.95 · old system 21/293 = 7% vs base 8% → lift 0.88 (293 names) || coverage (not the goal): TEST_ai_full4_1118 2026-11-18: catch cards 0 / 28 / 25 / 0 · cards+WATCH 13 / 34 / 5 / 1 · old 35 / 18 / 0 / 0 (before/late/missed/wrong, 2%+) · 3% movers 30: in time 25, late 1, missed 4 · rings 19 (09:15-09:45 1) · AI 1629 of 1629 (100%), $0.537, 338 calls · flags MISSED MOVER 5, COST SPIKE 1, NEWS DIRECTION WRONG 26
+EDGE TEST_ai_full4_1118 2026-11-18: 216 names a day (116 knowledge-driven) · TOP-5 by the engine's own rank (no analyst ideas in this run): >=1% 0/5 0% vs 16% lift 0.0, >=2% 0/5 0% vs 5% lift 0.0 · all names >=1% 49/216 23% vs 27% lift 0.85, >=2% 15/216 7% vs 8% lift 0.88 · knowledge >=2% 9/116 8% vs 8% lift 0.95 · all names >=2% to the next close 33/216 15% vs 12% lift 1.32 · old system >=2% 21/293 7% vs 8% lift 0.88 (293 names) || coverage (not the goal): TEST_ai_full4_1118 2026-11-18: catch cards 0 / 28 / 25 / 0 · cards+WATCH 13 / 34 / 5 / 1 · old 35 / 18 / 0 / 0 (before/late/missed/wrong, 2%+) · 3% movers 30: in time 25, late 1, missed 4 · rings 19 (09:15-09:45 1) · AI 1629 of 1629 (100%), $0.537, 338 calls · flags MISSED MOVER 5, COST SPIKE 1, NEWS DIRECTION WRONG 26
 
 ## EDGE - precision and earliness of GIR's names (the goal)
 
@@ -70,13 +70,14 @@ Every share + side GIR named on 2026-11-18, scored from the price when it was na
 
 ### Names a day and the TOP-5
 
-- card (MUST SEE / CRITICAL): 58 names; top-5 by engine rank: BAJAJ-AUTO PE 10:39, HINDZINC PE 12:03, SAIL PE 11:05, HINDALCO PE 11:45, VEDL PE 11:47 → 3 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- engine note 0715: 37 names; top-5 by score / points: HINDZINC PE 09:00, NATIONALUM PE 09:00, HINDALCO PE 09:00, VEDL PE 09:00, AMBER CE 09:00 → 4 of 5 moved 1%+ its way, 1 moved 2%+ (NOT PROVEN (n = 5))
-- engine note 1945: 56 names; top-5 by score / points: HINDZINC PE 09:00, NATIONALUM PE 09:00, HINDALCO PE 09:00, JINDALSTEL PE 09:00, JSWSTEEL PE 09:00 → 4 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- go now / get ready (any lane): 174 names; top-5 by engine rank: NMDC PE 09:26, CDSL CE 09:24, BIOCON CE 10:18, BSE CE 09:30, HINDPETRO PE 10:34 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- prediction loop (lists, fired movers): 9 names; top-5 by list order: TMPV CE 19:45, DIXON PE 19:45, PIIND CE 19:45, ASHOKLEY PE 09:19, KALYANKJIL PE 09:26 → 2 of 5 moved 1%+ its way, 2 moved 2%+ (NOT PROVEN (n = 5))
-- ALL: 216 names; top-5 by engine rank: NMDC PE 09:26, CDSL CE 09:24, BIOCON CE 10:18, BSE CE 09:30, HINDPETRO PE 10:34 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- OLD system: 293 names; top-5 by list order: MCX PE 09:01, ONGC PE 09:08, MANAPPURAM PE 09:08, HINDZINC PE 09:08, ADANIENSOL CE 09:15 → 3 of 5 moved 1%+ its way, 1 moved 2%+ (NOT PROVEN (n = 5))
+- **THE DAY'S TOP-5 (the engine's own rank (no analyst ideas in this run), by engine rank): NMDC PE 09:26, CDSL CE 09:24, BIOCON CE 10:18, BSE CE 09:30, HINDPETRO PE 10:34 → >=1% 0/5 0% vs 16% lift 0.0 · >=2% 0/5 0% vs 5% lift 0.0 · next close >=2% 0/5 0% vs 17% lift 0.0 (NOT PROVEN (n = 5))**
+- card (MUST SEE / CRITICAL): 58 names a day; top-5 by engine rank: BAJAJ-AUTO PE 10:39, HINDZINC PE 12:03, SAIL PE 11:05, HINDALCO PE 11:45, VEDL PE 11:47 → >=1% 3/5 60% vs 14% lift 4.17 · >=2% 0/5 0% vs 2% lift 0.0 (NOT PROVEN (n = 5))
+- engine note 0715: 37 names a day; top-5 by score / points: HINDZINC PE 09:00, NATIONALUM PE 09:00, HINDALCO PE 09:00, VEDL PE 09:00, AMBER CE 09:00 → >=1% 4/5 80% vs 36% lift 2.23 · >=2% 1/5 20% vs 11% lift 1.86 (NOT PROVEN (n = 5))
+- engine note 1945: 56 names a day; top-5 by score / points: HINDZINC PE 09:00, NATIONALUM PE 09:00, HINDALCO PE 09:00, JINDALSTEL PE 09:00, JSWSTEEL PE 09:00 → >=1% 4/5 80% vs 43% lift 1.86 · >=2% 0/5 0% vs 13% lift 0.0 (NOT PROVEN (n = 5))
+- go now / get ready (any lane): 174 names a day; top-5 by engine rank: NMDC PE 09:26, CDSL CE 09:24, BIOCON CE 10:18, BSE CE 09:30, HINDPETRO PE 10:34 → >=1% 0/5 0% vs 16% lift 0.0 · >=2% 0/5 0% vs 5% lift 0.0 (NOT PROVEN (n = 5))
+- prediction loop (lists, fired movers): 9 names a day; top-5 by list order: TMPV CE 19:45, DIXON PE 19:45, PIIND CE 19:45, ASHOKLEY PE 09:19, KALYANKJIL PE 09:26 → >=1% 2/5 40% vs 26% lift 1.51 · >=2% 2/5 40% vs 8% lift 4.74 (NOT PROVEN (n = 5))
+- ALL: 216 names a day; top-5 by engine rank: NMDC PE 09:26, CDSL CE 09:24, BIOCON CE 10:18, BSE CE 09:30, HINDPETRO PE 10:34 → >=1% 0/5 0% vs 16% lift 0.0 · >=2% 0/5 0% vs 5% lift 0.0 (NOT PROVEN (n = 5))
+- OLD system: 293 names a day; top-5 by list order: MCX PE 09:01, ONGC PE 09:08, MANAPPURAM PE 09:08, HINDZINC PE 09:08, ADANIENSOL CE 09:15 → >=1% 3/5 60% vs 36% lift 1.67 · >=2% 1/5 20% vs 11% lift 1.86 (NOT PROVEN (n = 5))
 
 ### The engine note: leakage and the honest check
 
