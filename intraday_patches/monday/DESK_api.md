@@ -34,4 +34,8 @@ Nothing here is investment advice; every idea carries `proof: "NOT PROVEN"`. GIR
 - No buy key: "Copy contract" only (the contract text is `plan.contract`).
 
 ## Change log
+- v2 20 Nov 20:55 IST: desk.meter.cap = 8.0 (the trader's 20:28 decision) - the footer must read the cap from the key, never a fixed "$5";
+  desk.meter gains "lean" {on, why} (LEAN combined fallback active) and "newsread_in_read" / "newsread_ai_off"; desk.meter.step can read
+  "EVENTS ONLY (past 90% of $8)"; desk.brief gains "stale" (true when the slot's brief failed and the last good brief is shown),
+  "stale_why", "failed_slot" - show it in grey with the reason, never an empty brief.
 - v1 20 Nov 2026 19:05 IST: first contract (desk state written; DeskAdapter added to gir-preview after hours).

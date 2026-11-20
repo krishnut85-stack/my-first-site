@@ -32,3 +32,12 @@ event-only after about 15 seat calls (70% of $0.90) and stops at about 21, so at
    the hour (meetings are hours apart), so it saves little.
 
 All [E] rows become measured after the first full shadow with complete Opus answers.
+
+## THE TRADER'S DECISION (20 Nov 20:44 IST record; decided 20:28): the FULL desk, daily AI cap $8.00
+- J11 hard cap **$8.00** a day (config.DAY_CAP_USD), same budget day 15:40 -> 15:40 per calendar day (desk accepted, DESK_TEAM 4.7).
+- Buckets: **MEET $1.80 · LIVE $1.50 · READ $1.60 · SEATS $2.80 · ASK $0.30 = $8.00** (from the measured prices above: the full roster's
+  SEATS need $2.5-2.9; READ holds R1-R6 and, until NEWSREAD_AI_OFF is set, the v2 news reader).
+- Ladder: SEATS half spent or the day at 75% ($6.00) -> the meetings switch to the 5 LEAN combined calls (LEAN_COMBINED.md, the desk's $4.14 plan);
+  SEATS at 70% -> seat calls event-only; the day at 90% ($7.20) -> only event calls, briefs (MEET) and LIVE; $8.00 -> code + rules only.
+- Honest: with the v2 news reader still on (~$2.6 a day) READ is over its $1.60 on a busy day and R1-R6 get refused; setting the flag
+  once R1-R6 pass their shadow fixes that. The page footer reads the cap from desk.meter.cap ("AI $x of $8").
