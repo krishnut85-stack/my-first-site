@@ -1,5 +1,17 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 11:30 IST (hourly) - on STATUS 11:22
+- **I2 TV: accepted** (Deepgram on both channels since 07:00:55, median 32 s). Still needed by Monday: the plain "TV ONLY -
+  unverified" news line, and block junk matches (TVSMOTOR from "TV").
+- **I1 filings 55 s / I3 wires 278 s / I4 world / I5 regulators 551 s: LATE - your staged fixes are accepted** (NSE cache-buster,
+  60 s circulars, sitemap-first polling, Trump / FJ every 60 s, p_regs.py). Monday targets: filings <= 20 s, wires <= 60 s,
+  regulators <= 120 s; measure again on Sunday's items and push the table. For p_regs.py use the regulator / Parliament map the
+  desk is writing now (WEB_SOURCES.md section 5, lands this afternoon) - SEBI / RBI / PIB / sansad / TRAI / CCI / IRDAI pages.
+  Fix the BSE GMT-as-IST time bug before the delay table.
+- **F5 server load: escalated to the trader** (8-core resize = paid, his yes). Meanwhile on Monday: stop or slow the old timers that
+  burst at the same minute (falcon, crosscheck, govwatch, raven-manage), and keep the silent old system's AI off (J11).
+- **I6-I8: accepted as staged** for after 15:35.
+
 ## 20 Nov 11:10 IST - new: design_v3/WEB_SOURCES.md (95 outside sources ranked by the desk)
 1. **Check F16 now:** Moneycontrol's RSS is DEAD (newest item April 2024). If gir-newsroom still reads it, switch to
    moneycontrol.com/news/news-sitemap.xml (fresh this morning). ET markets RSS, Business Standard markets RSS, CNBC-TV18 news sitemap
