@@ -1,0 +1,19 @@
+13:40:46 player: 2026-11-20: sources ready in 5.7 s - rec quotes,futoi,sectors,board,strikes,preopen,heartbeat · kite minute files 463 · oihist True · optrec True · chainlive True · news 1249 · tv 8307 · old alerts 2785 · F&O 218
+13:41:14 day 2026-11-20: desk ready (layer stub)
+13:43:52 player: 2026-11-20: making the 1945 note at virtual 19:45:00
+13:43:59 2026-11-19 19:47 brief 19:45: ok=True new 4 · updated 0 · BUY NOW 0 · WAIT 0 · manage 0 · dropped 0 
+13:45:42 2026-11-19 22:46 brief 22:45: ok=True new 2 · updated 4 · BUY NOW 0 · WAIT 0 · manage 0 · dropped 0 
+13:50:43 player: 2026-11-20: making the 0715 note at virtual 07:15:00
+13:50:49 2026-11-20 07:17 brief 07:15: ok=True new 0 · updated 6 · BUY NOW 0 · WAIT 0 · manage 0 · dropped 0 
+13:52:04 2026-11-20 09:10 brief 09:08: ok=True new 0 · updated 6 · BUY NOW 0 · WAIT 0 · manage 0 · dropped 0 
+13:52:08 2026-11-20 09:15 devil on T:e8650aac: C:158be782
+13:52:08 2026-11-20 09:15 trigger look (trigger met: VOLTAS CE (a 1-minute close above yesterday's high)): ok=True new 0 · updated 6 · BUY NOW 0 · WAIT 0 · manage 0 · dropped 0 
+13:52:10 2026-11-20 09:18 devil on T:73f64770: C:df523408
+13:52:10 2026-11-20 09:18 trigger look (trigger met: MANAPPURAM PE (a 1-minute close below yesterday's low)): ok=True new 0 · updated 6 · BUY NOW 0 · WAIT 0 · manage 0 · dropped 0 
+13:52:12 2026-11-20 09:21 devil on T:25e28560: C:83c6f312
+13:52:12 2026-11-20 09:21 trigger look (trigger met: INDIGO PE (a 1-minute close below yesterday's low)): ok=True new 0 · updated 6 · BUY NOW 0 · WAIT 0 · manage 0 · dropped 0 
+13:53:19 2026-11-20 10:06 heartbeat look: ok=True new 0 · updated 6 · BUY NOW 0 · WAIT 0 · manage 0 · dropped 0 
+13:53:43 2026-11-20 10:21 event look (weight 4 news item, price agrees: Nifty 500: Apollo Hospitals hits record high on bulk drug licensing plan; Kalyan): ok=True new 0 · updated 6 · BUY NOW 0 · WAIT 0 · manage 0 · dropped 0 
+13:53:48 2026-11-20 10:24 event look (weight 4 broker item, price agrees: Max Healthcare Jumps - Stock Stats | Max Healthcare Institute shares rose over 4): ok=True new 0 · updated 6 · BUY NOW 0 · WAIT 0 · manage 0 · dropped 0 
+13:53:57 2026-11-20 10:30 event look (weight 4 broker item, price agrees: Max Healthcare, Apollo Hospitals shares rally up to 5% as Macquarie double upgra): ok=True new 0 · updated 6 · BUY NOW 0 · WAIT 0 · manage 0 · dropped 0 
+13:55:12 2026-11-20 11:15 heartbeat look: ok=True new 0 · updated 6 · BUY NOW 0 · WAIT 0 · manage 0 · dropped 0 
