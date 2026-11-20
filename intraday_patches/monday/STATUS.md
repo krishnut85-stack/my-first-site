@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 10:34 IST
+Last update: 11:18 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -43,14 +43,14 @@ Last update: 10:34 IST
 | F5 Logs, disk, memory, restart | NOT STARTED |  |  |  |
 | G1 preopenstudy.py | NOT STARTED | desk: preopenstudy.py READY TO RUN (09:15); run after 15:35 today |  | 09:29 |
 | G2 Score this week's evening watches | NOT STARTED |  |  |  |
-| I1 NSE + BSE filings | IN PROGRESS | measuring 5 real items today | external_delays.md | 07:31 |
-| I2 TV speech-to-text | IN PROGRESS | TV speech-to-text RUNNING today since 07:00:55 on BOTH CNBC-TV18 and ET Now (Deepgram), last transcript line 10:33:47 on each; yesterday's 'TV listening stopped' meant the OLD on-server listener (tvstt.py), replaced by Deepgram on 19 Nov - not a stop of TV listening; delay table in external_delays.md | external_delays.md | 10:34 |
-| I3 Wires and publishers | IN PROGRESS | measuring | external_delays.md | 07:31 |
-| I4 World news and cues | IN PROGRESS | measuring | external_delays.md | 07:31 |
-| I5 Regulators / Parliament / PIB | IN PROGRESS | measuring | external_delays.md | 07:31 |
-| I6 Sector data (R49) | IN PROGRESS | measuring (3 checks vs NSE indices today) | external_delays.md | 07:31 |
-| I7 Economic + results calendar | IN PROGRESS | measuring | external_delays.md | 07:31 |
-| I8 Source health + silence alarm | IN PROGRESS | measuring | external_delays.md | 07:31 |
+| I1 NSE + BSE filings | IN PROGRESS | interim 09:00-11:30: median 55 s / worst 61 s vs 15 s target - LATE. NSE: CDN cache ~40 s (cache-buster fix staged); BSE ~30 s late at source; circulars only every 5 min (60 s staged) | external_delays.md (after 15:35) | 11:18 |
+| I2 TV speech-to-text | IN PROGRESS | TV speech-to-text RUNNING today since 07:00:55 on BOTH CNBC-TV18 and ET Now (Deepgram), last transcript line 10:33:47 on each; yesterday's 'TV listening stopped' meant the OLD on-server listener (tvstt.py), replaced by Deepgram on 19 Nov - not a stop of TV listening; delay table in external_delays.md; delay median 32 s / worst 38 s vs 60 s target - OK; but no plain 'TV only - unverified' news line yet (only map ideas) and tvcalls junk matches (TVSMOTOR from 'selling') - fixes after 15:35 | external_delays.md | 11:18 |
+| I3 Wires and publishers | IN PROGRESS | interim: median 278 s vs publishers' sitemap times (target 30 s) - LATE. Moneycontrol RSS dead (2024), ET RSS cached 2-10 min, Reuters 401 to bots, NDTV Profit feed ~30 min stale; sitemap-first polling to be staged | external_delays.md (after 15:35) | 11:18 |
+| I4 World news and cues | IN PROGRESS | interim: FinancialJuice 51-109 s, Trump read every 5 min (60 s staged), GIFT stale overnight until the Kite login, Yahoo futures ~10 min behind, Asia 15-20 min; no DXY / Asia on the page yet | external_delays.md (after 15:35) | 11:18 |
+| I5 Regulators / Parliament / PIB | IN PROGRESS | interim: RBI 551 s; v2 has no SEBI / PIB / TRAI / CCI / sansad poller - new p_regs.py staged (SEBI RSS empty; IRDAI disallows robots); BSE notice times look GMT-as-IST (bug to fix) | external_delays.md (after 15:35) | 11:18 |
+| I6 Sector data (R49) | IN PROGRESS | checks vs NSE sector indices at 10:30 / 12:30 / 14:30 running | external_delays.md (after 15:35) | 11:18 |
+| I7 Economic + results calendar | IN PROGRESS | cal.next missing on the page; builder written + tested (economic events weekly file, NSE board meetings, holidays) - install after 15:35 | external_delays.md (after 15:35) | 11:18 |
+| I8 Source health + silence alarm | IN PROGRESS | no per-source Health rows / silence alarm yet; patch staged (one row per source + one alarm per silence) - install after 15:35 | external_delays.md (after 15:35) | 11:18 |
 | J1 Automatic Kite login | NOT STARTED | plan: keys 2/3/4 use the same Zerodha user + TOTP as key 1's auto-login (each app has its own key/secret); built after 15:35 today - a new login during market hours could cut the old engine's live sessions; Sunday dry run of all four; Monday 08:20 check |  | 08:33 |
 | J2 Today's live session read-only | IN PROGRESS | recording since 09:04:30 on key 2 by REST quote() (no websocket slot free): 665 instruments, 2 calls every 3 s, 0 errors; ~220 items/s polled, 88-101/s changed, largest gap 3.2 s; FULL fields: 5-level depth on 99.25 pct of items (all shares and futures), OI on 100 pct of futures; 09:00-09:04 from the 10-30 s snapshots (no key 2/3/4 token before the old engine's 09:04 login); ~40 MB/h; proof table by 16:00 | J2_live_readonly.md (16:00) | 09:07 |
 | J3 One trading calendar (Tue 24 holiday) | NOT STARTED |  |  |  |
