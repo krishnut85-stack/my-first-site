@@ -3,6 +3,9 @@
 Evening prediction -> trading-day confirmation -> live news calls -> analyst BOTTOM / TOP calls -> scoring.
 Merged by the desk chair from three desk drafts (the senior F&O dealer, the sector-first options buyer, the market-intelligence /
 news desk). The server team builds from this file. Requirements R52-R56 in REQUIREMENTS.md point here.
+Revised 20 Nov after the desk review: sounds strictly R10 / E14 (F2), AI cost re-built from NEWS_READING_PLAN's figures (G), news
+speed targets = BUILD_PLAN E12.5 (C1), full R14 / E8 card fields and E9 gates (B2-B3), one RVOL (section 0), CE / PE mirrors written
+out (D3, D4, D5), the 09:17 departure completed, MS day-type figures marked not comparable (A4). Departures are listed at the end.
 
 **THE TRADER'S WORDS (20 Nov, binding):** "The study, the knowledge, AI knowledge, engage the brain, everything has to be done
 together, and then it has to PREDICT: 'this will go up' the day before. And when it goes up on the trading day, then you give the
@@ -33,13 +36,22 @@ still MIXED, so re-read when histstore finishes):
   1.1-1.9% of the premium after 1.5% costs (section 5, EVERY FIRE). So **the early warning has to be the evening / 09:08 prediction.**
   Intraday signals only time the entry on a share already named.
 - Two signs help timing and held out of sample: **yesterday's high / low break** (PDH: lift 1.36 CE / 1.33 PE tuning, 1.32 / 1.33
-  held out) and **the volume surge** (RVOL: lift about 1.6).
+  held out) and **the volume surge** (RVOL: lift about 1.6 - 1.67 / 1.56 in the verdict table).
+- **ONE RVOL in this file (the study's definition, MS line 1347):** RVOL = the share's volume SO FAR TODAY divided by a normal
+  day's volume by the same minute (20-day median of cumulative volume to that minute), counted only while price is on its side of
+  VWAP (CE above, PE below). "RVOL >= 2" / "volume 2x" anywhere below means exactly this. **RVOL5** is a different signal (MS line
+  1401: the last 5 minutes' volume vs normal for that minute, on its side of VWAP; lift 1.38 / 1.30, weaker) and is named RVOL5
+  wherever it is used (news price-confirm C5, bottom-rejected D4). No other volume ratio is used for a trigger.
 - Waiting for sector CONFIRMED (E3) caught only 19% (CE) and 29% (PE) early, against 46-48% for ORB5. **Sector is a GRADE, not a gate.**
 - Market day: NIFTY-up days 51.6 CE vs 25.7 PE moves a day; NIFTY-down days 24.0 CE vs 70.9 PE; mixed (448 of 737 days, 61%)
   30.6 CE vs 31.5 PE. Even on a down day there are about 24 CE moves, so the CE list is never empty by nature.
+  **NOT COMPARABLE with A4:** movestudy_report.txt never states its NIFTY up / down / mixed rule, so these day-type counts, the 61%
+  and the day-type base rates below are shown as "MS, rule unstated" and are NOT used as A4's base rates or as the bar the market
+  call must beat until PS recomputes them on the A4 definition (open -> 15:10, +/-0.5%). Code uses the PS table once it exists;
+  before that, the market call's tilt (A2) uses the all-days base rate only.
 - **Base rate** (the number every prediction must beat) = the day's same-side 2%+ movers divided by that day's F&O universe,
   computed in code each day. On the study's average: about 20% CE and 22% PE per share-day; about 30% CE on NIFTY-up days and about
-  41% PE on NIFTY-down days.
+  41% PE on NIFTY-down days (the last two: MS day rule unstated - not comparable, see above).
 - The v2 review: the engine was late, PE-only, rang 132-163 times a day, and its GO NOW check approved 57 of 57 cards.
 
 What cannot work, and what we do instead:
@@ -90,7 +102,7 @@ Evidence sources:
 6. **Sector** - today's whole-sector move vs NIFTY (R49), close near its extreme, 3-day run, breadth, futures build-up across the
    basket. Whether a sector continues or reverses next day is MEASURED by PS, never assumed.
 7. **The share's own state** - close in the top / bottom 20% of its range (within 0.25 ATR of the high / low), distance in ATR to
-   yesterday's and the 20-day high / low, RVOL today, NR7 / inside day, EXTENDED (range used > 1.2 ATR), 1- and 5-day RS vs sector,
+   yesterday's and the 20-day high / low, RVOL at the close (section 0 definition), NR7 / inside day, EXTENDED (range used > 1.2 ATR), 1- and 5-day RS vs sector,
    futures build-up over all months (LB / SB / SC / LU), delivery %, OI change.
 8. **Global witnesses** - ADRs, US / Asian peers, LME / SHFE / Brent / gold, USDINR NDF, GIFT: the expected gap per sector
    (NEWS_TO_SECTOR C8). Live at 19:45, final at 07:15.
@@ -134,8 +146,10 @@ present. Reject and retry once, then drop the line.
 - Defined on the tradable leg: UP = NIFTY open -> 15:10 >= +0.5%, DOWN <= -0.5%, else MIXED [S, PS re-defines].
 - Code baseline from GIFT vs prior close, US close and futures, ADRs, DXY / US10y, Brent, Asia open, FII flow, VIX, breadth trend.
   Opus writes the reason. Shown with the GIFT gap estimate and its range.
-- Default MIXED unless p(up) or p(down) >= 0.5 [S]. MIXED is 61% of days, so the call must beat "always mixed" and shows its record
-  ("market call right 14 of 22").
+- Default MIXED unless p(up) or p(down) >= 0.5 [S]. The call must beat "always mixed" and shows its record ("market call right 14
+  of 22"). How often MIXED happens on THIS definition is not known yet: MS's "mixed 448 of 737 days (61%)" uses an unstated NIFTY
+  rule and is NOT comparable; PS question 5 recomputes the day-type frequencies and base rates on the A4 definition, and only those
+  feed `base(d | day type)`.
 - The call TILTS the base rate (A2) and therefore the list mix. It never zeroes a side.
 - 09:08 re-call from the pre-open index; PS measures how much better 09:08 names the day.
 
@@ -145,14 +159,20 @@ present. Reject and retry once, then drop the line.
   lines per side, marked "NEW 07:15"; the market-day call re-stated.
 - **09:08 (code + one Sonnet call, no Opus - there are 7 minutes):** pre-open IEP gap, imbalance and pre-open volume vs its 20-day
   median, per predicted share (F09):
-  - GAP AGREES (0.3% to 1.0% or 0.6 ATR its way [S, PS]) = ARMED: "watch 09:17". A small gap (under 0.3% either way) is ARMED too.
-  - GAP TOOK IT (over that, its way) = "GAP TOOK x% (about y% of the usual move)". Trigger becomes the opening-range hold (A6);
-    otherwise a pullback to VWAP only.
-  - GAP AGAINST (1%+ or 0.6 ATR the other way [S]) = AT RISK: no entry until it reclaims yesterday's close. Not auto-cancelled;
-    PS measures how often these recover. CANCELLED if 09:20 trades beyond the cancel price.
+  - ONE gap table, by the IEP gap g in % measured IN THE PREDICTED DIRECTION (+ = its way, - = against). The % test is the only
+    test (ATR is shown beside it, never used to decide); band edges are [S] and re-fitted by preopenstudy. Bands do not overlap:
+    | g | state | what it means |
+    |---|---|---|
+    | g >= +1.0% | GAP TOOK IT | "GAP TOOK x% (about y% of the usual move)". Trigger becomes the opening-range hold (A6); otherwise a pullback to VWAP only. |
+    | +0.3% <= g < +1.0% | ARMED (gap agrees) | "watch 09:17", trigger as written. |
+    | -0.3% < g < +0.3% | ARMED (flat) | trigger as written. |
+    | -1.0% < g <= -0.3% | ARMED - SOFT AGAINST | trigger as written, AND price must first trade back across yesterday's close its way. |
+    | g <= -1.0% | AT RISK (gap against) | no entry until it reclaims yesterday's close. Not auto-cancelled; PS measures how often these recover. |
+    PE is the exact mirror (its way = down). CANCELLED in every band if a 1-minute close from 09:15 is beyond cancel_px (A6).
   - The Sonnet call writes each line's REJECT RULES as code-checkable conditions (premium cap, spread, IV vs 20-day, distance to the
     nearest wall, break-even move) - used by B instead of a live AI veto (G).
-  - One summary ring at 09:08: "ARMED: 4 UP / 3 DOWN · market MIXED".
+  - One summary at 09:08: "ARMED: 4 UP / 3 DOWN · market MIXED" - on the page and as a Telegram message, **SILENT** (no sound: R10 /
+    E14 do not list it). A soft tick here is an option he may switch on (Departures list), default OFF.
 - **After 09:08 a prediction never changes side, trigger or cancel for the day.** Only its STATE moves (B). Nothing is added to
   "predicted" during the day; a new idea is a news call (C) or a drill-down mover marked NOT PREDICTED.
 
@@ -160,11 +180,14 @@ present. Reject and retry once, then drop the line.
 - **Side** UP = CE / DOWN = PE · **share** · **sector** (whole-sector basis) · **role** LEADER / DEPENDENT / LAGGARD (E4).
 - **WHY (+):** at most 3 drivers, each with its counter-driver, proof status (PROVEN Lxx n= / NOT PROVEN) and source ID.
 - **AGAINST (-):** the strongest counter-evidence, always written (from the red team).
-- **TRIGGER (code):** CE = first 1-minute close above yesterday's high with RVOL at the same time of day >= 2.0 [S, MS / PS].
-  PE = mirror on yesterday's low. On GAP TOOK IT: the high (CE) / low (PE) of the first 3 minutes [S], held, RVOL >= 2.0, with a
-  GAP-HOLD line (CE must not fall back below yesterday's high; PE mirror).
-- **CANCEL (machine-readable, any one is enough):** a PRICE written before the open - CE: the nearer of yesterday's low and open
-  -0.8% [S, PS]; PE mirror - plus FACTS: an overnight driver reversing past its threshold, a denial or scope change, a contrary broker
+- **TRIGGER (code):** CE = first 1-minute close above yesterday's high with RVOL >= 2.0 (section 0 definition: day's volume so far
+  2x a normal day's by this minute, price above VWAP) [S, MS / PS]. PE = mirror on yesterday's low (price below VWAP). On GAP TOOK
+  IT: the high (CE) / low (PE) of the first 3 minutes [S], held, RVOL >= 2.0, with a GAP-HOLD line (CE must not fall back below
+  yesterday's high; PE must not climb back above yesterday's low).
+- **CANCEL (machine-readable, any one is enough):** a PRICE, cancel_px, made FINAL at P09 (09:08) from the pre-open equilibrium
+  price (IEP, which becomes NSE's open): CE cancel_px = the HIGHER (nearer) of yesterday's low and IEP -0.8% [S, PS]; PE cancel_px =
+  the LOWER (nearer) of yesterday's high and IEP +0.8%. N19 (19:45) and U07 (07:15) store a PROVISIONAL cancel_px using yesterday's
+  close in place of the IEP, marked provisional; B5 FAILED and A5 use only the final P09 value - plus FACTS: an overnight driver reversing past its threshold, a denial or scope change, a contrary broker
   stance change, GIFT against by more than 0.8% for beta > 1 shares [S].
 - **EXPECTED MOVE:** the share's own median base -> peak on its past 2%-move days (MS: about 3.3% CE / 3.2% PE across shares);
   fallback 1.0 x ATR14 %. Used for TOO LATE.
@@ -202,20 +225,40 @@ WAITING -> ARMED (09:08) -> NEAR (within 0.3 ATR of the trigger, silent) -> TRIG
 Or LATE, FAILED, CANCELLED, STALE, EXPIRED. Checked on every 1-minute close, plus a tick check for the trigger cross.
 
 ### B2. CONFIRMED needs ALL four, on a closed 1-minute bar
-1. **SHARE:** the trigger crossed the predicted way (1-minute close), RVOL at the same minute >= 2.0 [S, MS].
+1. **SHARE:** the trigger crossed the predicted way (1-minute close), RVOL >= 2.0 (section 0 definition) [S, MS].
 2. **SECTOR THE SAME WAY** (R49 whole-sector basket): sector % from the open the same sign and at least 0.3% [S], breadth over all
    listed shares >= 60% the same way [S]. Grade A when the sector is E3 CONFIRMED; grade B when it only agrees (FORMING). Never
    waits for E3. The share moving alone = grade C: a silent card "moving, sector not with it", no ring.
 3. **MARKET DAY AGREES:** NIFTY % from the open the same sign, or flat within ±0.2% [S]. 0.2-0.4% against: rings only for a LEADER,
    marked "AGAINST NIFTY". More than 0.4% against: silent card "share + sector agree, NIFTY against".
-4. **GATES:** not banned, data fresh (R09), lock room > 0 (E9), the 09:08 reject rules pass, the E7 strike gate passes - or the
-   better strike is named ("spread 3% - take the 1 ITM / wait for 09:20"). No tradable strike at all = "no tradable strike - X",
-   no ring.
+4. **GATES (all of E7, E8's validators and E9, checked in code; any failure = silent card with the reason in plain words, R12):**
+   - not banned; data fresh (R09); the 09:08 reject rules pass; the E7 strike gate passes - or the better strike is named ("spread
+     3% - take the 1 ITM / wait for 09:20"). No tradable strike at all = "no tradable strike - X", no ring.
+   - **E9 risk rules**, read from his live positions and fills (F10, every 5 s): lock room > 0 and lots from the lock room >= 1;
+     not LOCKED (daily loss lock / 2 losses in a row); **at most 3 trades today and 2 open positions**; **never a second position in
+     the same sector or on the same driver** (an open PSU-bank CE blocks a second PSU-bank CE; one gold PE max); **cooling-off 15-20
+     min after a loss** [S, E9]; **chase zone** - price more than 0.3 ATR past the trigger or premium 8% past the planned entry =
+     "WAIT FOR PULLBACK to `<p>`", no ring (the ring may come later on the pullback if still FRESH, B4).
+   - R:R after costs >= 1.5 (E8), with stop never more than 30% of premium.
+   - **E8's "confidence < 0.6 -> NO_TRADE" validator, mapped to grades:** the AI's own confidence is never used (A6). Before
+     calibration: grade WEAK (including a line that dropped to WEAK through STALE, B2 ring window, or a news / broker downgrade) =
+     NO_TRADE; MEDIUM and STRONG pass. After calibration (A2): p_cal below the A7 bar (1.6x the side's base rate) = NO_TRADE. An
+     absolute 0.6 on a 20% base event would block nearly every line, so this mapping is listed under Departures.
 
-**Earliest ring: the close of the 09:16 bar (09:17:00).** The 09:15 candle includes the pre-open. This departs on purpose from
-BUILD_PLAN E3 ("never before 09:20") and E8 ("no orders 09:15-09:20, entry window 09:30"), for PREDICTED shares only: by 09:38-09:44
-the median 2% move is already half done, and on gap days by about 09:21. E3 stays the definition of sector CONFIRMED (a grade).
-Unpredicted ideas keep E8's window. If PS shows 09:17-09:20 option spreads make it untradable, revert. **Needs his yes.**
+**Earliest ring: the close of the 09:16 bar (09:17:00).** The 09:15 candle includes the pre-open. This departs on purpose, for
+PREDICTED shares only, from:
+- BUILD_PLAN E3 ("never before 09:20") and E8 ("no orders 09:15-09:20, entry window 09:30");
+- GIR_SPEC line 352 ("after an overnight Tier-1 event: no entries 09:15-09:30; trade the mapped sector only if it holds its gap
+  after the opening range") - proposed instead: a predicted share on such a day may ring from 09:17 only if its 09:08 state is ARMED
+  (not AT RISK, not GAP TOOK IT) and its GAP-HOLD line holds; the sector's gap-hold is checked on the R49 basket, not after the
+  opening range;
+- GIR_SPEC line 87 ("CE only above VWAP and the opening range 09:15-09:30 / 09:45, PE only below both") - proposed instead: before
+  09:30 the card needs only the VWAP side (share AND sector basket) plus yesterday's high / low trigger; from 09:30 the opening-range
+  side applies in full as GIR_SPEC writes it.
+Why: by 09:38-09:44 the median 2% move is already half done, and on gap days by about 09:21 (MS). E3 stays the definition of sector
+CONFIRMED (a grade). Unpredicted ideas keep E8's window and both GIR_SPEC rules. If PS shows 09:17-09:20 option spreads make it
+untradable, revert. **Needs his yes. Until he says yes, predicted shares follow the existing windows (no ring before 09:30; after
+an overnight Tier-1 event the GIR_SPEC rule as written), and 09:17-09:30 confirmations are shown silently and scored.**
 
 **Ring window:** 09:17-11:00 [S, MS: 87-91% of onsets by 09:45]. Not triggered by 09:45 = STALE (grade drops one step, may still
 ring). After 11:00 a trigger cross is a silent "late trigger" row. 14:30 = EXPIRED, manage only (E8).
@@ -224,9 +267,24 @@ ring). After 11:00 a trigger cross is a silent "late trigger" row. 14:30 = EXPIR
 Line 1, his words:
 "PREDICTED last evening: `<SHARE>` UP · sector `<SECTOR>` up +1.1% (breadth 9/12, FORMING) · NIFTY up +0.4% · trigger `<price>`
 crossed 09:17 with volume 2.3x · move left ~70% of usual · FRESH till 09:22"
-Line 2 (R14 / E8 fields): MUST HOLD above VWAP `<p>` with the sector above its VWAP · TOO LATE after `<p>` · FAILS below `<cancel>` ·
-Dec `<strike>` CE ≤ ₹x, spread 0.9% · stop / target in premium AND share price · hold until · exit by 15:10 · AI line (G), filled in
-about 20 s after the ring, never delaying it.
+Line 2 onward - every field R14 / E8 require on a call card, in E8's order (CONFERENCE fix 4):
+- verdict GO NOW · CE / PE · share · strike · expiry · premium limit ("Dec `<strike>` CE ≤ ₹x, no chase above ₹y") · spread 0.9%;
+- trigger · stop · target on BOTH premium and share price (T1 before the wall; Kite backstop SL-L trigger and limit);
+- **THE VOTE** (R14 / E8): "4 of 5 agree · sector ✓ (grade B) · news ✓ · money ✓ (futures LB) · chain L05 ✓ · brain ? · against:
+  `<red-team point>`" - voters are the A2 evidence sources that voted on this line plus the live sector and money (futures) reads,
+  each weighted by its E4 shrunk hit rate (a voter with no edge counts zero), "?" for a voter that did not vote, a vote against
+  always shown; the red team is the auditor - it checks and does not vote (E8);
+- gate chips (spread, depth, IV / 20d, MWPL, lock room, data age);
+- MUST HOLD above VWAP `<p>` with the sector above its VWAP · TOO LATE after `<p>` · FAILS below `<cancel>`;
+- hold until (time stop 45-60 min without +0.5R; hard exit 15:10) and "don't exit before the stop or the target unless GIR says
+  EXIT";
+- **lots from the lock room** ("lock room ₹1,980 vs max loss ₹X -> n lots"; 0 = BLOCKED, no ring) · max loss in ₹ · R:R after costs
+  (charges + slippage);
+- why (one line, from the stored prediction row) and what makes it wrong (cancel price and facts) · signal age · source (prediction
+  version N19 / U07 / P09);
+- **that setup's record** from E4: "PREDICTED + CONFIRMED, CE, grade B: 9 of 21 right-tradable · base 20% · NOT PROVEN" (n and
+  NOT PROVEN always shown);
+- AI line (G), filled in about 20 s after the ring, never delaying it.
 PE is the exact mirror ("PREDICTED last evening: `<SHARE>` DOWN · sector `<S>` down -1.3% ...").
 
 ### B4. TOO LATE ("half the move gone")
@@ -256,7 +314,7 @@ each with its own reason. Every unpredicted mover is a MISS row in E.
 
 ### B7. Honest note
 The confirmation adds no edge of its own: a bare breakout ring loses money after costs (MS section 5). Its value depends entirely on
-the prediction picking better than the base rate. Hence the shadow rule in E7.
+the prediction picking better than the base rate. Hence the NOT PROVEN label in E7.
 
 ---
 
@@ -267,7 +325,22 @@ NEWS_TO_SECTOR_ENGINE A1-A12 and NEWS_READING_PLAN tiers: CATCH with first-seen 
 evening's scenario trees) -> Haiku frame (1-2 s) -> entity linker -> exposure matrix / link book, both sides, netted (code) -> Sonnet
 for weight 4-5 and every negation / denial, with the blind second direction check (E12.4) -> EVENT_MEMORY match NEW / REPEAT /
 NEW-FACT / DENIAL / OFFICIAL plus past reactions (within 10 s; 30 s for TV).
-Target from first source to call: <= 60 s for filings, regulator pages and wires; 60-90 s for TV. Latency is measured every day.
+
+**Speed targets, first source -> card on the page (BUILD_PLAN E12.5 adopted as written; EVENT_MEMORY and the replay tests agree):**
+| Source class | First source -> card | Story match (EVENT_MEMORY) | Why this is reachable |
+|---|---|---|---|
+| Exchange filings (F15) | **< 15 s** | 10 s | polled every 3-5 s; filing carries the symbol; fast path < 1 s; Haiku 1-2 s; Sonnet second opinion 2-5 s (NRP F) |
+| Basket shock, price first (F27) | **10 s** after the 3rd share crosses | - | code only |
+| Wires / class A flashes (F16) | **30 s** | 10 s | sitemaps every 15-20 s |
+| X / TV text (F17 speech-to-text, F19) | **15-30 s from the spoken words** | 30 s | transcript chunks + phrase filter + Haiku; the Sonnet check runs AFTER the card is up and only changes its label |
+| Regulator sites (F20) | **60-120 s** | 10 s after catch | polled every 1-2 min (RSS 60 s) - the polling sets the floor |
+- TV pass marks: a BOTTOM / TOP card within **30 s** of the words (R55, replay test 5); a TV BROKER CALL card within 30 s as the
+  target and **60 s as the fail line** (BROKER_CALLS replay 19 Nov 12:44). The stricter 30 s is the build target for both.
+- The card can appear before the second opinion finishes; it shows "CHECKING" and cannot become a GO NOW until the check agrees
+  (C3). The GO NOW itself also waits for the C5 price confirm (up to 10 min); latency is scored to the CARD, the GO NOW delay is
+  scored separately.
+- Every call logs the waterfall (first source -> caught -> read -> card -> Telegram) per class, in the 15:45 audit (E12.5 / E15).
+  A class whose p95 misses its target two days running is a P2 health item.
 
 ### C2. Junk guard - never ring on a ticker match
 - Tickers ONLY from the filing symbol, the alias table, or the ambiguous-name list settled by context words (NEWS_READING_PLAN B2),
@@ -284,16 +357,25 @@ Target from first source to call: <= 60 s for filings, regulator pages and wires
 
 ### C4. The call - one line, both sides
 "NEWS 11:42 · `<source>` (class A, 38 s after first source) · NEW · VERIFIED -> can go UP: `<A>`, `<B>` (`<sector>`) / can go DOWN:
-`<C>` (`<sector>`) · story back: 3rd time, past median +1.8% (n=5, NOT PROVEN) · GO NOW only if `<A>` > `<price>` with vol 2x within
-10 min · cancel if: denial / scope narrower"
+`<C>` (`<sector>`) · story back: 3rd time, past median +1.8% (n=5, NOT PROVEN) · GO NOW only if `<A>` > `<price>` with RVOL5 3x
+within 10 min · cancel if: denial / scope narrower"
 - Labels always shown: NEW / REPEAT / DENIAL / OFFICIAL; VERIFIED (class A, or two independent sources) / UNVERIFIED - TV ONLY /
   SOURCES SAY; the source and seconds since the first source.
 - Touches a PREDICTED share: merged into that card, not a second card. "NEWS AGREES with my 19:45 prediction" (grade up, no extra
-  ring if already rung) or "NEWS AGAINST my prediction: X - in doubt; cancel if Y" (this one may ring: it protects him).
+  ring if already rung) or "NEWS AGAINST my prediction: X - in doubt; cancel if Y" (silent on a share he does not hold - the
+  prediction's state changes on the page and in Telegram; if he HOLDS that side it is an exit-family warning, "PROTECT / BOOK HALF",
+  under E10 / E14).
+- **Sound, strictly by R10 / E14 and E12:** a news call is a GET READY until the C5 price confirm makes it a GO NOW. It sounds the
+  soft tick ONCE only when it is a GET READY on a sector / basket call (E12.1 basket shock with the cause found, or E12.2 watched
+  words on a mapped body naming a sector / basket) - "GET READY on a sector call" is the only GET READY R10 lets ring. A news GET
+  READY on a single share is a silent card. A confirmed news GO NOW sounds the bright chime once. Nothing else in C sounds.
 
 ### C5. Price confirm before any GO NOW [S, EM / LS]
 Within 10 minutes of first sight, the named share must:
-- move its way by at least 0.3 x ATR14 (about 0.5% on a typical F&O share) from the first-seen price, with 1-minute RVOL >= 2;
+- move its way by at least 0.3 x ATR14 (about 0.5% on a typical F&O share) from the first-seen price, with **RVOL5 >= 3** (MS line
+  1401: last 5 minutes' volume 3x normal for this minute, on its side of VWAP). RVOL5, not RVOL, because a mid-day news burst does
+  not lift the whole day's cumulative ratio for many minutes; RVOL5's lift (1.38 / 1.30 on all shares) is measured on breakouts,
+  not on news, so the level is [S, EM / LS];
 - be on the right side of VWAP;
 - with its whole-sector basket not against and NIFTY not against by more than 0.3%.
 Then:
@@ -303,7 +385,10 @@ Then:
   one grade down, LATE rules apply.
 - Text says up but price, breadth and IV say down in the first 3-5 minutes: no trade ("sell the news").
 - No confirmation in 10 minutes: the call expires silently and is scored as a NEWS call, not a trade.
-- A confirmed news GO NOW passes the E7 / E9 gates and the live Opus check (G) before it rings.
+- A confirmed news GO NOW passes every B2.4 gate (E7 strike gate, E8 validators, E9 trade / position / sector / cooling-off / chase
+  rules, lock room) and the live Opus check (G) before it rings. When the G ladder has switched the Opus check off, it rings on the
+  code gates plus the C3 Haiku + Sonnet agreement, and the card says "AI check off - budget". The card carries the full B3 field
+  list (THE VOTE, the setup's record - here the news event type's record - and lots from the lock room).
 - Basket shock first (E12.1, price before news): the blue card "falling together - news not found yet", never a GO NOW on price alone.
 
 ---
@@ -338,8 +423,10 @@ breadth. This voice: 6 of 10 held (NOT PROVEN if n < 8)."
 
 ### D3. What the call is allowed to change - decision and why
 **(a) His open position on that share, or in that sector on the threatened side: ALWAYS a ring** ("protect / trail to `<level>` /
-book half"), on the phone too. It is a warning; GIR never exits for him. Follow-up E10: PROTECT (stop to cost) / BOOK HALF; EXIT the
-rest if the test CONFIRMS the bottom. Why: these are his own exits, which R10 / E14 already let ring; missing a bounce on an open PE
+book half"), on the phone too. It is a warning; GIR never exits for him. It rings AS a BOOK HALF exit alert under E14 exactly: two
+low notes, repeated every 60 s until A + Enter, never muted while the position is open - no new sound, no changed repeat rule.
+Follow-up E10: PROTECT (stop to cost) / BOOK HALF; EXIT the rest if the test CONFIRMS the bottom. Why: these are his own exits,
+which R10 / E14 already let ring; missing a bounce on an open PE
 costs more than a false alarm (the review's KAYNES PE after a 9% fall lost -4.99% in 60 minutes; PAYTM 19 Nov stopped falling the
 moment the TV call came).
 
@@ -355,13 +442,16 @@ protect warning.
 
 **(c) Broker note before the open:** at 07:15 / 09:08 a PE prediction on that share drops one grade, or is CANCELLED when the note is
 a stance change by a house with hit rate >= 55% at n >= 8 [S, EM]. Card: "upgrade - gap-up may fade; no PE until the first 30 min decide".
+**Mirror, same thresholds:** a DOWNGRADE after a rally makes a CE prediction on that share drop one grade, or CANCELLED on a stance
+change by a house with hit rate >= 55% at n >= 8 [S, EM]. Card: "downgrade - gap-down may bounce; no CE until the first 30 min
+decide".
 
 **(d) Strategist sector view:** a warning line only; lowers that side's evening grade by one step for 1 day. No suspension.
 
 **(e) It NEVER creates a CE by itself** (nor a PE from a top call). A counter-side idea exists only after D4 CONFIRMED, as a GET READY,
 and only for a voice or kind that is PROVEN (D5). No flip-flopping.
 
-### D4. The price test (code, every minute, up to 45 minutes after the call; TOP is the mirror)
+### D4. The price test (code, every minute, up to 45 minutes after the call; TOP is the mirror: LOWER HIGH, VWAP LOSS, LONG UNWINDING (OI down while price falls off the high; nearby CE OI unwinding), BREADTH TURNING down, CE premium falling with ATM IV flat; TOP REJECTED = a 5-minute close 0.3% above the call-time high with RVOL5 >= 1.5 while above VWAP)
 1. HIGHER LOW: no new low for 15 minutes and a 5-minute swing low above the call-time low.
 2. VWAP RECLAIM: a 5-minute close above VWAP (if VWAP is more than 2 ATR away, the last 15-minute swing high instead).
 3. SHORT COVERING: futures OI down at least 1% over all months while price rises off the low; nearby PE OI unwinding.
@@ -370,13 +460,15 @@ and only for a voice or kind that is PROVEN (D5). No flip-flopping.
 
 Verdicts (one silent line each; a ring only if he holds the side at risk):
 - **BOTTOM CONFIRMED** = VWAP reclaim + at least 2 more. Suspension stays for the day.
-- **BOTTOM REJECTED** = a 5-minute close 0.3% (or 0.3 ATR) below the call-time low with RVOL >= 1.5 while below VWAP. "BOTTOM CALL
+- **BOTTOM REJECTED** = a 5-minute close 0.3% (or 0.3 ATR) below the call-time low with RVOL5 >= 1.5 [S, EM] while below VWAP. "BOTTOM CALL
   REJECTED by price - PE ideas back on." Suspension lifts.
 - Neither in 45 minutes: "CALL EXPIRED - NOT PROVEN". Suspension lifts; the warning stays on the card.
 
 ### D5. The house's own hit rate (EVENT_MEMORY TV CALLS / broker threads)
 - Each call stored as an EPISODE: kind (live / note / strategist) x BOTTOM / TOP x voice / house x side.
-- HELD = no new low beyond the call low by 0.3% AND +1% (or +0.5 ATR) from the call price within 60 min; also scored at 15:10, day 2, day 5.
+- BOTTOM HELD = no new low beyond the call low by 0.3% AND +1% (or +0.5 ATR) from the call price within 60 min.
+- TOP HELD (mirror) = no new high beyond the call high by 0.3% AND -1% (or -0.5 ATR) from the call price within 60 min.
+- Both also scored at 15:10, day 2 and day 5; NOT HELD is everything else.
 - Measured AGAINST A CONTROL: falls of the same size, same kind of day, no call, from the same minute store. Falling shares bounce
   often anyway; the voice must beat that.
 - The price test's own verdict is scored too (is the test or the voice better?).
@@ -385,7 +477,7 @@ Verdicts (one silent line each; a ring only if he holds the side at risk):
 - After n >= 20 [S]: a voice at or below the control drops to INFO ONLY (told, no suspension). A voice 10+ points above the control
   may also open a counter-side GET READY ("CE on the bounce, half size") - only after BOTTOM CONFIRMED, never a GO NOW on its own.
 
-**Dependency:** TV voices need speech-to-text (Deepgram, about $5-7 a trading day, outside the AI budget, paid - needs his yes).
+**Dependency:** TV voices need speech-to-text (Deepgram, about $5-7 a trading day, outside the AI budget; see Departures item 9).
 Without it D works only from wires, live blogs and broker notes.
 
 ---
@@ -437,15 +529,18 @@ Illustrative values, CE and PE always on separate lines:
 - "MARKET CALL: DOWN - right"
 - "PREDICTED last evening · UP 6: right 3 (2 tradable), flat 1, wrong 2 · DOWN 5: right 3, wrong 2 · beat the day CE +11 pts, PE +6 · 07:15 changes helped 2 / hurt 1"
 - "CONFIRMATIONS rung 7: early 4, late 2, failed 1 (said so at 10:02) · move left after ring median 1.4%"
-- "NEWS CALLS 5: right at 30 min 3/5 · median 41 s from first source · junk 0"
+- "NEWS CALLS 5: right at 30 min 3/5 · first source -> card p95: filings 11 s (target 15) · wires 26 s (30) · TV 24 s (30) · junk 0"
 - "BOTTOM / TOP 2: PAYTM bottom HELD (PE protected) · METALS bottom REJECTED · PE blocked 1 (would have lost -0.9%)"
-- "MISSED 3%+ movers 9 (CE 5 / PE 4), biggest `<SHARE>` -4.1% (not predicted, `<story>`) · RINGS 12 (peak 4 in 15 min) · AI $3.70"
+- "MISSED 3%+ movers 9 (CE 5 / PE 4), biggest `<SHARE>` -4.1% (not predicted, `<story>`) · RINGS 12 (peak 4 in 15 min) · AI $4.20 (ladder: none)"
 - "20-day: predictions 34% right vs 20% base, 22% yesterday's movers · AI vs code rank +4 pts (n=180) · NOT PROVEN until day 20"
 
-### E7. Shadow first
-From the first live day, predictions and confirmations show on screen in SHADOW (scored, no ring). The confirmation ring goes live
-PER SIDE only when 20 trading days show that side's prediction hit rate at least 8 points above baselines (a) and (d) (the
-SECTOR_LINKS proof spirit). If he wants rings sooner, they carry "NOT PROVEN" and he decides.
+### E7. Live from day 1, labelled until proven (the trader's order, 20 Nov: "Monday we use the full system")
+From Mon 23 Nov the confirmation signals, news calls, bottom / top calls and the 19:45 / 07:15 / 09:08 / FAILED / scorecard
+messages are LIVE: on the page, on Telegram and with the R10 / E14 sounds. This supersedes BUILD_PLAN 0.1's /preview shadow mode
+("nothing rings until he writes 'switch on'"): his order is the switch-on. Every ring carries "NOT PROVEN (day n of 20)" for its side
+until that side's prediction hit rate is at least 8 points above baselines (a) and (d) over 20 trading days; then the label becomes
+"PROVEN CE / PE". If a side falls below baseline over any rolling 20 days, its label goes back to NOT PROVEN and the desk tells him.
+The old system runs silent beside it for comparison, with the fallback switch (MONDAY_READY J7).
 
 ---
 
@@ -468,22 +563,40 @@ SECTOR_LINKS proof spirit). If he wants rings sooner, they carry "NOT PROVEN" an
 ### F2. Rings - his ceiling 50 a day and 6 in any 15 minutes; target a median of 10-15
 One AlertManager owns every ring; a demoted card never rings; a ring queued more than 3 minutes is delivered silently (no late
 ring); the log keeps the requested lane, the final lane and "held back (ring limit)".
-Priority when a 15-minute window is full (lower ones become silent cards, chosen by score, never by order of arrival):
-1. His own exits - STOP / BOOK HALF / EXIT / 15:10 (never counted, never dropped).
-2. BOTTOM / TOP on a held position; FAILED on a held position.
-3. PREDICTED + CONFIRMED, grade A / B, STRONG / MEDIUM first. At most one per prediction a day. In 09:17-09:30 only the top 6 by
-   score ring; the rest light up in the lane.
-4. NEWS CALL: impact 5 VERIFIED and price-confirmed, or impact 4 on a predicted or held share; NEWS AGAINST a prediction.
-5. BOTTOM / TOP that suspends a live predicted call.
-6. The 09:08 ARMED summary (one soft tick).
-Everything else is silent: unpredicted movers, NEAR, LATE, FAILED (not held), REPEAT news, TV-only items, strategist views.
 
-Expected per day [S, LS]: 09:08 summary 1 · confirmations 3-8 · news 0-6 · bottom / top 0-3 · his exits as they happen · other engine
-GO NOWs under a cap of 10. Typical total under 20.
+**What may sound at all - R10 / E14 exactly, no additions:** GO NOW (bright chime, once), GET READY on a sector call (soft tick,
+once), his own exits STOP / BOOK HALF / EXIT / 15:10 (two low notes, repeated every 60 s until A + Enter, never muted while a
+position is open). In this loop that means:
+- **Exit family (never counted, never dropped, E14 repeat rule unchanged):** his own exits; a BOTTOM / TOP call on a held position
+  (it rings as BOOK HALF / PROTECT, D3a); FAILED on a held position (E10); NEWS AGAINST a prediction on a side he holds.
+- **GO NOW (bright chime):** PREDICTED + CONFIRMED (B2, grade A / B, MEDIUM+); a price-confirmed news GO NOW (C5); other engine GO
+  NOWs (E8).
+- **GET READY on a sector call (soft tick):** a news call on a sector / basket (E12.1 cause found, E12.2 mapped body); rotation GET
+  READY (E11).
+- **Silent (page row + Telegram where F1 says so):** the 09:08 ARMED summary; news calls on a single share before the price confirm;
+  NEWS AGAINST a prediction he does not hold; a BOTTOM / TOP call that only suspends a live predicted call (the suspended card shows
+  "BOTTOM CALL - WAIT FOR THE TEST"); unpredicted movers, NEAR, LATE, FAILED (not held), REPEAT news, TV-only items, strategist views.
+  Three of these may get the soft tick ONLY if he says yes (Departures list); default OFF.
 
-Sounds (R10 / E14, one per type, no new sound families): a confirmation IS the GO NOW for a predicted share - the bright chime once;
-news call and the 09:08 summary - one soft tick (the GET READY sound); bottom / top on a held position - two low notes once (his exit
-family; his stop-loss alarm keeps its own repeat). Nothing else sounds.
+**Counting and the live slot rule (a ring cannot be taken back, so it is decided at request time from scores fixed BEFORE the
+open - never by order of arrival):**
+- Counted rings = every GO NOW and GET READY sound. Exit-family sounds are never counted. The silent 09:08 summary is not a ring and
+  does not count; if he switches its optional tick on, it counts as a tier-C ring in every rolling window containing 09:08.
+- Every requested ring gets a TIER from values already stored at 09:08 (P09) or fixed by the item's class:
+  - **Tier A:** a confirmation whose line is in the P09 top 3 by stored code score (both sides ranked together); a VERIFIED impact-5
+    news GO NOW.
+  - **Tier B:** any other scored-list confirmation (grade A / B, MEDIUM+); an impact-4 news GO NOW on a predicted or held share.
+  - **Tier C:** GET READY ticks on a sector call; other engine GO NOWs.
+- With n = counted rings in the trailing 15 minutes (rolling): tier C rings only if n <= 3; tier B only if n <= 4; tier A if n <= 5.
+  So the 6th slot of any 15 minutes is always kept for tier A, and two slots are always kept from tier C for GO NOWs. A request
+  that fails the test becomes a silent card "held back (ring limit)" and is scored (E1).
+- **09:17-09:30:** only confirmations whose lines are in the P09 top 5 by stored score are eligible to ring at all (the list is
+  fixed at 09:08, so it is known before the first trigger); the others light up in the lane. With the slot rule this caps the
+  opening at 6 rings, including any optional 09:08 tick.
+- Day ceiling: after 40 counted rings only tier A rings; at 50 nothing counted rings.
+
+Expected per day [S, LS]: confirmations 3-8 · news GO NOW 0-4 · sector GET READY 0-3 · other engine GO NOWs under a cap of 10 · his
+exits (incl. bottom / top protect) as they happen. Typical counted total under 20.
 
 Conflict to settle with him: IA.md section 7 (at most 6 audible P2 a session, 1 per 10 min) is stricter than his 50 / 6. This spec
 takes his 50 / 6 as the ceiling and IA's quiet target as the goal; the scorecard reports actual rings either way.
@@ -495,43 +608,77 @@ takes his 50 / 6 as the ceiling and IA's quiet target as the goal; the scorecard
 - Too late: "◐ TOO LATE · `<SHARE>` +1.9% of ~3.4% done · pullback only: VWAP `<p>`"
 - Failed: "✗ PREDICTION FAILED · `<SHARE>` predicted UP, now -1.3% < cancel `<p>` · I was wrong · no CE today"
 - Not predicted: "• NOT PREDICTED · `<SHARE>` -2.4% · `<SECTOR>` -1.2% · `<story>` · LATE · drill-down ›"
-- News: "NEWS 11:42 · `<source>` 38 s · NEW · VERIFIED → UP `<A>`, `<B>` (`<sector>`) · DOWN `<C>` · GO NOW only if `<A>` > `<p>` vol 2x in 10 min · cancel: denial"
+- News: "NEWS 11:42 · `<source>` 38 s · NEW · VERIFIED → UP `<A>`, `<B>` (`<sector>`) · DOWN `<C>` · GO NOW only if `<A>` > `<p>` RVOL5 3x in 10 min · cancel: denial"
 - Bottom: "BOTTOM CALL · `<voice>`, `<channel>` 11:05, TV ONLY · `<SHARE>` ~`<p>` after -7% · STOP: no new PE · your PE: protect `<p>` / book half · test VWAP `<p>` · voice 6/11 (NOT PROVEN)"
 - Top: "TOP CALL · `<voice>` · `<SHARE>` ~`<p>` after +6% · STOP: no new CE · your CE: protect / book · test: lower high + VWAP loss"
-- Scorecard: "UP 6: 3 right · DOWN 5: 3 right · beat the day CE +11 / PE +6 · rings 12 · missed 9 · AI $3.70"
+- Scorecard: "UP 6: 3 right · DOWN 5: 3 right · beat the day CE +11 / PE +6 · rings 12 · missed 9 · AI $4.20"
 
 ---
 
 ## G. AI COST (prices cached 3 Nov 2026: Haiku 5.5 $0.10 / $0.50, Sonnet 5.5 $2 / $10, Opus 5.5 $4 / $20 per M tokens; cache reads Sonnet $0.10, Opus $0.20; Batch -50%)
 
 CODE does: candidates, scores, triggers, 22:45 and 09:08 checks, the confirmation watcher, price tests, rings, scoring. **No AI on the
-critical path of a ring.**
+critical path of a ring.** News reading is costed from NEWS_READING_PLAN (NRP) section E's own per-call figures, not re-estimated.
 
 | Job | Model | Calls a day | $ a day (approx.) |
 |---|---|---|---|
 | 19:45 brain (~70-80K in: frozen knowledge prefix + candidate packet; ~10-15K out with thinking; effort high set explicitly) | Opus 5.5 | 1 (+1 retry) | 0.55-0.70 |
-| 19:45 red team | Sonnet 5.5 | 1 | 0.10 |
+| 19:45 red team (~30K in, ~4K out) | Sonnet 5.5 | 1 | 0.10 |
 | 22:45 cancel check | code (Sonnet sentence only on a change) | 0-1 | 0.02 |
 | 07:15 update (~40-50K in, ~8K out, effort medium; 11 h after 19:45, so no shared cache) | Opus 5.5 | 1 | 0.35 |
 | 09:08 reject rules + one sentence | Sonnet 5.5, effort low | 1 | 0.05 |
-| News reading, every item once after code grouping (tiers 1 / 1b); bottom / top phrase tagging inside it | Haiku 5.5 | ~2,500 + ~300 deep | 0.90-1.10 |
-| Weight 4-5 frames, denials, blind second direction check | Sonnet 5.5, cap 40 | 15-40 | 0.40-1.00 |
-| Bottom / top verify (stance, level, kind) | Sonnet 5.5 | 5-15 | 0.25 |
-| Live GO NOW check: before a news GO NOW rings; after a confirmation ring as the "AI: agrees / WAIT - reason" line (top by score). Gets premium, IV, spread, OI at the strike, days to expiry, explicit reject rules (review fix 5); 1-hour cache | Opus 5.5, effort medium, cap 8 | 0-8 | 0-0.40 |
-| Scorecard sentences; nightly labels (story novelty, TV-voice tagging) | Sonnet / Haiku via Batch | ~200 | 0.10-0.20 |
+| *Prediction runs subtotal (reserved $1.25, below)* | | | *1.07-1.22* |
+| News tier 1: every item once after code grouping, effort low (NRP: ~2,500-2,700 x $0.0003) | Haiku 5.5 | ~2,500-2,700 | 0.75-0.81 |
+| News tier 1b: deep reads of weight-3 items and full F&O articles, effort medium (NRP: ~300 x $0.002) | Haiku 5.5 | ~300 | 0.60 |
+| News tier 2 (NRP: ~70 calls incl. the blind second opinion = $1.3, ~$0.019 a call). Of these, **PROTECTED** (~25-35 calls, ~$0.50-0.65): the blind second opinion on weight 4-5, every negation / denial item, every Haiku refusal. **DISCRETIONARY** (~35-45 calls, ~$0.65-0.85): policy / sector chains, mixed results, TV management tone, 3+ F&O names. Bottom / top verification (stance, level, kind) is a tier-2 read inside these 70 - no separate line | Sonnet 5.5 | ~70 | 1.30 |
+| Live GO NOW check: before a news GO NOW rings; after a confirmation ring as the "AI: agrees / WAIT - reason" line (tier A first, F2). Gets premium, IV, spread, OI at the strike, days to expiry, explicit reject rules (review fix 5); 1-hour cache; ~$0.05 a call | Opus 5.5, effort medium, **cap 4** | 0-4 | 0-0.20 |
+| Batch (NRP: nightly knowledge rebuild, ET Prime long reads, end-of-day tagging audit) plus scorecard sentences and nightly labels (story novelty, TV-voice tagging) | Sonnet / Haiku via Batch | ~200 | 0.30 |
 | Confirmations, LATE / FAILED, price tests, scoring | code | 0 | 0 |
-| **Normal trading day** | | | **about $2.7-4.0** |
+| **Normal trading day** | | | **about $4.0-4.4** (headroom $0.6-1.0) |
+| First 2 weeks (tuning): + NRP's Sonnet re-read of a random 10% of Haiku items (~$0.3); NRP warns $5-6 a day until grouping and filters are tuned | | | **$4.3-4.7 planned; $5-6 possible -> the ladder trims** |
 
-- **Hard cap $5.00 per budget day** (16:00 to 15:59 next day, so the 19:45 and 07:15 runs count against the day they serve), checked in
-  code BEFORE each call (estimate x price vs per-call / hour / day counters) plus the provider-side limit.
-- **Ladder:** $3.50 -> GO NOW checks only for the 4 highest-score confirmations; $4.50 -> Sonnet only for impact-5 and denial items, no
-  more Opus that day; $5.00 -> code + Haiku only, one message to him. Heavy news days are capped, not uncapped.
-- The evening brain never drops - it is the edge. $1.00 of the cap is reserved for the 19:45 + 07:15 runs.
+**Hard cap $5.00 per budget day** (16:00 to 15:59 next day, so the 19:45 and 07:15 runs count against the day they serve), checked in
+code BEFORE each call (estimate x price vs per-call / hour / day counters, then the true cost from each reply's token counts, NRP C)
+plus the provider-side limit.
+
+**Reserves.** $1.25 is held for the 19:45 + 07:15 + 09:08 runs; no news spend between 16:00 and 19:45 can touch it. The evening brain
+never drops - it is the edge. A floor of $0.40 is held for the PROTECTED Sonnet set and Haiku: discretionary spend stops at $4.60.
+
+**Ladder (replaces the earlier $3.50 / $4.50 rungs, which a normal NRP-costed day would have tripped):**
+- **$4.25** -> Opus live checks stop for the day (cards say "AI check off - budget"; code reject rules and the C3 Haiku + Sonnet
+  agreement still gate); tier 1b deep reads only for F&O filings and items naming a held or predicted share (others stay on Haiku
+  low); in the first 2 weeks the re-read sample drops from 10% to 5%.
+- **$4.60** -> DISCRETIONARY Sonnet reads go to Haiku medium (NRP's own $9-rung rule, moved here); the PROTECTED set continues.
+- **$5.00** -> code + Haiku low only; one message to him. A protected item arriving after this gets no second opinion and is treated
+  under NRP F / E12.4's safe form: "NOT CHECKED - budget", no wake, never a GO NOW; it rings only if it touches a held position
+  (exit family, D3a / F2).
+
+**Priority of NRP's "never skipped" second opinion (NRP D):** it keeps priority over every other in-session spend. The earlier
+40-call cap on it is WITHDRAWN; it has no count cap below NRP's 200 calls a day (kept only as the runaway guard); neither the $4.25
+nor the $4.60 rung touches it; only the $5.00 hard stop ends it, and then the safe form above applies (no second opinion = no call).
+
+**Heavy news day (Budget, war, results peak; NRP: 8,000 items + 1,000 deep, Sonnet 200, uncapped $25-40).** Under $5: prediction runs
+$1.1-1.2 (spent before the session) + Haiku low on every item (never skipped) ~$2.4 + deep reads after $4.25 only for F&O filings /
+held / predicted shares ~$0.3-0.4 + PROTECTED Sonnet ~$0.6-1.0 (~30-50 calls) = about $4.6-5.0; discretionary Sonnet and the Opus
+checks are cut early in the day. Late protected items may hit the hard stop and run UNCHECKED (no GO NOW). Raising the cap for a
+named heavy day is his decision (Departures).
+
+**NRP rules this spec overrides (stated so nobody builds both):**
+1. NRP E's news ladder ($6 / $9 / $12 / $20) and the E13 $20 whole-system frame -> superseded by the $4.25 / $4.60 / $5.00 ladder.
+2. NRP A tier 3 "GO NOW check 1 per stock / 5 min, max 25 a day" and NRP E's "~5 GO NOW" -> cap 4, off at $4.25.
+3. NRP's "$3-5 a day for news reading" target -> news reading gets about $2.7 (Haiku $1.4 + Sonnet $1.3) inside the whole-system $5.
+4. NRP E's heavy-day "$12-13 capped" -> $5 capped with the cuts above.
+5. NRP A's Sonnet "cap 200 calls / day" -> kept as the runaway guard only; dollars do the budgeting.
+6. NRP E's Opus "2 notes + ~5 GO NOW = $1.4" -> re-costed from token sizes: notes $0.90-1.05 + checks up to $0.20.
+**Kept unchanged:** every NRP D NEVER SKIPPED rule (until the $5.00 stop, then the safe form), NRP E's weekend ($0.6-1) and NSE-holiday
+($1.5-2, 19:45 note only if the next day trades) costs, the first-2-weeks re-read, loop guards, caching and Batch rules (NRP C).
+
+- Month: ~21 trading days x ~$4.2 + ~9 weekend days x $0.8 + 1-2 holidays + weekly audit (~$4) = **about $100-110 for Claude**
+  (NRP's $120-135 carried a ~$20 heavy-day reserve; here heavy days are capped at $5).
 - Caching: frozen prefix (schema, F&O universe, aliases, exposure map, link book, chain table) before the breakpoint; live data last;
   no timestamps or unsorted JSON before it. Target 70-80% cache reads on live calls.
-- Non-trading days: Haiku triage plus the one 19:45 run, about $0.5-1.
 - The old E13 $20 cap and the 18 Nov $27 overspend are superseded by his $3-5.
-- The v2 GO NOW check took 77-89% of the cost and approved 57 of 57 cards. Here it is capped at 8, off the critical path for
+- The v2 GO NOW check took 77-89% of the cost and approved 57 of 57 cards. Here it is capped at 4, off the critical path for
   predicted lines (code reject rules from 09:08 decide), and must show REJECT / WAIT on known bad cards in the replay before it ships.
 - **Not AI money, each needs his yes:** TV speech-to-text (Deepgram, about $5-7 a trading day; cheaper: CNBC-TV18 all day + ET Now only
   09:00-10:30 and 14:30-15:30, about $2 less). D and TV news calls depend on it. The paid news archive for back-testing C.
@@ -542,9 +689,11 @@ critical path of a ring.**
 1. The lift of a 19:45 code list over the base rate, per side and per kind of reason (chain, sector follow-through, share state,
    story, broker), on held-out months.
 2. Whether 07:15 and 09:08 improve it, and how much the pre-open gap alone explains.
-3. Whether PDH + RVOL has higher lift on PREDICTED shares than on all shares; this sets the trigger, RVOL level and cancel level.
+3. Whether PDH + RVOL (section 0 definition) has higher lift on PREDICTED shares than on all shares; this sets the trigger, RVOL
+   level and cancel level.
 4. How often a predicted move is taken by the gap vs left for open -> 15:10.
-5. Day-type base rates on the tradable-leg definition, and how often the 09:08 market-day call is right.
+5. Day-type frequencies and base rates on the A4 tradable-leg definition (replacing MS's NIFTY-day figures, whose rule is unstated),
+   and how often the 19:45 / 09:08 market-day call is right.
 6. The confirmation window, the too-late fraction and the move left after a confirmation, CE and PE separately; whether 09:17-09:20
    option spreads are tradable.
 
@@ -552,11 +701,15 @@ critical path of a ring.**
 1. The prediction tables and the scorer (E) first. Without them nothing can be judged.
 2. The code candidate table, back-tested on the 3-year store against the base rate and baselines (no AI).
 3. The AI layer, tested only on days after July 2026 and live, against the code ranking.
-4. A 20-30 day replay with frozen as-of knowledge, then 2 weeks of live shadow (E7).
+4. Before Monday: replays of 16, 18, 20 Nov, an October up day and 27 Oct (SERVER_ORDER_MONDAY E1); after Monday a 20-30 day replay with frozen as-of knowledge runs in the background; live from Monday with the NOT PROVEN label (E7).
 5. Replay checks, all scored from data, never from a hand list: 18 Nov (down day) and 19 Nov (up day) - both CE and PE lists present,
    confirmations within 5 min of the trigger, 50 rings or fewer a day and 6 or fewer in 15 min; 20 Nov (US fall night); 19 Nov PAYTM
    TV call - BOTTOM card within 30 s of the words, PE suspended, test run; 18 Nov KAYNES - no fresh PE ring after a 9% fall without
-   the test; 19 Nov 12:44 Goldman - broker call raised, UNVERIFIED, no GO NOW before price confirms; KEI / TITAN junk - no ring.
+   the test; 19 Nov 12:44 Goldman - broker call card within 30 s of the words (60 s = fail, BROKER_CALLS), UNVERIFIED, no GO NOW
+   before price confirms; KEI / TITAN junk - no ring; every replayed news card within its C1 class target (filings < 15 s, wires
+   30 s, TV 15-30 s, basket shock 10 s, regulator 60-120 s); the ring log shows only R10 / E14 sounds, exit-family alerts repeating
+   until acknowledged, and no rolling 15 minutes with more than 6 counted rings; the AI cost log for the replayed days fits the G
+   ladder (no rung tripped on a normal day).
 6. Pass marks (from the review): cards before the move on the replayed days; CE present on up days; rings within the limits; the AI
    check rejects some cards; the after-cost proxy result is not negative.
 
@@ -588,13 +741,33 @@ confirm before E8's 09:30 window.
 | Bottom test verdict | 3 of 5 | 3 of 5 | VWAP + 2 more | VWAP reclaim + 2 more: VWAP is the clearest single proof of buyers back. |
 | What a bottom call changes | soft block of rings | suspend GIR PE calls ≤ 45 min | suspend; sector suspends leaders; broker / strategist rules | Draft 3 in full (it includes 1 and 2). |
 | Strong voice | > 60% may open mirror WATCH | 10 pts over control | PROVEN only | 10 pts over the no-call control at n >= 20: falling shares bounce anyway, so an absolute 60% means little. |
-| Live AI GO NOW check | Opus veto on confirmations, max 10 | none for predicted (09:08 code rules); Opus for news only | Opus after the ring, max 8 | Code reject rules from 09:08 gate predicted rings; Opus (cap 8) before news GO NOW and as an after-ring note. Speed and the rubber-stamp finding. |
+| Live AI GO NOW check | Opus veto on confirmations, max 10 | none for predicted (09:08 code rules); Opus for news only | Opus after the ring, max 8 | Code reject rules from 09:08 gate predicted rings; Opus (cap 4, off at the $4.25 rung) before news GO NOW and as an after-ring note. Speed, the rubber-stamp finding, and the NRP-costed budget (G). |
 | Misses | 3%+ | 3%+ | 2%+ | All 2%+ listed for the miss hunt; headline counts 3%+. |
 | Side bias flag | ratio outside 0.5-2 | - | > 70% one side vs 40-60% market | 20+ point gap vs the market's own side mix over 5 days. |
-| Ring priority / count | under 25 | confirmation A before news | target 10-15 | Target 10-15, ceiling 50 / 6; merged priority list in F2. |
+| Ring priority / count | under 25 | confirmation A before news | target 10-15 | Target 10-15, ceiling 50 / 6; only R10 / E14 sounds; tiered live slot rule from P09 scores in F2. |
 | Shadow before live | 30-day NOT PROVEN label | ring live per side after 20 days at +8 pts | 2 weeks shadow | Shadow first; live per side at +8 pts over baselines after 20 days, or earlier with NOT PROVEN by his choice. |
 
-**Departures from existing specs (need his yes):** B2 confirms PREDICTED shares from 09:17 (E3 says 09:20 for sector CONFIRMED, E8
-says 09:30) - the study's timing; G replaces the live Opus check on predicted lines with code reject rules - the review's rubber-stamp
-finding and his $3-5 budget; D suspends GIR's own calls after a bottom / top call - not his trading, so R12 holds; F2 adopts his 50 / 6
-as the ceiling over IA.md section 7's stricter budget, with IA's quiet target as the goal.
+**Departures from existing specs - DECIDED 20 Nov by the desk under his order ("Monday the full system; don't make me repeat").**
+He can change any of these at any time; until he does, they stand as written here.
+1. **09:17 earliest confirmation for PREDICTED shares (B2): YES.** Overrides BUILD_PLAN E3 (E3 stays the grade definition), E8's
+   09:30 entry window and GIR_SPEC line 87 (before 09:30 only the VWAP side is required). Why: the study (half the median move done by
+   09:38-09:44, 09:21 on gap days). EXCEPTION kept: on a day after an overnight Tier-1 event GIR_SPEC line 352 holds (no entries
+   09:15-09:30). From 09:17 to 09:30 only the 09:08 top 5 may ring (F2).
+2. **E8's "confidence < 0.6 -> NO_TRADE" mapped to grades (B2.4): YES.** WEAK = NO_TRADE before calibration; after calibration
+   p_cal below 1.6x the side's base rate.
+3. **Code reject rules on predicted lines; the Opus 5.5 GO NOW check on non-predicted and news GO NOWs, capped at 4 a day: YES.**
+   (SERVER_ORDER B6 "GO NOW on Opus 5.5 that can say no" applies to exactly those.) Why: the 57-of-57 rubber stamp and the $3-5 budget.
+4. **G's $5 hard cap and ladder: YES.** It supersedes every "$20" in BUILD_PLAN (0.2, E13, 3.0 P&L strip meter, 3.10, the Sun 22 Nov
+   step) and NRP's $6 / $9 / $12 / $20 ladder - the server builds ONE cap. A $6 cap for the first 10 trading days is allowed while the
+   news filters are tuned.
+5. **D suspends GIR's own new calls on the threatened side after a bottom / top call: YES** (his trading is never blocked; R12 holds).
+6. **F2: his 50 / 6 is the ceiling: YES**, IA.md section 7's quiet target stays the goal.
+7. **Extra soft ticks: OFF** (a: 09:08 ARMED summary, b: NEWS AGAINST on a share he does not hold, c: bottom / top suspending a live
+   predicted call). He can switch any of them on in Settings.
+8. **Index options:** the A4 market-day call also produces one NIFTY and one BANKNIFTY line (UP = CE / DOWN = PE) with the same
+   trigger (yesterday's high / low with breadth on its side), cancel, B-style confirmation and E scoring; Monday suggests the NEXT
+   weekly (1 Dec), the expiring contract shown as information.
+9. **Paid TV speech-to-text (Deepgram):** use it if it is among the subscriptions he has already given; otherwise TV stays on the
+   existing tvwatch and the Sunday status names it once as the only open paid item.
+**Not departures (now aligned):** news speed targets are BUILD_PLAN E12.5 as written (C1); the confirmation and news cards carry
+every R14 / E8 field and the E9 rules (B3, B2.4, C5); one RVOL definition from the study (section 0).
