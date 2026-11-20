@@ -16,7 +16,7 @@ md = ['# R51 controls test - SECTOR DRILL-DOWN (R50) on the real /preview pages'
       'Run %s. Real input only: mouse clicks, drags of scrollbar thumbs and wheel, keyboard on the desk (1366x768 and 1600x900, deviceScaleFactor 1);' % now,
       'finger touches on the phone (390x844, hasTouch + isMobile, CDP touchStart / touchMove / touchEnd). No forced states: the page state is only read to check what the input did.',
       'Inside = http://127.0.0.1:8100/preview/... ; outside = https://girtrader.com/preview/... through the login (cookie made by sitelogin, never printed).',
-      'Data = the live store with the 19 Nov close (market closed). NOT RUN = the control needs a live market state that does not exist tonight (named in the row).', '',
+      'Data = the live store with the close of the day of the run (market closed). NOT RUN = the control needs a live market state that does not exist tonight (named in the row).', '',
       '**Totals:** ' + ' · '.join('%s %s' % (v, k) for k, v in sorted(tot.items())), '',
       '| where | result | n |', '|---|---|---|'] + ['| %s | %s | %s |' % (k[0], k[1], v) for k, v in sorted(cnt.items())] + ['']
 fails = [r for r in rows if r['result'] == 'FAIL']

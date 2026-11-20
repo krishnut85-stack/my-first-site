@@ -13,6 +13,7 @@ unless a field says "wall". Made by v2/testobs/review_export.py. AI models are n
 | test_log.jsonl | the TEST OBSERVER's log (2546 rows): every engine row and every AI call, with cost, latency and the outcome |
 | flags.jsonl | the observer's flags, raised at the moment they became known on the replay clock |
 | scorecard.json / scorecard.md | the observer's scorecard at the run's end (the .md is the same in plain words) |
+| edge.json | the EDGE scorecard (the goal): every share + side GIR named, its source and rank, hit rates 1% / 2% to the close and the next close vs the base rate of all F&O shares from the same minute (lift), earliness vs the move's onset, wrong side, by channel and source, the top-5; the old system scored the same way. n < 30 = not proven. Its plain-words table is the EDGE section of scorecard.md; the catch table there is coverage, not the goal |
 | run_report.txt | the output of v2/engine/tools/run_report.py on this run (the engine builder's own score) |
 
 ## calls.jsonl / calls.csv fields

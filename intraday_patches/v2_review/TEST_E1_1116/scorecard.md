@@ -3,9 +3,84 @@
 Made 2026-11-20 16:48:17 IST by v2/testobs/observer.py. Run folder: `<server>/girdata/replay/out/TEST_E1_1116`. Done because: run.json written by the player (the day's end).
 
 ## In one line
-TEST_E1_1116 2026-11-16: catch cards 1 / 19 / 34 / 0 · cards+WATCH 3 / 44 / 6 / 1 · old 22 / 21 / 10 / 1 (before/late/missed/wrong, 2%+) · 3% movers 37: in time 29, late 5, missed 3 · rings 15 (09:15-09:45 1) · AI 723 of 723 (100%), $0.881, 359 calls · flags MISSED MOVER 8, NEWS DIRECTION WRONG 17
+EDGE TEST_E1_1116 2026-11-16: 201 names (60 knowledge-driven) · 2% to close: all 13/201 = 6% vs base 6% → lift 1.15; knowledge 6/60 = 10% vs base 8% → lift 1.25 · old system 16/167 = 10% vs base 7% → lift 1.42 (167 names) || coverage (not the goal): TEST_E1_1116 2026-11-16: catch cards 1 / 19 / 34 / 0 · cards+WATCH 3 / 44 / 6 / 1 · old 22 / 21 / 10 / 1 (before/late/missed/wrong, 2%+) · 3% movers 37: in time 29, late 5, missed 3 · rings 15 (09:15-09:45 1) · AI 723 of 723 (100%), $0.881, 359 calls · flags MISSED MOVER 8, NEWS DIRECTION WRONG 17
 
-## Did it catch the movers?
+## EDGE - precision and earliness of GIR's names (the goal)
+
+Every share + side GIR named on 2026-11-16, scored from the price when it was named (before 09:15 = the 09:15 open, the first tradable price). Hit = moved the named way by 1% / 2% to the close (and to the next close, 2026-11-17 known for 218 shares). Base rate = how many of the 218 F&O shares did as much the same way from the same minute; lift = hit rate / base rate (1.0 = no edge). Groups with n < 30 are NOT PROVEN.
+
+| group | n | 1% to close | 2% to close | 2% to next close | wrong side 2% | proof |
+|---|---|---|---|---|---|---|
+| ALL names (first naming of each share + side, any channel) | 201 | 36/201 = 18% vs base 16% → lift 1.12 | 13/201 = 6% vs base 6% → lift 1.15 | 26/201 = 13% vs base 13% → lift 1.03 | 11 (6%) | n >= 30 |
+| KNOWLEDGE-driven names (any source but price-only) | 60 | 12/60 = 20% vs base 20% → lift 0.98 | 6/60 = 10% vs base 8% → lift 1.25 | 9/60 = 15% vs base 16% → lift 0.94 | 4 (7%) | n >= 30 |
+| channel: card (MUST SEE / CRITICAL) | 38 | 11/38 = 29% vs base 12% → lift 2.39 | 4/38 = 10% vs base 4% → lift 2.87 | 5/38 = 13% vs base 11% → lift 1.25 | 2 (5%) | n >= 30 |
+| channel: engine note 0715 | 33 | 10/33 = 30% vs base 25% → lift 1.19 | 6/33 = 18% vs base 11% → lift 1.7 | 5/33 = 15% vs base 20% → lift 0.77 | 0 (0%) | n >= 30 |
+| channel: engine note 1945 | 33 | 10/33 = 30% vs base 25% → lift 1.19 | 6/33 = 18% vs base 11% → lift 1.7 | 5/33 = 15% vs base 20% → lift 0.77 | 0 (0%) | n >= 30 |
+| channel: go now / get ready (any lane) | 182 | 34/182 = 19% vs base 15% → lift 1.23 | 11/182 = 6% vs base 5% → lift 1.2 | 25/182 = 14% vs base 12% → lift 1.16 | 11 (6%) | n >= 30 |
+| channel: prediction loop (lists, fired movers) | 6 | 0/6 = 0% vs base 19% → lift 0.0 | 0/6 = 0% vs base 7% → lift 0.0 | 2/6 = 33% vs base 14% → lift 2.33 | 0 (0%) | NOT PROVEN (n < 30) |
+| source: trader read | 2 | 1/2 = 50% vs base 23% → lift 2.16 | 0/2 = 0% vs base 6% → lift 0.0 | 2/2 = 100% vs base 16% → lift 6.32 | 0 (0%) | NOT PROVEN (n < 30) |
+| source: filing | 0 | - | - | - | - | none named |
+| source: results | 2 | 0/2 = 0% vs base 18% → lift 0.0 | 0/2 = 0% vs base 6% → lift 0.0 | 0/2 = 0% vs base 14% → lift 0.0 | 0 (0%) | NOT PROVEN (n < 30) |
+| source: TV | 3 | 0/3 = 0% vs base 8% → lift 0.0 | 0/3 = 0% vs base 3% → lift 0.0 | 0/3 = 0% vs base 7% → lift 0.0 | 0 (0%) | NOT PROVEN (n < 30) |
+| source: broker call | 3 | 0/3 = 0% vs base 13% → lift 0.0 | 0/3 = 0% vs base 5% → lift 0.0 | 0/3 = 0% vs base 11% → lift 0.0 | 1 (33%) | NOT PROVEN (n < 30) |
+| source: news | 13 | 1/13 = 8% vs base 13% → lift 0.61 | 0/13 = 0% vs base 4% → lift 0.0 | 2/13 = 15% vs base 11% → lift 1.44 | 2 (15%) | NOT PROVEN (n < 30) |
+| source: sector chain / driver link | 37 | 10/37 = 27% vs base 25% → lift 1.1 | 6/37 = 16% vs base 10% → lift 1.59 | 5/37 = 14% vs base 19% → lift 0.71 | 1 (3%) | n >= 30 |
+| source: price-only | 141 | 24/141 = 17% vs base 14% → lift 1.21 | 7/141 = 5% vs base 5% → lift 1.08 | 17/141 = 12% vs base 11% → lift 1.08 | 7 (5%) | n >= 30 |
+| OLD system (tomorrow.db alerts of 2026-11-16 from the evening before 15:30) - comparison only | 167 | 39/167 = 23% vs base 18% → lift 1.31 | 16/167 = 10% vs base 7% → lift 1.42 | 27/167 = 16% vs base 15% → lift 1.1 | 15 (9%) | n >= 30 |
+| OLD system source: broker call | 20 | 3/20 = 15% vs base 18% → lift 0.86 | 0/20 = 0% vs base 7% → lift 0.0 | 3/20 = 15% vs base 15% → lift 0.97 | 2 (10%) | NOT PROVEN (n < 30) |
+| OLD system source: filing | 5 | 2/5 = 40% vs base 16% → lift 2.53 | 1/5 = 20% vs base 5% → lift 3.69 | 2/5 = 40% vs base 12% → lift 3.41 | 1 (20%) | NOT PROVEN (n < 30) |
+| OLD system source: news | 60 | 16/60 = 27% vs base 18% → lift 1.5 | 7/60 = 12% vs base 7% → lift 1.73 | 5/60 = 8% vs base 15% → lift 0.55 | 5 (8%) | n >= 30 |
+| OLD system source: price-only | 28 | 6/28 = 21% vs base 21% → lift 1.0 | 3/28 = 11% vs base 8% → lift 1.32 | 5/28 = 18% vs base 15% → lift 1.18 | 2 (7%) | NOT PROVEN (n < 30) |
+| OLD system source: results | 27 | 6/27 = 22% vs base 21% → lift 1.08 | 3/27 = 11% vs base 8% → lift 1.37 | 4/27 = 15% vs base 16% → lift 0.94 | 4 (15%) | NOT PROVEN (n < 30) |
+| OLD system source: sector chain / driver link | 23 | 3/23 = 13% vs base 10% → lift 1.28 | 0/23 = 0% vs base 3% → lift 0.0 | 5/23 = 22% vs base 11% → lift 1.93 | 1 (4%) | NOT PROVEN (n < 30) |
+| OLD system source: trader read | 4 | 3/4 = 75% vs base 26% → lift 2.86 | 2/4 = 50% vs base 10% → lift 5.07 | 3/4 = 75% vs base 19% → lift 3.94 | 0 (0%) | NOT PROVEN (n < 30) |
+
+### Earliness (names whose share moved 2%+ its way by the close; onset = score.py 'began')
+
+| group | moved 2%+ its way | named before the move began | named before the open | median lead (min) | median move left after the name | median share of the day's range left |
+|---|---|---|---|---|---|---|
+| ALL names (first naming of each share + side, any channel) | 47 | 10 | 9 | -17 | +1.24% | 34% |
+| KNOWLEDGE-driven names (any source but price-only) | 13 | 9 | 9 | 1 | +1.92% | 51% |
+| channel: card (MUST SEE / CRITICAL) | 20 | 1 | 0 | -68.0 | +0.89% | 17.0% |
+| channel: engine note 0715 | 9 | 9 | 9 | 1 | +2.53% | 59% |
+| channel: engine note 1945 | 9 | 9 | 9 | 1 | +2.53% | 59% |
+| channel: go now / get ready (any lane) | 47 | 4 | 0 | -17 | +1.24% | 34% |
+| channel: prediction loop (lists, fired movers) | 2 | 0 | 0 | -24.0 | -0.05% | -0.5% |
+| source: trader read | 2 | 0 | 0 | -51.0 | +1.16% | 17.0% |
+| source: results | 1 | 0 | 0 | -2 | -0.32% | -3% |
+| source: sector chain / driver link | 10 | 9 | 9 | 1.0 | +2.40% | 55.5% |
+| source: price-only | 34 | 1 | 0 | -30.0 | +1.15% | 33.5% |
+| OLD system (tomorrow.db alerts of 2026-11-16 from the evening before 15:30) - comparison only | 43 | 12 | 0 | -1 | +1.44% | 45% |
+| OLD system source: broker call | 4 | 3 | 0 | 1.5 | +1.11% | 36.5% |
+| OLD system source: filing | 1 | 0 | 0 | -2 | +3.50% | 71% |
+| OLD system source: news | 20 | 5 | 0 | -7.0 | +1.66% | 52.0% |
+| OLD system source: price-only | 6 | 1 | 0 | -2.5 | +2.87% | 68.0% |
+| OLD system source: results | 7 | 2 | 0 | 0 | +1.38% | 26% |
+| OLD system source: sector chain / driver link | 2 | 0 | 0 | -147.0 | -0.06% | -0.5% |
+| OLD system source: trader read | 3 | 1 | 0 | 0 | +1.00% | 25% |
+
+### Names a day and the TOP-5
+
+- card (MUST SEE / CRITICAL): 38 names; top-5 by AI priority: SBIN CE 09:30, ASIANPAINT CE 09:17, PREMIERENE PE 10:32, KARURVYSYA CE 09:19, MAXHEALTH CE 09:45 → 3 of 5 moved 1%+ its way, 2 moved 2%+ (NOT PROVEN (n = 5))
+- engine note 0715: 33 names; top-5 by score / points: BAJFINANCE PE 07:15, HDFCBANK PE 07:15, SBIN PE 07:15, AXISBANK PE 07:15, ICICIBANK PE 07:15 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
+- engine note 1945: 33 names; top-5 by score / points: BAJFINANCE PE 19:45, HDFCBANK PE 19:45, SBIN PE 19:45, AXISBANK PE 19:45, ICICIBANK PE 19:45 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
+- go now / get ready (any lane): 182 names; top-5 by AI priority: SBIN CE 09:30, ASIANPAINT CE 09:17, KARURVYSYA CE 09:19, BHARTIARTL CE 09:33, EICHERMOT CE 09:18 → 1 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
+- prediction loop (lists, fired movers): 6 names; top-5 by list order: PIIND CE 19:45, CUMMINSIND PE 10:41, MANAPPURAM PE 09:18, ABB PE 09:26, COCHINSHIP PE 09:18 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
+- ALL: 201 names; top-5 by AI priority: SBIN CE 09:30, ASIANPAINT CE 09:17, KARURVYSYA CE 09:19, BHARTIARTL CE 09:33, EICHERMOT CE 09:18 → 1 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
+- OLD system: 167 names; top-5 by list order: NATIONALUM PE 09:16, AXISBANK CE 09:16, PNB CE 09:16, TMPV PE 09:16, ABB PE 09:16 → 1 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
+
+### The engine note: leakage and the honest check
+
+- LEAKAGE-marked note names on this day: none (an engine-note name whose chain is marked LEAKAGE in v2/kb/chains.json (X19 / links_extra, added 19 Nov after the 19 Nov rally) on a replayed day up to 19 Nov).
+- The KB's links were partly written after the past days they are tested on, so a note's lift on a replayed day may be flattered. The honest check is the KB's blind multi-date test (v2/kb/BLIND_TESTS.md): named shares moved their way the next day 221 of 459 (48%) - a coin gives about 50%.
+- Prediction loop cross-check: 6 names here = 6 in its own EDGE block; 2%+ its way: 0 by 15:10 (theirs) / 0 by the close (here). same names, times and sources as the prediction loop's EDGE block; it measures to 15:10, this scorecard to the close.
+
+Inputs: prediction-loop names: the prediction loop's point-in-time replay of 2026-11-16 (C_replays) (<server>/girdata/review/monday/C_replays/2026-11-16, edge.rows); news calls (C3): <server>/girdata/review/monday/C_replays/2026-11-16/store/news_calls.jsonl
+
+Closes: Kite daily close (girdata/history) 218.
+
+
+## Coverage of the movers (not the goal)
 54 F&O shares moved 2%+ at the close. Counted as before / late / missed / wrong (run_report.py rules):
 
 | who | before | late | missed | wrong |

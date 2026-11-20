@@ -1,7 +1,7 @@
 {
- "run": "20 Nov 2026 05:57 IST",
+ "run": "20 Nov 2026 17:48 IST",
  "totals": {
-  "PASS": 841,
+  "PASS": 871,
   "NOT RUN": 12
  },
  "rows": [
@@ -75,7 +75,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "open banks in 9 ms (from the cached store)"
+   "evidence": "open banks in 13 ms (from the cached store)"
   },
   {
    "control": "opens under 100 ms",
@@ -83,7 +83,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "9 ms"
+   "evidence": "13 ms"
   },
   {
    "control": "the open list pushes the rows below (no overprint)",
@@ -91,7 +91,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "list bottom 721 · next sector row top 727"
+   "evidence": "list bottom 774 · next sector row top 780"
   },
   {
    "control": "row cap: whole share rows in the first view + \"+n more\"",
@@ -115,7 +115,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "J x7 -> SBIN (last row SBIN)"
+   "evidence": "J x7 -> FEDERALBNK (last row FEDERALBNK)"
   },
   {
    "control": "K back up",
@@ -123,7 +123,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "K x7 -> IDFCFIRSTB"
+   "evidence": "K x7 -> INDUSINDBK"
   },
   {
    "control": "↓ / ↑ move share to share",
@@ -131,7 +131,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "↓ PNB · ↑ IDFCFIRSTB"
+   "evidence": "↓ BANDHANBNK · ↑ INDUSINDBK"
   },
   {
    "control": "J / K after a click in the pane",
@@ -139,7 +139,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "J PNB · K IDFCFIRSTB"
+   "evidence": "J BANDHANBNK · K INDUSINDBK"
   },
   {
    "control": "pane share name - single click",
@@ -147,7 +147,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "still IDFCFIRSTB on rotation#sd=banks&r=IDFCFIRSTB&y=206"
+   "evidence": "still INDUSINDBK on rotation#sd=banks&r=INDUSINDBK&y=70"
   },
   {
    "control": "pane scrollbar - slow mouse drag of the thumb",
@@ -155,7 +155,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 282 -> 0 (max 705)"
+   "evidence": "0 -> 288 -> 0 (max 649)"
   },
   {
    "control": "pane scrollbar - fast drag (one 120 px jerk)",
@@ -163,7 +163,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 564"
+   "evidence": "0 -> 577"
   },
   {
    "control": "pane scrollbar - drag past the end, off the rail",
@@ -171,7 +171,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "top 705 of max 705 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 649 of max 649 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "pane scrollbar - drag past the top, off the rail",
@@ -187,7 +187,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 211 -> 0"
+   "evidence": "0 -> 193 -> 0"
   },
   {
    "control": "pane scrollbar - ▼ then ▲ buttons",
@@ -219,7 +219,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "open True · after Esc open False · share still IDFCFIRSTB"
+   "evidence": "open True · after Esc open False · share still INDUSINDBK"
   },
   {
    "control": "Space plan card + Esc",
@@ -259,7 +259,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "toast 600-648 · action bar top 654 · name bottom 419"
+   "evidence": "toast 583-648 · action bar top 654 · name bottom 439"
   },
   {
    "control": "Pin button (action bar)",
@@ -270,12 +270,12 @@
    "evidence": "pins 0 -> 1 -> 0"
   },
   {
-   "control": "Copy contract (clipboard only)",
+   "control": "Copy contract",
    "page": "F3 rotation",
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "clipboard \"IDFCFIRSTB26DEC86CE\" · button \"Copy 86 CE · 0 lots\" · toast \"Copied IDFCFIRSTB26DEC86CE · 0 lots - you place the order in Kite\""
+   "evidence": "Copy off for INDUSINDBK (oc.INDUSINDBK.rows2 (the next-month chain) not in the store) - disabled"
   },
   {
    "control": "Copy button shows the size",
@@ -283,7 +283,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "Copy 86 CE · 0 lots"
+   "evidence": "Copy contract · 0 lots (no December contract in the store for any share of this sector today - Copy off, size still shown)"
   },
   {
    "control": "signal only: no order / buy button, the Kite line shown",
@@ -299,7 +299,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "8 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False"
+   "evidence": "0 strike chips, 0 not December · trade box \"TRADE BOX · December (December only)\" · November date shown: False · December chain gap named once in the list"
   },
   {
    "control": "\"Expiry week · physical settlement - December only\" warning",
@@ -339,7 +339,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "pin line (list top under the sticky table head) 387 · [line y, first row y] after each 40 px wheel [[468, 537], [428, 497], [388, 457], [387, 417], [387, 377], [387, 337]]"
+   "evidence": "pin line (list top under the sticky table head) 387 · [line y, first row y] after each 40 px wheel [[418, 487], [387, 447], [387, 407], [387, 367], [387, 327], [387, 287]]"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - slow mouse drag of the thumb",
@@ -347,7 +347,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "326 -> 544 -> 326 (max 905)"
+   "evidence": "240 -> 467 -> 240 (max 954)"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - fast drag (one 120 px jerk)",
@@ -355,7 +355,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "326 -> 762"
+   "evidence": "240 -> 694"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - drag past the end, off the rail",
@@ -363,7 +363,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "top 877 of max 905 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 929 of max 954 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - drag past the top, off the rail",
@@ -379,7 +379,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 337 -> 205"
+   "evidence": "0 -> 339 -> 213"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - mouse wheel over the list, then over the bar",
@@ -387,7 +387,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "-> 405 -> 205"
+   "evidence": "-> 413 -> 213"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - thumb visible",
@@ -419,7 +419,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "\"▸ 12 more listed, not F&O · ▲8 ▼4 · wt 5% · context only, no strike\" -> open, then closed"
+   "evidence": "\"▸ 12 more listed, not F&O · ▲7 ▼5 · wt 5% · context only, no strike\" -> open, then closed"
   },
   {
    "control": "double-click a share row -> F7, Back returns to the same sector, list, row",
@@ -427,7 +427,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "went share?s=AXISBANK · back: open banks, row AXISBANK, expanded True"
+   "evidence": "went share?s=ICICIBANK · back: open banks, row ICICIBANK, expanded True"
   },
   {
    "control": "after Back, J still moves",
@@ -435,7 +435,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "AXISBANK -> INDUSINDBK"
+   "evidence": "ICICIBANK -> BANKINDIA"
   },
   {
    "control": "O opens the option chain at the December strike; Back",
@@ -443,7 +443,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "chain?s=INDUSINDBK&exp=2026-12-29&k=920&side=CE · back on INDUSINDBK"
+   "evidence": "chain?s=BANKINDIA · back on BANKINDIA (no December contract in the store for any share of this sector now: the chain opens on the share, never a November strike)"
   },
   {
    "control": "double-click the pane share name -> F7, Back",
@@ -451,7 +451,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "share?s=INDUSINDBK"
+   "evidence": "share?s=BANKINDIA"
   },
   {
    "control": "Enter on a share row -> F7",
@@ -459,7 +459,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "share?s=INDUSINDBK"
+   "evidence": "share?s=BANKINDIA"
   },
   {
    "control": "Esc closes step by step",
@@ -483,7 +483,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "3 -> fmcg (row 3 = fmcg) · 1 -> auto (row 1 = auto)"
+   "evidence": "3 -> cement & materials (row 3 = cement & materials) · 1 -> hospitals & diagnostics (row 1 = hospitals & diagnostics)"
   },
   {
    "control": "Tab to a sector row + Enter opens it",
@@ -491,7 +491,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "focused auto after 2 Tab · open auto"
+   "evidence": "focused hospitals & diagnostics after 2 Tab · open hospitals & diagnostics"
   },
   {
    "control": "R key (apply re-rank)",
@@ -507,7 +507,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "NOT RUN",
-   "evidence": "needs live ticks: the market is closed (store holds the 19 Nov close); code path in sector-drill.js listHtml (frozen order under pointer / focus, 30 s, pointer leave, R)"
+   "evidence": "needs live ticks: the market is closed (the store holds the close of today); code path in sector-drill.js listHtml (frozen order under pointer / focus, 30 s, pointer leave, R)"
   },
   {
    "control": "money-flow band: a sector name opens it in the table below",
@@ -515,7 +515,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "clicked it -> open it, list visible True"
+   "evidence": "clicked hospitals & diagnostics -> open hospitals & diagnostics, list visible True"
   },
   {
    "control": "\"moving, but not this rotation\" row opens that sector",
@@ -523,7 +523,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "clicked consumer durables -> open consumer durables"
+   "evidence": "clicked realty -> open realty"
   },
   {
    "control": "BAN: NOT TRADABLE, plan dimmed, Copy disabled",
@@ -550,12 +550,20 @@
    "evidence": "pos.day.lock.locked = False today; rule checked in the rules table"
   },
   {
-   "control": "up-side shown: a rising sector shows CE strikes on its groups",
+   "control": "up-side shown: a rising sector shows CE strikes on its groups (a falling one PE)",
    "page": "F3 rotation",
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "electronics & hardware dir 1 · every row CE: True"
+   "evidence": "hospitals & diagnostics dir 1 · every row CE: True"
+  },
+  {
+   "control": "no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)",
+   "page": "F3 rotation",
+   "viewport": "1366x768",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "26 sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: 0 · prose with a tooltip allowed: 242"
   },
   {
    "control": "page errors",
@@ -571,7 +579,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 266 -> 0 (max 798)"
+   "evidence": "44 -> 298 -> 44 (max 754)"
   },
   {
    "control": "F2 board scrollbar - fast drag (one 120 px jerk)",
@@ -579,7 +587,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 532"
+   "evidence": "44 -> 552"
   },
   {
    "control": "F2 board scrollbar - drag past the end, off the rail",
@@ -587,7 +595,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "top 798 of max 798 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 754 of max 754 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "F2 board scrollbar - drag past the top, off the rail",
@@ -627,7 +635,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "open auto · list bottom 564 · next row top 570"
+   "evidence": "open auto · list bottom 640 · next row top 646"
   },
   {
    "control": "row cap: whole share rows in the first view + \"+n more\"",
@@ -651,7 +659,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "J x7 -> MOTHERSON (last row MOTHERSON)"
+   "evidence": "J x7 -> BOSCHLTD (last row BOSCHLTD)"
   },
   {
    "control": "K back up",
@@ -659,7 +667,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "K x7 -> M&M"
+   "evidence": "K x7 -> MARUTI"
   },
   {
    "control": "↓ / ↑ move share to share",
@@ -667,7 +675,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "↓ MARUTI · ↑ M&M"
+   "evidence": "↓ BHARATFORG · ↑ MARUTI"
   },
   {
    "control": "J / K after a click in the pane",
@@ -675,7 +683,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "J MARUTI · K M&M"
+   "evidence": "J BHARATFORG · K MARUTI"
   },
   {
    "control": "pane share name - single click",
@@ -683,7 +691,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "still M&M on sectors#sd=auto&r=M%26M&y=180"
+   "evidence": "still MARUTI on sectors#sd=auto&r=MARUTI&y=840"
   },
   {
    "control": "pane scrollbar - slow mouse drag of the thumb",
@@ -691,7 +699,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 150 -> 0 (max 508)"
+   "evidence": "0 -> 154 -> 0 (max 529)"
   },
   {
    "control": "pane scrollbar - fast drag (one 120 px jerk)",
@@ -699,7 +707,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 300"
+   "evidence": "0 -> 308"
   },
   {
    "control": "pane scrollbar - drag past the end, off the rail",
@@ -707,7 +715,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "top 508 of max 508 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 529 of max 529 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "pane scrollbar - drag past the top, off the rail",
@@ -755,7 +763,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "open True · after Esc open False · share still M&M"
+   "evidence": "open True · after Esc open False · share still MARUTI"
   },
   {
    "control": "Space plan card + Esc",
@@ -811,7 +819,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "clipboard \"M&M26DEC3500CE\" · button \"Copy 3,500 CE · 0 lots\" · toast \"Copied M&M26DEC3500CE · 0 lots - you place the order in Kite\""
+   "evidence": "clipboard \"TMPV26DEC270CE\" · button \"Copy 270 CE · 0 lots\" · toast \"Copied TMPV26DEC270CE · 0 lots - you place the order in Kite\""
   },
   {
    "control": "Copy button shows the size",
@@ -819,7 +827,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "Copy 3,500 CE · 0 lots"
+   "evidence": "Copy 270 CE · 0 lots"
   },
   {
    "control": "signal only: no order / buy button, the Kite line shown",
@@ -835,7 +843,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "8 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False"
+   "evidence": "1 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False · December chain gap named once in the list"
   },
   {
    "control": "\"Expiry week · physical settlement - December only\" warning",
@@ -875,7 +883,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "tile consumer durables -> open consumer durables · in view True"
+   "evidence": "tile hospitals & diagnostics -> open hospitals & diagnostics · in view True"
   },
   {
    "control": "F2: the share pane sits in the right column",
@@ -891,7 +899,15 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "2 -> cables & wires (row 2 = cables & wires)"
+   "evidence": "2 -> banks (row 2 = banks)"
+  },
+  {
+   "control": "no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)",
+   "page": "F2 sectors",
+   "viewport": "1366x768",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "19 sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: 0 · prose with a tooltip allowed: 212"
   },
   {
    "control": "page errors",
@@ -907,7 +923,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "chip auto -> open auto"
+   "evidence": "chip banks -> open banks"
   },
   {
    "control": "row cap: whole share rows in the first view + \"+n more\"",
@@ -915,7 +931,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "8 whole rows (need 8) of 17 members · +n more bar: True"
+   "evidence": "8 whole rows (need 8) of 22 members · +n more bar: True"
   },
   {
    "control": "every visible share name - click loads the pane, the list stays",
@@ -931,7 +947,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "J x7 -> MOTHERSON (last row MOTHERSON)"
+   "evidence": "J x7 -> FEDERALBNK (last row FEDERALBNK)"
   },
   {
    "control": "K back up",
@@ -939,7 +955,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "K x7 -> M&M"
+   "evidence": "K x7 -> INDUSINDBK"
   },
   {
    "control": "↓ / ↑ move share to share",
@@ -947,7 +963,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "↓ MARUTI · ↑ M&M"
+   "evidence": "↓ BANDHANBNK · ↑ INDUSINDBK"
   },
   {
    "control": "J / K after a click in the pane",
@@ -955,7 +971,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "J MARUTI · K M&M"
+   "evidence": "J BANDHANBNK · K INDUSINDBK"
   },
   {
    "control": "pane share name - single click",
@@ -963,7 +979,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "still M&M on desk-hunt#sd=auto&r=M%26M&y=0"
+   "evidence": "still INDUSINDBK on desk-hunt#sd=banks&r=INDUSINDBK&y=0"
   },
   {
    "control": "pane scrollbar - slow mouse drag of the thumb",
@@ -971,7 +987,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 132 -> 0 (max 430)"
+   "evidence": "0 -> 121 -> 0 (max 354)"
   },
   {
    "control": "pane scrollbar - fast drag (one 120 px jerk)",
@@ -979,7 +995,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 265"
+   "evidence": "0 -> 241"
   },
   {
    "control": "pane scrollbar - drag past the end, off the rail",
@@ -987,7 +1003,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "top 430 of max 430 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 354 of max 354 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "pane scrollbar - drag past the top, off the rail",
@@ -1003,7 +1019,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 376 -> 0"
+   "evidence": "0 -> 354 -> 0"
   },
   {
    "control": "pane scrollbar - ▼ then ▲ buttons",
@@ -1027,7 +1043,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "thumb 11 px wide, colour rgb(107, 118, 134)"
+   "evidence": "thumb 11 px wide, colour rgb(138, 150, 168)"
   },
   {
    "control": "W why + Esc",
@@ -1035,7 +1051,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "open True · after Esc open False · share still M&M"
+   "evidence": "open True · after Esc open False · share still INDUSINDBK"
   },
   {
    "control": "Space plan card + Esc",
@@ -1086,12 +1102,12 @@
    "evidence": "pins 0 -> 1 -> 0"
   },
   {
-   "control": "Copy contract (clipboard only)",
+   "control": "Copy contract",
    "page": "F1 desk",
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "clipboard \"M&M26DEC3500CE\" · button \"Copy 3,500 CE · 0 lots\" · toast \"Copied M&M26DEC3500CE · 0 lots - you place the order in Kite\""
+   "evidence": "Copy off for INDUSINDBK (oc.INDUSINDBK.rows2 (the next-month chain) not in the store) - disabled"
   },
   {
    "control": "Copy button shows the size",
@@ -1099,7 +1115,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "Copy 3,500 CE · 0 lots"
+   "evidence": "Copy contract · 0 lots (no December contract in the store for any share of this sector today - Copy off, size still shown)"
   },
   {
    "control": "signal only: no order / buy button, the Kite line shown",
@@ -1115,7 +1131,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "8 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False"
+   "evidence": "0 strike chips, 0 not December · trade box \"TRADE BOX · December (December only)\" · November date shown: False · December chain gap named once in the list"
   },
   {
    "control": "\"Expiry week · physical settlement - December only\" warning",
@@ -1155,7 +1171,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 33 -> 0 (max 33)"
+   "evidence": "0 -> 99 -> 0 (max 287)"
   },
   {
    "control": "F1 sector list scrollbar (dock) - fast drag (one 120 px jerk)",
@@ -1163,7 +1179,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 33"
+   "evidence": "0 -> 198"
   },
   {
    "control": "F1 sector list scrollbar (dock) - drag past the end, off the rail",
@@ -1171,7 +1187,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "top 33 of max 33 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 287 of max 287 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "F1 sector list scrollbar (dock) - drag past the top, off the rail",
@@ -1187,7 +1203,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 33 -> 0"
+   "evidence": "0 -> 287 -> 0"
   },
   {
    "control": "F1 sector list scrollbar (dock) - ▼ then ▲ buttons",
@@ -1195,7 +1211,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 33 -> 0"
+   "evidence": "0 -> 66 -> 0"
   },
   {
    "control": "F1 sector list scrollbar (dock) - mouse wheel over the list, then over the bar",
@@ -1203,7 +1219,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "-> 33 -> 0"
+   "evidence": "-> 200 -> 0"
   },
   {
    "control": "F1 sector list scrollbar (dock) - thumb visible",
@@ -1212,6 +1228,14 @@
    "where": "inside",
    "result": "PASS",
    "evidence": "thumb 11 px wide, colour rgb(138, 150, 168)"
+  },
+  {
+   "control": "no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)",
+   "page": "F1 desk",
+   "viewport": "1366x768",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "26 sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: 0 · prose with a tooltip allowed: 755"
   },
   {
    "control": "F1 Esc closes back to the Desk",
@@ -1235,15 +1259,15 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "card cables & wires -> open cables & wires"
+   "evidence": "card realty -> open realty"
   },
   {
-   "control": "Morning: \"pre-open - not live\" with the session date (not shown as today)",
+   "control": "Morning: \"pre-open - not live\" (after 15:30 \"closed - not live\") with the session date",
    "page": "Morning",
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "['pre-open - not live · 19 Nov 15:30 close', True, True]"
+   "evidence": "['closed - not live · 20 Nov 15:30 close', True, True]"
   },
   {
    "control": "every visible share name - click loads the pane, the list stays",
@@ -1251,7 +1275,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "3 names clicked, wrong: [] · list visible: True"
+   "evidence": "6 names clicked, wrong: [] · list visible: True"
   },
   {
    "control": "J through the whole list (pane follows)",
@@ -1259,7 +1283,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "J x2 -> KEI (last row KEI)"
+   "evidence": "J x5 -> LODHA (last row LODHA)"
   },
   {
    "control": "K back up",
@@ -1267,7 +1291,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "K x2 -> HAVELLS"
+   "evidence": "K x5 -> GODREJPROP"
   },
   {
    "control": "↓ / ↑ move share to share",
@@ -1275,7 +1299,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "↓ POLYCAB · ↑ HAVELLS"
+   "evidence": "↓ DLF · ↑ GODREJPROP"
   },
   {
    "control": "J / K after a click in the pane",
@@ -1283,7 +1307,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "J POLYCAB · K HAVELLS"
+   "evidence": "J DLF · K GODREJPROP"
   },
   {
    "control": "pane share name - single click",
@@ -1291,7 +1315,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "still HAVELLS on morning#sd=cables%20%26%20wires&r=HAVELL"
+   "evidence": "still GODREJPROP on morning#sd=realty&r=GODREJPROP&y=0"
   },
   {
    "control": "pane scrollbar - slow mouse drag of the thumb",
@@ -1299,7 +1323,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 185 -> 0 (max 588)"
+   "evidence": "0 -> 190 -> 0 (max 570)"
   },
   {
    "control": "pane scrollbar - fast drag (one 120 px jerk)",
@@ -1307,7 +1331,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 369"
+   "evidence": "0 -> 380"
   },
   {
    "control": "pane scrollbar - drag past the end, off the rail",
@@ -1315,7 +1339,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "top 588 of max 588 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 570 of max 570 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "pane scrollbar - drag past the top, off the rail",
@@ -1331,7 +1355,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 300 -> 0"
+   "evidence": "0 -> 282 -> 0"
   },
   {
    "control": "pane scrollbar - ▼ then ▲ buttons",
@@ -1363,7 +1387,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "open True · after Esc open False · share still HAVELLS"
+   "evidence": "open True · after Esc open False · share still GODREJPROP"
   },
   {
    "control": "Space plan card + Esc",
@@ -1403,7 +1427,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "toast 599-647 · action bar top 653 · name bottom 348"
+   "evidence": "toast 582-647 · action bar top 653 · name bottom 368"
   },
   {
    "control": "Pin button (action bar)",
@@ -1414,12 +1438,12 @@
    "evidence": "pins 0 -> 1 -> 0"
   },
   {
-   "control": "Copy contract (clipboard only)",
+   "control": "Copy contract",
    "page": "Morning",
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "clipboard \"HAVELLS26DEC1200CE\" · button \"Copy 1,200 CE · 0 lots\" · toast \"Copied HAVELLS26DEC1200CE · 0 lots - you place the order in Kite\""
+   "evidence": "Copy off for GODREJPROP (oc.GODREJPROP.rows2 (the next-month chain) not in the store) - disabled"
   },
   {
    "control": "Copy button shows the size",
@@ -1427,7 +1451,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "Copy 1,200 CE · 0 lots"
+   "evidence": "Copy contract · 0 lots (no December contract in the store for any share of this sector today - Copy off, size still shown)"
   },
   {
    "control": "signal only: no order / buy button, the Kite line shown",
@@ -1443,7 +1467,7 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "3 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False"
+   "evidence": "0 strike chips, 0 not December · trade box \"TRADE BOX · December (December only)\" · November date shown: False · December chain gap named once in the list"
   },
   {
    "control": "\"Expiry week · physical settlement - December only\" warning",
@@ -1475,7 +1499,15 @@
    "viewport": "1366x768",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 lone dashes · \"not known\" x2 in the list"
+   "evidence": "0 lone dashes · \"not known\" x1 in the list"
+  },
+  {
+   "control": "no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)",
+   "page": "Morning",
+   "viewport": "1366x768",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "3 sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: 0 · prose with a tooltip allowed: 3"
   },
   {
    "control": "page errors",
@@ -1555,7 +1587,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "open banks in 12 ms (from the cached store)"
+   "evidence": "open banks in 14 ms (from the cached store)"
   },
   {
    "control": "opens under 100 ms",
@@ -1563,7 +1595,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "12 ms"
+   "evidence": "14 ms"
   },
   {
    "control": "the open list pushes the rows below (no overprint)",
@@ -1571,7 +1603,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "list bottom 817 · next sector row top 823"
+   "evidence": "list bottom 855 · next sector row top 861"
   },
   {
    "control": "row cap: whole share rows in the first view + \"+n more\"",
@@ -1595,7 +1627,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "J x11 -> INDUSINDBK (last row INDUSINDBK)"
+   "evidence": "J x11 -> BANKINDIA (last row BANKINDIA)"
   },
   {
    "control": "K back up",
@@ -1603,7 +1635,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "K x11 -> IDFCFIRSTB"
+   "evidence": "K x11 -> INDUSINDBK"
   },
   {
    "control": "↓ / ↑ move share to share",
@@ -1611,7 +1643,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "↓ PNB · ↑ IDFCFIRSTB"
+   "evidence": "↓ BANDHANBNK · ↑ INDUSINDBK"
   },
   {
    "control": "J / K after a click in the pane",
@@ -1619,7 +1651,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "J PNB · K IDFCFIRSTB"
+   "evidence": "J BANDHANBNK · K INDUSINDBK"
   },
   {
    "control": "pane share name - single click",
@@ -1627,7 +1659,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "still IDFCFIRSTB on rotation#sd=banks&r=IDFCFIRSTB&y=224"
+   "evidence": "still INDUSINDBK on rotation#sd=banks&r=INDUSINDBK&y=76"
   },
   {
    "control": "pane scrollbar - slow mouse drag of the thumb",
@@ -1635,7 +1667,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 148 -> 0 (max 492)"
+   "evidence": "0 -> 128 -> 0 (max 378)"
   },
   {
    "control": "pane scrollbar - fast drag (one 120 px jerk)",
@@ -1643,7 +1675,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 295"
+   "evidence": "0 -> 256"
   },
   {
    "control": "pane scrollbar - drag past the end, off the rail",
@@ -1651,7 +1683,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "top 492 of max 492 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 378 of max 378 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "pane scrollbar - drag past the top, off the rail",
@@ -1691,7 +1723,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "thumb 11 px wide, colour rgb(107, 118, 134)"
+   "evidence": "thumb 11 px wide, colour rgb(138, 150, 168)"
   },
   {
    "control": "W why + Esc",
@@ -1699,7 +1731,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "open True · after Esc open False · share still IDFCFIRSTB"
+   "evidence": "open True · after Esc open False · share still INDUSINDBK"
   },
   {
    "control": "Space plan card + Esc",
@@ -1750,12 +1782,12 @@
    "evidence": "pins 0 -> 1 -> 0"
   },
   {
-   "control": "Copy contract (clipboard only)",
+   "control": "Copy contract",
    "page": "F3 rotation",
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "clipboard \"IDFCFIRSTB26DEC86CE\" · button \"Copy 86 CE · 0 lots\" · toast \"Copied IDFCFIRSTB26DEC86CE · 0 lots - you place the order in Kite\""
+   "evidence": "Copy off for INDUSINDBK (oc.INDUSINDBK.rows2 (the next-month chain) not in the store) - disabled"
   },
   {
    "control": "Copy button shows the size",
@@ -1763,7 +1795,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "Copy 86 CE · 0 lots"
+   "evidence": "Copy contract · 0 lots (no December contract in the store for any share of this sector today - Copy off, size still shown)"
   },
   {
    "control": "signal only: no order / buy button, the Kite line shown",
@@ -1779,7 +1811,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "12 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False"
+   "evidence": "0 strike chips, 0 not December · trade box \"TRADE BOX · December (December only)\" · November date shown: False · December chain gap named once in the list"
   },
   {
    "control": "\"Expiry week · physical settlement - December only\" warning",
@@ -1819,7 +1851,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "pin line (list top under the sticky table head) 387 · [line y, first row y] after each 40 px wheel [[468, 537], [428, 497], [388, 457], [387, 417], [387, 377], [387, 337]]"
+   "evidence": "pin line (list top under the sticky table head) 387 · [line y, first row y] after each 40 px wheel [[424, 493], [387, 453], [387, 413], [387, 373], [387, 333], [387, 293]]"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - slow mouse drag of the thumb",
@@ -1827,7 +1859,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "344 -> 524 -> 345 (max 937)"
+   "evidence": "240 -> 425 -> 240 (max 981)"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - fast drag (one 120 px jerk)",
@@ -1835,7 +1867,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "345 -> 703"
+   "evidence": "240 -> 609"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - drag past the end, off the rail",
@@ -1843,7 +1875,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "top 919 of max 937 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 957 of max 981 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - drag past the top, off the rail",
@@ -1859,7 +1891,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 378 -> 224"
+   "evidence": "0 -> 390 -> 235"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - mouse wheel over the list, then over the bar",
@@ -1867,7 +1899,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "-> 424 -> 224"
+   "evidence": "-> 435 -> 235"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - thumb visible",
@@ -1899,7 +1931,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "\"▸ 12 more listed, not F&O · ▲8 ▼4 · wt 5% · context only, no strike\" -> open, then closed"
+   "evidence": "\"▸ 12 more listed, not F&O · ▲7 ▼5 · wt 5% · context only, no strike\" -> open, then closed"
   },
   {
    "control": "double-click a share row -> F7, Back returns to the same sector, list, row",
@@ -1907,7 +1939,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "went share?s=AXISBANK · back: open banks, row AXISBANK, expanded True"
+   "evidence": "went share?s=ICICIBANK · back: open banks, row ICICIBANK, expanded True"
   },
   {
    "control": "after Back, J still moves",
@@ -1915,7 +1947,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "AXISBANK -> INDUSINDBK"
+   "evidence": "ICICIBANK -> BANKINDIA"
   },
   {
    "control": "O opens the option chain at the December strike; Back",
@@ -1923,7 +1955,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "chain?s=INDUSINDBK&exp=2026-12-29&k=920&side=CE · back on INDUSINDBK"
+   "evidence": "chain?s=BANKINDIA · back on BANKINDIA (no December contract in the store for any share of this sector now: the chain opens on the share, never a November strike)"
   },
   {
    "control": "double-click the pane share name -> F7, Back",
@@ -1931,7 +1963,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "share?s=INDUSINDBK"
+   "evidence": "share?s=BANKINDIA"
   },
   {
    "control": "Enter on a share row -> F7",
@@ -1939,7 +1971,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "share?s=INDUSINDBK"
+   "evidence": "share?s=BANKINDIA"
   },
   {
    "control": "Esc closes step by step",
@@ -1963,7 +1995,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "3 -> fmcg (row 3 = fmcg) · 1 -> auto (row 1 = auto)"
+   "evidence": "3 -> cement & materials (row 3 = cement & materials) · 1 -> hospitals & diagnostics (row 1 = hospitals & diagnostics)"
   },
   {
    "control": "Tab to a sector row + Enter opens it",
@@ -1971,7 +2003,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "focused auto after 3 Tab · open auto"
+   "evidence": "focused hospitals & diagnostics after 3 Tab · open hospitals & diagnostics"
   },
   {
    "control": "R key (apply re-rank)",
@@ -1987,7 +2019,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "NOT RUN",
-   "evidence": "needs live ticks: the market is closed (store holds the 19 Nov close); code path in sector-drill.js listHtml (frozen order under pointer / focus, 30 s, pointer leave, R)"
+   "evidence": "needs live ticks: the market is closed (the store holds the close of today); code path in sector-drill.js listHtml (frozen order under pointer / focus, 30 s, pointer leave, R)"
   },
   {
    "control": "money-flow band: a sector name opens it in the table below",
@@ -1995,7 +2027,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "clicked it -> open it, list visible True"
+   "evidence": "clicked hospitals & diagnostics -> open hospitals & diagnostics, list visible True"
   },
   {
    "control": "\"moving, but not this rotation\" row opens that sector",
@@ -2003,7 +2035,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "clicked consumer durables -> open consumer durables"
+   "evidence": "clicked realty -> open realty"
   },
   {
    "control": "BAN: NOT TRADABLE, plan dimmed, Copy disabled",
@@ -2030,12 +2062,20 @@
    "evidence": "pos.day.lock.locked = False today; rule checked in the rules table"
   },
   {
-   "control": "up-side shown: a rising sector shows CE strikes on its groups",
+   "control": "up-side shown: a rising sector shows CE strikes on its groups (a falling one PE)",
    "page": "F3 rotation",
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "electronics & hardware dir 1 · every row CE: True"
+   "evidence": "hospitals & diagnostics dir 1 · every row CE: True"
+  },
+  {
+   "control": "no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)",
+   "page": "F3 rotation",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "26 sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: 0 · prose with a tooltip allowed: 187"
   },
   {
    "control": "page errors",
@@ -2051,7 +2091,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 167 -> 0 (max 666)"
+   "evidence": "44 -> 203 -> 43 (max 622)"
   },
   {
    "control": "F2 board scrollbar - fast drag (one 120 px jerk)",
@@ -2059,7 +2099,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 334"
+   "evidence": "43 -> 363"
   },
   {
    "control": "F2 board scrollbar - drag past the end, off the rail",
@@ -2067,7 +2107,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "top 666 of max 666 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 589 of max 622 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "F2 board scrollbar - drag past the top, off the rail",
@@ -2107,7 +2147,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "open auto · list bottom 661 · next row top 667"
+   "evidence": "open auto · list bottom 776 · next row top 782"
   },
   {
    "control": "row cap: whole share rows in the first view + \"+n more\"",
@@ -2131,7 +2171,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "J x11 -> ASHOKLEY (last row ASHOKLEY)"
+   "evidence": "J x11 -> HEROMOTOCO (last row HEROMOTOCO)"
   },
   {
    "control": "K back up",
@@ -2139,7 +2179,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "K x11 -> M&M"
+   "evidence": "K x11 -> MARUTI"
   },
   {
    "control": "↓ / ↑ move share to share",
@@ -2147,7 +2187,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "↓ MARUTI · ↑ M&M"
+   "evidence": "↓ BHARATFORG · ↑ MARUTI"
   },
   {
    "control": "J / K after a click in the pane",
@@ -2155,7 +2195,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "J MARUTI · K M&M"
+   "evidence": "J BHARATFORG · K MARUTI"
   },
   {
    "control": "pane share name - single click",
@@ -2163,7 +2203,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "still M&M on sectors#sd=auto&r=M%26M&y=180"
+   "evidence": "still MARUTI on sectors#sd=auto&r=MARUTI&y=785"
   },
   {
    "control": "pane scrollbar - slow mouse drag of the thumb",
@@ -2171,7 +2211,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 106 -> 0 (max 343)"
+   "evidence": "0 -> 102 -> 0 (max 308)"
   },
   {
    "control": "pane scrollbar - fast drag (one 120 px jerk)",
@@ -2179,7 +2219,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 212"
+   "evidence": "0 -> 203"
   },
   {
    "control": "pane scrollbar - drag past the end, off the rail",
@@ -2187,7 +2227,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "top 343 of max 343 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 308 of max 308 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "pane scrollbar - drag past the top, off the rail",
@@ -2203,7 +2243,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 343 -> 0"
+   "evidence": "0 -> 308 -> 0"
   },
   {
    "control": "pane scrollbar - ▼ then ▲ buttons",
@@ -2235,7 +2275,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "open True · after Esc open False · share still M&M"
+   "evidence": "open True · after Esc open False · share still MARUTI"
   },
   {
    "control": "Space plan card + Esc",
@@ -2291,7 +2331,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "clipboard \"M&M26DEC3500CE\" · button \"Copy 3,500 CE · 0 lots\" · toast \"Copied M&M26DEC3500CE · 0 lots - you place the order in Kite\""
+   "evidence": "clipboard \"TMPV26DEC270CE\" · button \"Copy 270 CE · 0 lots\" · toast \"Copied TMPV26DEC270CE · 0 lots - you place the order in Kite\""
   },
   {
    "control": "Copy button shows the size",
@@ -2299,7 +2339,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "Copy 3,500 CE · 0 lots"
+   "evidence": "Copy 270 CE · 0 lots"
   },
   {
    "control": "signal only: no order / buy button, the Kite line shown",
@@ -2315,7 +2355,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "12 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False"
+   "evidence": "1 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False · December chain gap named once in the list"
   },
   {
    "control": "\"Expiry week · physical settlement - December only\" warning",
@@ -2355,7 +2395,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "tile consumer durables -> open consumer durables · in view True"
+   "evidence": "tile hospitals & diagnostics -> open hospitals & diagnostics · in view True"
   },
   {
    "control": "F2: the share pane sits in the right column",
@@ -2371,267 +2411,19 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "2 -> cables & wires (row 2 = cables & wires)"
+   "evidence": "2 -> banks (row 2 = banks)"
   },
   {
-   "control": "page errors",
+   "control": "no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)",
    "page": "F2 sectors",
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "none"
-  },
-  {
-   "control": "Morning sector card opens the same component",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "card cables & wires -> open cables & wires"
-  },
-  {
-   "control": "Morning: \"pre-open - not live\" with the session date (not shown as today)",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "['pre-open - not live · 19 Nov 15:30 close', True, True]"
-  },
-  {
-   "control": "every visible share name - click loads the pane, the list stays",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "3 names clicked, wrong: [] · list visible: True"
-  },
-  {
-   "control": "J through the whole list (pane follows)",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "J x2 -> KEI (last row KEI)"
-  },
-  {
-   "control": "K back up",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "K x2 -> HAVELLS"
-  },
-  {
-   "control": "↓ / ↑ move share to share",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "↓ POLYCAB · ↑ HAVELLS"
-  },
-  {
-   "control": "J / K after a click in the pane",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "J POLYCAB · K HAVELLS"
-  },
-  {
-   "control": "pane share name - single click",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "still HAVELLS on morning#sd=cables%20%26%20wires&r=HAVELL"
-  },
-  {
-   "control": "pane scrollbar - slow mouse drag of the thumb",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "0 -> 176 -> 0 (max 551)"
-  },
-  {
-   "control": "pane scrollbar - fast drag (one 120 px jerk)",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "0 -> 352"
-  },
-  {
-   "control": "pane scrollbar - drag past the end, off the rail",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "top 551 of max 551 (a page that snaps to whole rows may stop one row short)"
-  },
-  {
-   "control": "pane scrollbar - drag past the top, off the rail",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "top 0"
-  },
-  {
-   "control": "pane scrollbar - track click below, then above the thumb",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "0 -> 302 -> 0"
-  },
-  {
-   "control": "pane scrollbar - ▼ then ▲ buttons",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "0 -> 66 -> 0"
-  },
-  {
-   "control": "pane scrollbar - mouse wheel over the list, then over the bar",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "-> 200 -> 0"
-  },
-  {
-   "control": "pane scrollbar - thumb visible",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "thumb 11 px wide, colour rgb(107, 118, 134)"
-  },
-  {
-   "control": "W why + Esc",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "open True · after Esc open False · share still HAVELLS"
-  },
-  {
-   "control": "Space plan card + Esc",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "open True · after Esc False"
-  },
-  {
-   "control": "pane button W why, then ✕",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "open True · closed True"
-  },
-  {
-   "control": "pane button Space plan, then ✕",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "open True"
-  },
-  {
-   "control": "P pin (toggle)",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "pins 0 -> 1 -> 0"
-  },
-  {
-   "control": "Pin toast sits above the action bar, below the share name",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "toast 760-808 · action bar top 814 · name bottom 477"
-  },
-  {
-   "control": "Pin button (action bar)",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "pins 0 -> 1 -> 0"
-  },
-  {
-   "control": "Copy contract (clipboard only)",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "clipboard \"HAVELLS26DEC1200CE\" · button \"Copy 1,200 CE · 0 lots\" · toast \"Copied HAVELLS26DEC1200CE · 0 lots - you place the order in Kite\""
-  },
-  {
-   "control": "Copy button shows the size",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "Copy 1,200 CE · 0 lots"
-  },
-  {
-   "control": "signal only: no order / buy button, the Kite line shown",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "line shown True · order-like buttons []"
-  },
-  {
-   "control": "December strikes only (rows + trade box)",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "3 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False"
-  },
-  {
-   "control": "\"Expiry week · physical settlement - December only\" warning",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "sector line True · pane True"
-  },
-  {
-   "control": "ATM ★ only on a strike he could take",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "mismatches [] · takeable now 0 (market closed: pre-open block, 0 lots everywhere)"
-  },
-  {
-   "control": "EXTENDED: one rule in the group, the gate cell and the pane",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "checked rows · mismatches []"
-  },
-  {
-   "control": "no repeated dashes; the reason shown once",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "inside",
-   "result": "PASS",
-   "evidence": "0 lone dashes · \"not known\" x2 in the list"
+   "evidence": "19 sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: 0 · prose with a tooltip allowed: 353"
   },
   {
    "control": "page errors",
-   "page": "Morning",
+   "page": "F2 sectors",
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
@@ -2643,7 +2435,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "chip auto -> open auto"
+   "evidence": "chip banks -> open banks"
   },
   {
    "control": "row cap: whole share rows in the first view + \"+n more\"",
@@ -2651,7 +2443,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "12 whole rows (need 12) of 17 members · +n more bar: True"
+   "evidence": "12 whole rows (need 12) of 22 members · +n more bar: True"
   },
   {
    "control": "every visible share name - click loads the pane, the list stays",
@@ -2667,7 +2459,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "J x11 -> ASHOKLEY (last row ASHOKLEY)"
+   "evidence": "J x11 -> BANKINDIA (last row BANKINDIA)"
   },
   {
    "control": "K back up",
@@ -2675,7 +2467,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "K x11 -> M&M"
+   "evidence": "K x11 -> INDUSINDBK"
   },
   {
    "control": "↓ / ↑ move share to share",
@@ -2683,7 +2475,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "↓ MARUTI · ↑ M&M"
+   "evidence": "↓ BANDHANBNK · ↑ INDUSINDBK"
   },
   {
    "control": "J / K after a click in the pane",
@@ -2691,7 +2483,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "J MARUTI · K M&M"
+   "evidence": "J BANDHANBNK · K INDUSINDBK"
   },
   {
    "control": "pane share name - single click",
@@ -2699,7 +2491,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "still M&M on desk-hunt#sd=auto&r=M%26M&y=0"
+   "evidence": "still INDUSINDBK on desk-hunt#sd=banks&r=INDUSINDBK&y=0"
   },
   {
    "control": "pane scrollbar - slow mouse drag of the thumb",
@@ -2707,7 +2499,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 93 -> 0 (max 246)"
+   "evidence": "0 -> 88 -> 0 (max 207)"
   },
   {
    "control": "pane scrollbar - fast drag (one 120 px jerk)",
@@ -2715,7 +2507,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 186"
+   "evidence": "0 -> 176"
   },
   {
    "control": "pane scrollbar - drag past the end, off the rail",
@@ -2723,7 +2515,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "top 246 of max 246 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 207 of max 207 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "pane scrollbar - drag past the top, off the rail",
@@ -2739,7 +2531,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 246 -> 0"
+   "evidence": "0 -> 207 -> 0"
   },
   {
    "control": "pane scrollbar - ▼ then ▲ buttons",
@@ -2771,7 +2563,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "open True · after Esc open False · share still M&M"
+   "evidence": "open True · after Esc open False · share still INDUSINDBK"
   },
   {
    "control": "Space plan card + Esc",
@@ -2822,12 +2614,12 @@
    "evidence": "pins 0 -> 1 -> 0"
   },
   {
-   "control": "Copy contract (clipboard only)",
+   "control": "Copy contract",
    "page": "F1 desk",
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "clipboard \"M&M26DEC3500CE\" · button \"Copy 3,500 CE · 0 lots\" · toast \"Copied M&M26DEC3500CE · 0 lots - you place the order in Kite\""
+   "evidence": "Copy off for INDUSINDBK (oc.INDUSINDBK.rows2 (the next-month chain) not in the store) - disabled"
   },
   {
    "control": "Copy button shows the size",
@@ -2835,7 +2627,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "Copy 3,500 CE · 0 lots"
+   "evidence": "Copy contract · 0 lots (no December contract in the store for any share of this sector today - Copy off, size still shown)"
   },
   {
    "control": "signal only: no order / buy button, the Kite line shown",
@@ -2851,7 +2643,7 @@
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "12 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False"
+   "evidence": "0 strike chips, 0 not December · trade box \"TRADE BOX · December (December only)\" · November date shown: False · December chain gap named once in the list"
   },
   {
    "control": "\"Expiry week · physical settlement - December only\" warning",
@@ -2886,12 +2678,76 @@
    "evidence": "0 lone dashes · \"not known\" x1 in the list"
   },
   {
-   "control": "F1 sector list scrollbar (dock)",
+   "control": "F1 sector list scrollbar (dock) - slow mouse drag of the thumb",
    "page": "F1 desk",
    "viewport": "1600x900",
    "where": "inside",
    "result": "PASS",
-   "evidence": "every row fits at this size (all 17 F&O rows + the not-F&O line shown): the drawn bar shows a full 624 px thumb of 624, 11 px wide - nothing to drag"
+   "evidence": "0 -> 79 -> 0 (max 159)"
+  },
+  {
+   "control": "F1 sector list scrollbar (dock) - fast drag (one 120 px jerk)",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "0 -> 158"
+  },
+  {
+   "control": "F1 sector list scrollbar (dock) - drag past the end, off the rail",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "top 159 of max 159 (a page that snaps to whole rows may stop one row short)"
+  },
+  {
+   "control": "F1 sector list scrollbar (dock) - drag past the top, off the rail",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "top 0"
+  },
+  {
+   "control": "F1 sector list scrollbar (dock) - track click below, then above the thumb",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "0 -> 159 -> 0"
+  },
+  {
+   "control": "F1 sector list scrollbar (dock) - ▼ then ▲ buttons",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "0 -> 66 -> 0"
+  },
+  {
+   "control": "F1 sector list scrollbar (dock) - mouse wheel over the list, then over the bar",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "-> 159 -> 0"
+  },
+  {
+   "control": "F1 sector list scrollbar (dock) - thumb visible",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "thumb 11 px wide, colour rgb(138, 150, 168)"
+  },
+  {
+   "control": "no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "26 sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: 0 · prose with a tooltip allowed: 728"
   },
   {
    "control": "F1 Esc closes back to the Desk",
@@ -2910,12 +2766,276 @@
    "evidence": "none"
   },
   {
+   "control": "Morning sector card opens the same component",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "card realty -> open realty"
+  },
+  {
+   "control": "Morning: \"pre-open - not live\" (after 15:30 \"closed - not live\") with the session date",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "['closed - not live · 20 Nov 15:30 close', True, True]"
+  },
+  {
+   "control": "every visible share name - click loads the pane, the list stays",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "6 names clicked, wrong: [] · list visible: True"
+  },
+  {
+   "control": "J through the whole list (pane follows)",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "J x5 -> LODHA (last row LODHA)"
+  },
+  {
+   "control": "K back up",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "K x5 -> GODREJPROP"
+  },
+  {
+   "control": "↓ / ↑ move share to share",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "↓ DLF · ↑ GODREJPROP"
+  },
+  {
+   "control": "J / K after a click in the pane",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "J DLF · K GODREJPROP"
+  },
+  {
+   "control": "pane share name - single click",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "still GODREJPROP on morning#sd=realty&r=GODREJPROP&y=0"
+  },
+  {
+   "control": "pane scrollbar - slow mouse drag of the thumb",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "0 -> 154 -> 0 (max 439)"
+  },
+  {
+   "control": "pane scrollbar - fast drag (one 120 px jerk)",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "0 -> 308"
+  },
+  {
+   "control": "pane scrollbar - drag past the end, off the rail",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "top 439 of max 439 (a page that snaps to whole rows may stop one row short)"
+  },
+  {
+   "control": "pane scrollbar - drag past the top, off the rail",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "top 0"
+  },
+  {
+   "control": "pane scrollbar - track click below, then above the thumb",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "0 -> 302 -> 0"
+  },
+  {
+   "control": "pane scrollbar - ▼ then ▲ buttons",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "0 -> 66 -> 0"
+  },
+  {
+   "control": "pane scrollbar - mouse wheel over the list, then over the bar",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "-> 200 -> 0"
+  },
+  {
+   "control": "pane scrollbar - thumb visible",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "thumb 11 px wide, colour rgb(107, 118, 134)"
+  },
+  {
+   "control": "W why + Esc",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "open True · after Esc open False · share still GODREJPROP"
+  },
+  {
+   "control": "Space plan card + Esc",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "open True · after Esc False"
+  },
+  {
+   "control": "pane button W why, then ✕",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "open True · closed True"
+  },
+  {
+   "control": "pane button Space plan, then ✕",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "open True"
+  },
+  {
+   "control": "P pin (toggle)",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "pins 0 -> 1 -> 0"
+  },
+  {
+   "control": "Pin toast sits above the action bar, below the share name",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "toast 760-808 · action bar top 814 · name bottom 477"
+  },
+  {
+   "control": "Pin button (action bar)",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "pins 0 -> 1 -> 0"
+  },
+  {
+   "control": "Copy contract",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "Copy off for GODREJPROP (oc.GODREJPROP.rows2 (the next-month chain) not in the store) - disabled"
+  },
+  {
+   "control": "Copy button shows the size",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "Copy contract · 0 lots (no December contract in the store for any share of this sector today - Copy off, size still shown)"
+  },
+  {
+   "control": "signal only: no order / buy button, the Kite line shown",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "line shown True · order-like buttons []"
+  },
+  {
+   "control": "December strikes only (rows + trade box)",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "0 strike chips, 0 not December · trade box \"TRADE BOX · December (December only)\" · November date shown: False · December chain gap named once in the list"
+  },
+  {
+   "control": "\"Expiry week · physical settlement - December only\" warning",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "sector line True · pane True"
+  },
+  {
+   "control": "ATM ★ only on a strike he could take",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "mismatches [] · takeable now 0 (market closed: pre-open block, 0 lots everywhere)"
+  },
+  {
+   "control": "EXTENDED: one rule in the group, the gate cell and the pane",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "checked rows · mismatches []"
+  },
+  {
+   "control": "no repeated dashes; the reason shown once",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "0 lone dashes · \"not known\" x1 in the list"
+  },
+  {
+   "control": "no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "3 sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: 0 · prose with a tooltip allowed: 3"
+  },
+  {
+   "control": "page errors",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "inside",
+   "result": "PASS",
+   "evidence": "none"
+  },
+  {
    "control": "tap a sector row opens the full-screen list sheet",
    "page": "F3 rotation",
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "open banks · built in 31 ms · tap-to-sheet 128 ms"
+   "evidence": "open banks · built in 35 ms · tap-to-sheet 117 ms"
   },
   {
    "control": "sheet header (sector line) <= 2 lines + WHY",
@@ -2939,7 +3059,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 447 -> 191"
+   "evidence": "0 -> 446 -> 189"
   },
   {
    "control": "list sheet - rail thumb, finger drag",
@@ -2947,7 +3067,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "191 -> 403 · share opened: None"
+   "evidence": "189 -> 415 · share opened: None"
   },
   {
    "control": "list sheet - rail drag, 8 px contact",
@@ -2955,7 +3075,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "403 -> 191"
+   "evidence": "415 -> 189"
   },
   {
    "control": "list sheet - rail drag at its right edge",
@@ -2963,7 +3083,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "191 -> 368"
+   "evidence": "189 -> 377"
   },
   {
    "control": "list sheet - rail track tap",
@@ -2971,7 +3091,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "368 -> 302"
+   "evidence": "377 -> 311"
   },
   {
    "control": "list sheet - rail, mouse drag (one mouse check)",
@@ -2979,7 +3099,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "302 -> 443"
+   "evidence": "311 -> 462"
   },
   {
    "control": "fast flick, then a tap still opens the row",
@@ -2987,7 +3107,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "flick then tap KOTAKBANK -> share sheet True (KOTAKBANK)"
+   "evidence": "flick then tap BANKINDIA -> share sheet True (BANKINDIA)"
   },
   {
    "control": "\"n more listed, not F&O\" (finger)",
@@ -3011,7 +3131,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "IDFCFIRSTB -> sheet True"
+   "evidence": "INDUSINDBK -> sheet True"
   },
   {
    "control": "share sheet - finger swipe",
@@ -3019,7 +3139,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 184"
+   "evidence": "0 -> 113"
   },
   {
    "control": "share sheet - action bar sticky, shows the size",
@@ -3027,7 +3147,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "bar 776-844 at scroll 0 and 776-844 after the swipe · \"Copy 86 CE · 0 lots\""
+   "evidence": "bar 733-844 at scroll 0 and 733-844 after the swipe · \"Copy contract · 0 lots\""
   },
   {
    "control": "share sheet - rail thumb, finger drag",
@@ -3035,7 +3155,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 185"
+   "evidence": "0 -> 113"
   },
   {
    "control": "share sheet - rail track tap",
@@ -3043,7 +3163,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "185 -> 119"
+   "evidence": "113 -> 47"
   },
   {
    "control": "WHY › (share sheet)",
@@ -3059,7 +3179,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "clipboard \"IDFCFIRSTB26DEC86CE\" · \"Copied IDFCFIRSTB26DEC86CE · 0 lots - you place the order in\""
+   "evidence": "Copy off: oc.INDUSINDBK.rows2 (the next-month chain) not in the store"
   },
   {
    "control": "Pin (toggle, n/5) (finger)",
@@ -3123,7 +3243,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "open auto · built in 21 ms · tap-to-sheet 82 ms"
+   "evidence": "open banks · built in 26 ms · tap-to-sheet 97 ms"
   },
   {
    "control": "sheet header (sector line) <= 2 lines + WHY",
@@ -3147,7 +3267,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 299 -> 51"
+   "evidence": "0 -> 425 -> 171"
   },
   {
    "control": "list sheet - rail thumb, finger drag",
@@ -3155,7 +3275,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "51 -> 228 · share opened: None"
+   "evidence": "171 -> 397 · share opened: None"
   },
   {
    "control": "list sheet - rail drag, 8 px contact",
@@ -3163,7 +3283,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "228 -> 51"
+   "evidence": "397 -> 171"
   },
   {
    "control": "list sheet - rail drag at its right edge",
@@ -3171,7 +3291,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "51 -> 198"
+   "evidence": "171 -> 359"
   },
   {
    "control": "list sheet - rail track tap",
@@ -3179,7 +3299,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "198 -> 132"
+   "evidence": "359 -> 293"
   },
   {
    "control": "list sheet - rail, mouse drag (one mouse check)",
@@ -3187,7 +3307,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "132 -> 250"
+   "evidence": "293 -> 444"
   },
   {
    "control": "fast flick, then a tap still opens the row",
@@ -3195,7 +3315,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "flick then tap TVSMOTOR -> share sheet True (TVSMOTOR)"
+   "evidence": "flick then tap BANKINDIA -> share sheet True (BANKINDIA)"
   },
   {
    "control": "\"n more listed, not F&O\" (finger)",
@@ -3211,7 +3331,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "basis (R49) whole sector: 50 listed shares, market-cap weighted (NSE m"
+   "evidence": "basis (R49) whole sector: 34 listed shares, market-cap weighted (NSE m"
   },
   {
    "control": "tap a share opens the share sheet",
@@ -3219,7 +3339,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "M&M -> sheet True"
+   "evidence": "INDUSINDBK -> sheet True"
   },
   {
    "control": "share sheet - finger swipe",
@@ -3227,7 +3347,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 165"
+   "evidence": "0 -> 70"
   },
   {
    "control": "share sheet - action bar sticky, shows the size",
@@ -3235,7 +3355,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "bar 776-844 at scroll 0 and 776-844 after the swipe · \"Copy 3,500 CE · 0 lots\""
+   "evidence": "bar 776-844 at scroll 0 and 776-844 after the swipe · \"Copy contract · 0 lots\""
   },
   {
    "control": "share sheet - rail thumb, finger drag",
@@ -3243,7 +3363,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "0 -> 166"
+   "evidence": "0 -> 70"
   },
   {
    "control": "share sheet - rail track tap",
@@ -3251,7 +3371,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "166 -> 100"
+   "evidence": "70 -> 4"
   },
   {
    "control": "WHY › (share sheet)",
@@ -3267,7 +3387,7 @@
    "viewport": "390x844",
    "where": "inside",
    "result": "PASS",
-   "evidence": "clipboard \"M&M26DEC3500CE\" · \"Copied M&M26DEC3500CE · 0 lots - you place the order in Kite\""
+   "evidence": "Copy off: oc.INDUSINDBK.rows2 (the next-month chain) not in the store"
   },
   {
    "control": "Pin (toggle, n/5) (finger)",
@@ -3329,7 +3449,7 @@
    "control": "six groups only",
    "rule": "every F&O member is in COMING UP / LEADER / LAGGARD / WAITING / AGAINST / NOT TRADABLE",
    "result": "PASS",
-   "evidence": "230 members in 26 sectors · bad: ",
+   "evidence": "226 members in 26 sectors · bad: ",
    "page": "shared module (F3 page)",
    "viewport": "rules",
    "where": "inside"
@@ -3338,7 +3458,7 @@
    "control": "COMING UP = 4 gates and not EXTENDED",
    "rule": "no COMING UP / DOWN share fails a gate or is extended",
    "result": "PASS",
-   "evidence": "M&M HINDALCO DELHIVERY",
+   "evidence": "MFSL ADANIPOWER NATIONALUM INOXWIND",
    "page": "shared module (F3 page)",
    "viewport": "rules",
    "where": "inside"
@@ -3356,7 +3476,7 @@
    "control": "EXTENDED rule",
    "rule": "EXT > 1.0 or range used > 0.8 ATR - one flag for the group, the gate cell and the pane",
    "result": "PASS",
-   "evidence": "57 extended",
+   "evidence": "40 extended",
    "page": "shared module (F3 page)",
    "viewport": "rules",
    "where": "inside"
@@ -3365,7 +3485,7 @@
    "control": "LAGGARD only at breadth >= 70%",
    "rule": "no LAGGARD where breadth (all listed) is under 70% one way",
    "result": "PASS",
-   "evidence": "laggards: DATAPATTNS NAUKRI ETERNAL JUBLFOOD GODREJPROP PRESTIGE",
+   "evidence": "laggards: BANDHANBNK ABB SUPREMEIND ASTRAL",
    "page": "shared module (F3 page)",
    "viewport": "rules",
    "where": "inside"
@@ -3374,7 +3494,7 @@
    "control": "\"no laggard\" sectors",
    "rule": "sectors under 70% one way say so",
    "result": "PASS",
-   "evidence": "construction 52%, nbfc & finance 52%, capital goods 69%, jewellers & gold loans 60%, metals & mining 68%, chemicals 55%, hospitals & diagnostics 53%, services 50%, oil producers 50%, capital markets 50%, pharma 68%, telecom services 63%, it 59%",
+   "evidence": "realty 65%, it 56%, electronics & hardware 56%, insurance 67%, nbfc & finance 42%, services 38%, consumer services 44%, capital markets 56%, fmcg 39%, power 33%, metals & mining 64%, telecom services 25%, oil & gas 58%, construction 61%, pharma 45%, auto 38%, consumer durables 62%, chemicals 32%",
    "page": "shared module (F3 page)",
    "viewport": "rules",
    "where": "inside"
@@ -3401,7 +3521,7 @@
    "control": "AGAINST rule",
    "rule": "moving the other way with RS <= -0.5",
    "result": "PASS",
-   "evidence": "RADICO VBL KARURVYSYA UJJIVANSFB MANAPPURAM MUTHOOTFIN POLICYBZR PAYTM BAJFINANCE PREMIERENE COCHINSHIP INOXWIND POWERINDIA ADANIENSOL MUTHOOTFIN NATIONALUM VEDL APLAPOLLO MFSL NAVINFLUOR ONGC INDIGO APOLLOHOSP GMRAIRPORT INDIGO CDSL MCX HDFCAMC LAURUSLABS ALKEM GLENMARK BHARTIARTL KPITTECH PERSISTENT TATAELXSI OFSS",
+   "evidence": "UJJIVANSFB KARURVYSYA OFSS KPITTECH SYRMA GRASIM SHRIRAMFIN RECLTD MUTHOOTFIN MANAPPURAM IRFC LTF JIOFIN CONCOR ETERNAL DMART SWIGGY NAM-INDIA MOTILALOFS MCX ITC GODFRYPHLP HINDUNILVR GODREJCP COLPAL NTPC IEX NMDC HINDALCO JINDALSTEL INDUSTOWER OIL COALINDIA GAIL PETRONET ONGC NBCC CIPLA ZYDUSLIFE AUROPHARMA LAURUSLABS SUNPHARMA DRREDDY BAJAJ-AUTO TIINDIA FORCEMOT ASHOKLEY SONACOMS ASIANPAINT BLUESTARCO HAVELLS CROMPTON SOLARINDS NAVINFLUOR PIIND SUZLON KEI POLYCAB BDL WAAREEENER HAL PREMIERENE",
    "page": "shared module (F3 page)",
    "viewport": "rules",
    "where": "inside"
@@ -3428,7 +3548,7 @@
    "control": "December strikes only",
    "rule": "every contract is the December expiry (never the 23 Nov expiry)",
    "result": "PASS",
-   "evidence": "not December: none · no December chain: IREDA IEX",
+   "evidence": "not December: none · no December chain: APOLLOHOSP MAXHEALTH FORTIS INDUSINDBK BANDHANBNK CUB AXISBANK HDFCBANK UNIONBANK KOTAKBANK FEDERALBNK RBLBANK CANBK ICICIBANK BANKINDIA MAHABANK IDFCFIRSTB BANKBARODA YESBANK SBIN INDIANB PNB AUBANK UJJIVANSFB KARURVYSYA GODREJPROP DLF PHOENIXLTD OBEROIRLTY PRESTIGE LODHA PIDILITIND INDIGO BPCL IOC HINDPETRO ASIANPAINT PERSISTENT TATAELXSI MPHASIS COFORGE LTM TCS TECHM WIPRO HCLTECH SAGILITY INFY OFSS KPITTECH DATAPATTNS PGEL AMBER DIXON SYRMA KAYNES MFSL ICICIGI HDFCLIFE LICI SBILIFE ICICILIFE BAJAJFINSV ULTRACEMCO SHREECEM AMBUJACEM GRASIM HAVELLS POLYCAB KEI PNBHOUSING IREDA BAJFINANCE SBICARD LICHSGFIN PAYTM POLICYBZR CHOLAFIN PFC SHRIRAMFIN RECLTD IRFC LTF JIOFIN INDIGO GMRAIRPORT DELHIVERY CONCOR INDHOTEL NYKAA NAUKRI TRENT JUBLFOOD VMM ETERNAL DMART SWIGGY ANGELONE CAMS CDSL BSE HDFCAMC ANANDRATHI KFINTECH NAM-INDIA MOTILALOFS MCX VBL NESTLEIND TATACONSUM BRITANNIA DABUR UNITDSPR PATANJALI RADICO MARICO ITC GODFRYPHLP HINDUNILVR GODREJCP COLPAL POWERGRID NHPC TATAPOWER JSWENERGY NTPC IEX NATIONALUM VEDL APLAPOLLO HINDZINC TATASTEEL SAIL JSWSTEEL NMDC HINDALCO JINDALSTEL BHARTIARTL IDEA INDUSTOWER BPCL IOC HINDPETRO RELIANCE OIL COALINDIA GAIL PETRONET ONGC LT NBCC TORNTPHARM MANKIND GLENMARK LUPIN BIOCON DIVISLAB CIPLA ZYDUSLIFE AUROPHARMA LAURUSLABS SUNPHARMA DRREDDY MARUTI BHARATFORG M&M EICHERMOT MOTHERSON ATHERENERG BOSCHLTD UNOMINDA HYUNDAI TVSMOTOR HEROMOTOCO BAJAJ-AUTO TIINDIA FORCEMOT ASHOKLEY SONACOMS TITAN ASIANPAINT BLUESTARCO HAVELLS CROMPTON PIDILITIND COROMANDEL UPL SRF SOLARINDS NAVINFLUOR PIIND INOXWIND SUPREMEIND ASTRAL CGPOWER ENRIN GVT&D POWERINDIA COCHINSHIP SIEMENS CUMMINSIND MAZDOCK BEL BHEL SUZLON KEI POLYCAB BDL WAAREEENER HAL PREMIERENE",
    "page": "shared module (F3 page)",
    "viewport": "rules",
    "where": "inside"
@@ -3437,7 +3557,7 @@
    "control": "pre-open now: 0 lots everywhere",
    "rule": "market not open -> every plan is \"pre-open - not live\", 0 lots",
    "result": "PASS",
-   "evidence": "0 lots · pre-open - not live",
+   "evidence": "0 lots · closed - not live",
    "page": "shared module (F3 page)",
    "viewport": "rules",
    "where": "inside"
@@ -3464,7 +3584,7 @@
    "control": "what-if live: R:R < 1 after costs -> 0 lots",
    "rule": "no plan is sized with R:R below 1",
    "result": "PASS",
-   "evidence": "96 plans held at 0 lots by R:R",
+   "evidence": "12 plans held at 0 lots by R:R",
    "page": "shared module (F3 page)",
    "viewport": "rules",
    "where": "inside"
@@ -3473,7 +3593,7 @@
    "control": "what-if live: one lot above 1R -> 0 lots",
    "rule": "no plan sized when one lot risks more than 1R",
    "result": "PASS",
-   "evidence": "16 plans held at 0 lots by 1R",
+   "evidence": "0 plans held at 0 lots by 1R",
    "page": "shared module (F3 page)",
    "viewport": "rules",
    "where": "inside"
@@ -3491,7 +3611,7 @@
    "control": "what-if live: the star / takeable follows the lots",
    "rule": "ATM star only on a strike he could take",
    "result": "PASS",
-   "evidence": "VBL 3 @1R 2000 · VEDL 4 @1R 2000 · VOLTAS 1 @1R 5000 · MARUTI 1 @1R 5000 · VBL 8 @1R 5000 · MUTHOOTFIN 1 @1R 5000 · POWERINDIA 1 @1R 5000 · MUTHOOTFIN 1 @1R 5000",
+   "evidence": "none takeable",
    "page": "shared module (F3 page)",
    "viewport": "rules",
    "where": "inside"
@@ -3509,7 +3629,7 @@
    "control": "what-if: LOCKED blocks every new trade",
    "rule": "loss lock -> \"LOCKED - no new trades today\", 0 lots",
    "result": "PASS",
-   "evidence": "230 plans · LOCKED - no new trades today",
+   "evidence": "226 plans · LOCKED - no new trades today",
    "page": "shared module (F3 page)",
    "viewport": "rules",
    "where": "inside"
@@ -3518,7 +3638,7 @@
    "control": "non-F&O fold counts from all listed",
    "rule": "n more listed, not F&O = all listed - F&O",
    "result": "PASS",
-   "evidence": "consumer durables 30 · cables & wires 1 · electronics & hardware 3 · auto 33 · construction 20 · fmcg 30",
+   "evidence": "hospitals & diagnostics 12 · banks 12 · realty 11 · oil marketers, paints, airlines 1 · it 26 · electronics & hardware 3",
    "page": "shared module (F3 page)",
    "viewport": "rules",
    "where": "inside"
@@ -3527,7 +3647,7 @@
    "control": "basis named (R49)",
    "rule": "every sector line names its basis (all listed shares)",
    "result": "PASS",
-   "evidence": "whole sector: 37 listed shares · driver group: its 4 named memb",
+   "evidence": "whole sector: 15 listed shares · whole sector: 34 listed shares",
    "page": "shared module (F3 page)",
    "viewport": "rules",
    "where": "inside"
@@ -3602,7 +3722,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "open banks in 8 ms (from the cached store)"
+   "evidence": "open banks in 13 ms (from the cached store)"
   },
   {
    "control": "opens under 100 ms",
@@ -3610,7 +3730,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "8 ms"
+   "evidence": "13 ms"
   },
   {
    "control": "the open list pushes the rows below (no overprint)",
@@ -3618,7 +3738,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "list bottom 721 · next sector row top 727"
+   "evidence": "list bottom 774 · next sector row top 780"
   },
   {
    "control": "row cap: whole share rows in the first view + \"+n more\"",
@@ -3642,7 +3762,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "J x7 -> SBIN (last row SBIN)"
+   "evidence": "J x7 -> FEDERALBNK (last row FEDERALBNK)"
   },
   {
    "control": "K back up",
@@ -3650,7 +3770,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "K x7 -> IDFCFIRSTB"
+   "evidence": "K x7 -> INDUSINDBK"
   },
   {
    "control": "↓ / ↑ move share to share",
@@ -3658,7 +3778,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "↓ PNB · ↑ IDFCFIRSTB"
+   "evidence": "↓ BANDHANBNK · ↑ INDUSINDBK"
   },
   {
    "control": "J / K after a click in the pane",
@@ -3666,7 +3786,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "J PNB · K IDFCFIRSTB"
+   "evidence": "J BANDHANBNK · K INDUSINDBK"
   },
   {
    "control": "pane share name - single click",
@@ -3674,7 +3794,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "still IDFCFIRSTB on rotation#sd=banks&r=IDFCFIRSTB&y=206"
+   "evidence": "still INDUSINDBK on rotation#sd=banks&r=INDUSINDBK&y=70"
   },
   {
    "control": "pane scrollbar - slow mouse drag of the thumb",
@@ -3682,7 +3802,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 282 -> 0 (max 705)"
+   "evidence": "0 -> 288 -> 0 (max 649)"
   },
   {
    "control": "pane scrollbar - fast drag (one 120 px jerk)",
@@ -3690,7 +3810,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 564"
+   "evidence": "0 -> 577"
   },
   {
    "control": "pane scrollbar - drag past the end, off the rail",
@@ -3698,7 +3818,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "top 705 of max 705 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 649 of max 649 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "pane scrollbar - drag past the top, off the rail",
@@ -3714,7 +3834,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 211 -> 0"
+   "evidence": "0 -> 193 -> 0"
   },
   {
    "control": "pane scrollbar - ▼ then ▲ buttons",
@@ -3746,7 +3866,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "open True · after Esc open False · share still IDFCFIRSTB"
+   "evidence": "open True · after Esc open False · share still INDUSINDBK"
   },
   {
    "control": "Space plan card + Esc",
@@ -3786,7 +3906,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "toast 600-648 · action bar top 654 · name bottom 419"
+   "evidence": "toast 583-648 · action bar top 654 · name bottom 439"
   },
   {
    "control": "Pin button (action bar)",
@@ -3797,12 +3917,12 @@
    "evidence": "pins 0 -> 1 -> 0"
   },
   {
-   "control": "Copy contract (clipboard only)",
+   "control": "Copy contract",
    "page": "F3 rotation",
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "clipboard \"IDFCFIRSTB26DEC86CE\" · button \"Copy 86 CE · 0 lots\" · toast \"Copied IDFCFIRSTB26DEC86CE · 0 lots - you place the order in Kite\""
+   "evidence": "Copy off for INDUSINDBK (oc.INDUSINDBK.rows2 (the next-month chain) not in the store) - disabled"
   },
   {
    "control": "Copy button shows the size",
@@ -3810,7 +3930,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "Copy 86 CE · 0 lots"
+   "evidence": "Copy contract · 0 lots (no December contract in the store for any share of this sector today - Copy off, size still shown)"
   },
   {
    "control": "signal only: no order / buy button, the Kite line shown",
@@ -3826,7 +3946,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "8 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False"
+   "evidence": "0 strike chips, 0 not December · trade box \"TRADE BOX · December (December only)\" · November date shown: False · December chain gap named once in the list"
   },
   {
    "control": "\"Expiry week · physical settlement - December only\" warning",
@@ -3866,7 +3986,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "pin line (list top under the sticky table head) 387 · [line y, first row y] after each 40 px wheel [[468, 537], [428, 497], [388, 457], [387, 417], [387, 377], [387, 337]]"
+   "evidence": "pin line (list top under the sticky table head) 387 · [line y, first row y] after each 40 px wheel [[418, 487], [387, 447], [387, 407], [387, 367], [387, 327], [387, 287]]"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - slow mouse drag of the thumb",
@@ -3874,7 +3994,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "326 -> 544 -> 326 (max 905)"
+   "evidence": "240 -> 467 -> 240 (max 954)"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - fast drag (one 120 px jerk)",
@@ -3882,7 +4002,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "326 -> 762"
+   "evidence": "240 -> 694"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - drag past the end, off the rail",
@@ -3890,7 +4010,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "top 877 of max 905 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 929 of max 954 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - drag past the top, off the rail",
@@ -3906,7 +4026,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 337 -> 205"
+   "evidence": "0 -> 339 -> 213"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - mouse wheel over the list, then over the bar",
@@ -3914,7 +4034,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "-> 405 -> 205"
+   "evidence": "-> 413 -> 213"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - thumb visible",
@@ -3946,7 +4066,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "\"▸ 12 more listed, not F&O · ▲8 ▼4 · wt 5% · context only, no strike\" -> open, then closed"
+   "evidence": "\"▸ 12 more listed, not F&O · ▲7 ▼5 · wt 5% · context only, no strike\" -> open, then closed"
   },
   {
    "control": "double-click a share row -> F7, Back returns to the same sector, list, row",
@@ -3954,7 +4074,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "went share?s=AXISBANK · back: open banks, row AXISBANK, expanded True"
+   "evidence": "went share?s=ICICIBANK · back: open banks, row ICICIBANK, expanded True"
   },
   {
    "control": "after Back, J still moves",
@@ -3962,7 +4082,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "AXISBANK -> INDUSINDBK"
+   "evidence": "ICICIBANK -> BANKINDIA"
   },
   {
    "control": "O opens the option chain at the December strike; Back",
@@ -3970,7 +4090,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "chain?s=INDUSINDBK&exp=2026-12-29&k=920&side=CE · back on INDUSINDBK"
+   "evidence": "chain?s=BANKINDIA · back on BANKINDIA (no December contract in the store for any share of this sector now: the chain opens on the share, never a November strike)"
   },
   {
    "control": "double-click the pane share name -> F7, Back",
@@ -3978,7 +4098,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "share?s=INDUSINDBK"
+   "evidence": "share?s=BANKINDIA"
   },
   {
    "control": "Enter on a share row -> F7",
@@ -3986,7 +4106,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "share?s=INDUSINDBK"
+   "evidence": "share?s=BANKINDIA"
   },
   {
    "control": "Esc closes step by step",
@@ -4010,7 +4130,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "3 -> fmcg (row 3 = fmcg) · 1 -> auto (row 1 = auto)"
+   "evidence": "3 -> cement & materials (row 3 = cement & materials) · 1 -> hospitals & diagnostics (row 1 = hospitals & diagnostics)"
   },
   {
    "control": "Tab to a sector row + Enter opens it",
@@ -4018,7 +4138,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "focused auto after 2 Tab · open auto"
+   "evidence": "focused hospitals & diagnostics after 2 Tab · open hospitals & diagnostics"
   },
   {
    "control": "R key (apply re-rank)",
@@ -4034,7 +4154,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "NOT RUN",
-   "evidence": "needs live ticks: the market is closed (store holds the 19 Nov close); code path in sector-drill.js listHtml (frozen order under pointer / focus, 30 s, pointer leave, R)"
+   "evidence": "needs live ticks: the market is closed (the store holds the close of today); code path in sector-drill.js listHtml (frozen order under pointer / focus, 30 s, pointer leave, R)"
   },
   {
    "control": "money-flow band: a sector name opens it in the table below",
@@ -4042,7 +4162,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "clicked it -> open it, list visible True"
+   "evidence": "clicked hospitals & diagnostics -> open hospitals & diagnostics, list visible True"
   },
   {
    "control": "\"moving, but not this rotation\" row opens that sector",
@@ -4050,7 +4170,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "clicked consumer durables -> open consumer durables"
+   "evidence": "clicked realty -> open realty"
   },
   {
    "control": "BAN: NOT TRADABLE, plan dimmed, Copy disabled",
@@ -4077,12 +4197,20 @@
    "evidence": "pos.day.lock.locked = False today; rule checked in the rules table"
   },
   {
-   "control": "up-side shown: a rising sector shows CE strikes on its groups",
+   "control": "up-side shown: a rising sector shows CE strikes on its groups (a falling one PE)",
    "page": "F3 rotation",
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "electronics & hardware dir 1 · every row CE: True"
+   "evidence": "hospitals & diagnostics dir 1 · every row CE: True"
+  },
+  {
+   "control": "no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)",
+   "page": "F3 rotation",
+   "viewport": "1366x768",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "26 sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: 0 · prose with a tooltip allowed: 242"
   },
   {
    "control": "page errors",
@@ -4098,7 +4226,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 266 -> 0 (max 798)"
+   "evidence": "44 -> 298 -> 44 (max 754)"
   },
   {
    "control": "F2 board scrollbar - fast drag (one 120 px jerk)",
@@ -4106,7 +4234,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 532"
+   "evidence": "44 -> 552"
   },
   {
    "control": "F2 board scrollbar - drag past the end, off the rail",
@@ -4114,7 +4242,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "top 798 of max 798 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 734 of max 754 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "F2 board scrollbar - drag past the top, off the rail",
@@ -4154,7 +4282,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "open auto · list bottom 564 · next row top 570"
+   "evidence": "open auto · list bottom 640 · next row top 646"
   },
   {
    "control": "row cap: whole share rows in the first view + \"+n more\"",
@@ -4178,7 +4306,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "J x7 -> MOTHERSON (last row MOTHERSON)"
+   "evidence": "J x7 -> BOSCHLTD (last row BOSCHLTD)"
   },
   {
    "control": "K back up",
@@ -4186,7 +4314,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "K x7 -> M&M"
+   "evidence": "K x7 -> MARUTI"
   },
   {
    "control": "↓ / ↑ move share to share",
@@ -4194,7 +4322,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "↓ MARUTI · ↑ M&M"
+   "evidence": "↓ BHARATFORG · ↑ MARUTI"
   },
   {
    "control": "J / K after a click in the pane",
@@ -4202,7 +4330,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "J MARUTI · K M&M"
+   "evidence": "J BHARATFORG · K MARUTI"
   },
   {
    "control": "pane share name - single click",
@@ -4210,7 +4338,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "still M&M on sectors#sd=auto&r=M%26M&y=180"
+   "evidence": "still MARUTI on sectors#sd=auto&r=MARUTI&y=840"
   },
   {
    "control": "pane scrollbar - slow mouse drag of the thumb",
@@ -4218,7 +4346,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 150 -> 0 (max 508)"
+   "evidence": "0 -> 154 -> 0 (max 529)"
   },
   {
    "control": "pane scrollbar - fast drag (one 120 px jerk)",
@@ -4226,7 +4354,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 300"
+   "evidence": "0 -> 308"
   },
   {
    "control": "pane scrollbar - drag past the end, off the rail",
@@ -4234,7 +4362,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "top 508 of max 508 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 529 of max 529 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "pane scrollbar - drag past the top, off the rail",
@@ -4282,7 +4410,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "open True · after Esc open False · share still M&M"
+   "evidence": "open True · after Esc open False · share still MARUTI"
   },
   {
    "control": "Space plan card + Esc",
@@ -4338,7 +4466,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "clipboard \"M&M26DEC3500CE\" · button \"Copy 3,500 CE · 0 lots\" · toast \"Copied M&M26DEC3500CE · 0 lots - you place the order in Kite\""
+   "evidence": "clipboard \"TMPV26DEC270CE\" · button \"Copy 270 CE · 0 lots\" · toast \"Copied TMPV26DEC270CE · 0 lots - you place the order in Kite\""
   },
   {
    "control": "Copy button shows the size",
@@ -4346,7 +4474,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "Copy 3,500 CE · 0 lots"
+   "evidence": "Copy 270 CE · 0 lots"
   },
   {
    "control": "signal only: no order / buy button, the Kite line shown",
@@ -4362,7 +4490,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "8 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False"
+   "evidence": "1 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False · December chain gap named once in the list"
   },
   {
    "control": "\"Expiry week · physical settlement - December only\" warning",
@@ -4402,7 +4530,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "tile consumer durables -> open consumer durables · in view True"
+   "evidence": "tile hospitals & diagnostics -> open hospitals & diagnostics · in view True"
   },
   {
    "control": "F2: the share pane sits in the right column",
@@ -4418,7 +4546,15 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "2 -> cables & wires (row 2 = cables & wires)"
+   "evidence": "2 -> banks (row 2 = banks)"
+  },
+  {
+   "control": "no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)",
+   "page": "F2 sectors",
+   "viewport": "1366x768",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "19 sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: 0 · prose with a tooltip allowed: 212"
   },
   {
    "control": "page errors",
@@ -4434,7 +4570,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "chip auto -> open auto"
+   "evidence": "chip banks -> open banks"
   },
   {
    "control": "row cap: whole share rows in the first view + \"+n more\"",
@@ -4442,7 +4578,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "8 whole rows (need 8) of 17 members · +n more bar: True"
+   "evidence": "8 whole rows (need 8) of 22 members · +n more bar: True"
   },
   {
    "control": "every visible share name - click loads the pane, the list stays",
@@ -4458,7 +4594,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "J x7 -> MOTHERSON (last row MOTHERSON)"
+   "evidence": "J x7 -> FEDERALBNK (last row FEDERALBNK)"
   },
   {
    "control": "K back up",
@@ -4466,7 +4602,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "K x7 -> M&M"
+   "evidence": "K x7 -> INDUSINDBK"
   },
   {
    "control": "↓ / ↑ move share to share",
@@ -4474,7 +4610,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "↓ MARUTI · ↑ M&M"
+   "evidence": "↓ BANDHANBNK · ↑ INDUSINDBK"
   },
   {
    "control": "J / K after a click in the pane",
@@ -4482,7 +4618,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "J MARUTI · K M&M"
+   "evidence": "J BANDHANBNK · K INDUSINDBK"
   },
   {
    "control": "pane share name - single click",
@@ -4490,7 +4626,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "still M&M on desk-hunt#sd=auto&r=M%26M&y=0"
+   "evidence": "still INDUSINDBK on desk-hunt#sd=banks&r=INDUSINDBK&y=0"
   },
   {
    "control": "pane scrollbar - slow mouse drag of the thumb",
@@ -4498,7 +4634,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 132 -> 0 (max 430)"
+   "evidence": "0 -> 121 -> 0 (max 354)"
   },
   {
    "control": "pane scrollbar - fast drag (one 120 px jerk)",
@@ -4506,7 +4642,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 265"
+   "evidence": "0 -> 241"
   },
   {
    "control": "pane scrollbar - drag past the end, off the rail",
@@ -4514,7 +4650,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "top 430 of max 430 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 354 of max 354 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "pane scrollbar - drag past the top, off the rail",
@@ -4530,7 +4666,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 376 -> 0"
+   "evidence": "0 -> 354 -> 0"
   },
   {
    "control": "pane scrollbar - ▼ then ▲ buttons",
@@ -4554,7 +4690,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "thumb 11 px wide, colour rgb(107, 118, 134)"
+   "evidence": "thumb 11 px wide, colour rgb(138, 150, 168)"
   },
   {
    "control": "W why + Esc",
@@ -4562,7 +4698,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "open True · after Esc open False · share still M&M"
+   "evidence": "open True · after Esc open False · share still INDUSINDBK"
   },
   {
    "control": "Space plan card + Esc",
@@ -4613,12 +4749,12 @@
    "evidence": "pins 0 -> 1 -> 0"
   },
   {
-   "control": "Copy contract (clipboard only)",
+   "control": "Copy contract",
    "page": "F1 desk",
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "clipboard \"M&M26DEC3500CE\" · button \"Copy 3,500 CE · 0 lots\" · toast \"Copied M&M26DEC3500CE · 0 lots - you place the order in Kite\""
+   "evidence": "Copy off for INDUSINDBK (oc.INDUSINDBK.rows2 (the next-month chain) not in the store) - disabled"
   },
   {
    "control": "Copy button shows the size",
@@ -4626,7 +4762,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "Copy 3,500 CE · 0 lots"
+   "evidence": "Copy contract · 0 lots (no December contract in the store for any share of this sector today - Copy off, size still shown)"
   },
   {
    "control": "signal only: no order / buy button, the Kite line shown",
@@ -4642,7 +4778,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "8 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False"
+   "evidence": "0 strike chips, 0 not December · trade box \"TRADE BOX · December (December only)\" · November date shown: False · December chain gap named once in the list"
   },
   {
    "control": "\"Expiry week · physical settlement - December only\" warning",
@@ -4682,7 +4818,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 33 -> 0 (max 33)"
+   "evidence": "0 -> 99 -> 0 (max 287)"
   },
   {
    "control": "F1 sector list scrollbar (dock) - fast drag (one 120 px jerk)",
@@ -4690,7 +4826,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 33"
+   "evidence": "0 -> 198"
   },
   {
    "control": "F1 sector list scrollbar (dock) - drag past the end, off the rail",
@@ -4698,7 +4834,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "top 33 of max 33 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 287 of max 287 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "F1 sector list scrollbar (dock) - drag past the top, off the rail",
@@ -4714,7 +4850,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 33 -> 0"
+   "evidence": "0 -> 287 -> 0"
   },
   {
    "control": "F1 sector list scrollbar (dock) - ▼ then ▲ buttons",
@@ -4722,7 +4858,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 33 -> 0"
+   "evidence": "0 -> 66 -> 0"
   },
   {
    "control": "F1 sector list scrollbar (dock) - mouse wheel over the list, then over the bar",
@@ -4730,7 +4866,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "-> 33 -> 0"
+   "evidence": "-> 200 -> 0"
   },
   {
    "control": "F1 sector list scrollbar (dock) - thumb visible",
@@ -4739,6 +4875,14 @@
    "where": "outside",
    "result": "PASS",
    "evidence": "thumb 11 px wide, colour rgb(138, 150, 168)"
+  },
+  {
+   "control": "no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)",
+   "page": "F1 desk",
+   "viewport": "1366x768",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "26 sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: 0 · prose with a tooltip allowed: 755"
   },
   {
    "control": "F1 Esc closes back to the Desk",
@@ -4762,15 +4906,15 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "card cables & wires -> open cables & wires"
+   "evidence": "card realty -> open realty"
   },
   {
-   "control": "Morning: \"pre-open - not live\" with the session date (not shown as today)",
+   "control": "Morning: \"pre-open - not live\" (after 15:30 \"closed - not live\") with the session date",
    "page": "Morning",
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "['pre-open - not live · 19 Nov 15:30 close', True, True]"
+   "evidence": "['closed - not live · 20 Nov 15:30 close', True, True]"
   },
   {
    "control": "every visible share name - click loads the pane, the list stays",
@@ -4778,7 +4922,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "3 names clicked, wrong: [] · list visible: True"
+   "evidence": "6 names clicked, wrong: [] · list visible: True"
   },
   {
    "control": "J through the whole list (pane follows)",
@@ -4786,7 +4930,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "J x2 -> KEI (last row KEI)"
+   "evidence": "J x5 -> LODHA (last row LODHA)"
   },
   {
    "control": "K back up",
@@ -4794,7 +4938,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "K x2 -> HAVELLS"
+   "evidence": "K x5 -> GODREJPROP"
   },
   {
    "control": "↓ / ↑ move share to share",
@@ -4802,7 +4946,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "↓ POLYCAB · ↑ HAVELLS"
+   "evidence": "↓ DLF · ↑ GODREJPROP"
   },
   {
    "control": "J / K after a click in the pane",
@@ -4810,7 +4954,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "J POLYCAB · K HAVELLS"
+   "evidence": "J DLF · K GODREJPROP"
   },
   {
    "control": "pane share name - single click",
@@ -4818,7 +4962,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "still HAVELLS on morning#sd=cables%20%26%20wires&r=HAVELL"
+   "evidence": "still GODREJPROP on morning#sd=realty&r=GODREJPROP&y=0"
   },
   {
    "control": "pane scrollbar - slow mouse drag of the thumb",
@@ -4826,7 +4970,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 185 -> 0 (max 588)"
+   "evidence": "0 -> 190 -> 0 (max 570)"
   },
   {
    "control": "pane scrollbar - fast drag (one 120 px jerk)",
@@ -4834,7 +4978,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 369"
+   "evidence": "0 -> 380"
   },
   {
    "control": "pane scrollbar - drag past the end, off the rail",
@@ -4842,7 +4986,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "top 588 of max 588 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 570 of max 570 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "pane scrollbar - drag past the top, off the rail",
@@ -4858,7 +5002,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 300 -> 0"
+   "evidence": "0 -> 282 -> 0"
   },
   {
    "control": "pane scrollbar - ▼ then ▲ buttons",
@@ -4890,7 +5034,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "open True · after Esc open False · share still HAVELLS"
+   "evidence": "open True · after Esc open False · share still GODREJPROP"
   },
   {
    "control": "Space plan card + Esc",
@@ -4930,7 +5074,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "toast 599-647 · action bar top 653 · name bottom 348"
+   "evidence": "toast 582-647 · action bar top 653 · name bottom 368"
   },
   {
    "control": "Pin button (action bar)",
@@ -4941,12 +5085,12 @@
    "evidence": "pins 0 -> 1 -> 0"
   },
   {
-   "control": "Copy contract (clipboard only)",
+   "control": "Copy contract",
    "page": "Morning",
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "clipboard \"HAVELLS26DEC1200CE\" · button \"Copy 1,200 CE · 0 lots\" · toast \"Copied HAVELLS26DEC1200CE · 0 lots - you place the order in Kite\""
+   "evidence": "Copy off for GODREJPROP (oc.GODREJPROP.rows2 (the next-month chain) not in the store) - disabled"
   },
   {
    "control": "Copy button shows the size",
@@ -4954,7 +5098,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "Copy 1,200 CE · 0 lots"
+   "evidence": "Copy contract · 0 lots (no December contract in the store for any share of this sector today - Copy off, size still shown)"
   },
   {
    "control": "signal only: no order / buy button, the Kite line shown",
@@ -4970,7 +5114,7 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "3 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False"
+   "evidence": "0 strike chips, 0 not December · trade box \"TRADE BOX · December (December only)\" · November date shown: False · December chain gap named once in the list"
   },
   {
    "control": "\"Expiry week · physical settlement - December only\" warning",
@@ -5002,7 +5146,15 @@
    "viewport": "1366x768",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 lone dashes · \"not known\" x2 in the list"
+   "evidence": "0 lone dashes · \"not known\" x1 in the list"
+  },
+  {
+   "control": "no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)",
+   "page": "Morning",
+   "viewport": "1366x768",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "3 sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: 0 · prose with a tooltip allowed: 3"
   },
   {
    "control": "page errors",
@@ -5082,7 +5234,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "open banks in 12 ms (from the cached store)"
+   "evidence": "open banks in 22 ms (from the cached store)"
   },
   {
    "control": "opens under 100 ms",
@@ -5090,7 +5242,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "12 ms"
+   "evidence": "22 ms"
   },
   {
    "control": "the open list pushes the rows below (no overprint)",
@@ -5098,7 +5250,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "list bottom 817 · next sector row top 823"
+   "evidence": "list bottom 855 · next sector row top 861"
   },
   {
    "control": "row cap: whole share rows in the first view + \"+n more\"",
@@ -5122,7 +5274,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "J x11 -> INDUSINDBK (last row INDUSINDBK)"
+   "evidence": "J x11 -> BANKINDIA (last row BANKINDIA)"
   },
   {
    "control": "K back up",
@@ -5130,7 +5282,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "K x11 -> IDFCFIRSTB"
+   "evidence": "K x11 -> INDUSINDBK"
   },
   {
    "control": "↓ / ↑ move share to share",
@@ -5138,7 +5290,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "↓ PNB · ↑ IDFCFIRSTB"
+   "evidence": "↓ BANDHANBNK · ↑ INDUSINDBK"
   },
   {
    "control": "J / K after a click in the pane",
@@ -5146,7 +5298,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "J PNB · K IDFCFIRSTB"
+   "evidence": "J BANDHANBNK · K INDUSINDBK"
   },
   {
    "control": "pane share name - single click",
@@ -5154,7 +5306,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "still IDFCFIRSTB on rotation#sd=banks&r=IDFCFIRSTB&y=224"
+   "evidence": "still INDUSINDBK on rotation#sd=banks&r=INDUSINDBK&y=76"
   },
   {
    "control": "pane scrollbar - slow mouse drag of the thumb",
@@ -5162,7 +5314,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 148 -> 0 (max 492)"
+   "evidence": "0 -> 128 -> 0 (max 378)"
   },
   {
    "control": "pane scrollbar - fast drag (one 120 px jerk)",
@@ -5170,7 +5322,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 295"
+   "evidence": "0 -> 256"
   },
   {
    "control": "pane scrollbar - drag past the end, off the rail",
@@ -5178,7 +5330,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "top 492 of max 492 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 378 of max 378 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "pane scrollbar - drag past the top, off the rail",
@@ -5218,7 +5370,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "thumb 11 px wide, colour rgb(107, 118, 134)"
+   "evidence": "thumb 11 px wide, colour rgb(138, 150, 168)"
   },
   {
    "control": "W why + Esc",
@@ -5226,7 +5378,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "open True · after Esc open False · share still IDFCFIRSTB"
+   "evidence": "open True · after Esc open False · share still INDUSINDBK"
   },
   {
    "control": "Space plan card + Esc",
@@ -5277,12 +5429,12 @@
    "evidence": "pins 0 -> 1 -> 0"
   },
   {
-   "control": "Copy contract (clipboard only)",
+   "control": "Copy contract",
    "page": "F3 rotation",
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "clipboard \"IDFCFIRSTB26DEC86CE\" · button \"Copy 86 CE · 0 lots\" · toast \"Copied IDFCFIRSTB26DEC86CE · 0 lots - you place the order in Kite\""
+   "evidence": "Copy off for INDUSINDBK (oc.INDUSINDBK.rows2 (the next-month chain) not in the store) - disabled"
   },
   {
    "control": "Copy button shows the size",
@@ -5290,7 +5442,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "Copy 86 CE · 0 lots"
+   "evidence": "Copy contract · 0 lots (no December contract in the store for any share of this sector today - Copy off, size still shown)"
   },
   {
    "control": "signal only: no order / buy button, the Kite line shown",
@@ -5306,7 +5458,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "12 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False"
+   "evidence": "0 strike chips, 0 not December · trade box \"TRADE BOX · December (December only)\" · November date shown: False · December chain gap named once in the list"
   },
   {
    "control": "\"Expiry week · physical settlement - December only\" warning",
@@ -5346,7 +5498,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "pin line (list top under the sticky table head) 387 · [line y, first row y] after each 40 px wheel [[468, 537], [428, 497], [388, 457], [387, 417], [387, 377], [387, 337]]"
+   "evidence": "pin line (list top under the sticky table head) 387 · [line y, first row y] after each 40 px wheel [[424, 493], [387, 453], [387, 413], [387, 373], [387, 333], [387, 293]]"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - slow mouse drag of the thumb",
@@ -5354,7 +5506,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "344 -> 524 -> 345 (max 937)"
+   "evidence": "240 -> 425 -> 240 (max 981)"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - fast drag (one 120 px jerk)",
@@ -5362,7 +5514,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "345 -> 703"
+   "evidence": "240 -> 609"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - drag past the end, off the rail",
@@ -5370,7 +5522,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "top 919 of max 937 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 957 of max 981 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - drag past the top, off the rail",
@@ -5386,7 +5538,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 378 -> 224"
+   "evidence": "0 -> 390 -> 235"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - mouse wheel over the list, then over the bar",
@@ -5394,7 +5546,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "-> 424 -> 224"
+   "evidence": "-> 435 -> 235"
   },
   {
    "control": "F3 sector-list scrollbar (Banks open) - thumb visible",
@@ -5426,7 +5578,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "\"▸ 12 more listed, not F&O · ▲8 ▼4 · wt 5% · context only, no strike\" -> open, then closed"
+   "evidence": "\"▸ 12 more listed, not F&O · ▲7 ▼5 · wt 5% · context only, no strike\" -> open, then closed"
   },
   {
    "control": "double-click a share row -> F7, Back returns to the same sector, list, row",
@@ -5434,7 +5586,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "went share?s=AXISBANK · back: open banks, row AXISBANK, expanded True"
+   "evidence": "went share?s=ICICIBANK · back: open banks, row ICICIBANK, expanded True"
   },
   {
    "control": "after Back, J still moves",
@@ -5442,7 +5594,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "AXISBANK -> INDUSINDBK"
+   "evidence": "ICICIBANK -> BANKINDIA"
   },
   {
    "control": "O opens the option chain at the December strike; Back",
@@ -5450,7 +5602,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "chain?s=INDUSINDBK&exp=2026-12-29&k=920&side=CE · back on INDUSINDBK"
+   "evidence": "chain?s=BANKINDIA · back on BANKINDIA (no December contract in the store for any share of this sector now: the chain opens on the share, never a November strike)"
   },
   {
    "control": "double-click the pane share name -> F7, Back",
@@ -5458,7 +5610,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "share?s=INDUSINDBK"
+   "evidence": "share?s=BANKINDIA"
   },
   {
    "control": "Enter on a share row -> F7",
@@ -5466,7 +5618,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "share?s=INDUSINDBK"
+   "evidence": "share?s=BANKINDIA"
   },
   {
    "control": "Esc closes step by step",
@@ -5490,7 +5642,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "3 -> fmcg (row 3 = fmcg) · 1 -> auto (row 1 = auto)"
+   "evidence": "3 -> cement & materials (row 3 = cement & materials) · 1 -> hospitals & diagnostics (row 1 = hospitals & diagnostics)"
   },
   {
    "control": "Tab to a sector row + Enter opens it",
@@ -5498,7 +5650,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "focused auto after 3 Tab · open auto"
+   "evidence": "focused hospitals & diagnostics after 3 Tab · open hospitals & diagnostics"
   },
   {
    "control": "R key (apply re-rank)",
@@ -5514,7 +5666,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "NOT RUN",
-   "evidence": "needs live ticks: the market is closed (store holds the 19 Nov close); code path in sector-drill.js listHtml (frozen order under pointer / focus, 30 s, pointer leave, R)"
+   "evidence": "needs live ticks: the market is closed (the store holds the close of today); code path in sector-drill.js listHtml (frozen order under pointer / focus, 30 s, pointer leave, R)"
   },
   {
    "control": "money-flow band: a sector name opens it in the table below",
@@ -5522,7 +5674,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "clicked it -> open it, list visible True"
+   "evidence": "clicked hospitals & diagnostics -> open hospitals & diagnostics, list visible True"
   },
   {
    "control": "\"moving, but not this rotation\" row opens that sector",
@@ -5530,7 +5682,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "clicked consumer durables -> open consumer durables"
+   "evidence": "clicked realty -> open realty"
   },
   {
    "control": "BAN: NOT TRADABLE, plan dimmed, Copy disabled",
@@ -5557,544 +5709,24 @@
    "evidence": "pos.day.lock.locked = False today; rule checked in the rules table"
   },
   {
-   "control": "up-side shown: a rising sector shows CE strikes on its groups",
+   "control": "up-side shown: a rising sector shows CE strikes on its groups (a falling one PE)",
    "page": "F3 rotation",
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "electronics & hardware dir 1 · every row CE: True"
+   "evidence": "hospitals & diagnostics dir 1 · every row CE: True"
   },
   {
-   "control": "page errors",
+   "control": "no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)",
    "page": "F3 rotation",
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "none"
-  },
-  {
-   "control": "F1 Desk sector chip opens the sector (same component)",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "chip auto -> open auto"
-  },
-  {
-   "control": "row cap: whole share rows in the first view + \"+n more\"",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "12 whole rows (need 12) of 17 members · +n more bar: True"
-  },
-  {
-   "control": "every visible share name - click loads the pane, the list stays",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "12 names clicked, wrong: [] · list visible: True"
-  },
-  {
-   "control": "J through the whole list (pane follows)",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "J x11 -> ASHOKLEY (last row ASHOKLEY)"
-  },
-  {
-   "control": "K back up",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "K x11 -> M&M"
-  },
-  {
-   "control": "↓ / ↑ move share to share",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "↓ MARUTI · ↑ M&M"
-  },
-  {
-   "control": "J / K after a click in the pane",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "J MARUTI · K M&M"
-  },
-  {
-   "control": "pane share name - single click",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "still M&M on desk-hunt#sd=auto&r=M%26M&y=0"
-  },
-  {
-   "control": "pane scrollbar - slow mouse drag of the thumb",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "0 -> 93 -> 0 (max 246)"
-  },
-  {
-   "control": "pane scrollbar - fast drag (one 120 px jerk)",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "0 -> 186"
-  },
-  {
-   "control": "pane scrollbar - drag past the end, off the rail",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "top 246 of max 246 (a page that snaps to whole rows may stop one row short)"
-  },
-  {
-   "control": "pane scrollbar - drag past the top, off the rail",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "top 0"
-  },
-  {
-   "control": "pane scrollbar - track click below, then above the thumb",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "0 -> 246 -> 0"
-  },
-  {
-   "control": "pane scrollbar - ▼ then ▲ buttons",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "0 -> 66 -> 0"
-  },
-  {
-   "control": "pane scrollbar - mouse wheel over the list, then over the bar",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "-> 200 -> 0"
-  },
-  {
-   "control": "pane scrollbar - thumb visible",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "thumb 11 px wide, colour rgb(138, 150, 168)"
-  },
-  {
-   "control": "W why + Esc",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "open True · after Esc open False · share still M&M"
-  },
-  {
-   "control": "Space plan card + Esc",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "open True · after Esc False"
-  },
-  {
-   "control": "pane button W why, then ✕",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "open True · closed True"
-  },
-  {
-   "control": "pane button Space plan, then ✕",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "open True"
-  },
-  {
-   "control": "P pin (toggle)",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "pins 0 -> 1 -> 0"
-  },
-  {
-   "control": "Pin toast sits above the action bar, below the share name",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "toast 761-809 · action bar top 815 · name bottom 268"
-  },
-  {
-   "control": "Pin button (action bar)",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "pins 0 -> 1 -> 0"
-  },
-  {
-   "control": "Copy contract (clipboard only)",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "clipboard \"M&M26DEC3500CE\" · button \"Copy 3,500 CE · 0 lots\" · toast \"Copied M&M26DEC3500CE · 0 lots - you place the order in Kite\""
-  },
-  {
-   "control": "Copy button shows the size",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "Copy 3,500 CE · 0 lots"
-  },
-  {
-   "control": "signal only: no order / buy button, the Kite line shown",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "line shown True · order-like buttons []"
-  },
-  {
-   "control": "December strikes only (rows + trade box)",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "12 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False"
-  },
-  {
-   "control": "\"Expiry week · physical settlement - December only\" warning",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "sector line True · pane True"
-  },
-  {
-   "control": "ATM ★ only on a strike he could take",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "mismatches [] · takeable now 0 (market closed: pre-open block, 0 lots everywhere)"
-  },
-  {
-   "control": "EXTENDED: one rule in the group, the gate cell and the pane",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "checked rows · mismatches []"
-  },
-  {
-   "control": "no repeated dashes; the reason shown once",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "0 lone dashes · \"not known\" x1 in the list"
-  },
-  {
-   "control": "F1 sector list scrollbar (dock)",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "every row fits at this size (all 17 F&O rows + the not-F&O line shown): the drawn bar shows a full 624 px thumb of 624, 11 px wide - nothing to drag"
-  },
-  {
-   "control": "F1 Esc closes back to the Desk",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "open None · members panel back"
+   "evidence": "26 sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: 0 · prose with a tooltip allowed: 187"
   },
   {
    "control": "page errors",
-   "page": "F1 desk",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "none"
-  },
-  {
-   "control": "Morning sector card opens the same component",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "card cables & wires -> open cables & wires"
-  },
-  {
-   "control": "Morning: \"pre-open - not live\" with the session date (not shown as today)",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "['pre-open - not live · 19 Nov 15:30 close', True, True]"
-  },
-  {
-   "control": "every visible share name - click loads the pane, the list stays",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "3 names clicked, wrong: [] · list visible: True"
-  },
-  {
-   "control": "J through the whole list (pane follows)",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "J x2 -> KEI (last row KEI)"
-  },
-  {
-   "control": "K back up",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "K x2 -> HAVELLS"
-  },
-  {
-   "control": "↓ / ↑ move share to share",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "↓ POLYCAB · ↑ HAVELLS"
-  },
-  {
-   "control": "J / K after a click in the pane",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "J POLYCAB · K HAVELLS"
-  },
-  {
-   "control": "pane share name - single click",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "still HAVELLS on morning#sd=cables%20%26%20wires&r=HAVELL"
-  },
-  {
-   "control": "pane scrollbar - slow mouse drag of the thumb",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "0 -> 176 -> 0 (max 551)"
-  },
-  {
-   "control": "pane scrollbar - fast drag (one 120 px jerk)",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "0 -> 352"
-  },
-  {
-   "control": "pane scrollbar - drag past the end, off the rail",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "top 551 of max 551 (a page that snaps to whole rows may stop one row short)"
-  },
-  {
-   "control": "pane scrollbar - drag past the top, off the rail",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "top 0"
-  },
-  {
-   "control": "pane scrollbar - track click below, then above the thumb",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "0 -> 302 -> 0"
-  },
-  {
-   "control": "pane scrollbar - ▼ then ▲ buttons",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "0 -> 66 -> 0"
-  },
-  {
-   "control": "pane scrollbar - mouse wheel over the list, then over the bar",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "-> 200 -> 0"
-  },
-  {
-   "control": "pane scrollbar - thumb visible",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "thumb 11 px wide, colour rgb(107, 118, 134)"
-  },
-  {
-   "control": "W why + Esc",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "open True · after Esc open False · share still HAVELLS"
-  },
-  {
-   "control": "Space plan card + Esc",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "open True · after Esc False"
-  },
-  {
-   "control": "pane button W why, then ✕",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "open True · closed True"
-  },
-  {
-   "control": "pane button Space plan, then ✕",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "open True"
-  },
-  {
-   "control": "P pin (toggle)",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "pins 0 -> 1 -> 0"
-  },
-  {
-   "control": "Pin toast sits above the action bar, below the share name",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "toast 760-808 · action bar top 814 · name bottom 477"
-  },
-  {
-   "control": "Pin button (action bar)",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "pins 0 -> 1 -> 0"
-  },
-  {
-   "control": "Copy contract (clipboard only)",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "clipboard \"HAVELLS26DEC1200CE\" · button \"Copy 1,200 CE · 0 lots\" · toast \"Copied HAVELLS26DEC1200CE · 0 lots - you place the order in Kite\""
-  },
-  {
-   "control": "Copy button shows the size",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "Copy 1,200 CE · 0 lots"
-  },
-  {
-   "control": "signal only: no order / buy button, the Kite line shown",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "line shown True · order-like buttons []"
-  },
-  {
-   "control": "December strikes only (rows + trade box)",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "3 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False"
-  },
-  {
-   "control": "\"Expiry week · physical settlement - December only\" warning",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "sector line True · pane True"
-  },
-  {
-   "control": "ATM ★ only on a strike he could take",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "mismatches [] · takeable now 0 (market closed: pre-open block, 0 lots everywhere)"
-  },
-  {
-   "control": "EXTENDED: one rule in the group, the gate cell and the pane",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "checked rows · mismatches []"
-  },
-  {
-   "control": "no repeated dashes; the reason shown once",
-   "page": "Morning",
-   "viewport": "1600x900",
-   "where": "outside",
-   "result": "PASS",
-   "evidence": "0 lone dashes · \"not known\" x2 in the list"
-  },
-  {
-   "control": "page errors",
-   "page": "Morning",
+   "page": "F3 rotation",
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
@@ -6106,7 +5738,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 167 -> 0 (max 666)"
+   "evidence": "44 -> 203 -> 43 (max 622)"
   },
   {
    "control": "F2 board scrollbar - fast drag (one 120 px jerk)",
@@ -6114,7 +5746,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 334"
+   "evidence": "43 -> 363"
   },
   {
    "control": "F2 board scrollbar - drag past the end, off the rail",
@@ -6122,7 +5754,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "top 666 of max 666 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 621 of max 622 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "F2 board scrollbar - drag past the top, off the rail",
@@ -6162,7 +5794,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "open auto · list bottom 661 · next row top 667"
+   "evidence": "open auto · list bottom 776 · next row top 782"
   },
   {
    "control": "row cap: whole share rows in the first view + \"+n more\"",
@@ -6186,7 +5818,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "J x11 -> ASHOKLEY (last row ASHOKLEY)"
+   "evidence": "J x11 -> HEROMOTOCO (last row HEROMOTOCO)"
   },
   {
    "control": "K back up",
@@ -6194,7 +5826,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "K x11 -> M&M"
+   "evidence": "K x11 -> MARUTI"
   },
   {
    "control": "↓ / ↑ move share to share",
@@ -6202,7 +5834,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "↓ MARUTI · ↑ M&M"
+   "evidence": "↓ BHARATFORG · ↑ MARUTI"
   },
   {
    "control": "J / K after a click in the pane",
@@ -6210,7 +5842,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "J MARUTI · K M&M"
+   "evidence": "J BHARATFORG · K MARUTI"
   },
   {
    "control": "pane share name - single click",
@@ -6218,7 +5850,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "still M&M on sectors#sd=auto&r=M%26M&y=180"
+   "evidence": "still MARUTI on sectors#sd=auto&r=MARUTI&y=785"
   },
   {
    "control": "pane scrollbar - slow mouse drag of the thumb",
@@ -6226,7 +5858,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 106 -> 0 (max 343)"
+   "evidence": "0 -> 100 -> 0 (max 289)"
   },
   {
    "control": "pane scrollbar - fast drag (one 120 px jerk)",
@@ -6234,7 +5866,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 212"
+   "evidence": "0 -> 199"
   },
   {
    "control": "pane scrollbar - drag past the end, off the rail",
@@ -6242,7 +5874,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "top 343 of max 343 (a page that snaps to whole rows may stop one row short)"
+   "evidence": "top 289 of max 289 (a page that snaps to whole rows may stop one row short)"
   },
   {
    "control": "pane scrollbar - drag past the top, off the rail",
@@ -6258,7 +5890,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 343 -> 0"
+   "evidence": "0 -> 289 -> 0"
   },
   {
    "control": "pane scrollbar - ▼ then ▲ buttons",
@@ -6290,7 +5922,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "open True · after Esc open False · share still M&M"
+   "evidence": "open True · after Esc open False · share still MARUTI"
   },
   {
    "control": "Space plan card + Esc",
@@ -6346,7 +5978,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "clipboard \"M&M26DEC3500CE\" · button \"Copy 3,500 CE · 0 lots\" · toast \"Copied M&M26DEC3500CE · 0 lots - you place the order in Kite\""
+   "evidence": "clipboard \"TMPV26DEC270CE\" · button \"Copy 270 CE · 0 lots\" · toast \"Copied TMPV26DEC270CE · 0 lots - you place the order in Kite\""
   },
   {
    "control": "Copy button shows the size",
@@ -6354,7 +5986,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "Copy 3,500 CE · 0 lots"
+   "evidence": "Copy 270 CE · 0 lots"
   },
   {
    "control": "signal only: no order / buy button, the Kite line shown",
@@ -6370,7 +6002,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "12 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False"
+   "evidence": "1 strike chips, 0 not December · trade box \"TRADE BOX · 2026-12-29 (December only)\" · November date shown: False · December chain gap named once in the list"
   },
   {
    "control": "\"Expiry week · physical settlement - December only\" warning",
@@ -6410,7 +6042,7 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "tile consumer durables -> open consumer durables · in view True"
+   "evidence": "tile hospitals & diagnostics -> open hospitals & diagnostics · in view True"
   },
   {
    "control": "F2: the share pane sits in the right column",
@@ -6426,11 +6058,619 @@
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
-   "evidence": "2 -> cables & wires (row 2 = cables & wires)"
+   "evidence": "2 -> banks (row 2 = banks)"
+  },
+  {
+   "control": "no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)",
+   "page": "F2 sectors",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "19 sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: 0 · prose with a tooltip allowed: 353"
   },
   {
    "control": "page errors",
    "page": "F2 sectors",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "none"
+  },
+  {
+   "control": "F1 Desk sector chip opens the sector (same component)",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "chip banks -> open banks"
+  },
+  {
+   "control": "row cap: whole share rows in the first view + \"+n more\"",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "12 whole rows (need 12) of 22 members · +n more bar: True"
+  },
+  {
+   "control": "every visible share name - click loads the pane, the list stays",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "12 names clicked, wrong: [] · list visible: True"
+  },
+  {
+   "control": "J through the whole list (pane follows)",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "J x11 -> BANKINDIA (last row BANKINDIA)"
+  },
+  {
+   "control": "K back up",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "K x11 -> INDUSINDBK"
+  },
+  {
+   "control": "↓ / ↑ move share to share",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "↓ BANDHANBNK · ↑ INDUSINDBK"
+  },
+  {
+   "control": "J / K after a click in the pane",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "J BANDHANBNK · K INDUSINDBK"
+  },
+  {
+   "control": "pane share name - single click",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "still INDUSINDBK on desk-hunt#sd=banks&r=INDUSINDBK&y=0"
+  },
+  {
+   "control": "pane scrollbar - slow mouse drag of the thumb",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "0 -> 88 -> 0 (max 207)"
+  },
+  {
+   "control": "pane scrollbar - fast drag (one 120 px jerk)",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "0 -> 176"
+  },
+  {
+   "control": "pane scrollbar - drag past the end, off the rail",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "top 207 of max 207 (a page that snaps to whole rows may stop one row short)"
+  },
+  {
+   "control": "pane scrollbar - drag past the top, off the rail",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "top 0"
+  },
+  {
+   "control": "pane scrollbar - track click below, then above the thumb",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "0 -> 207 -> 0"
+  },
+  {
+   "control": "pane scrollbar - ▼ then ▲ buttons",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "0 -> 66 -> 0"
+  },
+  {
+   "control": "pane scrollbar - mouse wheel over the list, then over the bar",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "-> 200 -> 0"
+  },
+  {
+   "control": "pane scrollbar - thumb visible",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "thumb 11 px wide, colour rgb(138, 150, 168)"
+  },
+  {
+   "control": "W why + Esc",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "open True · after Esc open False · share still INDUSINDBK"
+  },
+  {
+   "control": "Space plan card + Esc",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "open True · after Esc False"
+  },
+  {
+   "control": "pane button W why, then ✕",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "open True · closed True"
+  },
+  {
+   "control": "pane button Space plan, then ✕",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "open True"
+  },
+  {
+   "control": "P pin (toggle)",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "pins 0 -> 1 -> 0"
+  },
+  {
+   "control": "Pin toast sits above the action bar, below the share name",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "toast 761-809 · action bar top 815 · name bottom 268"
+  },
+  {
+   "control": "Pin button (action bar)",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "pins 0 -> 1 -> 0"
+  },
+  {
+   "control": "Copy contract",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "Copy off for INDUSINDBK (oc.INDUSINDBK.rows2 (the next-month chain) not in the store) - disabled"
+  },
+  {
+   "control": "Copy button shows the size",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "Copy contract · 0 lots (no December contract in the store for any share of this sector today - Copy off, size still shown)"
+  },
+  {
+   "control": "signal only: no order / buy button, the Kite line shown",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "line shown True · order-like buttons []"
+  },
+  {
+   "control": "December strikes only (rows + trade box)",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "0 strike chips, 0 not December · trade box \"TRADE BOX · December (December only)\" · November date shown: False · December chain gap named once in the list"
+  },
+  {
+   "control": "\"Expiry week · physical settlement - December only\" warning",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "sector line True · pane True"
+  },
+  {
+   "control": "ATM ★ only on a strike he could take",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "mismatches [] · takeable now 0 (market closed: pre-open block, 0 lots everywhere)"
+  },
+  {
+   "control": "EXTENDED: one rule in the group, the gate cell and the pane",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "checked rows · mismatches []"
+  },
+  {
+   "control": "no repeated dashes; the reason shown once",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "0 lone dashes · \"not known\" x1 in the list"
+  },
+  {
+   "control": "F1 sector list scrollbar (dock) - slow mouse drag of the thumb",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "0 -> 79 -> 0 (max 159)"
+  },
+  {
+   "control": "F1 sector list scrollbar (dock) - fast drag (one 120 px jerk)",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "0 -> 158"
+  },
+  {
+   "control": "F1 sector list scrollbar (dock) - drag past the end, off the rail",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "top 159 of max 159 (a page that snaps to whole rows may stop one row short)"
+  },
+  {
+   "control": "F1 sector list scrollbar (dock) - drag past the top, off the rail",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "top 0"
+  },
+  {
+   "control": "F1 sector list scrollbar (dock) - track click below, then above the thumb",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "0 -> 159 -> 0"
+  },
+  {
+   "control": "F1 sector list scrollbar (dock) - ▼ then ▲ buttons",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "0 -> 66 -> 0"
+  },
+  {
+   "control": "F1 sector list scrollbar (dock) - mouse wheel over the list, then over the bar",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "-> 159 -> 0"
+  },
+  {
+   "control": "F1 sector list scrollbar (dock) - thumb visible",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "thumb 11 px wide, colour rgb(138, 150, 168)"
+  },
+  {
+   "control": "no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "26 sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: 0 · prose with a tooltip allowed: 728"
+  },
+  {
+   "control": "F1 Esc closes back to the Desk",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "open None · members panel back"
+  },
+  {
+   "control": "page errors",
+   "page": "F1 desk",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "none"
+  },
+  {
+   "control": "Morning sector card opens the same component",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "card realty -> open realty"
+  },
+  {
+   "control": "Morning: \"pre-open - not live\" (after 15:30 \"closed - not live\") with the session date",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "['closed - not live · 20 Nov 15:30 close', True, True]"
+  },
+  {
+   "control": "every visible share name - click loads the pane, the list stays",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "6 names clicked, wrong: [] · list visible: True"
+  },
+  {
+   "control": "J through the whole list (pane follows)",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "J x5 -> LODHA (last row LODHA)"
+  },
+  {
+   "control": "K back up",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "K x5 -> GODREJPROP"
+  },
+  {
+   "control": "↓ / ↑ move share to share",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "↓ DLF · ↑ GODREJPROP"
+  },
+  {
+   "control": "J / K after a click in the pane",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "J DLF · K GODREJPROP"
+  },
+  {
+   "control": "pane share name - single click",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "still GODREJPROP on morning#sd=realty&r=GODREJPROP&y=0"
+  },
+  {
+   "control": "pane scrollbar - slow mouse drag of the thumb",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "0 -> 154 -> 0 (max 439)"
+  },
+  {
+   "control": "pane scrollbar - fast drag (one 120 px jerk)",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "0 -> 308"
+  },
+  {
+   "control": "pane scrollbar - drag past the end, off the rail",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "top 439 of max 439 (a page that snaps to whole rows may stop one row short)"
+  },
+  {
+   "control": "pane scrollbar - drag past the top, off the rail",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "top 0"
+  },
+  {
+   "control": "pane scrollbar - track click below, then above the thumb",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "0 -> 302 -> 0"
+  },
+  {
+   "control": "pane scrollbar - ▼ then ▲ buttons",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "0 -> 66 -> 0"
+  },
+  {
+   "control": "pane scrollbar - mouse wheel over the list, then over the bar",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "-> 200 -> 0"
+  },
+  {
+   "control": "pane scrollbar - thumb visible",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "thumb 11 px wide, colour rgb(107, 118, 134)"
+  },
+  {
+   "control": "W why + Esc",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "open True · after Esc open False · share still GODREJPROP"
+  },
+  {
+   "control": "Space plan card + Esc",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "open True · after Esc False"
+  },
+  {
+   "control": "pane button W why, then ✕",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "open True · closed True"
+  },
+  {
+   "control": "pane button Space plan, then ✕",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "open True"
+  },
+  {
+   "control": "P pin (toggle)",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "pins 0 -> 1 -> 0"
+  },
+  {
+   "control": "Pin toast sits above the action bar, below the share name",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "toast 760-808 · action bar top 814 · name bottom 477"
+  },
+  {
+   "control": "Pin button (action bar)",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "pins 0 -> 1 -> 0"
+  },
+  {
+   "control": "Copy contract",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "Copy off for GODREJPROP (oc.GODREJPROP.rows2 (the next-month chain) not in the store) - disabled"
+  },
+  {
+   "control": "Copy button shows the size",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "Copy contract · 0 lots (no December contract in the store for any share of this sector today - Copy off, size still shown)"
+  },
+  {
+   "control": "signal only: no order / buy button, the Kite line shown",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "line shown True · order-like buttons []"
+  },
+  {
+   "control": "December strikes only (rows + trade box)",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "0 strike chips, 0 not December · trade box \"TRADE BOX · December (December only)\" · November date shown: False · December chain gap named once in the list"
+  },
+  {
+   "control": "\"Expiry week · physical settlement - December only\" warning",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "sector line True · pane True"
+  },
+  {
+   "control": "ATM ★ only on a strike he could take",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "mismatches [] · takeable now 0 (market closed: pre-open block, 0 lots everywhere)"
+  },
+  {
+   "control": "EXTENDED: one rule in the group, the gate cell and the pane",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "checked rows · mismatches []"
+  },
+  {
+   "control": "no repeated dashes; the reason shown once",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "0 lone dashes · \"not known\" x1 in the list"
+  },
+  {
+   "control": "no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)",
+   "page": "Morning",
+   "viewport": "1600x900",
+   "where": "outside",
+   "result": "PASS",
+   "evidence": "3 sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: 0 · prose with a tooltip allowed: 3"
+  },
+  {
+   "control": "page errors",
+   "page": "Morning",
    "viewport": "1600x900",
    "where": "outside",
    "result": "PASS",
@@ -6442,7 +6682,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "open banks · built in 24 ms · tap-to-sheet 110 ms"
+   "evidence": "open banks · built in 26 ms · tap-to-sheet 107 ms"
   },
   {
    "control": "sheet header (sector line) <= 2 lines + WHY",
@@ -6466,7 +6706,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 446 -> 190"
+   "evidence": "0 -> 434 -> 193"
   },
   {
    "control": "list sheet - rail thumb, finger drag",
@@ -6474,7 +6714,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "190 -> 402 · share opened: None"
+   "evidence": "193 -> 419 · share opened: None"
   },
   {
    "control": "list sheet - rail drag, 8 px contact",
@@ -6482,7 +6722,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "402 -> 190"
+   "evidence": "419 -> 193"
   },
   {
    "control": "list sheet - rail drag at its right edge",
@@ -6490,7 +6730,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "190 -> 367"
+   "evidence": "193 -> 381"
   },
   {
    "control": "list sheet - rail track tap",
@@ -6498,7 +6738,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "367 -> 301"
+   "evidence": "381 -> 315"
   },
   {
    "control": "list sheet - rail, mouse drag (one mouse check)",
@@ -6506,7 +6746,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "301 -> 442"
+   "evidence": "315 -> 466"
   },
   {
    "control": "fast flick, then a tap still opens the row",
@@ -6514,7 +6754,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "flick then tap KOTAKBANK -> share sheet True (KOTAKBANK)"
+   "evidence": "flick then tap BANKINDIA -> share sheet True (BANKINDIA)"
   },
   {
    "control": "\"n more listed, not F&O\" (finger)",
@@ -6538,7 +6778,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "IDFCFIRSTB -> sheet True"
+   "evidence": "INDUSINDBK -> sheet True"
   },
   {
    "control": "share sheet - finger swipe",
@@ -6546,7 +6786,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 184"
+   "evidence": "0 -> 113"
   },
   {
    "control": "share sheet - action bar sticky, shows the size",
@@ -6554,7 +6794,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "bar 776-844 at scroll 0 and 776-844 after the swipe · \"Copy 86 CE · 0 lots\""
+   "evidence": "bar 733-844 at scroll 0 and 733-844 after the swipe · \"Copy contract · 0 lots\""
   },
   {
    "control": "share sheet - rail thumb, finger drag",
@@ -6562,7 +6802,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 185"
+   "evidence": "0 -> 113"
   },
   {
    "control": "share sheet - rail track tap",
@@ -6570,7 +6810,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "185 -> 119"
+   "evidence": "113 -> 47"
   },
   {
    "control": "WHY › (share sheet)",
@@ -6586,7 +6826,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "clipboard \"IDFCFIRSTB26DEC86CE\" · \"Copied IDFCFIRSTB26DEC86CE · 0 lots - you place the order in\""
+   "evidence": "Copy off: oc.INDUSINDBK.rows2 (the next-month chain) not in the store"
   },
   {
    "control": "Pin (toggle, n/5) (finger)",
@@ -6650,7 +6890,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "open auto · built in 21 ms · tap-to-sheet 88 ms"
+   "evidence": "open banks · built in 22 ms · tap-to-sheet 100 ms"
   },
   {
    "control": "sheet header (sector line) <= 2 lines + WHY",
@@ -6674,7 +6914,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 299 -> 46"
+   "evidence": "0 -> 443 -> 169"
   },
   {
    "control": "list sheet - rail thumb, finger drag",
@@ -6682,7 +6922,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "46 -> 223 · share opened: None"
+   "evidence": "169 -> 395 · share opened: None"
   },
   {
    "control": "list sheet - rail drag, 8 px contact",
@@ -6690,7 +6930,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "223 -> 46"
+   "evidence": "395 -> 169"
   },
   {
    "control": "list sheet - rail drag at its right edge",
@@ -6698,7 +6938,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "46 -> 193"
+   "evidence": "169 -> 357"
   },
   {
    "control": "list sheet - rail track tap",
@@ -6706,7 +6946,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "193 -> 127"
+   "evidence": "357 -> 291"
   },
   {
    "control": "list sheet - rail, mouse drag (one mouse check)",
@@ -6714,7 +6954,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "127 -> 245"
+   "evidence": "291 -> 442"
   },
   {
    "control": "fast flick, then a tap still opens the row",
@@ -6722,7 +6962,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "flick then tap TVSMOTOR -> share sheet True (TVSMOTOR)"
+   "evidence": "flick then tap BANKINDIA -> share sheet True (BANKINDIA)"
   },
   {
    "control": "\"n more listed, not F&O\" (finger)",
@@ -6738,7 +6978,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "basis (R49) whole sector: 50 listed shares, market-cap weighted (NSE m"
+   "evidence": "basis (R49) whole sector: 34 listed shares, market-cap weighted (NSE m"
   },
   {
    "control": "tap a share opens the share sheet",
@@ -6746,7 +6986,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "M&M -> sheet True"
+   "evidence": "INDUSINDBK -> sheet True"
   },
   {
    "control": "share sheet - finger swipe",
@@ -6754,7 +6994,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 165"
+   "evidence": "0 -> 70"
   },
   {
    "control": "share sheet - action bar sticky, shows the size",
@@ -6762,7 +7002,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "bar 776-844 at scroll 0 and 776-844 after the swipe · \"Copy 3,500 CE · 0 lots\""
+   "evidence": "bar 776-844 at scroll 0 and 776-844 after the swipe · \"Copy contract · 0 lots\""
   },
   {
    "control": "share sheet - rail thumb, finger drag",
@@ -6770,7 +7010,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "0 -> 166"
+   "evidence": "0 -> 70"
   },
   {
    "control": "share sheet - rail track tap",
@@ -6778,7 +7018,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "166 -> 100"
+   "evidence": "70 -> 4"
   },
   {
    "control": "WHY › (share sheet)",
@@ -6794,7 +7034,7 @@
    "viewport": "390x844",
    "where": "outside",
    "result": "PASS",
-   "evidence": "clipboard \"M&M26DEC3500CE\" · \"Copied M&M26DEC3500CE · 0 lots - you place the order in Kite\""
+   "evidence": "Copy off: oc.INDUSINDBK.rows2 (the next-month chain) not in the store"
   },
   {
    "control": "Pin (toggle, n/5) (finger)",

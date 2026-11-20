@@ -23,6 +23,12 @@ async def wheel_to(pg, sel, box):
         await pg.mouse.move(r[4], (r[2] + r[3]) / 2); await pg.mouse.wheel(0, 100 if r[1] > r[3] else -100); await pg.wait_for_timeout(200)
 
 
+async def pnl_mask(pg):
+    # the account P&L strip: every value box masked dark grey by Playwright, one label "P&L hidden" left in view
+    await pg.evaluate("""() => { const p = document.querySelector('#sh-pnl'); if (p && !p.querySelector('.pnl-lab')) { const l = document.createElement('span'); l.className = 'pnl-lab'; l.textContent = 'P&L hidden'; l.style.cssText = 'font:700 13px var(--sans);color:#C9D1DB;background:#2b3038;padding:2px 10px;border-radius:3px;margin:0 6px;align-self:center'; p.prepend(l); } }""")
+    return [pg.locator('#sh-pnl > .sh-pt')]
+
+
 async def main():
     async with async_playwright() as p:
         b = await p.chromium.launch()
@@ -40,17 +46,17 @@ async def main():
             await pg.goto(BASE + '/rotation', wait_until='domcontentloaded'); await ready(pg)
             await wheel_to(pg, '#wtb tr.row[data-s="banks"]', '#winB'); await mclick(pg, '#wtb tr.row[data-s="banks"]')
             await mclick(pg, '.sdl .sd-r', 0, 0.2)
-            await pg.screenshot(path=os.path.join(OUT, 'F3_rotation_banks_share_%d.png' % w), mask=[pg.locator('#sh-pnl')])
+            await pg.screenshot(path=os.path.join(OUT, 'F3_rotation_banks_share_%d.png' % w), mask=await pnl_mask(pg), mask_color='#2b3038')
             await pg.goto(BASE + '/sectors', wait_until='domcontentloaded'); await ready(pg)
             await wheel_to(pg, '#bdb .sec[data-id="auto"] > .srow', '#bdb'); await mclick(pg, '#bdb .sec[data-id="auto"] > .srow', 0, 0.3)
             await mclick(pg, '.sdl .sd-r', 1, 0.2)
-            await pg.screenshot(path=os.path.join(OUT, 'F2_sectors_auto_open_%d.png' % w), mask=[pg.locator('#sh-pnl')])
+            await pg.screenshot(path=os.path.join(OUT, 'F2_sectors_auto_open_%d.png' % w), mask=await pnl_mask(pg), mask_color='#2b3038')
             await pg.goto(BASE + '/desk-hunt', wait_until='domcontentloaded'); await ready(pg)
             await wheel_to(pg, '#secList .srow[data-sec="banks"]', '#secList'); await mclick(pg, '#secList .srow[data-sec="banks"]', 0, 0.3); await mclick(pg, '.sdl .sd-r', 0, 0.2)
-            await pg.screenshot(path=os.path.join(OUT, 'F1_desk_chip_open_%d.png' % w), mask=[pg.locator('#sh-pnl')])
+            await pg.screenshot(path=os.path.join(OUT, 'F1_desk_chip_open_%d.png' % w), mask=await pnl_mask(pg), mask_color='#2b3038')
             await pg.goto(BASE + '/morning', wait_until='domcontentloaded'); await ready(pg)
             await mclick(pg, '#cards .cd .snm', 0); await mclick(pg, '.sdl .sd-r', 0, 0.2)
-            await pg.screenshot(path=os.path.join(OUT, 'Morning_preopen_%d.png' % w), mask=[pg.locator('#sh-pnl')])
+            await pg.screenshot(path=os.path.join(OUT, 'Morning_preopen_%d.png' % w), mask=await pnl_mask(pg), mask_color='#2b3038')
             await ctx.close()
         await b.close()
     print('shots in', OUT)

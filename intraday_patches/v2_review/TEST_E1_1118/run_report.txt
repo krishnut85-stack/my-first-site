@@ -1,0 +1,9 @@
+
+run_report.py errors:
+Traceback (most recent call last):
+  File "<server>/intraday/v2/engine/tools/run_report.py", line 65, in <module>
+    main(p)
+  File "<server>/intraday/v2/engine/tools/run_report.py", line 38, in main
+    sc = json.load(open(os.path.join(p, "scorecard.json")))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '<server>/girdata/replay/out/TEST_E1_1118/scorecard.json'

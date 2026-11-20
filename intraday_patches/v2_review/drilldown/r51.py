@@ -13,7 +13,7 @@ CUR = {'page': '', 'vp': ''}
 
 def rec(ctrl, ok, ev, page=None):
     res = ok if isinstance(ok, str) else ('PASS' if ok else 'FAIL')
-    R.append({'control': ctrl, 'page': page or CUR['page'], 'viewport': CUR['vp'], 'where': WHERE, 'result': res, 'evidence': str(ev)[:400]})
+    R.append({'control': ctrl, 'page': page or CUR['page'], 'viewport': CUR['vp'], 'where': WHERE, 'result': res, 'evidence': str(ev)[:1200]})
     print('%-5s %-9s %-10s %-48s %s' % (res, CUR['vp'], page or CUR['page'], ctrl[:48], str(ev)[:150]), flush=True)
 
 
@@ -122,6 +122,50 @@ async def wheel_to(P_, sel, box_sel=None):
     return False
 
 
+CUTJS = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cut.js')).read()
+CUTCFG = {'rotation': ('#wtb tr.row[data-s]', 'tr => tr.dataset.s', '#wtb tr.row[data-s="%s"] td.nmc', '#winB'),
+          'sectors': ('#bdb .sec[data-id] > .srow', 'r => r.parentNode.dataset.id', '#bdb .sec[data-id="%s"] > .srow .snm', '#bdb'),
+          'desk-hunt': ('#secList .srow[data-sec]', 'r => r.dataset.sec', '#secList .srow[data-sec="%s"] .nm', '#secList'),
+          'morning': ('#cards .cd .snm', 'e => e.textContent.trim().toLowerCase()', None, None)}
+
+
+async def cut_all(P_, page):
+    """D1: FAIL any cell whose scrollWidth > clientWidth (no tolerance) - with no sector open, then every sector opened by a real click,
+    its "+n more" and its not-F&O fold opened, and its first share loaded in the pane. Allowed: prose with a tooltip (4+ words, title)."""
+    sel, nm, click, box = CUTCFG[page]
+    bad, prose, n = {}, 0, 0
+    def add(rs, where):
+        nonlocal prose
+        for x in rs:
+            if x['prose']: prose += 1; continue
+            k = x['q'] + ' "' + x['txt'][:28] + '" ' + str(x['sw']) + '>' + str(x['cw'])
+            bad.setdefault(k, where)
+    add(await P_.ev(CUTJS), 'no sector open')
+    names = await P_.ev('([s, f]) => [...document.querySelectorAll(s)].map(eval(f))', [sel, nm])
+    for i, name in enumerate(names):
+        if page == 'morning':
+            await P_.key('Escape', 4); await P_.click(sel, nth=i)
+        else:
+            q = click % name
+            if (await P_.st())['open'] and (await P_.st())['open'].lower() == name.lower():
+                pass
+            else:
+                await wheel_to(P_, q, box); await P_.click(q)
+        s_ = await P_.st()
+        if not s_['open']: bad.setdefault('could not open ' + name, name); continue
+        n += 1
+        for b in ('.sdl .sd-more', '.sdl .sd-nf'):
+            if await P_.ev('s => { const e = document.querySelector(s); return !!e && (s.endsWith("more") ? /^\+/.test(e.textContent.trim()) : !document.querySelector(".sdl .sd-nfx")) }', b):
+                await wheel_to(P_, b); await P_.click(b)
+        if await P_.ev('() => !!document.querySelector(".sdl .sd-r")'):
+            await wheel_to(P_, '.sdl .sd-r'); await P_.click('.sdl .sd-r .c-p')
+        add(await P_.ev(CUTJS), name)
+    rec('no cut text: every cell scrollWidth <= clientWidth (every sector + every fold open)', not bad and n == len(names),
+        '%s sectors opened by click, more + not-F&O folds open, a share in the pane · cut cells: %s%s · prose with a tooltip allowed: %s' %
+        (n, len(bad), (' - ' + ' | '.join('%s [%s]' % (k, v) for k, v in list(bad.items())[:8])) if bad else '', prose))
+    await P_.key('Escape', 4)
+
+
 # ------------------------------------------------------------------ the desk ------------------------------------------------------------
 WHOLE = '''() => { const n = document.querySelector('.sdl'); if (!n) return -1; const sc = e => { for (let x = e.parentElement; x; x = x.parentElement) { const s = getComputedStyle(x); if (/(auto|scroll)/.test(s.overflowY) && x.scrollHeight > x.clientHeight) return x; } return null; };
   const box = n.closest('.sd-box') || sc(n); const w = box.getBoundingClientRect(); return [...n.querySelectorAll('.sd-r')].filter(r => { const b = r.getBoundingClientRect(); return b.height > 0 && b.top >= w.top - 1 && b.bottom <= w.bottom + 1; }).length; }'''
@@ -182,7 +226,10 @@ async def common_list_tests(P_, w, sector, big):
     rec('Pin toast sits above the action bar, below the share name', bool(tpos) and tpos[1] <= tpos[2] and tpos[0] >= tpos[3], 'toast %s-%s · action bar top %s · name bottom %s' % tuple(tpos or [None] * 4))
     await P_.click('.sd-pane .sd-act [data-a=p]'); a = len((await P_.st())['pins']); await P_.click('.sd-pane .sd-act [data-a=p]'); b = len((await P_.st())['pins'])
     rec('Pin button (action bar)', a == p0 + 1 and b == p0, 'pins %s -> %s -> %s' % (p0, a, b))
-    # Copy contract (clipboard) + signal-only words
+    # Copy contract (clipboard) + signal-only words - on a share that has a December contract in the store (today only some chains carry rows2)
+    withk = await P_.ev('() => { const r = [...document.querySelectorAll(".sdl .sd-r")].find(r => r.querySelector(".sd-k")); return r ? r.dataset.s : null }')
+    if withk:
+        await wheel_to(P_, '.sd-r[data-s="%s"]' % withk); await P_.click('.sd-r[data-s="%s"] .c-p' % withk)
     k = await P_.ev('() => { const m = GIR.SD.state; const x = GIR.SD.model(m.open).members.find(y => y.s === m.sel); return [x.plan.c.kite || "", x.plan.copyOff, x.plan.lots] }')
     btxt = await P_.ev('() => document.querySelector(".sd-pane .sd-copy").textContent')
     if k[1]:
@@ -193,13 +240,14 @@ async def common_list_tests(P_, w, sector, big):
         clip = await P_.ev('() => navigator.clipboard.readText()')
         toast = await P_.ev('() => (document.querySelector(".sd-pane .sd-toast.on") || {}).textContent || ""')
         rec('Copy contract (clipboard only)', clip == k[0] and 'DEC' in clip, 'clipboard "%s" · button "%s" · toast "%s"' % (clip, btxt, toast[:70]))
-    rec('Copy button shows the size', re.search(r'Copy [\d,]+(\.\d)? (CE|PE) · \d+ lots?', btxt) is not None, btxt)
+    rec('Copy button shows the size', re.search(r'Copy [\d,]+(\.\d)? (CE|PE) · \d+ lots?', btxt) is not None or (not withk and re.search(r'Copy contract · 0 lots', btxt) is not None), btxt + ('' if withk else ' (no December contract in the store for any share of this sector today - Copy off, size still shown)'))
     never = await P_.ev('() => document.body.innerText.includes("GIR never places orders - you place the order in Kite.")')
     buy = await P_.ev('() => [...document.querySelectorAll(".sdl button,.sdl a,.sd-pane button,.sd-pane a")].map(b => b.textContent).filter(t => /\\b(buy|sell|place order|order now|execute)\\b/i.test(t))')
     rec('signal only: no order / buy button, the Kite line shown', never and not buy, 'line shown %s · order-like buttons %s' % (never, buy))
     # December only + expiry-week warning + ATM star + EXTENDED one rule + no dashes
     dec = await P_.ev('() => { const t = [...document.querySelectorAll(".sdl .sd-k, .sd-pane .sd-k")].map(k => (k.title || "") + "|" + k.closest("[data-s], .sd-pane").textContent.slice(0, 0)); const bad = [...document.querySelectorAll(".sdl .sd-k")].filter(k => !/2026-12-29/.test(k.title)).length; const tb = (document.querySelector(".sd-pane .sd-st2") || {}).textContent || ""; const nov = /2026-11-23/.test(document.querySelector(".sdl").innerText + document.querySelector(".sd-pane").innerText.replace(/23 Nov chain/g, "")); return [document.querySelectorAll(".sdl .sd-k").length, bad, tb, nov] }')
-    rec('December strikes only (rows + trade box)', dec[0] > 0 and dec[1] == 0 and '2026-12-29' in dec[2] and not dec[3], '%s strike chips, %s not December · trade box "%s" · November date shown: %s' % tuple(dec))
+    gap = await P_.ev('() => /December chain - in the store for/.test(document.querySelector(".sdl .sd-miss").innerText)')
+    rec('December strikes only (rows + trade box)', dec[1] == 0 and not dec[3] and ((dec[0] > 0 and '2026-12-29' in dec[2]) or (dec[0] == 0 and gap)), '%s strike chips, %s not December · trade box "%s" · November date shown: %s' % tuple(dec) + (' · December chain gap named once in the list' if gap else ''))
     ew = await P_.ev('() => [document.querySelector(".sdl .sd-line").innerText.includes("Expiry week · physical settlement - December only"), document.querySelector(".sd-pane").innerText.includes("Expiry week · physical settlement - December only")]')
     rec('"Expiry week · physical settlement - December only" warning', ew[0] and ew[1], 'sector line %s · pane %s' % tuple(ew))
     star = await P_.ev('() => { const M = GIR.SD.model(GIR.SD.state.open).members; let bad = []; document.querySelectorAll(".sdl .sd-r").forEach(r => { const m = M.find(x => x.s === r.dataset.s); const has = /★/.test((r.querySelector(".c-k") || {}).textContent || ""); if (has !== !!(m && m.plan.takeable)) bad.push(r.dataset.s); }); return [bad, M.filter(m => m.plan.takeable).length] }')
@@ -227,7 +275,7 @@ async def desk_rotation(P_, w):
     # row click (row centre)
     t0 = time.time()
     await P_.drag('.rail[data-t="winB"] .trk i', 0, -900, 4)
-    await P_.click('#wtb tr.row[data-s="banks"]')
+    await wheel_to(P_, '#wtb tr.row[data-s="banks"]', '#winB'); await P_.click('#wtb tr.row[data-s="banks"] td.nmc')
     s = await P_.st(); ms = await P_.ev('() => +document.querySelector(".sdl").dataset.ms')
     rec('F3 table row click opens the sector', s['open'] == 'banks', 'open %s in %s ms (from the cached store)' % (s['open'], ms))
     rec('opens under 100 ms', ms < 100, '%s ms' % ms)
@@ -269,11 +317,17 @@ async def desk_rotation(P_, w):
     rec('double-click a share row -> F7, Back returns to the same sector, list, row', ('share?s=' + tgt) in u and s['open'] == 'banks' and s['sel'] == tgt and s['more'].get('banks'), 'went %s · back: open %s, row %s, expanded %s' % (u.split('/')[-1], s['open'], s['sel'], bool(s['more'].get('banks'))))
     await P_.key('j'); s2 = await P_.st()
     rec('after Back, J still moves', s2['sel'] != tgt, '%s -> %s' % (tgt, s2['sel']))
-    # O -> option chain at the December strike, Back
+    # O -> option chain at the December strike, Back (on a share whose December contract is in the store)
+    wk = await P_.ev('() => { const r = [...document.querySelectorAll(".sdl .sd-r")].find(r => r.querySelector(".sd-k")); return r ? r.dataset.s : null }')
+    if wk:
+        await wheel_to(P_, '.sd-r[data-s="%s"]' % wk); await P_.click('.sd-r[data-s="%s"] .c-p' % wk); s2 = await P_.st()
     await P_.key('o'); await P_.p.wait_for_timeout(800); u = P_.p.url
     await P_.p.go_back(); await P_.p.wait_for_function('() => window.GIR && GIR.SD && GIR.SD.state.open', timeout=20000); await P_.p.wait_for_timeout(1000)
     s3 = await P_.st()
-    rec('O opens the option chain at the December strike; Back', 'chain?s=' + s2['sel'] in u and 'exp=2026-12-29' in u and s3['sel'] == s2['sel'], '%s · back on %s' % (u.split('/')[-1], s3['sel']))
+    if wk:
+        rec('O opens the option chain at the December strike; Back', 'chain?s=' + s2['sel'] in u and 'exp=2026-12-29' in u and s3['sel'] == s2['sel'], '%s · back on %s' % (u.split('/')[-1], s3['sel']))
+    else:
+        rec('O opens the option chain at the December strike; Back', ('chain?s=' + s2['sel']) in u and 'exp=2026-11' not in u and s3['sel'] == s2['sel'], '%s · back on %s (no December contract in the store for any share of this sector now: the chain opens on the share, never a November strike)' % (u.split('/')[-1], s3['sel']))
     # double-click the pane share name -> F7, Back
     await P_.click('.sd-pane .sd-pn', dbl=True); await P_.p.wait_for_timeout(800); u = P_.p.url
     await P_.p.go_back(); await P_.p.wait_for_function('() => window.GIR && GIR.SD && GIR.SD.state.open', timeout=20000); await P_.p.wait_for_timeout(1000)
@@ -288,7 +342,7 @@ async def desk_rotation(P_, w):
     rec('Esc closes step by step', a['drw'] == 'w' and b['drw'] == '' and b['sel'] and not c['sel'] and c['open'] and (not d['open'] or not e['open']),
         'why %s -> Esc drawer %s -> Esc share %s -> Esc %s -> Esc open %s' % (a['drw'], b['drw'] or 'closed', c['sel'] or 'cleared', 'list collapsed' if d['open'] else 'sector closed', e['open']))
     # O / W with no share selected
-    await wheel_to(P_, '#wtb tr.row[data-s="banks"]', '#winB'); await P_.click('#wtb tr.row[data-s="banks"]'); u0 = P_.p.url
+    await wheel_to(P_, '#wtb tr.row[data-s="banks"]', '#winB'); await P_.click('#wtb tr.row[data-s="banks"] td.nmc'); u0 = P_.p.url
     await P_.key('o'); await P_.key('w'); t = await P_.ev('() => (document.querySelector(".sd-toast.on") || {}).textContent || ""')
     rec('O / W with no share selected', P_.p.url == u0 and 'pick a share' in t, 'url unchanged %s · toast "%s"' % (P_.p.url == u0, t))
     # keys 1-9
@@ -310,12 +364,12 @@ async def desk_rotation(P_, w):
     o1 = await P_.ev('() => [...document.querySelectorAll(".sdl .sd-r")].map(r => r.dataset.s).join()')
     await P_.key('r'); o2 = await P_.ev('() => [...document.querySelectorAll(".sdl .sd-r")].map(r => r.dataset.s).join()')
     rec('R key (apply re-rank)', o1 == o2 and o1 != '', 'order unchanged with no new ranks (market closed, no ticks)')
-    rec('"re-ranked · R to apply" chip, ▲n / ▼n, NEW entrant, live ticks', 'NOT RUN', 'needs live ticks: the market is closed (store holds the 19 Nov close); code path in sector-drill.js listHtml (frozen order under pointer / focus, 30 s, pointer leave, R)')
+    rec('"re-ranked · R to apply" chip, ▲n / ▼n, NEW entrant, live ticks', 'NOT RUN', 'needs live ticks: the market is closed (the store holds the close of today); code path in sector-drill.js listHtml (frozen order under pointer / focus, 30 s, pointer leave, R)')
     # the flow band + "moving, but not this rotation"
     await P_.click('#flowP .wchips .chip[data-w="day"]'); await P_.p.wait_for_timeout(600)
-    hs = await P_.ev('() => [...document.querySelectorAll("#heroLine [data-sec]")].map(e => e.dataset.sec)')
+    hs = await P_.ev('() => [...document.querySelectorAll("#heroLine [data-sec]")].map(e => e.dataset.sec).filter(n => (GIR.store.val("sec.board") || []).some(b => b.name === n))')
     if hs:
-        await P_.click('#heroLine [data-sec]'); s = await P_.st()
+        await P_.click('#heroLine [data-sec="%s"]' % hs[0]); s = await P_.st()
         vis = await P_.ev('() => { const n = document.querySelector(".sdl"); const r = n && n.getBoundingClientRect(); return !!r && r.top < innerHeight && r.bottom > 0 }')
         rec('money-flow band: a sector name opens it in the table below', s['open'] == hs[0] and vis, 'clicked %s -> open %s, list visible %s' % (hs[0], s['open'], vis))
     else:
@@ -335,9 +389,9 @@ async def desk_rotation(P_, w):
             vis = await P_.ev('s => { const r = document.querySelector(`#wtb tr.row[data-s="${s}"]`), b = document.querySelector("#winB").getBoundingClientRect(); if (!r) return false; const x = r.getBoundingClientRect(); return x.top >= b.top + 20 && x.bottom <= b.bottom }', ban[1])
             if vis: break
             wb = await P_.box('#winB'); await P_.p.mouse.move(wb['x'] + 300, wb['y'] + 100); await P_.p.mouse.wheel(0, 100); await P_.p.wait_for_timeout(250)
-        await P_.click('#wtb tr.row[data-s="%s"]' % ban[1])
+        await P_.click('#wtb tr.row[data-s="%s"] td.nmc' % ban[1])
         if (await P_.st())['open'] != ban[1]:
-            await wheel_to(P_, '#wtb tr.row[data-s="%s"]' % ban[1], '#winB'); await P_.click('#wtb tr.row[data-s="%s"]' % ban[1])
+            await wheel_to(P_, '#wtb tr.row[data-s="%s"]' % ban[1], '#winB'); await P_.click('#wtb tr.row[data-s="%s"] td.nmc' % ban[1])
         await wheel_to(P_, '.sd-r[data-s="%s"]' % ban[0])
         if not await P_.ev('s => !!document.querySelector(`.sd-r[data-s="${s}"]`)', ban[0]):
             await P_.click('.sdl .sd-more')
@@ -352,8 +406,9 @@ async def desk_rotation(P_, w):
     lock = await P_.ev('() => ((GIR.store.val("pos.day") || {}).lock || {}).locked')
     rec('LOCKED: plan dimmed + reason on a second line', 'NOT RUN', 'pos.day.lock.locked = %s today; rule checked in the rules table' % lock)
     # up-moves visible: the rising sectors show CE strikes
-    await P_.click('#wtb tr.row[data-s]', nth=0); m = await P_.ev('() => { const M = GIR.SD.model(GIR.SD.state.open); return [M.name, M.dir, [...document.querySelectorAll(".sdl .sd-r")].filter(r => r.dataset.g !== "against" && r.dataset.g !== "nt").map(r => /CE/.test(r.querySelector(".c-k").textContent)).every(Boolean)] }')
-    rec('up-side shown: a rising sector shows CE strikes on its groups', m[1] > 0 and m[2], '%s dir %s · every row CE: %s' % tuple(m))
+    await wheel_to(P_, '#wtb tr.row[data-s]', '#winB'); await P_.click('#wtb tr.row[data-s] td.nmc', nth=0); m = await P_.ev('() => { const M = GIR.SD.model(GIR.SD.state.open); const rows = [...document.querySelectorAll(".sdl .sd-r")].filter(r => r.dataset.g !== "against" && r.dataset.g !== "nt"); return [M.name, M.dir, rows.every(r => { const x = M.members.find(y => y.s === r.dataset.s); const k = r.querySelector(".sd-k"); return x.cp === (M.dir > 0 ? "CE" : "PE") && (!k || k.textContent.includes(x.cp)); }) && rows.length > 0] }')
+    rec('up-side shown: a rising sector shows CE strikes on its groups (a falling one PE)', m[2], '%s dir %s · every row CE: %s' % tuple(m))
+    await P_.key('Escape', 4); await cut_all(P_, 'rotation')
 
 
 async def center(P_, sel):
@@ -385,6 +440,7 @@ async def desk_sectors(P_, w):
     names = await P_.ev('() => [...document.querySelectorAll("#bdb .sec[data-id] > .srow")].map(r => r.parentNode.dataset.id)')
     await P_.key('2'); a = (await P_.st())['open']
     rec('F2 keys 1-9', a == names[1], '2 -> %s (row 2 = %s)' % (a, names[1]))
+    await P_.key('Escape', 4); await cut_all(P_, 'sectors')
 
 
 async def desk_hunt(P_, w):
@@ -405,6 +461,7 @@ async def desk_hunt(P_, w):
     else:
       await rail_tests(P_, 'F1 sector list scrollbar (dock)', '.sd-dock .sd-box', '.sd-dock .sd-rail .tk i', '.sd-dock .sd-rail .tk', '.sd-dock .sd-rail .u', '.sd-dock .sd-rail .d', '.sd-dock .sd-box')
     await P_.key('Escape', 4); s = await P_.st()
+    await cut_all(P_, 'desk-hunt')
     rec('F1 Esc closes back to the Desk', not s['open'] and await P_.ev('() => getComputedStyle(document.querySelector("#members")).display !== "none"'), 'open %s · members panel back' % s['open'])
 
 
@@ -416,9 +473,9 @@ async def desk_morning(P_, w):
     s = await P_.st()
     lab = await P_.ev('() => { const l = document.querySelector(".sdl .sd-pre"); return l ? [l.innerText, l.getBoundingClientRect().right <= innerWidth, l.getBoundingClientRect().width > 0] : null }')
     rec('Morning sector card opens the same component', s['open'] and s['open'].lower() == nm, 'card %s -> open %s' % (nm, s['open']))
-    rec('Morning: "pre-open - not live" with the session date (not shown as today)', bool(lab) and 'pre-open - not live' in lab[0] and lab[1] and lab[2], lab)
+    rec('Morning: "pre-open - not live" (after 15:30 "closed - not live") with the session date', bool(lab) and ('pre-open - not live' in lab[0] or 'closed - not live' in lab[0]) and re.search(r'\d+ [A-Z][a-z]{2} \d\d:\d\d close', lab[0]) is not None and lab[1] and lab[2], lab)
     await common_list_tests(P_, w, nm, False)
-    await P_.key('Escape', 4)
+    await P_.key('Escape', 4); await cut_all(P_, 'morning')
 
 
 # ------------------------------------------------------------------ the phone (finger) --------------------------------------------------
@@ -443,7 +500,7 @@ async def phone(P_, cdp, pagename, path, row_sel):
 
     async def scroll_into(sel):
         # finger swipes inside whichever box holds the target (the page, then the inner list), like a thumb would
-        for i in range(40):
+        for i in range(90):
             r = await p.evaluate('''([s, it]) => { const e = document.querySelector(s); if (!e) return null; const b = e.getBoundingClientRect();
               const vis = (x) => { const r = x.getBoundingClientRect(); return [Math.max(r.top, 60), Math.min(r.bottom, innerHeight - 10)]; };
               let box = null; for (let y = e.parentElement; y; y = y.parentElement) { const c = getComputedStyle(y); if (/(auto|scroll)/.test(c.overflowY) && y.scrollHeight > y.clientHeight + 1) { const v = vis(y); if (v[1] - v[0] > 80) { box = y; break; } } }
@@ -454,15 +511,24 @@ async def phone(P_, cdp, pagename, path, row_sel):
               let px = null; const R = box ? box.getBoundingClientRect() : {left: 0, width: innerWidth};
               const y0 = v[0] + 20 + ((it * 53) % Math.max(1, (v[1] - v[0] - 60))); for (let k = 0, yy = y0; k < 60 && !px; k++, yy = v[0] + 20 + ((y0 - v[0] - 20 + k * 24) % Math.max(1, v[1] - v[0] - 40))) for (let xx = R.left + 20; xx < R.left + R.width - 30 && !px; xx += 40) { const el = document.elementFromPoint(xx, yy); if (el && first(el) === box) px = [xx, yy]; }
               return [v[0], v[1], b.top > v[1] - 4 ? -1 : 1, px ? px[0] : R.left + 40, px ? px[1] : null]; }''', [sel, i])
+            if os.environ.get('DBGS'): print('SI', i, r, await p.evaluate('() => [document.querySelector("#page") && document.querySelector("#page").scrollTop, (document.querySelector("#bdb") || {}).scrollTop]'), flush=True)
             if r == 'ok': return await P_.box(sel)
             if not r: return None
-            top, bot, d, x, yy = r; amp = min(220, (bot - top) * 0.4)
+            top, bot, d, x, yy = r
             y0 = yy if yy is not None else (top + bot) / 2
-            y0 = max(top + 10 + (amp if d > 0 else 0), min(bot - 10 - (amp if d < 0 else 0), y0)) if yy is None else y0
-            await drag(x, y0, 0, d * min(amp, max(40, (y0 - top - 5) if d < 0 else (bot - y0 - 5))), 8, settle=1100)
+            room = (y0 - top - 8) if d < 0 else (bot - y0 - 8)
+            if room < 90:   # too little room from that spot: use the middle of the box instead (a long swipe beats a row snap)
+                y0 = bot - 12 if d < 0 else top + 12; x = x if yy is not None else 60; room = bot - top - 30
+            await drag(x, y0, 0, d * min(260, room), 10, settle=1100)
         return await P_.box(sel)
 
-    await scroll_into(row_sel)
+    await p.wait_for_timeout(2500)   # let the page finish its own first scroll-to-the-open-sector
+    if path == 'sectors':
+        big = await p.evaluate('() => { const ids = [...document.querySelectorAll("#bdb .sec[data-id]")].slice(0, 5).map(e => e.dataset.id); let best = ids[0], n = -1; ids.forEach(i => { const m = GIR.SD.model(i); if (m && m.members.length > n) { n = m.members.length; best = i; } }); return best }')
+        row_sel = '#bdb .sec[data-id="%s"] > .srow .snm' % big
+    await scroll_into(row_sel); await p.wait_for_timeout(600)
+    if not await p.evaluate('s => { const b = document.querySelector(s).getBoundingClientRect(); return b.top > 60 && b.bottom < innerHeight - 10 }', row_sel):
+        await scroll_into(row_sel); await p.wait_for_timeout(600)
     t0 = await p.evaluate('() => performance.now()')
     b = await P_.box(row_sel)
     await cdp.send('Input.dispatchTouchEvent', {'type': 'touchStart', 'touchPoints': tp(b['x'] + b['width'] / 2, b['y'] + b['height'] / 2)}); await p.wait_for_timeout(30)
@@ -470,7 +536,7 @@ async def phone(P_, cdp, pagename, path, row_sel):
     try:
         await p.wait_for_function('() => document.querySelector(".sd-sheet.on")', timeout=5000)
     except Exception:
-        dbg = await p.evaluate('([x, y]) => { const e = document.elementFromPoint(x, y); return [e && e.outerHTML.slice(0, 120), GIR.SD.state.open, location.hash] }', [b['x'] + b['width'] / 2, b['y'] + b['height'] / 2])
+        dbg = await p.evaluate('([x, y]) => { const e = document.elementFromPoint(x, y); return [e && e.outerHTML.slice(0, 120), window.GIR && GIR.SD && GIR.SD.state ? GIR.SD.state.open : "no drill on this page", location.href.replace(/^https?:\\/\\/[^/]+/, "")] }', [b['x'] + b['width'] / 2, b['y'] + b['height'] / 2])
         raise Exception('sheet did not open: ' + str(dbg) + ' box ' + str(b))
     t1 = await p.evaluate('() => performance.now()'); ms = await p.evaluate('() => +document.querySelector(".sdl").dataset.ms')
     s = await P_.st()
@@ -529,7 +595,8 @@ async def phone(P_, cdp, pagename, path, row_sel):
     await tapel('.sd-sheet .sd-basis'); a = await p.evaluate('() => (document.querySelector(".sd-pop.on") || {}).innerText || ""'); await tapel('.sd-pop.on'); b2 = await p.evaluate('() => !!document.querySelector(".sd-pop.on")')
     rec('basis › (finger)', 'listed' in a and not b2, a[:70].replace('\n', ' '))
     # tap a share -> share sheet
-    sym = await p.evaluate('() => [...document.querySelectorAll(".sd-sheet .sd-r")].find(r => { const b = r.getBoundingClientRect(); return b.top > 150 && b.bottom < 760 }).dataset.s')
+    sym = await p.evaluate('() => { const R = [...document.querySelectorAll(".sd-sheet .sd-r")]; const k = R.find(r => r.querySelector(".sd-k")); return (k || R[0]).dataset.s }')
+    await scroll_into('.sd-sheet .sd-r[data-s="%s"]' % sym)
     await tapel('.sd-sheet .sd-r[data-s="%s"]' % sym); await p.wait_for_timeout(250)
     s = await P_.st(); on2 = await p.evaluate('() => !!document.querySelector(".sd-sheet2.on")')
     rec('tap a share opens the share sheet', s['sel'] == sym and on2, '%s -> sheet %s' % (sym, on2))
@@ -540,7 +607,8 @@ async def phone(P_, cdp, pagename, path, row_sel):
     a0 = await P_.stop(pb); await drag(180, 600, 0, -320, 12, settle=1300); a1 = await P_.stop(pb)
     ab2 = await p.evaluate('() => { const r = document.querySelector(".sd-sheet2 .sd-act").getBoundingClientRect(); return [Math.round(r.top), Math.round(r.bottom)] }')
     rec('share sheet - finger swipe', a1 > a0 + 30, '%s -> %s' % (a0, a1))
-    rec('share sheet - action bar sticky, shows the size', ab[1] <= 844 and ab[0] == ab2[0] and re.search(r'Copy [\d,]+(\.\d)? (CE|PE) · \d+ lots?', ab[2]) is not None, 'bar %s-%s at scroll 0 and %s-%s after the swipe · "%s"' % (ab[0], ab[1], ab2[0], ab2[1], ab[2]))
+    anyk = await p.evaluate('() => !!document.querySelector(".sd-sheet .sd-k")')
+    rec('share sheet - action bar sticky, shows the size', ab[1] <= 844 and ab[0] == ab2[0] and (re.search(r'Copy [\d,]+(\.\d)? (CE|PE) · \d+ lots?', ab[2]) is not None or (not anyk and 'Copy contract · 0 lots' in ab[2])), 'bar %s-%s at scroll 0 and %s-%s after the swipe · "%s"' % (ab[0], ab[1], ab2[0], ab2[1], ab[2]))
     await drag(180, 300, 0, 400, 8, settle=1300); a1 = await P_.stop(pb)
     th = await P_.box('.sd-sheet2 .sd-rail .tk i')
     await drag(th['x'] + th['width'] / 2, th['y'] + th['height'] / 2, 0, 140, 14); a2 = await P_.stop(pb)
@@ -617,7 +685,7 @@ async def run():
                     rec('page errors', len(P_.errs) == n0, P_.errs[n0:][:3] or 'none')
             else:
                 cdp = await ctx.new_cdp_session(pg)
-                for nm, path, row in [x for x in (('F3 rotation', 'rotation', '#wtb tr.row[data-s="banks"] td.nmc'), ('F2 sectors', 'sectors', '#bdb .sec[data-id="auto"] > .srow .snm')) if not os.environ.get('PAGES') or x[1] in os.environ.get('PAGES')]:
+                for nm, path, row in [x for x in (('F3 rotation', 'rotation', '#wtb tr.row[data-s="banks"] td.nmc'), ('F2 sectors', 'sectors', '#bdb .sec[data-id] > .srow .snm')) if not os.environ.get('PAGES') or x[1] in os.environ.get('PAGES')]:
                     n0 = len(P_.errs)
                     try:
                         await phone(P_, cdp, nm, path, row)
