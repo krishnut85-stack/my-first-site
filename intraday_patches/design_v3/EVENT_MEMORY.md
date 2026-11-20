@@ -197,3 +197,9 @@ it in Indian IT. So IT is coming up. This is one of the history."
   close; IT vs NIFTY; the 20 Nov FII / DII figures; next 1 / 2 / 5 days. If IT holds up again on the next US-tech-down day, the
   link "US AI-hardware selloff -> Indian IT CE" earns its second episode; it becomes PROVEN only under the SECTOR_LINKS rule
   (enough episodes, beats the base rate). Until then the card says "STORY: US AI shock -> Indian IT up (1 episode, NOT PROVEN)".
+- **Same story, banks leg (20 Nov close):** BANKNIFTY +2.49% to a record 64,635 (low ~62,599). Ranked causes (desk, sources): FII money
+  out of AI-heavy Asia (Kospi / Taiwan -6-7%) into Indian banks - financials took Rs 43,102 cr of FII money in the first half of
+  November (BS 13:55), "FIIs buying back the banks they sold to fund the AI trade" (Geojit); private-bank earnings upgrades (Motilal:
+  ~22% a year FY26-28) and IndusInd's Q2 turnaround (+8.6%, best day since Feb 2021); rate-hike margin argument (judgement only);
+  expiry short covering NOT confirmed (no 20 Nov OI found). Against: RSI extreme, breadth 1,582 up / 2,456 down, VIX +8%, month +16-17%
+  (biggest since Nov 2020). Measure: next 1 / 2 / 5 days, and whether 62,600-63,000 holds on Mon 23 Nov (expiry).
