@@ -84,7 +84,9 @@ Cost is within the AI budget (about $0.5-1 a replayed day). Each run pushes call
 - [ ] E1 Replay 16 Nov, 18 Nov (down days), 20 Nov (today) and one October up day, from the evening before (the 19:45 prediction
       included).
 - [ ] E2 PASS MARK on every replayed day:
-      - cards before the move (cards he sees, not WATCH rows): at least 10 a day;
+      - [CHANGED 20 Nov by the trader - the goal is the EDGE, not catching every 2% move] PRECISION of the knowledge-driven names
+        (19:45 / 07:15 / 09:08 lists, news calls, cards): right-side rate above the day's base rate, named BEFORE the move, few
+        wrong-side picks, hit rate reported by source (news / filing / TV / broker / sector / results / his read / price-only);
       - CE calls on the up day, PE calls on the down days;
       - 50 rings a day or fewer, 6 in any 15 minutes or fewer;
       - the GO NOW check rejects at least some cards;

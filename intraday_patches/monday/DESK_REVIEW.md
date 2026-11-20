@@ -1,5 +1,23 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 18:00 IST - THE TRADER CORRECTS THE GOAL (supersedes the 17:35 entry's fixes 1, 2 and 4)
+The trader: "My intention is not to catch all the 2% moves. My intention is the EDGE - the knowledge, the brain should catch the
+CORRECT F&O shares based on the news, sectors, external news, internal news, companies' performance. It has to PREDICT BEFORE."
+So the yardstick is PRECISION and EARLINESS of knowledge-driven picks, not coverage of every mover:
+- DROP 17:35 fix 1 (forcing every 2% mover into a card) and fix 2 (gap-and-go cards). WATCH may hold price-only movers; that is fine.
+  Cards are for ideas with a REASON (news, filing, TV / broker call, sector driver, results, his read) and a prediction made before.
+- KEEP fix 3 (no cancel churn) and keep rings low.
+- NEW SCORING for every replay and live day (replaces "cards before the move >= 10"):
+  1. PRECISION: of the shares GIR named (19:45 / 07:15 / 09:08 lists + news calls + cards), how many moved the predicted way
+     (>= 1% and >= 2%) by the close and by the next close - against the base rate of random F&O shares that day.
+  2. EARLINESS: named before the move started (minutes ahead), and the move left after the name.
+  3. WRONG-SIDE rate (named CE, it fell 2%+; named PE, it rose 2%+).
+  4. BY SOURCE: news / filing / TV / broker / sector chain / results / trader read / price-only - each with its own hit rate, so the
+     brain learns which knowledge earns trust.
+  5. A few strong names a day beat many weak ones: report how many names a day and the hit rate of the top 5.
+  Old system: scored the same way on what it named (for comparison only, not as the target).
+- Re-score TEST_E1_1116 on this yardstick and push it; run the rest of E1 the same way.
+
 ## 20 Nov 17:35 IST - RED: E1 replay of 16 Nov (TEST_E1_1116) - the fixed engine still misses most movers
 Cards (MUST SEE + CRITICAL) on the 54 F&O shares that moved 2%+: before 1 / late 19 / MISSED 34 / wrong 0 - old system 22 / 21 / 10 / 1.
 Cards + WATCH: 3 / 44 / 6 / 1 - so the engine SEES most movers but leaves them in WATCH (the trader never sees WATCH). Rings 15 (good),

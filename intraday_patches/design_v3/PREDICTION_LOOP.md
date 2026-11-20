@@ -32,6 +32,10 @@ evening prediction (19:45), updated through the night (22:45) and in the morning
 all from the MORNING TV - CNBC-TV18 live and ET Now pre-market and pre-open (07:00-09:15) - then the 09:08 pre-open. On the trading
 day the signal is "I predicted this, and now the sector and price confirm it".
 
+THE GOAL (the trader, 20 Nov 18:00): "Not to catch all the 2% moves - the EDGE: the knowledge, the brain should catch the CORRECT
+F&O shares based on news, sectors, external and internal news, company performance, and PREDICT BEFORE." GIR is judged on the
+PRECISION and EARLINESS of its reasoned picks, by source - not on how many movers it covers. Fewer, right, early, explained.
+
 ## 0. WHAT THE EVIDENCE FORCES (read first)
 
 From onset_results/movestudy_report.txt (737 days, 218 shares, 127,279 share-days, about 173 shares a day on average; the store is
