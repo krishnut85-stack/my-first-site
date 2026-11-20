@@ -1,0 +1,609 @@
+=== THE PICK STUDY (preopenstudy.py) · 2023-11-20 -> 2026-11-19 · 740 market days (3.0 years) · 218 shares · 128151 valid share-days
+    tuning 2023-11-20 -> 2026-05-20 (615 days) · HELD OUT (never used to pick, shown unchanged) 2026-05-21 -> 2026-11-19 (125 days)
+    movers a day: CE 1.5%/o 52.4 · PE 1.5%/o 59.1 · CE 1.5%/c 60.9 · PE 1.5%/c 55.4 · CE 2.0%/o 34.0 · PE 2.0%/o 37.3 · CE 2.0%/c 41.1 · PE 2.0%/c 36.4 · CE 3.0%/o 14.6 · PE 3.0%/o 15.0 · CE 3.0%/c 19.5 · PE 3.0%/c 16.2 (no movestudy.json in the store to check against)
+    valid share-days 128151 (the 3-year server store: ~127k) · valid sectors a day (4+ listed members): median 16, min 14, of 18
+    the universe (median valid shares a day) per half-year: 2023 H2 137 · 2024 H1 137 · 2024 H2 137 · 2025 H1 176 · 2025 H2 190 · 2026 H1 198 · 2026 H2 208
+    !! MIXED STORE: the early half-years have far fewer shares (onsetstudy's warning). Recall at a fixed N is easier on thin days;
+    !! lift against same-day random is not biased by it. Better: run with --years 3 once histstore.py has finished.
+    split / bonus-like jumps left out (that day + 20): SIEMENS 2025-04-07, TMPV 2025-10-14, VEDL 2026-04-30
+    renamed shares read with their old NSE symbol too: ETERNAL (was ZOMATO), TMPV (was TATAMOTORS), UNITDSPR (was MCDOWELL-N), GMRAIRPORT (was GMRINFRA), SAMMAANCAP (was IBULHSGFIN), LTF (was L&TFH)
+    sectors.json buckets treated as no sector: conglomerate, others
+    LOOK-AHEAD PROBE (this run, 6 per share: day D's minutes from the naming minute on - and all of day D+1 - replaced, every input re-read): 52974 checks, 0 moved
+READ: CE = the share going UP, PE = the share going DOWN - always side by side, equal weight. RIGHT = +2% its way before -1% against;
+WRONG SIDE = -2% against before +1% its way (a CE pick that fell 2%, a PE pick that rose 2%). Both read from the naming price to 15:10.
+NET2 = (RIGHT - WRONG) a day in the list. LIFT = RIGHT against random shares of the same day and side (95% interval, by day).
+
+=== 0. THE ANSWER IN PLAIN WORDS - CE and PE apart, for up / down / mixed days, tuning | held-out (picked on the tuning days only)
+  READ: a VERDICT per level and side, one of four:
+    PICKS = beats random shares (95% low > 1.1 on tuning, >= 1.1 held out) AND more RIGHT-minus-WRONG than both simple lists below
+    PICKS, BUT NO BETTER THAN THE PLAIN MOVERS LIST = beats random, but the shares already moving most do as well
+    PICKS, BUT NO BETTER THAN THE VOLATILE LIST = beats random, but the most volatile shares (on the right side) do as well
+    NO BETTER THAN RANDOM
+  'caught' = the share of the day's real 2% moves on the list, next to what as many RANDOM shares catch: at 19:45 / 09:08 the moves
+  from the 09:15 open; at 09:20 / 09:30 / 09:45 the moves STILL TO COME from the naming price (best move from C[t-1] >= 2% its way by
+  15:10) - and the market and sector reads there are graded from the naming price too. The intraday numbers from the open are
+  secondary lines marked 'includes the minutes already seen' (the read is made from the first minutes of that same move).
+  The intraday trigger is only the ENTRY on a named share; 'earliest safe trigger' = section 6's rule (a trigger that seldom fires
+  cannot pass: it must keep 70% of the RIGHT of entering on the card).
+  19:45 THE EVENING BEFORE
+    CE (the share going UP): NO BETTER THAN RANDOM
+      the list to name: COIL AT THE EDGE (D-1), top 10 - list size set by the market lean (nothing qualified - the best RIGHT-minus-WRONG is shown)  [S3 G2]
+        what it reads: NR7 / inside day, ATR contraction, near the 20-day edge, streak, sector
+      it catches 5% | 3% of the day's 2% CE moves (random 5%; live 5% | 3%) [5 names 3% (random 3%) · 15 names 7% (random 7%)] · WRONG SIDE 18% | 18% (random 19%)
+      lift vs random 1.04 (95% 0.97-1.11) | 0.96 · move left median 2.82% (p25 2.33%) · named 29 min + the night / 7 min before the move is half done (median)
+      earliest safe trigger: E3 VWAP+MOM (above (CE) / below (PE) VWAP and 0.2%+ its way in 3 min), median entry 09:22 (fires on 94% of the picks, RIGHT 13% vs 17% entering at once)
+      caught by NIFTY day: up days 4% (wrong 13%) | 3% · down days 4% (wrong 35%) | 3% · mixed days 5% (wrong 16%) | 4%
+    PE (the share going DOWN): PICKS, BUT NO BETTER THAN THE PLAIN MOVERS LIST
+      the list to name: CLOSE-STRENGTH (D-1), top 10 - only shares in the 3 named sectors  [S1 G1]
+        what it reads: close in its range, last hour, last-hour volume, vs sector, sector
+      it catches 7% | 5% of the day's 2% PE moves (random 6%; live 7% | 5%) [5 names 4% (random 3%) · 15 names 10% (random 9%)] · WRONG SIDE 16% | 19% (random 16%)
+      lift vs random 1.17 (95% 1.11-1.23) | 1.15 · move left median 2.92% (p25 2.37%) · named 22 min + the night / 7 min before the move is half done (median)
+      earliest safe trigger: E0 NOW (enter at the naming price), median entry 09:15
+      caught by NIFTY day: up days 7% (wrong 26%) | 6% · down days 7% (wrong 12%) | 4% · mixed days 7% (wrong 14%) | 6%
+    market read: side accuracy 43% | 39% · wrong-side days 37% | 34% of the days it called · NEUTRAL 32% of days
+    sector read: the named sectors hold 19% (CE) / 19% (PE) of the day's 2% moves; the true top 3 hold 33% / 30%; as many random sectors 18% / 18% · overlap with the true top 3 0.64 / 0.60 (random 0.60 / 0.60)
+    rings for this level's two lists + their safe triggers: a day median 9, p90 10 · busiest 15 min median 6, p90 9 (the evening card itself is outside the day count; E0 = enter on the card, no extra ring)
+    option proxy (secondary, 60-min, 0.5 delta / 2.5% premium): CE -2.6% / -4.1% · PE +0.7% / -0.8% of the premium after 1.5% / 3% costs.
+  09:08 THE PRE-OPEN (THE 09:15 OPEN STANDS IN)
+    CE (the share going UP): NO BETTER THAN RANDOM
+      the list to name: COIL AT THE EDGE (D-1), top 10 - list size set by the market lean (nothing qualified - the best RIGHT-minus-WRONG is shown)  [S3 G2]
+        what it reads: NR7 / inside day, ATR contraction, near the 20-day edge, streak, sector
+      it catches 5% | 4% of the day's 2% CE moves (random 5%; live 5% | 4%) [5 names 2% (random 2%) · 15 names 7% (random 7%)] · WRONG SIDE 18% | 19% (random 19%)
+      lift vs random 1.02 (95% 0.95-1.09) | 0.96 · move left median 2.84% (p25 2.33%) · named 30 min + the night / 7 min before the move is half done (median)
+      earliest safe trigger: E3 VWAP+MOM (above (CE) / below (PE) VWAP and 0.2%+ its way in 3 min), median entry 09:22 (fires on 94% of the picks, RIGHT 13% vs 17% entering at once)
+      caught by NIFTY day: up days 4% (wrong 13%) | 3% · down days 4% (wrong 34%) | 3% · mixed days 5% (wrong 16%) | 4%
+    PE (the share going DOWN): NO BETTER THAN RANDOM
+      the list to name: CLOSE-STRENGTH (D-1), top 10 - only shares in the 3 named sectors  [S1 G1]
+        what it reads: close in its range, last hour, last-hour volume, vs sector, sector
+      it catches 7% | 5% of the day's 2% PE moves (random 6%; live 7% | 5%) [5 names 3% (random 3%) · 15 names 11% (random 9%)] · WRONG SIDE 16% | 14% (random 16%)
+      lift vs random 1.09 (95% 1.03-1.15) | 1.14 · move left median 2.87% (p25 2.32%) · named 22 min + the night / 7 min before the move is half done (median)
+      earliest safe trigger: E0 NOW (enter at the naming price), median entry 09:15
+      caught by NIFTY day: up days 7% (wrong 25%) | 5% · down days 7% (wrong 12%) | 5% · mixed days 6% (wrong 15%) | 6%
+    market read: side accuracy 44% | 46% · wrong-side days 34% | 28% of the days it called · NEUTRAL 21% of days
+    sector read: the named sectors hold 19% (CE) / 18% (PE) of the day's 2% moves; the true top 3 hold 33% / 30%; as many random sectors 18% / 18% · overlap with the true top 3 0.64 / 0.55 (random 0.60 / 0.60)
+    rings for this level's two lists + their safe triggers: a day median 10, p90 11 · busiest 15 min median 7, p90 10
+    option proxy (secondary, 60-min, 0.5 delta / 2.5% premium): CE -2.6% / -4.1% · PE -0.2% / -1.7% of the premium after 1.5% / 3% costs.
+  09:20 (FIRST 5 MINUTES)
+    CE (the share going UP): NO BETTER THAN RANDOM
+      the list to name: LAGGARD CATCH-UP (intraday), top 10 - list size set by the market lean  [S8 G2]
+        what it reads: RVOL, 5-min momentum, near the edge, build-up - followers / laggards above VWAP
+      it catches 4% | 4% of the day's 2% CE moves STILL TO COME from the naming price (random 4%) [5 names 2% (random 2%) · 15 names 10% (random 8%)] · WRONG SIDE 14% | 13% (random 15%)
+        from the 09:15 open (includes the minutes already seen): it catches 7% | 7% of the day's 2% CE moves (random 4%) · from yesterday's close 6% | 7% (random 5%)
+      lift vs random 1.08 (95% 1.00-1.17) | 1.17 · move left median 2.01% (p25 1.49%) · named 9 min before the move is half done (median)
+      earliest safe trigger: E0 NOW (enter at the naming price), median entry 09:20
+      caught by NIFTY day: up days 5% (wrong 9%) | 5% · down days 2% (wrong 32%) | 3% · mixed days 4% (wrong 12%) | 4%
+    PE (the share going DOWN): NO BETTER THAN RANDOM
+      the list to name: SHARE-ONLY BLEND (intraday), top 10 - only shares in the 3 named sectors, list size set by the market lean  [S10 G3]
+        what it reads: vs NIFTY, RVOL, VWAP, beyond, gap, build-up - no sector gate
+      it catches 6% | 5% of the day's 2% PE moves STILL TO COME from the naming price (random 6%) [5 names 2% (random 2%) · 15 names 9% (random 9%)] · WRONG SIDE 14% | 13% (random 14%)
+        from the 09:15 open (includes the minutes already seen): it catches 11% | 10% of the day's 2% PE moves (random 6%) · from yesterday's close 12% | 12% (random 6%)
+      lift vs random 1.08 (95% 1.02-1.16) | 1.09 · move left median 1.87% (p25 1.28%) · named 1 min before the move is half done (median)
+      earliest safe trigger: E0 NOW (enter at the naming price), median entry 09:20
+      caught by NIFTY day: up days 7% (wrong 20%) | 5% · down days 6% (wrong 10%) | 4% · mixed days 6% (wrong 13%) | 6%
+    market read: side accuracy 43% | 50% · wrong-side days 37% | 23% of the days it called · NEUTRAL 84% of days (the side-day from the 2% movers still to come from the naming price)
+      from the 09:15 open (includes the minutes already seen): side accuracy 67% | 69% · wrong-side days 19% | 8% of the days it called
+    sector read: the named sectors hold 19% (CE) / 17% (PE) of the day's 2% moves still to come from the naming price; the true top 3 hold 34% / 31%; as many random sectors 18% / 18% · overlap with the true top 3 0.65 / 0.62 (random 0.60 / 0.60)
+      from the 09:15 open (includes the minutes already seen): the named sectors hold 26% / 24% of the day's 2% moves (random 18% / 18%) · overlap 1.10 / 1.10 (random 0.60 / 0.60)
+    rings for this level's two lists + their safe triggers: a day median 1, p90 1 · busiest 15 min median 1, p90 1
+    option proxy (secondary, 60-min, 0.5 delta / 2.5% premium): CE -1.7% / -3.2% · PE -0.6% / -2.1% of the premium after 1.5% / 3% costs.
+  09:30 (FIRST 15 MINUTES)
+    CE (the share going UP): NO BETTER THAN RANDOM
+      the list to name: LAGGARD CATCH-UP (intraday), top 10 by the score (nothing qualified - the best RIGHT-minus-WRONG is shown)  [S8 G0]
+        what it reads: RVOL, 5-min momentum, near the edge, build-up - followers / laggards above VWAP
+      it catches 4% | 4% of the day's 2% CE moves STILL TO COME from the naming price (random 4%) [5 names 2% (random 2%) · 15 names 11% (random 9%)] · WRONG SIDE 12% | 10% (random 13%)
+        from the 09:15 open (includes the minutes already seen): it catches 7% | 6% of the day's 2% CE moves (random 4%) · from yesterday's close 7% | 6% (random 5%)
+      lift vs random 1.05 (95% 0.96-1.14) | 1.16 · move left median 1.93% (p25 1.32%) · named 4 min before the move is half done (median)
+      earliest safe trigger: E0 NOW (enter at the naming price), median entry 09:30
+      caught by NIFTY day: up days 5% (wrong 7%) | 5% · down days 2% (wrong 30%) | 3% · mixed days 4% (wrong 10%) | 4%
+    PE (the share going DOWN): NO BETTER THAN RANDOM
+      the list to name: PREPARED + OPEN AGREES (09:08+), top 10 - only shares in the 3 named sectors, list size set by the market lean  [S6 G3]
+        what it reads: S1, S2 and the gap its way
+      it catches 5% | 4% of the day's 2% PE moves STILL TO COME from the naming price (random 4%) [5 names 3% (random 3%) · 15 names 11% (random 9%)] · WRONG SIDE 13% | 11% (random 13%)
+        from the 09:15 open (includes the minutes already seen): it catches 6% | 6% of the day's 2% PE moves (random 5%) · from yesterday's close 9% | 10% (random 5%)
+      lift vs random 1.08 (95% 1.00-1.15) | 0.96 · move left median 1.96% (p25 1.26%) · named 1 min AFTER the move was half done (median)
+      earliest safe trigger: E0 NOW (enter at the naming price), median entry 09:30
+      caught by NIFTY day: up days 3% (wrong 21%) | 5% · down days 6% (wrong 8%) | 4% · mixed days 5% (wrong 12%) | 4%
+    market read: side accuracy 43% | 37% · wrong-side days 42% | 37% of the days it called · NEUTRAL 78% of days (the side-day from the 2% movers still to come from the naming price)
+      from the 09:15 open (includes the minutes already seen): side accuracy 72% | 67% · wrong-side days 12% | 11% of the days it called
+    sector read: the named sectors hold 19% (CE) / 18% (PE) of the day's 2% moves still to come from the naming price; the true top 3 hold 35% / 31%; as many random sectors 18% / 18% · overlap with the true top 3 0.60 / 0.61 (random 0.60 / 0.60)
+      from the 09:15 open (includes the minutes already seen): the named sectors hold 29% / 26% of the day's 2% moves (random 18% / 18%) · overlap 1.29 / 1.24 (random 0.60 / 0.60)
+    rings for this level's two lists + their safe triggers: a day median 1, p90 1 · busiest 15 min median 1, p90 1
+    option proxy (secondary, 60-min, 0.5 delta / 2.5% premium): CE -1.9% / -3.4% · PE -0.7% / -2.2% of the premium after 1.5% / 3% costs.
+  09:45 (FIRST 30 MINUTES)
+    CE (the share going UP): PICKS
+      the list to name: GAP WITH SECTOR (09:08+), top 10 - only shares in the 3 named sectors  [S4 G1]
+        what it reads: gap / ATR, sector gap, open beyond yesterday's range, build-up
+      it catches 7% | 6% of the day's 2% CE moves STILL TO COME from the naming price (random 6%) [5 names 2% (random 2%) · 15 names 11% (random 9%)] · WRONG SIDE 12% | 11% (random 12%)
+        from the 09:15 open (includes the minutes already seen): it catches 10% | 8% of the day's 2% CE moves (random 6%) · from yesterday's close 12% | 11% (random 6%)
+      lift vs random 1.23 (95% 1.14-1.33) | 1.19 · move left median 1.73% (p25 1.00%) · named 14 min AFTER the move was half done (median)
+      earliest safe trigger: E0 NOW (enter at the naming price), median entry 09:45
+      caught by NIFTY day: up days 7% (wrong 7%) | 5% · down days 8% (wrong 24%) | 7% · mixed days 7% (wrong 10%) | 6%
+    PE (the share going DOWN): NO BETTER THAN RANDOM
+      the list to name: LAGGARD CATCH-UP (intraday), top 10 by the score (nothing qualified - the best RIGHT-minus-WRONG is shown)  [S8 G0]
+        what it reads: RVOL, 5-min momentum, near the edge, build-up - followers / laggards above VWAP
+      it catches 4% | 3% of the day's 2% PE moves STILL TO COME from the naming price (random 4%) [5 names 3% (random 3%) · 15 names 5% (random 5%)] · WRONG SIDE 10% | 8% (random 12%)
+        from the 09:15 open (includes the minutes already seen): it catches 6% | 5% of the day's 2% PE moves (random 4%) · from yesterday's close 6% | 5% (random 5%)
+      lift vs random 0.97 (95% 0.89-1.05) | 0.91 · move left median 1.69% (p25 1.17%) · named 7 min AFTER the move was half done (median)
+      earliest safe trigger: E0 NOW (enter at the naming price), median entry 09:45
+      caught by NIFTY day: up days 2% (wrong 20%) | 1% · down days 5% (wrong 6%) | 5% · mixed days 4% (wrong 10%) | 3%
+    market read: side accuracy 44% | 35% · wrong-side days 43% | 32% of the days it called · NEUTRAL 72% of days (the side-day from the 2% movers still to come from the naming price)
+      from the 09:15 open (includes the minutes already seen): side accuracy 71% | 71% · wrong-side days 12% | 9% of the days it called
+    sector read: the named sectors hold 19% (CE) / 18% (PE) of the day's 2% moves still to come from the naming price; the true top 3 hold 35% / 31%; as many random sectors 18% / 18% · overlap with the true top 3 0.67 / 0.54 (random 0.60 / 0.60)
+      from the 09:15 open (includes the minutes already seen): the named sectors hold 29% / 27% of the day's 2% moves (random 18% / 18%) · overlap 1.40 / 1.32 (random 0.60 / 0.60)
+    rings for this level's two lists + their safe triggers: a day median 1, p90 1 · busiest 15 min median 1, p90 1
+    option proxy (secondary, 60-min, 0.5 delta / 2.5% premium): CE -1.7% / -3.2% · PE -1.0% / -2.5% of the premium after 1.5% / 3% costs.
+  RINGS for the recommended plan (section 8: the best pre-open list + the 09:30 list, both sides, with their safe triggers): a day median
+  11, p90 12 · the busiest 15 minutes median 7, p90 10 (limits 50 a day, 6 in 15 min)
+
+=== 1. THE DAYS - what kind of day, and the CE / PE moves it gave (a day on average)
+  all             740 days (tuning 615, held out 125) · from the open: 1.5% CE 52.4 PE 59.1 · 2.0% CE 34.0 PE 37.3 · 3.0% CE 14.6 PE 15.0 | from yday close: 1.5% CE 60.9 PE 55.4 · 2.0% CE 41.1 PE 36.4 · 3.0% CE 19.5 PE 16.2
+  up days         159 days (tuning 131, held out 28) · from the open: 1.5% CE 75.1 PE 44.2 · 2.0% CE 51.8 PE 25.6 · 3.0% CE 23.5 PE 8.9 | from yday close: 1.5% CE 99.5 PE 29.6 · 2.0% CE 74.5 PE 17.1 · 3.0% CE 40.2 PE 6.6
+  down days       132 days (tuning 112, held out 20) · from the open: 1.5% CE 38.5 PE 97.1 · 2.0% CE 24.0 PE 70.9 · 3.0% CE 10.3 PE 34.9 | from yday close: 1.5% CE 33.1 PE 107.0 · 2.0% CE 19.8 PE 81.6 · 3.0% CE 8.3 PE 44.0
+  mixed days      449 days (tuning 372, held out 77) · from the open: 1.5% CE 48.4 PE 53.3 · 2.0% CE 30.7 PE 31.6 · 3.0% CE 12.7 PE 11.3 | from yday close: 1.5% CE 55.5 PE 49.4 · 2.0% CE 35.6 PE 29.9 · 3.0% CE 15.5 PE 11.5
+  TREND-UP        130 days (tuning 105, held out 25) · from the open: 1.5% CE 74.9 PE 42.7 · 2.0% CE 51.8 PE 24.5 · 3.0% CE 23.6 PE 8.4 | from yday close: 1.5% CE 94.4 PE 31.7 · 2.0% CE 69.5 PE 18.4 · 3.0% CE 35.9 PE 7.0
+  TREND-DOWN      109 days (tuning 94, held out 15) · from the open: 1.5% CE 34.7 PE 99.4 · 2.0% CE 20.5 PE 73.0 · 3.0% CE 7.9 PE 35.7 | from yday close: 1.5% CE 34.1 PE 104.2 · 2.0% CE 20.4 PE 77.7 · 3.0% CE 8.4 PE 39.4
+  REVERSAL-UP      11 days (tuning 11, held out 0) · from the open: 1.5% CE 59.2 PE 101.5 · 2.0% CE 40.5 PE 73.0 · 3.0% CE 18.9 PE 29.2 | from yday close: 1.5% CE 46.4 PE 112.3 · 2.0% CE 31.2 PE 89.2 · 3.0% CE 16.6 PE 52.8
+  REVERSAL-DOWN    12 days (tuning 11, held out 1) · from the open: 1.5% CE 55.8 PE 78.2 · 2.0% CE 34.2 PE 55.0 · 3.0% CE 13.1 PE 25.6 | from yday close: 1.5% CE 69.5 PE 72.6 · 2.0% CE 46.5 PE 54.2 · 3.0% CE 20.1 PE 28.7
+  RANGE           478 days (tuning 394, held out 84) · from the open: 1.5% CE 50.0 PE 52.9 · 2.0% CE 32.2 PE 31.4 · 3.0% CE 13.6 PE 11.5 | from yday close: 1.5% CE 58.1 PE 49.0 · 2.0% CE 38.2 PE 30.2 · 3.0% CE 17.6 PE 12.3
+  CE-day          308 days (tuning 254, held out 54) · from the open: 1.5% CE 71.0 PE 32.2 · 2.0% CE 48.8 PE 16.1 · 3.0% CE 22.1 PE 4.9 | from yday close: 1.5% CE 79.2 PE 32.2 · 2.0% CE 56.0 PE 18.4 · 3.0% CE 27.4 PE 7.2
+  PE-day          257 days (tuning 223, held out 34) · from the open: 1.5% CE 31.4 PE 93.8 · 2.0% CE 18.4 PE 66.9 · 3.0% CE 7.2 PE 30.7 | from yday close: 1.5% CE 37.9 PE 88.7 · 2.0% CE 23.5 PE 63.8 · 3.0% CE 10.6 PE 31.5
+  BOTH            175 days (tuning 138, held out 37) · from the open: 1.5% CE 50.3 PE 55.6 · 2.0% CE 31.0 PE 31.3 · 3.0% CE 12.2 PE 9.8 | from yday close: 1.5% CE 62.7 PE 47.5 · 2.0% CE 40.8 PE 27.8 · 3.0% CE 18.8 PE 9.7
+  (KIND: NIFTY's close vs yesterday +-0.6% · TYPE: TREND = close +-0.6% in the top / bottom 30% of the range; REVERSAL = 0.3% the
+  other way by 09:45 then 0.6% back by the close; RANGE = the rest · CE-day / PE-day = 1.5x more 2% movers on that side)
+
+=== 2. THE MARKET-DAY READ - fixed rules, nothing tuned, data up to the naming minute only · tuning | held-out
+    19:45: five votes (NIFTY D-1 return, close in range, F&O breadth, build-up ratio, NIFTY 5-day); 09:08: NIFTY gap + gap breadth,
+    else the 19:45 lean; 09:20 / 09:30 / 09:45: TREND / FADE / MIXED from NIFTY vs yesterday and the open, breadth above VWAP, BANKNIFTY
+    GRADED: 19:45 / 09:08 against the day's 2% movers from the 09:15 open; 09:20 / 09:30 / 09:45 against the 2% movers STILL TO COME
+    from the naming price (best move from C[t-1] >= 2% its way by 15:10) - the from-the-open grade there is a secondary line (includes the minutes already seen)
+  19:45 the evening before: side accuracy 43% | 39% (UP right 45%, DOWN right 40%) · WRONG-SIDE days 37% | 34% of the called days · NEUTRAL 32% | 34% · NIFTY after the read, its way -0.05% | -0.04% · always-UP baseline 41% | 43% of days
+      predicted vs TYPE (tuning   days)  NEUTRAL: 33/35/2/5/123 · UP: 39/26/3/2/171 · DOWN: 33/33/6/4/100   (TREND-UP/TREND-DOWN/REV-UP/REV-DOWN/RANGE)
+      predicted vs KIND (tuning   days)  NEUTRAL: 43/38/117 · UP: 45/33/163 · DOWN: 43/41/92   (up/down/mixed)
+      predicted vs TYPE (held-out days)  NEUTRAL: 9/5/0/0/29 · UP: 6/5/0/0/28 · DOWN: 10/5/0/1/27   (TREND-UP/TREND-DOWN/REV-UP/REV-DOWN/RANGE)
+      predicted vs KIND (held-out days)  NEUTRAL: 9/7/27 · UP: 8/7/24 · DOWN: 11/6/26   (up/down/mixed)
+      THE TRADER'S TABLE - the read says ... expect a day, CE / PE moves from the open (tuning | held-out):
+        UP          241 |  39 days · 1.5% CE 48 / PE 54 | 64 / 69 · 2.0% CE 31 / PE 33 | 43 / 40 · 3.0% CE 14 / PE 12 | 19 / 15
+        DOWN        176 |  43 days · 1.5% CE 60 / PE 66 | 62 / 72 · 2.0% CE 40 / PE 44 | 40 / 46 · 3.0% CE 17 / PE 19 | 16 / 19
+        NEUTRAL     198 |  43 days · 1.5% CE 45 / PE 55 | 57 / 60 · 2.0% CE 29 / PE 35 | 37 / 34 · 3.0% CE 12 / PE 14 | 15 / 12
+  09:08 the pre-open (the 09:15 open stands in): side accuracy 44% | 46% (UP right 46%, DOWN right 42%) · WRONG-SIDE days 34% | 28% of the called days · NEUTRAL 21% | 23% · NIFTY after the read, its way -0.05% | -0.03% · always-UP baseline 41% | 43% of days
+      predicted vs TYPE (tuning   days)  NEUTRAL: 15/24/2/4/83 · UP: 63/32/2/5/214 · DOWN: 27/38/7/2/97   (TREND-UP/TREND-DOWN/REV-UP/REV-DOWN/RANGE)
+      predicted vs KIND (tuning   days)  NEUTRAL: 16/26/86 · UP: 87/38/191 · DOWN: 28/48/95   (up/down/mixed)
+      predicted vs TYPE (held-out days)  NEUTRAL: 3/3/0/0/23 · UP: 15/4/0/1/33 · DOWN: 7/8/0/0/28   (TREND-UP/TREND-DOWN/REV-UP/REV-DOWN/RANGE)
+      predicted vs KIND (held-out days)  NEUTRAL: 3/4/22 · UP: 18/6/29 · DOWN: 7/10/26   (up/down/mixed)
+      THE TRADER'S TABLE - the read says ... expect a day, CE / PE moves from the open (tuning | held-out):
+        UP          316 |  53 days · 1.5% CE 49 / PE 53 | 67 / 66 · 2.0% CE 32 / PE 32 | 44 / 38 · 3.0% CE 14 / PE 13 | 19 / 14
+        DOWN        171 |  43 days · 1.5% CE 59 / PE 68 | 60 / 72 · 2.0% CE 39 / PE 46 | 38 / 45 · 3.0% CE 17 / PE 20 | 15 / 18
+        NEUTRAL     128 |  29 days · 1.5% CE 42 / PE 55 | 52 / 62 · 2.0% CE 26 / PE 35 | 34 / 37 · 3.0% CE 11 / PE 14 | 13 / 13
+  09:20 (first 5 minutes): side accuracy 43% | 50% (UP right 45%, DOWN right 42%) · WRONG-SIDE days 37% | 23% of the called days · NEUTRAL 84% | 79% · NIFTY after the read, its way -0.03% | +0.10% · always-UP baseline 45% | 52% of days
+      from the 09:15 open (includes the minutes already seen): side accuracy 67% | 69% · WRONG-SIDE days 19% | 8% of the called days
+      predicted vs TYPE (tuning   days)  MIXED: 87/75/7/11/337 · TREND-UP: 8/0/0/0/16 · TREND-DOWN: 1/14/4/0/18 · FADE-UP: 2/2/0/0/10 · FADE-DOWN: 7/3/0/0/13   (TREND-UP/TREND-DOWN/REV-UP/REV-DOWN/RANGE)
+      predicted vs KIND (tuning   days)  MIXED: 105/85/327 · TREND-UP: 13/0/11 · TREND-DOWN: 1/20/16 · FADE-UP: 2/4/8 · FADE-DOWN: 10/3/10   (up/down/mixed)
+      predicted vs TYPE (held-out days)  MIXED: 19/12/0/1/67 · TREND-UP: 2/0/0/0/6 · TREND-DOWN: 1/2/0/0/7 · FADE-UP: 2/0/0/0/2 · FADE-DOWN: 1/1/0/0/2   (TREND-UP/TREND-DOWN/REV-UP/REV-DOWN/RANGE)
+      predicted vs KIND (held-out days)  MIXED: 21/17/61 · TREND-UP: 3/0/5 · TREND-DOWN: 1/2/7 · FADE-UP: 2/0/2 · FADE-DOWN: 1/1/2   (up/down/mixed)
+      THE TRADER'S TABLE - the read says ... expect a day, CE / PE moves STILL TO COME from the naming price (tuning | held-out):
+        UP           38 |  12 days · 1.5% CE 48 / PE 48 | (thin) · 2.0% CE 29 / PE 28 | (thin) · 3.0% CE 11 / PE 8 | (thin)
+        DOWN         60 |  14 days · 1.5% CE 57 / PE 55 | (thin) · 2.0% CE 38 / PE 35 | (thin) · 3.0% CE 18 / PE 15 | (thin)
+        NEUTRAL     517 |  99 days · 1.5% CE 43 / PE 46 | 50 / 49 · 2.0% CE 26 / PE 28 | 30 / 28 · 3.0% CE 10 / PE 10 | 11 / 9
+        from the 09:15 open (includes the minutes already seen), 2% CE / PE: UP 58 / 21 · DOWN 31 / 63 · NEUTRAL 31 / 35
+      THE TRADER'S TABLE - the day class says ... expect a day, CE / PE moves STILL TO COME from the naming price (tuning | held-out):
+        MIXED       517 |  99 days · 1.5% CE 43 / PE 46 | 50 / 49 · 2.0% CE 26 / PE 28 | 30 / 28 · 3.0% CE 10 / PE 10 | 11 / 9
+        TREND-UP     24 |   8 days · 1.5% CE 53 / PE 39 | (thin) · 2.0% CE 32 / PE 21 | (thin) · 3.0% CE 12 / PE 5 | (thin)
+        TREND-DOWN   37 |  10 days · 1.5% CE 57 / PE 61 | (thin) · 2.0% CE 38 / PE 41 | (thin) · 3.0% CE 16 / PE 19 | (thin)
+        FADE-UP      14 |   4 days · 1.5% CE 40 / PE 64 | (thin) · 2.0% CE 24 / PE 42 | (thin) · 3.0% CE 8 / PE 12 | (thin)
+        FADE-DOWN    23 |   4 days · 1.5% CE 57 / PE 46 | (thin) · 2.0% CE 39 / PE 25 | (thin) · 3.0% CE 20 / PE 8 | (thin)
+        from the 09:15 open (includes the minutes already seen), 2% CE / PE: MIXED 31 / 35 · TREND-UP 55 / 17 · TREND-DOWN 29 / 72 · FADE-UP 64 / 28 · FADE-DOWN 34 / 49
+  09:30 (first 15 minutes): side accuracy 43% | 37% (UP right 51%, DOWN right 37%) · WRONG-SIDE days 42% | 37% of the called days · NEUTRAL 78% | 78% · NIFTY after the read, its way +0.01% | +0.02% · always-UP baseline 48% | 53% of days
+      from the 09:15 open (includes the minutes already seen): side accuracy 72% | 67% · WRONG-SIDE days 12% | 11% of the called days
+      predicted vs TYPE (tuning   days)  MIXED: 81/66/4/9/317 · TREND-UP: 15/0/0/2/21 · TREND-DOWN: 2/20/7/0/25 · FADE-UP: 2/5/0/0/10 · FADE-DOWN: 5/3/0/0/21   (TREND-UP/TREND-DOWN/REV-UP/REV-DOWN/RANGE)
+      predicted vs KIND (tuning   days)  MIXED: 97/75/305 · TREND-UP: 23/0/15 · TREND-DOWN: 2/27/25 · FADE-UP: 2/7/8 · FADE-DOWN: 7/3/19   (up/down/mixed)
+      predicted vs TYPE (held-out days)  MIXED: 19/8/0/0/71 · TREND-UP: 4/0/0/1/2 · TREND-DOWN: 1/5/0/0/9 · FADE-UP: 0/1/0/0/0 · FADE-DOWN: 1/1/0/0/2   (TREND-UP/TREND-DOWN/REV-UP/REV-DOWN/RANGE)
+      predicted vs KIND (held-out days)  MIXED: 22/12/64 · TREND-UP: 4/0/3 · TREND-DOWN: 1/6/8 · FADE-UP: 0/1/0 · FADE-DOWN: 1/1/2   (up/down/mixed)
+      THE TRADER'S TABLE - the read says ... expect a day, CE / PE moves STILL TO COME from the naming price (tuning | held-out):
+        UP           55 |   8 days · 1.5% CE 47 / PE 46 | (thin) · 2.0% CE 28 / PE 27 | (thin) · 3.0% CE 10 / PE 9 | (thin)
+        DOWN         83 |  19 days · 1.5% CE 48 / PE 48 | (thin) · 2.0% CE 30 / PE 29 | (thin) · 3.0% CE 12 / PE 10 | (thin)
+        NEUTRAL     477 |  98 days · 1.5% CE 38 / PE 42 | 49 / 43 · 2.0% CE 23 / PE 24 | 29 / 23 · 3.0% CE 9 / PE 8 | 11 / 7
+        from the 09:15 open (includes the minutes already seen), 2% CE / PE: UP 60 / 23 · DOWN 24 / 59 · NEUTRAL 31 / 34
+      THE TRADER'S TABLE - the day class says ... expect a day, CE / PE moves STILL TO COME from the naming price (tuning | held-out):
+        MIXED       477 |  98 days · 1.5% CE 38 / PE 42 | 49 / 43 · 2.0% CE 23 / PE 24 | 29 / 23 · 3.0% CE 9 / PE 8 | 11 / 7
+        TREND-UP     38 |   7 days · 1.5% CE 50 / PE 38 | (thin) · 2.0% CE 31 / PE 21 | (thin) · 3.0% CE 11 / PE 6 | (thin)
+        TREND-DOWN   54 |  15 days · 1.5% CE 53 / PE 50 | (thin) · 2.0% CE 33 / PE 30 | (thin) · 3.0% CE 12 / PE 10 | (thin)
+        FADE-UP      17 |   1 days · 1.5% CE 38 / PE 65 | (thin) · 2.0% CE 21 / PE 40 | (thin) · 3.0% CE 7 / PE 15 | (thin)
+        FADE-DOWN    29 |   4 days · 1.5% CE 41 / PE 44 | (thin) · 2.0% CE 25 / PE 27 | (thin) · 3.0% CE 10 / PE 10 | (thin)
+        from the 09:15 open (includes the minutes already seen), 2% CE / PE: MIXED 31 / 34 · TREND-UP 59 / 20 · TREND-DOWN 24 / 63 · FADE-UP 63 / 31 · FADE-DOWN 25 / 53
+  09:45 (first 30 minutes): side accuracy 44% | 35% (UP right 55%, DOWN right 36%) · WRONG-SIDE days 43% | 32% of the called days · NEUTRAL 72% | 73% · NIFTY after the read, its way -0.03% | +0.00% · always-UP baseline 52% | 54% of days
+      from the 09:15 open (includes the minutes already seen): side accuracy 71% | 71% · WRONG-SIDE days 12% | 9% of the called days
+      predicted vs TYPE (tuning   days)  MIXED: 70/54/4/6/306 · TREND-UP: 22/2/0/5/28 · TREND-DOWN: 3/28/7/0/27 · FADE-UP: 2/5/0/0/11 · FADE-DOWN: 8/5/0/0/22   (TREND-UP/TREND-DOWN/REV-UP/REV-DOWN/RANGE)
+      predicted vs KIND (tuning   days)  MIXED: 84/62/294 · TREND-UP: 32/2/23 · TREND-DOWN: 3/36/26 · FADE-UP: 2/7/9 · FADE-DOWN: 10/5/20   (up/down/mixed)
+      predicted vs TYPE (held-out days)  MIXED: 15/8/0/1/67 · TREND-UP: 7/0/0/0/5 · TREND-DOWN: 0/4/0/0/9 · FADE-UP: 1/1/0/0/1 · FADE-DOWN: 2/2/0/0/2   (TREND-UP/TREND-DOWN/REV-UP/REV-DOWN/RANGE)
+      predicted vs KIND (held-out days)  MIXED: 17/12/62 · TREND-UP: 8/0/4 · TREND-DOWN: 0/5/8 · FADE-UP: 1/1/1 · FADE-DOWN: 2/2/2   (up/down/mixed)
+      THE TRADER'S TABLE - the read says ... expect a day, CE / PE moves STILL TO COME from the naming price (tuning | held-out):
+        UP           75 |  15 days · 1.5% CE 38 / PE 40 | (thin) · 2.0% CE 21 / PE 24 | (thin) · 3.0% CE 7 / PE 7 | (thin)
+        DOWN        100 |  19 days · 1.5% CE 45 / PE 44 | (thin) · 2.0% CE 27 / PE 25 | (thin) · 3.0% CE 11 / PE 9 | (thin)
+        NEUTRAL     440 |  91 days · 1.5% CE 36 / PE 36 | 41 / 41 · 2.0% CE 21 / PE 21 | 23 / 22 · 3.0% CE 7 / PE 7 | 8 / 6
+        from the 09:15 open (includes the minutes already seen), 2% CE / PE: UP 53 / 24 · DOWN 24 / 60 · NEUTRAL 31 / 34
+      THE TRADER'S TABLE - the day class says ... expect a day, CE / PE moves STILL TO COME from the naming price (tuning | held-out):
+        MIXED       440 |  91 days · 1.5% CE 36 / PE 36 | 41 / 41 · 2.0% CE 21 / PE 21 | 23 / 22 · 3.0% CE 7 / PE 7 | 8 / 6
+        TREND-UP     57 |  12 days · 1.5% CE 39 / PE 36 | (thin) · 2.0% CE 22 / PE 21 | (thin) · 3.0% CE 7 / PE 6 | (thin)
+        TREND-DOWN   65 |  13 days · 1.5% CE 46 / PE 45 | (thin) · 2.0% CE 28 / PE 27 | (thin) · 3.0% CE 10 / PE 9 | (thin)
+        FADE-UP      18 |   3 days · 1.5% CE 36 / PE 54 | (thin) · 2.0% CE 21 / PE 33 | (thin) · 3.0% CE 6 / PE 11 | (thin)
+        FADE-DOWN    35 |   6 days · 1.5% CE 42 / PE 40 | (thin) · 2.0% CE 27 / PE 22 | (thin) · 3.0% CE 12 / PE 8 | (thin)
+        from the 09:15 open (includes the minutes already seen), 2% CE / PE: MIXED 31 / 34 · TREND-UP 50 / 23 · TREND-DOWN 22 / 64 · FADE-UP 64 / 26 · FADE-DOWN 26 / 53
+
+=== 3. THE SECTOR READ - the named top 3 per side vs the day's true top 3 · tuning | held-out
+    TRUTH: 19:45 / 09:08 the median member move from the 09:15 open to 15:10 and the day's 2%% moves from the open; 09:20 / 09:30 / 09:45
+    the median member move FROM THE NAMING PRICE C[t-1] to 15:10 and the 2%% moves still to come from it (best move >= 2%%). The intraday
+    read from the open is a secondary line (includes the minutes already seen: the read is made from the first minutes of that same move)
+  19:45 CE: No.1 in the true top 3 21% | 18% · overlap 0.64 | 0.55 of 3.0 named (random 0.60) · WRONG-SIDE sectors 30% | 30% · the day's 2% CE moves from the named sectors 19% | 18%, the true 3 33%, as many random sectors 18%, no-sector shares 8% · K median 16
+  19:45 PE: No.1 in the true top 3 21% | 12% · overlap 0.60 | 0.50 of 3.0 named (random 0.60) · WRONG-SIDE sectors 25% | 23% · the day's 2% PE moves from the named sectors 19% | 18%, the true 3 30%, as many random sectors 18%, no-sector shares 8% · K median 16
+        by day and by the predicted lean (tuning, named sectors' share of moves CE / PE, random in brackets): up days 18%/19% (18%/18%) · down days 19%/18% (18%/18%) · mixed days 20%/19% (18%/18%) · TREND-UP 17%/18% (18%/18%) · TREND-DOWN 20%/18% (18%/18%) · REVERSAL-UP 22%/22% (18%/18%) · REVERSAL-DOWN 18%/20% (18%/18%) · RANGE 19%/19% (18%/18%) · lean UP 20%/18% (18%/18%) · lean DOWN 18%/20% (18%/18%) · lean NEUTRAL 20%/18% (18%/18%)
+  09:08 CE: No.1 in the true top 3 24% | 30% · overlap 0.64 | 0.64 of 3.0 named (random 0.60) · WRONG-SIDE sectors 31% | 26% · the day's 2% CE moves from the named sectors 19% | 20%, the true 3 33%, as many random sectors 18%, no-sector shares 8% · K median 16
+  09:08 PE: No.1 in the true top 3 19% | 26% · overlap 0.55 | 0.62 of 3.0 named (random 0.60) · WRONG-SIDE sectors 27% | 22% · the day's 2% PE moves from the named sectors 18% | 18%, the true 3 30%, as many random sectors 18%, no-sector shares 8% · K median 16
+        by day and by the predicted lean (tuning, named sectors' share of moves CE / PE, random in brackets): up days 19%/19% (18%/18%) · down days 20%/18% (18%/18%) · mixed days 19%/17% (18%/18%) · TREND-UP 19%/19% (18%/18%) · TREND-DOWN 22%/18% (18%/18%) · REVERSAL-UP 20%/18% (18%/18%) · REVERSAL-DOWN 18%/12% (18%/18%) · RANGE 19%/18% (18%/18%) · lean UP 20%/18% (18%/18%) · lean DOWN 18%/18% (18%/18%) · lean NEUTRAL 20%/18% (18%/18%)
+  09:20 CE: No.1 in the true top 3 24% | 26% · overlap 0.65 | 0.65 of 3.0 named (random 0.60) · WRONG-SIDE sectors 29% | 27% · the day's 2% CE moves (still to come from the naming price) from the named sectors 19% | 21%, the true 3 34%, as many random sectors 18%, no-sector shares 9% · K median 16
+        from the 09:15 open (includes the minutes already seen): No.1 in the true top 3 47% | 49% · overlap 1.10 | 1.17 (random 0.60) · WRONG-SIDE 14% | 11% · the named sectors hold 26% | 29% of the day's 2% moves (random 18%)
+  09:20 PE: No.1 in the true top 3 22% | 18% · overlap 0.62 | 0.58 of 3.0 named (random 0.60) · WRONG-SIDE sectors 25% | 20% · the day's 2% PE moves (still to come from the naming price) from the named sectors 17% | 18%, the true 3 31%, as many random sectors 18%, no-sector shares 8% · K median 16
+        from the 09:15 open (includes the minutes already seen): No.1 in the true top 3 45% | 42% · overlap 1.10 | 1.13 (random 0.60) · WRONG-SIDE 13% | 6% · the named sectors hold 24% | 27% of the day's 2% moves (random 18%)
+        by day and by the predicted lean (tuning, named sectors' share of moves CE / PE, random in brackets): up days 19%/18% (18%/18%) · down days 20%/17% (18%/18%) · mixed days 19%/17% (18%/18%) · TREND-UP 18%/18% (18%/18%) · TREND-DOWN 21%/18% (18%/18%) · REVERSAL-UP 21%/17% (18%/18%) · REVERSAL-DOWN 18%/20% (18%/18%) · RANGE 19%/17% (18%/18%) · lean UP 22%/15% (18%/18%) · lean DOWN 17%/17% (18%/18%) · lean NEUTRAL 19%/17% (18%/18%)
+  09:30 CE: No.1 in the true top 3 21% | 21% · overlap 0.60 | 0.63 of 3.0 named (random 0.60) · WRONG-SIDE sectors 28% | 24% · the day's 2% CE moves (still to come from the naming price) from the named sectors 19% | 21%, the true 3 35%, as many random sectors 18%, no-sector shares 9% · K median 16
+        from the 09:15 open (includes the minutes already seen): No.1 in the true top 3 55% | 53% · overlap 1.29 | 1.33 (random 0.60) · WRONG-SIDE 11% | 10% · the named sectors hold 29% | 31% of the day's 2% moves (random 18%)
+  09:30 PE: No.1 in the true top 3 21% | 24% · overlap 0.61 | 0.63 of 3.0 named (random 0.60) · WRONG-SIDE sectors 26% | 20% · the day's 2% PE moves (still to come from the naming price) from the named sectors 18% | 18%, the true 3 31%, as many random sectors 18%, no-sector shares 8% · K median 16
+        from the 09:15 open (includes the minutes already seen): No.1 in the true top 3 50% | 46% · overlap 1.24 | 1.22 (random 0.60) · WRONG-SIDE 11% | 3% · the named sectors hold 26% | 28% of the day's 2% moves (random 18%)
+        by day and by the predicted lean (tuning, named sectors' share of moves CE / PE, random in brackets): up days 19%/17% (18%/18%) · down days 20%/18% (18%/18%) · mixed days 19%/18% (18%/18%) · TREND-UP 19%/17% (18%/18%) · TREND-DOWN 21%/18% (18%/18%) · REVERSAL-UP 18%/23% (18%/18%) · REVERSAL-DOWN 12%/15% (18%/19%) · RANGE 19%/18% (18%/18%) · lean UP 20%/18% (18%/18%) · lean DOWN 18%/19% (18%/18%) · lean NEUTRAL 19%/18% (18%/18%)
+  09:45 CE: No.1 in the true top 3 24% | 16% · overlap 0.67 | 0.60 of 3.0 named (random 0.60) · WRONG-SIDE sectors 27% | 28% · the day's 2% CE moves (still to come from the naming price) from the named sectors 19% | 21%, the true 3 35%, as many random sectors 18%, no-sector shares 9% · K median 16
+        from the 09:15 open (includes the minutes already seen): No.1 in the true top 3 61% | 58% · overlap 1.40 | 1.38 (random 0.60) · WRONG-SIDE 10% | 11% · the named sectors hold 29% | 31% of the day's 2% moves (random 18%)
+  09:45 PE: No.1 in the true top 3 20% | 22% · overlap 0.54 | 0.54 of 3.0 named (random 0.60) · WRONG-SIDE sectors 24% | 18% · the day's 2% PE moves (still to come from the naming price) from the named sectors 18% | 18%, the true 3 31%, as many random sectors 18%, no-sector shares 8% · K median 16
+        from the 09:15 open (includes the minutes already seen): No.1 in the true top 3 52% | 55% · overlap 1.32 | 1.26 (random 0.60) · WRONG-SIDE 8% | 3% · the named sectors hold 27% | 28% of the day's 2% moves (random 18%)
+        by day and by the predicted lean (tuning, named sectors' share of moves CE / PE, random in brackets): up days 18%/17% (18%/18%) · down days 19%/19% (18%/18%) · mixed days 19%/19% (18%/18%) · TREND-UP 18%/17% (18%/18%) · TREND-DOWN 19%/19% (18%/18%) · REVERSAL-UP 16%/28% (18%/18%) · REVERSAL-DOWN 17%/18% (18%/18%) · RANGE 19%/18% (18%/18%) · lean UP 20%/17% (18%/18%) · lean DOWN 17%/19% (18%/18%) · lean NEUTRAL 19%/19% (18%/18%)
+
+=== 4. THE SHARE PICK - the winner per level x side x N (picked on the tuning days by NET2, WRONG <= random, lift 95% low > 1.0),
+    shown UNCHANGED on the held-out days. Recall = the share of the day's real moves the list caught (live = with 1%+ still left from
+    the naming price). From-close moves at 19:45 / 09:08 include the gap, which the trader cannot buy before 09:15. At 09:20 / 09:30 /
+    09:45 recall is graded on the moves STILL TO COME (best move from the naming price >= 1.5 / 2 / 3%% its way by 15:10); recall from the
+    open and from yesterday's close there are secondary lines (includes the minutes already seen).
+
+  --- 19:45 the evening before · naming price o0 (the 09:15 open)
+    CE N=5  S3 G0            (no config qualified - best NET2 shown) · recall 2% 3% | 2% (live 3%, random 3%) · WRONG 18% | 19% · NET2 -0.04 | -0.10 a day · lift 1.02 | 1.00
+    PE N=5  S2 G1            (no config qualified - best NET2 shown) · recall 2% 4% | 3% (live 4%, random 3%) · WRONG 17% | 20% · NET2 +0.39 | +0.19 a day · lift 1.24 | 1.34
+    CE N=10  S3 G2 (COIL AT THE EDGE (D-1); list size set by the market lean) - NO configuration qualified, the best NET2 is shown · 0 configs qualified
+      mean list 8.2 names (5.1% of the universe) · NET2 -0.14 | -0.19 a day · RIGHT 17% | 16% · WRONG SIDE 18% | 18% (random 19%) · -2% any time 21% (random 22%)
+      recall from the open  1.5% 5% (live 5%, random 5%) | 4% · 2.0% 5% (live 5%, random 5%) | 3% · 3.0% 5% (live 5%, random 5%) | 4%
+      recall from yday close 1.5% 5% (random 5%) | 4% ·  2.0% 5% (random 5%) | 4% ·  3.0% 5% (random 5%) | 4%   (includes the gap)
+      precision: a 2% mover 20% (random 19%) · RIGHT 17% · move left on caught movers median 2.82% (p25 2.33%) = 90% of base->peak (p25 79%) · mean best 1.24% / worst -1.33% over all picks
+      named 29 min + the night / 7 min before the move is half done (median) · named before half-way 100%, before a quarter 100%
+      LIFT vs random 1.04 (95% 0.97-1.11) | 0.96 · vs random from the picked sectors 0.98 (0.93-1.03) · vs VOLATILE 0.78 (0.72-0.85) · vs TOP-MOVERS 0.84 (0.77-0.92)
+      benchmarks (tuning) NET2: VOLATILE -0.63 · TOP-MOVERS -0.59 · recall 2%: VOLATILE 9% · TOP-MOVERS 8% · WRONG: VOLATILE 28% · TOP-MOVERS 26%
+      ROBUSTNESS from the 09:16 price C[0] (the 09:15 print is hard to get): NET2 +0.17 | +0.06 · RIGHT 17% · WRONG 15% (random 16%) · lift 1.05 (95% 0.99-1.12) | 0.95
+      SELECTION LUCK: held-out NET2 of the tuning No.1 -0.19 vs the median of the tuning top 5 -0.30
+      by day, recall 2% / WRONG / NET2 (tuning | held-out): up days 4%/13%/+0.7 | 3% · down days 4%/35%/-1.8 | 3% · mixed days 5%/16%/+0.1 | 4% · TREND-UP 4%/13%/+0.7 | 3% · TREND-DOWN 5%/35%/-1.9 | (thin) · REVERSAL-UP 4%/35%/-1.1 | (thin) · REVERSAL-DOWN 4%/17%/+0.0 | (thin) · RANGE 5%/16%/+0.1 | 4% · lean UP 6%/18%/-0.1 | 5% · lean DOWN 2%/18%/+0.0 | 2% · lean NEUTRAL 6%/19%/-0.3 | 4%
+    PE N=10  S1 G1 (CLOSE-STRENGTH (D-1); only shares in the 3 named sectors) · 3 configs qualified
+      mean list 10.0 names (6.2% of the universe) · NET2 +0.68 | +0.07 a day · RIGHT 23% | 20% · WRONG SIDE 16% | 19% (random 16%) · -2% any time 20% (random 20%)
+      recall from the open  1.5% 7% (live 7%, random 6%) | 5% · 2.0% 7% (live 7%, random 6%) | 5% · 3.0% 8% (live 8%, random 6%) | 6%
+      recall from yday close 1.5% 6% (random 6%) | 5% ·  2.0% 7% (random 6%) | 5% ·  3.0% 8% (random 6%) | 6%   (includes the gap)
+      precision: a 2% mover 26% (random 22%) · RIGHT 23% · move left on caught movers median 2.92% (p25 2.37%) = 92% of base->peak (p25 83%) · mean best 1.53% / worst -1.26% over all picks
+      named 22 min + the night / 7 min before the move is half done (median) · named before half-way 100%, before a quarter 100%
+      LIFT vs random 1.17 (95% 1.11-1.23) | 1.15 · vs random from the picked sectors 1.11 (1.07-1.15) · vs VOLATILE 0.84 (0.79-0.89) · vs TOP-MOVERS 0.92 (0.87-0.97)
+      benchmarks (tuning) NET2: VOLATILE +0.62 · TOP-MOVERS +0.71 · recall 2%: VOLATILE 9% · TOP-MOVERS 8% · WRONG: VOLATILE 21% · TOP-MOVERS 18%
+      ROBUSTNESS from the 09:16 price C[0] (the 09:15 print is hard to get): NET2 +0.42 | -0.52 · RIGHT 20% · WRONG 15% (random 16%) · lift 1.19 (95% 1.12-1.26) | 1.03
+      SELECTION LUCK: held-out NET2 of the tuning No.1 +0.07 vs the median of the tuning top 5 +0.07
+      by day, recall 2% / WRONG / NET2 (tuning | held-out): up days 7%/26%/-1.1 | 6% · down days 7%/12%/+2.8 | 4% · mixed days 7%/14%/+0.6 | 6% · TREND-UP 8%/26%/-1.0 | 6% · TREND-DOWN 7%/10%/+3.2 | (thin) · REVERSAL-UP 6%/15%/+3.0 | (thin) · REVERSAL-DOWN 6%/21%/-0.3 | (thin) · RANGE 7%/15%/+0.5 | 6% · lean UP 7%/15%/+0.5 | 6% · lean DOWN 8%/19%/+1.0 | 5% · lean NEUTRAL 7%/15%/+0.6 | 6%
+    CE N=15 S3 G2            (no config qualified - best NET2 shown) · recall 2% 7% | 5% (live 7%, random 7%) · WRONG 18% | 17% · NET2 -0.21 | +0.02 a day · lift 1.02 | 1.02
+    PE N=15 S1 G1            · recall 2% 10% | 8% (live 10%, random 9%) · WRONG 16% | 18% · NET2 +0.81 | +0.18 a day · lift 1.11 | 1.11
+
+  --- 09:08 the pre-open (the 09:15 open stands in) · naming price o0 (the 09:15 open)
+    CE N=5  S3 G2            (no config qualified - best NET2 shown) · recall 2% 2% | 2% (live 2%, random 2%) · WRONG 17% | 18% · NET2 -0.02 | -0.04 a day · lift 1.03 | 1.03
+    PE N=5  S1 G1            · recall 2% 3% | 3% (live 3%, random 3%) · WRONG 16% | 14% · NET2 +0.28 | +0.34 a day · lift 1.12 | 1.19
+    CE N=10  S3 G2 (COIL AT THE EDGE (D-1); list size set by the market lean) - NO configuration qualified, the best NET2 is shown · 0 configs qualified
+      mean list 8.2 names (5.1% of the universe) · NET2 -0.15 | -0.24 a day · RIGHT 17% | 16% · WRONG SIDE 18% | 19% (random 19%) · -2% any time 20% (random 21%)
+      recall from the open  1.5% 5% (live 5%, random 5%) | 4% · 2.0% 5% (live 5%, random 5%) | 4% · 3.0% 5% (live 5%, random 5%) | 4%
+      recall from yday close 1.5% 5% (random 5%) | 4% ·  2.0% 5% (random 5%) | 4% ·  3.0% 5% (random 5%) | 4%   (includes the gap)
+      precision: a 2% mover 19% (random 19%) · RIGHT 17% · move left on caught movers median 2.84% (p25 2.33%) = 90% of base->peak (p25 80%) · mean best 1.24% / worst -1.34% over all picks
+      named 30 min + the night / 7 min before the move is half done (median) · named before half-way 100%, before a quarter 100%
+      LIFT vs random 1.02 (95% 0.95-1.09) | 0.96 · vs random from the picked sectors 0.97 (0.92-1.02) · vs VOLATILE 0.85 (0.77-0.92) · vs TOP-MOVERS 0.92 (0.84-1.01)
+      benchmarks (tuning) NET2: VOLATILE -1.08 · TOP-MOVERS -1.33 · recall 2%: VOLATILE 8% · TOP-MOVERS 8% · WRONG: VOLATILE 31% · TOP-MOVERS 31%
+      ROBUSTNESS from the 09:16 price C[0] (the 09:15 print is hard to get): NET2 +0.15 | -0.01 · RIGHT 17% · WRONG 15% (random 16%) · lift 1.05 (95% 0.99-1.12) | 0.94
+      SELECTION LUCK: held-out NET2 of the tuning No.1 -0.24 vs the median of the tuning top 5 -0.14
+      by day, recall 2% / WRONG / NET2 (tuning | held-out): up days 4%/13%/+0.7 | 3% · down days 4%/34%/-1.7 | 3% · mixed days 5%/16%/+0.0 | 4% · TREND-UP 4%/14%/+0.6 | 3% · TREND-DOWN 5%/34%/-1.8 | (thin) · REVERSAL-UP 4%/34%/-0.8 | (thin) · REVERSAL-DOWN 5%/13%/+0.5 | (thin) · RANGE 5%/16%/+0.0 | 4% · lean UP 6%/18%/-0.1 | 4% · lean DOWN 2%/20%/-0.0 | 2% · lean NEUTRAL 6%/19%/-0.5 | 4%
+    PE N=10  S1 G1 (CLOSE-STRENGTH (D-1); only shares in the 3 named sectors) · 1 configs qualified
+      mean list 10.0 names (6.2% of the universe) · NET2 +0.49 | +0.55 a day · RIGHT 21% | 20% · WRONG SIDE 16% | 14% (random 16%) · -2% any time 20% (random 20%)
+      recall from the open  1.5% 6% (live 6%, random 6%) | 5% · 2.0% 7% (live 7%, random 6%) | 5% · 3.0% 7% (live 7%, random 6%) | 6%
+      recall from yday close 1.5% 7% (random 6%) | 6% ·  2.0% 7% (random 6%) | 7% ·  3.0% 8% (random 6%) | 8%   (includes the gap)
+      precision: a 2% mover 24% (random 22%) · RIGHT 21% · move left on caught movers median 2.87% (p25 2.32%) = 92% of base->peak (p25 83%) · mean best 1.43% / worst -1.24% over all picks
+      named 22 min + the night / 7 min before the move is half done (median) · named before half-way 100%, before a quarter 100%
+      LIFT vs random 1.09 (95% 1.03-1.15) | 1.14 · vs random from the picked sectors 1.07 (1.03-1.10) · vs VOLATILE 0.96 (0.90-1.02) · vs TOP-MOVERS 1.21 (1.13-1.30)
+      benchmarks (tuning) NET2: VOLATILE -0.09 · TOP-MOVERS -0.87 · recall 2%: VOLATILE 7% · TOP-MOVERS 6% · WRONG: VOLATILE 23% · TOP-MOVERS 26%
+      ROBUSTNESS from the 09:16 price C[0] (the 09:15 print is hard to get): NET2 +0.22 | -0.52 · RIGHT 17% · WRONG 15% (random 16%) · lift 1.03 (95% 0.96-1.09) | 0.94
+      SELECTION LUCK: held-out NET2 of the tuning No.1 +0.55 vs the median of the tuning top 5 +0.55
+      by day, recall 2% / WRONG / NET2 (tuning | held-out): up days 7%/25%/-0.9 | 5% · down days 7%/12%/+2.8 | 5% · mixed days 6%/15%/+0.3 | 6% · TREND-UP 7%/26%/-1.1 | 5% · TREND-DOWN 7%/10%/+3.0 | (thin) · REVERSAL-UP 6%/15%/+2.5 | (thin) · REVERSAL-DOWN 4%/25%/-1.2 | (thin) · RANGE 7%/15%/+0.3 | 6% · lean UP 7%/16%/+0.3 | 6% · lean DOWN 6%/20%/+0.5 | 6% · lean NEUTRAL 7%/12%/+0.9 | 4%
+    CE N=15 S3 G2            (no config qualified - best NET2 shown) · recall 2% 7% | 5% (live 7%, random 7%) · WRONG 18% | 17% · NET2 -0.21 | -0.06 a day · lift 1.00 | 1.00
+    PE N=15 S1 G0            (no config qualified - best NET2 shown) · recall 2% 11% | 8% (live 11%, random 9%) · WRONG 17% | 20% · NET2 +0.96 | +0.00 a day · lift 1.18 | 1.14
+
+  --- 09:20 (first 5 minutes) · naming price C[4] (09:20)
+    CE N=5  S8 G0            · recall 2% still to come 2% | 3% (live 2%, random 2%) · WRONG 14% | 14% · NET2 +0.04 | +0.15 a day · lift 1.11 | 1.22
+    PE N=5  S8 G0            (no config qualified - best NET2 shown) · recall 2% still to come 2% | 2% (live 2%, random 2%) · WRONG 12% | 13% · NET2 +0.15 | +0.05 a day · lift 1.04 | 1.06
+    CE N=10  S8 G2 (LAGGARD CATCH-UP (intraday); list size set by the market lean) · 1 configs qualified
+      mean list 6.9 names (4.3% of the universe) · NET2 +0.06 | +0.29 a day · RIGHT 15% | 17% · WRONG SIDE 14% | 13% (random 15%) · -2% any time 15% (random 17%)
+      recall STILL TO COME from the naming price  1.5% 4% (random 4%) | 4% · 2.0% 4% (random 4%) | 4% · 3.0% 4% (random 4%) | 5%
+      recall from the open  1.5% 7% (live 5%, random 4%) | 7% · 2.0% 7% (live 6%, random 4%) | 7% · 3.0% 6% (live 6%, random 4%) | 8%   (includes the minutes already seen)
+      recall from yday close 1.5% 6% (random 5%) | 6% ·  2.0% 6% (random 5%) | 7% ·  3.0% 6% (random 5%) | 7%   (includes the gap and the minutes already seen)
+      precision: a 2% mover still to come 17% (random 16%) [from the open 32%, includes the minutes already seen] · RIGHT 15% · move left on caught movers median 2.01% (p25 1.49%) = 65% of base->peak (p25 52%) · mean best 1.14% / worst -1.16% over all picks
+      named 9 min before the move is half done (median) · named before half-way 73%, before a quarter 27%
+      LIFT vs random 1.08 (95% 1.00-1.17) | 1.17 · vs random from the picked sectors 0.95 (0.90-1.00) · vs VOLATILE 0.74 (0.67-0.82) · vs TOP-MOVERS 0.72 (0.64-0.80)
+      benchmarks (tuning) NET2: VOLATILE -0.53 · TOP-MOVERS -0.09 · recall 2% still to come: VOLATILE 9% · TOP-MOVERS 9% · WRONG: VOLATILE 25% · TOP-MOVERS 22%
+      SELECTION LUCK: held-out NET2 of the tuning No.1 +0.29 vs the median of the tuning top 5 +0.29
+      by day, recall 2% still to come / WRONG / NET2 (tuning | held-out): up days 5%/9%/+1.1 | 5% · down days 2%/32%/-1.2 | 3% · mixed days 4%/12%/+0.0 | 4% · TREND-UP 5%/8%/+1.3 | 5% · TREND-DOWN 3%/34%/-1.3 | (thin) · REVERSAL-UP 2%/29%/-0.5 | (thin) · REVERSAL-DOWN 6%/15%/-0.2 | (thin) · RANGE 4%/12%/+0.1 | 4% · lean UP 7%/14%/+0.4 | (thin) · lean DOWN 1%/12%/+0.1 | (thin) · lean NEUTRAL 5%/14%/+0.0 | 5%
+    PE N=10  S10 G3 (SHARE-ONLY BLEND (intraday); only shares in the 3 named sectors, list size set by the market lean) · 2 configs qualified
+      mean list 9.6 names (5.9% of the universe) · NET2 +0.32 | +0.10 a day · RIGHT 17% | 14% · WRONG SIDE 14% | 13% (random 14%) · -2% any time 16% (random 17%)
+      recall STILL TO COME from the naming price  1.5% 6% (random 6%) | 5% · 2.0% 6% (random 6%) | 5% · 3.0% 7% (random 6%) | 6%
+      recall from the open  1.5% 10% (live 7%, random 6%) | 9% · 2.0% 11% (live 9%, random 6%) | 10% · 3.0% 12% (live 11%, random 6%) | 12%   (includes the minutes already seen)
+      recall from yday close 1.5% 11% (random 6%) | 10% ·  2.0% 12% (random 6%) | 12% ·  3.0% 14% (random 6%) | 16%   (includes the gap and the minutes already seen)
+      precision: a 2% mover still to come 18% (random 17%) [from the open 40%, includes the minutes already seen] · RIGHT 17% · move left on caught movers median 1.87% (p25 1.28%) = 59% of base->peak (p25 43%) · mean best 1.28% / worst -1.16% over all picks
+      named 1 min before the move is half done (median) · named before half-way 55%, before a quarter 15%
+      LIFT vs random 1.08 (95% 1.02-1.16) | 1.09 · vs random from the picked sectors 1.02 (0.98-1.06) · vs VOLATILE 0.73 (0.67-0.78) · vs TOP-MOVERS 0.84 (0.79-0.89)
+      benchmarks (tuning) NET2: VOLATILE +0.40 · TOP-MOVERS +0.30 · recall 2% still to come: VOLATILE 9% · TOP-MOVERS 8% · WRONG: VOLATILE 19% · TOP-MOVERS 17%
+      SELECTION LUCK: held-out NET2 of the tuning No.1 +0.10 vs the median of the tuning top 5 +0.06
+      by day, recall 2% still to come / WRONG / NET2 (tuning | held-out): up days 7%/20%/-0.8 | 5% · down days 6%/10%/+2.2 | 4% · mixed days 6%/13%/+0.1 | 6% · TREND-UP 7%/21%/-0.9 | 6% · TREND-DOWN 6%/8%/+2.6 | (thin) · REVERSAL-UP 5%/25%/-0.8 | (thin) · REVERSAL-DOWN 7%/14%/+1.1 | (thin) · RANGE 6%/13%/+0.1 | 5% · lean UP 3%/17%/+0.1 | (thin) · lean DOWN 7%/19%/+0.3 | (thin) · lean NEUTRAL 6%/13%/+0.3 | 5%
+    CE N=15 S4 G3            (no config qualified - best NET2 shown) · recall 2% still to come 10% | 8% (live 10%, random 8%) · WRONG 16% | 14% · NET2 +0.12 | +0.49 a day · lift 1.18 | 1.23
+    PE N=15 S10 G3           · recall 2% still to come 9% | 7% (live 9%, random 9%) · WRONG 13% | 13% · NET2 +0.48 | +0.14 a day · lift 1.07 | 1.06
+
+  --- 09:30 (first 15 minutes) · naming price C[14] (09:30)
+    CE N=5  S8 G2            · recall 2% still to come 2% | 2% (live 2%, random 2%) · WRONG 13% | 11% · NET2 +0.07 | +0.14 a day · lift 1.13 | 1.17
+    PE N=5  S4 G0            · recall 2% still to come 3% | 3% (live 3%, random 3%) · WRONG 12% | 14% · NET2 +0.20 | -0.13 a day · lift 1.14 | 1.07
+    CE N=10  S8 G0 (LAGGARD CATCH-UP (intraday); no gate) - NO configuration qualified, the best NET2 is shown · 0 configs qualified
+      mean list 7.0 names (4.3% of the universe) · NET2 +0.15 | +0.34 a day · RIGHT 14% | 15% · WRONG SIDE 12% | 10% (random 13%) · -2% any time 12% (random 14%)
+      recall STILL TO COME from the naming price  1.5% 4% (random 4%) | 4% · 2.0% 4% (random 4%) | 4% · 3.0% 4% (random 4%) | 3%
+      recall from the open  1.5% 7% (live 5%, random 4%) | 6% · 2.0% 7% (live 6%, random 4%) | 6% · 3.0% 6% (live 6%, random 5%) | 6%   (includes the minutes already seen)
+      recall from yday close 1.5% 7% (random 5%) | 6% ·  2.0% 7% (random 5%) | 6% ·  3.0% 6% (random 5%) | 6%   (includes the gap and the minutes already seen)
+      precision: a 2% mover still to come 15% (random 15%) [from the open 31%, includes the minutes already seen] · RIGHT 14% · move left on caught movers median 1.93% (p25 1.32%) = 59% of base->peak (p25 46%) · mean best 1.10% / worst -1.06% over all picks
+      named 4 min before the move is half done (median) · named before half-way 59%, before a quarter 18%
+      LIFT vs random 1.05 (95% 0.96-1.14) | 1.16 · vs random from the picked sectors 0.95 (0.89-1.00) · vs VOLATILE 0.70 (0.63-0.77) · vs TOP-MOVERS 0.68 (0.62-0.75)
+      benchmarks (tuning) NET2: VOLATILE -0.28 · TOP-MOVERS -0.01 · recall 2% still to come: VOLATILE 10% · TOP-MOVERS 10% · WRONG: VOLATILE 22% · TOP-MOVERS 20%
+      SELECTION LUCK: held-out NET2 of the tuning No.1 +0.34 vs the median of the tuning top 5 +0.34
+      by day, recall 2% still to come / WRONG / NET2 (tuning | held-out): up days 5%/7%/+1.3 | 5% · down days 2%/30%/-1.0 | 3% · mixed days 4%/10%/+0.1 | 4% · TREND-UP 5%/6%/+1.4 | 4% · TREND-DOWN 3%/32%/-1.1 | (thin) · REVERSAL-UP 2%/15%/+0.5 | (thin) · REVERSAL-DOWN 3%/21%/-1.4 | (thin) · RANGE 4%/10%/+0.1 | 4% · lean UP 6%/11%/+0.5 | (thin) · lean DOWN 1%/7%/+0.2 | (thin) · lean NEUTRAL 5%/12%/+0.1 | 4%
+    PE N=10  S6 G3 (PREPARED + OPEN AGREES (09:08+); only shares in the 3 named sectors, list size set by the market lean) · 1 configs qualified
+      mean list 7.3 names (4.4% of the universe) · NET2 +0.17 | -0.06 a day · RIGHT 15% | 11% · WRONG SIDE 13% | 11% (random 13%) · -2% any time 15% (random 15%)
+      recall STILL TO COME from the naming price  1.5% 5% (random 4%) | 4% · 2.0% 5% (random 4%) | 4% · 3.0% 5% (random 5%) | 4%
+      recall from the open  1.5% 6% (live 4%, random 5%) | 5% · 2.0% 6% (live 5%, random 5%) | 6% · 3.0% 7% (live 6%, random 5%) | 6%   (includes the minutes already seen)
+      recall from yday close 1.5% 8% (random 5%) | 8% ·  2.0% 9% (random 5%) | 10% ·  3.0% 11% (random 5%) | 12%   (includes the gap and the minutes already seen)
+      precision: a 2% mover still to come 17% (random 16%) [from the open 31%, includes the minutes already seen] · RIGHT 15% · move left on caught movers median 1.96% (p25 1.26%) = 59% of base->peak (p25 40%) · mean best 1.20% / worst -1.07% over all picks
+      named 1 min AFTER the move was half done (median) · named before half-way 49%, before a quarter 13%
+      LIFT vs random 1.08 (95% 1.00-1.15) | 0.96 · vs random from the picked sectors 1.01 (0.96-1.05) · vs VOLATILE 0.69 (0.63-0.77) · vs TOP-MOVERS 0.77 (0.71-0.84)
+      benchmarks (tuning) NET2: VOLATILE +0.49 · TOP-MOVERS +0.37 · recall 2% still to come: VOLATILE 10% · TOP-MOVERS 9% · WRONG: VOLATILE 17% · TOP-MOVERS 16%
+      SELECTION LUCK: held-out NET2 of the tuning No.1 -0.06 vs the median of the tuning top 5 -0.06
+      by day, recall 2% still to come / WRONG / NET2 (tuning | held-out): up days 3%/21%/-0.9 | 5% · down days 6%/8%/+2.1 | 4% · mixed days 5%/12%/-0.1 | 4% · TREND-UP 3%/23%/-1.0 | 4% · TREND-DOWN 5%/6%/+2.4 | (thin) · REVERSAL-UP 8%/31%/-1.4 | (thin) · REVERSAL-DOWN 4%/14%/+0.4 | (thin) · RANGE 5%/12%/+0.0 | 4% · lean UP 2%/15%/-0.0 | (thin) · lean DOWN 6%/17%/-0.1 | (thin) · lean NEUTRAL 5%/12%/+0.2 | 4%
+    CE N=15 S4 G1            · recall 2% still to come 11% | 8% (live 11%, random 9%) · WRONG 14% | 12% · NET2 +0.21 | +0.31 a day · lift 1.17 | 1.07
+    PE N=15 S10 G0           (no config qualified - best NET2 shown) · recall 2% still to come 11% | 10% (live 11%, random 9%) · WRONG 14% | 15% · NET2 +0.38 | -0.04 a day · lift 1.20 | 1.35
+
+  --- 09:45 (first 30 minutes) · naming price C[29] (09:45)
+    CE N=5  S8 G2            (no config qualified - best NET2 shown) · recall 2% still to come 2% | 2% (live 2%, random 2%) · WRONG 9% | 7% · NET2 +0.13 | +0.33 a day · lift 1.11 | 1.47
+    PE N=5  S4 G0            · recall 2% still to come 3% | 3% (live 3%, random 3%) · WRONG 12% | 12% · NET2 +0.09 | -0.15 a day · lift 1.10 | 1.01
+    CE N=10  S4 G1 (GAP WITH SECTOR (09:08+); only shares in the 3 named sectors) · 1 configs qualified
+      mean list 10.0 names (6.2% of the universe) · NET2 +0.26 | +0.23 a day · RIGHT 15% | 13% · WRONG SIDE 12% | 11% (random 12%) · -2% any time 13% (random 13%)
+      recall STILL TO COME from the naming price  1.5% 7% (random 6%) | 5% · 2.0% 7% (random 6%) | 6% · 3.0% 8% (random 6%) | 6%
+      recall from the open  1.5% 9% (live 6%, random 6%) | 8% · 2.0% 10% (live 8%, random 6%) | 8% · 3.0% 12% (live 10%, random 6%) | 9%   (includes the minutes already seen)
+      recall from yday close 1.5% 11% (random 6%) | 9% ·  2.0% 12% (random 6%) | 11% ·  3.0% 15% (random 6%) | 14%   (includes the gap and the minutes already seen)
+      precision: a 2% mover still to come 16% (random 13%) [from the open 34%, includes the minutes already seen] · RIGHT 15% · move left on caught movers median 1.73% (p25 1.00%) = 47% of base->peak (p25 30%) · mean best 1.12% / worst -1.06% over all picks
+      named 14 min AFTER the move was half done (median) · named before half-way 35%, before a quarter 10%
+      LIFT vs random 1.23 (95% 1.14-1.33) | 1.19 · vs random from the picked sectors 1.06 (1.02-1.10) · vs VOLATILE 0.80 (0.74-0.88) · vs TOP-MOVERS 0.79 (0.72-0.85)
+      benchmarks (tuning) NET2: VOLATILE -0.14 · TOP-MOVERS +0.14 · recall 2% still to come: VOLATILE 10% · TOP-MOVERS 10% · WRONG: VOLATILE 20% · TOP-MOVERS 17%
+      SELECTION LUCK: held-out NET2 of the tuning No.1 +0.23 vs the median of the tuning top 5 +0.23
+      by day, recall 2% still to come / WRONG / NET2 (tuning | held-out): up days 7%/7%/+1.5 | 5% · down days 8%/24%/-1.4 | 7% · mixed days 7%/10%/+0.3 | 6% · TREND-UP 7%/7%/+1.5 | 6% · TREND-DOWN 8%/26%/-1.7 | (thin) · REVERSAL-UP 5%/5%/+2.8 | (thin) · REVERSAL-DOWN 7%/24%/-1.5 | (thin) · RANGE 7%/10%/+0.4 | 6% · lean UP 7%/15%/-0.1 | (thin) · lean DOWN 6%/12%/+0.4 | (thin) · lean NEUTRAL 8%/12%/+0.3 | 6%
+    PE N=10  S8 G0 (LAGGARD CATCH-UP (intraday); no gate) - NO configuration qualified, the best NET2 is shown · 0 configs qualified
+      mean list 6.1 names (3.7% of the universe) · NET2 +0.18 | +0.09 a day · RIGHT 13% | 10% · WRONG SIDE 10% | 8% (random 12%) · -2% any time 12% (random 14%)
+      recall STILL TO COME from the naming price  1.5% 4% (random 4%) | 3% · 2.0% 4% (random 4%) | 3% · 3.0% 5% (random 4%) | 3%
+      recall from the open  1.5% 6% (live 4%, random 4%) | 5% · 2.0% 6% (live 5%, random 4%) | 5% · 3.0% 7% (live 6%, random 5%) | 6%   (includes the minutes already seen)
+      recall from yday close 1.5% 6% (random 5%) | 5% ·  2.0% 6% (random 5%) | 5% ·  3.0% 6% (random 5%) | 5%   (includes the gap and the minutes already seen)
+      precision: a 2% mover still to come 14% (random 15%) [from the open 39%, includes the minutes already seen] · RIGHT 13% · move left on caught movers median 1.69% (p25 1.17%) = 54% of base->peak (p25 40%) · mean best 1.11% / worst -0.98% over all picks
+      named 7 min AFTER the move was half done (median) · named before half-way 42%, before a quarter 5%
+      LIFT vs random 0.97 (95% 0.89-1.05) | 0.91 · vs random from the picked sectors 0.87 (0.82-0.91) · vs VOLATILE 0.66 (0.59-0.74) · vs TOP-MOVERS 0.75 (0.66-0.83)
+      benchmarks (tuning) NET2: VOLATILE +0.23 · TOP-MOVERS +0.24 · recall 2% still to come: VOLATILE 10% · TOP-MOVERS 9% · WRONG: VOLATILE 17% · TOP-MOVERS 15%
+      SELECTION LUCK: held-out NET2 of the tuning No.1 +0.09 vs the median of the tuning top 5 +0.10
+      by day, recall 2% still to come / WRONG / NET2 (tuning | held-out): up days 2%/20%/-0.6 | 1% · down days 5%/6%/+1.9 | 5% · mixed days 4%/10%/-0.1 | 3% · TREND-UP 2%/18%/-0.6 | 1% · TREND-DOWN 5%/5%/+2.0 | (thin) · REVERSAL-UP 7%/30%/-2.2 | (thin) · REVERSAL-DOWN 3%/0%/+1.2 | (thin) · RANGE 4%/10%/-0.0 | 3% · lean UP 2%/5%/+0.3 | (thin) · lean DOWN 6%/12%/+0.3 | (thin) · lean NEUTRAL 4%/10%/+0.1 | 3%
+    CE N=15 S4 G1            · recall 2% still to come 11% | 8% (live 11%, random 9%) · WRONG 12% | 11% · NET2 +0.37 | +0.37 a day · lift 1.19 | 1.17
+    PE N=15 S8 G0            (no config qualified - best NET2 shown) · recall 2% still to come 5% | 5% (live 5%, random 5%) · WRONG 10% | 9% · NET2 +0.27 | +0.17 a day · lift 0.99 | 0.94
+
+=== 5. FEATURE TABLE (tuning days, descriptive only - never used to pick): by quintile, P(2% CE move) / P(2% PE move) from the open
+    (for the @5 / @15 / @30 features: a 2% move STILL TO COME from the naming price), median best move CE / PE from the naming price,
+    WRONG-SIDE rate CE / PE
+  ALL share-days  P(2% CE) 20% · P(2% PE) 22% · median best CE 0.91% / PE 1.07% · WRONG CE 19% / PE 16%
+  cpos1           Q1 20%/25% 0.9/1.2 22%/16% · Q2 19%/22% 0.9/1.1 20%/15% · Q3 19%/21% 0.9/1.0 19%/16% · Q4 19%/21% 0.9/1.0 18%/16% · Q5 22%/21% 1.0/1.1 18%/18%
+  lhr1            Q1 23%/27% 1.0/1.2 23%/18% · Q2 17%/21% 0.8/1.0 19%/14% · Q3 16%/19% 0.8/1.0 17%/14% · Q4 18%/20% 0.9/1.0 18%/16% · Q5 25%/24% 1.1/1.1 20%/20%
+  lhv1            Q1 16%/20% 0.8/1.0 18%/14% · Q2 18%/21% 0.9/1.0 18%/15% · Q3 19%/22% 0.9/1.1 19%/16% · Q4 21%/22% 0.9/1.1 20%/17% · Q5 25%/27% 1.0/1.2 23%/20%
+  rvol1           Q1 16%/19% 0.8/1.0 18%/14% · Q2 18%/20% 0.9/1.0 18%/16% · Q3 19%/21% 0.9/1.0 19%/16% · Q4 21%/22% 1.0/1.1 20%/17% · Q5 25%/28% 1.0/1.2 24%/20%
+  atrc            Q1 16%/19% 0.8/1.0 17%/14% · Q2 18%/20% 0.9/1.0 18%/16% · Q3 20%/23% 0.9/1.1 20%/16% · Q4 21%/23% 1.0/1.1 21%/17% · Q5 24%/26% 1.0/1.2 23%/19%
+  dh5             Q1 24%/27% 1.0/1.2 23%/19% · Q2 20%/23% 0.9/1.1 20%/17% · Q3 18%/22% 0.9/1.1 19%/15% · Q4 18%/20% 0.9/1.0 18%/15% · Q5 19%/20% 0.9/1.0 18%/17%
+  dh20            Q1 22%/26% 1.0/1.2 23%/17% · Q2 20%/22% 0.9/1.1 20%/16% · Q3 20%/21% 0.9/1.0 18%/17% · Q4 18%/21% 0.9/1.1 19%/16% · Q5 20%/21% 0.9/1.1 19%/17%
+  dh60            Q1 22%/25% 1.0/1.1 22%/18% · Q2 19%/23% 0.9/1.1 20%/16% · Q3 20%/21% 0.9/1.0 19%/17% · Q4 19%/21% 0.9/1.0 18%/16% · Q5 19%/21% 0.9/1.1 19%/16%
+  dl5             Q1 21%/24% 0.9/1.1 21%/17% · Q2 19%/22% 0.9/1.0 19%/16% · Q3 19%/22% 0.9/1.0 19%/16% · Q4 19%/22% 0.9/1.1 19%/16% · Q5 22%/23% 1.0/1.1 20%/18%
+  dl20            Q1 21%/25% 0.9/1.1 22%/17% · Q2 19%/22% 0.9/1.1 20%/16% · Q3 19%/22% 0.9/1.1 19%/16% · Q4 20%/21% 0.9/1.0 18%/17% · Q5 20%/22% 0.9/1.1 20%/17%
+  dl60            Q1 21%/26% 0.9/1.2 23%/17% · Q2 20%/22% 0.9/1.1 20%/16% · Q3 20%/20% 0.9/1.0 18%/17% · Q4 20%/21% 0.9/1.0 19%/17% · Q5 18%/21% 0.9/1.1 19%/15%
+  oichg1          Q1 21%/23% 1.0/1.1 20%/17% · Q2 18%/20% 0.9/1.0 18%/16% · Q3 18%/20% 0.9/1.0 18%/15% · Q4 18%/21% 0.9/1.0 19%/16% · Q5 23%/26% 1.0/1.2 23%/18%
+  ret1            Q1 26%/28% 1.1/1.2 24%/20% · Q2 17%/20% 0.9/1.0 18%/15% · Q3 16%/18% 0.8/1.0 16%/14% · Q4 17%/19% 0.8/1.0 17%/15% · Q5 23%/26% 1.0/1.2 23%/19%
+  sec1            Q1 25%/27% 1.1/1.2 23%/20% · Q2 18%/22% 0.8/1.1 20%/15% · Q3 16%/20% 0.8/1.0 18%/14% · Q4 18%/20% 0.8/1.0 18%/15% · Q5 22%/23% 1.0/1.1 20%/18%
+  sbr1            Q1 24%/26% 1.1/1.1 22%/19% · Q2 19%/23% 0.9/1.1 20%/16% · Q3 17%/21% 0.8/1.1 19%/14% · Q4 18%/20% 0.9/1.0 18%/15% · Q5 21%/21% 0.9/1.1 19%/18%
+  rs1             Q1 23%/25% 1.0/1.1 22%/18% · Q2 18%/20% 0.9/1.0 18%/15% · Q3 17%/19% 0.9/1.0 17%/15% · Q4 18%/20% 0.9/1.0 18%/16% · Q5 23%/26% 1.0/1.2 23%/18%
+  r5              Q1 26%/28% 1.1/1.2 24%/20% · Q2 18%/20% 0.9/1.0 18%/15% · Q3 16%/18% 0.8/1.0 17%/14% · Q4 17%/20% 0.8/1.0 18%/15% · Q5 23%/25% 1.0/1.2 22%/18%
+  rs5             Q1 22%/25% 1.0/1.1 22%/18% · Q2 18%/20% 0.9/1.0 18%/15% · Q3 18%/19% 0.9/1.0 17%/15% · Q4 18%/20% 0.9/1.0 18%/15% · Q5 23%/26% 1.0/1.2 23%/18%
+  nif1            Q1 24%/27% 1.1/1.2 23%/19% · Q2 19%/23% 0.9/1.1 20%/16% · Q3 16%/21% 0.8/1.0 19%/14% · Q4 16%/20% 0.8/1.0 18%/14% · Q5 23%/20% 1.0/1.0 17%/19%
+  nifcpos1        Q1 22%/23% 1.0/1.1 21%/18% · Q2 18%/24% 0.9/1.1 21%/15% · Q3 18%/24% 0.8/1.1 21%/15% · Q4 19%/19% 0.9/1.0 17%/17% · Q5 21%/20% 0.9/1.0 17%/18%
+  dte             Q1 18%/21% 0.9/1.0 18%/15% · Q2 19%/21% 0.9/1.0 19%/16% · Q3 18%/23% 0.9/1.1 20%/15% · Q4 21%/22% 0.9/1.1 19%/17% · Q5 22%/24% 1.0/1.1 20%/19%
+  atr20p          Q1 10%/11% 0.7/0.8 10%/9% · Q2 15%/17% 0.8/1.0 16%/13% · Q3 19%/22% 0.9/1.1 20%/16% · Q4 24%/27% 1.0/1.2 24%/19% · Q5 32%/35% 1.3/1.4 29%/24%
+  gap             Q1 27%/24% 1.2/1.0 20%/22% · Q2 16%/18% 0.9/1.0 16%/14% · Q3 16%/18% 0.8/1.0 16%/14% · Q4 17%/21% 0.8/1.1 19%/14% · Q5 23%/29% 0.9/1.3 26%/18%
+  gapA            Q1 26%/23% 1.2/1.0 19%/22% · Q2 18%/20% 0.9/1.0 18%/15% · Q3 18%/21% 0.9/1.0 18%/15% · Q4 18%/22% 0.8/1.1 19%/15% · Q5 21%/27% 0.8/1.3 23%/16%
+  secgap          Q1 23%/28% 1.0/1.2 25%/18% · Q2 16%/21% 0.8/1.1 19%/13% · Q3 17%/19% 0.8/1.0 17%/14% · Q4 18%/20% 0.9/1.0 18%/15% · Q5 25%/23% 1.1/1.0 19%/22%
+  gaprs           Q1 28%/20% 1.2/0.9 16%/24% · Q2 18%/18% 0.9/0.9 16%/16% · Q3 16%/19% 0.8/1.0 18%/14% · Q4 16%/23% 0.8/1.1 21%/13% · Q5 21%/32% 0.8/1.4 28%/15%
+  nifgap          Q1 24%/26% 1.0/1.2 23%/18% · Q2 17%/22% 0.8/1.1 20%/14% · Q3 18%/19% 0.9/1.0 17%/16% · Q4 17%/21% 0.8/1.0 19%/15% · Q5 23%/22% 1.0/1.0 19%/19%
+  bnfgap          Q1 23%/27% 1.0/1.2 24%/18% · Q2 18%/21% 0.9/1.1 19%/15% · Q3 18%/21% 0.9/1.0 19%/15% · Q4 17%/19% 0.8/1.0 17%/14% · Q5 24%/22% 1.0/1.0 19%/20%
+  gapx up         =0 19%/22% 0.9/1.1 19%/16% · =1 23%/25% 0.9/1.2 22%/18%
+  gapx down       =0 19%/22% 0.9/1.1 19%/16% · =1 31%/26% 1.3/1.0 22%/26%
+  mo@5            Q1 20%/22% 0.9/1.0 20%/17% · Q2 14%/15% 0.8/0.9 14%/13% · Q3 13%/14% 0.8/0.8 13%/12% · Q4 14%/15% 0.8/0.9 13%/12% · Q5 21%/20% 1.0/1.0 17%/18%
+  mpc@5           Q1 22%/22% 1.0/1.0 19%/18% · Q2 13%/15% 0.8/0.9 14%/11% · Q3 12%/14% 0.7/0.8 13%/11% · Q4 14%/15% 0.7/0.9 14%/12% · Q5 22%/20% 1.0/1.0 18%/19%
+  rv@5            Q1 12%/14% 0.7/0.8 13%/10% · Q2 14%/15% 0.8/0.9 14%/12% · Q3 16%/16% 0.8/0.9 15%/14% · Q4 18%/18% 0.9/0.9 16%/16% · Q5 23%/24% 1.0/1.1 20%/19%
+  vws@5           Q1 18%/20% 0.9/1.0 18%/15% · Q2 15%/17% 0.8/0.9 16%/14% · Q3 15%/16% 0.8/0.9 15%/13% · Q4 15%/16% 0.8/0.9 14%/14% · Q5 18%/18% 0.9/0.9 16%/16%
+  rs_sec@5        Q1 19%/19% 0.9/1.0 17%/16% · Q2 14%/15% 0.8/0.9 14%/12% · Q3 13%/15% 0.8/0.9 14%/12% · Q4 15%/16% 0.8/0.9 15%/13% · Q5 21%/21% 0.9/1.1 18%/18%
+  rs_nif@5        Q1 20%/21% 1.0/1.0 18%/17% · Q2 13%/14% 0.8/0.8 13%/12% · Q3 13%/14% 0.7/0.9 13%/11% · Q4 15%/15% 0.8/0.9 14%/13% · Q5 22%/21% 1.0/1.1 18%/19%
+  c5@5            Q1 20%/22% 0.9/1.0 20%/17% · Q2 14%/15% 0.8/0.9 14%/13% · Q3 13%/14% 0.8/0.8 13%/12% · Q4 14%/15% 0.8/0.9 13%/12% · Q5 21%/20% 1.0/1.0 17%/18%
+  beyond up@5     =0 16%/17% 0.8/0.9 15%/14% · =1 20%/17% 0.9/0.9 15%/18%
+  beyond down@5   =0 16%/17% 0.8/0.9 15%/14% · =1 20%/21% 1.0/1.0 18%/17%
+  mo@15           Q1 18%/21% 0.9/1.0 19%/15% · Q2 12%/14% 0.7/0.8 13%/11% · Q3 11%/11% 0.7/0.8 11%/10% · Q4 13%/12% 0.7/0.8 11%/12% · Q5 19%/17% 0.9/0.9 15%/17%
+  mpc@15          Q1 19%/22% 0.9/1.0 19%/16% · Q2 11%/13% 0.7/0.8 12%/10% · Q3 10%/12% 0.7/0.8 11%/9% · Q4 13%/12% 0.7/0.8 11%/11% · Q5 21%/17% 0.9/0.9 16%/18%
+  rv@15           Q1 10%/11% 0.7/0.8 10%/10% · Q2 12%/13% 0.7/0.8 12%/11% · Q3 14%/14% 0.8/0.9 13%/13% · Q4 16%/16% 0.8/0.9 15%/14% · Q5 21%/21% 0.9/1.0 18%/17%
+  vws@15          Q1 16%/19% 0.8/1.0 17%/13% · Q2 13%/15% 0.7/0.8 14%/11% · Q3 14%/13% 0.7/0.8 12%/12% · Q4 14%/13% 0.8/0.8 12%/13% · Q5 17%/16% 0.9/0.9 14%/15%
+  rs_sec@15       Q1 17%/18% 0.9/0.9 16%/15% · Q2 12%/13% 0.7/0.8 12%/11% · Q3 12%/12% 0.7/0.8 11%/11% · Q4 13%/13% 0.7/0.9 12%/11% · Q5 19%/19% 0.9/1.0 17%/16%
+  rs_nif@15       Q1 18%/20% 0.9/1.0 18%/15% · Q2 11%/13% 0.7/0.8 12%/10% · Q3 11%/11% 0.7/0.8 10%/10% · Q4 13%/13% 0.7/0.8 12%/11% · Q5 20%/18% 0.9/1.0 16%/18%
+  c5@15           Q1 18%/21% 0.9/1.0 18%/15% · Q2 12%/13% 0.7/0.8 12%/11% · Q3 12%/11% 0.7/0.8 10%/11% · Q4 13%/12% 0.8/0.8 11%/12% · Q5 19%/18% 0.9/1.0 16%/16%
+  beyond up@15    =0 14%/15% 0.8/0.9 14%/12% · =1 18%/15% 0.9/0.9 13%/16%
+  beyond down@15  =0 14%/14% 0.8/0.9 13%/13% · =1 17%/20% 0.9/1.0 18%/14%
+  mo@30           Q1 17%/19% 0.8/0.9 17%/15% · Q2 11%/11% 0.7/0.8 10%/10% · Q3 10%/10% 0.7/0.7 9%/9% · Q4 11%/10% 0.7/0.7 10%/11% · Q5 17%/15% 0.9/0.9 13%/15%
+  mpc@30          Q1 18%/20% 0.9/0.9 18%/15% · Q2 10%/11% 0.7/0.7 10%/9% · Q3 9%/10% 0.6/0.7 9%/8% · Q4 11%/10% 0.7/0.8 10%/10% · Q5 18%/14% 0.9/0.9 13%/16%
+  rv@30           Q1 9%/9% 0.6/0.7 9%/9% · Q2 11%/11% 0.7/0.8 11%/10% · Q3 13%/12% 0.7/0.8 11%/11% · Q4 14%/14% 0.8/0.8 13%/13% · Q5 19%/18% 0.9/0.9 16%/16%
+  vws@30          Q1 15%/15% 0.8/0.9 14%/13% · Q2 12%/13% 0.7/0.8 12%/10% · Q3 12%/12% 0.7/0.8 11%/11% · Q4 13%/12% 0.7/0.8 11%/11% · Q5 15%/14% 0.8/0.8 13%/14%
+  rs_sec@30       Q1 16%/16% 0.8/0.9 14%/14% · Q2 11%/11% 0.7/0.8 11%/10% · Q3 10%/11% 0.7/0.7 10%/10% · Q4 12%/11% 0.7/0.8 11%/11% · Q5 17%/16% 0.8/0.9 15%/15%
+  rs_nif@30       Q1 17%/18% 0.8/0.9 16%/14% · Q2 11%/11% 0.7/0.7 10%/10% · Q3 10%/10% 0.7/0.7 9%/9% · Q4 12%/11% 0.7/0.8 10%/11% · Q5 18%/15% 0.9/0.9 13%/16%
+  c5@30           Q1 17%/16% 0.9/0.9 15%/15% · Q2 11%/11% 0.7/0.8 11%/10% · Q3 10%/10% 0.7/0.7 10%/9% · Q4 11%/11% 0.7/0.8 10%/10% · Q5 17%/16% 0.8/0.9 15%/15%
+  beyond up@30    =0 13%/13% 0.7/0.8 12%/11% · =1 16%/12% 0.8/0.8 11%/14%
+  beyond down@30  =0 13%/12% 0.7/0.8 11%/12% · =1 16%/18% 0.8/0.9 16%/13%
+  build-up D-1    none 19%/21% 0.9/1.1 19%/16% · LB 28%/30% 1.1/1.3 25%/22% · SB 25%/33% 1.0/1.4 28%/19% · SC 25%/30% 1.0/1.3 25%/19% · LU 31%/31% 1.3/1.2 25%/22%
+  coil            0 20%/23% 0.9/1.1 20%/17% · 1 19%/20% 0.9/1.0 18%/16% · 2 17%/20% 0.8/1.0 18%/15%
+  expiry          expiry week 19%/21% 0.9/1.0 18%/16% · other 20%/23% 0.9/1.1 20%/17% · day after expiry 25%/21% 1.1/0.9 18%/22%
+  streak          <=-3 23%/25% 1.0/1.1 21%/19% · -2 20%/23% 1.0/1.1 20%/17% · -1 19%/22% 0.9/1.1 20%/16% · 0 16%/15% 0.8/1.0 14%/14% · +1 19%/22% 0.9/1.1 19%/16% · +2 19%/20% 0.9/1.0 18%/16% · >=+3 19%/21% 0.9/1.1 19%/16%
+
+=== 6. THE ENTRY TRIGGER on each winning list's picks (N=10; tuning days) - a pick that never fires is no trade: not caught, never wrong
+    EARLIEST SAFE = among E1..E5 with WRONG per trade that fired <= 0.75 x E0's, RIGHT over ALL picks >= 70% of E0's (a trigger that
+    seldom trades catches little and cannot pass) and a median move left >= 70% of E0's: the earliest median entry; else E0 (enter on
+    the card) if its WRONG <= random; else no safe trigger. (Tightened on 20 Nov after review and signed off by the chair as THE rule;
+    the agreed first rule judged WRONG over all picks, so a trigger that seldom fired passed by default - its answer is printed beside
+    each one below and kept in preopen.json as safe_old_rule.)
+    E0 NOW = enter at the naming price · E1 ORB5 = first close beyond the 09:15-09:19 high (CE) / low (PE), from 09:20 · E2 PDHL = first close beyond yesterday's high (CE) / low (PE) · E3 VWAP+MOM = above (CE) / below (PE) VWAP and 0.2%+ its way in 3 min · E4 OPEN-HOLD = 0.3%+ its way from the open, the 09:15 candle's other extreme unbroken, from 09:20 · E5 PULLBACK = a new day extreme its way after 3+ quiet minutes, 0.3%+ from the open, from 09:20
+  19:45 CE (19:45 S3 G2): EARLIEST SAFE E3 VWAP+MOM, median entry 09:22 · the agreed first rule: E2 PDHL (differs)
+      E0 NOW         fired 100% · entry 09:15 · RIGHT  17% · WRONG  18% (per trade fired  18%) · left median 0.90% (p25 0.38%) · HIT60  24% · MFE60 0.59% · CHASE   0%
+      E1 ORB5        fired  64% · entry 09:33 · RIGHT   8% · WRONG   7% (per trade fired  11%) · left median 0.75% (p25 0.31%) · HIT60  18% · MFE60 0.42% · CHASE  19%
+      E2 PDHL        fired  63% · entry 09:19 · RIGHT  10% · WRONG   7% (per trade fired  12%) · left median 0.79% (p25 0.33%) · HIT60  21% · MFE60 0.48% · CHASE  16%
+      E3 VWAP+MOM    fired  94% · entry 09:22 · RIGHT  13% · WRONG  12% (per trade fired  13%) · left median 0.81% (p25 0.34%) · HIT60  19% · MFE60 0.44% · CHASE   7%
+      E4 OPEN-HOLD   fired  39% · entry 09:21 · RIGHT   6% · WRONG   5% (per trade fired  12%) · left median 0.87% (p25 0.38%) · HIT60  22% · MFE60 0.49% · CHASE  17%
+      E5 PULLBACK    fired  55% · entry 09:45 · RIGHT   7% · WRONG   6% (per trade fired  10%) · left median 0.74% (p25 0.31%) · HIT60  17% · MFE60 0.40% · CHASE  23%
+  19:45 PE (19:45 S1 G1): EARLIEST SAFE E0 NOW, median entry 09:15 · the agreed first rule: E4 OPEN-HOLD (differs)
+      E0 NOW         fired 100% · entry 09:15 · RIGHT  23% · WRONG  16% (per trade fired  16%) · left median 1.17% (p25 0.56%) · HIT60  34% · MFE60 0.80% · CHASE   0%
+      E1 ORB5        fired  68% · entry 09:33 · RIGHT  10% · WRONG   8% (per trade fired  11%) · left median 0.84% (p25 0.38%) · HIT60  18% · MFE60 0.47% · CHASE  25%
+      E2 PDHL        fired  60% · entry 09:21 · RIGHT  11% · WRONG   8% (per trade fired  13%) · left median 0.91% (p25 0.40%) · HIT60  23% · MFE60 0.53% · CHASE  28%
+      E3 VWAP+MOM    fired  96% · entry 09:22 · RIGHT  17% · WRONG  13% (per trade fired  14%) · left median 0.94% (p25 0.43%) · HIT60  22% · MFE60 0.54% · CHASE  12%
+      E4 OPEN-HOLD   fired  47% · entry 09:21 · RIGHT   8% · WRONG   6% (per trade fired  14%) · left median 0.97% (p25 0.44%) · HIT60  23% · MFE60 0.55% · CHASE  23%
+      E5 PULLBACK    fired  63% · entry 09:40 · RIGHT   9% · WRONG   7% (per trade fired  11%) · left median 0.83% (p25 0.37%) · HIT60  18% · MFE60 0.46% · CHASE  28%
+  09:08 CE (09:08 S3 G2): EARLIEST SAFE E3 VWAP+MOM, median entry 09:22 · the agreed first rule: E2 PDHL (differs)
+      E0 NOW         fired 100% · entry 09:15 · RIGHT  17% · WRONG  18% (per trade fired  18%) · left median 0.90% (p25 0.38%) · HIT60  24% · MFE60 0.59% · CHASE   0%
+      E1 ORB5        fired  64% · entry 09:33 · RIGHT   8% · WRONG   7% (per trade fired  11%) · left median 0.74% (p25 0.31%) · HIT60  18% · MFE60 0.42% · CHASE  19%
+      E2 PDHL        fired  64% · entry 09:19 · RIGHT  10% · WRONG   7% (per trade fired  11%) · left median 0.80% (p25 0.33%) · HIT60  21% · MFE60 0.49% · CHASE  15%
+      E3 VWAP+MOM    fired  94% · entry 09:22 · RIGHT  13% · WRONG  12% (per trade fired  13%) · left median 0.81% (p25 0.34%) · HIT60  19% · MFE60 0.44% · CHASE   7%
+      E4 OPEN-HOLD   fired  39% · entry 09:21 · RIGHT   6% · WRONG   5% (per trade fired  12%) · left median 0.87% (p25 0.38%) · HIT60  22% · MFE60 0.50% · CHASE  17%
+      E5 PULLBACK    fired  55% · entry 09:46 · RIGHT   7% · WRONG   6% (per trade fired  10%) · left median 0.74% (p25 0.30%) · HIT60  17% · MFE60 0.40% · CHASE  23%
+  09:08 PE (09:08 S1 G1): EARLIEST SAFE E0 NOW, median entry 09:15 · the agreed first rule: E2 PDHL (differs)
+      E0 NOW         fired 100% · entry 09:15 · RIGHT  21% · WRONG  16% (per trade fired  16%) · left median 1.08% (p25 0.51%) · HIT60  31% · MFE60 0.73% · CHASE   0%
+      E1 ORB5        fired  67% · entry 09:34 · RIGHT   9% · WRONG   7% (per trade fired  11%) · left median 0.78% (p25 0.34%) · HIT60  17% · MFE60 0.45% · CHASE  24%
+      E2 PDHL        fired  60% · entry 09:19 · RIGHT  10% · WRONG   8% (per trade fired  13%) · left median 0.88% (p25 0.39%) · HIT60  21% · MFE60 0.51% · CHASE  25%
+      E3 VWAP+MOM    fired  96% · entry 09:22 · RIGHT  15% · WRONG  13% (per trade fired  13%) · left median 0.88% (p25 0.40%) · HIT60  19% · MFE60 0.49% · CHASE  11%
+      E4 OPEN-HOLD   fired  47% · entry 09:21 · RIGHT   8% · WRONG   7% (per trade fired  14%) · left median 0.89% (p25 0.38%) · HIT60  21% · MFE60 0.50% · CHASE  22%
+      E5 PULLBACK    fired  61% · entry 09:44 · RIGHT   8% · WRONG   6% (per trade fired  10%) · left median 0.76% (p25 0.34%) · HIT60  16% · MFE60 0.43% · CHASE  27%
+  09:20 CE (09:20 S8 G2): EARLIEST SAFE E0 NOW, median entry 09:20 · the agreed first rule: E2 PDHL (differs)
+      E0 NOW         fired 100% · entry 09:20 · RIGHT  15% · WRONG  14% (per trade fired  14%) · left median 0.85% (p25 0.39%) · HIT60  23% · MFE60 0.53% · CHASE   0%
+      E1 ORB5        fired  81% · entry 09:25 · RIGHT  10% · WRONG  10% (per trade fired  12%) · left median 0.79% (p25 0.34%) · HIT60  20% · MFE60 0.49% · CHASE   1%
+      E2 PDHL        fired  65% · entry 09:20 · RIGHT   9% · WRONG   7% (per trade fired  11%) · left median 0.80% (p25 0.36%) · HIT60  22% · MFE60 0.50% · CHASE   9%
+      E3 VWAP+MOM    fired  98% · entry 09:20 · RIGHT  14% · WRONG  13% (per trade fired  13%) · left median 0.82% (p25 0.37%) · HIT60  22% · MFE60 0.52% · CHASE   0%
+      E4 OPEN-HOLD   fired  76% · entry 09:21 · RIGHT  11% · WRONG  10% (per trade fired  13%) · left median 0.84% (p25 0.38%) · HIT60  22% · MFE60 0.52% · CHASE   0%
+      E5 PULLBACK    fired  72% · entry 09:33 · RIGHT   9% · WRONG   8% (per trade fired  11%) · left median 0.74% (p25 0.34%) · HIT60  18% · MFE60 0.45% · CHASE   6%
+  09:20 PE (09:20 S10 G3): EARLIEST SAFE E0 NOW, median entry 09:20 · the agreed first rule: E2 PDHL (differs)
+      E0 NOW         fired 100% · entry 09:20 · RIGHT  17% · WRONG  14% (per trade fired  14%) · left median 0.94% (p25 0.44%) · HIT60  23% · MFE60 0.57% · CHASE   0%
+      E1 ORB5        fired  81% · entry 09:25 · RIGHT  11% · WRONG  10% (per trade fired  12%) · left median 0.83% (p25 0.39%) · HIT60  19% · MFE60 0.48% · CHASE   3%
+      E2 PDHL        fired  67% · entry 09:20 · RIGHT  11% · WRONG   9% (per trade fired  13%) · left median 0.89% (p25 0.40%) · HIT60  23% · MFE60 0.55% · CHASE   8%
+      E3 VWAP+MOM    fired  97% · entry 09:20 · RIGHT  16% · WRONG  13% (per trade fired  13%) · left median 0.91% (p25 0.42%) · HIT60  22% · MFE60 0.54% · CHASE   0%
+      E4 OPEN-HOLD   fired  80% · entry 09:21 · RIGHT  13% · WRONG  11% (per trade fired  14%) · left median 0.92% (p25 0.41%) · HIT60  23% · MFE60 0.55% · CHASE   1%
+      E5 PULLBACK    fired  74% · entry 09:34 · RIGHT  10% · WRONG   8% (per trade fired  11%) · left median 0.80% (p25 0.37%) · HIT60  17% · MFE60 0.47% · CHASE   8%
+  09:30 CE (09:30 S8 G0): EARLIEST SAFE E0 NOW, median entry 09:30 · the agreed first rule: E4 OPEN-HOLD (differs)
+      E0 NOW         fired 100% · entry 09:30 · RIGHT  14% · WRONG  12% (per trade fired  12%) · left median 0.81% (p25 0.37%) · HIT60  18% · MFE60 0.47% · CHASE   0%
+      E1 ORB5        fired  87% · entry 09:30 · RIGHT  11% · WRONG  10% (per trade fired  11%) · left median 0.76% (p25 0.33%) · HIT60  17% · MFE60 0.44% · CHASE   1%
+      E2 PDHL        fired  65% · entry 09:30 · RIGHT   8% · WRONG   7% (per trade fired  10%) · left median 0.76% (p25 0.34%) · HIT60  18% · MFE60 0.45% · CHASE   9%
+      E3 VWAP+MOM    fired  95% · entry 09:33 · RIGHT  12% · WRONG  10% (per trade fired  11%) · left median 0.78% (p25 0.33%) · HIT60  16% · MFE60 0.44% · CHASE   0%
+      E4 OPEN-HOLD   fired  61% · entry 09:30 · RIGHT   9% · WRONG   7% (per trade fired  11%) · left median 0.79% (p25 0.37%) · HIT60  18% · MFE60 0.46% · CHASE   0%
+      E5 PULLBACK    fired  74% · entry 09:42 · RIGHT   9% · WRONG   7% (per trade fired  10%) · left median 0.70% (p25 0.30%) · HIT60  15% · MFE60 0.40% · CHASE   4%
+  09:30 PE (09:30 S6 G3): EARLIEST SAFE E0 NOW, median entry 09:30 · the agreed first rule: E4 OPEN-HOLD (differs)
+      E0 NOW         fired 100% · entry 09:30 · RIGHT  15% · WRONG  13% (per trade fired  13%) · left median 0.86% (p25 0.42%) · HIT60  19% · MFE60 0.49% · CHASE   0%
+      E1 ORB5        fired  77% · entry 09:32 · RIGHT  11% · WRONG   9% (per trade fired  12%) · left median 0.80% (p25 0.38%) · HIT60  17% · MFE60 0.44% · CHASE   5%
+      E2 PDHL        fired  65% · entry 09:30 · RIGHT  10% · WRONG   8% (per trade fired  13%) · left median 0.86% (p25 0.40%) · HIT60  21% · MFE60 0.49% · CHASE   8%
+      E3 VWAP+MOM    fired  93% · entry 09:35 · RIGHT  13% · WRONG  12% (per trade fired  13%) · left median 0.81% (p25 0.35%) · HIT60  17% · MFE60 0.44% · CHASE   1%
+      E4 OPEN-HOLD   fired  56% · entry 09:30 · RIGHT   9% · WRONG   8% (per trade fired  14%) · left median 0.88% (p25 0.42%) · HIT60  20% · MFE60 0.49% · CHASE   0%
+      E5 PULLBACK    fired  66% · entry 09:47 · RIGHT   9% · WRONG   7% (per trade fired  11%) · left median 0.76% (p25 0.34%) · HIT60  15% · MFE60 0.41% · CHASE   8%
+  09:45 CE (09:45 S4 G1): EARLIEST SAFE E0 NOW, median entry 09:45 · the agreed first rule: E4 OPEN-HOLD (differs)
+      E0 NOW         fired 100% · entry 09:45 · RIGHT  15% · WRONG  12% (per trade fired  12%) · left median 0.82% (p25 0.36%) · HIT60  17% · MFE60 0.43% · CHASE   0%
+      E1 ORB5        fired  75% · entry 09:45 · RIGHT  11% · WRONG   8% (per trade fired  11%) · left median 0.78% (p25 0.34%) · HIT60  17% · MFE60 0.44% · CHASE   6%
+      E2 PDHL        fired  65% · entry 09:45 · RIGHT  10% · WRONG   8% (per trade fired  12%) · left median 0.78% (p25 0.33%) · HIT60  18% · MFE60 0.44% · CHASE   8%
+      E3 VWAP+MOM    fired  91% · entry 09:52 · RIGHT  13% · WRONG  10% (per trade fired  11%) · left median 0.77% (p25 0.31%) · HIT60  16% · MFE60 0.41% · CHASE   0%
+      E4 OPEN-HOLD   fired  48% · entry 09:45 · RIGHT   8% · WRONG   6% (per trade fired  12%) · left median 0.83% (p25 0.37%) · HIT60  19% · MFE60 0.47% · CHASE   1%
+      E5 PULLBACK    fired  59% · entry 10:08 · RIGHT   7% · WRONG   5% (per trade fired   9%) · left median 0.73% (p25 0.32%) · HIT60  16% · MFE60 0.42% · CHASE  12%
+  09:45 PE (09:45 S8 G0): EARLIEST SAFE E0 NOW, median entry 09:45 · the agreed first rule: E4 OPEN-HOLD (differs)
+      E0 NOW         fired 100% · entry 09:45 · RIGHT  13% · WRONG  10% (per trade fired  10%) · left median 0.80% (p25 0.38%) · HIT60  15% · MFE60 0.43% · CHASE   0%
+      E1 ORB5        fired  90% · entry 09:45 · RIGHT  11% · WRONG   9% (per trade fired  10%) · left median 0.79% (p25 0.35%) · HIT60  14% · MFE60 0.42% · CHASE   1%
+      E2 PDHL        fired  65% · entry 09:45 · RIGHT   8% · WRONG   7% (per trade fired  10%) · left median 0.78% (p25 0.36%) · HIT60  14% · MFE60 0.44% · CHASE   8%
+      E3 VWAP+MOM    fired  93% · entry 09:51 · RIGHT  12% · WRONG   9% (per trade fired  10%) · left median 0.77% (p25 0.34%) · HIT60  14% · MFE60 0.41% · CHASE   0%
+      E4 OPEN-HOLD   fired  64% · entry 09:45 · RIGHT   8% · WRONG   6% (per trade fired   9%) · left median 0.80% (p25 0.38%) · HIT60  14% · MFE60 0.42% · CHASE   0%
+      E5 PULLBACK    fired  77% · entry 09:59 · RIGHT   9% · WRONG   7% (per trade fired   9%) · left median 0.74% (p25 0.32%) · HIT60  14% · MFE60 0.38% · CHASE   3%
+
+=== 7. ROLE IN THE SECTOR at 09:20 / 09:30 / 09:45 (tuning days): share-days, a 2% move its way STILL TO COME from the naming price,
+    RIGHT, WRONG, move left (all from the naming price; the move from the open would include the minutes the role was read from)
+  09:20 CE  NONE 68321: 15% / 13% / 15% / 0.80% · LEADER 7771: 24% / 20% / 19% / 1.04% · FOLLOWER 14992: 16% / 14% / 14% / 0.82% · LAGGARD 7139: 16% / 14% / 14% / 0.84% · AGAINST 841: 25% / 20% / 22% / 1.01% · ALONE 3086: 26% / 22% / 20% / 1.08%
+  09:20 PE  NONE 80073: 16% / 14% / 13% / 0.90% · LEADER 4787: 25% / 21% / 22% / 1.06% · FOLLOWER 9399: 19% / 17% / 16% / 0.94% · LAGGARD 4536: 20% / 18% / 16% / 0.99% · AGAINST 1058: 24% / 21% / 18% / 1.08% · ALONE 2297: 27% / 23% / 22% / 1.13%
+  09:30 CE  NONE 66222: 14% / 12% / 14% / 0.76% · LEADER 8786: 21% / 18% / 16% / 0.92% · FOLLOWER 14184: 15% / 13% / 11% / 0.79% · LAGGARD 7957: 14% / 12% / 11% / 0.79% · AGAINST 1317: 20% / 17% / 21% / 0.91% · ALONE 3684: 23% / 20% / 17% / 1.02%
+  09:30 PE  NONE 75157: 13% / 12% / 12% / 0.84% · LEADER 6277: 25% / 21% / 17% / 1.08% · FOLLOWER 10755: 18% / 16% / 13% / 0.90% · LAGGARD 5737: 19% / 17% / 12% / 0.98% · AGAINST 1546: 20% / 17% / 17% / 0.94% · ALONE 2678: 24% / 20% / 17% / 1.08%
+  09:45 CE  NONE 65700: 12% / 11% / 12% / 0.71% · LEADER 9251: 19% / 17% / 12% / 0.89% · FOLLOWER 13031: 13% / 11% / 9% / 0.75% · LAGGARD 8199: 12% / 11% / 9% / 0.74% · AGAINST 1717: 18% / 16% / 18% / 0.87% · ALONE 4252: 18% / 16% / 15% / 0.89%
+  09:45 PE  NONE 71865: 11% / 10% / 11% / 0.77% · LEADER 7350: 21% / 19% / 15% / 0.99% · FOLLOWER 11345: 15% / 14% / 12% / 0.82% · LAGGARD 6633: 16% / 14% / 11% / 0.87% · AGAINST 1873: 16% / 14% / 14% / 0.89% · ALONE 3084: 20% / 18% / 17% / 0.94%
+
+=== 8. RINGS for the recommended plan (the best pre-open list + the best 09:30 list + the safe trigger, both sides, N=10)
+    the evening card is reported, outside the day count · the 09:08 card 1 ring · the 09:30 card 1 ring when it adds a name · each pick's
+    safe-trigger first fire 1 ring (E0 = enter on the card: no extra ring) · limits: 50 a day, 6 in any 15 minutes
+  the plan: a day median 11, p90 12 · the day's busiest 15 min median 7, p90 10   (over the limit)
+  the plan, the trigger ringing only for the top 5 per side: a day median 7, p90 7 · the day's busiest 15 min median 5, p90 6
+    CE: pre-open list 19:45 S3 G2 (trigger E3 VWAP+MOM) · 09:30 list 09:30 S8 G0 (trigger E0 NOW)
+    PE: pre-open list 19:45 S1 G1 (trigger E0 NOW) · 09:30 list 09:30 S6 G3 (trigger E0 NOW)
+  EACH LIST ON ITS OWN (the winning N=10 list + its safe trigger; a day median / p90 · busiest 15 min median / p90):
+    19:45 CE 9 / 10 · 6 / 9 · PE 0 / 0 · 0 / 0 · both 9 / 10 · 6 / 9
+    09:08 CE 10 / 11 · 7 / 10 · PE 1 / 1 · 1 / 1 · both 10 / 11 · 7 / 10
+    09:20 CE 1 / 1 · 1 / 1 · PE 1 / 1 · 1 / 1 · both 1 / 1 · 1 / 1
+    09:30 CE 1 / 1 · 1 / 1 · PE 1 / 1 · 1 / 1 · both 1 / 1 · 1 / 1
+    09:45 CE 1 / 1 · 1 / 1 · PE 1 / 1 · 1 / 1 · both 1 / 1 · 1 / 1
+
+=== 9. WHAT THIS CAN AND CANNOT SAY
+  SURVIVORSHIP: today's F&O list and today's sectors.json. Shares that left F&O are missing; a share that changed sector is in today's.
+  MIXED STORE / GROWING UNIVERSE: early half-years have fewer shares (the header shows the universe per half-year). Recall at a fixed N is
+    easier on thin days, so N as a % of the universe is shown; lift against same-day random shares is not biased by it.
+  MULTIPLE TESTING: 90 configurations x 5 levels x 2 sides x 3 N. Limited by the fixed formulas (no fitted weights), selection on the
+    tuning days only, the unchanged held-out view and the selection-luck line. Some optimism remains in every winner.
+  LOOK-AHEAD GUARD (signed off by the chair): the shuffled-label 'leak test' is REPLACED by two parts. (1) The in-run probe (header): on
+    1 valid day of every share, day D's minutes from the naming minute on (all of D for 19:45, all of D+1 as well) are replaced and every
+    input re-read - any change is reported and section 0 is flagged. On the real store this checks the PER-SHARE INPUTS AND TRIGGER STATES
+    ONLY. (2) The fake-store scramble in preopen_test: day D's minutes are replaced from 09:15 / 09:20 / 09:30 / 09:45 on for EVERY symbol
+    and the whole study is rebuilt; every feature, score, market lean, sector read, role, list and trigger fire at that level must stay
+    the same (it found the c5@5 bug of 20 Nov). Part (2) covers the cross-share steps (sector medians, ranks, the market and sector reads,
+    the roles) that part (1) cannot - and it runs on the fake stores only, never on the real one.
+  GRADED FROM THE NAMING PRICE: 09:20 / 09:30 / 09:45 are read from the first 5 / 15 / 30 minutes, so they are graded on what is STILL TO
+    COME: recall on the moves whose best move from the naming price C[t-1] is >= 1.5 / 2 / 3% its way, the sector truth from C[t-1] to
+    15:10, the market read's side-day from the 2% movers from C[t-1]. Graded from the 09:15 open the same read scores itself on the move
+    it has already seen (on a pure-noise store the named sectors overlap the true top 3 by ~0.95 from the open, 0.50 = random from the
+    naming price). The from-the-open numbers there are secondary lines marked 'includes the minutes already seen'. 19:45 and 09:08 are graded from the open.
+  REGIME: about 3 years is mostly one regime. The held-out half-year gives wide intervals; its up / down day splits are thin.
+  NO NEWS, NO GLOBAL CUES, NO ORDER BOOK: the 19:45 level cannot see overnight news, so it is expected to be weak. 09:08 is the first level
+    that sees news, and only through the gap.
+  THE OPEN AS A FILL: the 09:15 candle's open stands in for the 09:08 pre-open price and is an optimistic fill; section 4 shows the
+    19:45 / 09:08 winners again from the 09:16 price (C[0]) as the robustness line.
+  MINUTE CANDLES hide moves inside a minute. A minute that touches both levels counts as the adverse one first.
+  MOVE LEFT and the best move run to the day's best price until 15:10. Nobody sells the top: read them as room, not profit.
+  WHIPSAW share-days count as real moves on both sides (a share that ran 2% up and 2% down is a CE and a PE move).
+  LABELS, KIND and TYPE are hindsight and are never inputs. The market and sector reads use data up to the naming minute only.
+  The 19:45 level assumes NSE's day-D-1 futures file is out by 19:45 (S1 and S3 do not need it). The split rule misses splits under 20%.
+    grid() smooths illiquid shares. Circuit days are included.
+  The OPTION PROXY ignores IV, skew, gap-day premiums and liquidity - that is why it is one secondary line and never the verdict.
+  SECTOR BREADTH in small sectors (4-6 members) moves in big steps; a sector-day needs 4+ listed members to be valid.
+  E0 rings are the card itself (no extra ring); a pick that never fires its trigger counts as not caught.
+  THE EARLIEST SAFE TRIGGER (signed off by the chair): the TIGHTENED rule is the primary one - WRONG per trade that fired, and 70% of
+    E0's RIGHT kept, so a trigger that seldom fires cannot pass. The agreed first rule (WRONG over all picks) is printed beside it in
+    section 6 and kept in preopen.json as safe_old_rule.
+  THE VERDICT WORDS (signed off by the chair, no change): the fourth verdict word stays - all four stay as they are: PICKS / NO BETTER
+    THAN RANDOM / PICKS, BUT NO BETTER THAN THE PLAIN MOVERS LIST / and the fourth, PICKS, BUT NO BETTER THAN THE VOLATILE LIST.
+
+(3.6 min)
