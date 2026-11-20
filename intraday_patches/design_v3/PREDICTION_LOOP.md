@@ -224,6 +224,15 @@ yet name the side (50.2%, a coin flip), and that a news-thin evening gives an em
 5. Hindsight check stays: a knowledge chain added after a move never scores that move (the 18 Nov -> 19 Nov AC / auto /
    electronics result is not counted).
 
+### A6c. EXTREME overbought / oversold rule (from obscan.py, 3 years, 318 events; the trader's challenge 20 Nov)
+After a daily RSI(14) >= 80: 81% corrected within 20 trading days (a 5%+ pullback from a high close, or a close below the 20-day
+average); median worst pullback -7.6% (worst cases -20% to -26%); yet 62% were higher at day 20 (median +3%) - the trend often
+resumes after a shake-out, and the 19% that ran on (e.g. GLENMARK Jun 2025, +29.9% in 20 days) still corrected later.
+So: (1) an EXTREME share never gets a fresh CE GO NOW on a breakout - only a pullback entry (hold at VWAP / the 20-day average
+with volume); (2) it may get a PE line, but only on the turn (yesterday's low broken, below VWAP, volume, sector weakening);
+(3) the card shows "EXTREME RSI nn - 81% corrected within 20 days (median -7.6%), n=318". The mirror (RSI <= 20) is measured
+the same way before it is used for CE bounce lines.
+
 ### A7. List size (both sides always computed and shown)
 - Up to 8 lines per side [S, PS] in the scored list: only lines with probability >= 1.6x the side's base rate (once calibrated) or
   grade MEDIUM+ (before), ordered by score.
