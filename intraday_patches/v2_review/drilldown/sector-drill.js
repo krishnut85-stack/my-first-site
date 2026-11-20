@@ -41,6 +41,7 @@
     const m = !open ? 'preopen' : t < RULES.FORM_END ? 'forming' : t > RULES.MANAGE ? 'manage' : 'live';
     return {k: m, locked: !!lock.locked, lockWhy: lock.why || '', open, st};
   }
+  const notLive = () => istMin() >= 15 * 60 + 30 ? 'closed - not live' : 'pre-open - not live';
   const lastSession = () => { const f = S.get('sh.RELIANCE') || S.get('idx.NIFTY'); return f && f.src_ts ? dhm(f.src_ts) : ''; };
   const board = () => { const v = S.val('sec.board'); return Array.isArray(v) ? v : []; };
   const secByName = n => { const k = String(n || '').trim().toLowerCase(), B = board(); if (!k) return null;
@@ -141,11 +142,15 @@
     if (!q) return {K, exp: ch.exp, why: 'no ' + m.cp + ' quote at ' + k0(K)};
     const lot = m.lot || ch.lot, bid = q.bid, ask = q.ask, mid = isN(q.mid) ? q.mid : isN(bid) && isN(ask) ? (bid + ask) / 2 : q.ltp;
     const sp = isN(bid) && isN(ask) ? ask - bid : null;
-    const ostale = !!BAD[ch.state] || (mode().open && isN(ch.age) && ch.age > RULES.STALE_S);
+    // B9 (21 Nov): yesterday's premium between 09:15 and 09:25 = "premium loading (09:15 sweep)", not STALE (still no GO NOW);
+    // F2: key 3 failed today's Kite check = the quote is STALE with that reason
+    const oo = (ch.f && ch.f.v && ch.f.v.opt) || {}, odeg = oo.degraded || '', im = istMin();
+    const oload = !odeg && im >= 555 && im < 565 && (!!oo.loading || (isN(q.q_ts) && nowS() - q.q_ts > (im - 555 + 1) * 60));
+    const ostale = !oload && (!!odeg || !!BAD[ch.state] || (mode().open && isN(ch.age) && ch.age > RULES.STALE_S));
     const thh = isN(q.theta) ? q.theta / RULES.TH_HOURS : null;
     return {K, exp: ch.exp, near: ch.near, cp: m.cp, q, lot, bid, ask, mid, sp, sprLot: isN(sp) && lot ? sp * lot : null, sprPct: isN(q.spr_pct) ? q.spr_pct : null,
       depLots: isN(q.depth_bid) && lot ? Math.floor(q.depth_bid / lot) : null, delta: q.delta, gamma: q.gamma, iv: q.iv, thh: isN(thh) && lot ? thh * lot : null,
-      lotCost: isN(ask) && lot ? ask * lot : null, kite: kite(m.s, ch.exp, K, m.cp), ostale, oage: ch.age, info: ch.info, roof: ch.roof, floor: ch.floor};
+      lotCost: isN(ask) && lot ? ask * lot : null, kite: kite(m.s, ch.exp, K, m.cp), ostale, oload, odeg, oage: ch.age, info: ch.info, roof: ch.roof, floor: ch.floor};
   }
   const hrsLeft = () => { const t = istMin(), md = mode(); return md.open ? Math.max(0, (RULES.LAST - t) / 60) : (RULES.LAST - (9 * 60 + 15)) / 60; };
   /* the plan: trigger / stop / target (share + premium), costs, R:R, lots. Hard blocks first (BAN, LOCKED, STALE, OPTION STALE), then
@@ -175,8 +180,10 @@
     if (m.ban) { out.block = 'BAN - only close existing'; out.why = 'F&O ban · MWPL ' + (m.banRow && m.banRow.mwpl) + '%'; }
     else if (md.locked) { out.block = 'LOCKED - no new trades today'; out.why = md.lockWhy || 'day loss lock hit (pos.day.lock)'; }
     else if (m.stale) { out.block = 'STALE ' + (m.staleS != null ? m.staleS + 's' : ''); out.why = 'share quote ' + (m.f ? m.f.state : '') + ' - no GO NOW until it ticks'; }
+    else if (c.odeg) { out.block = 'OPTION STALE - key 3 down'; out.why = c.odeg + ' - no GO NOW on its quotes'; }
+    else if (c.oload) { out.block = 'premium loading'; out.why = 'premium loading (09:15 sweep) - today\'s first December quote is not in yet; no GO NOW until it arrives'; }
     else if (c.ostale) { out.block = 'OPTION STALE ' + Math.round(c.oage || 0) + 's'; out.why = 'option bid / ask old - no GO NOW until it ticks'; }
-    else if (md.k === 'preopen') { out.block = 'pre-open - not live'; out.why = 'market not open: levels from the ' + lastSession() + ' close'; }
+    else if (md.k === 'preopen') { out.block = notLive(); out.why = 'market not open: levels from the ' + lastSession() + ' close'; }
     else if (md.k === 'forming') { out.block = 'forming - before 09:30'; out.why = 'groups settle on closed bars at 09:30'; }
     else if (md.k === 'manage') { out.block = 'manage only - no new entries'; out.why = 'after 14:30'; }
     else if (m.grp === 'nt' || m.grp === 'wait' || (m.grp === 'lead' && !m.gok)) { out.warn = 'waiting - ' + (m.fails[0] || 'a gate') + ' fails'; out.why = 'not a trade until every gate passes'; }
@@ -189,29 +196,30 @@
     else if (m.isExt) { out.lots = 1; out.lotsTxt = '1 lot (minimum) · extended, half size'; }
     else { out.lots = Math.max(0, Math.min(out.fitR, out.fitLock)); out.lotsTxt = out.lots + (out.lots === 1 ? ' lot' : ' lots'); }
     out.takeable = out.lots > 0;
-    out.copyOff = m.ban ? 'BAN - only close existing' : m.stale ? 'STALE quote' : c.ostale ? 'option quote STALE' : !c.kite ? (c.why || 'no December contract') : '';
+    out.copyOff = m.ban ? 'BAN - only close existing' : m.stale ? 'STALE quote' : c.odeg ? 'option quote STALE (key 3 down)' : c.oload ? 'premium loading (09:15 sweep)' : c.ostale ? 'option quote STALE' : !c.kite ? (c.why || 'no December contract') : '';
     return out;
   }
   /* ===================================================== end of RULES ===================================================== */
 
   /* ---------- labels ---------- */
   function gLabel(sec, g, n, md) { const up = sec.dir > 0, cp = up ? 'CE' : 'PE', ocp = up ? 'PE' : 'CE';
-    return {up: [md.k === 'forming' ? 'FORMING' : up ? 'COMING UP NOW' : 'COMING DOWN NOW', n + ' · ' + cp], lead: ['LEADER', 'pullback entry if extended'],
-      lag: ['LAGGARD', up ? 'may catch up' : 'may catch down'], wait: ['WAITING', 'a gate fails'], against: ['AGAINST (' + n + ')', ocp + ' strike'], nt: ['NOT TRADABLE', 'reason shown']}[g]; }
+    return {up: [md.k === 'forming' ? 'FORMING' : up ? 'COMING UP NOW' : 'COMING DOWN NOW', n + ' · ' + cp], lead: ['LEADER', 'pullback if EXT'],
+      lag: ['LAGGARD', up ? 'may catch up' : 'may catch down'], wait: ['WAITING', 'a gate fails'], against: ['AGAINST (' + n + ')', ocp + ' strike'], nt: ['NOT TRADABLE', 'reason in row']}[g]; }
   const roleChip = r => { r = UP(r); const k = /LEADER/.test(r) ? 'lead' : /LAG/.test(r) ? 'lag' : /DEP/.test(r) ? 'dep' : 'fol';
-    return `<i class="sd-role sd-role-${k}">${{lead: 'LEAD', lag: 'LAG', dep: 'DEP', fol: 'FOLL'}[k]}</i>`; };
+    return `<i class="sd-role sd-role-${k}" title="${{lead: 'LEADER - the biggest mover with the sector', lag: 'LAGGARD - flat, may catch up', dep: 'DEPENDENT - moves with its driver', fol: 'FOLLOWER - moves with the sector'}[k]}">${{lead: 'LDR', lag: 'LAG', dep: 'DEP', fol: 'FOL'}[k]}</i>`; };
   function stateCell(m) {
     const p = m.plan;
     if (m.ban) return `<b class="sd-ban">BAN</b> close only`;
     if (m.stale) return `<b class="sd-warn">STALE ${m.staleS != null ? m.staleS + 's' : ''}</b>`;
-    if (m.isExt) return `<span class="sd-ext" title="${esc(p.how)}">EXT · ${m.dir > 0 ? 'pullback' : 'bounce'} ${nn(p.trig, 2)}</span>`;
-    if (m.grp === 'lag') return `<span title="${esc(p.how)}">trig ${m.dir > 0 ? '>' : '<'} ${nn(p.trig, 2)}</span>`;
+    if (m.isExt) return `<span class="sd-ext" title="${esc(p.how)}">EXT ↩ ${nn(p.trig, p.trig >= 1000 ? 0 : 1)}</span>`;
+    if (m.grp === 'lag') return `<span title="${esc(p.how)}">trig ${m.dir > 0 ? '>' : '<'} ${nn(p.trig, p.trig >= 1000 ? 0 : 1)}</span>`;
     if (m.gok) return `<span class="sd-ok">✓ 4/4</span>`;
-    return `<span class="sd-fail" title="failing gates: ${esc(m.fails.join(' · '))}">✕ ${esc(m.fails[0])}${m.fails.length > 1 ? ' +' + (m.fails.length - 1) : ''}</span>`;
+    return `<span class="sd-fail" title="failing gates: ${esc(m.fails.join(' · '))}">✕ ${esc(String(m.fails[0]).replace(/ not known$/, ' n/k').replace(/^score /, 'sc ').replace(/ build-up$/, ''))}${m.fails.length > 1 ? ' +' + (m.fails.length - 1) : ''}</span>`;
   }
   function aiCell(m) {
     const C = S.val('calls.feed'), c = Array.isArray(C) ? C.find(x => x.s === m.s && x.engine !== 'old') : null;
-    if (c && c.action) return `<span class="sd-ai ${/GO NOW/.test(c.action) ? 'go' : 'rd'}" title="${esc((c.t || '') + ' ' + (c.why || ''))}">${esc(c.action)}</span>`;
+    if (c && /GO NOW|GET READY/.test(c.action || '')) return `<span class="sd-ai ${/GO NOW/.test(c.action) ? 'go' : 'rd'}" title="${esc((c.t || '') + ' ' + (c.why || ''))}">${esc(c.action)}</span>`;
+    if (c && c.action) return `<span class="t3" title="the engine's last word on ${esc(m.s)}: ${esc((c.t || '') + ' ' + c.action + ' · ' + (c.why || ''))}">AI silent</span>`;
     if (m.bs && m.bs.call) return `<span class="sd-ai rd" title="sector board · ${esc(m.bs.why || '')}">${esc(m.bs.call)}</span>`;
     return '<span class="t3">AI silent</span>';
   }
@@ -229,7 +237,7 @@
   const CFG = {
     rotation: {anchors: () => $$('#wtb tr.row[data-s]'), nameOf: a => a.dataset.s, mode: 'flow', paneHost: () => $('#rcol'),
       clicks: [['#wtb tr.row[data-s]', a => a.dataset.s, 1], ['#heroLine [data-sec]', a => a.dataset.sec], ['#flowSide .fs[data-sec]', a => a.dataset.sec]],
-      insert: a => { let tr = $('#wtb tr.sd-tr'); if (!tr) { tr = document.createElement('tr'); tr.className = 'sd-tr'; tr.innerHTML = '<td colspan="13"></td>'; } a.after(tr); tr.firstChild.appendChild(node); }},
+      insert: a => { let tr = $('#wtb tr.sd-tr'); if (!tr) { tr = document.createElement('tr'); tr.className = 'sd-tr'; tr.innerHTML = '<td></td>'; } tr.firstChild.colSpan = Math.max(1, $$('#wt thead th').filter(t => getComputedStyle(t).display !== 'none').length); a.after(tr); tr.firstChild.appendChild(node); }},
     sectors: {anchors: () => $$('#bdb .sec[data-id] > .srow'), nameOf: a => a.parentNode.dataset.id, mode: 'flow', paneHost: () => $('#call'),
       clicks: [['#bdb .sec[data-id] > .srow', a => a.parentNode.dataset.id, 1], ['#heat .ht[data-o]', a => a.dataset.o], ['#bdb .nt[data-o]', a => a.dataset.o]],
       insert: a => a.after(node)},
@@ -255,7 +263,9 @@
   }
   const anchorOf = name => cfg.anchors().find(a => lc(cfg.nameOf(a)) === lc(name)) || null;
   new MutationObserver(() => { if (st.open && !PHONE() && (!node.isConnected || (cfg.mode === 'dock' && dock && !dock.isConnected))) mount(); markAnchors(); }).observe(document.getElementById('page') || document.body, {childList: true, subtree: true});
-  function markAnchors() { cfg.anchors().forEach((a, i) => { if (!a.hasAttribute('tabindex')) a.tabIndex = 0; const on = !!st.open && lc(cfg.nameOf(a)) === lc(st.open); if (a.classList.contains('sd-anchor') !== on) a.classList.toggle('sd-anchor', on); }); }
+  function fixSpan() { const td = node.parentElement; if (td && td.tagName === 'TD' && td.parentElement.classList.contains('sd-tr')) {
+      const n = Math.max(1, $$('#wt thead th').filter(t => getComputedStyle(t).display !== 'none').length); if (td.colSpan !== n) td.colSpan = n; } }
+  function markAnchors() { fixSpan(); cfg.anchors().forEach((a, i) => { if (!a.hasAttribute('tabindex')) a.tabIndex = 0; const on = !!st.open && lc(cfg.nameOf(a)) === lc(st.open); if (a.classList.contains('sd-anchor') !== on) a.classList.toggle('sd-anchor', on); }); }
 
   /* ---------- open / close ---------- */
   function openSector(name, o) {
@@ -279,7 +289,7 @@
   function scroller(el) { for (let e = el.parentElement; e; e = e.parentElement) { const s = getComputedStyle(e); if (/(auto|scroll)/.test(s.overflowY) && e.scrollHeight > e.clientHeight) return e; } return null; }
   function closeSector() {
     st.open = null; st.sel = null; st.drw = ''; document.body.classList.remove('sd-on', 'sd-sel');
-    node.remove(); pane.remove(); if (dock) dock.remove(); $$('.sd-ph').forEach(e => e.classList.remove('sd-ph')); sheetClose(); markAnchors(); writeHash(); fire();
+    node.remove(); pane.remove(); if (dock) dock.remove(); const etr = document.querySelector('#wtb tr.sd-tr'); if (etr) etr.remove(); /* an empty spanning row would squeeze the table's columns */ $$('.sd-ph').forEach(e => e.classList.remove('sd-ph')); sheetClose(); markAnchors(); writeHash(); fire();
   }
   function select(sym, o) {
     o = o || {}; if (!st.open) return;
@@ -329,13 +339,13 @@
         <span class="sd-st">${esc(UP(b.status || ''))}${b.since ? ' ' + esc(b.since) : ''}</span>${sec.narrow ? '<span class="sd-chip sd-nar" title="F&amp;O names move one way, the other listed shares do not (R49)">NARROW</span>' : ''}
         <span class="sd-chip sd-ce" title="CE ideas in this sector now · engine calls today by side (calls.feed)">CE ${sec.ce} · PE ${sec.pe}${ce !== null ? ` · engine today PE ${pe} / CE ${ce}` : ''}</span>
 </div>
-      <div class="sd-l2">${fresh ? `<span class="sd-chip sd-pre" title="the market is not open: every number is from the last session, not today">pre-open - not live · ${esc(lastSession())} close</span>` : md.k === 'forming' ? '<span class="sd-chip sd-pre">forming - groups settle at 09:30</span>' : md.k === 'manage' ? '<span class="sd-chip sd-pre">manage only - no new entries</span>' : ''}
-        ${ew ? `<span class="sd-chip sd-exp" title="${esc(exp.date)} is the November expiry, ${exp.sessions_left} sessions left, physical settlement">Expiry week · physical settlement - December only</span>` : ''}<span class="sd-why"><b>WHY</b> ${why ? esc(why) + (bf && bf.src_ts ? ' <span class="t3">(' + H.ago(nowS() - bf.src_ts) + ' old)</span>' : '') : '<b class="am">UNEXPLAINED</b>'}</span>
+      <div class="sd-l2">${fresh ? `<span class="sd-chip sd-pre" title="the market is not open: every number is from the last session">${notLive()} · ${esc(lastSession())} close</span>` : md.k === 'forming' ? '<span class="sd-chip sd-pre">forming - groups settle at 09:30</span>' : md.k === 'manage' ? '<span class="sd-chip sd-pre">manage only - no new entries</span>' : ''}
+        ${ew ? `<span class="sd-chip sd-exp" title="${esc(exp.date)} is the November expiry, ${exp.sessions_left} sessions left, physical settlement">Expiry week · physical settlement - December only</span>` : ''}<span class="sd-why" title="${esc(why || 'UNEXPLAINED')}"><b>WHY</b> ${why ? esc(why) + (bf && bf.src_ts ? ' <span class="t3">(' + H.ago(nowS() - bf.src_ts) + ' old)</span>' : '') : '<b class="am">UNEXPLAINED</b>'}</span>
         ${b.since ? `<span class="t3" title="run clock: since the sector board's ${esc(b.status || '')} time; the typical run length (n) is not in the store">${ups ? 'up' : 'down'} since ${esc(b.since)}</span>` : ''}
         ${st.reranked ? '<button class="sd-chip sd-rr" title="the order is held while your pointer or focus is on the list">re-ranked · R to apply</button>' : ''}</div>
     </div>`;
   }
-  const HEAD = `<div class="sd-h sr"><span class="c-g">group</span><span class="c-n">share · role</span><span class="c-p r">day %</span><span class="c-rs r" title="share day % − sector day % (RS30 / RS15 need 1-min bars, not in the store)">vs sec</span><span class="c-rv r">RVOL</span><span class="c-vw" title="last price vs VWAP (the opening range is not in the store)">VWAP</span><span class="c-rm r" title="ATR used since the open · ATR left (day high / low not in the store)">room</span><span class="c-bu">build-up · OI</span><span class="c-wt r" title="weight in the sector (sec.board)">wt %</span><span class="c-k">December strike · prem · spr</span><span class="c-st">state / gate</span><span class="c-ai">AI</span><span class="c-ag r">age</span></div>`;
+  const HEAD = `<div class="sd-h sr"><span class="c-g">group</span><span class="c-n" title="role: LDR leader · FOL follower · DEP dependent · LAG laggard">share · role</span><span class="c-p r">day %</span><span class="c-rs r" title="share day % − sector day % (RS30 / RS15 need 1-min bars, not in the store)">vs sec</span><span class="c-rv r">RVOL</span><span class="c-vw" title="last price vs VWAP (the opening range is not in the store)">VWAP</span><span class="c-rm r" title="ATR used since the open · ATR left (day high / low not in the store)">room</span><span class="c-bu" title="futures build-up, all months, and OI change %">B/U · OI</span><span class="c-wt r" title="weight in the sector (sec.board)">wt %</span><span class="c-k" title="the suggested December strike, its ask premium and its spread %">Dec strike · prem · spr</span><span class="c-st" title="✓ 4/4 = every gate passes · ✕ = the gate that fails (+n more) · EXT ↩ = extended, enter on the pullback to VWAP at that price · trig = the laggard's own trigger">state / gate</span><span class="c-ai">AI</span><span class="c-ag r">age</span></div>`;
   function rowHtml(sec, m, first, n, md, newIn, mv) {
     const c = m.plan.c, gl = first ? gLabel(sec, m.grp, n, md) : null, star = m.plan.takeable;
     const kc = c.kite ? `<b class="sd-k ${m.cp === 'CE' ? 'ce' : 'pe'}${m.grp === 'nt' ? ' off' : ''}" title="${esc(c.kite)} · ${esc(c.exp)}${star ? ' · ★ takeable' : ''}">${k0(c.K)} ${m.cp}${star ? ' ★' : ''}</b> <span class="n">${nn(c.ask)}</span> <span class="t3 n">${isN(c.sprPct) ? c.sprPct.toFixed(1) + '%' : ''}</span>` : nkc(c.why, 'Dec n/k');
@@ -348,7 +358,7 @@
       <span class="c-rv r n">${isN(m.rvol) ? m.rvol.toFixed(1) : nkc('sh.' + m.s + '.rvol')}</span>
       <span class="c-vw">${m.side ? `<span class="${(m.side === 'above') === (sec.dir > 0) ? 'up2' : 'dn2'}">${m.side}</span>` : nkc('VWAP missing')}</span>
       <span class="c-rm r n">${isN(m.used) ? m.used.toFixed(1) + '·' + m.left.toFixed(1) : nkc('ATR / open missing')}</span>
-      <span class="c-bu">${m.bu ? `<span class="sh-c sh-c-${m.bu.toLowerCase()} sm">${m.bu}</span>` : '<span class="t3">none</span>'} <span class="n">${isN(m.oi) ? sgn(m.oi, 1) : ''}</span></span>
+      <span class="c-bu">${m.bu ? `<span class="sh-c sh-c-${m.bu.toLowerCase()} sm">${m.bu}</span>` : '<span class="t3">none</span>'} <span class="n">${isN(m.oi) ? sgn(m.oi, Math.abs(m.oi) >= 100 ? 0 : 1) : ''}</span></span>
       <span class="c-wt r n">${isN(m.wt) ? m.wt.toFixed(1) + `<i class="sd-wb" style="width:${Math.min(100, m.wt * 2).toFixed(0)}%"></i>` : nkc('sec.board lists no weight for ' + m.s)}</span>
       <span class="c-k">${kc}</span>
       <span class="c-st">${stateCell(m)}</span>
@@ -386,8 +396,12 @@
     if (nf && nf.n > 0) h += `<button class="sd-nf sr" title="the listed shares of this sector with no F&amp;O contract: context only, never a strike">${st.nf ? '▾' : '▸'} ${nf.n} more listed, not F&amp;O · <b class="up">▲${nf.up}</b> <b class="dn">▼${nf.dn}</b> · wt ${isN(nf.wt) ? nf.wt.toFixed(0) + '%' : 'not known'}<span class="t3"> · context only, no strike</span></button>` +
       (st.nf ? `<div class="sd-nfx sr">${nf.n} listed shares outside F&amp;O: ▲${nf.up} ▼${nf.dn} (from the all-listed breadth). Their names and prices are not known - sec.board names its F&amp;O shares only. They never get a strike.</div>` : '');
     const miss = [];
+    const nodec = L.filter(m => !m.plan.c || !m.plan.c.kite);
+    if (nodec.length) { const have = S.keys('oc.').filter(k => { const o = S.val(k); return o && Array.isArray(o.rows2) && o.rows2.length; }).length;
+      miss.push('December chain - in the store for ' + have + ' of ' + S.keys('oc.').length + ' option chains now (oc.<SYM>.rows2); ' + nodec.length + ' rows here show Dec n/k'); }
     if (L.some(m => m.wt === null)) miss.push('weight % - sec.board gives weights for ' + L.filter(m => m.wt !== null).length + ' of ' + L.length + ' shares');
     miss.push('RS30 / RS15 / closed 5-min bars / opening range / day high-low - not in the store; the day RS vs the sector and the last price vs VWAP stand in');
+    h += '<div class="sd-leg sr" title="legend">roles <b>LDR</b> leader · <b>FOL</b> follower · <b>DEP</b> dependent · <b>LAG</b> laggard · <b>EXT ↩ x</b> extended - enter on the pullback to VWAP x · <b>✕</b> the gate that fails · <b>★</b> a strike you could take</div>';
     h += `<div class="sd-miss sr"><b>not known</b> - ${miss.map(esc).join(' · ')}</div>`;
     return h;
   }
@@ -430,15 +444,16 @@
       <div class="sd-s1">build-up ${m.bu ? `<span class="sh-c sh-c-${m.bu.toLowerCase()} sm">${m.bu}</span>` : 'none'} ${months}</div>
       ${ew ? '<div class="sd-wn sd-expw">Expiry week · physical settlement - December only</div>' : ''}
       <div class="sd-sec ${dimmed ? 'sd-dim' : ''}"><div class="sd-st2">TRADE BOX · ${c && c.exp ? esc(c.exp) : 'December'} (December only)</div>
-      <table class="sd-tb"><tr><th></th><td>${col(c, x => `<b class="sd-k ${m.cp === 'CE' ? 'ce' : 'pe'}">${k0(x.K)} ${m.cp}${p.takeable ? ' ★' : ''}</b> ATM`)}</td><td>${col(i2, x => `<b class="sd-k ${m.cp === 'CE' ? 'ce' : 'pe'}">${k0(x.K)} ${m.cp}</b> 1 ITM`)}</td></tr>
-      ${box('bid / ask', col(c, x => nn(x.bid) + ' / ' + nn(x.ask)), col(i2, x => nn(x.bid) + ' / ' + nn(x.ask)))}
-      ${box('spread / lot', col(c, x => rsI(x.sprLot) + ' · ' + (isN(x.sprPct) ? x.sprPct.toFixed(1) + '%' : '')), col(i2, x => rsI(x.sprLot) + ' · ' + (isN(x.sprPct) ? x.sprPct.toFixed(1) + '%' : '')))}
+      ${c && c.why && !c.K ? `<div class="sd-s1"><span class="nk">not known</span> - ${esc(c.why)}: no December bid / ask, depth, delta, theta, IV or lot cost for ${esc(m.s)} tonight</div>` : `
+      <table class="sd-tb"><tr><th></th><td class="t3">ATM</td><td class="t3">1 ITM</td></tr><tr><th>contract</th><td>${col(c, x => `<b class="sd-k ${m.cp === 'CE' ? 'ce' : 'pe'}">${k0(x.K)} ${m.cp}${p.takeable ? ' ★' : ''}</b>`)}</td><td>${col(i2, x => `<b class="sd-k ${m.cp === 'CE' ? 'ce' : 'pe'}">${k0(x.K)} ${m.cp}</b>`)}</td></tr>
+      ${box('bid', col(c, x => nn(x.bid)), col(i2, x => nn(x.bid)))}${box('ask', col(c, x => nn(x.ask)), col(i2, x => nn(x.ask)))}
+      ${box('spread ₹ / lot', col(c, x => rsI(x.sprLot)), col(i2, x => rsI(x.sprLot)))}${box('spread %', col(c, x => isN(x.sprPct) ? x.sprPct.toFixed(1) + '%' : 'n/k'), col(i2, x => isN(x.sprPct) ? x.sprPct.toFixed(1) + '%' : 'n/k'))}
       ${box('depth at bid', col(c, x => isN(x.depLots) ? x.depLots + ' lots' : 'n/k'), col(i2, x => isN(x.depLots) ? x.depLots + ' lots' : 'n/k'))}
       ${box('Δ · θ ₹/h per lot', col(c, x => (isN(x.delta) ? x.delta.toFixed(2) : 'n/k') + ' · ' + (isN(x.thh) ? rsI(x.thh) : 'n/k')), col(i2, x => (isN(x.delta) ? x.delta.toFixed(2) : 'n/k') + ' · ' + (isN(x.thh) ? rsI(x.thh) : 'n/k')))}
       ${box('IV · vs 20-day', col(c, x => (isN(x.iv) ? x.iv.toFixed(1) : 'n/k') + ' · ' + nkc('IV 20-day history not in the store', 'n/k')), col(i2, x => (isN(x.iv) ? x.iv.toFixed(1) : 'n/k')))}
-      ${box('lot cost = max loss', col(c, x => rsI(x.lotCost)), col(i2, x => rsI(x.lotCost)))}
+      ${box('max loss = lot cost', col(c, x => rsI(x.lotCost)), col(i2, x => rsI(x.lotCost)))}
       ${box('break-even 15:10', isN(p.be) ? nn(p.be) : 'n/k', '')}</table>
-      <div class="t3 sd-fn">θ ₹/h = the store's day theta ÷ ${RULES.TH_HOURS} h × lot · premiums at the levels ≈ delta-gamma from the December mid</div></div>
+      <div class="t3 sd-fn">θ ₹/h = the store's day theta ÷ ${RULES.TH_HOURS} h × lot · premiums at the levels ≈ delta-gamma from the December mid</div>`}</div>
       <div class="sd-sec sd-planb ${blocked || dimmed ? 'sd-dim' : ''}"><div class="sd-st2">PLAN · ${esc(m.cp)}</div>
         <table class="sd-tb"><tr><th></th><td>share</td><td>premium</td></tr>${box('trigger', nn(p.trig), isN(p.pT) ? '≈ ' + nn(p.pT) : 'n/k')}${box('stop', nn(p.stop), isN(p.pS) ? '≈ ' + nn(p.pS) : 'n/k')}${box('target', nn(p.tgt), isN(p.pG) ? '≈ ' + nn(p.pG) : 'n/k')}</table>
         <div class="sd-s1">${esc(p.how)}</div>
@@ -633,11 +648,14 @@
     if (push) pushSheet(2);
   }
   function shareSheetClose() { if (sheet2) sheet2.classList.remove('on'); }
-  function pushSheet(n) { try { history.pushState({sd: n}, '', location.pathname + location.search + location.hash); } catch (e) {} }
-  addEventListener('popstate', () => {
+  function pushSheet(n) { try { if (history.state && history.state.sd === n) return; history.pushState({sd: n}, '', location.pathname + location.search + location.hash); } catch (e) {} }
+  addEventListener('popstate', e => {
     if (!PHONE()) { const m = /[#&]sd=/.test(location.hash); if (!m && st.open) closeSector(); return; }
-    if (sheet2 && sheet2.classList.contains('on')) { st.sel = null; shareSheetClose(); $$('.sd-r.on', node).forEach(r => r.classList.remove('on')); writeHash(); return; }
-    if (sheet && sheet.classList.contains('on')) { closeSector(); }
+    /* D1: Back follows the history entry, not what happens to be on screen: level 2 = share sheet, 1 = list sheet, none = the page */
+    const lv = e.state && e.state.sd ? e.state.sd : 0;
+    if (lv >= 2) return;
+    if (sheet2 && sheet2.classList.contains('on')) { st.sel = null; shareSheetClose(); $$('.sd-r.on', node).forEach(r => r.classList.remove('on')); document.body.classList.remove('sd-sel'); writeHash(); }
+    if (lv === 0 && st.open) closeSector();
   });
 
   /* ---------- live: numbers tick in place; the order is held under the pointer / focus (re-ranked chip, R, pointer leave, 30 s) ---------- */
