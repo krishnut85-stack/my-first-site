@@ -1,3 +1,6 @@
+> **Superseded / extended by DESK_TEAM.md (20 Nov evening).** The desk seats (section 1b), the cost (section 3) and the build
+> order are now in /home/user/my-first-site/intraday_patches/design_v3/DESK_TEAM.md. Read that first.
+
 # GIR ANALYST - a senior F&O analyst living inside GIR (the new system's brain) - 20 Nov 2026
 
 The trader, 20 Nov 17:45: "I want a complete new system. A senior F&O analyst is inside GIR, monitoring everything, and then telling
