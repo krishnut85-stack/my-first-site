@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 19:29 IST
+Last update: 19:32 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -79,3 +79,4 @@ Last update: 19:29 IST
 - 19:05 - DESK core (a) PLUMBING BUILT: J11 gate (hard $5.00 total; buckets MEET 1.50 / LIVE 1.30 / READ 1.00 / SEATS 0.90 / ASK 0.30; counts only the desk's own calls; old-system parts listed as not counted; whether the v2 news reader (~$2.6/day) counts is an OPEN desk decision), SQLite append-only DESK BOARD, validators, the 4.3a head scheduler (45-min heartbeat + triggers, Devil before head), head BUY NOW chain (second read + Devil's objection enforced in code), all 46 seats in the roster, code seats on, FLOWS 5-day sum honest ('not known (3 days)' until 5 NSDL days exist); 13 tests, dry run of the 19:45 meeting passes with fake brains. AI seats + HEAD are OFF until desk/prompts/ lands. DESK_api.md published (13 store keys live in gir-preview, MISSING until gir-v2desk runs); pages builder wiring the Desk Room. Next: the rehearsal harness (stub layer). gir-v2desk install approved by the trader - after the harness passes.
 - 19:25 - gir-v2desk INSTALLED + running (the trader's yes; 15 tests passed first; started 19:23:39): code seats 32 / 33 writing cards to the DESK BOARD, J11 meter $0 of $5 (budget day Fri 15:40 -> Mon 15:40), Telegram OFF (WOULD SEND), login 0.06 s. Desk prompts synced from the branch: R1-R6 + seats 1-8 (14 files); head (H), CONTRACTS.md and seats 9-40 not landed yet - the head shows 'head analyst not running' and no AI money is spent until they land and pass a shadow run. Stub rehearsal of 18 / 19 / 20 Nov running (no AI); the $15 Opus rehearsal waits for the prompts.
 - 19:29 - first DESK SHADOW (the 14 seats with prompts, tonight's news, own folder, ~$0.25): 13 of 14 PASS (readers R1 / R3 / R4 / R5 / R6 and seats 1-8 made valid cards); R2 wires reader timed out after 40 s - fix sent; file DESK_shadow_20261120-1359.md (its title time is UTC by mistake - IST fix sent). Seats switch on only after the Saturday / Sunday --apply shadows.
+- 19:32 - shadow fixes in (gir-v2desk restarted 19:32, 16 tests): R2 wires reader now 45 s / 90 s with batches of 6 and a half-batch retry, then UNREAD with the reason; every time shown in IST; empty reader cards confirmed as 'nothing worth a card' (routine filings, no F&O link) and now logged with counts + reasons; routine filings stripped before the AI read (saves money). Measured: readers $0.001-0.003 a batch, global seats $0.027-0.035 a call.
