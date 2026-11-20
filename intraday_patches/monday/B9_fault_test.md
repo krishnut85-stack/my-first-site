@@ -19,3 +19,16 @@ Even with the AI down, the written GO NOW rules (B6) still reject bad cards. Tha
     test_dead_feed_read_only_and_fault_file ... ok
     test_stale_quote_blocks_no_ring ... ok
     test_timeout_429_truncated_each_named ... ok
+
+## Stale December quote (A5 gap) and the contract's lot (J5), added 20 Nov
+- **The data:** v2/data/optquote.json already holds each leg's own quote time (`ts`, when gir-v2opt fetched it) and last trade time (`ltt`), plus the contract's `lot` and `sym`. The preview adapter now passes them into every oc row leg as `q_ts`, `ltt`, `lot`, `sym`: the main series, rows2 and exps. This is a preview.py change only; optquote.py and gir-v2opt are unchanged. (Applied after 15:35 under the edit lock; see BUILD_LOG.)
+- **The rule: 60 s live.**
+  - A premium older than 60 s fails the QUOTE AGE gate, reading "STALE Ns: the <exp> <strike> <side> premium is N s old (limit 60 s)". The card cannot be GO NOW.
+  - The GO NOW check's written rules REJECT it (R4 "the premium is STALE Ns").
+  - A kept strike (one strike per idea) is checked on its own quote time.
+  - With no quote time in the store (replays) the gate says the age cannot be checked and does not block.
+  - Config: OPT_QUOTE_MAX_S = 60.
+- **J5 lot:** the plan uses the chosen contract's own lot when the store carries it, and the card says "lot N from the <exp> contract <sym>". Otherwise it uses the share's listed lot and says the contract's own lot is not in the store. Today's instrument file (data/instr/NFO_2026-11-20.csv): December option lots equal November for all 224 names; 35 names change lot in January.
+- Tests (engine_next):
+    test_plan_lot_is_the_contracts_own ... ok
+    test_stale_premium_blocks_go_now ... ok

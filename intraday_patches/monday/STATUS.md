@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 09:36 IST
+Last update: 09:38 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -22,7 +22,7 @@ Last update: 09:36 IST
 | B6 GO NOW on Opus 5.5 + reject rules | IN PROGRESS | coded: GO NOW chain Opus 5.5 first, card carries premium/bid-ask/spread/IV/delta/OI/days to expiry; reject R1-R6 + wait W1-W4 in prompt and code; 13 bad cards -> 13 WAIT/REJECT, 2 clean -> CONFIRM by the rules; AI proof run after the 15:35 swap; 84 unit tests pass; live engine untouched until the swap after 15:35 | B6_go_now_check.md, B6_rules_proof.jsonl | 08:11 |
 | B7 Triage ranks | IN PROGRESS | coded: triage priority 1-10; opening cap / rate limit keep the highest; ai_lane and final_lane logged apart; 84 unit tests pass; live engine untouched until the swap after 15:35 | B7_triage_ranks.md | 08:11 |
 | B8 News by company and context | IN PROGRESS | coded: newsmatch.py - company named in context only (no product codes, look-alike names, counterparties, baskets); KEI-01 / Ford-Stellantis class dropped; second reading AGREE / DIRECTION WRONG / EVIDENCE WEAK, DIRECTION WRONG blocks GO NOW; 97 unit tests pass; swap after 15:35 | B8_news_by_company.md, B8_news_drops_16-19nov.txt | 08:28 |
-| B9 Fault test | IN PROGRESS | coded: AI calls time-bounded with named fallback reasons, 3 failures = AI paused 5 min (rules decide), stale quote blocks at once, dead feed writes a FEED DEAD fault; 97 unit tests pass; swap after 15:35 | B9_fault_test.md | 08:28 |
+| B9 Fault test | IN PROGRESS | coded: AI calls time-bounded with named fallback reasons, 3 failures = AI paused 5 min (rules decide), stale quote blocks at once, dead feed writes a FEED DEAD fault; 97 unit tests pass; swap after 15:35; + QUOTE AGE gate: December premium older than 60 s = STALE, no GO NOW (per-row quote time added to the store after 15:35, priority re-quote of card strikes) | B9_fault_test.md | 09:38 |
 | C1 Evening prediction | IN PROGRESS | coded in v2/predict (19:45 / 22:45 / 07:15 / 09:08 versions, append-only store, CE + PE lists, market call); point-in-time tests 16/18/19 Nov done, 20 Nov after the minute pull. RISK: it picks shares that WILL MOVE (lift ~1.4 held out) but the SIDE is right only 50.2 pct - every line labelled NOT PROVEN; on quiet-news evenings it does not supply 10 early cards (desk B3 point) | C1_evening_prediction.md | 08:54 |
 | C2 PREDICTED signal | IN PROGRESS | coded (v2/predict/monitor.py): one state per 09:08 line, confirm from 09:17, 09:17-09:30 only the 09:08 top 5, TOO LATE / PREDICTION FAILED / NOT PREDICTED, ring tiers 6/15 min + 50/day; live shadow run today, nothing sent; 23 unit tests; pages + timers after 15:35 | proof after 15:35 | 09:22 |
 | C3 Live news call | IN PROGRESS | coded (newscall.py): NEWS -> can go UP / DOWN with NEW / REPEAT / DENIAL / OFFICIAL, VERIFIED / TV ONLY, price-confirm before any GO NOW; live shadow today; 23 unit tests; pages + timers after 15:35 | proof after 15:35 | 09:22 |
@@ -55,7 +55,7 @@ Last update: 09:36 IST
 | J2 Today's live session read-only | IN PROGRESS | recording since 09:04:30 on key 2 by REST quote() (no websocket slot free): 665 instruments, 2 calls every 3 s, 0 errors; ~220 items/s polled, 88-101/s changed, largest gap 3.2 s; FULL fields: 5-level depth on 99.25 pct of items (all shares and futures), OI on 100 pct of futures; 09:00-09:04 from the 10-30 s snapshots (no key 2/3/4 token before the old engine's 09:04 login); ~40 MB/h; proof table by 16:00 | J2_live_readonly.md (16:00) | 09:07 |
 | J3 One trading calendar (Tue 24 holiday) | NOT STARTED |  |  |  |
 | J4 Fake-clock Monday 08:00 / 08:45 | NOT STARTED |  |  |  |
-| J5 Monday instrument file vs Friday | NOT STARTED |  |  |  |
+| J5 Monday instrument file vs Friday | IN PROGRESS | December option lots equal November for all 224 names in today's file (35 change in January); plan-card lot taken from the chosen contract; Saturday dry run of Monday-vs-Friday file; live check Mon 08:15 |  | 09:38 |
 | J6 Silence every old sender | NOT STARTED |  |  |  |
 | J7 Fallback switch safe and his | NOT STARTED |  |  |  |
 | J8 Replay isolation | NOT STARTED |  |  |  |

@@ -32,6 +32,8 @@ test_budget_cap_message (engine_next.tests.test_monday.B9Faults.test_budget_cap_
 test_dead_feed_read_only_and_fault_file (engine_next.tests.test_monday.B9Faults.test_dead_feed_read_only_and_fault_file) ... ok
 test_stale_quote_blocks_no_ring (engine_next.tests.test_monday.B9Faults.test_stale_quote_blocks_no_ring) ... ok
 test_timeout_429_truncated_each_named (engine_next.tests.test_monday.B9Faults.test_timeout_429_truncated_each_named) ... ok
+test_plan_lot_is_the_contracts_own (engine_next.tests.test_monday.B9StaleOptionQuote.test_plan_lot_is_the_contracts_own) ... ok
+test_stale_premium_blocks_go_now (engine_next.tests.test_monday.B9StaleOptionQuote.test_stale_premium_blocks_go_now) ... ok
 test_buildup_from_all_months_in_rollover (engine_next.tests.test_monday.J10ExpiryDay.test_buildup_from_all_months_in_rollover) ... ok
 test_index_next_weekly_expiring_is_info (engine_next.tests.test_monday.J10ExpiryDay.test_index_next_weekly_expiring_is_info) ... /home/globalbot/intraday/v2/engine_next/tests/test_monday.py:547: ResourceWarning: unclosed file <_io.TextIOWrapper name='/home/globalbot/intraday/v2/engine_next/tests/fixtures/store_20261119_1518.json' mode='r' encoding='UTF-8'>
   st = json.load(open(os.path.join(os.path.dirname(__file__), "fixtures", "store_20261119_1518.json")))["store"]
@@ -39,8 +41,12 @@ ResourceWarning: Enable tracemalloc to get the object allocation traceback
 ok
 test_pinning_from_1330 (engine_next.tests.test_monday.J10ExpiryDay.test_pinning_from_1330) ... ok
 test_stock_options_december_only (engine_next.tests.test_monday.J10ExpiryDay.test_stock_options_december_only) ... ok
+test_proxy_only_behind_the_replay_switch (engine_next.tests.test_monday.ReplayPremiumProxy.test_proxy_only_behind_the_replay_switch) ... /home/globalbot/intraday/v2/engine_next/tests/test_monday.py:619: ResourceWarning: unclosed file <_io.TextIOWrapper name='/home/globalbot/intraday/v2/engine_next/run.py' mode='r' encoding='UTF-8'>
+  src = open(os.path.join(os.path.dirname(core.__file__), "run.py")).read()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
 
 ----------------------------------------------------------------------
-Ran 32 tests in 1.167s
+Ran 35 tests in 1.111s
 
 OK
