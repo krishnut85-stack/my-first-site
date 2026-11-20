@@ -22,6 +22,32 @@ THIS FILE OVERRIDES the idea that the v2 rule engine is the product. From now on
 5. **15:45 SCORECARD:** each recommendation right or wrong, how early, the move left, and the result **by source**.
 Nothing else rings. Everything the eyes see but the analyst did not pick stays on the background pages (drill-down, WATCH).
 
+## 1b. THE DESK TEAM INSIDE GIR (the trader, 20 Nov 18:30: "a pool of team which sits inside GIR, monitoring the Indian stock
+exchange, all F&O shares, sectors and the outside world, everywhere, analysing, then telling me what to buy")
+Not one analyst - a live desk of AI specialists that run all day inside GIR on the server, each with a job, a cadence and a model,
+reporting to ONE head analyst who alone talks to the trader. Code (the eyes) feeds every specialist the numbers; specialists write
+short structured notes into a shared DESK BOARD (append-only); the head analyst reads the board and decides.
+| seat | watches | cadence | model | writes |
+|---|---|---|---|---|
+| **Global / macro strategist** | US / Asia / Europe markets and futures, DXY, US10y, crude, metals (copper / aluminium / gold), Fed / ECB / China, GIFT | 19:45, 22:45, 07:15, 09:05, then hourly + on a >1% shock | Sonnet | market-day lean, which Indian sectors each global move helps / hurts, with the link book |
+| **News & filings desk** | NSE / BSE filings, wires, publishers, regulators, Parliament, PIB, courts (WEB_SOURCES 5) | every item as it lands | Haiku reads, Sonnet confirms weight >= 3 | fact cards: NEW / REPEAT / DENIAL, shares + side, verified or not |
+| **TV desk** | CNBC-TV18, ET Now, CNBC Awaaz, Sansad TV (speech-to-text) | live chunks; 07:00-09:15 the morning shows in full | Haiku | who said what on which share / sector, broker / TV calls with the voice's record |
+| **Sector analysts (3 seats: financials; industrials-metals-energy-infra; consumer-IT-pharma-auto)** | whole-sector moves (R49), breadth, leaders / laggards, sector news, results calendar | every 15 min + on a sector event | Sonnet | sector view (up / down / mixed, why), the 2-3 best F&O shares each way in the sector with reasons |
+| **Derivatives analyst** | futures OI build-up (all months), option chains (December), PCR, IV / IV rank, max pain, rollover, ban / MWPL, expiry effects | every 15 min | Sonnet | where fresh money is (long / short build-up), IV traps, expiry pinning, which strikes are tradable |
+| **Risk manager** | his positions, lock room, trades n of 3, sector clustering, stale data, EXTREME / oversold rules | on every candidate BUY + every 5 min when he holds a trade | code + Sonnet | approve / WAIT / REJECT with the reason; manage notes (book half, exit) |
+| **HEAD ANALYST (the senior F&O analyst)** | the DESK BOARD + the snapshot + the thesis book + his reads + the scorecard | every 5 min + at once on a high-weight note | **Opus 5.5** | the evening brief, BUY NOW (<= 3-4 a day), manage notes, the desk view - the ONLY voice to the trader |
+Every seat's notes are scored at 15:45 like everything else (was it right, early, which source), so the head analyst learns whose
+word to trust. The trader can ask any seat a question from the Desk ("ask the derivatives analyst about BANKNIFTY").
+
+### Cost of the full desk (honest)
+- Head analyst on Opus every 5 minutes: about $2-3 a day.
+- Six Sonnet seats every 15 minutes + events: about $2.5-4 a day.
+- Haiku reading news / TV: about $0.5-1 a day.
+- **The full desk is about $5-8 a day**, above his $3-5 rule. Paid AI above $5 needs his yes.
+- **A lean desk fits $5:** the head analyst every 10 minutes, the sector seats every 30 minutes, and macro / derivatives at the
+  fixed times plus on events.
+- The budget ladder (section 3) applies either way.
+
 ## 2. How it thinks (one agent, every few minutes, with memory)
 - **Model:** Opus 5.5 for the analyst. Haiku only for reading and sorting raw news / TV chunks into facts.
 - **Every 5 minutes in market hours**, and **at once on a high-weight event** (filing, regulator, broker call, TV call on an F&O
