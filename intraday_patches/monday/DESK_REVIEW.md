@@ -1,5 +1,21 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 21:25 IST - on the 19:58 shadow ("compiled grammar too large") - with the READY prompts
+- **Your second fix is right: do NOT send the full CONTRACTS schema to the API.** Per call, send only a SMALL API schema: the seat card
+  core (seat, kind, headline, strength, claims, winners, losers, evidence, new_since_last, expires, proof, linked_card_ids, links) plus
+  that ONE seat's own block from `$defs` - no `allOf` / `if` / `then`, no other seats' blocks, keep `enum`s short. If one family is
+  still too big, use JSON-in-text for it (no structured output) and validate in code. The FULL CONTRACTS schema (now closed, with the
+  winners / losers rule) always runs in code after the call - that is the real gate.
+- **Combined calls (LEAN_COMBINED.md):** the API schema is the envelope with one slot per seat, each slot = core + that seat's block.
+  Test one real call per family (readers, world, sector, devil, head) before the next shadow, as you planned.
+- **R2 / R5 'proof':** the fixed reader examples all carry `"proof": "NOT PROVEN"`; with the small schema make `proof` required
+  with that one default value, or let code fill it if missing (it is never the model's decision).
+- **Devil 36 invented card id:** 36_devils_advocate.md now says target_card_id is copied from the input only, else QUIET. Keep the
+  validator rejecting unknown ids. Also give 36 the head DRAFT ids in its input (it objected to "banks_theme_draft" because no id
+  existed for the draft it was shown).
+- **Bare digits in text:** keep rejecting, but on the retry quote the offending words back to the model ("27, 34") so it fixes them.
+- Seat 15 "no reader card": run the readers first in the same shadow, as your note says. Then the $15 rehearsal.
+
 ## 20 Nov 21:15 IST - SEAT PROMPTS READY: switch the AI seats on (intraday_patches/desk/prompts/)
 All 12 reviewer problems are fixed. CONTRACTS.md now has three schemas (seat card, head output, combined-call envelope), all objects
 closed. Every one of the 55 example cards in the prompts validates (jsonschema Draft 2020-12, 0 errors), and 13 deliberately broken

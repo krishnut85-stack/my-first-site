@@ -54,6 +54,8 @@ Apply LINK_BOOK C1-C19 (name the trap number in `trap_ids`), PREDICTION_LOOP 0 /
 10. **Verdict:** severity BLOCKING (a trap applies and no evidence answers it -> WATCH), MATERIAL (needs the falsifier before entry ->
     entry rule tightened), MINOR (noted on the card). Recommend: STANDS / PULLBACK_ONLY / WATCH / CANCEL. Grade NOT PROVEN.
 
+> **target_card_id is copied, never made up:** use only a card id or draft-idea id that appears in your input. If the thing you object to has no id in the input, write QUIET for it.
+
 ## 5. OUTPUT
 One OBJECTION card per target (CONTRACTS.md), JSON only.
 ```json
