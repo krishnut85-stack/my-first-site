@@ -1,0 +1,361 @@
+=== THE MONTHLY SERIES STUDY (seriesstudy.py) · 2023-12-29 -> 2026-10-21 · 32 series used (27 tuning, 5 held-out, 0 dropped at the cut) · 218 shares with data · 16855 candidate trades
+Entry at the close of day 1 / 2 / 3 of a monthly series, exit at the close 4 market days before the expiry. CE and PE judged separately. 31 signal sets x 3 entry days = 93 tries per side (186 in all).
+
+0 THE ANSWER - in plain words. Does a monthly CE / PE opened in the first 1-3 days of a series and closed 4 market days before expiry beat
+  random picks? Picked on the tuning months only (27 series), then shown UNCHANGED on the held-out last 6 months; CE and PE judged separately.
+
+  CE - buy calls on shares expected to rise:
+    THE FIRST-DAYS SET THAT BEATS RANDOM: none does. None of the 93 CE tries passed every rule - do not trade the monthly CE idea
+    on these signals. For scale, every share the CE way at the close of day 3:
+                                     tuning                             held-out (last 6 months)          
+      trades a month                 169.9 (4587 trades in 27 months)   206.4 (1032 trades in 5 months)   
+      hit rate (spread proxy > 0)    43%                                31%                               
+      median share move its way      +0.4% (mean +0.8%)                 -0.9% (mean -0.6%)                
+      median debit spread result     -71% (mean -20%)                   -100% (mean -41%)                 
+      median naked option result     -43% (hit 36%)                     -67% (hit 24%)                    
+      worst trade (share move)       KALYANKJIL 31 Dec 24 -39.6% (spread -100%) YESBANK 05 Oct 26 -22.2% (spread -100%)
+      worst month (avg spread)       Mar 2026 series: 195 trades, avg -95% Sep 2026 series: 208 trades, avg -66%
+
+  PE - buy puts on shares expected to fall:
+    THE FIRST-DAYS SET THAT BEATS RANDOM: none does. None of the 93 PE tries passed every rule - do not trade the monthly PE idea
+    on these signals. For scale, every share the PE way at the close of day 3:
+                                     tuning                             held-out (last 6 months)          
+      trades a month                 169.9 (4587 trades in 27 months)   206.4 (1032 trades in 5 months)   
+      hit rate (spread proxy > 0)    37%                                45%                               
+      median share move its way      -0.4% (mean -0.8%)                 +0.9% (mean +0.6%)                
+      median debit spread result     -100% (mean -31%)                  -46% (mean -16%)                  
+      median naked option result     -59% (hit 29%)                     -37% (hit 35%)                    
+      worst trade (share move)       OFSS 02 Jan 24 -56.9% (spread -100%) KALYANKJIL 03 Jul 26 -54.5% (spread -100%)
+      worst month (avg spread)       Jun 2024 series: 137 trades, avg -98% Jun 2026 series: 204 trades, avg -62%
+
+  THE PLAN'S OWN CE RULE (A3: long build-up + rollover above its average + a top sector, day 3): 33 trades (1.2 a month), hit 45% against random 38%, lift 1.20 [0.74-1.58], held-out lift 1.27 - FAIL (1.2 trades a month (< 2); lift interval 0.74-1.58 not above 1.0; held-out lift 1.27 on 3 trades)
+  THE PLAN'S OWN PE RULE (A3: short build-up + rollover + a bottom sector, day 3): 33 trades (1.2 a month), hit 42% against random 31%, lift 1.38 [0.80-2.07], held-out lift 0.00 - FAIL (1.2 trades a month (< 2); lift interval 0.80-2.07 not above 1.0; held-out lift 0.00 on 11 trades; lift above 1.0 in 3 of 6 half-years (needs 5))
+
+  HONEST CAVEATS - read before using any of this:
+  - NO OPTION HISTORY: the store has no option prices. The naked option and the debit spread are PROXIES priced from the share's own
+    20-day realised volatility (premium ~ 0.4 x vol x sqrt(time left)); real premiums, bid-ask (4 legs for a spread) and lot sizes differ.
+  - IV CHANGES ARE NOT SEEN: the proxy holds volatility fixed. IV falling after results / events, or rising in a sell-off, changes real
+    option prices in ways this study cannot measure - even a PASS is optimistic.
+  - SURVIVORSHIP: only today's 218 F&O shares are in the store. Shares that left F&O, merged or collapsed in these years are missing,
+    so every number here (baselines included) looks better than a trader would have got.
+  - The day-k OI is NSE's end-of-day number (summed over expiries); at 15:20 Kite's live OI is close but not the same. Rollover and
+    build-up are proxies from summed OI. Results / ex-dates are not filtered (no event calendar in the store). No costs or slippage.
+  - 93 tries per side: a pass also needs the lift bound widened for that many tries (the guard), the held-out months and the half-years -
+    a set that fails any of them is treated as luck.
+
+1 THE CALENDAR - every monthly series (day 0 = the previous expiry; days 1-3 = the entry days; exit = the close 4 market days before the expiry)
+  series    day 0 (expiry)  day 1           day 2           day 3           exit             OI drop  check
+  Dec 2023  Thu 30 Nov 23   Fri 01 Dec 23   Mon 04 Dec 23   Tue 05 Dec 23   Thu 21 Dec 23      -5.0%  ok  (not used: outside --years or no trades)
+  Jan 2024  Thu 28 Dec 23   Fri 29 Dec 23   Mon 01 Jan 24   Tue 02 Jan 24   Fri 19 Jan 24      -8.4%  ok tuning
+  Feb 2024  Thu 25 Jan 24   Mon 29 Jan 24   Tue 30 Jan 24   Wed 31 Jan 24   Fri 23 Feb 24      -6.1%  ok tuning
+  Mar 2024  Thu 29 Feb 24   Fri 01 Mar 24   Mon 04 Mar 24   Tue 05 Mar 24   Thu 21 Mar 24      -7.7%  ok tuning
+  Apr 2024  Thu 28 Mar 24   Mon 01 Apr 24   Tue 02 Apr 24   Wed 03 Apr 24   Fri 19 Apr 24      -8.7%  ok tuning
+  May 2024  Thu 25 Apr 24   Fri 26 Apr 24   Mon 29 Apr 24   Tue 30 Apr 24   Fri 24 May 24      -7.6%  ok tuning
+  Jun 2024  Thu 30 May 24   Fri 31 May 24   Mon 03 Jun 24   Tue 04 Jun 24   Fri 21 Jun 24      -5.9%  ok tuning
+  Jul 2024  Thu 27 Jun 24   Fri 28 Jun 24   Mon 01 Jul 24   Tue 02 Jul 24   Fri 19 Jul 24      -6.5%  ok tuning
+  Aug 2024  Thu 25 Jul 24   Fri 26 Jul 24   Mon 29 Jul 24   Tue 30 Jul 24   Fri 23 Aug 24      -2.5%  ok tuning
+  Sep 2024  Thu 29 Aug 24   Fri 30 Aug 24   Mon 02 Sep 24   Tue 03 Sep 24   Fri 20 Sep 24     -10.3%  ok tuning
+  Oct 2024  Thu 26 Sep 24   Fri 27 Sep 24   Mon 30 Sep 24   Tue 01 Oct 24   Fri 25 Oct 24      -6.6%  MISMATCH: NSE's next trading day is Fri 01 Nov 2024 but NIFTY's is Mon 04 Nov 2024 - a day is missing after the expiry  DROPPED - expiry 2024-10-31: NSE's next trading day is Fri 01 Nov 2024 but NIFTY's is Mon 04 Nov 2024 - a day is missing after the expiry
+  Nov 2024  Thu 31 Oct 24   Mon 04 Nov 24   Tue 05 Nov 24   Wed 06 Nov 24   Fri 22 Nov 24      -5.8%  ok  DROPPED - expiry 2024-10-31: NSE's next trading day is Fri 01 Nov 2024 but NIFTY's is Mon 04 Nov 2024 - a day is missing after the expiry
+  Dec 2024  Thu 28 Nov 24   Fri 29 Nov 24   Mon 02 Dec 24   Tue 03 Dec 24   Thu 19 Dec 24      -4.2%  ok tuning
+  Jan 2025  Thu 26 Dec 24   Fri 27 Dec 24   Mon 30 Dec 24   Tue 31 Dec 24   Fri 24 Jan 25      -8.9%  ok tuning
+  Feb 2025  Thu 30 Jan 25   Fri 31 Jan 25   Sat 01 Feb 25   Mon 03 Feb 25   Thu 20 Feb 25      -5.9%  ok tuning
+  Mar 2025  Thu 27 Feb 25   Fri 28 Feb 25   Mon 03 Mar 25   Tue 04 Mar 25   Fri 21 Mar 25      -5.3%  ok tuning
+  Apr 2025  Thu 27 Mar 25   Fri 28 Mar 25   Tue 01 Apr 25   Wed 02 Apr 25   Thu 17 Apr 25      -5.4%  ok tuning
+  May 2025  Thu 24 Apr 25   Fri 25 Apr 25   Mon 28 Apr 25   Tue 29 Apr 25   Fri 23 May 25      -6.4%  ok tuning
+  Jun 2025  Thu 29 May 25   Fri 30 May 25   Mon 02 Jun 25   Tue 03 Jun 25   Fri 20 Jun 25      -6.0%  ok tuning
+  Jul 2025  Thu 26 Jun 25   Fri 27 Jun 25   Mon 30 Jun 25   Tue 01 Jul 25   Fri 25 Jul 25      -5.2%  ok tuning
+  Aug 2025  Thu 31 Jul 25   Fri 01 Aug 25   Mon 04 Aug 25   Tue 05 Aug 25   Thu 21 Aug 25      -3.6%  ok tuning
+  Sep 2025  Thu 28 Aug 25   Fri 29 Aug 25   Mon 01 Sep 25   Tue 02 Sep 25   Wed 24 Sep 25      -3.7%  ok tuning
+  Oct 2025  Tue 30 Sep 25   Wed 01 Oct 25   Fri 03 Oct 25   Mon 06 Oct 25   Mon 20 Oct 25      -2.6%  ok tuning
+  Nov 2025  Tue 28 Oct 25   Wed 29 Oct 25   Thu 30 Oct 25   Fri 31 Oct 25   Wed 19 Nov 25      -4.4%  ok tuning
+  Dec 2025  Tue 25 Nov 25   Wed 26 Nov 25   Thu 27 Nov 25   Fri 28 Nov 25   Tue 23 Dec 25      -3.7%  ok tuning
+  Jan 2026  Tue 30 Dec 25   Wed 31 Dec 25   Thu 01 Jan 26   Fri 02 Jan 26   Tue 20 Jan 26      -5.3%  ok tuning
+  Feb 2026  Tue 27 Jan 26   Wed 28 Jan 26   Thu 29 Jan 26   Fri 30 Jan 26   Wed 18 Feb 26      -5.4%  ok tuning
+  Mar 2026  Tue 24 Feb 26   Wed 25 Feb 26   Thu 26 Feb 26   Fri 27 Feb 26   Mon 23 Mar 26      -7.2%  ok tuning
+  Apr 2026  Mon 30 Mar 26   Wed 01 Apr 26   Thu 02 Apr 26   Mon 06 Apr 26   Wed 22 Apr 26      -4.8%  ok tuning
+  May 2026  Tue 28 Apr 26   Wed 29 Apr 26   Thu 30 Apr 26   Mon 04 May 26   Wed 20 May 26      -4.6%  ok tuning
+  Jun 2026  Tue 26 May 26   Wed 27 May 26   Fri 29 May 26   Mon 01 Jun 26   Tue 23 Jun 26      -5.6%  ok HELD-OUT
+  Jul 2026  Tue 30 Jun 26   Wed 01 Jul 26   Thu 02 Jul 26   Fri 03 Jul 26   Wed 22 Jul 26      -5.8%  ok HELD-OUT
+  Aug 2026  Tue 28 Jul 26   Wed 29 Jul 26   Thu 30 Jul 26   Fri 31 Jul 26   Wed 19 Aug 26      -4.8%  ok HELD-OUT
+  Sep 2026  Tue 25 Aug 26   Wed 26 Aug 26   Thu 27 Aug 26   Fri 28 Aug 26   Wed 23 Sep 26      -5.4%  ok HELD-OUT
+  Oct 2026  Tue 29 Sep 26   Wed 30 Sep 26   Thu 01 Oct 26   Mon 05 Oct 26   Wed 21 Oct 26      -5.6%  ok HELD-OUT
+  (the first expiry in the store, 2023-11-30, only opens the first series; its OI check: ok)
+  the open series (day 1 = 2026-10-28, after the 2026-10-27 expiry) has no exit in the store yet - not studied
+  OI CHECK: 35 of 36 expiries agree with the next day's drop in the summed futures OI; 1 mismatch:
+    !! 2024-10-31 (Thu): MISMATCH: NSE's next trading day is Fri 01 Nov 2024 but NIFTY's is Mon 04 Nov 2024 - a day is missing after the expiry (drop -6.6%)
+  DROPPED SERIES (the calendar may be wrong there - fix the NIFTY minute file and run again): Oct 2024 (expiry 2024-10-31: NSE's next trading day is Fri 01 Nov 2024 but NIFTY's is Mon 04 Nov 2024 - a day is missing after the expiry) · Nov 2024 (expiry 2024-10-31: NSE's next trading day is Fri 01 Nov 2024 but NIFTY's is Mon 04 Nov 2024 - a day is missing after the expiry)
+
+2 BASELINES - every share the same side and day (ALL), the top sector of the previous series only (TOP; PE: the bottom sector)
+  hit = the debit-spread proxy ended above 0 · move = the share's move its way to the exit · spread / naked = the proxies' results (% of the premium paid)
+  side day base  | tuning: trades/mo  hit  move  spread  naked  MAE | held-out: trades/mo  hit  move  spread  naked  MAE
+  CE   1   ALL   | 169.9   45%  +0.6%   -61%   -43%  -4.4% | 206.4   28%  -1.7%  -100%   -83%  -5.3%
+  CE   1   TOP   |   7.3   51%  +2.0%   +10%   -24%  -4.2% |   9.8   20%  -2.9%  -100%   -95%  -5.2%
+  CE   2   ALL   | 169.9   43%  +0.4%   -75%   -47%  -4.5% | 206.4   31%  -1.1%  -100%   -71%  -4.7%
+  CE   2   TOP   |   7.3   45%  +0.9%   -51%   -39%  -4.1% |   9.8   22%  -1.9%  -100%   -84%  -4.6%
+  CE   3   ALL   | 169.9   43%  +0.4%   -71%   -43%  -4.2% | 206.4   31%  -0.9%  -100%   -67%  -4.3%
+  CE   3   TOP   |   7.3   45%  +1.0%   -34%   -34%  -3.5% |   9.8   24%  -1.6%  -100%   -80%  -3.4%
+  PE   1   ALL   | 169.9   36%  -0.6%  -100%   -65%  -5.1% | 206.4   50%  +1.7%    +2%   -27%  -3.4%
+  PE   1   TOP   |   8.7   40%  +0.0%   -97%   -52%  -4.7% |  13.0   46%  +1.0%   -33%   -33%  -3.2%
+  PE   2   ALL   | 169.9   38%  -0.4%  -100%   -60%  -4.6% | 206.4   46%  +1.1%   -35%   -37%  -3.7%
+  PE   2   TOP   |   8.7   39%  +0.2%   -83%   -48%  -4.3% |  13.0   42%  +1.0%   -44%   -41%  -3.2%
+  PE   3   ALL   | 169.9   37%  -0.4%  -100%   -59%  -4.5% | 206.4   45%  +0.9%   -46%   -37%  -3.6%
+  PE   3   TOP   |   8.7   39%  -0.4%  -100%   -57%  -4.3% |  13.0   40%  +0.6%   -58%   -40%  -3.3%
+
+3 SINGLE SIGNALS - lift = hit rate / random matched picks' hit rate (tuning, 95% interval by month) · held = the same on the held-out months · guard = the lift's lower bound widened for the 93 tries a side · half = half-years with lift > 1 / counted
+  CE (buy calls on expected rises)
+    set      day  tr/mo   hit  rand lift [95%]       guard      p   held    move  spread  naked  half  verdict
+    BU_LB    1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    BU_LB    2     16.6   41%   42% 0.97 [0.87-1.06]  0.82  0.759   0.98   -0.4%   -100%   -60%   2/6  -
+    BU_LB    3     21.7   40%   42% 0.94 [0.85-1.02]  0.81  0.905   0.95   -0.2%   -100%   -54%   2/6  -
+    BU_SC    1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    BU_SC    2     15.9   47%   44% 1.07 [0.94-1.20]  0.86  0.088   0.95   +1.2%    -39%   -32%   6/6  -
+    BU_SC    3     27.8   46%   43% 1.06 [1.00-1.14]  0.95  0.047   0.94   +0.8%    -50%   -37%   4/6  -
+    ROLL_HI  1     52.7   46%   45% 1.01 [0.97-1.05]  0.95  0.313   0.97   +0.8%    -53%   -40%   4/6  -
+    ROLL_HI  2     52.6   44%   43% 1.02 [0.98-1.06]  0.95  0.273   0.99   +0.5%    -69%   -44%   4/6  -
+    ROLL_HI  3     52.6   44%   44% 1.02 [0.97-1.06]  0.93  0.299   0.99   +0.6%    -55%   -39%   4/6  -
+    ROLL_LO  1     52.6   44%   45% 0.97 [0.93-1.02]  0.89  0.873   1.01   +0.5%    -71%   -46%   1/6  -
+    ROLL_LO  2     52.6   42%   43% 0.98 [0.93-1.02]  0.90  0.818   0.95   +0.2%    -85%   -50%   1/6  -
+    ROLL_LO  3     52.6   43%   44% 0.99 [0.94-1.04]  0.90  0.723   0.89   +0.4%    -78%   -46%   1/6  -
+    SEC_TOP  1     25.4   46%   45% 1.00 [0.88-1.14]  0.81  0.468   0.93   +1.0%    -52%   -39%   3/6  -
+    SEC_TOP  2     25.4   43%   43% 1.00 [0.86-1.14]  0.78  0.543   0.94   +0.6%    -67%   -43%   3/6  -
+    SEC_TOP  3     25.4   44%   44% 1.02 [0.89-1.14]  0.82  0.357   0.89   +0.7%    -57%   -39%   3/6  -
+    BREADTH  1     60.3   39%   40% 0.99 [0.93-1.05]  0.88  0.656   1.02   -0.2%   -100%   -57%   4/6  -
+    BREADTH  2     60.3   38%   38% 0.98 [0.91-1.05]  0.86  0.727   0.94   -0.3%   -100%   -60%   4/6  -
+    BREADTH  3     60.3   38%   39% 0.99 [0.92-1.06]  0.87  0.691   0.82   -0.5%   -100%   -61%   2/6  -
+    RSI_N    1    148.6   44%   45% 0.99 [0.98-1.00]  0.97  0.766   0.96   +0.4%    -73%   -47%   2/6  -
+    RSI_N    2    149.3   42%   43% 1.00 [0.98-1.01]  0.97  0.535   0.96   +0.3%    -78%   -48%   2/6  -
+    RSI_N    3    150.1   43%   43% 0.98 [0.97-0.99]  0.96  0.863   0.99   +0.3%    -79%   -46%   0/6  -
+    RSI_X    1      5.0   50%   43% 1.14 [0.92-1.39]  0.79  0.064   0.80   +2.0%    -36%   -37%   4/6  -
+    RSI_X    2      5.5   37%   43% 0.86 [0.64-1.14]  0.52  0.950   1.01   -0.1%   -100%   -52%   3/6  -
+    RSI_X    3      5.1   43%   39% 1.09 [0.93-1.27]  0.83  0.220   0.92   +0.1%    -95%   -50%   3/6  -
+    REV_OS   1      7.1   64%   58% 1.10 [0.95-1.25]  0.87  0.025   1.47   +3.9%    +80%   +16%   4/6  -
+    REV_OS   2      5.3   51%   53% 0.96 [0.72-1.16]  0.63  0.750   1.17   +2.2%    +46%   -13%   3/6  -
+    REV_OS   3      5.1   52%   51% 1.01 [0.74-1.18]  0.68  0.463   1.10   +1.9%    +23%   -17%   3/6  -
+    REV_X    1      3.7   63%   63% 1.00 [0.87-1.33]  0.67  0.534   0.98   +5.6%    +80%   +26%   3/6  -
+    REV_X    2      3.0   56%   57% 0.97 [0.58-1.11]  0.58  0.734   0.79   +4.6%    +57%    -9%   1/6  -
+    REV_X    3      3.1   60%   59% 1.02 [0.89-1.24]  0.76  0.438   0.79   +3.5%    +42%   -11%   2/6  -
+    TREND    1     75.3   39%   39% 1.00 [0.94-1.07]  0.90  0.451   0.96   -0.2%   -100%   -57%   2/6  -
+    TREND    2     80.3   39%   38% 1.02 [0.96-1.09]  0.91  0.187   1.01   -0.1%   -100%   -54%   4/6  -
+    TREND    3     77.2   41%   39% 1.03 [0.98-1.09]  0.94  0.094   0.95   +0.0%   -100%   -53%   5/6  -
+    PULL     1     30.6   41%   42% 1.00 [0.92-1.08]  0.87  0.543   0.98   +0.0%    -99%   -55%   3/6  -
+    PULL     2     30.9   41%   39% 1.04 [0.97-1.11]  0.92  0.182   0.91   +0.2%    -90%   -50%   4/6  -
+    PULL     3     31.7   41%   40% 1.01 [0.94-1.07]  0.90  0.448   1.01   +0.1%    -94%   -49%   2/6  -
+    MKT      1     98.1   41%   41% 1.00 [1.00-1.00]  1.00  0.509   1.00   +0.2%    -91%   -51%   0/6  -
+    MKT      2     95.7   41%   41% 1.00 [1.00-1.00]  1.00  0.508   1.00   +0.2%    -84%   -49%   0/6  -
+    MKT      3     98.1   38%   38% 1.00 [1.00-1.00]  1.00  0.504   1.00   -0.2%   -100%   -55%   0/6  -
+  PE (buy puts on expected falls - every signal mirrored)
+    set      day  tr/mo   hit  rand lift [95%]       guard      p   held    move  spread  naked  half  verdict
+    BU_LB    1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    BU_LB    2     13.3   37%   37% 1.02 [0.90-1.14]  0.83  0.385   1.07   -0.4%   -100%   -59%   4/6  -
+    BU_LB    3     20.7   38%   35% 1.07 [0.98-1.17]  0.92  0.090   0.85   -0.5%   -100%   -58%   4/6  -
+    BU_SC    1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    BU_SC    2      4.9   30%   32% 0.93 [0.77-1.12]  0.66  0.757   1.08   -1.7%   -100%   -76%   3/6  -
+    BU_SC    3     11.6   26%   29% 0.90 [0.78-1.07]  0.69  0.910   0.98   -2.7%   -100%   -96%   1/6  -
+    ROLL_HI  1     52.7   36%   35% 1.01 [0.97-1.06]  0.93  0.342   0.99   -0.8%   -100%   -67%   3/6  -
+    ROLL_HI  2     52.6   37%   37% 0.99 [0.94-1.03]  0.91  0.659   0.98   -0.5%   -100%   -61%   2/6  -
+    ROLL_HI  3     52.6   37%   37% 0.99 [0.95-1.03]  0.92  0.645   0.99   -0.6%   -100%   -62%   2/6  -
+    ROLL_LO  1     52.6   35%   35% 1.00 [0.95-1.04]  0.92  0.575   1.01   -0.5%   -100%   -63%   4/6  -
+    ROLL_LO  2     52.6   38%   38% 1.01 [0.97-1.06]  0.93  0.387   1.04   -0.2%   -100%   -57%   5/6  -
+    ROLL_LO  3     52.6   38%   37% 1.03 [0.99-1.07]  0.96  0.181   1.00   -0.4%   -100%   -58%   4/6  -
+    SEC_TOP  1     25.8   37%   35% 1.03 [0.88-1.18]  0.80  0.250   0.92   -0.6%   -100%   -63%   2/6  -
+    SEC_TOP  2     25.8   37%   38% 0.97 [0.83-1.11]  0.76  0.755   0.90   -0.3%   -100%   -57%   1/6  -
+    SEC_TOP  3     25.8   37%   37% 1.00 [0.87-1.12]  0.79  0.533   0.86   -0.4%   -100%   -58%   2/6  -
+    BREADTH  1     38.2   27%   27% 1.00 [0.87-1.14]  0.79  0.545   0.93   -2.8%   -100%  -100%   3/6  -
+    BREADTH  2     38.2   28%   28% 0.98 [0.85-1.11]  0.78  0.722   0.92   -2.4%   -100%   -97%   3/6  -
+    BREADTH  3     38.2   27%   28% 0.97 [0.86-1.10]  0.79  0.742   0.93   -2.5%   -100%   -94%   2/6  -
+    RSI_N    1    148.6   37%   36% 1.02 [1.01-1.03]  1.00  0.159   1.03   -0.4%   -100%   -62%   6/6  -
+    RSI_N    2    149.3   38%   38% 1.00 [0.99-1.02]  0.98  0.419   1.04   -0.3%   -100%   -59%   4/6  -
+    RSI_N    3    150.1   38%   37% 1.02 [1.00-1.03]  0.99  0.199   1.03   -0.3%   -100%   -57%   6/6  -
+    RSI_X    1      3.7   17%   25% 0.67 [0.33-0.90]  0.31  0.999   0.60   -5.6%   -100%  -100%   1/6  -
+    RSI_X    2      3.0   22%   31% 0.72 [0.48-1.14]  0.36  0.994   0.87   -4.6%   -100%   -97%   2/6  -
+    RSI_X    3      3.1   19%   28% 0.69 [0.36-1.24]  0.25  0.998   0.78   -3.5%   -100%   -89%   2/6  -
+    REV_OS   1     12.3   32%   38% 0.86 [0.71-1.00]  0.63  0.989   0.92   -0.9%   -100%   -68%   2/6  -
+    REV_OS   2     13.1   40%   39% 1.01 [0.87-1.16]  0.78  0.453   0.63   -0.1%   -100%   -54%   3/6  -
+    REV_OS   3     12.0   36%   42% 0.86 [0.72-0.97]  0.66  0.992   0.72   -1.1%   -100%   -70%   1/6  -
+    REV_X    1      5.0   30%   36% 0.85 [0.63-1.07]  0.54  0.941   0.95   -2.0%   -100%   -72%   1/6  -
+    REV_X    2      5.5   39%   36% 1.08 [0.78-1.46]  0.62  0.248   0.95   +0.1%    -97%   -49%   3/6  -
+    REV_X    3      5.1   36%   40% 0.90 [0.72-1.10]  0.62  0.880   0.72   -0.1%   -100%   -54%   2/6  -
+    TREND    1     57.9   30%   31% 0.96 [0.85-1.05]  0.81  0.886   0.93   -2.0%   -100%   -91%   1/6  -
+    TREND    2     56.7   32%   34% 0.94 [0.85-1.04]  0.79  0.967   0.93   -1.2%   -100%   -78%   1/6  -
+    TREND    3     58.0   32%   33% 0.98 [0.91-1.05]  0.86  0.801   0.94   -1.3%   -100%   -75%   1/6  -
+    PULL     1     28.3   41%   39% 1.05 [0.94-1.13]  0.88  0.142   1.06   +0.4%    -80%   -49%   4/6  -
+    PULL     2     28.7   37%   39% 0.95 [0.84-1.04]  0.79  0.891   0.99   -0.7%   -100%   -64%   3/6  -
+    PULL     3     28.3   38%   37% 1.01 [0.91-1.08]  0.88  0.414   1.04   -0.3%   -100%   -57%   5/6  -
+    MKT      1     61.6   35%   35% 1.00 [1.00-1.00]  1.00  0.519   1.00   -1.5%   -100%   -81%   0/6  -
+    MKT      2     69.1   37%   37% 1.00 [1.00-1.00]  1.00  0.513   1.00   -0.6%   -100%   -64%   0/6  -
+    MKT      3     66.7   34%   34% 1.00 [1.00-1.00]  1.00  0.517   1.00   -1.8%   -100%   -81%   0/6  -
+
+4 PRE-DECLARED PAIRS AND TRIPLES - lift = hit rate / random matched picks' hit rate (tuning, 95% interval by month) · held = the same on the held-out months · guard = the lift's lower bound widened for the 93 tries a side · half = half-years with lift > 1 / counted
+  CE (buy calls on expected rises)
+    set      day  tr/mo   hit  rand lift [95%]       guard      p   held    move  spread  naked  half  verdict
+    P01      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    P01      2      5.8   44%   44% 1.01 [0.85-1.16]  0.77  0.494   0.79   +0.5%    -70%   -44%   3/6  -
+    P01      3      7.1   44%   42% 1.04 [0.90-1.21]  0.80  0.311   0.84   +0.5%    -60%   -40%   4/6  -
+    P02      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    P02      2      3.0   46%   40% 1.15 [0.86-1.47]  0.72  0.129   0.39   +0.8%    -51%   -40%   3/6  -
+    P02      3      3.7   40%   38% 1.05 [0.80-1.29]  0.69  0.351   0.93   +0.1%    -91%   -48%   3/6  -
+    P03      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    P03      2     11.0   37%   38% 0.97 [0.83-1.12]  0.75  0.707   0.82   -1.3%   -100%   -72%   2/6  -
+    P03      3     13.5   38%   39% 0.98 [0.85-1.10]  0.78  0.662   0.94   -0.6%   -100%   -60%   2/6  -
+    P04      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    P04      2      2.4   40%   40% 1.01 [0.71-1.28]  0.59  0.537   1.06   -0.7%   -100%   -69%   4/6  -
+    P04      3      2.8   39%   43% 0.91 [0.64-1.16]  0.53  0.810   1.06   -0.0%   -100%   -47%   3/6  -
+    P05      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    P05      2      9.8   38%   40% 0.93 [0.79-1.06]  0.71  0.856   0.87   -0.7%   -100%   -66%   1/6  -
+    P05      3     13.2   35%   38% 0.94 [0.83-1.05]  0.77  0.847   0.93   -0.7%   -100%   -61%   1/6  -
+    P06      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    P06      2     13.4   41%   43% 0.97 [0.85-1.08]  0.79  0.742   1.05   -0.3%   -100%   -58%   1/6  -
+    P06      3     17.7   39%   42% 0.92 [0.81-1.01]  0.77  0.953   0.92   -0.2%   -100%   -55%   2/6  -
+    P07      1     16.4   43%   41% 1.03 [0.88-1.20]  0.79  0.283   0.96   +0.6%    -72%   -46%   3/6  -
+    P07      2     17.0   43%   40% 1.08 [0.92-1.25]  0.83  0.079   1.07   +0.6%    -68%   -43%   4/6  -
+    P07      3     16.1   45%   40% 1.12 [0.96-1.29]  0.87  0.011   0.96   +0.7%    -56%   -38%   3/6  -
+    P08      1      4.4   41%   45% 0.90 [0.74-1.10]  0.63  0.895   0.96   +0.4%    -72%   -47%   3/6  -
+    P08      2      4.5   36%   39% 0.90 [0.72-1.11]  0.61  0.852   1.06   -0.3%   -100%   -60%   2/6  -
+    P08      3      5.0   44%   43% 1.01 [0.84-1.18]  0.75  0.507   0.97   +0.7%    -55%   -39%   2/6  -
+    P09      1     17.8   41%   41% 1.00 [0.83-1.20]  0.72  0.481   0.93   +0.1%    -92%   -50%   2/6  -
+    P09      2     17.8   39%   39% 0.99 [0.80-1.19]  0.70  0.588   0.78   +0.0%   -100%   -52%   3/6  -
+    P09      3     17.9   40%   39% 1.00 [0.82-1.19]  0.71  0.484   0.63   -0.0%    -97%   -54%   3/6  -
+    P10      1      7.0   42%   45% 0.94 [0.78-1.08]  0.71  0.843   0.62   -0.1%   -100%   -56%   2/6  -
+    P10      2      7.0   41%   42% 0.96 [0.76-1.14]  0.69  0.724   0.73   -0.1%   -100%   -53%   2/6  -
+    P10      3      7.0   42%   43% 0.97 [0.79-1.12]  0.71  0.687   0.75   +0.1%    -91%   -49%   3/6  -
+    P11      1     60.0   41%   40% 1.02 [0.96-1.09]  0.91  0.201   0.97   +0.2%    -84%   -50%   3/6  -
+    P11      2     58.9   41%   40% 1.02 [0.94-1.10]  0.89  0.281   1.04   +0.4%    -76%   -48%   3/6  -
+    P11      3     59.3   41%   39% 1.05 [0.99-1.12]  0.95  0.042   1.08   +0.1%    -93%   -50%   6/6  -
+    P12      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    P12      2      2.7   52%   48% 1.08 [0.79-1.47]  0.63  0.268   1.00   +2.2%    +19%   -19%   5/6  -
+    P12      3      3.9   48%   42% 1.13 [0.90-1.34]  0.80  0.108   1.09   +1.4%    -22%   -29%   5/6  -
+    T01      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    T01      2      0.9   52%   40% 1.29 [0.79-1.64]  0.70  0.133   0.00   +0.9%     +8%   -19%   2/6  -
+    T01      3      1.2   45%   38% 1.20 [0.74-1.58]  0.60  0.215   1.27   +1.4%    -16%   -27%   5/6  -
+    T02      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    T02      2      0.4   64%   39% 1.65 [0.77-2.42]  0.61  0.068   0.00   +3.4%    +80%    +5%   2/6  -
+    T02      3      0.4   40%   41% 0.97 [0.24-1.83]  0.21  0.664   0.00   +1.9%     -5%   -25%   2/6  -
+    T03      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    T03      2      1.9   45%   39% 1.16 [0.79-1.58]  0.62  0.198   0.50   +0.9%    -49%   -35%   2/6  -
+    T03      3      2.6   39%   38% 1.01 [0.74-1.30]  0.61  0.514   1.37   +0.7%    -58%   -36%   3/6  -
+    T04      1     11.8   42%   42% 1.02 [0.84-1.21]  0.75  0.395   0.99   +0.7%    -62%   -43%   3/6  -
+    T04      2     11.0   44%   42% 1.06 [0.88-1.26]  0.77  0.207   1.12   +0.9%    -45%   -38%   4/6  -
+    T04      3     11.0   45%   39% 1.16 [0.94-1.38]  0.82  0.015   0.92   +0.8%    -42%   -35%   4/6  -
+    T05      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    T05      2      3.8   41%   39% 1.04 [0.82-1.23]  0.72  0.414   0.52   -0.3%   -100%   -53%   2/6  -
+    T05      3      4.8   41%   40% 1.03 [0.84-1.24]  0.74  0.409   0.76   -0.2%   -100%   -55%   2/6  -
+    T06      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    T06      2      1.7   41%   42% 0.99 [0.68-1.20]  0.58  0.578   0.70   +0.6%    -70%   -42%   2/6  -
+    T06      3      2.1   36%   38% 0.96 [0.68-1.24]  0.57  0.646   0.80   +0.1%    -92%   -48%   3/6  -
+  PE (buy puts on expected falls - every signal mirrored)
+    set      day  tr/mo   hit  rand lift [95%]       guard      p   held    move  spread  naked  half  verdict
+    P01      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    P01      2      5.0   36%   36% 0.97 [0.81-1.13]  0.74  0.631   1.04   -0.1%   -100%   -56%   4/6  -
+    P01      3      8.2   38%   35% 1.10 [0.95-1.27]  0.85  0.118   0.88   -0.1%   -100%   -55%   4/6  -
+    P02      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    P02      2      1.9   53%   40% 1.32 [1.02-1.73]  0.83  0.025   0.58   +2.6%    +66%    -9%   4/6  -
+    P02      3      3.1   44%   36% 1.21 [0.93-1.55]  0.77  0.058   0.27   -0.1%   -100%   -55%   2/6  -
+    P03      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    P03      2      7.4   37%   37% 1.00 [0.84-1.16]  0.75  0.529   0.98   -0.1%   -100%   -56%   3/6  -
+    P03      3     11.9   37%   35% 1.04 [0.92-1.18]  0.84  0.299   0.79   -1.0%   -100%   -66%   3/6  -
+    P04      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    P04      2      1.8   35%   40% 0.87 [0.50-1.16]  0.42  0.826   1.21   -0.3%   -100%   -59%   3/6  -
+    P04      3      2.4   39%   38% 1.03 [0.79-1.25]  0.68  0.457   0.90   +0.2%    -90%   -49%   3/6  -
+    P05      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    P05      2      6.5   39%   40% 1.00 [0.85-1.14]  0.76  0.545   1.12   -0.1%   -100%   -53%   3/6  -
+    P05      3      9.1   33%   33% 1.01 [0.85-1.12]  0.79  0.477   0.82   -2.0%   -100%   -82%   2/6  -
+    P06      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    P06      2     11.1   39%   37% 1.05 [0.88-1.20]  0.81  0.243   1.14   +0.0%    -99%   -54%   5/6  -
+    P06      3     18.1   39%   36% 1.08 [0.99-1.19]  0.92  0.067   0.93   +0.0%   -100%   -53%   4/6  -
+    P07      1     14.1   31%   33% 0.94 [0.76-1.13]  0.67  0.825   0.83   -1.7%   -100%   -80%   3/6  -
+    P07      2     14.3   33%   35% 0.94 [0.74-1.19]  0.62  0.846   0.79   -0.8%   -100%   -64%   3/6  -
+    P07      3     13.9   32%   34% 0.94 [0.76-1.17]  0.65  0.844   0.90   -0.8%   -100%   -64%   3/6  -
+    P08      1      5.4   39%   43% 0.91 [0.71-1.07]  0.64  0.861   1.12   +0.2%    -82%   -47%   3/6  -
+    P08      2      5.8   35%   39% 0.90 [0.65-1.14]  0.54  0.891   0.96   -1.0%   -100%   -67%   1/6  -
+    P08      3      6.0   37%   37% 1.00 [0.74-1.22]  0.65  0.547   0.92   -0.3%   -100%   -55%   2/6  -
+    P09      1     12.4   32%   30% 1.06 [0.84-1.29]  0.73  0.245   1.01   -1.9%   -100%   -86%   3/6  -
+    P09      2     12.4   30%   32% 0.94 [0.74-1.19]  0.62  0.797   0.94   -1.0%   -100%   -72%   2/6  -
+    P09      3     12.4   29%   31% 0.94 [0.75-1.15]  0.64  0.826   0.97   -1.3%   -100%   -74%   2/6  -
+    P10      1      8.0   34%   34% 1.01 [0.83-1.23]  0.71  0.502   0.83   -0.8%   -100%   -67%   2/6  -
+    P10      2      7.9   34%   36% 0.92 [0.79-1.08]  0.70  0.847   0.69   -0.9%   -100%   -70%   2/6  -
+    P10      3      7.9   35%   36% 0.98 [0.80-1.17]  0.70  0.650   0.67   -1.0%   -100%   -70%   2/6  -
+    P11      1     36.5   26%   29% 0.91 [0.72-1.01]  0.68  0.992   0.99   -3.5%   -100%  -100%   1/6  -
+    P11      2     35.9   28%   31% 0.89 [0.80-0.98]  0.74  0.997   0.93   -2.6%   -100%   -96%   0/6  -
+    P11      3     36.7   27%   30% 0.91 [0.82-0.96]  0.79  0.991   0.92   -2.9%   -100%  -100%   0/6  -
+    P12      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    P12      2      0.8   33%   30% 1.11 [0.51-1.82]  0.38  0.456   1.13   -0.5%   -100%   -56%   2/6  -
+    P12      3      1.4   24%   20% 1.21 [0.51-2.31]  0.32  0.308   0.71   -5.3%   -100%  -100%   3/6  -
+    T01      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    T01      2      0.7   47%   34% 1.40 [0.85-1.98]  0.66  0.130   0.57   -0.1%   -100%   -57%   3/6  -
+    T01      3      1.2   42%   31% 1.38 [0.80-2.07]  0.61  0.066   0.00   -0.2%   -100%   -58%   3/6  -
+    T02      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    T02      2      0.3   43%   49% 0.87 [0.00-1.32]  0.28  0.792      -   -1.9%   -100%   -79%   0/6  -
+    T02      3      0.4   42%   39% 1.07 [0.00-1.87]  0.24  0.549   0.00   -0.3%    -55%   -57%   1/6  -
+    T03      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    T03      2      1.4   51%   45% 1.15 [0.80-1.45]  0.68  0.237   0.61   +2.5%    +66%    -7%   4/6  -
+    T03      3      2.3   46%   37% 1.24 [0.86-1.64]  0.70  0.067   0.44   +0.9%    -44%   -34%   3/6  -
+    T04      1      7.3   25%   32% 0.78 [0.55-0.99]  0.45  0.997   0.84   -2.7%   -100%   -99%   1/6  -
+    T04      2      7.6   24%   35% 0.70 [0.43-1.00]  0.33  1.000   0.79   -1.8%   -100%   -80%   0/6  -
+    T04      3      7.6   24%   32% 0.74 [0.48-0.97]  0.39  1.000   0.81   -2.4%   -100%   -84%   0/6  -
+    T05      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    T05      2      3.3   30%   35% 0.87 [0.62-1.11]  0.52  0.872   0.86   -0.3%   -100%   -60%   2/6  -
+    T05      3      5.0   35%   35% 1.01 [0.82-1.18]  0.74  0.491   0.82   -0.8%   -100%   -62%   2/6  -
+    T06      1      0.0     -     - - [---]              -      -      -       -       -      -   0/6  -
+    T06      2      0.9   57%   44% 1.27 [0.91-2.34]  0.56  0.112   0.74   +3.1%    +66%    -7%   2/6  -
+    T06      3      1.8   38%   34% 1.09 [0.76-1.51]  0.63  0.355   0.30   -1.8%   -100%   -75%   3/6  -
+
+  the signals (CE wording; PE = the mirror):
+    BU_LB    long build-up (CE: price up 0.5%+ since the expiry close and OI since the day-1 close 2%+ above the market's; PE: short build-up - price down, OI up) - from day 2 (the OI leg starts at the day-1 close, after the expiry drop)
+    BU_SC    short covering (CE: price up 0.5%+, OI since day 1 2%+ below the market's; PE: long unwinding - price down, OI down) - from day 2
+    ROLL_HI  rollover proxy in the top third of the series (OI day 1 / OI the day before expiry, against the share's own last 6 series) - same for CE and PE
+    ROLL_LO  rollover proxy in the bottom third - same for CE and PE
+    SEC_TOP  its sector was in the top 3 of the previous series (PE: the bottom 3) - median move of the sector's shares, expiry to expiry
+    BREADTH  70%+ of its sector's shares rose over the previous series (PE: 70%+ fell)
+    RSI_N    RSI regime normal: daily RSI(14) between 30 and 70 and within 10% of the 20-day average - same for CE and PE
+    RSI_X    RSI regime EXTREME its way (CE: RSI >= 80 or 10%+ above the 20-day average; PE: RSI <= 20 or 10%+ below) - the plan's 'never'
+    REV_OS   against the stretch (CE on an oversold share, RSI <= 30; PE on an overbought share, RSI >= 70) - the plan's 'do not, until measured'
+    REV_X    against an EXTREME (CE on RSI <= 20 or 10%+ below the 20-day average; PE on EXTREME overbought) - the plan's 'do not'
+    TREND    above both its 20- and 50-day averages (PE: below both)
+    PULL     a pullback to the 20-day average (within 2% of it) while above the 50-day average (PE: below it) - the plan's entry zone
+    MKT      NIFTY above its 50-day average (PE: below)
+    pairs / triples (declared before the run, never added after): P01 = BU_LB + ROLL_HI · P02 = BU_LB + SEC_TOP · P03 = BU_LB + TREND · P04 = BU_LB + PULL · P05 = BU_LB + MKT · P06 = BU_LB + RSI_N · P07 = SEC_TOP + TREND · P08 = SEC_TOP + PULL · P09 = SEC_TOP + BREADTH · P10 = ROLL_HI + SEC_TOP · P11 = TREND + MKT · P12 = BU_SC + SEC_TOP · T01 = BU_LB + ROLL_HI + SEC_TOP · T02 = BU_LB + SEC_TOP + PULL · T03 = BU_LB + SEC_TOP + RSI_N · T04 = SEC_TOP + TREND + MKT · T05 = BU_LB + ROLL_HI + TREND · T06 = BU_LB + SEC_TOP + MKT
+
+5 THE VERDICT - PASS = lift 95% interval above 1.0 (tuning) and still above 1.0 after the 93-tries guard + lift > 1.0 held-out (6+ trades) + lift > 1.0 in 5 of 6 half-years (2024 H1, 2024 H2, 2025 H1, 2025 H2, 2026 H1, 2026 H2) + 2+ trades a month · 93 tries per side
+  CE: 0 of 93 tries pass
+     closest: P11 day 3 - lift 1.05 [0.99-1.12], guard 0.95; failed: lift interval 0.99-1.12 not above 1.0
+  PE: 0 of 93 tries pass
+     closest: RSI_N day 1 - lift 1.02 [1.01-1.03], guard 1.00; failed: lift bound 1.00 after the 93-tries guard not above 1.0
+  (with 93 tries a side, about 1 in 40 sets of pure noise clears a plain 95% interval - hence the guard: the bound widened to z = 3.46)
+
+6 HOW IT WAS MEASURED
+  THE SERIES: onsetstudy.expiry_flags on NIFTY's market days (last Thursday of the month to Aug 2025, last Tuesday from Sep 2025, a holiday
+    moves the expiry to the market day before). A series runs from the day after one expiry (day 1) to the next expiry. Only series with
+    both expiries in the store are studied. The check compares each expiry with the next day's change in the summed futures OI of every
+    symbol present on both days: expiring contracts vanish, so the summed OI should drop then more than on any other day of the month.
+  ENTRY / EXIT: the close of day 1, 2 or 3 (a share needs a full session that day - onsetstudy.prep's rules: previous day present, no
+    split jump, listed in NSE's F&O file). EXIT (desk decision): the close 4 MARKET days before the expiry day, Thursday and Tuesday
+    expiries alike, holidays not counted (Tue 29 Dec 2026 -> Tue 22 Dec). A trade with an unadjusted split / bonus inside is dropped.
+    A second check: an NSE trading day after a flagged expiry and on or before the scheduled last Thursday / Tuesday, or NIFTY's next
+    day differing from NSE's, means a missing NIFTY minute day moved the calendar - the series ending and starting there are dropped.
+  SIGNALS at the close of the entry day, from that day and earlier only. Prices on a log scale so the PE mirror is exact. Build-up: the
+    price since the expiry close (day 0) and the share's OI since the DAY-1 close against the median of all F&O shares over the same
+    days - the expiry drop (day 0 -> day 1) is left out because it is the rollover's information; so day 1 has no build-up signal.
+    OI unit changes (NSE's OI is not split-adjusted: OI 1.8x up / down on a day the price moved < 20%, or a split jump) switch that
+    share's OI signals off from that day to the end of the series (never before it: no look-ahead) and keep that series' rollover
+    out of later series' history. Rollover proxy: OI on day 1 / OI the day before the
+    expiry, against the share's own last 6 series, split into thirds across the shares of that series. Sector: median move of its shares
+    over the previous series (expiry to expiry; a share with a split inside it is left out), ranked; top 3 of 9+ sectors (top third when fewer); breadth = share of members up.
+    LOOSE sectors.json buckets ('other', 'misc', ...) get no sector signals. RSI(14) Wilder on daily closes; 20 / 50-day averages
+    (geometric); NIFTY against its 50-day average. No signals within 60 rows after a split jump (the averages would mix units).
+  OUTCOMES: move = (exit / entry - 1) for CE, (1 - exit / entry) for PE. MAE = the worst daily low (CE) / high (PE) after entry up to the
+    exit, against the entry. Naked option = (0.5 x move - (P0 - P1)) / P0, floored at -100%%: P0 = 0.4 x vol x sqrt(days to expiry / 252)
+    at entry, P1 the same at the exit, vol = 20-day realised volatility (at least 10% a year). Debit spread = a debit of 0.55 x P0 and a
+    width of 1.8 x the debit, valued at its intrinsic value at the exit: result between -100% and +80% of the debit (the time value
+    left 1-3 days before expiry is ignored - slightly harsh on losers). HIT = the spread result above 0. Equal money per trade.
+  BASELINES: ALL = every share the same side and day; TOP = the shares of the previous series' top sector (PE: bottom). RANDOM = for every
+    trade a random share of the same series, entry day and side; its hit count over 10,000 draws is drawn as the exactly equivalent
+    binomial count per series. LIFT = the set's hits / the random picks' expected hits; its 95% interval resamples whole months (series)
+    2,000 times (onsetstudy.boot). p = the share of the 10,000 random draws that hit as often as the set. MKT alone takes every share
+    of a series or none, so against a same-series random pick its lift is exactly 1.00 by construction - it counts only in pairs.
+  THE GUARD (added to the design's PASS rule): the lift's lower bound with the interval widened for the number of tries on that side
+    (Bonferroni on the log lift, the month-bootstrap's standard error): with ~93 tries a plain 95% interval lets pure noise pass.
+  TUNING / HELD-OUT: held-out = series starting in the last 6 months of the store (onsetstudy's cut); tuning = series that end before
+    it; a series spanning the cut is used in neither. Half-years count only with 3+ series; a set needs 3+ trades in one to hold there.
+
+(0.3 min · every candidate trade is kept in /home/globalbot/girdata/hist_fresh/seriesstudy_trades.npz)
