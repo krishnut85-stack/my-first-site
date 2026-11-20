@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 09:38 IST
+Last update: 09:41 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -24,7 +24,7 @@ Last update: 09:38 IST
 | B8 News by company and context | IN PROGRESS | coded: newsmatch.py - company named in context only (no product codes, look-alike names, counterparties, baskets); KEI-01 / Ford-Stellantis class dropped; second reading AGREE / DIRECTION WRONG / EVIDENCE WEAK, DIRECTION WRONG blocks GO NOW; 97 unit tests pass; swap after 15:35 | B8_news_by_company.md, B8_news_drops_16-19nov.txt | 08:28 |
 | B9 Fault test | IN PROGRESS | coded: AI calls time-bounded with named fallback reasons, 3 failures = AI paused 5 min (rules decide), stale quote blocks at once, dead feed writes a FEED DEAD fault; 97 unit tests pass; swap after 15:35; + QUOTE AGE gate: December premium older than 60 s = STALE, no GO NOW (per-row quote time added to the store after 15:35, priority re-quote of card strikes) | B9_fault_test.md | 09:38 |
 | C1 Evening prediction | IN PROGRESS | coded in v2/predict (19:45 / 22:45 / 07:15 / 09:08 versions, append-only store, CE + PE lists, market call); point-in-time tests 16/18/19 Nov done, 20 Nov after the minute pull. RISK: it picks shares that WILL MOVE (lift ~1.4 held out) but the SIDE is right only 50.2 pct - every line labelled NOT PROVEN; on quiet-news evenings it does not supply 10 early cards (desk B3 point) | C1_evening_prediction.md | 08:54 |
-| C2 PREDICTED signal | IN PROGRESS | coded (v2/predict/monitor.py): one state per 09:08 line, confirm from 09:17, 09:17-09:30 only the 09:08 top 5, TOO LATE / PREDICTION FAILED / NOT PREDICTED, ring tiers 6/15 min + 50/day; live shadow run today, nothing sent; 23 unit tests; pages + timers after 15:35 | proof after 15:35 | 09:22 |
+| C2 PREDICTED signal | IN PROGRESS | coded + desk A6b: never-empty list, 8 MOVER lines (side set by price: CE above yesterday's high / OR high, PE below yesterday's low / OR low, RVOL 2); first point-in-time numbers: 16 Nov 5/8 moved 2pct+, 2 fired, 1 right, 0 early; 18 Nov 5/8, 2 fired both right, 1 early; 19 Nov 4/8, 3 fired, 1 right, 2 wrong, 1 early. RISK: far from 10 early cards a day - list size tuned on 21 Oct-13 Nov after the close, tested on 16-20 Nov + 27 Oct | proof after 15:35 | 09:41 |
 | C3 Live news call | IN PROGRESS | coded (newscall.py): NEWS -> can go UP / DOWN with NEW / REPEAT / DENIAL / OFFICIAL, VERIFIED / TV ONLY, price-confirm before any GO NOW; live shadow today; 23 unit tests; pages + timers after 15:35 | proof after 15:35 | 09:22 |
 | C4 Bottom / top calls | IN PROGRESS | coded (bottomtop.py): STOP no new PE / CE, 45-min suspension, price test, the voice's record; live shadow today; 23 unit tests; pages + timers after 15:35 | proof after 15:35 | 09:22 |
 | C5 Scoring after 15:35 | IN PROGRESS | with C1; first scoring after today's close |  | 08:33 |
