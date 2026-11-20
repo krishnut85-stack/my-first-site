@@ -20,8 +20,7 @@ strikes only** for stocks on Monday. GIR never places orders: he trades in Kite 
 - Hard limits stay on: 50 rings a day, 6 in any 15 minutes, the AI cost cap, the loss lock, no order button anywhere.
 
 ## A. Data and feeds (S) - by Sun 18:00
-- [ ] A1 Kite login works with the Monday token flow; the four Kite keys carry their jobs (BUILD_PLAN 1.3); a dry run of the 08:00
-      token refresh on Sunday with the real steps, and the alarm if it fails.
+- [ ] A1 Kite: the four keys carry their jobs (BUILD_PLAN 1.3); the Monday login flow as in J1; no job before 08:15 needs a Monday token.
 - [ ] A2 Every feed F01-F31 (BUILD_PLAN 1.2) shows its source, last update and freshness; any feed that cannot be live on Monday is
       listed with what replaces it and what the page shows instead ("not known" is shown once, with the reason).
 - [ ] A3 NSE daily files for Fri 20 Nov downloaded and checked (F&O bhavcopy, OI, MWPL / ban list for Monday, FII/DII, sector
@@ -156,9 +155,9 @@ from Fri 20 Nov or the weekend: published at (source time) -> seen by GIR -> on 
 - [ ] J9 09:00-09:30 rules: the 09:15 print carries the pre-open volume (RVOL5 would fire everywhere) - exclude it from RVOL5,
       high/low, VWAP seeding; decide which evening GET READY triggers may ring at 09:15 (at most 6, ranked, not first-come);
       test on today's recorded 09:00-09:30 frames. (D writes the rule, S builds, Sat 22:00)
-- [ ] J10 EXPIRY-DAY MODE for Monday: stock options expire (December strikes only); index expiry choice for index options is the
-      TRADER'S decision; build-up read from OI across all months (rollover makes near-month OI collapse); pinning to big-OI strikes
-      from ~13:30 flagged; add the last expiry day (27 Oct) to the E1 replays. (D spec, T decides index expiry, S builds, Sat 22:00)
+- [ ] J10 EXPIRY-DAY MODE for Monday: stock options expire (December strikes only); index options: GIR suggests the NEXT weekly (1 Dec) by default,
+      the expiring contract shown as information only (he can change this at any time); build-up read from OI across all months (rollover makes near-month OI collapse); pinning to big-OI strikes
+      from ~13:30 flagged; add the last expiry day (27 Oct) to the E1 replays. (D spec, S builds, Sat 22:00)
 - [ ] J11 AI budget: the silent old system gets a small fixed allowance or no AI; replays have their own counter; the day resets on
       the India date; proof that the old system cannot use up the new one's budget (the Opus GO NOW must not be switched off at 60%).
       (S, Sun 18:00)
@@ -168,16 +167,20 @@ from Fri 20 Nov or the weekend: published at (source time) -> seen by GIR -> on 
       OUTSIDE uptime check on /status.json and last-tick age, tested Sunday by stopping the heartbeat. (S, Sun 18:00)
 - [ ] J14 Rate limits at cold start: a request budget per key (Kite, NSE, Telegram); proof = peak requests/s from a cold start at
       08:30 with zero 429 / 403. (S, Sun 18:00)
-- [ ] J15 His Monday routine (T): logins by 08:15; at 08:25 open the page on laptop and phone, click once (browsers block sound until
-      a click), hear the test chime, receive the Telegram test ping; phone not on Do Not Disturb, channel not muted, battery saver
-      not stopping Telegram. He writes "switch on" for the new system by Sun 21:00 (the new system rings on the live address).
-- [ ] J16 Code freeze Sun 16:00. D picks one held-out replay day only after the freeze. After GO at 21:00 nothing changes before
+- [ ] J15 His Monday routine (T, the only manual part): logins by 08:15; at 08:25 open the page on laptop and phone and click once
+      (browsers block sound until a click); test chime + Telegram test ping arrive; phone not on Do Not Disturb, channel not muted,
+      battery saver not stopping Telegram. His order of 20 Nov IS the switch-on: the new system rings on the live address from
+      Mon 09:15; S does not wait for another "switch on". If the Sun 21:00 status has a RED blocker, D tells him that evening with
+      the fallback.
+- [ ] J16 Code freeze Sun 16:00 for the engine and the pages (data / ops fixes and their tests may continue to Sun 18:00). D picks one held-out replay day only after the freeze. After GO at 21:00 nothing changes before
       Mon 15:35 except through the fallback switch.
 
 ## H. The Monday timeline
 - Sun 19:45  the evening prediction for Monday goes out (C1). D reviews it at once.
-- Sun 21:00  GO / NO-GO: D gives the trader a one-page status of every item above (DONE with proof / NOT DONE / risk). He decides.
-- Mon 07:15  global run; the prediction is updated; Kite token refreshed (A1).
+- Sun 21:00  S pushes the status of every item (DONE with proof / NOT DONE / risk); D checks it and gives the trader one page.
+            Any RED blocker is named with its fallback.
+- Mon 07:15  global run (no Monday Kite token needed); the prediction is updated.
+- Mon 08:15  he logs in the four Kite keys (J1); 08:20 S checks every key.
 - Mon 08:00  every feed fresh (A2); ban list loaded (A3); health all green (F1).
 - Mon 08:30  READY: S posts "READY" with the health line. Any red item is named with its fallback.
 - Mon 09:08  pre-open update of the prediction lists.
