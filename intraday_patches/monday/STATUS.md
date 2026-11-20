@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 08:33 IST
+Last update: 08:54 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -23,7 +23,7 @@ Last update: 08:33 IST
 | B7 Triage ranks | IN PROGRESS | coded: triage priority 1-10; opening cap / rate limit keep the highest; ai_lane and final_lane logged apart; 84 unit tests pass; live engine untouched until the swap after 15:35 | B7_triage_ranks.md | 08:11 |
 | B8 News by company and context | IN PROGRESS | coded: newsmatch.py - company named in context only (no product codes, look-alike names, counterparties, baskets); KEI-01 / Ford-Stellantis class dropped; second reading AGREE / DIRECTION WRONG / EVIDENCE WEAK, DIRECTION WRONG blocks GO NOW; 97 unit tests pass; swap after 15:35 | B8_news_by_company.md, B8_news_drops_16-19nov.txt | 08:28 |
 | B9 Fault test | IN PROGRESS | coded: AI calls time-bounded with named fallback reasons, 3 failures = AI paused 5 min (rules decide), stale quote blocks at once, dead feed writes a FEED DEAD fault; 97 unit tests pass; swap after 15:35 | B9_fault_test.md | 08:28 |
-| C1 Evening prediction | IN PROGRESS | PREDICTION_LOOP.md final landed; builder started (19:45 / 22:45 / 07:15 / 09:08 lists, point-in-time tests on 16/18/19/20 Nov) |  | 08:33 |
+| C1 Evening prediction | IN PROGRESS | coded in v2/predict (19:45 / 22:45 / 07:15 / 09:08 versions, append-only store, CE + PE lists, market call); point-in-time tests 16/18/19 Nov done, 20 Nov after the minute pull. RISK: it picks shares that WILL MOVE (lift ~1.4 held out) but the SIDE is right only 50.2 pct - every line labelled NOT PROVEN; on quiet-news evenings it does not supply 10 early cards (desk B3 point) | C1_evening_prediction.md | 08:54 |
 | C2 PREDICTED signal | IN PROGRESS | with C1 (09:17 earliest; 09:17-09:30 only the 09:08 top 5) |  | 08:33 |
 | C3 Live news call | IN PROGRESS | with C1 (company match from engine_next/newsmatch.py) |  | 08:33 |
 | C4 Bottom / top calls | IN PROGRESS | with C1 |  | 08:33 |
