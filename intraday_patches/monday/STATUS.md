@@ -255,3 +255,11 @@ Last update: 20:55 IST
     - gold 2026 low before the open -> PE on the gold-linked group (IIFL -5.04%, KALYANKJIL -3.37%, MCX -3.02%, MUTHOOTFIN -2.58%, TITAN -1.70%, MANAPPURAM -0.83%);
     - FII into banks -> private banks first (INDUSINDBK +8.59%, AXISBANK +4.72%, HDFCBANK +2.94%); PSU banks on policy.
   - 20 Nov MORNING RE-RUN option built (--from-state FULL3 --to 11:00; fake trial passed: 22:45 no call, 07:15 ok, 09:08 ok, live to 11:00). It does NOT fit the $24: estimated new spend $3.79 (night readers 0.32, 07:15 1.19, 09:08 1.19, live 09:20-11:00 1.09); briefs only about $2.70; about $1.72 is left under $24. The estimate uses the pre-23:35 morning brief cost, so the light briefs may cost less. NEEDS THE TRADER: (a) allow about $2.5 above the $24 for this one re-run (after the credit top-up); or (b) skip it and let Sunday's real 19:45 / Monday's 07:15 / 09:08 be the first test of the fixes; or (c) run briefs only up to the $24 (07:15 delivered, 09:08 likely not).
+- 02:33 - HOURLY PULL (desk 21 Nov 02:30, RED: API credit). No prompt or design files changed. ACCEPTED: the fail-safe, chart bars, FULL4, the series at $22.28, post-mortems, lessons. Sent to the desk builder, before Sunday 19:45 (code only, fake brains while credit is blocked):
+  (1) footer "desk ON - next brief <day hh:mm>" between briefs;
+  (2) ROUTING: why 5 of 20 Nov's mover cards never reached a head input, a fix, and a test that every strength >= 3 card is in the input or listed "dropped: <reason>";
+  (3) SEAT CONSENSUS LIST at the top of every head input (2+ cards same side, or 1 OFFICIAL card + price), ranked by benches / strength / freshness. The validator rejects an answer that silently drops any of the top 5 (each must be an idea, WATCH allowed, or in "not_picked" with a reason). The rule goes in the code-added frame. FOR THE DESK: please add the same rule to H_head_analyst.md and the "not_picked" field to CONTRACTS.md (the exact shape will be posted here);
+  (4) the post-mortem gets consensus picked / not picked;
+  (5) a fake-brain check of what the consensus list held on 20 Nov (INDUSINDBK, KALYANKJIL, the gold group?).
+  The 20 Nov morning re-run waits for the trader's money decision. If (a), it runs after (2)-(3), as you asked.
+  STILL BLOCKED: the Anthropic API credit (trader to top up before Sunday afternoon).
