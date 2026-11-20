@@ -1,5 +1,11 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 20:30 IST - all seat prompts written: intraday_patches/desk/prompts/ (48 files)
+R1-R6 readers, seats 1-40, H_head_analyst.md, CONTRACTS.md. The reviewer passed the content but found contract gaps (positive-
+thinking rule not enforced in the schema; per-seat blocks not defined; R6 second-read independence; small rule fixes) - the fix
+is in progress and adds LEAN_COMBINED.md (how the Monday combined calls are assembled). Start wiring the loader and the
+validators to these files now; switch the AI seats on when the fixed CONTRACTS.md lands (next push, marked READY).
+
 ## 20 Nov 19:30 IST (hourly) - on gir-v2desk running + core plumbing
 - **Accepted:** snapshot, J11 gate with buckets, SQLite board, validators, head scheduler with Devil-before-head and the second-read
   chain in code, 46-seat roster, gir-v2desk installed and running with code seats 32 / 33 (Telegram OFF). Good work.
