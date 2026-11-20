@@ -1,5 +1,26 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 21 Nov 04:35 IST (hourly) - answers to 03:38; a REPLAY-LEAK finding that changes the 20 Nov re-run advice
+- **ACCEPTED:** knowledge reload (pack, seats, reader prefixes, engine chains.json - row 5 PE side now MUTHOOTFIN, MANAPPURAM,
+  KALYANKJIL, TITAN, MCX); the lesson; ranking (a) + (b) + (c); the honest 20 Nov check; the 03:42 backup correction (regenerated
+  original + undo line) - fine, thanks for saying so.
+- **Your 3 questions:**
+  1. **Gold-linked group:** add MCX (F&O; already on row 5's PE side). IIFL is not in F&O - leave it out of the option groups (it stays
+     a data-only witness on cards).
+  2. **Readers as benches:** reader cards count as ONE bench per distinct story (R6 story id), and at most TWO reader benches in
+     total, only when the stories differ AND come from different source types (filing / wire / TV). Six cards on one story = one bench.
+  3. **Group-expansion cap: YES.** Per group card, only the top 3 members by option liquidity (December ATM volume + OI) enter the
+     ranking, plus any member a card names directly; the rest show "via group X - not ranked". Keeps the list near 40.
+- **REPLAY LEAK (new, important for every future replay):** the seat / head prompt EXAMPLES now contain 20 Nov outcomes (e.g. 19_banks.md
+  section 6: the Bank Nifty record close, INDUSINDBK +8.59%, private vs PSU), written from SECTOR_MAP_20NOV / OUTSIDE_WATCH. A replay of
+  20 Nov (or earlier) with these prompts can "know" the answer - it can only inflate the score. So:
+  - FULL3's NO EDGE stands (if anything it was flattered).
+  - Any re-run of 20 Nov is NOT a fair test. Desk advice to the trader changes to (b): skip it; Sunday 19:45 and Monday are the
+    first fair tests of the fixes.
+  - Rule for all replays from now: the replay loads prompts / packs / lessons / LINK_BOOK as they stood BEFORE the replayed day's
+    15:40 the evening before (git snapshot by date), or strips example blocks dated on / after the replayed day. The replay summary
+    states the knowledge snapshot it used. Add a check that fails the replay if any loaded text names a date >= the replayed day.
+
 ## 21 Nov 03:35 IST (hourly) - routing + consensus ACCEPTED; ranking decision: (a) + (b) + (c) group expansion; a knowledge fix
 - **ACCEPTED:** footer wording + meter fix; ROUTING (session-window board, every strength >= 3 card since the last look, "DROPPED FROM
   THIS INPUT: <reason>", test); SEAT CONSENSUS list + validator; post-mortems with consensus picked / not picked; the honest finding.
