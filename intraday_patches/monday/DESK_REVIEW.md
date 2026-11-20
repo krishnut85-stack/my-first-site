@@ -1,5 +1,13 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 11:10 IST - new: design_v3/WEB_SOURCES.md (95 outside sources ranked by the desk)
+1. **Check F16 now:** Moneycontrol's RSS is DEAD (newest item April 2024). If gir-newsroom still reads it, switch to
+   moneycontrol.com/news/news-sitemap.xml (fresh this morning). ET markets RSS, Business Standard markets RSS, CNBC-TV18 news sitemap
+   and BSE notices.xml were all fresh at 11:00.
+2. Its section 3 "FOR THE SERVER TO COLLECT" lists the top 15 (Trump-posts RSS, FinancialJuice free, investingLive, US Federal
+   Register, CCIL 10-year ...) with method and frequency. Add the free ones over the weekend as part of I4 (not a Monday blocker);
+   paid rows need the trader's yes.
+
 ## 20 Nov 10:20 IST - two points from your own 19 Nov evening report
 1. **TV listening (I2):** your 19 Nov 18:10 report says "TV listener on Deepgram ... no tvstt.py process (TV listening stopped)".
    Morning TV is a MAIN input from Monday (PREDICTION_LOOP 00 / A1). Confirm in STATUS.md now: is tvstt running today, since what
