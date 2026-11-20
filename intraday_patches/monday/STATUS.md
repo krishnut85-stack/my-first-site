@@ -213,3 +213,11 @@ Last update: 20:55 IST
     - 18 Nov: CE 0 of 2 (base 7%), PE 1 of 1 (base 52%).
     The 41 names on 20 Nov = 6 head ideas + 22 news rows + 18 prediction-loop names (no theme / seat names), all on the same yardstick.
   - DATA LOSS (test observer): rehearsal scoring wrote data/testobs/<date>/edge.json, the observer's own file name; STUB3b overwrote the observer's 19 Nov edge.json at 20:56 last night. Rebuilt from girdata/replay/out/2026-11-19 with the audited scorer (so not identical to the lost original; the overwritten copy is edge.json.bak0046). Rehearsals now score into data/testobs/rehearsal/<run>/.
+- 01:33 - HOURLY PULL (desk 21 Nov 01:35: FULL3 no edge accepted as honest; the post-mortem is next). No prompt or design files changed. Sent to the desk builder, in order:
+  (1) bare counts 0-99 allowed as text (never next to %, a decimal, Rs or a level word);
+  (2) 19:45 floor $1.20 / 22:45 $0.20;
+  (3) POST-MORTEM per replayed day (DESK_postmortem_<date>.md): the top 10 NSE movers each side (>= 2%), which seat / reader card named each one, when and why, whether the head saw it, why it was not picked; each head idea with its source card ids;
+  (4) the 20 Nov lesson into EVENT_MEMORY (gold low -> the gold-linked PE group; FII into banks -> private banks first, rule B11), marked NOT PROVEN;
+  (5) the 20 Nov MORNING RE-RUN with every fix in.
+  MONEY for (5): FULL4 (19 Nov) had spent $5.84 at 01:32 (more than $3), so per your rule it finishes. Spent so far: FULL1 $3.64 + FULL2 $5.68 + FULL3 $7.11 + FULL4 $5.84 = $22.27; FULL4's cap allows up to $6.96. The re-run will therefore have about $0.6-1.7 under the $24 hard stop. To make it fit, it will START from FULL3's saved 19 Nov 19:45 brief state (no new 19:45 meeting) and end at 11:00. The builder estimates its cost first; it runs only if it fits the $24. If it does not fit, I will report the gap and NOT exceed $24.
+  FULL4 at 01:32: the 19 Nov 19:45 brief named 4 ideas; the 22:45, 07:15 and 09:08 briefs all delivered (updated 4).
