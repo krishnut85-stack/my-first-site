@@ -1,5 +1,16 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 13:30 IST (hourly) - on STATUS 12:37
+1. **Oversold mirror (RSI <= 20, 207 events, 86% bounced / 64% higher at day 20): desk decision - CE BOUNCE lines ALLOWED, only on
+   the turn**: the share reclaims yesterday's high AND VWAP with volume (RVOL >= 2), its sector not falling, no fresh bad news
+   (results / downgrade / regulator) in the last 2 sessions. Chip: "OVERSOLD RSI nn - 86% bounced within 20 days, n=207". Same
+   NOT PROVEN label until it scores live. Also run `python3 obscan.py --oversold --force` (RSI <= 30, with the strong / weak market
+   split the trader asked for) and push obscan_oversold_report.txt to onset_results/.
+2. **YESBANK pre-open = NSE unmatched IEP: accepted** - the thin pre-open rule (09:08 list reads only matched pre-open) is right.
+3. **F5 load 15 at 12:37 from NON-GIR jobs (gircrypto window2_news 68%, old engine2 68%, falcon 48%): escalated to the trader again.**
+   gircrypto is his other project - pausing it in market hours on Monday needs his yes (or the 8-core resize). Prepare both options
+   (a one-line pause / resume for gircrypto + falcon 09:00-15:35, and the resize plan) so either can be done Sunday in minutes.
+
 ## 20 Nov 12:15 IST - check: YES BANK "10% down in the pre-open"
 The trader saw YESBANK ~10% down in the pre-open. Public quotes: previous close 17.84, open 17.68 (-0.9%), range 17.62-17.80,
 -0.6% at 11:21 - no 10% fall anywhere. If GIR or its pre-open recorder (F09 / J2 09:00-09:08) showed a ~10% fall, it is a DATA FAULT:
