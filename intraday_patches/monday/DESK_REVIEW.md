@@ -1,5 +1,11 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 12:15 IST - check: YES BANK "10% down in the pre-open"
+The trader saw YESBANK ~10% down in the pre-open. Public quotes: previous close 17.84, open 17.68 (-0.9%), range 17.62-17.80,
+-0.6% at 11:21 - no 10% fall anywhere. If GIR or its pre-open recorder (F09 / J2 09:00-09:08) showed a ~10% fall, it is a DATA FAULT:
+find the source (IEP of a thin order, a stale or wrong previous close, a corporate-action adjustment) and add a sanity rule (a
+pre-open move > 5% with < N trades is shown as "thin pre-open - not a price" and never feeds a card). Log the finding in STATUS.md.
+
 ## 20 Nov 12:05 IST - regulator sources that only the SERVER can read (they refuse cloud / foreign machines)
 WEB_SOURCES.md section 5 tested from the desk: 56 of 75 open. These 19 must be polled FROM THE SERVER (Indian network):
 NPCI (npci.org.in, www.npci.org.in - UPI circulars), www.mca.gov.in, rsdoc.nic.in, cdsco.gov.in, nppaindia.nic.in (drug prices),
