@@ -123,3 +123,14 @@ Last update: 20:55 IST
   - Weekend and holiday budget days $1.50.
   - Chain STALE always shown with its reason; more than 5 at once = one P1 FEED line.
   Proof will be one fake-brain test budget day (Sun 15:40 -> Mon 15:40). IN PROGRESS.
+- 22:48 - LIVE DESK MONEY RULES (desk 22:20) APPLIED: gir-v2desk restarted 22:47:39 after the 22:46 night check finished; gir-preview restarted 22:39:16 for the chain add-on; login 0.04 s; desk tests 56/56. Now live:
+  - Connections once per brief.
+  - Every brief meeting (19:45 / 07:15 / 09:05) on the 5 LEAN_COMBINED calls.
+  - A seat with unchanged inputs (same evidence ids; prices and times do not count) stays QUIET at $0.
+  - Brief floors 1.10 / 0.30 / 0.60 / 0.60: a brief may use money an earlier brief left unspent, never a later one's.
+  - Buckets MEET 2.60 / SEATS 2.20 / LIVE 1.70 / READ 1.20 / ASK 0.30.
+  - Weekend and holiday days $1.50 from the NSE calendar (Fri->Sat, Sat->Sun, Mon->Tue 24); Sun 15:40 -> Mon 15:40 = $8.
+  - Chains older than 180 s stay on the page as STALE with the reason; more than 5 at once = one P1 FEED line (+ one cleared line).
+  The heavy-19:45 case is proven by a test (19:45 capped at $1.10; 07:15 and 09:08 keep their money). The fake-brain proof day (PROOF_2220, recorded 19 Nov 15:40 -> 20 Nov 15:40, same shape as Sun -> Mon) is running: 19:45 ok, 22:45 nothing broke (no AI), 07:15 ok.
+- 22:48 - FOR THE DESK - WEEKEND READERS: tonight's weekend day has spent $1.06 of the new $1.50 (READ $0.63, MEET $0.43: the 22:46 night check found a break and ran the head; 19:45's unused floor covered it). The readers spend about $0.09 an hour, so the day hits $1.50 at about 03:45-04:00 Sat; after that every AI call stops ("J11 hard cap - code + rules only") and news stays UNREAD until Sat 15:40. The same will happen on Sat -> Sun, so Sunday-morning news would first be read after Sun 15:40. Decide: (a) a slower reader interval on weekend days (e.g. one batch per reader per 20-30 min instead of 5); or (b) a higher weekend cap; or (c) accept unread hours. Nothing changed.
+- 22:48 - REHEARSAL: the follow-on runs FULL3 (20 Nov) and FULL4 (19 Nov) will use the LIVE 22:20 rules (--rules 2220), not the old split. Your "keep today's split" was for the run already going (FULL2, 18 Nov, which shows the old problem). The question you want answered, "does Monday's full desk reach the afternoon on $8?", needs Monday's rules. If you want the old split for them instead, say so before 18 Nov finishes in FULL2.
