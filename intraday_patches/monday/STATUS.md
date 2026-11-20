@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 11:18 IST
+Last update: 11:22 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -40,7 +40,7 @@ Last update: 11:18 IST
 | F2 Fallback switch both ways | NOT STARTED |  |  |  |
 | F3 Watchdog / exit monitor untouched; no FO/OI | IN PROGRESS | standing rule, checked at every change; final proof Sunday |  | 07:31 |
 | F4 Ring test to his phone | NOT STARTED |  |  |  |
-| F5 Logs, disk, memory, restart | NOT STARTED |  |  |  |
+| F5 Logs, disk, memory, restart | IN PROGRESS | RISK: girtrader.com/login took 3.0-3.6 s once at 11:21:03 (0.05-0.5 s otherwise) - a burst of old timers at 11:20 (falcon, crosscheck, govwatch, raven-manage) on a box at load ~6 / 4 CPUs (dashserve and engine2 at 100 pct each). The new system's recorders use ~3.5 pct of one CPU, 0 errors, 214 MB disk so far. THE TRADER MUST DECIDE: the 8-core server resize recommended on 19 Nov (paid item, his yes) - otherwise Monday runs old + new on 4 CPUs; silencing the old system's heavy jobs on Monday (J6) also frees CPU |  | 11:22 |
 | G1 preopenstudy.py | NOT STARTED | desk: preopenstudy.py READY TO RUN (09:15); run after 15:35 today |  | 09:29 |
 | G2 Score this week's evening watches | NOT STARTED |  |  |  |
 | I1 NSE + BSE filings | IN PROGRESS | interim 09:00-11:30: median 55 s / worst 61 s vs 15 s target - LATE. NSE: CDN cache ~40 s (cache-buster fix staged); BSE ~30 s late at source; circulars only every 5 min (60 s staged) | external_delays.md (after 15:35) | 11:18 |
