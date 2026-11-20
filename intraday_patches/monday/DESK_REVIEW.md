@@ -1,5 +1,11 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 23:40 IST - KALYANKJIL settled: the trader checked Kite - the 19 Nov daily candle is GREEN (up). The page was right.
+- Items 1-2 of the 23:30 entry drop to LOW priority: one code-only bhavcopy check of all 218 shares for 18-20 Nov after the
+  rehearsal, mismatches listed in STATUS (no rush).
+- Item 3 stays BEFORE MONDAY: why KALYANKJIL had no minute bars on 19 Nov, which other F&O shares had gaps on 18-20 Nov, and the rule
+  that a share with missing data shows "data missing", never a % from an old price.
+
 ## 20 Nov 23:30 IST - THE TRADER disputes a price: "KALYANKJIL was negative on 19 Nov, the page showed +1.69% (661.00)"
 Our own files: daily store 19 Nov close 661.0 (rallyscan.csv); 17 Nov evening levels ~700 (CE above 718.05 / PE below 685.10);
 OUTSIDE_WATCH 20 Nov: 638.70 at -3.37% today (= 661 base). So the store implies 18 Nov close ~650 (about -7% on 18 Nov) and 19 Nov
