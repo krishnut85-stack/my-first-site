@@ -47,3 +47,17 @@ whole 19:45 meeting (31 seats in the desk order) + the head + the brief pass val
 - **Tools:** shadow.py (go-live check; --head; seat 15 tested on the shadow's own reader card), apitest.py (one cheap real call per family), rehearsal.py (summary to DESK_rehearsal_<run>.md, names scrubbed; raw stays in the excluded DESK_rehearsal/).
 - **Tests:** 19 pass. Stub rehearsal 18 Nov clean (4 briefs, 911 looks, 918 FAKE calls, EDGE scored by the analyst's own rank); 19-20 Nov running.
 - **Open:** no real-model answer validated yet for the JSON-in-text families (needs the coordinator's apitest run); the prompts use some keys code does not fill yet (story stats, scorecard sc.*, opt.*, deal.*, cal.*, rbi.*) - a model that uses them gets a validator retry.
+
+## UPDATE 20 Nov 20:58 IST (final state of this build session)
+- Cap: the trader's $8.00 a day (J11), buckets MEET 1.80 / LIVE 1.50 / READ 1.60 / SEATS 2.80 / ASK 0.30; ladder: LEAN combined calls
+  (LEAN_COMBINED.md, built and tested) when SEATS >= 50% or the day >= 75%, SEATS event-only at 70%, day event-only at 90%, stop at $8.
+- Prompts: the desk's READY set (49 files) + CONTRACTS with per-seat blocks; reader stems R1-R6; seat 8 OFF (weeks 2-3).
+- API: structured outputs only for seat 15 and the Devil (small core + their block); everything else JSON-in-text with the full CONTRACTS
+  schema in the frame, full jsonschema check in code, one retry naming the exact problem (missing field, allowed triggers, word count,
+  nearest allowed number keys). Probe (analyst.apitest): 9 / 9 families PASS on the real API (coordinator, 20:49 IST).
+- Numbers: CONTRACTS section-6 keys + drv.<name>.pct; names with digits whitelisted (tenors, seat refs, dates, CNBC-TV18, NIFTY 50 ...).
+- Opus calls streamed (brief 600 s, live 150 s, 35 180 s); a failed brief shows the last good one labelled STALE. Prompt caching
+  measured working: head / 35 cold $0.46-0.47, warm (cache read 40-44k) $0.26-0.28.
+- Stub rehearsal 18 / 19 / 20 Nov: clean (4 / 4 briefs a day, ~900-1,100 looks and FAKE calls a day); replays label the option gates
+  they cannot hold. FULL1 ($15, Opus) ready to run; head un-gating and the --apply shadow are the coordinator's next steps.
+- Tests: 21 pass (python3 -m pytest -q analyst/tests from v2/).
