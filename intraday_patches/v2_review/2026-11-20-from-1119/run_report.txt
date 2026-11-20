@@ -1,0 +1,6 @@
+run <server>/girdata/replay/out/2026-11-20-from-1119: 42 movers 2%+
+  AI share of triage rows: 1126 of 1241 (91%); rules fallbacks: {'below rank floor + AI answer had no lane for this candidate': 72, 'AI answer had no lane for this candidate': 17, 'below rank floor + AI error no model answered (RuntimeError: stop_reason max_tokens (text 2002 chars))': 6, 'AI error no model answered (RuntimeError: stop_reason max_tokens (text 2002 chars))': 1, 'below rank floor + AI error no model answered (RuntimeError: stop_reason max_tokens (text 2973 chars))': 4, 'critical lane (by design)': 2, 'below rank floor + AI error no model answered (RuntimeError: stop_reason max_tokens (text 2380 chars))': 11, 'AI error no model answered (RuntimeError: stop_reason max_tokens (text 2380 chars))': 2}
+  rings 19 (09:15-09:45: 4); by hour {'09': 5, '10': 4, '11': 3, '12': 3, '13': 2, '14': 2}
+  early / late / missed / wrong - cards: 0 / 14 / 27 / 1 · cards + WATCH: 4 / 36 / 0 / 2 · old system: 20 / 22 / 0 / 0
+  AI: 387 calls, $1.969, {('triage', 'routine-tier model'): 296, ('final', 'final-tier model'): 77, ('rank', 'routine-tier model'): 8, ('second', 'routine-tier model'): 6}, stop reasons {'end_turn': 367, 'max_tokens': 10, None: 10}
+  lanes: {'MUST SEE': 95, 'WATCH': 896, 'LOG': 250}
