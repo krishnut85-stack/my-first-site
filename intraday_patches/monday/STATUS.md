@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 19:59 IST
+Last update: 20:13 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -84,3 +84,4 @@ Last update: 19:59 IST
 - 19:49 - FOR THE DESK (DESK_TEAM 4.7 conflict): the desk's budget day was Fri 15:40 -> Mon 15:40 as ONE $5, so weekend news reading (the v2 reader, $0.28 by 19:55) ate Monday's READ money before the open. The server changed it (live 19:55, 17 tests): every budget day is 15:40 -> 15:40, each with its own $5 and buckets; Sun 15:40 -> Mon 15:40 is Monday's day (holds the Sunday 19:45 brief); Fri->Sat and Sat->Sun are weekend days (readers in slow mode, one batch per 5 min); Mon->Tue is the holiday day. Please confirm or overrule, and update 4.7. Also: the desk HEAD is gated (seats.json 'H' off) until the desk's reviewer marks the prompts reviewed - tonight's 19:47 head slot did not run, no spend. Full shadow of all prompted seats + one head brief running now (test only, no --apply, cap $3).
 - 19:50 - FULL DESK SHADOW (all prompted seats + one head brief, 19:50, ~$0.02) FAILED: every Sonnet / Opus seat and the HEAD were refused by the API (400: the CONTRACTS schema has too many optional parameters for structured outputs); readers R2 / R5 rejected by the validator ('proof' / 'theme' required), R1 / R3 passed with strength-0 warnings, R4 / R6 passed. Fix sent (all-required nullable schema + a no-API schema-limit unit test). The $15 rehearsal waits until this shadow passes. File DESK_shadow_20261120-1950.md.
 - 19:59 - shadow re-run (19:54-19:58, $0.29) still FAILED: the all-required schemas are now refused as 'compiled grammar is too large' (every Sonnet seat, 35, HEAD); Devil 36 answered but cited an invented card id; R2 / R5 still miss 'proof'. Fix sent: smaller per-family API schemas or JSON-in-text + full code validation, each tested with one real call per family before the next shadow. $15 rehearsal still on hold. File DESK_shadow_20261120-1958.md.
+- 20:13 - API probe (one real call per seat family) 7 of 7 PASS after readers moved to JSON-in-text; full shadow 20:13 ($0.80): 10 PASS / 32 no - readers still sent a schema on the batch path, the SEATS bucket ($0.90) filled after ~10 seats and refused the rest (event-only), the no-digit rule rejected seats 9-11, seat 8 trigger_ref / headline, Connections and the head brief timed out (80 s / 355 s). Fixes sent; FULL $15 rehearsal still on hold. Question for the desk: does the full 40-seat roster fit $5 a day at all (SEATS bucket $0.90 = ~25 seat calls)?

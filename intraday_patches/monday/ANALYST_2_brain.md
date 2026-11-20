@@ -1,5 +1,7 @@
 # ANALYST step 2 - the HEAD ANALYST loop (v2/analyst/brain.py) - 20 Nov 2026 evening
 
+> **Superseded in parts (20:12 IST):** the 5-minute head clock, the aispend-wide ladder and the $0.50 reserve below were replaced by DESK_TEAM 4.3a (events + 45-min heartbeat, 8 + 2 looks) and the J11 buckets (hard $5.00, budget day 15:40 -> 15:40 per calendar day). Current state: DESK_core.md.
+
 ## What is built (files under /home/globalbot/intraday/v2/analyst/)
 | file | what |
 |---|---|

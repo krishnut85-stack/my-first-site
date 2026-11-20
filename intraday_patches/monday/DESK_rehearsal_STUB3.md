@@ -1,0 +1,10 @@
+# DESK REHEARSAL STUB3 - layer stub - made 20 Nov 20:12 IST
+
+Every brain in this layer that is FAKE is labelled so; a FAKE score says nothing about the desk's edge.
+
+## 2026-11-18
+- looks: 911 (ok 911) · cards: 2615 · AI calls: 918 · cost $0.000
+- by seat: 1 3 calls (3 ok, 0 refused) $0.000; 10 3 calls (3 ok, 0 refused) $0.000; 11 2 calls (2 ok, 0 refused) $0.000; 12 2 calls (2 ok, 0 refused) $0.000; 13 1 calls (1 ok, 0 refused) $0.000; 14 1 calls (1 ok, 0 refused) $0.000; 15 10 calls (10 ok, 0 refused) $0.000; 16 2 calls (2 ok, 0 refused) $0.000; 17 2 calls (2 ok, 0 refused) $0.000; 18 1 calls (1 ok, 0 refused) $0.000; 19 2 calls (2 ok, 0 refused) $0.000; 2 2 calls (2 ok, 0 refused) $0.000; 20 2 calls (2 ok, 0 refused) $0.000; 21 2 calls (2 ok, 0 refused) $0.000; 22 2 calls (2 ok, 0 refused) $0.000; 23 2 calls (2 ok, 0 refused) $0.000; 24 2 calls (2 ok, 0 refused) $0.000; 25 2 calls (2 ok, 0 refused) $0.000; 26 2 calls (2 ok, 0 refused) $0.000; 27 3 calls (3 ok, 0 refused) $0.000; 28 1 calls (1 ok, 0 refused) $0.000; 3 2 calls (2 ok, 0 refused) $0.000; 31 9 calls (9 ok, 0 refused) $0.000; 35 3 calls (3 ok, 0 refused) $0.000; 36 6 calls (6 ok, 0 refused) $0.000; 37 1 calls (1 ok, 0 refused) $0.000; 4 2 calls (2 ok, 0 refused) $0.000; 5 2 calls (2 ok, 0 refused) $0.000; 6 2 calls (2 ok, 0 refused) $0.000; 7 2 calls (2 ok, 0 refused) $0.000; 8 2 calls (2 ok, 0 refused) $0.000; 9 2 calls (2 ok, 0 refused) $0.000; H 15 calls (15 ok, 0 refused) $0.000; R2 352 calls (352 ok, 0 refused) $0.000; R3 113 calls (113 ok, 0 refused) $0.000; R6 356 calls (356 ok, 0 refused) $0.000
+- briefs: 07:15 ok ok; 09:08 ok ok; 19:45 ok ok; 22:45 ok ok
+- EDGE: EDGE 2026-11-18 2026-11-18: 15 names a day (7 knowledge-driven) · TOP-5 by the analyst's own rank: >=1% 1/5 20% vs 26% lift 0.78, >=2% 0/5 0% vs 8% lift 0.0 · all names >=1% 3/15 20% vs 24% lift 0.85, >=2% 2/15 13% vs 8% lift 1.74 · knowledge >=2% 0/7 0% vs 6% lift 0.0 · all names >=2% to the next close 2/15 13% vs 16% lift 0.83 · old system >=2% 21/293 7% vs 8% lift 0.88 (293 names)
+
