@@ -1577,7 +1577,13 @@ def report(S, t0, args):
             A("      closest by the lift: %s (early %.0f%%, lift %.2f, 95%% %s, %d fires) · the best catch: %s (early %.0f%%, lift %.2f, 95%% %s) - not a card"
               % (smname(nl), st[nl]["all"]["be"] * 100, st[nl]["lift"], ci_(st[nl]["lift_ci"]), st[nl]["n_fires"], smname(nb), st[nb]["all"]["be"] * 100,
                  st[nb]["lift"], ci_(st[nb]["lift_ci"])))
-            A("    3 REACTION BUDGET: none given - with no alarm that beats random there is no edge for speed to keep (section 5 has the curves).")
+            if np.isfinite(st[nl]["lift_ci"][0]) and st[nl]["lift_ci"][0] > ALARM_CI:
+                A("      NOTE: %s DOES beat random (95%% low %.2f > %.1f) but comes LATE (early only %.0f%% < %.0f%%): a late confirmation, not an early alarm."
+                  " Whether it still pays after option costs: section 5, OVER EVERY ALARM (move left, option proxy after 1.5%% / 3%%)."
+                  % (smname(nl), st[nl]["lift_ci"][0], ALARM_CI, st[nl]["all"]["be"] * 100, FLOOR_BE * 100))
+                A("    3 REACTION BUDGET: none given for an early alarm (section 5 has the curves for the late confirmation sets).")
+            else:
+                A("    3 REACTION BUDGET: none given - with no alarm that beats random there is no edge for speed to keep (section 5 has the curves).")
             A("    4 MOVE LEFT after the alarm: - (no alarm on this side)")
             sa = None
         else:
