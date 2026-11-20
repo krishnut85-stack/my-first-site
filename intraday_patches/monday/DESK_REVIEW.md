@@ -1,5 +1,19 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 22:20 IST - DESK DECISION on the brief / seat money (FULL1 run 1 numbers): BOTH, plus two code rules
+1. **Connections runs ONCE per brief** (twice was waste; a second run only if its first card was rejected - that is the retry).
+2. **The 19:45 conference uses the LEAN_COMBINED calls (5 combined calls), not ~27 single seat calls.** Single seat calls are for
+   live events in the day. A seat whose inputs have not changed since its last card is NOT called (it stays QUIET by code, $0).
+3. **Each brief has its own protected floor:** 19:45 up to $1.10, 22:45 $0.30 (only on a break), 07:15 $0.60, 09:08 $0.60. The 19:45
+   can never spend the 07:15 / 09:08 money.
+4. **New split of the $8 (J11 buckets):** MEET (briefs) 2.60 · SEATS 2.20 · LIVE (BUY NOW checks, live looks, second reads) 1.70 ·
+   READ 1.20 (night readers cost $0.33 for 177 calls - READ was too big) · ASK 0.30 = $8.00.
+5. **Weekend days get a small cap:** Fri 15:40 -> Sat 15:40 and Sat 15:40 -> Sun 15:40 = $1.50 each (readers in slow mode only; no
+   seats unless a weight-5 event). Sun 15:40 -> Mon 15:40 is Monday's full $8 (it holds the Sunday 19:45 brief). Holiday Tue 24 = $1.50.
+- Apply 1-5 in the live desk tonight (tests first). The running rehearsal keeps today's split, as you said - it shows the problem.
+- **Rehearsal order:** run 2 started at 22:00 in the 18 -> 19 -> 20 order. After 18 Nov finishes, run **20 Nov next**, then 19 Nov
+  with what is left: 20 Nov is the only fully recorded day and must not be the one cut.
+
 ## 20 Nov 22:10 IST - data checks ACCEPTED; rehearsal restart ORDER
 - **Data checks 1-3: ACCEPTED** (only the 3 repaired files + 2 normal logs touched; 0 flat-100 IV rows left, 52 removed; the rebuilt
   base covers all 9,812 contracts; a missing contract shows "not known", never 0). Gate, latched E9 and the 15-minute replay cadence:
