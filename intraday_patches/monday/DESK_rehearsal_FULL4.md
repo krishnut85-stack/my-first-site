@@ -1,6 +1,8 @@
-# DESK REHEARSAL FULL4 - layer full - made 21 Nov 01:45 IST
+# DESK REHEARSAL FULL4 - layer stub - made 21 Nov 04:39 IST
 
 Every brain in this layer that is FAKE is labelled so; a FAKE score says nothing about the desk's edge.
+
+- knowledge snapshot: NOT controlled (prompts written 20 Nov evening may contain outcomes)
 
 ## COST PER REPLAYED BUDGET DAY and the J11 $8 ladder (virtual times; replay tick every 15 min, head per 4.3a)
 - 2026-11-17 15:40 -> 2026-11-18 15:40 (session 2026-11-18, cap $8.00): $0.00 in 2 calls (0 refused) · by bucket READ $0.00

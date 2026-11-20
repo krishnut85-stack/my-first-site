@@ -1,16 +1,18 @@
-# DESK REHEARSAL FULL2 - layer stub - made 21 Nov 00:46 IST
+# DESK REHEARSAL FULL2 - layer stub - made 21 Nov 04:39 IST
 
 Every brain in this layer that is FAKE is labelled so; a FAKE score says nothing about the desk's edge.
 
+- knowledge snapshot: NOT controlled (prompts written 20 Nov evening may contain outcomes)
+
 ## COST PER REPLAYED BUDGET DAY and the J11 $8 ladder (virtual times; replay tick every 15 min, head per 4.3a)
 - 2026-11-16 15:40 -> 2026-11-17 15:40 (session 2026-11-17, cap $8.00): $0.01 in 3 calls (0 refused) · by bucket READ $0.01
-  brief floors (MEET by brief): 19:45 $0.00 of $1.10; 22:45 $0.00 of $0.30; 07:15 $0.00 of $0.60; 09:08 $0.00 of $0.60
+  brief floors (MEET by brief): 19:45 $0.00 of $1.20; 22:45 $0.00 of $0.20; 07:15 $0.00 of $0.60; 09:08 $0.00 of $0.60
   steps: none - the full desk ran the whole budget day
 - 2026-11-17 15:40 -> 2026-11-18 15:40 (session 2026-11-18, cap $8.00): $5.67 in 477 calls (229 refused) · by bucket LIVE $1.37, MEET $1.82, READ $0.44, SEATS $2.04
   cost per brief (MEET + SEATS within 20 min of the run): 07:15 $0.42; 09:08 $0.00; 19:45 $3.04; 22:45 $0.33
   LIVE by hour: 09:00 $0.84; 10:00 $0.53; 11:00 $0.00; 12:00 $0.00; 13:00 $0.00; 14:00 $0.00; 15:00 $0.00
   LIVE by caller: H head 214 calls $0.89 (208 refused); 36 seat 7 calls $0.48 (0 refused)
-  brief floors (MEET by brief): 19:45 $1.07 of $1.10; 22:45 $0.33 of $0.30; 07:15 $0.42 of $0.60; 09:08 $0.00 of $0.60
+  brief floors (MEET by brief): 19:45 $1.07 of $1.20; 22:45 $0.33 of $0.20; 07:15 $0.42 of $0.60; 09:08 $0.00 of $0.60
   steps: LEAN (combined seat calls) at 2026-11-17 19:47 - SEATS $1.43; SEATS event-only at 2026-11-17 19:47; first refusal at 2026-11-17 19:47 (SEATS at 70% of $2.80 - event calls only); MEET bucket full at 2026-11-18 07:17; first LIVE refusal at 2026-11-18 11:43 (WAIT: AI live budget used - rules view only ($1.37 of $1.50 LIVE spent)
 
 ## 2026-11-18

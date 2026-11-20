@@ -4,7 +4,7 @@
  "days": [
   "2026-11-18"
  ],
- "made_ist": "2026-11-21 00:46:37",
+ "made_ist": "2026-11-21 04:39:12",
  "edge": {
   "2026-11-18": {
    "line": "EDGE 2026-11-18 2026-11-18: 12 names a day (4 knowledge-driven) \u00b7 TOP-5 by the analyst's own rank: >=1% 1/3 33% vs 22% lift 1.49, >=2% 1/3 33% vs 9% lift 3.69 \u00b7 all names >=1% 3/12 25% vs 25% lift 1.01, >=2% 3/12 25% vs 9% lift 2.75 \u00b7 knowledge >=2% 1/4 25% vs 8% lift 3.35 \u00b7 all names >=2% to the next close 1/12 8% vs 16% lift 0.54 \u00b7 old system >=2% 23/293 8% vs 8% lift 0.95 (293 names)",
@@ -168,12 +168,12 @@
    "floors": [
     [
      "19:45",
-     1.1,
+     1.2,
      0.0
     ],
     [
      "22:45",
-     0.3,
+     0.2,
      0.0
     ],
     [
@@ -241,12 +241,12 @@
    "floors": [
     [
      "19:45",
-     1.1,
+     1.2,
      1.068
     ],
     [
      "22:45",
-     0.3,
+     0.2,
      0.334
     ],
     [
@@ -271,5 +271,6 @@
   "SEATS": 2.8,
   "ASK": 0.3
  },
- "sim_cost": false
+ "sim_cost": false,
+ "knowledge": "knowledge snapshot: NOT controlled (prompts written 20 Nov evening may contain outcomes)"
 }
