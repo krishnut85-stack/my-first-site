@@ -1,5 +1,16 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 19:20 IST - THE TRADER: "BUILD EVERYTHING FROM NOW" (overrides the phased plan in DESK_TEAM.md section 7)
+Build ALL 40 seats / 10 benches this weekend, not one bench a day in week 1. Order of work: the MINIMUM first (head, flows,
+connections, devil, filings reader, second read, desk board, snapshot, J11 gate) so Monday has a working core even if time runs
+out, then every other bench in the section 7 order, then the web Desk Room + phone + Telegram changes (section 6).
+Go-live rule for Monday: every seat that is built AND has run once in shadow on Sunday's news (cards valid, no errors, inside
+its budget bucket) is live; a seat that is not ready stays off and is listed in STATUS.md - no seat is dropped from the build.
+The replay test is the NEW desk on recorded days (18 / 19 / 20 Nov news, TV, filings, prices), not the old desk: run its free
+layers (stub + Haiku); the full Opus layer (~$15 one-off) waits for the trader's yes.
+Budget: keep the J11 hard gate at $5 a day until the trader raises it; at $5 the seat-pool sub-cap trims the busiest seats first
+(DESK_TEAM 4.7). Report on Sunday noon what is built, what is live, and the measured cost per seat.
+
 ## 20 Nov 19:00 IST - DESK_TEAM.md is FINAL (panel + checker ok): build the Monday MINIMUM desk this weekend
 Read design_v3/DESK_TEAM.md (verdict section 1, overrides 1a, seats 2.2, AI + budget 4.1-4.8, architecture 5, web / phone 6, build
 order 7 with the cut line and drop order) and design_v3/desk_cost.py. Monday MINIMUM: gir-desk service + SQLite DESK BOARD +
