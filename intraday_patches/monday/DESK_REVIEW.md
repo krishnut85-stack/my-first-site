@@ -1,5 +1,21 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 17:35 IST - RED: E1 replay of 16 Nov (TEST_E1_1116) - the fixed engine still misses most movers
+Cards (MUST SEE + CRITICAL) on the 54 F&O shares that moved 2%+: before 1 / late 19 / MISSED 34 / wrong 0 - old system 22 / 21 / 10 / 1.
+Cards + WATCH: 3 / 44 / 6 / 1 - so the engine SEES most movers but leaves them in WATCH (the trader never sees WATCH). Rings 15 (good),
+calls right 201 / wrong 178 at 30 min (near a coin flip), 456 cancel rows. This fails E2 / E3. Fix before the other replays count:
+1. COVERAGE: a share moving 2%+ with its sector (or on its own news) must reach a CARD (MUST SEE), never stay in WATCH. Lane = rules
+   first (move size, sector agreement, RVOL, news), the AI may only ADD reasons or downgrade on a named reject rule (B6), not demote by
+   default. Log every demotion with its reason.
+2. OPENING MOVERS (TMPV, AMBER, INOXWIND, EICHERMOT crossed 3% at 09:16): the 09:08 list's MOVER lines (A6b, both triggers) and a
+   GAP-AND-GO card at 09:16-09:20 for any F&O share gapping 2%+ with pre-open volume and its sector the same way (side = the gap's
+   way; PE if it holds below the opening range low, CE if above the high). The old system catches these at 09:16.
+3. CANCELS: 456 cancel rows - an idea is cancelled only on its written cancel condition (price beyond the cancel level, thesis
+   broken), not on lane churn. A cancelled card does not come back the same day unless a new trigger fires (B3).
+4. SAME YARDSTICK: score new and old with the SAME rule (the observer's strict BEFORE / the gap-open minute 09:15 for both) and
+   print both rows; keep the old run_report number beside it labelled "looser rule".
+5. Re-run 16 Nov first with 1-4, push the scorecard, then 18 Nov, 29 Oct, 27 Oct, 20 Nov. The pass mark (E2) stands.
+
 ## 20 Nov 16:30 IST (hourly) - on STATUS 16:11
 - **Engine 0.3 in the live shadow: accepted** (TV hold-offs and thesis cancels no longer ring; repeated news never re-rings; today's
   08:58-10:28 frames 15 -> 8 rings). Rings are now well inside 50 / 6 - the test that matters next is E2: CARDS before the move
