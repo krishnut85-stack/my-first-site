@@ -1,8 +1,8 @@
 # EDGE - TEST_ai_full_1116 (2026-11-16, replay)
 
-Made 2026-11-20 17:52:43 IST by v2/testobs/edge.py (run by the TEST OBSERVER at the scorecard; by hand: observer.py --edge <run folder>). The goal is the EDGE: how precise and how early GIR's names are. Catching every 2% mover is coverage, not the goal.
+Made 2026-11-20 18:37:57 IST by v2/testobs/edge.py (run by the TEST OBSERVER at the scorecard; by hand: observer.py --edge <run folder>). The goal is the EDGE: how precise and how early GIR's names are. Catching every 2% mover is coverage, not the goal.
 
-**In one line:** EDGE TEST_ai_full_1116 2026-11-16: 128 names (74 knowledge-driven) · 2% to close: all 10/128 = 8% vs base 6% → lift 1.26; knowledge 6/74 = 8% vs base 8% → lift 1.03 · old system 16/167 = 10% vs base 7% → lift 1.43 (167 names)
+**In one line:** EDGE TEST_ai_full_1116 2026-11-16: 128 names a day (74 knowledge-driven) · TOP-5 by the engine's own rank (no analyst ideas in this run): >=1% 1/5 20% vs 14% lift 1.48, >=2% 1/5 20% vs 3% lift 6.06 · all names >=1% 21/128 16% vs 18% lift 0.93, >=2% 10/128 8% vs 6% lift 1.26 · knowledge >=2% 6/74 8% vs 8% lift 1.03 · all names >=2% to the next close 18/128 14% vs 13% lift 1.05 · old system >=2% 16/167 10% vs 7% lift 1.43 (167 names)
 
 ## EDGE - precision and earliness of GIR's names (the goal)
 
@@ -62,13 +62,14 @@ Every share + side GIR named on 2026-11-16, scored from the price when it was na
 
 ### Names a day and the TOP-5
 
-- card (MUST SEE / CRITICAL): 9 names; top-5 by engine rank: NATIONALUM PE 14:01, LTM PE 13:54, SAIL PE 13:25, TMPV PE 12:55, HINDALCO PE 10:37 → 1 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- engine note 0715: 33 names; top-5 by score / points: BAJFINANCE PE 09:00, HDFCBANK PE 09:00, SBIN PE 09:00, AXISBANK PE 09:00, ICICIBANK PE 09:00 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- engine note 1945: 33 names; top-5 by score / points: BAJFINANCE PE 09:00, HDFCBANK PE 09:00, SBIN PE 09:00, AXISBANK PE 09:00, ICICIBANK PE 09:00 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- go now / get ready (any lane): 108 names; top-5 by engine rank: BAJFINANCE PE 10:52, LT PE 10:43, KEI PE 10:12, JSWSTEEL PE 09:23, HCLTECH PE 13:53 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- prediction loop (lists, fired movers): 6 names; top-5 by list order: PIIND CE 19:45, CUMMINSIND PE 10:41, MANAPPURAM PE 09:18, ABB PE 09:26, COCHINSHIP PE 09:18 → 0 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
-- ALL: 128 names; top-5 by engine rank: LT PE 10:43, KEI PE 10:12, HCLTECH PE 13:53, MAXHEALTH CE 09:46, POLYCAB PE 10:16 → 1 of 5 moved 1%+ its way, 1 moved 2%+ (NOT PROVEN (n = 5))
-- OLD system: 167 names; top-5 by list order: NATIONALUM PE 09:16, AXISBANK CE 09:16, PNB CE 09:16, TMPV PE 09:16, ABB PE 09:16 → 1 of 5 moved 1%+ its way, 0 moved 2%+ (NOT PROVEN (n = 5))
+- **THE DAY'S TOP-5 (the engine's own rank (no analyst ideas in this run), by engine rank): LT PE 10:43, KEI PE 10:12, HCLTECH PE 13:53, MAXHEALTH CE 09:46, POLYCAB PE 10:16 → >=1% 1/5 20% vs 14% lift 1.48 · >=2% 1/5 20% vs 3% lift 6.06 · next close >=2% 3/5 60% vs 10% lift 6.0 (NOT PROVEN (n = 5))**
+- card (MUST SEE / CRITICAL): 9 names a day; top-5 by engine rank: NATIONALUM PE 14:01, LTM PE 13:54, SAIL PE 13:25, TMPV PE 12:55, HINDALCO PE 10:37 → >=1% 1/5 20% vs 4% lift 4.84 · >=2% 0/5 0% vs 1% lift 0.0 (NOT PROVEN (n = 5))
+- engine note 0715: 33 names a day; top-5 by score / points: BAJFINANCE PE 09:00, HDFCBANK PE 09:00, SBIN PE 09:00, AXISBANK PE 09:00, ICICIBANK PE 09:00 → >=1% 0/5 0% vs 30% lift 0.0 · >=2% 0/5 0% vs 12% lift 0.0 (NOT PROVEN (n = 5))
+- engine note 1945: 33 names a day; top-5 by score / points: BAJFINANCE PE 09:00, HDFCBANK PE 09:00, SBIN PE 09:00, AXISBANK PE 09:00, ICICIBANK PE 09:00 → >=1% 0/5 0% vs 30% lift 0.0 · >=2% 0/5 0% vs 12% lift 0.0 (NOT PROVEN (n = 5))
+- go now / get ready (any lane): 108 names a day; top-5 by engine rank: BAJFINANCE PE 10:52, LT PE 10:43, KEI PE 10:12, JSWSTEEL PE 09:23, HCLTECH PE 13:53 → >=1% 0/5 0% vs 13% lift 0.0 · >=2% 0/5 0% vs 4% lift 0.0 (NOT PROVEN (n = 5))
+- prediction loop (lists, fired movers): 6 names a day; top-5 by list order: PIIND CE 19:45, CUMMINSIND PE 10:41, MANAPPURAM PE 09:18, ABB PE 09:26, COCHINSHIP PE 09:18 → >=1% 0/5 0% vs 21% lift 0.0 · >=2% 0/5 0% vs 8% lift 0.0 (NOT PROVEN (n = 5))
+- ALL: 128 names a day; top-5 by engine rank: LT PE 10:43, KEI PE 10:12, HCLTECH PE 13:53, MAXHEALTH CE 09:46, POLYCAB PE 10:16 → >=1% 1/5 20% vs 14% lift 1.48 · >=2% 1/5 20% vs 3% lift 6.06 (NOT PROVEN (n = 5))
+- OLD system: 167 names a day; top-5 by list order: NATIONALUM PE 09:16, AXISBANK CE 09:16, PNB CE 09:16, TMPV PE 09:16, ABB PE 09:16 → >=1% 1/5 20% vs 24% lift 0.84 · >=2% 0/5 0% vs 10% lift 0.0 (NOT PROVEN (n = 5))
 
 ### The engine note: leakage and the honest check
 
