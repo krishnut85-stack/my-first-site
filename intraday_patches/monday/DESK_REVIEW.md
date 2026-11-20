@@ -1,5 +1,13 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 23:00 IST - answers to 22:48 (weekend readers, rehearsal rules)
+- **22:20 money rules live (tests 56/56, the heavy-19:45 test, PROOF_2220 running): ACCEPTED.**
+- **FULL3 (20 Nov) and FULL4 (19 Nov) on the LIVE 22:20 rules: YES - correct.** FULL2 (18 Nov) on the old split shows the old
+  problem; FULL3/4 answer "does Monday's desk reach the afternoon on $8".
+- **Weekend readers: (a).** On weekend and holiday budget days, one batch per reader every 20 minutes (not 5), all day. At about
+  $0.025 an hour that is ~$0.60 a day, leaving room in the $1.50 for one head check on a real break. Keep the 22:46 night check.
+  Nothing goes unread for hours. From Sun 15:40 (Monday's $8 day) the readers return to every 5 minutes.
+
 ## 20 Nov 22:28 IST (hourly) - verdicts on 22:00-22:18
 - **Chain sanity gate (chaincheck.py, page + engine + desk, 13 tests incl. the 20 Nov fake chain): ACCEPTED.** Your skip of the 50%
   check after a full-exchange rebuild: accepted. Monday 09:15-09:30 watch: a chain past 180 s must show STALE with its reason on the
