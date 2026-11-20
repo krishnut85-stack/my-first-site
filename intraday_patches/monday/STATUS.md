@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 17:34 IST
+Last update: 17:42 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -33,8 +33,8 @@ Last update: 17:34 IST
 | D3 Footer: real models + AI cost | IN PROGRESS | footer shows the engine's real AI status; GO NOW model moves to Opus 5.5 with B6 |  | 07:31 |
 | D4 All 23 pages: 0 console errors, R51 0 FAIL | NOT STARTED |  |  |  |
 | D5 Masked screenshots only | NOT STARTED |  |  |  |
-| E1 Replays 16/18/20 Nov, Oct up day, 27 Oct | BLOCKED | RED (desk 17:35): 16 Nov real-AI replay (engine 0.3, from the evening before) - cards before 1 / late 19 / missed 34 vs the old system 22 / 21 / 10; cards + WATCH 3 / 44 / 6 (the engine sees movers but leaves them on WATCH); rings 15; 456 cancel rows; AI $0.88. Remaining E1 runs STOPPED to save AI money until the fix: coverage (rules set the lane, AI only adds reasons or rejects on a named rule), GAP-AND-GO card 09:16-09:20, cancels only on the written condition, both systems on the same strict yardstick - engine builder on it; then 16 Nov re-run first, then 18 Nov, 29 Oct, 27 Oct, 20 Nov. What the trader must do: nothing | TEST_E1_1116 scorecard (v2_review) | 17:34 |
-| E2 Pass mark | NOT STARTED | pass mark stands (10+ cards before the move a day, CE on up days, <= 50 rings, GO NOW rejects some); 16 Nov FAILS today (1 card before) |  | 17:34 |
+| E1 Replays 16/18/20 Nov, Oct up day, 27 Oct | IN PROGRESS | trader 18:00: the goal is the EDGE (precision + earliness of knowledge-driven picks, scored by source), not catching every 2 pct mover - the 17:35 coverage / gap-and-go fixes are STOPPED (not built); only the cancel-churn fix is kept (engine builder). An EDGE scorecard is being built into the observer; TEST_E1_1116 is re-scored first, then 18 Nov, 29 Oct, 27 Oct, 20 Nov run with the cancel fix in | TEST_E1_1116 (edge re-score to come) | 17:42 |
+| E2 Pass mark | NOT STARTED | pass mark CHANGED (MONDAY_READY E2, trader 20 Nov): precision of named picks above the day's base rate, named before the move, few wrong-side picks, hit rate by source, top-5 hit rate; CE on up days / PE on down days; <= 50 rings, <= 6 per 15 min; GO NOW rejects some; no ring on a wrong-side news match |  | 17:42 |
 | E3 Side by side with the old system | NOT STARTED |  |  |  |
 | F1 Control room / health line + alarm | NOT STARTED |  |  |  |
 | F2 Fallback switch both ways | IN PROGRESS | desk decision: no automatic key failover on Monday - a down key marks its feeds 'DEGRADED - key n down', the engine treats those quotes as STALE (no GO NOW), the phone alarm says so; being built; full failover = week-1 item; key-down marking BUILT: footer 'DEGRADED - key n down (feeds)' in red, Health KITE KEYS tile; key 1 down -> share prices + NIFTY STALE, key 3 -> all option chains STALE (no GO NOW), key 4 -> v2kq quotes unused, key 2 marked only; clears when a retry passes. The switch both ways is still Sunday | F2_key_degraded.md | 17:09 |
