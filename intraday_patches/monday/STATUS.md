@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 15:42 IST
+Last update: 15:43 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -52,7 +52,7 @@ Last update: 15:42 IST
 | I7 Economic + results calendar | IN PROGRESS | cal.next missing on the page; builder written + tested (economic events weekly file, NSE board meetings, holidays) - install after 15:35 | external_delays.md (after 15:35) | 11:18 |
 | I8 Source health + silence alarm | IN PROGRESS | no per-source Health rows / silence alarm yet; patch staged (one row per source + one alarm per silence) - install after 15:35 | external_delays.md (after 15:35) | 11:18 |
 | J1 Automatic Kite login | IN PROGRESS | keys 2/3/4 already log in by code (kite2.py / kite_apps.py) but only when the old engine starts (~09:04 / 09:21); building a 07:40 trading-day login timer for all four (reuse today's file, never two logins of one key) + 08:20 profile+quote check; Sunday dry run |  | 15:42 |
-| J2 Today's live session read-only | IN PROGRESS | recording since 09:04:30 on key 2 by REST quote() (no websocket slot free): 665 instruments, 2 calls every 3 s, 0 errors; ~220 items/s polled, 88-101/s changed, largest gap 3.2 s; FULL fields: 5-level depth on 99.25 pct of items (all shares and futures), OI on 100 pct of futures; 09:00-09:04 from the 10-30 s snapshots (no key 2/3/4 token before the old engine's 09:04 login); ~40 MB/h; proof table by 16:00 | J2_live_readonly.md (16:00) | 09:07 |
+| J2 Today's live session read-only | DONE | DONE with gaps: recorded 09:04:30-15:40, 0 errors, REST quote() on key 2 (665 instruments, 164 changed/s avg, peak 190/s at 09:16, largest gap 3.8 s, 0 reconnects); FULL fields 98.3 pct depth / 100 pct futures OI; no websocket (all slots used by the old system); 09:00-09:04 only in 10-30 s snapshots. Would-have-rung (engine 0.2, before tonight's swap): 75 vs 50 limit - 45 were 'TV call held off 60 min' CRITICAL rows, 10 repeated news; one 15-min window had 7. Live day scored by hand: 39 shares moved 3 pct+, in time 12 / late 12 / missed 15; NEWS DIRECTION WRONG 40. Fixes sent to the engine builder (TV hold-off must not ring, repeated-news dedupe), re-checked on engine 0.3 over today's frames | J2_live_readonly.md, J2_testobs/LIVE_2026-11-20/scorecard.md | 15:43 |
 | J3 One trading calendar (Tue 24 holiday) | NOT STARTED |  |  |  |
 | J4 Fake-clock Monday 08:00 / 08:45 | NOT STARTED |  |  |  |
 | J5 Monday instrument file vs Friday | IN PROGRESS | December option lots equal November for all 224 names in today's file (35 change in January); plan-card lot taken from the chosen contract; Saturday dry run of Monday-vs-Friday file; live check Mon 08:15 |  | 09:38 |
