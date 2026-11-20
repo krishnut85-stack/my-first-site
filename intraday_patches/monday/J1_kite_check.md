@@ -1,0 +1,61 @@
+# J1 - Kite keys: automatic login and 08:20 check
+
+Day 2026-11-20 · login job 16:01:13 (dry run) · check 16:01:17 · written 16:01:17 IST. No tokens, keys or user id in this file.
+
+| Key | Carries | Login time (IST) | How | profile() | quote(NIFTY 50) | Note |
+|---|---|---|---|---|---|---|
+| 1 | underlyings + drivers (old engine main, RAVEN, gir.py) | 10:17:05 | reused today's token | OK | OK |  |
+| 2 | options in play (old engine ws2 / x2b / x2c) | 09:04:12 | reused today's token | OK | OK |  |
+| 3 | full chains (old engine x3a-c, gir-v2opt) | 09:21:59 | reused today's token | OK | OK |  |
+| 4 | standby + REST (old engine x4a-c, gir-v2kq, gir-v2optdec, gir-v2wsrec) | 09:22:00 | reused today's token | OK | OK |  |
+
+## Rings
+
+- none (every key passed)
+
+The phone ring is NOT wired yet: a failed key is written as a WOULD RING line (log intraday/data/kitelogin.log and here) until the Sunday ring test.
+
+## Failover (key 4 takes a failed key's lists)
+
+- none needed
+
+Written to intraday/data/kite_failover.json. What happens today without new wiring: gir-v2wsrec and gir-v2optdec already take the first key with a working token of today (wsrec 2 -> 4 -> 3, optdec 4 -> 2); the old engine skips a key that is not logged in and runs on the rest. NOT automatic yet: gir-v2opt is fixed on key 3 and gir-v2kq on key 4 (no fallback key), and the old engine does not move key 2's / key 3's websocket lists onto key 4.
+
+## Rules the jobs keep
+
+- 07:40 login and 08:20 check on NSE trading days only (explicit dates from the J3 calendar; no Tue 24 Nov).
+- A key whose token file is already from today and answers profile() is NOT logged in again (a new login would kill the token every other service already holds).
+- No login 09:00-15:35 on a trading day; automatic logins only 06:00-08:55; at most 4 attempts per key per day; never two attempts of a key within 3 min; a wrong-password / captcha / blocked answer stops all logins for the day.
+- No 07:15 job needs a Monday token: the 07:15 prediction update reads no Kite token (its GIFT NIFTY line says 'not known' when the key-4 quote file is old).
+
+## Sunday dry run (for the coordinator - run on Sun 22 Nov after 16:00, ONCE)
+
+All four keys share one Zerodha account. Do not run the login twice within a few minutes, and never on a trading day 09:00-15:35.
+The job reads the keys by variable name from the environment file (systemd EnvironmentFile); nothing secret is printed.
+
+```
+# 0. what is scheduled (expect Mon 23 Nov 07:40 + 08:20, NO Tue 24 Nov, then Wed 25 Nov)
+systemctl list-timers gir-kitelogin.timer gir-kitecheck.timer gir-kitecal.timer --no-pager
+
+# 1. optional: see what the login WOULD do (calls profile() only, no login)
+systemd-run --wait --pipe --collect -p EnvironmentFile=/home/globalbot/.env \
+    /usr/bin/python3 -u /home/globalbot/intraday/kitelogin.py login --any-day --dry-run
+
+# 2. the real login for all four keys (each one only if its token file is not already from today; ~30 s apart; 2 retries 2 min apart)
+systemd-run --wait --pipe --collect -p EnvironmentFile=/home/globalbot/.env \
+    /usr/bin/python3 -u /home/globalbot/intraday/kitelogin.py login --any-day
+
+# 3. the check: one profile() + one quote("NSE:NIFTY 50") per key; rewrites this file with the table
+systemd-run --wait --pipe --collect -p EnvironmentFile=/home/globalbot/.env \
+    /usr/bin/python3 -u /home/globalbot/intraday/kitelogin.py check --any-day
+
+# 4. the result to push (no tokens, no user id in either)
+cat /home/globalbot/girdata/review/monday/J1_kite_check.md
+python3 /home/globalbot/intraday/kitelogin.py status
+tail -30 /home/globalbot/intraday/data/kitelogin.log
+```
+
+Expected on Sunday: key 1 shows "reused today's token" (RAVEN logs key 1 in by itself every morning; the job does not log in over a
+working token); keys 2, 3, 4 show "new login HH:MM" (their files are from Friday). Sunday's tokens are dated Sunday, so on Monday
+07:40 keys 2-4 log in again by themselves (the Monday login is the one that counts). After the Sunday ring test, replace the
+"WOULD RING" log line with the real ring (one place: run_check() in kitelogin.py).

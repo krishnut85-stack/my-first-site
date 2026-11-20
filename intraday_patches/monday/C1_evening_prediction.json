@@ -1,6 +1,6 @@
 {
  "study": {
-  "made": "2026-11-20T08:53:30+05:30",
+  "made": "2026-11-20T15:57:51+05:30",
   "train": [
    "2022-02-09",
    "2025-11-14"
@@ -109,30 +109,30 @@
   },
   "heldout": {
    "CE": {
-    "precision_top8": 0.289,
-    "base_rate": 0.21154128440366973,
-    "volatility_only_top8": 0.358,
-    "lift_vs_base": 1.3661635874750628,
-    "lift_vs_volatility": 0.8072625698324022,
-    "lines": 2000
+    "precision_top8": 0.28884462151394424,
+    "base_rate": 0.2123798384443876,
+    "volatility_only_top8": 0.35806772908366535,
+    "lift_vs_base": 1.3600378624903193,
+    "lift_vs_volatility": 0.8066759388038943,
+    "lines": 2008
    },
    "PE": {
-    "precision_top8": 0.347,
-    "base_rate": 0.23543119266055046,
-    "volatility_only_top8": 0.426,
-    "lift_vs_base": 1.4738913568700802,
-    "lift_vs_volatility": 0.8145539906103286,
-    "lines": 2000
+    "precision_top8": 0.3456175298804781,
+    "base_rate": 0.2347856281296831,
+    "volatility_only_top8": 0.425796812749004,
+    "lift_vs_base": 1.4720557328559198,
+    "lift_vs_volatility": 0.8116959064327486,
+    "lines": 2008
    },
    "direction_named": {
-    "right": 0.5021968365553603,
-    "n": 2276
+    "right": 0.5010940919037199,
+    "n": 2285
    },
    "direction_strongest_fifth": {
-    "right": 0.5054736842105263,
-    "n": 4750
+    "right": 0.5045045045045045,
+    "n": 4773
    },
-   "days": 250
+   "days": 251
   },
   "features": {
    "F01": [
@@ -196,6 +196,541 @@
  },
  "tests": [
   {
+   "session": "2026-11-20",
+   "scorecard": {
+    "session": "2026-11-20",
+    "universe": 218,
+    "base": {
+     "CE": 0.344,
+     "PE": 0.064
+    },
+    "early_cards": {
+     "side_lines": 1,
+     "mover_lines": 1
+    },
+    "baselines": {
+     "yesterdays_movers_CE": {
+      "n": 8,
+      "big_right": 7,
+      "precision": 0.875
+     },
+     "yesterdays_movers_PE": {
+      "n": 8,
+      "big_right": 0,
+      "precision": 0.0
+     },
+     "volatility_only_8": {
+      "CE_right": 2,
+      "PE_right": 2,
+      "n": 8,
+      "note": "the same 8 names on both sides"
+     }
+    },
+    "ideas": {
+     "CE": {
+      "n": 3,
+      "big_right": 1,
+      "moved_against": 0,
+      "precision": 0.333,
+      "right_names": [
+       "BAJFINANCE"
+      ]
+     },
+     "PE": {
+      "n": 19,
+      "big_right": 1,
+      "moved_against": 7,
+      "precision": 0.053,
+      "right_names": [
+       "KEI"
+      ]
+     }
+    },
+    "base_either_way": 0.404,
+    "missed_2pct": 82,
+    "missed_3pct": [
+     [
+      "INDUSINDBK",
+      "CE",
+      10.0
+     ],
+     [
+      "COFORGE",
+      "CE",
+      7.0
+     ],
+     [
+      "TATAELXSI",
+      "CE",
+      6.5
+     ],
+     [
+      "CUB",
+      "CE",
+      6.2
+     ],
+     [
+      "PERSISTENT",
+      "CE",
+      6.2
+     ],
+     [
+      "RBLBANK",
+      "CE",
+      5.4
+     ],
+     [
+      "LTM",
+      "CE",
+      5.2
+     ],
+     [
+      "AXISBANK",
+      "CE",
+      5.1
+     ],
+     [
+      "ANGELONE",
+      "CE",
+      5.0
+     ],
+     [
+      "KALYANKJIL",
+      "PE",
+      4.9
+     ],
+     [
+      "APOLLOHOSP",
+      "CE",
+      4.8
+     ],
+     [
+      "MPHASIS",
+      "CE",
+      4.6
+     ],
+     [
+      "NAUKRI",
+      "CE",
+      4.3
+     ],
+     [
+      "PNBHOUSING",
+      "CE",
+      4.2
+     ],
+     [
+      "APLAPOLLO",
+      "PE",
+      4.1
+     ],
+     [
+      "TCS",
+      "CE",
+      3.9
+     ],
+     [
+      "UNIONBANK",
+      "CE",
+      3.9
+     ],
+     [
+      "HDFCBANK",
+      "CE",
+      3.8
+     ],
+     [
+      "LICHSGFIN",
+      "CE",
+      3.8
+     ],
+     [
+      "WIPRO",
+      "CE",
+      3.8
+     ],
+     [
+      "GMRAIRPORT",
+      "CE",
+      3.7
+     ],
+     [
+      "HINDALCO",
+      "CE",
+      3.7
+     ],
+     [
+      "COROMANDEL",
+      "CE",
+      3.6
+     ],
+     [
+      "HINDZINC",
+      "CE",
+      3.5
+     ],
+     [
+      "KOTAKBANK",
+      "CE",
+      3.5
+     ],
+     [
+      "BAJFINANCE",
+      "CE",
+      3.4
+     ],
+     [
+      "MANAPPURAM",
+      "CE",
+      3.4
+     ],
+     [
+      "PGEL",
+      "CE",
+      3.4
+     ],
+     [
+      "TECHM",
+      "CE",
+      3.3
+     ],
+     [
+      "FORTIS",
+      "CE",
+      3.1
+     ],
+     [
+      "JSWSTEEL",
+      "PE",
+      3.1
+     ],
+     [
+      "DLF",
+      "CE",
+      3.0
+     ],
+     [
+      "FEDERALBNK",
+      "CE",
+      3.0
+     ],
+     [
+      "GODREJPROP",
+      "CE",
+      3.0
+     ],
+     [
+      "ICICIGI",
+      "CE",
+      3.0
+     ]
+    ],
+    "day_movers_2pct": {
+     "CE": 75,
+     "PE": 14
+    },
+    "confirmations": {
+     "confirmed": 2,
+     "rung": 2,
+     "late": 8,
+     "failed": 4,
+     "not_predicted_rows": 36,
+     "silent_cards": 4
+    },
+    "market": {
+     "called": "MIXED",
+     "real": "UP",
+     "nifty_open_to_1510": 1.44,
+     "right": false
+    },
+    "text": "MARKET CALL: MIXED - wrong (NIFTY open->15:10 +1.44%, real UP)\nPREDICTED N19 \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -34 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 11 (all names 40%)\nPREDICTED C22 \u00b7 CE scored 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -34 pts \u00b7 CE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -34 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -34 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 11 (all names 40%)\nPREDICTED U07 \u00b7 CE scored 3: right 0 (0 tradable), flat 2, wrong 1 \u00b7 beat the day -34 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -34 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 11 (all names 40%)\nPREDICTED P09 \u00b7 CE scored 4: right 1 (0 tradable), flat 2, wrong 1 \u00b7 beat the day -9 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -34 pts \u00b7 PE scored 3: right 0 (0 tradable), flat 1, wrong 2 \u00b7 beat the day -6 pts \u00b7 MOVER (side open) 25: fired 10 (early 1), right side 6 (1 tradable), wrong 0, flat 4 \u00b7 moved 2% either way 10 (all names 40%)\nEARLY CARDS (trigger before half the move): side lines 1 \u00b7 MOVER lines 1 \u00b7 total 2 (E2 pass mark 10)\nCONFIRMATIONS 2 (rung 2) \u00b7 too late 8 \u00b7 failed 4 \u00b7 silent cards 4 \u00b7 NOT PREDICTED movers shown 36\nBASE RATE: CE 34% / PE 6% of 218 F&O names moved 2% its way \u00b7 day movers CE 75 / PE 14\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 3 named, 1 moved 2% its way, 0 2% against \u00b7 PE 19 named, 1 its way, 7 against\nMISSED 2%+ movers 82 \u00b7 3%+: INDUSINDBK CE 10.0%, COFORGE CE 7.0%, TATAELXSI CE 6.5%, CUB CE 6.2%, PERSISTENT CE 6.2%, RBLBANK CE 5.4%, LTM CE 5.2%, AXISBANK CE 5.1%, ANGELONE CE 5.0%, KALYANKJIL PE 4.9%\nBASELINES: yesterday's movers CE 7 / PE 0 \u00b7 volatility-only 8: CE 2 / PE 2 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)",
+    "news": [
+     {
+      "id": "NC:e35a6df51c",
+      "lead": "VEDL",
+      "side": "DOWN",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": 1.01,
+       "+15": 1.24,
+       "+30": 0.48,
+       "+60": 0.02
+      },
+      "right_30": true
+     },
+     {
+      "id": "NC:11eded317e",
+      "lead": "SYRMA",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.1,
+       "+15": 0.35,
+       "+30": 0.97,
+       "+60": 0.57
+      },
+      "right_30": true
+     },
+     {
+      "id": "NC:0245ef0bde",
+      "lead": "MUTHOOTFIN",
+      "side": "DOWN",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": 0.07,
+       "+15": 0.18,
+       "+30": 0.07,
+       "+60": 0.21
+      },
+      "right_30": true
+     },
+     {
+      "id": "NC:0b45b2c65e",
+      "lead": "MAXHEALTH",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.26,
+       "+15": -0.31,
+       "+30": -1.13,
+       "+60": -0.73
+      },
+      "right_30": false
+     },
+     {
+      "id": "NC:2223962ef8",
+      "lead": "BDL",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class C)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.01,
+       "+15": 0.15,
+       "+30": -0.02,
+       "+60": -0.11
+      },
+      "right_30": false
+     },
+     {
+      "id": "NC:8925c66e8b",
+      "lead": "MAXHEALTH",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.17,
+       "+15": -0.37,
+       "+30": -0.71,
+       "+60": -0.2
+      },
+      "right_30": false
+     },
+     {
+      "id": "NC:a5292d2d2d",
+      "lead": "MUTHOOTFIN",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": 0.07,
+       "+15": 0.04,
+       "+30": -0.06,
+       "+60": -0.63
+      },
+      "right_30": false
+     },
+     {
+      "id": "NC:cdb23f227f",
+      "lead": "LUPIN",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class C)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.01,
+       "+15": -0.2,
+       "+30": 0.04,
+       "+60": -0.03
+      },
+      "right_30": true
+     },
+     {
+      "id": "NC:b542bfee75",
+      "lead": "VEDL",
+      "side": "DOWN",
+      "verified": "UNVERIFIED - TV ONLY",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": 0.34,
+       "+15": -0.08,
+       "+30": -0.15,
+       "+60": -0.22
+      },
+      "right_30": false
+     },
+     {
+      "id": "NC:5890fa4bce",
+      "lead": "PAYTM",
+      "side": "DOWN",
+      "verified": "UNVERIFIED (one source, class C)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.05,
+       "+15": 0.22,
+       "+30": 0.66,
+       "+60": 1.15
+      },
+      "right_30": true
+     },
+     {
+      "id": "NC:c52f097679",
+      "lead": "NHPC",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class C)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.22,
+       "+15": 0.09,
+       "+30": 0.02,
+       "+60": 0.1
+      },
+      "right_30": true
+     },
+     {
+      "id": "NC:7340819012",
+      "lead": "EICHERMOT",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class C)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.11,
+       "+15": -0.4,
+       "+30": -0.2,
+       "+60": -0.4
+      },
+      "right_30": false
+     },
+     {
+      "id": "NC:f29fa60a3f",
+      "lead": "BAJFINANCE",
+      "side": "DOWN",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.16,
+       "+15": -0.22,
+       "+30": -0.53,
+       "+60": -0.19
+      },
+      "right_30": false
+     },
+     {
+      "id": "NC:2cb67ad8a7",
+      "lead": "BIOCON",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class C)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.09,
+       "+15": -0.28,
+       "+30": -0.31,
+       "+60": 0.07
+      },
+      "right_30": false
+     },
+     {
+      "id": "NC:0776170805",
+      "lead": "TATASTEEL",
+      "side": "DOWN",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": 0.12,
+       "+15": 0.21,
+       "+30": 0.17,
+       "+60": 0.2
+      },
+      "right_30": true
+     },
+     {
+      "id": "NC:1d1821ecbe",
+      "lead": "VEDL",
+      "side": "DOWN",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.04,
+       "+15": -0.17,
+       "+30": -0.1,
+       "+60": 0.2
+      },
+      "right_30": false
+     }
+    ],
+    "bottom_top": [
+     {
+      "at": "10:44",
+      "call": "APOLLOHOSP",
+      "kind": "ORDINARY",
+      "text": "BOTTOM view by Macquarie on APOLLOHOSP - not already falling, so an ordinary TV / broker call",
+      "ring": false
+     },
+     {
+      "at": "12:12",
+      "call": "hospitals & diagnostics",
+      "kind": "ORDINARY",
+      "text": "BOTTOM view by unnamed voice on hospitals & diagnostics - not already falling, so an ordinary TV / broker call",
+      "ring": false
+     }
+    ],
+    "bt_episodes": []
+   },
+   "p09": {
+    "CE scored": {
+     "n": 4,
+     "big_right": 1,
+     "wrong_side": 1,
+     "flat": 2,
+     "tradable": 0,
+     "precision": 0.25,
+     "beat_base_pts": -9.4
+    },
+    "CE bounce": {
+     "n": 1,
+     "big_right": 0,
+     "wrong_side": 1,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -34.4
+    },
+    "PE scored": {
+     "n": 3,
+     "big_right": 0,
+     "wrong_side": 2,
+     "flat": 1,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -6.4
+    },
+    "MOVER": {
+     "n": 25,
+     "fired": 10,
+     "big_right": 6,
+     "wrong_side": 0,
+     "tradable": 1,
+     "early": 1,
+     "moved_2pct_either": 10,
+     "flat": 4,
+     "precision": 0.6,
+     "beat_base_pts": null
+    }
+   }
+  },
+  {
    "session": "2026-11-16",
    "scorecard": {
     "session": "2026-11-16",
@@ -203,6 +738,10 @@
     "base": {
      "CE": 0.115,
      "PE": 0.303
+    },
+    "early_cards": {
+     "side_lines": 0,
+     "mover_lines": 1
     },
     "baselines": {
      "yesterdays_movers_CE": {
@@ -247,13 +786,8 @@
       ]
      }
     },
-    "movers_watch": {
-     "n": 8,
-     "moved_2pct_either_way": 5,
-     "precision": 0.625,
-     "base_either_way": 0.413
-    },
-    "missed_2pct": 91,
+    "base_either_way": 0.413,
+    "missed_2pct": 88,
     "missed_3pct": [
      [
       "KAYNES",
@@ -284,11 +818,6 @@
       "MAXHEALTH",
       "CE",
       6.3
-     ],
-     [
-      "CUMMINSIND",
-      "PE",
-      5.6
      ],
      [
       "WAAREEENER",
@@ -324,11 +853,6 @@
       "TMPV",
       "PE",
       4.3
-     ],
-     [
-      "ABB",
-      "PE",
-      4.2
      ],
      [
       "ATHERENERG",
@@ -376,11 +900,6 @@
       3.3
      ],
      [
-      "COCHINSHIP",
-      "PE",
-      3.3
-     ],
-     [
       "SAIL",
       "PE",
       3.3
@@ -421,11 +940,11 @@
      "PE": 66
     },
     "confirmations": {
-     "confirmed": 0,
+     "confirmed": 2,
      "rung": 0,
-     "late": 0,
+     "late": 3,
      "failed": 2,
-     "not_predicted_rows": 24,
+     "not_predicted_rows": 18,
      "silent_cards": 0
     },
     "market": {
@@ -434,26 +953,32 @@
      "nifty_open_to_1510": 0.23,
      "right": true
     },
-    "text": "MARKET CALL: MIXED - right (NIFTY open->15:10 +0.23%, real MIXED)\nPREDICTED N19 \u00b7 CE watch 3: right 0 (0 tradable), flat 2, wrong 1 \u00b7 beat the day -12 pts \u00b7 PE watch 3: right 3 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +70 pts\nPREDICTED C22 \u00b7 CE watch 3: right 0 (0 tradable), flat 2, wrong 1 \u00b7 beat the day -12 pts \u00b7 PE watch 3: right 3 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +70 pts\nPREDICTED U07 \u00b7 CE watch 3: right 0 (0 tradable), flat 2, wrong 1 \u00b7 beat the day -12 pts \u00b7 PE watch 3: right 3 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +70 pts\nPREDICTED P09 \u00b7 CE watch 3: right 0 (0 tradable), flat 2, wrong 1 \u00b7 beat the day -12 pts \u00b7 PE watch 3: right 3 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +70 pts\nCONFIRMATIONS 0 (rung 0) \u00b7 too late 0 \u00b7 failed 2 \u00b7 silent cards 0 \u00b7 NOT PREDICTED movers shown 24\nBASE RATE: CE 12% / PE 30% of 218 F&O names moved 2% its way \u00b7 day movers CE 25 / PE 66\nMOVERS WATCH (side not known): 5 of 8 moved 2% either way (62%) vs 41% of all names\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 11 named, 1 moved 2% its way, 4 2% against \u00b7 PE 19 named, 6 its way, 2 against\nMISSED 2%+ movers 91 \u00b7 3%+: KAYNES PE 11.1%, PREMIERENE PE 7.4%, AMBER PE 7.3%, LAURUSLABS PE 7.3%, INOXWIND PE 7.2%, MAXHEALTH CE 6.3%, CUMMINSIND PE 5.6%, WAAREEENER PE 5.6%, KALYANKJIL CE 5.1%, FORTIS CE 5.0%\nBASELINES: yesterday's movers CE 0 / PE 2 \u00b7 volatility-only 8: CE 0 / PE 5 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)"
+    "text": "MARKET CALL: MIXED - right (NIFTY open->15:10 +0.23%, real MIXED)\nPREDICTED N19 \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -12 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 14 (all names 41%)\nPREDICTED C22 \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -12 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 14 (all names 41%)\nPREDICTED U07 \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -12 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 14 (all names 41%)\nPREDICTED P09 \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -12 pts \u00b7 MOVER (side open) 25: fired 5 (early 1), right side 3 (2 tradable), wrong 1, flat 1 \u00b7 moved 2% either way 14 (all names 41%)\nEARLY CARDS (trigger before half the move): side lines 0 \u00b7 MOVER lines 1 \u00b7 total 1 (E2 pass mark 10)\nCONFIRMATIONS 2 (rung 0) \u00b7 too late 3 \u00b7 failed 2 \u00b7 silent cards 0 \u00b7 NOT PREDICTED movers shown 18\nBASE RATE: CE 12% / PE 30% of 218 F&O names moved 2% its way \u00b7 day movers CE 25 / PE 66\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 11 named, 1 moved 2% its way, 4 2% against \u00b7 PE 19 named, 6 its way, 2 against\nMISSED 2%+ movers 88 \u00b7 3%+: KAYNES PE 11.1%, PREMIERENE PE 7.4%, AMBER PE 7.3%, LAURUSLABS PE 7.3%, INOXWIND PE 7.2%, MAXHEALTH CE 6.3%, WAAREEENER PE 5.6%, KALYANKJIL CE 5.1%, FORTIS CE 5.0%, PATANJALI PE 4.6%\nBASELINES: yesterday's movers CE 0 / PE 2 \u00b7 volatility-only 8: CE 0 / PE 5 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)",
+    "news": [],
+    "bottom_top": [],
+    "bt_episodes": []
    },
    "p09": {
-    "CE watch": {
-     "n": 3,
+    "CE bounce": {
+     "n": 1,
      "big_right": 0,
      "wrong_side": 1,
-     "flat": 2,
+     "flat": 0,
      "tradable": 0,
      "precision": 0.0,
      "beat_base_pts": -11.5
     },
-    "PE watch": {
-     "n": 3,
+    "MOVER": {
+     "n": 25,
+     "fired": 5,
      "big_right": 3,
-     "wrong_side": 0,
-     "flat": 0,
-     "tradable": 0,
-     "precision": 1.0,
-     "beat_base_pts": 69.7
+     "wrong_side": 1,
+     "tradable": 2,
+     "early": 1,
+     "moved_2pct_either": 14,
+     "flat": 1,
+     "precision": 0.6,
+     "beat_base_pts": null
     }
    }
   },
@@ -465,6 +990,10 @@
     "base": {
      "CE": 0.087,
      "PE": 0.257
+    },
+    "early_cards": {
+     "side_lines": 0,
+     "mover_lines": 1
     },
     "baselines": {
      "yesterdays_movers_CE": {
@@ -508,23 +1037,13 @@
       ]
      }
     },
-    "movers_watch": {
-     "n": 8,
-     "moved_2pct_either_way": 4,
-     "precision": 0.5,
-     "base_either_way": 0.33
-    },
-    "missed_2pct": 75,
+    "base_either_way": 0.33,
+    "missed_2pct": 71,
     "missed_3pct": [
      [
       "ANGELONE",
       "PE",
       5.7
-     ],
-     [
-      "KALYANKJIL",
-      "PE",
-      5.4
      ],
      [
       "IREDA",
@@ -632,12 +1151,12 @@
      "PE": 56
     },
     "confirmations": {
-     "confirmed": 0,
+     "confirmed": 2,
      "rung": 0,
-     "late": 0,
-     "failed": 3,
-     "not_predicted_rows": 18,
-     "silent_cards": 0
+     "late": 4,
+     "failed": 5,
+     "not_predicted_rows": 13,
+     "silent_cards": 1
     },
     "market": {
      "called": "MIXED",
@@ -645,26 +1164,50 @@
      "nifty_open_to_1510": -0.6,
      "right": false
     },
-    "text": "MARKET CALL: MIXED - wrong (NIFTY open->15:10 -0.60%, real DOWN)\nPREDICTED N19 \u00b7 CE watch 3: right 1 (0 tradable), flat 0, wrong 2 \u00b7 beat the day +25 pts \u00b7 PE watch 3: right 1 (0 tradable), flat 1, wrong 1 \u00b7 beat the day +8 pts\nPREDICTED C22 \u00b7 CE watch 3: right 1 (0 tradable), flat 0, wrong 2 \u00b7 beat the day +25 pts \u00b7 PE watch 3: right 1 (0 tradable), flat 1, wrong 1 \u00b7 beat the day +8 pts\nPREDICTED U07 \u00b7 CE watch 3: right 1 (0 tradable), flat 0, wrong 2 \u00b7 beat the day +25 pts \u00b7 PE watch 3: right 1 (0 tradable), flat 1, wrong 1 \u00b7 beat the day +8 pts\nPREDICTED P09 \u00b7 CE watch 3: right 1 (0 tradable), flat 0, wrong 2 \u00b7 beat the day +25 pts \u00b7 PE watch 3: right 1 (0 tradable), flat 1, wrong 1 \u00b7 beat the day +8 pts\nCONFIRMATIONS 0 (rung 0) \u00b7 too late 0 \u00b7 failed 3 \u00b7 silent cards 0 \u00b7 NOT PREDICTED movers shown 18\nBASE RATE: CE 9% / PE 26% of 218 F&O names moved 2% its way \u00b7 day movers CE 19 / PE 56\nMOVERS WATCH (side not known): 4 of 8 moved 2% either way (50%) vs 33% of all names\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 24 named, 1 moved 2% its way, 6 2% against \u00b7 PE 32 named, 5 its way, 1 against\nMISSED 2%+ movers 75 \u00b7 3%+: ANGELONE PE 5.7%, KALYANKJIL PE 5.4%, IREDA CE 5.0%, SWIGGY PE 5.0%, SAIL PE 4.4%, TITAN PE 4.2%, BSE PE 4.1%, POLYCAB PE 4.0%, NAVINFLUOR CE 3.8%, MANAPPURAM PE 3.8%\nBASELINES: yesterday's movers CE 0 / PE 4 \u00b7 volatility-only 8: CE 1 / PE 5 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)"
+    "text": "MARKET CALL: MIXED - wrong (NIFTY open->15:10 -0.60%, real DOWN)\nPREDICTED N19 \u00b7 CE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 PE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +74 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 33%)\nPREDICTED C22 \u00b7 CE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 PE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +74 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 33%)\nPREDICTED U07 \u00b7 CE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 PE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +74 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 33%)\nPREDICTED P09 \u00b7 CE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 PE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +74 pts \u00b7 MOVER (side open) 25: fired 6 (early 1), right side 4 (2 tradable), wrong 1, flat 1 \u00b7 moved 2% either way 12 (all names 33%)\nEARLY CARDS (trigger before half the move): side lines 0 \u00b7 MOVER lines 1 \u00b7 total 1 (E2 pass mark 10)\nCONFIRMATIONS 2 (rung 0) \u00b7 too late 4 \u00b7 failed 5 \u00b7 silent cards 1 \u00b7 NOT PREDICTED movers shown 13\nBASE RATE: CE 9% / PE 26% of 218 F&O names moved 2% its way \u00b7 day movers CE 19 / PE 56\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 24 named, 1 moved 2% its way, 6 2% against \u00b7 PE 32 named, 5 its way, 1 against\nMISSED 2%+ movers 71 \u00b7 3%+: ANGELONE PE 5.7%, IREDA CE 5.0%, SWIGGY PE 5.0%, SAIL PE 4.4%, TITAN PE 4.2%, BSE PE 4.1%, POLYCAB PE 4.0%, NAVINFLUOR CE 3.8%, MANAPPURAM PE 3.8%, DIXON PE 3.7%\nBASELINES: yesterday's movers CE 0 / PE 4 \u00b7 volatility-only 8: CE 1 / PE 5 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)",
+    "news": [],
+    "bottom_top": [],
+    "bt_episodes": []
    },
    "p09": {
     "CE watch": {
-     "n": 3,
-     "big_right": 1,
-     "wrong_side": 2,
+     "n": 1,
+     "big_right": 0,
+     "wrong_side": 1,
      "flat": 0,
      "tradable": 0,
-     "precision": 0.333,
-     "beat_base_pts": 24.6
+     "precision": 0.0,
+     "beat_base_pts": -8.7
+    },
+    "CE bounce": {
+     "n": 1,
+     "big_right": 0,
+     "wrong_side": 1,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -8.7
     },
     "PE watch": {
-     "n": 3,
+     "n": 1,
      "big_right": 1,
-     "wrong_side": 1,
-     "flat": 1,
+     "wrong_side": 0,
+     "flat": 0,
      "tradable": 0,
-     "precision": 0.333,
-     "beat_base_pts": 7.6
+     "precision": 1.0,
+     "beat_base_pts": 74.3
+    },
+    "MOVER": {
+     "n": 25,
+     "fired": 6,
+     "big_right": 4,
+     "wrong_side": 1,
+     "tradable": 2,
+     "early": 1,
+     "moved_2pct_either": 12,
+     "flat": 1,
+     "precision": 0.667,
+     "beat_base_pts": null
     }
    }
   },
@@ -676,6 +1219,10 @@
     "base": {
      "CE": 0.33,
      "PE": 0.06
+    },
+    "early_cards": {
+     "side_lines": 0,
+     "mover_lines": 2
     },
     "baselines": {
      "yesterdays_movers_CE": {
@@ -726,13 +1273,8 @@
       ]
      }
     },
-    "movers_watch": {
-     "n": 8,
-     "moved_2pct_either_way": 5,
-     "precision": 0.625,
-     "base_either_way": 0.385
-    },
-    "missed_2pct": 85,
+    "base_either_way": 0.385,
+    "missed_2pct": 80,
     "missed_3pct": [
      [
       "VOLTAS",
@@ -825,19 +1367,9 @@
       4.3
      ],
      [
-      "MOTHERSON",
-      "CE",
-      4.3
-     ],
-     [
       "TVSMOTOR",
       "CE",
       4.3
-     ],
-     [
-      "TMPV",
-      "CE",
-      4.2
      ],
      [
       "HINDUNILVR",
@@ -878,11 +1410,6 @@
       "BAJAJ-AUTO",
       "CE",
       3.7
-     ],
-     [
-      "ASHOKLEY",
-      "CE",
-      3.6
      ],
      [
       "SYRMA",
@@ -950,12 +1477,12 @@
      "PE": 13
     },
     "confirmations": {
-     "confirmed": 0,
-     "rung": 0,
-     "late": 0,
+     "confirmed": 2,
+     "rung": 1,
+     "late": 6,
      "failed": 5,
-     "not_predicted_rows": 41,
-     "silent_cards": 0
+     "not_predicted_rows": 34,
+     "silent_cards": 7
     },
     "market": {
      "called": "MIXED",
@@ -963,14 +1490,17 @@
      "nifty_open_to_1510": 0.66,
      "right": false
     },
-    "text": "MARKET CALL: MIXED - wrong (NIFTY open->15:10 +0.66%, real UP)\nPREDICTED N19 \u00b7 CE watch 3: right 1 (0 tradable), flat 1, wrong 1 \u00b7 beat the day +0 pts \u00b7 PE watch 3: right 1 (0 tradable), flat 2, wrong 0 \u00b7 beat the day +27 pts\nPREDICTED C22 \u00b7 CE watch 3: right 1 (0 tradable), flat 1, wrong 1 \u00b7 beat the day +0 pts \u00b7 PE watch 3: right 1 (0 tradable), flat 2, wrong 0 \u00b7 beat the day +27 pts\nPREDICTED U07 \u00b7 CE watch 3: right 1 (0 tradable), flat 1, wrong 1 \u00b7 beat the day +0 pts \u00b7 PE watch 3: right 1 (0 tradable), flat 2, wrong 0 \u00b7 beat the day +27 pts\nPREDICTED P09 \u00b7 CE watch 3: right 0 (0 tradable), flat 0, wrong 3 \u00b7 beat the day -33 pts \u00b7 PE watch 3: right 1 (0 tradable), flat 0, wrong 2 \u00b7 beat the day +27 pts\nCONFIRMATIONS 0 (rung 0) \u00b7 too late 0 \u00b7 failed 5 \u00b7 silent cards 0 \u00b7 NOT PREDICTED movers shown 41\nBASE RATE: CE 33% / PE 6% of 218 F&O names moved 2% its way \u00b7 day movers CE 72 / PE 13\nMOVERS WATCH (side not known): 5 of 8 moved 2% either way (62%) vs 38% of all names\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 21 named, 18 moved 2% its way, 0 2% against \u00b7 PE 25 named, 1 its way, 7 against\nMISSED 2%+ movers 85 \u00b7 3%+: VOLTAS CE 9.1%, BLUESTARCO CE 7.8%, AMBER CE 7.7%, IREDA CE 7.7%, PAYTM PE 7.5%, MARUTI CE 7.0%, PGEL CE 6.9%, UNITDSPR CE 6.2%, HAVELLS CE 6.0%, COLPAL CE 5.5%\nBASELINES: yesterday's movers CE 2 / PE 1 \u00b7 volatility-only 8: CE 3 / PE 1 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)"
+    "text": "MARKET CALL: MIXED - wrong (NIFTY open->15:10 +0.66%, real UP)\nPREDICTED N19 \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -33 pts \u00b7 PE watch 3: right 1 (0 tradable), flat 2, wrong 0 \u00b7 beat the day +27 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 38%)\nPREDICTED C22 \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -33 pts \u00b7 PE watch 3: right 1 (0 tradable), flat 2, wrong 0 \u00b7 beat the day +27 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 38%)\nPREDICTED U07 \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -33 pts \u00b7 PE watch 3: right 1 (0 tradable), flat 2, wrong 0 \u00b7 beat the day +27 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 38%)\nPREDICTED P09 \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -33 pts \u00b7 PE watch 3: right 1 (0 tradable), flat 0, wrong 2 \u00b7 beat the day +27 pts \u00b7 MOVER (side open) 25: fired 9 (early 2), right side 3 (3 tradable), wrong 5, flat 1 \u00b7 moved 2% either way 13 (all names 38%)\nEARLY CARDS (trigger before half the move): side lines 0 \u00b7 MOVER lines 2 \u00b7 total 2 (E2 pass mark 10)\nCONFIRMATIONS 2 (rung 1) \u00b7 too late 6 \u00b7 failed 5 \u00b7 silent cards 7 \u00b7 NOT PREDICTED movers shown 34\nBASE RATE: CE 33% / PE 6% of 218 F&O names moved 2% its way \u00b7 day movers CE 72 / PE 13\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 21 named, 18 moved 2% its way, 0 2% against \u00b7 PE 25 named, 1 its way, 7 against\nMISSED 2%+ movers 80 \u00b7 3%+: VOLTAS CE 9.1%, BLUESTARCO CE 7.8%, AMBER CE 7.7%, IREDA CE 7.7%, PAYTM PE 7.5%, MARUTI CE 7.0%, PGEL CE 6.9%, UNITDSPR CE 6.2%, HAVELLS CE 6.0%, COLPAL CE 5.5%\nBASELINES: yesterday's movers CE 2 / PE 1 \u00b7 volatility-only 8: CE 3 / PE 1 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)",
+    "news": [],
+    "bottom_top": [],
+    "bt_episodes": []
    },
    "p09": {
-    "CE watch": {
-     "n": 3,
+    "CE bounce": {
+     "n": 1,
      "big_right": 0,
-     "wrong_side": 3,
-     "flat": 0,
+     "wrong_side": 0,
+     "flat": 1,
      "tradable": 0,
      "precision": 0.0,
      "beat_base_pts": -33.0
@@ -983,8 +1513,545 @@
      "tradable": 0,
      "precision": 0.333,
      "beat_base_pts": 27.4
+    },
+    "MOVER": {
+     "n": 25,
+     "fired": 9,
+     "big_right": 3,
+     "wrong_side": 5,
+     "tradable": 3,
+     "early": 2,
+     "moved_2pct_either": 13,
+     "flat": 1,
+     "precision": 0.333,
+     "beat_base_pts": null
+    }
+   }
+  },
+  {
+   "session": "2026-10-29",
+   "scorecard": {
+    "session": "2026-10-29",
+    "universe": 218,
+    "base": {
+     "CE": 0.284,
+     "PE": 0.083
+    },
+    "early_cards": {
+     "side_lines": 0,
+     "mover_lines": 1
+    },
+    "baselines": {
+     "yesterdays_movers_CE": {
+      "n": 8,
+      "big_right": 3,
+      "precision": 0.375
+     },
+     "yesterdays_movers_PE": {
+      "n": 8,
+      "big_right": 2,
+      "precision": 0.25
+     },
+     "volatility_only_8": {
+      "CE_right": 2,
+      "PE_right": 0,
+      "n": 8,
+      "note": "the same 8 names on both sides"
+     }
+    },
+    "ideas": {
+     "CE": {
+      "n": 2,
+      "big_right": 0,
+      "moved_against": 0,
+      "precision": 0.0,
+      "right_names": []
+     },
+     "PE": {
+      "n": 5,
+      "big_right": 0,
+      "moved_against": 1,
+      "precision": 0.0,
+      "right_names": []
+     }
+    },
+    "base_either_way": 0.362,
+    "missed_2pct": 75,
+    "missed_3pct": [
+     [
+      "PNBHOUSING",
+      "PE",
+      6.8
+     ],
+     [
+      "ADANIENT",
+      "CE",
+      4.8
+     ],
+     [
+      "CUB",
+      "CE",
+      4.7
+     ],
+     [
+      "JSWENERGY",
+      "CE",
+      4.6
+     ],
+     [
+      "UNITDSPR",
+      "CE",
+      4.6
+     ],
+     [
+      "POWERGRID",
+      "CE",
+      4.5
+     ],
+     [
+      "MANAPPURAM",
+      "CE",
+      4.3
+     ],
+     [
+      "ADANIENSOL",
+      "CE",
+      4.2
+     ],
+     [
+      "CDSL",
+      "CE",
+      4.1
+     ],
+     [
+      "ETERNAL",
+      "CE",
+      4.0
+     ],
+     [
+      "TVSMOTOR",
+      "PE",
+      3.7
+     ],
+     [
+      "ADANIPORTS",
+      "CE",
+      3.6
+     ],
+     [
+      "HEROMOTOCO",
+      "PE",
+      3.6
+     ],
+     [
+      "PAYTM",
+      "CE",
+      3.5
+     ],
+     [
+      "BLUESTARCO",
+      "CE",
+      3.4
+     ],
+     [
+      "HYUNDAI",
+      "CE",
+      3.4
+     ],
+     [
+      "SUZLON",
+      "PE",
+      3.4
+     ],
+     [
+      "ADANIPOWER",
+      "CE",
+      3.3
+     ],
+     [
+      "PHOENIXLTD",
+      "CE",
+      3.3
+     ],
+     [
+      "ITC",
+      "CE",
+      3.2
+     ],
+     [
+      "360ONE",
+      "CE",
+      3.1
+     ],
+     [
+      "ADANIGREEN",
+      "CE",
+      3.1
+     ],
+     [
+      "FORCEMOT",
+      "CE",
+      3.1
+     ],
+     [
+      "KOTAKBANK",
+      "CE",
+      3.1
+     ],
+     [
+      "PIDILITIND",
+      "CE",
+      3.1
+     ],
+     [
+      "PIDILITIND",
+      "PE",
+      3.1
+     ],
+     [
+      "NHPC",
+      "CE",
+      3.0
+     ],
+     [
+      "RECLTD",
+      "CE",
+      3.0
+     ],
+     [
+      "KPITTECH",
+      "PE",
+      3.0
+     ]
+    ],
+    "day_movers_2pct": {
+     "CE": 62,
+     "PE": 18
+    },
+    "confirmations": {
+     "confirmed": 0,
+     "rung": 0,
+     "late": 6,
+     "failed": 5,
+     "not_predicted_rows": 25,
+     "silent_cards": 0
+    },
+    "market": {
+     "called": "MIXED",
+     "real": "UP",
+     "nifty_open_to_1510": 0.66,
+     "right": false
+    },
+    "text": "MARKET CALL: MIXED - wrong (NIFTY open->15:10 +0.66%, real UP)\nPREDICTED N19 \u00b7 CE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +72 pts \u00b7 CE bounce 4: right 1 (0 tradable), flat 0, wrong 3 \u00b7 beat the day -3 pts \u00b7 PE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -8 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 36%)\nPREDICTED C22 \u00b7 CE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +72 pts \u00b7 CE bounce 4: right 1 (0 tradable), flat 0, wrong 3 \u00b7 beat the day -3 pts \u00b7 PE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -8 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 36%)\nPREDICTED U07 \u00b7 CE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +72 pts \u00b7 CE bounce 4: right 1 (0 tradable), flat 0, wrong 3 \u00b7 beat the day -3 pts \u00b7 PE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -8 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 36%)\nPREDICTED P09 \u00b7 CE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +72 pts \u00b7 CE bounce 4: right 1 (0 tradable), flat 0, wrong 3 \u00b7 beat the day -3 pts \u00b7 PE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -8 pts \u00b7 MOVER (side open) 25: fired 6 (early 1), right side 3 (1 tradable), wrong 2, flat 1 \u00b7 moved 2% either way 13 (all names 36%)\nEARLY CARDS (trigger before half the move): side lines 0 \u00b7 MOVER lines 1 \u00b7 total 1 (E2 pass mark 10)\nCONFIRMATIONS 0 (rung 0) \u00b7 too late 6 \u00b7 failed 5 \u00b7 silent cards 0 \u00b7 NOT PREDICTED movers shown 25\nBASE RATE: CE 28% / PE 8% of 218 F&O names moved 2% its way \u00b7 day movers CE 62 / PE 18\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 2 named, 0 moved 2% its way, 0 2% against \u00b7 PE 5 named, 0 its way, 1 against\nMISSED 2%+ movers 75 \u00b7 3%+: PNBHOUSING PE 6.8%, ADANIENT CE 4.8%, CUB CE 4.7%, JSWENERGY CE 4.6%, UNITDSPR CE 4.6%, POWERGRID CE 4.5%, MANAPPURAM CE 4.3%, ADANIENSOL CE 4.2%, CDSL CE 4.1%, ETERNAL CE 4.0%\nBASELINES: yesterday's movers CE 3 / PE 2 \u00b7 volatility-only 8: CE 2 / PE 0 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)",
+    "news": [],
+    "bottom_top": [],
+    "bt_episodes": []
+   },
+   "p09": {
+    "CE watch": {
+     "n": 1,
+     "big_right": 1,
+     "wrong_side": 0,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 1.0,
+     "beat_base_pts": 71.6
+    },
+    "CE bounce": {
+     "n": 4,
+     "big_right": 1,
+     "wrong_side": 3,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 0.25,
+     "beat_base_pts": -3.4
+    },
+    "PE watch": {
+     "n": 1,
+     "big_right": 0,
+     "wrong_side": 1,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -8.3
+    },
+    "MOVER": {
+     "n": 25,
+     "fired": 6,
+     "big_right": 3,
+     "wrong_side": 2,
+     "tradable": 1,
+     "early": 1,
+     "moved_2pct_either": 13,
+     "flat": 1,
+     "precision": 0.5,
+     "beat_base_pts": null
+    }
+   }
+  },
+  {
+   "session": "2026-10-27",
+   "scorecard": {
+    "session": "2026-10-27",
+    "universe": 218,
+    "base": {
+     "CE": 0.326,
+     "PE": 0.055
+    },
+    "early_cards": {
+     "side_lines": 0,
+     "mover_lines": 3
+    },
+    "baselines": {
+     "yesterdays_movers_CE": {
+      "n": 8,
+      "big_right": 4,
+      "precision": 0.5
+     },
+     "yesterdays_movers_PE": {
+      "n": 8,
+      "big_right": 1,
+      "precision": 0.125
+     },
+     "volatility_only_8": {
+      "CE_right": 5,
+      "PE_right": 0,
+      "n": 8,
+      "note": "the same 8 names on both sides"
+     }
+    },
+    "ideas": {
+     "CE": {
+      "n": 18,
+      "big_right": 5,
+      "moved_against": 1,
+      "precision": 0.278,
+      "right_names": [
+       "BEL",
+       "COROMANDEL",
+       "HAL",
+       "JSWSTEEL",
+       "SAIL"
+      ]
+     },
+     "PE": {
+      "n": 25,
+      "big_right": 2,
+      "moved_against": 4,
+      "precision": 0.08,
+      "right_names": [
+       "HINDUNILVR",
+       "PIDILITIND"
+      ]
+     }
+    },
+    "base_either_way": 0.376,
+    "missed_2pct": 78,
+    "missed_3pct": [
+     [
+      "DATAPATTNS",
+      "CE",
+      8.4
+     ],
+     [
+      "PGEL",
+      "CE",
+      7.7
+     ],
+     [
+      "SONACOMS",
+      "CE",
+      7.4
+     ],
+     [
+      "MANKIND",
+      "CE",
+      6.9
+     ],
+     [
+      "GVT&D",
+      "CE",
+      5.4
+     ],
+     [
+      "MOTILALOFS",
+      "CE",
+      5.1
+     ],
+     [
+      "APLAPOLLO",
+      "CE",
+      5.0
+     ],
+     [
+      "CUB",
+      "CE",
+      5.0
+     ],
+     [
+      "AMBUJACEM",
+      "PE",
+      4.8
+     ],
+     [
+      "MAHABANK",
+      "CE",
+      4.5
+     ],
+     [
+      "NAVINFLUOR",
+      "CE",
+      4.4
+     ],
+     [
+      "JSWENERGY",
+      "CE",
+      4.2
+     ],
+     [
+      "RADICO",
+      "CE",
+      4.0
+     ],
+     [
+      "ANGELONE",
+      "CE",
+      3.9
+     ],
+     [
+      "DIVISLAB",
+      "CE",
+      3.9
+     ],
+     [
+      "RECLTD",
+      "PE",
+      3.9
+     ],
+     [
+      "BANDHANBNK",
+      "CE",
+      3.8
+     ],
+     [
+      "BHARATFORG",
+      "CE",
+      3.8
+     ],
+     [
+      "NAM-INDIA",
+      "CE",
+      3.8
+     ],
+     [
+      "POWERINDIA",
+      "CE",
+      3.8
+     ],
+     [
+      "UNITDSPR",
+      "CE",
+      3.7
+     ],
+     [
+      "ALKEM",
+      "CE",
+      3.5
+     ],
+     [
+      "GODFRYPHLP",
+      "CE",
+      3.5
+     ],
+     [
+      "HYUNDAI",
+      "CE",
+      3.5
+     ],
+     [
+      "SYRMA",
+      "CE",
+      3.5
+     ],
+     [
+      "ADANIENSOL",
+      "CE",
+      3.1
+     ],
+     [
+      "LODHA",
+      "CE",
+      3.1
+     ],
+     [
+      "TATACONSUM",
+      "CE",
+      3.1
+     ],
+     [
+      "BHARTIARTL",
+      "CE",
+      3.0
+     ],
+     [
+      "GODREJPROP",
+      "CE",
+      3.0
+     ],
+     [
+      "KALYANKJIL",
+      "PE",
+      3.0
+     ]
+    ],
+    "day_movers_2pct": {
+     "CE": 71,
+     "PE": 12
+    },
+    "confirmations": {
+     "confirmed": 1,
+     "rung": 0,
+     "late": 5,
+     "failed": 2,
+     "not_predicted_rows": 34,
+     "silent_cards": 0
+    },
+    "market": {
+     "called": "MIXED",
+     "real": "MIXED",
+     "nifty_open_to_1510": 0.09,
+     "right": true
+    },
+    "text": "MARKET CALL: MIXED - right (NIFTY open->15:10 +0.09%, real MIXED)\nPREDICTED N19 \u00b7 CE bounce 4: right 2 (0 tradable), flat 1, wrong 1 \u00b7 beat the day +17 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 14 (all names 38%)\nPREDICTED C22 \u00b7 CE bounce 4: right 2 (0 tradable), flat 1, wrong 1 \u00b7 beat the day +17 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 14 (all names 38%)\nPREDICTED U07 \u00b7 CE bounce 4: right 2 (0 tradable), flat 1, wrong 1 \u00b7 beat the day +17 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 14 (all names 38%)\nPREDICTED P09 \u00b7 CE bounce 4: right 2 (0 tradable), flat 1, wrong 1 \u00b7 beat the day +17 pts \u00b7 MOVER (side open) 25: fired 6 (early 3), right side 4 (2 tradable), wrong 2, flat 0 \u00b7 moved 2% either way 14 (all names 38%)\nEARLY CARDS (trigger before half the move): side lines 0 \u00b7 MOVER lines 3 \u00b7 total 3 (E2 pass mark 10)\nCONFIRMATIONS 1 (rung 0) \u00b7 too late 5 \u00b7 failed 2 \u00b7 silent cards 0 \u00b7 NOT PREDICTED movers shown 34\nBASE RATE: CE 33% / PE 6% of 218 F&O names moved 2% its way \u00b7 day movers CE 71 / PE 12\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 18 named, 5 moved 2% its way, 1 2% against \u00b7 PE 25 named, 2 its way, 4 against\nMISSED 2%+ movers 78 \u00b7 3%+: DATAPATTNS CE 8.4%, PGEL CE 7.7%, SONACOMS CE 7.4%, MANKIND CE 6.9%, GVT&D CE 5.4%, MOTILALOFS CE 5.1%, APLAPOLLO CE 5.0%, CUB CE 5.0%, AMBUJACEM PE 4.8%, MAHABANK CE 4.5%\nBASELINES: yesterday's movers CE 4 / PE 1 \u00b7 volatility-only 8: CE 5 / PE 0 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)",
+    "news": [],
+    "bottom_top": [],
+    "bt_episodes": []
+   },
+   "p09": {
+    "CE bounce": {
+     "n": 4,
+     "big_right": 2,
+     "wrong_side": 1,
+     "flat": 1,
+     "tradable": 0,
+     "precision": 0.5,
+     "beat_base_pts": 17.4
+    },
+    "MOVER": {
+     "n": 25,
+     "fired": 6,
+     "big_right": 4,
+     "wrong_side": 2,
+     "tradable": 2,
+     "early": 3,
+     "moved_2pct_either": 14,
+     "flat": 0,
+     "precision": 0.667,
+     "beat_base_pts": null
     }
    }
   }
- ]
+ ],
+ "tuning": "days 14 all-names 2pct-either base 45%\nN= 5 lines  70 moved2%  47 (67%) fired  17 early   1/day 0.1 right   8 wrong   7 tradable   4 (right-of-fired 47%)\nN= 8 lines 112 moved2%  73 (65%) fired  23 early   2/day 0.1 right  12 wrong   7 tradable   5 (right-of-fired 52%)\nN=10 lines 140 moved2%  91 (65%) fired  29 early   4/day 0.3 right  15 wrong   8 tradable   8 (right-of-fired 52%)\nN=12 lines 168 moved2% 105 (62%) fired  34 early   7/day 0.5 right  19 wrong   8 tradable  11 (right-of-fired 56%)\nN=15 lines 210 moved2% 133 (63%) fired  46 early  11/day 0.8 right  26 wrong  10 tradable  15 (right-of-fired 57%)\nN=20 lines 280 moved2% 174 (62%) fired  62 early  15/day 1.1 right  36 wrong  13 tradable  19 (right-of-fired 58%)\nN=25 lines 350 moved2% 213 (61%) fired  83 early  23/day 1.6 right  51 wrong  17 tradable  25 (right-of-fired 61%)\n",
+ "test_N": "days 6 all-names 2pct-either base 38%\nN= 5 lines  30 moved2%  19 (63%) fired  11 early   3/day 0.5 right  10 wrong   1 tradable   4 (right-of-fired 91%)\nN= 8 lines  48 moved2%  28 (58%) fired  17 early   4/day 0.7 right  13 wrong   2 tradable   4 (right-of-fired 76%)\nN=10 lines  60 moved2%  35 (58%) fired  21 early   5/day 0.8 right  14 wrong   4 tradable   5 (right-of-fired 67%)\nN=12 lines  72 moved2%  42 (58%) fired  24 early   5/day 0.8 right  15 wrong   5 tradable   5 (right-of-fired 62%)\nN=15 lines  90 moved2%  50 (56%) fired  30 early   6/day 1.0 right  18 wrong   7 tradable   7 (right-of-fired 60%)\nN=20 lines 120 moved2%  60 (50%) fired  34 early   8/day 1.3 right  19 wrong   7 tradable   9 (right-of-fired 56%)\nN=25 lines 150 moved2%  76 (51%) fired  42 early   9/day 1.5 right  23 wrong  11 tradable  11 (right-of-fired 55%)\n"
 }
