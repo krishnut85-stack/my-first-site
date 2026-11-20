@@ -2,14 +2,14 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 09:41 IST
+Last update: 10:34 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
 | A1 Kite four keys + auto-login | NOT STARTED | desk decision: the NEW system takes the websocket slots on Monday; the silent old system compares from the new recorder's data; `gir mode old/new` hands the slots back and forth (tested Sunday with real reconnects, F2 / J7) |  | 08:33 |
 | A2 Feeds F01-F31 source/freshness | NOT STARTED |  |  |  |
 | A3 NSE files Fri 20 Nov + Monday ban list | NOT STARTED |  |  |  |
-| A4 Minute store through Fri 20 Nov | IN PROGRESS | one-month minutes 16 Oct-19 Nov in girdata/minute; /root/hist store ends 13 Nov; Fri 20 Nov after 15:40 |  | 07:31 |
+| A4 Minute store through Fri 20 Nov | IN PROGRESS | 5-year history = DAILY bars (girdata/history, 218 shares x 1,245 days); minute store /root/hist = 3 years (16 Nov 2023 - 13 Nov 2026); one-month minutes 16 Oct - 19 Nov in girdata/minute. /root/hist can be extended to 5 years only by a new Kite minute download (~2 more years x 218 shares) - planned as a weekend after-hours job; Fri 20 Nov minutes after 15:40 |  | 10:34 |
 | A5 December chains + current lots | IN PROGRESS | December chains read LIVE: 10 December ATM contracts on 5 shares checked 3 ways (store, new December recorder, direct Kite quote 09:35) - bid/ask equal or a few ticks apart, OI within 0-1.5 pct (one 7.8 pct on a 51 s older reading in a fast move); gir-v2optdec records 2,160 December contracts every 15 min. OPEN: store rows have no per-row quote time (stale rows cannot be told apart) - fix with B9 after 15:35; December lots checked with J5 | A5_dec_chain_check.md | 09:36 |
 | A6 Global feeds for 07:15 | NOT STARTED |  |  |  |
 | A7 News feeds live + de-duplicated | NOT STARTED |  |  |  |
@@ -44,7 +44,7 @@ Last update: 09:41 IST
 | G1 preopenstudy.py | NOT STARTED | desk: preopenstudy.py READY TO RUN (09:15); run after 15:35 today |  | 09:29 |
 | G2 Score this week's evening watches | NOT STARTED |  |  |  |
 | I1 NSE + BSE filings | IN PROGRESS | measuring 5 real items today | external_delays.md | 07:31 |
-| I2 TV speech-to-text | IN PROGRESS | measuring | external_delays.md | 07:31 |
+| I2 TV speech-to-text | IN PROGRESS | TV speech-to-text RUNNING today since 07:00:55 on BOTH CNBC-TV18 and ET Now (Deepgram), last transcript line 10:33:47 on each; yesterday's 'TV listening stopped' meant the OLD on-server listener (tvstt.py), replaced by Deepgram on 19 Nov - not a stop of TV listening; delay table in external_delays.md | external_delays.md | 10:34 |
 | I3 Wires and publishers | IN PROGRESS | measuring | external_delays.md | 07:31 |
 | I4 World news and cues | IN PROGRESS | measuring | external_delays.md | 07:31 |
 | I5 Regulators / Parliament / PIB | IN PROGRESS | measuring | external_delays.md | 07:31 |
@@ -67,3 +67,6 @@ Last update: 09:41 IST
 | J14 Rate limits at cold start | NOT STARTED |  |  |  |
 | J15 His Monday routine (trader) | NOT STARTED | trader's own step Mon 08:25 |  |  |
 | J16 Code freeze Sun 16:00 | NOT STARTED | Sun 16:00 |  |  |
+
+## Notes for the desk
+- 10:34 - old system STALE alert 09:28 (desk.json 6 min old): cause = the OLD desk service itself. Its cycle stalled 09:22 -> 09:32:50 inside its own AI reader calls ('reader NHPC / CIPLA: no JSON in the answer'), then wrote desk.json at 09:32:50; the alert cleared. Server load was ~9 then, mostly from programs outside GIR v2 (falcon.py ~65% CPU, engine2, gir.py). Not Kite rate limits on key 2 (no 'Too many requests' from the old engine; elon_code.py had 4 today vs 3 yesterday on its own key). The new system's recorders use ~0% CPU and kept recording without a gap. Logged as an old-system fault; nothing changed on the old system.
