@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 17:09 IST
+Last update: 17:34 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -33,8 +33,8 @@ Last update: 17:09 IST
 | D3 Footer: real models + AI cost | IN PROGRESS | footer shows the engine's real AI status; GO NOW model moves to Opus 5.5 with B6 |  | 07:31 |
 | D4 All 23 pages: 0 console errors, R51 0 FAIL | NOT STARTED |  |  |  |
 | D5 Masked screenshots only | NOT STARTED |  |  |  |
-| E1 Replays 16/18/20 Nov, Oct up day, 27 Oct | IN PROGRESS | engine 0.3 + real AI, each day from the evening before (19:45 note included), headless test names (the trader's replay page stays on hold): 16 Nov, 18 Nov, 29 Oct (the October up day, NIFTY +1.08 pct), 27 Oct (last expiry day) running one after another; 20 Nov after tonight's minute and option pulls; December premiums from the recorded option minutes; observer scorecards |  | 15:44 |
-| E2 Pass mark | NOT STARTED |  |  |  |
+| E1 Replays 16/18/20 Nov, Oct up day, 27 Oct | BLOCKED | RED (desk 17:35): 16 Nov real-AI replay (engine 0.3, from the evening before) - cards before 1 / late 19 / missed 34 vs the old system 22 / 21 / 10; cards + WATCH 3 / 44 / 6 (the engine sees movers but leaves them on WATCH); rings 15; 456 cancel rows; AI $0.88. Remaining E1 runs STOPPED to save AI money until the fix: coverage (rules set the lane, AI only adds reasons or rejects on a named rule), GAP-AND-GO card 09:16-09:20, cancels only on the written condition, both systems on the same strict yardstick - engine builder on it; then 16 Nov re-run first, then 18 Nov, 29 Oct, 27 Oct, 20 Nov. What the trader must do: nothing | TEST_E1_1116 scorecard (v2_review) | 17:34 |
+| E2 Pass mark | NOT STARTED | pass mark stands (10+ cards before the move a day, CE on up days, <= 50 rings, GO NOW rejects some); 16 Nov FAILS today (1 card before) |  | 17:34 |
 | E3 Side by side with the old system | NOT STARTED |  |  |  |
 | F1 Control room / health line + alarm | NOT STARTED |  |  |  |
 | F2 Fallback switch both ways | IN PROGRESS | desk decision: no automatic key failover on Monday - a down key marks its feeds 'DEGRADED - key n down', the engine treats those quotes as STALE (no GO NOW), the phone alarm says so; being built; full failover = week-1 item; key-down marking BUILT: footer 'DEGRADED - key n down (feeds)' in red, Health KITE KEYS tile; key 1 down -> share prices + NIFTY STALE, key 3 -> all option chains STALE (no GO NOW), key 4 -> v2kq quotes unused, key 2 marked only; clears when a retry passes. The switch both ways is still Sunday | F2_key_degraded.md | 17:09 |
