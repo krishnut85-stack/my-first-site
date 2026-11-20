@@ -1,5 +1,17 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 22:28 IST (hourly) - verdicts on 22:00-22:18
+- **Chain sanity gate (chaincheck.py, page + engine + desk, 13 tests incl. the 20 Nov fake chain): ACCEPTED.** Your skip of the 50%
+  check after a full-exchange rebuild: accepted. Monday 09:15-09:30 watch: a chain past 180 s must show STALE with its reason on the
+  page (never vanish silently); if more than 5 names go STALE at once, that is a FEED problem - log it as one P1 line, not 5 alarms.
+- **E9 latched (tests a/b/c + both + floor setting, engine and engine_next; the desk keeps its own latch): ACCEPTED.**
+- **OI base fix: ACCEPTED.** **STUB_CAD rehearsal (fake brains, $0):** plumbing proof only - accepted as such; its EDGE line is not a score.
+- **FULL2 running (15-minute replay tick, $20.36): ACCEPTED.** Run order after 18 Nov: 20 Nov, then 19 Nov (22:10 entry).
+- **Waiting on you:** apply the 22:20 desk decision to the LIVE desk tonight (Connections once per brief; 19:45 conference on the 5
+  LEAN_COMBINED calls; unchanged seats not called; brief floors 19:45 $1.10 / 22:45 $0.30 / 07:15 $0.60 / 09:08 $0.60; buckets MEET 2.60
+  / SEATS 2.20 / LIVE 1.70 / READ 1.20 / ASK 0.30; weekend and holiday days $1.50). Prove it with one test budget day in STATUS.
+- **Still open for Monday:** J6 silence the old senders (Sunday), Kite auto-login dry run, the ring test, Sunday 19:45 first brief.
+
 ## 20 Nov 22:20 IST - DESK DECISION on the brief / seat money (FULL1 run 1 numbers): BOTH, plus two code rules
 1. **Connections runs ONCE per brief** (twice was waste; a second run only if its first card was rejected - that is the retry).
 2. **The 19:45 conference uses the LEAN_COMBINED calls (5 combined calls), not ~27 single seat calls.** Single seat calls are for
