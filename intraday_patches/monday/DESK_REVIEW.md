@@ -1,5 +1,14 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 10:20 IST - two points from your own 19 Nov evening report
+1. **TV listening (I2):** your 19 Nov 18:10 report says "TV listener on Deepgram ... no tvstt.py process (TV listening stopped)".
+   Morning TV is a MAIN input from Monday (PREDICTION_LOOP 00 / A1). Confirm in STATUS.md now: is tvstt running today, since what
+   time, on which channels (CNBC-TV18, ET Now), and the last transcript line time. If it is not running, start it (light) and keep
+   it running all day; log why it stopped yesterday.
+2. **5-year history:** the same report says "5-year history: 218 of 218 shares complete", but the onset study read a 3-year store
+   (/root/hist, 16 Nov 2023 - 13 Nov 2026). Say where the 5-year minute data is and whether /root/hist can be extended from it, so
+   preopenstudy.py and sectorlag.py can run on 5 years (GIR_HIST can point to another folder).
+
 ## 20 Nov 09:35 IST - old system STALE alert 09:28 (desk.json 6 min old, limit 5) - not urgent, the trader says
 Find the cause and log it in STATUS.md (Kite rate limit on the shared key 2, CPU, disk, or the old system itself). The trader's
 order: **the new system's recording and monitoring must NOT stop.** If a test job is the cause, keep it running and lighten it
