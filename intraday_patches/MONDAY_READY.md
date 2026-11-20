@@ -131,6 +131,49 @@ from Fri 20 Nov or the weekend: published at (source time) -> seen by GIR -> on 
 - [ ] I8 Each source shows on the Health page with its last item time; a source silent too long raises one alarm, and the page says
       which source is down instead of showing nothing.
 
+## J. Go-live traps (found by the go-live review, 20 Nov) - these override any time above that disagrees
+- [ ] J1 Kite login, one owner, one time: T logs in all four keys by Mon 08:15; S checks each key (one profile + one quote call) by
+      08:20; a missing key moves its lists to K4 and rings his phone. No 07:15 job may depend on a Monday token (use Friday closes /
+      non-Kite sources for the 07:15 run). (S + T, Mon 08:20)
+- [ ] J2 USE TODAY'S LIVE SESSION (Fri 20 Nov, the last one before Monday): run the v2 feed + engine read-only as its own service
+      (no rings), record raw frames at least 09:00-09:30 and through the day; push tick rates per connection, FULL-mode proof,
+      reconnects and the rings it WOULD have sent. (S, start by 12:00, push by 16:00 today)
+- [ ] J3 Tue 24 Nov is an NSE holiday: ONE trading calendar for every job. `systemctl list-timers` shows Sun 19:45 (prediction for
+      Mon), Mon 07:15 / 08:00 / 08:45 / 09:08 / 15:35, and NO trading-day jobs on Tue 24; Monday 19:45 predicts for Wed 25. (S, Sat 22:00)
+- [ ] J4 After the weekend "yesterday" = Fri 20: run the 08:00 and 08:45 jobs with the clock faked to Mon 23 08:00 and push the output:
+      no Friday file marked RED, ban file accepted, previous-day high / low / gap / OI change / RVOL baselines from Fri 20,
+      Monday ex-dates handled (no false gap-down PE). (S, Sat 22:00)
+- [ ] J5 Monday's share list from Monday's 08:00 instrument file: compare with Friday's (counts, December lot changes, shares leaving
+      F&O dropped); plan-card lots = the file's December lot; days to expiry from the contract file. (S, dry run Sat 22:00, live Mon 08:15)
+- [ ] J6 Silence EVERY old sender: old morning / evening note timers (gir-overnight, gir-ready, 19:40 / 19:45 notes), old page
+      sounds at "/", plus a list of what gir-watchdog and paper_exit_monitor send (they stay untouched). One 07:15 note, one 19:45
+      note, never two. (S, Sun 18:00)
+- [ ] J7 The fallback switch is safe and his: flipping it never dumps held-back alerts; he can flip it himself (Telegram command or a
+      Settings button); written reasons to flip (no card 15 min after 09:15, more than 6 rings in 15 min, a wrong-side ring).
+      (S builds, D writes reasons, T approves, Sun 18:00)
+- [ ] J8 Replays can never reach his phone or the live day: no Telegram credentials, no sound, separate calls store / limiter /
+      counters / scorecard; proof = a replay run with an empty sent-messages log. (S, Sat 22:00)
+- [ ] J9 09:00-09:30 rules: the 09:15 print carries the pre-open volume (RVOL5 would fire everywhere) - exclude it from RVOL5,
+      high/low, VWAP seeding; decide which evening GET READY triggers may ring at 09:15 (at most 6, ranked, not first-come);
+      test on today's recorded 09:00-09:30 frames. (D writes the rule, S builds, Sat 22:00)
+- [ ] J10 EXPIRY-DAY MODE for Monday: stock options expire (December strikes only); index expiry choice for index options is the
+      TRADER'S decision; build-up read from OI across all months (rollover makes near-month OI collapse); pinning to big-OI strikes
+      from ~13:30 flagged; add the last expiry day (27 Oct) to the E1 replays. (D spec, T decides index expiry, S builds, Sat 22:00)
+- [ ] J11 AI budget: the silent old system gets a small fixed allowance or no AI; replays have their own counter; the day resets on
+      the India date; proof that the old system cannot use up the new one's budget (the Opus GO NOW must not be switched off at 60%).
+      (S, Sun 18:00)
+- [ ] J12 Clock and time zone: clock offset < 100 ms (NTP); every v2 timer and day boundary on Asia/Kolkata. (S, Sun 18:00)
+- [ ] J13 Restart proof: kill the engine and the page stream mid-replay at 09:16 and 11:00 - no repeated rings; limiter, AI spend
+      and loss lock carry on; page reconnects; no crash-loop flood. Sunday-night restart starts Monday's counters clean. Plus an
+      OUTSIDE uptime check on /status.json and last-tick age, tested Sunday by stopping the heartbeat. (S, Sun 18:00)
+- [ ] J14 Rate limits at cold start: a request budget per key (Kite, NSE, Telegram); proof = peak requests/s from a cold start at
+      08:30 with zero 429 / 403. (S, Sun 18:00)
+- [ ] J15 His Monday routine (T): logins by 08:15; at 08:25 open the page on laptop and phone, click once (browsers block sound until
+      a click), hear the test chime, receive the Telegram test ping; phone not on Do Not Disturb, channel not muted, battery saver
+      not stopping Telegram. He writes "switch on" for the new system by Sun 21:00 (the new system rings on the live address).
+- [ ] J16 Code freeze Sun 16:00. D picks one held-out replay day only after the freeze. After GO at 21:00 nothing changes before
+      Mon 15:35 except through the fallback switch.
+
 ## H. The Monday timeline
 - Sun 19:45  the evening prediction for Monday goes out (C1). D reviews it at once.
 - Sun 21:00  GO / NO-GO: D gives the trader a one-page status of every item above (DONE with proof / NOT DONE / risk). He decides.
