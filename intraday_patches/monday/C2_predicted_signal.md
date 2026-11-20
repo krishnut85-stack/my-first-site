@@ -45,7 +45,7 @@ test_thin_preopen (predict.tests.test_predict.Rules20Nov.test_thin_preopen) ... 
 test_labels (predict.tests.test_predict.Score.test_labels) ... ok
 
 ----------------------------------------------------------------------
-Ran 28 tests in 0.027s
+Ran 28 tests in 0.023s
 
 OK
 ```

@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 17:45 IST
+Last update: 17:47 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -27,7 +27,7 @@ Last update: 17:45 IST
 | C2 PREDICTED signal | DONE | MOVER lines (N=25, tuned on 23 Oct-17 Nov only): on the 6 test days 51 pct moved 2 pct either way vs 38 pct of all names; 42 fired, 23 right / 11 wrong; 20 Nov 10 fired, 6 right, 0 wrong. 20 Nov 09:08 side lines poor on a strong up day (CE 1 right 1 wrong, PE 0 right 2 wrong). RISK E2: only 1-3 early cards a day (avg 1.5) - the prediction lane alone does NOT meet the 10-card mark and is below the old system on 16 / 18 Nov | C2_predicted_signal.md | 16:01 |
 | C3 Live news call | DONE | 20 Nov: 16 news items in market hours, all silent (none rated 4-5, so no news GO NOW); live shadow 25 items, 9 right at +30 min vs NIFTY | C3_news_calls.md | 16:01 |
 | C4 Bottom / top calls | DONE | 20 Nov: 2 bottom calls (a broker on APOLLOHOSP, one sector view) - neither share was falling, so treated as ordinary calls; the 19 Nov PAYTM bottom-call replay cannot run (no such speech in that day's TV text, reader not yet live) | C4_bottom_top.md | 16:01 |
-| C5 Scoring after 15:35 | DONE | daily scorecard built and run on the 6 test days | C5_scorecard.md | 16:01 |
+| C5 Scoring after 15:35 | DONE | daily scorecard built and run on the 6 test days; EDGE scoring (trader 18:00) added: every line and news call carries source + rank; over the 6 test days names WITH a reason are few (0-7 a day: TV 1 right, news 5 - 1 hit >=1 pct, 0 >=2 pct, 2 wrong side; results 1; sector-chain 2) - too few to judge (the reader only started 19 Nov evening); price-only 59 names: 20 pct hit >=1 pct, 8 pct >=2 pct, 7 pct wrong side; nothing PROVEN | C5_scorecard.md, C_replays/INDEX.json | 17:47 |
 | D1 Drill-down + cut-text fixes | IN PROGRESS | after-close cleanup started 15:45: cut text at 1366, flow box numbers, footer model from the live engine, grey 'P&L hidden' masks, new r51 scrollWidth check with every fold open, full re-run inside + outside | ../v2_review/drilldown/R51_controls.md | 15:42 |
 | D2 Prediction on Morning / Desk / phone | DONE | Morning THE PREDICTION board (open before 09:15), Desk PREDICTED TODAY lane, phone TODAY at the top of NOW; all read /preview/api/predict; 0 console errors, no sideways scroll at 1366 / 390, P&L masked 'P&L hidden' | D2_shots/ | 15:45 |
 | D3 Footer: real models + AI cost | IN PROGRESS | footer shows the engine's real AI status; GO NOW model moves to Opus 5.5 with B6 |  | 07:31 |

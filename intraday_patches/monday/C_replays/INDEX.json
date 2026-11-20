@@ -1,0 +1,95 @@
+{
+ "what": "point-in-time replay lists of the prediction loop (v2/predict/replay.py): every version N19/C22/U07/P09 of every line, made as if on the evening before, inputs only by first-seen time; fields per line incl. source and rank (desk 18:00)",
+ "days": {
+  "2026-10-27": {
+   "lists_flat": "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/lists_2026-10-27.jsonl",
+   "predictions_full": "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/store/predictions.jsonl",
+   "events": "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/store/prediction_event.jsonl",
+   "news_calls": "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/store/news_calls.jsonl",
+   "latest_versions": [
+    "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/store/latest_2026-10-27_C22.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/store/latest_2026-10-27_N19.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/store/latest_2026-10-27_P09.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/store/latest_2026-10-27_U07.json"
+   ],
+   "scorecard": "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/scorecard_2026-10-27.json",
+   "replay": "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/replay_2026-10-27.json",
+   "n_rows": 116
+  },
+  "2026-10-29": {
+   "lists_flat": "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/lists_2026-10-29.jsonl",
+   "predictions_full": "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/store/predictions.jsonl",
+   "events": "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/store/prediction_event.jsonl",
+   "news_calls": "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/store/news_calls.jsonl",
+   "latest_versions": [
+    "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/store/latest_2026-10-29_C22.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/store/latest_2026-10-29_N19.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/store/latest_2026-10-29_P09.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/store/latest_2026-10-29_U07.json"
+   ],
+   "scorecard": "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/scorecard_2026-10-29.json",
+   "replay": "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/replay_2026-10-29.json",
+   "n_rows": 124
+  },
+  "2026-11-16": {
+   "lists_flat": "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/lists_2026-11-16.jsonl",
+   "predictions_full": "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/store/predictions.jsonl",
+   "events": "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/store/prediction_event.jsonl",
+   "news_calls": "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/store/news_calls.jsonl",
+   "latest_versions": [
+    "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/store/latest_2026-11-16_C22.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/store/latest_2026-11-16_N19.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/store/latest_2026-11-16_P09.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/store/latest_2026-11-16_U07.json"
+   ],
+   "scorecard": "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/scorecard_2026-11-16.json",
+   "replay": "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/replay_2026-11-16.json",
+   "n_rows": 104
+  },
+  "2026-11-18": {
+   "lists_flat": "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/lists_2026-11-18.jsonl",
+   "predictions_full": "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/store/predictions.jsonl",
+   "events": "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/store/prediction_event.jsonl",
+   "news_calls": "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/store/news_calls.jsonl",
+   "latest_versions": [
+    "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/store/latest_2026-11-18_C22.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/store/latest_2026-11-18_N19.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/store/latest_2026-11-18_P09.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/store/latest_2026-11-18_U07.json"
+   ],
+   "scorecard": "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/scorecard_2026-11-18.json",
+   "replay": "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/replay_2026-11-18.json",
+   "n_rows": 112
+  },
+  "2026-11-19": {
+   "lists_flat": "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/lists_2026-11-19.jsonl",
+   "predictions_full": "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/store/predictions.jsonl",
+   "events": "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/store/prediction_event.jsonl",
+   "news_calls": "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/store/news_calls.jsonl",
+   "latest_versions": [
+    "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/store/latest_2026-11-19_C22.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/store/latest_2026-11-19_N19.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/store/latest_2026-11-19_P09.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/store/latest_2026-11-19_U07.json"
+   ],
+   "scorecard": "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/scorecard_2026-11-19.json",
+   "replay": "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/replay_2026-11-19.json",
+   "n_rows": 116
+  },
+  "2026-11-20": {
+   "lists_flat": "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/lists_2026-11-20.jsonl",
+   "predictions_full": "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/store/predictions.jsonl",
+   "events": "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/store/prediction_event.jsonl",
+   "news_calls": "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/store/news_calls.jsonl",
+   "latest_versions": [
+    "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/store/latest_2026-11-20_C22.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/store/latest_2026-11-20_N19.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/store/latest_2026-11-20_P09.json",
+    "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/store/latest_2026-11-20_U07.json"
+   ],
+   "scorecard": "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/scorecard_2026-11-20.json",
+   "replay": "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/replay_2026-11-20.json",
+   "n_rows": 116
+  }
+ }
+}

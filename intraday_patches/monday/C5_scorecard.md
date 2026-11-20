@@ -21,6 +21,12 @@ KNOWLEDGE CHAINS (IDEA, weight 0): CE 3 named, 1 moved 2% its way, 0 2% against 
 MISSED 2%+ movers 82 · 3%+: INDUSINDBK CE 10.0%, COFORGE CE 7.0%, TATAELXSI CE 6.5%, CUB CE 6.2%, PERSISTENT CE 6.2%, RBLBANK CE 5.4%, LTM CE 5.2%, AXISBANK CE 5.1%, ANGELONE CE 5.0%, KALYANKJIL PE 4.9%
 BASELINES: yesterday's movers CE 7 / PE 0 · volatility-only 8: CE 2 / PE 2 right
 NOT PROVEN until 20 trading days show +8 pts over baselines (E7)
+EDGE (desk 18:00) 2026-11-20 · names 18 (with a reason 7, price-only 11) · base CE 1%/2%: 51%/21% · PE: 2%/1%
+  TV           n  1 · its way >=1% 100% · >=2% 100% (base 21%, lift 4.84) · wrong side   0% · next close >=1%: not known · move left 2.4% · ahead of the half move 167 min
+  news         n  5 · its way >=1%  20% · >=2%   0% (base  9%, lift 0.0) · wrong side  40% · next close >=1%: not known · move left 0.9% · ahead of the half move 0 min
+  price-only   n 11 · its way >=1%   9% · >=2%   0% (base 21%, lift 0.0) · wrong side   0% · next close >=1%: not known · move left 1.0% · ahead of the half move -10 min
+  results      n  1 · its way >=1%   0% · >=2%   0% (base 21%, lift 0.0) · wrong side   0% · next close >=1%: not known · move left 1.7% · ahead of the half move 3 min
+  TOP 5 by rank: >=1% 20% · >=2% 0% (base 13%) · wrong 20%
 ```
 
 ## 2026-11-16
@@ -37,6 +43,9 @@ KNOWLEDGE CHAINS (IDEA, weight 0): CE 11 named, 1 moved 2% its way, 4 2% against
 MISSED 2%+ movers 88 · 3%+: KAYNES PE 11.1%, PREMIERENE PE 7.4%, AMBER PE 7.3%, LAURUSLABS PE 7.3%, INOXWIND PE 7.2%, MAXHEALTH CE 6.3%, WAAREEENER PE 5.6%, KALYANKJIL CE 5.1%, FORTIS CE 5.0%, PATANJALI PE 4.6%
 BASELINES: yesterday's movers CE 0 / PE 2 · volatility-only 8: CE 0 / PE 5 right
 NOT PROVEN until 20 trading days show +8 pts over baselines (E7)
+EDGE (desk 18:00) 2026-11-16 · names 6 (with a reason 0, price-only 6) · base CE 1%/2%: 11%/4% · PE: 40%/17%
+  price-only   n  6 · its way >=1%  17% · >=2%   0% (base 15%, lift 0.0) · wrong side   0% · next close >=1%: 67% · move left 0.9% · ahead of the half move -6 min
+  TOP 5 by rank: >=1% 20% · >=2% 0% (base 14%) · wrong 0%
 ```
 
 ## 2026-11-18
@@ -53,6 +62,10 @@ KNOWLEDGE CHAINS (IDEA, weight 0): CE 24 named, 1 moved 2% its way, 6 2% against
 MISSED 2%+ movers 71 · 3%+: ANGELONE PE 5.7%, IREDA CE 5.0%, SWIGGY PE 5.0%, SAIL PE 4.4%, TITAN PE 4.2%, BSE PE 4.1%, POLYCAB PE 4.0%, NAVINFLUOR CE 3.8%, MANAPPURAM PE 3.8%, DIXON PE 3.7%
 BASELINES: yesterday's movers CE 0 / PE 4 · volatility-only 8: CE 1 / PE 5 right
 NOT PROVEN until 20 trading days show +8 pts over baselines (E7)
+EDGE (desk 18:00) 2026-11-18 · names 9 (with a reason 1, price-only 8) · base CE 1%/2%: 5%/3% · PE: 45%/18%
+  price-only   n  8 · its way >=1%  25% · >=2%  25% (base 12%, lift 2.05) · wrong side  38% · next close >=1%: 12% · move left 1.0% · ahead of the half move -1 min
+  sector-chain n  1 · its way >=1%   0% · >=2%   0% (base  3%, lift 0.0) · wrong side 100% · next close >=1%: 100% · move left 0.0% · ahead of the half move 0 min
+  TOP 5 by rank: >=1% 40% · >=2% 40% (base 12%) · wrong 40%
 ```
 
 ## 2026-11-19
@@ -69,6 +82,9 @@ KNOWLEDGE CHAINS (IDEA, weight 0): CE 21 named, 18 moved 2% its way, 0 2% agains
 MISSED 2%+ movers 80 · 3%+: VOLTAS CE 9.1%, BLUESTARCO CE 7.8%, AMBER CE 7.7%, IREDA CE 7.7%, PAYTM PE 7.5%, MARUTI CE 7.0%, PGEL CE 6.9%, UNITDSPR CE 6.2%, HAVELLS CE 6.0%, COLPAL CE 5.5%
 BASELINES: yesterday's movers CE 2 / PE 1 · volatility-only 8: CE 3 / PE 1 right
 NOT PROVEN until 20 trading days show +8 pts over baselines (E7)
+EDGE (desk 18:00) 2026-11-19 · names 13 (with a reason 0, price-only 13) · base CE 1%/2%: 42%/21% · PE: 8%/0%
+  price-only   n 13 · its way >=1%  23% · >=2%   0% (base 12%, lift 0.0) · wrong side   0% · next close >=1%: 38% · move left 1.0% · ahead of the half move -1 min
+  TOP 5 by rank: >=1% 20% · >=2% 0% (base 5%) · wrong 0%
 ```
 
 ## 2026-10-29
@@ -85,6 +101,10 @@ KNOWLEDGE CHAINS (IDEA, weight 0): CE 2 named, 0 moved 2% its way, 0 2% against 
 MISSED 2%+ movers 75 · 3%+: PNBHOUSING PE 6.8%, ADANIENT CE 4.8%, CUB CE 4.7%, JSWENERGY CE 4.6%, UNITDSPR CE 4.6%, POWERGRID CE 4.5%, MANAPPURAM CE 4.3%, ADANIENSOL CE 4.2%, CDSL CE 4.1%, ETERNAL CE 4.0%
 BASELINES: yesterday's movers CE 3 / PE 2 · volatility-only 8: CE 2 / PE 0 right
 NOT PROVEN until 20 trading days show +8 pts over baselines (E7)
+EDGE (desk 18:00) 2026-10-29 · names 12 (with a reason 1, price-only 11) · base CE 1%/2%: 32%/14% · PE: 13%/3%
+  price-only   n 11 · its way >=1%  18% · >=2%   9% (base 13%, lift 0.69) · wrong side   9% · next close >=1%: 18% · move left 0.8% · ahead of the half move 0 min
+  sector-chain n  1 · its way >=1% 100% · >=2%   0% (base 14%, lift 0.0) · wrong side   0% · next close >=1%: 0% · move left 2.5% · ahead of the half move 0 min
+  TOP 5 by rank: >=1% 20% · >=2% 0% (base 12%) · wrong 0%
 ```
 
 ## 2026-10-27
@@ -101,6 +121,9 @@ KNOWLEDGE CHAINS (IDEA, weight 0): CE 18 named, 5 moved 2% its way, 1 2% against
 MISSED 2%+ movers 78 · 3%+: DATAPATTNS CE 8.4%, PGEL CE 7.7%, SONACOMS CE 7.4%, MANKIND CE 6.9%, GVT&D CE 5.4%, MOTILALOFS CE 5.1%, APLAPOLLO CE 5.0%, CUB CE 5.0%, AMBUJACEM PE 4.8%, MAHABANK CE 4.5%
 BASELINES: yesterday's movers CE 4 / PE 1 · volatility-only 8: CE 5 / PE 0 right
 NOT PROVEN until 20 trading days show +8 pts over baselines (E7)
+EDGE (desk 18:00) 2026-10-27 · names 10 (with a reason 0, price-only 10) · base CE 1%/2%: 38%/17% · PE: 9%/2%
+  price-only   n 10 · its way >=1%  30% · >=2%  20% (base 17%, lift 1.18) · wrong side   0% · next close >=1%: 40% · move left 1.5% · ahead of the half move 4 min
+  TOP 5 by rank: >=1% 40% · >=2% 40% (base 17%) · wrong 0%
 ```
 
 ## Tuning-day replay (14 sessions, 23 Oct-17 Nov, point-in-time each)
