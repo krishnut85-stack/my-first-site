@@ -156,3 +156,41 @@ replaced by this new design. Only its FEATURES (the data and functions below) mu
   and by hand: each tab, F-key, button, icon, link, chip, sector row, share name, drawer, scrollbar drag, wheel, keyboard shortcut,
   Esc and Back, at 1600x900, 1366x768 and phone. The result is a table of control / action / expected / PASS or FAIL; a page with
   any FAIL is not approved.
+
+## H. THE PREDICTION LOOP (binding, 20 Nov) - full spec: PREDICTION_LOOP.md. Where it settles a point, it wins.
+- **R52 The evening prediction** - the trader, 20 Nov: "The study, the knowledge, AI knowledge, engage the brain, everything has to
+  be done together, and then it has to PREDICT: 'this will go up' the day before." At 19:45 (code check 22:45, updates 07:15 and
+  09:08) GIR publishes "WILL GO UP TOMORROW (CE)" and "WILL GO DOWN TOMORROW (PE)" plus the market-day call (UP / DOWN / MIXED with
+  probabilities). Code scores every F&O share on BOTH sides from the study, the knowledge files, the day's news and global cues; the
+  AI explains both sides of every driver, red-teams, and may move a grade one step - it never invents a ticker, price or hit rate.
+  Each line shows sector, role, why (+) and against (-), trigger (yesterday's high / low with volume 2x), cancel (price and facts),
+  grade with the base rate (a % only once calibrated) and strike. Both sides always shown (a WATCH ONLY fold of 3 when a side has
+  fewer than 3 above the bar). Every version is stored append-only with its time; the list freezes at 09:08. Test: a replayed night
+  produces both lists, every number traces to data, every stored row has made_at and version.
+- **R53 The trading-day confirmation** - the trader, 20 Nov: "When it goes up on the trading day, then you give the signal: 'Hey, I
+  predicted this is going up, the sector is also going up'." A predicted share rings ONCE when its trigger is crossed with RVOL >= 2,
+  its whole sector moves the same way (breadth 60%) and NIFTY agrees or is flat: "PREDICTED last evening: X up · sector Y up +1.1% ·
+  NIFTY up · trigger crossed with volume 2.3x". From 09:17 for predicted shares only. The card says what must hold, when it is TOO
+  LATE (half the usual move done, 1.2 ATR, or 20 min) and when it FAILED - said plainly ("I was wrong"), never flipped to the other
+  side by the prediction lane. Unpredicted movers show grey "NOT PREDICTED" in the drill-down and never ring through this lane. Test:
+  replay rings within 5 min of the trigger, no second ring per prediction, no opposite-side ring after FAILED.
+- **R54 Live news calls** - the trader, 20 Nov: "If some news comes, you have to tell me: 'this is news, this can go up.'" Within
+  about a minute of the first source: "NEWS: ... -> can go UP: A, B (sector) / can go DOWN: C", with the source, NEW or OLD, VERIFIED
+  or TV ONLY, and the price rule before any GO NOW (0.3 ATR its way with volume 2x inside 10 min, sector and NIFTY not against).
+  Built on NEWS_TO_SECTOR_ENGINE and EVENT_MEMORY. Never rings on a ticker-text match, a repeat, or an unverified TV item. News on a
+  predicted share is merged into its card ("NEWS AGREES / AGAINST my prediction"). Test: the KEI / TITAN junk items never ring;
+  first-source-to-call latency is logged for every call.
+- **R55 Analyst BOTTOM / TOP calls** - the trader, 20 Nov: "If some shares in a sector are already going down and some analyst says
+  this is the bottom, you should tell me: 'Hey, this is the bottom, stop.'" When a TV voice, broker or strategist calls a bottom on a
+  share or sector that is already falling (or a top on one already rising): "BOTTOM CALL by ... on X - STOP: no new PE here, protect /
+  book your PE" (mirror: TOP CALL, no new CE). It ALWAYS rings on his held position on the threatened side; it SUSPENDS GIR's own new
+  calls on that side (at most 45 min) until the price test (higher low, VWAP reclaim, short covering, breadth turning) says CONFIRMED
+  or REJECTED; it never hard-blocks him (R12) and never creates the opposite trade by itself. Every voice's hit rate vs a no-call
+  control is shown with its n. Test: a replayed TV bottom call shows the card within 30 s and no fresh PE ring before the test decides.
+- **R56 Scoring and the daily scorecard** - the trader, 20 Nov: "...then it has to predict... I predicted this is going up." After
+  15:35 every prediction (each version), confirmation, news call, bottom / top call and suspension is scored against what happened:
+  right side, tradable or not, how early, move left, wrong side, missed movers - CE and PE apart, against the day's base rate and
+  naive baselines, with the AI vs the code ranking. Shrunk hit rates per source and kind feed the next evening's weights. A simple
+  scorecard reaches the Desk, phone and Telegram by 15:45. Rings stay within 50 a day and 6 in 15 min; AI stays within $3-5 a day
+  (hard cap $5 in code). Test: every shown item has a score row next day; the scorecard flags SIDE BIAS when one side drifts 20+
+  points from the market's own side mix.
