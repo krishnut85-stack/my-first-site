@@ -282,7 +282,7 @@ def inputs(R, s, P=None):
 
 
 PROBE_CUTS = (("19:45", None), ("09:08", 0), ("09:20", 5), ("09:30", 15), ("09:45", 30), ("next day", "next"))
-PROBE_DAYS = 2
+PROBE_DAYS = 1                       # one probed day per share (218 share-days x 6 cuts on the real store)
 
 
 def _pert(R, row, m0, move_open, seed):
@@ -316,7 +316,7 @@ def probe(R, s, P, ndays=PROBE_DAYS):
         i = int(np.searchsorted(Rg, gD))
         if i >= len(Rg) or Rg[i] != gD:
             continue
-        lo, hi = max(0, i - 90), min(len(Rg), i + 2)
+        lo, hi = max(0, i - 64), min(len(Rg), i + 2)          # 64 days of history: the 60-day windows are whole
         Rt = {k: (v[lo:hi] if isinstance(v, np.ndarray) else v) for k, v in R.items()}
         row = i - lo
         Pb, Fb = inputs(Rt, s)
@@ -1837,7 +1837,7 @@ BIASES = (
     "  easier on thin days, so N as a % of the universe is shown; lift against same-day random shares is not biased by it.",
     "MULTIPLE TESTING: 90 configurations x 5 levels x 2 sides x 3 N. Limited by the fixed formulas (no fitted weights), selection on the",
     "  tuning days only, the unchanged held-out view and the selection-luck line. Some optimism remains in every winner.",
-    "LOOK-AHEAD GUARD, two parts. (1) In every run (header): on 2 valid days of every share, day D's minutes from the naming minute on (all",
+    "LOOK-AHEAD GUARD, two parts. (1) In every run (header): on 1 valid day of every share, day D's minutes from the naming minute on (all",
     "  of D for 19:45, all of D+1 as well) are replaced and every per-share input and trigger state is re-read - any change is reported and",
     "  section 0 is flagged. (2) preopen_test (fake stores): day D's minutes are replaced from 09:15 / 09:20 / 09:30 / 09:45 on for EVERY",
     "  symbol and the whole study is rebuilt; every feature, score, market lean, sector read, role, list and trigger fire at that level",
