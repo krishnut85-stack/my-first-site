@@ -9,8 +9,11 @@ top, and which F&O shares are now overbought / extremely overbought?" From the m
                 with % above the 20 / 50-day averages and distance from its 52-week high - the CE side's "late / don't chase" list
                 and the PE side's "watch for a turn" list
   4 OVERSOLD    the mirror (RSI <= 30), for balance
+  5 MARKET CAP  if STORE/shares_outstanding.json exists ({"SBIN": 8925961185, ...} = number of shares issued, from NSE's quote
+                "issuedSize" or the company's filing): market cap at the NIFTY low and now (Rs crore), the value added, and per sector the
+                total added and its share of all value added - this is the weighted answer to "which sector pushed NIFTY"
   python3 rallyscan.py [--from 2026-03-02] [--force]      light, one pass, nice 19; --force to run in market hours
-Writes only STORE/rallyscan_report.txt. numpy only. Not advice: RSI says how far it ran, not when it turns - confirm with price."""
+Writes only STORE/rallyscan_report.txt and STORE/rallyscan.csv (every share, every number). numpy only. Not advice: RSI says how far it ran, not when it turns - confirm with price."""
 import os, sys, json, datetime as dt
 import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -67,8 +70,10 @@ def main():
         sma20 = c[-20:].mean() if len(c) >= 20 else np.nan
         sma50 = c[-50:].mean() if len(c) >= 50 else np.nan
         hi52 = c[-250:].max()
+        k = int(np.argmin(c[-250:])); lo52 = c[-250:][k]; lo52d = ds[len(ds) - min(250, len(ds)) + k]
         rows.append(dict(s=s, sec=OF.get(s, "-"), ret=r, rsi=rsi(c[-120:]), e20=(c[-1] / sma20 - 1) * 100, e50=(c[-1] / sma50 - 1) * 100,
-                         off=(c[-1] / hi52 - 1) * 100, last=c[-1]))
+                         off=(c[-1] / hi52 - 1) * 100, last=c[-1], at_low=c[j[0]], lo52=lo52, lo52d=lo52d, hi52=hi52,
+                         from_lo52=(c[-1] / lo52 - 1) * 100))
     L = []
     P = L.append
     P("=== RALLY SCAN (rallyscan.py) · data to %s · %d F&O shares" % (fmtd(last), len(rows)))
@@ -99,6 +104,42 @@ def main():
     for r in ob:
         ex = "EXTREME" if (r["rsi"] >= 80 or r["e20"] >= 10) else ""
         P("  %-12s %-18s %5.1f %+6.1f%% %+6.1f%% %+7.1f%% %+8.1f%% %s" % (r["s"], r["sec"][:18], r["rsi"], r["e20"], r["e50"], r["off"], r["ret"], ex))
+    shp = os.path.join(STORE, "shares_outstanding.json")
+    SH = json.load(open(shp)) if os.path.exists(shp) else {}
+    for r in rows:
+        n_ = SH.get(r["s"])
+        r["mc_low"] = r["at_low"] * n_ / 1e7 if n_ else np.nan
+        r["mc_now"] = r["last"] * n_ / 1e7 if n_ else np.nan
+        r["mc_add"] = r["mc_now"] - r["mc_low"]
+    if SH:
+        P("")
+        tot = np.nansum([r["mc_add"] for r in rows])
+        P("5 MARKET CAP since the NIFTY low (Rs crore; shares issued x price; %d of %d shares have a share count):" % (
+            sum(1 for r in rows if np.isfinite(r["mc_add"])), len(rows)))
+        P("  value added by all F&O shares: Rs %s cr" % format(int(round(tot)), ","))
+        agg = {}
+        for r in rows:
+            if np.isfinite(r["mc_add"]):
+                a = agg.setdefault(r["sec"], [0.0, 0.0, 0.0]); a[0] += r["mc_low"]; a[1] += r["mc_now"]; a[2] += r["mc_add"]
+        for k, (lo_, now_, add_) in sorted(agg.items(), key=lambda t: -t[1][2]):
+            P("  %-22s at low %12s  now %12s  added %+11s  (%4.1f%% of all value added)" % (k[:22], format(int(lo_), ","), format(int(now_), ","),
+                                                                                       format(int(add_), ","), add_ / tot * 100 if tot else 0))
+        P("  NOTE: market cap added is the rise in value, not money actually put in; shares issued are today's count (a split or")
+        P("  bonus since the low would distort it - check any share with a jump).")
+    import csv
+    with open(os.path.join(STORE, "rallyscan.csv"), "w", newline="") as fh:
+        w = csv.writer(fh)
+        w.writerow(["share", "sector", "nifty_low_date", "close_at_nifty_low", "last_date", "last_close", "move_since_nifty_low_pct",
+                    "own_52w_low", "own_52w_low_date", "move_from_own_52w_low_pct", "own_52w_high", "pct_from_52w_high", "rsi14",
+                    "pct_above_20dma", "pct_above_50dma", "shares_issued", "mcap_at_nifty_low_cr", "mcap_now_cr", "mcap_added_cr"])
+        for r in sorted(rows, key=lambda r: (r["sec"], r["s"])):
+            w.writerow([r["s"], r["sec"], str(dt.date(1970, 1, 1) + dt.timedelta(days=int(start))), round(r["at_low"], 2),
+                        str(dt.date(1970, 1, 1) + dt.timedelta(days=int(last))), round(r["last"], 2), round(r["ret"], 2),
+                        round(r["lo52"], 2), str(dt.date(1970, 1, 1) + dt.timedelta(days=int(r["lo52d"]))), round(r["from_lo52"], 2),
+                        round(r["hi52"], 2), round(r["off"], 2), round(r["rsi"], 1) if np.isfinite(r["rsi"]) else "",
+                        round(r["e20"], 2), round(r["e50"], 2), SH.get(r["s"], ""),
+                        round(r["mc_low"], 0) if np.isfinite(r["mc_low"]) else "", round(r["mc_now"], 0) if np.isfinite(r["mc_now"]) else "",
+                        round(r["mc_add"], 0) if np.isfinite(r["mc_add"]) else ""])
     os_ = sorted([r for r in rows if np.isfinite(r["rsi"]) and r["rsi"] <= 30], key=lambda r: r["rsi"])
     P("")
     P("4 OVERSOLD F&O shares (RSI14 <= 30) - %d: " % len(os_) + ", ".join("%s %.0f (%s)" % (r["s"], r["rsi"], r["sec"]) for r in os_))
