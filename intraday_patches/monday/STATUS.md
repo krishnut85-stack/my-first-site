@@ -177,3 +177,11 @@ Last update: 20:55 IST
   - FOR THE DESK: "NIFTY / BANKNIFTY futures below VWAP" is on NEITHER side in the engine today (only a CE kill switch exists). Adding it as a hard block changes Monday's calls on both sides without a replay. Decide: (a) a block on both sides (mirror: futures above VWAP for CE); or (b) a witness line only. Nothing changed.
   - REPORTING: cost per brief, LIVE by hour, LIVE by caller and the side-split EDGE are in the summary; --score-only re-scores old runs.
 - 00:02 - REHEARSAL FULL3 (20 Nov, the 22:20 rules, real brains) at 00:02: 19:45 brief 3 new ideas; 22:45 nothing broke (no AI call); 07:15 re-check 3 new + 3 updated; $3.83 so far. It started before the 23:35 fixes, so its morning briefs are the older (heavier) kind.
+- 00:33 - HOURLY PULL (desk 21 Nov 00:30): ACCEPTED: the KALYANKJIL check, the weekend split, the 23:35 fixes + PROOF_2220c, the retry fix, CE / PE. No prompt or design files changed.
+  - 19 Nov 09:15-11:39 PRICES: the replay reads the history minute store (girdata/minute/2026-11-19, 990 files, 772 names), not only the v2 recorder. Checked: KALYANKJIL eq 641.10 at 09:16, 644.25 at 11:00, 649.40 at 11:39; ITC 299.00 / 297.80 / 298.25 (futures too). So FULL4 (19 Nov) sees the whole morning; no change needed. The summary will say so.
+  - MARKET FUTURES vs VWAP (desk decision (b)): sent to the desk builder.
+    - A witness line on every BUY NOW card.
+    - A BUY NOW against the index futures' VWAP side only with a stock-specific reason (weight-3+ news / filing or a whole-sector move), shown as "AGAINST THE MARKET: <reason>"; otherwise WAIT.
+    - Tests both sides.
+    IN PROGRESS.
+  - The F1 chart bars fix (pages builder): must be live before Monday. IN PROGRESS.
