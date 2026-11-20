@@ -1,0 +1,177 @@
+=== SECTOR LAG (sectorlag.py) · Thu 16 Nov 2023 -> Fri 13 Nov 2026 · 738 market days · 218 shares · 18 sectors (3+ F&O shares)
+    sector move = median close-to-close % of its F&O shares in the store (sectors.json = today's members). 'metal' = metals · 'auto' = auto, auto-anc
+
+=== E1 metal down <= -1.0% AND auto up >= +0.5% the same day · 6 days
+    SECTORS - median move % (how often up) on the day D and from D's close to D+1 / D+2 / D+3; [baseline over all days]
+    telecom-media                D -0.74 ( 33% up) [+0.00  49%] · D+1 +0.30 ( 83% up) [+0.00  49%] · D+2 +0.04 ( 50% up) [-0.10  49%] · D+3 +1.27 ( 83% up) [-0.06  49%]
+    healthcare                   D -0.06 ( 33% up) [+0.05  51%] · D+1 +0.25 ( 50% up) [+0.05  51%] · D+2 +0.18 ( 50% up) [+0.15  52%] · D+3 +1.90 ( 67% up) [+0.23  54%]
+    consumer                     D +0.28 ( 67% up) [+0.06  53%] · D+1 +0.22 ( 67% up) [+0.05  53%] · D+2 +0.19 ( 50% up) [+0.02  51%] · D+3 +1.22 ( 67% up) [+0.02  51%]
+    pharma                       D -0.20 ( 33% up) [+0.08  53%] · D+1 -0.07 ( 50% up) [+0.08  53%] · D+2 +0.18 ( 50% up) [+0.08  52%] · D+3 +1.20 ( 83% up) [+0.09  53%]
+    insurance                    D -0.03 ( 50% up) [-0.01  49%] · D+1 -0.28 ( 33% up) [-0.01  49%] · D+2 +0.31 ( 67% up) [+0.04  52%] · D+3 +0.78 (100% up) [-0.03  49%]
+    cement-infra                 D -0.04 ( 50% up) [+0.06  53%] · D+1 -0.27 ( 50% up) [+0.06  53%] · D+2 +0.43 ( 67% up) [+0.12  53%] · D+3 +1.95 ( 83% up) [+0.07  52%]
+    it                           D +0.08 ( 50% up) [-0.02  48%] · D+1 -0.37 ( 50% up) [-0.02  48%] · D+2 -0.14 ( 50% up) [-0.06  49%] · D+3 +0.52 ( 50% up) [+0.03  50%]
+    auto                         D +1.14 ( 83% up) [+0.00  50%] · D+1 -0.63 ( 33% up) [+0.00  50%] · D+2 -0.26 ( 33% up) [+0.04  52%] · D+3 +0.62 ( 67% up) [+0.03  51%]
+    metals                       D -1.28 (  0% up) [+0.13  54%] · D+1 -0.51 ( 50% up) [+0.13  54%] · D+2 -0.65 ( 33% up) [+0.15  53%] · D+3 +0.13 ( 67% up) [+0.15  53%]
+    chemicals                    D +0.11 ( 67% up) [+0.03  51%] · D+1 -0.66 ( 17% up) [+0.03  51%] · D+2 -0.62 ( 33% up) [+0.04  51%] · D+3 +0.92 ( 67% up) [+0.09  52%]
+    fmcg                         D +0.77 ( 83% up) [-0.06  46%] · D+1 -0.86 ( 17% up) [-0.06  46%] · D+2 -1.12 ( 17% up) [-0.11  46%] · D+3 -0.27 ( 33% up) [-0.21  45%]
+    oil-gas                      D -0.64 ( 17% up) [+0.05  52%] · D+1 -0.83 ( 17% up) [+0.05  52%] · D+2 -0.05 ( 50% up) [+0.06  51%] · D+3 +1.58 ( 67% up) [+0.05  51%]
+    banks                        D -0.05 ( 17% up) [+0.03  51%] · D+1 -1.01 ( 17% up) [+0.04  51%] · D+2 -0.39 ( 33% up) [+0.02  51%] · D+3 +0.42 ( 50% up) [-0.07  49%]
+    nbfc                         D -0.09 ( 33% up) [+0.02  52%] · D+1 -1.07 ( 17% up) [+0.03  52%] · D+2 -0.52 ( 33% up) [-0.00  50%] · D+3 +0.68 ( 67% up) [-0.05  49%]
+    capital-mkts                 D -0.03 ( 33% up) [+0.06  51%] · D+1 -1.08 ( 33% up) [+0.06  51%] · D+2 -0.35 ( 17% up) [+0.15  54%] · D+3 +1.63 ( 67% up) [+0.10  52%]
+    auto-anc                     D +0.66 ( 83% up) [+0.08  52%] · D+1 -1.18 ( 17% up) [+0.08  52%] · D+2 -0.50 ( 33% up) [+0.08  52%] · D+3 +0.47 ( 50% up) [+0.10  52%]
+    power                        D -0.39 ( 33% up) [-0.04  48%] · D+1 -1.64 (  0% up) [-0.04  48%] · D+2 -1.70 (  0% up) [-0.09  48%] · D+3 -0.80 ( 33% up) [-0.13  48%]
+    capital-goods                D +0.43 ( 67% up) [+0.04  52%] · D+1 -1.56 ( 17% up) [+0.04  52%] · D+2 -1.23 ( 17% up) [+0.01  51%] · D+3 -0.61 ( 33% up) [-0.07  48%]
+    (sorted by D+1 move above its baseline: the top rows are the NEXT-DAY beneficiaries, the bottom rows the next-day losers)
+    SHARES ON THE DAY (D) - most often UP (CE): UNOMINDA +3.31% (83% up, n=6) · COCHINSHIP +3.16% (67% up, n=6) · FORCEMOT +2.60% (67% up, n=6) · DELHIVERY +2.58% (67% up, n=6) · PRESTIGE +2.53% (83% up, n=6) · ATHERENERG +2.11% (100% up, n=3) · DATAPATTNS +2.01% (50% up, n=6) · TATACONSUM +1.99% (83% up, n=6) · M&M +1.94% (67% up, n=6) · UNITDSPR +1.80% (100% up, n=6)
+    SHARES ON THE DAY (D) - most often DOWN (PE): SWIGGY -2.31% (17% up, n=6) · NATIONALUM -2.28% (0% up, n=6) · ONGC -1.94% (33% up, n=6) · HINDALCO -1.92% (0% up, n=6) · HINDZINC -1.87% (0% up, n=6) · JINDALSTEL -1.85% (17% up, n=6) · COALINDIA -1.69% (0% up, n=6) · POWERGRID -1.68% (17% up, n=6) · MUTHOOTFIN -1.57% (33% up, n=6) · NBCC -1.51% (0% up, n=6)
+    SHARES THE NEXT DAY (D+1) - most often UP (CE): PAYTM +2.76% (83% up, n=6) · MAXHEALTH +1.31% (67% up, n=6) · HYUNDAI +1.21% (83% up, n=6) · PHOENIXLTD +1.09% (67% up, n=6) · SBILIFE +1.08% (67% up, n=6) · FORTIS +1.03% (67% up, n=6) · POLICYBZR +0.96% (67% up, n=6) · CUB +0.71% (50% up, n=6) · INDUSTOWER +0.59% (83% up, n=6) · ICICIGI +0.59% (50% up, n=6)
+    SHARES THE NEXT DAY (D+1) - most often DOWN (PE): COCHINSHIP -3.68% (17% up, n=6) · WAAREEENER -3.53% (0% up, n=6) · BDL -3.03% (17% up, n=6) · ADANIGREEN -2.80% (0% up, n=6) · MOTILALOFS -2.74% (17% up, n=6) · NBCC -2.59% (0% up, n=6) · RVNL -2.59% (0% up, n=6) · ADANIENSOL -2.49% (17% up, n=6) · IRFC -2.43% (17% up, n=6) · BHARATFORG -2.35% (33% up, n=6)
+    THE LAST 12 TIMES - the day's and the next day's top 5 risers / fallers (F&O shares in the store):
+    Thu 25 Jun 2026  metal -1.48% / auto +0.90%
+        day up:   INDIGO +5.1, MOTHERSON +5.0, OFSS +4.5, MARUTI +4.1, MAXHEALTH +4.0   day down: BANDHANBNK -4.6, NATIONALUM -4.3, HINDZINC -4.2, SUPREMEIND -4.0, ASTRAL -3.4
+        next up:  ATHERENERG +8.5, MAHABANK +5.4, VEDL +4.2, KEI +4.1, NATIONALUM +4.1   next down: PERSISTENT -11.4, ASTRAL -7.8, SUPREMEIND -6.7, HINDPETRO -4.3, SYRMA -4.2
+    Tue 17 Feb 2026  metal -1.19% / auto +0.87%
+        day up:   FORCEMOT +5.3, PAYTM +4.4, DELHIVERY +3.6, BANKBARODA +3.5, INDIANB +3.4   day down: SRF -3.8, SWIGGY -3.1, MCX -2.9, WAAREEENER -2.6, NATIONALUM -2.3
+        next up:  CUB +4.1, HDFCLIFE +3.5, MARICO +3.0, TATASTEEL +2.9, NAM-INDIA +2.9   next down: FORCEMOT -3.2, WAAREEENER -2.7, OIL -2.4, KPITTECH -2.2, OFSS -2.1
+    Fri 30 Jan 2026  metal -4.15% / auto +0.90%
+        day up:   IDEA +11.5, BLUESTARCO +5.4, RADICO +5.1, SYRMA +4.6, AUROPHARMA +4.3   day down: HINDZINC -12.6, VEDL -11.4, NATIONALUM -10.6, MCX -7.0, MUTHOOTFIN -6.9
+        next up:  AMBER +4.7, PAYTM +3.1, KAYNES +2.5, WIPRO +2.2, DELHIVERY +1.9   next down: MCX -11.5, BDL -10.4, HINDZINC -9.1, BANKINDIA -8.4, MUTHOOTFIN -8.3
+    Tue 29 Apr 2025  metal -1.27% / auto +0.72%
+        day up:   DATAPATTNS +15.8, COCHINSHIP +10.0, MAZDOCK +8.6, TIINDIA +5.8, TRENT +5.8   day down: AUROPHARMA -3.0, TVSMOTOR -2.9, ANANDRATHI -2.8, CHOLAFIN -2.6, IDEA -2.4
+        next up:  VMM +9.7, HDFCLIFE +4.2, MARUTI +3.5, TIINDIA +2.9, LODHA +2.5   next down: TRENT -6.8, KFINTECH -6.6, BAJAJFINSV -5.5, BAJFINANCE -5.4, BSE -4.8
+    Sat 01 Feb 2025  metal -1.29% / auto +1.38%
+        day up:   BLUESTARCO +11.5, RADICO +9.3, DMART +9.0, GODFRYPHLP +8.2, CROMPTON +7.2   day down: RVNL -9.6, JSWENERGY -7.5, ABB -6.7, IRFC -6.4, SIEMENS -5.8
+        next up:  VOLTAS +6.4, CHOLAFIN +5.8, DIVISLAB +5.8, UPL +5.1, BAJFINANCE +5.0   next down: MOTHERSON -8.5, BDL -8.5, SIEMENS -8.4, ANGELONE -6.5, HAL -6.3
+    Tue 19 Nov 2024  metal -1.09% / auto +0.78%
+        day up:   PGEL +7.1, HYUNDAI +5.6, DATAPATTNS +5.5, SUZLON +5.3, KALYANKJIL +5.0   day down: WAAREEENER -7.1, MFSL -3.6, SWIGGY -3.5, SBILIFE -3.0, ADANIGREEN -2.8
+        next up:  AMBER +6.4, SUZLON +5.0, INDHOTEL +4.5, PHOENIXLTD +4.4, PRESTIGE +4.1   next down: ADANIENSOL -19.8, ADANIGREEN -19.0, AMBUJACEM -13.1, ADANIPORTS -13.0, ADANIPOWER -9.3
+
+=== E2 metal down <= -1.0% · 144 days
+    SECTORS - median move % (how often up) on the day D and from D's close to D+1 / D+2 / D+3; [baseline over all days]
+    telecom-media                D -1.09 ( 22% up) [+0.00  49%] · D+1 +0.15 ( 55% up) [+0.00  49%] · D+2 -0.11 ( 49% up) [-0.10  49%] · D+3 +0.23 ( 52% up) [-0.06  49%]
+    it                           D -0.68 ( 27% up) [-0.02  48%] · D+1 +0.10 ( 53% up) [-0.02  48%] · D+2 +0.09 ( 52% up) [-0.06  49%] · D+3 +0.13 ( 53% up) [+0.03  50%]
+    metals                       D -1.71 (  0% up) [+0.13  54%] · D+1 +0.26 ( 56% up) [+0.13  54%] · D+2 +0.31 ( 54% up) [+0.15  53%] · D+3 +0.08 ( 52% up) [+0.15  53%]
+    consumer                     D -0.91 ( 17% up) [+0.06  53%] · D+1 +0.17 ( 58% up) [+0.05  53%] · D+2 +0.04 ( 51% up) [+0.02  51%] · D+3 +0.17 ( 55% up) [+0.02  51%]
+    cement-infra                 D -1.29 ( 10% up) [+0.06  53%] · D+1 +0.16 ( 53% up) [+0.06  53%] · D+2 +0.23 ( 56% up) [+0.12  53%] · D+3 +0.24 ( 54% up) [+0.07  52%]
+    banks                        D -1.18 ( 12% up) [+0.03  51%] · D+1 +0.11 ( 53% up) [+0.04  51%] · D+2 +0.08 ( 51% up) [+0.02  51%] · D+3 -0.09 ( 49% up) [-0.07  49%]
+    pharma                       D -0.68 ( 24% up) [+0.08  53%] · D+1 +0.14 ( 56% up) [+0.08  53%] · D+2 -0.06 ( 48% up) [+0.08  52%] · D+3 -0.07 ( 48% up) [+0.09  53%]
+    healthcare                   D -0.61 ( 31% up) [+0.05  51%] · D+1 +0.11 ( 53% up) [+0.05  51%] · D+2 +0.01 ( 50% up) [+0.15  52%] · D+3 +0.24 ( 53% up) [+0.23  54%]
+    auto                         D -0.88 ( 19% up) [+0.00  50%] · D+1 +0.03 ( 51% up) [+0.00  50%] · D+2 -0.00 ( 50% up) [+0.04  52%] · D+3 +0.24 ( 54% up) [+0.03  51%]
+    auto-anc                     D -1.10 ( 17% up) [+0.08  52%] · D+1 +0.10 ( 53% up) [+0.08  52%] · D+2 +0.24 ( 56% up) [+0.08  52%] · D+3 +0.15 ( 53% up) [+0.10  52%]
+    power                        D -1.43 (  8% up) [-0.04  48%] · D+1 -0.04 ( 49% up) [-0.04  48%] · D+2 -0.23 ( 47% up) [-0.09  48%] · D+3 +0.01 ( 50% up) [-0.13  48%]
+    insurance                    D -0.77 ( 19% up) [-0.01  49%] · D+1 -0.02 ( 49% up) [-0.01  49%] · D+2 +0.07 ( 52% up) [+0.04  52%] · D+3 -0.03 ( 49% up) [-0.03  49%]
+    nbfc                         D -1.49 (  8% up) [+0.02  52%] · D+1 +0.02 ( 51% up) [+0.03  52%] · D+2 +0.04 ( 51% up) [-0.00  50%] · D+3 -0.00 ( 50% up) [-0.05  49%]
+    chemicals                    D -0.75 ( 22% up) [+0.03  51%] · D+1 -0.02 ( 49% up) [+0.03  51%] · D+2 -0.09 ( 49% up) [+0.04  51%] · D+3 +0.14 ( 53% up) [+0.09  52%]
+    fmcg                         D -0.58 ( 26% up) [-0.06  46%] · D+1 -0.15 ( 43% up) [-0.06  46%] · D+2 -0.03 ( 49% up) [-0.11  46%] · D+3 -0.21 ( 46% up) [-0.21  45%]
+    oil-gas                      D -1.44 ( 10% up) [+0.05  52%] · D+1 -0.05 ( 48% up) [+0.05  52%] · D+2 -0.14 ( 46% up) [+0.06  51%] · D+3 +0.06 ( 51% up) [+0.05  51%]
+    capital-mkts                 D -1.36 ( 16% up) [+0.06  51%] · D+1 -0.04 ( 49% up) [+0.06  51%] · D+2 +0.19 ( 52% up) [+0.15  54%] · D+3 +0.33 ( 53% up) [+0.10  52%]
+    capital-goods                D -1.58 ( 11% up) [+0.04  52%] · D+1 -0.10 ( 46% up) [+0.04  52%] · D+2 -0.28 ( 47% up) [+0.01  51%] · D+3 -0.18 ( 48% up) [-0.07  48%]
+    (sorted by D+1 move above its baseline: the top rows are the NEXT-DAY beneficiaries, the bottom rows the next-day losers)
+    SHARES ON THE DAY (D) - most often UP (CE): ATHERENERG -0.06% (49% up, n=67) · BRITANNIA -0.19% (44% up, n=144) · HINDUNILVR -0.20% (40% up, n=144) · DABUR -0.33% (36% up, n=144) · ITC -0.35% (33% up, n=144) · ANANDRATHI -0.37% (36% up, n=144) · BHARTIARTL -0.39% (36% up, n=144) · INFY -0.39% (39% up, n=144) · TCS -0.40% (33% up, n=144) · MAXHEALTH -0.41% (41% up, n=144)
+    SHARES ON THE DAY (D) - most often DOWN (PE): NBCC -2.57% (11% up, n=144) · NATIONALUM -2.50% (5% up, n=144) · SAIL -2.44% (3% up, n=144) · INOXWIND -2.35% (17% up, n=144) · BHEL -2.33% (17% up, n=144) · COCHINSHIP -2.33% (19% up, n=144) · DATAPATTNS -2.16% (26% up, n=144) · IDEA -2.13% (15% up, n=144) · RVNL -2.13% (12% up, n=144) · VEDL -2.10% (6% up, n=143)
+    SHARES THE NEXT DAY (D+1) - most often UP (CE): DLF +0.59% (57% up, n=144) · NATIONALUM +0.55% (58% up, n=144) · HINDALCO +0.46% (58% up, n=144) · PAYTM +0.44% (55% up, n=144) · INDUSTOWER +0.42% (59% up, n=144) · VOLTAS +0.42% (60% up, n=144) · ETERNAL +0.38% (56% up, n=144) · MCX +0.37% (56% up, n=144) · LAURUSLABS +0.37% (62% up, n=144) · INDHOTEL +0.35% (56% up, n=144)
+    SHARES THE NEXT DAY (D+1) - most often DOWN (PE): DATAPATTNS -1.00% (38% up, n=144) · COCHINSHIP -0.83% (37% up, n=144) · SWIGGY -0.71% (37% up, n=99) · MAZDOCK -0.68% (38% up, n=144) · ANGELONE -0.63% (41% up, n=144) · BDL -0.62% (42% up, n=144) · RVNL -0.59% (40% up, n=144) · FORCEMOT -0.58% (42% up, n=136) · NBCC -0.55% (44% up, n=144) · IREDA -0.51% (43% up, n=144)
+    THE LAST 12 TIMES - the day's and the next day's top 5 risers / fallers (F&O shares in the store):
+    Fri 23 Oct 2026  metal -2.68% / auto -1.57%
+        day up:   ETERNAL +4.0, SHREECEM +2.0, APOLLOHOSP +1.0, MARUTI +0.9, TCS +0.8   day down: SWIGGY -15.3, MOTILALOFS -5.8, ADANIENSOL -5.6, BANDHANBNK -5.4, 360ONE -5.3
+        next up:  ATHERENERG +13.3, DRREDDY +7.5, IDEA +5.2, KEI +5.1, LAURUSLABS +5.0   next down: AUBANK -7.0, CUB -6.8, SHRIRAMFIN -5.0, UJJIVANSFB -5.0, BANKINDIA -3.6
+    Wed 21 Oct 2026  metal -1.72% / auto -1.95%
+        day up:   WIPRO +3.6, PERSISTENT +3.5, INFY +3.3, MPHASIS +3.0, TECHM +3.0   day down: ABB -5.8, SRF -5.1, KEI -5.0, MANAPPURAM -5.0, COCHINSHIP -5.0
+        next up:  INDHOTEL +5.0, KAYNES +3.9, SAGILITY +2.7, ZYDUSLIFE +2.1, SBICARD +2.0   next down: KEI -8.6, SWIGGY -5.1, KALYANKJIL -4.6, OFSS -4.1, MAZDOCK -3.9
+    Thu 08 Oct 2026  metal -2.94% / auto -2.34%
+        day up:   LICHSGFIN +3.9, SRF +1.8, MPHASIS +1.5, PNBHOUSING +1.5, SAGILITY +1.1   day down: ADANIGREEN -7.6, JUBLFOOD -7.2, INOXWIND -6.9, TIINDIA -5.8, ADANIENT -5.6
+        next up:  INOXWIND +6.5, PERSISTENT +5.9, CUB +5.4, APOLLOHOSP +4.8, COLPAL +4.7   next down: ANANDRATHI -4.8, AMBER -1.8, UJJIVANSFB -1.8, ENRIN -1.7, JUBLFOOD -1.6
+    Wed 07 Oct 2026  metal -1.56% / auto -1.15%
+        day up:   MAHABANK +4.7, KALYANKJIL +3.9, SYRMA +3.7, UNIONBANK +3.5, LICHSGFIN +3.0   day down: NATIONALUM -4.6, TITAN -3.9, INDUSINDBK -3.4, ADANIENT -3.3, AUBANK -3.0
+        next up:  LICHSGFIN +3.9, SRF +1.8, MPHASIS +1.5, PNBHOUSING +1.5, SAGILITY +1.1   next down: ADANIGREEN -7.6, JUBLFOOD -7.2, INOXWIND -6.9, TIINDIA -5.8, ADANIENT -5.6
+    Thu 01 Oct 2026  metal -2.26% / auto -2.66%
+        day up:   MPHASIS +5.1, COFORGE +4.0, ENRIN +3.7, INFY +3.4, HDFCLIFE +3.2   day down: BAJAJ-AUTO -7.7, POLICYBZR -7.2, UNOMINDA -4.9, KALYANKJIL -4.7, MARUTI -4.6
+        next up:  KALYANKJIL +5.6, KFINTECH +5.5, ITC +4.7, AUBANK +4.4, NYKAA +4.4   next down: DMART -7.1, HCLTECH -3.9, MFSL -3.6, UPL -3.5, BANDHANBNK -3.4
+    Mon 28 Sep 2026  metal -1.50% / auto -2.12%
+        day up:   DRREDDY +1.7, DIXON +1.6, VOLTAS +1.1, IREDA +1.0, PREMIERENE +1.0   day down: YESBANK -5.9, MANAPPURAM -5.8, BANKINDIA -5.5, IDEA -5.4, ADANIGREEN -4.6
+        next up:  MANKIND +4.3, PAYTM +3.6, UJJIVANSFB +3.4, INDUSTOWER +3.3, ALKEM +3.1   next down: POLICYBZR -5.8, PREMIERENE -5.3, PATANJALI -4.9, AMBER -4.9, COROMANDEL -4.8
+    Thu 24 Sep 2026  metal -1.43% / auto -1.09%
+        day up:   ICICIGI +5.0, MCX +1.7, KAYNES +1.7, CIPLA +1.6, MANAPPURAM +1.5   day down: MFSL -9.4, LTF -8.9, NAUKRI -6.3, HDFCLIFE -5.9, CHOLAFIN -5.5
+        next up:  KAYNES +4.0, UJJIVANSFB +3.3, BLUESTARCO +3.3, MAHABANK +3.2, ENRIN +3.1   next down: POLICYBZR -6.4, FORTIS -4.9, PAYTM -3.8, MCX -3.2, MAXHEALTH -2.6
+    Tue 15 Sep 2026  metal -2.45% / auto -2.20%
+        day up:   HCLTECH +4.0, INFY +3.7, MPHASIS +3.6, TCS +2.5, TECHM +2.5   day down: SOLARINDS -13.9, DATAPATTNS -9.2, GVT&D -6.4, CGPOWER -5.9, SBICARD -5.4
+        next up:  PATANJALI +7.6, POLICYBZR +4.5, MFSL +3.4, PAYTM +3.3, KARURVYSYA +3.3   next down: PREMIERENE -4.8, KALYANKJIL -4.4, TCS -3.6, NAM-INDIA -3.3, NYKAA -2.7
+    Fri 11 Sep 2026  metal -2.05% / auto -0.63%
+        day up:   YESBANK +6.1, PAYTM +5.3, INDUSTOWER +4.3, WAAREEENER +3.5, ANGELONE +3.4   day down: COCHINSHIP -9.4, GODREJPROP -6.1, PIIND -4.2, LODHA -4.2, SUPREMEIND -3.3
+        next up:  HCLTECH +4.0, INFY +3.7, MPHASIS +3.6, TCS +2.5, TECHM +2.5   next down: SOLARINDS -13.9, DATAPATTNS -9.2, GVT&D -6.4, CGPOWER -5.9, SBICARD -5.4
+    Thu 10 Sep 2026  metal -1.30% / auto -0.80%
+        day up:   FORCEMOT +4.6, ATHERENERG +4.5, BLUESTARCO +4.4, PNBHOUSING +3.8, MANAPPURAM +3.6   day down: IDEA -4.4, KAYNES -3.1, ADANIENSOL -2.9, DIXON -2.8, GVT&D -2.8
+        next up:  YESBANK +6.1, PAYTM +5.3, INDUSTOWER +4.3, WAAREEENER +3.5, ANGELONE +3.4   next down: COCHINSHIP -9.4, GODREJPROP -6.1, PIIND -4.2, LODHA -4.2, SUPREMEIND -3.3
+    Mon 07 Sep 2026  metal -1.69% / auto -0.02%
+        day up:   SYRMA +11.4, IDEA +3.7, BOSCHLTD +3.4, SUPREMEIND +3.2, NAM-INDIA +2.9   day down: SAIL -5.2, MANAPPURAM -4.0, ICICILIFE -3.9, INFY -3.6, GODREJPROP -3.5
+        next up:  GVT&D +9.2, DATAPATTNS +7.3, BANDHANBNK +4.6, KALYANKJIL +4.2, LAURUSLABS +4.0   next down: BLUESTARCO -2.8, BPCL -2.6, VOLTAS -2.4, POWERINDIA -2.2, ANGELONE -1.8
+    Mon 31 Aug 2026  metal -1.32% / auto +0.30%
+        day up:   SBICARD +4.0, CAMS +3.3, CUB +3.1, ASTRAL +2.4, UJJIVANSFB +2.3   day down: ADANIENSOL -7.0, KAYNES -6.9, ADANIENT -6.2, ADANIPOWER -3.8, KPITTECH -3.8
+        next up:  ATHERENERG +5.5, MPHASIS +3.8, BAJAJ-AUTO +2.8, HCLTECH +2.7, ETERNAL +2.5   next down: KALYANKJIL -6.8, ADANIENSOL -6.2, UJJIVANSFB -5.7, SBICARD -5.0, IDEA -4.4
+
+=== E3 auto up >= +1.0% (it led) · 121 days
+    SECTORS - median move % (how often up) on the day D and from D's close to D+1 / D+2 / D+3; [baseline over all days]
+    capital-goods                D +1.40 ( 91% up) [+0.04  52%] · D+1 +0.42 ( 60% up) [+0.04  52%] · D+2 +0.48 ( 62% up) [+0.01  51%] · D+3 +0.28 ( 56% up) [-0.07  48%]
+    capital-mkts                 D +1.34 ( 92% up) [+0.06  51%] · D+1 +0.34 ( 59% up) [+0.06  51%] · D+2 +0.41 ( 59% up) [+0.15  54%] · D+3 +0.77 ( 58% up) [+0.10  52%]
+    insurance                    D +0.83 ( 82% up) [-0.01  49%] · D+1 +0.17 ( 53% up) [-0.01  49%] · D+2 +0.21 ( 57% up) [+0.04  52%] · D+3 +0.12 ( 52% up) [-0.03  49%]
+    chemicals                    D +0.96 ( 88% up) [+0.03  51%] · D+1 +0.21 ( 60% up) [+0.03  51%] · D+2 +0.24 ( 59% up) [+0.04  51%] · D+3 +0.34 ( 59% up) [+0.09  52%]
+    cement-infra                 D +1.27 ( 93% up) [+0.06  53%] · D+1 +0.22 ( 59% up) [+0.06  53%] · D+2 +0.48 ( 63% up) [+0.12  53%] · D+3 +0.49 ( 57% up) [+0.07  52%]
+    power                        D +1.07 ( 87% up) [-0.04  48%] · D+1 +0.09 ( 53% up) [-0.04  48%] · D+2 +0.32 ( 55% up) [-0.09  48%] · D+3 +0.30 ( 57% up) [-0.13  48%]
+    consumer                     D +1.10 ( 89% up) [+0.06  53%] · D+1 +0.18 ( 58% up) [+0.05  53%] · D+2 +0.39 ( 60% up) [+0.02  51%] · D+3 +0.37 ( 59% up) [+0.02  51%]
+    metals                       D +1.26 ( 91% up) [+0.13  54%] · D+1 +0.23 ( 57% up) [+0.13  54%] · D+2 +0.46 ( 58% up) [+0.15  53%] · D+3 +0.80 ( 64% up) [+0.15  53%]
+    auto-anc                     D +1.73 ( 98% up) [+0.08  52%] · D+1 +0.16 ( 54% up) [+0.08  52%] · D+2 +0.24 ( 57% up) [+0.08  52%] · D+3 +0.46 ( 57% up) [+0.10  52%]
+    oil-gas                      D +0.99 ( 89% up) [+0.05  52%] · D+1 +0.12 ( 54% up) [+0.05  52%] · D+2 +0.36 ( 56% up) [+0.06  51%] · D+3 +0.45 ( 57% up) [+0.05  51%]
+    auto                         D +1.56 ( 99% up) [+0.00  50%] · D+1 +0.04 ( 51% up) [+0.00  50%] · D+2 +0.40 ( 60% up) [+0.04  52%] · D+3 +0.61 ( 60% up) [+0.03  51%]
+    banks                        D +1.04 ( 87% up) [+0.03  51%] · D+1 +0.07 ( 51% up) [+0.04  51%] · D+2 +0.34 ( 60% up) [+0.02  51%] · D+3 +0.44 ( 58% up) [-0.07  49%]
+    fmcg                         D +0.65 ( 80% up) [-0.06  46%] · D+1 -0.04 ( 48% up) [-0.06  46%] · D+2 -0.11 ( 49% up) [-0.11  46%] · D+3 -0.14 ( 49% up) [-0.21  45%]
+    telecom-media                D +0.97 ( 83% up) [+0.00  49%] · D+1 -0.01 ( 49% up) [+0.00  49%] · D+2 +0.18 ( 52% up) [-0.10  49%] · D+3 +0.15 ( 53% up) [-0.06  49%]
+    nbfc                         D +1.36 ( 91% up) [+0.02  52%] · D+1 +0.00 ( 50% up) [+0.03  52%] · D+2 +0.22 ( 55% up) [-0.00  50%] · D+3 +0.12 ( 51% up) [-0.05  49%]
+    pharma                       D +0.80 ( 84% up) [+0.08  53%] · D+1 -0.01 ( 50% up) [+0.08  53%] · D+2 +0.29 ( 57% up) [+0.08  52%] · D+3 +0.40 ( 62% up) [+0.09  53%]
+    healthcare                   D +0.71 ( 78% up) [+0.05  51%] · D+1 -0.04 ( 49% up) [+0.05  51%] · D+2 +0.44 ( 59% up) [+0.15  52%] · D+3 +0.49 ( 60% up) [+0.23  54%]
+    it                           D +0.82 ( 73% up) [-0.02  48%] · D+1 -0.13 ( 44% up) [-0.02  48%] · D+2 +0.01 ( 50% up) [-0.06  49%] · D+3 +0.27 ( 55% up) [+0.03  50%]
+    (sorted by D+1 move above its baseline: the top rows are the NEXT-DAY beneficiaries, the bottom rows the next-day losers)
+    SHARES ON THE DAY (D) - most often UP (CE): MOTHERSON +2.23% (88% up, n=121) · MOTILALOFS +2.20% (79% up, n=121) · UNOMINDA +2.17% (88% up, n=121) · FORCEMOT +2.02% (86% up, n=115) · NBCC +1.98% (82% up, n=121) · BHEL +1.94% (84% up, n=121) · GVT&D +1.93% (73% up, n=121) · TVSMOTOR +1.92% (90% up, n=121) · BSE +1.87% (73% up, n=121) · M&M +1.86% (92% up, n=121)
+    SHARES ON THE DAY (D) - most often DOWN (PE): TCS +0.21% (60% up, n=121) · ITC +0.34% (64% up, n=121) · TECHM +0.38% (65% up, n=121) · ANANDRATHI +0.39% (63% up, n=121) · NESTLEIND +0.40% (64% up, n=121) · HINDUNILVR +0.43% (68% up, n=121) · DABUR +0.45% (68% up, n=121) · RADICO +0.47% (60% up, n=121) · BRITANNIA +0.49% (67% up, n=121) · ICICIBANK +0.50% (69% up, n=121)
+    SHARES THE NEXT DAY (D+1) - most often UP (CE): LODHA +0.60% (60% up, n=121) · PHOENIXLTD +0.57% (62% up, n=121) · ANGELONE +0.56% (61% up, n=121) · POWERINDIA +0.54% (55% up, n=120) · DIXON +0.52% (57% up, n=121) · KAYNES +0.50% (57% up, n=120) · ATHERENERG +0.50% (57% up, n=63) · BDL +0.48% (56% up, n=121) · RADICO +0.44% (56% up, n=121) · KEI +0.42% (60% up, n=121)
+    SHARES THE NEXT DAY (D+1) - most often DOWN (PE): IDEA -0.53% (42% up, n=121) · NBCC -0.31% (45% up, n=121) · UNIONBANK -0.31% (45% up, n=121) · POLICYBZR -0.28% (45% up, n=121) · KPITTECH -0.28% (47% up, n=121) · SONACOMS -0.27% (43% up, n=121) · SAGILITY -0.25% (38% up, n=86) · VOLTAS -0.21% (46% up, n=121) · CROMPTON -0.20% (45% up, n=121) · INDUSINDBK -0.19% (43% up, n=121)
+    THE LAST 12 TIMES - the day's and the next day's top 5 risers / fallers (F&O shares in the store):
+    Wed 11 Nov 2026  metal +0.71% / auto +1.06%
+        day up:   KALYANKJIL +8.5, COROMANDEL +7.2, FORCEMOT +6.0, NAVINFLUOR +5.9, BANKBARODA +5.3   day down: COCHINSHIP -7.1, ADANIGREEN -3.2, MPHASIS -2.7, NHPC -2.7, DIVISLAB -2.1
+        next up:  PAYTM +8.0, KALYANKJIL +7.8, POLICYBZR +6.4, PRESTIGE +5.7, MOTILALOFS +5.5   next down: PAGEIND -12.2, BDL -3.7, POWERINDIA -2.8, HYUNDAI -2.7, HINDUNILVR -2.2
+    Thu 05 Nov 2026  metal +1.22% / auto +2.91%
+        day up:   UNOMINDA +11.2, ASHOKLEY +9.6, MOTILALOFS +8.4, BAJFINANCE +7.9, PATANJALI +7.4   day down: PIIND -19.4, CUMMINSIND -12.6, SOLARINDS -4.8, OIL -3.5, CGPOWER -3.4
+        next up:  KALYANKJIL +6.0, YESBANK +5.6, HAVELLS +5.1, MCX +4.7, M&M +4.5   next down: ASTRAL -9.8, FORTIS -6.5, TIINDIA -5.6, MOTHERSON -5.1, DATAPATTNS -4.9
+    Wed 04 Nov 2026  metal +2.26% / auto +1.37%
+        day up:   MUTHOOTFIN +8.3, INOXWIND +7.0, UNOMINDA +6.3, POWERINDIA +6.3, BHEL +6.1   day down: MCX -5.5, ZYDUSLIFE -4.0, MPHASIS -2.5, TCS -2.3, HCLTECH -2.1
+        next up:  UNOMINDA +11.2, ASHOKLEY +9.6, MOTILALOFS +8.4, BAJFINANCE +7.9, PATANJALI +7.4   next down: PIIND -19.4, CUMMINSIND -12.6, SOLARINDS -4.8, OIL -3.5, CGPOWER -3.4
+    Tue 03 Nov 2026  metal +0.21% / auto +1.21%
+        day up:   MARICO +8.6, MCX +8.0, ANGELONE +7.4, BRITANNIA +5.9, LODHA +5.6   day down: GVT&D -3.0, NATIONALUM -2.9, POWERINDIA -2.7, BIOCON -2.6, POWERGRID -2.6
+        next up:  MUTHOOTFIN +8.3, INOXWIND +7.0, UNOMINDA +6.3, POWERINDIA +6.3, BHEL +6.1   next down: MCX -5.5, ZYDUSLIFE -4.0, MPHASIS -2.5, TCS -2.3, HCLTECH -2.1
+    Mon 02 Nov 2026  metal +3.53% / auto +1.17%
+        day up:   DIXON +12.3, RELIANCE +10.0, NBCC +8.7, INOXWIND +8.2, AMBER +6.5   day down: POLICYBZR -7.8, SYRMA -6.9, NAVINFLUOR -3.8, LODHA -3.4, CUB -2.7
+        next up:  MARICO +8.6, MCX +8.0, ANGELONE +7.4, BRITANNIA +5.9, LODHA +5.6   next down: GVT&D -3.0, NATIONALUM -2.9, POWERINDIA -2.7, BIOCON -2.6, POWERGRID -2.6
+    Wed 28 Oct 2026  metal +0.19% / auto +1.74%
+        day up:   PATANJALI +7.9, PGEL +7.1, VOLTAS +6.9, UPL +5.7, CHOLAFIN +5.4   day down: KAYNES -5.9, SAIL -5.9, PIDILITIND -4.2, DATAPATTNS -3.6, RELIANCE -3.5
+        next up:  JSWENERGY +9.0, SYRMA +6.5, ADANIPORTS +6.2, ADANIENT +5.9, ADANIENSOL +5.3   next down: HEROMOTOCO -4.5, GMRAIRPORT -2.6, NAVINFLUOR -2.3, CUMMINSIND -2.2, CROMPTON -1.9
+    Tue 27 Oct 2026  metal +1.15% / auto +1.38%
+        day up:   DATAPATTNS +10.1, MANKIND +8.8, SONACOMS +8.6, NAVINFLUOR +7.2, TATACONSUM +6.4   day down: MAZDOCK -6.8, AMBUJACEM -5.0, RECLTD -3.6, PAYTM -2.9, BDL -2.6
+        next up:  PATANJALI +7.9, PGEL +7.1, VOLTAS +6.9, UPL +5.7, CHOLAFIN +5.4   next down: KAYNES -5.9, SAIL -5.9, PIDILITIND -4.2, DATAPATTNS -3.6, RELIANCE -3.5
+    Fri 09 Oct 2026  metal +1.26% / auto +1.05%
+        day up:   INOXWIND +6.5, PERSISTENT +5.9, CUB +5.4, APOLLOHOSP +4.8, COLPAL +4.7   day down: ANANDRATHI -4.8, AMBER -1.8, UJJIVANSFB -1.8, ENRIN -1.7, JUBLFOOD -1.6
+        next up:  SUZLON +5.0, UPL +5.0, ANGELONE +3.8, PNBHOUSING +3.6, TATAELXSI +3.5   next down: DMART -4.6, TECHM -3.6, ITC -3.3, DABUR -3.3, COLPAL -3.0
+    Tue 06 Oct 2026  metal +0.28% / auto +1.04%
+        day up:   TRENT +12.4, PGEL +8.4, MOTILALOFS +7.0, TIINDIA +6.2, BHEL +5.5   day down: COALINDIA -3.5, BANDHANBNK -3.1, PHOENIXLTD -2.7, FEDERALBNK -2.2, TECHM -2.1
+        next up:  MAHABANK +4.7, KALYANKJIL +3.9, SYRMA +3.7, UNIONBANK +3.5, LICHSGFIN +3.0   next down: NATIONALUM -4.6, TITAN -3.9, INDUSINDBK -3.4, ADANIENT -3.3, AUBANK -3.0
+    Thu 17 Sep 2026  metal +0.50% / auto +1.19%
+        day up:   SYRMA +6.9, HDFCLIFE +5.1, TMPV +4.8, MFSL +4.7, SBILIFE +4.0   day down: POLICYBZR -4.0, PATANJALI -2.5, OIL -2.4, FEDERALBNK -2.0, PNBHOUSING -1.9
+        next up:  SYRMA +6.5, NAVINFLUOR +4.7, SUPREMEIND +4.4, ENRIN +4.3, ATHERENERG +4.3   next down: TCS -4.0, TMPV -3.2, KPITTECH -3.1, INFY -1.8, MARUTI -1.7
+    Fri 07 Aug 2026  metal +0.22% / auto +1.18%
+        day up:   ENRIN +12.1, MOTHERSON +9.5, FORTIS +4.6, AUROPHARMA +4.5, SONACOMS +3.9   day down: CROMPTON -7.2, BAJFINANCE -6.2, NAVINFLUOR -4.5, BAJAJFINSV -3.9, BLUESTARCO -3.6
+        next up:  POWERINDIA +10.9, PAYTM +10.3, SYRMA +7.0, MCX +5.2, BSE +4.1   next down: PFC -8.1, BHARATFORG -6.9, RECLTD -6.5, INOXWIND -5.6, AMBER -4.6
+    Wed 05 Aug 2026  metal +1.29% / auto +1.21%
+        day up:   HINDZINC +5.9, JUBLFOOD +4.8, BOSCHLTD +3.9, SONACOMS +3.8, PNBHOUSING +3.7   day down: KALYANKJIL -3.7, NHPC -2.7, MCX -2.6, DATAPATTNS -2.6, BLUESTARCO -2.4
+        next up:  NAVINFLUOR +13.1, MAZDOCK +6.6, HAL +6.4, KALYANKJIL +5.1, COCHINSHIP +5.0   next down: BLUESTARCO -4.7, POWERGRID -3.9, SONACOMS -3.4, JUBLFOOD -3.0, VOLTAS -2.6
+
+LIMITS: close-to-close only (no intraday timing); sectors are today's members; F&O shares only; a median hides one big mover -
+the share lists and 'the last 12 times' show them. History is a guide, not a promise: confirm live (sector breadth, leader above
+yesterday's high and VWAP with volume) before any CE / PE.
