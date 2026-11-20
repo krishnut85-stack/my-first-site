@@ -281,3 +281,12 @@ Last update: 20:55 IST
      The cards did not agree on them, so the gap is upstream of the head. DECISION FOR THE DESK: (a) rank strong single sources (an OFFICIAL / weight-4+ card, a lesson match) next to bench count; and / or (b) rely on the new lessons reaching seats 7 / 19 / 20 so more benches name them. Nothing changed in the ranking.
   - Weekend day at $1.35 of $1.50 (past the 90% step): readers event-only until Sat 15:40, as the ladder is written; moot while the API credit is blocked.
   - The builder's "pending restarts" (gir-v2testobs, gir-v2opt) were already done: gir-v2testobs at 01:06, gir-v2opt at 22:17 and again after the OI-base fix.
+- 03:33 - HOURLY PULL (desk 21 Nov 03:35): routing + consensus ACCEPTED.
+  - Copied to the loaders (old copies kept): desk/prompts/CONTRACTS.md (not_picked) and H_head_analyst.md (the consensus rule, "read LESSONS first"); design_v3/LINK_BOOK.md (row 5: jewellers CE only over weeks, they fall the SAME day on a sharp gold fall); EVENT_MEMORY.md (new section G: the US AI shock -> Indian IT story); REQUIREMENTS.md; and the new MONTHLY_PLAN, SECTOR_MAP_20NOV, SUMMITS, SUMMIT_CALENDAR, WATCH_20NOV_update and WATCH_20NOV_us_night.
+  - Sent to the desk builder (fake brains only):
+    - reload the knowledge pack where it caches;
+    - the gold-sharp-fall lesson into event_lessons.json (NOT PROVEN);
+    - RANKING (a) a strong single source (OFFICIAL, weight-4+ or a lesson match) = two benches, flagged, max 2 of the top 5; (b) lessons to seats 7 / 8 / 19 / 20; (c) GROUP EXPANSION: a group / sector card counts for each F&O member at half weight, with the expansion source shown;
+    - re-run the 20 Nov consensus check and the post-mortems.
+    IN PROGRESS.
+  - STILL BLOCKED: the Anthropic API credit. Waiting on the trader's choice for the 20 Nov morning re-run.
