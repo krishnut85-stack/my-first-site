@@ -1,13 +1,13 @@
 {
  "run": "FULL3",
- "layer": "full",
+ "layer": "stub",
  "days": [
   "2026-11-20"
  ],
- "made_ist": "2026-11-21 00:42:06",
+ "made_ist": "2026-11-21 00:46:40",
  "edge": {
   "2026-11-20": {
-   "line": "EDGE 2026-11-20 2026-11-20: 41 names a day (32 knowledge-driven) \u00b7 TOP-5 by the analyst's own rank: >=1% 0/5 0% vs 23% lift 0.0, >=2% 0/5 0% vs 11% lift 0.0 \u00b7 all names >=1% 8/41 20% vs 26% lift 0.75, >=2% 1/41 2% vs 10% lift 0.24 \u00b7 knowledge >=2% 0/32 0% vs 8% lift 0.0 \u00b7 all names >=2% to the next close not known yet (2026-11-23 has not closed / no data) \u00b7 old system >=2% 21/288 7% vs 7% lift 1.09 (288 names)",
+   "line": "EDGE 2026-11-20 2026-11-20: 41 names a day (32 knowledge-driven) \u00b7 TOP-5 by the analyst's own rank: >=1% 0/5 0% vs 22% lift 0.0, >=2% 0/5 0% vs 9% lift 0.0 \u00b7 all names >=1% 11/41 27% vs 26% lift 1.02, >=2% 3/41 7% vs 10% lift 0.75 \u00b7 knowledge >=2% 2/32 6% vs 8% lift 0.78 \u00b7 all names >=2% to the next close not known yet (2026-11-23 has not closed / no data) \u00b7 old system >=2% 25/288 9% vs 8% lift 1.1 (288 names)",
    "names_per_day": {
     "analyst ideas": 6,
     "news row (C3, silent)": 22,
@@ -33,14 +33,14 @@
      "n": 5,
      "hits": 0,
      "hit_rate": 0.0,
-     "base_rate": 0.23,
+     "base_rate": 0.221,
      "lift": 0.0
     },
     "2_close": {
      "n": 5,
      "hits": 0,
      "hit_rate": 0.0,
-     "base_rate": 0.108,
+     "base_rate": 0.086,
      "lift": 0.0
     },
     "1_next": "not known (no next close yet)",
@@ -68,14 +68,14 @@
        "n": 5,
        "hits": 1,
        "hit_rate": 0.2,
-       "base_rate": 0.379,
-       "lift": 0.53
+       "base_rate": 0.423,
+       "lift": 0.47
       },
       "2_close": {
        "n": 5,
        "hits": 0,
        "hit_rate": 0.0,
-       "base_rate": 0.144,
+       "base_rate": 0.161,
        "lift": 0.0
       },
       "1_next": "not known (no next close yet)",
@@ -95,22 +95,22 @@
        "BAJFINANCE PE 12:01"
       ],
       "n": 5,
-      "hit1_close": 0,
-      "hit2_close": 0,
+      "hit1_close": 1,
+      "hit2_close": 1,
       "proof": "NOT PROVEN (n = 5)",
       "1_close": {
        "n": 5,
-       "hits": 0,
-       "hit_rate": 0.0,
-       "base_rate": 0.05,
-       "lift": 0.0
+       "hits": 1,
+       "hit_rate": 0.2,
+       "base_rate": 0.069,
+       "lift": 2.91
       },
       "2_close": {
        "n": 5,
-       "hits": 0,
-       "hit_rate": 0.0,
-       "base_rate": 0.004,
-       "lift": 0.0
+       "hits": 1,
+       "hit_rate": 0.2,
+       "base_rate": 0.013,
+       "lift": 15.57
       },
       "1_next": "not known (no next close yet)",
       "2_next": "not known (no next close yet)"

@@ -1,4 +1,4 @@
-# DESK REHEARSAL FULL3 - layer full - made 21 Nov 00:42 IST
+# DESK REHEARSAL FULL3 - layer stub - made 21 Nov 00:46 IST
 
 Every brain in this layer that is FAKE is labelled so; a FAKE score says nothing about the desk's edge.
 
@@ -19,9 +19,9 @@ Every brain in this layer that is FAKE is labelled so; a FAKE score says nothing
 - CE: ideas named 2 · BUY NOW 0 · WAIT 0
 - PE: ideas named 4 · BUY NOW 0 · WAIT 0
 - briefs: 07:15 ok ok; 09:08 NO budget: brief floor: the 09:08 brief has $0.08 of its $2.60 (incl. what earlier ; 19:45 ok ok; 22:45 ok 22:45 - nothing broke since 19:45: the evening brief stands (no AI call)
-- EDGE: EDGE 2026-11-20 2026-11-20: 41 names a day (32 knowledge-driven) · TOP-5 by the analyst's own rank: >=1% 0/5 0% vs 23% lift 0.0, >=2% 0/5 0% vs 11% lift 0.0 · all names >=1% 8/41 20% vs 26% lift 0.75, >=2% 1/41 2% vs 10% lift 0.24 · knowledge >=2% 0/32 0% vs 8% lift 0.0 · all names >=2% to the next close not known yet (2026-11-23 has not closed / no data) · old system >=2% 21/288 7% vs 7% lift 1.09 (288 names)
-  SIDE CE - ALL names (base = F&O shares that rose >=1% / >=2%): n 25 · >=1% 8/25 32% vs base 40% · >=2% 1/25 4% vs base 16% · wrong side 2% 0/25 · earliness named before onset 0 of 3
-  SIDE CE - channel: analyst ideas: n 2 · >=1% 0/2 0% vs base 54% · >=2% 0/2 0% vs base 27% · wrong side 2% 0/2 · earliness none of these names moved 2%+ its way by the close
-  SIDE PE - ALL names (base = F&O shares that fell >=1% / >=2%): n 16 · >=1% 0/16 0% vs base 4% · >=2% 0/16 0% vs base 0% · wrong side 2% 2/16 · earliness named before onset 2 of 3
-  SIDE PE - channel: analyst ideas: n 4 · >=1% 0/4 0% vs base 2% · >=2% 0/4 0% vs base 0% · wrong side 2% 1/4 · earliness none of these names moved 2%+ its way by the close
+- EDGE: EDGE 2026-11-20 2026-11-20: 41 names a day (32 knowledge-driven) · TOP-5 by the analyst's own rank: >=1% 0/5 0% vs 22% lift 0.0, >=2% 0/5 0% vs 9% lift 0.0 · all names >=1% 11/41 27% vs 26% lift 1.02, >=2% 3/41 7% vs 10% lift 0.75 · knowledge >=2% 2/32 6% vs 8% lift 0.78 · all names >=2% to the next close not known yet (2026-11-23 has not closed / no data) · old system >=2% 25/288 9% vs 8% lift 1.1 (288 names)
+  SIDE CE - ALL names (base = F&O shares that rose >=1% / >=2%): n 25 · >=1% 8/25 32% vs base 37% · >=2% 1/25 4% vs base 14% · wrong side 2% 2/25 · earliness named before onset 0 of 3
+  SIDE CE - channel: analyst ideas: n 2 · >=1% 0/2 0% vs base 34% · >=2% 0/2 0% vs base 15% · wrong side 2% 0/2 · earliness none of these names moved 2%+ its way by the close
+  SIDE PE - ALL names (base = F&O shares that fell >=1% / >=2%): n 16 · >=1% 3/16 19% vs base 9% · >=2% 2/16 12% vs base 2% · wrong side 2% 0/16 · earliness named before onset 2 of 3
+  SIDE PE - channel: analyst ideas: n 4 · >=1% 1/4 25% vs base 14% · >=2% 0/4 0% vs base 5% · wrong side 2% 0/4 · earliness none of these names moved 2%+ its way by the close
 
