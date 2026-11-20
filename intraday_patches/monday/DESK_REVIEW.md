@@ -1,5 +1,11 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 09:35 IST - old system STALE alert 09:28 (desk.json 6 min old, limit 5) - not urgent, the trader says
+Find the cause and log it in STATUS.md (Kite rate limit on the shared key 2, CPU, disk, or the old system itself). The trader's
+order: **the new system's recording and monitoring must NOT stop.** If a test job is the cause, keep it running and lighten it
+instead (J2 every 5-10 s, shadow run at nice 19, December quotes every 15 min, or move polling off key 2). If the old system is
+the cause on its own, note it as an old-system fault and leave it.
+
 ## 20 Nov 09:25 IST - URGENT, on after2_2026-11-18.txt: "zero lots 1036 of 1050 - no premium - not tradable (821)"
 The fixed engine rang only 3 times on 18 Nov mostly because almost every card had NO PREMIUM, not because the ideas were bad. The
 recorded days hold November strikes; the new rule asks for December strikes, which were not recorded -> 0 lots -> silent. So:
