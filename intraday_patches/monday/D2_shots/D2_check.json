@@ -1,0 +1,29 @@
+{
+ "morning": {
+  "chip": "PREDICTED\n\u25b23\n\u25bc3\n\u25c68 \u00b7 MIXED\nNOT PROVEN",
+  "board_open": true,
+  "phone_box": null,
+  "board_text": "THE PREDICTION\n\u2715\nNOT PROVEN (day 0 of 20) - the code layer names shares that move, the side is right ~50% held-out\nMarket-day call MIXED \u00b7 up 19% / down 21% / mixed 61% \u00b7 all-days base rate on the A4 definition, 1245 sessions to 2026-11-19 (no cue has a measured tilt yet) \u00b7 GIFT NIFTY 25470 (-0.32% vs its previous close, quote time 1795112978.609656)\nFor 2026-11-20 \u00b7 version P09 made 09:08 \u00b7 ARMED",
+  "console_errors": [],
+  "scrollWidth": 1366,
+  "viewport": 1366
+ },
+ "desk-hunt": {
+  "chip": "PREDICTED\n\u25b23\n\u25bc3\n\u25c68 \u00b7 MIXED\nNOT PROVEN",
+  "board_open": true,
+  "phone_box": null,
+  "board_text": "PREDICTED TODAY\n\u2715\nNOT PROVEN (day 0 of 20) - the code layer names shares that move, the side is right ~50% held-out\nMarket-day call MIXED \u00b7 up 19% / down 21% / mixed 61% \u00b7 all-days base rate on the A4 definition, 1245 sessions to 2026-11-19 (no cue has a measured tilt yet) \u00b7 GIFT NIFTY 25470 (-0.32% vs its previous close, quote time 1795112978.609656)\nFor 2026-11-20 \u00b7 version P09 made 09:08 \u00b7 ARME",
+  "console_errors": [],
+  "scrollWidth": 1366,
+  "viewport": 1366
+ },
+ "phone": {
+  "chip": null,
+  "board_open": null,
+  "phone_box": "TODAY \u00b7 PREDICTION\nNOT PROVEN (day 0 of 20) - the code layer names shares that move, the side is right ~50% held-out\nMarket-day call MIXED \u00b7 up 19% / down 21% / mixed 61% \u00b7 all-days base rate on the A4 definition, 1245 sessions to 2026-11-19 (no cue has a measured tilt yet) \u00b7 GIFT NIFTY 25470 (-0.32",
+  "board_text": null,
+  "console_errors": [],
+  "scrollWidth": 390,
+  "viewport": 390
+ }
+}
