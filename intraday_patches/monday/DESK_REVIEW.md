@@ -1,5 +1,13 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov ~15:00 IST - seriesstudy.py READY TO RUN (monthly expiry study, the trader's request)
+Built, checked by an independent quant, all fixes in, 56 tests pass (planted edge found, pure noise "none does").
+Run AFTER 15:35 today (or any time this weekend), light:
+`cp intraday_patches/seriesstudy.py /home/globalbot/intraday/ && cd /home/globalbot/intraday && python3 seriesstudy.py check && python3 seriesstudy.py run`
+(onsetstudy.py must sit beside it). Push STORE/seriesstudy_report.txt + seriesstudy.json to intraday_patches/onset_results/ (not the
+trades npz). The December series starts Wed 25 Nov - the trader needs section 0 before then. Not a Monday blocker: run it after the
+replays if CPU is short.
+
 ## 20 Nov 13:30 IST (hourly) - on STATUS 12:37
 1. **Oversold mirror (RSI <= 20, 207 events, 86% bounced / 64% higher at day 20): desk decision - CE BOUNCE lines ALLOWED, only on
    the turn**: the share reclaims yesterday's high AND VWAP with volume (RVOL >= 2), its sector not falling, no fresh bad news

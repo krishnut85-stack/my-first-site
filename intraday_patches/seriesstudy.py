@@ -4,15 +4,17 @@ desk asked for before the MONTHLY F&O PLAN (design_v3/MONTHLY_PLAN.md, section A
 
 The trader, 20 Nov: "For the F&O shares, how about a longer holding - targeting the monthly expiry?" ONE trader buys NSE stock options, CE when
 he expects a rise and PE when he expects a fall, equal money per trade. The question measured here: does a position OPENED IN THE FIRST 1-3
-DAYS OF A MONTHLY SERIES and CLOSED AT EXPIRY-WEEK MONDAY work better than random picks - as a naked option and as a debit spread?
+DAYS OF A MONTHLY SERIES and CLOSED 4 MARKET DAYS BEFORE THE EXPIRY work better than random picks - as a naked option and as a debit spread?
 
   1 THE CALENDAR  every monthly series in the store from onsetstudy.expiry_flags (last Thursday to Aug 2025, last Tuesday from Sep 2025, a
                   holiday moves it to the market day before), each expiry checked against the NEXT day's drop in the summed futures OI
-                  (fo_daily.json); mismatches are printed. Day 1 = the first market day after the previous expiry. Entry at the close of day
-                  1, 2 or 3. Exit at the close of expiry-week Monday (the market day before if Monday is a holiday, and never the expiry day
-                  itself: when a holiday moves the expiry to Monday, the exit is the Friday before). Nothing is held into expiry week.
+                  (fo_daily.json) and against NSE's own trading days (a NIFTY minute day missing near an expiry would silently move the
+                  calendar: such a series is dropped and printed); mismatches are printed. Day 1 = the first market day after the previous
+                  expiry. Entry at the close of day 1, 2 or 3. EXIT (desk decision, 20 Nov): the close 4 MARKET DAYS before the expiry day,
+                  in both regimes (Thursday and Tuesday expiries), holidays not counted - for the Tue 29 Dec 2026 expiry that is Tue 22 Dec
+                  (Christmas is skipped), the plan's "exit / roll by 22 Dec". Nothing is held into expiry week.
   2 THE SIGNALS   read at the close of the entry day from that day and earlier days only, CE and PE exact mirrors (prices on a log scale,
-                  so a fall is the mirror of a rise): build-up (price x OI since the expiry close), rollover proxy terciles, the sector's
+                  so a fall is the mirror of a rise): build-up (price since the expiry close x OI since the day-1 close; none on day 1), rollover proxy terciles, the sector's
                   previous-series rank and breadth, the RSI regime (EXTREME / normal / oversold), distance from the 20 / 50-day averages,
                   NIFTY against its 50-day average - each alone, and a short PRE-DECLARED list of pairs and triples (the count of sets
                   tried is reported)
@@ -41,7 +43,7 @@ environment variable. It writes ONLY:
   STORE/seriesstudy_trades.npz     every candidate trade (share x series x entry day) with its signals and outcomes, for later study
 About 1-3 minutes on ~220 shares x 3 years (the minute files are the slow part). numpy only. Run it after 15:35:
   cd /home/globalbot/intraday && python3 seriesstudy.py run"""
-import os, sys, json, time, math, datetime as dt
+import os, sys, json, time, math, calendar, datetime as dt
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -72,14 +74,18 @@ FAMILY_ALPHA = 0.05              # THE MULTIPLE-TESTING GUARD (added to section 
                                  # month-bootstrap's standard error). The plain 95% interval is still shown and still required.
 OI_DROP = -0.02                  # the calendar check: the summed OI must fall 2%+ the day after an expiry ...
 OI_LEAD = 0.01                   # ... and no other day of that month may show a drop more than 1 point bigger
+EXIT_BACK = 4                    # the exit: the close 4 market days before the expiry day (desk decision, both regimes)
+OI_UNIT = math.log(1.8)          # an OI unit change (NSE's OI is not split-adjusted): |log OI change| >= log 1.8 on a day the price moved < 20%
+OI_UNIT_PX = 0.20
 SPLIT_LOOK = 60                  # rows after an unadjusted split / bonus whose 20 / 50-day averages would mix units: no signals there
 ROLL_PREV, ROLL_MIN = 6, 2       # the rollover is compared with the share's own last 6 series (at least 2)
 BRD_T = 0.70                     # breadth: 70%+ of the sector's shares rose (fell) over the previous series
 
 # ------------------------------------------------------------------ the signals (CE wording; PE is the exact mirror) ------------------------------------------------------------------
 SINGLES = ("BU_LB", "BU_SC", "ROLL_HI", "ROLL_LO", "SEC_TOP", "BREADTH", "RSI_N", "RSI_X", "REV_OS", "REV_X", "TREND", "PULL", "MKT")
-DESC = {"BU_LB": "long build-up since the expiry close (CE: price up 0.5%+ and OI 2%+ above the market's; PE: short build-up - price down, OI up)",
-        "BU_SC": "short covering (CE: price up 0.5%+, OI 2%+ below the market's; PE: long unwinding - price down, OI down)",
+DESC = {"BU_LB": "long build-up (CE: price up 0.5%+ since the expiry close and OI since the day-1 close 2%+ above the market's; PE: short build-up - "
+                 "price down, OI up) - from day 2 (the OI leg starts at the day-1 close, after the expiry drop)",
+        "BU_SC": "short covering (CE: price up 0.5%+, OI since day 1 2%+ below the market's; PE: long unwinding - price down, OI down) - from day 2",
         "ROLL_HI": "rollover proxy in the top third of the series (OI day 1 / OI the day before expiry, against the share's own last 6 series) - same for CE and PE",
         "ROLL_LO": "rollover proxy in the bottom third - same for CE and PE",
         "SEC_TOP": "its sector was in the top 3 of the previous series (PE: the bottom 3) - median move of the sector's shares, expiry to expiry",
@@ -177,19 +183,50 @@ def indicators(D):
 
 
 # ------------------------------------------------------------------ the series calendar and its OI check ------------------------------------------------------------------
+def scheduled_expiry(y, m):
+    """the month's scheduled stock expiry before any holiday shift: last Thursday to Aug 2025, last Tuesday from Sep 2025"""
+    last = dt.date(y, m, calendar.monthrange(y, m)[1])
+    wd = 1 if (y, m) >= (2025, 9) else 3
+    return last - dt.timedelta(days=(last.weekday() - wd) % 7)
+
+
+def cal_check(E):
+    """{expiry index: reason} for expiries the NIFTY calendar may have moved: NSE traded (a date in its daily file) after the flagged expiry
+    and on or before the scheduled one (the real expiry day is missing from NIFTY's minutes), or NIFTY's next day is not NSE's next day
+    (a missing day right after the expiry moves day 1)"""
+    bad = {}
+    if not O.FODAYS:
+        return bad
+    fd = sorted(dt.date.fromisoformat(x) for x in O.FODAYS)
+    for e in E:
+        e = int(e); ed = dday(O.CAL[e]); sch = scheduled_expiry(ed.year, ed.month)
+        inn = [d for d in fd if ed < d <= sch]
+        if inn:
+            bad[e] = "NSE traded on %s, after this expiry and by the scheduled %s - NIFTY's minutes miss the real expiry day" % (
+                inn[0].strftime("%a %d %b %Y"), sch.strftime("%a %d %b"))
+            continue
+        nx = [d for d in fd if d > ed]
+        if nx and e + 1 < O.G and dday(O.CAL[e + 1]) != nx[0]:
+            bad[e] = "NSE's next trading day is %s but NIFTY's is %s - a day is missing after the expiry" % (
+                nx[0].strftime("%a %d %b %Y"), dday(O.CAL[e + 1]).strftime("%a %d %b %Y"))
+    return bad
+
+
 def series_calendar():
-    """-> the series with a known start and end: e0 = the previous expiry (day 0), e1 = this expiry, days 1-3, x = the exit (close of
-    expiry-week Monday, the market day before if Monday is a holiday, never the expiry day itself), and the open series (no expiry yet)"""
+    """-> the series with a known start and end: e0 = the previous expiry (day 0), e1 = this expiry, days 1-3, x = the exit (the close
+    EXIT_BACK market days before the expiry day), and the open series (no expiry yet). A series touching an expiry that cal_check doubts
+    (it ends there - wrong exit - or starts after it - wrong day 0 / day 1) is kept in the list with "bad" set and is not studied"""
     E = np.nonzero(O.EXP)[0]
+    BAD = cal_check(E)
     out = []
     for j in range(1, len(E)):
         e0, e1 = int(E[j - 1]), int(E[j])
         ed = dday(O.CAL[e1])
-        mon = ed - dt.timedelta(days=ed.weekday())
-        x = int(np.searchsorted(O.CAL, (mon - dt.date(1970, 1, 1)).days, "right")) - 1
-        x = min(x, e1 - 1)
+        x = e1 - EXIT_BACK
+        why = BAD.get(e1) or BAD.get(e0)
         out.append({"j": len(out), "e0": e0, "e1": e1, "x": x, "em1": e0 - 1 if e0 >= 1 else -1,
-                    "days": [e0 + k if e0 + k < x else -1 for k in KS], "label": ed.strftime("%b %Y")})
+                    "days": [e0 + k if e0 + k < x else -1 for k in KS], "label": ed.strftime("%b %Y"),
+                    "bad": ("expiry %s: %s" % (dday(O.CAL[e1 if e1 in BAD else e0]), why)) if why else None})
     open_ = None
     if len(E) and E[-1] + 1 < O.G:
         open_ = {"day1": str(dday(O.CAL[E[-1] + 1])), "after": str(dday(O.CAL[E[-1]]))}
@@ -225,6 +262,7 @@ def oi_check(E):
     r = np.r_[r, np.nan]
     mon = np.array([dday(x).year * 12 + dday(x).month for x in O.CAL])
     rows = []
+    BAD = cal_check(E)
     for e in E:
         e = int(e); dr = r[e]
         inm = np.nonzero((mon == mon[e]) & np.isfinite(r))[0]
@@ -237,6 +275,8 @@ def oi_check(E):
             st = "MISMATCH: a bigger drop after %s" % dday(O.CAL[big]).strftime("%a %d %b")
         else:
             st = "ok"
+        if e in BAD:
+            st = "MISMATCH: " + BAD[e] + ("" if st == "ok" else " · " + st)
         rows.append({"expiry": str(dday(O.CAL[e])), "wd": dday(O.CAL[e]).strftime("%a"), "drop": float(dr) * 100 if np.isfinite(dr) else None,
                      "status": st, "biggest": str(dday(O.CAL[big])) if big >= 0 else None})
     return rows, None
@@ -257,7 +297,22 @@ def build(names, D):
         rs, a20, a50, rv = indicators(d)
         RS[i, d["g"]] = rs; D20[i, d["g"]] = a20; D50[i, d["g"]] = a50; RV[i, d["g"]] = rv
         SPL[i, [x for x in d["splits"]]] = True
+        if O.FODAYS and s not in O.FOD:                   # NSE's file never lists it (after the ALIAS merge): not an F&O share here
+            V[i, :] = False
     OI = oi_matrix(names)
+    # OI unit changes: NSE's OI is not split-adjusted - a day whose OI jumps 1.8x+ (or falls by as much) while the price moved < 20% (an
+    # adjusted price history), or a split jump the price shows (SPL): that share's OI fields are nulled for the series it falls in
+    OIU = np.zeros((NSH, G), bool)
+    for i in range(NSH):
+        gi = np.nonzero(np.isfinite(OI[i]))[0]
+        if len(gi) < 2:
+            continue
+        with np.errstate(all="ignore"):
+            jo = np.abs(np.log(OI[i, gi[1:]] / OI[i, gi[:-1]])) >= OI_UNIT
+            cp = C[i, gi[1:]] / C[i, gi[:-1]]
+            calm = ~(np.abs(cp - 1) >= OI_UNIT_PX)       # a missing price counts as calm (the OI jump alone decides)
+        OIU[i, gi[1:][jo & calm]] = True
+    OIU |= SPL
     nl = np.log(O.NIFC[:, -1]) if O.G else np.zeros(0)
     NIF = nl - trail_mean(nl, 50)
     # sectors: real ones only (O.SEC already moved LOOSE buckets and unsectored shares to "_SYM" singletons)
@@ -270,16 +325,26 @@ def build(names, D):
     SER, E, open_ = series_calendar()
     J = len(SER)
     # the rollover proxy per share and series: log(OI day 1 / OI the day before the previous expiry)
-    ROLL = np.full((NSH, J), np.nan)
+    # An OI unit change switches the share's OI fields off from that day to the end of its series (causal: a row entered BEFORE the change
+    # keeps them - the trader could not have known), and that series' rollover never enters the share's later rollover history.
+    ROLL = np.full((NSH, J), np.nan)                       # this series' own rollover (read on day 1)
+    OIBAD = np.zeros((NSH, J), bool)                       # a unit change anywhere from day -1 to the expiry (history only)
     for sr in SER:
+        lo_ = max(sr["em1"] + 1, 0)
+        OIBAD[:, sr["j"]] = OIU[:, lo_:sr["e1"] + 1].any(1)
         if sr["em1"] >= 0:
             with np.errstate(all="ignore"):
                 ROLL[:, sr["j"]] = np.log(OI[:, sr["e0"] + 1] / OI[:, sr["em1"]])
+            ROLL[OIU[:, lo_:sr["e0"] + 2].any(1), sr["j"]] = np.nan     # a unit change inside its own window
+    for sr in SER:
+        if sr["bad"]:
+            ROLL[:, sr["j"]] = np.nan                      # a doubted calendar: its day 1 / day -1 may be the wrong days
+    ROLLH = ROLL.copy(); ROLLH[OIBAD] = np.nan             # the history later series compare with
     rows = []
     with np.errstate(all="ignore"):
         for sr in SER:
             j, e0, e1, x = sr["j"], sr["e0"], sr["e1"], sr["x"]
-            if e0 + 1 < O.GLO:
+            if e0 + 1 < O.GLO or sr["bad"]:
                 continue
             # the sector's previous series (expiry to expiry), known on day 1
             rkt = np.full(NSH, -1, np.int16); rkb = np.full(NSH, -1, np.int16); bup = np.full(NSH, np.nan); bdn = np.full(NSH, np.nan)
@@ -287,6 +352,7 @@ def build(names, D):
             if j >= 1:
                 p0, p1 = SER[j - 1]["e0"], SER[j - 1]["e1"]
                 pr = np.log(C[:, p1] / C[:, p0])
+                pr[SPL[:, p0 + 1:p1 + 1].any(1)] = np.nan          # a split inside the previous series: its move is in two units
                 med, fu, fd, ks = [], [], [], []
                 for a in range(len(secs)):
                     v = pr[(sid == a) & np.isfinite(pr)]
@@ -304,7 +370,7 @@ def build(names, D):
             rq = np.full(NSH, np.nan)
             rel = np.full(NSH, np.nan)
             for i in range(NSH):
-                h_ = ROLL[i, max(0, j - ROLL_PREV):j]; h_ = h_[np.isfinite(h_)]
+                h_ = ROLLH[i, max(0, j - ROLL_PREV):j]; h_ = h_[np.isfinite(h_)]
                 if len(h_) >= ROLL_MIN and np.isfinite(ROLL[i, j]) and V[i, e0 + 1]:
                     rel[i] = ROLL[i, j] - np.median(h_)
             fin = np.nonzero(np.isfinite(rel))[0]
@@ -314,16 +380,21 @@ def build(names, D):
             for k, d in zip(KS, sr["days"]):
                 if d < 0 or d < O.GLO:
                     continue
-                # build-up: the price since the expiry close, the OI since the expiry close against the market's median OI change that day
+                # build-up: the price since the expiry close (day 0); the OI since the DAY-1 close (after the expiry drop, which is the
+                # rollover's own information) against the market's median OI change on the same days. Day 1 has no OI leg: no build-up.
                 pm = np.log(C[:, d] / C[:, e0])
-                lo = np.log(OI[:, d] / OI[:, e0])
+                lo = np.log(OI[:, d] / OI[:, e0 + 1])
+                ub = OIU[:, max(sr["em1"] + 1, 0):d + 1].any(1)          # a unit change by the entry day: OI fields off from here
+                lo[~V[:, e0 + 1] | ub] = np.nan
                 pool = V[:, d] & np.isfinite(lo)
                 oirel = lo - (np.median(lo[pool]) if pool.sum() >= 3 else np.nan)
+                if k == 1:
+                    oirel[:] = np.nan
                 T0 = e1 - d; T1 = e1 - x
                 for i in np.nonzero(V[:, d] & np.isfinite(C[:, e0]) & np.isfinite(RV[:, d]))[0]:
                     r = np.zeros((), RDT)
                     r["i"], r["j"], r["k"], r["d"], r["x"], r["e"], r["sec"] = i, j, k, d, x, e1, sid[i]
-                    r["pm"], r["oirel"], r["rollq"] = pm[i], oirel[i], rq[i]
+                    r["pm"], r["oirel"], r["rollq"] = pm[i], oirel[i], (np.nan if ub[i] else rq[i])
                     r["rkt"], r["rkb"], r["ntop"], r["bup"], r["bdn"] = rkt[i], rkb[i], ntop, bup[i], bdn[i]
                     r["rsi"], r["d20"], r["d50"], r["nif"] = RS[i, d], D20[i, d], D50[i, d], NIF[d]
                     rv = max(float(RV[i, d]), RV_FLOOR); r["rv"] = rv
@@ -548,25 +619,25 @@ def report(S, SER, E, open_, chk, chk_note, secs, names, nsh_data, t0, args):
     last = dday(O.CAL[used_ser[-1]["x"]]) if used_ser else None
     P("=== THE MONTHLY SERIES STUDY (seriesstudy.py) · %s -> %s · %d series used (%d tuning, %d held-out, %d dropped at the cut) · %d shares with "
       "data · %d candidate trades" % (first, last, len(used_ser), int(tu.sum()), int(he.sum()), int(S.used.sum() - tu.sum() - he.sum()), nsh_data, len(T)))
-    P("Entry at the close of day 1 / 2 / 3 of a monthly series, exit at the close of expiry-week Monday. CE and PE judged separately. "
+    P("Entry at the close of day 1 / 2 / 3 of a monthly series, exit at the close 4 market days before the expiry. CE and PE judged separately. "
       "%d signal sets x %d entry days = %d tries per side (%d in all)." % (len(SETS), len(KS), ntry, 2 * ntry))
     P("")
     TOP = len(out)
     # ---------------- 1 the calendar
-    P("1 THE CALENDAR - every monthly series (day 0 = the previous expiry; days 1-3 = the entry days; exit = the close of expiry-week Monday)")
+    P("1 THE CALENDAR - every monthly series (day 0 = the previous expiry; days 1-3 = the entry days; exit = the close 4 market days before the expiry)")
     P("  %-9s %-15s %-15s %-15s %-15s %-15s %8s  %s" % ("series", "day 0 (expiry)", "day 1", "day 2", "day 3", "exit", "OI drop", "check"))
     chkd = {c["expiry"]: c for c in chk}
     for s in SER:
         c = chkd.get(str(dday(O.CAL[s["e1"]])), {})
         dl = [dday(O.CAL[d]).strftime("%a %d %b %y") if d >= 0 else "-" for d in s["days"]]
-        tag = "" if S.used[s["j"]] else "  (not used: outside --years or no trades)"
+        tag = "" if S.used[s["j"]] else ("  DROPPED - " + s["bad"]) if s.get("bad") else "  (not used: outside --years or no trades)"
         side = " tuning" if tu[s["j"]] else " HELD-OUT" if he[s["j"]] else (" (cut)" if S.used[s["j"]] else "")
         P("  %-9s %-15s %-15s %-15s %-15s %-15s %8s  %s%s%s" % (s["label"], dday(O.CAL[s["e0"]]).strftime("%a %d %b %y"), dl[0], dl[1], dl[2],
                                                            dday(O.CAL[s["x"]]).strftime("%a %d %b %y"),
                                                            f1(c.get("drop"), "%+.1f%%") if c else "-", c.get("status", "-"), side, tag))
         J["calendar"].append({"series": s["label"], "day0": str(dday(O.CAL[s["e0"]])), "expiry": str(dday(O.CAL[s["e1"]])),
                               "days": [str(dday(O.CAL[d])) if d >= 0 else None for d in s["days"]], "exit": str(dday(O.CAL[s["x"]])),
-                              "tuning": bool(tu[s["j"]]), "heldout": bool(he[s["j"]]), "used": bool(S.used[s["j"]])})
+                              "tuning": bool(tu[s["j"]]), "heldout": bool(he[s["j"]]), "used": bool(S.used[s["j"]]), "dropped": s.get("bad")})
     if E is not None and len(E):
         c0 = chkd.get(str(dday(O.CAL[E[0]])), {})
         P("  (the first expiry in the store, %s, only opens the first series; its OI check: %s)" % (dday(O.CAL[E[0]]), c0.get("status", "-")))
@@ -580,6 +651,10 @@ def report(S, SER, E, open_, chk, chk_note, secs, names, nsh_data, t0, args):
             len(chk) - len(mis), len(chk), len(mis), "" if len(mis) == 1 else "es", ":" if mis else ""))
         for c in mis:
             P("    !! %s (%s): %s (drop %s)" % (c["expiry"], c["wd"], c["status"], f1(c["drop"], "%+.1f%%")))
+    dropped = [s for s in SER if s.get("bad")]
+    if dropped:
+        P("  DROPPED SERIES (the calendar may be wrong there - fix the NIFTY minute file and run again): " +
+          " · ".join("%s (%s)" % (s["label"], s["bad"]) for s in dropped))
     P("")
     # ---------------- 2 baselines
     P("2 BASELINES - every share the same side and day (ALL), the top sector of the previous series only (TOP; PE: the bottom sector)")
@@ -648,7 +723,7 @@ def report(S, SER, E, open_, chk, chk_note, secs, names, nsh_data, t0, args):
         P("  " + ln)
     # ---------------- 0 the answer (at the top)
     top = []; Q = top.append
-    Q("0 THE ANSWER - in plain words. Does a monthly CE / PE opened in the first 1-3 days of a series and closed at expiry-week Monday beat")
+    Q("0 THE ANSWER - in plain words. Does a monthly CE / PE opened in the first 1-3 days of a series and closed 4 market days before expiry beat")
     Q("  random picks? Picked on the tuning months only (%s), then shown UNCHANGED on the held-out last 6 months; CE and PE judged separately." % (
         "%d series" % int(tu.sum())))
     for sd in (0, 1):
@@ -750,13 +825,18 @@ METHOD = (
     "  both expiries in the store are studied. The check compares each expiry with the next day's change in the summed futures OI of every",
     "  symbol present on both days: expiring contracts vanish, so the summed OI should drop then more than on any other day of the month.",
     "ENTRY / EXIT: the close of day 1, 2 or 3 (a share needs a full session that day - onsetstudy.prep's rules: previous day present, no",
-    "  split jump, listed in F&O). Exit at the close of the Monday of the expiry week (the market day before if that Monday is a holiday;",
-    "  never the expiry day itself). A trade with an unadjusted split / bonus between entry and exit is dropped.",
+    "  split jump, listed in NSE's F&O file). EXIT (desk decision): the close 4 MARKET days before the expiry day, Thursday and Tuesday",
+    "  expiries alike, holidays not counted (Tue 29 Dec 2026 -> Tue 22 Dec). A trade with an unadjusted split / bonus inside is dropped.",
+    "  A second check: an NSE trading day after a flagged expiry and on or before the scheduled last Thursday / Tuesday, or NIFTY's next",
+    "  day differing from NSE's, means a missing NIFTY minute day moved the calendar - the series ending and starting there are dropped.",
     "SIGNALS at the close of the entry day, from that day and earlier only. Prices on a log scale so the PE mirror is exact. Build-up: the",
-    "  price since the expiry close (day 0) and the share's OI since day 0 against the median OI change of all F&O shares that day (the",
-    "  expiry drop hits everyone; a share keeping more OI than the market is building). Rollover proxy: OI on day 1 / OI the day before the",
+    "  price since the expiry close (day 0) and the share's OI since the DAY-1 close against the median of all F&O shares over the same",
+    "  days - the expiry drop (day 0 -> day 1) is left out because it is the rollover's information; so day 1 has no build-up signal.",
+    "  OI unit changes (NSE's OI is not split-adjusted: OI 1.8x up / down on a day the price moved < 20%, or a split jump) switch that",
+    "  share's OI signals off from that day to the end of the series (never before it: no look-ahead) and keep that series' rollover",
+    "  out of later series' history. Rollover proxy: OI on day 1 / OI the day before the",
     "  expiry, against the share's own last 6 series, split into thirds across the shares of that series. Sector: median move of its shares",
-    "  over the previous series (expiry to expiry), ranked; top 3 of 9+ sectors (top third when fewer); breadth = share of members up.",
+    "  over the previous series (expiry to expiry; a share with a split inside it is left out), ranked; top 3 of 9+ sectors (top third when fewer); breadth = share of members up.",
     "  LOOSE sectors.json buckets ('other', 'misc', ...) get no sector signals. RSI(14) Wilder on daily closes; 20 / 50-day averages",
     "  (geometric); NIFTY against its 50-day average. No signals within %d rows after a split jump (the averages would mix units)." % SPLIT_LOOK,
     "OUTCOMES: move = (exit / entry - 1) for CE, (1 - exit / entry) for PE. MAE = the worst daily low (CE) / high (PE) after entry up to the",
@@ -792,9 +872,10 @@ def check():
     for c in chk:
         print("  expiry %s %s · next-day summed OI %s · %s" % (c["wd"], c["expiry"], f1(c["drop"], "%+.1f%%"), c["status"]))
     for s in SER:
-        print("  series %-8s day 1 %s · day 3 %s · exit %s (expiry %s)" % (s["label"], dday(O.CAL[s["e0"] + 1]),
-                                                                       dday(O.CAL[s["days"][2]]) if s["days"][2] >= 0 else "-",
-                                                                       dday(O.CAL[s["x"]]), dday(O.CAL[s["e1"]])))
+        print("  series %-8s day 1 %s · day 3 %s · exit %s (expiry %s)%s" % (s["label"], dday(O.CAL[s["e0"] + 1]),
+                                                                         dday(O.CAL[s["days"][2]]) if s["days"][2] >= 0 else "-",
+                                                                         dday(O.CAL[s["x"]]), dday(O.CAL[s["e1"]]),
+                                                                         ("  DROPPED - " + s["bad"]) if s["bad"] else ""))
     print("NSE daily futures file: %d days · %d symbols%s" % (len(O.FODAYS), len(O.FOD), (" · renamed: " + ", ".join(O.ALIAS_USED)) if O.ALIAS_USED else ""))
     secs = [k for k in O.SEC if not k.startswith("_")]
     print("sectors: %d usable (%s)%s" % (len(secs), ", ".join("%s %d" % (k, len(O.SEC[k])) for k in sorted(secs)),
