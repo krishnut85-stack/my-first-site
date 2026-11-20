@@ -1,0 +1,79 @@
+2026-11-16: share-matched items 150 - kept 132, dropped 18 {'N1': 12, 'N3': 1, 'N4': 2, 'N5': 3}
+    ADANIPOWER | Indian billionaire Gautam Adani's group tipped for 23% earnings growth by Jefferies | N1 'Adani' is a common / short word - needs 'Adani Power' or the ticker ADANIPOWER
+    ADANIENT | Indian billionaire Gautam Adani's group tipped for 23% earnings growth by Jefferies | N1 'Adani' is a common / short word - needs 'Adani Enterprises' or the ticker ADANIENT
+    WAAREEENER | Vikram Solar vs Premier vs Waaree vs Suzlon: Green energy stocks under pressure - What do  | N4 WAAREEENER appears as the counterparty of another company's news
+    RECLTD | Ondo REC warns Muslims against selling votes ahead of 2027 elections | N1 'REC' is a common / short word - needs 'REC Limited' or the ticker RECLTD
+    NESTLEIND | Top 3 Stocks to Buy: Airtel, Bajaj Finance, Nestle India | N5 a strategy note / basket, not one company's news
+    BAJFINANCE | Top 3 stocks to buy: Bharti Airtel, Bajaj Finance, Nestle by Sumeet Bagadia | Targets, sto | N5 a strategy note / basket, not one company's news
+    WAAREEENER | Waaree ESS starts commercial production at 5.15 GWh battery pack line in Gujarat | N3 'Waaree ESS' is a different company from Waaree Energies Limited
+    ADANIENT | Jefferies bullish on Adani Group; initiates coverage with ‘Buy’ ratings on 6 stocks, sees  | N1 'Adani' is a common / short word - needs 'Adani Enterprises' or the ticker ADANIENT
+    TITAN | The Sky Today on Monday, November 16: Titan south, Rhea north | N1 'Titan' is a common / short word - needs 'Titan Company' or the ticker TITAN
+    RECLTD | How an Ottawa man played 365 rec sports games in less than a year | N1 'REC' is a common / short word - needs 'REC Limited' or the ticker RECLTD
+    KOTAKBANK | Bank Stocks at 52-Week High: Kotak, PNB and Union Bank | N1 'Kotak' is a common / short word - needs 'Kotak Mahindra' or the ticker KOTAKBANK
+    SUZLON | Vikram Solar vs Premier vs Waaree vs Suzlon: Green energy stocks under pressure - What do  | N4 SUZLON appears as the counterparty of another company's news
+    RECLTD | 2027: Fmr INEC REC Urges President Trump To Prevent Rigging | N1 'REC' is a common / short word - needs 'REC Limited' or the ticker RECLTD
+    PREMIERENE | Vikram Solar vs Premier vs Waaree vs Suzlon: Green energy stocks under pressure - What do  | N1 'Premier' is a common / short word - needs 'Premier Energies' or the ticker PREMIERENE
+    MUTHOOTFIN | Muthoot FinCorp Q2 profit doubles to ₹779 crore on better asset quality | N1 'Muthoot' is a common / short word - needs 'Muthoot Finance' or the ticker MUTHOOTFIN
+    KEI | Former Princess Mako, husband Kei arrive in New York for new life | N1 'KEI' is a common / short word - needs 'KEI Industries' or the ticker KEI
+    BAJFINANCE | Top 3 Stocks to Buy: Airtel, Bajaj Finance, Nestle India | N5 a strategy note / basket, not one company's news
+    ADANIPORTS | Adani Group stocks: Jefferies sees $51 billion capex over FY27–FY29; check how shares are  | N1 'Adani' is a common / short word - needs 'Adani Ports' or the ticker ADANIPORTS
+2026-11-18: share-matched items 149 - kept 111, dropped 38 {'N1': 30, 'N4': 1, 'N5': 6, 'N6': 1}
+    WIPRO | From Wipro To Organic Farming: How This Techie Built Akshayakalpa Into A Rs 720-Crore Busi | N6 a personal story, not company news
+    BAJFINANCE | Soket AI Gets $4 Million From Bajaj Finance, Pennant | N4 BAJFINANCE appears as the counterparty of another company's news
+    TRENT | Severn Trent H1 2026-27 slides: 17.6% EPS growth, £1bn capex deployed By Investing.com | N1 'Trent' is a common / short word - needs 'Trent Limited' or the ticker TRENT
+    TRENT | Severn Trent H1 Earnings Call Highlights | N1 'Trent' is a common / short word - needs 'Trent Limited' or the ticker TRENT
+    KOTAKBANK | The comeback club: ICICI Bank, Kotak Mahindra Bank, Bajaj Finance and Adani Port recovered | N5 a list of several companies
+    KEI | Scion by Toyota KEI-01 | N1 the headline does not name KEI (KEI Industries Limited)
+    KAYNES | Stocks to Watch Today, Nov 17: Pace’s ₹2,691-Cr Win, BSE’s US Nod, Kaynes’ Profit Slump | N5 a strategy note / basket, not one company's news
+    JINDALSTEL | India to have adequate coking coal as Europe, US move away from blast furnaces: Naveen Jin | N1 'JINDAL' is a common / short word - needs 'JINDAL STEEL' or the ticker JINDALSTEL
+    ICICIBANK | The comeback club: ICICI Bank, Kotak Mahindra Bank, Bajaj Finance and Adani Port recovered | N5 a list of several companies
+    BAJFINANCE | The comeback club: ICICI Bank, Kotak Mahindra Bank, Bajaj Finance and Adani Port recovered | N5 a list of several companies
+    ADANIPORTS | The comeback club: ICICI Bank, Kotak Mahindra Bank, Bajaj Finance and Adani Port recovered | N5 a list of several companies
+    TRENT | Severn Trent H1 2027 Earnings Call Is Live | N1 'Trent' is a common / short word - needs 'Trent Limited' or the ticker TRENT
+    BANKBARODA | Nifty PSU Bank index up 0.5%; SBI rises more than 2% | NIFTY PSU Bank Top Stock Gainers (I | N1 'Bank' is a common / short word - needs 'Bank Baroda' or the ticker BANKBARODA
+    BAJFINANCE | Goldman Sachs sees RBI raising repo rate to 6.25% by mid-2027, India growth slowing to 7.2 | N1 the headline does not name BAJFINANCE (Bajaj Finance Limited)
+    KOTAKBANK | Goldman Sachs sees RBI raising repo rate to 6.25% by mid-2027, India growth slowing to 7.2 | N1 the headline does not name KOTAKBANK (Kotak Mahindra Bank Limited)
+    AXISBANK | Goldman Sachs sees RBI raising repo rate to 6.25% by mid-2027, India growth slowing to 7.2 | N1 the headline does not name AXISBANK (Axis Bank Limited)
+    SBIN | Goldman Sachs sees RBI raising repo rate to 6.25% by mid-2027, India growth slowing to 7.2 | N1 the headline does not name SBIN (State Bank of India)
+    ICICIBANK | Goldman Sachs sees RBI raising repo rate to 6.25% by mid-2027, India growth slowing to 7.2 | N1 the headline does not name ICICIBANK (ICICI Bank Limited)
+    HDFCBANK | Goldman Sachs sees RBI raising repo rate to 6.25% by mid-2027, India growth slowing to 7.2 | N1 the headline does not name HDFCBANK (HDFC Bank Limited)
+    BAJAJ-AUTO | Watch | Modified Bajaj Auto steal the show at Asean Summit in Manila | N1 the headline does not name BAJAJ-AUTO (Bajaj Auto Limited)
+    APLAPOLLO | Metal stocks to buy! APL Apollo Tubes, Hindalco: Axis Sec lists 2 conviction picks post Q2 | N5 a strategy note / basket, not one company's news
+    TRENT | Severn Trent plc Declares an Interim Dividend for the Financial Year Ending March 31, 2027 | N1 'Trent' is a common / short word - needs 'Trent Limited' or the ticker TRENT
+    TRENT | Severn Trent posts 13% profit growth on higher revenue By Investing.com | N1 'Trent' is a common / short word - needs 'Trent Limited' or the ticker TRENT
+    TITAN | Global Lithium Resources Scheme Booklet Registered with ASIC for Titan Australia Mining Ac | N1 'Titan' is a common / short word - needs 'Titan Company' or the ticker TITAN
+    TITAN | Nifty Consumer Durables index slides 3%; Titan, Kalyan Jewellers crack 5% | N1 'Titan' is a common / short word - needs 'Titan Company' or the ticker TITAN
+    ONGC | ICICI Securities On CNBCTV18 | New Norms Could Also Benefit ONGC, As Its Share In JV Is Ex | N1 the headline does not name ONGC (Oil & Natural Gas Corporation Limited)
+    360ONE | Government reviews LTCG, STT cut ahead of Budget 2027, No proposal to hike equity derivati | N1 the headline does not name 360ONE (360 ONE WAM LIMITED)
+    MOTILALOFS | Government reviews LTCG, STT cut ahead of Budget 2027, No proposal to hike equity derivati | N1 the headline does not name MOTILALOFS (Motilal Oswal Financial Services Limited)
+    MCX | Government reviews LTCG, STT cut ahead of Budget 2027, No proposal to hike equity derivati | N1 the headline does not name MCX (Multi Commodity Exchange of India Limited)
+    CDSL | Government reviews LTCG, STT cut ahead of Budget 2027, No proposal to hike equity derivati | N1 the headline does not name CDSL (Central Depository Services (India) Limited)
+    BSE | Government reviews LTCG, STT cut ahead of Budget 2027, No proposal to hike equity derivati | N1 the headline does not name BSE (BSE Limited)
+    ANGELONE | Government reviews LTCG, STT cut ahead of Budget 2027, No proposal to hike equity derivati | N1 the headline does not name ANGELONE (Angel One Limited)
+    BSE | Stock alert: Most active stocks on Nifty 50 in today's trade | The most active stocks on N | N1 the headline does not name BSE (BSE Limited)
+    360ONE | No MTF Decision Yet, Longer Market Hours Unlikely: SEBI Chair Tuhin Kanta Pandey | N1 the headline does not name 360ONE (360 ONE WAM LIMITED)
+    MOTILALOFS | No MTF Decision Yet, Longer Market Hours Unlikely: SEBI Chair Tuhin Kanta Pandey | N1 the headline does not name MOTILALOFS (Motilal Oswal Financial Services Limited)
+    MCX | No MTF Decision Yet, Longer Market Hours Unlikely: SEBI Chair Tuhin Kanta Pandey | N1 the headline does not name MCX (Multi Commodity Exchange of India Limited)
+    CDSL | No MTF Decision Yet, Longer Market Hours Unlikely: SEBI Chair Tuhin Kanta Pandey | N1 the headline does not name CDSL (Central Depository Services (India) Limited)
+    BSE | No MTF Decision Yet, Longer Market Hours Unlikely: SEBI Chair Tuhin Kanta Pandey | N1 the headline does not name BSE (BSE Limited)
+2026-11-19: share-matched items 150 - kept 130, dropped 20 {'N1': 13, 'N3': 1, 'N4': 2, 'N5': 3, 'N6': 1}
+    HDFCBANK | Nifty Bank hits new hight: MOFSL picks ICICI Bank, HDFC Bank, Kotak Bank, SBI, AU Bank as  | N5 a strategy note / basket, not one company's news
+    KEI | Citizen's new limited-edition Kei automatic features a standout textured pink dial | N1 'KEI' is a common / short word - needs 'KEI Industries' or the ticker KEI
+    KEI | Citizen’s limited-edition Kei automatic features a textured pink dial | N1 'KEI' is a common / short word - needs 'KEI Industries' or the ticker KEI
+    WAAREEENER | Waaree Transpower Secures INR 100 Crore-Plus Transformer Order from NTPC | N3 'Waaree Transpower' is a different company from Waaree Energies Limited
+    M&M | SML Mahindra rights issue: Price, record date and eligibility details | N1 'Mahindra' is a common / short word - needs 'Mahindra Mahindra' or the ticker M&M
+    MUTHOOTFIN | Muthoot Microfin board approves restated financials for Muthoot Fincorp IPO | N1 'Muthoot' is a common / short word - needs 'Muthoot Finance' or the ticker MUTHOOTFIN
+    BHARATFORG | Stocks To Watch Today: Genus Power, Sky Gold Diamonds, Phoenix Mills And Bharat Forge | N5 a strategy note / basket, not one company's news
+    BHARATFORG | Top stocks to watch today: Coal India, Jio Financial, NALCO, Bharat Forge, Sky Gold, Dalmi | N5 a strategy note / basket, not one company's news
+    BDL | Defence shares rise | Defence-linked companies have also gained through the session, with  | N1 the headline does not name BDL (Bharat Dynamics Limited)
+    ADANIENSOL | ORDER: Press Release — “The Pirpainti transmission scheme will create a robust evacuation  | N1 the headline does not name ADANIENSOL (Adani Energy Solutions Limited)
+    GAIL | Vectras Enprocon Secures 139.3 Million Rupees Pipeline Construction Order From Gail (India | N4 GAIL appears as the counterparty of another company's news
+    INFY | Nagole Tree Fall: Newly Married Infosys Techie Killed | N6 a personal story, not company news
+    BSE | Indian Renewable Energy Development Agency shares surge 6.83% in today's trade | today's s | N1 the headline does not name BSE (BSE Limited)
+    LT | Markets@2 | Sensex up 600 points, Nifty at 25400 | The Sensex was up 608.28 points or 0.74 | N1 the headline does not name LT (Larsen & Toubro Limited)
+    TRENT | Trent Perry keeps No. 7 UCLA from going splat, avoiding massive upset | N1 'Trent' is a common / short word - needs 'Trent Limited' or the ticker TRENT
+    KALYANKJIL | Stock alert: Most active stocks on Nifty Midcap 150 in today's trade | Stock NamePrice (Rs | N1 the headline does not name KALYANKJIL (Kalyan Jewellers India Limited)
+    INDIANB | South Indian Bank (NSE: SOUTHBANK) Raises One-Year MCLR to 9.55% | N1 'Bank' is a common / short word - needs 'Bank' or the ticker INDIANB
+    ALKEM | REG: General Updates — 19th November, 2026 To, The Corporate Relationship Department BSE L | N1 the headline does not name ALKEM (Alkem Laboratories Limited)
+    ITC | IHCL vs Leela vs ITC Hotels: Jefferies top hotel picks as October room revenue jumps 26% | N4 ITC appears as the counterparty of another company's news
+    KALYANKJIL | Gold Rates Live Today: Gold rate in Delhi today, November 19, 2026 | 22K gold jewellery pr | N1 the headline does not name KALYANKJIL (Kalyan Jewellers India Limited)
