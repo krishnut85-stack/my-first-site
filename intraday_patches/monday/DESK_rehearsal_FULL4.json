@@ -1,0 +1,273 @@
+{
+ "run": "FULL4",
+ "layer": "full",
+ "days": [
+  "2026-11-19"
+ ],
+ "made_ist": "2026-11-21 01:45:19",
+ "edge": {
+  "2026-11-19": {
+   "line": "EDGE 2026-11-19 2026-11-19: 17 names a day (4 knowledge-driven) \u00b7 TOP-5 by the analyst's own rank: >=1% 0/4 0% vs 19% lift 0.0, >=2% 0/4 0% vs 7% lift 0.0 \u00b7 all names >=1% 6/17 35% vs 26% lift 1.35, >=2% 0/17 0% vs 9% lift 0.0 \u00b7 knowledge >=2% 0/4 0% vs 7% lift 0.0 \u00b7 all names >=2% to the next close 4/17 24% vs 20% lift 1.18 \u00b7 old system >=2% 33/274 12% vs 10% lift 1.25 (274 names)",
+   "names_per_day": {
+    "analyst ideas": 4,
+    "prediction loop (lists, fired movers)": 13,
+    "ALL": 17,
+    "OLD system": 274,
+    "INDEX": 0
+   },
+   "top5_headline": {
+    "by": "list order",
+    "names": [
+     "MUTHOOTFIN PE 19:47",
+     "CIPLA CE 19:47",
+     "POLYCAB PE 19:47",
+     "HINDZINC PE 19:47"
+    ],
+    "n": 4,
+    "hit1_close": 0,
+    "hit2_close": 0,
+    "proof": "NOT PROVEN (n = 4)",
+    "1_close": {
+     "n": 4,
+     "hits": 0,
+     "hit_rate": 0.0,
+     "base_rate": 0.186,
+     "lift": 0.0
+    },
+    "2_close": {
+     "n": 4,
+     "hits": 0,
+     "hit_rate": 0.0,
+     "base_rate": 0.068,
+     "lift": 0.0
+    },
+    "1_next": {
+     "n": 4,
+     "hits": 2,
+     "hit_rate": 0.5,
+     "base_rate": 0.226,
+     "lift": 2.21
+    },
+    "2_next": {
+     "n": 4,
+     "hits": 1,
+     "hit_rate": 0.25,
+     "base_rate": 0.136,
+     "lift": 1.83
+    },
+    "whose": "the analyst's own rank"
+   },
+   "by_side": {
+    "CE": {
+     "names": 8,
+     "analyst_names": 1,
+     "top5": {
+      "by": "list order",
+      "names": [
+       "CIPLA CE 19:47",
+       "KAYNES CE 19:45",
+       "ASHOKLEY CE 09:34",
+       "MOTHERSON CE 10:23",
+       "KALYANKJIL CE 10:07"
+      ],
+      "n": 5,
+      "hit1_close": 3,
+      "hit2_close": 0,
+      "proof": "NOT PROVEN (n = 5)",
+      "1_close": {
+       "n": 5,
+       "hits": 3,
+       "hit_rate": 0.6,
+       "base_rate": 0.507,
+       "lift": 1.18
+      },
+      "2_close": {
+       "n": 5,
+       "hits": 0,
+       "hit_rate": 0.0,
+       "base_rate": 0.206,
+       "lift": 0.0
+      },
+      "1_next": {
+       "n": 5,
+       "hits": 1,
+       "hit_rate": 0.2,
+       "base_rate": 0.598,
+       "lift": 0.33
+      },
+      "2_next": {
+       "n": 5,
+       "hits": 1,
+       "hit_rate": 0.2,
+       "base_rate": 0.397,
+       "lift": 0.5
+      }
+     }
+    },
+    "PE": {
+     "names": 9,
+     "analyst_names": 3,
+     "top5": {
+      "by": "list order",
+      "names": [
+       "POWERINDIA PE 19:45",
+       "MUTHOOTFIN PE 19:47",
+       "360ONE PE 19:45",
+       "POLYCAB PE 19:47",
+       "MOTILALOFS PE 19:45"
+      ],
+      "n": 5,
+      "hit1_close": 2,
+      "hit2_close": 0,
+      "proof": "NOT PROVEN (n = 5)",
+      "1_close": {
+       "n": 5,
+       "hits": 2,
+       "hit_rate": 0.4,
+       "base_rate": 0.064,
+       "lift": 6.23
+      },
+      "2_close": {
+       "n": 5,
+       "hits": 0,
+       "hit_rate": 0.0,
+       "base_rate": 0.005,
+       "lift": 0.0
+      },
+      "1_next": {
+       "n": 5,
+       "hits": 3,
+       "hit_rate": 0.6,
+       "base_rate": 0.101,
+       "lift": 5.95
+      },
+      "2_next": {
+       "n": 5,
+       "hits": 2,
+       "hit_rate": 0.4,
+       "base_rate": 0.037,
+       "lift": 10.9
+      }
+     }
+    }
+   },
+   "error": null
+  }
+ },
+ "budget_days": [
+  {
+   "budget_day": "2026-11-17 15:40 -> 2026-11-18 15:40",
+   "session": "2026-11-18",
+   "usd": 0.003,
+   "calls": 2,
+   "refused": 0,
+   "by": {
+    "READ": 0.003
+   },
+   "steps": {},
+   "cap": 8.0,
+   "floors": [
+    [
+     "19:45",
+     1.2,
+     0.0
+    ],
+    [
+     "22:45",
+     0.2,
+     0.0
+    ],
+    [
+     "07:15",
+     0.6,
+     0.0
+    ],
+    [
+     "09:08",
+     0.6,
+     0.0
+    ]
+   ],
+   "brief_cost": {},
+   "live_by_hour": {},
+   "live_by_caller": {}
+  },
+  {
+   "budget_day": "2026-11-18 15:40 -> 2026-11-19 15:40",
+   "session": "2026-11-19",
+   "usd": 5.823,
+   "calls": 337,
+   "refused": 8,
+   "by": {
+    "LIVE": 1.071,
+    "MEET": 2.42,
+    "READ": 0.401,
+    "SEATS": 1.932
+   },
+   "steps": {
+    "first refusal": "2026-11-18 19:47 (brief floor: the 19:45 brief has $0.65 of its $1.10 (incl. what earlier briefs left) and $)",
+    "MEET bucket full": "2026-11-19 09:10",
+    "LEAN (combined seat calls)": "2026-11-19 09:16 - SEATS $1.43"
+   },
+   "cap": 8.0,
+   "brief_cost": {
+    "19:45": 1.439,
+    "22:45": 0.411,
+    "07:15": 0.956,
+    "09:08": 1.547
+   },
+   "live_by_hour": {
+    "09:00": 1.071,
+    "10:00": 0.0,
+    "11:00": 0.0,
+    "12:00": 0.0,
+    "13:00": 0.0,
+    "14:00": 0.0
+   },
+   "live_by_caller": {
+    "H head": {
+     "calls": 12,
+     "usd": 0.536,
+     "refused": 0
+    },
+    "36 seat": {
+     "calls": 8,
+     "usd": 0.535,
+     "refused": 0
+    }
+   },
+   "floors": [
+    [
+     "19:45",
+     1.2,
+     0.881
+    ],
+    [
+     "22:45",
+     0.2,
+     0.354
+    ],
+    [
+     "07:15",
+     0.6,
+     0.342
+    ],
+    [
+     "09:08",
+     0.6,
+     0.844
+    ]
+   ]
+  }
+ ],
+ "replay_tick_min": 15,
+ "rules": "20nov",
+ "buckets": {
+  "MEET": 1.8,
+  "LIVE": 1.5,
+  "READ": 1.6,
+  "SEATS": 2.8,
+  "ASK": 0.3
+ },
+ "sim_cost": false
+}

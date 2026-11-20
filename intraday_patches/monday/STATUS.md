@@ -236,3 +236,10 @@ Last update: 20:55 IST
   - Desk-web suite re-run 144 / 0. No server change; girtrader.com/login 0.04 s. Proof: D_bars_data_missing.md / .json, D_bars_shots/ (P&L masked).
   - Limit: the old-price check uses the time the price first appeared in gir-preview (exact per-share last-trade time would need a server change).
   - Seen on the shot: on the weekend the footer reads "desk OFF · head analyst not running (starting)" while the desk is on and between briefs. Wording to fix: "desk ON · next brief Sun 19:45".
+- 01:45 - REHEARSAL 19 Nov DONE (FULL4, real brains, the 22:20 rules; recordings partial: TV from 19 Nov, news reader from the 19 Nov evening, v2 prices from 11:40 with the history minute store for the morning). $5.84. All four briefs delivered (19:45 / 22:45 / 07:15 / 09:08). The AI was REFUSED from 10:11 virtual (credit exhausted, row above), so the live session after 10:11 ran rules only. Re-scored with the audited scorer (same numbers).
+  - HEAD IDEAS vs NSE (previous close -> close): PE MUTHOOTFIN -0.83%, CE CIPLA +0.11%, PE POLYCAB +3.32% (wrong side), PE HINDZINC +0.38% = 0 of 4 by >= 1% (up-day base: 49% of F&O shares rose >= 1%; 6% fell >= 1%).
+  - All 17 names: >= 1% the named way 35% vs 26% (lift 1.35), >= 2% 0 of 17 vs 9%; to the next close >= 2% 24% vs 20%. The old system that day: >= 2% 12% vs 10% (lift 1.25).
+- 01:45 - REHEARSAL SERIES CLOSED: total real spend FULL1 $3.64 + FULL2 $5.68 + FULL3 $7.11 + FULL4 $5.84 = $22.28 (within the $24 hard stop; about $1.72 left for the 20 Nov morning re-run once credit is back).
+  - Head ideas over the three days: 18 Nov 1 of 3, 19 Nov 0 of 4, 20 Nov 1 of 6 moved >= 1% the named way = 2 of 13.
+  - NO EDGE SHOWN on any day (small samples, NOT PROVEN either way). The main fault read by the desk: the head missed the day's two big knowable stories on 20 Nov (gold low, FII into private banks), and the 09:08 brief was lost.
+  - Post-mortems for 18 and 20 Nov written (DESK_postmortem_2026-11-18.md / -20.md); 19 Nov follows.
