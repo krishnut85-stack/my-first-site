@@ -16,6 +16,9 @@ members (R49 basis).
   means - the desk names the group with him in mind and scores it both ways.
 - His photo, 07:45: Trade Brains, 9 h old: "Aerospace and defence stock jumps 4% after FIIs and DIIs buy 2.51% stake in the company
   via bulk..." (company not visible in the photo; the server finds it in Thursday's NSE bulk / block deal file). Score that share too.
+- His reason, 08:05: "Yesterday I was hearing on CNBC TV that the government is expecting to increase the capex 20% for defence,
+  and today I see foreign institutions increasing investments in defence stocks." Source chain to keep: CNBC-TV18 19 Nov (TV) ->
+  FII + DII bulk deal (NSE file) -> his read. Score the chain as one story thread in EVENT_MEMORY.
 - Context the desk already gave for today (WATCH_20NOV_us_night.md): US fell ~1.5-2% on rates; IT leaned PE, metals PE, banks CE only
   if Bank Nifty holds. His read (defence and electronics UP) is scored against that - both are kept, and the better one is learned.
 
