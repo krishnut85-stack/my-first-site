@@ -1,6 +1,6 @@
 # SUMMITS AND MEETINGS - a standing source for the desk (20 Nov 2026)
 
-The trader, 20 Nov 21:30: "All these summits and meetings are very critical to study the market news and trend."
+The trader, 20 Nov 20:18: "All these summits and meetings are very critical to study the market news and trend."
 Until now a summit reached the desk only if a wire or TV line happened to carry it (the CII Financing Summit read on 20 Nov was done
 by hand). From now on summits and meetings are a STANDING SOURCE: put on a calendar before the day, read live on the day, logged
 after it, and scored like every other source.

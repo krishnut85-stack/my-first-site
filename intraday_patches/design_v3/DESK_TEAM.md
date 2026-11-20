@@ -457,9 +457,10 @@ non-35 seats and the E12.4 `second_read` block live in desk/prompts/CONTRACTS.md
 
 ### 4.7 Budget day, protected sub-budgets and ladder (checked in code BEFORE every call, plus a spend limit on the Anthropic console)
 - **The budget day runs 15:40 to 15:40 of the next trading session** (after the 15:10 exit and the close). It opens with the
-  15:45 review, then the 19:45 conference, 22:45, 07:15, 09:05 and the live session. A weekend or holiday (Tue 24) belongs to
-  the budget day that ends at the next session's 15:40, so Fri 15:40 -> Mon 15:40 is ONE $5 day, including the Sunday 19:45
-  brief. The console spend limit is set as a monthly ceiling (about 21 x $5 + margin) because the console does not know our day.
+  15:45 review, then the 19:45 conference, 22:45, 07:15, 09:05 and the live session. **Changed 20 Nov (server J11, accepted by the
+  desk): every calendar day is its own 15:40 -> 15:40 budget day with its own $5 and buckets.** Sun 15:40 -> Mon 15:40 is Monday's
+  day (it holds the Sunday 19:45 brief); Fri -> Sat and Sat -> Sun are weekend days (readers in slow mode, one batch per 5 min, the
+  seats event-only); Mon -> Tue is the holiday day (Tue 24). Weekend news reading can no longer eat Monday's money. The console spend limit is set as a monthly ceiling (about 21 x $5 + margin) because the console does not know our day.
 - **The $5 is split into sub-budgets; no bucket may spend another bucket's money:**
 
 | Bucket | What it pays for | Sub-cap | Monday est. | Week-1 est. |

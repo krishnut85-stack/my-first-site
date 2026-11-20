@@ -1,6 +1,17 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
-## 20 Nov 22:00 IST - on the 20:13 shadow (probe 7/7, shadow 10 PASS) and your question "does the 40-seat roster fit $5?"
+## 20 Nov 20:28 IST (hourly) - verdicts
+(Clock note: the four entries below were first stamped 21:15-22:00 by mistake; corrected to their real times 20:12-20:24.)
+- **J11 budget days split per calendar day (your 19:49 change): ACCEPTED.** Each 15:40 -> 15:40 day has its own $5 and buckets;
+  Sun 15:40 -> Mon 15:40 = Monday's day; weekend days in slow mode; Tue 24 = holiday day. DESK_TEAM 4.7 updated to match.
+- **Head gated until the prompts are reviewed: ACCEPTED** - the prompts are now reviewed and READY (20:12 entry). Un-gate the head
+  once the LEAN shadow passes.
+- **20:13 shadow (probe 7/7, 10 PASS): fixes accepted as sent;** the answers are in the 20:24 entry (lean shape, separate test cap,
+  timeouts, no-digit keys, seat 8 out). No newer push since 20:13 - next: the LEAN shadow, then the $15 rehearsal.
+- **Still open for Monday (MONDAY_READY):** J6 silence the old senders (Sunday), the Kite auto-login dry run, the ring test, the
+  Sunday 19:45 first brief, the minimal page items 1-4 and 8 (DESK_WEB_CHANGES).
+
+## 20 Nov 20:24 IST - on the 20:13 shadow (probe 7/7, shadow 10 PASS) and your question "does the 40-seat roster fit $5?"
 - **Answer: NO, 40 separate seat calls do not fit $5 - by design.** Monday runs the LEAN desk: LEAN_COMBINED.md = 5 combined calls
   (GLOBAL seats 1-4, 6, 7; FLOWS with 5 and 9; FINANCIALS; INDUSTRIALS-METALS-ENERGY-INFRA; CONSUMER-IT-PHARMA-AUTO) on the SEATS
   bucket, plus the readers (READ), 35 + 36 + head (MEET), second reads (LIVE). The other seats are prompts only on Monday; they join
@@ -16,7 +27,7 @@
 - **Readers:** JSON-in-text on every path (batch too), validated in code - correct.
 - When the lean shadow passes: run the $15 rehearsal on 18 / 19 / 20 Nov and score it on EDGE.
 
-## 20 Nov 21:45 IST - NEW STANDING SOURCE: summits and meetings (design_v3/SUMMITS.md)
+## 20 Nov 20:20 IST - NEW STANDING SOURCE: summits and meetings (design_v3/SUMMITS.md)
 The trader: "All these summits and meetings are very critical to study the market news and trend." Summits (chambers, sector bodies,
 broker investor conferences, company days, regulators / ministers on a stage, RBI MPC / SEBI board / GST Council, global meetings)
 are now a standing desk source: calendar before, live reading on the day, EVENT_MEMORY after, scored by speaker type and line type.
@@ -25,7 +36,7 @@ Seat prompts 34 / 35 / 37 updated. SUMMIT_CALENDAR.md (dates + past statements w
 stream URL per event in the STT recorder (2), the reader tags (3), the scorecard grouping (4), and the one-off backfill pricing of
 the past statements after 15:35 (5, code only, no AI cost). No new page.
 
-## 20 Nov 21:25 IST - on the 19:58 shadow ("compiled grammar too large") - with the READY prompts
+## 20 Nov 20:16 IST - on the 19:58 shadow ("compiled grammar too large") - with the READY prompts
 - **Your second fix is right: do NOT send the full CONTRACTS schema to the API.** Per call, send only a SMALL API schema: the seat card
   core (seat, kind, headline, strength, claims, winners, losers, evidence, new_since_last, expires, proof, linked_card_ids, links) plus
   that ONE seat's own block from `$defs` - no `allOf` / `if` / `then`, no other seats' blocks, keep `enum`s short. If one family is
@@ -41,7 +52,7 @@ the past statements after 15:35 (5, code only, no AI cost). No new page.
 - **Bare digits in text:** keep rejecting, but on the retry quote the offending words back to the model ("27, 34") so it fixes them.
 - Seat 15 "no reader card": run the readers first in the same shadow, as your note says. Then the $15 rehearsal.
 
-## 20 Nov 21:15 IST - SEAT PROMPTS READY: switch the AI seats on (intraday_patches/desk/prompts/)
+## 20 Nov 20:12 IST - SEAT PROMPTS READY: switch the AI seats on (intraday_patches/desk/prompts/)
 All 12 reviewer problems are fixed. CONTRACTS.md now has three schemas (seat card, head output, combined-call envelope), all objects
 closed. Every one of the 55 example cards in the prompts validates (jsonschema Draft 2020-12, 0 errors), and 13 deliberately broken
 cards are rejected as expected. Wire these, in order:
