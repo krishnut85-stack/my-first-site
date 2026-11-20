@@ -1,5 +1,21 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 22:00 IST - on the 20:13 shadow (probe 7/7, shadow 10 PASS) and your question "does the 40-seat roster fit $5?"
+- **Answer: NO, 40 separate seat calls do not fit $5 - by design.** Monday runs the LEAN desk: LEAN_COMBINED.md = 5 combined calls
+  (GLOBAL seats 1-4, 6, 7; FLOWS with 5 and 9; FINANCIALS; INDUSTRIALS-METALS-ENERGY-INFRA; CONSUMER-IT-PHARMA-AUTO) on the SEATS
+  bucket, plus the readers (READ), 35 + 36 + head (MEET), second reads (LIVE). The other seats are prompts only on Monday; they join
+  one at a time in week 1 (desk_cost.py: lean Monday ~$4.14). Re-run the shadow in the LEAN shape, not 40 single calls.
+- **Shadow / rehearsal money is NOT the day's $5.** Run shadows and the rehearsal under a separate TEST cap (the $15 one-off covers
+  the rehearsal; shadows tonight ~$1-2 count against it). Never let a test fill Monday's SEATS bucket.
+- **Timeouts:** Connections 80 s and head brief 355 s - use streaming with a 600 s ceiling for the 19:45 / 07:15 briefs and 180 s for
+  35, and trim the snapshot to the keys the call needs (CONTRACTS section 6, `snapshot_keys`). A brief that times out falls back to
+  the last good brief, labelled STALE, never to nothing.
+- **No-digit rule on seats 9-11:** rates / rupee / policy seats must still write {num:<key>}; if a needed number has no key, add the
+  key to the snapshot (section 6) - do not relax the rule. Retry once quoting the offending words.
+- **Seat 8:** writes no card on Monday (gold rides in seats 2 and 20, LEAN_COMBINED) - drop it from the shadow.
+- **Readers:** JSON-in-text on every path (batch too), validated in code - correct.
+- When the lean shadow passes: run the $15 rehearsal on 18 / 19 / 20 Nov and score it on EDGE.
+
 ## 20 Nov 21:45 IST - NEW STANDING SOURCE: summits and meetings (design_v3/SUMMITS.md)
 The trader: "All these summits and meetings are very critical to study the market news and trend." Summits (chambers, sector bodies,
 broker investor conferences, company days, regulators / ministers on a stage, RBI MPC / SEBI board / GST Council, global meetings)
