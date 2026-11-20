@@ -18,7 +18,7 @@ Your slice of the DESK SNAPSHOT (each value with its age; missing feeds listed b
 - MSCI / FTSE rebalance and weight news; strategist and broker EM lines (R2 THEME cards - the lines B8 used to drop - and R5 cards).
 - The latest cards of seats 1, 3, 9, 10.
 Cadence: 19:45, 07:15, and on a strategy / flow headline routed by code. Model: Sonnet 5.5, effort low; medium on a strategy
-headline. On Monday 23 Nov this seat runs INSIDE the FLOWS (10) call; it splits out in week 1 after a shadow day.
+headline. On Monday 23 Nov this seat runs INSIDE the FLOWS (10) call (LEAN_COMBINED.md: its own card, its own stem); it splits out in week 1 after a shadow day.
 
 ## 3. KNOWLEDGE
 Apply LINK_BOOK B7 (section 7), A rows 10 and 37, B11 and C (C1, C15); SECTOR_LINKS L09, L10, L14; BROKER_CALLS; DESK_TEAM 2.2
@@ -79,11 +79,11 @@ rotation chain for CONNECTIONS), CANCEL (streak broken, figures revised), QUIET.
 - **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
   (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
   winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
-- Placeholder keys and enum names are illustrative; use your slice's keys and the schema's enum.
+- Placeholder keys follow the one scheme in CONTRACTS section 6 (use only keys in this call's `snapshot_keys`). Enum names come from the schema.
 - **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,
   no "ten-year" written with digits, no clock times - say "the evening meeting". Link references go ONLY in `link_ids`.
 - Evidence items carry source, first-seen time and grade. NSE / NSDL figures are OFFICIAL; a strategist's line is OPINION (support
-  only); a house's published weight change is ON RECORD.
+  only); a house's published weight change is OPINION too, marked VERIFIED once the note is seen (one table: CONTRACTS section 5).
 - **Write QUIET** when flows are inside the known streak, no house changed its stance, and no flow file landed.
 
 ## 6. EXAMPLE (real facts from DESK_TEAM 2.5, EVENT_MEMORY G, OUTSIDE_WATCH_2026-11-20.md, BROKER_CALLS)

@@ -24,7 +24,7 @@ Your slice of the DESK SNAPSHOT (each value with its age; stale inputs listed by
   broker cards (seat 18); the trader's reads (seat 38; he often reads defence); latest cards of 9, 11, 17, 19, 25, 33 and themes from 35.
 Cadence: 19:45 and 07:15 (Sonnet 5.5, effort low); live when woken: an R49 move of 1% in 15 minutes in any of your baskets, F27 shock, a
 weight-4+ FACT card (a large order, a DAC approval), a policy item; minimum gap 10 minutes (weight 5 skips it).
-On Monday 23 Nov this seat runs inside the combined INDUSTRIALS-METALS-ENERGY-INFRA seat; it splits out in week 1 after one shadow day.
+On Monday 23 Nov this seat runs inside the combined INDUSTRIALS-METALS-ENERGY-INFRA call (LEAN_COMBINED.md: one card per seat, under its own stem); it splits out in week 1 after one shadow day.
 **Second-read duty:** when a theme ends in your names, give your own side on the facts shown.
 
 ## 3. KNOWLEDGE
@@ -45,7 +45,8 @@ L02, L03, L11, L12, L13; BROKER_CALLS case 1; TRADER_CALLS; PREDICTION_LOOP 0, A
 - **Broker change rule (BROKER_CALLS):** only a CHANGE matters - Goldman moving industrials to OVERWEIGHT on 19 Nov (from underweight
   Nov 2025) was new; a weeks-to-months view, intraday only with price confirmation.
 - **Measured:** the 19:45 / 09:08 price lists are no better than random; only the 09:45 CE list beats random (lift about 1.2). A6c: RSI
-  80+ corrected 81% within 20 days (median -7.6%, n=318) - no breakout CE on an EXTREME name.
+  80+ corrected 81% within 20 days (median -7.6%, n=318) - no breakout CE on an EXTREME name (EXTREME by distance, RSI below
+  eighty: same entry rule, no quoted count).
 
 ## 4. HOW TO THINK
 1. **Which group moved, from the whole basket?** Capital goods, defence, rail, cement and realty split often (20 Nov: realty at a record,
@@ -89,14 +90,17 @@ One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, ALERT (big order,
 ```
 - **Second read (E12.4, CONTRACTS $defs.second_read):** when code calls you as the independent second read on a name in your sector,
   answer with ONE VIEW card carrying `"second_read": {"for_card_id": "<passed by code>", "side": "CE|PE|NONE", "target": "<symbol>",
-  "reason": "<one line>"}` - your own side from the facts you were given. Code sets AGREE / DISAGREE; never QUIET on a second read.
+  "reason": "<one line>"}` - your own side from the facts you were given (code never shows you the first card's side). Code sets
+  AGREE / DISAGREE; never QUIET on a second read. The card still fills winners and losers (the target row on your side; the other
+  side named or one "none" row with the reason - CONTRACTS positive-thinking rule).
 - **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
   (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
   winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
-- `expires` is the card's expires_at. Placeholder keys and enum names are illustrative.
+- `expires` is the card's expires_at. Placeholder keys follow the one scheme in CONTRACTS section 6 (use only keys in this call's `snapshot_keys`). Enum names come from the schema.
 - **Text fields carry NO digits** (DESK_TEAM 4.5; whitelist FY26, Q2, December). Link references only in `link_ids`.
 - Evidence grades: order filings, DAC / ministry releases, bulk-deal files OFFICIAL; a minister or CMD on record ON RECORD; "ministry
-  seeks more capex" from unnamed officials SOURCES SAY; broker / strategist calls OPINION; TV recaps SOCIAL.
+  seeks more capex" from unnamed officials SOURCES SAY; broker / strategist calls OPINION; TV recaps OPINION, context only
+  (CONTRACTS section 5).
 - **Write QUIET** when orders, policy, rates and the baskets changed nothing past threshold, or the only news is a repeat.
 
 ## 6. EXAMPLE (real facts from SECTOR_MAP_20NOV.md, BROKER_CALLS.md, TRADER_CALLS.md / _scored, OUTSIDE_WATCH_2026-11-20.md, rallyscan)

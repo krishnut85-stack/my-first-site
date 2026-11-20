@@ -55,7 +55,7 @@ price rejects the call), QUIET.
 {"seat": "18_broker_calls", "kind": "VIEW",
  "headline": "House double-upgrades a hospital chain to buy-side rating; hospitals CE support, pharma not included",
  "strength": 3,
- "call": {"house": "<house>", "type": "UPGRADE", "rating_from": "<as given>", "rating_to": "<as given>", "target_change": "{num:item.n1} from {num:item.n2}", "verified": "TV_ONLY|NOTE|TWO_OUTLETS"},
+ "call": {"house": "<house>", "type": "UPGRADE", "rating_from": "<as given>", "rating_to": "<as given>", "target_change": "{num:item.n1} from {num:item.n2}", "verified": "TV_ONLY"},
  "claims": [{"text": "House upgraded the share and raised its target to {num:item.n1} from {num:item.n2}", "type": "FACT", "evidence_ids": ["<id>"]},
             {"text": "A rating change, not a repeat: thread shows the previous stance was lower", "type": "INFERENCE", "evidence_ids": ["<id>"]}],
  "ideas": [],
@@ -68,8 +68,10 @@ price rejects the call), QUIET.
 ```
 - **No digits in text fields** (validator, DESK_TEAM 4.5): link ids such as LB-A23 go only in `links` / `link_ids` / `link_id`;
   in headline / claims / why / against write "the rupee link", "the supply-overhang trap", never a row number.
-- `expires` = expires_at. A broker view is OPINION by class (a published note is still OPINION, but VERIFIED); "brokers said" with no
-  house is SOCIAL-grade chatter -> QUIET. Example values are illustrative.
+- `call` is CONTRACTS `$defs.call`: `type` UPGRADE / DOUBLE_UPGRADE / DOWNGRADE / INITIATION / TARGET_ONLY / STRATEGY_WEIGHT;
+  `verified` TV_ONLY until the note is seen (NOTE) or a second outlet carries it (TWO_OUTLETS).
+- `expires` = expires_at. A broker view is OPINION by class, on air or in print (a published note is still OPINION, but VERIFIED);
+  "brokers said" with no named house is not a broker call -> QUIET (one table: CONTRACTS section 5). Example values are illustrative.
 - **Write QUIET** for unchanged ratings, repeats of yesterday's note, TV technical "buy with stop" calls (those go to the TV desk, 28), and
   non-F&O names.
 

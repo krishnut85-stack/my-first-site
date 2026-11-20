@@ -50,8 +50,8 @@ Kinds: ALERT (T1-T5 state changes), QUIET (written once per 30 minutes if nothin
  "headline": "Banks hold VWAP on a red NIFTY and beat it over thirty minutes; breadth agrees - live proof of the flows theme",
  "strength": 3,
  "claims": [
-  {"text": "Bank basket {num:sec.BANKS.pct_open} from the open vs NIFTY {num:mkt.NIFTY.pct_open}; above VWAP", "type": "FACT", "evidence_ids": ["tape:<snap>"]},
-  {"text": "Members up {num:sec.BANKS.breadth_up} of {num:sec.BANKS.n}; relative strength {num:sec.BANKS.rs30}", "type": "FACT", "evidence_ids": ["tape:<snap>"]}],
+  {"text": "Bank basket {num:sec.BANKS_PVT.pct_open} from the open vs NIFTY {num:idx.NIFTY.pct_open}; above VWAP", "type": "FACT", "evidence_ids": ["tape:<snap>"]},
+  {"text": "Members up {num:sec.BANKS_PVT.breadth_up} of {num:sec.BANKS_PVT.n}; relative strength {num:sec.BANKS_PVT.rs30}", "type": "FACT", "evidence_ids": ["tape:<snap>"]}],
  "ideas": [], "winners": [{"target": "BANKS_PVT", "side": "CE", "strength": 3, "horizon": "TODAY", "role": "theme sector", "why": "holds VWAP and beats a red NIFTY"}],
  "losers": [{"target": "none", "side": "PE", "strength": 1, "horizon": "TODAY", "role": "-", "why": "none: tape proof covers the theme sector only"}],
  "leaders": ["AXISBANK", "ICICIBANK", "KOTAKBANK"], "grade": "A", "not_seeing": [],
@@ -59,10 +59,12 @@ Kinds: ALERT (T1-T5 state changes), QUIET (written once per 30 minutes if nothin
  "new_since_last": "State changed from NEW to LIVE", "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<theme card>"], "links": ["SL-D"]}
 ```
 **One-line card texts (code fills the placeholders):**
-- T1: "LIVE: {sector} holds VWAP on a {red|green} NIFTY, beats it by {num:rs30} over 30 min, breadth {num:up}/{num:n} - proves {theme}."
-- T2: "FADING: {sector} lost VWAP ({num:below}/{num:n} members below their VWAP) - {theme} weakening." / "BROKEN: {theme} cancel met."
-- T3: "MOVE: {sector} {num:pct15} in 15 min - sector seat woken." T4: "SHOCK: {num:k} {sector} shares {up|down} together in 60 s - cause unknown."
-- T5: "NARROW: NIFTY {num:pct} but breadth {num:adv}/{num:dec} - leaders only, no laggard chase."
+- T1: "LIVE: {sector} holds VWAP on a {red|green} NIFTY, beats it by {num:sec.<KEY>.rs30} over 30 min, breadth {num:sec.<KEY>.breadth_up}/{num:sec.<KEY>.n} - proves {theme}."
+- T2: "FADING: {sector} lost VWAP ({num:sec.<KEY>.below_vwap}/{num:sec.<KEY>.n} members below their VWAP) - {theme} weakening." / "BROKEN: {theme} cancel met."
+- T3: "MOVE: {sector} {num:sec.<KEY>.pct15} in 15 min - sector seat woken." T4: "SHOCK: {num:sec.<KEY>.shock_n} {sector} shares {up|down} together in 60 s - cause unknown."
+- T5: "NARROW: NIFTY {num:idx.NIFTY.pct_open} but breadth {num:mkt.breadth.adv}/{num:mkt.breadth.dec} - leaders only, no laggard chase."
+- `<KEY>` is the sector key (CONTRACTS sections 4 and 6). Seat-33 blocks: `rule` T1_THEME_LIVE / T2_THEME_FADING / T2_THEME_BROKEN /
+  T3_SECTOR_MOVE / T4_BASKET_SHOCK / T5_NARROW; `grade` A / B / C is the tape grade (not an evidence grade); `leaders`; `not_seeing`.
 
 ## 6. EXAMPLE (Fri 20 Nov 2026, from DESK_TEAM 2.5 and monday/OUTSIDE_WATCH_2026-11-20.md; exact minutes to check in the replay)
 - **Morning:** NIFTY opened red (about -0.66% near the open); Nifty IT led, up to +1.3-1.6% (TCS, Tech Mahindra, HCL Tech, Infosys) while

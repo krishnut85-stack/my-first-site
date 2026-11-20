@@ -57,7 +57,7 @@ Kinds: VIEW (regime lines), OBJECTION (an idea that breaks a measured rule), QUI
  "strength": 2,
  "regimes": [
   {"target": "PNB", "zone": "EXTREME", "rsi": "{num:tech.PNB.rsi14}", "line": "EXTREME RSI - pullback entry only; corrected four times in five within a month in the study", "allowed": ["VWAP_RECLAIM"]},
-  {"target": "BANKS_PVT", "zone": "OVERBOUGHT", "rsi": "{num:tech.BANKS_PVT.rsi14}", "line": "stretched - buy the dip that holds VWAP, never the gap", "allowed": ["VWAP_RECLAIM", "PDH_BREAK"]},
+  {"target": "BANKS_PVT", "zone": "OVERBOUGHT", "rsi": "{num:tech.BANKS_PVT.rsi14}", "line": "stretched - buy the dip that holds VWAP, never the gap", "allowed": ["VWAP_RECLAIM", "PULLBACK_VWAP"]},
   {"target": "IT", "zone": "DOWN_STREAK", "rsi": "{num:tech.IT.rsi14}", "line": "down three days - bounce risk, not oversold; read the cause before any PE", "allowed": ["VWAP_RECLAIM", "VWAP_LOSS"]}],
  "claims": [{"text": "PNB daily RSI {num:tech.PNB.rsi14}, {num:tech.PNB.vs20d_pct} above its twenty-day average", "type": "FACT", "evidence_ids": ["tech:<snap>"]},
             {"text": "EXTREME rule applies: no fresh breakout CE", "type": "JUDGEMENT", "evidence_ids": ["tech:<snap>"]}],
@@ -68,6 +68,9 @@ Kinds: VIEW (regime lines), OBJECTION (an idea that breaks a measured rule), QUI
 - `regimes` is CONTRACTS $defs.regime: target, zone (EXTREME / EXTREME_BY_DISTANCE / OVERBOUGHT / NEUTRAL / OVERSOLD / DOWN_STREAK /
   GAP_TOOK_IT / LATE), rsi placeholder, line, allowed triggers. The A6c counts (n=318, 81%, median -7.6%) are added by CODE as the
   `extreme_rsi` object, only on zone EXTREME (RSI eighty or above) - never typed in text, never on EXTREME_BY_DISTANCE.
+- `allowed` never lists PDH_BREAK, PDL_BREAK or an ORB5 trigger: every first fire of ORB5 / PDH loses after costs. A PDH / PDL break is
+  only a timing aid on a share another bench already named, said in words in a claim, never an allowed entry. A stretched or EXTREME
+  CE line allows VWAP_RECLAIM / PULLBACK_VWAP only.
 - **Write QUIET** when no share changed zone, no idea breaks a rule and the 09:45 check adds nothing.
 
 ## 6. EXAMPLE (19-20 Nov 2026, from onset_results/rallyscan_report.txt, monday/A6c, DESK_TEAM 2.5, OUTSIDE_WATCH 20 Nov)

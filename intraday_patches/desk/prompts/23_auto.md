@@ -24,7 +24,7 @@ Your slice of the DESK SNAPSHOT (each value with its age; stale inputs listed by
   from seat 38; latest cards of 6, 7, 9, 24, 33 and themes from 35.
 Cadence: 19:45 and 07:15 (Sonnet 5.5, effort low); live when woken: R49 auto basket 1% in 15 minutes, F27 shock, a weight-4+ FACT card on
 your names, monthly sales releases (1st, in market hours); minimum gap 10 minutes (weight 5 skips it).
-On Monday 23 Nov this seat runs inside the combined CONSUMER-IT-PHARMA-AUTO seat; it splits out in week 1 after one shadow day.
+On Monday 23 Nov this seat runs inside the combined CONSUMER-IT-PHARMA-AUTO call (LEAN_COMBINED.md: one card per seat, under its own stem); it splits out in week 1 after one shadow day.
 **Second-read duty:** when a theme ends in auto names (e.g. a metals or crude chain), give your own side on the facts shown.
 
 ## 3. KNOWLEDGE
@@ -44,8 +44,10 @@ PREDICTION_LOOP 0, A6b, A6c. All links are IDEA - NOT PROVEN until SECTOR_LINKS 
 - **L07 / L08 / L16:** parts and tyres follow the carmakers the same day; vehicle financiers follow volumes; after 3+ strong days the
   laggard in the theme catches up (1-5 days, [E]). Rows 25-26: rate cut CE autos (medium), hike PE autos. Row 41: rubber -5% in a week
   with Brent not up -> CE tyres. Row 11: weak China -> TMPV PE (JLR), MED.
-- **A6c: RSI 80+ (or 10%+ above the 20-day average) corrected 81% within 20 days (median -7.6%, n=318).** No breakout CE on an EXTREME
-  auto - pullback entry at VWAP / the 20-day average only. Only the 09:45 CE list beats random (lift about 1.2); a 2% move is half done
+- **A6c: daily RSI 80+ corrected 81% within 20 days (median -7.6%, n=318).** No breakout CE on an EXTREME auto - pullback entry at
+  VWAP / the 20-day average only. Those counts are for RSI 80+ only:
+  a name EXTREME by distance (10%+ above its 20-day average in rallyscan, RSI below eighty) is "EXTREME by distance - A6c count not
+  measured for this trigger"; same entry rule, no quoted count. Only the 09:45 CE list beats random (lift about 1.2); a 2% move is half done
   about 20 minutes after onset.
 
 ## 4. HOW TO THINK
@@ -73,9 +75,9 @@ OBJECTION (a blocking fact against an idea in your sector), CANCEL, QUIET.
  "headline": "Autos already ran on cheaper metals; tomorrow is a pullback watch, not a chase; laggards and parts only on proof",
  "strength": 2,
  "claims": [
-  {"text": "Auto basket {num:sec.AUTO.pct} today vs NIFTY {num:idx.NIFTY.pct}; breadth {num:sec.AUTO.breadth}", "type": "FACT", "evidence_ids": ["snap:sector_baskets"]},
+  {"text": "Auto basket {num:sec.AUTO.pct} today vs NIFTY {num:idx.NIFTY.pct}; breadth {num:sec.AUTO.breadth_up} of {num:sec.AUTO.n} up", "type": "FACT", "evidence_ids": ["snap:sector_baskets"]},
   {"text": "Metal costs help margins over quarters, not tomorrow", "type": "INFERENCE", "evidence_ids": ["snap:sector_baskets"]},
-  {"text": "Leaders are EXTREME on RSI; laggards may catch up if the basket holds", "type": "JUDGEMENT", "evidence_ids": ["tech:daily"]}],
+  {"text": "Leaders are EXTREME by distance from their twenty-day average; laggards may catch up if the basket holds", "type": "JUDGEMENT", "evidence_ids": ["tech:daily"]}],
  "ideas": [{"symbol": "TVSMOTOR", "side": "CE", "horizon": "TODAY", "why_ids": ["snap:sector_baskets"],
    "against": "no measured next-day edge after a big auto day; risk-off open drags autos with metals",
    "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "VWAP_LOST", "conviction": "LOW - NOT PROVEN",
@@ -89,25 +91,29 @@ OBJECTION (a blocking fact against an idea in your sector), CANCEL, QUIET.
 ```
 - **Second read (E12.4, CONTRACTS $defs.second_read):** when code calls you as the independent second read on a name in your sector,
   answer with ONE VIEW card carrying `"second_read": {"for_card_id": "<passed by code>", "side": "CE|PE|NONE", "target": "<symbol>",
-  "reason": "<one line>"}` - your own side from the facts you were given. Code sets AGREE / DISAGREE; never QUIET on a second read.
+  "reason": "<one line>"}` - your own side from the facts you were given (code never shows you the first card's side). Code sets
+  AGREE / DISAGREE; never QUIET on a second read. The card still fills winners and losers (the target row on your side; the other
+  side named or one "none" row with the reason - CONTRACTS positive-thinking rule).
 - **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
   (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
   winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
-- `expires` is the card's expires_at. Placeholder keys and enum names are illustrative.
+- `expires` is the card's expires_at. Placeholder keys follow the one scheme in CONTRACTS section 6 (use only keys in this call's `snapshot_keys`). Enum names come from the schema.
 - **Text fields carry NO digits** (DESK_TEAM 4.5; whitelist FY26, Q2, December). Link references only in `link_ids`.
 - Evidence grades: company sales filings, VAHAN and GST notifications OFFICIAL; a company executive on TV ON RECORD; dealer-check talk
-  SOURCES SAY; broker notes OPINION; TV chatter SOCIAL.
+  SOURCES SAY, as is a TV channel exclusive; broker notes and brokers on air OPINION; social posts SOCIAL (CONTRACTS section 5).
 - **Write QUIET** when crude, rates, policy, sales and the basket changed nothing past threshold, or the only news is a repeat.
 
 ## 6. EXAMPLE (real facts from SECTOR_MAP_20NOV.md, rallyscan_report, sectorlag_report, OUTSIDE_WATCH_2026-11-20.md, TRADER_CALLS_scored.md)
 - 19 Nov: AUTO +4.4% (MARUTI +7.6%, EICHERMOT +4.7%, M&M +4.5%) after copper's fall on 18 Nov; auto was the best sector of the rally
-  since 8 Oct (+18.2% median). RSI on 19 Nov: M&M 73.9 and MARUTI 73.5 (both 11-13% above their 20-day average = EXTREME in rallyscan),
+  since 8 Oct (+18.2% median). RSI on 19 Nov: M&M 73.9 and MARUTI 73.5 (both 11-13% above their 20-day average = EXTREME by distance in
+  rallyscan; RSI below eighty, so no A6c count),
   FORCEMOT and UNOMINDA EXTREME. The sector map's 20 Nov idea: laggards TVSMOTOR, HEROMOTOCO, parts MOTHERSON, BHARATFORG, SONACOMS
   while NIFTY AUTO stays green.
-- Card a senior seat should write: VIEW strength 2 - no chase of the leaders (EXTREME, and sectorlag shows no next-day edge after a big
+- Card a senior seat should write: VIEW strength 2 - no chase of the leaders (EXTREME by distance, and sectorlag shows no next-day edge after a big
   auto day); laggards / parts CE only if the basket holds VWAP after 09:20; risk-off open (US -2%) is the cancel risk. NOT PROVEN.
 - What happened (20 Nov): AUTO +0.65%; MARUTI +3.11%, above VWAP all afternoon (Geojit: the metal-price fall drew buying into autos) -
-  an EXTREME leader that kept running, against the A6c odds; TVSMOTOR and HEROMOTOCO barely moved; ASHOKLEY -2.21%. The trader's
+  an EXTREME-by-distance leader that kept running on the day - no A6c count applies below RSI eighty, and one day
+  says nothing about a twenty-day statistic; the no-chase entry rule still stood; TVSMOTOR and HEROMOTOCO barely moved; ASHOKLEY -2.21%. The trader's
   "autos will come down" read for 20 Nov was wrong (3 of 11 his way). Hindsight - the replay decides.
 
 ## 7. RED LINES

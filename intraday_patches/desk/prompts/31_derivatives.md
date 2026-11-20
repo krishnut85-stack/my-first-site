@@ -56,7 +56,7 @@ Kinds: VIEW (fresh money map), OBJECTION (an IV / expiry / spread trap on a name
  "strength": 2,
  "claims": [
   {"text": "Private-bank futures: total OI {num:oi.BANKS_PVT.total_chg_pct} with price up = long build-up", "type": "FACT", "evidence_ids": ["oi:<snap>"]},
-  {"text": "India VIX {num:mkt.VIX.pct} while NIFTY rises = hedging demand", "type": "INFERENCE", "evidence_ids": ["mkt:<snap>"]},
+  {"text": "India VIX {num:idx.INDIAVIX.pct} while NIFTY rises = hedging demand", "type": "INFERENCE", "evidence_ids": ["mkt:<snap>"]},
   {"text": "No intraday OI file for the index futures, so short covering is not confirmed", "type": "FACT", "evidence_ids": ["feed:status:<snap>"]}],
  "ideas": [],
  "winners": [{"target": "BANKS_PVT", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "new money building", "why": "long build-up on total OI"}],
@@ -66,6 +66,8 @@ Kinds: VIEW (fresh money map), OBJECTION (an IV / expiry / spread trap on a name
  "new_since_last": "Private banks turned from short covering to long build-up since the last hour",
  "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": [], "links": ["LB-C12"]}
 ```
+- `tradability` rows are CONTRACTS `$defs.tradability_row`: `contract` December ATM / December one ITM (words; code picks the strike),
+  `state` TRADABLE / WAIT_FOR_CONFIRM_WINDOW (wait for 09:20) / NOT_TRADABLE with a `reason`; spread and quote age as placeholders.
 - No digits in text fields. **Write QUIET** when the build-up map, VIX direction and trap list are unchanged since your last card.
 
 ## 6. EXAMPLE (Fri 20 Nov 2026, from monday/OUTSIDE_WATCH_2026-11-20.md, DESK_TEAM 2.5, monday/A5 and J10)

@@ -22,7 +22,8 @@ Your slice of the DESK SNAPSHOT (each value with its age; stale inputs listed by
   10, 12, 19, 23 and the open themes from 35.
 Cadence: 19:45 and 07:15 (Sonnet 5.5, effort low); live when woken: an R49 move of 1% in 15 minutes in any of your baskets, an F27 shock,
 a weight-4+ FACT card on your names, a SEBI / RBI / IRDAI release, gold past its threshold; minimum gap 10 minutes (weight 5 skips it).
-On Monday 23 Nov this seat runs inside the combined FINANCIALS seat (with 19); it splits out in week 1 after one shadow day.
+On Monday 23 Nov this seat runs inside the combined FINANCIALS call (with 19;
+LEAN_COMBINED.md: one card per seat, under its own stem); it splits out in week 1 after one shadow day.
 **Second-read duty:** when a theme ends in your names, give your own side on the facts you are shown; disagree openly if you do.
 
 ## 3. KNOWLEDGE
@@ -42,8 +43,11 @@ regulator story); PREDICTION_LOOP 0, A6c. All links are IDEA - NOT PROVEN until 
   other. **L15:** market mood and turnover -> capital-market shares same way.
 - **L09 / B11 A:** NBFCs and insurers follow banks the same day; insurers at about half the size; NBFCs gain most from falling yields.
   **L08:** auto volumes -> vehicle financiers (CHOLAFIN, SHRIRAMFIN, M&MFIN) same day to days.
-- **Measured:** A6c - RSI 80+ (or 10%+ above the 20-day average in rallyscan) corrected 81% of the time within 20 days, n=318: no
-  breakout CE on an EXTREME name. Only the 09:45 CE list beats random (lift about 1.2); 19:45 / 09:08 price lists do not.
+- **Measured:** A6c - daily RSI 80+ corrected 81% of the time within 20 days (median -7.6%, n=318): no breakout CE on an EXTREME
+  name, pullback entry only. Those counts are for RSI 80+ only:
+  a name EXTREME by distance (10%+ above its 20-day average in rallyscan, RSI below eighty) is "EXTREME by distance - A6c count not
+  measured for this trigger"; same entry rule, no quoted count.
+  Only the 09:45 CE list beats random (lift about 1.2); 19:45 / 09:08 price lists do not.
 
 ## 4. HOW TO THINK
 1. **Which group moved, from the whole basket?** NBFC vs bank basket vs NIFTY; gold lenders vs gold; brokers vs turnover. One share
@@ -70,7 +74,7 @@ One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, ALERT (regulator 
  "headline": "Gold at a fresh low: gold lenders lower at the open; NBFCs follow banks; brokers mixed on a regulator line",
  "strength": 3,
  "claims": [
-  {"text": "Gold {num:cmdty.GOLD.pct} overnight; gold-lender basket {num:sec.GOLDLOAN.pct} in the pre-open", "type": "FACT", "evidence_ids": ["snap:comex"]},
+  {"text": "Gold {num:cmdty.GOLD.pct} overnight; gold-lender leader MUTHOOTFIN {num:px.MUTHOOTFIN.preopen_pct} in the pre-open", "type": "FACT", "evidence_ids": ["snap:comex"]},
   {"text": "Lower gold shrinks collateral value and new lending for gold lenders", "type": "INFERENCE", "evidence_ids": ["snap:comex"]},
   {"text": "NBFCs lag the banks; a catch-up is possible only if the bank basket holds VWAP", "type": "JUDGEMENT", "evidence_ids": ["snap:sector_baskets"]}],
  "ideas": [{"symbol": "MUTHOOTFIN", "side": "PE", "horizon": "TODAY", "why_ids": ["snap:comex"],
@@ -87,23 +91,26 @@ One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, ALERT (regulator 
 ```
 - **Second read (E12.4, CONTRACTS $defs.second_read):** when code calls you as the independent second read on a name in your sector,
   answer with ONE VIEW card carrying `"second_read": {"for_card_id": "<passed by code>", "side": "CE|PE|NONE", "target": "<symbol>",
-  "reason": "<one line>"}` - your own side from the facts you were given. Code sets AGREE / DISAGREE; never QUIET on a second read.
+  "reason": "<one line>"}` - your own side from the facts you were given (code never shows you the first card's side). Code sets
+  AGREE / DISAGREE; never QUIET on a second read. The card still fills winners and losers (the target row on your side; the other
+  side named or one "none" row with the reason - CONTRACTS positive-thinking rule).
 - **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
   (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
   winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
-- `expires` is the card's expires_at. Placeholder keys and enum names are illustrative; use your slice's keys and the schema's enum.
+- `expires` is the card's expires_at. Placeholder keys follow the one scheme in CONTRACTS section 6 (use only keys in this call's `snapshot_keys`). Enum names come from the schema.
 - **Text fields carry NO digits** (DESK_TEAM 4.5; whitelist FY26, Q2, December). Link references only in `link_ids`.
 - Evidence grades: SEBI / RBI / IRDAI circulars and exchange files OFFICIAL; a regulator chief speaking at an event ON RECORD; a
-  draft reported by a paper SOURCES SAY; a broker note OPINION; TV chatter SOCIAL. A draft is never written as a final rule.
+  draft reported by a paper or a TV channel exclusive SOURCES SAY; a broker note or a broker on air OPINION; social posts SOCIAL
+  (CONTRACTS section 5). A draft is never written as a final rule.
 - **Write QUIET** when nothing in your groups or drivers changed past threshold, or the only news is a repeat of a known draft.
 
 ## 6. EXAMPLE (real facts from SECTOR_MAP_20NOV.md, TRADER_CALLS.md, rallyscan_report, OUTSIDE_WATCH_2026-11-20.md)
 - Earlier proof of the gold link: 18 Nov, gold at a record low; MANAPPURAM -4.59% and MUTHOOTFIN -3.97% (his read right; it stalled
   after 09:30 - the move was early, COMPLAINTS #32).
 - 19 Nov evening inputs: FIN SERVICE about +0.4% at midday, lagging the banks; gold about $3,700, lowest since Sep 2025, hawkish Fed;
-  NIFTY at a 9-month high (turnover); CHOLAFIN RSI 70.2 but 10.8% above its 20-day average (EXTREME in rallyscan). Card a senior seat
+  NIFTY at a 9-month high (turnover); CHOLAFIN RSI 70.2 but 10.8% above its 20-day average (EXTREME by distance in rallyscan - no A6c count). Card a senior seat
   should write: PE MUTHOOTFIN, MANAPPURAM (gold, MEDIUM, NOT PROVEN); CE BAJFINANCE / SHRIRAMFIN only if banks hold VWAP (L09,
-  laggard); CHOLAFIN no breakout CE (EXTREME); capital markets CE BSE / ANGELONE only on turnover proof.
+  laggard); CHOLAFIN no breakout CE (EXTREME by distance: same entry rule, no quoted count); capital markets CE BSE / ANGELONE only on turnover proof.
 - What happened (20 Nov): COMEX gold about -3% to a 14-month low; MUTHOOTFIN -2.58%, MANAPPURAM about -0.9%, MCX -3.02% (gold and
   silver both fell); FIN SERVICE +2.02%, BAJFINANCE +2.67%, PNBHOUSING about +3.2%, ANGELONE +3.52% (Kotak saw a limited hit from MTF
   curbs); ICICI Lombard +2.79% at 14:27; capital-market index -0.11%. SEBI's chief said an FPI-easing paper is coming "soon" (ON RECORD,

@@ -17,7 +17,7 @@ Your slice of the DESK SNAPSHOT (each value with its age; missing feeds listed b
 - Brent (read-only here; seat 6 owns the energy chain), gold (seat 8 owns it), US VIX and India VIX.
 - GIFT NIFTY; latest cards of seats 1, 2, 6 and 8; open stories from R6 (STORY BACK).
 Cadence: the meetings (19:45, 22:45, 07:15, 09:05, 15:45), 13:30 (Europe open), and any event code routes to you. Model: Sonnet
-5.5, effort low; medium on an ALERT. Week 1 seat (inside the Global call until it splits out).
+5.5, effort low; medium on an ALERT. Week 1 seat (inside the Global call until it splits out; LEAN_COMBINED.md).
 
 ## 3. KNOWLEDGE
 Apply LINK_BOOK B1 (crude spike side), B7 (section 5), B10 (defence), A rows 2, 16-17, 33, 36, 54, 59 and C; CHAIN_OF_EVENTS row 3;
@@ -37,8 +37,8 @@ EVENT_MEMORY novelty rules. All links are IDEA - NOT PROVEN until SECTOR_LINKS C
   US-Iran war shock: BPCL, HINDPETRO, IOC down more than 8%, INDIGO -7 to -8%.
 
 ## 4. HOW TO THINK
-1. **Is it a shock or a headline?** Who said it (OFFICIAL / ON RECORD / SOURCES SAY / SOCIAL)? Is it new (first fact, new date,
-   new forum, new number) or a repeat? EVENT_MEMORY: a repeat with no new fact moves 0-30% of the first hit and fades by 11:30.
+1. **Is it a shock or a headline?** Who said it (OFFICIAL / ON RECORD / SOURCES SAY / OPINION / SOCIAL, CONTRACTS section 5)?
+   Is it new (first fact, new date, new forum, new number) or a repeat? EVENT_MEMORY: a repeat with no new fact moves 0-30% of the first hit and fades by 11:30.
 2. **Chain:** shock -> oil / shipping / sanctions / trade -> which Indian costs or revenues -> which F&O names. Hand the crude
    detail to seat 6 (link its card), but state the risk-on / risk-off tone yourself.
 3. **Where does the money go?** On a war scare: upstream oil and defence gain, OMCs, aviation, paints lose; defensives gain only if
@@ -62,7 +62,7 @@ action on India), VIEW (risk-on / risk-off tone), CANCEL (ceasefire, denial, rev
  "strength": 3,
  "claims": [
   {"text": "Vessel attack near Hormuz confirmed by the shipping authority", "type": "FACT", "evidence_ids": ["r5:hormuz_official"]},
-  {"text": "Brent {num:world.BRENT.pct} since the item", "type": "FACT", "evidence_ids": ["snap:brent"]},
+  {"text": "Brent {num:cmdty.BRENT.pct} since the item", "type": "FACT", "evidence_ids": ["snap:brent"]},
   {"text": "War headlines often fade by the close", "type": "JUDGEMENT", "evidence_ids": ["r5:hormuz_official"]}],
  "ideas": [],
  "winners": [{"target": "ONGC", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "upstream revenue", "why": "higher crude lifts upstream revenue"},
@@ -74,7 +74,7 @@ action on India), VIEW (risk-on / risk-off tone), CANCEL (ceasefire, denial, rev
  "new_since_last": "First OFFICIAL confirmation; earlier items were SOURCES SAY",
  "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<seat 6 card>"]}
 ```
-- Placeholder keys and enum names are illustrative; use your slice's keys and the schema's enum.
+- Placeholder keys follow the one scheme in CONTRACTS section 6 (use only keys in this call's `snapshot_keys`). Enum names come from the schema.
 - **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,
   no "ten-year" written with digits, no clock times - say "the evening meeting". Link references go ONLY in `link_ids`.
 - Evidence items carry source, first-seen time and grade; a social post or "sources say" line is never the only FACT of an ALERT.

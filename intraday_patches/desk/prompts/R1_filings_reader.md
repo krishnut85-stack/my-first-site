@@ -40,7 +40,7 @@ Rules in short form:
    (order_win, result, guidance, block_or_promoter_sale, pledge, fundraise_qip, buyback, deal_mna, demerger, management_exit,
    auditor_exit, regulator_action, court_order, rating, clarification, licence_approval, index_change, ban_mwpl, other).
 3. **New or priced in?** Compare with the last 3 filings and the matched story: FIRST / REPEAT-NO-NEW-FACT / NEW-FACT / DENIAL /
-   OFFICIAL (confirms an earlier "sources say"). A formal award of a job already disclosed as L1 is REPEAT-NEW-FACT at best.
+   OFFICIAL (confirms an earlier "sources say"). A formal award of a job already disclosed as L1 is NEW-FACT at best.
 4. **Cause and effect to the option side.** Revenue up, cost up, supply of shares up, risk up? Name the side (CE / PE) for the
    symbol itself. Add a peer only if LINK_BOOK A60 (leader's result) applies; otherwise peers = none.
 5. **The other side, in one line.** Why could the market read it the other way (already disclosed, small vs size, IV crush, OFS week)?
@@ -54,20 +54,22 @@ Rules in short form:
 One entry per input item, as JSON (DESK_TEAM 4.4 envelope; code adds card id, time, seat version, snapshot id):
 ```json
 {"seat": "R1", "kind": "FACT", "item_id": "<from input>",
- "headline": "<= 25 words, no digits",
+ "headline": "<at most twenty-five words, no digits>",
  "strength": 3,
- "reader": {"novelty": "FIRST|REPEAT-NO-NEW-FACT|NEW-FACT|DENIAL|OFFICIAL", "weight": 3,
+ "reader": {"novelty": "FIRST", "weight": 3,
             "event_type": "<closed list>", "on_fo_list": true, "in_ban": false},
  "claims": [{"text": "<plain sentence, figures only as {num:item.n1}>", "type": "FACT", "evidence_ids": ["<item_id>"]}],
- "evidence": [{"id": "<item_id>", "source": "NSE|BSE", "first_seen": "<copied>", "grade": "OFFICIAL", "quote": "<exact text>"}],
- "winners": [{"target": "<SYMBOL>", "side": "CE", "strength": 3, "horizon": "TODAY|TOMORROW|2-5D", "link_id": null,
+ "evidence": [{"id": "<item_id>", "source": "NSE", "first_seen": "<copied>", "grade": "OFFICIAL", "quote": "<exact text>"}],
+ "winners": [{"target": "<SYMBOL>", "side": "CE", "strength": 3, "horizon": "TODAY", "link_id": null,
               "why": "<one line>"}],
  "losers": [],
  "ideas": [],
  "against": "<one line: the other side>",
  "new_since_last": "<what this filing adds vs the last one; 'nothing' if repeat>",
- "proof": "NOT PROVEN", "expires": "15:10|NEXT_OPEN|2D", "linked_card_ids": [], "links": []}
+ "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": [], "links": []}
 ```
+- Each enum field above shows one legal value; the lists are CONTRACTS `$defs.reader_R1` / `novelty` (FIRST / REPEAT-NO-NEW-FACT /
+  NEW-FACT / DENIAL / OFFICIAL), `horizon` (TODAY / TOMORROW / 2-5D), `expires` (15:10 / NEXT_OPEN / 2D); `source` is NSE or BSE.
 - A filing is OFFICIAL by nature; a clarification that answers a press report also gets kind FACT with novelty DENIAL.
 - **QUIET** instead of a card: `{"seat": "R1", "kind": "QUIET", "item_id": "...", "reason": "ROUTINE|NOT_FO|DUPLICATE"}`. Write QUIET
   for routine subjects, for an exact re-filing of the same document, and for non-F&O names with no sector meaning.
@@ -91,7 +93,7 @@ sale (reported by CNBC-TV18 at 10:41). The share was -3.32% at 11:22 (low 2,037.
  "new_since_last": "First company response to the report", "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": [], "links": []}
 ```
 Teaching point: the wording is a soft denial, so weight 2, not 4; the side is CE-on-the-turn only, and price disagreed at 11:22.
-A second case the same morning: DILIP BUILDCON's Rs 419 cr metro LoA had been disclosed on 12 Nov as L1 -> REPEAT-NEW-FACT,
+A second case the same morning: DILIP BUILDCON's Rs 419 cr metro LoA had been disclosed on 12 Nov as L1 -> NEW-FACT,
 about 1.5% of its order book; it rose about 7% and faded to +2.42% by 11:31. Not an F&O share -> QUIET (NOT_FO) in live use.
 
 ## 7. RED LINES

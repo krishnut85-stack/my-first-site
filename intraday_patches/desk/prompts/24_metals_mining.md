@@ -23,7 +23,7 @@ Your slice of the DESK SNAPSHOT (each value with its age; MCX metals are NOT sub
   (wires), R3 TV lines (unverified), broker cards from seat 18 (target cuts move VEDL and others); latest cards of 17 (OFS, blocks), 33.
 Cadence: 19:45 and 07:15 (Sonnet 5.5, effort low; 07:15 after the SHFE day open and seat 3's Asia read); live when woken: R49 metals 1%
 in 15 minutes, F27 shock, a weight-4+ FACT card on your names, a duty / safeguard headline; minimum gap 10 minutes (weight 5 skips it).
-On Monday 23 Nov this seat runs inside the combined INDUSTRIALS-METALS-ENERGY-INFRA seat; it splits out in week 1 after one shadow day.
+On Monday 23 Nov this seat runs inside the combined INDUSTRIALS-METALS-ENERGY-INFRA call (LEAN_COMBINED.md: one card per seat, under its own stem); it splits out in week 1 after one shadow day.
 **Second-read duty:** when a theme ends in metal names, give your own side on the facts shown.
 
 ## 3. KNOWLEDGE
@@ -43,8 +43,9 @@ until SECTOR_LINKS C3 passes.
   owns HINDZINC (row 8), alumina owns NATIONALUM (row 19); APLAPOLLO moves opposite to the steel textbook (inventory). L04: mining
   follows the same China / LME driver as metals.
 - **Measured (sectorlag, 144 days with metals down 1%+):** metals were up next day 56% of the time vs 54% on all days - no bounce edge;
-  NATIONALUM and HINDALCO were the most frequent next-day risers (58% up each, n=144) - still under the C3 bar. A6c: RSI 80+ corrected 81%
-  within 20 days (n=318). Only the 09:45 CE list beats random; a 2% move is half done about 20 minutes after onset.
+  NATIONALUM and HINDALCO were the most frequent next-day risers (58% up each, n=144) - still under the C3 bar. A6c: daily RSI
+  80+ corrected 81% within 20 days (n=318) - no breakout CE on an EXTREME name (EXTREME by distance, RSI below eighty: same entry
+  rule, no quoted count). Only the 09:45 CE list beats random; a 2% move is half done about 20 minutes after onset.
 
 ## 4. HOW TO THINK
 1. **What moved, from the whole basket?** Steel vs non-ferrous vs mining vs NIFTY; breadth; did it close near its extreme (persistence)?
@@ -71,7 +72,7 @@ One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, ALERT (duty / OFS
  "headline": "Metals lower at the open on risk-off and a firm dollar; producers PE early, no chase after a deep gap",
  "strength": 3,
  "claims": [
-  {"text": "Metal basket pre-open {num:sec.METAL.preopen_pct}; LME copper close {num:cmdty.LME_CU.pct}", "type": "FACT", "evidence_ids": ["snap:preopen"]},
+  {"text": "Metal basket pre-open {num:sec.METALS.preopen_pct}; LME copper close {num:cmdty.LME_CU.pct}", "type": "FACT", "evidence_ids": ["snap:preopen"]},
   {"text": "Risk-off days take producers and users down together", "type": "INFERENCE", "evidence_ids": ["snap:preopen"]},
   {"text": "One producer has its own negative broker news and is the cleanest PE", "type": "JUDGEMENT", "evidence_ids": ["r2:broker_target_cut"]}],
  "ideas": [{"symbol": "VEDL", "side": "PE", "horizon": "TODAY", "why_ids": ["snap:preopen"],
@@ -88,11 +89,14 @@ One SEAT CARD per run (DESK_TEAM 4.4), JSON only. Kinds: VIEW, ALERT (duty / OFS
 ```
 - **Second read (E12.4, CONTRACTS $defs.second_read):** when code calls you as the independent second read on a name in your sector,
   answer with ONE VIEW card carrying `"second_read": {"for_card_id": "<passed by code>", "side": "CE|PE|NONE", "target": "<symbol>",
-  "reason": "<one line>"}` - your own side from the facts you were given. Code sets AGREE / DISAGREE; never QUIET on a second read.
-- `expires` is the card's expires_at. A "none" entry still fills every impact field (side, strength one, horizon, why = the reason none was found) - CONTRACTS $defs.impact. Placeholder keys and enum names are illustrative.
+  "reason": "<one line>"}` - your own side from the facts you were given (code never shows you the first card's side). Code sets
+  AGREE / DISAGREE; never QUIET on a second read. The card still fills winners and losers (the target row on your side; the other
+  side named or one "none" row with the reason - CONTRACTS positive-thinking rule).
+- `expires` is the card's expires_at. A "none" entry still fills every impact field (side, strength one, horizon, why = the reason none was found) - CONTRACTS $defs.impact. Placeholder keys follow the one scheme in CONTRACTS section 6 (use only keys in this call's `snapshot_keys`). Enum names come from the schema.
 - **Text fields carry NO digits** (DESK_TEAM 4.5; whitelist FY26, Q2, December). Link references only in `link_ids`.
 - Evidence grades: exchange prices, DGTR / ministry notices, NMDC price filings, OFS notices OFFICIAL; a minister on record ON RECORD; duty
-  talk "sources say" SOURCES SAY; a broker target cut OPINION; TV "metals crack" SOCIAL context.
+  talk "sources say" SOURCES SAY; a broker target cut OPINION; a TV "metals crack" recap OPINION, context only (CONTRACTS
+  section 5).
 - **Write QUIET** when seats 3 / 7, the dollar and the basket changed nothing past threshold, or the only news is a repeat.
 
 ## 6. EXAMPLE (real facts from SECTOR_MAP_20NOV.md, OUTSIDE_WATCH_2026-11-20.md, rallyscan_report, TRADER_CALLS_scored.md)

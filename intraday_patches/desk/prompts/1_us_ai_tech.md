@@ -21,7 +21,7 @@ Your slice of the DESK SNAPSHOT (built by code every minute, each value with its
 - "What I am not seeing": stale inputs listed by name. World prices are 600-1,200 s old (F23, Yahoo) - say so when it matters.
 Cadence: the meetings 19:45, 22:45, 07:15, 09:05, 15:45; live 20:00-02:30 IST only when woken by code on a 1% US index move or a
 5% move in an AI name (thresholds are guesses to tune). Model: Sonnet 5.5, effort low; medium on a woken event. On Monday 23 Nov
-this seat runs inside the one Global call; it splits out in week 1 after one shadow day.
+this seat runs inside the one Global call (LEAN_COMBINED.md: its own card, its own stem); it splits out in week 1 after one shadow day.
 
 ## 3. KNOWLEDGE
 Apply LINK_BOOK B7 and C, SECTOR_LINKS B (NIFTY IT row), CHAIN_OF_EVENTS rows 12-13, EVENT_MEMORY G, PREDICTION_LOOP 0 / A6c.
@@ -71,7 +71,7 @@ Connections), ALERT (woken on a shock), CANCEL (your earlier card's driver rever
   {"text": "Nasdaq closed {num:world.NASDAQ.pct}; AI basket {num:world.AI_BASKET.pct}", "type": "FACT", "evidence_ids": ["snap:us_close"]},
   {"text": "Cause ranked first: AI spend and AI returns doubted; rates second", "type": "INFERENCE", "evidence_ids": ["fj:us_close", "r5:ai_capex_press"]}],
  "ideas": [{"symbol": "INFY", "side": "CE", "horizon": "TODAY", "why_ids": ["fj:us_close"],
-   "against": "IT fell three days; ADR {num:world.ADR.INFY.pct} could gap it lower first",
+   "against": "IT fell three days; ADR {num:world.ADR_INFY.pct} could gap it lower first",
    "trigger_ref": "VWAP_RECLAIM", "cancel_ref": "VWAP_LOST", "conviction": "LOW - NOT PROVEN",
    "link_ids": ["LB-C7", "EM-G"], "story_id": "<open story id>"}],
  "winners": [{"target": "BANKS_PVT", "side": "CE", "strength": 3, "horizon": "TODAY", "role": "second order: money leaving AI-heavy Asia", "why": "low-AI market inside EM"},
@@ -87,11 +87,12 @@ Connections), ALERT (woken on a shock), CANCEL (your earlier card's driver rever
 - **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
   (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
   winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
-- `trigger_ref` / `cancel_ref` must be values from the engine enum in your schema; key names above are illustrative. `cancel_ref` is one of the CONTRACTS cancel codes (e.g. VWAP_LOST), never a placeholder.
+- `trigger_ref` / `cancel_ref` must be values from the engine enum in your schema; placeholder keys follow CONTRACTS section 6 (only keys in this call's `snapshot_keys`). `cancel_ref` is one of the CONTRACTS cancel codes (e.g. VWAP_LOST), never a placeholder.
 - **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,
   no "ten-year" written with digits, no clock times - say "the evening meeting". Link references go ONLY in `link_ids`.
 - Evidence ids point to input items that already carry source, first-seen time and grade (OFFICIAL / ON RECORD / SOURCES SAY /
-  OPINION / SOCIAL). A SOURCES SAY or OPINION item can support a claim, never be its only FACT.
+  OPINION / SOCIAL - one table, CONTRACTS section 5: a TV channel exclusive is SOURCES SAY, a broker on air OPINION, only social posts
+  SOCIAL). A SOURCES SAY or OPINION item can support a claim, never be its only FACT.
 - **Write QUIET** (headline "no change since <last card id>", empty lists) when nothing in your slice changed past its wake
   threshold, the only news is a repeat, or your inputs are stale. At 22:45 you are silent unless a theme changed state.
 

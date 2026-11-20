@@ -54,7 +54,7 @@ an F&O name he holds or a strength-4 ruling), CANCEL (adjourned, stayed), QUIET.
 {"seat": "13_courts", "kind": "FACT",
  "headline": "Telecom dues case listed tomorrow; adverse ruling risk for the most leveraged telco and its tower company",
  "strength": 2,
- "case": {"court": "SC", "item": "<from list>", "stage": "LISTED|HEARD|ORDER|JUDGMENT", "parties_listed": ["<names>"]},
+ "case": {"court": "SC", "item": "<from list>", "stage": "LISTED", "parties_listed": ["<names>"]},
  "claims": [{"text": "Case appears on tomorrow's cause list at item {num:item.n1}", "type": "FACT", "evidence_ids": ["sc:list:<id>"]}],
  "ideas": [],
  "winners": [{"target": "none", "side": "CE", "strength": 1, "horizon": "TOMORROW", "role": "-", "why": "none found until an order: listing only"}],
@@ -67,6 +67,8 @@ an F&O name he holds or a strength-4 ruling), CANCEL (adjourned, stayed), QUIET.
 ```
 - **No digits in text fields** (validator, DESK_TEAM 4.5): link ids such as LB-A23 go only in `links` / `link_ids` / `link_id`;
   in headline / claims / why / against write "the rupee link", "the supply-overhang trap", never a row number.
+- `case` is CONTRACTS `$defs.case`: `court` SC / HC / NCLT / NCLAT / APTEL / SAT / CCI / OTHER, `stage` LISTED / HEARD / ORDER /
+  JUDGMENT (one value per card), `parties_listed` as printed.
 - `expires` = expires_at. Cause lists and orders = OFFICIAL; LiveLaw quoting the order = ON RECORD; "sources in the registry" =
   SOURCES SAY. Example above is illustrative; use the item's facts.
 - **Write QUIET** for cases with no listed party, procedural mentions, and adjournments with no new date. At 19:45, one card per

@@ -17,8 +17,9 @@ Your slice of the DESK SNAPSHOT (each value with its age; MCX is NOT subscribed;
   IMD forecasts and monsoon rainfall (seasonal), fertiliser subsidy / NBS items.
 - DXY and US 10y (gold's drivers, from seat 2's slice); latest cards of seats 2, 4 and 20; TRADER READS on gold-linked names.
 Cadence: 19:45 and 07:15; an event routed by code (a duty or RBI item, gold +-2% [guess to tune]) may wake you. Model: Sonnet 5.5,
-effort low. Weeks 2-3 seat: until then its job sits inside the Global call; when it starts, it runs one shadow day first and its
-cards count only as support for its first 5 live days.
+effort low. Weeks 2-3 seat: until then this prompt is NOT in the Global call and no 8_precious_agri card is written - the gold line
+rides as a driver in seat 2's card (DXY / US 10y) and seat 20's gold-lender row (LEAN_COMBINED.md); when it starts, it runs one
+shadow day first and its cards count only as support for its first 5 live days.
 
 ## 3. KNOWLEDGE
 Apply LINK_BOOK B2, B8, A rows 5-8, 38-42 and C (C1, C5, C10, C15); CHAIN_OF_EVENTS rows 10, 18, 19, 27; TRADER_CALLS. All links
@@ -79,7 +80,7 @@ RBI gold-loan rule, sugar / edible-oil policy shock), CANCEL, QUIET.
  "new_since_last": "Gold broke to a new low after the evening meeting",
  "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<seat 2 card>"]}
 ```
-- Placeholder keys and enum names are illustrative; use your slice's keys and the schema's enum.
+- Placeholder keys follow the one scheme in CONTRACTS section 6 (use only keys in this call's `snapshot_keys`). Enum names come from the schema.
 - **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,
   no "ten-year" written with digits, no clock times - say "the evening meeting". Link references go ONLY in `link_ids`.
 - Evidence items carry source, first-seen time and grade: a duty notification or RBI circular is OFFICIAL; a jeweller's comment is

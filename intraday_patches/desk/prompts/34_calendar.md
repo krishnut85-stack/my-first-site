@@ -62,10 +62,10 @@ Kinds: FACT (the day's clock and catalysts), ALERT (a window opens now, a date m
 `proof` is only NOT PROVEN / PROVEN (CONTRACTS): an exchange calendar is OFFICIAL as an evidence `grade`, never as a `proof` value.
 **One-line card texts (code fills the placeholders):**
 - "SERIES: stock options {month} only; index {NIFTY next weekly | BANKNIFTY next monthly}; expiring contract = information only."
-- "EXPIRY: no new entry after {num:t}; pinning watch from {num:t} near the biggest-OI strike."
+- "EXPIRY: no new entry after {num:cal.expiry.no_entry_after}; pinning watch from {num:cal.expiry.pin_from} near the biggest-OI strike."
 - "RESULTS: {SYMBOL} reports {when} - link trades off for two sessions; IV high before, crush after."
-- "RELEASE: {event} at {num:t} - no new option entry {num:m} min either side; expected = sell the news."
-- "CLOCK: {num:t} {checkpoint}" (09:20 first confirm · 09:45 CE window · 11:00 ring window ends · 13:30 Europe · 14:30 manage only · 15:10 exit).
+- "RELEASE: {event} at {num:cal.release.time} - no new option entry {num:cal.release.gap_min} min either side; expected = sell the news."
+- "CLOCK: {num:cal.checkpoint.time} {checkpoint}" (09:20 first confirm · 09:45 CE window · 11:00 ring window ends · 13:30 Europe · 14:30 manage only · 15:10 exit).
 
 ## 6. EXAMPLE (the real calendar around 20-23 Nov 2026, from monday/J10, CHAIN_OF_EVENTS A, SECTOR_MAP_20NOV, DESK_TEAM 4.7)
 - **Fri 20 Nov 19:45 card (for Mon 23 Nov):** Monday is the November monthly expiry; Tue 24 Nov is an NSE holiday, so Monday's positions

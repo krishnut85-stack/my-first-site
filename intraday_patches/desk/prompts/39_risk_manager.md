@@ -47,24 +47,26 @@ You must NEVER: place or suggest an order beyond a manage note to the head; type
 Code writes the gate stamp on each candidate; Sonnet writes the MANAGE note. JSON only (DESK_TEAM 4.4; manage enum from the HEAD contract).
 ```json
 {"seat": "39_risk_manager", "kind": "VIEW", "manage": "HOLD", "position_ref": "<position id>",
- "headline": "Hold: thesis intact - gold still falling and the jewellery basket below VWAP; do not exit before the stop or target",
+ "headline": "Hold: thesis intact - gold still falling and the share below VWAP with its basket; do not exit before the stop or target",
  "strength": 3,
  "claims": [
   {"text": "Position at {num:pos.r_now}R after {num:pos.minutes} minutes; stop {num:pos.stop} and target {num:pos.target} unchanged", "type": "FACT", "evidence_ids": ["pos:<id>"]},
-  {"text": "Driver unchanged: gold down {num:world.GOLD.pct}; sector basket below VWAP", "type": "FACT", "evidence_ids": ["tape:<snap>", "world:<snap>"]},
+  {"text": "Driver unchanged: gold down {num:cmdty.GOLD.pct}; sector basket below VWAP", "type": "FACT", "evidence_ids": ["tape:<snap>", "world:<snap>"]},
   {"text": "No cancel fact and no counter-call on the share", "type": "INFERENCE", "evidence_ids": ["board:<snap>"]}],
  "against": "move already large; if the basket reclaims VWAP the thesis weakens - then book half",
  "ideas": [], "winners": [], "losers": [],
  "evidence": [{"id": "pos:<id>", "source": "Kite positions via code", "first_seen": "<copied>", "grade": "OFFICIAL"}],
  "new_since_last": "Price reached the first target zone", "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<idea card>"], "links": []}
 ```
-Code gate stamp text (one line): "APPROVED - lots {num:lots} (lock room {num:room}) · trade {num:n} of 3 · R:R {num:rr} · spread {num:sp}"
+Code gate stamp text (one line): "APPROVED - lots {num:pos.lots} (lock room {num:pos.lock_room}) · trade {num:pos.trade_n} of 3 · R:R {num:pos.rr} · spread {num:pos.spread_pct}"
 or "WAIT: {reason}" with reason one of SECOND_READ · BANNED · QUOTE_STALE · SPREAD · RR_LOW · CHASE_ZONE · LATE · SAME_SECTOR ·
 SAME_DRIVER · MAX_TRADES · MAX_OPEN · LOCKED · COOLING_OFF · EXTREME_RSI · EXPIRY_CUTOFF · AI_BUDGET.
 - **Write QUIET** (no note) while the position is between stop and target, inside its time, and nothing on its thesis changed.
 
-## 6. EXAMPLE (real facts from TRADER_CALLS rows 28-29, TRADER_CALLS_scored, LINK_BOOK row 5; the note itself is illustrative)
-- **Wed 18 Nov, TITAN PE (his trade):** gold at a record low (LINK_BOOK row 5: gold falls -> gold lenders PE, jewellers weak). TITAN went
+## 6. EXAMPLE (real facts from TRADER_CALLS rows 28-29, TRADER_CALLS_scored, the 18 Nov tape; the note itself is illustrative)
+- **Wed 18 Nov, TITAN PE (his trade):** gold at a record low; his read is logged as "TITAN DOWN = PE (gold down)" (TRADER_CALLS row 29). The
+  thesis came from his read and the 18 Nov tape, not from LINK_BOOK row 5 - that row puts the jewellers (TITAN, KALYANKJIL) on the CE
+  side (low, weeks) and only the gold lenders on the PE side, so the note leans on the tape, not on a link. TITAN went
   through -3% at 10:15 and closed -5.3%, the day's biggest F&O loser; he exited early and lost. The note this seat should have written
   at his exit urge: "HOLD - thesis intact: gold still down, jewellery and gold-loan basket below VWAP; stop and target unchanged; don't
   exit before the stop or the target unless GIR says EXIT" (card above).

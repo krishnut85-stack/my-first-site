@@ -1,5 +1,23 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 20 Nov 21:15 IST - SEAT PROMPTS READY: switch the AI seats on (intraday_patches/desk/prompts/)
+All 12 reviewer problems are fixed. CONTRACTS.md now has three schemas (seat card, head output, combined-call envelope), all objects
+closed. Every one of the 55 example cards in the prompts validates (jsonschema Draft 2020-12, 0 errors), and 13 deliberately broken
+cards are rejected as expected. Wire these, in order:
+1. **CONTRACTS.md:** load the three schemas. Strict structured outputs reject `if`/`then`/`dependentSchemas`, so build a FLATTENED
+   per-seat schema at load time (the seat -> block table is in CONTRACTS) and keep the full schema as the code validator after the call.
+2. **Winners / losers rule:** seats 1-10 and 19-27 must name winners AND losers on every VIEW / ALERT / THEME; a side with no name is one
+   `target: "none"` row with a reason. Reject and retry once, then QUIET.
+3. **Placeholders:** the snapshot builder emits exactly the keys in CONTRACTS section 6 and passes the present ones as `snapshot_keys`.
+   A `{num:...}` key outside that list = reject the card.
+4. **R6 story matcher:** gets the raw item + target ONLY, never the first reader's card. Code sets the verdict. R6 never stands in for
+   the BUY NOW second read (seat 15 or the linked sector seat does that; a single-seat second read bills to LIVE).
+5. **LEAN_COMBINED.md:** the five Monday combined calls (GLOBAL seats 1-4, 6, 7; FLOWS carrying 5 and 9; FINANCIALS;
+   INDUSTRIALS-METALS-ENERGY-INFRA; CONSUMER-IT-PHARMA-AUTO), SEATS bucket, the prompt order for caching, the envelope schema, the
+   failure handling and the budget ladder. Seat 8 writes no card on Monday (gold rides in seats 2 and 20).
+6. **Source grades:** one table, CONTRACTS section 5 (TV exclusive = SOURCES SAY, broker on air = OPINION, SOCIAL = social posts only).
+Then run the rehearsal of the NEW desk on recorded 18 / 19 / 20 Nov ($15 one-off, approved) and score it on EDGE. Report in STATUS.md.
+
 ## 20 Nov 20:30 IST - all seat prompts written: intraday_patches/desk/prompts/ (48 files)
 R1-R6 readers, seats 1-40, H_head_analyst.md, CONTRACTS.md. The reviewer passed the content but found contract gaps (positive-
 thinking rule not enforced in the schema; per-seat blocks not defined; R6 second-read independence; small rule fixes) - the fix

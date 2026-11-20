@@ -37,8 +37,8 @@ PREDICTION_LOOP C2 / C3, LINK_BOOK (A37, B7.7, C3, C4, C15) and DESK_TEAM gap G1
 1. **Recap, fact or theme?** A pure price recap ("Sensex up 300 points", "stocks to watch" list with no new fact) = QUIET (RECAP).
    A new fact about a company, sector or policy = FACT. A sentence that states a cause or a money flow for a sector or the
    market = THEME. One item can yield one FACT and one THEME.
-2. **Who says it?** Grade the evidence: OFFICIAL (document, filing, minister on record) / ON RECORD (named person) / SOURCES SAY /
-   OPINION (strategist, analyst, broker) / SOCIAL.
+2. **Who says it?** Grade the evidence (one table, CONTRACTS section 5): OFFICIAL (the document or filing itself) / ON RECORD (a
+   named person, a minister included) / SOURCES SAY (unnamed sources) / OPINION (strategist, analyst, broker, column) / SOCIAL (social posts only).
 3. **New or priced in?** Use the story match: FIRST / REPEAT-NO-NEW-FACT / NEW-FACT / DENIAL / OFFICIAL. A later outlet repeating
    the morning's fact is a sighting, not a card (QUIET DUPLICATE). Note if the share already moved before first_seen.
 4. **Chain to Indian F&O names.** State the channel (revenue, cost, flow, rates, policy) and both sides: who gains (CE), who loses
@@ -50,20 +50,21 @@ PREDICTION_LOOP C2 / C3, LINK_BOOK (A37, B7.7, C3, C4, C15) and DESK_TEAM gap G1
 
 ## 5. OUTPUT
 ```json
-{"seat": "R2", "kind": "FACT|THEME", "item_id": "<from input>",
- "headline": "<= 25 words, no digits", "strength": 2,
- "reader": {"novelty": "FIRST|REPEAT-NO-NEW-FACT|NEW-FACT|DENIAL|OFFICIAL", "source_class": "A|B|C",
-            "sightings": "<copied count field>", "moved_before_first_seen": "yes|no|unknown",
-            "route_to": ["10", "35"]},
- "claims": [{"text": "<figures only as {num:item.nK}>", "type": "FACT|INFERENCE|JUDGEMENT", "evidence_ids": ["<item_id>"]}],
- "evidence": [{"id": "<item_id>", "source": "<outlet>", "first_seen": "<copied>", "grade": "OFFICIAL|ON RECORD|SOURCES SAY|OPINION|SOCIAL",
-               "quote": "<exact text>"}],
- "winners": [{"target": "<SYMBOL or SECTOR>", "side": "CE", "strength": 2, "horizon": "TODAY|TOMORROW|2-5D", "link_id": null, "why": "..."}],
- "losers":  [{"target": "<SYMBOL or SECTOR>", "side": "PE", "strength": 1, "horizon": "...", "link_id": null, "why": "..."}],
+{"seat": "R2", "kind": "FACT", "item_id": "<from input>",
+ "headline": "<at most twenty-five words, no digits>", "strength": 2,
+ "reader": {"novelty": "FIRST", "source_class": "B", "sightings": "<copied count field>", "moved_before_first_seen": "unknown"},
+ "claims": [{"text": "<figures only as {num:item.nK}>", "type": "FACT", "evidence_ids": ["<item_id>"]}],
+ "evidence": [{"id": "<item_id>", "source": "<outlet>", "first_seen": "<copied>", "grade": "ON RECORD", "quote": "<exact text>"}],
+ "winners": [{"target": "<SYMBOL or SECTOR>", "side": "CE", "strength": 2, "horizon": "TODAY", "link_id": null, "why": "<one line>"}],
+ "losers":  [{"target": "<SYMBOL or SECTOR>", "side": "PE", "strength": 1, "horizon": "TODAY", "link_id": null, "why": "<one line>"}],
  "ideas": [], "against": "<one line>", "new_since_last": "<what is new; 'nothing' if repeat>",
- "proof": "NOT PROVEN", "expires": "15:10|NEXT_OPEN|2D", "linked_card_ids": [], "links": []}
+ "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": [], "links": []}
 ```
-- `route_to` is "10" (FLOWS) and / or "35" (CONNECTIONS) for THEME cards; empty for FACT cards (code routes them to seat 29 / 15).
+- Each enum field above shows one legal value; the lists are CONTRACTS `$defs.reader_R2`: kind FACT / THEME / QUIET, `novelty`
+  (FIRST / REPEAT-NO-NEW-FACT / NEW-FACT / DENIAL / OFFICIAL), `source_class` A / B / C, `moved_before_first_seen` yes / no / unknown,
+  claim `type` FACT / INFERENCE / JUDGEMENT, `grade` per CONTRACTS section 5, `horizon` and `expires` as in section 1.
+- Routing: a THEME card names its seats in `theme.route_to` ("10_flows" and / or "35_connections"); a FACT card carries no route
+  (code routes it to seat 29 / 15).
 - **A THEME card adds the LIGHT theme block** (CONTRACTS section 1): `"theme": {"theme_id": "<short name>", "state": "NEW|CONFIRMING|BROKEN",
   "route_to": ["10_flows", "35_connections"], "chain": [two or more nodes, each {node, channel, link_id, status, evidence_ids}]}`, plus
   winners and losers. Only seat 35 writes the full form; without the block code rejects the card.
@@ -77,7 +78,7 @@ had sold to fund the AI trade; easing commodities also helped autos and consumer
 points by 09:57 (CNBC-TV18); breadth was still negative (1,318 up / 2,291 down at 11:02). The old B8 rule dropped this line.
 ```json
 {"seat": "R2", "kind": "THEME", "item_id": "mc:liveblog:1102", "headline": "Strategist: FIIs buying back Indian banks they sold to fund the AI trade",
- "strength": 2, "reader": {"novelty": "FIRST", "source_class": "B", "sightings": "<copied>", "moved_before_first_seen": "yes", "route_to": ["10", "35"]},
+ "strength": 2, "reader": {"novelty": "FIRST", "source_class": "B", "sightings": "<copied>", "moved_before_first_seen": "yes"},
  "theme": {"theme_id": "FII_BANKS_BUYBACK", "state": "NEW", "route_to": ["10_flows", "35_connections"],
   "chain": [{"node": "foreign money that funded the AI trade comes back to India", "channel": "flow", "link_id": null, "status": "SEEN", "evidence_ids": ["mc:liveblog:1102"]},
             {"node": "banking majors bought back first", "channel": "flow", "link_id": "LB-A37", "status": "EXPECTED", "evidence_ids": ["mc:liveblog:1102"]}]},

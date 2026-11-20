@@ -39,7 +39,7 @@ DESK_TEAM 2.3 rule 4. All voices are NOT PROVEN until D5 scores them.
 1. **Sort the half hour:** recap of the papers / anchor chat (QUIET) - REPEAT of a known view (QUIET) - NEW fact from an official or
    management on record - NEW opinion (broker, analyst) - BOTTOM / TOP call - FLOW / strategy line (forward to FLOWS and CONNECTIONS).
 2. **Who and how good?** Copy the speaker record. A channel exclusive is SOURCES SAY; management or a minister is ON RECORD; a broker
-   or TV analyst is OPINION.
+   or TV analyst is OPINION; nothing on TV is SOCIAL (one table: CONTRACTS section 5).
 3. **What is new vs priced in?** Has the share already moved its way before the words (check % from the open in the snapshot)?
    TV often explains a move already made - say "explains, not predicts".
 4. **Risk to his book first:** does any NEW line threaten his open position or a live head idea? If yes, ALERT with the plain
@@ -56,7 +56,7 @@ fact against a held share or live idea), THEME (a flow / strategy line routed to
  "headline": "TV bottom call on a share already falling: bounce risk for any PE, new desk PE suspended until the price test decides",
  "strength": 3,
  "claims": [
-  {"text": "A TV analyst called the share a good buying price after a fall of {num:sec.share.pct_open}", "type": "FACT", "evidence_ids": ["tv:cnbc:<hhmm>"]},
+  {"text": "A TV analyst called the share a good buying price after a fall of {num:px.<SYMBOL>.pct_open}", "type": "FACT", "evidence_ids": ["tv:cnbc:<hhmm>"]},
   {"text": "The share passes the already-falling test, so this is a bottom call, not an ordinary call", "type": "INFERENCE", "evidence_ids": ["tv:cnbc:<hhmm>"]},
   {"text": "The voice has no scored record yet", "type": "FACT", "evidence_ids": ["rec:voice:<id>"]}],
  "ideas": [],
@@ -69,6 +69,8 @@ fact against a held share or live idea), THEME (a flow / strategy line routed to
 - **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
   (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
   winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
+- `price_test` (RUNNING / CONFIRMED / REJECTED / EXPIRED / NOT_APPLICABLE) is copied from code's D4 state; `verification` is TV ONLY -
+  UNVERIFIED until a document or a second outlet confirms (then VERIFIED). Both are CONTRACTS seat-28 blocks.
 - No digits in headline / claims / why / against (validator, DESK_TEAM 4.5); levels said on air stay in R3's quote field.
 - **Write QUIET** `{"seat": "28_tv_desk", "kind": "QUIET", "reason": "RECAP|REPEAT|NOTHING_PRICE_RELEVANT"}` when the half hour holds
   no NEW or CHANGE line, or only repeats today's headlines. Never repeat a card on the same voice and share within 30 minutes.

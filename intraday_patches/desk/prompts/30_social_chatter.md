@@ -48,7 +48,7 @@ Kinds: VIEW with `buzz: true` ("BUZZ, no fact yet"), ALERT (chatter against a he
  "claims": [
   {"text": "A public channel posted that the company won a large order", "type": "FACT", "evidence_ids": ["tg:<channel>:<post>"]},
   {"text": "No exchange filing, wire or TV card carries this fact so far", "type": "FACT", "evidence_ids": ["lookup:<id>"]},
-  {"text": "The share was up {num:sec.share.pct_15m_before} in the minutes before the post", "type": "FACT", "evidence_ids": ["snap:<id>"]}],
+  {"text": "The share was up {num:px.<SYMBOL>.pct_15m_before} in the minutes before the post", "type": "FACT", "evidence_ids": ["snap:<id>"]}],
  "ideas": [],
  "winners": [{"target": "<SYMBOL>", "side": "CE", "strength": 1, "horizon": "TODAY", "role": "named share", "why": "unconfirmed chatter; watch for a filing"}],
  "losers": [{"target": "none", "side": "PE", "strength": 1, "horizon": "TODAY", "role": "-", "why": "none: one-company rumour"}],

@@ -32,8 +32,9 @@ Apply BROKER_CALLS (routine), EVENT_MEMORY (TV-VOICE, TV CALLS), PREDICTION_LOOP
 ## 4. HOW TO THINK (per chunk)
 1. **Anything price-relevant?** Anchors chatting, ads, a recap of the morning papers = QUIET.
 2. **Who is speaking?** Classify: CHANNEL_SOURCES (exclusive "sources say") / MANAGEMENT (named company official) / OFFICIAL (minister,
-   regulator head) / BROKER_STRATEGIST / TV_ANALYST (buy / sell call) / GUEST. Grade: OFFICIAL or ON RECORD for named officials and
-   management, SOURCES SAY for exclusives, OPINION for brokers and analysts.
+   regulator head) / BROKER_STRATEGIST / TV_ANALYST (buy / sell call) / GUEST. Grade (CONTRACTS section 5): ON RECORD for named
+   officials and management, SOURCES SAY for channel exclusives, OPINION for brokers, analysts, anchors and guests; nothing on TV is
+   SOCIAL, and the document behind a TV line is OFFICIAL only once it is seen.
 3. **What exactly was said?** Short paraphrase plus an exact quote from the transcript. If the name is flagged unsettled, write it
    as said and set target to null - never guess.
 4. **New or repeat?** Compare with the house's last stance, the last 10 minutes and today's headlines: NEW / REPEAT / CHANGE.
@@ -45,18 +46,20 @@ Apply BROKER_CALLS (routine), EVENT_MEMORY (TV-VOICE, TV CALLS), PREDICTION_LOOP
 
 ## 5. OUTPUT
 ```json
-{"seat": "R3", "kind": "FACT|THEME|ALERT", "item_id": "<chunk id>",
+{"seat": "R3", "kind": "FACT", "item_id": "<chunk id>",
  "headline": "<= 25 words, no digits; start with the voice (the channel goes in reader.channel - channel names hold digits)>", "strength": 2,
- "reader": {"channel": "CNBC-TV18|ET Now|CNBC Awaaz|Sansad TV", "speaker": "<as labelled>", "speaker_type": "<class>",
-            "call_kind": "BROKER_CALL|SHARE_CALL|BOTTOM_CALL|TOP_CALL|MANAGEMENT|SOURCES_SAY|POLICY_VOICE|FLOW_THEME",
-            "novelty": "NEW|REPEAT|CHANGE", "speaker_record": "<copied from input, or 'no record yet'>",
-            "verification": "TV ONLY - UNVERIFIED"},
- "claims": [{"text": "<figures only as {num:item.nK}>", "type": "FACT|JUDGEMENT", "evidence_ids": ["<chunk id>"]}],
- "evidence": [{"id": "<chunk id>", "source": "<channel>", "first_seen": "<copied>", "grade": "OFFICIAL|ON RECORD|SOURCES SAY|OPINION", "quote": "<exact transcript>"}],
- "winners": [{"target": "<SYMBOL or SECTOR>", "side": "CE", "strength": 2, "horizon": "TODAY|TOMORROW|2-5D", "link_id": null, "why": "..."}],
+ "reader": {"channel": "CNBC-TV18", "speaker": "<as labelled>", "speaker_type": "BROKER_STRATEGIST", "call_kind": "BROKER_CALL",
+            "novelty": "NEW", "speaker_record": "<copied from input, or 'no record yet'>", "verification": "TV ONLY - UNVERIFIED"},
+ "claims": [{"text": "<figures only as {num:item.nK}>", "type": "JUDGEMENT", "evidence_ids": ["<chunk id>"]}],
+ "evidence": [{"id": "<chunk id>", "source": "<channel>", "first_seen": "<copied>", "grade": "OPINION", "quote": "<exact transcript>"}],
+ "winners": [{"target": "<SYMBOL or SECTOR>", "side": "CE", "strength": 2, "horizon": "TODAY", "link_id": null, "why": "<one line>"}],
  "losers": [], "ideas": [], "against": "<one line>", "new_since_last": "<vs the house's last stance>",
- "proof": "NOT PROVEN", "expires": "15:10|NEXT_OPEN|2D", "linked_card_ids": [], "links": []}
+ "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": [], "links": []}
 ```
+- Each enum field above shows one legal value; the lists are CONTRACTS `$defs.reader_R3`: kind FACT / THEME / ALERT / QUIET, `channel`
+  CNBC-TV18 / ET Now / CNBC Awaaz / Sansad TV, `speaker_type` CHANNEL_SOURCES / MANAGEMENT / OFFICIAL / BROKER_STRATEGIST / TV_ANALYST /
+  GUEST, `call_kind` BROKER_CALL / SHARE_CALL / BOTTOM_CALL / TOP_CALL / MANAGEMENT / SOURCES_SAY / POLICY_VOICE / FLOW_THEME, `novelty`
+  NEW / REPEAT / CHANGE, `verification` TV ONLY - UNVERIFIED / VERIFIED, `grade` per CONTRACTS section 5.
 - **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
   (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
   winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.

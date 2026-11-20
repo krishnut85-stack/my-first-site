@@ -76,11 +76,11 @@ shock, OFS), CANCEL (overnight rebound past the cancel line), QUIET.
  "new_since_last": "LME close confirmed the fall; SHFE did not bounce",
  "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<seat 2 card>", "<seat 3 card>"]}
 ```
-- Placeholder keys and enum names are illustrative; use your slice's keys and the schema's enum.
+- Placeholder keys follow the one scheme in CONTRACTS section 6 (use only keys in this call's `snapshot_keys`). Enum names come from the schema.
 - **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,
   no "ten-year" written with digits, no clock times - say "the evening meeting". Link references go ONLY in `link_ids`.
 - Evidence items carry source, first-seen time and grade: exchange prices and DGTR / ministry notices are OFFICIAL; a broker target
-  cut is OPINION; "metals extend decline" on TV is SOCIAL-grade context.
+  cut is OPINION; "metals extend decline" on TV is an anchor's recap - OPINION, context only (CONTRACTS section 5).
 - **Write QUIET** when the LME close and SHFE changed nothing since your last card, or the only news is a repeat.
 
 ## 6. EXAMPLE (real facts from COPPER_LINKS.md, SECTOR_MAP_20NOV.md, OUTSIDE_WATCH_2026-11-20.md, sectorlag_report)

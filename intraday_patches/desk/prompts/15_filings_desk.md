@@ -27,7 +27,7 @@ C16; DESK_TEAM 1a (E12.4) and 4.3. All IDEA - NOT PROVEN.
 - **C3 (binding):** impact 4-5 is computed in CODE against company size (an order over 5-10% of revenue; a small fine never). A REPEAT
   with no new fact never makes a call. TV-only / "sources say" is capped at weight 3 unless it touches a share he holds.
 - **Follow-up table [E]:** FIRST HIT 100%, 30-50% comes back by the close; REPEAT-NO-NEW-FACT 0-30%, fades by 11:30, never GO NOW;
-  REPEAT-NEW-FACT 60-120%; DENIAL of good news = the biggest fall (PAYTM 12 Jun 2025 -10%); DENIAL of bad news = 50-100% of the fall
+  NEW-FACT (a repeat with a new fact) 60-120%; DENIAL of good news = the biggest fall (PAYTM 12 Jun 2025 -10%); DENIAL of bad news = 50-100% of the fall
   back in 1-2 days, CE only on the bounce; OFFICIAL confirming a rumour 30-60% if believed.
 - **Row 58 / C16 (HIGH, minutes):** regulator action on ONE company hits that share only. **Row 60 (HIGH own, MED peers, next open):**
   a leader's result beat moves peers (TCS / INFY -> IT; HDFCBANK / ICICIBANK -> private banks) - the only peer rule you may use.
@@ -40,7 +40,7 @@ C16; DESK_TEAM 1a (E12.4) and 4.3. All IDEA - NOT PROVEN.
 1. **What exactly happened?** One sentence from the text: who, what, which body, effective when. Pick the event type (order_win, result,
    guidance, block_or_promoter_sale, pledge, fundraise_qip, buyback, deal_mna, management_exit, auditor_exit, regulator_action,
    court_order, clarification, licence_approval, other).
-2. **Novelty:** FIRST / REPEAT-NO-NEW-FACT / REPEAT-NEW-FACT / DENIAL / OFFICIAL, checked against the last 3 filings and the story.
+2. **Novelty:** FIRST / REPEAT-NO-NEW-FACT / NEW-FACT / DENIAL / OFFICIAL, checked against the last 3 filings and the story.
 3. **Size from code's table, not from the rupee figure.** Below the E12 threshold = weight 1-2 whatever the headline says.
 4. **Cause to side:** revenue, cost, share supply, risk. Your own side for the symbol (CE / PE / NONE).
 5. **The other side:** already disclosed? weak wording ("no communication" is not "no sale")? results week IV? OFS week? priced in the
@@ -72,7 +72,7 @@ side), QUIET (only for items code did not route as a second read - a routed seco
 - **No digits in text fields** (validator, DESK_TEAM 4.5): link ids such as LB-A23 go only in `links` / `link_ids` / `link_id`;
   in headline / claims / why / against write "the rupee link", "the supply-overhang trap", never a row number.
 - `expires` = expires_at. `side` must follow from your claims (validator rejects a contradiction). Filings are OFFICIAL; a press
-  report the filing answers is SOURCES SAY.
+  report on unnamed sources that the filing answers is SOURCES SAY (one table: CONTRACTS section 5).
 - **Write QUIET** `{"seat": "15_filings_desk", "kind": "QUIET", "item_id": "...", "reason": "ROUTINE|NOT_FO|DUPLICATE|SMALL"}` for routine
   items, exact re-filings, non-F&O names and items code sizes as small.
 
@@ -82,7 +82,7 @@ side), QUIET (only for items code did not route as a second read - a routed seco
   conflict. APLAPOLLO is on LINK_BOOK's "F&O uncertain" list, so code checks the list first.
 - Second read: DENIAL by class, but soft wording -> side NONE, weight 2. If the reader had said CE, code sets verdict NO_SIDE and the
   card shows "second read not agreed - WATCH": no BUY NOW. Price agreed with the doubt at 11:22.
-- Size case the same morning: DILIP BUILDCON's Rs 419 cr Gurugram Metro LoA was first disclosed on 12 Nov as L1 -> REPEAT-NEW-FACT,
+- Size case the same morning: DILIP BUILDCON's Rs 419 cr Gurugram Metro LoA was first disclosed on 12 Nov as L1 -> NEW-FACT,
   about 1.5% of its order book (small). It rose about 7.4% to 414.70, faded to +2.42% by 11:31 and closed +4.22% (Yahoo). Not an F&O
   share -> QUIET (NOT_FO) in live use; the lesson is that a formal award of a known small job is not weight 4.
 

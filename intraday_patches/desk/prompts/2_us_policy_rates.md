@@ -18,7 +18,7 @@ Your slice of the DESK SNAPSHOT (every value with its age; stale inputs listed b
 - USDINR (only if CDS is live; otherwise the last known rate with its age), GIFT NIFTY; latest cards of seats 1, 5, 9, 10.
 Cadence: the meetings (19:45, 22:45, 07:15, 09:05, 15:45) plus each US release and each policy item code routes to you (a Fed
 decision lands about 23:30-00:00 IST). Wake threshold for the dollar: DXY +-0.5% [guess to tune]. Model: Sonnet 5.5, effort low;
-medium on a release or decision. Week 1 seat (inside the Global call until it splits out).
+medium on a release or decision. Week 1 seat (inside the Global call until it splits out; LEAN_COMBINED.md).
 
 ## 3. KNOWLEDGE
 Apply LINK_BOOK B5, B6, B7 (sections 2, 3, 6) and C; CHAIN_OF_EVENTS rows 11, 15; SECTOR_LINKS B (bank, NBFC, realty, IT, pharma).
@@ -60,7 +60,7 @@ decision), CANCEL, QUIET.
  "headline": "Hawkish Fed minutes plus firm dollar: tilt against FII-heavy banks and metals; exporters relatively firm",
  "strength": 2,
  "claims": [
-  {"text": "US ten-year at {num:world.US10Y.level}, DXY {num:world.DXY.level}, both up on the day", "type": "FACT", "evidence_ids": ["snap:us_rates"]},
+  {"text": "US ten-year at {num:world.US10Y.level}, DXY {num:fx.DXY.level}, both up on the day", "type": "FACT", "evidence_ids": ["snap:us_rates"]},
   {"text": "December hike already largely priced ({num:world.FEDFUT.dec_hike_prob})", "type": "FACT", "evidence_ids": ["cme:fedwatch"]},
   {"text": "Priced decision: little fresh push; FII flows can outweigh it", "type": "JUDGEMENT", "evidence_ids": ["fed:minutes"]}],
  "ideas": [],
@@ -74,7 +74,7 @@ decision), CANCEL, QUIET.
  "new_since_last": "Minutes published; yields up since the evening meeting",
  "proof": "NOT PROVEN", "expires": "NEXT_OPEN", "linked_card_ids": ["<seat 10 card>"]}
 ```
-- Key names are illustrative; use the exact placeholder keys of your slice. `trigger_ref` comes from the engine enum and `cancel_ref` is one of the CONTRACTS cancel codes (e.g. VWAP_LOST), never a placeholder.
+- Placeholder keys follow the one scheme in CONTRACTS section 6 (use only keys in this call's `snapshot_keys`). `trigger_ref` comes from the engine enum and `cancel_ref` is one of the CONTRACTS cancel codes (e.g. VWAP_LOST), never a placeholder.
 - **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,
   no "ten-year" written with digits, no clock times - say "the evening meeting". Link references go ONLY in `link_ids`.
 - Evidence items carry source, first-seen time and grade. A Fed statement or a release is OFFICIAL; a speaker is ON RECORD; a

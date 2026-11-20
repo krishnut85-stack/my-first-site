@@ -78,14 +78,18 @@ The HEAD object (CONTRACTS.md), JSON only. A BUY NOW (code renders it; you never
    "why": [{"text": "FII five-day buying past the bank-first line {num:flows.FII.sum5_cr}", "type": "FACT", "evidence_ids": ["nse:fiidii:<date>"]},
            {"text": "Private banks above VWAP and ahead of NIFTY since the open settled", "type": "FACT", "evidence_ids": ["<tape alert>"]},
            {"text": "Money leaving AI-heavy Asia has a low-AI home in Indian banks", "type": "INFERENCE", "evidence_ids": ["<seat 35 theme>"]}],
-   "against": "Bank run long; PSU banks EXTREME; breadth narrow", "answer": "Private name, not EXTREME, entry on VWAP reclaim, leaders only",
+   "against": "Devil: bank run already long, PSU banks EXTREME, breadth narrow - a crowded chase", "answer": "Private name, not EXTREME, entry on VWAP reclaim, leaders only",
    "enter_only_if": "VWAP_RECLAIM", "cancel_if": "SECTOR_VWAP_LOST", "benches": ["money", "sector", "market-internal"],
-   "source_card_ids": ["<seat 10>", "<seat 19>", "<seat 33>", "<seat 35>"], "second_read": "AGREED", "conviction": "MEDIUM - NOT PROVEN"}],
+   "source_card_ids": ["<seat 10>", "<seat 19>", "<seat 33>", "<seat 35>", "<seat 36 objection>"], "second_read": "AGREED", "conviction": "MEDIUM - NOT PROVEN"}],
  "ideas_new": [], "ideas_update": [], "manage": [],
  "why_not": [{"symbol": "PNB", "code": "EXTREME_RSI", "line": "EXTREME RSI - no breakout CE, pullback only"}],
  "ask_seats": [], "nothing_new": false}
 ```
-- Text has no digits; numbers only as placeholders code fills from the snapshot. `buy_now` holds at most one; code enforces the daily cap.
+- Text has no digits; numbers only as placeholders code fills from the snapshot (keys: CONTRACTS section 6). `buy_now` holds at most
+  one; code enforces the daily cap.
+- `against` is the Devil's objection, and the seat 36 card id that carries it is in `source_card_ids` (rule 2 must be traceable;
+  code holds the BUY NOW if no seat 36 card for the idea is listed). The same holds for every idea in a brief.
+- `second_read` is AGREED only from seat 15 (news / filing) or the linked sector seat (theme); an R6 weight-3 check never counts.
 - Ideas in a brief use the same fields plus `state` (WATCH / ARMED) and `scenario` lines. Write `nothing_new: true` with empty lists
   when the look found nothing that changes a decision - that is the normal live answer.
 
@@ -94,12 +98,13 @@ The HEAD object (CONTRACTS.md), JSON only. A BUY NOW (code renders it; you never
   (FLOWS: FII +Rs 7,411 cr, a long buying streak; EM rotation; theme NEW) - against: bank run long, PSU banks EXTREME - answer: private
   names only, VWAP reclaim, never at the open. IT PE -> WATCH both ways after the Devil's B7 2026 objection. Metals PE WATCH (strong dollar).
 - **22:45:** ANT opened $111.50 against $83 -> theme CONFIRMING; "IT PE cancelled, banks CE stands with its entry rule".
-- **Fri 20 Nov 07:15:** changed since 19:45: S&P about -2.0%, Nasdaq about -2.3%, Nikkei -4.3%. Lower open expected; metals PE ARMED;
-  banks CE and IT CE WATCH only if they hold VWAP and beat NIFTY after 09:20 on a weak market.
+- **Fri 20 Nov 07:15:** changed since 19:45: S&P about -2.0%, Nasdaq about -2.3%, Nikkei -4.3%. Lower open expected; PE watch on metals
+  (DESK_TEAM 2.5: state WATCH, not ARMED); banks CE and IT CE WATCH only if they hold VWAP and beat
+  NIFTY after 09:20 on a weak market.
 - **Live:** BANKNIFTY recovered about 600 points by 09:57 and made records from 11:31; IT led (+1.3-1.6%) while US tech fell. A private-bank
   December ATM CE BUY NOW is legal only once the tape card shows VWAP hold + relative strength, seat 19 agrees and code passes the gates
   (exact minute [G]). His 10:45 read "money out of US tech into Indian IT" matched the theme: "Your read agrees with the desk theme; your
-  CE reads are {num:trader.ce_hits} of {num:trader.ce_reads} on the day - small n." (code fills the record: ten of fourteen in
+  CE reads are {num:tr.ce.hits} of {num:tr.ce.n} on the day - small n." (code fills the record: ten of fourteen in
   TRADER_CALLS_scored; the head never types it). Why not for PSU banks chasing: EXTREME_RSI. Breadth 1,582 / 2,456, VIX +8%: leaders only.
 - **15:45:** banks CE right, metals PE right, 19 Nov IT PE wrong (the Devil's objection is what stopped it). EM-G episode 1, NOT PROVEN.
 

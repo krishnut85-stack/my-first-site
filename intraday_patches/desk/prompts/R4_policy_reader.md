@@ -51,18 +51,21 @@ Apply LINK_BOOK B10 (and master rows 3, 4, 7, 16, 17, 25-28, 42, 44, 47, 50-52, 
 ```json
 {"seat": "R4", "kind": "FACT", "item_id": "<from input>",
  "headline": "<= 25 words, no digits: body, action, who is hit>", "strength": 3,
- "reader": {"body": "<RBI|SEBI|...>", "doc_type": "<type>", "doc_date_is_today": true,
-            "policy_clock": {"story": "<clock id or null>", "state": "PENDING|DELAYED|CONFIRMED|NOTIFIED|DEAD", "moved_from": "<state or null>",
+ "reader": {"body": "<RBI, SEBI ...>", "doc_type": "<type>", "doc_date_is_today": true,
+            "policy_clock": {"story": null, "state": "PENDING", "moved_from": null,
                              "next_step": "<plain words, date only as {num:item.nK} or in quote>"},
-            "scope": "SECTOR|ONE_COMPANY|MARKET", "novelty": "FIRST|REPEAT-NO-NEW-FACT|NEW-FACT|DENIAL|OFFICIAL",
-            "route_to": "11|12|13"},
- "claims": [{"text": "<figures only as {num:item.nK}>", "type": "FACT|INFERENCE", "evidence_ids": ["<item_id>"]}],
- "evidence": [{"id": "<item_id>", "source": "<body / site>", "first_seen": "<copied>", "grade": "OFFICIAL|ON RECORD", "quote": "<exact text>"}],
- "winners": [{"target": "<SYMBOL or SECTOR>", "side": "CE", "strength": 3, "horizon": "TODAY|TOMORROW|2-5D", "link_id": null, "why": "..."}],
- "losers":  [{"target": "<SYMBOL or SECTOR>", "side": "PE", "strength": 3, "horizon": "...", "link_id": null, "why": "..."}],
+            "scope": "SECTOR", "novelty": "FIRST", "route_to": ["12_regulators"]},
+ "claims": [{"text": "<figures only as {num:item.nK}>", "type": "FACT", "evidence_ids": ["<item_id>"]}],
+ "evidence": [{"id": "<item_id>", "source": "<body / site>", "first_seen": "<copied>", "grade": "OFFICIAL", "quote": "<exact text>"}],
+ "winners": [{"target": "<SYMBOL or SECTOR>", "side": "CE", "strength": 3, "horizon": "TODAY", "link_id": null, "why": "<one line>"}],
+ "losers":  [{"target": "<SYMBOL or SECTOR>", "side": "PE", "strength": 3, "horizon": "TODAY", "link_id": null, "why": "<one line>"}],
  "ideas": [], "against": "<one line: expected? draft? narrow scope?>", "new_since_last": "<the step this item adds>",
- "proof": "NOT PROVEN", "expires": "15:10|NEXT_OPEN|2D", "linked_card_ids": [], "links": []}
+ "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": [], "links": []}
 ```
+- Each enum field above shows one legal value; the lists are CONTRACTS `$defs.reader_R4` and `$defs.policy_clock`: `policy_clock.state`
+  and `moved_from` PENDING / DELAYED / CONFIRMED / NOTIFIED / DEAD (`story` and `moved_from` null on a first step), `scope` SECTOR /
+  ONE_COMPANY / MARKET, `novelty` FIRST / REPEAT-NO-NEW-FACT / NEW-FACT / DENIAL / OFFICIAL, `route_to` one or more of 11_government,
+  12_regulators, 13_courts; `grade` OFFICIAL for the document, ON RECORD for a named official (CONTRACTS section 5).
 - **QUIET** `{"seat": "R4", "kind": "QUIET", "item_id": "...", "reason": "STALE|PROCEDURAL|NO_FO_LINK|DUPLICATE"}` for old documents,
   procedural notices (meeting schedules, staff, tenders with no listed name), and items with no F&O link.
 - No digit in headline / claims / why / against (whitelist FY26, Q2, December); circular numbers and dates go in `quote`.
@@ -77,7 +80,7 @@ UNITDSPR; the share fell through -3% by 09:24, then closed +1.32%.
  "strength": 3,
  "reader": {"body": "Finance Ministry", "doc_type": "notification", "doc_date_is_today": true,
             "policy_clock": {"story": null, "state": "CONFIRMED", "moved_from": null, "next_step": "Effective date as in the document"},
-            "scope": "SECTOR", "novelty": "FIRST", "route_to": "11"},
+            "scope": "SECTOR", "novelty": "FIRST", "route_to": ["11_government"]},
  "claims": [{"text": "Duty on bulk Scotch rises to {num:item.n1}.", "type": "FACT", "evidence_ids": ["pib:scotch_duty"]},
             {"text": "Bulk Scotch is an input for Indian blenders, so this is a cost, not protection.", "type": "INFERENCE", "evidence_ids": ["pib:scotch_duty"]}],
  "evidence": [{"id": "pib:scotch_duty", "source": "<site>", "first_seen": "<copied>", "grade": "OFFICIAL", "quote": "<exact text>"}],

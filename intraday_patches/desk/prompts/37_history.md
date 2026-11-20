@@ -48,14 +48,16 @@ Kinds: VIEW with `analogue: true`, QUIET (no rows found - say so), OBJECTION (th
 {"seat": "37_history", "kind": "VIEW", "analogue": true, "asked_by": "<card id>",
  "headline": "US AI-shock to India-banks-and-IT chain: one episode only, show it, no average; next test is the next US-tech-down day",
  "strength": 1,
- "rows": [{"level": "L1", "date": "{num:hist.G.ep1.date}", "what": "AI listing shock, FII rotation", "reaction": "{num:hist.G.ep1.banknifty_close_pct}", "context": "RSI extreme, breadth negative"}],
- "count": {"n": "{num:hist.G.n}", "same_way": "{num:hist.G.same}", "rule": "UNDER_THREE_SHOW_ONLY"},
- "claims": [{"text": "The chain has {num:hist.G.n} scored episode; the sample rule allows no average", "type": "FACT", "evidence_ids": ["em:G:ep1"]},
+ "rows": [{"level": "L1", "date": "{num:story.EM-G.ep1.date}", "what": "AI listing shock, FII rotation", "reaction": "{num:story.EM-G.ep1.banknifty_close_pct}", "context": "RSI extreme, breadth negative"}],
+ "count": {"n": "{num:story.EM-G.n}", "same_way": "{num:story.EM-G.same}", "rule": "EPISODES_ONLY"},
+ "claims": [{"text": "The chain has {num:story.EM-G.n} scored episode; the sample rule allows no average", "type": "FACT", "evidence_ids": ["em:G:ep1"]},
             {"text": "The desk's IT put call the evening before was the counter-case for the IT leg", "type": "FACT", "evidence_ids": ["score:<date>"]}],
  "ideas": [], "winners": [], "losers": [],
  "evidence": [{"id": "em:G:ep1", "source": "EVENT_MEMORY section G", "first_seen": "<copied>", "grade": "OFFICIAL"}],
  "new_since_last": "-", "proof": "NOT PROVEN", "expires": "2D", "linked_card_ids": ["<theme card>"], "links": ["DT-G8"]}
 ```
+- `rows` / `count` are CONTRACTS `$defs.history_row` / `history_count`; `count.rule` is the shared sample rule (EPISODES_ONLY under
+  three, MEDIAN_CAPPED_MEDIUM three to seven, HIT_RATE eight or more, NONE_FOUND), the same enum seat 35 and R6 use.
 - No digits in headline / claims / what / context; every count and date is a placeholder. **Write QUIET** with `reason: "NO_ROWS"`
   when code finds nothing - and say "no analogue" rather than reach for a loose one.
 

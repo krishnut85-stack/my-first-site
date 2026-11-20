@@ -58,8 +58,8 @@ war spike), CANCEL (driver reversed overnight, policy overrides), QUIET.
  "headline": "Brent fell sharply after the Indian close on supply news; OMCs and INDIGO gain, ONGC and OIL lose at the open",
  "strength": 3,
  "claims": [
-  {"text": "Brent {num:world.BRENT.pct} since the Indian close, {num:world.BRENT.pct5d} over five days", "type": "FACT", "evidence_ids": ["snap:brent"]},
-  {"text": "Cause: supply (OPEC item), not demand fear; GIFT NIFTY {num:mkt.GIFT.pct}", "type": "INFERENCE", "evidence_ids": ["r5:opec_item", "snap:brent"]},
+  {"text": "Brent {num:cmdty.BRENT.pct} since the Indian close, {num:cmdty.BRENT.pct5d} over five days", "type": "FACT", "evidence_ids": ["snap:brent"]},
+  {"text": "Cause: supply (OPEC item), not demand fear; GIFT NIFTY {num:idx.GIFT.pct}", "type": "INFERENCE", "evidence_ids": ["r5:opec_item", "snap:brent"]},
   {"text": "No fuel-policy item found this evening", "type": "FACT", "evidence_ids": ["r4:policy_sweep"]}],
  "ideas": [{"symbol": "HINDPETRO", "side": "CE", "horizon": "TODAY", "why_ids": ["r5:opec_item"],
    "against": "rupee {num:fx.USDINR.pct} may halve the gain; the gap may take the move",
@@ -74,7 +74,7 @@ war spike), CANCEL (driver reversed overnight, policy overrides), QUIET.
  "new_since_last": "Brent move happened after the evening meeting and passed the crude-fall threshold",
  "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<seat 25 card>"]}
 ```
-- Placeholder keys and enum names are illustrative; use your slice's keys and the schema's enum.
+- Placeholder keys follow the one scheme in CONTRACTS section 6 (use only keys in this call's `snapshot_keys`). Enum names come from the schema.
 - **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,
   no "ten-year" written with digits, no clock times - say "the evening meeting". Link references go ONLY in `link_ids`.
 - Evidence items carry source, first-seen time and grade: OPEC / EIA / PPAC / a ministry order = OFFICIAL; "oil steady on tension"

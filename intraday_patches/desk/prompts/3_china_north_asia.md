@@ -18,7 +18,7 @@ Your slice of the DESK SNAPSHOT (each value with its age; missing feeds listed b
 - Offshore ETF units (EWY, EWT vs INDA, EPI, FLIN) when gap G5 is built; R5 world-reader cards on Asian companies and policy.
 - GIFT NIFTY; the latest cards of seats 1, 5 and 7.
 Cadence: 05:30-09:15 every 15 minutes, plus the meetings (19:45, 22:45, 07:15, 09:05, 15:45). Wake on Kospi / Taiwan +-2% [guess
-to tune]. Model: Sonnet 5.5, effort low (15-minute runs must stay short); medium at 07:15. Week 1 seat.
+to tune]. Model: Sonnet 5.5, effort low (15-minute runs must stay short); medium at 07:15. Week 1 seat (inside the Global call until it splits out; LEAN_COMBINED.md).
 
 ## 3. KNOWLEDGE
 Apply LINK_BOOK B3, B4, B7 (section 4), A rows 9-12 and C; CHAIN_OF_EVENTS rows 4-5; DESK_TEAM 2.5 and gap G8. All links are
@@ -58,7 +58,7 @@ threshold), CANCEL, QUIET. In 05:30-09:15 runs you will usually write QUIET; wri
  "headline": "Korea and Taiwan sold hard on AI hardware; Asia money may rotate to India banks; metals weak on risk-off",
  "strength": 3,
  "claims": [
-  {"text": "Kospi {num:asia.KOSPI.pct}, Taiex {num:asia.TAIEX.pct}, Nikkei {num:asia.NIKKEI.pct}", "type": "FACT", "evidence_ids": ["snap:asia_open"]},
+  {"text": "Kospi {num:world.KOSPI.pct}, Taiex {num:world.TAIEX.pct}, Nikkei {num:world.NIKKEI.pct}", "type": "FACT", "evidence_ids": ["snap:asia_open"]},
   {"text": "Korea / Taiwan foreign flow feed not available; rotation inferred from index moves", "type": "INFERENCE", "evidence_ids": ["snap:asia_open"]}],
  "ideas": [],
  "theme": {"theme_id": "AI_CAPEX_SHOCK", "state": "NEW", "route_to": ["35_connections", "10_flows"],
@@ -75,7 +75,7 @@ threshold), CANCEL, QUIET. In 05:30-09:15 runs you will usually write QUIET; wri
 - **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
   (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
   winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
-- Placeholder keys and enum names are illustrative; use your slice's keys and the schema's enum.
+- Placeholder keys follow the one scheme in CONTRACTS section 6 (use only keys in this call's `snapshot_keys`). Enum names come from the schema.
 - **Text fields carry NO digits at all** (validator, DESK_TEAM 4.5; whitelist only FY26, Q2, December): no row numbers,
   no "ten-year" written with digits, no clock times - say "the evening meeting". Link references go ONLY in `link_ids`.
 - Evidence items carry source, first-seen time and grade. An exchange statistic is OFFICIAL; "funds are moving" in a blog is

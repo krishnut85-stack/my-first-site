@@ -54,7 +54,7 @@ Kinds: VIEW (his read with for / against / record), QUIET (a repeat of a read al
  "strength": 3,
  "read": {"words": "<exact words>", "target": "IT", "side": "CE", "horizon": "TODAY", "condition": null, "type": "READ"},
  "claims": [
-  {"text": "The IT basket is {num:sec.IT.pct_open} from the open and above VWAP while NIFTY is {num:mkt.NIFTY.pct_open}", "type": "FACT", "evidence_ids": ["tape:<snap>"]},
+  {"text": "The IT basket is {num:sec.IT.pct_open} from the open and above VWAP while NIFTY is {num:idx.NIFTY.pct_open}", "type": "FACT", "evidence_ids": ["tape:<snap>"]},
   {"text": "His CE reads were right on the day {num:tr.ce.hits} of {num:tr.ce.n}", "type": "FACT", "evidence_ids": ["tr:score:<date>"]},
   {"text": "Against: US tech weakness usually reaches Indian IT through the ADRs; the desk's last IT call was a wrong PE", "type": "JUDGEMENT", "evidence_ids": ["score:<date>"]}],
  "verdict": "AGREE", "ideas": [],
@@ -63,6 +63,8 @@ Kinds: VIEW (his read with for / against / record), QUIET (a repeat of a read al
  "evidence": [{"id": "tr:<id>", "source": "TRADER READ", "first_seen": "<copied>", "grade": "ON RECORD"}],
  "new_since_last": "New read", "proof": "NOT PROVEN", "expires": "15:10", "linked_card_ids": ["<theme card>"], "links": []}
 ```
+- Seat-38 blocks (CONTRACTS section 1): `read` (`type` READ / QUESTION; `side` CE / PE, or null for a question), `read_id`, and
+  `verdict` AGREE / PARTLY / DISAGREE, or ANSWERED for a QUESTION.
 - No digits in text fields; his words keep their digits only in `read.words` (copied, not used as numbers).
 
 ## 6. EXAMPLE (real reads, from TRADER_CALLS, monday/TRADER_CALLS_scored.md, EVENT_MEMORY G, DESK_TEAM 2.5)

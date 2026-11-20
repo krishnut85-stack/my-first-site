@@ -51,19 +51,21 @@ Apply LINK_BOOK A23-A36, B7 (1-7), C1, C2, C3, C7, C17; DESK_TEAM G8; EVENT_MEMO
 
 ## 5. OUTPUT
 ```json
-{"seat": "R5", "kind": "FACT|THEME", "item_id": "<from input>",
- "headline": "<= 25 words, no digits", "strength": 2,
+{"seat": "R5", "kind": "FACT", "item_id": "<from input>",
+ "headline": "<at most twenty-five words, no digits>", "strength": 2,
  "reader": {"driver_keys": ["AI_CAPEX_SHOCK"], "cause": "<one line>", "money_goes": "<from where to where, one line>",
-            "order": "FIRST|SECOND", "session": "US_NIGHT|ASIA_MORNING|INDIA_HOURS",
-            "side_open": [{"target": "<SECTOR>", "why": "<the conflict>"}], "novelty": "FIRST|REPEAT-NO-NEW-FACT|NEW-FACT"},
- "claims": [{"text": "<figures only as {num:item.nK} or {num:snap.<key>}>", "type": "FACT|INFERENCE", "evidence_ids": ["<item_id>"]}],
- "evidence": [{"id": "<item_id>", "source": "<source>", "first_seen": "<copied>", "grade": "OFFICIAL|ON RECORD|SOURCES SAY|OPINION|SOCIAL", "quote": "<exact text>"}],
- "winners": [{"target": "<SYMBOL or SECTOR>", "side": "CE", "strength": 2, "horizon": "TODAY|TOMORROW|2-5D", "link_id": null, "why": "..."}],
- "losers":  [{"target": "<SYMBOL or SECTOR>", "side": "PE", "strength": 2, "horizon": "...", "link_id": null, "why": "..."}],
+            "order": "FIRST", "session": "US_NIGHT",
+            "side_open": [{"target": "<SECTOR>", "why": "<the conflict>"}], "novelty": "FIRST"},
+ "claims": [{"text": "<figures only as {num:item.nK} or a snapshot key, CONTRACTS section 6>", "type": "FACT", "evidence_ids": ["<item_id>"]}],
+ "evidence": [{"id": "<item_id>", "source": "<source>", "first_seen": "<copied>", "grade": "ON RECORD", "quote": "<exact text>"}],
+ "winners": [{"target": "<SYMBOL or SECTOR>", "side": "CE", "strength": 2, "horizon": "TOMORROW", "link_id": null, "why": "<one line>"}],
+ "losers":  [{"target": "<SYMBOL or SECTOR>", "side": "PE", "strength": 2, "horizon": "TOMORROW", "link_id": null, "why": "<one line>"}],
  "ideas": [], "against": "<one line>", "new_since_last": "<what this adds>",
- "proof": "NOT PROVEN", "expires": "NEXT_OPEN|15:10|2D", "linked_card_ids": [], "links": []}
+ "proof": "NOT PROVEN", "expires": "NEXT_OPEN", "linked_card_ids": [], "links": []}
 ```
-- winners and losers are REQUIRED; an empty side needs one full row `{"target": "none", "side": "CE", "strength": 1, "horizon": "...", "why": "<reason>"}`.
+- Each enum field above shows one legal value; the lists are CONTRACTS `$defs.reader_R5`: kind FACT / THEME / QUIET, `order` FIRST /
+  SECOND, `session` US_NIGHT / ASIA_MORNING / INDIA_HOURS, `novelty` FIRST / REPEAT-NO-NEW-FACT / NEW-FACT, `grade` per CONTRACTS section 5.
+- winners and losers are REQUIRED; an empty side needs exactly one full row `{"target": "none", "side": "CE", "strength": 1, "horizon": "TOMORROW", "why": "none found: <reason>"}`.
 - **A THEME card adds the LIGHT theme block** (CONTRACTS section 1): `"theme": {"theme_id": "<driver key>", "state": "NEW|CONFIRMING|BROKEN",
   "route_to": ["35_connections", "10_flows"], "chain": [two or more nodes, each {node, channel, link_id, status, evidence_ids}]}`.
   Only seat 35 writes the full form (confirm_live, kill_if, analogue); without the block code rejects the card.

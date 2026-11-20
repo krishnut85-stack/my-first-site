@@ -36,7 +36,7 @@ PREDICTION_LOOP C2-C5 and A6b point 5, LINK_BOOK C3 / C4 / C16, DESK_TEAM 1a (E1
 ## 4. HOW TO THINK (per story)
 1. **Is it news?** Price recap, "stocks to watch" with no new fact, or a sighting of a fact already on the board = QUIET.
 2. **What exactly is new?** One line vs the story's last episode: new date, new number, named official, denial, firm vs delay.
-3. **Who says it?** OFFICIAL / ON RECORD / SOURCES SAY / OPINION. A class C item stays capped until confirmed.
+3. **Who says it?** OFFICIAL / ON RECORD / SOURCES SAY / OPINION / SOCIAL (one table: CONTRACTS section 5). A class C item stays capped until confirmed.
 4. **Priced in?** If the share already moved its way in the 15 minutes before first sight, or the whole move is done, say so: the
    story EXPLAINS; the head may use it only for manage notes or WHY NOT, not for a new entry.
 5. **Chain to F&O names, both sides:** the named share first; peers only if LINK_BOOK links them (C16: usually not). For a policy or
@@ -55,7 +55,7 @@ or flow line), QUIET. JSON only (DESK_TEAM 4.4).
  "strength": 2,
  "claims": [
   {"text": "Semiconductor unit approved a strategic investment of {num:item.n1} from a global chip foundry", "type": "FACT", "evidence_ids": ["bs:live:<id>"]},
-  {"text": "The share was already up {num:sec.CYIENT.pct_open} before the item was first seen", "type": "FACT", "evidence_ids": ["snap:<id>"]}],
+  {"text": "The share was already up {num:px.CYIENT.pct_open} before the item was first seen", "type": "FACT", "evidence_ids": ["snap:<id>"]}],
  "novelty": "NEW-FACT", "price_state": "ALREADY_MOVED", "route": ["15_filings_desk", "21_it_ems"],
  "ideas": [],
  "winners": [{"target": "CYIENT", "side": "CE", "strength": 2, "horizon": "TODAY", "role": "named share", "why": "new investment in its chip unit; move largely made"}],
@@ -67,6 +67,8 @@ or flow line), QUIET. JSON only (DESK_TEAM 4.4).
 - **A THEME card** must carry the LIGHT theme block (CONTRACTS section 1): `theme_id`, `state` NEW / CONFIRMING / BROKEN, `route_to`
   (35_connections and / or 10_flows) and a `chain` of two or more nodes, each with channel, link_id, status and evidence ids - plus
   winners and losers. Only seat 35 writes the full form; a THEME without the block is rejected. No chain to write = write VIEW.
+- Seat-29 blocks (CONTRACTS section 1): `story_id`, `story_back` true / false, `novelty` FIRST / REPEAT-NO-NEW-FACT / NEW-FACT / DENIAL /
+  OFFICIAL, `price_state` NOT_MOVED / PARTLY_MOVED / ALREADY_MOVED, `route` = seat stems.
 - No digits in text fields; link ids only in `links`. **Write QUIET** `{"seat": "29_news_wires", "kind": "QUIET", "story_id": "...",
   "reason": "RECAP|SIGHTING|NO_FO_SHARE|REPEAT_NO_NEW_FACT"}` for recaps, sightings and non-F&O items. Most items are QUIET.
 
