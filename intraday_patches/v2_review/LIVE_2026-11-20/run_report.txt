@@ -1,0 +1,6 @@
+run <server>/girdata/testobs_live/LIVE_2026-11-20: 42 movers 2%+
+  AI share of triage rows: 917 of 917 (100%); rules fallbacks: {}
+  rings 75 (09:15-09:45: 7); by hour {'08': 4, '09': 12, '10': 12, '11': 17, '12': 8, '13': 9, '14': 9, '15': 4}
+  early / late / missed / wrong - cards: 0 / 10 / 32 / 0 · cards + WATCH: 0 / 17 / 15 / 10 · old system: 13 / 29 / 0 / 0
+  AI: 173 calls, $0.178, {('triage', 'routine-tier model'): 146, ('second', 'routine-tier model'): 15, ('rank', 'routine-tier model'): 8, ('final', 'final-tier model'): 4}, stop reasons {'end_turn': 173}
+  lanes: {'MUST SEE': 105, 'LOG': 2, 'WATCH': 810}
