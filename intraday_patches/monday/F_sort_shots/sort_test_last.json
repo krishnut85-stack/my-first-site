@@ -11,7 +11,7 @@
   "1600",
   "f2-board",
   "PASS",
-  "HIGH->LOW (pct) [3.68, 1.94, 1.9, 1.75] | LOW->HIGH (pct) [0.13, 0.17, 0.18, 0.27] | column click rs arrow=True | box 'FOR': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [483, 516], 'list': [538, 847], 'head': [516, 538]} | kept after reload (rs desc)"
+  "HIGH->LOW (pct) [3.68, 1.94, 1.9, 1.75] | LOW->HIGH (pct) [0.13, 0.17, 0.18, 0.27] | column click rs arrow=True | box 'FOR': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [483, 516], 'list': [538, 804], 'head': [516, 538]} | kept after reload (rs desc)"
  ],
  [
   "sectors",
@@ -82,5 +82,677 @@
   "drill-members",
   "NO BAR",
   "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "desk-hunt",
+  "1600",
+  "f1-sectors",
+  "PASS",
+  "HIGH->LOW (pct) [3.68, 1.94, 1.9, 1.75] | LOW->HIGH (pct) [-2.12, -0.91, -0.66, -0.64] | column click br arrow=True | FILTER / FIND opens the filters | box 'FOR': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [442, 500], 'list': [520, 599], 'head': [500, 520]} | kept after reload (br desc)"
+ ],
+ [
+  "desk-hunt",
+  "1600",
+  "f1-movers",
+  "PASS",
+  "HIGH->LOW (pct) [-0.01, -0.01, -0.02, -0.05] | LOW->HIGH (pct) [-3.37, -3.02, -2.78, -2.65] | FILTER / FIND opens the filters | filter ban: 1 rows, chip says 1, count '1 of 85 \u25b4' | box 'KAL': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [651, 709], 'list': [709, 849], 'head': None} | kept after reload (pct asc)"
+ ],
+ [
+  "desk-hunt",
+  "1600",
+  "f1-members",
+  "PASS",
+  "HIGH->LOW (pct) [5.29, 3.88, 1.87] | LOW->HIGH (pct) [1.87, 3.88, 5.29] | column click rs arrow=True | filter up: 3 rows, chip says 3, count 'all 3' | box 'APO': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [237, 298], 'list': [318, 395], 'head': [298, 318]} | kept after reload (rs desc)"
+ ],
+ [
+  "desk-hunt",
+  "1600",
+  "f1-action",
+  "NO BAR",
+  "rows 1 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "desk-hunt",
+  "1600",
+  "drill-members",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "desk-hunt",
+  "1366",
+  "f1-sectors",
+  "PASS",
+  "HIGH->LOW (pct) [3.68, 1.94, 1.9, 1.75] | LOW->HIGH (pct) [-2.12, -0.91, -0.66, -0.64] | column click br arrow=True | FILTER / FIND opens the filters | box 'FOR': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [374, 432], 'list': [454, 534], 'head': [432, 454]} | kept after reload (br desc)"
+ ],
+ [
+  "desk-hunt",
+  "1366",
+  "f1-movers",
+  "PASS",
+  "HIGH->LOW (pct) [-0.01, -0.01, -0.02, -0.05] | LOW->HIGH (pct) [-3.37, -3.02, -2.78, -2.65] | FILTER / FIND opens the filters | filter ban: 1 rows, chip says 1, count '1 of 85 \u25b4' | box 'KAL': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [604, 662], 'list': [662, 718], 'head': None} | kept after reload (pct asc)"
+ ],
+ [
+  "desk-hunt",
+  "1366",
+  "f1-members",
+  "PASS",
+  "HIGH->LOW (pct) [5.29, 3.88, 1.87] | LOW->HIGH (pct) [1.87, 3.88, 5.29] | column click room arrow=True | filter up: 3 rows, chip says 3, count 'all 3' | box 'FOR': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (room desc)"
+ ],
+ [
+  "desk-hunt",
+  "1366",
+  "f1-action",
+  "NO BAR",
+  "rows 1 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "desk-hunt",
+  "1366",
+  "drill-members",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "desk-hunt",
+  "1366 blocked",
+  "f1-sectors",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "desk-hunt",
+  "1366 blocked",
+  "f1-movers",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "desk-hunt",
+  "1366 blocked",
+  "f1-members",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "desk-hunt",
+  "1366 blocked",
+  "f1-action",
+  "NO BAR",
+  "rows 1 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "desk-hunt",
+  "1366 blocked",
+  "drill-members",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "desk-hunt",
+  "390",
+  "f1-sectors",
+  "PASS",
+  "HIGH->LOW (pct) [3.68, 1.94, 1.9, 1.75] | LOW->HIGH (pct) [-2.12, -0.91, -0.66, -0.64] | column click br arrow=True | FILTER / FIND opens the filters | box 'FOR': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [542, 579], 'list': [599, 939], 'head': [579, 599]} | kept after reload (br desc)"
+ ],
+ [
+  "desk-hunt",
+  "390",
+  "f1-movers",
+  "PASS",
+  "HIGH->LOW (pct) [-0.01, -0.01, -0.02, -0.05] | LOW->HIGH (pct) [-3.37, -3.02, -2.78, -2.65] | FILTER / FIND opens the filters | filter ban: 1 rows, chip says 1, count '1 of 85 \u25b4' | box 'KAL': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [493, 564], 'list': [564, 904], 'head': None} | kept after reload (pct asc)"
+ ],
+ [
+  "desk-hunt",
+  "390",
+  "f1-members",
+  "PASS",
+  "HIGH->LOW (pct) [5.29, 3.88, 1.87] | LOW->HIGH (pct) [1.87, 3.88, 5.29] | column click room arrow=True | filter up: 3 rows, chip says 3, count 'all 3' | box 'FOR': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (room desc)"
+ ],
+ [
+  "desk-hunt",
+  "390",
+  "f1-action",
+  "NO BAR",
+  "rows 1 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "desk-hunt",
+  "390",
+  "drill-members",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "desk-trade",
+  "1600",
+  "f1t-market",
+  "PASS",
+  "HIGH->LOW (pct) [3.68, 1.94, 1.9, 1.75] | LOW->HIGH (pct) [-2.12, -0.91, -0.66, -0.64] | box 'Jew': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [603, 636], 'list': [660, 841], 'head': [636, 660]} | kept after reload (pct asc)"
+ ],
+ [
+  "desk-trade",
+  "1600",
+  "f1t-action",
+  "NO BAR",
+  "rows 1 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "desk-trade",
+  "1366",
+  "f1t-market",
+  "PASS",
+  "HIGH->LOW (pct) [3.68, 1.94, 1.9, 1.75] | LOW->HIGH (pct) [-2.12, -0.91, -0.66, -0.64] | box 'Jew': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [567, 594], 'list': [612, 713], 'head': [594, 612]} | kept after reload (pct asc)"
+ ],
+ [
+  "desk-trade",
+  "1366",
+  "f1t-action",
+  "NO BAR",
+  "rows 1 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "desk-trade",
+  "1366 blocked",
+  "f1t-market",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "desk-trade",
+  "1366 blocked",
+  "f1t-action",
+  "NO BAR",
+  "rows 1 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "desk-trade",
+  "390",
+  "f1t-market",
+  "PASS",
+  "HIGH->LOW (pct) [3.68, 1.94, 1.9, 1.75] | LOW->HIGH (pct) [-2.12, -0.91, -0.66, -0.64] | FILTER / FIND opens the filters | box 'Jew': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [493, 530], 'list': [554, 794], 'head': [530, 554]} | kept after reload (pct asc)"
+ ],
+ [
+  "desk-trade",
+  "390",
+  "f1t-action",
+  "NO BAR",
+  "rows 1 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "rotation",
+  "1600",
+  "f3-windows",
+  "PASS",
+  "HIGH->LOW (w1) [2.34, 1, 0.54, 0.52] | LOW->HIGH (w1) [-3.07, -2.64, -2.27, -1.69] | column click dy arrow=True | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (dy desc)"
+ ],
+ [
+  "rotation",
+  "1600",
+  "drill-members",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "rotation",
+  "1366",
+  "f3-windows",
+  "PASS",
+  "HIGH->LOW (w1) [2.34, 1, 0.54, 0.52] | LOW->HIGH (w1) [-3.07, -2.64, -2.27, -1.69] | column click dy arrow=True | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (dy desc)"
+ ],
+ [
+  "rotation",
+  "1366",
+  "drill-members",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "rotation",
+  "1366 blocked",
+  "f3-windows",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "rotation",
+  "1366 blocked",
+  "drill-members",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "rotation",
+  "390",
+  "f3-windows",
+  "PASS",
+  "HIGH->LOW (w1) [2.34, 1, 0.54, 0.52] | LOW->HIGH (w1) [-3.07, -2.64, -2.27, -1.69] | column click dy arrow=True | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (dy desc)"
+ ],
+ [
+  "rotation",
+  "390",
+  "drill-members",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "news",
+  "1600",
+  "f4-news",
+  "PASS",
+  "HIGH->LOW (t) [1795278841, 1795277343, 1795277190, 1795276828] | LOW->HIGH (t) [1795202418, 1795202719, 1795247659, 1795248579] | column click w arrow=True | box 'BOS': 4 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [381, 414], 'list': [438, 843], 'head': [414, 438]} | kept after reload (w desc)"
+ ],
+ [
+  "news",
+  "1366",
+  "f4-news",
+  "PASS",
+  "HIGH->LOW (t) [1795278841, 1795277343, 1795277190, 1795276828] | LOW->HIGH (t) [1795202418, 1795202719, 1795247659, 1795248579] | column click w arrow=True | box 'BOS': 4 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [373, 406], 'list': [430, 649], 'head': [406, 430]} | kept after reload (w desc)"
+ ],
+ [
+  "news",
+  "1366 blocked",
+  "f4-news",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "news",
+  "390",
+  "f4-news",
+  "PASS",
+  "HIGH->LOW (t) [1795278841, 1795277343, 1795277190, 1795276828] | LOW->HIGH (t) [1795202418, 1795202719, 1795247659, 1795248579] | box 'NTP': 2 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [785, 822], 'list': [822, 1342], 'head': None} | kept after reload (t asc)"
+ ],
+ [
+  "positions",
+  "1600",
+  "f6-open",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "positions",
+  "1366",
+  "f6-open",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "positions",
+  "1366 blocked",
+  "f6-open",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "positions",
+  "390",
+  "f6-open",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "futures-oi",
+  "1600",
+  "f10-buildup",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 5.29, 4.72] | LOW->HIGH (pct) [-3.37, -3.02, -2.78, -2.65] | column click oi arrow=True | filter ban: 1 rows, chip says 1, count '1 of 218' | box 'CUB': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [411, 472], 'list': [496, 818], 'head': [472, 496]} | kept after reload (oi desc)"
+ ],
+ [
+  "futures-oi",
+  "1600",
+  "f10-money",
+  "PASS",
+  "HIGH->LOW (v) [97.25, 90.08, 85.52, 85.46] | LOW->HIGH (v) [85.46, 85.52, 90.08, 97.25] | filter ban: 1 rows, chip says 1, count '1 of 4' | box 'LIC': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (v asc)"
+ ],
+ [
+  "futures-oi",
+  "1366",
+  "f10-buildup",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 5.29, 4.72] | LOW->HIGH (pct) [-3.37, -3.02, -2.78, -2.65] | column click oi arrow=True | filter ban: 1 rows, chip says 1, count '1 of 218' | box 'CUB': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [411, 472], 'list': [496, 680], 'head': [472, 496]} | kept after reload (oi desc)"
+ ],
+ [
+  "futures-oi",
+  "1366",
+  "f10-money",
+  "PASS",
+  "HIGH->LOW (v) [97.25, 90.08, 85.52, 85.46] | LOW->HIGH (v) [85.46, 85.52, 90.08, 97.25] | filter ban: 1 rows, chip says 1, count '1 of 4' | box 'LIC': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [543, 601], 'list': [601, 713], 'head': None} | kept after reload (v asc)"
+ ],
+ [
+  "futures-oi",
+  "1366 blocked",
+  "f10-buildup",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "futures-oi",
+  "1366 blocked",
+  "f10-money",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "futures-oi",
+  "390",
+  "f10-buildup",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 5.29, 4.72] | LOW->HIGH (pct) [-3.37, -3.02, -2.78, -2.65] | column click oi arrow=True | filter ban: 1 rows, chip says 1, count '1 of 218' | box 'CUB': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [463, 500], 'list': [524, 944], 'head': [500, 524]} | kept after reload (oi desc)"
+ ],
+ [
+  "futures-oi",
+  "390",
+  "f10-money",
+  "PASS",
+  "HIGH->LOW (v) [97.25, 90.08, 85.52, 85.46] | LOW->HIGH (v) [85.46, 85.52, 90.08, 97.25] | filter ban: 1 rows, chip says 1, count '1 of 4' | box 'LIC': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (v asc)"
+ ],
+ [
+  "reference",
+  "1600",
+  "ref-names",
+  "PASS",
+  "HIGH->LOW (sym) ['360ONE', 'ABB', 'ABCAPITAL', 'ADANIENSOL'] | LOW->HIGH (sym) ['ZYDUSLIFE', 'YESBANK', 'WIPRO', 'WAAREEENER'] | filter up: 133 rows, chip says 133, count '133 of 218' | box 'ZYD': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [653, 729], 'list': [729, 815], 'head': None} | kept after reload (sym desc)"
+ ],
+ [
+  "reference",
+  "1366",
+  "ref-names",
+  "PASS",
+  "HIGH->LOW (sym) ['360ONE', 'ABB', 'ABCAPITAL', 'ADANIENSOL'] | LOW->HIGH (sym) ['ZYDUSLIFE', 'YESBANK', 'WIPRO', 'WAAREEENER'] | filter up: 133 rows, chip says 133, count '133 of 218' | box 'ZYD': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [597, 680], 'list': [680, 683], 'head': None} | kept after reload (sym desc)"
+ ],
+ [
+  "reference",
+  "1366 blocked",
+  "ref-names",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "reference",
+  "390",
+  "ref-names",
+  "PASS",
+  "HIGH->LOW (sym) ['360ONE', 'ABB', 'ABCAPITAL', 'ADANIENSOL'] | LOW->HIGH (sym) ['ZYDUSLIFE', 'YESBANK', 'WIPRO', 'WAAREEENER'] | filter up: 133 rows, chip says 133, count '133 of 218' | box 'ZYD': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [493, 530], 'list': [530, 830], 'head': None} | kept after reload (sym desc)"
+ ],
+ [
+  "scorecard",
+  "1600",
+  "sc-moved",
+  "PASS",
+  "HIGH->LOW (mv) [8.59, 6.25, 5.29, 4.72] | LOW->HIGH (mv) [-3.37, -3.02, -2.78, -2.65] | column click atm arrow=True | box 'IND': 7 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [433, 481], 'list': [481, 628], 'head': [481, 503]} | kept after reload (atm desc)"
+ ],
+ [
+  "scorecard",
+  "1600",
+  "sc-calls",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "scorecard",
+  "1366",
+  "sc-moved",
+  "PASS",
+  "HIGH->LOW (mv) [8.59, 6.25, 5.29, 4.72] | LOW->HIGH (mv) [-3.37, -3.02, -2.78, -2.65] | column click atm arrow=True | box 'IND': 7 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [422, 483], 'list': [483, 590], 'head': [483, 502]} | kept after reload (atm desc)"
+ ],
+ [
+  "scorecard",
+  "1366",
+  "sc-calls",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "scorecard",
+  "1366 blocked",
+  "sc-moved",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "scorecard",
+  "1366 blocked",
+  "sc-calls",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "scorecard",
+  "390",
+  "sc-moved",
+  "PASS",
+  "HIGH->LOW (mv) [8.59, 6.25, 5.29, 4.72] | LOW->HIGH (mv) [-3.37, -3.02, -2.78, -2.65] | column click atm arrow=True | box 'IND': 7 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [493, 530], 'list': [530, 830], 'head': [530, 549]} | kept after reload (atm desc)"
+ ],
+ [
+  "scorecard",
+  "390",
+  "sc-calls",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "journal",
+  "1600",
+  "jr-trades",
+  "PASS",
+  "HIGH->LOW (pnl) [585, -853, -9071] | LOW->HIGH (pnl) [-9071, -853, 585] | box 'UNI': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (pnl asc)"
+ ],
+ [
+  "journal",
+  "1366",
+  "jr-trades",
+  "PASS",
+  "HIGH->LOW (pnl) [585, -853, -9071] | LOW->HIGH (pnl) [-9071, -853, 585] | box 'UNI': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (pnl asc)"
+ ],
+ [
+  "journal",
+  "1366 blocked",
+  "jr-trades",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "journal",
+  "390",
+  "jr-trades",
+  "PASS",
+  "HIGH->LOW (pnl) [585, -853, -9071] | LOW->HIGH (pnl) [-9071, -853, 585] | box 'UNI': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (pnl asc)"
+ ],
+ [
+  "analyst",
+  "1600",
+  "an-feed",
+  "NO BAR",
+  "rows 1 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "analyst",
+  "1366",
+  "an-feed",
+  "NO BAR",
+  "rows 1 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "analyst",
+  "1366 blocked",
+  "an-feed",
+  "NO BAR",
+  "rows 1 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "analyst",
+  "390",
+  "an-feed",
+  "NO BAR",
+  "rows 1 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "morning",
+  "1600",
+  "mo-movers",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 5.29, 4.72] | LOW->HIGH (pct) [-3.37, -3.02, -2.78, -2.65] | column click oi arrow=True | box 'CUB': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [543, 601], 'list': [623, 839], 'head': [601, 623]} | kept after reload (oi desc)"
+ ],
+ [
+  "morning",
+  "1600",
+  "drill-members",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "morning",
+  "1366",
+  "mo-movers",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 5.29, 4.72] | LOW->HIGH (pct) [-3.37, -3.02, -2.78, -2.65] | column click oi arrow=True | box 'CUB': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [389, 447], 'list': [469, 707], 'head': [447, 469]} | kept after reload (oi desc)"
+ ],
+ [
+  "morning",
+  "1366",
+  "drill-members",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "morning",
+  "1366 blocked",
+  "mo-movers",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "morning",
+  "1366 blocked",
+  "drill-members",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "morning",
+  "390",
+  "mo-movers",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 5.29, 4.72] | LOW->HIGH (pct) [-3.37, -3.02, -2.78, -2.65] | column click oi arrow=True | box 'CUB': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (oi desc)"
+ ],
+ [
+  "morning",
+  "390",
+  "drill-members",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "phone",
+  "1600",
+  "ph-movers",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 5.29, 4.72] | LOW->HIGH (pct) [0.01, 0.02, 0.03, 0.04] | box 'JSW': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [357, 415], 'list': [415, 806], 'head': None} | kept after reload (pct asc)"
+ ],
+ [
+  "phone",
+  "1366",
+  "ph-movers",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 5.29, 4.72] | LOW->HIGH (pct) [0.01, 0.02, 0.03, 0.04] | box 'JSW': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [357, 415], 'list': [415, 674], 'head': None} | kept after reload (pct asc)"
+ ],
+ [
+  "phone",
+  "1366 blocked",
+  "ph-movers",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "phone",
+  "390",
+  "ph-movers",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 5.29, 4.72] | LOW->HIGH (pct) [0.01, 0.02, 0.03, 0.04] | box 'JSW': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [357, 394], 'list': [394, 750], 'head': None} | kept after reload (pct asc)"
+ ],
+ [
+  "sectors#sd=banks",
+  "1600",
+  "drill-members",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 4.72, 4.21] | LOW->HIGH (pct) [0.04, 1.73, 1.93, 2.12] | column click rs arrow=True | filter up: 12 rows, chip says 12, count 'all 12' | box 'IND': 2 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [406, 439], 'list': [264, 847], 'head': [439, 459]} | kept after reload (rs desc)"
+ ],
+ [
+  "sectors#sd=banks",
+  "1366",
+  "drill-members",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 4.72, 4.21] | LOW->HIGH (pct) [0.04, 2.47, 2.54, 2.94] | column click rs arrow=True | filter up: 8 rows, chip says 8, count 'all 8' | box 'IND': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [405, 438], 'list': [263, 715], 'head': [438, 458]} | kept after reload (rs desc)"
+ ],
+ [
+  "sectors#sd=banks",
+  "1366 blocked",
+  "drill-members",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "sectors#sd=banks",
+  "390",
+  "drill-members",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 4.72, 4.21] | LOW->HIGH (pct) [-1.82, -1.44, 0.04, 0.1] | filter up: 20 rows, chip says 20, count '20 of 22' | box 'KAR': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (pct asc)"
+ ],
+ [
+  "rotation#sd=banks",
+  "1600",
+  "drill-members",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 4.72, 4.21] | LOW->HIGH (pct) [0.04, 1.73, 1.93, 2.12] | column click rs arrow=True | filter up: 12 rows, chip says 12, count 'all 12' | box 'IND': 2 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (rs desc)"
+ ],
+ [
+  "rotation#sd=banks",
+  "1366",
+  "drill-members",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 4.72, 4.21] | LOW->HIGH (pct) [0.04, 2.47, 2.54, 2.94] | column click rs arrow=True | filter up: 8 rows, chip says 8, count 'all 8' | box 'IND': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (rs desc)"
+ ],
+ [
+  "rotation#sd=banks",
+  "1366 blocked",
+  "drill-members",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "rotation#sd=banks",
+  "390",
+  "drill-members",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 4.72, 4.21] | LOW->HIGH (pct) [-1.82, -1.44, 0.04, 0.1] | filter up: 20 rows, chip says 20, count '20 of 22' | box 'KAR': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (pct asc)"
+ ],
+ [
+  "positions@5",
+  "1600",
+  "f6-open",
+  "PASS",
+  "HIGH->LOW (pnl) [100, 40, -20, -80] | LOW->HIGH (pnl) [-140, -80, -20, 40] | box 'TAT': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (pnl asc)"
+ ],
+ [
+  "positions@5",
+  "1366",
+  "f6-open",
+  "PASS",
+  "HIGH->LOW (pnl) [100, 40, -20, -80] | LOW->HIGH (pnl) [-140, -80, -20, 40] | box 'TAT': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (pnl asc)"
+ ],
+ [
+  "positions@5",
+  "1366 blocked",
+  "f6-open",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "positions@5",
+  "390",
+  "f6-open",
+  "PASS",
+  "HIGH->LOW (pnl) [100, 40, -20, -80] | LOW->HIGH (pnl) [-140, -80, -20, 40] | box 'TAT': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': False, 'ok': True} | kept after reload (pnl asc)"
  ]
 ]
