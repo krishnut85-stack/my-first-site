@@ -28,6 +28,18 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 17:10 IST (real time) - THE TRADER: "No stopping - keep continuing the work." No pauses, no waiting for questions that have a
+sensible default; keep building through tonight and Sunday. NEXT, in order:
+1. The safety items still BUILDING (heartbeat, Telegram send-failure check, positions read, shock-day wait, carry rule, runbook) - DONE and
+   tested before the Sunday 17:00 mock.
+2. Room-to-run (M2) data prepared tonight so the live check does not compute at 09:20.
+3. Sunday after the ~12:00 reboot: kill test + the fallback round-trip test (2 harmless timers), then the 17:00 mock with the CPU peak
+   measured, 18:30 ring test, 19:45 brief (with the chip-shock ranking and the Bitcoin weekend line, NOT PROVEN).
+4. Then the rest of the list: MSCI / FTSE dates, earnings-call reader, the remaining free upgrades, and keep scoring every source.
+Decisions still with the trader (do not wait on them, carry on around them): ntfy topic, DO Backups in the panel, X / Gemini cancel,
+TV channels and broker PDFs (default NO until he says yes), ttyd / redis / his other projects (leave running until he says).
+Report hourly in STATUS as before.
+
 ## 21 Nov 16:50 IST (real time) - THE TRADER: "We don't need any old programs running. Monday we use the new desk and I watch on my
 laptop. Park the old programs, remove the old program subscriptions, use the CPU." DO NOW (weekend, market closed - no need to wait
 for Sun 21:00):
