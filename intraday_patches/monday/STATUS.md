@@ -958,3 +958,8 @@ Last update: 20:55 IST
   | LAST CALL line on the /preview share card | BUILDING (tonight, before the Sun 16:00 page freeze) |
   | daily source scorecard 16:00 IST (sources/p_score.py; SOURCE_SCORE.md): items, F&O items, first-on shares, lead, longest silence; false items need the readers' JUNK counts (not measured yet) | DONE |
   | free upgrades: Polymarket Fed odds (stand-in for CME, which blocks the server), DGTR / DGFT page watches, NCLT / NCLAT / SAT / TDSAT cause lists (robots.txt allowed only) | BUILDING (defaults: free + public + allowed = build) |
+- 18:05 - ROOM TO MOVE (17:10 item 2) - DONE + tested (safety builder; analyst/tests/test_m2_live.py 7/7, desk suite 278; gir-v2desk restarted 17:15):
+  nightly prep v2/models/m2prep.py ran 17:15 for Mon 23 Nov: 218 F&O shares prepared, 0 missing (19 sessions of first-5-min volume each; the 8 Nov Muhurat session has no 09:15 bar), OI change from the 20 Nov bhavcopy; cron /etc/cron.d/gir-m2prep 20:40 IST (after Mon 23 it prepares Wed 25).
+  Live: one Kite 1-minute call per share whose BUY NOW passed every gate, at/after 09:20, never a scan; failure = "Room to move: no reading", never blocks a card. Card lines inside SIZE ONLY (send gate clean). Checked against training inputs (SBIN 13 Nov equal).
+  NOT PROVEN: key 4's 1-minute history access (its token is dead today; falls back to key 1, which dayaudit already uses). BUILDING: a one-call probe of keys 4 / 1 in the Monday 08:20 key check, shown on the READY line.
+  MSCI / FTSE dates now read by indiacal: Mon 23 shows "INDEX CHANGE Mon 30 Nov at the close: MSCI India Standard - F&O in ADANIGREEN, COFORGE, LICI; out PIIND" + the Small Cap line. DONE.
