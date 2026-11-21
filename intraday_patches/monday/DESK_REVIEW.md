@@ -28,6 +28,10 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 16:35 IST - HOLD the 16:20 INDEX DESK entry. The trader asked for a proper panel decision first ("don't be fast"). A 3-member panel
+(index options trader, quant, risk / devil) is designing the NIFTY / BANKNIFTY decision process now; the agreed rules replace 16:20 in the
+next entry. Do not build index cards or send the Monday index plan until then.
+
 ## 21 Nov 16:20 IST - THE TRADER: "monitor NIFTY and BANKNIFTY too - ask the desk for CE and PE". THE INDEX DESK (part of the frozen design:
 index ideas were already allowed; this makes them a fixed, visible part):
 1. EVERY BRIEF gets an "INDEX" block (bullet layout): NIFTY and BANKNIFTY - THE OPEN lean, THE SESSION lean, key levels (previous close,
