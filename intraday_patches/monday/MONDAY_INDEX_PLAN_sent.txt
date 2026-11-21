@@ -1,0 +1,49 @@
+MONDAY INDEX PLAN - WATCH ONLY
+
+OPEN LEAN - NOT A TRIGGER
+• Nasdaq futures since Fri close: -4.0%
+• (last quote Sat 03:25 IST)
+• On 1%+ moves the gap followed 80%
+• (148 cases)
+• Lean: gap DOWN - final read at 07:15
+• Friday Nasdaq fall: Monday opened lower 93%
+• (20 cases)
+
+AFTER THE OPEN - HISTORY
+• Gap down 0.5%+: closed above open 6 in 10
+• (NIFTY 61%, BANKNIFTY 64%)
+• US-shock days: closed above open 58-63%
+• (41 cases)
+• Big gaps up rarely fill the same day
+• Session lean: flat from the open / unknown
+
+09:20 / 09:30 CHECKS - DECEMBER FUTURES
+• Hands off 09:15-09:20
+• VIX up 10%+: no entry before 09:30
+• Futures above or below VWAP
+• Opening range 09:15-09:30
+• Gap vs the usual gap
+• BANKNIFTY: 4 of 5 big banks above VWAP
+• NIFTY: 6 of 8 heavyweights above VWAP
+• NIFTY and BANKNIFTY must agree
+
+WHAT WOULD MAKE AN IDEA - PE IS THE MIRROR
+• Gap down, then 2 closes back above VWAP
+• A dip to VWAP that closes above it
+• Range high broken on 1.5x volume
+• Plus breadth and a fresh reason
+• Plus every desk check passing
+
+MONDAY RISK
+• 1 index trade only, 0.5% risk
+• No new index entry after 13:30
+• Exit by 15:10, no carry
+• Stop on the futures, premium -30% max
+• While you hold a bank PE (UNIONBANK):
+• no BANKNIFTY PE - same driver
+• No second PE on the same US shock
+
+NOT PROVEN
+• No index buy signal has passed testing
+• (22 tried on 3 years)
+• So no index BUY on Monday - WATCH only
