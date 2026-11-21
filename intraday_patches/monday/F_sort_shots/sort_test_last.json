@@ -1,0 +1,86 @@
+[
+ [
+  "sectors",
+  "1600",
+  "f2-movers",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 5.29, 4.72] | LOW->HIGH (pct) [2.51, 2.54, 2.58, 2.62] | column click oi arrow=True | filter fo: 20 rows, chip says 20, count '20 of 21' | box 'CUB': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [433, 491], 'list': [513, 847], 'head': [491, 513]} | kept after reload (oi desc)"
+ ],
+ [
+  "sectors",
+  "1600",
+  "f2-board",
+  "PASS",
+  "HIGH->LOW (pct) [3.68, 1.94, 1.9, 1.75] | LOW->HIGH (pct) [0.13, 0.17, 0.18, 0.27] | column click rs arrow=True | box 'FOR': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [475, 508], 'list': [530, 840], 'head': [508, 530]} | kept after reload (rs desc)"
+ ],
+ [
+  "sectors",
+  "1600",
+  "drill-members",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "sectors",
+  "1366",
+  "f2-movers",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 5.29, 4.72] | LOW->HIGH (pct) [2.51, 2.54, 2.58, 2.62] | column click oi arrow=True | filter fo: 20 rows, chip says 20, count '20 of 21' | box 'CUB': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [431, 503], 'list': [525, 715], 'head': [503, 525]} | kept after reload (oi desc)"
+ ],
+ [
+  "sectors",
+  "1366",
+  "f2-board",
+  "PASS",
+  "HIGH->LOW (pct) [3.68, 1.94, 1.9, 1.75] | LOW->HIGH (pct) [0.13, 0.17, 0.18, 0.27] | column click rs arrow=True | box 'FOR': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [473, 506], 'list': [528, 706], 'head': [506, 528]} | kept after reload (rs desc)"
+ ],
+ [
+  "sectors",
+  "1366",
+  "drill-members",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "sectors",
+  "1366 blocked",
+  "f2-movers",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "sectors",
+  "1366 blocked",
+  "f2-board",
+  "PASS",
+  "storage blocked: bar works"
+ ],
+ [
+  "sectors",
+  "1366",
+  "drill-members",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ],
+ [
+  "sectors",
+  "390",
+  "f2-movers",
+  "PASS",
+  "HIGH->LOW (pct) [8.59, 6.25, 5.29, 4.72] | LOW->HIGH (pct) [2.51, 2.54, 2.58, 2.62] | column click oi arrow=True | filter fo: 20 rows, chip says 20, count '20 of 21' | box 'CUB': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [464, 501], 'list': [523, 943], 'head': [501, 523]} | kept after reload (oi desc)"
+ ],
+ [
+  "sectors",
+  "390",
+  "f2-board",
+  "PASS",
+  "HIGH->LOW (pct) [3.68, 1.94, 1.9, 1.75] | LOW->HIGH (pct) [0.13, 0.17, 0.18, 0.27] | column click rk arrow=True | box 'FOR': 1 rows | no cut text on the bar | bar + column names on screen at the list end {'scrolled': True, 'ok': True, 'bar': [493, 530], 'list': [552, 1112], 'head': [530, 552]} | kept after reload (rk desc)"
+ ],
+ [
+  "sectors",
+  "390",
+  "drill-members",
+  "NO BAR",
+  "rows 0 (fewer than 2 rows or list not on screen at this width)"
+ ]
+]

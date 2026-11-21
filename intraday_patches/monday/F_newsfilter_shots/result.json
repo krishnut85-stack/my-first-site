@@ -1,0 +1,38 @@
+{
+ "1600": {
+  "cnt": "Market news 61 · hidden 29 · 54 stories · 37 today + 17 earlier · live event pinned above",
+  "main_rows": 54,
+  "other_line": "▸Other news (hidden: 29) · not market news · logged with the reason",
+  "other_rows_open": 29,
+  "hidden_in_main": [],
+  "news_hscroll": false,
+  "share_hscroll": false,
+  "share_has_other": true,
+  "share_stories_attack_on_titan": false,
+  "errors": []
+ },
+ "1366": {
+  "cnt": "Market news 61 · hidden 29 · 54 stories · 37 today + 17 earlier",
+  "main_rows": 54,
+  "other_line": "▸Other news (hidden: 29) · not market news · logged with the reason",
+  "other_rows_open": 29,
+  "hidden_in_main": [],
+  "news_hscroll": false,
+  "share_hscroll": false,
+  "share_has_other": true,
+  "share_stories_attack_on_titan": false,
+  "errors": []
+ },
+ "390": {
+  "cnt": "Market news 61 · hidden 29 · 54 stories · 37 today + 17 earlier",
+  "main_rows": 54,
+  "other_line": "▸Other news (hidden: 29) · not market news · logged with the reason",
+  "other_rows_open": 29,
+  "hidden_in_main": [],
+  "news_hscroll": false,
+  "share_hscroll": false,
+  "share_has_other": true,
+  "share_stories_attack_on_titan": false,
+  "errors": []
+ }
+}
