@@ -1,0 +1,91 @@
+{
+ "iv_days": [
+  "2025-10-14",
+  "2026-11-20",
+  272
+ ],
+ "cut": "2026-06-16",
+ "rows": 52303,
+ "signals": [
+  {
+   "signal": "S1 IV jump top fifth -> next-day |move| / ATR",
+   "discovery": {
+    "n": 5981,
+    "mean_sig": 0.642,
+    "mean_rest": 0.513,
+    "t": 16.23
+   },
+   "unseen": {
+    "n": 4481,
+    "mean_sig": 0.602,
+    "mean_rest": 0.528,
+    "t": 8.0
+   },
+   "holds": true
+  },
+  {
+   "signal": "S2 IV jump top fifth + share fell today -> next-day return",
+   "discovery": {
+    "n": 3634,
+    "mean_sig": 0.109,
+    "mean_rest": -0.006,
+    "t": 2.75
+   },
+   "unseen": {
+    "n": 2630,
+    "mean_sig": 0.11,
+    "mean_rest": 0.0,
+    "t": 2.52
+   },
+   "holds": true
+  },
+  {
+   "signal": "S3 IV jump top fifth + share rose today -> next-day return",
+   "discovery": {
+    "n": 2339,
+    "mean_sig": -0.027,
+    "mean_rest": 0.011,
+    "t": -0.74
+   },
+   "unseen": {
+    "n": 1841,
+    "mean_sig": -0.066,
+    "mean_rest": 0.02,
+    "t": -1.52
+   },
+   "holds": false
+  },
+  {
+   "signal": "S4 IV crush bottom fifth -> next-day |move| / ATR",
+   "discovery": {
+    "n": 5981,
+    "mean_sig": 0.467,
+    "mean_rest": 0.557,
+    "t": -13.97
+   },
+   "unseen": {
+    "n": 4481,
+    "mean_sig": 0.491,
+    "mean_rest": 0.555,
+    "t": -8.16
+   },
+   "holds": true
+  },
+  {
+   "signal": "S5 control: IV jump top fifth on a QUIET day (|today| / ATR below median) -> next-day |move| / ATR, vs other quiet days",
+   "discovery": {
+    "n": 2314,
+    "mean_sig": 0.598,
+    "mean_rest": 0.497,
+    "t": 8.64
+   },
+   "unseen": {
+    "n": 1804,
+    "mean_sig": 0.598,
+    "mean_rest": 0.512,
+    "t": 6.1
+   },
+   "holds": true
+  }
+ ]
+}

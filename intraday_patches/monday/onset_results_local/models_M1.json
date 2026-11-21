@@ -1,5 +1,5 @@
 {
- "made": "2026-11-21T07:35:45",
+ "made": "2026-11-21T07:43:01",
  "rule": "for each test year Y, train on all years < Y only, calibrate on out-of-fold scores inside those years (Platt), then\nscore year Y once. A model PASSES only if, on the unseen years pooled: accuracy beats the base rate (the training years' majority\nclass) with a one-sided binomial p < 0.025 (0.05 halved: the better of 2 model kinds is picked), the Brier score beats the base\nrate's, and it beats the base rate in at least half of the test years. Otherwise it stays OFF the cards and predict() says \"no edge\".",
  "results": [
   {

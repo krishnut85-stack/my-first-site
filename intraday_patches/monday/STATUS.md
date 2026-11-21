@@ -711,3 +711,13 @@ Last update: 20:55 IST
   - A CARRY line appears only once model M1 beats the base rate on unseen data (config.GAP_EDGE_TESTED).
 - 13:08 - FOR THE DESK - 19:45 BRIEF MONEY: at the new 18,000-token brief limit a head brief costs about $0.65 (worst case $0.73); with the meeting seats (~$0.2-0.3) ONE attempt fits the $1.20 floor ($0.95-1.05), but a full-size RETRY would need about $1.40 and the floor would refuse it, so the brief would fail instead of going out. Choose: (a) raise the 19:45 floor to about $1.50 (e.g. 22:45 $0.20 -> $0.00 + 07:15 $0.60 -> $0.50; 22:45 rarely runs); or (b) keep "one attempt" (the brief passed every check twice today). Nothing changed.
 - 13:08 - MOCK: MOCK_DRY9 (started before the gate) is interim; the FINAL real dry run on the frozen code runs before Sun 16:00 after B and C.
+- 13:16 - THE TRADER'S 10 STANDING RULES (desk 15:20, in his words: "I'm crying. I don't know what to do. Ask them not to make this mistake again and again."). desk/prompts/TRADER_RULES.md copied to the prompt loader. TOP PRIORITY for the desk builder, above everything else:
+  (1) LOAD the rules into the HEAD and EVERY SEAT on EVERY call, at the top of the cached prompt (with a test);
+  (2) ENFORCE rules 4-7 in code:
+      - R4: BUY only on an agreed A; WATCH never says BUY; grade C never on Telegram;
+      - R5: clean lines + block internal-note words;
+      - R6: NEVER REPEAT. A sent-ideas ledger; unchanged ideas collapse into one "Still watching: ..." line;
+      - R7: WHOLE MARKET. Rank all F&O shares every time, demote names stuck 3 sessions without new evidence, and if nothing new passes say so in one line and stay quiet;
+  (3) a REPEAT-OF-A-CORRECTED-MISTAKE detector: any repeated unchanged idea, BUY on a non-A idea, grade C on Telegram, messy text, names stuck 3 sessions, or SILENCE on a big event (a RED shock / RBI operation with no line within 5 min) = "P1 RULE BROKEN: rule n" on the page / board / System topic, logged to v2/data/desk/rule_breaks.jsonl, and reported HERE the same day.
+  Both builders were told to read the rules before any change he sees. IN PROGRESS.
+  RULE CHECK ON TODAY'S MESSAGES (honest): messages 638-639 broke rule 5 (messy text: doubled "%%", broken bullets) -> the hard send gate now blocks such text; message 631-633's first outlook printed "BUY <share>" lines for WATCH ideas (rule 4) -> fixed by the agreement loop (BUY only on agreed A); 635 corrected stale overnight numbers (rule 1). No message today was a repeated unchanged idea under rule 6 except the outlook re-sends (637 and 640-641, which the trader / desk ordered).
