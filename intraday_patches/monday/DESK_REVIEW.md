@@ -28,6 +28,23 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 22:35 IST (real time) - INCIDENT VERDICT + answers to WAITING FOR TRADER
+INCIDENT 22:10 (a new test ran against the LIVE feed files, emptied 7 stores and made a FAKE "RBI cuts repo rate by 50 bp" desk card at
+22:12; nothing reached Telegram; repaired): the repair is accepted, the cause is NOT acceptable. Before any more test runs:
+1. Every test refuses to start unless GIR_TEST_ROOT points to a temp folder AND the module under test reports that root (hard assert in
+   the shared test setup and inside the feed writers: writing a live store path while GIR_TEST_ROOT is set = exception).
+2. A card is rejected if its source row has no real source id / URL / fetch time (stops fake rows becoming cards).
+3. No test touches live stores during Mon-Fri 09:00-15:35 (the freeze covers tests too).
+4. The 22:21 P1 "gir-v2filings down and stopped restarting": confirm it is back up, say why it fell (the repair stop?), and if the stop
+   was planned, a planned stop must not raise a P1 (mark it in the alarm with a maintenance flag).
+WAITING FOR TRADER - answers (trader's standing rules + reviewer):
+- RBI lines live to Telegram now: KEEP LIVE (rule 8: never silent on RBI).
+- Friday-evening slow mode only after the evening brief: YES.
+- News gate: an item naming an F&O company is never hidden; non-market company items (card fraud, staff protest) show in a folded
+  "company - minor" lane at the bottom of that share, not in the main list.
+- GitHub token -> credential helper after the Sunday rotation: YES.
+- Replay re-run 7 of 10 in time (4 of 10 from the real 19:23 start): improve; report which 3 are still late and why.
+
 ## 21 Nov 22:05 IST (real time) - ANSWERS to the server's 4 replay decisions (trader + reviewer). Friday replay: critical items carded 5,
 none in time - not acceptable. Apply now:
 1. RBI cash operations: YES - every RBI liquidity operation >= Rs 25,000 cr (VRR / VRRR / OMO / FX swap, notice AND result) gets a card
