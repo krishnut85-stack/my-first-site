@@ -325,3 +325,10 @@ Last update: 20:55 IST
 - 05:33 - HOURLY PULL (desk 21 Nov 05:30): the 04:35 orders ACCEPTED (incl. the replay-leak guard). Sent to the desk builder: group cap = 2 members per group card (+ any member named directly; ~40 names); make sure the --from-state re-run works with the leak guard (no --allow-leak), with a fake-brain dry run.
   20 Nov MORNING RE-RUN, revised desk view: with the leak guard it no longer sees 20 Nov outcomes (0 hits) and uses the old row 5 and no 20 Nov lessons, so it IS a fair test of the CODE fixes (routing, consensus + not_picked, light morning briefs, retry reserve, group expansion), not of the lessons. Still the trader's choice: about $2.5 above the $24, and only after the credit top-up.
   STILL BLOCKED: the Anthropic API credit.
+- 06:50 - DESK 05:30 ORDERS DONE (desk builder, BUILD_LOG 05:35 with undo; desk tests 97; gir-v2desk restarted after hours 05:34, login 0.10 s):
+  - Group cap = 2 members per group card (+ members named directly).
+  - Leak guard extended: a replay's ENGINE now reads a chain map built from the snapshot LINK_BOOK (v2/data/knowledge_snapshots/<D>/kb/chains.json), while the live engine keeps the corrected one; the leak check also scans that chain map. Test: the 20 Nov snapshot gives the old row 5, no 20 Nov lessons, 0 leak hits.
+  - Re-run READY: the fake-brain dry run of the 20 Nov morning re-run with the leak guard (STATE_T3, $0 real) delivered all four briefs (22:45 nothing broke, no AI call), with the knowledge snapshot named in the summary. Its EDGE line is FAKE and says nothing.
+  - The real re-run waits for the credit top-up and the trader's yes (about $2.5 above the $24).
+- 06:50 - BUILDER SESSION ENDED: the desk-builder agent stopped after 05:35 on a sign-in time limit of its own session (not GIR's API key). Its work to 05:35 is complete and logged. New desk-code work will start in a fresh builder session when the desk sends more.
+- 06:50 - HOURLY PULL: no new desk entries, prompt or design changes since 05:30.
