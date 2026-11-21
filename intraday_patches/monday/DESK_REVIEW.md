@@ -28,6 +28,24 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 20:30 IST (real time) - THE TRADER: "We gave a long list of websites and not even one critical item came - I see nothing."
+He is right. Reasons on record (NEWS_COVERAGE_AUDIT 13:58): 104 of 186 listed hosts NOT BUILT; regulator rows went to the wrong reader
+(PIB 48 / RBI 13 / SEBI 16 items -> 0 cards; fixed today); BSE blocked for v2 (bridge fixed); the readers stopped at 08:50 today on the
+$1.50 weekend cap, so nothing read since; Google News (96 min late) made most cards while the fast wires made few.
+ORDERS (code, $0 unless the AI line says so):
+1. NO "Sat 28 Nov / Phase 2 / Phase 3" dates any more (trader 16:05). Build every FREE, allowed host in the audit's PARTIAL + NOT BUILT
+   lists now, most valuable first: FE + Zee Biz sitemaps, gazette Extraordinary, FDA warning letters, CERC / PNGRB / PRS, IRDAI (robots
+   says no -> say so, do not read), CCI slowed to 300 s, then the rest. Respect robots.txt and 403s.
+2. CHECK THE PARK: newshawk-regwatch / govwatch / regnews were parked at 16:55. Where one was the ONLY reader of a source (CERC, PNGRB,
+   FDA, DGCA, PRS, IRDAI...), that source is now not read at all. List them and rebuild each in v2 tonight.
+3. PROOF ON FRIDAY'S TAPE: replay 20 Nov through the v2 news path and show, for each critical item, first seen time / source / reader /
+   card yes-no: RBI VRR result 10:20, second VRR 12:35 / 13:40, the 4-day VRR notice 19:25, Nvidia SEC probe (Reuters), Anthropic IPO
+   slide, US close -3.7% / -5.3%, IndusInd roadshows, CII summit FPI line, gold -4.7%. Any item missed = named fix.
+4. WEEKEND READING: with the $1.50 weekend cap the readers stop early, so the Sunday 19:45 brief starts blind to the weekend's news.
+   Offer the trader ONE choice (do not change it yourself): keep $1.50, or Sunday only $3.00 so the readers work through Sunday afternoon
+   before the brief.
+5. Report the new totals: LIVE / PARTIAL / BLOCKED / NOT BUILT, and "critical items caught on Friday's replay: x of y".
+
 ## 21 Nov 20:20 IST (real time) - THE TRADER: "Many unnecessary news items come into the system (a festival celebration...). Only
 market-related news should be visible on the GIR page." BUILD before the Sun 16:00 freeze:
 1. RELEVANCE GATE on every news list (News page F4, share page, phone): an item is shown only if it (a) names an F&O share / its company,
