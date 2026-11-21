@@ -115,3 +115,62 @@ BUY NOW / READY / NOT TAKING on a fire are proven by the unit tests (below), not
 sheet from a fixture book (3 CE + 3 PE + AVOID, every row with trigger / stop / target / why / grade, gate-clean, longest line <= 45, grade C absent), "fewer than 3" said plainly, refusal of a row with no trigger / stop / target / why / wrong-side levels, why shortened never wrapped, 07:15 keep / drop / new, trigger fire -> BUY NOW for A and READY for B (not before 09:30, not without RVOL 1.5, never twice), Devil unanswered -> NOT TAKING, A with failed checks -> READY (never silent), NO TRADE YET at 10:30 / 13:00 (once; none after a BUY NOW), 15:15 summary, 15:45 score rows + week scorecard, the SHEET send-gate rule, ring-test detection + ring limits, a replay never sends, the market call (GIFT outranks NQ; the world builder's verdict), after_brief with the real board (ungraded idea graded first; 07:15 update).
 
 NOT PROVEN - the sheet earns trust only through the week-1 scorecard.
+
+## Reviewer's fixes 5-10 (DESK_REVIEW 22 Nov 00:50) - in the sheet code
+
+| fix | status | what the code does | proof |
+|---|---|---|---|
+| 5 anti-chase on the evening list | DONE | at sheet time every open idea is graded again by grade.py with the store as it is then; a CE after a 3%+ rise / PE after a 3%+ fall with no catalyst dated after the move -> WATCH only -> AVOID "only the last move" (never a row) | tests (POLYCAB fixture); Friday dry run: BANKBARODA CE (+4.1% Thu) and PNB CE -> AVOID; Monday preview: INDUSINDBK CE, PERSISTENT CE -> AVOID |
+| 6 both legs per driver | DONE (sheet) | "BOTH SIDES: <driver> <move since India's close> (<time>)" + the two legs with the sign the tape shows (copper down: cables PE + AC / EMS CE; gold down: lenders PE + jewellers PE; chips, Nasdaq, Brent, Bitcoin); the 3 biggest movers >= 1% | test_fix6; Monday preview below. The head's own D-lines are the head prompt (desk-owned) - not changed here |
+| 7 Monday lean | DONE | market call from gapsignals.signals(now): when GIFT and the NQ line disagree: "SIGNALS DISAGREE" + "No pre-set side - decide at 09:30"; GIFT, Nasdaq futures and Bitcoin each with its time; a CORRECTION block on the Sun 19:45 sheet for msgs 640-641 / 644 (gap DOWN said while GIFT was +0.14% after the US close; an untested ALKEM PE shown; "93% (20 cases)" -> 14 of 15; DIXON demoted) | test_world_builder_verdict, test_sheet_3_3 (CORRECTION) |
+| 8 open positions first | DONE | every sheet starts with "YOUR <share> <side> <strike> DEC" + HOLD while / EXIT if the share crosses the last session's high (PE) / low (CE), no amounts; an idea on the same share or sector on the other side is flagged "Against your ... - your call" and can never be a desk BUY (A -> B) | test_fix8 (SBIN CE vs a bank PE); Monday preview |
+| 9 Monday PE list from the chip-shock study | DONE | for session Mon 23 Nov the PE rows are the study's 2026 laggers in order (CGPOWER, POWERINDIA, GVT&D, KAYNES, KPITTECH, PGEL; n = 12, NOT PROVEN, grade B with "Study: lagged k of 12"), levels by code (break of Friday's low); DIXON demoted to last | test_fix9; Monday preview (GVT&D had no code levels -> KAYNES next) |
+| 10 one message per idea / balanced levels / untested label | DONE | 07:15 / 09:08 updates show only NEW or CHANGED ideas; unchanged ones = one "STILL ON - NO CHANGE" line; live READY / BUY NOW / NOT TAKING ring once per idea per day; a row with reward / risk below 1.0 is refused (INDUSINDBK +0.6% vs -3.4% could not be printed); an idea without a tested base rate prints "Story only - not tested by history" | test_0715, test_fix10, tests of ring-once |
+
+### Monday 23 Nov preview (live board + live store at 00:2x Sun, not sent)
+
+```
+YOUR HDFCBANK PE 820 DEC
+• HOLD while share below 850.4
+• EXIT if share above 850.4 after 09:30
+(MOTILALOFS PE 1160 DEC: 1,215 · UNIONBANK PE 210 DEC: 219.1)
+
+CORRECTION (SAT MESSAGES)
+• 640 / 644 said gap DOWN: GIFT was +0.14%
+• after the US close (Sat 02:44) - no pre-set
+• 641 showed an untested idea (ALKEM PE)
+• 644 '93% (20 cases)' was wrong: 14 of 15
+• DIXON PE demoted: lagged least in 2026
+
+MARKET CALL
+• SIGNALS DISAGREE · Session: DOWN
+• GIFT NIFTY 25,836 at Sat 02:44 IST
+• +35 pts (+0.14%) vs NIFTY close
+• Nasdaq fut -4.0% since close (Sat 03:25)
+• Bitcoin -2.7% since close (Sun 00:14)
+• No pre-set side - decide at 09:30
+
+BOTH SIDES: CHIPS (SOX) -10.7% (SAT 02:30)
+• power / EMS PE (CGPOWER, KAYNES)
+• IT services held better in 2026
+
+CE IDEAS
+• No CE passed the checks
+
+PE IDEAS
+CGPOWER PE 800 DEC · B
+• READY below 785.1 + RVOL 1.5 after 09:30
+• Stop 799.3 · Target 756.7
+• Study: lagged 8 of 12, -2.5 vs NIFTY
+(then POWERINDIA PE, KAYNES PE)
+
+AVOID
+• INDUSINDBK CE - only the last move
+• PERSISTENT CE - only the last move
+```
+
+The real 19:45 sheet is built from the head's 19:45 ideas on top of this.
+
+## Replay / dress rehearsal
+
+`rehearsal.py` (and so `mock.py` and the dress rehearsal) now runs the sheet after each brief slot, the sheet's live step (triggers, NO TRADE YET 10:30 / 13:00, 15:15 summary) and the 15:45 score, all inside the run folder; every line goes to the run's `would_send.jsonl` (the capture) - a replay never sends. Checked on a stub mock dry run of Fri 20 Nov (`DESK_rehearsal/MOCK_DRY_SHEET1`): sheets at 19:47 / 07:17 / 09:10 in the capture.
