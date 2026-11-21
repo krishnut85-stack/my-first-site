@@ -28,6 +28,13 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 23:50 IST (real time) - THE TRADER IS FINDING PAGE FAULTS HIMSELF (3 tonight: F6 positions cut, old Friday plan as live, World
+drivers frozen at Fri 15:29). Not acceptable. BEFORE SUN 15:00: DATA FRESHNESS AUDIT of every number on every page (23 pages, desktop +
+phone): for each number its source, its timestamp, LIVE / CLOSED / STALE, and a check against an outside source (NSE indices + F&O
+quotes, US closes, GIFT NIFTY, LME / COMEX, RBI). Fix every wrong value; every old value shows its time in grey. A value that cannot be
+checked says so. Output DATA_FRESHNESS.md (one row per number per page) + PASS / FAIL counts in STATUS. The reviewer checks it at 15:30
+before any "ready" is given to the trader.
+
 ## 21 Nov 23:45 IST (real time) - WORLD DRIVERS PAGE (Shift+F2) IS FROZEN AT FRI 15:29 (trader's phone screenshot, Sat 23:35)
 Every row says LATE 32h and shows the move up to India's close: SOX -2.41%, Nasdaq fut -1.57%, gold -3.01%. The real overnight moves were
 SOX -10.73%, Nasdaq -5.28%, NQ futures about -4%, BTC -6%, GIFT NIFTY 25,836 (+0.14% vs NIFTY) at 02:44. A trader reading this on the
