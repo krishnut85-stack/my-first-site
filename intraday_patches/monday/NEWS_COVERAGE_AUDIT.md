@@ -1,5 +1,187 @@
 # NEWS / INFORMATION SOURCE COVERAGE AUDIT
 
+## REFRESH 21 Nov 2026 21:54 IST (DESK_REVIEW 21 Nov 20:30 - "We gave a long list of websites and not even one critical item came")
+
+No more "Sat 28 Nov / Phase 2 / Phase 3" dates: every FREE host of the PARTIAL + NOT BUILT lists that answers this server and whose
+robots.txt allows us was built tonight (v2/sources/p_govpages.py: govpages / worldoff / newslane / egazette / odds; wires + Zee Business
+and Zerodha Pulse; regs + PRS, CCI slowed to 300 s). Generic User-Agent `GIR-newsreader/1.0` (no personal details), robots.txt read per
+host and obeyed, 1 request / 3 s / host, 403 / 429 -> back-off, never evaded; 10 min - 6 h per page, 60 min+ at night. No AI, no
+Telegram, no keys. Machine copy of this host table: `NEWS_COVERAGE_HOSTS_2026-11-21.json`. (`NEWS_COVERAGE_AUDIT.json` is the 13:58
+per-source audit the source-silence alarm reads - left as it is.)
+
+### New totals (186 hosts in WEB_SOURCES.md + COLLECTION_PLAN.md)
+
+| | LIVE | PARTIAL | BLOCKED | NOT BUILT | NOT NEEDED | DEAD |
+|---|---|---|---|---|---|---|
+| 13:58 audit | 34 | 20 | 15 | 104 | 10 | 3 |
+| now | 93 | 7 | 39 | 28 | 16 | 3 |
+
+- LIVE +59: 52 hosts built tonight, 7 built earlier today by the news builder (Fed / BoJ via cbanks, EIA, GST Council, DGTR, NCLAT, TDSAT).
+  The pages built tonight read fine (53 of 53 page / feed parts OK on their first read at 21:35-21:50) but a page watch only writes a row when a NEW
+  item appears, so most have no first row yet on a Saturday night; they show as LIVE (new) below.
+- BLOCKED grew 15 -> 39: on a real try many NOT BUILT hosts turned out to say no (robots.txt) or 403 a declared reader, or not answer.
+  Those are NOT read and NOT evaded - IRDAI (robots: no) is one of them, as ordered.
+- NOT BUILT left: 28, each with its reason (mostly script-only government pages whose data API was not found tonight; their releases
+  mostly reach GIR through PIB).
+
+**Robots flag (needs a desk decision):** news.google.com/robots.txt says `Disallow: /` for every generic agent, RSS search included.
+The kept newsroom (Google News per share) and v2 uswrap still read it with a browser User-Agent. Because of this, the parked regnews /
+regwatch Google-News queries were NOT rebuilt; their regulators are now read from the regulators' own pages.
+
+### Park check (newshawk-regwatch, gir-regwatch, gir-govwatch, regnews - parked 21 Nov 16:55; not un-parked)
+
+| Source | Parked reader(s) | Was it read anywhere else? | Now |
+|---|---|---|---|
+| CERC (home, recent orders, draft regulations) | gir-regwatch; regnews / regwatch_bot via Google News | **no - orphan** | **rebuilt**: govpages cerc / cerc_orders / cerc_draft |
+| PNGRB what's new | gir-regwatch | **no - orphan** | **rebuilt**: govpages pngrb (home links; the what's-new page is script-loaded) |
+| US FDA press + warning letters | gir-regwatch (RSS); regwatch_bot / regnews via Google News | **no - orphan** | **rebuilt**: worldoff fda_press, fda_wl (page; the WL RSS is 404), fda_ia, openfda |
+| DGCA | newshawk-regwatch, gir-regwatch | **no - orphan** | **rebuilt**: govpages dgca |
+| PRS bill tracker | gir-regwatch | **no - orphan** (v2 parser not polled) | **rebuilt**: regs prs (30 min) |
+| Enforcement Directorate press | gir-regwatch | **no - orphan** | **rebuilt**: govpages ed (home; /press-release is 404) |
+| CCI antitrust orders | gir-regwatch | **no - orphan** (v2 read press releases only) | **rebuilt**: govpages cci_orders |
+| IRDAI (home, press, circulars, orders, drafts) | all four | no | **NOT rebuilt: robots.txt Disallow: /** (IRDAI news via PIB / publishers) |
+| NPPA | gir-regwatch | no | **NOT rebuilt**: nppaindia.nic.in has no DNS from this server |
+| FSSAI / NPPA / DGTR / CERC / USFDA Google-News queries | newshawk-regwatch | no | **NOT rebuilt** (Google News robots); direct pages instead (DGTR pagewatch, CERC, FDA); FSSAI is a script-only page |
+| 25 regnews Google-News queries (courts, RBI / SEBI / CCI / TRAI / DGCA / CERC / NPPA penalties, ED raids, tax demands, USFDA, OFAC / SEC, tariffs, ratings) | regnews | no | **NOT rebuilt** (Google News robots); covered by direct pages: SC cause lists + LiveLaw + Bar & Bench + SC Observer, Delhi HC, NCLT / NCLAT / SAT / CESTAT / TDSAT / APTEL / NGT, CBDT, ED, OFAC, SEC, USTR, FDA. Not covered: High Courts other than Delhi (Bombay HC times out), rating-agency actions |
+| govwatch Google-News IRDAI + POLICY queries | gir-govwatch | PIB / wires (policy) | IRDAI not read (robots); policy via PIB + wires |
+| RBI / SEBI / PIB / TRAI / GST Council / sansad bills | all | **yes** (v2 regs / bonds / pagewatch) | covered |
+| MarketWatch, Investing.com RSS (newshawk main) | newshawk | **yes** (v2 uswrap) | covered |
+
+### Every PARTIAL / NOT BUILT host of the 13:58 audit, now
+
+| Host | 13:58 | Now | How / why |
+|---|---|---|---|
+| accessdata.fda.gov | NOT BUILT | LIVE (new) | NEW worldoff fda_ia: FDA import-alert list (60 min) |
+| aljazeera.com | NOT BUILT | LIVE (new) | NEW worldoff: Al Jazeera RSS (10 min), kept to market words (oil, Hormuz, Iran, sanctions, war ...) |
+| amfiindia.com | NOT BUILT | LIVE (new) | NEW govpages: AMFI monthly page (6 h) |
+| api.elections.kalshi.com | NOT BUILT | LIVE (new) | NEW odds poller: Kalshi 'Fed decision' next two meetings (15 min) -> odds_now.json, row on a >= 10-point move |
+| api.fda.gov | NOT BUILT | LIVE (new) | NEW worldoff openfda: drug recalls (enforcement) newest 25 (60 min) |
+| barandbench.com | NOT BUILT | LIVE (new) | NEW govpages: Bar & Bench RSS (15 min), kept to regulator / court / tax matters |
+| bis.org | NOT BUILT | LIVE (new) | NEW worldoff: BIS central-banker speeches RSS (60 min) |
+| bls.gov | NOT BUILT | LIVE (new) | NEW worldoff: BLS latest-release RSS (30 min) |
+| boj.or.jp | NOT BUILT | LIVE | v2 cbanks (built 21 Nov 16:19): BoJ what's-new RSS |
+| cabsec.gov.in | NOT BUILT | LIVE (new) | NEW govpages (6 h) |
+| cci.gov.in | PARTIAL | LIVE (new) | v2 regs press JSON slowed 60 -> 300 s (the 429s); NEW govpages cci_orders page (30 min) |
+| cea.nic.in | NOT BUILT | LIVE (new) | NEW govpages: CEA (power) home links (60 min) |
+| cercind.gov.in | PARTIAL | LIVE (new) | NEW govpages: home (30 min), recent orders + draft regulations (60 min) - was read only by the parked gir-regwatch |
+| cestat.gov.in | NOT BUILT | LIVE (new) | NEW govpages (60 min) |
+| chemicals.gov.in | NOT BUILT | LIVE (new) | NEW govpages (60 min) |
+| chittorgarh.com | NOT BUILT | LIVE (new) | NEW newslane: IPO list (60 min) -> R2 |
+| coal.gov.in | NOT BUILT | LIVE (new) | NEW govpages (60 min) |
+| coal.nic.in | NOT BUILT | LIVE (new) | NEW govpages (60 min) |
+| dea.gov.in | NOT BUILT | LIVE (new) | NEW govpages (60 min) |
+| delhihighcourt.nic.in | NOT BUILT | LIVE (new) | NEW govpages (60 min) |
+| dgca.gov.in | PARTIAL | LIVE (new) | NEW govpages: DGCA portal home links (30 min) - was read only by the parked regwatch readers |
+| dgtr.gov.in | PARTIAL | LIVE | v2 pagewatch dgtr (built 21 Nov 17:30, 30 min) |
+| drewry.co.uk | NOT BUILT | LIVE (new) | NEW worldoff: World Container Index page links (6 h) |
+| eaindustry.nic.in | NOT BUILT | LIVE (new) | NEW govpages: Office of the Economic Adviser (WPI) (6 h) |
+| egazette.gov.in | PARTIAL | LIVE (new) | NEW egazette poller: the Extraordinary list via the site's own View-All form, every 5 min; land / ROB notices learnt silently |
+| eia.gov | NOT BUILT | LIVE | v2 energy (built 21 Nov 16:19): EIA weekly petroleum report issue list |
+| english.news.cn | NOT BUILT | LIVE (new) | NEW worldoff: Xinhua business RSS (15 min), market words only |
+| fda.gov | PARTIAL | LIVE (new) | NEW worldoff: FDA press RSS (30 min) + warning-letters page (60 min); the FDA warning-letter RSS is 404 |
+| federalreserve.gov | NOT BUILT | LIVE | v2 cbanks (built 21 Nov 16:19): Fed press + speeches RSS |
+| fert.gov.in | NOT BUILT | LIVE (new) | NEW govpages (60 min) |
+| fred.stlouisfed.org | NOT BUILT | LIVE (new) | NEW worldoff fred_hy: the real US high-yield spread (ICE BofA via FRED public CSV), daily |
+| gamma-api.polymarket.com | NOT BUILT | LIVE (new) | NEW odds poller: Polymarket top-200 markets by volume, kept to market events (15 min) |
+| greentribunal.gov.in | NOT BUILT | LIVE (new) | NEW govpages: NGT (60 min) |
+| gstcouncil.gov.in | PARTIAL | LIVE | v2 pagewatch gstcouncil + press-release (built 21 Nov, 15 min) |
+| ibbi.gov.in | NOT BUILT | LIVE (new) | NEW govpages: IBBI what's new (60 min) |
+| icicidirect.com | NOT BUILT | LIVE (new) | NEW newslane: ICICI Direct research list (60 min) -> R2 |
+| iexindia.com | NOT BUILT | LIVE (new) | NEW govpages: IEX home links (60 min) |
+| ifsca.gov.in | NOT BUILT | LIVE (new) | NEW govpages (60 min) |
+| incometaxindia.gov.in | NOT BUILT | LIVE (new) | NEW govpages: Income Tax / CBDT (60 min) |
+| mopng.gov.in | NOT BUILT | LIVE (new) | NEW govpages: petroleum ministry (60 min) |
+| nclat.nic.in | NOT BUILT | LIVE | v2 pagewatch nclat cause list + judgments (built 21 Nov 17:35) |
+| nclt.gov.in | NOT BUILT | LIVE (new) | NEW govpages: NCLT home links (30 min) - answers this server tonight (robots.txt 403 = no rules) |
+| newsonair.gov.in | NOT BUILT | LIVE (new) | NEW govpages: AIR news home (30 min) |
+| npp.gov.in | NOT BUILT | LIVE (new) | NEW govpages: National Power Portal (6 h) |
+| ofac.treasury.gov | NOT BUILT | LIVE (new) | NEW worldoff: OFAC recent actions (30 min) |
+| pngrb.gov.in | PARTIAL | LIVE (new) | NEW govpages: PNGRB home links (30 min; the what's-new page is script-loaded) - was read only by the parked gir-regwatch |
+| ppac.gov.in | NOT BUILT | LIVE (new) | NEW govpages (60 min) |
+| prsindia.org | PARTIAL | LIVE (new) | v2 regs now polls the PRS bill tracker (30 min; parser was there, not polled) - was read only by the parked gir-regwatch |
+| pulse.zerodha.com | NOT BUILT | LIVE (new) | NEW wires part: Zerodha Pulse RSS (120 s, generic UA) -> R2 |
+| satweb.sat.gov.in | NOT BUILT | LIVE (new) | NEW govpages: SAT (30 min) |
+| scmp.com | NOT BUILT | LIVE (new) | NEW worldoff: SCMP RSS (15 min), market words only |
+| scobserver.in | NOT BUILT | LIVE (new) | NEW govpages: SC Observer (60 min) |
+| sec.gov | NOT BUILT | LIVE (new) | NEW worldoff: SEC press-release RSS (30 min, generic UA - answered 200) |
+| siam.in | NOT BUILT | LIVE (new) | NEW govpages: SIAM press releases (6 h) |
+| steel.gov.in | NOT BUILT | LIVE (new) | NEW govpages (60 min) |
+| tdsat.gov.in | NOT BUILT | LIVE | v2 pagewatch TDSAT cause list + judgments (built 21 Nov 17:35) |
+| ustr.gov | NOT BUILT | LIVE (new) | NEW worldoff: USTR press releases (30 min) |
+| zeebiz.com | PARTIAL | LIVE (new) | NEW wires part: Zee Business news sitemap (60 s, generic UA) |
+| zerodha.com | NOT BUILT | LIVE (new) | NEW newslane: Zerodha bulletin RSS (6 h), F&O / margin / circular words -> R2 |
+| api.bseindia.com | PARTIAL | PARTIAL | v2 direct still 403 (back-off 15 min); BSE filings reach v2 through the newshawk-filings bridge (built 21 Nov) |
+| aptel.gov.in | PARTIAL | PARTIAL | v2 pagewatch polls OK, no new link since 20 Nov (unproven) |
+| cbic-gst.gov.in | PARTIAL | PARTIAL | v2 pagewatch polls OK, no new link since 20 Nov (unproven) |
+| cdsco.gov.in | PARTIAL | PARTIAL | v2 pagewatch polls OK, no new link since 20 Nov (unproven) |
+| investing.com | PARTIAL | PARTIAL | news RSS read by v2 uswrap; quote pages 403 (not planned) |
+| ndtvprofit.com | PARTIAL | PARTIAL | news sitemap 403 to this server; feedburner RSS read by the kept newsroom (old macro.py) |
+| trumpstruth.org | PARTIAL | PARTIAL | v2 p_trump reads the mirror; the mirror's own newest post is Fri 20 Nov 13:03 UTC (18:33 IST) = GIR's last row - the mirror is quiet / stale, not GIR; trumpstruth.org now redirects to www.trumpstruth.org |
+| apnews.com | NOT BUILT | BLOCKED | 403 to a declared reader (not evaded) |
+| civilaviation.gov.in | NOT BUILT | BLOCKED | 403 to a declared reader (not evaded); DGCA itself is read |
+| dgft.gov.in | NOT BUILT | BLOCKED | 403 to a declared reader (page and robots.txt) - not evaded |
+| financialexpress.com | PARTIAL | BLOCKED | 403 to a declared reader on every path (news sitemap, sitemap, feed, robots.txt) - not evaded |
+| hls.media.nic.in | NOT BUILT | BLOCKED | times out from this server |
+| hq.sinajs.cn | NOT BUILT | BLOCKED | 403 to a declared reader |
+| iocl.com | NOT BUILT | BLOCKED | redirect loop (307) to this server |
+| irdai.gov.in | PARTIAL | BLOCKED | robots.txt Disallow: / - NOT read (the trader's order: say so, do not read); IRDAI news reaches GIR via PIB and the publishers |
+| kerc.karnataka.gov.in | NOT BUILT | BLOCKED | TLS chain fails - not bypassed |
+| merc.gov.in | NOT BUILT | BLOCKED | robots.txt Disallow - not read |
+| opec.org | NOT BUILT | BLOCKED | 403 to a declared reader (not evaded) |
+| opstra.definedge.com | NOT BUILT | BLOCKED | login needed |
+| pbc.gov.cn | NOT BUILT | BLOCKED | robots.txt Disallow - not read |
+| pfrda.org.in | NOT BUILT | BLOCKED | robots.txt Disallow - not read |
+| pmi.spglobal.com | NOT BUILT | BLOCKED | 403 to a declared reader |
+| report.grid-india.in | NOT BUILT | BLOCKED | connection error from this server |
+| sat.gov.in | NOT BUILT | BLOCKED | 503 from this server (satweb.sat.gov.in is read instead) |
+| stats.gov.cn | NOT BUILT | BLOCKED | connection reset from this server |
+| stooq.com | NOT BUILT | BLOCKED | robots.txt Disallow - not read |
+| taxinformation.cbic.gov.in | NOT BUILT | BLOCKED | TLS chain fails - not bypassed |
+| tis.nhai.gov.in | NOT BUILT | BLOCKED | times out from this server |
+| ukmto.org | NOT BUILT | BLOCKED | 403 to a declared reader (not evaded) |
+| vahan.parivahan.gov.in | NOT BUILT | BLOCKED | broken (chunked) reply to this server |
+| web.sensibull.com | NOT BUILT | BLOCKED | login needed |
+| chinamoney.com.cn | NOT BUILT | NOT BUILT | script-only page; data API not found |
+| commerce.gov.in | NOT BUILT | NOT BUILT | press-release page answers 404; the right listing URL not found tonight (trade data reaches GIR via PIB) |
+| dot.gov.in | NOT BUILT | NOT BUILT | script-only page (Next.js, no items in the HTML); data API not found |
+| drdo.gov.in | NOT BUILT | NOT BUILT | redirects to a Hindi IDN host; low value - not built |
+| elibrary.sansad.in | NOT BUILT | NOT BUILT | script-only page; data API not found |
+| fada.in | NOT BUILT | NOT BUILT | press-release page answers 404; URL not found tonight |
+| financialservices.gov.in | NOT BUILT | NOT BUILT | what's-new page 404 and robots.txt 403; URL not found |
+| fssai.gov.in | PARTIAL | NOT BUILT | script-only page (754 bytes, no items in the HTML); its data API not found; the parked readers read it only via Google News |
+| grid-india.in | NOT BUILT | NOT BUILT | script-only page; data API not found |
+| hindi.cnbctv18.com | NOT BUILT | NOT BUILT | Hindi headlines: the F&O name matcher is English-only, so a sitemap would yield no rows; Awaaz TV needs speech-to-text |
+| kotaksecurities.com | NOT BUILT | NOT BUILT | research moved to kotakneo.com (404); not built |
+| meity.gov.in | NOT BUILT | NOT BUILT | script-only page (Next.js); data API not found |
+| mines.gov.in | NOT BUILT | NOT BUILT | script-only page (Angular); data API not found |
+| mnre.gov.in | NOT BUILT | NOT BUILT | script-only page; data API not found |
+| mod.gov.in | NOT BUILT | NOT BUILT | script-only page; defence releases are mirrored on PIB (read) |
+| morth.gov.in | NOT BUILT | NOT BUILT | script-only page; data API not found |
+| morth.nic.in | NOT BUILT | NOT BUILT | redirects to morth.gov.in (script-only) |
+| mospi.gov.in | NOT BUILT | NOT BUILT | script-only page (React; 5.8 MB bundle, no public list API found); MoSPI releases reach GIR via PIB + the indiacal poller |
+| motilaloswal.com | NOT BUILT | NOT BUILT | script-only research page; not built |
+| nhai.gov.in | NOT BUILT | NOT BUILT | script-only page; data API not found |
+| niftytrader.in | NOT BUILT | NOT BUILT | an OI witness page, not a news source (Kite OI is read); not built |
+| powermin.gov.in | NOT BUILT | NOT BUILT | script-only page (Next.js); data API not found; CERC / CEA / IEX / NPP are read |
+| public.api.bsky.app | NOT BUILT | NOT BUILT | works, but no account list exists in the plan ('low value until coverage grows') |
+| results.eci.gov.in | NOT BUILT | NOT BUILT | used on counting days only; no counting day scheduled |
+| rsdoc.nic.in | NOT BUILT | NOT BUILT | back-end API answers 405 to GET; not built |
+| t.me | NOT BUILT | NOT BUILT | works for public channels, but the plan names no channel list (t.me/s/cnbctv18 has no public preview) |
+| trendlyne.com | NOT BUILT | NOT BUILT | paid - needs the trader's yes |
+| uperc.org | NOT BUILT | NOT BUILT | script-only page; data API not found |
+| api.bls.gov | NOT BUILT | NOT NEEDED | bls.gov release RSS is read (NEW worldoff); the numbers come through FinancialJuice; the API needs a key for volume |
+| api.stlouisfed.org | NOT BUILT | NOT NEEDED | not needed: fred.stlouisfed.org's public CSV works without a key (read) |
+| cdnbbsr.s3waas.gov.in | NOT BUILT | NOT NEEDED | PDF host behind the ministry pages that are read |
+| ibjarates.com | NOT BUILT | NOT NEEDED | a gold-rate page, not news (gold comes from Yahoo / MCX via Kite) |
+| rsdebate.nic.in | NOT BUILT | NOT NEEDED | redirects to sansad.in (read) |
+| static.pib.gov.in | NOT BUILT | NOT NEEDED | PDF host behind PIB (PIB is read) |
+
+Unchanged from 13:58: the 34 LIVE, 15 BLOCKED, 3 DEAD and 10 NOT NEEDED hosts (sections below), except news.google.com's robots flag above.
+
+---
+
+*Below: the audit as made at 13:58 IST (unchanged).*
+
 Made 2026-11-21 13:58 IST, Saturday (market closed). Read-only: no code changed, no service restarted, no Telegram, no AI calls, no outside fetches. Every number below comes from GIR's own stores, logs and code on this server. Machine copy: `NEWS_COVERAGE_AUDIT.json` (same folder).
 
 **Weekend note.** Indian sources are naturally quiet on Saturday. "Last item" is shown as it is, but LIVE / SILENT was judged on Friday 20 Nov (the `Fri` column). Lag = GIR's first-seen time minus the source's own time, median over the last 72 h, leaving out the first poll after each start (it re-reads old items) and sources that give a date only.
