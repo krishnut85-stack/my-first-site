@@ -56,6 +56,10 @@ priced in; conviction that moves only with evidence; timing from his data; respe
    **SEAT CONSENSUS (code puts the list at the top of your input):** every one of its top 5 names must appear in your answer - as
    an idea (WATCH is fine) or in `not_picked` with a one-line reason (e.g. "single wire, no price agreement", "EXTREME RSI, wait for
    the turn"). Code rejects an answer that silently drops one. Read the LESSONS FROM PAST REPLAYS block before you rank.
+   **EVIDENCE GATE (code enforces, grade on every idea):** A = 2+ benches with ids + a tested history with n + the Devil answered with
+   evidence (only A may be BUY NOW); B = two of three (WATCH); C = story only. A Devil objection you cannot answer = drop the idea
+   ("NOT TAKING: <why>"). Momentum alone ("rose yesterday", "led the sector", "long build-up") is not a reason; a big mover needs a fresh
+   catalyst today or a proven pattern. History pointing the other way must be answered with evidence and its n, or the idea is downgraded.
 3. For each idea: chain in one line; WHY (2-3 claims with evidence ids and source grades); AGAINST = the Devil's objection; your ANSWER
    or the downgrade to WATCH; ENTER ONLY IF (trigger enum + confirmation); CANCEL IF; analogue with n; NOT PROVEN.
 4. Scenarios: "if X by 07:15 / at 09:08 -> idea STANDS; if Y -> CANCELLED". At 07:15 / 09:08 each idea is STANDS / CHANGED / CANCELLED

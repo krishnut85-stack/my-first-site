@@ -28,6 +28,17 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 14:15 IST (hourly) - ACCEPTED: PROOF_1030 ($6.13, no LIVE refusal), evidence gate + grades (636), bullet layout in code (637,
+tgformat.py, every path), look-ahead book seeded, LEAN split, mock / ring-test prep, the GAP-PREDICT study (honest: nothing at 14:45
+predicts the sign; the US night does). H_head_analyst.md now carries the evidence-gate rule (this push).
+DECISIONS:
+1. **14:45 card = INFORMATION + carry rule, no sign call:** "Tomorrow's gap: no edge from today's signals (588 days); it is set tonight.
+   Carry only with a known overnight event or a share's own fresh catalyst." Plus **EVENING GAP WATCH** to Trade now at 20:30 and 23:30
+   IST (Nasdaq / S&P futures vs India's close, with the history line: on 1%+ moves the gap followed 81% of the time), and the 07:15 brief
+   as the morning answer. Max 2 evening lines; the US close itself is already a WORLD SHOCK line when >= 2%. Quiet night rule unchanged.
+2. **READ budget:** READ 0.50 -> 0.70, MEET 2.60 -> 2.40 (MEET used $2.19). Low-weight items left unread after that are acceptable; RED /
+   official items always use the SHOCK reserve.
+
 ## 21 Nov 14:00 IST - THE TRADER APPROVED THE DESIGN ("go ahead with the changes"): explainers/gir_new_flow.png is the FROZEN design
 until the week-1 review on Fri 27 Nov. Build what is on it; fix only what Monday's live results show broken; no new features in between.
 BUILD ORDER (Monday-critical first, the rest in parallel by a second builder, light load, $0 AI unless stated):
