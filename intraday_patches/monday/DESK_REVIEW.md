@@ -14,6 +14,19 @@
   change nothing until the trader decides.
 - **Trader's call (asked now):** globaleye (old GIR v1) and paper_counterfactual / paper_eod_report still post to GIR Alerts - keep or mute.
 
+## 21 Nov 11:00 IST - MISSED SIGNAL: RBI liquidity injection on Fri 20 Nov (reported Rs 75,000 cr of 3-day VRR repos: Rs 50k cr + Rs 25k cr;
+bids about Rs 1.13 lakh cr for the first Rs 50k cr - one source so far, goodreturns). Neither GIR (old or new) nor the desk's outside
+watch told the trader, and LINK_BOOK row 27 says "RBI liquidity injection -> CE AUBANK, PNB, AXISBANK, BANKBARODA next day (HIGH)".
+1. **VERIFY now from RBI's own press releases** (rbi.org.in "Money Market Operations" / VRR auction notices and results, 20 Nov): the
+   amounts, the announcement time and the result time (IST), and whether GIR's R4 / regulator feeds ingested them (which file, when).
+2. **New standing rule - RBI LIQUIDITY is an OFFICIAL shock (family G, RED in market hours):** any VRR / VRRR / OMO buy or sell /
+   FX buy-sell swap / CRR change / SDF-MSF change, announcement AND result. RED when the size is >= Rs 25,000 cr or the bid-cover is
+   >= 2x; the line carries the LINK_BOOK row 27 / 28 names on both sides ("injection: CE watch AUBANK, PNB, AXISBANK, BANKBARODA; deficit
+   widening: PE over days"). Seat 9 (rupee / rates) gets the daily system liquidity (surplus / deficit, SDF and MSF use, call rate vs
+   repo) in its snapshot and writes a card on every operation.
+3. Re-score 20 Nov: would this rule have rung, at what time, and where was BANKNIFTY then versus its close (+2.49%)? Report honestly -
+   the FII buying may have been the bigger driver.
+
 ## 21 Nov 10:50 IST - AFTER MONDAY (week 1): a weekly CRASH-RISK METER on the trader's 5 factors (credit levels, market concentration,
 institutional behaviour, liquidity, trigger vulnerabilities) for the US and India, LOW / MEDIUM / HIGH each with the numbers (FINRA margin
 debt, HY spreads, AI-credit CDS, top-10 weight, hedge-fund leverage reports, Fed / RBI path; India MTF book, NIFTY sector weights, NSDL
