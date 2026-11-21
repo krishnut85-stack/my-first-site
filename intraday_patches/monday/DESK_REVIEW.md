@@ -1,5 +1,14 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 21 Nov 07:00 IST - THE TRADER TOPPED UP the Anthropic API credit; Claude Code on the server now uses his subscription
+- The builder (Claude Code on the server) re-logged in on the trader's Claude subscription (Ultra) at about 06:48 - it no longer
+  spends the API credit. GIR's own ANTHROPIC_API_KEY (.env) is separate and now has credit again.
+- **Confirm in STATUS:** the fail-safe probe cleared ("P1 cleared" line) in gir-v2desk, gir-v2engine and the news reader; one real
+  minimal call per family passes; the weekend day's readers resume within the $1.50 ladder. No restarts needed if the probe clears.
+- **Weekend list from the trader (after hours, test after each step):** swap at 95% (find users, stop leftover rehearsal processes,
+  clear safely), disk 68%, the 30 Ubuntu updates incl. 4 security, remove the old gircrypto login lines.
+- The 20 Nov fair re-run (leak guard) still waits for the trader's yes / no.
+
 ## 21 Nov 05:30 IST (hourly) - 04:35 orders ACCEPTED; cap 2; the leak guard makes a FAIR 20 Nov re-run possible again
 - **ACCEPTED:** MCX in the gold group; reader benches by story and source type; group cap with the liquidity source labelled; the
   REPLAY-LEAK GUARD (knowsnap.py: knowledge files from the commit before D-1 15:40, dated lines stripped from prompts, replay FAILS on
