@@ -698,3 +698,16 @@ Last update: 20:55 IST
   - WHY SONNET: not budget, not config. The Opus brief hit max_tokens (the 12-driver brief + thinking did not fit 14,000), so the chain fell back as designed. HEAD_MAX_TOKENS_BRIEF is now 18,000; without it the Sunday 19:45 brief would likely have been cut the same way. Opus itself works (the 13:02 call ended normally). The cost per 19:45 brief at that size vs its $1.20 floor is being checked.
   - BUGS FIXED with tests: (1) the head could never cite the US closes / history / flows numbers (the keys were missing from the citable list); (2) the filler doubled "%" and printed past-case shares as moves ("+93.00%" -> "93%"); (3) the stale-driver rule wrongly caught GIFT; (4) re-formatting a laid-out part doubled the bullets (parts now start "PART n OF m"). Desk tests 163. BUILD_LOG 13:06.
   - MOCK: MOCK_DRY7 PASSED in a real run (code before A1 / A2): 14 / 14, no bad layout, 0 AI calls, 24.8 min. MOCK_DRY9 on the final code is running (the real pass).
+- 13:08 - HARD SEND GATE LIVE (desk builder; desk tests 167; gir-v2desk restarted):
+  - The exact outgoing text is checked right before EVERY Telegram send (the desk sender + the System-topic sender; the mock and the ring test go through the desk sender): lines <= 48 chars; no "%%", "• •", "[", "{num:", "(a)", "(b)", "(c)", "base rate", "bench" or bare "n <count>"; no line starting "BUY" unless it is a BUY NOW card.
+  - Any failure: NOT sent; the full text goes to v2/data/desk/tg_blocked.jsonl, the page shows "P1 MESSAGE BLOCKED by the layout gate", the board gets a look. Never on Telegram.
+  - Tests block the logged 638 / 639 texts.
+  - The overspend is recorded in BUILD_LOG ($1.54 vs $0.90 approved).
+- 13:08 - B1 14:45 TOMORROW'S GAP CARD BUILT (analyst/gapcard.py, code, $0; test_gapcard.py; first run Mon 23 Nov 14:45, to Trade now):
+  - It says "no edge on tomorrow's gap from what is visible now, tested on 588 past days".
+  - WHEN IT IS KNOWN: the 20:30 / 23:30 / US-close hit rates.
+  - MOST EXPOSED TONIGHT: the 3 biggest movers each side.
+  - NO CARRY by default ("flat by 15:10, carry is your choice"); IF YOU CARRY ANYWAY: smaller size, December strikes, and before Tue 24 Nov "2 nights to the next session".
+  - A CARRY line appears only once model M1 beats the base rate on unseen data (config.GAP_EDGE_TESTED).
+- 13:08 - FOR THE DESK - 19:45 BRIEF MONEY: at the new 18,000-token brief limit a head brief costs about $0.65 (worst case $0.73); with the meeting seats (~$0.2-0.3) ONE attempt fits the $1.20 floor ($0.95-1.05), but a full-size RETRY would need about $1.40 and the floor would refuse it, so the brief would fail instead of going out. Choose: (a) raise the 19:45 floor to about $1.50 (e.g. 22:45 $0.20 -> $0.00 + 07:15 $0.60 -> $0.50; 22:45 rarely runs); or (b) keep "one attempt" (the brief passed every check twice today). Nothing changed.
+- 13:08 - MOCK: MOCK_DRY9 (started before the gate) is interim; the FINAL real dry run on the frozen code runs before Sun 16:00 after B and C.
