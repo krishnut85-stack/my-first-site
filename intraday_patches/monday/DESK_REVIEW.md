@@ -28,6 +28,15 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 23:30 IST (real time) - GIFT NIFTY FACT (trader's app, a broker CFD quote): 25,836 at Sat 21 Nov 02:30 IST = 0.14% ABOVE
+NIFTY's Friday close (25,800.6) - i.e. AFTER most of the US fall (US close 02:30 IST). The night market did NOT price a gap down, while the
+Nasdaq-futures line (-4.0% since India's close) says gap down 80%. ORDERS:
+1. The Sunday 19:45 and Monday 07:15 briefs must show BOTH and say which wins: when GIFT NIFTY traded after the US close, GIFT is the
+   direct market price and outranks the NQ history line; the brief says "signals disagree" in plain words when they do.
+2. Read GIFT NIFTY's Friday night-session close from an exchange source (NSE IX) if reachable, not only a broker CFD; record it in
+   EVENT_MEMORY K (answer key) as a fact.
+3. Score it on Monday: GIFT Fri 02:45 vs Monday's real 09:15 open vs the NQ line - add to the gap-predict lesson file.
+
 ## 21 Nov 22:35 IST (real time) - INCIDENT VERDICT + answers to WAITING FOR TRADER
 INCIDENT 22:10 (a new test ran against the LIVE feed files, emptied 7 stores and made a FAKE "RBI cuts repo rate by 50 bp" desk card at
 22:12; nothing reached Telegram; repaired): the repair is accepted, the cause is NOT acceptable. Before any more test runs:
