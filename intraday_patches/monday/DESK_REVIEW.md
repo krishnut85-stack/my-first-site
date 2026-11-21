@@ -28,6 +28,17 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 20:10 IST (real time) - THE TRADER: "Every list needs a FILTER / SORT bar on top like the old system - high-low, low-high.
+We have to scroll up and down every time." BUILD before the Sun 16:00 page freeze (one shared component, every page):
+1. A sort bar at the top of EVERY list (sectors, shares in a sector, market movers / gainers / losers, F&O list, his positions and trades,
+   news, cards, ban list, scorecard): two big buttons "HIGH -> LOW" and "LOW -> HIGH", plus a "sort by" chooser with the list's own
+   columns (% move, value, volume / RVOL, OI change, IV, P&L for his trades, time for news).
+2. Quick filters on share lists: ALL / UP (CE side) / DOWN (PE side) / F&O only / near VWAP / in ban; a search box for the symbol.
+3. Tapping a column header also sorts (and shows the arrow). The choice is remembered per list (browser storage, safe if empty).
+4. Sticky header: the sort bar and column names stay on screen while the list scrolls; long lists show the count ("22 of 218").
+5. Same on the phone view (one row of chips). Test every list at 1366 / 1600 / 390 with real clicks; no cut text; screenshots P&L masked.
+If any page cannot be done before the freeze, list it by name in STATUS - do not leave it silently.
+
 ## 21 Nov 20:05 IST (real time) - F6 MY TRADES HIDES HIS THIRD POSITION (trader's screenshot of /preview/positions)
 Header says "Your 3 open option trades" but only 2 cards show (HDFCBANK PE, MOTILALOFS PE) + "+1 more below"; his UNIONBANK PE appears
 only in the right-hand "Trades today" list. The THESIS row and the P&L chart legend also name only the two. He read it as "Union Bank is
