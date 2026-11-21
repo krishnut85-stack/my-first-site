@@ -28,6 +28,15 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 21:30 IST (real time, hourly) - VERDICTS after the reboot
+ACCEPTED: reboot 20:20, up 20:22 on kernel 6.8.0-151; postreboot.sh 96 PASS / 0 FAIL (POSTREBOOT_2047.txt): 17 new units + 13 feeders
+active, 28 timers with next runs (Kite login Mon 07:40, depth 09:45, pre-open 08:59, NFO instruments 08:05), m2prep ran 20:40, remote-control
+starts at boot. This is the restart proof (J13). Sunday cap $3.00 live on the Sat 15:40 -> Sun 15:40 budget day with READ $2.00; readers
+resumed 21:12. Accepted (Sun 15:40 -> 19:45 reading falls in Monday's $8 day - fine).
+CHECK: the remote-control unit starts with --permission-mode auto (trader: ~100 "Allow" taps tonight); the GitHub token in the
+/root/intraday-push remote URL -> move it to a credential helper after the trader rotates it on Sunday (never print it).
+Builders 20:10 / 20:15 / 20:20 / 20:30 running - next review on their proofs.
+
 ## 21 Nov 20:35 IST (real time) - THE TRADER: SUNDAY 22 NOV CAP = $3.00 (was $1.50). Sunday only; Saturdays, other weekends and holidays
 stay $1.50 unless he says otherwise; trading days stay $8.00. Give the extra to READ (readers work through Sunday afternoon on the
 weekend news) with the 19:45 brief floor kept whole. Show it on the page meter + the 19:30 credit line. Tue 24 Nov holiday = $1.50.
