@@ -28,6 +28,22 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 12:10 IST - THE TRADER: "think ahead like brokers - continuity, every day, alerts BEFORE the move". THE LOOK-AHEAD BOOK
+A standing, multi-day idea book (horizon 1-10 sessions), separate from intraday BUY NOW:
+1. **Each idea:** share / sector, side (CE / PE), horizon, the chain of events (e.g. "metals falling -> input costs down -> auto margins up
+   over the quarter"), the evidence WITH n from his data (sectorlag / onset / us_shock / rbi_liquidity / obscan studies, LINK_BOOK grade),
+   what must happen first (the trigger), what kills it, and the December strike + carry note.
+2. **Stages, each one an alert to GIR Trade now:** WATCH (the story starts: first news / first sector move) -> SETTING UP (a second bench
+   agrees, price starts to agree) -> READY (trigger near - "position before tomorrow / before the event") -> GO (trigger hit, or carry at
+   14:45) -> DONE / CANCELLED (with the reason). Re-checked every day at 14:45 and 19:45; a change of stage is a card, never silent.
+3. **Honesty rule - test the link before betting:** his own data (sectorlag.py, 3 years) says "metals down -> autos up" does NOT work over
+   1-3 days: after metals <= -1% (n=144) autos the next day +0.03% (51% up) vs a +0.00% baseline; when autos had already risen that day
+   (n=6) they FELL the next day (-0.63%, 33% up). Cost relief shows in margins over quarters, not days. So every look-ahead idea shows its
+   tested hit rate, and an untested link is labelled "STORY ONLY - not tested".
+4. Every brief carries the book (open ideas with stage, days open, move since WATCH); the 15:45 scorecard scores them at their horizon.
+5. Build after the 14:45 carry card; seed it from the Monday outlook (INDUSINDBK / PERSISTENT CE, MUTHOOTFIN / VEDL / DIXON PE) and the
+   desk's rotation read (insurers, capital goods, auto parts as laggard destinations).
+
 ## 21 Nov 11:55 IST (hourly) - MILESTONE ACCEPTED: the new desk speaks on GIR Trade now (630-635), old system barred from it (tested)
 - ACCEPTED: channel switch, old health lines moved to the System topic, Telegram ON for shocks / RBI-official / WHY / briefs / credit P1,
   BUY NOW / manage / rotation hard-off until Mon 09:15, the Monday outlook, the honest CORRECTION message (stale 15:29 prints vs the US
