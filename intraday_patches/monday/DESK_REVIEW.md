@@ -1,5 +1,20 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 21 Nov 07:40 IST - THE TRADER: "you are not reading the news - the biggest flaw". US Fri 20 Nov: S&P -3.11%, Nasdaq -4.67%
+GIR's own world reader (R5) and world seats must say WHY a big world move happened - every time. Orders:
+1. **Now that credit is back:** run R5 + seats 1 / 2 on the US close of Fri 20 Nov (the AI was refused overnight) and show their cards in
+   STATUS: the named cause(s) with sources, what fell / rose, and the India chain. If R5 found no cause, say which sources it read
+   and why they were empty - that is a feed gap to fix (Reuters / CNBC / MarketWatch / Investing.com US market-wrap pages, the
+   Nasdaq.com close wrap, the Indian outlets' "US markets" stories).
+2. **Standing rule - "NO CAUSE" is not an answer for a big move:** on any world move >= 1.5% (S&P, Nasdaq, Nikkei, KOSPI, Taiwan, Hang
+   Seng, crude, gold, DXY) the world reader keeps searching its feeds every 15 minutes until it has a named cause from 2+ sources, or
+   writes the best LIKELY cause marked LIKELY with its sources. The head's brief must carry "WHY: <cause>" for the overnight move.
+3. **US close card by 03:30 IST every trading night** (US close 02:30 IST in winter): index moves, cause, sector moves, breadth, VIX,
+   10y, dollar, gold, oil, and the India chain (who gains / loses). On weekends it waits for the Monday 07:15 brief.
+4. **Rotation, not just direction:** when FII money is expected to come in, the brief must name WHERE it goes - weighting laggard,
+   under-owned sectors over EXTREME ones (banks are EXTREME after the November run) - using rallyscan / sector RSI and NSDL flows.
+The desk's own manual read of the cause and the rotation lands in EVENT_MEMORY section K within the hour.
+
 ## 21 Nov 07:25 IST - THE TRADER CONFIRMS: keep the $8 daily AI cap (trading days), $1.50 weekend / holiday; continue as planned
 Review after week 1 (Fri 27 Nov) on the EDGE scorecard: if the desk's calls are not worth it, step down to the ~$3-4 option (readers on
 free rules, AI only for briefs + BUY NOW checks) or off. Report the week's spend by bucket with the week-1 summary.
