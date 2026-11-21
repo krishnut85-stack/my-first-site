@@ -964,3 +964,12 @@ Last update: 20:55 IST
   NOT PROVEN: key 4's 1-minute history access (its token is dead today; falls back to key 1, which dayaudit already uses). BUILDING: a one-call probe of keys 4 / 1 in the Monday 08:20 key check, shown on the READY line.
   MSCI / FTSE dates now read by indiacal: Mon 23 shows "INDEX CHANGE Mon 30 Nov at the close: MSCI India Standard - F&O in ADANIGREEN, COFORGE, LICI; out PIIND" + the Small Cap line. DONE.
 - 18:15 - ROOM BARS KEY PROBE - DONE + tested (fake Kite, test_kite_account.py 4/4, desk suite 280; gir-v2desk restarted 17:20): the Monday 08:20 key check (and the 08:25 / 08:35 / 08:45 retries) makes one read-only 1-minute call per key (key 4, then key 1), stores counts only under room_bars in kite_login_status.json; room-to-move then calls only the proven key, or none ("room off"). READY line: "room bars: key 4 OK" / "key 4 NO, key 1 OK" / "NO - room off" / "not probed today". Real proof = Monday 08:20.
+- 18:25 - NEWS BUILDER free upgrades (17:10 item 4), sources tests 16/16; gir-v2sources 17:18, gir-preview 17:20 (edit lock):
+  | item | status |
+  |---|---|
+  | Fed-decision odds from Polymarket's public API (stand-in for CME, which blocks the server), "prediction-market odds, not CME", information only. Checked by me with one independent read at 17:21 IST: December hike 25 bp 89.5%, hold 8.2%, cut < 1%; parser right. The live poller hit connection resets; back-off + last-good reading being added | DONE (feed flaky) |
+  | DGTR anti-dumping / safeguard notices -> R4, with the sector only when the product is mapped (steel, aluminium, copper, APIs, solar, ...) | DONE |
+  | DGFT | SKIPPED - 403 to this server (robots.txt too); not evaded |
+  | NCLAT + TDSAT cause lists and judgments -> R4 | DONE |
+  | NCLT (403) and SAT (503) | SKIPPED; not evaded |
+  | LAST CALL quoted guidance line on the /preview share page (on request, not in the live stream) | DONE; phone sheet BUILDING |
