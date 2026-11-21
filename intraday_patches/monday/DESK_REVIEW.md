@@ -28,6 +28,19 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 15:05 IST - THE TRADER (13:03 Trade now messages): "the same Persistent, VEDL, Muthoot again and again - I'm fed up". FIX NOW:
+1. **FORMATTER BUGS (tgformat.py):** double bullets ("• •"), lines split mid-phrase ("(b)", ">=", "30)" on their own lines), internal text
+   leaking ("missing: (a)...", "src:news", "n >= 30", "desk team"). Rules: one bullet per fact, never nested; a long fact wraps onto a
+   continuation line WITHOUT a bullet; never split inside a bracket or a number; strip every grading / missing-field note from Telegram
+   (it stays on the page). Test with today's 13:03 messages as fixtures.
+2. **SEND ONLY WHAT CHANGED:** an idea already sent is NOT re-sent unless its stage, grade, trigger or price picture changed. Unchanged
+   ideas collapse to ONE line: "Still watching (no change): DIXON PE, VEDL PE, MUTHOOTFIN PE". No "NEXT DAYS" block repeated per idea.
+3. **GRADE C NEVER ON TELEGRAM** (ALKEM PE grade C was sent at 13:03 - against the 12:25 rule). C stays on the page only.
+4. **BREADTH - stop thinking only about the five seeds:** every brief and every look-ahead pass ranks the WHOLE F&O list (218) from the seat
+   consensus, the group expansion, the event library and the models, and shows the best 3 CE + 3 PE (new or changed, grade A / B only).
+   If nothing new qualifies, one line: "No new ideas - nothing passed the checks."
+5. Re-send ONE clean, short message to Trade now replacing the 13:03 ones, then quiet until something changes.
+
 ## 21 Nov 14:40 IST - GAP REVIEW (independent F&O-dealer + reliability reviews). These are ADDED to the frozen design now, so nothing
 "could have been added" later. Build list B is extended; all are small and mostly code, $0.
 **CRITICAL - before Mon 09:15:**
