@@ -243,3 +243,14 @@ it in Indian IT. So IT is coming up. This is one of the history."
 - FII money into banks + Bank Nifty record: the CE leaders were PRIVATE banks (INDUSINDBK about +10%, AXISBANK +5%, HDFCBANK +2.7%);
   PSU banks were flat to soft (BANKBARODA +0.38%, PNB +0.31%). Rule B11: flow news -> private names first; policy news -> PSU names.
 - Follow-up: score whether the 09:08 brief names these on a re-run (DESK_REVIEW 21 Nov 01:35).
+
+## K. Fri 20 Nov 2026 US close - a second, bigger AI sell-off day (for the Sunday 19:45 and Monday 07:15 / 09:08 briefs)
+- US close Fri 20 Nov (trader's app, 16:30 EST): S&P 500 6,974.97 (-3.11%), Nasdaq Composite 22,796.78 (-4.67%), Dow 48,444.77 (-1.41%);
+  NYSE breadth 398 up / 1,924 down. Cause NOT confirmed by a source yet (AI / chip valuation again is the likely story: Thu 19 Nov
+  S&P about -2%, Nasdaq about -2.3%, AMD about -10%; 5 Nov Nasdaq-100 -6.36% on AI data-centre doubts).
+- The one past episode this week (section G): after Thursday's US AI fall, India on Fri 20 Nov opened lower (NIFTY about -0.66%), then
+  money rotated INTO India - private banks led, Bank Nifty a record, IT / ER&D ROSE. The desk's "IT PE" call that night was WRONG.
+  n = 1 - NOT PROVEN; a -4.7% Nasdaq day plus a weekend is bigger than that episode.
+- Monday 23 Nov is EXPIRY (stocks: December strikes; NIFTY: next weekly) and Tuesday 24 Nov is a holiday.
+- Watch before deciding: US futures (open Sunday evening US time), KOSPI / Taiwan at their Monday open, GIFT NIFTY from about 06:30 IST,
+  the FII figure for 20 Nov, morning TV. The briefs decide; no pre-set side. Two-thirds of moves start at 09:15 - wait for 09:20.
