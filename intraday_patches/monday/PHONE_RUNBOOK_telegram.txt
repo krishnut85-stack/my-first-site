@@ -3,7 +3,7 @@ GIR PHONE RUNBOOK
 • a problem here hits GIR messages only
 
 WHERE TO LOOK FIRST
-• new desk page: girtrader.com/preview/
+• desk page: girtrader.com
 • health check, no login:
 • girtrader.com/preview/api/gir/status.json
 • OK = all well, PROBLEM = it says what

@@ -3,7 +3,7 @@
 GIR never places orders. If anything below happens, your own trading is not affected - only GIR's messages.
 
 ## WHERE TO LOOK FIRST
-- The new desk page: girtrader.com/preview/ (girtrader.com alone opens the OLD home page)
+- The desk page: girtrader.com (opens the new desk); the old page for week 1: girtrader.com/old
 - The health check (no login): girtrader.com/preview/api/gir/status.json
   - "overall": "OK" = all well; "PROBLEM" = it lists what is wrong
 - Your phone alarm app (ntfy): P1 alarms only (server, Kite, AI credit, Telegram, disk, backup)
