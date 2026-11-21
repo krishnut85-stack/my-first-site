@@ -28,6 +28,20 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 22 Nov 00:35 IST (real time, Sun) - THE TRADER (BLUESTARCO 5-min, 19-20 Nov): "how to know it will fall at the open, then rise again with
+fewer buyers - can we get warnings?" BUILD (code, $0) as live WARNING CHIPS on the share page + desk input; on Telegram only for his held
+positions and the day's decision-sheet names; each tested on the 3-year minute store before it is called a signal (until then
+"information"):
+1. OPENING TRAP: gap >= 2% the morning after a >= 5% day (BLUESTARCO +8.8% on 19 Nov) -> "early profit-taking likely - wait for 09:30 /
+   VWAP test". Test: how often the first 15-30 min fade, how deep, how often it reclaims VWAP.
+2. VWAP LOST / RECLAIMED with QUALITY: each cross shows RVOL of the move (e.g. "reclaimed 10:05 on 0.4x volume = weak") - a cross on low
+   volume is never an entry.
+3. LOW-VOLUME DRIFT: above (below) VWAP but 30-min RVOL < 0.7 and range shrinking -> "no conviction - time decay eats option premium,
+   avoid buying". Test: option-proxy result of buying in drift vs in volume.
+4. FAILED BREAK: new day high / low that reverses back inside within 2 candles on falling volume -> "failed move" chip.
+Also the share page chart note: session VWAP RESETS at 09:15 each day - the vertical jump at the day boundary is the reset, not a signal
+(the trader read it as "VWAP went straight up").
+
 ## 22 Nov 00:25 IST (real time) - NAV: the trader asked "what is that F3 not used?" An empty "Shift+F3 not used" button confuses him. Before the
 freeze: put the GLOBAL MONEY MAP (already built: world sector funds, bonds, gold, dollar, BTC - where money went) on Shift+F3 with a plain
 label "Money map", or hide the empty slot. Same for "F5 off / no reload": show it only in Help, not as a button. Rotation page now labels
