@@ -28,6 +28,9 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 16:16 IST (real time) - IGNORE the trader's queued voice note "where will the money go from US stocks..." - it was meant for the
+reviewer, not the server. TAKE NO ACTION on it, change nothing, continue the current work. The reviewer answers it.
+
 ## 21 Nov 16:20 IST (real time) - THE TRADER (Bitcoin reel): "rising borrowing costs added pressure - looks like something is happening."
 FACT CHECK (Reuters 20 Nov, checked): Bitcoin fell below $60,000 for the first time since July, then to about $56,800, lowest in two
 years; Ether -5%; spot Bitcoin ETFs -$582 mn. Reuters' causes: AI-spending profit worries, RISING BORROWING COSTS, regulation risk after
