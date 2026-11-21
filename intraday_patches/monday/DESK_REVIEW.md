@@ -28,6 +28,15 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 19:45 IST (real time) - THE TRADER opened girtrader.com and expected the NEW desk; it is still the old home page.
+1. Before the Sun 16:00 page freeze: make girtrader.com (root) open the NEW desk (/preview/), keep the old home at girtrader.com/old for
+   week 1. Caddy change + test at 1366 / 390, login unchanged, status.json path unchanged (the trader's UptimeRobot monitors point at
+   girtrader.com and /preview/api/gir/status.json). Update runbook + Settings text.
+2. SECTOR MONEY page, FOREIGN FUNDS "last Rs cr": the same NSDL number repeats on several rows (+43,102 on banks / insurance / NBFC /
+   capital markets = NSDL "Financial Services"; +998 hospitals + pharma; -3,781 electronics + capital goods; +7,570 telecom services +
+   telecom equipment). It reads as wrong. Show the number once on the first row of the group and "same fund group (Financial Services)"
+   on the others, or merge the rows for the fund columns. Low priority; before the freeze if time allows.
+
 ## 21 Nov 19:40 IST (real time) - THE TRADER: "YES B6". Run the real-model desk proof on the 7 known bad cards now (< $1, inside the
 weekend cap, its own ledger line): each card must come out WAIT / REJECT / NOT TAKING with the Devil's objection answered or standing,
 and the 2 clean controls must pass. Report cost + per-card verdict in STATUS. Also: #5 default stands (engine GO NOW hidden Monday).
