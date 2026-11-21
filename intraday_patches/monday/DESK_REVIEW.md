@@ -28,6 +28,10 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 20:35 IST (real time) - THE TRADER: SUNDAY 22 NOV CAP = $3.00 (was $1.50). Sunday only; Saturdays, other weekends and holidays
+stay $1.50 unless he says otherwise; trading days stay $8.00. Give the extra to READ (readers work through Sunday afternoon on the
+weekend news) with the 19:45 brief floor kept whole. Show it on the page meter + the 19:30 credit line. Tue 24 Nov holiday = $1.50.
+
 ## 21 Nov 20:30 IST (real time, hourly) - VERDICTS on 19:48-20:20 (server clock); server rebooting since 20:20
 ACCEPTED:
 - OLD PLAN chip: real root cause found (the watch file's " IST" time ending was not parsed, so Friday's plan looked fresh). test 5/5.
