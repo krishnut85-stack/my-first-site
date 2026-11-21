@@ -1,10 +1,12 @@
 # M2 09:20 SHARE CONTINUATION - walk-forward results (2026-11-21)
 
-Rows: F&O share-days whose 09:20 price is >= 0.5% from the previous close (n 80138, 2023-12-18 to 2026-11-13, 3 years of minute bars). Train on the years before, test once on 2025 and on 2026. PASS rule as M1 (accuracy beats the base rate with p < 0.025, Brier beats it, at least half of the years). Note: rows on the same day move together, so the p-value is optimistic - the by-year results matter more.
+Rows: F&O share-days whose 09:20 price is >= 0.5% from the previous close (n 80138, 2023-12-18 to 2026-11-13, 3 years of minute bars). Train on the years before, test once on 2025 and on 2026. PASS rule: accuracy beats the base rate with a DAY-CLUSTERED p < 0.025 (each day counts once, since shares on one day move together), Brier beats it, at least half of the years, AND (trader rule 9, CE and PE equally) the up-move side and the down-move side EACH beat their own base rate.
 
 ## touch - P(>= 1% more in the 09:20 direction at any minute up to 15:10) (n 80138)
 
-**PASS** - lr: unseen accuracy 57.1% vs base rate 49.5% (n 52110); Brier 0.2425 vs 0.2501; AUC 0.601; p 0.0000; years beaten 2/2
+**PASS** - lr: unseen accuracy 57.1% vs base rate 49.5% (n 52110 rows, 462 days); Brier 0.2425 vs 0.2501; AUC 0.601; p day-clustered 0.0000 (row binomial 0.0000); years beaten 2/2; both sides (CE + PE) beat their own base rate: True
+
+Both sides (rule 9): DOWN (PE side): n 23201, acc 56.5% vs its base 50.1%, Brier 0.2435 vs 0.2506 -> beats; UP (CE side): n 28909, acc 57.5% vs its base 51.0%, Brier 0.2416 vs 0.2500 -> beats
 
 | year | n | train n | model acc | base acc | Brier | base Brier | AUC |
 |---|---|---|---|---|---|---|---|
@@ -19,7 +21,9 @@ Top inputs: atr14(+), first5_d(+), move0920(-), gap_d(+), range5(+), rvol5(+), s
 
 ## hold - P(15:09 close >= 1% beyond the 09:20 price in its direction) (n 80138)
 
-**NO EDGE** - lr: unseen accuracy 75.0% vs base rate 75.0% (n 52110); Brier 0.1858 vs 0.1874; AUC 0.57; p 0.4992; years beaten 0/2
+**NO EDGE** - lr: unseen accuracy 75.0% vs base rate 75.0% (n 52110 rows, 462 days); Brier 0.1858 vs 0.1874; AUC 0.57; p day-clustered 1.0000 (row binomial 0.4992); years beaten 0/2; both sides (CE + PE) beat their own base rate: False
+
+Both sides (rule 9): DOWN (PE side): n 23201, acc 74.3% vs its base 74.3%, Brier 0.1900 vs 0.1911 -> does NOT beat; UP (CE side): n 28909, acc 75.6% vs its base 75.6%, Brier 0.1824 vs 0.1844 -> does NOT beat
 
 | year | n | train n | model acc | base acc | Brier | base Brier | AUC |
 |---|---|---|---|---|---|---|---|
@@ -32,7 +36,9 @@ Top inputs: atr14(+), first5_d(+), move0920(-), rvol5(+), sector_d(+), gap_d(+),
 
 ## first - P(the 1% WITH the 09:20 move comes before the 1% against it | at least one is touched by 15:10) - the direction test (n 69432)
 
-**PASS** - lr: unseen accuracy 51.2% vs base rate 50.1% (n 44504); Brier 0.2497 vs 0.2502; AUC 0.519; p 0.0000; years beaten 2/2
+**NO EDGE** - lr: unseen accuracy 51.2% vs base rate 50.1% (n 44504 rows, 462 days); Brier 0.2497 vs 0.2502; AUC 0.519; p day-clustered 0.1007 (row binomial 0.0000); years beaten 2/2; both sides (CE + PE) beat their own base rate: True
+
+Both sides (rule 9): DOWN (PE side): n 19887, acc 51.5% vs its base 50.3%, Brier 0.2496 vs 0.2500 -> beats; UP (CE side): n 24617, acc 51.0% vs its base 50.4%, Brier 0.2499 vs 0.2507 -> beats
 
 | year | n | train n | model acc | base acc | Brier | base Brier | AUC |
 |---|---|---|---|---|---|---|---|
@@ -48,3 +54,9 @@ Top inputs: first5_d(+), move0920(-), gap_d(+), range5(-), sector_d(+), rsi_d(-)
 Reading: 'touch' passing while 'first' does not would mean the edge is mostly volatility (busy shares reach 1% either way), not direction. 'first' is the direction test.
 
 Saved: v2/models/artifacts/m2_touch.json, m2_hold.json, m2_first.json; predict.predict('m2_touch', inputs) (inputs: dir, gap_d, first5_d, range5, move0920, rvol5, vwap_d, sector_d, nifty_d, oi_chg_prev_d, rsi_d, dist_52h, dist_52l, atr14).
+
+## READING FOR THE DESK (plain words)
+- 'touch' PASSES on both sides (CE and PE): the model knows which movers are likely to travel 1% MORE by 15:10 (57% right vs 50%; when it says >= 60%, 65% came true, n 5,817).
+- 'first' (the direction test) does NOT pass: it cannot tell whether the next 1% comes with the move or against it (51.2% vs 50.1%, day-clustered p 0.10).
+- So the edge is ROOM / volatility (top inputs: ATR, first-5-min move and range), not direction. Per trader rule 2 it is NOT proof that a move continues; at most "room to travel".
+- 'hold' (still 1% further at 15:09) does NOT pass.

@@ -1,5 +1,5 @@
 {
- "made": "2026-11-21T07:42:24",
+ "made": "2026-11-21T07:47:15",
  "n": 80138,
  "span": [
   "2023-12-18",
@@ -39,7 +39,10 @@
       "p_value": 0.0,
       "years_beaten": 2,
       "years": 2,
-      "pass": true
+      "p_value_clustered": 0.0,
+      "groups": 462,
+      "pass": true,
+      "both_sides": true
      },
      "years": [
       {
@@ -79,6 +82,8 @@
       "p_value": 0.0,
       "years_beaten": 2,
       "years": 2,
+      "p_value_clustered": 0.0,
+      "groups": 462,
       "pass": true
      },
      "years": [
@@ -173,7 +178,53 @@
      "sign": "+"
     }
    ],
-   "export_check": 0.0
+   "export_check": 0.0,
+   "sides": {
+    "DOWN (PE side)": {
+     "n": 23201,
+     "acc": 0.5654,
+     "base_acc": 0.5012,
+     "brier": 0.2435,
+     "base_brier": 0.2506,
+     "beats": true,
+     "years": [
+      {
+       "year": 2025,
+       "n": 10689,
+       "acc": 0.5743,
+       "base_acc": 0.5032
+      },
+      {
+       "year": 2026,
+       "n": 12512,
+       "acc": 0.5578,
+       "base_acc": 0.4994
+      }
+     ]
+    },
+    "UP (CE side)": {
+     "n": 28909,
+     "acc": 0.5753,
+     "base_acc": 0.51,
+     "brier": 0.2416,
+     "base_brier": 0.25,
+     "beats": true,
+     "years": [
+      {
+       "year": 2025,
+       "n": 14877,
+       "acc": 0.5844,
+       "base_acc": 0.5124
+      },
+      {
+       "year": 2026,
+       "n": 14032,
+       "acc": 0.5657,
+       "base_acc": 0.5074
+      }
+     ]
+    }
+   }
   },
   "hold": {
    "target": "P(15:09 close >= 1% beyond the 09:20 price in its direction)",
@@ -192,7 +243,10 @@
       "p_value": 0.4992,
       "years_beaten": 0,
       "years": 2,
-      "pass": false
+      "p_value_clustered": 1.0,
+      "groups": 462,
+      "pass": false,
+      "both_sides": false
      },
      "years": [
       {
@@ -286,7 +340,53 @@
      "sign": "-"
     }
    ],
-   "export_check": 0.0
+   "export_check": 0.0,
+   "sides": {
+    "DOWN (PE side)": {
+     "n": 23201,
+     "acc": 0.7427,
+     "base_acc": 0.7427,
+     "brier": 0.19,
+     "base_brier": 0.1911,
+     "beats": false,
+     "years": [
+      {
+       "year": 2025,
+       "n": 10689,
+       "acc": 0.7428,
+       "base_acc": 0.7428
+      },
+      {
+       "year": 2026,
+       "n": 12512,
+       "acc": 0.7426,
+       "base_acc": 0.7426
+      }
+     ]
+    },
+    "UP (CE side)": {
+     "n": 28909,
+     "acc": 0.7561,
+     "base_acc": 0.7561,
+     "brier": 0.1824,
+     "base_brier": 0.1844,
+     "beats": false,
+     "years": [
+      {
+       "year": 2025,
+       "n": 14877,
+       "acc": 0.7573,
+       "base_acc": 0.7573
+      },
+      {
+       "year": 2026,
+       "n": 14032,
+       "acc": 0.7549,
+       "base_acc": 0.7549
+      }
+     ]
+    }
+   }
   },
   "first": {
    "target": "P(the 1% WITH the 09:20 move comes before the 1% against it | at least one is touched by 15:10) - the direction test",
@@ -305,7 +405,10 @@
       "p_value": 0.0,
       "years_beaten": 2,
       "years": 2,
-      "pass": true
+      "p_value_clustered": 0.1007,
+      "groups": 462,
+      "pass": false,
+      "both_sides": true
      },
      "years": [
       {
@@ -345,6 +448,8 @@
       "p_value": 0.0716,
       "years_beaten": 1,
       "years": 2,
+      "p_value_clustered": 0.4267,
+      "groups": 462,
       "pass": false
      },
      "years": [
@@ -439,7 +544,53 @@
      "sign": "-"
     }
    ],
-   "export_check": 0.0
+   "export_check": 0.0,
+   "sides": {
+    "DOWN (PE side)": {
+     "n": 19887,
+     "acc": 0.5152,
+     "base_acc": 0.5031,
+     "brier": 0.2496,
+     "base_brier": 0.25,
+     "beats": true,
+     "years": [
+      {
+       "year": 2025,
+       "n": 9130,
+       "acc": 0.5161,
+       "base_acc": 0.5028
+      },
+      {
+       "year": 2026,
+       "n": 10757,
+       "acc": 0.5144,
+       "base_acc": 0.5033
+      }
+     ]
+    },
+    "UP (CE side)": {
+     "n": 24617,
+     "acc": 0.5098,
+     "base_acc": 0.5038,
+     "brier": 0.2499,
+     "base_brier": 0.2507,
+     "beats": true,
+     "years": [
+      {
+       "year": 2025,
+       "n": 12616,
+       "acc": 0.5101,
+       "base_acc": 0.5095
+      },
+      {
+       "year": 2026,
+       "n": 12001,
+       "acc": 0.5095,
+       "base_acc": 0.4978
+      }
+     ]
+    }
+   }
   }
  },
  "artifacts": [

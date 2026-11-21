@@ -1,6 +1,6 @@
 {
- "made": "2026-11-21T07:43:01",
- "rule": "for each test year Y, train on all years < Y only, calibrate on out-of-fold scores inside those years (Platt), then\nscore year Y once. A model PASSES only if, on the unseen years pooled: accuracy beats the base rate (the training years' majority\nclass) with a one-sided binomial p < 0.025 (0.05 halved: the better of 2 model kinds is picked), the Brier score beats the base\nrate's, and it beats the base rate in at least half of the test years. Otherwise it stays OFF the cards and predict() says \"no edge\".",
+ "made": "2026-11-21T07:54:04",
+ "rule": "for each test year Y, train on all years < Y only, calibrate on out-of-fold scores inside those years (Platt), then\nscore year Y once. A model PASSES only if, on the unseen years pooled: accuracy beats the base rate (the training years' majority\nclass) with a one-sided p < 0.025 (binomial; for M2 / M3, whose rows share days, a day-clustered t: each day counts once) (0.05 halved: the better of 2 model kinds is picked), the Brier score beats the base\nrate's, and it beats the base rate in at least half of the test years. Otherwise it stays OFF the cards and predict() says \"no edge\".",
  "results": [
   {
    "name": "NIFTY_daily",
@@ -39,6 +39,19 @@
       "p_value": 0.5074,
       "years_beaten": 0,
       "years": 12,
+      "calls": {
+       "up": {
+        "n": 2931,
+        "right": 0.666,
+        "base": 0.666
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.334
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -199,6 +212,19 @@
       "p_value": 0.5074,
       "years_beaten": 0,
       "years": 12,
+      "calls": {
+       "up": {
+        "n": 2931,
+        "right": 0.666,
+        "base": 0.666
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.334
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -526,6 +552,19 @@
       "p_value": 0.0,
       "years_beaten": 12,
       "years": 12,
+      "calls": {
+       "up": {
+        "n": 2328,
+        "right": 0.7521,
+        "base": 0.666
+       },
+       "down": {
+        "n": 603,
+        "right": 0.6667,
+        "base": 0.334
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -686,6 +725,19 @@
       "p_value": 0.0,
       "years_beaten": 11,
       "years": 12,
+      "calls": {
+       "up": {
+        "n": 2261,
+        "right": 0.7567,
+        "base": 0.666
+       },
+       "down": {
+        "n": 670,
+        "right": 0.6403,
+        "base": 0.334
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -1003,6 +1055,19 @@
       "p_value": 0.5073,
       "years_beaten": 0,
       "years": 12,
+      "calls": {
+       "up": {
+        "n": 2937,
+        "right": 0.6197,
+        "base": 0.6197
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.3803
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -1163,6 +1228,19 @@
       "p_value": 0.5073,
       "years_beaten": 0,
       "years": 12,
+      "calls": {
+       "up": {
+        "n": 2937,
+        "right": 0.6197,
+        "base": 0.6197
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.3803
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -1490,6 +1568,19 @@
       "p_value": 0.0,
       "years_beaten": 12,
       "years": 12,
+      "calls": {
+       "up": {
+        "n": 2277,
+        "right": 0.7022,
+        "base": 0.6197
+       },
+       "down": {
+        "n": 660,
+        "right": 0.6652,
+        "base": 0.3803
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -1650,6 +1741,19 @@
       "p_value": 0.0,
       "years_beaten": 12,
       "years": 12,
+      "calls": {
+       "up": {
+        "n": 2238,
+        "right": 0.7069,
+        "base": 0.6197
+       },
+       "down": {
+        "n": 699,
+        "right": 0.6595,
+        "base": 0.3803
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -1960,6 +2064,19 @@
       "p_value": 0.513,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.6096,
+        "base": 0.6096
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.3904
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -2024,6 +2141,19 @@
       "p_value": 0.513,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.6096,
+        "base": 0.6096
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.3904
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -2201,6 +2331,19 @@
       "p_value": 0.0,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 757,
+        "right": 0.6856,
+        "base": 0.6096
+       },
+       "down": {
+        "n": 206,
+        "right": 0.6699,
+        "base": 0.3904
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -2265,6 +2408,19 @@
       "p_value": 0.0,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 757,
+        "right": 0.6922,
+        "base": 0.6096
+       },
+       "down": {
+        "n": 206,
+        "right": 0.6942,
+        "base": 0.3904
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -2423,6 +2579,19 @@
       "p_value": 0.5122,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.567,
+        "base": 0.567
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.433
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -2487,6 +2656,19 @@
       "p_value": 0.5122,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.567,
+        "base": 0.567
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.433
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -2664,6 +2846,19 @@
       "p_value": 0.0,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 714,
+        "right": 0.6471,
+        "base": 0.567
+       },
+       "down": {
+        "n": 249,
+        "right": 0.6627,
+        "base": 0.433
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -2728,6 +2923,19 @@
       "p_value": 0.0,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 705,
+        "right": 0.6525,
+        "base": 0.567
+       },
+       "down": {
+        "n": 258,
+        "right": 0.6667,
+        "base": 0.433
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -2886,6 +3094,19 @@
       "p_value": 0.513,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.5888,
+        "base": 0.5888
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.4112
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -2950,6 +3171,19 @@
       "p_value": 0.513,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.5888,
+        "base": 0.5888
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.4112
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -3127,6 +3361,19 @@
       "p_value": 0.0,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 655,
+        "right": 0.6992,
+        "base": 0.5888
+       },
+       "down": {
+        "n": 308,
+        "right": 0.6461,
+        "base": 0.4112
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -3191,6 +3438,19 @@
       "p_value": 0.0,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 680,
+        "right": 0.6956,
+        "base": 0.5888
+       },
+       "down": {
+        "n": 283,
+        "right": 0.6678,
+        "base": 0.4112
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -3349,6 +3609,19 @@
       "p_value": 0.5127,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.5587,
+        "base": 0.5587
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.4413
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -3413,6 +3686,19 @@
       "p_value": 0.5127,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.5587,
+        "base": 0.5587
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.4413
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -3590,6 +3876,19 @@
       "p_value": 0.0,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 696,
+        "right": 0.6351,
+        "base": 0.5587
+       },
+       "down": {
+        "n": 267,
+        "right": 0.6404,
+        "base": 0.4413
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -3654,6 +3953,19 @@
       "p_value": 0.0,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 673,
+        "right": 0.6449,
+        "base": 0.5587
+       },
+       "down": {
+        "n": 290,
+        "right": 0.6414,
+        "base": 0.4413
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -3812,6 +4124,19 @@
       "p_value": 0.5145,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.7092,
+        "base": 0.7092
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.2908
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -3876,6 +4201,19 @@
       "p_value": 0.5145,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.7092,
+        "base": 0.7092
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.2908
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -4053,6 +4391,19 @@
       "p_value": 0.1693,
       "years_beaten": 3,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 913,
+        "right": 0.7284,
+        "base": 0.7092
+       },
+       "down": {
+        "n": 50,
+        "right": 0.64,
+        "base": 0.2908
+       },
+       "both": true
+      },
       "pass": false
      },
      "years": [
@@ -4117,6 +4468,19 @@
       "p_value": 0.1693,
       "years_beaten": 3,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 909,
+        "right": 0.7294,
+        "base": 0.7092
+       },
+       "down": {
+        "n": 54,
+        "right": 0.6296,
+        "base": 0.2908
+       },
+       "both": true
+      },
       "pass": false
      },
      "years": [
@@ -4283,6 +4647,19 @@
       "p_value": 0.5124,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.5618,
+        "base": 0.5618
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.4382
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -4347,6 +4724,19 @@
       "p_value": 0.5124,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.5618,
+        "base": 0.5618
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.4382
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -4524,6 +4914,19 @@
       "p_value": 0.0,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 674,
+        "right": 0.6588,
+        "base": 0.5618
+       },
+       "down": {
+        "n": 289,
+        "right": 0.6644,
+        "base": 0.4382
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -4588,6 +4991,19 @@
       "p_value": 0.0,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 684,
+        "right": 0.6608,
+        "base": 0.5618
+       },
+       "down": {
+        "n": 279,
+        "right": 0.681,
+        "base": 0.4382
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -4746,6 +5162,19 @@
       "p_value": 0.514,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.704,
+        "base": 0.704
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.296
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -4810,6 +5239,19 @@
       "p_value": 0.514,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.704,
+        "base": 0.704
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.296
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -4987,6 +5429,19 @@
       "p_value": 0.0026,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 873,
+        "right": 0.748,
+        "base": 0.704
+       },
+       "down": {
+        "n": 90,
+        "right": 0.7222,
+        "base": 0.296
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -5051,6 +5506,19 @@
       "p_value": 0.009,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 873,
+        "right": 0.7446,
+        "base": 0.704
+       },
+       "down": {
+        "n": 90,
+        "right": 0.6889,
+        "base": 0.296
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -5217,6 +5685,19 @@
       "p_value": 0.5137,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.6781,
+        "base": 0.6781
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.3219
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -5281,6 +5762,19 @@
       "p_value": 0.5137,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.6781,
+        "base": 0.6781
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.3219
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -5458,6 +5952,19 @@
       "p_value": 0.0177,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 882,
+        "right": 0.712,
+        "base": 0.6781
+       },
+       "down": {
+        "n": 81,
+        "right": 0.6914,
+        "base": 0.3219
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -5522,6 +6029,19 @@
       "p_value": 0.069,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 901,
+        "right": 0.7026,
+        "base": 0.6781
+       },
+       "down": {
+        "n": 62,
+        "right": 0.6774,
+        "base": 0.3219
+       },
+       "both": true
+      },
       "pass": false
      },
      "years": [
@@ -5688,6 +6208,19 @@
       "p_value": 0.5142,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.6916,
+        "base": 0.6916
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.3084
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -5752,6 +6285,19 @@
       "p_value": 0.5142,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.6916,
+        "base": 0.6916
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.3084
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -5929,6 +6475,19 @@
       "p_value": 0.0097,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 855,
+        "right": 0.7357,
+        "base": 0.6916
+       },
+       "down": {
+        "n": 108,
+        "right": 0.6574,
+        "base": 0.3084
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -5993,6 +6552,19 @@
       "p_value": 0.0066,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 867,
+        "right": 0.7336,
+        "base": 0.6916
+       },
+       "down": {
+        "n": 96,
+        "right": 0.6875,
+        "base": 0.3084
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -6151,6 +6723,19 @@
       "p_value": 0.5141,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.7061,
+        "base": 0.7061
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.2939
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -6215,6 +6800,19 @@
       "p_value": 0.5141,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.7061,
+        "base": 0.7061
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.2939
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -6392,6 +6990,19 @@
       "p_value": 0.0557,
       "years_beaten": 3,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 864,
+        "right": 0.7431,
+        "base": 0.7061
+       },
+       "down": {
+        "n": 99,
+        "right": 0.6162,
+        "base": 0.2939
+       },
+       "both": true
+      },
       "pass": false
      },
      "years": [
@@ -6456,6 +7067,19 @@
       "p_value": 0.0073,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 842,
+        "right": 0.7565,
+        "base": 0.7061
+       },
+       "down": {
+        "n": 121,
+        "right": 0.6446,
+        "base": 0.2939
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -6614,6 +7238,19 @@
       "p_value": 0.5135,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.6874,
+        "base": 0.6874
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.3126
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -6678,6 +7315,19 @@
       "p_value": 0.5135,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.6874,
+        "base": 0.6874
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.3126
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -6855,6 +7505,19 @@
       "p_value": 0.0068,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 865,
+        "right": 0.7295,
+        "base": 0.6874
+       },
+       "down": {
+        "n": 98,
+        "right": 0.6837,
+        "base": 0.3126
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -6919,6 +7582,19 @@
       "p_value": 0.0016,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 854,
+        "right": 0.7365,
+        "base": 0.6874
+       },
+       "down": {
+        "n": 109,
+        "right": 0.6972,
+        "base": 0.3126
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -7077,6 +7753,19 @@
       "p_value": 0.5141,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.7134,
+        "base": 0.7134
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.2866
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -7141,6 +7830,19 @@
       "p_value": 0.5141,
       "years_beaten": 0,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 963,
+        "right": 0.7134,
+        "base": 0.7134
+       },
+       "down": {
+        "n": 0,
+        "right": null,
+        "base": 0.2866
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -7318,6 +8020,19 @@
       "p_value": 0.0211,
       "years_beaten": 4,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 866,
+        "right": 0.754,
+        "base": 0.7134
+       },
+       "down": {
+        "n": 97,
+        "right": 0.6495,
+        "base": 0.2866
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -7382,6 +8097,19 @@
       "p_value": 0.0404,
       "years_beaten": 3,
       "years": 4,
+      "calls": {
+       "up": {
+        "n": 864,
+        "right": 0.7523,
+        "base": 0.7134
+       },
+       "down": {
+        "n": 99,
+        "right": 0.6263,
+        "base": 0.2866
+       },
+       "both": true
+      },
       "pass": false
      },
      "years": [
@@ -7550,6 +8278,19 @@
       "p_value": 0.6624,
       "years_beaten": 0,
       "years": 2,
+      "calls": {
+       "up": {
+        "n": 439,
+        "right": 0.533,
+        "base": 0.5355
+       },
+       "down": {
+        "n": 26,
+        "right": 0.4231,
+        "base": 0.4645
+       },
+       "both": false
+      },
       "pass": false
      },
      "years": [
@@ -7590,6 +8331,19 @@
       "p_value": 0.6624,
       "years_beaten": 1,
       "years": 2,
+      "calls": {
+       "up": {
+        "n": 393,
+        "right": 0.5369,
+        "base": 0.5355
+       },
+       "down": {
+        "n": 72,
+        "right": 0.4722,
+        "base": 0.4645
+       },
+       "both": true
+      },
       "pass": false
      },
      "years": [
@@ -7724,6 +8478,19 @@
       "p_value": 0.0,
       "years_beaten": 2,
       "years": 2,
+      "calls": {
+       "up": {
+        "n": 295,
+        "right": 0.6746,
+        "base": 0.5355
+       },
+       "down": {
+        "n": 170,
+        "right": 0.7059,
+        "base": 0.4645
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -7764,6 +8531,19 @@
       "p_value": 0.0,
       "years_beaten": 2,
       "years": 2,
+      "calls": {
+       "up": {
+        "n": 342,
+        "right": 0.6228,
+        "base": 0.5355
+       },
+       "down": {
+        "n": 123,
+        "right": 0.7073,
+        "base": 0.4645
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -7887,6 +8667,19 @@
       "p_value": 0.1432,
       "years_beaten": 1,
       "years": 2,
+      "calls": {
+       "up": {
+        "n": 391,
+        "right": 0.5217,
+        "base": 0.5054
+       },
+       "down": {
+        "n": 74,
+        "right": 0.5811,
+        "base": 0.4946
+       },
+       "both": true
+      },
       "pass": false
      },
      "years": [
@@ -7927,6 +8720,19 @@
       "p_value": 0.0524,
       "years_beaten": 2,
       "years": 2,
+      "calls": {
+       "up": {
+        "n": 365,
+        "right": 0.5315,
+        "base": 0.5054
+       },
+       "down": {
+        "n": 100,
+        "right": 0.59,
+        "base": 0.4946
+       },
+       "both": true
+      },
       "pass": false
      },
      "years": [
@@ -8053,6 +8859,19 @@
       "p_value": 0.0,
       "years_beaten": 2,
       "years": 2,
+      "calls": {
+       "up": {
+        "n": 281,
+        "right": 0.637,
+        "base": 0.5054
+       },
+       "down": {
+        "n": 184,
+        "right": 0.6957,
+        "base": 0.4946
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
@@ -8093,6 +8912,19 @@
       "p_value": 0.0001,
       "years_beaten": 1,
       "years": 2,
+      "calls": {
+       "up": {
+        "n": 340,
+        "right": 0.5676,
+        "base": 0.5054
+       },
+       "down": {
+        "n": 125,
+        "right": 0.664,
+        "base": 0.4946
+       },
+       "both": true
+      },
       "pass": true
      },
      "years": [
