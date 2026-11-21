@@ -28,6 +28,15 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 22 Nov 01:05 IST (real time) - THE TRADER'S RULE (his words + his choice in the reviewer's question): "The head analyst should have money
+till the trading day ends" -> UP TO $10 A DAY.
+1. On every trading day the HEAD ANALYST (live looks, the 07:15 / 09:08 briefs, manage notes) is never refused 07:00-15:30. It has first
+   claim on the day's $8; seats, readers and ASK stop before the head does.
+2. Only if the head still needs more, it may go above $8, to a hard ceiling of $10 for that trading day (the extra is for the head only).
+   Each time that happens, one Trade now line: "Head analyst over $8 today: $x - reason". Above $10: P1 + rules-only, as before.
+3. Weekends / holidays unchanged ($1.50; Sun 22 Nov $3.00). Show the head's own spend on the meter and in the 19:30 credit line.
+4. Re-run PROOF on Friday's tape with this rule: head refused 0 times 07:00-15:30, total spend, extra used. Review at Fri 27 Nov.
+
 ## 22 Nov 00:50 IST (real time) - REVIEWER'S DECISION TEST (the desk's real replays 18 / 19 / 20 Nov + Saturday's messages, judged as an F&O
 options buyer). VERDICT: NOT YET. Zero BUY NOW in three sessions; 1 of 13 head ideas paid an ATM buyer (POLYCAB PE 18 Nov - early and right,
 held at WAIT all day); 0 of 31 big movers caught on 19-20 Nov; the head was refused for budget on most live looks (18 Nov 208 of 214, 20 Nov
