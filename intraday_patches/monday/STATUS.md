@@ -573,3 +573,24 @@ Last update: 20:55 IST
     (2) The Reuters Nvidia / SEC exclusive did not reach the head's input this turn (the head named it without an id).
     (3) D11 gives history in words ("four in five") instead of the exact numbers with n.
   - The 12-DRIVER CHECKLIST is now enforced in code for every brief (19:45 / 22:45 / 07:15 / 09:08 and outlooks): the validator rejects a brief missing any D1-D12 line.
+- 11:18 - NEW DESK SPEAKS ON "GIR Trade now" (gir-v2desk restarted 11:14 / 11:17, login 0.05 s; desk tests 144; BUILD_LOG 11:20 with undo).
+  ON now:
+  - world shocks A / B / E;
+  - India shocks C / D / F and news G / H / I / J, RED only, under flood control (8 RED a day; 23:00-06:30 only A / B / E and official G / I);
+  - RBI / official G;
+  - the WHY / cause card (once per set of US closes);
+  - every brief (19:45 / 22:45 / 07:15 / 09:08 + outlooks, numbered parts);
+  - credit P1 (EMPTY / LOW / the 19:30 balance) and FLIP-REASON P1 lines (on the System topic too).
+  OFF until Mon 23 Nov 09:15 IST (hard check; WOULD SEND until then): BUY NOW cards, manage notes, rotation alerts.
+  J7 DESK_TG_OFF drops BUY NOW / manage / rotation / brief lines (not queued); shock / P1 / WHY lines stay on in both modes. FO / OI refused by tgguard. Tests can never send.
+  SENT TO TRADE NOW SO FAR (message id, IST):
+  - 630 11:09:19 "From 21 Nov this channel = NEW GIR DESK ONLY";
+  - 631-633 11:12:34-38 the MONDAY OUTLOOK (3 parts);
+  - 634 11:14:49 the WHY card C:0c3bbe5b;
+  - 635 11:17:55 "CORRECTION to the Monday outlook D1": US closes Nasdaq -5.28%, S&P -3.70%, Dow -1.93%, SOX -10.73% (the -1.57% / -2.41% were Friday 15:29 prints); read unchanged.
+  OUTLOOK FIXES (test_overnight_fix.py):
+  (1) drivers printed before the newest US close are labelled STALE in the head's input, and the validator rejects a D1 that quotes a STALE number or leaves out the US close;
+  (2) the hot US-wrap rows (incl. the Reuters Nvidia / SEC exclusive K:aa87fd83) are in the head's input with ids;
+  (3) D11 must use the lesson's numbers with n (keys), else the brief is rejected.
+  NOTE: us_overnight.json now reads gold -4.62% and Brent +0.64% (settlement prices; the earlier -3.98% / -2.29% were pre-settlement). The correction quoted only the four US cash closes for that reason.
+  The 12-driver checklist is permanent on every brief. PROOF_1030 (the new $8 split) is still running.
