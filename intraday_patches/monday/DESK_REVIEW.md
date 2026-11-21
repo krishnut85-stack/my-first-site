@@ -28,6 +28,13 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 23:40 IST (real time) - ORDER FLOW (trader asked after a reel selling "order flow" software). Free version from our own data:
+from the depth recorder (Kite 5 levels from Mon 09:45) + ticks: per share and per minute - buy vs sell aggression (trades at ask vs at bid
+= delta), book imbalance (bid qty vs ask qty, top 5), large-order prints, absorption (price holds while heavy selling hits). STUDY after
+5 trading days of recording (code only, $0): do these lead the next 5 / 15 / 30 min move on the 218 F&O shares, beyond VWAP / RVOL, with the
+same tuning / unseen split + random baseline as every other test. Only if it passes: one "ORDER FLOW: buyers / sellers in control" line on
+the share page and the desk's evidence. No paid software, no academy.
+
 ## 21 Nov 23:30 IST (real time, hourly) - VERDICTS on 22:31-23:20 (server clock)
 ACCEPTED: sort / filter bar (one shared component, 13 pages, 72 / 72 with real clicks + storage blocked) · news gate final (F&O names never
 hidden, "Company - minor" lane; live 51 / 8 / 22) · Friday replay 10 / 10 in time if the desk runs all day (it will from Monday; Friday's
