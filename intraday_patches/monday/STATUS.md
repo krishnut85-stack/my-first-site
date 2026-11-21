@@ -362,3 +362,32 @@ Last update: 20:55 IST
   UNDO: one sender: rm /home/globalbot/tg_off/<name>.off (live at once). All: rm /home/globalbot/tg_off/*.off and rm v2/data/newsread_tg_off. The code guards: cp <file>.bak_tgmute0701 <file> + restart that unit. solsniper: mv the unit back from archive/crypto_2026-11-20/ + systemctl enable --now.
   SECURITY FINDING: newshawk tape_bot writes the FULL Telegram bot token into its journal on every failed post (inside the request URL in "telegram post failed" lines). Anyone with journal access can use the bot. Recommend: rotate that bot token (BotFather) and fix the log line. Not changed.
   FROM MONDAY (desk point 4): the new desk speaks on ONE channel only (BUY NOW, manage notes, the brief headlines), WOULD SEND until the Sunday 18:30 ring test passes; no "URGENT" from keyword rules.
+- 07:37 - DESK 21 Nov 07:50 (the trader) items 1-3:
+  1. OLD TRADING PROGRAMS PAUSED.
+     - Read-only first. CAN IT PLACE A REAL ORDER?
+       - raven / raven-manage / raven-preopen: NO. PAPER_MODE = True is a hard block that raises on any real order, and the real kite.place_order line is commented out (raven/raven.py:80, :268).
+       - hunter-execute / hunter-manage: YES CAPABLE. kite.place_order (hunter_execute.py:420, hunter_manage.py:381) and kite.place_gtt (hunter_execute.py:459, hunter_manage.py:338). They are paper only while paper/paper_trader.py PAPER_MODE = True (line 43). If that import ever fails, the bot switches itself to LIVE (hunter_execute.py ~line 58: "bot in LIVE mode!").
+       - hunter-scan: no order calls (scan + paper book).
+       - eqfloor@scan / manage / execute: no direct Kite order call; orders go through paper_trader; real orders only if PHOENIX_LIVE (hard-coded False, gir_eq_floor.py:43) and GIR_PAPER_MODE != 1.
+     - OPEN POSITIONS / ORDERS: the Kite read (positions / orders) could not run: Friday's tokens expired at 06:00 and there is no weekend login. Instead:
+       - their logs since 1 Oct show NO live sign (no "IMPORT FAILED" / "LIVE mode", no real order id), only PAPER lines;
+       - paper_trader holds 35 open PAPER trades (not real);
+       - raven has no live state file.
+       => no real position or order found, so case (b).
+     - ACTION: stopped + disabled raven.service, raven-manage / raven-preopen (+ timers), hunter-scan / -manage / -execute (+ timers), eqfloor@scan / @manage / @execute (+ eqfloor-scan / -manage / -execute timers). Code and state files are untouched. The previous state of each unit is in /home/globalbot/archive/old_trading_paused_2026-11-21.txt. Undo: systemctl enable --now <timer / service> per that list.
+     - The new Kite login (gir-kitelogin) imports raven/kite_login.py as a library, so it is NOT affected. Sunday's planned raven restart (J1 guard) is no longer needed.
+     - RECOMMENDATION for the trader: before any of them is ever restarted, make hunter's LIVE fallback impossible (refuse to start if paper_trader fails to import).
+  2. 20 Nov RE-RUN: CANCELLED (the trader). No more rehearsal money; Sunday 19:45 and Monday are the tests.
+  3. SPEND ACCOUNT, 15-21 Nov (same API key). From aispend.json (the live ledger, which starts 18 Nov), every ai_raw log by its own call time, and the Claude Code session logs on this server (tokens x the price table in intraday/aispend.py; an ESTIMATE - the Console is the true figure):
+  | day | Claude Code on the server (est.) | old system + v2 live services (ledger) | new desk LIVE | desk shadows + probes | rehearsals FULL1-4 | old-engine replays | day total (known) |
+  |---|---|---|---|---|---|---|---|
+  | 15 Nov | 0 (none found) | NOT IN A LEDGER (ledger starts 18 Nov) | - | - | - | not logged | Console only |
+  | 16 Nov | 0 (none found) | NOT IN A LEDGER | - | - | - | not logged | Console only |
+  | 17 Nov | ~$49.5 | NOT IN A LEDGER | - | - | - | not logged | ~$49.5 + Console |
+  | 18 Nov | ~$135.9 | $34.99 (analyst expert 13.33, reader 7.73, analyst routine 7.40, desks 2.40) | - | - | - | in replay ledger (no wall time) | ~$170.9 |
+  | 19 Nov | ~$547.4 | $12.24 (reader 7.69, ready files 1.52, decider 1.03, v2 news reader 0.80) | - | - | - | $4.78 | ~$564.4 |
+  | 20 Nov | ~$528.0 | $14.51 (reader 7.67, v2 news reader 2.70, ready files 1.58, decider 1.00) | $0.89 | $12.95 | $12.65 | $7.10 | ~$576.1 |
+  | 21 Nov (to 06:48) | ~$84.8 | $0.08 | $0.15 | - | $9.61 | - | ~$94.6 |
+  | WEEK | ~$1,345.6 | $61.82 (+15-17 Nov unknown) | $1.04 | $12.95 | $22.28 | $11.88 (+ earlier replays: the replay ledger holds $42.09 by replayed day, incl. the rehearsals) | ~$1,455 known |
+  - READING: Claude Code on the server (the main session + its builder agents, all on "API Usage Billing" until about 06:48 today) used roughly 90% of this week's API money. GIR's own AI (old + new, live, rehearsals, shadows, replays) was about $110. After 06:48 Claude Code runs on the trader's subscription (~$10.9 so far today, not from the API balance).
+  - LIMITS: the Claude Code figure is tokens x GIR's own price table (Opus 5.5 4 / 20 / 0.20 cached / 5 cache-write per M tokens; Fable 5.1 at the generic Fable row); the Console's "Claude Code" category is authoritative. 15-17 Nov old-system spend is not in any server ledger. The old system's "reader" part spends ~$7.7 a day by itself: worth deciding whether it should still run (it is the old system, now silent on Telegram).
