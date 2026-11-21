@@ -483,3 +483,5 @@ Last update: 20:55 IST
   - STALE chip.
   - Fixed on the way: the ROTATION row's "null", the phone label spacing, P1 lines in white.
   The shock lines and credit P1 show live once the desk builder publishes desk.shocks / meter.p1 (in progress).
+- 10:06 - OLD-SYSTEM AI OFF (the trader's yes): flag set, 10 old services restarted (all active, no errors), their non-AI feeds keep running. Every AI call on the key now goes through the desk's $8 gate (J11). Baseline of today's old parts at the switch: decider $0.069, decider big news $0.054, news reader $0.024, headline map $0.008, reader $0.000. These must not grow; checked again at the next pull and on Monday ("old paths = $0").
+- 10:06 - REBOOT (kernel 6.8.0-151): the trader chose AFTER MONDAY (Monday evening). The kernel is installed and waits. When it happens, Claude Code ("claude remote-control" in tmux) must be started again by hand.
