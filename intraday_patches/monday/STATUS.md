@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 22:24 IST
+Last update: 22:25 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -67,6 +67,12 @@ Last update: 22:24 IST
 | J14 Rate limits at cold start | DONE (model; live proof Mon 08:30) | model 07:40-09:30 per key / endpoint (Kite limits: quote 1/s, historical 3/s, other 10/s): 2 bursts over the quote limit (key 1 seclive + futlive from 09:15; key 4 kquote + optdec) -> fixed by a shared per-key spacer (intraday/kiterl.py), 7 services restarted 17:35. MISSED: the old price engine (kept on) is an unspaced key-1 user - being added; live check Mon 08:30 (429 errors in the logs) | J14_ratelimits.md | 21 Nov 17:38 |
 | J15 His Monday routine (trader) | NOT STARTED | trader's own step Mon 08:25 |  |  |
 | J16 Code freeze Sun 16:00 | NOT STARTED | Sun 16:00 |  |  |
+
+## WAITING FOR TRADER (approve in the morning; overnight rule 22:25: steps needing approval are skipped and listed here, all other work carries on)
+- RBI lines live now: Rs 25,000 cr+ RBI operation lines go to Telegram LIVE (India-shock switch on) while trade lines wait for the Sunday ring test - keep live, or hold to the ring test?
+- Friday-evening slow mode: start only after the evening brief? (would catch items like the 19:33 Anthropic slide in time)
+- News gate rule (a): 10 hidden items name an F&O company but are not market news (customer card fraud, staff protest) - may the NOT-market list win, or must "names an F&O company" always show?
+- GitHub token: after you rotate it (Sunday), the new one goes into a credential helper, not the remote URL.
 
 ## Notes for the desk
 - 10:34 - old system STALE alert 09:28 (desk.json 6 min old): cause = the OLD desk service itself. Its cycle stalled 09:22 -> 09:32:50 inside its own AI reader calls ('reader NHPC / CIPLA: no JSON in the answer'), then wrote desk.json at 09:32:50; the alert cleared. Server load was ~9 then, mostly from programs outside GIR v2 (falcon.py ~65% CPU, engine2, gir.py). Not Kite rate limits on key 2 (no 'Too many requests' from the old engine; elon_code.py had 4 today vs 3 yesterday on its own key). The new system's recorders use ~0% CPU and kept recording without a gap. Logged as an old-system fault; nothing changed on the old system.
