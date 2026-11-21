@@ -28,6 +28,20 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 16:20 IST - THE TRADER: "monitor NIFTY and BANKNIFTY too - ask the desk for CE and PE". THE INDEX DESK (part of the frozen design:
+index ideas were already allowed; this makes them a fixed, visible part):
+1. EVERY BRIEF gets an "INDEX" block (bullet layout): NIFTY and BANKNIFTY - THE OPEN lean, THE SESSION lean, key levels (previous close,
+   previous high / low, the record, the opening-range high / low once known), and a CE plan + a PE plan each with its trigger:
+   CE = gap-down that closes back above the FUTURES VWAP twice / dips holding VWAP / break of the morning high on volume, RSI > 50.
+   PE = gap-up that loses VWAP / bounces failing at VWAP / break of the morning low on volume, RSI < 50.
+   Strikes: NIFTY next weekly (1 Dec), BANKNIFTY December monthly; ATM or 1 ITM; the shock-day IV wait (09:30) applies.
+2. LIVE (09:20-14:30): the same 5 clues checked every 5 min on NIFTY / BANKNIFTY DECEMBER futures (VWAP from futures volume, not the
+   index); an index BUY card only when grade A (clues + a reason: flows / news / breadth / money line) and the gates pass. Max 2 index
+   cards a day, counted in the 3-trades rule. Exit notes: RSI > 80 with no new high, or a 5-min close back through VWAP.
+3. History line on each index card from the studies (e.g. after a Friday US fall: open lower 93%, session flat from the open).
+4. SEND NOW to Trade now: "MONDAY INDEX PLAN" for NIFTY + BANKNIFTY in this format (Friday close / record / VWAP levels, OPEN lean,
+   SESSION lean, CE trigger, PE trigger, the 09:20 checks), grade shown, NOT PROVEN.
+
 ## 21 Nov 16:00 IST - ANSWERS to the server's 4 open points (1 and 4 are in the 15:45 entry - repeated here so nothing waits)
 1. READ money: (c) both - TV reader 2 min per call 07:00-09:15, 4 min after; READ 1.10 (SEATS 1.50, ASK 0.10, SHOCK 0.90); MEET 2.60,
    LIVE 1.80; total $8. Re-run PROOF before Monday 07:00.
