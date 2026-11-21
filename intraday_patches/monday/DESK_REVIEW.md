@@ -28,6 +28,29 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 13:15 IST - THE TRADER APPROVED: build STATISTICAL MODELS and MARKET-DEPTH recording NOW, side by side (not week 2).
+Limits: code only ($0 AI), no paid storage, light on the server (train after 15:35 / weekends with nice 15; never slow 09:15). Monday's
+go-live items keep priority; these run in parallel with their own builder.
+**A. MODELS (scikit-learn: logistic regression + gradient-boosted trees; walk-forward test: train on older years, test on later unseen
+years; calibrated probabilities; shown ONLY if they beat the simple base rate on the unseen years, else kept off the cards):**
+  M1 NEXT-DAY GAP (NIFTY, BANKNIFTY, sector indices): inputs = US index + futures moves, SOX, Asia closes, Europe, GIFT premium at
+     15:10, USDINR, crude, gold, US 10y, FII cash, India VIX, day-of-week (Friday), holiday next, NIFTY RSI / distance from 20-day.
+     Output: P(gap down / up), expected size. Feeds the 14:45 TOMORROW card.
+  M2 09:20 SHARE CONTINUATION (218 F&O shares, 3 years of minute data): inputs = gap, first-5-min range, RVOL, VWAP side, sector move,
+     NIFTY move, pre-open IEP gap, OI change, daily RSI, distance from 52-week high / low. Output: P(>= 1% more in the same direction by
+     15:10). Feeds the A / B / C grade (a call needs the model to agree or say why not).
+  M3 SECTOR NEXT 1-5 DAYS: sector RSI, breadth, FII sector flow (NSDL), relative strength vs NIFTY, the pairs. Feeds the look-ahead book.
+  Report each model: accuracy vs base rate on unseen years, by year, with n; the top inputs; file onset_results/models_*.md.
+**B. MARKET DEPTH (closest to tick-by-tick with what he already pays for): Kite websocket FULL mode (5 levels of bids / asks + last
+trade + OI), on a SEPARATE key / connection from the live feed:**
+  - Instruments: NIFTY + BANKNIFTY futures, the ~60 most liquid F&O shares, NIFTY / BANKNIFTY ATM +/- 2 strikes, and the day's watch-list
+    names (outlook / look-ahead) - not all 218.
+  - Store per-second FEATURES, not raw snapshots: bid / ask total quantity, imbalance, spread, best-level size jumps, large-order flags,
+    trade-side estimate. Compressed (parquet / zstd), 30-day rolling, disk cap 3 GB (alert at 80%).
+  - Load guard: stop the recorder for the session if CPU > 70% or the live feed lags (logged).
+  - Start recording Mon 23 Nov 09:15 if the Sunday test passes. NOT used in decisions until a study (about 2 weeks of data) shows the
+    imbalance predicts the next 5-15 minutes beyond random.
+
 ## 21 Nov 13:00 IST - THE TRADER: "bullet points in straight lines" - EXACT TELEGRAM LAYOUT (every message, code-formatted, not left to the model)
 - Every line starts with "• " and is ONE short line (max ~45 characters, no wrapping into a paragraph). One fact per line.
 - Plain words only: no "bench", "base rate", "n", "D1", ids or keys on Telegram ("73 past cases", "proven by history").
