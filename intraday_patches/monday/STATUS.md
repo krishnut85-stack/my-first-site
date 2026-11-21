@@ -949,3 +949,12 @@ Last update: 20:55 IST
   4. Earnings-call reader (no-AI first pass over 162 transcripts; AI only inside the READ budget), remaining free upgrades, daily source scorecard, parked old sources taken off the silence alarm - BUILDING (news builder).
   Defaults used for the open decisions (not waiting): ntfy = not set up until his topic file; DO backups = his panel; X / Gemini = keys stay until he says cancelled; TV channels + broker PDFs = NO; ttyd / redis / his other projects = left running.
 - 17:40 - 19:45 BRIEF INPUTS: the chip-shock ranking and the Bitcoin weekend lesson were NOT read by the desk (files existed, no loader). Now loaded (analyst/retrieve.py): head + US seat 1 + IT/EMS 21, power 25, capital goods 26 (chip); head + seat 1 (BTC); point in time (a replay before 16:36 never sees them). Desk suite 270 pass; gir-v2desk restarted 17:38, no errors. DONE.
+- 17:55 - NEWS BUILDER (17:10 item 4), proof v2/BUILD_LOG.md; desk suite 271/271, sources 14/14; restarts gir-v2sources + gir-v2desk 17:00 / 17:11 / 17:13:
+  | item | status |
+  |---|---|
+  | silence alarm after the park: 25 old-only rows now "parked, not watched" (from archive/park_1127/keep.txt); tvwatch, newsroom, newshawk-filings still watched | DONE |
+  | earnings-call reader, no AI (sources/p_transcripts.py): 171 calls read, 149 with a quoted LAST CALL guidance line, 147 shares; seat 34 shows them for the day's movers ("quoted, not a trade signal") | DONE |
+  | AI reading of calls (would cost more than the READ budget) | NOT STARTED, default NO until the trader says yes |
+  | LAST CALL line on the /preview share card | BUILDING (tonight, before the Sun 16:00 page freeze) |
+  | daily source scorecard 16:00 IST (sources/p_score.py; SOURCE_SCORE.md): items, F&O items, first-on shares, lead, longest silence; false items need the readers' JUNK counts (not measured yet) | DONE |
+  | free upgrades: Polymarket Fed odds (stand-in for CME, which blocks the server), DGTR / DGFT page watches, NCLT / NCLAT / SAT / TDSAT cause lists (robots.txt allowed only) | BUILDING (defaults: free + public + allowed = build) |
