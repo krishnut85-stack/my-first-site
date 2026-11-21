@@ -1,5 +1,40 @@
 # NEWS REPLAY - Friday 20 Nov 2026 through the v2 news path
 
+## CARDING REPLAY after the trader's 22:05 decisions (made Sat 21 Nov 22:21 IST)
+
+**Critical items carded in time: 7 of 10** if the desk had been running all day (A); **4 of 10** with the real desk start Fri 19:23 (B).
+(Friday's actual live desk: 0 of 10 in time.)
+
+- **In time** = a desk card within 10 minutes of GIR's first sight of the item; for overnight items that is also before the next 09:15 open.
+- **(A) assumption:** the v2 desk with tonight's code (items 1-3) running all day Fri 20 Nov from 00:00 on the same recorded tape, with the budget days and the weekend slow mode (from Fri 15:40) as configured. **(B):** the real start Fri 19:23.
+- **$0, no AI:** a card counts when CODE makes it (item 1: RBI operation >= Rs 25,000 cr) or when the live readers actually wrote a card on the same story when they did read it (a recorded answer). No recorded answer = not counted. A desk pass is taken as <= 1 minute after a row is seen.
+- **Google News (item 4):** no longer fetched live, so every row that came via news.google.com is removed from this replay. Effect: **IndusInd roadshows is now NOT SEEN** (both copies - Google News 07:11 and the 'WIRE' 19:10 line - came via Google News links). Gold, CII, Nvidia, US close and Anthropic keep a non-Google first sight (WIRE publisher RSS / live blog / FinancialJuice / investingLive); some later Google-News copies (US-wrap Reuters links) drop out but change no first-sight time.
+
+| # | Item | First seen (GIR, no Google News) | How it is carded now | Card (A all day) | In time (A) | Card (B 19:23 start) | In time (B) | Why not |
+|---|---|---|---|---|---|---|---|---|
+| 1 | RBI VRR result 10:20 | Fri 10:28 (ext:bonds) | code card (item 1: RBI op >= Rs 25,000 cr) + one Trade now line; gate PASS; facts 3-day VRR result for Fri 20 Nov / Allotted Rs 50,003 cr / Offered Rs 50,000 cr / Bids Rs 112,555 cr (2.25x cover) | Fri 10:29 | yes | - | no | shocknews seeds silently at desk start: a release seen before 19:23 gets no code card |
+| 2 | Second VRR notice 12:35 | Fri 12:43 (ext:bonds) | code card (item 1: RBI op >= Rs 25,000 cr) + one Trade now line; gate PASS; facts 3-day VRR notice for Fri 20 Nov / Size Rs 25,000 cr / Bids window 12:45-13:15 / Money lent to the banks | Fri 12:44 | yes | - | no | shocknews seeds silently at desk start: a release seen before 19:23 gets no code card |
+| 3 | Second VRR result 13:40 | Fri 13:43 (ext:bonds) | code card (item 1: RBI op >= Rs 25,000 cr) + one Trade now line; gate PASS; facts 3-day VRR result for Fri 20 Nov / Allotted Rs 25,007 cr / Offered Rs 25,000 cr / Bids Rs 48,040 cr (1.92x cover) | Fri 13:44 | yes | - | no | shocknews seeds silently at desk start: a release seen before 19:23 gets no code card |
+| 4 | 4-day VRR notice 19:25 | Fri 19:32 (ext:regs) | code card (item 1: RBI op >= Rs 25,000 cr) + one Trade now line; gate PASS; facts 4-day VRR notice for Mon 23 Nov / Size Rs 50,000 cr / Bids window 09:30-10:00 / Money lent to the banks | Fri 19:33 | yes | Fri 19:33 | yes |  |
+| 5 | Nvidia SEC probe (Reuters) | Sat 00:46 (ext:fjuice) | item 2: hot top-tier headline (Securities and Exchange Commission probe into NVIDIA is exploring potential acco) -> R5 read at once from the SHOCK bucket + free code line; recorded answer: Sat 18:21 R5: Nvidia falls on a reported  | Sat 00:47 | yes | Sat 00:47 | yes |  |
+| 6 | Anthropic IPO slide | Fri 19:33 (ext:world) | R5 normal path; recorded answer: Fri 21:41 R5: Anthropic shares slide after listing as gold breaks lower; read for gold-linked India name | - | no | Fri 19:34 | yes | (A) Fri 19:33 is in the weekend budget day: slow mode, one R5 batch per 20 min - card 0-20 min later, not proven in time |
+| 7 | US close S&P -3.7% / Nasdaq -5.3% | Sat 02:35 (ext:fjuice) | item 2: hot top-tier headline (S&P 500, Dow Jones close in correction territory) -> R5 read at once from the SHOCK bucket + free code line; recorded answer: Sat 07:59 R5: US indexes extend their fall as Nasdaq leads losses and the | Sat 02:36 | yes | Sat 02:36 | yes |  |
+| 8 | IndusInd roadshows | NOT SEEN  | R2 path (first sight now WIRE None - the Google News 07:11 copy no longer counts); recorded answer: none - the live readers never carded this story | - | no | - | no | no recorded answer exists ($0 rule: no card counted); (A) Fri 19:10 is in the weekend slow mode; (B) 19:10 is before the desk start |
+| 9 | CII summit FPI line (SEBI chairman) | Fri 11:33 (newsread:CNBC-TV18 Live Blog) | R2 path; the 11:33 live-blog copy has v2 news-reader weight 1 (dropped by knowledge()), first reader input 11:45; recorded answer: Fri 21:08 R4: SEBI opens consultation on reviewing extra disclosure rules for foreign portfolio inv | Fri 11:46 | no | - | no | (B) desk not running at 11:33 |
+| 10 | Gold -4.7% | Fri 10:20 (newsread:WIRE) | R2 path (WIRE 10:20, Friday session = no slow mode); recorded answer: Fri 21:08 R5: Domestic gold falls sharply, with the karat rate slipping below the one lakh rupee mark | Fri 10:21 | yes | - | no | (B) desk not running at 10:20 |
+
+**What still misses and why (named):**
+- IndusInd roadshows: not seen without Google News - needs a publisher feed that carries it (item 4's ET / MC / BS / FE / Zee Biz / CNBC-TV18 feeds from tonight; not provable on Friday's tape); and the live readers never carded this story, so no recorded answer.
+- CII summit FPI line: the 11:33 CNBC-TV18 live-blog copy has v2 news-reader weight 1, so knowledge() drops it; the first reader input is the ET Now copy at 11:45 -> card 11:46 = 13 min (just over the 10-min rule).
+- Anthropic slide in (A): Fri 19:33 falls in the weekend budget day (Fri 15:40 -> Sat 15:40), so R5 reads one batch per 20 minutes; the card lands 0-20 minutes later (not proven in time). In (B) R5 is in backlog mode at 19:33 (item 3: newest top-tier first, no slow-mode wait) -> 19:34.
+- (B) items 1-3, 9, 10: first seen before the desk started at 19:23; the code alerts seed silently at start (no burst of old lines), so nothing could be in time.
+
+Per item the JSON (`NEWS_REPLAY_20NOV.json` -> `carding`) has the mechanism, the recorded answer used and the minutes after first sight.
+
+---
+
+*Below: the 21:50 path replay (before items 1-3; its 'first seen' column still included Google-News copies).*
+
 Made Sat 21 Nov 2026 ~21:50 IST (DESK_REVIEW 21 Nov 20:30, order 3). Machine copy: `NEWS_REPLAY_20NOV.json` (same folder).
 Script: `v2/replay/newspath_replay.py` (run: `GIR_REPLAY_NO_TG=1 nice -n 15 python3 replay/newspath_replay.py --out <folder>`).
 

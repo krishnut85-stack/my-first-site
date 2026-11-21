@@ -1,5 +1,5 @@
 {
- "made_ist": "2026-11-21 21:54",
+ "made_ist": "2026-11-21 22:21",
  "day": "2026-11-20",
  "window": "Fri 00:00 -> Sat 09:00",
  "items": [
@@ -36,11 +36,11 @@
      "note": "NEW; news_gate applied"
     },
     {
-     "t": "Fri 15:37",
+     "t": "Fri 15:39",
      "src": "ext:regs",
      "kind": "regulator",
      "reader": "R4",
-     "note": "EARLIER; news_gate applied"
+     "note": "NEW; news_gate applied"
     },
     {
      "t": "Fri 15:39",
@@ -51,7 +51,7 @@
     }
    ],
    "code_alerts": [
-    "Fri 15:37 regs: RED RBI LIQUIDITY 15:37 IST: result: 3-day VRR auction on 20 Nov \u00b7 Rs 50,003 cr - bids 112,555 cr (2.25x) \u00b7 injection: CE wa"
+    "Fri 15:39 regs: AMBER RBI LIQUIDITY 15:39 IST: result: 3-day VRR auction on 20 Nov | Tenor 3-day Notified Amount (in \u20b9 crore) 50,000 Total amo"
    ],
    "reader": "R4 at 10:28 via ext:bonds",
    "reader_t": 1795150735.0,
@@ -101,7 +101,7 @@
      "note": "NEW; news_gate applied"
     },
     {
-     "t": "Fri 15:37",
+     "t": "Fri 15:38",
      "src": "ext:regs",
      "kind": "regulator",
      "reader": "R4",
@@ -116,7 +116,7 @@
     }
    ],
    "code_alerts": [
-    "Fri 15:37 regs: RED RBI LIQUIDITY 15:37 IST: announced: RBI to conduct Second 3-day VRR auction under LAF on 20 Nov \u00b7 Unscheduled operation "
+    "Fri 15:38 regs: RED RBI LIQUIDITY 15:38 IST: announced: RBI to conduct Second 3-day VRR auction under LAF on 20 Nov | On a review of current"
    ],
    "reader": "R4 at 12:43 via ext:bonds",
    "reader_t": 1795158836.0,
@@ -159,11 +159,11 @@
      "note": "NEW; news_gate applied"
     },
     {
-     "t": "Fri 15:37",
+     "t": "Fri 15:38",
      "src": "ext:regs",
      "kind": "regulator",
      "reader": "R4",
-     "note": "EARLIER; news_gate applied"
+     "note": "NEW; news_gate applied"
     },
     {
      "t": "Fri 15:38",
@@ -174,7 +174,7 @@
     }
    ],
    "code_alerts": [
-    "Fri 15:37 regs: RED RBI LIQUIDITY 15:37 IST: result: Second 3-day VRR auction on 20 Nov \u00b7 Rs 25,007 cr - bids 48,040 cr (1.92x) \u00b7 injection:"
+    "Fri 15:38 regs: AMBER RBI LIQUIDITY 15:38 IST: result: Second 3-day VRR auction on 20 Nov | Tenor 3-day Notified Amount (in \u20b9 crore) 25,000 To"
    ],
    "reader": "R4 at 13:43 via ext:bonds",
    "reader_t": 1795162436.0,
@@ -195,7 +195,7 @@
    "catch_by_min": 15,
    "seen": true,
    "first": "Fri 19:32",
-   "first_t": 1795183321.0,
+   "first_t": 1795183322.0,
    "lag_min": 7.0,
    "source": "ext:regs",
    "headline": "RBI: RBI to conduct 4-day Variable Rate Repo (VRR) auction under LAF on November 23, 2026",
@@ -231,7 +231,7 @@
     "Fri 19:32 regs: AMBER RBI LIQUIDITY 19:32 IST: announced: RBI to conduct 4-day VRR auction under LAF on 23 Nov \u00b7 injection: CE watch AUBANK, P"
    ],
    "reader": "R4 at 19:32 via ext:regs",
-   "reader_t": 1795183321.0,
+   "reader_t": 1795183322.0,
    "live_reads": [
     "Fri 21:16 R4 ok: read 8 items: 0 card(s), 8 QUIET (NO_FO_LINK x3, PROCEDURAL x5)",
     "Fri 21:37 R5 NOT READ: batch of 8 items: rejected by the validator after 1 retry: rejected by the validator: K:fddc37be: contract: '29_news_wires' was expected at ",
@@ -252,17 +252,15 @@
    "catch_by_min": 30,
    "seen": true,
    "first": "Sat 00:46",
-   "first_t": 1795202171.0,
-   "lag_min": 6.2,
+   "first_t": 1795202176.0,
+   "lag_min": 6.3,
    "source": "ext:fjuice",
    "headline": "US Securities and Exchange Commission probe into NVIDIA is exploring potential accounting issues - Sources. $NVDA",
    "all_sources": [
     "ext:fjuice",
-    "ext:uswrap",
     "ext:uswrap_hot",
     "ext:world",
     "newsread:fjuice/headline",
-    "newsread:uswrap/world",
     "newsread:world/investinglive"
    ],
    "paths": [
@@ -296,75 +294,49 @@
     },
     {
      "t": "Sat 04:33",
+     "src": "ext:world",
+     "kind": "world",
+     "reader": "R5",
+     "note": "EARLIER; news_gate applied"
+    },
+    {
+     "t": "Sat 04:33",
      "src": "newsread:world/investinglive",
      "kind": null,
      "reader": "none",
      "note": "v2 news-reader weight None (knowledge() keeps weight >= 2 only)"
     },
     {
-     "t": "Sat 07:49",
-     "src": "ext:uswrap",
+     "t": "Sat 08:52",
+     "src": "ext:uswrap_hot",
      "kind": "world",
      "reader": "R5",
      "note": "NEW; news_gate applied"
     },
     {
-     "t": "Sat 07:49",
-     "src": "ext:uswrap",
+     "t": "Sat 08:52",
+     "src": "ext:uswrap_hot",
      "kind": "world",
      "reader": "R5",
      "note": "NEW; news_gate applied"
-    },
-    {
-     "t": "Sat 07:49",
-     "src": "ext:uswrap",
-     "kind": "world",
-     "reader": "R5",
-     "note": "NEW; news_gate applied"
-    },
-    {
-     "t": "Sat 07:49",
-     "src": "ext:uswrap_hot",
-     "kind": null,
-     "reader": "none",
-     "note": "not a reader item"
-    },
-    {
-     "t": "Sat 07:49",
-     "src": "ext:uswrap_hot",
-     "kind": null,
-     "reader": "none",
-     "note": "not a reader item"
-    },
-    {
-     "t": "Sat 07:49",
-     "src": "ext:uswrap_hot",
-     "kind": null,
-     "reader": "none",
-     "note": "not a reader item"
-    },
-    {
-     "t": "Sat 07:49",
-     "src": "newsread:uswrap/world",
-     "kind": null,
-     "reader": "none",
-     "note": "v2 news-reader weight None (knowledge() keeps weight >= 2 only)"
     }
    ],
    "code_alerts": [
-    "Sat 07:49 uswrap_hot: AMBER WORLD NEWS 07:49 IST: EXCLUSIVE: Nvidia's accounting is a focus of US SEC investigation, sources say - Reuters - Reuters",
-    "Sat 07:49 uswrap_hot: AMBER WORLD NEWS 07:49 IST: Nvidia Stock Plunges 12% After Reuters Reports an SEC Probe of Its Accounting. It's Nvidia's Worst",
-    "Sat 07:49 uswrap_hot: AMBER WORLD NEWS 07:49 IST: NVIDIA's Stock Slips Further After Reuters Reports That The US SEC Is Investigating Its Accounting"
+    "Sat 00:46 fjuice: RED WORLD NEWS 00:46 IST: US Securities and Exchange Commission probe into NVIDIA is exploring potential accounting issues -",
+    "Sat 01:33 world: RED WORLD NEWS 01:33 IST: investingLive: Nvidia down falls after SEC probe on potential accounting issues | Shares of Nvidia",
+    "Sat 04:33 world: RED WORLD NEWS 04:33 IST: investingLive: investingLive Americas FX news wrap 20 Nov: Stocks get hammered as Nasdaq plunges 5",
+    "Sat 08:52 uswrap_hot: RED WORLD NEWS 08:52 IST: EXCLUSIVE: Nvidia's accounting is a focus of US SEC investigation, sources say - Reuters - Reuters",
+    "Sat 08:52 uswrap_hot: RED WORLD NEWS 08:52 IST: NVIDIA's Stock Slips Further After Reuters Reports That The US SEC Is Investigating Its Accounting"
    ],
    "reader": "R5 at 00:46 via ext:fjuice",
-   "reader_t": 1795202171.0,
+   "reader_t": 1795202176.0,
    "live_reads": [
     "Sat 08:52 R5 NOT READ: batch of 8 items: budget: J11: day total $1.91 + ~$0.002 would pass the $1.50 hard cap - code + rules only",
     "Sat 08:54 R5 NOT READ: batch of 8 items: budget: J11: day total $1.91 + ~$0.002 would pass the $1.50 hard cap - code + rules only",
     "Sat 09:02 R5 NOT READ: batch of 8 items: budget: J11: day total $1.92 + ~$0.002 would pass the $1.50 hard cap - code + rules only",
     "Sat 09:10 R5 NOT READ: batch of 8 items: budget: J11: day total $1.92 + ~$0.002 would pass the $1.50 hard cap - code + rules only"
    ],
-   "live_read_ok": "Sat 19:38 R5",
+   "live_read_ok": null,
    "cards_matching_words": [
     "Sat 08:36 R5: Heavy bearish bets hit chip stocks; AI-hardware money may rotate toward low-AI markets like India",
     "Sat 08:36 R5: Nvidia's losing streak runs the longest since the financial crisis; AI-hardware weakness keeps spreading",
@@ -382,12 +354,11 @@
    "catch_by_min": 30,
    "seen": true,
    "first": "Fri 19:33",
-   "first_t": 1795183400.0,
-   "lag_min": 3.3,
+   "first_t": 1795183402.0,
+   "lag_min": 3.4,
    "source": "ext:world",
-   "headline": "investingLive: Morning Kickstart. Anthropic slides after its IPO and gold breaks lower",
+   "headline": "investingLive: Morning Kickstart. Anthropic slides after its IPO and gold breaks lower | Anthropic (ANT) is giving back much of its first-day gain. Th",
    "all_sources": [
-    "ext:uswrap",
     "ext:world"
    ],
    "paths": [
@@ -397,60 +368,13 @@
      "kind": "world",
      "reader": "R5",
      "note": "NEW; news_gate applied"
-    },
-    {
-     "t": "Sat 07:49",
-     "src": "ext:uswrap",
-     "kind": "world",
-     "reader": "R5",
-     "note": "NEW; news_gate applied"
-    },
-    {
-     "t": "Sat 07:49",
-     "src": "ext:uswrap",
-     "kind": "world",
-     "reader": "R5",
-     "note": "NEW; news_gate applied"
-    },
-    {
-     "t": "Sat 07:49",
-     "src": "ext:uswrap",
-     "kind": "world",
-     "reader": "R5",
-     "note": "NEW; news_gate applied"
-    },
-    {
-     "t": "Sat 08:21",
-     "src": "ext:uswrap",
-     "kind": "world",
-     "reader": "R5",
-     "note": "NEW; news_gate applied"
-    },
-    {
-     "t": "Sat 08:57",
-     "src": "ext:uswrap",
-     "kind": "world",
-     "reader": "R5",
-     "note": "NEW; news_gate applied"
-    },
-    {
-     "t": "Sat 08:57",
-     "src": "ext:uswrap",
-     "kind": "world",
-     "reader": "R5",
-     "note": "NEW; news_gate applied"
     }
    ],
    "code_alerts": [],
    "reader": "R5 at 19:33 via ext:world",
-   "reader_t": 1795183400.0,
-   "live_reads": [
-    "Fri 21:37 R5 NOT READ: batch of 8 items: rejected by the validator after 1 retry: rejected by the validator: K:fddc37be: contract: '29_news_wires' was expected at ",
-    "Fri 21:41 R5 ok: read 8 items: 3 card(s), 5 QUIET (NO_INDIA_CHANNEL x4, NOT_WORLD_DRIVER: domestic liquidity notice x1)",
-    "Sat 00:42 R5 ok: read 8 items: 2 card(s), 6 QUIET (NO_INDIA_CHANNEL: a routine BSE debenture redemption notice with no market link x1, NO_INDIA_CHANNEL: a go",
-    "Sat 08:06 R5 ok: read 8 items: 3 card(s), 5 QUIET (NO_INDIA_CHANNEL x2, REPEAT x3)"
-   ],
-   "live_read_ok": "Fri 21:41 R5",
+   "reader_t": 1795183402.0,
+   "live_reads": [],
+   "live_read_ok": null,
    "cards_matching_words": [
     "Fri 21:21 R5: Weekly wrap says Nvidia and Anthropic failed to lift the AI trade; money stays cautious on AI names",
     "Fri 21:41 R5: Anthropic shares slide after listing as gold breaks lower; read for gold-linked India names, not a market driv",
@@ -468,8 +392,8 @@
    "catch_by_min": 30,
    "seen": true,
    "first": "Sat 02:35",
-   "first_t": 1795208711.0,
-   "lag_min": 5.2,
+   "first_t": 1795208721.0,
+   "lag_min": 5.3,
    "source": "ext:fjuice",
    "headline": "S&P 500, Dow Jones close in correction territory.",
    "all_sources": [
@@ -508,9 +432,12 @@
      "note": "NEW; news_gate applied"
     }
    ],
-   "code_alerts": [],
+   "code_alerts": [
+    "Sat 02:35 fjuice: RED WORLD NEWS 02:35 IST: S&P 500, Dow Jones close in correction territory. - no market move yet",
+    "Sat 04:33 world: RED WORLD NEWS 04:33 IST: investingLive: investingLive Americas FX news wrap 20 Nov: Stocks get hammered as Nasdaq plunges 5"
+   ],
    "reader": "R5 at 02:35 via ext:fjuice",
-   "reader_t": 1795208711.0,
+   "reader_t": 1795208721.0,
    "live_reads": [
     "Sat 08:06 R5 ok: read 8 items: 3 card(s), 5 QUIET (NO_INDIA_CHANNEL x2, REPEAT x3)"
    ],
@@ -530,57 +457,11 @@
    "item": "IndusInd roadshows",
    "event": "Fri 07:00",
    "catch_by_min": 30,
-   "seen": true,
-   "first": "Fri 07:11",
-   "first_t": 1795138880.738878,
-   "lag_min": 11.3,
-   "source": "news.db:GOOGLE NEWS",
-   "headline": "IndusInd Bank engages 8 funds in Chennai meet after Singapore roadshow",
-   "all_sources": [
-    "news.db:GOOGLE NEWS",
-    "news.db:WIRE",
-    "newsread:GOOGLE NEWS",
-    "newsread:WIRE"
-   ],
-   "paths": [
-    {
-     "t": "Fri 07:11",
-     "src": "news.db:GOOGLE NEWS",
-     "kind": "news",
-     "reader": "R2",
-     "note": "NEW; news_gate applied"
-    },
-    {
-     "t": "Fri 07:11",
-     "src": "newsread:GOOGLE NEWS",
-     "kind": "news",
-     "reader": "R2",
-     "note": "NEW; news_gate applied"
-    },
-    {
-     "t": "Fri 19:10",
-     "src": "news.db:WIRE",
-     "kind": "news",
-     "reader": "R2",
-     "note": "NEW; news_gate applied"
-    },
-    {
-     "t": "Fri 19:10",
-     "src": "newsread:WIRE",
-     "kind": "news",
-     "reader": "R2",
-     "note": "NEW; news_gate applied"
-    }
-   ],
-   "code_alerts": [],
-   "reader": "R2 at 07:11 via news.db:GOOGLE NEWS",
-   "reader_t": 1795138880.738878,
-   "live_reads": [],
-   "live_read_ok": null,
-   "cards_matching_words": [],
-   "desk_live_at_first_sight": false,
-   "caught": true,
-   "verdict": "CAUGHT (reader input 11 min after the event)",
+   "seen": false,
+   "first": null,
+   "reader": null,
+   "card": null,
+   "verdict": "MISSED - not in any GIR store",
    "live_card_checked_by_hand": "no (never in a reader batch)"
   },
   {
@@ -597,21 +478,10 @@
    "all_sources": [
     "ext:regs",
     "ext:wires",
-    "newsread:ANI News",
-    "newsread:Asianet Newsable",
-    "newsread:Business Today",
-    "newsread:BusinessLine",
     "newsread:BusinessLine Markets",
     "newsread:CNBC-TV18 Live Blog",
-    "newsread:Deccan Chronicle",
     "newsread:ET Now",
-    "newsread:Elets BFSI",
     "newsread:Hindu Business",
-    "newsread:NDTV Profit",
-    "newsread:NewsBytes",
-    "newsread:Rediff MoneyWiz",
-    "newsread:The Financial Express",
-    "newsread:The New Indian Express",
     "newsread:regs/sebi",
     "newsread:wires/bs_mkts",
     "newsread:wires/cnbctv18_rss",
@@ -641,34 +511,6 @@
      "note": "NEW; news_gate applied"
     },
     {
-     "t": "Fri 12:24",
-     "src": "newsread:ANI News",
-     "kind": "news",
-     "reader": "R2",
-     "note": "NEW; news_gate applied"
-    },
-    {
-     "t": "Fri 12:27",
-     "src": "newsread:NewsBytes",
-     "kind": "news",
-     "reader": "R2",
-     "note": "NEW; news_gate applied"
-    },
-    {
-     "t": "Fri 14:32",
-     "src": "newsread:Elets BFSI",
-     "kind": "news",
-     "reader": "R2",
-     "note": "NEW; news_gate applied"
-    },
-    {
-     "t": "Fri 14:38",
-     "src": "newsread:Rediff MoneyWiz",
-     "kind": "news",
-     "reader": "R2",
-     "note": "NEW; news_gate applied"
-    },
-    {
      "t": "Fri 14:38",
      "src": "newsread:Hindu Business",
      "kind": "news",
@@ -676,7 +518,7 @@
      "note": "NEW; news_gate applied"
     },
     {
-     "t": "Fri 15:37",
+     "t": "Fri 15:39",
      "src": "ext:regs",
      "kind": "regulator",
      "reader": "R4",
@@ -702,6 +544,34 @@
      "kind": null,
      "reader": "none",
      "note": "v2 news-reader weight 2 (knowledge() keeps weight >= 2 only)"
+    },
+    {
+     "t": "Fri 17:37",
+     "src": "ext:wires",
+     "kind": "news",
+     "reader": "R2",
+     "note": "NEW; news_gate applied"
+    },
+    {
+     "t": "Fri 17:37",
+     "src": "newsread:wires/et",
+     "kind": null,
+     "reader": "none",
+     "note": "v2 news-reader weight 1 (knowledge() keeps weight >= 2 only)"
+    },
+    {
+     "t": "Fri 19:44",
+     "src": "newsread:Hindu Business",
+     "kind": "news",
+     "reader": "R2",
+     "note": "NEW; news_gate applied"
+    },
+    {
+     "t": "Fri 19:50",
+     "src": "ext:wires",
+     "kind": "news",
+     "reader": "R2",
+     "note": "NEW; news_gate applied"
     }
    ],
    "code_alerts": [],
@@ -738,9 +608,7 @@
    "all_sources": [
     "ext:wires",
     "ext:world",
-    "news.db:GOOGLE NEWS",
     "news.db:WIRE",
-    "newsread:GOOGLE NEWS",
     "newsread:TV CNBC-TV18 (speech-to-text)",
     "newsread:WIRE"
    ],
@@ -767,39 +635,11 @@
      "note": "NEW; news_gate applied"
     },
     {
-     "t": "Fri 11:29",
-     "src": "news.db:GOOGLE NEWS",
-     "kind": "news",
-     "reader": "R2",
-     "note": "EARLIER; news_gate applied"
-    },
-    {
-     "t": "Fri 11:35",
-     "src": "news.db:GOOGLE NEWS",
-     "kind": "news",
-     "reader": "R2",
-     "note": "EARLIER; news_gate applied"
-    },
-    {
      "t": "Fri 12:52",
      "src": "newsread:TV CNBC-TV18 (speech-to-text)",
      "kind": "tv",
      "reader": "R3",
      "note": "TV minute read by R3 straight from tv.db"
-    },
-    {
-     "t": "Fri 13:03",
-     "src": "news.db:GOOGLE NEWS",
-     "kind": "news",
-     "reader": "R2",
-     "note": "NEW; news_gate applied"
-    },
-    {
-     "t": "Fri 13:03",
-     "src": "newsread:GOOGLE NEWS",
-     "kind": "news",
-     "reader": "R2",
-     "note": "NEW; news_gate applied"
     },
     {
      "t": "Fri 19:33",
@@ -820,12 +660,10 @@
    "reader": "R2 at 10:20 via newsread:WIRE",
    "reader_t": 1795150207.0,
    "live_reads": [
-    "Fri 21:37 R5 NOT READ: batch of 8 items: rejected by the validator after 1 retry: rejected by the validator: K:fddc37be: contract: '29_news_wires' was expected at ",
-    "Fri 21:41 R5 ok: read 8 items: 3 card(s), 5 QUIET (NO_INDIA_CHANNEL x4, NOT_WORLD_DRIVER: domestic liquidity notice x1)",
     "Fri 21:48 R5 ok: read 8 items: 3 card(s), 5 QUIET (NO_INDIA_CHANNEL x4, REPEAT x1)",
-    "Fri 22:52 R2 ok: read 6 items: 1 card(s), 5 QUIET (DUPLICATE x3, OPINION_COLUMN x1, RECAP x1)"
+    "Sat 01:04 R5 ok: read 8 items: 0 card(s), 8 QUIET (NO_INDIA_CHANNEL x7, STALE x1)"
    ],
-   "live_read_ok": "Fri 21:41 R5",
+   "live_read_ok": "Fri 21:48 R5",
    "cards_matching_words": [
     "Fri 19:23 33: tape: jewellers & gold loans -2.12% against NIFTY +1.12%; oil producers -0.91% against NIFTY +1.12%; construct",
     "Fri 19:25 33: tape: jewellers & gold loans -2.12% against NIFTY +1.12%; oil producers -0.91% against NIFTY +1.12%; construct",
@@ -837,8 +675,199 @@
    "live_card_checked_by_hand": "yes - R5 Fri 21:08 / R2 Fri 22:52"
   }
  ],
- "caught": 10,
+ "caught": 9,
  "of": 10,
  "ai_usd": 0.0,
- "telegram": "none (GIR_REPLAY_NO_TG=1, network refused)"
+ "telegram": "none (GIR_REPLAY_NO_TG=1, network refused)",
+ "carding": {
+  "in_time_rule": "a desk card within 10 minutes of GIR's first sight (overnight items: also before the next 09:15 open)",
+  "assumption_A": "the v2 desk with the 21 Nov 22:05 code running all day Fri 20 Nov from 00:00 on the same recorded tape (budget days, weekend slow mode from Fri 15:40 as configured)",
+  "assumption_B": "the real desk start Fri 20 Nov 19:23 IST",
+  "card_rule": "$0: a card counts when CODE makes it (item 1) or the live readers wrote a card on the same story when they read it (recorded answer); no recorded answer = not counted",
+  "A_in_time": 7,
+  "B_in_time": 4,
+  "of": 10,
+  "rows": [
+   {
+    "id": "vrr1",
+    "item": "RBI VRR result 10:20",
+    "first_seen": "Fri 10:28",
+    "source": "ext:bonds",
+    "A_all_day": {
+     "card": "Fri 10:29",
+     "in_time": true,
+     "min_after_first_seen": 1.0
+    },
+    "B_real_start": {
+     "card": null,
+     "in_time": false,
+     "min_after_first_seen": null
+    },
+    "how": "code card (item 1: RBI op >= Rs 25,000 cr) + one Trade now line; gate PASS; facts 3-day VRR result for Fri 20 Nov / Allotted Rs 50,003 cr / Offered Rs 50,000 cr / Bids Rs 112,555 cr (2.25x cover)",
+    "why_not": "shocknews seeds silently at desk start: a release seen before 19:23 gets no code card"
+   },
+   {
+    "id": "vrr2n",
+    "item": "Second VRR notice 12:35",
+    "first_seen": "Fri 12:43",
+    "source": "ext:bonds",
+    "A_all_day": {
+     "card": "Fri 12:44",
+     "in_time": true,
+     "min_after_first_seen": 1.0
+    },
+    "B_real_start": {
+     "card": null,
+     "in_time": false,
+     "min_after_first_seen": null
+    },
+    "how": "code card (item 1: RBI op >= Rs 25,000 cr) + one Trade now line; gate PASS; facts 3-day VRR notice for Fri 20 Nov / Size Rs 25,000 cr / Bids window 12:45-13:15 / Money lent to the banks",
+    "why_not": "shocknews seeds silently at desk start: a release seen before 19:23 gets no code card"
+   },
+   {
+    "id": "vrr2r",
+    "item": "Second VRR result 13:40",
+    "first_seen": "Fri 13:43",
+    "source": "ext:bonds",
+    "A_all_day": {
+     "card": "Fri 13:44",
+     "in_time": true,
+     "min_after_first_seen": 1.0
+    },
+    "B_real_start": {
+     "card": null,
+     "in_time": false,
+     "min_after_first_seen": null
+    },
+    "how": "code card (item 1: RBI op >= Rs 25,000 cr) + one Trade now line; gate PASS; facts 3-day VRR result for Fri 20 Nov / Allotted Rs 25,007 cr / Offered Rs 25,000 cr / Bids Rs 48,040 cr (1.92x cover)",
+    "why_not": "shocknews seeds silently at desk start: a release seen before 19:23 gets no code card"
+   },
+   {
+    "id": "vrr4",
+    "item": "4-day VRR notice 19:25",
+    "first_seen": "Fri 19:32",
+    "source": "ext:regs",
+    "A_all_day": {
+     "card": "Fri 19:33",
+     "in_time": true,
+     "min_after_first_seen": 1.0
+    },
+    "B_real_start": {
+     "card": "Fri 19:33",
+     "in_time": true,
+     "min_after_first_seen": 1.0
+    },
+    "how": "code card (item 1: RBI op >= Rs 25,000 cr) + one Trade now line; gate PASS; facts 4-day VRR notice for Mon 23 Nov / Size Rs 50,000 cr / Bids window 09:30-10:00 / Money lent to the banks",
+    "why_not": ""
+   },
+   {
+    "id": "nvda",
+    "item": "Nvidia SEC probe (Reuters)",
+    "first_seen": "Sat 00:46",
+    "source": "ext:fjuice",
+    "A_all_day": {
+     "card": "Sat 00:47",
+     "in_time": true,
+     "min_after_first_seen": 1.0
+    },
+    "B_real_start": {
+     "card": "Sat 00:47",
+     "in_time": true,
+     "min_after_first_seen": 1.0
+    },
+    "how": "item 2: hot top-tier headline (Securities and Exchange Commission probe into NVIDIA is exploring potential acco) -> R5 read at once from the SHOCK bucket + free code line; recorded answer: Sat 18:21 R5: Nvidia falls on a reported SEC accounting probe; AI hardware sentiment takes a hit",
+    "why_not": ""
+   },
+   {
+    "id": "anth",
+    "item": "Anthropic IPO slide",
+    "first_seen": "Fri 19:33",
+    "source": "ext:world",
+    "A_all_day": {
+     "card": null,
+     "in_time": false,
+     "min_after_first_seen": null
+    },
+    "B_real_start": {
+     "card": "Fri 19:34",
+     "in_time": true,
+     "min_after_first_seen": 1.0
+    },
+    "how": "R5 normal path; recorded answer: Fri 21:41 R5: Anthropic shares slide after listing as gold breaks lower; read for gold-linked India name",
+    "why_not": "(A) Fri 19:33 is in the weekend budget day: slow mode, one R5 batch per 20 min - card 0-20 min later, not proven in time"
+   },
+   {
+    "id": "usclose",
+    "item": "US close S&P -3.7% / Nasdaq -5.3%",
+    "first_seen": "Sat 02:35",
+    "source": "ext:fjuice",
+    "A_all_day": {
+     "card": "Sat 02:36",
+     "in_time": true,
+     "min_after_first_seen": 1.0
+    },
+    "B_real_start": {
+     "card": "Sat 02:36",
+     "in_time": true,
+     "min_after_first_seen": 1.0
+    },
+    "how": "item 2: hot top-tier headline (S&P 500, Dow Jones close in correction territory) -> R5 read at once from the SHOCK bucket + free code line; recorded answer: Sat 07:59 R5: US indexes extend their fall as Nasdaq leads losses and the S&P nears an eight-month low o",
+    "why_not": ""
+   },
+   {
+    "id": "indus",
+    "item": "IndusInd roadshows",
+    "first_seen": null,
+    "source": null,
+    "A_all_day": {
+     "card": null,
+     "in_time": false,
+     "min_after_first_seen": null
+    },
+    "B_real_start": {
+     "card": null,
+     "in_time": false,
+     "min_after_first_seen": null
+    },
+    "how": "R2 path (first sight now WIRE None - the Google News 07:11 copy no longer counts); recorded answer: none - the live readers never carded this story",
+    "why_not": "no recorded answer exists ($0 rule: no card counted); (A) Fri 19:10 is in the weekend slow mode; (B) 19:10 is before the desk start"
+   },
+   {
+    "id": "cii",
+    "item": "CII summit FPI line (SEBI chairman)",
+    "first_seen": "Fri 11:33",
+    "source": "newsread:CNBC-TV18 Live Blog",
+    "A_all_day": {
+     "card": "Fri 11:46",
+     "in_time": false,
+     "min_after_first_seen": 13.2
+    },
+    "B_real_start": {
+     "card": null,
+     "in_time": false,
+     "min_after_first_seen": null
+    },
+    "how": "R2 path; the 11:33 live-blog copy has v2 news-reader weight 1 (dropped by knowledge()), first reader input 11:45; recorded answer: Fri 21:08 R4: SEBI opens consultation on reviewing extra disclosure rules for foreign portfolio investor",
+    "why_not": "(B) desk not running at 11:33"
+   },
+   {
+    "id": "gold",
+    "item": "Gold -4.7%",
+    "first_seen": "Fri 10:20",
+    "source": "newsread:WIRE",
+    "A_all_day": {
+     "card": "Fri 10:21",
+     "in_time": true,
+     "min_after_first_seen": 1.0
+    },
+    "B_real_start": {
+     "card": null,
+     "in_time": false,
+     "min_after_first_seen": null
+    },
+    "how": "R2 path (WIRE 10:20, Friday session = no slow mode); recorded answer: Fri 21:08 R5: Domestic gold falls sharply, with the karat rate slipping below the one lakh rupee mark",
+    "why_not": "(B) desk not running at 10:20"
+   }
+  ]
+ }
 }
