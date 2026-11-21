@@ -28,6 +28,11 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 22 Nov 00:25 IST (real time) - NAV: the trader asked "what is that F3 not used?" An empty "Shift+F3 not used" button confuses him. Before the
+freeze: put the GLOBAL MONEY MAP (already built: world sector funds, bonds, gold, dollar, BTC - where money went) on Shift+F3 with a plain
+label "Money map", or hide the empty slot. Same for "F5 off / no reload": show it only in Help, not as a button. Rotation page now labels
+Friday's flow "FRI 20 NOV" - accepted.
+
 ## 22 Nov 00:20 IST (real time, check of the fixed World page - trader's phone 00:12) - ACCEPTED: latest values with own times, SINCE INDIA'S
 CLOSE column, GIFT NIFTY 25,836 (+35) Sat 02:44, NQ -3.96%, SOX -10.73%, BTC live, Fed odds live, footer "Market closed - next session Mon
 09:15". MONDAY CHECK (add to duty): COMEX gold / silver / copper, NYMEX crude / gas, US futures and the dollar reopen Sun 18:00 New York =
