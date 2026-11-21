@@ -28,6 +28,12 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 22 Nov 00:20 IST (real time, check of the fixed World page - trader's phone 00:12) - ACCEPTED: latest values with own times, SINCE INDIA'S
+CLOSE column, GIFT NIFTY 25,836 (+35) Sat 02:44, NQ -3.96%, SOX -10.73%, BTC live, Fed odds live, footer "Market closed - next session Mon
+09:15". MONDAY CHECK (add to duty): COMEX gold / silver / copper, NYMEX crude / gas, US futures and the dollar reopen Sun 18:00 New York =
+Mon 04:30 IST - from then each must show LIVE with a fresh time (not "closed"); MCX from 09:00. At 07:00 Mon list any of them still "closed"
+= P1 with the feed named. Weekend "closed" on these rows is CORRECT (they do not trade Sat / Sun; only Bitcoin and Fed odds do).
+
 ## 22 Nov 01:15 IST (real time) - THE TRADER: "Test again with one trading day - 20 Nov - make sure the whole session works with no flaws, then
 we start on a real trading day. Start immediately." = FULL DRESS REHEARSAL OF FRI 20 NOV. Trader approved the spend (real models, ~$7-10,
 own replay ledger, from the API credit). ORDER:
