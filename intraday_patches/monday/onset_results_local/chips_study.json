@@ -1,0 +1,218 @@
+{
+ "made": "2026-11-21T19:29:32",
+ "summary": {
+  "tune": {
+   "trap": {
+    "n": 290,
+    "fade15": 0.614,
+    "fade30": 0.576,
+    "depth_median": -0.37,
+    "lost_vwap": 0.924,
+    "reclaimed_by_11": 0.888,
+    "opt_open": -4.73,
+    "opt_wait_0945": -5.43,
+    "day_move_gap_side": -1.48
+   },
+   "control": {
+    "n": 3897,
+    "fade15": 0.652,
+    "fade30": 0.658,
+    "depth_median": -0.47,
+    "lost_vwap": 0.958,
+    "reclaimed_by_11": 0.895,
+    "opt_open": -3.54,
+    "opt_wait_0945": -2.99,
+    "day_move_gap_side": -0.76
+   },
+   "vwap": {
+    "weak": {
+     "n": 117327,
+     "opt_mean": -2.5,
+     "random_mean": -2.32,
+     "win": 0.338
+    },
+    "strong": {
+     "n": 64607,
+     "opt_mean": -2.03,
+     "random_mean": -2.37,
+     "win": 0.36
+    }
+   },
+   "drift": {
+    "drift": {
+     "n": 94170,
+     "opt_mean": -2.25,
+     "random_mean": -2.33,
+     "win": 0.35
+    },
+    "in_volume": {
+     "n": 74159,
+     "opt_mean": -1.96,
+     "random_mean": -2.34,
+     "win": 0.368
+    }
+   },
+   "failed": {
+    "n": 116137,
+    "opt_mean": -1.97,
+    "random_mean": -2.26,
+    "win": 0.378,
+    "fade_side": -2.54,
+    "move60_break_side": 0.02
+   }
+  },
+  "unseen": {
+   "trap": {
+    "n": 73,
+    "fade15": 0.493,
+    "fade30": 0.466,
+    "depth_median": -0.17,
+    "lost_vwap": 0.945,
+    "reclaimed_by_11": 0.87,
+    "opt_open": 0.73,
+    "opt_wait_0945": -1.09,
+    "day_move_gap_side": 0.12
+   },
+   "control": {
+    "n": 2307,
+    "fade15": 0.568,
+    "fade30": 0.573,
+    "depth_median": -0.2,
+    "lost_vwap": 0.951,
+    "reclaimed_by_11": 0.882,
+    "opt_open": -2.06,
+    "opt_wait_0945": -1.07,
+    "day_move_gap_side": -0.2
+   },
+   "vwap": {
+    "weak": {
+     "n": 51259,
+     "opt_mean": -2.42,
+     "random_mean": -2.36,
+     "win": 0.341
+    },
+    "strong": {
+     "n": 31731,
+     "opt_mean": -2.08,
+     "random_mean": -2.41,
+     "win": 0.368
+    }
+   },
+   "drift": {
+    "drift": {
+     "n": 41098,
+     "opt_mean": -2.44,
+     "random_mean": -2.3,
+     "win": 0.345
+    },
+    "in_volume": {
+     "n": 34430,
+     "opt_mean": -2.15,
+     "random_mean": -2.39,
+     "win": 0.368
+    }
+   },
+   "failed": {
+    "n": 50598,
+    "opt_mean": -2.25,
+    "random_mean": -2.29,
+    "win": 0.367,
+    "fade_side": -2.35,
+    "move60_break_side": 0.0
+   }
+  }
+ },
+ "verdicts": {
+  "TRAP": {
+   "tune_diff": -0.7055576403063101,
+   "tune_p": 0.6026164187048236,
+   "tune_n": 290,
+   "unseen_diff": -1.8212857276649785,
+   "unseen_p": 0.5536895972371895,
+   "unseen_p_holm": 0.8994733273720287,
+   "unseen_n": 73,
+   "PASS": false
+  },
+  "VWAP": {
+   "tune_diff": 0.46238165198576775,
+   "tune_p": 1.6666239415717382e-15,
+   "tune_n": 64607,
+   "unseen_diff": 0.34128502589158183,
+   "unseen_p": 1.6338450227088533e-05,
+   "unseen_p_holm": 6.535380090835413e-05,
+   "unseen_n": 31731,
+   "PASS": true
+  },
+  "DRIFT": {
+   "tune_diff": 0.28784454684064964,
+   "tune_p": 1.210468840056699e-07,
+   "tune_n": 74159,
+   "unseen_diff": 0.2921684810707701,
+   "unseen_p": 0.00014956125131142687,
+   "unseen_p_holm": 0.00044868375393428063,
+   "unseen_n": 34430,
+   "PASS": true
+  },
+  "FAILED": {
+   "tune_diff": -0.29403791012546865,
+   "tune_p": 1.0266224589584824e-14,
+   "tune_n": 116137,
+   "unseen_diff": -0.040974392442503664,
+   "unseen_p": 0.44973666368601434,
+   "unseen_p_holm": 0.8994733273720287,
+   "unseen_n": 50598,
+   "PASS": false
+  }
+ },
+ "tests": {
+  "TRAP tune": [
+   -0.7055576403063101,
+   0.6026164187048236,
+   290
+  ],
+  "VWAP tune": [
+   0.46238165198576775,
+   1.6666239415717382e-15,
+   64607
+  ],
+  "DRIFT tune": [
+   0.28784454684064964,
+   1.210468840056699e-07,
+   74159
+  ],
+  "FAILED tune": [
+   -0.29403791012546865,
+   1.0266224589584824e-14,
+   116137
+  ],
+  "TRAP unseen": [
+   -1.8212857276649785,
+   0.5536895972371895,
+   73
+  ],
+  "VWAP unseen": [
+   0.34128502589158183,
+   1.6338450227088533e-05,
+   31731
+  ],
+  "DRIFT unseen": [
+   0.2921684810707701,
+   0.00014956125131142687,
+   34430
+  ],
+  "FAILED unseen": [
+   -0.040974392442503664,
+   0.44973666368601434,
+   50598
+  ]
+ },
+ "n_events": {
+  "vwap_weak": 168586,
+  "drift": 135268,
+  "volume": 108589,
+  "failed": 166735,
+  "vwap_strong": 96338,
+  "control": 6204,
+  "trap": 363
+ }
+}
