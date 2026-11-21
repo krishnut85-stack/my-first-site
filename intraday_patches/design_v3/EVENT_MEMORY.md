@@ -292,3 +292,12 @@ it in Indian IT. So IT is coming up. This is one of the history."
   20 Nov). Back to the previous close within 5 sessions 55-65%. Exact 20 Nov match (Friday, 2nd US down day, India up, Asia -5-6%): 4 cases.
   Reconciled: news sample "closed above its open" and data "rarely closed above the previous close" are both true - typical day = gap
   down, early low, partial bounce, close still red. Server to confirm close-vs-open directly.
+- **K crash framework 21 Nov 10:45 IST (the trader's 5 factors; Kindleberger-Minsky stages):** US AI trade = Stage 4 (distress) moving
+  toward 5 - margin debt $1.45T (peak $1.50T June, 4.39% of GDP vs 3.1% average), CoreWeave 5y CDS about 1,233 bp, top-10 = 37-39% of
+  S&P, Goldman L/S gross leverage cut 8.7 pts (biggest since Mar 2020), Fed hike 95% priced, Nvidia / Broadcom / Anthropic triggers.
+  India = Stage 2-3 (boom / euphoria in banks): MTF book about Rs 1.55 lakh cr near its record, financials 37% of NIFTY, Bank Nifty +16%
+  in Nov, FPI record but tactical (FY27 still net sellers); RBI INJECTED Rs 75,000 cr via 3-day repos on 20 Nov (demand Rs 1.13 lakh cr
+  for the first Rs 50k cr) - LINK_BOOK row 27 says liquidity injection -> bank CE next day. Pattern: one-off US shocks -> India -1 to -3%
+  day one, recovered in weeks (2022, 2024, 2025); only funding crises with FII exits (2008) hit India as hard. Crash signs to watch: US HY
+  spreads well above 348 bp, an AI-credit default, an Nvidia filing / audit problem, fund gating, Fed hike with 10y > 5%, Nasdaq-100
+  below -20%. India following vs decoupling: NSDL FPI daily flows turning to selling, MTF book shrinking, India VIX spike, RBI 4 Dec tone.

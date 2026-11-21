@@ -14,6 +14,12 @@
   change nothing until the trader decides.
 - **Trader's call (asked now):** globaleye (old GIR v1) and paper_counterfactual / paper_eod_report still post to GIR Alerts - keep or mute.
 
+## 21 Nov 10:50 IST - AFTER MONDAY (week 1): a weekly CRASH-RISK METER on the trader's 5 factors (credit levels, market concentration,
+institutional behaviour, liquidity, trigger vulnerabilities) for the US and India, LOW / MEDIUM / HIGH each with the numbers (FINRA margin
+debt, HY spreads, AI-credit CDS, top-10 weight, hedge-fund leverage reports, Fed / RBI path; India MTF book, NIFTY sector weights, NSDL
+FPI flows, RBI liquidity ops, India VIX) and the stage (boom / euphoria / distress / panic). Code fetches the numbers; the head writes
+one paragraph in the Sunday 19:45 brief. Not for Monday.
+
 ## 21 Nov 10:30 IST (hourly) - big batch ACCEPTED; one money fix; the J7 reasons (desk writes them, trader approves)
 - **ACCEPTED:** watchdog (a); credit balance from the $50 top-up with the warnings; one $8 gate (J11) for every v2 call; old-system AI
   OFF (baseline frozen - "old paths = $0" check on Monday); credit warning without credit; WORLD SHOCK A / B / E live with the Fri 20 Nov
