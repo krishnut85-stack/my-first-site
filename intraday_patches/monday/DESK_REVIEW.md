@@ -1,5 +1,22 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 21 Nov 07:10 IST - THE TRADER: the OLD system floods Telegram all night (rules / keyword only, no AI) - inventory + silence NOW
+His Telegram at 06:54 Sat: GIR Market News 472 unread (05:47 "URGENT - GNews Regulators"), GIR F&O Live 281 (04:47 "URGENT -
+Investing.com"), GIR Regulator Watch 72, GIR Whales & Filings 205, GIR Live (system + "My Stock Alerts: ESCALATION"), GIR Trade now
+110 (DIGEST), GIR Ledger, GIR Box Picks. Market shut, yet "URGENT" lines at 04:47 / 05:47.
+1. **Inventory (read-only, today):** every process / timer that sends Telegram: unit name, the chat it sends to (by env-var NAME,
+   never the value), messages in the last 24 h, rule or AI. Put the table in STATUS.
+2. **STANDING RULE CHECK:** TG_CHAT_FO and TG_CHAT_OI must never be used. Is "GIR F&O Live" (or any channel above) TG_CHAT_FO or
+   TG_CHAT_OI? If yes, that sender breaks the rule - stop it now and report.
+3. **Bring J6 forward and widen it - TODAY (weekend, market closed):** silence the old NEWS broadcast senders (Market News, F&O Live,
+   Regulator Watch, Whales & Filings, Box Picks, the old Trade-now digests and "My Stock Alerts" escalations). Keep only: system P1
+   alerts (one line each, GIR Live / system bot), the weekly Ledger export, and gir-watchdog / paper_exit_monitor untouched (list what
+   they send). Their feeds and stores keep running as the desk's EYES - only the Telegram sends stop. One flag per sender, logged, with
+   an undo line.
+4. **From Monday:** the new desk speaks on ONE channel only (BUY NOW, manage notes, the 07:15 / 09:08 / 19:45 brief headline);
+   Telegram stays WOULD SEND until the Sunday 18:30 ring test passes. No "URGENT" from keyword rules ever again - urgency comes only
+   from the head analyst or a P1 system fault.
+
 ## 21 Nov 07:00 IST - THE TRADER TOPPED UP the Anthropic API credit; Claude Code on the server now uses his subscription
 - The builder (Claude Code on the server) re-logged in on the trader's Claude subscription (Ultra) at about 06:48 - it no longer
   spends the API credit. GIR's own ANTHROPIC_API_KEY (.env) is separate and now has credit again.
