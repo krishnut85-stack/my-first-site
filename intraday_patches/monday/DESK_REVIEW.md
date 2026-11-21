@@ -14,6 +14,19 @@
   change nothing until the trader decides.
 - **Trader's call (asked now):** globaleye (old GIR v1) and paper_counterfactual / paper_eod_report still post to GIR Alerts - keep or mute.
 
+## 21 Nov 07:50 IST - THE TRADER: (1) PAUSE the old trading programs; (2) no more rehearsal spend; (3) account for the money
+1. **PAUSE raven, raven-manage, raven-preopen, hunter-scan / -manage / -execute, eqfloor@scan / -manage / -execute.** Safely, in this
+   order: (a) read-only check first - any OPEN real position or pending order any of them manages (Kite positions / orders, their own
+   state files)? (b) if NONE: stop + disable every unit (do not delete code or state), log each with an undo line; (c) if ANY open
+   position or order exists: pause only the scan / execute units, leave its manager running, and report the position to the trader at
+   once. Also report the yes / no "can it place a real order" answer per unit with the code line. GIR never places orders.
+2. **The 20 Nov re-run is CANCELLED** - no more rehearsal money. Sunday 19:45 and Monday are the tests.
+3. **SPEND ACCOUNT, this week (15-21 Nov), from aispend ledgers + logs, by user of the API key:** the new desk (live), rehearsals
+   (FULL1-4 = $22.28), shadows / API probes, the old system's AI (v2 news reader, GO NOW / triage, old desk notes), and Claude Code on the
+   server - it ran on "API Usage Billing" until the trader re-logged it onto his subscription at about 06:48 today, so its usage came out
+   of the same API balance. Put the table in STATUS with totals per day; if a user is not in a ledger, say so and estimate from the
+   Console usage page categories (the trader can read the Console total).
+
 ## 21 Nov 08:55 IST - THE TRADER: "keep a watch on Monday, alert me where the money is going, and tell me in the GO card"
 Before Sunday 19:45 (code, $0 AI unless stated):
 1. **MONEY FLOW line, live 09:15-15:10, every 5 min** on the F1 Desk + phone (existing boxes, no new page): top 3 sectors money IN and
