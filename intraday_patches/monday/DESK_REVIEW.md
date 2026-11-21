@@ -28,6 +28,24 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 13:30 IST - FREE ($0) BRAIN UPGRADES, ranked - the trader asked for every zero-cost improvement (build in parallel after the
+Monday must-haves; code + free public data only; light load; each one shown on cards only after it beats random on unseen data):
+1. MODELS M1-M3 (13:15 entry) - started.
+2. LEARN WHOSE WORD TO TRUST: each seat / source / broker gets a running hit rate from the 15:45 scorecard, and the head weights cards by
+   it (a simple Bayesian score, shrunk toward 50% while n is small). Shown as "track record 7/10" on cards.
+3. FII DERIVATIVE POSITIONING: NSE's free daily participant-wise OI file (FII / DII / pro / client long-short in index futures and
+   options), years of history -> study: does FII index-futures long / short change predict the next 1-3 days? Feeds M1 and driver 4.
+4. EVENT LIBRARY from free NSE archives: results-day reactions by surprise size, bulk / block deal follow-through, broker upgrade /
+   downgrade follow-through, ban-list entries / exits, index inclusion, RBI operations (11:45 study). Each gives "last N times: X% moved".
+5. NEWS-HISTORY BACKFILL: GDELT (free global news database with tone, from 2015) filtered to India / F&O company names / sectors ->
+   years of news-volume and tone history, so the news-based models do not wait months for GIR's own recordings. Keep the download filtered
+   (disk cap 2 GB).
+6. OPTIONS SIGNALS from the recorded chains: IV skew, PCR change, OI walls / max-pain drift -> does any predict the next session?
+7. MARKET REGIME model: trend / range / high-volatility from India VIX, breadth and NIFTY's distance from its averages; each strategy and
+   the A / B / C gate adjust to the regime (e.g. no breakout CE in a range regime).
+8. CALENDAR EFFECTS: expiry week, pre-holiday, month-start auto sales, results season, budget / RBI weeks - measured, not assumed.
+Report each as LIVE / testing / not started, with its first result, in STATUS.
+
 ## 21 Nov 13:15 IST - THE TRADER APPROVED: build STATISTICAL MODELS and MARKET-DEPTH recording NOW, side by side (not week 2).
 Limits: code only ($0 AI), no paid storage, light on the server (train after 15:35 / weekends with nice 15; never slow 09:15). Monday's
 go-live items keep priority; these run in parallel with their own builder.
