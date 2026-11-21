@@ -28,6 +28,23 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 16:50 IST (real time) - THE TRADER: "We don't need any old programs running. Monday we use the new desk and I watch on my
+laptop. Park the old programs, remove the old program subscriptions, use the CPU." DO NOW (weekend, market closed - no need to wait
+for Sun 21:00):
+1. STOP + DISABLE every OLD-system service and cron NOW: falcon, gir-intraday (old engine), the old senders, old AI callers, old scanners,
+   old recorders that the new system does not read. Not deleted: code and units stay on disk, disabled, until the week-1 review Fri 27 Nov;
+   then the trader decides on deletion.
+2. BEFORE stopping each one, check the NEW system does not read from it (BSE bridge via newshawk, the Kite websocket / recorders, any file
+   the v2 services read). Anything the new desk depends on stays on and is RENAMED in the list as part of the new system. Never touch
+   gir-watchdog (only its checks for the stopped services are removed, as before).
+3. "gir mode old" stays as a COLD fallback for week 1 (re-enables the parked units by one command, takes minutes, not instant). Update the
+   Settings page, runbook and STATUS text to say so.
+4. SUBSCRIPTIONS: list every paid service / API key with who uses it (old only / new / both) and its monthly cost. KEEP anything the new
+   desk uses (Kite Connect, Anthropic API, DigitalOcean, speech-to-text for the TV reader, any news feed the new readers use). Give the
+   trader the "old only" list with the cancel link per service - he cancels in his own accounts; the server never logs in to cancel.
+   Remove the old-only keys from the old configs after he cancels (never print them).
+5. Report: CPU before / after (idle now, and at the Sunday 17:00 mock), memory freed, the services stopped, the list of subscriptions.
+
 ## 21 Nov 16:30 IST (real time, hourly) - VERDICTS on the pushes 15:58-16:23
 ACCEPTED:
 - WEEKEND INDEX TESTS (index_tests.md): 0 of 22 pass, every trigger with its PE mirror, both indices, tuning then unseen 2026, random
