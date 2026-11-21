@@ -660,3 +660,29 @@ Last update: 20:55 IST
   - 18:30 RING TEST (refused outside 18:25-18:50): 3 real messages, sound on, each starting "RING TEST": 1/3 CRITICAL (P1 credit block, "a test - nothing is wrong"); 2/3 GO NOW (TEST ONLY, replay of Fri 20 Nov, the MARUTI CE card with FROM / AGAINST / MONEY / NOT PROVEN); 3/3 NEWS (a real 20 Nov official line: NSE drops GODFRYPHLP from F&O). The script prints ok, message_id and time; the trader confirms each one rang.
   - 18:45 the pass / fail table per item here.
   - 19:45 the live desk's Sunday brief (12 drivers, the LEAN split, grades, the look-ahead book) to Trade now in the same layout.
+- 12:33 - THE TRADER APPROVED THE DESIGN (desk 14:00): explainers/gir_new_flow.png is FROZEN until Fri 27 Nov (build + fix only). Build order and owners (done / testing / not started):
+  A. BEFORE THE SUNDAY 17:00 MOCK (desk builder):
+     | item | status |
+     |---|---|
+     | agreement loop + "BUY only on agreed grade-A calls" (WATCH / NOT TAKING otherwise) | not started -> building |
+     | anti-chase refined + RUNNER CHECK (RIDE / LATE) | not started -> building |
+     | one-line bullet layout | DONE (tgformat.py) |
+     | 12-driver checklist | DONE |
+     | open / session lean split | DONE |
+     | PROOF on the new $8 split | DONE (PROOF_1030 passes) |
+     | Monday outlook re-sent in the final format | after the two items above |
+     | MOCK_DRY7 on the final code | asked |
+  B. BEFORE MONDAY 08:30:
+     | item | status |
+     |---|---|
+     | 14:45 TOMORROW'S GAP card ("NO CARRY" by default; CARRY only with a tested edge, per the gap study) | desk builder, building |
+     | RBI liquidity official shock + seat 9 card + the 20 Nov verify / re-score | desk builder, building |
+     | market-depth recorder (Kite FULL, separate key / slot, per-second features, 3 GB cap, CPU / lag guard; starts Mon 09:15 only if tested) | second builder, building |
+     | Sunday mock 17:00 + ring test 18:30 + 19:45 brief | me, scheduled |
+  C. IN PARALLEL (not blocking Monday):
+     | item | status |
+     |---|---|
+     | models M1 (gap: at 14:45 and evening / 07:30) / M2 (09:20 continuation) / M3 (sector 1-5 days), walk-forward, shown only if they beat the base rate on unseen years | second builder |
+     | RBI liquidity study | study agent, running |
+     | look-ahead book: the head moves stages | desk builder (code-moved stages already live) |
+     | free upgrades 2-8 (trust score, FII participant OI, event library, GDELT backfill, options signals, regime, calendar effects) | second builder, after the models |
