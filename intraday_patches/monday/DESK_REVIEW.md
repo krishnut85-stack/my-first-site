@@ -28,6 +28,30 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 22 Nov 00:20 IST (real time) - P&L MASK FAILURE + REVIEWER'S OWN PAGE CHECK (46 D4 shots + samples, looked at as the trader would)
+1. MASK FAILURE: the F_newsfilter_shots / F_sort_shots (and likely F_search_shots) screenshots show the header P&L strip UNMASKED. They were
+   in the public repo; the reviewer removed the three folders from the branch tip. FIX: (a) add the header P&L strip to the mask list for
+   every screenshot; (b) the push scanner rejects any PNG not produced by the masked shooter (mask marker check); (c) re-export masked
+   copies only if needed. No history rewrite without the trader's yes.
+2. PAGE CHECK RESULT: NOT READY. Some shots may predate the 19:55-20:08 fixes - re-shoot ALL 23 pages x 1366 / 390 AFTER the fixes and
+   verify each of these is gone (the trader saw 2 of them live at 23:35):
+   - World drivers frozen at Fri 15:29 (SOX -2.41%, NQ -1.57%), "live 0 / late 10"; World headline "CE side" after a 10.7% SOX crash.
+   - GIFT NIFTY "not known" in the header while the Phone page shows a stale 25,862 (22:44) - must be 25,836 at 02:44 Sat everywhere.
+   - Friday's "CALL day on AUTOS" (Morning, Analyst L1), Friday's prediction "MAXHEALTH CE" and Friday's SHOCK lines shown as TODAY.
+   - Sectors "CE day" / Rotation "TODAY" = Friday's verdicts with Saturday stamps; Market rotation strip REVERSED vs the Rotation page.
+   - Footer "health DOWN / MISSING / LATE" on a weekend -> "Market closed - next session Mon 09:15" (one wording everywhere).
+   - Expiry box "next 2026-12-29" over "Mon 23 Nov - 1 sessions left"; Market "3 days to 23 NOV".
+   - Raw developer text on pages (premium.path..., money.big [{...}], idx.NIFTY.spark, calls.feed, kq_mcx_cds, sectorplan GROU...).
+   - News: the US crash in no visible story; "today's heaviest" = a PIB cinema story / an unverified rumour.
+   - Calendar: RBI Rs 50,000 cr VRR Mon 09:30 and the Tue 24 holiday not visible; "cannot add" shown as if banned.
+   - Held PEs under "CE side / CONFIRMED" labels with no conflict warning; "Banks -> PE CONFIRMED" vs Banks +1.90%.
+   - Desk hunt: CALL tags on falling drivers (silver -4.74%, Hang Seng -3.79%).
+   - Share page "LAST CALL 2026-10-23" (an earnings-call quote) -> rename "LAST EARNINGS CALL".
+   - Chain opens on 360ONE / Nov expiry -> open on a held position and its expiry (his PEs are December).
+   - Morning card text overlaps / cut; phone P&L box pushes drivers below the fold.
+   Passed: sort / filter bars, search autofill, news hiding, plan card, settings, help; all 3 positions shown where positions appear.
+   Report PASS / FAIL per line in STATUS with fresh masked shots before the Sun 16:00 freeze.
+
 ## 22 Nov 00:05 IST (real time) - THE TRADER: "I want to work with GIR. Simple instruction: make money - MAKE DECISIONS. I have not got one
 trade message on Telegram." The desk must DECIDE, not only watch. Binding for the Sun 19:45 brief and every trading day:
 1. SUNDAY 19:45 BRIEF = A DECISION SHEET, sent to Trade now (after the 18:30 ring test): market call for Monday (gap + session lean, with the
