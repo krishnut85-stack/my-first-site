@@ -28,6 +28,29 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 13:00 IST - THE TRADER: "bullet points in straight lines" - EXACT TELEGRAM LAYOUT (every message, code-formatted, not left to the model)
+- Every line starts with "• " and is ONE short line (max ~45 characters, no wrapping into a paragraph). One fact per line.
+- Plain words only: no "bench", "base rate", "n", "D1", ids or keys on Telegram ("73 past cases", "proven by history").
+- A header line, then the lines, then one blank line between items. No closing paragraph.
+Example - the re-graded Monday list:
+  MONDAY LIST (re-checked)
+  PERSISTENT CE
+  • Not a buy - watch only
+  • Reason was only Friday's rise
+  • History: IT weakest after US crash (73 cases)
+  INDUSINDBK CE
+  • Not a buy yet - watch only
+  • Already up 8.6% on Friday
+  • Needs a new reason or a dip that holds
+  DIXON · VEDL · MUTHOOTFIN PE
+  • Best ideas - not a buy yet
+  • BUY only if at 09:20:
+  • share below VWAP
+  • sector below VWAP
+  • Nothing to buy at the open
+Re-send this list now in this layout, and use it for every card and brief part from now on (the code builds the lines; the model only
+fills the fields).
+
 ## 21 Nov 12:50 IST - ROOT CAUSE of "a call sent although the Devil disagreed" + the agreement process (code, before Sunday 19:45)
 Root cause: the outlook DID mark PERSISTENT / INDUSINDBK "WATCH only, on a pullback", but the Telegram card template prints "BUY <share>
 <strike>" for EVERY idea, whatever its state - so a WATCH idea with an unanswered Devil read as a BUY. Fix:
