@@ -28,6 +28,15 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 20:05 IST (real time) - F6 MY TRADES HIDES HIS THIRD POSITION (trader's screenshot of /preview/positions)
+Header says "Your 3 open option trades" but only 2 cards show (HDFCBANK PE, MOTILALOFS PE) + "+1 more below"; his UNIONBANK PE appears
+only in the right-hand "Trades today" list. The THESIS row and the P&L chart legend also name only the two. He read it as "Union Bank is
+not open". FIX before the Sun 16:00 freeze:
+1. F6 shows EVERY open position at once at 1366 x 768 and 1600 x 900 (3 cards in a row, or one compact row per position when > 3;
+   nothing hidden below the fold), phone NOW shows all of them as cards.
+2. THESIS row and the P&L chart lines include every open position. The header count must equal the number of cards shown.
+3. Test with 1, 2, 3, 5 open positions (fixture) + the live 3; screenshots with P&L masked.
+
 ## 21 Nov 20:00 IST (real time) - MORNING PAGE SHOWS A STALE PLAN (trader's screenshot of /preview/morning, Sat 19:45)
 The big headline reads "CALL day on AUTOS" from the evening prediction written Fri 20 Nov 19:45 for Mon 23 Nov - BEFORE the US crash
 (Nasdaq -5.3%, SOX -10.7%, BTC -6%). The driver cards are Friday 15:29 data ("LATE 28h"). A trader reading this on Saturday / Sunday is
