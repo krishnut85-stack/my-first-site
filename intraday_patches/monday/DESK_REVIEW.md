@@ -1,5 +1,9 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 21 Nov 07:25 IST - THE TRADER CONFIRMS: keep the $8 daily AI cap (trading days), $1.50 weekend / holiday; continue as planned
+Review after week 1 (Fri 27 Nov) on the EDGE scorecard: if the desk's calls are not worth it, step down to the ~$3-4 option (readers on
+free rules, AI only for briefs + BUY NOW checks) or off. Report the week's spend by bucket with the week-1 summary.
+
 ## 21 Nov 07:10 IST - THE TRADER: the OLD system floods Telegram all night (rules / keyword only, no AI) - inventory + silence NOW
 His Telegram at 06:54 Sat: GIR Market News 472 unread (05:47 "URGENT - GNews Regulators"), GIR F&O Live 281 (04:47 "URGENT -
 Investing.com"), GIR Regulator Watch 72, GIR Whales & Filings 205, GIR Live (system + "My Stock Alerts: ESCALATION"), GIR Trade now
