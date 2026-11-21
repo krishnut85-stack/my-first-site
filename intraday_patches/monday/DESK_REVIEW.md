@@ -28,6 +28,22 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 22 Nov 00:35 IST (real time) - THE TRADER: "It missed the BANKNIFTY and NIFTY - that very big move" (Fri 20 Nov: BANKNIFTY +2.49%, NIFTY +1.12%).
+Timeline (OUTSIDE_WATCH 20 Nov): gap down, NIFTY -0.66% near the open; 09:57 "sharp recovery in Nifty Bank" +600 pts, ICICI / Kotak record
+highs; 10:20 RBI Rs 50,003 cr VRR result (2.25x bids); 11:31 BANKNIFTY +0.53% at a record; 12:28 +1.69%; 13:24 +2.02%; 14:27 +2.39%, all
+bank heavyweights above VWAP; close +2.49%. Knowable from about 10:00-11:30 with 1.5-2% still to go = a big Bank Nifty CE day missed.
+Today's rules would STILL miss it (0 of 22 index triggers passed -> WATCH only). That gap must close:
+1. TREND-DAY STUDY (code, $0, before the Sun 19:45 brief if possible, else by Mon 08:00): at 10:00 / 10:30 / 11:00 / 11:30 detect a trend
+   day - index above VWAP after a gap-down reclaim (T1) or opening-range break, heavyweights 4 of 5 (BANKNIFTY) / 6 of 8 (NIFTY) above VWAP,
+   breadth, range expansion vs ADR, VWAP slope, sector leadership (PVT BANK), RBI / FII flow events - and test HOLD-TO-15:10 with a trailing
+   stop (not the 60-min target that sank the 22 triggers). Same tuning / unseen 2026 split, random baseline, option proxy with costs, Holm.
+   Report the best rule with n, hit rate, option P&L. If it passes -> grade A index CE / PE on trend days.
+2. LIVE, FROM MONDAY, EVEN BEFORE ANY TEST PASSES: when BANKNIFTY or NIFTY is up / down >= 0.8% from its day low / high after 10:00 with
+   the heavyweight count met and above / below VWAP -> one Trade now line: "BANKNIFTY TREND DAY - CE side: +x% from low, 5 of 5 banks
+   above VWAP, cause (RBI / FII / sector) - READY, your call - option Dec ATM, stop = futures VWAP". Grade B (not proven), never silent.
+   Same for PE. Max 2 a day per index.
+3. Score these lines daily; Friday week-1 scorecard reports them separately.
+
 ## 22 Nov 00:20 IST (real time) - P&L MASK FAILURE + REVIEWER'S OWN PAGE CHECK (46 D4 shots + samples, looked at as the trader would)
 1. MASK FAILURE: the F_newsfilter_shots / F_sort_shots (and likely F_search_shots) screenshots show the header P&L strip UNMASKED. They were
    in the public repo; the reviewer removed the three folders from the branch tip. FIX: (a) add the header P&L strip to the mask list for
