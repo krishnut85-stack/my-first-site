@@ -28,6 +28,18 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 18:35 IST (real time) - KILL TEST ACCEPTED + REBOOT MOVED TO TONIGHT (trader: "if all the jobs are finished, I want to reboot")
+- Kill test: accepted. Three real faults found and fixed (alarm could never fire: 5 restarts in 10 s -> 15 min; alarm on every crash ->
+  only if still down after 45 s; endless alarm loop -> one alarm + one retry an hour). The 18:17 P1 was the test - tell the trader once.
+- REBOOT TONIGHT instead of Sunday 12:00, when: (1) the D4 page sweep and the A1-J16 checklist audit are finished, committed and pushed;
+  (2) the post-reboot checklist is written in STATUS first; (3) the window avoids the 20:40 m2prep and the 23:30 backup - reboot
+  between 20:50 and 23:15 IST (or before 20:30 if everything is done). No paid snapshot: the DO weekly backup (15 Nov) + the nightly
+  copy are enough for a planned reboot.
+- AFTER THE REBOOT (the trader restarts the server's Claude Code session from the DigitalOcean console): every new-system unit + feeder
+  active, timers and cron.d listed with next run times, MemoryMax / Nice / OOM settings applied, freeze cron, status.json "OK", one
+  ntfy test, Telegram /gir status answer, CPU / memory idle, Kite login timer set for Mon 07:40, depth timer set for Mon 09:45. Report
+  each PASS / FAIL in STATUS. The Sunday 12:00 reboot is then cancelled; Sunday keeps 17:00 mock / 18:30 ring test / 19:45 brief.
+
 ## 21 Nov 17:30 IST (real time, hourly) - VERDICTS on the pushes 16:34-18:25 (labels) = 16:34-17:21 IST (commit times)
 ACCEPTED:
 - SAFETY ITEMS 1-7 + 9b (heartbeat, send-failure check, /status.json, positions read, shock-day wait, carry rule, ntfy code, runbook):
