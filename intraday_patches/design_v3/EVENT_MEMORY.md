@@ -274,3 +274,12 @@ it in Indian IT. So IT is coming up. This is one of the history."
   Q2 FY27. A "loan recovery" story (trader's read) NOT found in sources - ask the trader for his source. Insurers ranked HDFCLIFE (Oct
   individual business +16%, -26.8% from high), SBILIFE, ICICIGI; insurance = catch-up idea, no trigger yet. Laggard private banks:
   AUBANK, BANDHANBNK, RBLBANK. RBI hike (4 Dec) hurts NBFC / HFC (CHOLAFIN, BAJFINANCE, SHRIRAMFIN, LICHSGFIN). NOT PROVEN.
+- **K history 21 Nov 10:05 IST - India's next session after a Nasdaq fall >= 3% (17 episodes 2020-2026, news-report figures, some UV):**
+  Nifty opened lower 11 of 13 (median gap about -0.7%; extremes -5% Apr 2025, -10% Mar 2020); closed lower 12 of 16 (median -0.30%);
+  closed ABOVE its open about 9 of 12 (the gap was usually near the day's low). Friday-US-crash -> Monday India worse: opens -2.1% /
+  -5.0%, closes -1.40% / -3.24% / -0.20%, made back in 1-5 sessions. India up on the US-crash day did not protect it (29 Aug 2022 -1.40%,
+  14 Sep 2022 -0.37%) unless FIIs kept buying (6 Nov 2026 +2.01%, FII +Rs 13,750 cr). IT the usual laggard in 2022 / 2024 but ROSE on
+  6 Nov 2026 despite SOX -12%; banks fell in panics but led recoveries; FMCG held. Mon 23 Nov base case: open -1% to -2%, close -0.4%
+  to -1.5%, close above the open more likely; bear tail (open -2.5 to -3%) needs FIIs to sell; bull tail (flat / up) needs FII buying.
+  Signals: GIFT discount < 300 pts and the opening low holding; BANKNIFTY holding about 64,000 and beating NIFTY; Asia / Nasdaq futures
+  stabilising, India VIX < 20. NOT PROVEN (n small); the server's us_shock_study on 20 years of data will refine it.
