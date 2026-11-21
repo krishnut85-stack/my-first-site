@@ -594,3 +594,14 @@ Last update: 20:55 IST
   (3) D11 must use the lesson's numbers with n (keys), else the brief is rejected.
   NOTE: us_overnight.json now reads gold -4.62% and Brent +0.64% (settlement prices; the earlier -3.98% / -2.29% were pre-settlement). The correction quoted only the four US cash closes for that reason.
   The 12-driver checklist is permanent on every brief. PROOF_1030 (the new $8 split) is still running.
+- 11:33 - HOURLY PULL (desk 11:40 / 11:45 / 11:55 / 12:10 / 12:25). The 11:55 milestone (the new desk on Trade now, old system barred, the outlook + correction, the validator fixes) was ACCEPTED. No prompt or design files changed. Started:
+  - STUDIES (code only, $0, two agents in parallel):
+    (a) GAP-PREDICT: how well the signals visible at 14:45-15:10 IST (US futures during India hours, Asia closes, Europe's first hour, GIFT premium, FII provisional flow, macro) predict the next NIFTY / sector gap, Fridays split out, base rates with n, plus an honest check of what a 14:45 card would have said on Fri 20 Nov;
+    (b) RBI LIQUIDITY: every RBI operation since 2020 (VRR / VRRR / OMO / swaps / CRR), announcement and result times, size, bid-cover; BANKNIFTY / PSU / PVT bank / NIFTY at +30 / +60 min, the close and the next session; split by size, type, bid-cover and FII side; 20 Nov 2026 as the latest row.
+    Both give NOT PROVEN lessons for the head.
+  - DESK BUILDER, in order:
+    1. every brief splits the LEAN into OPEN (the gap) and SESSION (open -> close), each with its base rate;
+    2. ANTI-CHASE + EVIDENCE GATE + GRADE A / B / C on every card (only A can ring BUY NOW), then a short RE-GRADED Monday list to Trade now before Sunday 19:45;
+    3. the 14:45 TOMORROW'S GAP / CARRY card (from Mon 23 Nov, OVERNIGHT-labelled, carry is the trader's choice);
+    4. the LOOK-AHEAD BOOK (multi-day ideas with stages WATCH -> SETTING UP -> READY -> GO -> DONE; untested links labelled STORY ONLY);
+    then the mock prep (PROOF_1030, the full dry run, the Sunday commands, the ring-test plan).
