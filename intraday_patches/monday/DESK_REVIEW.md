@@ -28,6 +28,10 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 19:40 IST (real time) - THE TRADER: "YES B6". Run the real-model desk proof on the 7 known bad cards now (< $1, inside the
+weekend cap, its own ledger line): each card must come out WAIT / REJECT / NOT TAKING with the Devil's objection answered or standing,
+and the 2 clean controls must pass. Report cost + per-card verdict in STATUS. Also: #5 default stands (engine GO NOW hidden Monday).
+
 ## 21 Nov 19:30 IST (real time, hourly) - VERDICTS on 18:33-18:59 (server clock)
 ACCEPTED:
 - Post-reboot checklist + script (81 PASS dry run, kernel FAIL expected). Reboot tonight 20:50-23:15; Sunday 12:00 reboot cancelled.
