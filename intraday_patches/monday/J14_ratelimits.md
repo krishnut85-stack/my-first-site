@@ -8,7 +8,7 @@ Model: every caller's own code constants, worst-case phases (every loop starts o
 
 | key | endpoint | calls 07:40-09:30 | max per second | limit | seconds over | first burst |
 |---|---|---|---|---|---|---|
-| 1 | historical | 30 | 10 | 3 | 3 | 09:15:00 engine2 idxclose prev close |
+| 1 | historical | 30 | 10 | 3 | 3 | 08:58:00 engine2 idxclose prev close |
 | 1 | other | 328 | 3 | 10 | 0 | - |
 | 1 | quote | 565 | 8 | 1 | 64 | 09:08:30 engine2 pre-open gap quotes |
 | 2 | other | 3 | 2 | 10 | 0 | - |
@@ -33,6 +33,21 @@ Model: every caller's own code constants, worst-case phases (every loop starts o
 | 4 | historical | 4 | 3 | 3 | 0 | 0.0 |
 | 4 | other | 3 | 2 | 10 | 0 | 0.0 |
 | 4 | quote | 379 | 1 | 1 | 0 | 1.1 |
+
+## engine2's TICK LOOP (non-blocking spacer, coordinator 21 Nov)
+
+engine2's trade_loop thread (sector indices every 15 s, index quote every 60 s, idxclose) runs the spacer in NON-BLOCKING mode: a wait longer than 1.5 s raises kiterl.Busy, the loop's own try / except skips that round and tries on the next tick. Background threads (idxdesk, enternow, gap quotes, chains, other processes) keep waiting.
+
+| measure (07:40-09:30 model, worst case) | value |
+|---|---|
+| longest block of the tick loop | 1.50 s (limit 1.5 s) |
+| tick-loop rounds skipped (retried next tick) | 48 |
+| longest wait of a background call | 6.2 s |
+| longest delay of the idxclose prev close round (skips retried after 5 s) | 1.5 s |
+| longest delay of the index quote round (skips retried after 5 s) | 20.1 s |
+| longest delay of the sector indices round (skips retried after 5 s) | 0.0 s |
+
+idxclose's daily candles are asked only outside 09:00-15:30 (in session it takes the quote's own close): a skipped call there falls back to the tick feed's close and is asked again after 10 min (its own rule).
 
 ## Bursts found and fixed
 - KEY 1 quote: gir-intraday (engine2.py - kept ON by the 16:55 park: the page reads its quotes_live.json / pins_live.json) + seclive (ohlc every 3 s) +
@@ -73,3 +88,16 @@ Model: every caller's own code constants, worst-case phases (every loop starts o
 ## Live check Monday 08:30-09:30
 - grep every feed log for '429' / 'Too many requests' (engine2 log, kquote.log, optquote.log, wsrec.log, optdec.log, seclive, futlive, pnlwatch.log).
 - The Kite page does not say whether limits are per key or per user (the four keys are one Zerodha user); the counts above are per key.
+
+## engine2 tick loop - no stall (coordinator 21 Nov, after fix 2)
+- Which engine2 calls run in the tick-loop thread (trade_loop, the main thread): the sector indices quote (every 15 s), the index quote (every 60 s),
+  idxclose.prev_close inside them (daily candles only outside 09:00-15:30; in session it uses the quote's own close - no call), and the REST
+  prices of open paper trades only when the websocket feed is dead (slow mode). In their OWN threads: idxdesk.kick, enternow.kick, movealert
+  (its own thread), gap_thread (pre-open / open / circuit quotes), the futures-OI baseline (_base), chain_worker (chains), the getdata top-up.
+  bookpress (every 10 s) reads the websocket feed only.
+- quotes_live.json is written by quotes_write(feed) from the WEBSOCKET ticks (feed.ltp / feed.pclose) in its own thread (focus_ticks_loop,
+  ~1 s; the 'quotes246' catch-up thread after a late start) - never from REST, never from the tick-loop thread.
+- FIX 3 (17:43): kiterl.set_nonblocking(1.5) for engine2's tick-loop thread (around both trade_loop calls): a Kite call there that would wait
+  more than 1.5 s raises kiterl.Busy instead of waiting; the loop's own try / except skips that round and retries 5 s later (sidx / vix ticks
+  reset, engine2.py .bak1743n). Background threads keep waiting. gir-intraday RESTARTED 17:47:19 IST via gir-restart.
+- The table above: the tick loop never blocks more than 1.5 s; the index quote round is at most ~20 s late in the worst-case model.
