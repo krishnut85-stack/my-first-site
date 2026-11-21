@@ -28,6 +28,23 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 19:30 IST (real time, hourly) - VERDICTS on 18:33-18:59 (server clock)
+ACCEPTED:
+- Post-reboot checklist + script (81 PASS dry run, kernel FAIL expected). Reboot tonight 20:50-23:15; Sunday 12:00 reboot cancelled.
+- CHECKLIST_AUDIT.md: honest, row by row, with a risk-ordered next list. Good. The park missed market-hours writers because the trace
+  used Saturday file times; the RE-TRACE BY CODE (18:54) is the right method and fixed 8 gaps (sector board, pre-open readers, NFO
+  instruments, MWPL, futures-OI base, missaudit, checklist). Add to the Monday 09:20 duty: status.json not_live / STALE list = empty,
+  else P1 and name the writer.
+- Leftover old session process stopped (146 MB freed), own session untouched. Fine.
+DEFAULTS for the audit's trader items (use these unless the trader says otherwise - do not wait):
+- #5 TWO GO SOURCES: HIDE the engine's GO NOW cards on Monday. Only the desk's agreed calls show as BUY NOW (his rule: no blind picks,
+  the team agrees). The engine's rule lines may stay on the page labelled "ENGINE (rules) - not the desk's call", never amber, never rung.
+- #13 real flip: NOT needed - the round-trip test passed and he does not want the old programs.
+- #14 B6 real-model run on the 7 known bad cards (< $1): recommended YES inside today's weekend cap; waits for his word.
+- #6 token rotation: before Sun 18:30 (he knows). #9 outside monitor: the reviewer guides him to a free UptimeRobot check on status.json.
+STILL OPEN before Monday: J1 Kite login dry run (Sun 16:15), D4 page sweep (before Sun 16:00), J5 08:15 check scheduled, F5 CPU at the mock,
+J9 RVOL 09:15 print, and the 19:10 RBI reversal-date line.
+
 ## 21 Nov 19:10 IST (real time) - THE TRADER: "On 27 Nov, when the banks return the money, there could be issues in Bank Nifty."
 ADD (code, $0): every RBI repo / reverse-repo REVERSAL DATE goes on the event calendar (seat 34) with the amount due back
 ("Fri 27 Nov: Rs 50,000 cr 4-day VRR reverses"), and the brief the evening before + the 07:15 brief carry one line:
