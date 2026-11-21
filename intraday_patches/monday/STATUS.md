@@ -498,3 +498,9 @@ Last update: 20:55 IST
   - Status now: mode new, 12 / 12 old senders muted, old AI OFF.
   - Desk builder adding: the desk's DESK_TG_OFF lever, the trader's Telegram command (/gir mode old | new | status, accepted only from his own Telegram user id), and the flip test in the Sunday mock.
   - The flip has NOT been tested live yet: flipping to "old" now would send real old alerts to his channels. It is tested both ways in the Sunday mock (F2). The written reasons to flip (no card 15 min after 09:15, more than 6 rings in 15 min, a wrong-side ring) are for the desk to write (MONDAY_READY J7: D writes reasons, T approves).
+- 10:10 - HOURLY PULL (desk 09:30 / 09:45):
+  - The desk's 09:30 points were already decided by the trader at 09:2x: reboot AFTER MONDAY (not Sunday noon); watchdog (a) done, raven + paper_exit_monitor dropped (its next runs are clean, so no flood remains); (b) "one line per new problem" was not chosen, so the watchdog is otherwise unchanged.
+  - OLD-SYSTEM AI CONFIRMED OFF: today's old parts are unchanged since the switch (decider $0.069, decider big news $0.054, news reader $0.024, headline map $0.008, reader $0.000).
+  - EVENT_MEMORY.md updated (the desk's "K history 21 Nov 10:05" bullet): it stays inside section K, the answer key, which is kept out of every pack. The desk builder is re-checking.
+  - US-SHOCK STUDY (desk 09:45, code only, $0): running now. 2005 -> 20 Nov 2026 Yahoo daily bars + local history / minute data. Events: Nasdaq <= -3% / <= -4.5% and S&P <= -2.5%. India's next session for NIFTY, BANKNIFTY and NIFTY IT (gap, low, high, close, close vs open, minutes to the low), the four splits, base rates with n, sector medians. Output onset_results/us_shock_study.md + .json, and a NOT PROVEN lesson for the head's Sunday 19:45 brief.
+  - Desk builder: the Sunday MOCK mode, the page keys (desk.shocks, meter.p1) and the J7 levers (desk flag + Telegram command); pages builder: the J7 Settings button. IN PROGRESS.
