@@ -210,3 +210,32 @@ expected size (ridge): MAE 0.46 vs naive 0.50 (pct points) by year
 - daily NIFTY / BANKNIFTY before 15 Nov 2021 use Yahoo ^NSEI / ^NSEBANK day bars (opens checked: only 25 of 4,175 equal the previous close).
 - Model choice (lr vs gbt) is made on the same unseen years; the p-value threshold is halved for that.
 - Saved: v2/models/artifacts/m1_<set>_<time>.json; call v2/models/predict.py predict('M1', ...).
+
+## M1 vs THE SIMPLE HISTORY LINE (DESK_REVIEW 21 Nov 16:00 point 3) - 2026-11-21
+
+THE LINE: NQ futures from India's close (15:30 IST) to 07:30 IST; a move of 1%+ calls the gap's sign, smaller = no call. Same unseen days for both (2025 + 2026; each M1 year is scored by a model trained on earlier years only). The desk's '81% (186 cases)' comes from the gap study's 14:30 -> 09:00 IST window (ends after the 07:15 brief) - shown as a reference row.
+PASS needs all four: (1) at the SAME coverage (M1's k most confident days, k = the line's calls) M1's hit rate beats the line's, one-sided p < 0.025; (2) both sides - M1's gap-UP and gap-DOWN calls each beat the line's; (3) more than half the years (2 of 2); (4) better Brier on the line's call days.
+
+| comparison | line calls (coverage) | line hit | M1 hit, same coverage | p | UP: M1 / line | DOWN: M1 / line | years M1 better | Brier M1 / line | M1 on the line's days | M1 on no-call days | M1 all days | verdict |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| NIFTY: M1 intraday (lr) vs the line (NQ 15:30 -> 07:30 IST, >= 1%) | 148 (33%) | 0.7973 | 0.8041 | 0.4422 | 0.79 / 0.8481 | 0.8333 / 0.7391 | 1 of 2 | 0.1806 / 0.1676 | 0.75 (n 148) | 0.6482 (n 307) | 0.6813 (n 455) | **FAIL** |
+| NIFTY: M1 daily (lr) vs the line (NQ 15:30 -> 07:30 IST, >= 1%) | 148 (33%) | 0.777 | 0.7838 | 0.4442 | 0.7778 / 0.8481 | 0.8462 / 0.6957 | 1 of 2 | 0.1632 / 0.1785 | 0.7635 (n 148) | 0.5635 (n 307) | 0.6286 (n 455) | **FAIL** |
+| NIFTY: M1 intraday vs the study's window (NQ 14:30 -> 09:00 IST, ends after the 07:15 brief - reference only) | 147 (32%) | 0.8367 | 0.8027 | 0.7759 | 0.798 / 0.859 | 0.8125 / 0.8116 | 1 of 2 | 0.1677 / 0.1461 | 0.7891 (n 147) | 0.6299 (n 308) | 0.6813 (n 455) | **FAIL** |
+| NIFTY: M1 daily vs PROXY line (Nasdaq Composite cash night move >= 1%), unseen 2015-2026 | 1001 (34%) | 0.8082 | 0.8661 | 0.0002 | 0.8759 / 0.8998 | 0.8129 / 0.6969 | 10 of 12 | 0.145 / 0.1567 | 0.8082 (n 1001) | 0.6964 (n 1930) | 0.7346 (n 2931) | **FAIL** |
+| BANKNIFTY: M1 intraday (lr) vs the line (NQ 15:30 -> 07:30 IST, >= 1%) | 148 (33%) | 0.7568 | 0.7905 | 0.2437 | 0.7812 / 0.8101 | 0.8077 / 0.6957 | 2 of 2 | 0.1865 / 0.1842 | 0.7838 (n 148) | 0.5961 (n 307) | 0.6571 (n 455) | **FAIL** |
+| BANKNIFTY: M1 daily (gbt) vs the line (NQ 15:30 -> 07:30 IST, >= 1%) | 148 (33%) | 0.7568 | 0.7095 | 0.8212 | 0.6957 / 0.8228 | 0.9 / 0.6812 | 0 of 2 | 0.1791 / 0.1842 | 0.723 (n 148) | 0.5309 (n 307) | 0.5934 (n 455) | **FAIL** |
+| BANKNIFTY: M1 intraday vs the study's window (NQ 14:30 -> 09:00 IST, ends after the 07:15 brief - reference only) | 147 (32%) | 0.7959 | 0.7891 | 0.5572 | 0.7812 / 0.8205 | 0.8039 / 0.7681 | 1 of 2 | 0.179 / 0.1644 | 0.8231 (n 147) | 0.5779 (n 308) | 0.6571 (n 455) | **FAIL** |
+| BANKNIFTY: M1 daily vs PROXY line (Nasdaq Composite cash night move >= 1%), unseen 2015-2026 | 1000 (34%) | 0.773 | 0.829 | 0.0009 | 0.8228 / 0.8394 | 0.8662 / 0.6925 | 10 of 12 | 0.1594 / 0.1791 | 0.783 (n 1000) | 0.6505 (n 1937) | 0.6956 (n 2937) | **FAIL** |
+
+By year (line calls / line hit / M1 hit at the same coverage / M1 on the line's days / M1 on no-call days):
+
+- NIFTY: M1 intraday (lr) vs the line (NQ 15:30 -> 07:30 IST, >= 1%): 2025: 73 calls of 243 days, line 0.836, M1 0.767, M1 on line days 0.781, M1 no-call days 106/170 · 2026: 75 calls of 212 days, line 0.76, M1 0.84, M1 on line days 0.72, M1 no-call days 93/137
+- NIFTY: M1 daily (lr) vs the line (NQ 15:30 -> 07:30 IST, >= 1%): 2025: 73 calls of 243 days, line 0.822, M1 0.808, M1 on line days 0.795, M1 no-call days 102/170 · 2026: 75 calls of 212 days, line 0.733, M1 0.76, M1 on line days 0.733, M1 no-call days 71/137
+- NIFTY: M1 intraday vs the study's window (NQ 14:30 -> 09:00 IST, ends after the 07:15 brief - reference only): 2025: 74 calls of 243 days, line 0.851, M1 0.757, M1 on line days 0.797, M1 no-call days 104/169 · 2026: 73 calls of 212 days, line 0.822, M1 0.849, M1 on line days 0.781, M1 no-call days 90/139
+- NIFTY: M1 daily vs PROXY line (Nasdaq Composite cash night move >= 1%), unseen 2015-2026: M1 vs line by year: 2015 0.875 vs 0.847 · 2016 0.893 vs 0.857 · 2017 0.875 vs 0.917 · 2018 0.912 vs 0.787 · 2019 0.833 vs 0.778 · 2020 0.864 vs 0.797 · 2021 0.895 vs 0.737 · 2022 0.892 vs 0.835 · 2023 0.904 vs 0.872 · 2024 0.917 vs 0.821 · 2025 0.808 vs 0.756 · 2026 0.719 vs 0.753
+- BANKNIFTY: M1 intraday (lr) vs the line (NQ 15:30 -> 07:30 IST, >= 1%): 2025: 73 calls of 243 days, line 0.767, M1 0.808, M1 on line days 0.808, M1 no-call days 97/170 · 2026: 75 calls of 212 days, line 0.747, M1 0.773, M1 on line days 0.76, M1 no-call days 86/137
+- BANKNIFTY: M1 daily (gbt) vs the line (NQ 15:30 -> 07:30 IST, >= 1%): 2025: 73 calls of 243 days, line 0.767, M1 0.712, M1 on line days 0.767, M1 no-call days 91/170 · 2026: 75 calls of 212 days, line 0.747, M1 0.707, M1 on line days 0.68, M1 no-call days 72/137
+- BANKNIFTY: M1 intraday vs the study's window (NQ 14:30 -> 09:00 IST, ends after the 07:15 brief - reference only): 2025: 74 calls of 243 days, line 0.797, M1 0.811, M1 on line days 0.838, M1 no-call days 94/169 · 2026: 73 calls of 212 days, line 0.795, M1 0.767, M1 on line days 0.808, M1 no-call days 84/139
+- BANKNIFTY: M1 daily vs PROXY line (Nasdaq Composite cash night move >= 1%), unseen 2015-2026: M1 vs line by year: 2015 0.917 vs 0.875 · 2016 0.855 vs 0.8 · 2017 0.875 vs 0.875 · 2018 0.85 vs 0.75 · 2019 0.75 vs 0.736 · 2020 0.831 vs 0.763 · 2021 0.829 vs 0.711 · 2022 0.867 vs 0.829 · 2023 0.904 vs 0.809 · 2024 0.857 vs 0.75 · 2025 0.705 vs 0.692 · 2026 0.708 vs 0.719
+
+**VERDICT for the 07:15 brief (NIFTY, the line's own window): FAIL.** Per the desk's 16:00 decision the 07:15 brief carries the simple tested line instead; its hit rate in the 15:30 -> 07:30 window on these unseen days is in the table (the 81% / 186 figure belongs to the 14:30 -> 09:00 window).
