@@ -28,6 +28,12 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 17:15 IST - THE TRADER APPROVED the 17:00 INDEX DECISION PROCESS ("yes"). Build it now (before the Sunday 17:00 mock): the brief
+INDEX block, the 09:20 / 09:30 checks on December futures, triggers T1-T3 with confirmation, the risk rules (Monday 1 index trade, 0.5%
+risk, 13:30 / 15:10, no carry, same-driver block incl. his UNIONBANK PE), index ideas WATCH-only until a trigger passes the weekend test,
+the index card, the scorecard fields. Run the weekend tests (part 8) and report each trigger PASS / FAIL in STATUS. Then send the MONDAY
+INDEX PLAN to Trade now in the bullet layout (WATCH grade, NOT PROVEN).
+
 ## 21 Nov 17:00 IST - INDEX DECISION PROCESS - PANEL AGREED (trader + quant + risk/devil). REPLACES 16:20. RULES WAIT FOR THE TRADER'S
 YES; the weekend TESTS (part 8) may start now (code only, $0).
 1. PRE-MARKET: OPEN lean from M1 (evening / 07:30 cut-off; passes 73.5% vs 66.6%, 12 of 12 years) + the US-shock history; SESSION lean
