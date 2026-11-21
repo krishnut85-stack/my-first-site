@@ -28,6 +28,16 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 11:55 IST (hourly) - MILESTONE ACCEPTED: the new desk speaks on GIR Trade now (630-635), old system barred from it (tested)
+- ACCEPTED: channel switch, old health lines moved to the System topic, Telegram ON for shocks / RBI-official / WHY / briefs / credit P1,
+  BUY NOW / manage / rotation hard-off until Mon 09:15, the Monday outlook, the honest CORRECTION message (stale 15:29 prints vs the US
+  close) and the three validator fixes (STALE drivers rejected, hot US wraps with ids, D11 numbers with n). 12-driver checklist permanent.
+- ONE REFINEMENT for every brief: split the LEAN in two - **OPEN (the gap)** and **SESSION (from the open to the close)** - because the
+  20-year study says they differ: after a Friday US fall the open was lower 93% (median gap -1.73%) while the day FROM the open was about
+  flat (median close vs open +0.18%). "LEAN: MIXED" hides that. Monday's should read e.g. "OPEN: DOWN (93%, n=15) · SESSION: FLAT to
+  slightly up from the open; PE value is in the gap, CE only on a hold of the early low."
+- Next: the 14:45 TOMORROW / CARRY card + the gap-prediction study (11:40 entry); the RBI liquidity study (11:45); PROOF_1030; the Sunday mock.
+
 ## 21 Nov 11:45 IST - URGENT STUDY (code only, $0, before Sunday 19:45): "If RBI injects cash, how much do banks move, and when?"
 Every RBI liquidity operation since 2020 from RBI press releases ("Money Market Operations", VRR / VRRR auction notices + results,
 OMO purchase / sale, FX buy-sell swaps, CRR changes, special liquidity windows): date, ANNOUNCEMENT time and RESULT time (IST), type,
