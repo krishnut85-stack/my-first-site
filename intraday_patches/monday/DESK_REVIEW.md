@@ -1,5 +1,11 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 21 Nov 08:15 IST - naming + a rotation check for the briefs
+- Use "US OVERNIGHT SUMMARY" on pages and briefs (not "US close card"); India's own 15:30 close stays "the close".
+- Rotation check every brief and at 09:20: insurers (HDFCLIFE, SBILIFE, ICICIPRULI, LICI) vs BANKNIFTY. Insurers are NOT in BANKNIFTY
+  (they sit in FINNIFTY). Insurers above VWAP while BANKNIFTY is below = money moving out of banks into insurers (rotation); both up =
+  FII buying all financials; trade insurance through the insurers' own options, never through BANKNIFTY.
+
 ## 21 Nov 07:40 IST - THE TRADER: "you are not reading the news - the biggest flaw". US Fri 20 Nov: S&P -3.11%, Nasdaq -4.67%
 GIR's own world reader (R5) and world seats must say WHY a big world move happened - every time. Orders:
 1. **Now that credit is back:** run R5 + seats 1 / 2 on the US close of Fri 20 Nov (the AI was refused overnight) and show their cards in
@@ -9,7 +15,8 @@ GIR's own world reader (R5) and world seats must say WHY a big world move happen
 2. **Standing rule - "NO CAUSE" is not an answer for a big move:** on any world move >= 1.5% (S&P, Nasdaq, Nikkei, KOSPI, Taiwan, Hang
    Seng, crude, gold, DXY) the world reader keeps searching its feeds every 15 minutes until it has a named cause from 2+ sources, or
    writes the best LIKELY cause marked LIKELY with its sources. The head's brief must carry "WHY: <cause>" for the overnight move.
-3. **US close card by 03:30 IST every trading night** (US close 02:30 IST in winter): index moves, cause, sector moves, breadth, VIX,
+3. **"US OVERNIGHT SUMMARY" (renamed from "US close card" - the trader: India's close is 15:30, the US close is a different thing)**
+   ready by 03:30 IST every US trading night: the US market closes at 16:00 New York = 02:30 IST (Nov-Mar) / 01:30 IST (Mar-Nov): index moves, cause, sector moves, breadth, VIX,
    10y, dollar, gold, oil, and the India chain (who gains / loses). On weekends it waits for the Monday 07:15 brief.
 4. **Rotation, not just direction:** when FII money is expected to come in, the brief must name WHERE it goes - weighting laggard,
    under-owned sectors over EXTREME ones (banks are EXTREME after the November run) - using rallyscan / sector RSI and NSDL flows.
