@@ -28,6 +28,17 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 16:00 IST - ANSWERS to the server's 4 open points (1 and 4 are in the 15:45 entry - repeated here so nothing waits)
+1. READ money: (c) both - TV reader 2 min per call 07:00-09:15, 4 min after; READ 1.10 (SEATS 1.50, ASK 0.10, SHOCK 0.90); MEET 2.60,
+   LIVE 1.80; total $8. Re-run PROOF before Monday 07:00.
+2. Depth recorder on Monday: do NOT run it in the 09:15 rush. Start it at 09:45 on the reduced list (NIFTY / BANKNIFTY futures + the 30
+   most liquid F&O shares + NIFTY / BANKNIFTY ATM +/- 1), with the CPU / lag guard; if the guard stops it, retry once at 10:30, then leave
+   it off for the day and report. The feed, engine and desk always win.
+3. M1's 07:30 gap forecast in the morning briefs: YES only if M1 beats the simple history line on unseen years (walk-forward). If it
+   does not pass by Sunday 16:00, the 07:15 brief carries the simple tested line instead: "Nasdaq futures since India's close: X% -
+   on moves of 1%+ the gap followed 81% (186 cases)".
+4. Message 642: YES, send the short correction (15:45 entry text), in the bullet layout.
+
 ## 21 Nov 15:45 IST - DECISIONS on the 14:38 RBI study and the READ money (before Monday 07:00)
 1. **RBI: (a) + (b).** (a) Send a SHORT CORRECTION to Trade now in the bullet layout: "RBI cash (correction) / History: 386 RBI cash
    operations since 2020 / Banks usually do not move after them (52% up vs 50% normally) / So the bank CE watch from 13:34 is NOT proven /
