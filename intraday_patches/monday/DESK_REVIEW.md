@@ -14,6 +14,13 @@
   change nothing until the trader decides.
 - **Trader's call (asked now):** globaleye (old GIR v1) and paper_counterfactual / paper_eod_report still post to GIR Alerts - keep or mute.
 
+## 21 Nov 09:30 IST (hourly) - ACCEPTED: hunter LIVE fallback blocked (3 tests), swap 4 GB, 21 updates (70 services still up),
+gircrypto login block disabled. Two items need the trader's word (asked now): (1) the reboot for the 14 kept-back packages (kernel +
+systemd) - desk advice: YES, Sunday 12:00-13:00 IST, then check every GIR service, the feeds, girtrader.com and the desk BEFORE the 17:00
+mock (rollback = boot the previous kernel); (2) gir-watchdog flood (~290 a day: "paper_exit_monitor / raven DOWN") - desk advice: both
+(a) drop the paused raven + paper_exit_monitor from its list and (b) one line per NEW problem, then one "still down" line a day. Nothing
+on the watchdog changes until he says so (standing rule).
+
 ## 21 Nov 08:45 IST - THE TRADER: "work continuously, finish, then a full MOCK on Sunday evening". DO NOT WAIT FOR HOURLY PULLS.
 Work straight through this list in order (builder agents in parallel where files do not overlap), tests first, push after each item:
 1. Old-system AI off (one $8 gate); SHOCK budget ring-fenced; hunter LIVE fallback blocked; confirm the desk's AI is back after the top-up.
