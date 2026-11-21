@@ -28,6 +28,16 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 14:45 IST - THE TRADER: "external news monitoring - I have asked for it since day 1". NEWS COVERAGE AUDIT, before Sunday 19:45:
+1. A table in STATUS of EVERY news / information source GIR reads (world wraps + closes, RBI / SEBI / PIB / GST / courts / Parliament,
+   NSE / BSE filings, wires / publishers, TV speech-to-text, broker calls, FII / DII, NSDL, global peers' results, commodities,
+   summits): the host, how often it is polled, the last item time, items in the last 24 h, typical lag vs the source's own time, and
+   whether the reader (R1-R6) actually turned items into cards. Mark each LIVE / SLOW / SILENT / NOT BUILT.
+2. Every source in WEB_SOURCES.md and COLLECTION_PLAN.md that is NOT live gets a line: why (blocked host, not built, needs a key) and the
+   date it will be live. Hosts that block cloud machines are read by the server only - confirm each one is being read.
+3. A SOURCE-SILENCE alarm: in market hours any core source silent > 30 min (> 2 h for slow ones) = a P1 line on the System topic.
+4. The 08:30 READY line names how many sources are LIVE / SLOW / SILENT.
+
 ## 21 Nov 14:30 IST (hourly) - ACCEPTED: send gate (blocks bad text before sending), agreement loop + runner check, 14:45 gap card (no
 carry by default, honest), TRADER_RULES in every prompt + R4-R7 in code + the repeat detector, RBI liquidity shock + the 20 Nov re-score
 (silence explained: the poller was born at 15:36 that day; live lag since 1-7 min), look-ahead stages, outlook clean copy 640-641, the
