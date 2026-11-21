@@ -14,6 +14,18 @@
   change nothing until the trader decides.
 - **Trader's call (asked now):** globaleye (old GIR v1) and paper_counterfactual / paper_eod_report still post to GIR Alerts - keep or mute.
 
+## 21 Nov 08:20 IST - THE TRADER: shocks of EVERY kind, India and world, news and price - design_v3/SHOCK_ALERTS.md (REPLACES 08:05)
+Build in this order, tests first, code-only parts need no AI credit:
+1. **Today:** families A (world markets), B (world macro), E (overnight India) on the system channel; the replay proof of Fri 20 Nov
+   night (show each line and time it would have sent).
+2. **Before Sunday 19:45:** C (India market), D (F&O share), F (flows) detectors live on the page as AMBER / RED, Telegram after the
+   ring test; G (India official news) - poll RBI, SEBI, PIB, GST Council, Supreme Court / NCLT, NSE / BSE circulars - new release ->
+   R4 grades it; H (company surprise) on the 11-second filings path with R1.
+3. **Before Monday 08:30:** I (world news surprise) via R5 + the economic calendar with consensus bands; J (calendar surprise) via
+   seat 34 + the head; the reserved SHOCK budget ($1.00 trading / $0.50 weekend, from READ); flood control (max 8 RED a day, quiet-night
+   rule, one per story, AMBER for the rest); the low-credit warning; 15:45 scoring of every shock.
+Report each family as LIVE / page-only / not yet, with its test.
+
 ## 21 Nov 08:05 IST - THE TRADER: "not even once did the desk alert me that the US market fell" - a WORLD SHOCK alert that cannot fail
 Why it was silent on Fri night: the API credit ran out at 01:32 IST (US close 02:30 IST), the weekend budget day was already at 90% of
 $1.50 (readers event-only), and the new desk's Telegram is WOULD SEND until the Sunday ring test. Three blockers at once. Fix, today:
