@@ -1,13 +1,15 @@
 # Can we see tomorrow's gap at 14:45?
 
-GIR research study, made 21 Nov 2026 11:43 IST, pure code (no AI calls). Research only - GIR places no orders. Script: v2/kb/gap_predict_study.py; raw data: /home/globalbot/girdata/ext/gap_predict_study/raw/ (Yahoo, saved untouched).
+GIR research study, made 21 Nov 2026 11:44 IST, pure code (no AI calls). Research only - GIR places no orders. Script: v2/kb/gap_predict_study.py; raw data: /home/globalbot/girdata/ext/gap_predict_study/raw/ (Yahoo, saved untouched).
 
 ## The answer in plain words
-- **No.** Over 588 India days (2024-07-04 -> 2026-11-19), nothing visible by 14:30-15:10 IST predicted the next NIFTY gap better than a coin weighted to the usual up-gap. Every single signal's sign hit rate sat at or below the base rate of 56% (always guessing 'up'). Correlations with the next gap were between -0.10 and +0.04.
+- **No.** Over 588 India days (2024-07-04 -> 2026-11-19), nothing visible by 14:30-15:10 IST predicted the next NIFTY gap better than always guessing the usual up-gap (base 56%). Sign hit rates of the 13 signals with enough data ran from 46% to 57% (best: niy, 57% of 434 days - within noise of the base). Correlations with the next gap: -0.10 to +0.04.
 - All the 14:45 signals together (NQ, DAX, Asia, NIFTY itself, crude, gold, dollar, 10y; a straight-line fit) explained 3.3% of the gap in-sample and -2.4% out-of-sample (trained on 345 days, tested on the next 230 from 2025-12-04): sign right 52% vs 52% by always guessing the majority.
 - The gap is made AFTER India closes. The Nasdaq-futures move from 14:30 IST to 09:00 IST next morning - not knowable at 14:45 - explains 32% of the gap (24% out-of-sample) and gets its sign right 81% (151 of 186) when it moves 1%+.
 - So 'anticipate the day before' has to mean the evening, not 14:45: by 20:30 IST the NQ move since India's close already explains 7% of the gap (sign right 60% (218 of 363) on 0.3%+ moves); by the US close 14% (69% (284 of 414)); by 09:00 IST 30% (72% (304 of 425)). See the timing table.
 - Big Asia falls and 'India ignored a weak US' did NOT lead to gap-downs here: when some Asia index closed -3% or worse, the next NIFTY gap was down only 38% (21 of 55); when NQ minus NIFTY was -1 point or worse, down 37% (21 of 57). India's close had already absorbed the day; the next morning followed the US night.
+- One faint exception, worth re-testing, not using: on Fridays (n=116) the 14:30 signals lined up a little with Monday's gap - NQ corr 0.202, sign hit 62% (37 of 60) vs base 57%; NIFTY at 15:10 corr 0.301; Asia corr 0.209. On US event nights (FOMC / jobs Friday, approx., n=45) NQ corr 0.284, hit 64% (18 of 28). Small samples; on other weekdays the correlations are about zero or negative.
+- BANKNIFTY and NIFTY IT: same picture - NQ 14:30 corr 0.008 (BANKNIFTY) and -0.005 (IT); the NQ night (not knowable) corr 0.514 and 0.431.
 
 ## Fri 20 Nov 2026: what a 14:45 'TOMORROW'S GAP' card would have said
 - Values (vs the 19 Nov US cash close; Europe vs its 19 Nov close; Asia = 20 Nov closes; NIFTY vs 19 Nov close):
@@ -50,13 +52,13 @@ GIR research study, made 21 Nov 2026 11:43 IST, pure code (no AI calls). Researc
 | NQ <= -1% AND Asia avg <= -1% AND NIFTY up at 15:10 (the 20 Nov shape) (matched only on the 14:45 value, NQ -1.16%) | 6 | 33% (2 of 6) | 17% (1 of 6) | +0.17% | 17% (1 of 6) | +0.89% |
 | (all days, for comparison) | 588 | 43% (255 of 588) | 10% (56 of 588) | +0.03% | 49% (291 of 588) | +0.01% |
 
-- An honest 14:45 card: 'History gives no edge on the sign tomorrow from these signals: in the matching cases the next gap was down about half the time or less (see table, n = 28-88). The gap will be set by the US session tonight - watch NQ futures from 19:00-20:30 IST.' It should not have said 'gap down'.
+- An honest 14:45 card: 'History gives no edge on the sign tomorrow from these signals: in the matching cases the next gap was down about half the time or less (see table, n = 6-88). The gap will be set by the US session tonight - watch NQ futures from 19:00-20:30 IST.' It should not have said 'gap down'.
 - What happened after 14:45 (known now, not at 14:45): NQ futures kept falling into the US session; by Friday's US close they were -5.50% vs the 19 Nov close (Nasdaq Composite -5.28%). That move is exactly the 'not knowable' part. Monday 23 Nov's outcome is not known yet.
 
 ## Base: what the next gap usually is
-NIFTY, 588 days: gap up 55% (325 of 588), down 43% (255 of 588); mean gap +0.03%, mean size +0.35%; gap <= -0.5% 10% (56 of 588); next close down 49% (291 of 588).
-BANKNIFTY: gap up 51% (298 of 588), down 47% (278 of 588); mean size +0.38%.
-IT: gap up 55% (325 of 588), down 44% (261 of 588); mean size +0.57%.
+NIFTY, 588 days: gap up 55% (325 of 588), down 43% (255 of 588); mean gap +0.03%, mean size 0.35%; gap <= -0.5% 10% (56 of 588); next close down 49% (291 of 588).
+BANKNIFTY: gap up 51% (298 of 588), down 47% (278 of 588); mean size 0.38%.
+IT: gap up 55% (325 of 588), down 44% (261 of 588); mean size 0.57%.
 
 ## Each signal vs the next NIFTY gap
 Hit = the gap went the signal's expected way (prior direction in the label), counting days where the signal moved at least the small / big threshold. Base = always guessing the majority sign (56%).
@@ -146,10 +148,10 @@ Median next gap per index when the 14:30 signal fired (n = days).
 
 ## Checks
 - Gap measure: the exchange day open (Kite). On 36 days the open sat within 0.02% of the previous close (a known first-print quirk); on 9 of them the 09:15 minute close was 0.2%+ away. Re-running the NQ signal on the 09:15-close gap: corr -0.017, hit 50% (156 of 314) (small) - same conclusion.
-- 14:30 vs later: on the last 46 days with 5m bars (from 2026-09-15), NQ at 14:30 and 14:45 differed by a median 0.07 points, 14:30 vs 15:10 by 0.07. Hit at 14:30 44% (12 of 27), at 15:10 50% (15 of 30) - no better late in the day (tiny n).
-- Straight-line fits (gap on signals), first 60%% of days to train, last 40%% to test:
+- 14:30 vs later: on the last 46 days with 5m bars (from 2026-09-15), NQ at 14:30 and 14:45 differed by a median 0.07 percentage points, 14:30 vs 15:10 by 0.07. Hit at 14:30 44% (12 of 27), at 15:10 50% (15 of 30) - no better late in the day (tiny n).
+- Straight-line fits (gap on signals), first 60% of days to train, last 40% to test:
   - known_at_1445: n=575, r2 in-sample 0.033, out-of-sample -0.024, test sign hit 52% vs majority 52%; strong calls (|pred| >= 0.3%) n=4 hit 75%.
-  - nq_only: n=587, r2 in-sample 0.0, out-of-sample 0.0, test sign hit 49% vs majority 51%; strong calls (|pred| >= 0.3%) n=0 hit None%.
+  - nq_only: n=587, r2 in-sample 0.0, out-of-sample 0.0, test sign hit 49% vs majority 51%; strong calls (|pred| >= 0.3%) n=0 hit n/a%.
   - known_plus_night: n=565, r2 in-sample 0.351, out-of-sample 0.231, test sign hit 63% vs majority 51%; strong calls (|pred| >= 0.3%) n=61 hit 77%.
   - night_only: n=575, r2 in-sample 0.315, out-of-sample 0.244, test sign hit 62% vs majority 50%; strong calls (|pred| >= 0.3%) n=62 hit 82%.
 

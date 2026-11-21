@@ -611,3 +611,24 @@ Last update: 20:55 IST
   - Both morning briefs delivered (07:15 $1.50, of which MEET $0.90 using earlier briefs' unspent money; 09:08 $0.61); 19:45 ok ($1.38); 22:45 "nothing broke" ($0).
   - FOR THE DESK: READ at $0.50 runs DRY on a busy day: empty at 08:01, then 102 refusals, with low-weight news left UNREAD for the rest of the day. SEATS went event-only at 09:33 (6 refusals). Options: (a) roll unspent SHOCK money into READ before 11:00 (it already rolls into LIVE after 11:00); (b) READ 0.50 -> 0.70 from MEET (MEET used $2.19 of $2.60); (c) accept unread low-weight items. Nothing changed.
 - 11:43 - MOCK + RING TEST prep (desk builder): dry run 4 found the stand-in head's briefs failing the new 12-driver check (fixed: D1-D12 "no change" lines + the LEAN split); dry run 5 (Telegram OFF) running. STOP: touch <mock folder>/STOP, checked before every send and every virtual minute (tested: exits at once, nothing sent) + mock.pid. RING TEST: analyst/ringtest.py, 3 lines each starting "RING TEST" (CRITICAL / GO NOW test-only / NEWS), refuses outside Sun 18:25-18:50, with a --dry mode. The LEAN split is in the validator (tests); the evidence gate + grades are next.
+- 11:45 - GAP-PREDICT STUDY DONE (desk 11:40; code only, $0; onset_results_local/gap_predict_study.md + .json with all 588 rows; script v2/kb/gap_predict_study.py; lesson v2/data/gap_predict_lesson.json NOT PROVEN).
+  HONEST RESULT: NOTHING visible at 14:30-15:10 IST predicts the next NIFTY gap. 588 India days (4 Jul 2024 - 19 Nov 2026, as far as Yahoo's hourly futures go); base: the next gap up 55% / down 43%; "always up" scores 56%.
+  | signal at 14:30 IST | n | result |
+  |---|---|---|
+  | any single signal (13 tested) | up to 588 | sign right 46-57% vs the 56% base; correlations -0.10 to +0.04 |
+  | NQ futures <= -1% | 39 | next gap down 46% (mean gap +0.12%) |
+  | an Asia index closed <= -3% | 55 | next gap down 38% |
+  | NQ minus NIFTY <= -1 pt (India ignoring a weak US) | 57 | next gap down 37% |
+  | all signals in one fit | 588 | 3.3% of the gap in-sample, -2.4% OUT of sample; sign right 52% |
+  - Faint and too thin to use: Fridays (n=116) NQ correlation 0.20, sign right 62% vs 57%; US event nights (n=45) correlation 0.28. BANKNIFTY / IT / sectors: the same (correlations ~0).
+  - WHEN THE GAP BECOMES KNOWABLE (NQ futures from India's 15:30 close):
+    | NQ move up to | share of the gap explained | sign right on 0.3%+ moves |
+    |---|---|---|
+    | 20:30 IST | 7% | 60% |
+    | 23:30 IST | 10% | 66% |
+    | the US cash close | 14% | 69% |
+    | 07:30 IST next day | 29% | 72% |
+    On 1%+ NQ moves (14:30 -> 09:00) the gap went the same way 81% (151 of 186). Long daily history 2011-2026: the Nasdaq close got the sign right 82% on 1%+ moves.
+  - FRI 20 Nov CHECK: NQ futures -0.89% at 14:30, -1.16% at 14:45, -1.55% at 15:10; DAX about -1.9%; Asia closed -5% to -6% (Hang Seng -1.89%); NIFTY +1.12%. The exact shape matched n=6, 33% gap down. An honest 14:45 card would have said "no edge on the sign; the gap is set tonight; watch NQ from 19:00-20:30 IST", NOT "gap down". NQ then fell to -5.50% by the US close, which is exactly the part no 14:45 card could see. (The desk's "SOX futures -2.4%" can't be checked: Yahoo's SOX=F barely trades in India hours.)
+  - DATA GAPS: the GIFT NIFTY premium has no history on the server (only live since 19 Nov; it could be fetched as Kite minute candles); FII provisional flow has 1 day; the event calendar is approximate; the 14:45 / 15:10 comparison has only 46 days of 5-min data.
+  - FOR THE DESK (it changes the 11:40 design): the 14:45 CARRY card cannot make a sign call from what is visible at 14:45. Candidate: (a) keep 14:45 as an information card ("no edge on the sign, n 588; the gap is set tonight") with NO carry call from 14:45 signals; and (b) add an EVENING GAP WATCH to Trade now (NQ / ES vs India's close at 20:30, 23:30, the US close and 07:30 with their base rates; at most 3 lines a night). Carry stays the trader's choice. The builder holds the carry call until you decide; the lesson is being wired into the head.
