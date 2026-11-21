@@ -28,6 +28,19 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 15:55 IST (real time) - PENDING LIST for the server, one place (note: the desk's entries stamped 16:00-17:15 were written
+between 15:20 and 15:50 - clock slip on the desk side; their content stands).
+NOT YET SEEN IN STATUS - the 14:40 GAP-REVIEW CRITICAL items (do these FIRST, before the index build):
+  heartbeat (08:30 READY + every 30 min) · Telegram send-failure check + retry + alarm · /status.json fields for the trader's outside
+  monitor · full token-rotation sender list + Sunday test from each sender · market-hours change freeze 09:00-15:35 (lock file) · 09:15
+  CPU option A + priorities · Restart=on-failure + burst alarm + Sunday kill test · NTP check · 08:30 Kite cold-start test · stop
+  apt-daily-upgrade until Mon 16:00 · 08:20 check reads HIS positions / orders / funds ("risk gates blind" otherwise) · shock-day option
+  price wait (VIX +10% / IV 1.3x -> 09:30) · carry rule (declared OVERNIGHT, max 1, 0.5%, 09:08 card, two-night warning) · the phone runbook.
+THEN: the approved INDEX process (17:15 / 17:00 entries) + weekend index tests + Monday index plan · confirm the RBI correction message
+was sent · PROOF on the new READ split · Sunday mock 17:00 / ring test 18:30 / 19:45 brief.
+AFTER MONDAY (this week): M2 / M3, the look-ahead stages by the head, free upgrades 2-8, his trade journal, backups + snapshot before the
+Monday-evening reboot, second P1 channel, results-IV block, MSCI dates, transcripts, the not-built news sources.
+
 ## 21 Nov 17:15 IST - THE TRADER APPROVED the 17:00 INDEX DECISION PROCESS ("yes"). Build it now (before the Sunday 17:00 mock): the brief
 INDEX block, the 09:20 / 09:30 checks on December futures, triggers T1-T3 with confirmation, the risk rules (Monday 1 index trade, 0.5%
 risk, 13:30 / 15:10, no carry, same-driver block incl. his UNIONBANK PE), index ideas WATCH-only until a trigger passes the weekend test,
