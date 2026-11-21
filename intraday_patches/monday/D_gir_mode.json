@@ -29,7 +29,7 @@
   "viewport": "",
   "where": "inside",
   "result": "PASS",
-  "evidence": "{'mode': 'new', 'never_flipped': True, 'muted': '12 of 12', 'old_ai': 'OFF', 'desk_lines': 'ON', 'last': ['2026-11-21 10:20:59 IST web REFUSED mode request: no valid website session (from 127.0.0.1)', '2026-11-21 10:23:54 IST web REFUSED mode request: no valid website session (from 127.0.0.1)', '2026-11-21 10:23:54 IST web REFUSED mode request: no valid website session (from 127.0.0.1)']}"
+  "evidence": "{'mode': 'new', 'never_flipped': True, 'muted': '12 of 12', 'old_ai': 'OFF', 'desk_lines': 'ON', 'last': ['2026-11-21 10:47:15 IST web REFUSED mode request: no valid website session (from 64.227.155.177)', '2026-11-21 10:48:32 IST web REFUSED mode request: no valid website session (from 127.0.0.1)', '2026-11-21 10:48:32 IST web REFUSED mode request: no valid website session (from 127.0.0.1)']}"
  },
  {
   "control": "signed in but no switch header / a shell-text mode / no confirm word -> refused",
@@ -53,7 +53,7 @@
   "viewport": "",
   "where": "inside",
   "result": "PASS",
-  "evidence": "['2026-11-21 10:24:05 IST web request: mode NEW by the signed-in website session from 127.0.0.1 (gir-preview Settings button)', '2026-11-21 10:24:05 IST mode NEW (by root)']"
+  "evidence": "['2026-11-21 10:48:43 IST web request: mode NEW by the signed-in website session from 127.0.0.1 (gir-preview Settings button)', '2026-11-21 10:48:43 IST mode NEW (by root)']"
  },
  {
   "control": "the real mode is still unchanged after the test flips",
@@ -64,12 +64,20 @@
   "evidence": "never flipped"
  },
  {
-  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines + the 3 reasons to flip",
+  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines",
   "page": "Settings GIR MODE (test copy)",
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last: 2026-11-21 10:24:05 IST mode NEW (by root) Switch to OLD alerts Back to NEW des"
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: 2026-11-21 10:48:43 IST mode NEW ("
+ },
+ {
+  "control": "the trader's approved reasons to flip, word for word (wrapped, one numbered reason per line)",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
  },
  {
   "control": "two buttons; the one for the current mode is disabled",
@@ -85,7 +93,7 @@
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "0 cut · prose with a tooltip: 0"
+  "evidence": "0 cut · prose with a tooltip: 1"
  },
  {
   "control": "click \"Switch to OLD alerts\": the confirm step shows (what changes) and NOTHING is sent yet",
@@ -101,7 +109,7 @@
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "GIR MODE fallback switch · instant · no backlog OLD alerts old senders muted 0 of 12 old AI ON desk trade lines OFF last: 2026-11-21 10:24:18 IST mode OLD (by r"
+  "evidence": "GIR MODE fallback switch · instant · no backlog OLD alerts old senders muted 0 of 12 old AI ON desk trade lines OFF last flip: 2026-11-21 10:48:57 IST mode OLD "
  },
  {
   "control": "no cut text (Settings GIR MODE after OLD)",
@@ -109,7 +117,7 @@
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "0 cut · prose with a tooltip: 0"
+  "evidence": "0 cut · prose with a tooltip: 1"
  },
  {
   "control": "Back to NEW desk + CONFIRM (test copy): NEW desk, 12 of 12 muted",
@@ -117,15 +125,23 @@
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last: 2026-11-21 10:24:27"
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: 2026-11-21 10:"
  },
  {
-  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines + the 3 reasons to flip",
+  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines",
   "page": "Settings GIR MODE (real)",
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last: 2026-11-21 10:23:54 IST web REFUSED mode request: no valid website session (fro"
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: never flipped (NEW is the default)"
+ },
+ {
+  "control": "the trader's approved reasons to flip, word for word (wrapped, one numbered reason per line)",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
  },
  {
   "control": "two buttons; the one for the current mode is disabled",
@@ -141,7 +157,7 @@
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "0 cut · prose with a tooltip: 1"
+  "evidence": "0 cut · prose with a tooltip: 0"
  },
  {
   "control": "real page: the button only opens the built-in confirm step; Cancel closes it and nothing changed",
@@ -168,12 +184,20 @@
   "evidence": "1366 px"
  },
  {
-  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines + the 3 reasons to flip",
+  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines",
   "page": "Settings GIR MODE (test copy)",
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last: 2026-11-21 10:24:27 IST mode NEW (by root) Switch to OLD alerts Back to NEW des"
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: 2026-11-21 10:49:06 IST mode NEW ("
+ },
+ {
+  "control": "the trader's approved reasons to flip, word for word (wrapped, one numbered reason per line)",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
  },
  {
   "control": "two buttons; the one for the current mode is disabled",
@@ -205,7 +229,7 @@
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "GIR MODE fallback switch · instant · no backlog OLD alerts old senders muted 0 of 12 old AI ON desk trade lines OFF last: 2026-11-21 10:24:48 IST mode OLD (by r"
+  "evidence": "GIR MODE fallback switch · instant · no backlog OLD alerts old senders muted 0 of 12 old AI ON desk trade lines OFF last flip: 2026-11-21 10:49:27 IST mode OLD "
  },
  {
   "control": "no cut text (Settings GIR MODE after OLD)",
@@ -221,15 +245,23 @@
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last: 2026-11-21 10:24:56"
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: 2026-11-21 10:"
  },
  {
-  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines + the 3 reasons to flip",
+  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines",
   "page": "Settings GIR MODE (real)",
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last: 2026-11-21 10:23:54 IST web REFUSED mode request: no valid website session (fro"
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: never flipped (NEW is the default)"
+ },
+ {
+  "control": "the trader's approved reasons to flip, word for word (wrapped, one numbered reason per line)",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
  },
  {
   "control": "two buttons; the one for the current mode is disabled",
@@ -245,7 +277,7 @@
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "0 cut · prose with a tooltip: 1"
+  "evidence": "0 cut · prose with a tooltip: 0"
  },
  {
   "control": "real page: the button only opens the built-in confirm step; Cancel closes it and nothing changed",
@@ -272,12 +304,20 @@
   "evidence": "1600 px"
  },
  {
-  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines + the 3 reasons to flip",
+  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines",
   "page": "Settings GIR MODE (test copy)",
   "viewport": "390x844",
   "where": "inside",
   "result": "PASS",
-  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last: 2026-11-21 10:24:56 IST mode NEW (by root) Switch to OLD alerts Back to NEW des"
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: 2026-11-21 10:49:36 IST mode NEW ("
+ },
+ {
+  "control": "the trader's approved reasons to flip, word for word (wrapped, one numbered reason per line)",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
  },
  {
   "control": "two buttons; the one for the current mode is disabled",
@@ -309,7 +349,7 @@
   "viewport": "390x844",
   "where": "inside",
   "result": "PASS",
-  "evidence": "GIR MODE fallback switch · instant · no backlog OLD alerts old senders muted 0 of 12 old AI ON desk trade lines OFF last: 2026-11-21 10:25:23 IST mode OLD (by r"
+  "evidence": "GIR MODE fallback switch · instant · no backlog OLD alerts old senders muted 0 of 12 old AI ON desk trade lines OFF last flip: 2026-11-21 10:50:04 IST mode OLD "
  },
  {
   "control": "no cut text (Settings GIR MODE after OLD)",
@@ -325,15 +365,23 @@
   "viewport": "390x844",
   "where": "inside",
   "result": "PASS",
-  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last: 2026-11-21 10:25:31"
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: 2026-11-21 10:"
  },
  {
-  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines + the 3 reasons to flip",
+  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines",
   "page": "Settings GIR MODE (real)",
   "viewport": "390x844",
   "where": "inside",
   "result": "PASS",
-  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last: 2026-11-21 10:23:54 IST web REFUSED mode request: no valid website session (fro"
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: never flipped (NEW is the default)"
+ },
+ {
+  "control": "the trader's approved reasons to flip, word for word (wrapped, one numbered reason per line)",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
  },
  {
   "control": "two buttons; the one for the current mode is disabled",
@@ -349,7 +397,7 @@
   "viewport": "390x844",
   "where": "inside",
   "result": "PASS",
-  "evidence": "0 cut · prose with a tooltip: 1"
+  "evidence": "0 cut · prose with a tooltip: 0"
  },
  {
   "control": "real page: the button only opens the built-in confirm step; Cancel closes it and nothing changed",
@@ -397,7 +445,7 @@
   "viewport": "",
   "where": "outside",
   "result": "PASS",
-  "evidence": "200 {'mode': 'new', 'never_flipped': True, 'muted': '12 of 12', 'old_ai': 'OFF', 'desk_lines': 'ON', 'last': ['2026-11-21 10:37:37 IST web REFUSED mode request: no valid website session (from 64.227.155.177)', '2026-11-21 10:37:37 IST web REFUSED mode request: no valid website session (from 64.227.155.177)', '2026-11-21 10:38:15 IST web REFUSED mode request: no valid website session (from 64.227.155.177)']}"
+  "evidence": "200 {'mode': 'new', 'never_flipped': True, 'muted': '12 of 12', 'old_ai': 'OFF', 'desk_lines': 'ON', 'last': ['2026-11-21 10:48:32 IST web REFUSED mode request: no valid website session (from 127.0.0.1)', '2026-11-21 10:48:32 IST web REFUSED mode request: no valid website session (from 127.0.0.1)', '2026-11-21 10:50:27 IST web REFUSED mode request: no valid website session (from 64.227.155.177)']}"
  },
  {
   "control": "outside, signed in: POST without the switch header (403), without the confirm word (400), with a shell-text mode (400) - all refused, mode unchanged",
@@ -421,7 +469,23 @@
   "viewport": "1366x768",
   "where": "outside",
   "result": "PASS",
-  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last: 2026-11-21 10:38:15 IST web REFUSED mode request: no valid website session (fro"
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: never flipped (NEW is the default)"
+ },
+ {
+  "control": "outside: the approved reasons to flip, word for word",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
+ },
+ {
+  "control": "outside: \"last flip\" shows only real flips (never a refused web request)",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "last flip: never flipped (NEW is the default)"
  },
  {
   "control": "outside: two buttons, the current mode's disabled",
@@ -437,7 +501,7 @@
   "viewport": "1366x768",
   "where": "outside",
   "result": "PASS",
-  "evidence": "0 cut · prose with a tooltip: 1"
+  "evidence": "0 cut · prose with a tooltip: 0"
  },
  {
   "control": "outside: the button opens the built-in confirm step; Cancel closes it; nothing sent, the real mode unchanged (never confirmed)",
@@ -469,7 +533,23 @@
   "viewport": "1600x900",
   "where": "outside",
   "result": "PASS",
-  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last: 2026-11-21 10:38:15 IST web REFUSED mode request: no valid website session (fro"
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: never flipped (NEW is the default)"
+ },
+ {
+  "control": "outside: the approved reasons to flip, word for word",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
+ },
+ {
+  "control": "outside: \"last flip\" shows only real flips (never a refused web request)",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "last flip: never flipped (NEW is the default)"
  },
  {
   "control": "outside: two buttons, the current mode's disabled",
@@ -485,7 +565,7 @@
   "viewport": "1600x900",
   "where": "outside",
   "result": "PASS",
-  "evidence": "0 cut · prose with a tooltip: 1"
+  "evidence": "0 cut · prose with a tooltip: 0"
  },
  {
   "control": "outside: the button opens the built-in confirm step; Cancel closes it; nothing sent, the real mode unchanged (never confirmed)",
@@ -517,7 +597,23 @@
   "viewport": "390x844",
   "where": "outside",
   "result": "PASS",
-  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last: 2026-11-21 10:38:15 IST web REFUSED mode request: no valid website session (fro"
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: never flipped (NEW is the default)"
+ },
+ {
+  "control": "outside: the approved reasons to flip, word for word",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
+ },
+ {
+  "control": "outside: \"last flip\" shows only real flips (never a refused web request)",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "last flip: never flipped (NEW is the default)"
  },
  {
   "control": "outside: two buttons, the current mode's disabled",
@@ -533,7 +629,7 @@
   "viewport": "390x844",
   "where": "outside",
   "result": "PASS",
-  "evidence": "0 cut · prose with a tooltip: 1"
+  "evidence": "0 cut · prose with a tooltip: 0"
  },
  {
   "control": "outside: the button opens the built-in confirm step; Cancel closes it; nothing sent, the real mode unchanged (never confirmed)",
