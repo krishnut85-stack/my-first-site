@@ -1,6 +1,6 @@
 # GIR MODE - the trader's fallback switch on the Settings page (MONDAY_READY J7)
 
-Run 21 Nov 2026 10:26 IST. **R51: 1 NOTE · 61 PASS** (inside: real gir-preview for refusals and read-only status, plus a TEST COPY for every flip; outside through the login), at 1366x768 / 1600x900 (mouse) and 390x844 (CDP taps). The real switch was never flipped: /home/globalbot/gir_mode still does not exist ("new, default, never flipped").
+Run 21 Nov 2026 10:39 IST (outside re-run after the Caddy route went live; inside run 10:30 on the same code). **R51: 70 PASS** (inside 47 PASS · outside 23 PASS), at 1366x768 / 1600x900 (mouse) and 390x844 (CDP taps). The real switch was never flipped: /home/globalbot/gir_mode still does not exist ("new, default, never flipped").
 
 ## Server (gir-preview, restarted 10:14 and 10:29 IST Saturday under the edit lock; undo below)
 - **GET /preview/api/gir/status:** runs exactly `/usr/local/bin/gir status` and returns {ok, text, status {mode, muted "n of 12", old_ai, desk_lines, last[]}}. Without a valid website session it returns {ok: false, signed_in: false} with NO status data (HTTP 200, so the page logs no console error).
@@ -17,17 +17,17 @@ Run 21 Nov 2026 10:26 IST. **R51: 1 NOTE · 61 PASS** (inside: real gir-preview 
 - **Built-in confirm step:** a click shows what will change plus "CONFIRM · OLD / NEW" and Cancel. It closes by itself after 20 s and nothing is sent before CONFIRM.
 - **Reasons, always shown:** Flip to OLD when: no card 15 min after 09:15 · more than 6 rings in 15 min · a wrong-side ring.
 
-## OPEN - needs a yes: the website does not reach the switch yet
-girtrader.com goes Caddy -> dashserve (8090, old engine, not touched). dashserve forwards GET /preview/* to gir-preview without the cookie, and forwards no POST except /api/ask. So, signed in on the website, the panel shows "mode not known · website route pending · for now on the server: gir mode old · gir mode new" (the NOTE row).
-- **Proposed fix (not applied):** one Caddy `handle /preview/api/gir/*` block that sends only these two paths straight to 127.0.0.1:8100; everything else stays on dashserve. gir-preview checks the session itself.
-- The draft is validated (`caddy validate`): pages agent scratchpad girmode/Caddyfile.DRAFT.
-- **To apply:** copy it to /etc/caddy/Caddyfile, then `systemctl reload caddy` (graceful).
-- **The alternative** is 2 forwarding lines in dashserve.py (old engine). Either needs his yes.
+## Website route - APPLIED 21 Nov 10:36 (the trader said yes; the coordinator applied the draft)
+/etc/caddy/Caddyfile now sends ONLY /preview/api/gir/* straight to gir-preview (127.0.0.1:8100); everything else still goes to dashserve (8090). gir-preview checks the session itself. Backup /etc/caddy/Caddyfile.bak_girmode1036, validated, graceful reload.
+- **Signed out:** GET status gives {ok: false, signed_in: false} with no data; POST gets 403.
+- **Signed in:** GET status shows the real mode ("new, never flipped", 12 of 12 muted, old AI OFF), and the panel shows it with no "route pending".
+- **Signed-in POSTs that are refused:** without the header (403), without the confirm word (400), with a shell-text mode (400).
+- **Undo:** `cp /etc/caddy/Caddyfile.bak_girmode1036 /etc/caddy/Caddyfile && systemctl reload caddy`.
 
 ## Tests (never a real flip)
 - **Flips:** only against a test copy of gir-preview (127.0.0.1:8105, now stopped) whose GIR_BIN is a copy of /usr/local/bin/gir with every flag path moved to a scratchpad folder; the flags were checked file by file.
 - **Refusals:** on the real server (GET / POST without a session, forged cookie). A signed-in GET of the real status is read only.
-- **Real page:** the button was clicked only to open the confirm step, then Cancel.
+- **Real page, inside and outside:** the button was clicked only to open the confirm step, then Cancel; never CONFIRM.
 
 ## Undo
 `cp -p v2/server/preview.py.bak1011 v2/server/preview.py` + `systemctl restart gir-preview` (after hours, edit lock); `cd v2/pages && cp -p settings.html.bak1013 settings.html && cp -p static/settings.js.bak1013 static/settings.js && cp -p static/settings-v2.css.bak1013 static/settings-v2.css`.
@@ -84,18 +84,26 @@ Shots (P&L masked): girdata/review/monday/D_gir_mode_shots/ (real, test copy bef
 | real page: the button only opens the built-in confirm step; Cancel closes it and nothing changed | Settings GIR MODE (real) | 390x844 | inside | PASS | True -> False · mode never flipped |
 | 0 page errors | Settings GIR MODE (real) | 390x844 | inside | PASS | none |
 | no sideways scroll | Settings GIR MODE (real) | 390x844 | inside | PASS | 390 px |
-| outside, not signed in: the status path ends at the login page (never the switch) | GIR MODE API | - | outside | PASS | 200 https://girtrader.com/login |
+| outside, not signed in: the status read is refused (no status data: {ok false, signed_in false}, or the login page) | GIR MODE API | - | outside | PASS | 200 {"ok": false, "signed_in": false, "why": "sign in on the website first |
 | outside, not signed in: POST refused | GIR MODE API | - | outside | PASS | 403 |
-| outside, signed in: the website does not pass the session to the switch yet (route pending) | GIR MODE API | - | outside | NOTE | 200 {"ok": false, "signed_in": false, "why": "sign in on the website first"} |
-| outside: the panel renders with both buttons, the reasons, and (route pending) says to use the server; buttons disabled | Settings GIR MODE (outside) | 1366x768 | outside | PASS | GIR MODE fallback switch · instant · no backlog mode not known website route pending for now on the server: gir mode old · gir mode new Switch to OLD alerts Back to NEW desk Flip to OLD when: no card  |
-| no cut text (Settings GIR MODE outside) | Settings GIR MODE (outside) | 1366x768 | outside | PASS | 0 cut · prose with a tooltip: 0 |
+| outside, signed in (Caddy route): GET status shows the real mode | GIR MODE API | - | outside | PASS | 200 {'mode': 'new', 'never_flipped': True, 'muted': '12 of 12', 'old_ai': 'OFF', 'desk_lines': 'ON', 'last': ['2026-11-21 10:37:37 IST web REFUSED mode request: no valid website session (from 64.227.155.177)', '2026-11-21 10:37:37 IST web REFUSED mode request: |
+| outside, signed in: POST without the switch header (403), without the confirm word (400), with a shell-text mode (400) - all refused, mode unchanged | GIR MODE API | - | outside | PASS | 403 / 400 / 400 · mode never flipped |
+| outside, forged cookie: POST refused | GIR MODE API | - | outside | PASS | 403 |
+| outside, signed in: the panel shows the real mode, no "website route pending" | Settings GIR MODE (outside) | 1366x768 | outside | PASS | GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last: 2026-11-21 10:38:15 IST web REFUSED mode request: no valid website session (fro |
+| outside: two buttons, the current mode's disabled | Settings GIR MODE (outside) | 1366x768 | outside | PASS | [['Switch to OLD alerts', False], ['Back to NEW desk', True]] |
+| no cut text (Settings GIR MODE outside) | Settings GIR MODE (outside) | 1366x768 | outside | PASS | 0 cut · prose with a tooltip: 1 |
+| outside: the button opens the built-in confirm step; Cancel closes it; nothing sent, the real mode unchanged (never confirmed) | Settings GIR MODE (outside) | 1366x768 | outside | PASS | Switch to OLD alerts now? The old senders and the old AI com -> closed True · mode never flipped |
 | 0 page errors | Settings GIR MODE (outside) | 1366x768 | outside | PASS | none |
 | no sideways scroll | Settings GIR MODE (outside) | 1366x768 | outside | PASS | 1366 px |
-| outside: the panel renders with both buttons, the reasons, and (route pending) says to use the server; buttons disabled | Settings GIR MODE (outside) | 1600x900 | outside | PASS | GIR MODE fallback switch · instant · no backlog mode not known website route pending for now on the server: gir mode old · gir mode new Switch to OLD alerts Back to NEW desk Flip to OLD when: no card  |
-| no cut text (Settings GIR MODE outside) | Settings GIR MODE (outside) | 1600x900 | outside | PASS | 0 cut · prose with a tooltip: 0 |
+| outside, signed in: the panel shows the real mode, no "website route pending" | Settings GIR MODE (outside) | 1600x900 | outside | PASS | GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last: 2026-11-21 10:38:15 IST web REFUSED mode request: no valid website session (fro |
+| outside: two buttons, the current mode's disabled | Settings GIR MODE (outside) | 1600x900 | outside | PASS | [['Switch to OLD alerts', False], ['Back to NEW desk', True]] |
+| no cut text (Settings GIR MODE outside) | Settings GIR MODE (outside) | 1600x900 | outside | PASS | 0 cut · prose with a tooltip: 1 |
+| outside: the button opens the built-in confirm step; Cancel closes it; nothing sent, the real mode unchanged (never confirmed) | Settings GIR MODE (outside) | 1600x900 | outside | PASS | Switch to OLD alerts now? The old senders and the old AI com -> closed True · mode never flipped |
 | 0 page errors | Settings GIR MODE (outside) | 1600x900 | outside | PASS | none |
 | no sideways scroll | Settings GIR MODE (outside) | 1600x900 | outside | PASS | 1600 px |
-| outside: the panel renders with both buttons, the reasons, and (route pending) says to use the server; buttons disabled | Settings GIR MODE (outside) | 390x844 | outside | PASS | GIR MODE fallback switch · instant · no backlog mode not known website route pending for now on the server: gir mode old · gir mode new Switch to OLD alerts Back to NEW desk Flip to OLD when: no card  |
-| no cut text (Settings GIR MODE outside) | Settings GIR MODE (outside) | 390x844 | outside | PASS | 0 cut · prose with a tooltip: 0 |
+| outside, signed in: the panel shows the real mode, no "website route pending" | Settings GIR MODE (outside) | 390x844 | outside | PASS | GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last: 2026-11-21 10:38:15 IST web REFUSED mode request: no valid website session (fro |
+| outside: two buttons, the current mode's disabled | Settings GIR MODE (outside) | 390x844 | outside | PASS | [['Switch to OLD alerts', False], ['Back to NEW desk', True]] |
+| no cut text (Settings GIR MODE outside) | Settings GIR MODE (outside) | 390x844 | outside | PASS | 0 cut · prose with a tooltip: 1 |
+| outside: the button opens the built-in confirm step; Cancel closes it; nothing sent, the real mode unchanged (never confirmed) | Settings GIR MODE (outside) | 390x844 | outside | PASS | Switch to OLD alerts now? The old senders and the old AI com -> closed True · mode never flipped |
 | 0 page errors | Settings GIR MODE (outside) | 390x844 | outside | PASS | none |
 | no sideways scroll | Settings GIR MODE (outside) | 390x844 | outside | PASS | 390 px |

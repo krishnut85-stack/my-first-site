@@ -536,3 +536,21 @@ Last update: 20:55 IST
   - Old AI check: only 6 running files outside v2 call the API, all through ai_gate (off), and their parts are unchanged.
   - The US-shock lesson is wired for the head + seats 1-4 from 21 Nov 10:19 (never in a 20 Nov replay); the answer key K (incl. the new "K history" Monday base case) stays out (test).
   - MOCK dry run 2 (Telegram OFF, 0 AI): 9 of 12 lines. GO, ROTATION and MANAGE needed two labelled mock shortcuts (the live gates block stand-in brains; recorded quotes have no RVOL); the run from 09:00 now gives a GO card with FROM / AGAINST / MONEY and the rotation alert. Next: the full dry run with the J7 flip, then the run commands. Desk tests 133.
+- 10:41 - HOURLY PULL (desk 10:30 / 10:40 / 10:50): everything ACCEPTED.
+  - MONEY FIX sent to the desk builder: trading-day split MEET 2.60 / SEATS 1.90 / LIVE 1.80 / READ 0.50 / ASK 0.20 / SHOCK 1.00; SHOCK money unspent by 11:00 rolls into LIVE; PROOF re-run (pass = no LIVE refusal before 14:30, both morning briefs, <= $8). IN PROGRESS.
+  - J7 REASONS TO FLIP: APPROVED BY THE TRADER as the desk wrote them. They go on the Settings panel (pages builder) and in the "/gir status" reply (desk builder); the desk may also flag a reason in code as a P1 suggestion, never an automatic flip.
+  - EVENT_MEMORY.md synced (a "K 20-YEAR STUDY" bullet inside section K, which stays out of every pack).
+  - CRASH-RISK METER (desk 10:50): noted for AFTER Monday, not built now.
+- 10:41 - J7 SETTINGS BUTTON WORKS FROM girtrader.com (pages builder, 70 PASS / 0 FAIL; outside rows re-run through the live Caddy route). Signed in: the real status (new, never flipped, 12 / 12 muted, old AI OFF); the panel no longer says "route pending"; the current-mode button is disabled. Refusals: no header 403, no confirm word 400, shell text 400. Signed out / forged cookie: refused. The live "Switch to OLD" button was only opened and cancelled, never confirmed; the mode is still "new, never flipped". Proof D_gir_mode.md / .json / shots (masked).
+- 10:41 - US-SHOCK STUDY, the desk's follow-up (close vs OPEN + the bounce from the early low; code only):
+  | event set | closed above its OPEN | median close vs open | n |
+  |---|---|---|---|
+  | Nasdaq <= -3% | 56% (43/77) | +0.18% | 77 |
+  | Nasdaq <= -4.5% | 56% (10/18) | +0.25% | 18 |
+  | S&P <= -2.5% | 59% (43/73) | +0.18% | 73 |
+  | Friday -> Monday | 53% (8/15) | +0.18% | 15 |
+  | India up on the US-fall day | 50% (12/24) | +0.01% | 24 |
+  - On the same rows: median gap -0.87%, median close vs the previous close -0.79%, median low 0.45% below the open. From the open the day is roughly FLAT; the red close comes from the gap.
+  - BOUNCE FROM THE EARLY LOW (minute data from Nov 2023, NIFTY n=13; small): low in the first 15 min 69% (9/13), median depth -0.65% vs the previous close; close minus that low median +0.45% (range -0.82% to +2.62%); a bounce >= 0.5% in 46% (6/13). The high after an early low came around 15:00 (median 345 min after 09:15; in the last hour 5 of 9): a slow drift up, not a sharp rebound. BANKNIFTY: median bounce +0.52%, >= 0.5% in 7 of 13.
+  - THE DESK'S READING ("gap down, early low, partial bounce, red close"): the direction is right, but all four together are the MINORITY: 15% with minute data (2/13); the daily stand-in (gap down + red close + close >= 0.5% above the day's low) 32% (25/77). Correction from the first summary: the median low is 0.45% below the open, not ~1%.
+  - The lesson file carries both new findings (first_seen kept at 21 Nov 10:18 IST).

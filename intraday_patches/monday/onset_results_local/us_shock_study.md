@@ -1,6 +1,6 @@
 # After a big Nasdaq fall, what does India do next?
 
-GIR research study, made 21 Nov 2026 10:19 IST, pure code (no AI calls). Research only - GIR places no orders. Base rates from history are a guide, not a forecast.
+GIR research study, made 21 Nov 2026 10:40 IST, pure code (no AI calls). Research only - GIR places no orders. Base rates from history are a guide, not a forecast.
 Script: v2/kb/us_shock_study.py. Raw data: /home/globalbot/girdata/ext/us_shock_study/raw/ (Yahoo daily bars, saved untouched).
 
 ## How it is measured
@@ -19,8 +19,8 @@ Script: v2/kb/us_shock_study.py. Raw data: /home/globalbot/girdata/ext/us_shock_
 
 ## In plain words
 - After a Nasdaq Composite fall of 3%+ (n=122 US days, Sep 2007 -> 19 Nov 2026), NIFTY's next session opened lower 81% (62 of 77) and closed lower 73% (89 of 122). Median gap -0.87%, median close -0.92%.
-- The open was usually not the low: NIFTY's median low was -1.94% vs a median gap of -0.87%, so the typical session went about another 1% below its open at some point. When it opened lower, it got back above the previous close by the close only 18% (11 of 62). It closed above its own open 56% (43 of 77).
-- Timing of the low (minute data only from Nov 2023, so n is small): NIFTY's low came within the first 15 minutes in 9 of 13 events (median 2 minutes after 09:15); BANKNIFTY 6 of 13 (median 15 min). In older years: not available.
+- Close vs the OPEN (NIFTY opens from 2011, n=77): it closed above its own open 56% (43 of 77); median close vs open +0.18%. The median low was -0.45% vs the open. So from the open the day was roughly flat; the red close vs the previous close came mostly from the gap (median gap -0.87%, median close vs previous close -0.79% on the same rows). When it opened lower, it got back above the previous close by the close only 18% (11 of 62).
+- Bounce from the early low (minute data only from Nov 2023, NIFTY n=13 events): the day's low came in the first 15 minutes in 69% (9 of 13). Close minus the first-15-minute low, as % of the previous close: median +0.45% (range -0.82 to +2.62); 46% (6 of 13) closed 0.5%+ above that early low. On gap-down days only (n=9): median +0.45% (range -0.54 to +2.36), 0.5%+ in 44% (4 of 9). After an early low, the day's high came a median 345 minutes after 09:15 (n=9; in the last hour in 56% (5 of 9)).
 - Within 5 sessions NIFTY closed back at or above the pre-event close 65% (79 of 122).
 - Bigger falls (Nasdaq <= -4.5%, n=31): closed lower 77% (24 of 31), median close -1.68%. S&P 500 <= -2.5% (n=130): closed lower 73% (95 of 130), median close -0.96% - nearly the same picture as Nasdaq <= -3%.
 - Friday US fall -> Monday India (Nasdaq <= -3%, n=20): closed lower 85% (17 of 20), median close -1.38%, worse than other weekdays.
@@ -29,131 +29,203 @@ Script: v2/kb/us_shock_study.py. Raw data: /home/globalbot/girdata/ext/us_shock_
 - Same events from Nov 2021 only (n=31, the only window with PVT BANK): best NIFTY FMCG -0.16%, NIFTY PHARMA -0.28%; worst NIFTY REALTY -0.69%, NIFTY IT -0.98%; PVT BANK -0.42%, NIFTY 50 -0.37%.
 - Small samples: the exact 20 Nov look-alike (Friday + India up + two US down days) has n=4 for Nasdaq <= -3% and n=0 for Nasdaq <= -4.5%. Do not lean on those rows.
 
+## Check of the desk's reading: 'gap down, early low, partial bounce, red close'
+Nasdaq <= -3%, NIFTY:
+- Gap down: yes, usually - 81% (62 of 77) opened lower (2011+).
+- Red close: yes, usually - 73% (89 of 122) closed below the previous close.
+- Early low: yes in the recent minute data - the day's low was in the first 15 minutes in 69% (9 of 13), but n is small (Nov 2023 ->).
+- Partial bounce: small. Median close only +0.45% above the first-15-minute low; 0.5%+ in 46% (6 of 13). Close vs open median +0.18% (n=77) - about flat, not a strong bounce; it closed below its open 44% of the time.
+- All four steps together on the same day: 15% (2 of 13) with minute data (gap down, low in the first 15 min, close 0.5%+ above it, red close). Daily-data stand-in for 2011+ (gap down, red close, close 0.5%+ above the day's low): 32% (25 of 77).
+- When the low did come early, the day's high came late (median 345 minutes after 09:15, n=9) - a slow drift up into the close, not a sharp rebound.
+- Verdict: the direction agrees (gap down and red close are the usual outcome), but the 'bounce' is weak - typically the close ends near the open, and the full four-step day is the minority case, not the norm. Treat 'early low then bounce' as one possible path, not the base case.
+
 ## Headline base rates (NIFTY 50, next India session)
 
-| event set | n | opened lower | closed lower | closed above its open | opened lower -> closed positive | back to prev close in 5 sessions | median gap | worst gap | median close |
-|---|---|---|---|---|---|---|---|---|---|
-| Nasdaq Composite <= -3% - all events | 122 | 81% (62 of 77) | 73% (89 of 122) | 56% (43 of 77) | 18% (11 of 62) | 65% (79 of 122) | -0.87% | -9.14% (2020-03-23) | -0.92% |
-| Nasdaq Composite <= -3% - (a) Friday US fall -> next India session (Monday) | 20 | 93% (14 of 15) | 85% (17 of 20) | 53% (8 of 15) | 14% (2 of 14) | 55% (11 of 20) | -1.73% | -9.14% (2020-03-23) | -1.38% |
-| Nasdaq Composite <= -3% - 20 Nov look-alike: Friday + India up + two US down days | 4 | 100% (2 of 2) | 75% (3 of 4) | 50% (1 of 2) | 0% (0 of 2) | 75% (3 of 4) | -1.87% | -3.31% (2020-05-04) | -0.18% |
-| Nasdaq Composite <= -4.5% - all events | 31 | 89% (16 of 18) | 77% (24 of 31) | 56% (10 of 18) | 19% (3 of 16) | 55% (17 of 31) | -1.85% | -5.03% (2020-03-13) | -1.68% |
-| Nasdaq Composite <= -4.5% - (a) Friday US fall -> next India session (Monday) | 2 | 100% (1 of 1) | 100% (2 of 2) | 100% (1 of 1) | 0% (0 of 1) | 50% (1 of 2) | -5.00% | -5.00% (2025-04-07) | -1.81% |
-| Nasdaq Composite <= -4.5% - 20 Nov look-alike: Friday + India up + two US down days | 0 | | | | | | | | |
-| S&P 500 <= -2.5% - all events | 130 | 82% (60 of 73) | 73% (95 of 130) | 59% (43 of 73) | 18% (11 of 60) | 63% (82 of 130) | -0.90% | -9.14% (2020-03-23) | -0.96% |
-| S&P 500 <= -2.5% - (a) Friday US fall -> next India session (Monday) | 24 | 94% (15 of 16) | 92% (22 of 24) | 56% (9 of 16) | 7% (1 of 15) | 58% (14 of 24) | -1.41% | -9.14% (2020-03-23) | -1.69% |
-| S&P 500 <= -2.5% - 20 Nov look-alike: Friday + India up + two US down days | 4 | 75% (3 of 4) | 75% (3 of 4) | 75% (3 of 4) | 0% (0 of 3) | 75% (3 of 4) | -0.62% | -3.31% (2020-05-04) | -0.34% |
+| event set | n | opened lower | closed lower | closed above its open | median close vs open (n) | opened lower -> closed positive | back to prev close in 5 sessions | median gap | worst gap | median close |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Nasdaq Composite <= -3% - all events | 122 | 81% (62 of 77) | 73% (89 of 122) | 56% (43 of 77) | +0.18% (77) | 18% (11 of 62) | 65% (79 of 122) | -0.87% | -9.14% (2020-03-23) | -0.92% |
+| Nasdaq Composite <= -3% - (a) Friday US fall -> next India session (Monday) | 20 | 93% (14 of 15) | 85% (17 of 20) | 53% (8 of 15) | +0.18% (15) | 14% (2 of 14) | 55% (11 of 20) | -1.73% | -9.14% (2020-03-23) | -1.38% |
+| Nasdaq Composite <= -3% - 20 Nov look-alike: Friday + India up + two US down days | 4 | 100% (2 of 2) | 75% (3 of 4) | 50% (1 of 2) | -1.16% (2) | 0% (0 of 2) | 75% (3 of 4) | -1.87% | -3.31% (2020-05-04) | -0.18% |
+| Nasdaq Composite <= -4.5% - all events | 31 | 89% (16 of 18) | 77% (24 of 31) | 56% (10 of 18) | +0.25% (18) | 19% (3 of 16) | 55% (17 of 31) | -1.85% | -5.03% (2020-03-13) | -1.68% |
+| Nasdaq Composite <= -4.5% - (a) Friday US fall -> next India session (Monday) | 2 | 100% (1 of 1) | 100% (2 of 2) | 100% (1 of 1) | +1.85% (1) | 0% (0 of 1) | 50% (1 of 2) | -5.00% | -5.00% (2025-04-07) | -1.81% |
+| Nasdaq Composite <= -4.5% - 20 Nov look-alike: Friday + India up + two US down days | 0 | | | | | | | | | |
+| S&P 500 <= -2.5% - all events | 130 | 82% (60 of 73) | 73% (95 of 130) | 59% (43 of 73) | +0.18% (73) | 18% (11 of 60) | 63% (82 of 130) | -0.90% | -9.14% (2020-03-23) | -0.96% |
+| S&P 500 <= -2.5% - (a) Friday US fall -> next India session (Monday) | 24 | 94% (15 of 16) | 92% (22 of 24) | 56% (9 of 16) | +0.19% (16) | 7% (1 of 15) | 58% (14 of 24) | -1.41% | -9.14% (2020-03-23) | -1.69% |
+| S&P 500 <= -2.5% - 20 Nov look-alike: Friday + India up + two US down days | 4 | 75% (3 of 4) | 75% (3 of 4) | 75% (3 of 4) | +0.29% (4) | 0% (0 of 3) | 75% (3 of 4) | -0.62% | -3.31% (2020-05-04) | -0.34% |
 
 ## Nasdaq Composite <= -3% - all splits
 
-| split | idx | n | opened lower | closed lower | closed > open | opened lower -> closed + | prev close in 5 s | median gap | worst gap | median low | median close | minutes open->low (median, n) |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| all events | NIFTY | 122 | 81% (62 of 77) | 73% (89 of 122) | 56% (43 of 77) | 18% (11 of 62) | 65% (79 of 122) | -0.87 | -9.14 | -1.94 | -0.92 | 2 (n=13; low in first 15 min 9 of 13) |
-|  | BANKNIFTY | 122 | 85% (104 of 122) | 69% (84 of 122) | 54% (66 of 122) | 29% (30 of 104) | 61% (74 of 122) | -1.19 | -9.87 | -2.76 | -0.91 | 15 (n=13; low in first 15 min 6 of 13) |
-|  | IT | 122 | 86% (105 of 122) | 78% (95 of 122) | 48% (59 of 122) | 20% (21 of 105) | 58% (71 of 122) | -1.04 | -8.37 | -2.47 | -1.29 | 226 (n=1; low in first 15 min 0 of 1) |
-| (a) Friday US fall -> next India session (Monday) | NIFTY | 20 | 93% (14 of 15) | 85% (17 of 20) | 53% (8 of 15) | 14% (2 of 14) | 55% (11 of 20) | -1.73 | -9.14 | -2.15 | -1.38 | 1 (n=3; low in first 15 min 2 of 3) |
-|  | BANKNIFTY | 20 | 90% (18 of 20) | 70% (14 of 20) | 60% (12 of 20) | 33% (6 of 18) | 60% (12 of 20) | -1.67 | -9.87 | -2.73 | -1.77 | 20 (n=3; low in first 15 min 1 of 3) |
-|  | IT | 20 | 95% (19 of 20) | 85% (17 of 20) | 45% (9 of 20) | 11% (2 of 19) | 40% (8 of 20) | -1.35 | -8.37 | -2.80 | -1.71 | not available |
-| not a Friday | NIFTY | 102 | 77% (48 of 62) | 71% (72 of 102) | 56% (35 of 62) | 19% (9 of 48) | 67% (68 of 102) | -0.74 | -5.03 | -1.92 | -0.80 | 4.0 (n=10; low in first 15 min 7 of 10) |
-|  | BANKNIFTY | 102 | 84% (86 of 102) | 69% (70 of 102) | 53% (54 of 102) | 28% (24 of 86) | 61% (62 of 102) | -1.15 | -6.37 | -2.76 | -0.83 | 8.5 (n=10; low in first 15 min 5 of 10) |
-|  | IT | 102 | 84% (86 of 102) | 76% (78 of 102) | 49% (50 of 102) | 22% (19 of 86) | 62% (63 of 102) | -1.00 | -6.15 | -2.44 | -1.19 | 226 (n=1; low in first 15 min 0 of 1) |
-| (b) India closed UP on the US-fall day | NIFTY | 37 | 88% (21 of 24) | 86% (32 of 37) | 50% (12 of 24) | 10% (2 of 21) | 51% (19 of 37) | -1.32 | -9.14 | -2.05 | -1.40 | 14 (n=3; low in first 15 min 2 of 3) |
-|  | BANKNIFTY | 37 | 92% (34 of 37) | 78% (29 of 37) | 46% (17 of 37) | 18% (6 of 34) | 51% (19 of 37) | -1.75 | -9.87 | -2.64 | -1.76 | 0 (n=3; low in first 15 min 2 of 3) |
-|  | IT | 37 | 92% (34 of 37) | 86% (32 of 37) | 32% (12 of 37) | 12% (4 of 34) | 41% (15 of 37) | -1.11 | -8.37 | -2.65 | -2.01 | 226 (n=1; low in first 15 min 0 of 1) |
-| India closed down/flat on the US-fall day | NIFTY | 85 | 77% (41 of 53) | 67% (57 of 85) | 58% (31 of 53) | 22% (9 of 41) | 71% (60 of 85) | -0.75 | -5.03 | -1.82 | -0.38 | 1.5 (n=10; low in first 15 min 7 of 10) |
-|  | BANKNIFTY | 85 | 82% (70 of 85) | 65% (55 of 85) | 58% (49 of 85) | 34% (24 of 70) | 65% (55 of 85) | -1.08 | -6.37 | -2.88 | -0.65 | 22.5 (n=10; low in first 15 min 4 of 10) |
-|  | IT | 85 | 84% (71 of 85) | 74% (63 of 85) | 55% (47 of 85) | 24% (17 of 71) | 66% (56 of 85) | -0.99 | -6.58 | -2.40 | -1.18 | not available |
-| (c) two US down days in a row | NIFTY | 61 | 81% (29 of 36) | 72% (44 of 61) | 53% (19 of 36) | 21% (6 of 29) | 69% (42 of 61) | -0.81 | -5.03 | -1.69 | -0.43 | 10.0 (n=8; low in first 15 min 5 of 8) |
-|  | BANKNIFTY | 61 | 85% (52 of 61) | 66% (40 of 61) | 57% (35 of 61) | 33% (17 of 52) | 67% (41 of 61) | -1.07 | -6.37 | -2.49 | -0.64 | 11.0 (n=8; low in first 15 min 4 of 8) |
-|  | IT | 61 | 84% (51 of 61) | 77% (47 of 61) | 52% (32 of 61) | 22% (11 of 51) | 59% (36 of 61) | -0.96 | -6.58 | -2.21 | -1.05 | not available |
-| the US day before was up | NIFTY | 61 | 80% (33 of 41) | 74% (45 of 61) | 59% (24 of 41) | 15% (5 of 33) | 61% (37 of 61) | -0.90 | -9.14 | -2.24 | -1.00 | 1 (n=5; low in first 15 min 4 of 5) |
-|  | BANKNIFTY | 61 | 85% (52 of 61) | 72% (44 of 61) | 51% (31 of 61) | 25% (13 of 52) | 54% (33 of 61) | -1.64 | -9.87 | -3.11 | -1.73 | 15 (n=5; low in first 15 min 2 of 5) |
-|  | IT | 61 | 89% (54 of 61) | 79% (48 of 61) | 44% (27 of 61) | 19% (10 of 54) | 57% (35 of 61) | -1.21 | -8.37 | -2.71 | -1.67 | 226 (n=1; low in first 15 min 0 of 1) |
-| (d) Asia <= -3% on India's next-session date | NIFTY | 54 | 89% (25 of 28) | 78% (42 of 54) | 50% (14 of 28) | 8% (2 of 25) | 61% (33 of 54) | -1.66 | -9.14 | -3.43 | -1.61 | 1 (n=5; low in first 15 min 5 of 5) |
-|  | BANKNIFTY | 54 | 93% (50 of 54) | 76% (41 of 54) | 56% (30 of 54) | 22% (11 of 50) | 54% (29 of 54) | -2.19 | -9.87 | -3.72 | -1.79 | 30 (n=5; low in first 15 min 2 of 5) |
-|  | IT | 54 | 93% (50 of 54) | 83% (45 of 54) | 43% (23 of 54) | 14% (7 of 50) | 52% (28 of 54) | -1.81 | -8.37 | -4.71 | -2.58 | 226 (n=1; low in first 15 min 0 of 1) |
-| (d2) Asia <= -3% on the US date | NIFTY | 33 | 61% (11 of 18) | 55% (18 of 33) | 50% (9 of 18) | 36% (4 of 11) | 73% (24 of 33) | -0.62 | -5.03 | -2.09 | -0.27 | 1 (n=3; low in first 15 min 2 of 3) |
-|  | BANKNIFTY | 33 | 76% (25 of 33) | 58% (19 of 33) | 61% (20 of 33) | 44% (11 of 25) | 70% (23 of 33) | -1.03 | -5.59 | -3.00 | -0.35 | 0 (n=3; low in first 15 min 2 of 3) |
-|  | IT | 33 | 73% (24 of 33) | 67% (22 of 33) | 61% (20 of 33) | 29% (7 of 24) | 76% (25 of 33) | -0.99 | -6.15 | -2.74 | -1.23 | 226 (n=1; low in first 15 min 0 of 1) |
-| events since 2011 (drops the 2008-10 cluster) | NIFTY | 77 | 81% (62 of 77) | 74% (57 of 77) | 56% (43 of 77) | 18% (11 of 62) | 64% (49 of 77) | -0.87 | -9.14 | -1.43 | -0.79 | 2 (n=13; low in first 15 min 9 of 13) |
-|  | BANKNIFTY | 77 | 81% (62 of 77) | 68% (52 of 77) | 57% (44 of 77) | 27% (17 of 62) | 60% (46 of 77) | -0.98 | -9.87 | -1.69 | -0.75 | 15 (n=13; low in first 15 min 6 of 13) |
-|  | IT | 77 | 86% (66 of 77) | 74% (57 of 77) | 51% (39 of 77) | 23% (15 of 66) | 53% (41 of 77) | -1.02 | -8.37 | -2.04 | -1.18 | 226 (n=1; low in first 15 min 0 of 1) |
-| 20 Nov look-alike: Friday + India up + two US down days | NIFTY | 4 | 100% (2 of 2) | 75% (3 of 4) | 50% (1 of 2) | 0% (0 of 2) | 75% (3 of 4) | -1.87 | -3.31 | -0.95 | -0.18 | 19 (n=1; low in first 15 min 0 of 1) |
-|  | BANKNIFTY | 4 | 100% (4 of 4) | 25% (1 of 4) | 75% (3 of 4) | 75% (3 of 4) | 75% (3 of 4) | -1.46 | -4.74 | -1.67 | +0.11 | 20 (n=1; low in first 15 min 0 of 1) |
-|  | IT | 4 | 100% (4 of 4) | 100% (4 of 4) | 25% (1 of 4) | 0% (0 of 4) | 25% (1 of 4) | -0.64 | -3.28 | -2.27 | -1.82 | not available |
+| split | idx | n | opened lower | closed lower | closed > open | median close vs open (n) | opened lower -> closed + | prev close in 5 s | median gap | worst gap | median low | median close | minutes open->low (median, n) | close minus first-15-min low: median [range], >= 0.5% |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| all events | NIFTY | 122 | 81% (62 of 77) | 73% (89 of 122) | 56% (43 of 77) | +0.18 (77) | 18% (11 of 62) | 65% (79 of 122) | -0.87 | -9.14 | -1.94 | -0.92 | 2 (n=13; low in first 15 min 9 of 13) | +0.45 [-0.82, +2.62]; 46% (6 of 13) |
+|  | BANKNIFTY | 122 | 85% (104 of 122) | 69% (84 of 122) | 54% (66 of 122) | +0.13 (122) | 29% (30 of 104) | 61% (74 of 122) | -1.19 | -9.87 | -2.76 | -0.91 | 15 (n=13; low in first 15 min 6 of 13) | +0.52 [-1.29, +3.06]; 54% (7 of 13) |
+|  | IT | 122 | 86% (105 of 122) | 78% (95 of 122) | 48% (59 of 122) | -0.12 (122) | 20% (21 of 105) | 58% (71 of 122) | -1.04 | -8.37 | -2.47 | -1.29 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| (a) Friday US fall -> next India session (Monday) | NIFTY | 20 | 93% (14 of 15) | 85% (17 of 20) | 53% (8 of 15) | +0.18 (15) | 14% (2 of 14) | 55% (11 of 20) | -1.73 | -9.14 | -2.15 | -1.38 | 1 (n=3; low in first 15 min 2 of 3) | +0.23 [+0.20, +1.82]; 33% (1 of 3) |
+|  | BANKNIFTY | 20 | 90% (18 of 20) | 70% (14 of 20) | 60% (12 of 20) | +0.35 (20) | 33% (6 of 18) | 60% (12 of 20) | -1.67 | -9.87 | -2.73 | -1.77 | 20 (n=3; low in first 15 min 1 of 3) | +0.52 [+0.40, +1.20]; 67% (2 of 3) |
+|  | IT | 20 | 95% (19 of 20) | 85% (17 of 20) | 45% (9 of 20) | -0.24 (20) | 11% (2 of 19) | 40% (8 of 20) | -1.35 | -8.37 | -2.80 | -1.71 | not available | not available |
+| not a Friday | NIFTY | 102 | 77% (48 of 62) | 71% (72 of 102) | 56% (35 of 62) | +0.19 (62) | 19% (9 of 48) | 67% (68 of 102) | -0.74 | -5.03 | -1.92 | -0.80 | 4.0 (n=10; low in first 15 min 7 of 10) | +0.52 [-0.82, +2.62]; 50% (5 of 10) |
+|  | BANKNIFTY | 102 | 84% (86 of 102) | 69% (70 of 102) | 53% (54 of 102) | +0.10 (102) | 28% (24 of 86) | 61% (62 of 102) | -1.15 | -6.37 | -2.76 | -0.83 | 8.5 (n=10; low in first 15 min 5 of 10) | +0.48 [-1.29, +3.06]; 50% (5 of 10) |
+|  | IT | 102 | 84% (86 of 102) | 76% (78 of 102) | 49% (50 of 102) | -0.07 (102) | 22% (19 of 86) | 62% (63 of 102) | -1.00 | -6.15 | -2.44 | -1.19 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| (b) India closed UP on the US-fall day | NIFTY | 37 | 88% (21 of 24) | 86% (32 of 37) | 50% (12 of 24) | +0.01 (24) | 10% (2 of 21) | 51% (19 of 37) | -1.32 | -9.14 | -2.05 | -1.40 | 14 (n=3; low in first 15 min 2 of 3) | +2.36 [+0.20, +2.62]; 67% (2 of 3) |
+|  | BANKNIFTY | 37 | 92% (34 of 37) | 78% (29 of 37) | 46% (17 of 37) | -0.01 (37) | 18% (6 of 34) | 51% (19 of 37) | -1.75 | -9.87 | -2.64 | -1.76 | 0 (n=3; low in first 15 min 2 of 3) | +2.27 [+0.52, +3.06]; 100% (3 of 3) |
+|  | IT | 37 | 92% (34 of 37) | 86% (32 of 37) | 32% (12 of 37) | -0.30 (37) | 12% (4 of 34) | 41% (15 of 37) | -1.11 | -8.37 | -2.65 | -2.01 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| India closed down/flat on the US-fall day | NIFTY | 85 | 77% (41 of 53) | 67% (57 of 85) | 58% (31 of 53) | +0.26 (53) | 22% (9 of 41) | 71% (60 of 85) | -0.75 | -5.03 | -1.82 | -0.38 | 1.5 (n=10; low in first 15 min 7 of 10) | +0.40 [-0.82, +1.82]; 40% (4 of 10) |
+|  | BANKNIFTY | 85 | 82% (70 of 85) | 65% (55 of 85) | 58% (49 of 85) | +0.29 (85) | 34% (24 of 70) | 65% (55 of 85) | -1.08 | -6.37 | -2.88 | -0.65 | 22.5 (n=10; low in first 15 min 4 of 10) | +0.38 [-1.29, +1.20]; 40% (4 of 10) |
+|  | IT | 85 | 84% (71 of 85) | 74% (63 of 85) | 55% (47 of 85) | +0.15 (85) | 24% (17 of 71) | 66% (56 of 85) | -0.99 | -6.58 | -2.40 | -1.18 | not available | not available |
+| (c) two US down days in a row | NIFTY | 61 | 81% (29 of 36) | 72% (44 of 61) | 53% (19 of 36) | +0.19 (36) | 21% (6 of 29) | 69% (42 of 61) | -0.81 | -5.03 | -1.69 | -0.43 | 10.0 (n=8; low in first 15 min 5 of 8) | +0.33 [-0.82, +2.36]; 38% (3 of 8) |
+|  | BANKNIFTY | 61 | 85% (52 of 61) | 66% (40 of 61) | 57% (35 of 61) | +0.31 (61) | 33% (17 of 52) | 67% (41 of 61) | -1.07 | -6.37 | -2.49 | -0.64 | 11.0 (n=8; low in first 15 min 4 of 8) | +0.56 [-1.29, +2.27]; 62% (5 of 8) |
+|  | IT | 61 | 84% (51 of 61) | 77% (47 of 61) | 52% (32 of 61) | +0.10 (61) | 22% (11 of 51) | 59% (36 of 61) | -0.96 | -6.58 | -2.21 | -1.05 | not available | not available |
+| the US day before was up | NIFTY | 61 | 80% (33 of 41) | 74% (45 of 61) | 59% (24 of 41) | +0.18 (41) | 15% (5 of 33) | 61% (37 of 61) | -0.90 | -9.14 | -2.24 | -1.00 | 1 (n=5; low in first 15 min 4 of 5) | +0.59 [-0.54, +2.62]; 60% (3 of 5) |
+|  | BANKNIFTY | 61 | 85% (52 of 61) | 72% (44 of 61) | 51% (31 of 61) | +0.06 (61) | 25% (13 of 52) | 54% (33 of 61) | -1.64 | -9.87 | -3.11 | -1.73 | 15 (n=5; low in first 15 min 2 of 5) | +0.20 [+0.05, +3.06]; 40% (2 of 5) |
+|  | IT | 61 | 89% (54 of 61) | 79% (48 of 61) | 44% (27 of 61) | -0.28 (61) | 19% (10 of 54) | 57% (35 of 61) | -1.21 | -8.37 | -2.71 | -1.67 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| (d) Asia <= -3% on India's next-session date | NIFTY | 54 | 89% (25 of 28) | 78% (42 of 54) | 50% (14 of 28) | +0.05 (28) | 8% (2 of 25) | 61% (33 of 54) | -1.66 | -9.14 | -3.43 | -1.61 | 1 (n=5; low in first 15 min 5 of 5) | +0.80 [+0.23, +2.62]; 60% (3 of 5) |
+|  | BANKNIFTY | 54 | 93% (50 of 54) | 76% (41 of 54) | 56% (30 of 54) | +0.20 (54) | 22% (11 of 50) | 54% (29 of 54) | -2.19 | -9.87 | -3.72 | -1.79 | 30 (n=5; low in first 15 min 2 of 5) | +0.40 [+0.19, +3.06]; 40% (2 of 5) |
+|  | IT | 54 | 93% (50 of 54) | 83% (45 of 54) | 43% (23 of 54) | -0.27 (54) | 14% (7 of 50) | 52% (28 of 54) | -1.81 | -8.37 | -4.71 | -2.58 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| (d2) Asia <= -3% on the US date | NIFTY | 33 | 61% (11 of 18) | 55% (18 of 33) | 50% (9 of 18) | +0.03 (18) | 36% (4 of 11) | 73% (24 of 33) | -0.62 | -5.03 | -2.09 | -0.27 | 1 (n=3; low in first 15 min 2 of 3) | +0.23 [-0.82, +2.62]; 33% (1 of 3) |
+|  | BANKNIFTY | 33 | 76% (25 of 33) | 58% (19 of 33) | 61% (20 of 33) | +0.39 (33) | 44% (11 of 25) | 70% (23 of 33) | -1.03 | -5.59 | -3.00 | -0.35 | 0 (n=3; low in first 15 min 2 of 3) | +0.40 [-1.29, +3.06]; 33% (1 of 3) |
+|  | IT | 33 | 73% (24 of 33) | 67% (22 of 33) | 61% (20 of 33) | +0.44 (33) | 29% (7 of 24) | 76% (25 of 33) | -0.99 | -6.15 | -2.74 | -1.23 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| events since 2011 (drops the 2008-10 cluster) | NIFTY | 77 | 81% (62 of 77) | 74% (57 of 77) | 56% (43 of 77) | +0.18 (77) | 18% (11 of 62) | 64% (49 of 77) | -0.87 | -9.14 | -1.43 | -0.79 | 2 (n=13; low in first 15 min 9 of 13) | +0.45 [-0.82, +2.62]; 46% (6 of 13) |
+|  | BANKNIFTY | 77 | 81% (62 of 77) | 68% (52 of 77) | 57% (44 of 77) | +0.14 (77) | 27% (17 of 62) | 60% (46 of 77) | -0.98 | -9.87 | -1.69 | -0.75 | 15 (n=13; low in first 15 min 6 of 13) | +0.52 [-1.29, +3.06]; 54% (7 of 13) |
+|  | IT | 77 | 86% (66 of 77) | 74% (57 of 77) | 51% (39 of 77) | +0.04 (77) | 23% (15 of 66) | 53% (41 of 77) | -1.02 | -8.37 | -2.04 | -1.18 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| 20 Nov look-alike: Friday + India up + two US down days | NIFTY | 4 | 100% (2 of 2) | 75% (3 of 4) | 50% (1 of 2) | -1.16 (2) | 0% (0 of 2) | 75% (3 of 4) | -1.87 | -3.31 | -0.95 | -0.18 | 19 (n=1; low in first 15 min 0 of 1) | +0.20 [+0.20, +0.20]; 0% (0 of 1) |
+|  | BANKNIFTY | 4 | 100% (4 of 4) | 25% (1 of 4) | 75% (3 of 4) | +0.41 (4) | 75% (3 of 4) | 75% (3 of 4) | -1.46 | -4.74 | -1.67 | +0.11 | 20 (n=1; low in first 15 min 0 of 1) | +0.52 [+0.52, +0.52]; 100% (1 of 1) |
+|  | IT | 4 | 100% (4 of 4) | 100% (4 of 4) | 25% (1 of 4) | -0.80 (4) | 0% (0 of 4) | 25% (1 of 4) | -0.64 | -3.28 | -2.27 | -1.82 | not available | not available |
 
 ## Nasdaq Composite <= -4.5% - all splits
 
-| split | idx | n | opened lower | closed lower | closed > open | opened lower -> closed + | prev close in 5 s | median gap | worst gap | median low | median close | minutes open->low (median, n) |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| all events | NIFTY | 31 | 89% (16 of 18) | 77% (24 of 31) | 56% (10 of 18) | 19% (3 of 16) | 55% (17 of 31) | -1.85 | -5.03 | -3.80 | -1.68 | 1 (n=3; low in first 15 min 2 of 3) |
-|  | BANKNIFTY | 31 | 84% (26 of 31) | 71% (22 of 31) | 61% (19 of 31) | 31% (8 of 26) | 55% (17 of 31) | -2.19 | -6.37 | -4.22 | -1.82 | 199 (n=3; low in first 15 min 1 of 3) |
-|  | IT | 31 | 87% (27 of 31) | 81% (25 of 31) | 48% (15 of 31) | 15% (4 of 27) | 52% (16 of 31) | -2.23 | -6.58 | -5.07 | -2.65 | 226 (n=1; low in first 15 min 0 of 1) |
-| (a) Friday US fall -> next India session (Monday) | NIFTY | 2 | 100% (1 of 1) | 100% (2 of 2) | 100% (1 of 1) | 0% (0 of 1) | 50% (1 of 2) | -5.00 | -5.00 | -4.60 | -1.81 | 0 (n=1; low in first 15 min 1 of 1) |
-|  | BANKNIFTY | 2 | 50% (1 of 2) | 100% (2 of 2) | 50% (1 of 2) | 0% (0 of 1) | 50% (1 of 2) | -1.93 | -4.21 | -6.04 | -3.44 | 199 (n=1; low in first 15 min 0 of 1) |
-|  | IT | 2 | 50% (1 of 2) | 50% (1 of 2) | 100% (2 of 2) | 0% (0 of 1) | 50% (1 of 2) | -3.24 | -6.58 | -5.58 | -1.16 | not available |
-| not a Friday | NIFTY | 29 | 88% (15 of 17) | 76% (22 of 29) | 53% (9 of 17) | 20% (3 of 15) | 55% (16 of 29) | -1.72 | -5.03 | -3.61 | -1.68 | 171.5 (n=2; low in first 15 min 1 of 2) |
-|  | BANKNIFTY | 29 | 86% (25 of 29) | 69% (20 of 29) | 62% (18 of 29) | 32% (8 of 25) | 55% (16 of 29) | -2.19 | -6.37 | -3.90 | -1.73 | 171.5 (n=2; low in first 15 min 1 of 2) |
-|  | IT | 29 | 90% (26 of 29) | 83% (24 of 29) | 45% (13 of 29) | 15% (4 of 26) | 52% (15 of 29) | -2.23 | -6.15 | -5.07 | -2.83 | 226 (n=1; low in first 15 min 0 of 1) |
-| (b) India closed UP on the US-fall day | NIFTY | 5 | 75% (3 of 4) | 80% (4 of 5) | 50% (2 of 4) | 0% (0 of 3) | 20% (1 of 5) | -1.62 | -4.00 | -2.05 | -1.63 | 1 (n=1; low in first 15 min 1 of 1) |
-|  | BANKNIFTY | 5 | 80% (4 of 5) | 60% (3 of 5) | 60% (3 of 5) | 25% (1 of 4) | 60% (3 of 5) | -1.88 | -4.95 | -2.50 | -1.82 | 0 (n=1; low in first 15 min 1 of 1) |
-|  | IT | 5 | 80% (4 of 5) | 80% (4 of 5) | 0% (0 of 5) | 0% (0 of 4) | 40% (2 of 5) | -2.41 | -3.43 | -3.70 | -3.36 | 226 (n=1; low in first 15 min 0 of 1) |
-| India closed down/flat on the US-fall day | NIFTY | 26 | 93% (13 of 14) | 77% (20 of 26) | 57% (8 of 14) | 23% (3 of 13) | 62% (16 of 26) | -2.08 | -5.03 | -3.87 | -1.83 | 171.0 (n=2; low in first 15 min 1 of 2) |
-|  | BANKNIFTY | 26 | 85% (22 of 26) | 73% (19 of 26) | 62% (16 of 26) | 32% (7 of 22) | 54% (14 of 26) | -2.23 | -6.37 | -4.29 | -1.89 | 271.0 (n=2; low in first 15 min 0 of 2) |
-|  | IT | 26 | 88% (23 of 26) | 81% (21 of 26) | 58% (15 of 26) | 17% (4 of 23) | 54% (14 of 26) | -2.22 | -6.58 | -5.10 | -2.58 | not available |
-| (c) two US down days in a row | NIFTY | 13 | 100% (6 of 6) | 69% (9 of 13) | 83% (5 of 6) | 33% (2 of 6) | 62% (8 of 13) | -2.52 | -5.03 | -3.51 | -1.34 | 0 (n=1; low in first 15 min 1 of 1) |
-|  | BANKNIFTY | 13 | 92% (12 of 13) | 62% (8 of 13) | 77% (10 of 13) | 42% (5 of 12) | 69% (9 of 13) | -2.23 | -6.37 | -4.22 | -0.35 | 199 (n=1; low in first 15 min 0 of 1) |
-|  | IT | 13 | 92% (12 of 13) | 69% (9 of 13) | 69% (9 of 13) | 33% (4 of 12) | 62% (8 of 13) | -2.51 | -6.58 | -5.47 | -2.47 | not available |
-| the US day before was up | NIFTY | 18 | 83% (10 of 12) | 83% (15 of 18) | 42% (5 of 12) | 10% (1 of 10) | 50% (9 of 18) | -1.82 | -4.79 | -3.87 | -1.97 | 171.5 (n=2; low in first 15 min 1 of 2) |
-|  | BANKNIFTY | 18 | 78% (14 of 18) | 78% (14 of 18) | 50% (9 of 18) | 21% (3 of 14) | 44% (8 of 18) | -2.12 | -5.59 | -4.33 | -2.31 | 171.5 (n=2; low in first 15 min 1 of 2) |
-|  | IT | 18 | 83% (15 of 18) | 89% (16 of 18) | 33% (6 of 18) | 0% (0 of 15) | 44% (8 of 18) | -2.17 | -4.84 | -4.46 | -2.85 | 226 (n=1; low in first 15 min 0 of 1) |
-| (d) Asia <= -3% on India's next-session date | NIFTY | 18 | 90% (9 of 10) | 83% (15 of 18) | 60% (6 of 10) | 11% (1 of 9) | 61% (11 of 18) | -2.86 | -5.03 | -4.67 | -2.34 | 0.5 (n=2; low in first 15 min 2 of 2) |
-|  | BANKNIFTY | 18 | 94% (17 of 18) | 78% (14 of 18) | 72% (13 of 18) | 18% (3 of 17) | 61% (11 of 18) | -3.31 | -6.37 | -4.70 | -2.23 | 99.5 (n=2; low in first 15 min 1 of 2) |
-|  | IT | 18 | 94% (17 of 18) | 83% (15 of 18) | 44% (8 of 18) | 12% (2 of 17) | 56% (10 of 18) | -2.56 | -6.58 | -6.14 | -3.52 | 226 (n=1; low in first 15 min 0 of 1) |
-| (d2) Asia <= -3% on the US date | NIFTY | 13 | 71% (5 of 7) | 54% (7 of 13) | 86% (6 of 7) | 40% (2 of 5) | 62% (8 of 13) | -1.12 | -5.03 | -3.51 | -0.27 | 1 (n=1; low in first 15 min 1 of 1) |
-|  | BANKNIFTY | 13 | 85% (11 of 13) | 46% (6 of 13) | 85% (11 of 13) | 55% (6 of 11) | 69% (9 of 13) | -2.23 | -5.59 | -4.37 | +0.10 | 0 (n=1; low in first 15 min 1 of 1) |
-|  | IT | 13 | 85% (11 of 13) | 62% (8 of 13) | 77% (10 of 13) | 36% (4 of 11) | 77% (10 of 13) | -2.51 | -6.15 | -4.88 | -1.73 | 226 (n=1; low in first 15 min 0 of 1) |
-| events since 2011 (drops the 2008-10 cluster) | NIFTY | 18 | 89% (16 of 18) | 78% (14 of 18) | 56% (10 of 18) | 19% (3 of 16) | 50% (9 of 18) | -1.85 | -5.03 | -3.03 | -1.65 | 1 (n=3; low in first 15 min 2 of 3) |
-|  | BANKNIFTY | 18 | 83% (15 of 18) | 72% (13 of 18) | 61% (11 of 18) | 27% (4 of 15) | 44% (8 of 18) | -1.97 | -5.59 | -3.20 | -1.77 | 199 (n=3; low in first 15 min 1 of 3) |
-|  | IT | 18 | 89% (16 of 18) | 83% (15 of 18) | 44% (8 of 18) | 12% (2 of 16) | 28% (5 of 18) | -2.35 | -6.58 | -4.21 | -3.09 | 226 (n=1; low in first 15 min 0 of 1) |
-| 20 Nov look-alike: Friday + India up + two US down days | | 0 | | | | | | | | | | |
+| split | idx | n | opened lower | closed lower | closed > open | median close vs open (n) | opened lower -> closed + | prev close in 5 s | median gap | worst gap | median low | median close | minutes open->low (median, n) | close minus first-15-min low: median [range], >= 0.5% |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| all events | NIFTY | 31 | 89% (16 of 18) | 77% (24 of 31) | 56% (10 of 18) | +0.25 (18) | 19% (3 of 16) | 55% (17 of 31) | -1.85 | -5.03 | -3.80 | -1.68 | 1 (n=3; low in first 15 min 2 of 3) | +1.82 [-0.54, +2.62]; 67% (2 of 3) |
+|  | BANKNIFTY | 31 | 84% (26 of 31) | 71% (22 of 31) | 61% (19 of 31) | +0.47 (31) | 31% (8 of 26) | 55% (17 of 31) | -2.19 | -6.37 | -4.22 | -1.82 | 199 (n=3; low in first 15 min 1 of 3) | +1.20 [+0.05, +3.06]; 67% (2 of 3) |
+|  | IT | 31 | 87% (27 of 31) | 81% (25 of 31) | 48% (15 of 31) | -0.27 (31) | 15% (4 of 27) | 52% (16 of 31) | -2.23 | -6.58 | -5.07 | -2.65 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| (a) Friday US fall -> next India session (Monday) | NIFTY | 2 | 100% (1 of 1) | 100% (2 of 2) | 100% (1 of 1) | +1.85 (1) | 0% (0 of 1) | 50% (1 of 2) | -5.00 | -5.00 | -4.60 | -1.81 | 0 (n=1; low in first 15 min 1 of 1) | +1.82 [+1.82, +1.82]; 100% (1 of 1) |
+|  | BANKNIFTY | 2 | 50% (1 of 2) | 100% (2 of 2) | 50% (1 of 2) | -1.49 (2) | 0% (0 of 1) | 50% (1 of 2) | -1.93 | -4.21 | -6.04 | -3.44 | 199 (n=1; low in first 15 min 0 of 1) | +1.20 [+1.20, +1.20]; 100% (1 of 1) |
+|  | IT | 2 | 50% (1 of 2) | 50% (1 of 2) | 100% (2 of 2) | +2.21 (2) | 0% (0 of 1) | 50% (1 of 2) | -3.24 | -6.58 | -5.58 | -1.16 | not available | not available |
+| not a Friday | NIFTY | 29 | 88% (15 of 17) | 76% (22 of 29) | 53% (9 of 17) | +0.13 (17) | 20% (3 of 15) | 55% (16 of 29) | -1.72 | -5.03 | -3.61 | -1.68 | 171.5 (n=2; low in first 15 min 1 of 2) | +1.04 [-0.54, +2.62]; 50% (1 of 2) |
+|  | BANKNIFTY | 29 | 86% (25 of 29) | 69% (20 of 29) | 62% (18 of 29) | +0.47 (29) | 32% (8 of 25) | 55% (16 of 29) | -2.19 | -6.37 | -3.90 | -1.73 | 171.5 (n=2; low in first 15 min 1 of 2) | +1.55 [+0.05, +3.06]; 50% (1 of 2) |
+|  | IT | 29 | 90% (26 of 29) | 83% (24 of 29) | 45% (13 of 29) | -0.28 (29) | 15% (4 of 26) | 52% (15 of 29) | -2.23 | -6.15 | -5.07 | -2.83 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| (b) India closed UP on the US-fall day | NIFTY | 5 | 75% (3 of 4) | 80% (4 of 5) | 50% (2 of 4) | +0.64 (4) | 0% (0 of 3) | 20% (1 of 5) | -1.62 | -4.00 | -2.05 | -1.63 | 1 (n=1; low in first 15 min 1 of 1) | +2.62 [+2.62, +2.62]; 100% (1 of 1) |
+|  | BANKNIFTY | 5 | 80% (4 of 5) | 60% (3 of 5) | 60% (3 of 5) | +0.06 (5) | 25% (1 of 4) | 60% (3 of 5) | -1.88 | -4.95 | -2.50 | -1.82 | 0 (n=1; low in first 15 min 1 of 1) | +3.06 [+3.06, +3.06]; 100% (1 of 1) |
+|  | IT | 5 | 80% (4 of 5) | 80% (4 of 5) | 0% (0 of 5) | -0.88 (5) | 0% (0 of 4) | 40% (2 of 5) | -2.41 | -3.43 | -3.70 | -3.36 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| India closed down/flat on the US-fall day | NIFTY | 26 | 93% (13 of 14) | 77% (20 of 26) | 57% (8 of 14) | +0.25 (14) | 23% (3 of 13) | 62% (16 of 26) | -2.08 | -5.03 | -3.87 | -1.83 | 171.0 (n=2; low in first 15 min 1 of 2) | +0.64 [-0.54, +1.82]; 50% (1 of 2) |
+|  | BANKNIFTY | 26 | 85% (22 of 26) | 73% (19 of 26) | 62% (16 of 26) | +0.52 (26) | 32% (7 of 22) | 54% (14 of 26) | -2.23 | -6.37 | -4.29 | -1.89 | 271.0 (n=2; low in first 15 min 0 of 2) | +0.62 [+0.05, +1.20]; 50% (1 of 2) |
+|  | IT | 26 | 88% (23 of 26) | 81% (21 of 26) | 58% (15 of 26) | +0.18 (26) | 17% (4 of 23) | 54% (14 of 26) | -2.22 | -6.58 | -5.10 | -2.58 | not available | not available |
+| (c) two US down days in a row | NIFTY | 13 | 100% (6 of 6) | 69% (9 of 13) | 83% (5 of 6) | +1.52 (6) | 33% (2 of 6) | 62% (8 of 13) | -2.52 | -5.03 | -3.51 | -1.34 | 0 (n=1; low in first 15 min 1 of 1) | +1.82 [+1.82, +1.82]; 100% (1 of 1) |
+|  | BANKNIFTY | 13 | 92% (12 of 13) | 62% (8 of 13) | 77% (10 of 13) | +0.98 (13) | 42% (5 of 12) | 69% (9 of 13) | -2.23 | -6.37 | -4.22 | -0.35 | 199 (n=1; low in first 15 min 0 of 1) | +1.20 [+1.20, +1.20]; 100% (1 of 1) |
+|  | IT | 13 | 92% (12 of 13) | 69% (9 of 13) | 69% (9 of 13) | +1.08 (13) | 33% (4 of 12) | 62% (8 of 13) | -2.51 | -6.58 | -5.47 | -2.47 | not available | not available |
+| the US day before was up | NIFTY | 18 | 83% (10 of 12) | 83% (15 of 18) | 42% (5 of 12) | -0.10 (12) | 10% (1 of 10) | 50% (9 of 18) | -1.82 | -4.79 | -3.87 | -1.97 | 171.5 (n=2; low in first 15 min 1 of 2) | +1.04 [-0.54, +2.62]; 50% (1 of 2) |
+|  | BANKNIFTY | 18 | 78% (14 of 18) | 78% (14 of 18) | 50% (9 of 18) | -0.07 (18) | 21% (3 of 14) | 44% (8 of 18) | -2.12 | -5.59 | -4.33 | -2.31 | 171.5 (n=2; low in first 15 min 1 of 2) | +1.55 [+0.05, +3.06]; 50% (1 of 2) |
+|  | IT | 18 | 83% (15 of 18) | 89% (16 of 18) | 33% (6 of 18) | -0.78 (18) | 0% (0 of 15) | 44% (8 of 18) | -2.17 | -4.84 | -4.46 | -2.85 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| (d) Asia <= -3% on India's next-session date | NIFTY | 18 | 90% (9 of 10) | 83% (15 of 18) | 60% (6 of 10) | +0.99 (10) | 11% (1 of 9) | 61% (11 of 18) | -2.86 | -5.03 | -4.67 | -2.34 | 0.5 (n=2; low in first 15 min 2 of 2) | +2.22 [+1.82, +2.62]; 100% (2 of 2) |
+|  | BANKNIFTY | 18 | 94% (17 of 18) | 78% (14 of 18) | 72% (13 of 18) | +0.77 (18) | 18% (3 of 17) | 61% (11 of 18) | -3.31 | -6.37 | -4.70 | -2.23 | 99.5 (n=2; low in first 15 min 1 of 2) | +2.13 [+1.20, +3.06]; 100% (2 of 2) |
+|  | IT | 18 | 94% (17 of 18) | 83% (15 of 18) | 44% (8 of 18) | -0.48 (18) | 12% (2 of 17) | 56% (10 of 18) | -2.56 | -6.58 | -6.14 | -3.52 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| (d2) Asia <= -3% on the US date | NIFTY | 13 | 71% (5 of 7) | 54% (7 of 13) | 86% (6 of 7) | +2.01 (7) | 40% (2 of 5) | 62% (8 of 13) | -1.12 | -5.03 | -3.51 | -0.27 | 1 (n=1; low in first 15 min 1 of 1) | +2.62 [+2.62, +2.62]; 100% (1 of 1) |
+|  | BANKNIFTY | 13 | 85% (11 of 13) | 46% (6 of 13) | 85% (11 of 13) | +2.46 (13) | 55% (6 of 11) | 69% (9 of 13) | -2.23 | -5.59 | -4.37 | +0.10 | 0 (n=1; low in first 15 min 1 of 1) | +3.06 [+3.06, +3.06]; 100% (1 of 1) |
+|  | IT | 13 | 85% (11 of 13) | 62% (8 of 13) | 77% (10 of 13) | +1.08 (13) | 36% (4 of 11) | 77% (10 of 13) | -2.51 | -6.15 | -4.88 | -1.73 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| events since 2011 (drops the 2008-10 cluster) | NIFTY | 18 | 89% (16 of 18) | 78% (14 of 18) | 56% (10 of 18) | +0.25 (18) | 19% (3 of 16) | 50% (9 of 18) | -1.85 | -5.03 | -3.03 | -1.65 | 1 (n=3; low in first 15 min 2 of 3) | +1.82 [-0.54, +2.62]; 67% (2 of 3) |
+|  | BANKNIFTY | 18 | 83% (15 of 18) | 72% (13 of 18) | 61% (11 of 18) | +0.43 (18) | 27% (4 of 15) | 44% (8 of 18) | -1.97 | -5.59 | -3.20 | -1.77 | 199 (n=3; low in first 15 min 1 of 3) | +1.20 [+0.05, +3.06]; 67% (2 of 3) |
+|  | IT | 18 | 89% (16 of 18) | 83% (15 of 18) | 44% (8 of 18) | -0.28 (18) | 12% (2 of 16) | 28% (5 of 18) | -2.35 | -6.58 | -4.21 | -3.09 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| 20 Nov look-alike: Friday + India up + two US down days | | 0 | | | | | | | | | | | | |
 
 ## S&P 500 <= -2.5% - all splits
 
-| split | idx | n | opened lower | closed lower | closed > open | opened lower -> closed + | prev close in 5 s | median gap | worst gap | median low | median close | minutes open->low (median, n) |
+| split | idx | n | opened lower | closed lower | closed > open | median close vs open (n) | opened lower -> closed + | prev close in 5 s | median gap | worst gap | median low | median close | minutes open->low (median, n) | close minus first-15-min low: median [range], >= 0.5% |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| all events | NIFTY | 130 | 82% (60 of 73) | 73% (95 of 130) | 59% (43 of 73) | +0.18 (73) | 18% (11 of 60) | 63% (82 of 130) | -0.90 | -9.14 | -2.03 | -0.96 | 1 (n=9; low in first 15 min 6 of 9) | +0.34 [-0.82, +2.62]; 44% (4 of 9) |
+|  | BANKNIFTY | 130 | 86% (112 of 130) | 68% (88 of 130) | 52% (68 of 130) | +0.14 (130) | 31% (35 of 112) | 59% (77 of 130) | -1.17 | -9.87 | -2.89 | -1.06 | 15 (n=9; low in first 15 min 4 of 9) | +0.52 [-1.29, +3.06]; 56% (5 of 9) |
+|  | IT | 130 | 82% (107 of 130) | 77% (100 of 130) | 46% (60 of 130) | -0.21 (130) | 18% (19 of 107) | 56% (73 of 130) | -0.99 | -8.37 | -2.45 | -1.29 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| (a) Friday US fall -> next India session (Monday) | NIFTY | 24 | 94% (15 of 16) | 92% (22 of 24) | 56% (9 of 16) | +0.19 (16) | 7% (1 of 15) | 58% (14 of 24) | -1.41 | -9.14 | -2.85 | -1.69 | 1 (n=3; low in first 15 min 2 of 3) | +0.23 [+0.20, +1.82]; 33% (1 of 3) |
+|  | BANKNIFTY | 24 | 92% (22 of 24) | 67% (16 of 24) | 54% (13 of 24) | +0.35 (24) | 32% (7 of 22) | 62% (15 of 24) | -1.30 | -9.87 | -2.76 | -2.00 | 20 (n=3; low in first 15 min 1 of 3) | +0.52 [+0.40, +1.20]; 67% (2 of 3) |
+|  | IT | 24 | 88% (21 of 24) | 88% (21 of 24) | 38% (9 of 24) | -0.46 (24) | 5% (1 of 21) | 42% (10 of 24) | -1.46 | -8.37 | -3.36 | -1.89 | not available | not available |
+| not a Friday | NIFTY | 106 | 79% (45 of 57) | 69% (73 of 106) | 60% (34 of 57) | +0.18 (57) | 22% (10 of 45) | 64% (68 of 106) | -0.78 | -5.03 | -1.94 | -0.92 | 1.5 (n=6; low in first 15 min 4 of 6) | +0.46 [-0.82, +2.62]; 50% (3 of 6) |
+|  | BANKNIFTY | 106 | 85% (90 of 106) | 68% (72 of 106) | 52% (55 of 106) | +0.10 (106) | 31% (28 of 90) | 58% (62 of 106) | -1.10 | -6.37 | -2.91 | -0.97 | 8.5 (n=6; low in first 15 min 3 of 6) | +0.40 [-1.29, +3.06]; 50% (3 of 6) |
+|  | IT | 106 | 81% (86 of 106) | 75% (79 of 106) | 48% (51 of 106) | -0.12 (106) | 21% (18 of 86) | 59% (63 of 106) | -0.94 | -6.15 | -2.38 | -1.13 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| (b) India closed UP on the US-fall day | NIFTY | 32 | 79% (15 of 19) | 84% (27 of 32) | 58% (11 of 19) | +0.20 (19) | 0% (0 of 15) | 53% (17 of 32) | -1.52 | -9.14 | -2.09 | -1.27 | 10.0 (n=2; low in first 15 min 1 of 2) | +1.41 [+0.20, +2.62]; 50% (1 of 2) |
+|  | BANKNIFTY | 32 | 91% (29 of 32) | 75% (24 of 32) | 50% (16 of 32) | +0.02 (32) | 21% (6 of 29) | 50% (16 of 32) | -1.38 | -9.87 | -2.59 | -1.77 | 10.0 (n=2; low in first 15 min 1 of 2) | +1.79 [+0.52, +3.06]; 100% (2 of 2) |
+|  | IT | 32 | 84% (27 of 32) | 84% (27 of 32) | 41% (13 of 32) | -0.23 (32) | 7% (2 of 27) | 44% (14 of 32) | -1.10 | -8.37 | -2.73 | -1.62 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| India closed down/flat on the US-fall day | NIFTY | 98 | 83% (45 of 54) | 69% (68 of 98) | 59% (32 of 54) | +0.18 (54) | 24% (11 of 45) | 66% (65 of 98) | -0.89 | -5.03 | -1.97 | -0.92 | 1 (n=7; low in first 15 min 5 of 7) | +0.34 [-0.82, +1.82]; 43% (3 of 7) |
+|  | BANKNIFTY | 98 | 85% (83 of 98) | 65% (64 of 98) | 53% (52 of 98) | +0.18 (98) | 35% (29 of 83) | 62% (61 of 98) | -1.10 | -6.37 | -2.96 | -0.72 | 15 (n=7; low in first 15 min 3 of 7) | +0.40 [-1.29, +1.20]; 43% (3 of 7) |
+|  | IT | 98 | 82% (80 of 98) | 74% (73 of 98) | 48% (47 of 98) | -0.17 (98) | 21% (17 of 80) | 60% (59 of 98) | -0.99 | -6.58 | -2.41 | -1.25 | not available | not available |
+| (c) two US down days in a row | NIFTY | 72 | 82% (37 of 45) | 72% (52 of 72) | 60% (27 of 45) | +0.31 (45) | 24% (9 of 37) | 64% (46 of 72) | -0.88 | -5.03 | -1.81 | -0.92 | 9.5 (n=4; low in first 15 min 2 of 4) | +0.27 [-0.82, +1.82]; 25% (1 of 4) |
+|  | BANKNIFTY | 72 | 85% (61 of 72) | 65% (47 of 72) | 53% (38 of 72) | +0.14 (72) | 33% (20 of 61) | 62% (45 of 72) | -1.00 | -6.37 | -2.59 | -0.65 | 109.5 (n=4; low in first 15 min 1 of 4) | +0.56 [-1.29, +1.20]; 75% (3 of 4) |
+|  | IT | 72 | 81% (58 of 72) | 72% (52 of 72) | 47% (34 of 72) | -0.16 (72) | 22% (13 of 58) | 60% (43 of 72) | -0.93 | -6.58 | -2.33 | -1.09 | not available | not available |
+| the US day before was up | NIFTY | 58 | 82% (23 of 28) | 74% (43 of 58) | 57% (16 of 28) | +0.14 (28) | 9% (2 of 23) | 62% (36 of 58) | -1.10 | -9.14 | -2.42 | -1.02 | 1 (n=5; low in first 15 min 4 of 5) | +0.59 [-0.54, +2.62]; 60% (3 of 5) |
+|  | BANKNIFTY | 58 | 88% (51 of 58) | 71% (41 of 58) | 52% (30 of 58) | +0.14 (58) | 29% (15 of 51) | 55% (32 of 58) | -1.47 | -9.87 | -3.12 | -1.73 | 0 (n=5; low in first 15 min 3 of 5) | +0.40 [+0.05, +3.06]; 40% (2 of 5) |
+|  | IT | 58 | 84% (49 of 58) | 83% (48 of 58) | 45% (26 of 58) | -0.29 (58) | 12% (6 of 49) | 52% (30 of 58) | -1.29 | -8.37 | -3.11 | -1.52 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| (d) Asia <= -3% on India's next-session date | NIFTY | 61 | 90% (27 of 30) | 79% (48 of 61) | 47% (14 of 30) | -0.07 (30) | 7% (2 of 27) | 62% (38 of 61) | -1.57 | -9.14 | -3.16 | -1.60 | 1 (n=3; low in first 15 min 3 of 3) | +1.82 [+0.23, +2.62]; 67% (2 of 3) |
+|  | BANKNIFTY | 61 | 90% (55 of 61) | 72% (44 of 61) | 51% (31 of 61) | +0.06 (61) | 25% (14 of 55) | 57% (35 of 61) | -1.88 | -9.87 | -3.68 | -1.85 | 0 (n=3; low in first 15 min 2 of 3) | +1.20 [+0.40, +3.06]; 67% (2 of 3) |
+|  | IT | 61 | 92% (56 of 61) | 82% (50 of 61) | 38% (23 of 61) | -0.33 (61) | 14% (8 of 56) | 52% (32 of 61) | -1.71 | -8.37 | -4.54 | -2.41 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| (d2) Asia <= -3% on the US date | NIFTY | 37 | 60% (12 of 20) | 57% (21 of 37) | 45% (9 of 20) | -0.15 (20) | 33% (4 of 12) | 70% (26 of 37) | -0.57 | -5.03 | -1.91 | -0.27 | 1 (n=3; low in first 15 min 2 of 3) | +0.23 [-0.82, +2.62]; 33% (1 of 3) |
+|  | BANKNIFTY | 37 | 70% (26 of 37) | 59% (22 of 37) | 57% (21 of 37) | +0.39 (37) | 38% (10 of 26) | 68% (25 of 37) | -0.72 | -5.59 | -3.00 | -0.35 | 0 (n=3; low in first 15 min 2 of 3) | +0.40 [-1.29, +3.06]; 33% (1 of 3) |
+|  | IT | 37 | 68% (25 of 37) | 62% (23 of 37) | 59% (22 of 37) | +0.35 (37) | 32% (8 of 25) | 76% (28 of 37) | -0.93 | -6.15 | -2.35 | -0.91 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| events since 2011 (drops the 2008-10 cluster) | NIFTY | 73 | 82% (60 of 73) | 75% (55 of 73) | 59% (43 of 73) | +0.18 (73) | 18% (11 of 60) | 62% (45 of 73) | -0.90 | -9.14 | -1.50 | -0.89 | 1 (n=9; low in first 15 min 6 of 9) | +0.34 [-0.82, +2.62]; 44% (4 of 9) |
+|  | BANKNIFTY | 73 | 84% (61 of 73) | 66% (48 of 73) | 56% (41 of 73) | +0.29 (73) | 33% (20 of 61) | 59% (43 of 73) | -0.93 | -9.87 | -1.97 | -0.75 | 15 (n=9; low in first 15 min 4 of 9) | +0.52 [-1.29, +3.06]; 56% (5 of 9) |
+|  | IT | 73 | 84% (61 of 73) | 73% (53 of 73) | 49% (36 of 73) | -0.01 (73) | 20% (12 of 61) | 52% (38 of 73) | -1.00 | -8.37 | -2.04 | -1.17 | 226 (n=1; low in first 15 min 0 of 1) | -0.53 [-0.53, -0.53]; 0% (0 of 1) |
+| 20 Nov look-alike: Friday + India up + two US down days | NIFTY | 4 | 75% (3 of 4) | 75% (3 of 4) | 75% (3 of 4) | +0.29 (4) | 0% (0 of 3) | 75% (3 of 4) | -0.62 | -3.31 | -1.08 | -0.34 | 19 (n=1; low in first 15 min 0 of 1) | +0.20 [+0.20, +0.20]; 0% (0 of 1) |
+|  | BANKNIFTY | 4 | 75% (3 of 4) | 25% (1 of 4) | 75% (3 of 4) | +0.78 (4) | 67% (2 of 3) | 75% (3 of 4) | -0.62 | -4.74 | -0.94 | +0.18 | 20 (n=1; low in first 15 min 0 of 1) | +0.52 [+0.52, +0.52]; 100% (1 of 1) |
+|  | IT | 4 | 75% (3 of 4) | 75% (3 of 4) | 25% (1 of 4) | -0.46 (4) | 0% (0 of 3) | 50% (2 of 4) | -0.71 | -3.28 | -2.13 | -1.18 | not available | not available |
+
+## Does it bounce from the early low? (minute data, Nov 2023 -> 20 Nov 2026)
+Early low = the low of 09:15-09:29. Bounce = (close - early low) / previous close. 'Day's high after an early low' counts only days whose low of the day came in the first 15 minutes; minutes are after 09:15 (315+ = the last hour). NIFTY IT has minute data only from Oct 2026, so its row is 1 event at most. Small n everywhere - read as examples, not rates.
+
+| event set | split | idx | days | gap-down days | day's low in first 15 min | median early low vs prev close | bounce: median [range] | bounce >= 0.5% | gap-down days: bounce median [range], >= 0.5% | day's high after an early low: median min (n) | high in last hour | all 4 desk steps |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| all events | NIFTY | 130 | 82% (60 of 73) | 73% (95 of 130) | 59% (43 of 73) | 18% (11 of 60) | 63% (82 of 130) | -0.90 | -9.14 | -2.03 | -0.96 | 1 (n=9; low in first 15 min 6 of 9) |
-|  | BANKNIFTY | 130 | 86% (112 of 130) | 68% (88 of 130) | 52% (68 of 130) | 31% (35 of 112) | 59% (77 of 130) | -1.17 | -9.87 | -2.89 | -1.06 | 15 (n=9; low in first 15 min 4 of 9) |
-|  | IT | 130 | 82% (107 of 130) | 77% (100 of 130) | 46% (60 of 130) | 18% (19 of 107) | 56% (73 of 130) | -0.99 | -8.37 | -2.45 | -1.29 | 226 (n=1; low in first 15 min 0 of 1) |
-| (a) Friday US fall -> next India session (Monday) | NIFTY | 24 | 94% (15 of 16) | 92% (22 of 24) | 56% (9 of 16) | 7% (1 of 15) | 58% (14 of 24) | -1.41 | -9.14 | -2.85 | -1.69 | 1 (n=3; low in first 15 min 2 of 3) |
-|  | BANKNIFTY | 24 | 92% (22 of 24) | 67% (16 of 24) | 54% (13 of 24) | 32% (7 of 22) | 62% (15 of 24) | -1.30 | -9.87 | -2.76 | -2.00 | 20 (n=3; low in first 15 min 1 of 3) |
-|  | IT | 24 | 88% (21 of 24) | 88% (21 of 24) | 38% (9 of 24) | 5% (1 of 21) | 42% (10 of 24) | -1.46 | -8.37 | -3.36 | -1.89 | not available |
-| not a Friday | NIFTY | 106 | 79% (45 of 57) | 69% (73 of 106) | 60% (34 of 57) | 22% (10 of 45) | 64% (68 of 106) | -0.78 | -5.03 | -1.94 | -0.92 | 1.5 (n=6; low in first 15 min 4 of 6) |
-|  | BANKNIFTY | 106 | 85% (90 of 106) | 68% (72 of 106) | 52% (55 of 106) | 31% (28 of 90) | 58% (62 of 106) | -1.10 | -6.37 | -2.91 | -0.97 | 8.5 (n=6; low in first 15 min 3 of 6) |
-|  | IT | 106 | 81% (86 of 106) | 75% (79 of 106) | 48% (51 of 106) | 21% (18 of 86) | 59% (63 of 106) | -0.94 | -6.15 | -2.38 | -1.13 | 226 (n=1; low in first 15 min 0 of 1) |
-| (b) India closed UP on the US-fall day | NIFTY | 32 | 79% (15 of 19) | 84% (27 of 32) | 58% (11 of 19) | 0% (0 of 15) | 53% (17 of 32) | -1.52 | -9.14 | -2.09 | -1.27 | 10.0 (n=2; low in first 15 min 1 of 2) |
-|  | BANKNIFTY | 32 | 91% (29 of 32) | 75% (24 of 32) | 50% (16 of 32) | 21% (6 of 29) | 50% (16 of 32) | -1.38 | -9.87 | -2.59 | -1.77 | 10.0 (n=2; low in first 15 min 1 of 2) |
-|  | IT | 32 | 84% (27 of 32) | 84% (27 of 32) | 41% (13 of 32) | 7% (2 of 27) | 44% (14 of 32) | -1.10 | -8.37 | -2.73 | -1.62 | 226 (n=1; low in first 15 min 0 of 1) |
-| India closed down/flat on the US-fall day | NIFTY | 98 | 83% (45 of 54) | 69% (68 of 98) | 59% (32 of 54) | 24% (11 of 45) | 66% (65 of 98) | -0.89 | -5.03 | -1.97 | -0.92 | 1 (n=7; low in first 15 min 5 of 7) |
-|  | BANKNIFTY | 98 | 85% (83 of 98) | 65% (64 of 98) | 53% (52 of 98) | 35% (29 of 83) | 62% (61 of 98) | -1.10 | -6.37 | -2.96 | -0.72 | 15 (n=7; low in first 15 min 3 of 7) |
-|  | IT | 98 | 82% (80 of 98) | 74% (73 of 98) | 48% (47 of 98) | 21% (17 of 80) | 60% (59 of 98) | -0.99 | -6.58 | -2.41 | -1.25 | not available |
-| (c) two US down days in a row | NIFTY | 72 | 82% (37 of 45) | 72% (52 of 72) | 60% (27 of 45) | 24% (9 of 37) | 64% (46 of 72) | -0.88 | -5.03 | -1.81 | -0.92 | 9.5 (n=4; low in first 15 min 2 of 4) |
-|  | BANKNIFTY | 72 | 85% (61 of 72) | 65% (47 of 72) | 53% (38 of 72) | 33% (20 of 61) | 62% (45 of 72) | -1.00 | -6.37 | -2.59 | -0.65 | 109.5 (n=4; low in first 15 min 1 of 4) |
-|  | IT | 72 | 81% (58 of 72) | 72% (52 of 72) | 47% (34 of 72) | 22% (13 of 58) | 60% (43 of 72) | -0.93 | -6.58 | -2.33 | -1.09 | not available |
-| the US day before was up | NIFTY | 58 | 82% (23 of 28) | 74% (43 of 58) | 57% (16 of 28) | 9% (2 of 23) | 62% (36 of 58) | -1.10 | -9.14 | -2.42 | -1.02 | 1 (n=5; low in first 15 min 4 of 5) |
-|  | BANKNIFTY | 58 | 88% (51 of 58) | 71% (41 of 58) | 52% (30 of 58) | 29% (15 of 51) | 55% (32 of 58) | -1.47 | -9.87 | -3.12 | -1.73 | 0 (n=5; low in first 15 min 3 of 5) |
-|  | IT | 58 | 84% (49 of 58) | 83% (48 of 58) | 45% (26 of 58) | 12% (6 of 49) | 52% (30 of 58) | -1.29 | -8.37 | -3.11 | -1.52 | 226 (n=1; low in first 15 min 0 of 1) |
-| (d) Asia <= -3% on India's next-session date | NIFTY | 61 | 90% (27 of 30) | 79% (48 of 61) | 47% (14 of 30) | 7% (2 of 27) | 62% (38 of 61) | -1.57 | -9.14 | -3.16 | -1.60 | 1 (n=3; low in first 15 min 3 of 3) |
-|  | BANKNIFTY | 61 | 90% (55 of 61) | 72% (44 of 61) | 51% (31 of 61) | 25% (14 of 55) | 57% (35 of 61) | -1.88 | -9.87 | -3.68 | -1.85 | 0 (n=3; low in first 15 min 2 of 3) |
-|  | IT | 61 | 92% (56 of 61) | 82% (50 of 61) | 38% (23 of 61) | 14% (8 of 56) | 52% (32 of 61) | -1.71 | -8.37 | -4.54 | -2.41 | 226 (n=1; low in first 15 min 0 of 1) |
-| (d2) Asia <= -3% on the US date | NIFTY | 37 | 60% (12 of 20) | 57% (21 of 37) | 45% (9 of 20) | 33% (4 of 12) | 70% (26 of 37) | -0.57 | -5.03 | -1.91 | -0.27 | 1 (n=3; low in first 15 min 2 of 3) |
-|  | BANKNIFTY | 37 | 70% (26 of 37) | 59% (22 of 37) | 57% (21 of 37) | 38% (10 of 26) | 68% (25 of 37) | -0.72 | -5.59 | -3.00 | -0.35 | 0 (n=3; low in first 15 min 2 of 3) |
-|  | IT | 37 | 68% (25 of 37) | 62% (23 of 37) | 59% (22 of 37) | 32% (8 of 25) | 76% (28 of 37) | -0.93 | -6.15 | -2.35 | -0.91 | 226 (n=1; low in first 15 min 0 of 1) |
-| events since 2011 (drops the 2008-10 cluster) | NIFTY | 73 | 82% (60 of 73) | 75% (55 of 73) | 59% (43 of 73) | 18% (11 of 60) | 62% (45 of 73) | -0.90 | -9.14 | -1.50 | -0.89 | 1 (n=9; low in first 15 min 6 of 9) |
-|  | BANKNIFTY | 73 | 84% (61 of 73) | 66% (48 of 73) | 56% (41 of 73) | 33% (20 of 61) | 59% (43 of 73) | -0.93 | -9.87 | -1.97 | -0.75 | 15 (n=9; low in first 15 min 4 of 9) |
-|  | IT | 73 | 84% (61 of 73) | 73% (53 of 73) | 49% (36 of 73) | 20% (12 of 61) | 52% (38 of 73) | -1.00 | -8.37 | -2.04 | -1.17 | 226 (n=1; low in first 15 min 0 of 1) |
-| 20 Nov look-alike: Friday + India up + two US down days | NIFTY | 4 | 75% (3 of 4) | 75% (3 of 4) | 75% (3 of 4) | 0% (0 of 3) | 75% (3 of 4) | -0.62 | -3.31 | -1.08 | -0.34 | 19 (n=1; low in first 15 min 0 of 1) |
-|  | BANKNIFTY | 4 | 75% (3 of 4) | 25% (1 of 4) | 75% (3 of 4) | 67% (2 of 3) | 75% (3 of 4) | -0.62 | -4.74 | -0.94 | +0.18 | 20 (n=1; low in first 15 min 0 of 1) |
-|  | IT | 4 | 75% (3 of 4) | 75% (3 of 4) | 25% (1 of 4) | 0% (0 of 3) | 50% (2 of 4) | -0.71 | -3.28 | -2.13 | -1.18 | not available |
+| Nasdaq Composite <= -3% | all events | NIFTY | 13 | 9 | 69% (9 of 13) | -0.65% | +0.45 [-0.82, +2.62] | 46% (6 of 13) | +0.45 [-0.54, +2.36], 44% (4 of 9) | 345 (9) | 56% (5 of 9) | 15% (2 of 13) |
+| Nasdaq Composite <= -3% | all events | BANKNIFTY | 13 | 7 | 46% (6 of 13) | -0.75% | +0.52 [-1.29, +3.06] | 54% (7 of 13) | +0.40 [+0.19, +1.20], 43% (3 of 7) | 238.0 (6) | 33% (2 of 6) | 8% (1 of 13) |
+| Nasdaq Composite <= -3% | (a) Friday US fall -> next India session (Monday) | NIFTY | 3 | 3 | 67% (2 of 3) | -1.27% | +0.23 [+0.20, +1.82] | 33% (1 of 3) | +0.23 [+0.20, +1.82], 33% (1 of 3) | 293.0 (2) | 50% (1 of 2) | 33% (1 of 3) |
+| Nasdaq Composite <= -3% | (a) Friday US fall -> next India session (Monday) | BANKNIFTY | 3 | 3 | 33% (1 of 3) | -1.20% | +0.52 [+0.40, +1.20] | 67% (2 of 3) | +0.52 [+0.40, +1.20], 67% (2 of 3) | 19 (1) | 0% (0 of 1) | 0% (0 of 3) |
+| Nasdaq Composite <= -3% | (b) India closed UP on the US-fall day | NIFTY | 3 | 2 | 67% (2 of 3) | -0.59% | +2.36 [+0.20, +2.62] | 67% (2 of 3) | +1.28 [+0.20, +2.36], 50% (1 of 2) | 359.5 (2) | 100% (2 of 2) | 0% (0 of 3) |
+| Nasdaq Composite <= -3% | (b) India closed UP on the US-fall day | BANKNIFTY | 3 | 1 | 67% (2 of 3) | -0.49% | +2.27 [+0.52, +3.06] | 100% (3 of 3) | +0.52 [+0.52, +0.52], 100% (1 of 1) | 307.0 (2) | 50% (1 of 2) | 0% (0 of 3) |
+| Nasdaq Composite <= -3% | (c) two US down days in a row | NIFTY | 8 | 6 | 62% (5 of 8) | -0.71% | +0.33 [-0.82, +2.36] | 38% (3 of 8) | +0.57 [+0.20, +2.36], 50% (3 of 6) | 295 (5) | 40% (2 of 5) | 25% (2 of 8) |
+| Nasdaq Composite <= -3% | (c) two US down days in a row | BANKNIFTY | 8 | 5 | 50% (4 of 8) | -0.84% | +0.56 [-1.29, +2.27] | 62% (5 of 8) | +0.52 [+0.36, +1.20], 60% (3 of 5) | 192.0 (4) | 25% (1 of 4) | 12% (1 of 8) |
+| Nasdaq Composite <= -4.5% | all events | NIFTY | 3 | 2 | 67% (2 of 3) | -0.95% | +1.82 [-0.54, +2.62] | 67% (2 of 3) | +0.64 [-0.54, +1.82], 50% (1 of 2) | 372.0 (2) | 100% (2 of 2) | 33% (1 of 3) |
+| Nasdaq Composite <= -4.5% | all events | BANKNIFTY | 3 | 1 | 33% (1 of 3) | -0.78% | +1.20 [+0.05, +3.06] | 67% (2 of 3) | +1.20 [+1.20, +1.20], 100% (1 of 1) | 374 (1) | 100% (1 of 1) | 0% (0 of 3) |
+| Nasdaq Composite <= -4.5% | (a) Friday US fall -> next India session (Monday) | NIFTY | 1 | 1 | 100% (1 of 1) | -5.07% | +1.82 [+1.82, +1.82] | 100% (1 of 1) | +1.82 [+1.82, +1.82], 100% (1 of 1) | 370 (1) | 100% (1 of 1) | 100% (1 of 1) |
+| Nasdaq Composite <= -4.5% | (a) Friday US fall -> next India session (Monday) | BANKNIFTY | 1 | 1 | 0% (0 of 1) | -4.39% | +1.20 [+1.20, +1.20] | 100% (1 of 1) | +1.20 [+1.20, +1.20], 100% (1 of 1) | n/a (0) | n/a | 0% (0 of 1) |
+| Nasdaq Composite <= -4.5% | (b) India closed UP on the US-fall day | NIFTY | 1 | 0 | 100% (1 of 1) | -0.61% | +2.62 [+2.62, +2.62] | 100% (1 of 1) | n/a | 374 (1) | 100% (1 of 1) | 0% (0 of 1) |
+| Nasdaq Composite <= -4.5% | (b) India closed UP on the US-fall day | BANKNIFTY | 1 | 0 | 100% (1 of 1) | -0.78% | +3.06 [+3.06, +3.06] | 100% (1 of 1) | n/a | 374 (1) | 100% (1 of 1) | 0% (0 of 1) |
+| Nasdaq Composite <= -4.5% | (c) two US down days in a row | NIFTY | 1 | 1 | 100% (1 of 1) | -5.07% | +1.82 [+1.82, +1.82] | 100% (1 of 1) | +1.82 [+1.82, +1.82], 100% (1 of 1) | 370 (1) | 100% (1 of 1) | 100% (1 of 1) |
+| Nasdaq Composite <= -4.5% | (c) two US down days in a row | BANKNIFTY | 1 | 1 | 0% (0 of 1) | -4.39% | +1.20 [+1.20, +1.20] | 100% (1 of 1) | +1.20 [+1.20, +1.20], 100% (1 of 1) | n/a (0) | n/a | 0% (0 of 1) |
+| S&P 500 <= -2.5% | all events | NIFTY | 9 | 6 | 67% (6 of 9) | -0.65% | +0.34 [-0.82, +2.62] | 44% (4 of 9) | +0.29 [-0.54, +1.82], 33% (2 of 6) | 293.0 (6) | 50% (3 of 6) | 11% (1 of 9) |
+| S&P 500 <= -2.5% | all events | BANKNIFTY | 9 | 5 | 44% (4 of 9) | -0.78% | +0.52 [-1.29, +3.06] | 56% (5 of 9) | +0.52 [+0.20, +1.20], 60% (3 of 5) | 190.0 (4) | 25% (1 of 4) | 11% (1 of 9) |
+| S&P 500 <= -2.5% | (a) Friday US fall -> next India session (Monday) | NIFTY | 3 | 3 | 67% (2 of 3) | -1.27% | +0.23 [+0.20, +1.82] | 33% (1 of 3) | +0.23 [+0.20, +1.82], 33% (1 of 3) | 293.0 (2) | 50% (1 of 2) | 33% (1 of 3) |
+| S&P 500 <= -2.5% | (a) Friday US fall -> next India session (Monday) | BANKNIFTY | 3 | 3 | 33% (1 of 3) | -1.20% | +0.52 [+0.40, +1.20] | 67% (2 of 3) | +0.52 [+0.40, +1.20], 67% (2 of 3) | 19 (1) | 0% (0 of 1) | 0% (0 of 3) |
+| S&P 500 <= -2.5% | (b) India closed UP on the US-fall day | NIFTY | 2 | 1 | 50% (1 of 2) | -0.52% | +1.41 [+0.20, +2.62] | 50% (1 of 2) | +0.20 [+0.20, +0.20], 0% (0 of 1) | 374 (1) | 100% (1 of 1) | 0% (0 of 2) |
+| S&P 500 <= -2.5% | (b) India closed UP on the US-fall day | BANKNIFTY | 2 | 1 | 50% (1 of 2) | -0.64% | +1.79 [+0.52, +3.06] | 100% (2 of 2) | +0.52 [+0.52, +0.52], 100% (1 of 1) | 374 (1) | 100% (1 of 1) | 0% (0 of 2) |
+| S&P 500 <= -2.5% | (c) two US down days in a row | NIFTY | 4 | 3 | 50% (2 of 4) | -0.90% | +0.27 [-0.82, +1.82] | 25% (1 of 4) | +0.34 [+0.20, +1.82], 33% (1 of 3) | 257.0 (2) | 50% (1 of 2) | 25% (1 of 4) |
+| S&P 500 <= -2.5% | (c) two US down days in a row | BANKNIFTY | 4 | 3 | 25% (1 of 4) | -1.08% | +0.56 [-1.29, +1.20] | 75% (3 of 4) | +0.60 [+0.52, +1.20], 100% (3 of 3) | 144 (1) | 0% (0 of 1) | 25% (1 of 4) |
+
+Every minute-data event (Nasdaq <= -3% set; % vs previous close; minutes after 09:15):
+
+| India date | idx | gap | early low (09:15-09:29) | day's low | min to low | min to high | close | close vs open | bounce |
+|---|---|---|---|---|---|---|---|---|---|
+| 2024-07-25 | NIFTY | -0.75 | -0.83 | -0.83 | 6 | 295 | -0.03 | +0.72 | +0.80 |
+| 2024-07-25 | BANKNIFTY | -1.08 | -1.20 | -1.48 | 70 | 0 | -0.83 | +0.25 | +0.36 |
+| 2024-08-06 | NIFTY | +0.56 | +0.56 | -0.40 | 333 | 7 | -0.26 | -0.82 | -0.82 |
+| 2024-08-06 | BANKNIFTY | +0.69 | +0.61 | -0.86 | 304 | 6 | -0.69 | -1.37 | -1.29 |
+| 2024-09-04 | NIFTY | -0.75 | -0.78 | -0.78 | 0 | 374 | -0.32 | +0.43 | +0.45 |
+| 2024-09-04 | BANKNIFTY | -0.63 | -0.75 | -0.83 | 30 | 0 | -0.56 | +0.07 | +0.19 |
+| 2024-12-19 | NIFTY | -1.33 | -1.36 | -1.36 | 0 | 144 | -1.02 | +0.31 | +0.34 |
+| 2024-12-19 | BANKNIFTY | -1.36 | -1.68 | -1.68 | 2 | 144 | -1.08 | +0.29 | +0.60 |
+| 2025-01-28 | NIFTY | +0.58 | +0.24 | +0.12 | 63 | 324 | +0.56 | -0.01 | +0.32 |
+| 2025-01-28 | BANKNIFTY | +1.20 | +0.80 | +0.80 | 0 | 324 | +1.67 | +0.46 | +0.87 |
+| 2025-03-11 | NIFTY | -0.51 | -0.65 | -0.65 | 2 | 374 | +0.17 | +0.68 | +0.82 |
+| 2025-03-11 | BANKNIFTY | -0.71 | -0.95 | -1.07 | 15 | 297 | -0.75 | -0.04 | +0.20 |
+| 2025-04-04 | NIFTY | -0.26 | -0.95 | -1.69 | 342 | 0 | -1.49 | -1.23 | -0.54 |
+| 2025-04-04 | BANKNIFTY | +0.22 | -0.24 | -0.46 | 343 | 27 | -0.18 | -0.40 | +0.05 |
+| 2025-04-07 | NIFTY | -5.00 | -5.07 | -5.07 | 0 | 370 | -3.24 | +1.85 | +1.82 |
+| 2025-04-07 | BANKNIFTY | -4.21 | -4.39 | -4.55 | 199 | 1 | -3.19 | +1.06 | +1.20 |
+| 2025-04-11 | NIFTY | +1.32 | +1.32 | +1.32 | 0 | 183 | +1.92 | +0.59 | +0.59 |
+| 2025-04-11 | BANKNIFTY | +0.78 | +0.78 | +0.78 | 0 | 236 | +1.52 | +0.73 | +0.73 |
+| 2025-04-17 | NIFTY | -0.15 | -0.59 | -0.59 | 14 | 345 | +1.77 | +1.92 | +2.36 |
+| 2025-04-17 | BANKNIFTY | +0.07 | -0.06 | -0.06 | 0 | 240 | +2.21 | +2.14 | +2.27 |
+| 2025-10-13 | NIFTY | -0.43 | -0.43 | -0.53 | 19 | 314 | -0.23 | +0.20 | +0.20 |
+| 2025-10-13 | BANKNIFTY | -0.48 | -0.49 | -0.50 | 20 | 312 | +0.03 | +0.51 | +0.52 |
+| 2026-06-08 | NIFTY | -1.22 | -1.27 | -1.27 | 1 | 216 | -1.04 | +0.18 | +0.23 |
+| 2026-06-08 | BANKNIFTY | -1.18 | -1.20 | -1.20 | 0 | 19 | -0.79 | +0.39 | +0.40 |
+| 2026-11-06 | NIFTY | +0.01 | -0.61 | -0.61 | 1 | 374 | +2.01 | +2.01 | +2.62 |
+| 2026-11-06 | BANKNIFTY | +0.07 | -0.78 | -0.78 | 0 | 374 | +2.27 | +2.20 | +3.06 |
+| 2026-11-06 | IT | +1.32 | +0.95 | -0.34 | 226 | 5 | +0.43 | -0.88 | -0.53 |
 
 ## Which sectors held up best on the next session
 Median next-session close vs previous close, per sector index (n differs: sector histories start 2010-2011 on Yahoo; PVT BANK only from Nov 2021).
