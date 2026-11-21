@@ -28,6 +28,19 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 20:20 IST (real time) - THE TRADER: "Many unnecessary news items come into the system (a festival celebration...). Only
+market-related news should be visible on the GIR page." BUILD before the Sun 16:00 freeze:
+1. RELEVANCE GATE on every news list (News page F4, share page, phone): an item is shown only if it (a) names an F&O share / its company,
+   an index or a sector, or (b) is macro / policy / rates / FX / commodities / world markets / regulator / court / government economic
+   action, or (c) the desk made a card from it. Everything else goes to a collapsed "Other news (hidden: n)" line, never in the main list.
+2. Code first ($0): entity link + the F&O vocabulary + a market word list + a NOT-market list (festivals, celebrations, sport, film,
+   crime, weather unless it hits crops / power / ports, lifestyle, horoscope). AI only for the items code cannot decide, inside the READ
+   budget, cheapest model, one word answer MARKET / NOT. Log every hidden item with its reason; the 16:00 scorecard counts hidden items so
+   nothing important is lost silently (an official source - RBI, SEBI, PIB economic, exchanges - is never hidden).
+3. Show the count on the page: "Market news 46 · hidden 212".
+COVERAGE ANSWER for the trader (from NEWS_COVERAGE_AUDIT 13:58 + the fixes since): say plainly what is read and what is not (paid wires,
+OPEC / CME / NCLT blocked, CNBC Awaaz / Sansad TV and broker PDFs declined, X cancelled). Update the audit table after the reboot.
+
 ## 21 Nov 20:15 IST (real time) - THE TRADER: search must AUTOFILL and a click must open ALL the details of the share. "Very important."
 The design has it (SHELL.md R04: "/" box, suggestions after 2 letters, Enter / click opens the Share page F7), but no proof file shows it
 tested on the LIVE new desk. PROVE + FIX before the Sun 16:00 freeze (add to the D4 sweep, real typing, 1366 / 1600 / 390 phone):
