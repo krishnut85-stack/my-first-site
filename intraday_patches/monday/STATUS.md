@@ -774,3 +774,18 @@ Last update: 20:55 IST
   (4) the silence alarm from the audit JSON + stop polling dead feeds;
   (5) NOT BUILT, this week after Monday: the India data calendar (GDP 30 Nov, CPI, IIP, auto sales), Fed / ECB / BoJ, global peers' results, GST Council, EIA / OPEC, CNBC Awaaz + Sansad TV, broker research PDFs.
   STILL WAITING FOR THE DESK: the depth recorder's CPU guard (recommended "own" + the feed-lag guard; as approved it stops itself on Monday) and wiring M1's 07:30 gap forecast into the morning briefs before the Sun 16:00 freeze.
+- 14:38 - RBI LIQUIDITY STUDY DONE (desk 11:45; code only, $0; all RBI releases Jan 2020 -> 20 Nov 2026 fetched, slow polite crawl; onset_results_local/rbi_liquidity_study.md + .json; lesson v2/data/rbi_liquidity_lesson.json NOT PROVEN).
+  ANSWER: NO RELIABLE LIFT. 386 injections on 324 days (400 absorptions as contrast; 325 injections in the minute-data period from Nov 2023). "Normally" = the same clock time on non-injection days.
+  | | up after injection | normally | median after injection |
+  |---|---|---|---|
+  | BANKNIFTY +30 min | 47% | 50% | -0.01% |
+  | BANKNIFTY +60 min | 47% | - | -0.01% |
+  | BANKNIFTY to the close | 52% | 50% | +0.02% |
+  | BANKNIFTY to the next close | 49% | - | -0.02% |
+  | PSU BANK to the close | 46% | 45% | -0.06% |
+  | PVT BANK to the close | 51% | 49% | +0.01% |
+  - Size does not matter (<25k / 25-75k / >75k cr: 50% / 53% / 52% up); structural ops (OMO buy, FX swap, LTRO / TLTRO, CRR cut) 47% up (stress spells); tight bids >= 2x 45% up vs 53%; absorptions look the same. The only small exception: PSU BANK at +30 min 55% up vs 46%.
+  - NOT PROVEN pattern: "SWITCH DAYS" (the first injection after 3+ absorb-only days, as on 20 Nov): BANKNIFTY auction close -> day close 81% up, median +0.47% (n 16; without 20 Nov 79%, n 14); holds with 2+ / 5+ day rules; NIFTY the same (81%), so a whole-market tilt, not banks; p = 0.057 before allowing for ~30 splits tried.
+  - 20 Nov CONFIRMED from RBI's releases: 1st VRR Rs 50,000 cr, window 09:30-10:00, result 10:20, bids Rs 1,12,555 cr (2.25x), allotted 50,003; 2nd VRR Rs 25,000 cr, notice 12:35, window 12:45-13:15, result 13:40, bids 48,040 (1.92x), allotted 25,007. BANKNIFTY +0.43% / +0.44% / +2.45% after the first (+30 / +60 / close), +0.14% / +0.22% / +0.36% after the second; its day (+2.49%, FII +10,308 cr) beat 98% of injection days since 2020: an unusual day, not a typical one.
+  - DATA GAPS: release TIMES known only for 20 Nov (RBI's pages show the date; minute numbers start at the auction window close); no minute data before Nov 2023; PSU / PVT BANK minutes before Oct 2026 are a member-weighted stand-in (correlation 0.998 / 0.986); FII history only 99 days. Raw pages 542 MB under girdata/ext/rbi_liquidity_study/raw/.
+  - FOR THE DESK (rule 2, "proof from history"): LINK_BOOK row 27 ("RBI injection -> CE AUBANK, PNB, AXISBANK, BANKBARODA next day, HIGH") is NOT supported by 386 cases. Message 642 (13:34) told the trader "CE watch AUBANK, PNB, AXISBANK, BANKBARODA after the open". Decide: (a) send a short correction to Trade now ("History: banks usually do not move after RBI cash (386 cases) - the bank CE watch is not proven"); (b) re-grade LINK_BOOK row 27. Being done now by the fresh builder (no Telegram send): the lesson wired into the head + seat 9; the RBI LIQUIDITY line's meaning changed to what history shows ("banks usually do not move after RBI cash, 386 cases"; the switch-day line only on a switch day, not proven).
