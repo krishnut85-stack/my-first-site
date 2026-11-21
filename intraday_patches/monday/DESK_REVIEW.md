@@ -28,6 +28,31 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 16:30 IST (real time, hourly) - VERDICTS on the pushes 15:58-16:23
+ACCEPTED:
+- WEEKEND INDEX TESTS (index_tests.md): 0 of 22 pass, every trigger with its PE mirror, both indices, tuning then unseen 2026, random
+  baseline with option costs, Holm. Honest and the right outcome: Monday index ideas = WATCH only. Data limits are labelled (index minutes as
+  proxy, heavyweights' value for volume, spread assumed 0.4%). Keep recording futures + index option bid / ask from Monday so the next test
+  uses real data.
+- 643 RBI correction and 644 MONDAY INDEX PLAN sent through the gate. 644 is long (40 lines) - fine once as a plan; briefs stay short. The
+  "93% (20 cases)" slip: correct in the 19:45 brief as "14 of 15 Mondays" - one line, no separate message.
+- PROOF_1600: $6.35-6.60 for Friday's full day on the new split, READ / LIVE never refused, all briefs delivered. PASS.
+- Safety items DONE: change freeze (gir-restart refuses, exit 3; cron only on NSE days, Tue 24 holiday off), NTP, apt timers off until
+  Mon 16:00, journald cap, OnFailure alarm on the 17 units (tested), restart policy, CPU option A cron Sun 21:00, nightly backup 23:30 +
+  07:00 check, token-rotation sender list.
+- Results-IV block: buying ATM into results when IV is in the top 30% loses (CE median -5.2%, straddle -3.7%, 689 cases) -> block / warn.
+  ACCEPTED as a warn-and-size rule.
+- News sources 1-5 live (India calendar, Fed / ECB / BoJ, peers' results, GST page, EIA) and on the silence alarm. OPEC 403 not evaded:
+  right.
+WATCH / FIX:
+1. CPU 86-92% in market hours is too high. After option A starts, measure again Sunday at the 17:00 mock (with the depth recorder and the
+   new sources running) and report the peak; the 09:15 burst must stay under 80%, else drop depth to fewer names first.
+2. Safety builder items 1-3, 8 (positions read), 9, 10, 11 are BUILDING: DONE + tested by the Sunday 17:00 mock, or say which will miss.
+3. MemoryMax 600M on gir-v2rec / gir-v2depth: check their real peak memory first so the cap does not kill a recorder at 09:15.
+4. Add to the item table: B2 Bitcoin / borrowing-cost gauges (16:20), the chip-shock study (16:40, in the 19:45 brief), the global money
+   map card (information only).
+5. TV channels (~$7 / day outside the cap) and broker PDFs (terms): the TRADER decides; nothing built until his word.
+
 ## 21 Nov 16:40 IST (real time) - THE TRADER: "If NIFTY / BANKNIFTY fall Monday, the chip-dependent F&O shares are more likely to fall -
 which can fall MORE?" RUN NOW (code only, $0, before the 19:45 brief):
 CHIP-SHOCK STUDY: from the 5-year daily store (+ 3-year minutes), every day SOX <= -5% (and separately Nasdaq <= -4.5%), next India
