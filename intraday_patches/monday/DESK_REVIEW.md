@@ -28,6 +28,15 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 19:10 IST (real time) - THE TRADER: "On 27 Nov, when the banks return the money, there could be issues in Bank Nifty."
+ADD (code, $0): every RBI repo / reverse-repo REVERSAL DATE goes on the event calendar (seat 34) with the amount due back
+("Fri 27 Nov: Rs 50,000 cr 4-day VRR reverses"), and the brief the evening before + the 07:15 brief carry one line:
+"RBI loans due back today: Rs X cr. New RBI repo announced: yes Rs Y cr / not yet." Also show daily from RBI's Money Market
+Operations release: the overnight call rate (WACR) vs the repo rate 5.50% and the system liquidity (surplus / deficit).
+RED to Trade now only if: the call rate goes above the MSF rate (top of the corridor) or RBI announces an unscheduled operation.
+Study (code, $0): Bank Nifty / PSU bank / NBFC moves on reversal days with NO roll-over vs with a roll-over vs normal days, from the
+386-operation file. NOT PROVEN until it passes; information only.
+
 ## 21 Nov 18:35 IST (real time) - KILL TEST ACCEPTED + REBOOT MOVED TO TONIGHT (trader: "if all the jobs are finished, I want to reboot")
 - Kill test: accepted. Three real faults found and fixed (alarm could never fire: 5 restarts in 10 s -> 15 min; alarm on every crash ->
   only if still down after 45 s; endless alarm loop -> one alarm + one retry an hour). The 18:17 P1 was the test - tell the trader once.
