@@ -1,0 +1,254 @@
+{
+ "run": "HB_AFTER_20",
+ "layer": "stub",
+ "days": [
+  "2026-11-20"
+ ],
+ "made_ist": "2026-11-22 01:05:30",
+ "edge": {
+  "2026-11-20": {
+   "line": "EDGE 2026-11-20 2026-11-20: 43 names a day (34 knowledge-driven) \u00b7 TOP-5 by the analyst's own rank: >=1% 0/5 0% vs 22% lift 0.0, >=2% 0/5 0% vs 8% lift 0.0 \u00b7 all names >=1% 11/43 26% vs 26% lift 0.96, >=2% 3/43 7% vs 10% lift 0.71 \u00b7 knowledge >=2% 3/34 9% vs 8% lift 1.07 \u00b7 all names >=2% to the next close not known yet (2026-11-23 has not closed / no data) \u00b7 old system >=2% 25/288 9% vs 8% lift 1.1 (288 names)",
+   "names_per_day": {
+    "analyst ideas": 10,
+    "news row (C3, silent)": 22,
+    "prediction loop (lists, fired movers)": 18,
+    "ALL": 43,
+    "OLD system": 288,
+    "INDEX": 0
+   },
+   "top5_headline": {
+    "by": "AI priority",
+    "names": [
+     "RELIANCE CE 19:47",
+     "ALKEM PE 07:17",
+     "APOLLOHOSP CE 10:21",
+     "HINDZINC PE 11:24",
+     "HEROMOTOCO PE 19:47"
+    ],
+    "n": 5,
+    "hit1_close": 0,
+    "hit2_close": 0,
+    "proof": "NOT PROVEN (n = 5)",
+    "1_close": {
+     "n": 5,
+     "hits": 0,
+     "hit_rate": 0.0,
+     "base_rate": 0.217,
+     "lift": 0.0
+    },
+    "2_close": {
+     "n": 5,
+     "hits": 0,
+     "hit_rate": 0.0,
+     "base_rate": 0.085,
+     "lift": 0.0
+    },
+    "1_next": "not known (no next close yet)",
+    "2_next": "not known (no next close yet)",
+    "whose": "the analyst's own rank"
+   },
+   "by_side": {
+    "CE": {
+     "names": 27,
+     "analyst_names": 5,
+     "top5": {
+      "by": "AI priority",
+      "names": [
+       "RELIANCE CE 19:47",
+       "APOLLOHOSP CE 10:21",
+       "MARUTI CE 07:17",
+       "HDFCBANK CE 11:24",
+       "POLYCAB CE 19:47"
+      ],
+      "n": 5,
+      "hit1_close": 2,
+      "hit2_close": 1,
+      "proof": "NOT PROVEN (n = 5)",
+      "1_close": {
+       "n": 5,
+       "hits": 2,
+       "hit_rate": 0.4,
+       "base_rate": 0.348,
+       "lift": 1.15
+      },
+      "2_close": {
+       "n": 5,
+       "hits": 1,
+       "hit_rate": 0.2,
+       "base_rate": 0.14,
+       "lift": 1.42
+      },
+      "1_next": "not known (no next close yet)",
+      "2_next": "not known (no next close yet)"
+     }
+    },
+    "PE": {
+     "names": 16,
+     "analyst_names": 5,
+     "top5": {
+      "by": "AI priority",
+      "names": [
+       "ALKEM PE 07:17",
+       "HINDZINC PE 11:24",
+       "HEROMOTOCO PE 19:47",
+       "INDIGO PE 19:47",
+       "VEDL PE 09:00"
+      ],
+      "n": 5,
+      "hit1_close": 1,
+      "hit2_close": 1,
+      "proof": "NOT PROVEN (n = 5)",
+      "1_close": {
+       "n": 5,
+       "hits": 1,
+       "hit_rate": 0.2,
+       "base_rate": 0.127,
+       "lift": 1.58
+      },
+      "2_close": {
+       "n": 5,
+       "hits": 1,
+       "hit_rate": 0.2,
+       "base_rate": 0.039,
+       "lift": 5.19
+      },
+      "1_next": "not known (no next close yet)",
+      "2_next": "not known (no next close yet)"
+     }
+    }
+   },
+   "error": null
+  }
+ },
+ "budget_days": [
+  {
+   "budget_day": "2026-11-18 15:40 -> 2026-11-19 15:40",
+   "session": "2026-11-19",
+   "usd": 0.004,
+   "calls": 2,
+   "refused": 0,
+   "by": {
+    "READ": 0.004
+   },
+   "steps": {},
+   "cap": 8.0,
+   "floors": [
+    [
+     "19:45",
+     1.5,
+     0.0
+    ],
+    [
+     "22:45",
+     0.0,
+     0.0
+    ],
+    [
+     "07:15",
+     0.5,
+     0.0
+    ],
+    [
+     "09:08",
+     0.6,
+     0.0
+    ]
+   ],
+   "brief_cost": {},
+   "live_by_hour": {},
+   "live_by_caller": {}
+  },
+  {
+   "budget_day": "2026-11-19 15:40 -> 2026-11-20 15:40",
+   "session": "2026-11-20",
+   "usd": 9.927,
+   "calls": 316,
+   "refused": 131,
+   "by": {
+    "LIVE": 6.51,
+    "MEET": 2.03,
+    "READ": 0.272,
+    "SEATS": 1.115
+   },
+   "steps": {
+    "LEAN (combined seat calls)": "2026-11-20 07:17 - SEATS $0.86",
+    "SEATS event-only": "2026-11-20 07:17",
+    "first refusal": "2026-11-20 07:17 (SEATS at 70% of $1.50 - event calls only)",
+    "MEET bucket full": "2026-11-20 09:10",
+    "day event-only (90%)": "2026-11-20 09:38",
+    "first LIVE refusal": "2026-11-20 10:21 (J11: day total $7.85 + ~$0.100 would eat the head analyst's reserve ($)",
+    "cap reached - code + rules only": "2026-11-20 10:21"
+   },
+   "cap": 8.0,
+   "live_by_hour": {
+    "02:00": 0.01,
+    "05:00": 0.01,
+    "08:00": 0.04,
+    "09:00": 4.1,
+    "10:00": 1.82,
+    "11:00": 0.52,
+    "12:00": 0.0,
+    "13:00": 0.0,
+    "14:00": 0.0,
+    "15:00": 0.0,
+    "17:00": 0.01
+   },
+   "live_by_caller": {
+    "H head": {
+     "calls": 49,
+     "usd": 6.24,
+     "refused": 25
+    },
+    "36 seat": {
+     "calls": 6,
+     "usd": 0.2,
+     "refused": 4
+    },
+    "15 seat": {
+     "calls": 7,
+     "usd": 0.07,
+     "refused": 0
+    }
+   },
+   "brief_cost": {
+    "19:45": 1.52,
+    "07:15": 0.98,
+    "09:08": 0.58
+   },
+   "floors": [
+    [
+     "19:45",
+     1.5,
+     0.87
+    ],
+    [
+     "22:45",
+     0.0,
+     0.0
+    ],
+    [
+     "07:15",
+     0.5,
+     0.58
+    ],
+    [
+     "09:08",
+     0.6,
+     0.58
+    ]
+   ]
+  }
+ ],
+ "replay_tick_min": 15,
+ "rules": "2220",
+ "buckets": {
+  "MEET": 2.6,
+  "SEATS": 1.5,
+  "LIVE": 1.8,
+  "READ": 1.1,
+  "ASK": 0.1,
+  "SHOCK": 0.9
+ },
+ "sim_cost": true,
+ "knowledge": "knowledge snapshot: design_v3 = snapshot 697fdf1ef6 (2026-11-19 09:38:35 +0000); prompts = today's prompts, sections / lines naming a date on or after the evening before stripped (no clean snapshot); engine chains = kb/chains.json rebuilt from the snapshot LINK_BOOK (/home/globalbot/intraday/v2/data/knowledge_snapshots/2026-11-20/kb/chains.json) \u00b7 leak check: PASS - no loaded text names 2026-11-20 or later"
+}

@@ -1,0 +1,286 @@
+{
+ "run": "HB_AFTER_18",
+ "layer": "stub",
+ "days": [
+  "2026-11-18"
+ ],
+ "made_ist": "2026-11-22 01:04:20",
+ "edge": {
+  "2026-11-18": {
+   "line": "EDGE 2026-11-18 2026-11-18: 19 names a day (11 knowledge-driven) \u00b7 TOP-5 by the analyst's own rank: >=1% 2/5 40% vs 28% lift 1.41, >=2% 0/5 0% vs 10% lift 0.0 \u00b7 all names >=1% 5/19 26% vs 22% lift 1.2, >=2% 2/19 10% vs 8% lift 1.4 \u00b7 knowledge >=2% 0/11 0% vs 6% lift 0.0 \u00b7 all names >=2% to the next close 0/19 0% vs 15% lift 0.0 \u00b7 old system >=2% 23/293 8% vs 8% lift 0.95 (293 names)",
+   "names_per_day": {
+    "analyst ideas": 10,
+    "prediction loop (lists, fired movers)": 9,
+    "ALL": 19,
+    "OLD system": 293,
+    "INDEX": 0
+   },
+   "top5_headline": {
+    "by": "AI priority",
+    "names": [
+     "KAYNES PE 07:17",
+     "MANAPPURAM CE 09:10",
+     "MANAPPURAM PE 09:24",
+     "ADANIGREEN PE 09:32",
+     "LUPIN CE 09:59"
+    ],
+    "n": 5,
+    "hit1_close": 2,
+    "hit2_close": 0,
+    "proof": "NOT PROVEN (n = 5)",
+    "1_close": {
+     "n": 5,
+     "hits": 2,
+     "hit_rate": 0.4,
+     "base_rate": 0.284,
+     "lift": 1.41
+    },
+    "2_close": {
+     "n": 5,
+     "hits": 0,
+     "hit_rate": 0.0,
+     "base_rate": 0.103,
+     "lift": 0.0
+    },
+    "1_next": {
+     "n": 5,
+     "hits": 2,
+     "hit_rate": 0.4,
+     "base_rate": 0.294,
+     "lift": 1.36
+    },
+    "2_next": {
+     "n": 5,
+     "hits": 0,
+     "hit_rate": 0.0,
+     "base_rate": 0.15,
+     "lift": 0.0
+    },
+    "whose": "the analyst's own rank"
+   },
+   "by_side": {
+    "CE": {
+     "names": 9,
+     "analyst_names": 5,
+     "top5": {
+      "by": "AI priority",
+      "names": [
+       "MANAPPURAM CE 09:10",
+       "LUPIN CE 09:59",
+       "COFORGE CE 11:02",
+       "GLENMARK CE 07:17",
+       "BIOCON CE 07:17"
+      ],
+      "n": 5,
+      "hit1_close": 1,
+      "hit2_close": 0,
+      "proof": "NOT PROVEN (n = 5)",
+      "1_close": {
+       "n": 5,
+       "hits": 1,
+       "hit_rate": 0.2,
+       "base_rate": 0.072,
+       "lift": 2.76
+      },
+      "2_close": {
+       "n": 5,
+       "hits": 0,
+       "hit_rate": 0.0,
+       "base_rate": 0.024,
+       "lift": 0.0
+      },
+      "1_next": {
+       "n": 5,
+       "hits": 2,
+       "hit_rate": 0.4,
+       "base_rate": 0.376,
+       "lift": 1.06
+      },
+      "2_next": {
+       "n": 5,
+       "hits": 0,
+       "hit_rate": 0.0,
+       "base_rate": 0.199,
+       "lift": 0.0
+      }
+     }
+    },
+    "PE": {
+     "names": 10,
+     "analyst_names": 5,
+     "top5": {
+      "by": "AI priority",
+      "names": [
+       "KAYNES PE 07:17",
+       "MANAPPURAM PE 09:24",
+       "ADANIGREEN PE 09:32",
+       "PREMIERENE PE 11:34",
+       "BSE PE 12:46"
+      ],
+      "n": 5,
+      "hit1_close": 2,
+      "hit2_close": 0,
+      "proof": "NOT PROVEN (n = 5)",
+      "1_close": {
+       "n": 5,
+       "hits": 2,
+       "hit_rate": 0.4,
+       "base_rate": 0.301,
+       "lift": 1.33
+      },
+      "2_close": {
+       "n": 5,
+       "hits": 0,
+       "hit_rate": 0.0,
+       "base_rate": 0.098,
+       "lift": 0.0
+      },
+      "1_next": {
+       "n": 5,
+       "hits": 1,
+       "hit_rate": 0.2,
+       "base_rate": 0.189,
+       "lift": 1.06
+      },
+      "2_next": {
+       "n": 5,
+       "hits": 0,
+       "hit_rate": 0.0,
+       "base_rate": 0.088,
+       "lift": 0.0
+      }
+     }
+    }
+   },
+   "error": null
+  }
+ },
+ "budget_days": [
+  {
+   "budget_day": "2026-11-16 15:40 -> 2026-11-17 15:40",
+   "session": "2026-11-17",
+   "usd": 0.002,
+   "calls": 1,
+   "refused": 0,
+   "by": {
+    "READ": 0.002
+   },
+   "steps": {},
+   "cap": 8.0,
+   "floors": [
+    [
+     "19:45",
+     1.5,
+     0.0
+    ],
+    [
+     "22:45",
+     0.0,
+     0.0
+    ],
+    [
+     "07:15",
+     0.5,
+     0.0
+    ],
+    [
+     "09:08",
+     0.6,
+     0.0
+    ]
+   ],
+   "brief_cost": {},
+   "live_by_hour": {},
+   "live_by_caller": {}
+  },
+  {
+   "budget_day": "2026-11-17 15:40 -> 2026-11-18 15:40",
+   "session": "2026-11-18",
+   "usd": 9.881,
+   "calls": 223,
+   "refused": 76,
+   "by": {
+    "LIVE": 6.4,
+    "MEET": 2.14,
+    "READ": 0.206,
+    "SEATS": 1.135
+   },
+   "steps": {
+    "LEAN (combined seat calls)": "2026-11-17 22:46 - SEATS $0.86",
+    "SEATS event-only": "2026-11-18 07:17",
+    "first refusal": "2026-11-18 07:17 (SEATS at 71% of $1.50 - event calls only)",
+    "MEET bucket full": "2026-11-18 09:10",
+    "day event-only (90%)": "2026-11-18 10:17",
+    "first LIVE refusal": "2026-11-18 11:02 (J11: day total $7.54 + ~$0.100 would eat the head analyst's reserve ($)",
+    "cap reached - code + rules only": "2026-11-18 11:17"
+   },
+   "cap": 8.0,
+   "brief_cost": {
+    "19:45": 1.52,
+    "22:45": 0.65,
+    "07:15": 0.46,
+    "09:08": 0.58
+   },
+   "live_by_hour": {
+    "08:00": 0.02,
+    "09:00": 2.9,
+    "10:00": 0.88,
+    "11:00": 1.56,
+    "12:00": 0.78,
+    "13:00": 0.26,
+    "14:00": 0.0
+   },
+   "live_by_caller": {
+    "H head": {
+     "calls": 27,
+     "usd": 5.98,
+     "refused": 4
+    },
+    "36 seat": {
+     "calls": 8,
+     "usd": 0.4,
+     "refused": 4
+    },
+    "15 seat": {
+     "calls": 2,
+     "usd": 0.02,
+     "refused": 0
+    }
+   },
+   "floors": [
+    [
+     "19:45",
+     1.5,
+     0.87
+    ],
+    [
+     "22:45",
+     0.0,
+     0.44
+    ],
+    [
+     "07:15",
+     0.5,
+     0.25
+    ],
+    [
+     "09:08",
+     0.6,
+     0.58
+    ]
+   ]
+  }
+ ],
+ "replay_tick_min": 15,
+ "rules": "2220",
+ "buckets": {
+  "MEET": 2.6,
+  "SEATS": 1.5,
+  "LIVE": 1.8,
+  "READ": 1.1,
+  "ASK": 0.1,
+  "SHOCK": 0.9
+ },
+ "sim_cost": true,
+ "knowledge": "knowledge snapshot: design_v3 = today's files, lines naming a date on or after the evening before stripped; prompts = today's prompts, sections / lines naming a date on or after the evening before stripped (no clean snapshot); engine chains = today's kb/chains.json (no LINK_BOOK in the snapshot) \u00b7 leak check: LEAKED - 10 mention(s) of 2026-11-18 or later"
+}
