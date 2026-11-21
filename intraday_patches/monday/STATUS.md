@@ -941,3 +941,4 @@ Last update: 20:55 IST
      | Bitcoin weekend study (adds nothing beyond the NQ line, n 116; footnote only on Monday 07:15) | study agent | DONE - NOT PROVEN |
      | India calendar D9 / seat 34, "14 of 15 Mondays" line, results-IV block, SIZE ONLY block, journal, AI wording, heartbeat, /status.json, account read, carry rule, ntfy code | safety builder | DONE (269 tests) |
      | predict.room() live wiring (needs 09:15-09:19 bars + 20-day first-5-min volume) | safety builder | NOT STARTED - CPU risk at 09:20; plan: precompute the 20-day volume tonight, read the bars from the recorder store |
+- 16:58 - PARK CHECK after: news.db is written only by gir-newsroom (kept); its "EXCHANGE" rows came from parked gir-exchange and stop - the new readers take filings from gir-v2filings (fresh 16:45 IST) and the BSE bridge, so nothing is lost. gir-v2desk / gir-v2newsread / gir-preview: no errors in the 12 min after the park; girtrader.com 0.04 s.
