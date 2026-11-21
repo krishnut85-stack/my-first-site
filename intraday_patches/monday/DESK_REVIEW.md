@@ -28,6 +28,25 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 12:40 IST - THE TRADER on the Telegram outlook: "500-line paragraphs; a call sent although the Devil said no". TWO HARD RULES
+**RULE 1 - an unanswered Devil = NO CALL.** If the Devil's objection is BLOCKING (history points the other way, or "the gap is the whole
+move") and the head has no evidence-based answer, the idea is NOT sent as BUY. It appears only as one line: "NOT TAKING: PERSISTENT CE -
+history: IT weakest after a big Nasdaq fall (n=...)". Code check: a call whose AGAINST is a Devil card with severity BLOCKING and no
+answer id is rejected. No call goes out until head + Devil + history + a second seat agree (the A / B / C gate of 12:25).
+**RULE 2 - SHORT BULLET CARDS ONLY on Telegram.** Max 8 lines per call, max 15 lines per brief part; no paragraphs; numbers from code.
+Call card template:
+  DIXON · PE · WATCH · Grade B
+  • Trigger: US chip index -10.7% (Fri night)
+  • Link: DIXON = Indian AI-hardware / EMS -> hit
+  • Money: leaving hardware for IT and banks
+  • History: EMS / IT weakest after big Nasdaq falls (n=...)
+  • Enter 09:20 only if: EMS below VWAP + DIXON loses VWAP
+  • Cancel if: EMS holds VWAP, or a big gap already took the move
+  • Stop 13,307 · Target 12,676 · Dec 13000 PE
+Brief template: 1 line OPEN lean + 1 line SESSION lean; 12 driver lines of <= 1 line each (only drivers that CHANGED get words; the
+rest one word "no change"); CE list; PE list; NOT TAKING list; 09:20 checks (<= 4 bullets). Full text stays on the page / in the file.
+Re-send the Monday outlook in this format (with Rule 1 applied) to GIR Trade now, and apply both rules to every message from now on.
+
 ## 21 Nov 12:25 IST - THE TRADER: "no blind picks - not 'it went up today, so CE tomorrow'". ANTI-CHASE + EVIDENCE GATE (code + H prompt)
 1. **Anti-chase:** a CE on a share that rose >= 3% in the last session (or a PE after a >= 3% fall) needs a NEW reason dated after that move
    (fresh news / filing / flow / event) OR a tested continuation base rate (n >= 30, hit rate >= 55% and >= 5 pts over random). Without one
