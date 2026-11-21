@@ -269,3 +269,8 @@ it in Indian IT. So IT is coming up. This is one of the history."
   - PE candidates: semis / EMS (DIXON, KAYNES, CGPOWER), power T&D data-centre trade (GVT&D, CGPOWER), ER&D / mid IT that ran on
     20 Nov (PERSISTENT, TATAELXSI, COFORGE), metals (HINDALCO, VEDL, HINDCOPPER, NATIONALUM), gold lenders (MUTHOOTFIN, MANAPPURAM).
     IT majors mixed. All NOT PROVEN; Monday's GIFT NIFTY, KOSPI / Taiwan open, the 20 Nov FII figure and 09:20 sector VWAP decide.
+- **K financials 21 Nov 08:40 IST:** INDUSINDBK +8.59% on 20 Nov (biggest day in 5+ years, above Rs 1,000, OI +15.7%): reported drivers =
+  foreign-fund roadshows (Morgan Stanley Singapore 18-19 Nov, CLSA Chennai 19 Nov, exchange filing) + bank-sector traction + a better
+  Q2 FY27. A "loan recovery" story (trader's read) NOT found in sources - ask the trader for his source. Insurers ranked HDFCLIFE (Oct
+  individual business +16%, -26.8% from high), SBILIFE, ICICIGI; insurance = catch-up idea, no trigger yet. Laggard private banks:
+  AUBANK, BANDHANBNK, RBLBANK. RBI hike (4 Dec) hurts NBFC / HFC (CHOLAFIN, BAJFINANCE, SHRIRAMFIN, LICHSGFIN). NOT PROVEN.
