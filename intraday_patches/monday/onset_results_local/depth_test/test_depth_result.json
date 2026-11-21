@@ -1,9 +1,9 @@
 {
- "t": "2026-11-21T12:53:24+05:30",
+ "t": "2026-11-21T13:43:00+05:30",
  "passed": 29,
  "of": 29,
  "all_pass": true,
- "tmp": "/tmp/depthtest_f8x3y962",
+ "tmp": "/tmp/depthtest_rqeanx0x",
  "results": [
   {
    "test": "T1 features: one row per second",
@@ -103,7 +103,7 @@
   {
    "test": "T2 ws: rows for shares, index futures and ATM options",
    "pass": true,
-   "detail": "29112 rows, 179 instruments {'spot': 63, 'fut': 4, 'opt': 112}, stop: test run length"
+   "detail": "29108 rows, 179 instruments {'spot': 63, 'fut': 4, 'opt': 112}, stop: test run length"
   },
   {
    "test": "T2 file roll: one zstd parquet per chunk (2 min in the test, 10 min live)",
@@ -128,12 +128,12 @@
   {
    "test": "T2 feature sanity on real quotes",
    "pass": true,
-   "detail": "imb5 range -0.97..0.99, 24800 rows with a trade side, 2379 with a large bid"
+   "detail": "imb5 range -0.97..0.99, 24808 rows with a trade side, 2376 with a large bid"
   },
   {
    "test": "T2 size + load",
    "pass": true,
-   "detail": "1578 KB for 12 market minutes -> about 51 MB a day at this rate, x30 days = 1.5 GB (cap 3 GB); recorder CPU 4.3 s for 725 s of market data played in 72 s"
+   "detail": "1577 KB for 12 market minutes -> about 51 MB a day at this rate, x30 days = 1.5 GB (cap 3 GB); recorder CPU 4.1 s for 725 s of market data played in 72 s"
   },
   {
    "test": "_size_mb_day",

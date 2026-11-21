@@ -1,0 +1,179 @@
+{
+ "gdelt_days": [
+  "2025-07-22",
+  "2026-11-20",
+  487
+ ],
+ "rows": 456,
+ "cut": "2026-05-21",
+ "table": [
+  {
+   "signal": "biz_tone",
+   "target": "gap",
+   "discovery": {
+    "n": 273,
+    "top": 0.124,
+    "bottom": -0.146,
+    "t": 2.09
+   },
+   "unseen": {
+    "n": 183,
+    "top": -0.057,
+    "bottom": 0.11,
+    "t": -1.48
+   },
+   "holds": false
+  },
+  {
+   "signal": "biz_tone",
+   "target": "ret",
+   "discovery": {
+    "n": 273,
+    "top": 0.177,
+    "bottom": -0.117,
+    "t": 1.69
+   },
+   "unseen": {
+    "n": 183,
+    "top": -0.151,
+    "bottom": 0.1,
+    "t": -1.31
+   },
+   "holds": false
+  },
+  {
+   "signal": "biz_tone",
+   "target": "abs_ret",
+   "discovery": {
+    "n": 273,
+    "top": 0.574,
+    "bottom": 0.766,
+    "t": -1.62
+   },
+   "unseen": {
+    "n": 183,
+    "top": 0.604,
+    "bottom": 0.703,
+    "t": -0.86
+   },
+   "holds": false
+  },
+  {
+   "signal": "volume",
+   "target": "gap",
+   "discovery": {
+    "n": 273,
+    "top": -0.003,
+    "bottom": -0.108,
+    "t": 0.99
+   },
+   "unseen": {
+    "n": 183,
+    "top": 0.052,
+    "bottom": 0.123,
+    "t": -0.59
+   },
+   "holds": false
+  },
+  {
+   "signal": "volume",
+   "target": "ret",
+   "discovery": {
+    "n": 273,
+    "top": -0.065,
+    "bottom": 0.011,
+    "t": -0.49
+   },
+   "unseen": {
+    "n": 183,
+    "top": -0.034,
+    "bottom": 0.054,
+    "t": -0.47
+   },
+   "holds": false
+  },
+  {
+   "signal": "volume",
+   "target": "abs_ret",
+   "discovery": {
+    "n": 273,
+    "top": 0.514,
+    "bottom": 0.685,
+    "t": -1.71
+   },
+   "unseen": {
+    "n": 183,
+    "top": 0.704,
+    "bottom": 0.585,
+    "t": 1.08
+   },
+   "holds": false
+  },
+  {
+   "signal": "conflict",
+   "target": "gap",
+   "discovery": {
+    "n": 273,
+    "top": -0.003,
+    "bottom": -0.119,
+    "t": 0.8
+   },
+   "unseen": {
+    "n": 183,
+    "top": -0.072,
+    "bottom": 0.167,
+    "t": -2.06
+   },
+   "holds": false
+  },
+  {
+   "signal": "conflict",
+   "target": "ret",
+   "discovery": {
+    "n": 273,
+    "top": 0.025,
+    "bottom": -0.086,
+    "t": 0.61
+   },
+   "unseen": {
+    "n": 183,
+    "top": -0.179,
+    "bottom": 0.069,
+    "t": -1.39
+   },
+   "holds": false
+  },
+  {
+   "signal": "conflict",
+   "target": "abs_ret",
+   "discovery": {
+    "n": 273,
+    "top": 0.796,
+    "bottom": 0.645,
+    "t": 1.28
+   },
+   "unseen": {
+    "n": 183,
+    "top": 0.642,
+    "bottom": 0.611,
+    "t": 0.29
+   },
+   "holds": false
+  }
+ ],
+ "company": {
+  "discovery": {
+   "n_spike": 430,
+   "spike": 0.641,
+   "rest": 0.57,
+   "t": 2.37
+  },
+  "unseen": {
+   "n_spike": 301,
+   "spike": 0.603,
+   "rest": 0.587,
+   "t": 0.46
+  },
+  "holds": false
+ }
+}
