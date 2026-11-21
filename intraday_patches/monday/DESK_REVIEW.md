@@ -28,6 +28,27 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 22 Nov 01:15 IST (real time) - THE TRADER: "Test again with one trading day - 20 Nov - make sure the whole session works with no flaws, then
+we start on a real trading day. Start immediately." = FULL DRESS REHEARSAL OF FRI 20 NOV. Trader approved the spend (real models, ~$7-10,
+own replay ledger, from the API credit). ORDER:
+A. NOW: build the 10 fixes (00:50) + the trend-day line (00:35) + the head rule (01:05). No other work first.
+B. THEN replay Fri 20 Nov 07:00 -> 15:45 point in time on the REAL models, knowledge snapshot CONTROLLED (nothing written after 20 Nov 07:00
+   visible), the full desk + pages + the Telegram path into a CAPTURE file (replay no-Telegram flag stays ON - nothing to his channel).
+C. PASS CRITERIA (every line PASS, or it is not done):
+   1. Head analyst refused 0 times; 07:15 and 09:08 briefs delivered; total spend <= $10.
+   2. Decision sheet at 07:15 / 09:08 with top 3 CE + top 3 PE, each with trigger, stop, target, why; his 3 PEs first with HOLD / EXIT.
+   3. RBI 10:20 (Rs 50,003 cr) and 13:40 (Rs 25,007 cr) -> one information line each within 5 min.
+   4. BANKNIFTY trend-day line (CE side, "your call") by about 11:30 at the latest.
+   5. MOVER WATCH: within 5 min of +-3% with volume, a READY or NOT TAKING line for INDUSINDBK, APOLLOHOSP, AXISBANK, CUB, UNIONBANK,
+      PERSISTENT (CE side) and KALYANKJIL, MCX, MUTHOOTFIN, CGPOWER, GVT&D, VEDL (PE side) - list each with its time and verdict.
+   6. Never silent: the 10:30 / 13:00 "no trade yet - why" lines if no BUY; 15:15 summary.
+   7. Messages: his one-line format, no "%%", no grade C, no idea repeated, every world number with its time, nothing untested sold as fact.
+   8. Pages at 09:20 / 11:30 / 14:30 (replay clock): numbers equal the recorded tape, all 3 positions, no stale headline, no debug text
+      (masked screenshots, header P&L strip masked).
+   9. Score every call vs the real tape (right-way, early / late, option proxy after costs).
+D. Output DRESS_20NOV.md (each criterion PASS / FAIL + evidence) + DRESS_20NOV_telegram.txt (every message that WOULD have been sent, in
+   order, with time). The reviewer grades it like the trader. Any FAIL -> fix -> re-run the failing part. Target: done before Sun 15:00.
+
 ## 22 Nov 01:05 IST (real time) - THE TRADER'S RULE (his words + his choice in the reviewer's question): "The head analyst should have money
 till the trading day ends" -> UP TO $10 A DAY.
 1. On every trading day the HEAD ANALYST (live looks, the 07:15 / 09:08 briefs, manage notes) is never refused 07:00-15:30. It has first
