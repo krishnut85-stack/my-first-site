@@ -28,6 +28,15 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 20:00 IST (real time) - MORNING PAGE SHOWS A STALE PLAN (trader's screenshot of /preview/morning, Sat 19:45)
+The big headline reads "CALL day on AUTOS" from the evening prediction written Fri 20 Nov 19:45 for Mon 23 Nov - BEFORE the US crash
+(Nasdaq -5.3%, SOX -10.7%, BTC -6%). The driver cards are Friday 15:29 data ("LATE 28h"). A trader reading this on Saturday / Sunday is
+told CALL. FIX before the Sun 16:00 freeze:
+1. Any plan / prediction older than 18 h, OR written before a SHOCK family A / B / E alert, shows a grey "OLD PLAN - written Fri 19:45,
+   before the US fall - next plan Sun 19:45" chip and the side words in grey, never the green CALL / red PUT headline.
+2. The Sunday 19:45 brief replaces it; the 07:15 Monday brief replaces that. Headline always names its time.
+3. Weekend pre-flight reds (optquote / expiry MISSING because the market is shut) show as "market closed - normal", not red.
+
 ## 21 Nov 19:55 IST (real time) - THE TRADER: his positions / P&L must show correctly on the new desk page, the phone view and match Kite.
 Monday duty (add to the 09:20 checks): the new page (desk-trade / F6 positions), the phone NOW cards and the old /mypnl all read
 gir-pnlwatch (Kite, read only, every 3 s). Check once at 09:20 and once at 12:00: number of positions, symbols, quantity, average price
