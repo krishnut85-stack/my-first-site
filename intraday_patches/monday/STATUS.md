@@ -648,3 +648,15 @@ Last update: 20:55 IST
   - Paths: the desk sender (shocks, official, WHY, P1, flip reasons, look-ahead, and BUY NOW / manage from Mon 09:15), the System-topic sender, the /gir command reply, briefs, the mock (it records what the channel would show and checks the layout + the MOCK prefix) and the ring test.
   - The page and the board keep the full text with ids. The test fails any line that is not a header / blank / "• " line of <= 48 characters, or that contains "[", "{num:", "base rate", "bench" or a bare " n ".
   - Mock dry run 6 (formatter + Trade now routing + 12 drivers + J7 flip) is running; the Sunday commands and the ring-test plan follow.
+- 12:31 - SUNDAY MOCK READY. DRY RUN 6 PASSES (Telegram OFF, current code; DESK_rehearsal/MOCK_DRY6):
+  - all 14 checks + START / END, 0 AI calls, every line starts "MOCK";
+  - 3 lines (COMPANY / STALE / INDIA) failed the layout check on "[...]" brackets; the formatter was fixed and all 16 recorded lines re-checked offline: pass;
+  - a trade test line was DROPPED in the J7 "old" window ("0 sent from the old mode");
+  - nothing can reach the real channel outside the mock's own sender (the desk and credit senders are replaced by blockers inside the mock).
+  Labelled stand-in limits: the GO card passes the chain gate once (its message says what the live gate said); rotation runs with turnover "not known".
+  SUNDAY 22 Nov PLAN (the code refuses Telegram ON outside 16:45-18:45):
+  - 17:00 the LIVE MOCK: 16 MOCK-prefixed messages to "GIR Trade now", 3 s+ apart, ~24 min (START, COMPANY, WORLD, BRIEF 07:15, BRIEF 09:08, GO, ROTATION, SWITCH OLD, P1 CREDIT, SWITCH NEW, STALE, CHAIN, INDIA, MANAGE, SCORE, END). Check after: mock_checklist.json "missing": [], "bad_layout_or_no_mock": [], 0 AI calls; message ids in telegram.jsonl.
+  - STOP AT ONCE: touch DESK_rehearsal/MOCK_SUN/STOP (checked before every send; tested), or kill the pid in mock.pid. The mock never touches /usr/local/bin/gir, the live flags or the live desk files.
+  - 18:30 RING TEST (refused outside 18:25-18:50): 3 real messages, sound on, each starting "RING TEST": 1/3 CRITICAL (P1 credit block, "a test - nothing is wrong"); 2/3 GO NOW (TEST ONLY, replay of Fri 20 Nov, the MARUTI CE card with FROM / AGAINST / MONEY / NOT PROVEN); 3/3 NEWS (a real 20 Nov official line: NSE drops GODFRYPHLP from F&O). The script prints ok, message_id and time; the trader confirms each one rang.
+  - 18:45 the pass / fail table per item here.
+  - 19:45 the live desk's Sunday brief (12 drivers, the LEAN split, grades, the look-ahead book) to Trade now in the same layout.
