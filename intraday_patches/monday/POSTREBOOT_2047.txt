@@ -1,0 +1,99 @@
+GIR post-reboot check 2026-11-21 20:47 IST - up up 25 minutes
+PASS  kernel 6.8.0-151                             6.8.0-151-generic
+PASS  unit gir-preview                             active
+PASS  unit gir-v2desk                              active
+PASS  unit gir-v2engine                            active
+PASS  unit gir-v2sources                           active
+PASS  unit gir-v2filings                           active
+PASS  unit gir-v2kq                                active
+PASS  unit gir-v2newsmap                           active
+PASS  unit gir-v2newsread                          active
+PASS  unit gir-v2opt                               active
+PASS  unit gir-v2optdec                            active
+PASS  unit gir-v2pagewatch                         active
+PASS  unit gir-v2rec                               active
+PASS  unit gir-v2replay                            active
+PASS  unit gir-v2testobs                           active
+PASS  unit gir-v2tgcmd                             active
+PASS  unit gir-v2tvcalls                           active
+PASS  unit gir-v2wsrec                             active
+PASS  unit gir-intraday                            active
+PASS  unit gir-futlive                             active
+PASS  unit gir-seclive                             active
+PASS  unit gir-dash                                active
+PASS  unit gir-pnlwatch                            active
+PASS  unit gir-windwatch                           active
+PASS  unit gir-newsroom                            active
+PASS  unit gir-tvwatch                             active
+PASS  unit newshawk-filings                        active
+PASS  unit caddy                                   active
+PASS  unit cron                                    active
+PASS  unit gir-sectorboard                         active
+PASS  timer gir-kitelogin                          next Mon 23 Nov 07:40 IST
+PASS  timer gir-kitecheck                          next Mon 23 Nov 08:20 IST
+PASS  timer gir-kiteretry                          next Mon 23 Nov 08:25 IST
+PASS  timer gir-kitecal                            next Sat 21 Nov 23:52 IST
+PASS  timer gir-ivhist                             next Mon 23 Nov 20:30 IST
+PASS  timer gir-universe                           next Sat 28 Nov 10:00 IST
+PASS  timer gir-whydesk                            next Mon 23 Nov 15:50 IST
+PASS  timer gir-ixrefresh                          next Mon 23 Nov 15:50 IST
+PASS  timer gir-lockguard                          next Sat 21 Nov 20:47 IST
+PASS  timer gir-watchdog                           next Sat 21 Nov 20:48 IST
+PASS  timer gir-v2depth                            next Mon 23 Nov 09:45 IST
+PASS  timer gir-v2predict-n19                      next Sun 22 Nov 19:45 IST
+PASS  timer gir-v2predict-c22                      next Sun 22 Nov 22:45 IST
+PASS  timer gir-v2predict-u07                      next Mon 23 Nov 07:15 IST
+PASS  timer gir-v2predict-live                     next Mon 23 Nov 09:05 IST
+PASS  timer gir-v2predict-p09                      next Mon 23 Nov 09:09 IST
+PASS  timer gir-v2predict-score                    next Mon 23 Nov 15:50 IST
+PASS  timer gir-v2predict-cal                      next Sat 21 Nov 23:50 IST
+PASS  timer gir-v2kb-daily                         next Mon 23 Nov 15:42 IST
+PASS  timer gir-v2etprime                          next Sun 22 Nov 07:15 IST
+PASS  timer gir-preopenread                        next Mon 23 Nov 08:59 IST
+PASS  timer gir-prerec                             next Mon 23 Nov 09:09 IST
+PASS  timer gir-nfoinstr                           next Mon 23 Nov 08:05 IST
+PASS  timer gir-morningcues                        next Mon 23 Nov 07:20 IST
+PASS  timer gir-nsebase                            next Mon 23 Nov 18:40 IST
+PASS  timer gir-mwpl                               next Mon 23 Nov 19:50 IST
+PASS  timer gir-missscore                          next Mon 23 Nov 15:45 IST
+PASS  timer gir-checklist                          next Mon 23 Nov 19:15 IST
+PASS  Kite login Mon 07:40                         
+PASS  depth recorder Mon 09:45                     
+PASS  cron.d gir-journal                           
+PASS  cron.d gir-m2prep                            
+PASS  cron.d gir-outwatch                          
+PASS  crontab: gir-freeze on                       
+PASS  crontab: gir-freeze off                      
+PASS  crontab: gir-backup                          
+PASS  crontab: gir-backup-check                    
+PASS  crontab: apt-daily.timer                     
+PASS  crontab: 7 old lines parked                  7
+PASS  crontab: Sun engine pause off                
+PASS  old programs parked (0 running, 0 enabled)   old programs parked list: 72 units - running 0, enabled 0; old cron lines parked: 7
+PASS  old senders muted 14 of 14                   muted: 14 of 14
+PASS  old system AI off                            
+PASS  sector board never sends (tg_off/sectorboard.off) 
+PASS  gir-preopenread next Mon 08:59               
+PASS  gir-nfoinstr next Mon 08:05                  
+PASS  gir-morningcues next Mon 07:20               
+PASS  apt-daily.timer disabled until Mon 16:00     disabled
+PASS  apt-daily-upgrade.timer disabled until Mon 16:00 disabled
+PASS  gir-v2desk nice -5 / OOM -600                nice -5 oom -600
+PASS  gir-preview limits                           MemoryMax 629145600 nice -5
+PASS  gir-v2rec limits                             MemoryMax 629145600 nice 10
+PASS  gir-v2optdec limits                          MemoryMax 314572800 nice 10
+PASS  gir-v2newsmap limits                         MemoryMax 314572800 nice 10
+PASS  replays: no Telegram flag                    
+PASS  ntfy topic mode 600                          
+PASS  .env files owner-only                        
+PASS  status.json OK                               OK 
+PASS  girtrader.com < 1 s                          0.033209s
+PASS  /preview answers                             303 0.036606
+PASS  no failed units                              0 failed
+PASS  CPU idle busy < 30%                          busy 8.5%
+PASS  memory used < 6 GB                           2750 MB
+PASS  disk < 85%                                   73%
+PASS  no tracebacks since boot (v2)                0
+PASS  ntfy test push                               ok
+TOTAL: 96 PASS, 0 FAIL
+Trader step: type /gir status in the GIR group System topic; the answer must come back (tgcmd log below).
