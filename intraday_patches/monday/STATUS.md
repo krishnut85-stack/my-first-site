@@ -332,3 +332,33 @@ Last update: 20:55 IST
   - The real re-run waits for the credit top-up and the trader's yes (about $2.5 above the $24).
 - 06:50 - BUILDER SESSION ENDED: the desk-builder agent stopped after 05:35 on a sign-in time limit of its own session (not GIR's API key). Its work to 05:35 is complete and logged. New desk-code work will start in a fresh builder session when the desk sends more.
 - 06:50 - HOURLY PULL: no new desk entries, prompt or design changes since 05:30.
+- 07:03 - DESK 21 Nov 07:10 DONE - TELEGRAM SENDER INVENTORY + TG_CHAT_FO / TG_CHAT_OI CHECK + OLD NEWS BROADCAST SILENCED (weekend, market closed).
+  STANDING-RULE CHECK: "GIR F&O Live" IS TG_CHAT_FO, and "GIR OI Buildup" IS TG_CHAT_OI (channel titles read by env-var NAME via the Telegram API, no values shown). The OLD NEWSHAWK bots were sending to both, which breaks the rule: news_alert_bot, evening_bot, optionwatch, regwatch_bot (F&O mirror) and tape_bot (F&O + OI). All are now SILENCED. GIR's own code (v2, intraday desk / engine2, etprime keep-alive) only names TG_CHAT_FO / TG_CHAT_OI in "never used here" comments.
+  INVENTORY (every running unit / timer that can send Telegram; chat by env-var NAME -> channel; exact per-message counts are not logged by the old bots, so volume = the trader's unread at 06:54 Sat + log evidence):
+  | unit (script) | sends to | rule / AI | 24 h volume | action |
+  |---|---|---|---|---|
+  | newshawk (news_alert_bot) | TG_NEWS_CHAT_ID Market News, TG_CHAT_FO F&O Live, TELEGRAM_CHAT_ID GIR Alerts | rule / keyword | Market News 472 + F&O Live 281 unread (with ahead / filings / tape); 3,992 items seen | SILENCED (news_alert_bot.off) |
+  | newshawk-ahead (ahead_bot, timer) | Market News | rule | in Market News | SILENCED (ahead_bot.off) |
+  | newshawk-filings (filings_bot) | TG_CHAT_WHALES Whales & Filings, Market News | rule | Whales & Filings 205 unread; 625 seen | SILENCED (filings_bot.off) |
+  | newshawk-whales (whales_bot) | Whales & Filings | rule | in 205; 112 seen | SILENCED (whales_bot.off) |
+  | newshawk-optionwatch (optionwatch) | F&O Live (else Market News / GIR Alerts) | rule | in F&O Live | SILENCED (optionwatch.off) |
+  | newshawk-tape (tape_bot) | TG_CHAT_OI OI Buildup + F&O Live | rule | ~99 alerts logged on 20 Nov | SILENCED (tape_bot.off) |
+  | newshawk-evening (evening_bot, timer) | F&O Live | rule | once an evening | SILENCED (evening_bot.off) |
+  | newshawk-regwatch (regwatch_bot, timer) | TG_CHAT_REG Regulator Watch + F&O mirror | rule | Regulator Watch 72 unread; "sent=1" cycles | SILENCED (regwatch_bot.off) |
+  | regnews (regnews_bot) | Regulator Watch | rule (Google News RSS) | 17 stories / 1,132 seen | SILENCED (regnews_bot.off) |
+  | newshawk-preopen (preopen_bot, timer) | TG_CHAT_PREOPEN Pre-Open | rule | weekday mornings | SILENCED (preopen_bot.off) - a news broadcast, not on the keep list |
+  | gir-desk / gir-intraday / gir-dash / gir-exchange / gir-newsroom (old intraday core.tg) | TG_CHAT_TRADENOW Trade now (DIGEST) / TG_CHAT_INTRADAY | rule (desk.py has an AI note path) | Trade now 110 unread | SILENCED (intraday_core.off) EXCEPT system health lines (GIR DOWN / BACK / NOT LIVE / BUDGET / P1) |
+  | gir-desk / gir-intraday / exchange (engine2.tg_fo) | TG_CHAT_BOX Box Picks | rule | Box Picks | SILENCED (engine2_box.off) |
+  | gir-v2newsread (v2 ESCALATION -> K.tg) | TG_CHAT_GIRGROUP GIR Live, System topic ("My Stock Alerts: ESCALATION") | rule (class-A keyword hit) | the GIR Live escalation lines | SILENCED by its existing flag v2/data/newsread_tg_off (new system: WOULD SEND until the Sunday ring test anyway) |
+  | newshawk-ledger-daily / -preview (catalyst_ledger) | TG_CHAT_LEDGER Ledger (+ Pre-Open) | rule | daily / weekly export | KEPT (desk: keep the Ledger export) |
+  | gir-watchdog (watchdog.py) | TELEGRAM_CHAT_ID GIR Alerts | rule (system) | system alerts | UNTOUCHED (standing rule) |
+  | paper_exit_monitor | GIR Alerts (via paper/notify.py) | rule | not running now | UNTOUCHED (standing rule) |
+  | paper_counterfactual / paper_eod_report (timers) | GIR Alerts (paper/notify.py) | rule | EOD report | not touched - not on the desk's list; say if they should go |
+  | globaleye (gir.py, old GIR v1) | GIR Alerts (FNO / HEALTH / PHOENIX threads) | rule | 69k log lines; GIR Alerts not in the trader's flood list | not touched - say if it should go |
+  | raven / raven-manage / raven-preopen, hunter-scan/manage/execute, eqfloor@scan/manage/execute | GIR Alerts (RAVEN thread etc.) | rule | quiet (0-1 send lines) | not touched (old trading bots) |
+  | gir-v2etprime (keep-alive) | GIR Live System topic, on fault only | system | none | KEPT (system P1) |
+  | gir-solsniper (live Solana launch trader, real SOL) | its own chat | rule | "alive" lines only | STOPPED + DISABLED, unit moved to archive/crypto_2026-11-20/ (the trader's 20 Nov "all crypto jobs" decision; missed in F5 because the name has no "crypto"). It was NOT trading: its STOP file has been set since 11 Oct, no open positions, wallet 0.0835 SOL; code folder left in place (it holds the wallet key, not copied). |
+  HOW: one shared helper /home/globalbot/tgmute.py + one flag per sender /home/globalbot/tg_off/<name>.off (12 flags), checked on EVERY send; the feeds, stores and loops keep running, only the Telegram send is skipped and its first line is written to /home/globalbot/tg_off/muted.log. A guard was added at the top of each send function (news_alert_bot.tg_send + _tg_send_text (also used by ahead / filings / whales / optionwatch / tape), evening_bot.send, regwatch_bot._tg_raw, regnews_bot.tg, preopen_bot.tg, engine2.tg_fo, core._tg_send (health lines pass)). Backups *.bak_tgmute0701. Restarted after hours, Saturday: newshawk, -filings, -whales, -optionwatch, regnews, -tape, gir-dash, gir-desk, gir-exchange, gir-intraday, gir-newsroom (all active, no new errors; only the feeds' usual Google 429 / NSE 503); timers pick it up on their next run. girtrader.com/login 0.04 s.
+  UNDO: one sender: rm /home/globalbot/tg_off/<name>.off (live at once). All: rm /home/globalbot/tg_off/*.off and rm v2/data/newsread_tg_off. The code guards: cp <file>.bak_tgmute0701 <file> + restart that unit. solsniper: mv the unit back from archive/crypto_2026-11-20/ + systemctl enable --now.
+  SECURITY FINDING: newshawk tape_bot writes the FULL Telegram bot token into its journal on every failed post (inside the request URL in "telegram post failed" lines). Anyone with journal access can use the bot. Recommend: rotate that bot token (BotFather) and fix the log line. Not changed.
+  FROM MONDAY (desk point 4): the new desk speaks on ONE channel only (BUY NOW, manage notes, the brief headlines), WOULD SEND until the Sunday 18:30 ring test passes; no "URGENT" from keyword rules.
