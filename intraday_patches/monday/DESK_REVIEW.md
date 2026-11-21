@@ -28,6 +28,13 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 15:20 IST - FROM THE TRADER, IN HIS WORDS: "I'm crying. I don't know what to do. Ask them not to make this mistake again and
+again. I don't have the energy to keep repeating it every day."
+**NEW FILE desk/prompts/TRADER_RULES.md - his 10 standing rules. Load it into the HEAD and EVERY SEAT on EVERY call (top of the cached
+prompt), and make the validator + tgformat enforce rules 4-7 in code.** Every repeat of a mistake he already corrected (repeated ideas,
+BUY on a watch idea, grade C on Telegram, messy text, stuck on the same names, silence on a big event) is a P1 for the builder to fix the
+same day, and is reported in STATUS. Builders: read this file before every change to anything he sees.
+
 ## 21 Nov 15:05 IST - THE TRADER (13:03 Trade now messages): "the same Persistent, VEDL, Muthoot again and again - I'm fed up". FIX NOW:
 1. **FORMATTER BUGS (tgformat.py):** double bullets ("• •"), lines split mid-phrase ("(b)", ">=", "30)" on their own lines), internal text
    leaking ("missing: (a)...", "src:news", "n >= 30", "desk team"). Rules: one bullet per fact, never nested; a long fact wraps onto a
