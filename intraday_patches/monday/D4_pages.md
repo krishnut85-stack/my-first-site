@@ -1,6 +1,6 @@
 # D4 - all 23 pages: console errors, failed requests, cut text, R51 controls
 
-Run 21 Nov 23:09 IST (Sat 21 Nov 2026, market closed). Pages served from disk by a test stub (127.0.0.1:8198) whose /preview/api/* answers are ONE copy of the real gir-preview answers (fetched once, then cached), so the 23 pages x 3 widths put no load on the live server; POSTs (ask / GIR MODE) answered by the stub, never forwarded. Chromium with real (not hidden) scrollbars, deviceScaleFactor 1, one browser, nice 10.
+Run 21 Nov 23:47 IST (Sat 21 Nov 2026, market closed). Pages served from disk by a test stub (127.0.0.1:8198) whose /preview/api/* answers are ONE copy of the real gir-preview answers (fetched once, then cached), so the 23 pages x 3 widths put no load on the live server; POSTs (ask / GIR MODE) answered by the stub, never forwarded. Chromium with real (not hidden) scrollbars, deviceScaleFactor 1, one browser, nice 10.
 
 - **console errors / page errors / failed requests**: Playwright console type error, pageerror, requestfailed, any response >= 400.
 - **cut cells**: every visible element with text whose scrollWidth > clientWidth, no tolerance, innermost only, every `<details>` open. Not counted: a scroll box (overflow auto / scroll, or inside one) and prose of 4+ words whose tooltip carries the text (the trader's rule). The drill-down (sectors / folds opened) has its own cut check in the drill-down R51 (girdata/review/drilldown).
@@ -13,7 +13,7 @@ Run 21 Nov 23:09 IST (Sat 21 Nov 2026, market closed). Pages served from disk by
 | console + page errors | 6 | 0 |
 | failed requests | 6 | 0 |
 | cut cells | 1179 | 494 |
-| R51 rows | - | 3172 PASS · 74 FAIL · 122 NOT RUN · 140 NOCHANGE |
+| R51 rows | - | 3196 PASS · 68 FAIL · 140 NOT RUN · 125 NOCHANGE |
 
 Before: the 2 console errors + 2 failed requests per width on Replay were the stub following the 301 of /preview/replay itself (fixed in the stub, not a page fault); every other page had 0. Before the bar fix the first R51 trial (analyst, desk-trade at 1366) had 4 FAIL on drawn bars (8 px, not draggable) - fixed for every page in shell.js.
 
@@ -78,12 +78,12 @@ Before: the 2 console errors + 2 failed requests per width on Replay were the st
 | scorecard | 1366x768 | 0 → 0 | 0 → 0 | 10 → 7 | 50 | 0 | 2 | 3 |
 | scorecard | 1600x900 | 0 → 0 | 0 → 0 | 7 → 5 | 44 | 0 | 2 | 3 |
 | scorecard | 390x844 phone | 0 → 0 | 0 → 0 | 48 → 2 | 40 | 0 | 2 | 2 |
-| sectors | 1366x768 | 0 → 0 | 0 → 0 | 10 → 0 | 50 | 1 | 2 | 5 |
-| sectors | 1600x900 | 0 → 0 | 0 → 0 | 14 → 0 | 51 | 1 | 2 | 5 |
-| sectors | 390x844 phone | 0 → 0 | 0 → 0 | 32 → 0 | 33 | 1 | 3 | 6 |
-| settings | 1366x768 | 0 → 0 | 0 → 0 | 10 → 5 | 42 | 0 | 1 | 2 |
-| settings | 1600x900 | 0 → 0 | 0 → 0 | 5 → 3 | 42 | 3 | 1 | 1 |
-| settings | 390x844 phone | 0 → 0 | 0 → 0 | 7 → 4 | 31 | 0 | 2 | 4 |
+| sectors | 1366x768 | 0 → 0 | 0 → 0 | 10 → 0 | 56 | 0 | 6 | 2 |
+| sectors | 1600x900 | 0 → 0 | 0 → 0 | 14 → 0 | 57 | 0 | 6 | 2 |
+| sectors | 390x844 phone | 0 → 0 | 0 → 0 | 32 → 0 | 41 | 0 | 8 | 2 |
+| settings | 1366x768 | 0 → 0 | 0 → 0 | 10 → 5 | 45 | 0 | 3 | 0 |
+| settings | 1600x900 | 0 → 0 | 0 → 0 | 5 → 3 | 45 | 0 | 2 | 0 |
+| settings | 390x844 phone | 0 → 0 | 0 → 0 | 7 → 4 | 29 | 0 | 4 | 2 |
 | share | 1366x768 | 0 → 0 | 0 → 0 | 0 → 0 | 24 | 0 | 0 | 0 |
 | share | 1600x900 | 0 → 0 | 0 → 0 | 0 → 0 | 24 | 0 | 0 | 0 |
 | share | 390x844 phone | 0 → 0 | 0 → 0 | 2 → 0 | 12 | 0 | 0 | 0 |
@@ -108,7 +108,6 @@ Before: the 2 console errors + 2 failed requests per width on Replay were the st
 | replay | 390 | a.lk "F1 Desk ›" -> desk-hunt - no error | HTTP 404 http://127.0.0.1:8198/preview/replay/api/predict; console: Failed to load resource: the server responded with a status of 404 (Not Found) |
 | calendar | 390 | div.er "09:45 Realty +1.94% Realty +1." - pointer reaches it | covered by MAIN#page. |
 | shell | 390 | list #page (390x622, 622 of 2287 px) - finger swipe up / down | 0 -> 424 -> 424 |
-| sectors | 390 | a.sym "INDUSINDBK" -> share?s=INDUSINDBK - pointer reaches it | covered by DIV.sh-m1 |
 | replay | 1600 | list #ybody (342x142, 142 of 207 px) - pointer reaches the bar thumb | top element at the thumb: DIV.inline (pointer-events auto) |
 | replay | 1600 | list #ybody (342x142, 142 of 207 px) - mouse drag of the thumb | 0 -> 0 |
 | replay | 1600 | list #ybody (342x142, 142 of 207 px) - click on the track below the thumb | 0 -> 0 |
@@ -137,10 +136,6 @@ Before: the 2 console errors + 2 failed requests per width on Replay were the st
 | replay | 1600 | button.on "DAY" - pointer reaches it | covered by BUTTON#grp-start. |
 | replay | 1600 | button "09:00-12:30" - pointer reaches it | covered by BUTTON#grp-start. |
 | replay | 1600 | button.rp-j "09:15 open" - pointer reaches it | covered by BUTTON#grp-start. |
-| settings | 1600 | list .col in #pg (388x558, 558 of 653 px) - visible bar >= 10 px | drawn vsb 8 px wide |
-| settings | 1600 | list .col in #pg (388x558, 558 of 653 px) - mouse drag of the thumb | 0 -> 0 |
-| settings | 1600 | list .col in #pg (388x558, 558 of 653 px) - click on the track below the thumb | 0 -> 0 |
-| sectors | 1600 | a.sym "INDUSINDBK" -> share?s=INDUSINDBK - pointer reaches it | covered by DIV.sh-m1 |
 | replay | 1366 | list #ybody (286x74, 74 of 200 px) - pointer reaches the bar thumb | top element at the thumb: DIV.inline (pointer-events auto) |
 | replay | 1366 | list #ybody (286x74, 74 of 200 px) - mouse drag of the thumb | 0 -> 0 |
 | replay | 1366 | list #ybody (286x74, 74 of 200 px) - click on the track below the thumb | 0 -> 0 |
@@ -171,7 +166,6 @@ Before: the 2 console errors + 2 failed requests per width on Replay were the st
 | replay | 1366 | button "▼" - pointer reaches it | covered by P.note |
 | health | 1366 | list #tlTab (1331x60, 45 of 10538 px) - mouse drag of the thumb | 0 -> 0 |
 | health | 1366 | a.hv-sym "MARKET" -> share?s=MARKET - pointer reaches it | covered by DIV.hv-more |
-| sectors | 1366 | a.sym "INDUSINDBK" -> share?s=INDUSINDBK - pointer reaches it | covered by DIV.sh-m1 |
 
 ## NOCHANGE rows (the click changed nothing visible - reviewed)
 
@@ -193,8 +187,6 @@ Before: the 2 console errors + 2 failed requests per width on Replay were the st
 | scorecard | 1366 | button "MISSES FIRST" |
 | scorecard | 1366 | span.ud "▲ ▼" |
 | scorecard | 1366 | button.chip "LATE –" |
-| settings | 1366 | div.r "Charter rules not known his ru" |
-| settings | 1366 | div.r "Backstops fit room LOCK not kn" |
 | world | 1366 | span.sbtn "scroll up" |
 | analyst | 390 | span.sbtn "scroll up" |
 | chain | 390 | tr.itmc "– 166.00 72k– 1,040 68k– 0.05" |
@@ -223,10 +215,6 @@ Before: the 2 console errors + 2 failed requests per width on Replay were the st
 | rotation | 390 | span.sdx "HOSPITALS & DIAGNOSTICS" |
 | scorecard | 390 | button "MISSES FIRST" |
 | scorecard | 390 | button.chip "LATE –" |
-| settings | 390 | div.r "Charter rules not known his ru" |
-| settings | 390 | div.r "Backstops fit room LOCK not kn" |
-| settings | 390 | div.tn "1 GO NOW ▶ TEST one bright chi" |
-| settings | 390 | div.tn "2 GET READY sector ▶ TEST one " |
 | world | 390 | span.sbtn "scroll up" |
 | calendar | 390 | div.dg "DROVE TODAY pinned · % all lis" |
 | calendar | 390 | a.lk2 "F10 ›" -> futures-oi#buildup |
@@ -242,12 +230,10 @@ Before: the 2 console errors + 2 failed requests per width on Replay were the st
 | phone | 390 | div.sec "THE 15:10 LADDER rings as MY E" |
 | phone | 390 | a.m-pnl "(own-trade text hidden)" |
 | positions | 390 | span.li "MOTILALOFS" |
-| sectors | 390 | a.sh-c "LB" -> futures-oi?bu=LB |
-| sectors | 390 | a.sh-c "LB" -> futures-oi?bu=LB |
-| sectors | 390 | a "all on F10 Fut & OI ›" -> futures-oi#buildup |
 | sectors | 390 | b.sb2 "▲" |
-| sectors | 390 | b.sb2 "▼" |
 | sectors | 390 | span.chip "– left" |
+| settings | 390 | div.tn "1 GO NOW ▶ TEST one bright chi" |
+| settings | 390 | div.tn "2 GET READY sector ▶ TEST one " |
 | chain | 1600 | tr.itmc "– 166.00 72k– 1,040 68k– 0.05" |
 | chain | 1600 | tr.itmc "– 150.00 1.34L– 1,060 71k– 0.0" |
 | chain | 1600 | tr.itmp "– 6.75 1.04L0 1,220 38k+1k 15." |
@@ -271,7 +257,6 @@ Before: the 2 console errors + 2 failed requests per width on Replay were the st
 | scorecard | 1600 | button "MISSES FIRST" |
 | scorecard | 1600 | span.ud "▲ ▼" |
 | scorecard | 1600 | button.chip "LATE –" |
-| settings | 1600 | div.r "Charter rules not known his ru" |
 | world | 1600 | span.sbtn "scroll up" |
 | calendar | 1600 | div.dg "DROVE TODAY pinned · sector % " |
 | calendar | 1600 | a.lk2 "F10 ›" -> futures-oi#buildup |
@@ -283,15 +268,12 @@ Before: the 2 console errors + 2 failed requests per width on Replay were the st
 | health | 1600 | span.hv-chip "LOG 1" |
 | health | 1600 | span.hv-chip "RINGS –/6" |
 | positions | 1600 | span.li "MOTILALOFS" |
-| sectors | 1600 | a.sh-c "LB" -> futures-oi?bu=LB |
-| sectors | 1600 | a.sh-c "LB" -> futures-oi?bu=LB |
-| sectors | 1600 | a "all on F10 Fut & OI ›" -> futures-oi#buildup |
-| sectors | 1600 | b.sb2 "▲" |
-| sectors | 1600 | b.sb2 "▼" |
 | phone | 1600 | div.hero "no exit waiting GIR follows yo" |
 | phone | 1600 | div.card "(own-trade text hidden)" |
 | phone | 1600 | div.sec "THE 15:10 LADDER rings as MY E" |
 | phone | 1600 | a.m-pnl "(own-trade text hidden)" |
+| sectors | 1600 | b.sb2 "▲" |
+| sectors | 1600 | span.chip "– trades left" |
 | journal | 1366 | div.dv "NOT TAKEN · 0 GO NOW CALLS UNT" |
 | journal | 1366 | div.dv "BLOCKSnone calls GIR held back" |
 | journal | 1366 | div.dv "GIR EXITSEXIT 0 · BOOK HALF 0 " |
@@ -304,11 +286,6 @@ Before: the 2 console errors + 2 failed requests per width on Replay were the st
 | health | 1366 | span.hv-chip "LOG 1" |
 | health | 1366 | span.hv-chip "RINGS –/6" |
 | positions | 1366 | span.li "MOTILALOFS" |
-| sectors | 1366 | a.sh-c "LB" -> futures-oi?bu=LB |
-| sectors | 1366 | a.sh-c "LB" -> futures-oi?bu=LB |
-| sectors | 1366 | a "all on F10 Fut & OI ›" -> futures-oi#buildup |
-| sectors | 1366 | b.sb2 "▲" |
-| sectors | 1366 | b.sb2 "▼" |
 | desk-hunt | 1366 | a.st "STRIKE" -> desk-hunt |
 | shell | 1366 | a.sh-mark "GIR" -> desk-hunt |
 | shell | 1366 | span.sh-tab "F5 off no reload" |
@@ -317,6 +294,8 @@ Before: the 2 console errors + 2 failed requests per width on Replay were the st
 | phone | 1366 | div.card "(own-trade text hidden)" |
 | phone | 1366 | div.sec "THE 15:10 LADDER rings as MY E" |
 | phone | 1366 | a.m-pnl "(own-trade text hidden)" |
+| sectors | 1366 | b.sb2 "▲" |
+| sectors | 1366 | span.chip "– left" |
 
 ## Cut cells left (after)
 
@@ -522,8 +501,7 @@ Screenshots: D4_shots/ (every page at 1366 and 390; the P&L strip, every rupee a
 
 **R51 1600 FAIL left (after the key rows re-judged):**
 - Replay playback page (/preview/replay/, gir-v2replay) - 28 rows: about 22 x "pointer reaches it" covered by the injected "No replay running" box (#grp-idle.inline from v2/replay/inject.html, over the fixed page), 1 x START = HTTP 423 ON HOLD (by design: the replay is held until the trader calls it; the stub never forwards playback commands), list #ybody under the same box (4 rows), 2 date inputs covered by the shell top bar over the same box. Not a page file - for the replay owner (fix proposed above).
-- Settings, list .col (the GIR MODE column, 95 px taller than the screen at 1600) - 3 rows (bar width / drag / track click): the tester takes the 8 px drawn bar of the GATES panel next to it (a whole-row pager with its own up / down buttons) for the column's bar; the column itself has a real 10 px native bar, which passed every check at 1366. Test attribution, not changed before the freeze.
-- Sectors, a.sym "INDUSINDBK" (first F&O MOVERS row) "covered by DIV.sh-m1" - only after the tester's scrollIntoView(center) on the first row of the list; on a fresh page the row is clear (elementFromPoint = the link). Same row at 1366 / 390.
+- Settings list .col (3 rows) and Sectors INDUSINDBK (1 row) were TEST faults, fixed in r51all.py 21 Nov 23:40 and re-run at 1366 / 1600 / 390: (1) the bar finder took the GATES panel's drawn 8 px pager bar (a panel INSIDE the scrolling column) for the column's bar - a bar inside the box scrolls with it, so it is never the box's bar; the column's own 10 px native bar now passes (bar, pointer, drag, wheel; keys re-judged: End reached the end). (2) INDUSINDBK was tested after the tester's own click on the movers bar's "BAN 0" chip, which (rightly) hides every row; the hidden row has no box, so the aim fell on (1,1) = the shell strip. A control hidden by an earlier click is now NOT RUN "hidden by an earlier click (a filter / tab now shows other rows)", also on the fresh-load retry (the bar remembers the filter).
 - Other widths (re-run of the changed pages): 1366 health #tlTab (TEST LOG table, now a shorter band) native-bar drag 0 -> 0 (the same row failed before tonight) and one link under the "▼ n more below" box (by design: the box is the cue over the cut-off last row, a click scrolls); 390 shell #page swipe down after a swipe up started on the F1 sector list and stayed (0 -> 424 -> 424) - open, re-check on the phone.
 - Fixed tonight: health 12 rows (TEST LOG band left the panels 60-80 px tall, 7 px rails without drag - now capped band, 11 px draggable rails, wheel over "more below"), phone 1 row (no bar for a mouse), calendar 390 pins.
 **NOT RUN (1600):** "cap per page reached" (25 controls, 2 per kind) on 20 pages; native drop-downs (select, checked by hand) on chain, desk-hunt x2, health x2, journal, news, replay x3, rotation, scorecard, sectors; "gone after an earlier click re-drew the page" - news pib.gov.in link (the list re-drew), reference THEMES / HELD / CHANGED / THEME MAP chips (a chip click re-draws the chip row), desk-hunt DOWN chip.

@@ -2402,321 +2402,6 @@
 "evidence": "cap per page reached"
 },
 {
-"page": "settings",
-"vp": "1366",
-"control": "page opens without an error",
-"result": "PASS",
-"evidence": "no console / page error, no failed request"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "list .col in #pg (329x434, 434 of 729 px) - visible bar >= 10 px",
-"result": "PASS",
-"evidence": "native scrollbar 10 px"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "list .col in #pg (329x434, 434 of 729 px) - pointer reaches the bar",
-"result": "PASS",
-"evidence": "at 1010,435"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "list .col in #pg (329x434, 434 of 729 px) - mouse drag of the thumb",
-"result": "PASS",
-"evidence": "0 -> 128"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "list .col in #pg (329x434, 434 of 729 px) - mouse wheel down / up",
-"result": "PASS",
-"evidence": "0 -> 240 -> 0"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "list .col in #pg (329x434, 434 of 729 px) - keys PageDown / End / Home / PageUp",
-"result": "PASS",
-"evidence": "focus on list: 0 -> 295 -> 295 -> 0 -> 0 (max 295) (re-judged: End reached the end)"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "button.thb \"DARK\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "button.thb \"LIGHT\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "button.thb \"AUTO\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "button.btn \"CHANGE E\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "button.btn \"CHANGE E\" - Esc closes what it opened",
-"result": "PASS",
-"evidence": "open boxes 0 -> 1 -> 0"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a.btn \"WEEKLY REVIEW \u203a\" -> journal#review",
-"result": "PASS",
-"evidence": "opened /preview/journal#review (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a.btn \"WEEKLY REVIEW \u203a\" -> journal#review - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a.btn \"?\" -> help#settings",
-"result": "PASS",
-"evidence": "opened /preview/help#settings (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a.btn \"?\" -> help#settings - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a.tile \"(own-trade text hidden)\" -> #",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a.tile \"ROOM AT STOPS \u2013 3 open\" -> #",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a.go \"LB SB SC LU OI build-up F10 \u203a\" -> futures-oi#buildup",
-"result": "PASS",
-"evidence": "opened /preview/futures-oi#buildup (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a.go \"LB SB SC LU OI build-up F10 \u203a\" -> futures-oi#buildup - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a.go \"\u25b2 \u25bc F&O movers F2 \u203a\" -> sectors#movers",
-"result": "PASS",
-"evidence": "opened /preview/sectors#movers (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a.go \"\u25b2 \u25bc F&O movers F2 \u203a\" -> sectors#movers - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a \"PREPARE \u21e7F1\" -> morning",
-"result": "PASS",
-"evidence": "opened /preview/morning (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a \"PREPARE \u21e7F1\" -> morning - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a \"FIND F2\" -> sectors",
-"result": "PASS",
-"evidence": "opened /preview/sectors (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a \"FIND F2\" -> sectors - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a \"SHARE F7\" -> share",
-"result": "PASS",
-"evidence": "opened /preview/share (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a \"SHARE F7\" -> share - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a \"STRIKE F9\" -> chain",
-"result": "PASS",
-"evidence": "opened /preview/chain (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a \"STRIKE F9\" -> chain - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a \"PLAN Space\" -> plan-card",
-"result": "PASS",
-"evidence": "opened /preview/plan-card (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a \"PLAN Space\" -> plan-card - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a \"ENTER Kite\" -> plan-card#kite",
-"result": "PASS",
-"evidence": "opened /preview/plan-card#kite (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a \"ENTER Kite\" -> plan-card#kite - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a \"MANAGE F6\" -> positions",
-"result": "PASS",
-"evidence": "opened /preview/positions (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a \"MANAGE F6\" -> positions - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a \"REVIEW \u21e7F6\" -> journal",
-"result": "PASS",
-"evidence": "opened /preview/journal (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "a \"REVIEW \u21e7F6\" -> journal - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "button \"\u25bc\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "button.on \"RULES\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "button \"PLAN\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "div.r \"Charter rules not known his ru\"",
-"result": "NOCHANGE",
-"evidence": "no visible change after the click"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "div.r \"1 OPTIONS FIRST buys CE / PE \u00b7\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "button \"\u25bc\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "div.r \"Backstops fit room LOCK not kn\"",
-"result": "NOCHANGE",
-"evidence": "no visible change after the click"
-},
-{
-"page": "settings",
-"vp": "1366",
-"control": "6 more controls of the same kinds",
-"result": "NOT RUN",
-"evidence": "cap per page reached"
-},
-{
 "page": "world",
 "vp": "1366",
 "control": "page opens without an error",
@@ -6847,265 +6532,6 @@
 "evidence": "cap per page reached"
 },
 {
-"page": "settings",
-"vp": "390",
-"control": "page opens without an error",
-"result": "PASS",
-"evidence": "no console / page error, no failed request"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "list #page (390x660, 660 of 3322 px) - finger swipe up / down",
-"result": "PASS",
-"evidence": "0 -> 245 -> 0"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "button.thb \"DARK\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "button.thb \"LIGHT\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "button.thb \"AUTO\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "button.btn \"CHANGE E\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "button.btn \"CHANGE E\" - Esc closes what it opened",
-"result": "PASS",
-"evidence": "open boxes 0 -> 1 -> 0"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "a.btn \"Old page (week 1): girtrader.c\" -> /old",
-"result": "PASS",
-"evidence": "opened /old (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "a.btn \"Old page (week 1): girtrader.c\" -> /old - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "a.btn \"WEEKLY REVIEW \u203a\" -> journal#review",
-"result": "PASS",
-"evidence": "opened /preview/journal#review (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "a.btn \"WEEKLY REVIEW \u203a\" -> journal#review - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "a.btn \"?\" -> help#settings",
-"result": "PASS",
-"evidence": "opened /preview/help#settings (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "a.btn \"?\" -> help#settings - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "a.tile \"(own-trade text hidden)\" -> #",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "a.tile \"ROOM AT STOPS \u2013 3 open\" -> #",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "a.go \"LB SB SC LU OI build-up F10 \u203a\" -> futures-oi#buildup",
-"result": "PASS",
-"evidence": "opened /preview/futures-oi#buildup (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "a.go \"LB SB SC LU OI build-up F10 \u203a\" -> futures-oi#buildup - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "a.go \"\u25b2 \u25bc F&O movers F2 \u203a\" -> sectors#movers",
-"result": "PASS",
-"evidence": "opened /preview/sectors#movers (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "a.go \"\u25b2 \u25bc F&O movers F2 \u203a\" -> sectors#movers - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "button \"\u25bc\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "button.on \"RULES\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "button \"PLAN\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "div.r \"Charter rules not known his ru\"",
-"result": "NOCHANGE",
-"evidence": "no visible change after the tap"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "div.r \"1 OPTIONS FIRST buys CE / PE \u00b7\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "div.r \"2 NRI \u00b7 NRO HARD no commodity \"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "button \"\u25bc\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "div.r \"Backstops fit room LOCK not kn\"",
-"result": "NOCHANGE",
-"evidence": "no visible change after the tap"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "a.sym \"MANAPPURAM\" -> share?s=MANAPPURAM",
-"result": "PASS",
-"evidence": "opened /preview/share?s=MANAPPURAM (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "a.sym \"MANAPPURAM\" -> share?s=MANAPPURAM - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "a.sym \"AMBUJACEM\" -> share?s=AMBUJACEM",
-"result": "PASS",
-"evidence": "opened /preview/share?s=AMBUJACEM (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "a.sym \"AMBUJACEM\" -> share?s=AMBUJACEM - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "button.thb \"DARK\"",
-"result": "NOT RUN",
-"evidence": "gone after an earlier click re-drew the page"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "button.sw \"OFF\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "div.tn \"1 GO NOW \u25b6 TEST one bright chi\"",
-"result": "NOCHANGE",
-"evidence": "no visible change after the tap"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "div.tn \"2 GET READY sector \u25b6 TEST one \"",
-"result": "NOCHANGE",
-"evidence": "no visible change after the tap"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "div.spc \"DARK PE CE \u2212 + LB SB LEADER\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "390",
-"control": "2 more controls of the same kinds",
-"result": "NOT RUN",
-"evidence": "cap per page reached"
-},
-{
 "page": "world",
 "vp": "390",
 "control": "page opens without an error",
@@ -9584,6 +9010,90 @@
 "evidence": "cap per page reached"
 },
 {
+"page": "share",
+"vp": "390",
+"control": "page opens without an error",
+"result": "PASS",
+"evidence": "no console / page error, no failed request"
+},
+{
+"page": "share",
+"vp": "390",
+"control": "a.btn \"Plan card Space\" -> plan-card",
+"result": "PASS",
+"evidence": "opened /preview/plan-card (HTTP 200)"
+},
+{
+"page": "share",
+"vp": "390",
+"control": "a.btn \"Plan card Space\" -> plan-card - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/share"
+},
+{
+"page": "share",
+"vp": "390",
+"control": "a.btn \"Chain F9\" -> chain",
+"result": "PASS",
+"evidence": "opened /preview/chain (HTTP 200)"
+},
+{
+"page": "share",
+"vp": "390",
+"control": "a.btn \"Chain F9\" -> chain - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/share"
+},
+{
+"page": "share",
+"vp": "390",
+"control": "button.btn \"Ring R\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "share",
+"vp": "390",
+"control": "a.btn \"Ask Q\" -> analyst",
+"result": "PASS",
+"evidence": "opened /preview/analyst (HTTP 200)"
+},
+{
+"page": "share",
+"vp": "390",
+"control": "a.btn \"Ask Q\" -> analyst - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/share"
+},
+{
+"page": "share",
+"vp": "390",
+"control": "button.tab \"ALL \u2605\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "share",
+"vp": "390",
+"control": "button.tab \"CHART\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "share",
+"vp": "390",
+"control": "button.tab \"STRIKE \u2605\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "share",
+"vp": "390",
+"control": "div.pane \"type / to pick a share\"",
+"result": "PASS",
+"evidence": "already the selected one - nothing to change"
+},
+{
 "page": "sectors",
 "vp": "390",
 "control": "page opens without an error",
@@ -9595,7 +9105,7 @@
 "vp": "390",
 "control": "list #page (390x622, 622 of 2671 px) - finger swipe up / down",
 "result": "PASS",
-"evidence": "0 -> 245 -> 0"
+"evidence": "0 -> 416 -> 0"
 },
 {
 "page": "sectors",
@@ -9609,14 +9119,14 @@
 "vp": "390",
 "control": "list #bdb (372x560, 560 of 1030 px) - finger swipe up / down",
 "result": "PASS",
-"evidence": "0 -> 403 -> 0"
+"evidence": "0 -> 421 -> 176"
 },
 {
 "page": "sectors",
 "vp": "390",
 "control": "list #cb (372x560, 560 of 1401 px) - finger swipe up / down",
 "result": "PASS",
-"evidence": "0 -> 430 -> 2"
+"evidence": "0 -> 437 -> 8"
 },
 {
 "page": "sectors",
@@ -9754,37 +9264,44 @@
 {
 "page": "sectors",
 "vp": "390",
-"control": "a.sym \"INDUSINDBK\" -> share?s=INDUSINDBK - pointer reaches it",
-"result": "FAIL",
-"evidence": "covered by DIV.sh-m1"
+"control": "a.sym \"INDUSINDBK\" -> share?s=INDUSINDBK",
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
 },
 {
 "page": "sectors",
 "vp": "390",
 "control": "a.sh-c \"LB\" -> futures-oi?bu=LB",
-"result": "NOCHANGE",
-"evidence": "no visible change after the tap"
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
 },
 {
 "page": "sectors",
 "vp": "390",
 "control": "a.sym \"CUB\" -> share?s=CUB",
-"result": "PASS",
-"evidence": "page changed"
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
 },
 {
 "page": "sectors",
 "vp": "390",
 "control": "a.sh-c \"LB\" -> futures-oi?bu=LB",
-"result": "NOCHANGE",
-"evidence": "no visible change after the tap"
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
 },
 {
 "page": "sectors",
 "vp": "390",
 "control": "a \"all on F10 Fut & OI \u203a\" -> futures-oi#buildup",
-"result": "NOCHANGE",
-"evidence": "no visible change after the tap"
+"result": "PASS",
+"evidence": "opened /preview/futures-oi#buildup (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "390",
+"control": "a \"all on F10 Fut & OI \u203a\" -> futures-oi#buildup - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
 },
 {
 "page": "sectors",
@@ -9797,8 +9314,8 @@
 "page": "sectors",
 "vp": "390",
 "control": "b.sb2 \"\u25bc\"",
-"result": "NOCHANGE",
-"evidence": "no visible change after the tap"
+"result": "PASS",
+"evidence": "page changed"
 },
 {
 "page": "sectors",
@@ -9880,93 +9397,303 @@
 {
 "page": "sectors",
 "vp": "390",
+"control": "a.mini \"F3 \u203a\" -> rotation",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "390",
+"control": "select select \"GIR order day % RS breadth (sh\"",
+"result": "NOT RUN",
+"evidence": "native drop-down (checked by hand)"
+},
+{
+"page": "sectors",
+"vp": "390",
+"control": "div.srow \"1 \u25be Hospitals & diagnostics 15\"",
+"result": "PASS",
+"evidence": "page changed (hash sd=hospitals%20%26%20diagnosti)"
+},
+{
+"page": "sectors",
+"vp": "390",
+"control": "div.srow \"1 \u25be Hospitals & diagnostics 15\" - Esc closes what it opened",
+"result": "PASS",
+"evidence": "open boxes 0 -> 1 -> 0"
+},
+{
+"page": "sectors",
+"vp": "390",
+"control": "div.srow \"2 \u25b8 Banks 34 listed shares, ma\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "390",
+"control": "div.srow \"3 \u25b8 Realty 17 listed shares, m\"",
+"result": "PASS",
+"evidence": "page changed (hash sd=realty)"
+},
+{
+"page": "sectors",
+"vp": "390",
+"control": "div.srow \"3 \u25b8 Realty 17 listed shares, m\" - Esc closes what it opened",
+"result": "PASS",
+"evidence": "open boxes 0 -> 1 -> 0"
+},
+{
+"page": "sectors",
+"vp": "390",
 "control": "38 more controls of the same kinds",
 "result": "NOT RUN",
 "evidence": "cap per page reached"
 },
 {
-"page": "share",
+"page": "settings",
 "vp": "390",
 "control": "page opens without an error",
 "result": "PASS",
 "evidence": "no console / page error, no failed request"
 },
 {
-"page": "share",
+"page": "settings",
 "vp": "390",
-"control": "a.btn \"Plan card Space\" -> plan-card",
+"control": "list #page (390x622, 622 of 3322 px) - finger swipe up / down",
 "result": "PASS",
-"evidence": "opened /preview/plan-card (HTTP 200)"
+"evidence": "0 -> 423 -> 0"
 },
 {
-"page": "share",
+"page": "settings",
 "vp": "390",
-"control": "a.btn \"Plan card Space\" -> plan-card - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/share"
-},
-{
-"page": "share",
-"vp": "390",
-"control": "a.btn \"Chain F9\" -> chain",
-"result": "PASS",
-"evidence": "opened /preview/chain (HTTP 200)"
-},
-{
-"page": "share",
-"vp": "390",
-"control": "a.btn \"Chain F9\" -> chain - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/share"
-},
-{
-"page": "share",
-"vp": "390",
-"control": "button.btn \"Ring R\"",
+"control": "button.thb \"DARK\"",
 "result": "PASS",
 "evidence": "page changed"
 },
 {
-"page": "share",
+"page": "settings",
 "vp": "390",
-"control": "a.btn \"Ask Q\" -> analyst",
-"result": "PASS",
-"evidence": "opened /preview/analyst (HTTP 200)"
-},
-{
-"page": "share",
-"vp": "390",
-"control": "a.btn \"Ask Q\" -> analyst - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/share"
-},
-{
-"page": "share",
-"vp": "390",
-"control": "button.tab \"ALL \u2605\"",
+"control": "button.thb \"LIGHT\"",
 "result": "PASS",
 "evidence": "page changed"
 },
 {
-"page": "share",
+"page": "settings",
 "vp": "390",
-"control": "button.tab \"CHART\"",
+"control": "button.thb \"AUTO\"",
 "result": "PASS",
 "evidence": "page changed"
 },
 {
-"page": "share",
+"page": "settings",
 "vp": "390",
-"control": "button.tab \"STRIKE \u2605\"",
+"control": "button.btn \"CHANGE E\"",
 "result": "PASS",
 "evidence": "page changed"
 },
 {
-"page": "share",
+"page": "settings",
 "vp": "390",
-"control": "div.pane \"type / to pick a share\"",
+"control": "button.btn \"CHANGE E\" - Esc closes what it opened",
 "result": "PASS",
-"evidence": "already the selected one - nothing to change"
+"evidence": "open boxes 0 -> 1 -> 0"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "a.btn \"Old page (week 1): girtrader.c\" -> /old",
+"result": "PASS",
+"evidence": "opened /old (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "a.btn \"Old page (week 1): girtrader.c\" -> /old - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "a.btn \"WEEKLY REVIEW \u203a\" -> journal#review",
+"result": "PASS",
+"evidence": "opened /preview/journal#review (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "a.btn \"WEEKLY REVIEW \u203a\" -> journal#review - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "a.btn \"?\" -> help#settings",
+"result": "PASS",
+"evidence": "opened /preview/help#settings (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "a.btn \"?\" -> help#settings - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "a.tile \"(own-trade text hidden)\" -> #",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "a.tile \"ROOM AT STOPS \u2013 3 open\" -> #",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "a.go \"LB SB SC LU OI build-up F10 \u203a\" -> futures-oi#buildup",
+"result": "PASS",
+"evidence": "opened /preview/futures-oi#buildup (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "a.go \"LB SB SC LU OI build-up F10 \u203a\" -> futures-oi#buildup - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "a.go \"\u25b2 \u25bc F&O movers F2 \u203a\" -> sectors#movers",
+"result": "PASS",
+"evidence": "opened /preview/sectors#movers (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "a.go \"\u25b2 \u25bc F&O movers F2 \u203a\" -> sectors#movers - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "button \"\u25bc\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "button.on \"RULES\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "button \"PLAN\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "div.r \"Charter rules not known his ru\"",
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "div.r \"1 OPTIONS FIRST buys CE / PE \u00b7\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "div.r \"2 NRI \u00b7 NRO HARD no commodity \"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "button \"\u25bc\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "div.r \"Backstops fit room LOCK not kn\"",
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "a.sym \"MANAPPURAM\" -> share?s=MANAPPURAM",
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "a.sym \"AMBUJACEM\" -> share?s=AMBUJACEM",
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "button.thb \"DARK\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "button.sw \"OFF\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "div.tn \"1 GO NOW \u25b6 TEST one bright chi\"",
+"result": "NOCHANGE",
+"evidence": "no visible change after the tap"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "div.tn \"2 GET READY sector \u25b6 TEST one \"",
+"result": "NOCHANGE",
+"evidence": "no visible change after the tap"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "div.spc \"DARK PE CE \u2212 + LB SB LEADER\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "390",
+"control": "div.spc \"LIGHT PE CE \u2212 + LB SB LEADER\"",
+"result": "PASS",
+"evidence": "page changed"
 },
 {
 "page": "analyst",
@@ -14484,335 +14211,6 @@
 "evidence": "cap per page reached"
 },
 {
-"page": "settings",
-"vp": "1600",
-"control": "page opens without an error",
-"result": "PASS",
-"evidence": "no console / page error, no failed request"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "list .col in #pg (388x558, 558 of 653 px) - visible bar >= 10 px",
-"result": "FAIL",
-"evidence": "drawn vsb 8 px wide"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "list .col in #pg (388x558, 558 of 653 px) - pointer reaches the bar thumb",
-"result": "PASS",
-"evidence": "top element at the thumb: I. (pointer-events auto)"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "list .col in #pg (388x558, 558 of 653 px) - mouse drag of the thumb",
-"result": "FAIL",
-"evidence": "0 -> 0"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "list .col in #pg (388x558, 558 of 653 px) - click on the track below the thumb",
-"result": "FAIL",
-"evidence": "0 -> 0"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "list .col in #pg (388x558, 558 of 653 px) - mouse wheel down / up",
-"result": "PASS",
-"evidence": "0 -> 95 -> 0"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "list .col in #pg (388x558, 558 of 653 px) - keys PageDown / End / Home / PageUp",
-"result": "PASS",
-"evidence": "focus on list: 0 -> 95 -> 95 -> 0 -> 0 (max 95) (re-judged: End reached the end)"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "button.thb \"DARK\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "button.thb \"LIGHT\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "button.thb \"AUTO\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "button.btn \"CHANGE A RULE E\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "button.btn \"CHANGE A RULE E\" - Esc closes what it opened",
-"result": "PASS",
-"evidence": "open boxes 0 -> 1 -> 0"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a.btn \"Old page (week 1): girtrader.c\" -> /old",
-"result": "PASS",
-"evidence": "opened /old (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a.btn \"Old page (week 1): girtrader.c\" -> /old - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a.btn \"WEEKLY REVIEW \u203a\" -> journal#review",
-"result": "PASS",
-"evidence": "opened /preview/journal#review (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a.btn \"WEEKLY REVIEW \u203a\" -> journal#review - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a.btn \"?\" -> help#settings",
-"result": "PASS",
-"evidence": "opened /preview/help#settings (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a.btn \"?\" -> help#settings - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a.tile \"(own-trade text hidden)\" -> #",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a.tile \"ROOM AT STOPS \u2013 3 open\" -> #",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a.go \"LB SB SC LU OI build-up F10 Fu\" -> futures-oi#buildup",
-"result": "PASS",
-"evidence": "opened /preview/futures-oi#buildup (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a.go \"LB SB SC LU OI build-up F10 Fu\" -> futures-oi#buildup - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a.go \"\u25b2 \u25bc F&O movers F2 Sectors \u203a\" -> sectors#movers",
-"result": "PASS",
-"evidence": "opened /preview/sectors#movers (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a.go \"\u25b2 \u25bc F&O movers F2 Sectors \u203a\" -> sectors#movers - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a \"PREPARE \u21e7F1\" -> morning",
-"result": "PASS",
-"evidence": "opened /preview/morning (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a \"PREPARE \u21e7F1\" -> morning - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a \"FIND F2\" -> sectors",
-"result": "PASS",
-"evidence": "opened /preview/sectors (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a \"FIND F2\" -> sectors - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a \"SHARE F7\" -> share",
-"result": "PASS",
-"evidence": "opened /preview/share (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a \"SHARE F7\" -> share - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a \"STRIKE F9\" -> chain",
-"result": "PASS",
-"evidence": "opened /preview/chain (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a \"STRIKE F9\" -> chain - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a \"PLAN Space\" -> plan-card",
-"result": "PASS",
-"evidence": "opened /preview/plan-card (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a \"PLAN Space\" -> plan-card - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a \"ENTER Kite\" -> plan-card#kite",
-"result": "PASS",
-"evidence": "opened /preview/plan-card#kite (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a \"ENTER Kite\" -> plan-card#kite - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a \"MANAGE F6\" -> positions",
-"result": "PASS",
-"evidence": "opened /preview/positions (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a \"MANAGE F6\" -> positions - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a \"REVIEW \u21e7F6\" -> journal",
-"result": "PASS",
-"evidence": "opened /preview/journal (HTTP 200)"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "a \"REVIEW \u21e7F6\" -> journal - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/settings"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "button \"\u25bc\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "button.on \"RULES\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "button \"PLAN\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "div.r \"Charter rules not known his ru\"",
-"result": "NOCHANGE",
-"evidence": "no visible change after the click"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "div.r \"1 OPTIONS FIRST buys CE / PE \u00b7\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "div.r \"2 NRI \u00b7 NRO HARD no commodity \"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "settings",
-"vp": "1600",
-"control": "10 more controls of the same kinds",
-"result": "NOT RUN",
-"evidence": "cap per page reached"
-},
-{
 "page": "world",
 "vp": "1600",
 "control": "page opens without an error",
@@ -17921,419 +17319,6 @@
 "evidence": "cap per page reached"
 },
 {
-"page": "sectors",
-"vp": "1600",
-"control": "page opens without an error",
-"result": "PASS",
-"evidence": "no console / page error, no failed request"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #mvb (390x334, 334 of 638 px) - visible bar >= 10 px",
-"result": "PASS",
-"evidence": "drawn vsb sd-drag 14 px wide"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #mvb (390x334, 334 of 638 px) - pointer reaches the bar thumb",
-"result": "PASS",
-"evidence": "top element at the thumb: I. (pointer-events auto)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #mvb (390x334, 334 of 638 px) - mouse drag of the thumb",
-"result": "PASS",
-"evidence": "0 -> 138"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #mvb (390x334, 334 of 638 px) - click on the track below the thumb",
-"result": "PASS",
-"evidence": "0 -> 304"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #mvb (390x334, 334 of 638 px) - mouse wheel down / up",
-"result": "PASS",
-"evidence": "0 -> 240 -> 0"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #mvb (390x334, 334 of 638 px) - keys PageDown / End / Home / PageUp",
-"result": "PASS",
-"evidence": "focus on list: 0 -> 292 -> 304 -> 0 -> 0 (max 304)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #bdb (762x266, 266 of 932 px) - visible bar >= 10 px",
-"result": "PASS",
-"evidence": "drawn vsb sd-drag 14 px wide"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #bdb (762x266, 266 of 932 px) - pointer reaches the bar thumb",
-"result": "PASS",
-"evidence": "top element at the thumb: I. (pointer-events auto)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #bdb (762x266, 266 of 932 px) - mouse drag of the thumb",
-"result": "PASS",
-"evidence": "0 -> 217"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #bdb (762x266, 266 of 932 px) - click on the track below the thumb",
-"result": "PASS",
-"evidence": "0 -> 475"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #bdb (762x266, 266 of 932 px) - mouse wheel down / up",
-"result": "PASS",
-"evidence": "0 -> 240 -> 0"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #bdb (762x266, 266 of 932 px) - keys PageDown / End / Home / PageUp",
-"result": "PASS",
-"evidence": "focus on list: 0 -> 232 -> 666 -> 0 -> 0 (max 666)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #cb (402x380, 380 of 1370 px) - visible bar >= 10 px",
-"result": "PASS",
-"evidence": "drawn vsb sd-drag 14 px wide"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #cb (402x380, 380 of 1370 px) - pointer reaches the bar thumb",
-"result": "PASS",
-"evidence": "top element at the thumb: I. (pointer-events auto)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #cb (402x380, 380 of 1370 px) - mouse drag of the thumb",
-"result": "PASS",
-"evidence": "0 -> 237"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #cb (402x380, 380 of 1370 px) - click on the track below the thumb",
-"result": "PASS",
-"evidence": "0 -> 692"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #cb (402x380, 380 of 1370 px) - mouse wheel down / up",
-"result": "PASS",
-"evidence": "0 -> 240 -> 0"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "list #cb (402x380, 380 of 1370 px) - keys PageDown / End / Home / PageUp",
-"result": "PASS",
-"evidence": "focus on list: 0 -> 332 -> 990 -> 0 -> 0 (max 990)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a \"PREP\" -> morning",
-"result": "PASS",
-"evidence": "opened /preview/morning (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a \"PREP\" -> morning - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a \"SHARE + STRIKE\" -> share?s=FORTIS",
-"result": "PASS",
-"evidence": "opened /preview/share?s=FORTIS (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a \"SHARE + STRIKE\" -> share?s=FORTIS - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a \"PLAN\" -> plan-card",
-"result": "PASS",
-"evidence": "opened /preview/plan-card (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a \"PLAN\" -> plan-card - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a \"MANAGE\" -> positions",
-"result": "PASS",
-"evidence": "opened /preview/positions (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a \"MANAGE\" -> positions - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a \"REVIEW\" -> journal",
-"result": "PASS",
-"evidence": "opened /preview/journal (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a \"REVIEW\" -> journal - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a \"NIFTY \u2013 VWAP \u00b7 BANKNIFTY \u2013 VWA\" -> market#NIFTY",
-"result": "PASS",
-"evidence": "opened /preview/market#NIFTY (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a \"NIFTY \u2013 VWAP \u00b7 BANKNIFTY \u2013 VWA\" -> market#NIFTY - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.mini \"10 drivers \u21e7F2 \u203a\" -> world",
-"result": "PASS",
-"evidence": "opened /preview/world (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.mini \"10 drivers \u21e7F2 \u203a\" -> world - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.mini \"F8 \u203a\" -> analyst",
-"result": "PASS",
-"evidence": "opened /preview/analyst (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.mini \"F8 \u203a\" -> analyst - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.sh-c \"LB 3/3\" -> futures-oi?bu=LB",
-"result": "PASS",
-"evidence": "opened /preview/futures-oi?bu=LB (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.sh-c \"LB 3/3\" -> futures-oi?bu=LB - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.mini \"F6 \u203a\" -> positions",
-"result": "PASS",
-"evidence": "opened /preview/positions (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.mini \"F6 \u203a\" -> positions - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.lk \"HDFCBANK\" -> share?s=HDFCBANK",
-"result": "PASS",
-"evidence": "opened /preview/share?s=HDFCBANK (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.lk \"HDFCBANK\" -> share?s=HDFCBANK - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.lk \"MOTILALOFS\" -> share?s=MOTILALOFS",
-"result": "PASS",
-"evidence": "opened /preview/share?s=MOTILALOFS (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.lk \"MOTILALOFS\" -> share?s=MOTILALOFS - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.hlink \"full list + OI build-up \u2192 F10\" -> futures-oi#buildup",
-"result": "PASS",
-"evidence": "opened /preview/futures-oi#buildup (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.hlink \"full list + OI build-up \u2192 F10\" -> futures-oi#buildup - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "button.gsb-b \"HIGH \u2192 LOW\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "button.gsb-b \"LOW \u2192 HIGH\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "select select \"GIR order day % OI chg share b\"",
-"result": "NOT RUN",
-"evidence": "native drop-down (checked by hand)"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "button.gsb-c \"ALL 20\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "button.gsb-c \"BAN 0\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.sym \"INDUSINDBK\" -> share?s=INDUSINDBK - pointer reaches it",
-"result": "FAIL",
-"evidence": "covered by DIV.sh-m1"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.sh-c \"LB\" -> futures-oi?bu=LB",
-"result": "NOCHANGE",
-"evidence": "no visible change after the click"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.sym \"CUB\" -> share?s=CUB",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a.sh-c \"LB\" -> futures-oi?bu=LB",
-"result": "NOCHANGE",
-"evidence": "no visible change after the click"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "a \"all on F10 Fut & OI \u203a\" -> futures-oi#buildup",
-"result": "NOCHANGE",
-"evidence": "no visible change after the click"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "b.sb2 \"\u25b2\"",
-"result": "NOCHANGE",
-"evidence": "no visible change after the click"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "b.sb2 \"\u25bc\"",
-"result": "NOCHANGE",
-"evidence": "no visible change after the click"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "span.chip \"GO NOW 0\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "sectors",
-"vp": "1600",
-"control": "51 more controls of the same kinds",
-"result": "NOT RUN",
-"evidence": "cap per page reached"
-},
-{
 "page": "share",
 "vp": "1600",
 "control": "page opens without an error",
@@ -18778,6 +17763,790 @@
 "page": "phone",
 "vp": "1600",
 "control": "1 more controls of the same kinds",
+"result": "NOT RUN",
+"evidence": "cap per page reached"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "page opens without an error",
+"result": "PASS",
+"evidence": "no console / page error, no failed request"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #mvb (390x334, 334 of 638 px) - visible bar >= 10 px",
+"result": "PASS",
+"evidence": "drawn vsb sd-drag 14 px wide"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #mvb (390x334, 334 of 638 px) - pointer reaches the bar thumb",
+"result": "PASS",
+"evidence": "top element at the thumb: I. (pointer-events auto)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #mvb (390x334, 334 of 638 px) - mouse drag of the thumb",
+"result": "PASS",
+"evidence": "0 -> 138"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #mvb (390x334, 334 of 638 px) - click on the track below the thumb",
+"result": "PASS",
+"evidence": "0 -> 304"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #mvb (390x334, 334 of 638 px) - mouse wheel down / up",
+"result": "PASS",
+"evidence": "0 -> 240 -> 0"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #mvb (390x334, 334 of 638 px) - keys PageDown / End / Home / PageUp",
+"result": "PASS",
+"evidence": "focus on list: 0 -> 292 -> 304 -> 0 -> 0 (max 304)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #bdb (762x266, 266 of 932 px) - visible bar >= 10 px",
+"result": "PASS",
+"evidence": "drawn vsb sd-drag 14 px wide"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #bdb (762x266, 266 of 932 px) - pointer reaches the bar thumb",
+"result": "PASS",
+"evidence": "top element at the thumb: I. (pointer-events auto)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #bdb (762x266, 266 of 932 px) - mouse drag of the thumb",
+"result": "PASS",
+"evidence": "0 -> 217"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #bdb (762x266, 266 of 932 px) - click on the track below the thumb",
+"result": "PASS",
+"evidence": "0 -> 475"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #bdb (762x266, 266 of 932 px) - mouse wheel down / up",
+"result": "PASS",
+"evidence": "0 -> 240 -> 0"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #bdb (762x266, 266 of 932 px) - keys PageDown / End / Home / PageUp",
+"result": "PASS",
+"evidence": "focus on list: 0 -> 232 -> 666 -> 0 -> 0 (max 666)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #cb (402x380, 380 of 1370 px) - visible bar >= 10 px",
+"result": "PASS",
+"evidence": "drawn vsb sd-drag 14 px wide"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #cb (402x380, 380 of 1370 px) - pointer reaches the bar thumb",
+"result": "PASS",
+"evidence": "top element at the thumb: I. (pointer-events auto)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #cb (402x380, 380 of 1370 px) - mouse drag of the thumb",
+"result": "PASS",
+"evidence": "0 -> 237"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #cb (402x380, 380 of 1370 px) - click on the track below the thumb",
+"result": "PASS",
+"evidence": "0 -> 692"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #cb (402x380, 380 of 1370 px) - mouse wheel down / up",
+"result": "PASS",
+"evidence": "0 -> 240 -> 0"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "list #cb (402x380, 380 of 1370 px) - keys PageDown / End / Home / PageUp",
+"result": "PASS",
+"evidence": "focus on list: 0 -> 332 -> 990 -> 0 -> 0 (max 990)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a \"PREP\" -> morning",
+"result": "PASS",
+"evidence": "opened /preview/morning (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a \"PREP\" -> morning - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a \"SHARE + STRIKE\" -> share?s=FORTIS",
+"result": "PASS",
+"evidence": "opened /preview/share?s=FORTIS (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a \"SHARE + STRIKE\" -> share?s=FORTIS - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a \"PLAN\" -> plan-card",
+"result": "PASS",
+"evidence": "opened /preview/plan-card (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a \"PLAN\" -> plan-card - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a \"MANAGE\" -> positions",
+"result": "PASS",
+"evidence": "opened /preview/positions (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a \"MANAGE\" -> positions - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a \"REVIEW\" -> journal",
+"result": "PASS",
+"evidence": "opened /preview/journal (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a \"REVIEW\" -> journal - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a \"NIFTY \u2013 VWAP \u00b7 BANKNIFTY \u2013 VWA\" -> market#NIFTY",
+"result": "PASS",
+"evidence": "opened /preview/market#NIFTY (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a \"NIFTY \u2013 VWAP \u00b7 BANKNIFTY \u2013 VWA\" -> market#NIFTY - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.mini \"10 drivers \u21e7F2 \u203a\" -> world",
+"result": "PASS",
+"evidence": "opened /preview/world (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.mini \"10 drivers \u21e7F2 \u203a\" -> world - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.mini \"F8 \u203a\" -> analyst",
+"result": "PASS",
+"evidence": "opened /preview/analyst (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.mini \"F8 \u203a\" -> analyst - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.sh-c \"LB 3/3\" -> futures-oi?bu=LB",
+"result": "PASS",
+"evidence": "opened /preview/futures-oi?bu=LB (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.sh-c \"LB 3/3\" -> futures-oi?bu=LB - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.mini \"F6 \u203a\" -> positions",
+"result": "PASS",
+"evidence": "opened /preview/positions (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.mini \"F6 \u203a\" -> positions - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.lk \"HDFCBANK\" -> share?s=HDFCBANK",
+"result": "PASS",
+"evidence": "opened /preview/share?s=HDFCBANK (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.lk \"HDFCBANK\" -> share?s=HDFCBANK - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.lk \"MOTILALOFS\" -> share?s=MOTILALOFS",
+"result": "PASS",
+"evidence": "opened /preview/share?s=MOTILALOFS (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.lk \"MOTILALOFS\" -> share?s=MOTILALOFS - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.hlink \"full list + OI build-up \u2192 F10\" -> futures-oi#buildup",
+"result": "PASS",
+"evidence": "opened /preview/futures-oi#buildup (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.hlink \"full list + OI build-up \u2192 F10\" -> futures-oi#buildup - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "button.gsb-b \"HIGH \u2192 LOW\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "button.gsb-b \"LOW \u2192 HIGH\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "select select \"GIR order day % OI chg share b\"",
+"result": "NOT RUN",
+"evidence": "native drop-down (checked by hand)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "button.gsb-c \"ALL 20\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "button.gsb-c \"BAN 0\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.sym \"INDUSINDBK\" -> share?s=INDUSINDBK",
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.sh-c \"LB\" -> futures-oi?bu=LB",
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.sym \"CUB\" -> share?s=CUB",
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a.sh-c \"LB\" -> futures-oi?bu=LB",
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a \"all on F10 Fut & OI \u203a\" -> futures-oi#buildup",
+"result": "PASS",
+"evidence": "opened /preview/futures-oi#buildup (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "a \"all on F10 Fut & OI \u203a\" -> futures-oi#buildup - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "b.sb2 \"\u25b2\"",
+"result": "NOCHANGE",
+"evidence": "no visible change after the click"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "b.sb2 \"\u25bc\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "span.chip \"GO NOW 0\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "span.chip \"GET READY 0\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "span.chip \"BLOCKED \u2013\"",
+"result": "PASS",
+"evidence": "opened /preview/rotation (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "span.chip \"BLOCKED \u2013\" - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "span.chip \"\u2013 trades left\"",
+"result": "NOCHANGE",
+"evidence": "no visible change after the click"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "span.sbtn \"\u25b2\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "1600",
+"control": "51 more controls of the same kinds",
+"result": "NOT RUN",
+"evidence": "cap per page reached"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "page opens without an error",
+"result": "PASS",
+"evidence": "no console / page error, no failed request"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "list .col in #pg (388x558, 558 of 653 px) - visible bar >= 10 px",
+"result": "PASS",
+"evidence": "native scrollbar 10 px"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "list .col in #pg (388x558, 558 of 653 px) - pointer reaches the bar",
+"result": "PASS",
+"evidence": "at 1186,337"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "list .col in #pg (388x558, 558 of 653 px) - mouse drag of the thumb",
+"result": "PASS",
+"evidence": "0 -> 88"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "list .col in #pg (388x558, 558 of 653 px) - mouse wheel down / up",
+"result": "PASS",
+"evidence": "0 -> 95 -> 0"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "list .col in #pg (388x558, 558 of 653 px) - keys PageDown / End / Home / PageUp",
+"result": "PASS",
+"evidence": "focus on list: 0 -> 95 -> 95 -> 0 -> 0 (max 95) (re-judged: End reached the end)"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "button.thb \"DARK\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "button.thb \"LIGHT\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "button.thb \"AUTO\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "button.btn \"CHANGE A RULE E\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "button.btn \"CHANGE A RULE E\" - Esc closes what it opened",
+"result": "PASS",
+"evidence": "open boxes 0 -> 1 -> 0"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a.btn \"Old page (week 1): girtrader.c\" -> /old",
+"result": "PASS",
+"evidence": "opened /old (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a.btn \"Old page (week 1): girtrader.c\" -> /old - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a.btn \"WEEKLY REVIEW \u203a\" -> journal#review",
+"result": "PASS",
+"evidence": "opened /preview/journal#review (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a.btn \"WEEKLY REVIEW \u203a\" -> journal#review - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a.btn \"?\" -> help#settings",
+"result": "PASS",
+"evidence": "opened /preview/help#settings (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a.btn \"?\" -> help#settings - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a.tile \"(own-trade text hidden)\" -> #",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a.tile \"ROOM AT STOPS \u2013 3 open\" -> #",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a.go \"LB SB SC LU OI build-up F10 Fu\" -> futures-oi#buildup",
+"result": "PASS",
+"evidence": "opened /preview/futures-oi#buildup (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a.go \"LB SB SC LU OI build-up F10 Fu\" -> futures-oi#buildup - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a.go \"\u25b2 \u25bc F&O movers F2 Sectors \u203a\" -> sectors#movers",
+"result": "PASS",
+"evidence": "opened /preview/sectors#movers (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a.go \"\u25b2 \u25bc F&O movers F2 Sectors \u203a\" -> sectors#movers - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a \"PREPARE \u21e7F1\" -> morning",
+"result": "PASS",
+"evidence": "opened /preview/morning (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a \"PREPARE \u21e7F1\" -> morning - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a \"FIND F2\" -> sectors",
+"result": "PASS",
+"evidence": "opened /preview/sectors (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a \"FIND F2\" -> sectors - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a \"SHARE F7\" -> share",
+"result": "PASS",
+"evidence": "opened /preview/share (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a \"SHARE F7\" -> share - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a \"STRIKE F9\" -> chain",
+"result": "PASS",
+"evidence": "opened /preview/chain (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a \"STRIKE F9\" -> chain - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a \"PLAN Space\" -> plan-card",
+"result": "PASS",
+"evidence": "opened /preview/plan-card (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a \"PLAN Space\" -> plan-card - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a \"ENTER Kite\" -> plan-card#kite",
+"result": "PASS",
+"evidence": "opened /preview/plan-card#kite (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a \"ENTER Kite\" -> plan-card#kite - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a \"MANAGE F6\" -> positions",
+"result": "PASS",
+"evidence": "opened /preview/positions (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a \"MANAGE F6\" -> positions - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a \"REVIEW \u21e7F6\" -> journal",
+"result": "PASS",
+"evidence": "opened /preview/journal (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "a \"REVIEW \u21e7F6\" -> journal - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "button \"\u25bc\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "button.on \"RULES\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "button \"PLAN\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "div.r \"Charter rules not known his ru\"",
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "div.r \"1 OPTIONS FIRST buys CE / PE \u00b7\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "div.r \"2 NRI \u00b7 NRO HARD no commodity \"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "button \"\u25bc\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1600",
+"control": "10 more controls of the same kinds",
 "result": "NOT RUN",
 "evidence": "cap per page reached"
 },
@@ -21939,412 +21708,6 @@
 "evidence": "cap per page reached"
 },
 {
-"page": "sectors",
-"vp": "1366",
-"control": "page opens without an error",
-"result": "PASS",
-"evidence": "no console / page error, no failed request"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #mvb (322x204, 204 of 612 px) - visible bar >= 10 px",
-"result": "PASS",
-"evidence": "drawn vsb sd-drag 14 px wide"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #mvb (322x204, 204 of 612 px) - pointer reaches the bar thumb",
-"result": "PASS",
-"evidence": "top element at the thumb: I. (pointer-events auto)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #mvb (322x204, 204 of 612 px) - mouse drag of the thumb",
-"result": "PASS",
-"evidence": "0 -> 216"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #mvb (322x204, 204 of 612 px) - click on the track below the thumb",
-"result": "PASS",
-"evidence": "0 -> 358"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #mvb (322x204, 204 of 612 px) - mouse wheel down / up",
-"result": "PASS",
-"evidence": "0 -> 240 -> 0"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #mvb (322x204, 204 of 612 px) - keys PageDown / End / Home / PageUp",
-"result": "PASS",
-"evidence": "focus on list: 0 -> 178 -> 408 -> 0 -> 0 (max 408)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #bdb (662x178, 178 of 932 px) - visible bar >= 10 px",
-"result": "PASS",
-"evidence": "drawn vsb sd-drag 14 px wide"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #bdb (662x178, 178 of 932 px) - pointer reaches the bar thumb",
-"result": "PASS",
-"evidence": "top element at the thumb: I. (pointer-events auto)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #bdb (662x178, 178 of 932 px) - mouse drag of the thumb",
-"result": "PASS",
-"evidence": "0 -> 374"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #bdb (662x178, 178 of 932 px) - click on the track below the thumb",
-"result": "PASS",
-"evidence": "0 -> 308"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #bdb (662x178, 178 of 932 px) - mouse wheel down / up",
-"result": "PASS",
-"evidence": "0 -> 240 -> 0"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #bdb (662x178, 178 of 932 px) - keys PageDown / End / Home / PageUp",
-"result": "PASS",
-"evidence": "focus on list: 0 -> 155 -> 754 -> 0 -> 0 (max 754)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #cb (338x275, 275 of 1457 px) - visible bar >= 10 px",
-"result": "PASS",
-"evidence": "drawn vsb sd-drag 14 px wide"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #cb (338x275, 275 of 1457 px) - pointer reaches the bar thumb",
-"result": "PASS",
-"evidence": "top element at the thumb: I. (pointer-events auto)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #cb (338x275, 275 of 1457 px) - mouse drag of the thumb",
-"result": "PASS",
-"evidence": "0 -> 365"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #cb (338x275, 275 of 1457 px) - click on the track below the thumb",
-"result": "PASS",
-"evidence": "0 -> 493"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #cb (338x275, 275 of 1457 px) - mouse wheel down / up",
-"result": "PASS",
-"evidence": "0 -> 240 -> 0"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "list #cb (338x275, 275 of 1457 px) - keys PageDown / End / Home / PageUp",
-"result": "PASS",
-"evidence": "focus on list: 0 -> 240 -> 1182 -> 0 -> 0 (max 1182)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a \"PREP\" -> morning",
-"result": "PASS",
-"evidence": "opened /preview/morning (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a \"PREP\" -> morning - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a \"SHARE + STRIKE\" -> share?s=FORTIS",
-"result": "PASS",
-"evidence": "opened /preview/share?s=FORTIS (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a \"SHARE + STRIKE\" -> share?s=FORTIS - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a \"PLAN\" -> plan-card",
-"result": "PASS",
-"evidence": "opened /preview/plan-card (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a \"PLAN\" -> plan-card - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a \"MANAGE\" -> positions",
-"result": "PASS",
-"evidence": "opened /preview/positions (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a \"MANAGE\" -> positions - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a \"REVIEW\" -> journal",
-"result": "PASS",
-"evidence": "opened /preview/journal (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a \"REVIEW\" -> journal - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a \"NIFTY \u2013 VWAP \u00b7 BANKNIFTY \u2013 VWA\" -> market#NIFTY",
-"result": "PASS",
-"evidence": "opened /preview/market#NIFTY (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a \"NIFTY \u2013 VWAP \u00b7 BANKNIFTY \u2013 VWA\" -> market#NIFTY - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a.mini \"10 drivers \u21e7F2 \u203a\" -> world",
-"result": "PASS",
-"evidence": "opened /preview/world (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a.mini \"10 drivers \u21e7F2 \u203a\" -> world - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a.sh-c \"LB 3/3\" -> futures-oi?bu=LB",
-"result": "PASS",
-"evidence": "opened /preview/futures-oi?bu=LB (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a.sh-c \"LB 3/3\" -> futures-oi?bu=LB - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a.mini \"F6 \u203a\" -> positions",
-"result": "PASS",
-"evidence": "opened /preview/positions (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a.mini \"F6 \u203a\" -> positions - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a.lk \"HDFCBANK\" -> share?s=HDFCBANK",
-"result": "PASS",
-"evidence": "opened /preview/share?s=HDFCBANK (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a.lk \"HDFCBANK\" -> share?s=HDFCBANK - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a.lk \"MOTILALOFS\" -> share?s=MOTILALOFS",
-"result": "PASS",
-"evidence": "opened /preview/share?s=MOTILALOFS (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a.lk \"MOTILALOFS\" -> share?s=MOTILALOFS - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a.hlink \"full list + OI build-up \u2192 F10\" -> futures-oi#buildup",
-"result": "PASS",
-"evidence": "opened /preview/futures-oi#buildup (HTTP 200)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a.hlink \"full list + OI build-up \u2192 F10\" -> futures-oi#buildup - Back returns",
-"result": "PASS",
-"evidence": "back at /preview/sectors"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "button.gsb-b \"HIGH \u2192 LOW\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "button.gsb-b \"LOW \u2192 HIGH\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "select select \"GIR order day % OI chg share b\"",
-"result": "NOT RUN",
-"evidence": "native drop-down (checked by hand)"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "button.gsb-c \"ALL 20\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "button.gsb-c \"BAN 0\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a.sym \"INDUSINDBK\" -> share?s=INDUSINDBK - pointer reaches it",
-"result": "FAIL",
-"evidence": "covered by DIV.sh-m1"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a.sh-c \"LB\" -> futures-oi?bu=LB",
-"result": "NOCHANGE",
-"evidence": "no visible change after the click"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a.sym \"CUB\" -> share?s=CUB",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a.sh-c \"LB\" -> futures-oi?bu=LB",
-"result": "NOCHANGE",
-"evidence": "no visible change after the click"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "a \"all on F10 Fut & OI \u203a\" -> futures-oi#buildup",
-"result": "NOCHANGE",
-"evidence": "no visible change after the click"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "b.sb2 \"\u25b2\"",
-"result": "NOCHANGE",
-"evidence": "no visible change after the click"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "b.sb2 \"\u25bc\"",
-"result": "NOCHANGE",
-"evidence": "no visible change after the click"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "span.chip \"GO NOW 0\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "span.chip \"GET READY 0\"",
-"result": "PASS",
-"evidence": "page changed"
-},
-{
-"page": "sectors",
-"vp": "1366",
-"control": "49 more controls of the same kinds",
-"result": "NOT RUN",
-"evidence": "cap per page reached"
-},
-{
 "page": "share",
 "vp": "1366",
 "control": "page opens without an error",
@@ -24555,6 +23918,790 @@
 "control": "1 more controls of the same kinds",
 "result": "NOT RUN",
 "evidence": "cap per page reached"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "page opens without an error",
+"result": "PASS",
+"evidence": "no console / page error, no failed request"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #mvb (322x204, 204 of 612 px) - visible bar >= 10 px",
+"result": "PASS",
+"evidence": "drawn vsb sd-drag 14 px wide"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #mvb (322x204, 204 of 612 px) - pointer reaches the bar thumb",
+"result": "PASS",
+"evidence": "top element at the thumb: I. (pointer-events auto)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #mvb (322x204, 204 of 612 px) - mouse drag of the thumb",
+"result": "PASS",
+"evidence": "0 -> 216"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #mvb (322x204, 204 of 612 px) - click on the track below the thumb",
+"result": "PASS",
+"evidence": "0 -> 358"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #mvb (322x204, 204 of 612 px) - mouse wheel down / up",
+"result": "PASS",
+"evidence": "0 -> 240 -> 0"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #mvb (322x204, 204 of 612 px) - keys PageDown / End / Home / PageUp",
+"result": "PASS",
+"evidence": "focus on list: 0 -> 178 -> 408 -> 0 -> 0 (max 408)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #bdb (662x178, 178 of 932 px) - visible bar >= 10 px",
+"result": "PASS",
+"evidence": "drawn vsb sd-drag 14 px wide"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #bdb (662x178, 178 of 932 px) - pointer reaches the bar thumb",
+"result": "PASS",
+"evidence": "top element at the thumb: I. (pointer-events auto)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #bdb (662x178, 178 of 932 px) - mouse drag of the thumb",
+"result": "PASS",
+"evidence": "0 -> 374"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #bdb (662x178, 178 of 932 px) - click on the track below the thumb",
+"result": "PASS",
+"evidence": "0 -> 308"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #bdb (662x178, 178 of 932 px) - mouse wheel down / up",
+"result": "PASS",
+"evidence": "0 -> 240 -> 0"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #bdb (662x178, 178 of 932 px) - keys PageDown / End / Home / PageUp",
+"result": "PASS",
+"evidence": "focus on list: 0 -> 155 -> 754 -> 0 -> 0 (max 754)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #cb (338x275, 275 of 1457 px) - visible bar >= 10 px",
+"result": "PASS",
+"evidence": "drawn vsb sd-drag 14 px wide"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #cb (338x275, 275 of 1457 px) - pointer reaches the bar thumb",
+"result": "PASS",
+"evidence": "top element at the thumb: I. (pointer-events auto)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #cb (338x275, 275 of 1457 px) - mouse drag of the thumb",
+"result": "PASS",
+"evidence": "0 -> 365"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #cb (338x275, 275 of 1457 px) - click on the track below the thumb",
+"result": "PASS",
+"evidence": "0 -> 493"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #cb (338x275, 275 of 1457 px) - mouse wheel down / up",
+"result": "PASS",
+"evidence": "0 -> 240 -> 0"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "list #cb (338x275, 275 of 1457 px) - keys PageDown / End / Home / PageUp",
+"result": "PASS",
+"evidence": "focus on list: 0 -> 240 -> 1182 -> 0 -> 0 (max 1182)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a \"PREP\" -> morning",
+"result": "PASS",
+"evidence": "opened /preview/morning (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a \"PREP\" -> morning - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a \"SHARE + STRIKE\" -> share?s=FORTIS",
+"result": "PASS",
+"evidence": "opened /preview/share?s=FORTIS (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a \"SHARE + STRIKE\" -> share?s=FORTIS - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a \"PLAN\" -> plan-card",
+"result": "PASS",
+"evidence": "opened /preview/plan-card (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a \"PLAN\" -> plan-card - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a \"MANAGE\" -> positions",
+"result": "PASS",
+"evidence": "opened /preview/positions (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a \"MANAGE\" -> positions - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a \"REVIEW\" -> journal",
+"result": "PASS",
+"evidence": "opened /preview/journal (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a \"REVIEW\" -> journal - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a \"NIFTY \u2013 VWAP \u00b7 BANKNIFTY \u2013 VWA\" -> market#NIFTY",
+"result": "PASS",
+"evidence": "opened /preview/market#NIFTY (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a \"NIFTY \u2013 VWAP \u00b7 BANKNIFTY \u2013 VWA\" -> market#NIFTY - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a.mini \"10 drivers \u21e7F2 \u203a\" -> world",
+"result": "PASS",
+"evidence": "opened /preview/world (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a.mini \"10 drivers \u21e7F2 \u203a\" -> world - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a.sh-c \"LB 3/3\" -> futures-oi?bu=LB",
+"result": "PASS",
+"evidence": "opened /preview/futures-oi?bu=LB (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a.sh-c \"LB 3/3\" -> futures-oi?bu=LB - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a.mini \"F6 \u203a\" -> positions",
+"result": "PASS",
+"evidence": "opened /preview/positions (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a.mini \"F6 \u203a\" -> positions - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a.lk \"HDFCBANK\" -> share?s=HDFCBANK",
+"result": "PASS",
+"evidence": "opened /preview/share?s=HDFCBANK (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a.lk \"HDFCBANK\" -> share?s=HDFCBANK - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a.lk \"MOTILALOFS\" -> share?s=MOTILALOFS",
+"result": "PASS",
+"evidence": "opened /preview/share?s=MOTILALOFS (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a.lk \"MOTILALOFS\" -> share?s=MOTILALOFS - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a.hlink \"full list + OI build-up \u2192 F10\" -> futures-oi#buildup",
+"result": "PASS",
+"evidence": "opened /preview/futures-oi#buildup (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a.hlink \"full list + OI build-up \u2192 F10\" -> futures-oi#buildup - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "button.gsb-b \"HIGH \u2192 LOW\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "button.gsb-b \"LOW \u2192 HIGH\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "select select \"GIR order day % OI chg share b\"",
+"result": "NOT RUN",
+"evidence": "native drop-down (checked by hand)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "button.gsb-c \"ALL 20\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "button.gsb-c \"BAN 0\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a.sym \"INDUSINDBK\" -> share?s=INDUSINDBK",
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a.sh-c \"LB\" -> futures-oi?bu=LB",
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a.sym \"CUB\" -> share?s=CUB",
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a.sh-c \"LB\" -> futures-oi?bu=LB",
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a \"all on F10 Fut & OI \u203a\" -> futures-oi#buildup",
+"result": "PASS",
+"evidence": "opened /preview/futures-oi#buildup (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "a \"all on F10 Fut & OI \u203a\" -> futures-oi#buildup - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "b.sb2 \"\u25b2\"",
+"result": "NOCHANGE",
+"evidence": "no visible change after the click"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "b.sb2 \"\u25bc\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "span.chip \"GO NOW 0\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "span.chip \"GET READY 0\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "span.chip \"BLOCKED \u2013\"",
+"result": "PASS",
+"evidence": "opened /preview/rotation (HTTP 200)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "span.chip \"BLOCKED \u2013\" - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/sectors"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "span.chip \"\u2013 left\"",
+"result": "NOCHANGE",
+"evidence": "no visible change after the click"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "span.sbtn \"\u25b2\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "span.sbtn \"\u25bc\"",
+"result": "PASS",
+"evidence": "page changed (hash sd=hospitals%20%26%20diagnosti)"
+},
+{
+"page": "sectors",
+"vp": "1366",
+"control": "49 more controls of the same kinds",
+"result": "NOT RUN",
+"evidence": "cap per page reached"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "page opens without an error",
+"result": "PASS",
+"evidence": "no console / page error, no failed request"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "list .col in #pg (329x434, 434 of 729 px) - visible bar >= 10 px",
+"result": "PASS",
+"evidence": "native scrollbar 10 px"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "list .col in #pg (329x434, 434 of 729 px) - pointer reaches the bar",
+"result": "PASS",
+"evidence": "at 1010,329"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "list .col in #pg (329x434, 434 of 729 px) - mouse drag of the thumb",
+"result": "PASS",
+"evidence": "0 -> 128"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "list .col in #pg (329x434, 434 of 729 px) - mouse wheel down / up",
+"result": "PASS",
+"evidence": "0 -> 240 -> 0"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "list .col in #pg (329x434, 434 of 729 px) - keys PageDown / End / Home / PageUp",
+"result": "PASS",
+"evidence": "focus on list: 0 -> 295 -> 295 -> 0 -> 0 (max 295) (re-judged: End reached the end)"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "button.thb \"DARK\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "button.thb \"LIGHT\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "button.thb \"AUTO\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "button.btn \"CHANGE E\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "button.btn \"CHANGE E\" - Esc closes what it opened",
+"result": "PASS",
+"evidence": "open boxes 0 -> 1 -> 0"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a.btn \"Old page (week 1): girtrader.c\" -> /old",
+"result": "PASS",
+"evidence": "opened /old (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a.btn \"Old page (week 1): girtrader.c\" -> /old - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a.btn \"WEEKLY REVIEW \u203a\" -> journal#review",
+"result": "PASS",
+"evidence": "opened /preview/journal#review (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a.btn \"WEEKLY REVIEW \u203a\" -> journal#review - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a.btn \"?\" -> help#settings",
+"result": "PASS",
+"evidence": "opened /preview/help#settings (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a.btn \"?\" -> help#settings - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a.tile \"(own-trade text hidden)\" -> #",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a.tile \"ROOM AT STOPS \u2013 3 open\" -> #",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a.go \"LB SB SC LU OI build-up F10 \u203a\" -> futures-oi#buildup",
+"result": "PASS",
+"evidence": "opened /preview/futures-oi#buildup (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a.go \"LB SB SC LU OI build-up F10 \u203a\" -> futures-oi#buildup - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a.go \"\u25b2 \u25bc F&O movers F2 \u203a\" -> sectors#movers",
+"result": "PASS",
+"evidence": "opened /preview/sectors#movers (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a.go \"\u25b2 \u25bc F&O movers F2 \u203a\" -> sectors#movers - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a \"PREPARE \u21e7F1\" -> morning",
+"result": "PASS",
+"evidence": "opened /preview/morning (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a \"PREPARE \u21e7F1\" -> morning - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a \"FIND F2\" -> sectors",
+"result": "PASS",
+"evidence": "opened /preview/sectors (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a \"FIND F2\" -> sectors - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a \"SHARE F7\" -> share",
+"result": "PASS",
+"evidence": "opened /preview/share (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a \"SHARE F7\" -> share - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a \"STRIKE F9\" -> chain",
+"result": "PASS",
+"evidence": "opened /preview/chain (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a \"STRIKE F9\" -> chain - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a \"PLAN Space\" -> plan-card",
+"result": "PASS",
+"evidence": "opened /preview/plan-card (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a \"PLAN Space\" -> plan-card - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a \"ENTER Kite\" -> plan-card#kite",
+"result": "PASS",
+"evidence": "opened /preview/plan-card#kite (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a \"ENTER Kite\" -> plan-card#kite - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a \"MANAGE F6\" -> positions",
+"result": "PASS",
+"evidence": "opened /preview/positions (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a \"MANAGE F6\" -> positions - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a \"REVIEW \u21e7F6\" -> journal",
+"result": "PASS",
+"evidence": "opened /preview/journal (HTTP 200)"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "a \"REVIEW \u21e7F6\" -> journal - Back returns",
+"result": "PASS",
+"evidence": "back at /preview/settings"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "button \"\u25bc\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "button.on \"RULES\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "button \"PLAN\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "div.r \"Charter rules not known his ru\"",
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "div.r \"1 OPTIONS FIRST buys CE / PE \u00b7\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "button \"\u25bc\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "div.r \"Backstops fit room LOCK not kn\"",
+"result": "NOT RUN",
+"evidence": "hidden by an earlier click (a filter / tab now shows other rows)"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "button.thb \"DARK\"",
+"result": "PASS",
+"evidence": "page changed"
+},
+{
+"page": "settings",
+"vp": "1366",
+"control": "7 more controls of the same kinds",
+"result": "NOT RUN",
+"evidence": "cap per page reached"
 }
 ],
 "after": {
@@ -24979,7 +25126,7 @@
 },
 {
 "path": "#plb > div.pr > div.p1 > span.it",
-"txt": "FM Sitharaman chairs pre-Budget consultation with employment",
+"txt": "FM (name) chairs pre-Budget consultation with employment",
 "sw": 590,
 "cw": 136,
 "ov": "hidden",
@@ -25330,7 +25477,7 @@
 },
 {
 "path": "#plb > div.pr > div.p1 > span.it",
-"txt": "FM Sitharaman chairs pre-Budget consultation with employment",
+"txt": "FM (name) chairs pre-Budget consultation with employment",
 "sw": 590,
 "cw": 203,
 "ov": "hidden",
@@ -26101,7 +26248,7 @@
 },
 {
 "path": "#plb > div.pr > div.p1 > span.it",
-"txt": "FM Sitharaman chairs pre-Budget consultation with employment",
+"txt": "FM (name) chairs pre-Budget consultation with employment",
 "sw": 1680,
 "cw": 382,
 "ov": "past-edge",
