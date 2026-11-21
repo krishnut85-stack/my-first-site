@@ -28,6 +28,18 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 23:30 IST (real time, hourly) - VERDICTS on 22:31-23:20 (server clock)
+ACCEPTED: sort / filter bar (one shared component, 13 pages, 72 / 72 with real clicks + storage blocked) · news gate final (F&O names never
+hidden, "Company - minor" lane; live 51 / 8 / 22) · Friday replay 10 / 10 in time if the desk runs all day (it will from Monday; Friday's
+4 / 10 is the late 19:23 start) · incident orders 1-4 (test guard in all 69 test files + child processes, no card without a real source,
+freeze covers tests, maintenance flag) · D4 finished: errors 0, failed requests 0, cut cells 702 -> 494 with F1 / F2 / F6 / F7 / phone NOW at 0
+· F1 "in a trade" shows every position (same slice(0, 2) bug as F6 - good that it was hunted on all pages).
+OPEN: (a) D4 32 FAIL - 28 are the replay page's own box; name and fix the other 4 before the freeze. (b) Confirm the sort bar is on EVERY
+list the trader named (sectors, shares in a sector, movers, F&O list, positions, trades, news, cards, ban list, scorecard) - list any
+list without it. (c) Search a "slice(" / fixed-slot hunt across all page JS so no other list silently cuts to 2-3 rows.
+Sunday: 15:30 reviewer full check; 16:00 page freeze; 16:15 Kite login dry run; 17:00 mock with CPU peak; trader rotates the Telegram +
+GitHub tokens before 18:30; 18:30 ring test; 19:45 brief vs EVENT_MEMORY K.
+
 ## 21 Nov 23:30 IST (real time) - GIFT NIFTY FACT (trader's app, a broker CFD quote): 25,836 at Sat 21 Nov 02:30 IST = 0.14% ABOVE
 NIFTY's Friday close (25,800.6) - i.e. AFTER most of the US fall (US close 02:30 IST). The night market did NOT price a gap down, while the
 Nasdaq-futures line (-4.0% since India's close) says gap down 80%. ORDERS:
