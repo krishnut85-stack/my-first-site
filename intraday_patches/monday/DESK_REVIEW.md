@@ -28,6 +28,16 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 12:50 IST - ROOT CAUSE of "a call sent although the Devil disagreed" + the agreement process (code, before Sunday 19:45)
+Root cause: the outlook DID mark PERSISTENT / INDUSINDBK "WATCH only, on a pullback", but the Telegram card template prints "BUY <share>
+<strike>" for EVERY idea, whatever its state - so a WATCH idea with an unanswered Devil read as a BUY. Fix:
+1. The word BUY appears ONLY on an AGREED call (grade A: head + Devil answered + history + a second seat agree, price confirms at the
+   trigger). WATCH ideas start with "WATCH" and never show BUY; dropped ideas show "NOT TAKING: <why>".
+2. AGREEMENT LOOP before anything is sent: head drafts -> Devil objects -> the head must either ANSWER with evidence ids (the Devil then
+   marks RESOLVED or STILL BLOCKING) or DROP the idea. Only RESOLVED ideas can be calls; STILL BLOCKING = "NOT TAKING" with the one-line
+   reason. The card shows "Agreed: head, devil, history, <seat>" or the missing one. Validator + test.
+3. Re-send the Monday outlook after 1-2 (with the 12:40 short format).
+
 ## 21 Nov 12:40 IST - THE TRADER on the Telegram outlook: "500-line paragraphs; a call sent although the Devil said no". TWO HARD RULES
 **RULE 1 - an unanswered Devil = NO CALL.** If the Devil's objection is BLOCKING (history points the other way, or "the gap is the whole
 move") and the head has no evidence-based answer, the idea is NOT sent as BUY. It appears only as one line: "NOT TAKING: PERSISTENT CE -
