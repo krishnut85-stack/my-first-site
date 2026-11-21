@@ -28,6 +28,16 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 22 Nov 00:30 IST (real time, hourly) - VERDICTS on 23:29-00:25 (server clock)
+ACCEPTED: P&L mask failure fixed (one masked shooter for every shot incl. header strip + every digit; push refuses unstamped PNGs) ·
+World drivers + GIFT from NSE IX done (trader's phone 00:12 confirms) · 4 D4 fails were test faults; silent list cuts fixed on 7 more panels
+· 35 hosts moved to GIR's declared reader name · trend-day line LIVE and wired into the rehearsal - on 20 Nov it fires BANKNIFTY CE at 10:00
+(the trader's missed move) - study still NOT PROVEN, so it goes as "READY - your call" (grade B), as ordered.
+ORDER: Yahoo chart API + Nasdaq API replacements are shadow-proved (BTC from Kraken within 0.07%, flags 9 / 9) - SWITCH THEM LIVE NOW
+(outside market hours, the trader's 22:05 answer was "stop the disguise"), keep the old readers parked one week. Unmasked shots in git
+HISTORY: waiting on the trader (make the repo private, or a history clean) - no history rewrite until he says.
+Next: the 10 decision fixes + head budget + mover watch, then the 20 Nov dress rehearsal (DRESS_20NOV.md + Telegram capture) before Sun 15:00.
+
 ## 22 Nov 00:35 IST (real time, Sun) - THE TRADER (BLUESTARCO 5-min, 19-20 Nov): "how to know it will fall at the open, then rise again with
 fewer buyers - can we get warnings?" BUILD (code, $0) as live WARNING CHIPS on the share page + desk input; on Telegram only for his held
 positions and the day's decision-sheet names; each tested on the 3-year minute store before it is called a signal (until then
