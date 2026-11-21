@@ -28,6 +28,18 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 20:15 IST (real time) - THE TRADER: search must AUTOFILL and a click must open ALL the details of the share. "Very important."
+The design has it (SHELL.md R04: "/" box, suggestions after 2 letters, Enter / click opens the Share page F7), but no proof file shows it
+tested on the LIVE new desk. PROVE + FIX before the Sun 16:00 freeze (add to the D4 sweep, real typing, 1366 / 1600 / 390 phone):
+1. Type "TIT" -> TITAN, TITAGARH; "UNION" -> UNIONBANK; "hdfc" (lower case) -> HDFCBANK, HDFCLIFE, HDFCAMC; "NIFTY" / "BANKNIFTY" ->
+   the index page; a company name ("motilal") finds MOTILALOFS. Arrow keys + Enter and a mouse click / finger tap both work.
+2. The Share page opened from search shows ALL details in one place: price + % + day high / low, 5-min chart with VWAP + RSI, the
+   desk's view (CE / PE / WATCH + why + time), news and filings (latest first), option chain (current + December, OI build-up, IV, IV
+   percentile), futures OI, delivery, FII / sector context, results date and the results-IV block, ban / MWPL, LAST CALL guidance line,
+   and HIS POSITION in that share if held (qty, average, P&L masked in screenshots, the desk's HOLD / EXIT line).
+3. A search box is visible on every page and on the phone (not only the "/" shortcut). Nothing in it can send an order.
+Report PASS / FAIL per check in STATUS with masked screenshots.
+
 ## 21 Nov 20:10 IST (real time) - THE TRADER: "Every list needs a FILTER / SORT bar on top like the old system - high-low, low-high.
 We have to scroll up and down every time." BUILD before the Sun 16:00 page freeze (one shared component, every page):
 1. A sort bar at the top of EVERY list (sectors, shares in a sector, market movers / gainers / losers, F&O list, his positions and trades,
