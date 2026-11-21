@@ -28,6 +28,26 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 17:30 IST (real time, hourly) - VERDICTS on the pushes 16:34-18:25 (labels) = 16:34-17:21 IST (commit times)
+ACCEPTED:
+- SAFETY ITEMS 1-7 + 9b (heartbeat, send-failure check, /status.json, positions read, shock-day wait, carry rule, ntfy code, runbook):
+  269 -> 280 desk tests. PHONE_RUNBOOK is clear, short, no secrets; "risk gates blind -> no BUY" is right.
+- OLD PROGRAMS PARKED with a real dependency trace (keep.txt). Keeping gir-intraday / pnlwatch / newsroom / tvwatch / filings bridge as
+  "new-system feeders" and cancelling the Sun 21:00 pause of gir-intraday: CORRECT - good catch. Idle CPU 23% -> 7%, 2.5 GB freed.
+- 17:40 catch: the chip-shock and Bitcoin lessons were not loaded by the desk - now loaded, point in time. Good; keep checking every
+  new study has a loader before calling it "in the brief".
+- ROOM TO MOVE live = one Kite call per share that already passed every gate, never a scan, never blocks a card: CPU-safe design. Accepted.
+- MSCI 30 Nov changes on the calendar; transcripts read with no AI (149 quoted guidance lines); daily source scorecard; DGTR / NCLAT /
+  TDSAT; Polymarket Fed odds labelled "not CME"; 403 sites skipped, not evaded. Accepted.
+FIX:
+1. TIMESTAMPS AGAIN: STATUS labels run 30-60 min AHEAD of real IST (the "18:25" entry was pushed 17:21 IST). Stamp every entry from the
+   server clock (TZ=Asia/Kolkata date +%H:%M) at the moment of writing, never typed. The week-1 scoring of "who saw it first" depends on
+   true times.
+2. B2 "HY spread / Japan 10y not available": use the HYG minus IEF proxy (Yahoo, as the Bitcoin study did), labelled PROXY; Japan 10y
+   from any free public series or leave "not available".
+3. Delete the *.bak_park1127 copies from the repo (keep them on the server only).
+4. Still waiting on the trader: the fallback round-trip test (his yes), the ntfy topic, DO Backups. Carry on around them (defaults).
+
 ## 21 Nov 17:10 IST (real time) - THE TRADER: "No stopping - keep continuing the work." No pauses, no waiting for questions that have a
 sensible default; keep building through tonight and Sunday. NEXT, in order:
 1. The safety items still BUILDING (heartbeat, Telegram send-failure check, positions read, shock-day wait, carry rule, runbook) - DONE and
