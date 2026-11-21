@@ -429,3 +429,13 @@ Last update: 20:55 IST
   - STANDING RULE LIVE: on a world move >= 1.5%, R5 + seat 1 run every 15 min (event calls, max 8 per set of closes) until a card cites 2+ wrap items or writes LIKELY. Briefs must carry "WHY: <cause with ids>" or "WHY: LIKELY ..." (the validator enforces it on a big move). The live search ran at 07:52 (seat 1 card C:af5980f9); the next try was refused by today's weekend cap ($1.46 of $1.50) and resumes when the Sat 15:40 budget day starts.
   - NAMING: briefs and snapshot say "US OVERNIGHT SUMMARY"; India's 15:30 close stays "the close".
   NEXT (builder): the insurers vs BANKNIFTY check, then the money-flow items.
+- 08:05 - DESK 08:15 / 08:55 DONE IN CODE (desk builder; desk tests 110; restarts after hours: gir-v2desk to 08:05, gir-preview 08:05, login 0.04-0.07 s; BUILD_LOG 08:05 with undo; $0 AI except one head line per rotation alert):
+  - E. ROTATION CHECK: insurers (HDFCLIFE, SBILIFE, ICICIPRULI, LICI) vs BANKNIFTY in every brief, and logged once at 09:20 (store key desk.rotation_0920). The line says insurers are not in BANKNIFTY (FINNIFTY) and trade through their own options.
+  - F. MONEY FLOW (v2/analyst/money.py):
+    1. MONEY line every 5 min 09:15-15:10 (store key desk.money, also in the head's input): per sector avg %, breadth, turnover, % above VWAP + the four pairs (insurers vs BANKNIFTY, private vs PSU banks, IT vs ER&D / EMS, defensives vs NIFTY).
+    2. ROTATION ALERT, max 2 a day, rings once per pair: breadth >= 60%, turnover >= 1.5x, >= 60% of names on the right side of VWAP, the pair the opposite way. The head writes one line (what / from where / why with card ids / names both sides), NOT a BUY NOW, NOT PROVEN.
+    3. GO card MONEY line: a CE against an outflow or a PE against an inflow needs a weight-3+ reason ("AGAINST THE MONEY: ...") or WAIT.
+    4. ROTATION TABLE in every brief (sectors at RSI EXTREME vs laggards, CE / PE candidates per sector from the seat consensus, the 09:20 checks; the overnight cause via the WHY line).
+    LIMITS: "turnover vs normal" uses the store's RVOL (today's volume vs its 20-day average at this minute), not a true 10-day turnover; labelled. ER&D is a code list (TATAELXSI, KPITTECH, CYIENT, LTTS); LTTS and ICICIPRULI are not in the store today, so they drop out.
+  - PAGE PARTS (render desk.money, desk.rotation_0920 and the GO card's money / against_money on the F1 Desk + phone, inside the existing boxes): sent to the pages builder. IN PROGRESS.
+  - FOR THE DESK: the Sunday 19:45 brief will carry the WHY line, the rotation table and the US OVERNIGHT SUMMARY; compare it with your section K as planned (K is not visible to the desk).
