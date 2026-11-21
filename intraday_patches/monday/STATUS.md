@@ -504,3 +504,21 @@ Last update: 20:55 IST
   - EVENT_MEMORY.md updated (the desk's "K history 21 Nov 10:05" bullet): it stays inside section K, the answer key, which is kept out of every pack. The desk builder is re-checking.
   - US-SHOCK STUDY (desk 09:45, code only, $0): running now. 2005 -> 20 Nov 2026 Yahoo daily bars + local history / minute data. Events: Nasdaq <= -3% / <= -4.5% and S&P <= -2.5%. India's next session for NIFTY, BANKNIFTY and NIFTY IT (gap, low, high, close, close vs open, minutes to the low), the four splits, base rates with n, sector medians. Output onset_results/us_shock_study.md + .json, and a NOT PROVEN lesson for the head's Sunday 19:45 brief.
   - Desk builder: the Sunday MOCK mode, the page keys (desk.shocks, meter.p1) and the J7 levers (desk flag + Telegram command); pages builder: the J7 Settings button. IN PROGRESS.
+- 10:19 - US-SHOCK STUDY DONE (desk 09:45; code only, $0, no services touched). Report onset_results_local/us_shock_study.md + .json (every event row in the appendix); script v2/kb/us_shock_study.py; lesson v2/data/us_shock_lesson.json (NOT PROVEN, first_seen 21 Nov 10:18, being wired into the head's Sunday 19:45 brief).
+  Window: Sep 2007 (Yahoo's NIFTY start) -> 19 Nov 2026. India's NEXT trading session, NIFTY 50 vs the previous close. Opens use 2011 onward only (Yahoo's pre-2011 NIFTY opens are not real).
+  | event set | n | opened lower | closed lower | opened lower, then closed positive | back to the previous close within 5 sessions | median gap | worst gap | median close |
+  |---|---|---|---|---|---|---|---|---|
+  | Nasdaq <= -3% | 122 | 81% (62/77) | 73% (89/122) | 18% (11/62) | 65% | -0.87% | -9.14% (23 Mar 2020) | -0.92% |
+  | Nasdaq <= -4.5% | 31 | 89% (16/18) | 77% | 19% (3/16) | 55% | -1.85% | -5.03% (13 Mar 2020) | -1.68% |
+  | S&P <= -2.5% | 130 | 82% (60/73) | 73% | 18% (11/60) | 63% | -0.90% | -9.14% | -0.96% |
+  | Nasdaq <= -3%, Friday US -> Monday India | 20 | 93% (14/15) | 85% (17/20) | 14% (2/14) | 55% | -1.73% | -9.14% | -1.38% |
+  - SPLITS (Nasdaq <= -3%):
+    - India UP on the US-fall day did NOT protect it: closed lower 86% (32/37) vs 67% otherwise.
+    - Two US down days in a row (n=61): about the same as one, closed lower 72%.
+    - Asia down >= 3% by its close on India's session (n=54): closed lower 78%, median -1.61% (Asia closes 11:00-13:40 IST, so it is not fully known at the open).
+    - The exact 20 Nov look-alike (Friday + India up + two US down days): n=4. Too small to lean on.
+  - TIMING (minute data from Nov 2023, 13 events): the NIFTY low came in the first 15 minutes in 9 of 13; BANKNIFTY in 6 of 13.
+  - SECTORS (median next-session close, n=73 from Sep 2011): best FMCG -0.21%, pharma -0.43%; worst metal -1.02%, IT -1.17%; bank -0.71%, PSU bank -0.80%, auto -0.80%, realty -0.82%. PVT BANK from Nov 2021 only (n=31): -0.42%. NIFTY IT had the weakest close of NIFTY / BANKNIFTY / IT in 24 of 29 cuts.
+  - 20 Nov 2026 (no outcome yet): Nasdaq -5.28%, S&P -3.70%, the day before Nasdaq -2.25%. A Friday, NIFTY +1.12% that day, Asia already weak (Nikkei -5.06%, KOSPI -5.21%, Taiwan -6.23%). It falls in all three event sets and splits (a), (b), (c); the session to measure is Mon 23 Nov.
+  - DATA GAPS: pre-2011 NIFTY opens (unusable); NIFTY PVT BANK has no Yahoo history (local Kite file from Nov 2021); fin services from Sep 2011; the other sectors from 2010-2011; minute data from Nov 2023 (IT from Oct 2026). Yahoo vs local daily candles agree within 0.013% on ~1,240 days.
+  - NOTE vs the desk's own K-history (17 news-reported episodes 2020-2026): the 20-year data AGREES that India usually opens lower, but DISAGREES on the recovery. The desk's read was "closed above its open about 9 of 12 (the gap was usually near the day's low)"; the data says that after a lower open NIFTY reached the previous close by the close only 18% of the time, and the median close (-0.92%) was close to the median gap (-0.87%). "Closed above the open" is a different, softer measure that the desk may want added to the report.
