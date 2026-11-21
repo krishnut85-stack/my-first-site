@@ -14,6 +14,26 @@
   change nothing until the trader decides.
 - **Trader's call (asked now):** globaleye (old GIR v1) and paper_counterfactual / paper_eod_report still post to GIR Alerts - keep or mute.
 
+## 21 Nov 08:45 IST - THE TRADER: "work continuously, finish, then a full MOCK on Sunday evening". DO NOT WAIT FOR HOURLY PULLS.
+Work straight through this list in order (builder agents in parallel where files do not overlap), tests first, push after each item:
+1. Old-system AI off (one $8 gate); SHOCK budget ring-fenced; hunter LIVE fallback blocked; confirm the desk's AI is back after the top-up.
+2. **CREDIT WARNING THAT NEEDS NO CREDIT:** plain code, sent over Telegram (free) on the system channel + the page footer + the phone card:
+   (a) at the FIRST credit refusal: "P1 AI CREDIT EMPTY - top up at console.anthropic.com; GIR runs on rules; shock alerts still on";
+   (b) BEFORE it runs out: keep a running balance = the last top-up amount the trader gives (ask him once, store it, never a key) minus
+   the ledger spend; warn at < 3 days of the $8 cap left ($24) and again at < 1 day; (c) a daily 19:30 line with the estimated balance.
+   Note for the trader: after he rotates the Telegram token, the NEW token must go into .env at once or every alert stops.
+3. World shock alerts A / B / E live + the Fri 20 Nov night proof.
+4. Pages: MONEY line, rotation 09:20 line, GO card MONEY / AGAINST-THE-MONEY, "desk ON - next brief" footer, STALE / data-missing / P1
+   lines on desk + phone.
+5. Shock C / D / F / G / H (India market, F&O share, flows, official news, company), then I / J; flood control; 15:45 scoring.
+6. Server health: swap, the 30 Ubuntu updates (test after), the gircrypto login lines.
+7. J6 complete, J7 fallback switch for the trader.
+**SUNDAY MOCK (dress rehearsal), 17:00-18:30 IST, Telegram LIVE to the trader, every message prefixed "MOCK":** replay Fri 20 Nov through
+the LIVE pipeline (not the rehearsal tool) at speed with stand-in brains ($0), covering: the 07:15 / 09:08 briefs, a GO card with FROM /
+AGAINST / MONEY, a manage note, a rotation alert, a world shock line (the US crash), an India shock line, a company-filing shock, the
+credit-empty P1 (simulated refusal), a feed-stop STALE line, a fake-chain block, the fallback switch, and the 15:45 scorecard. Then the
+18:30 ring test, then the real 19:45 brief. Write a pass / fail table per item in STATUS by 18:45.
+
 ## 21 Nov 08:25 IST (hourly) - big batch ACCEPTED; three orders
 - **ACCEPTED:** old trading programs paused (no real order found, states kept, undo list); spend account (Claude Code on the server
   ~90% of the week's API money while on API billing - now on the subscription); TG_CHAT_FO / OI guard in EVERY sender (old + new,
