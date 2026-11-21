@@ -14,6 +14,20 @@
   change nothing until the trader decides.
 - **Trader's call (asked now):** globaleye (old GIR v1) and paper_counterfactual / paper_eod_report still post to GIR Alerts - keep or mute.
 
+## 21 Nov 11:20 IST - THE TRADER: "you chase whatever I name - copper, auto, RBI - that is not a human analyst". A FIXED DRIVER CHECKLIST.
+Every brief (19:45 / 07:15 / 09:08 and the Saturday-Sunday outlook) MUST carry all 12 drivers, one line each, with the CE / PE meaning and
+the F&O names - or "no change" - and the validator rejects a brief that skips one. Live, a change in ANY driver is a card / alert:
+1 WORLD markets + the cause (US, Asia, Europe, futures, VIX). 2 WORLD macro (US 10y, dollar, yen, yuan, crude, gold, copper / metals).
+3 INDIA overnight (GIFT NIFTY, ADRs, rupee). 4 MONEY FLOWS (FII / DII cash, FII F&O positioning, NSDL sector flows, MTF book).
+5 RBI + LIQUIDITY (operations, system surplus / deficit, call rate, policy dates). 6 GOVERNMENT + REGULATORS (SEBI, GST, Cabinet,
+Parliament, courts, PIB, exchanges). 7 COMPANIES (results, filings, block deals, orders, management, broker calls on F&O names).
+8 SECTOR ROTATION (EXTREME vs laggard sectors, money in / out, the pairs). 9 CALENDAR (data, summits, expiry, holidays, results dates).
+10 MARKET INTERNALS (breadth, India VIX, OI build-up, PCR, VWAP side of NIFTY / BANKNIFTY). 11 HISTORY (what the last N similar
+cases did, with n). 12 THE OTHER SIDE (Devil's strongest objection) + RISK (what kills the view).
+Then: MARKET LEAN (UP / DOWN / MIXED + the 2 strongest drivers), CE list, PE list, the 09:20 checks. Seats already map to these
+(world 1-4, commodities 6-8, money 9-10, policy 11-14, company 15-18, sectors 19-27, voices 28-30, internals 31-34, connections 35,
+devil 36, history 37); this makes the coverage visible and enforced. Apply to the Monday outlook being sent today.
+
 ## 21 Nov 11:00 IST - MISSED SIGNAL: RBI liquidity injection on Fri 20 Nov (reported Rs 75,000 cr of 3-day VRR repos: Rs 50k cr + Rs 25k cr;
 bids about Rs 1.13 lakh cr for the first Rs 50k cr - one source so far, goodreturns). Neither GIR (old or new) nor the desk's outside
 watch told the trader, and LINK_BOOK row 27 says "RBI liquidity injection -> CE AUBANK, PNB, AXISBANK, BANKBARODA next day (HIGH)".
