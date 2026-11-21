@@ -28,6 +28,13 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 19:55 IST (real time) - THE TRADER: his positions / P&L must show correctly on the new desk page, the phone view and match Kite.
+Monday duty (add to the 09:20 checks): the new page (desk-trade / F6 positions), the phone NOW cards and the old /mypnl all read
+gir-pnlwatch (Kite, read only, every 3 s). Check once at 09:20 and once at 12:00: number of positions, symbols, quantity, average price
+and P&L equal Kite's own positions (P&L within the LTP-timing difference); day P&L and the loss-lock counter equal. Any mismatch = P1
+with the row named. His P&L stays masked in every screenshot and never goes to the repo. Also confirm each held position gets the
+desk's manage line (HOLD / EXIT / TIGHTEN + why) on the page, phone and Telegram, and that his UNIONBANK PE shows as HELD.
+
 ## 21 Nov 19:45 IST (real time) - THE TRADER opened girtrader.com and expected the NEW desk; it is still the old home page.
 1. Before the Sun 16:00 page freeze: make girtrader.com (root) open the NEW desk (/preview/), keep the old home at girtrader.com/old for
    week 1. Caddy change + test at 1366 / 390, login unchanged, status.json path unchanged (the trader's UptimeRobot monitors point at
