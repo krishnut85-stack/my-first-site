@@ -28,6 +28,18 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 15:30 IST (hourly) - news audit ACCEPTED (88 read: 59 live / 15 slow / 14 silent; 186 named hosts, 104 not built) + final mock dry
+run 12 PASS + RBI Monday line (642) + routing fix + one-off line fix. PRIORITY for the fresh builder, all before Sun 18:00:
+1. BSE filings: polite poll + the read-only bridge from the old bot's BSE store (F&O only, "via newshawk"). Never try to get around a block.
+2. TV - the trader's main morning input: 390 minutes captured, 5 cards. Find why (chunk size? reader quiet rules? the snippet routing?)
+   and fix so the 07:00-09:15 shows and live market calls on F&O names become cards; prove it on Friday's recordings ($0 replay of the
+   text, then one real R3 call per hour of tape on Monday's budget).
+3. Fresh-first: ET / Moneycontrol / BS / CNBC-TV18 items first; the slow per-share Google News (96-min median lag) only fills gaps and is
+   marked LATE; an item older than 60 min cannot start a live idea.
+4. Silence alarm from NEWS_COVERAGE_AUDIT.json (real core list), stop polling dead feeds.
+5. NOT BUILT, this week (in order): India data calendar (GDP 30 Nov, CPI, IIP, auto sales 1st) · Fed / ECB / BoJ statements · global peers'
+   results (Accenture ~17 Dec, US banks, chip makers) · GST Council · EIA / OPEC · CNBC Awaaz + Sansad TV transcripts · broker research PDFs.
+
 ## 21 Nov 14:45 IST - THE TRADER: "external news monitoring - I have asked for it since day 1". NEWS COVERAGE AUDIT, before Sunday 19:45:
 1. A table in STATUS of EVERY news / information source GIR reads (world wraps + closes, RBI / SEBI / PIB / GST / courts / Parliament,
    NSE / BSE filings, wires / publishers, TV speech-to-text, broker calls, FII / DII, NSDL, global peers' results, commodities,
