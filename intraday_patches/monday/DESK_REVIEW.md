@@ -28,6 +28,10 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 22 Nov 00:40 IST (real time) - TRADER DECISION: the repository will be made PRIVATE by the trader (later). NO history rewrite. Until then
+keep every new file free of P&L / positions values (masked shooter + push scanner stay on). After he makes it private, check that the
+server's push (token / credential helper) still works.
+
 ## 22 Nov 00:30 IST (real time, hourly) - VERDICTS on 23:29-00:25 (server clock)
 ACCEPTED: P&L mask failure fixed (one masked shooter for every shot incl. header strip + every digit; push refuses unstamped PNGs) ·
 World drivers + GIFT from NSE IX done (trader's phone 00:12 confirms) · 4 D4 fails were test faults; silent list cuts fixed on 7 more panels
