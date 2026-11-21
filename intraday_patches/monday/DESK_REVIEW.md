@@ -28,6 +28,41 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 17:00 IST - INDEX DECISION PROCESS - PANEL AGREED (trader + quant + risk/devil). REPLACES 16:20. RULES WAIT FOR THE TRADER'S
+YES; the weekend TESTS (part 8) may start now (code only, $0).
+1. PRE-MARKET: OPEN lean from M1 (evening / 07:30 cut-off; passes 73.5% vs 66.6%, 12 of 12 years) + the US-shock history; SESSION lean
+   "flat from the open / unknown" unless tested. The lean is NEVER a trigger.
+2. 09:15-09:20 HANDS OFF. Shock day (India VIX up > 10% or ATM IV > 1.3x its 5-day level): no entry before 09:30.
+3. 09:20 / 09:30 CHECKS on DECEMBER FUTURES (VWAP from futures volume; if futures minute volume is missing, label VWAP a proxy): side of
+   VWAP · opening range 09:15-09:30 · gap vs the median gap · heavyweights above VWAP (BANKNIFTY: HDFCBANK, ICICIBANK, SBIN, KOTAKBANK,
+   AXISBANK - 4 of 5 CE / <= 1 PE; NIFTY: + RELIANCE, INFY, BHARTIARTL, LT, TCS, ITC - 6 of 8 CE / <= 2 PE) · NIFTY vs BANKNIFTY agree.
+4. TRIGGERS (PE = exact mirror): T1 gap-down then two 5-min closes back above VWAP · T2 a dip tagging VWAP (within 0.1%) that closes above
+   · T3 break of the opening-range / previous-day high on 5-min volume >= 1.5x the 20-bar average, RSI 50-75 rising.
+5. CONFIRM (all): breadth count · a fresh reason (FII flow, short covering = price up + OI down, news) · every seat PASS (tape, breadth,
+   volatility, flows/news, history, risk) · the Devil answered. One FAIL = "NOT TAKING: why".
+6. GRADE: A only when the trigger has PASSED the out-of-sample test (part 8) - TODAY NO INDEX TRIGGER QUALIFIES, so Monday's index ideas
+   are WATCH (B) at most, never a BUY ring, unless the weekend tests pass. B = context base rate n >= 30, >= 55% and >= 5 pts over base.
+7. RISK (code): strikes ATM or 1 ITM, NIFTY next weekly / BANKNIFTY December, spread < 0.5% of premium · Monday 0.5% risk (normal 1%) ·
+   max 1 index trade Monday (2 normally), inside the 3-trade cap · stop on the futures (VWAP / OR level) + premium cap -30% · book half at
+   1R, trail under VWAP; exit if RSI > 80 with no new high · time stop 45 min without +0.5R · no new index entry after 13:30 Monday
+   (14:30 normally) · 15:10 exit, NO index carry Monday · chop flag (4+ VWAP crosses by 10:30, opening range < 0.4x its 10-day average)
+   = no entry until a volume break · expiry pin after 13:00 · cooling-off 30 min after a loss, no re-entry same index + side, 2 losses
+   lock the day · SAME-DRIVER: a BANKNIFTY PE blocks any bank PE (incl. his UNIONBANK PE) and the reverse; a NIFTY PE blocks a second PE on
+   the same US shock · chase > 0.3 ATR past the trigger = WAIT · positions unread = "risk gates blind", no BUY.
+   NO INDEX TRADE TODAY when: VIX still rising after 09:30 · gap beyond about -2.5% or filled to flat · chop · Devil blocking · stale data
+   · big news due · 2 losses.
+8. WEEKEND TESTS (code, $0, before Sun 18:00, most valuable first): (1) index trigger harness on NIFTY / BANKNIFTY futures - the share
+   study's 6 triggers + T1-T3 + gap-fill + RSI-50, with an option P&L proxy (Black-Scholes at India VIX, theta, IV drop at the open, spread
+   twice, costs), random same-time baseline, tune on 4 half-years / score 2, n >= 100 / >= 30, lift lower bound > 1.1, Holm guard, NIFTY
+   and BANKNIFTY agree; (2) gap-day path tables (gaps >= 0.5% / 1% and US-shock days: close vs open, gap-fill, first-15-min low, best CE vs
+   PE window); (3) calibrate the option proxy on the recorded chains; (4) expiry-day and pre-holiday effects. A trigger that passes becomes
+   grade-A capable; the rest stay WATCH.
+9. THE INDEX CARD (5-second read): BUY / WATCH · index · strike · expiry · CE / PE · grade · "Agreed: ..." / entry premium zone / stop on
+   the index AND premium / target / MAX LOSS Rs and % / lots / break-even move in points / IV CHEAP-NORMAL-RICH / trade n of 3, index n of 2,
+   same-driver clear or BLOCKED / time-stop clock / "exit 15:10, no carry" / history line with n / "kills it: <price fact>" / NOT PROVEN.
+10. Scorecard per index card: alert vs trigger time, futures + real premium outcome at 15 / 30 / 60 min and 15:10, paired random entry;
+    per day the OPEN / SESSION lean vs always-UP, and index moves >= 0.8% with no card.
+
 ## 21 Nov 16:35 IST - HOLD the 16:20 INDEX DESK entry. The trader asked for a proper panel decision first ("don't be fast"). A 3-member panel
 (index options trader, quant, risk / devil) is designing the NIFTY / BANKNIFTY decision process now; the agreed rules replace 16:20 in the
 next entry. Do not build index cards or send the Monday index plan until then.
