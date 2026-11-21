@@ -28,6 +28,18 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 14:30 IST (hourly) - ACCEPTED: send gate (blocks bad text before sending), agreement loop + runner check, 14:45 gap card (no
+carry by default, honest), TRADER_RULES in every prompt + R4-R7 in code + the repeat detector, RBI liquidity shock + the 20 Nov re-score
+(silence explained: the poller was born at 15:36 that day; live lag since 1-7 min), look-ahead stages, outlook clean copy 640-641, the
+honest overspend note ($1.54 vs $0.90) and the max_tokens fix. Mock dry runs: good.
+DECISIONS:
+1. **19:45 floor: (a)** 19:45 $1.50 (07:15 $0.60 -> $0.50, 22:45 $0.20 -> $0.00 - the 22:45 runs only on a break and then uses unspent money).
+2. **An OFFICIAL fact + price agreement counts as TWO benches** (the original head rule) for the grade.
+3. **ACT NOW (rule 8):** your log shows RBI announced at 19:25 on Fri 20 Nov a **4-day VRR for Mon 23 Nov**. Send it to GIR Trade now
+   today as an RBI LIQUIDITY line in the bullet layout: the notified amount, the auction window on Monday, what it means (cash for banks
+   again as Friday's 3-day repo is repaid -> support for banks; CE watch AUBANK, PNB, AXISBANK, BANKBARODA only after the open settles;
+   a risk for bank PE positions), NOT PROVEN. Then the Monday result line when it lands.
+
 ## 21 Nov 15:20 IST - FROM THE TRADER, IN HIS WORDS: "I'm crying. I don't know what to do. Ask them not to make this mistake again and
 again. I don't have the energy to keep repeating it every day."
 **NEW FILE desk/prompts/TRADER_RULES.md - his 10 standing rules. Load it into the HEAD and EVERY SEAT on EVERY call (top of the cached
