@@ -197,3 +197,23 @@ switching** (NSE / BSE bot rules may differ under load, and BSE blocked fast pol
 - NEW `v2/sources/p_shadow.py`, `v2/sources/shadow_run.py`, `v2/sources/shadow_compare.py` (read only), `v2/sources/test_shadow.py`
 - NEW outputs `v2/data/ext/shadow_{crypto,rates,usclose,worldq,peers,sci}{_now.json,.jsonl}`, `v2/data/ext/shadow_status.json`; log `girdata/ext/shadow_run.log`
 - `v2/BUILD_LOG.md` one row (backup `.bak2347rep`). common.py, run.py, the live pollers, alerts and pages were **not** touched; gir-v2sources was **not** restarted.
+
+---
+
+## 22 Nov 00:33 - switch order (DESK_REVIEW 00:30) NOT carried out: WAITING FOR TRADER
+
+The coordinator relayed the 00:30 order "switch them live now". The first edit (a guard in common.get that refuses the two hosts) was
+**refused by this session's permission system**. Under the overnight rule nothing was switched: the live feeds still read query1 / api.nasdaq.com,
+all locks were released, and the shadow keeps running (more proof by morning). The trader has to approve the switch himself (or run it in a session
+where it is allowed). Prepared for that switch:
+- Every code path that still reads the two hosts, and that must be parked:
+  - **live:** v2/sources/p_gauges.py (Y5 crypto, YD money map, Y1D HYG / IEF credit proxy, 2YY=F); v2/sources/p_uswrap.py (quote5 -> world_quotes.json, closes -> us_overnight.json); v2/sources/p_macro.py (NASDAQ_EARN -> peers_calendar.json).
+  - **also query1 with a browser name:** /home/globalbot/intraday/morning.py fetch_cue (gir-morningcues timer, next run Mon 07:20 IST). It also falls back to **stooq**, whose robots.txt says no. It could read the local world_quotes.json instead; every cue symbol is in it.
+  - **not called anywhere:** /home/globalbot/intraday/sectorplan.py drivers_history.
+  - **replay tool:** v2/analyst/shock.py replay() (through common.get).
+  - **offline studies:** v2/kb/{btc_weekend,chip_shock,us_shock,rbi_liquidity,gap_predict}_study.py (query1); v2/kb/fetch_free.py (api.nasdaq.com historical).
+- One flag would park them all: common.py `PARKED_HOSTS` + `PARKED_READERS_ON = False` (dated "park until Sun 29 Nov"), checked in get().
+- Keys the readers depend on, which a switch must keep:
+  - world_quotes.json `q[sym]`: last, prev, pct, pct30, bar_ts, session, closed, family, name. analyst/shock.py treats the file as stale after 20 min and uses pct30 in the family A rules; p_drivers and gapline read bar_ts.
+  - gauges_now.json btc: last, t, pct_1h, pct_24h, since_session, since_session_px, pct_since_session_close.
+- **MU date:** investors.micron.com allows robots but answers 403 (Cloudflare challenge) to the declared name, so it was not evaded. Show both dates (Nasdaq 16 Dec, read 21 Nov 23:30; Yahoo 17 Dec after the close). The last Nasdaq read is kept as v2/data/ext/peers_calendar_nasdaq_parked_2026-11-21.json.
