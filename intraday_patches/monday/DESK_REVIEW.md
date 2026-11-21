@@ -28,6 +28,18 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 13:45 IST - THE TRADER: "don't block the 10% / 20% runners". ANTI-CHASE REFINED (replaces 12:25 point 1)
+The rule never blocks a big mover that has a reason. It blocks only "it rose yesterday, so CE today" with nothing new.
+1. ALLOWED at any size of move: (a) a FRESH catalyst today - results, filing, order win, block / bulk deal, regulator / government news,
+   broker upgrade, sector news - with price + volume confirming (above VWAP, RVOL >= 2, sector not against); or (b) a PROVEN momentum
+   pattern from his data (e.g. the onset study's breakout-with-volume rows; M2's continuation probability above its tested threshold).
+2. RUNNER CHECK (new): any F&O share up / down >= 5% intraday on RVOL >= 3 gets a dedicated look: what is the catalyst, is it new, how did
+   the last N similar runners do (event library / M2), where is it vs VWAP and the day's high. Output: RIDE (grade A / B with the evidence)
+   or LATE ("move mostly done: N past cases gave back X%").
+3. BLOCKED only: a carry or next-day CE / PE whose only reason is the previous session's move (or "long build-up" / "led the sector")
+   with no fresh catalyst and no proven pattern -> WATCH only.
+The flowchart line now reads "Big movers allowed WITH a fresh reason or a proven pattern".
+
 ## 21 Nov 13:30 IST - FREE ($0) BRAIN UPGRADES, ranked - the trader asked for every zero-cost improvement (build in parallel after the
 Monday must-haves; code + free public data only; light load; each one shown on cards only after it beats random on unseen data):
 1. MODELS M1-M3 (13:15 entry) - started.

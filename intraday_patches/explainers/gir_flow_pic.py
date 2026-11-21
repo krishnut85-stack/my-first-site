@@ -42,7 +42,7 @@ box(3,95,94,22.5,'6 · AGREEMENT LOOP (AI)',[
 arrow(50,95,50,90.5)
 box(3,63,94,27.5,'7 · CHECK GATES (code - AI cannot override)',[
  'Evidence: 2 reasons + proven history + devil answered',
- 'No chasing: already moved 3%? needs a NEW reason',
+ 'Big movers allowed WITH a fresh reason or a proven pattern',
  'Grade:  A = BUY   ·   B = WATCH   ·   C = story only',
  'Price must agree: VWAP, sector, market, money flow',
  'Risk: lots, stop, loss / profit lock, 3 trades, 15:10 exit'],'gate',new=True)
