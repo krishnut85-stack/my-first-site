@@ -1,5 +1,22 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 21 Nov 08:55 IST - THE TRADER: "keep a watch on Monday, alert me where the money is going, and tell me in the GO card"
+Before Sunday 19:45 (code, $0 AI unless stated):
+1. **MONEY FLOW line, live 09:15-15:10, every 5 min** on the F1 Desk + phone (existing boxes, no new page): top 3 sectors money IN and
+   top 3 OUT (whole-sector %, breadth, turnover vs its 10-day normal, % of names above VWAP), plus the pairs that matter today:
+   insurers vs BANKNIFTY, private vs PSU banks, IT vs ER&D / EMS, defensives (FMCG, pharma) vs NIFTY. Use the existing ROTATION
+   module (official sector indices + the PSU / private bank groups). Words: "MONEY: into INSURERS, CAP GOODS · out of PSU BANKS, EMS".
+2. **ROTATION ALERT, at most 2 a day, rings once:** when a sector flips - its breadth >= 60% one way, turnover >= 1.5x normal, the
+   sector above (or below) VWAP, and opposite to a sector it is paired with - the head writes one line: what is moving, from where,
+   why (card ids), and which F&O names to watch both sides. Not a BUY NOW; labelled NOT PROVEN.
+3. **GO card (F1 BUY NOW) gets a "MONEY:" line** next to FROM / AGAINST: is the money flowing INTO this share's sector right now (yes /
+   no / mixed, with the breadth and turnover numbers from code). A CE against an outflow, or a PE against an inflow, needs the
+   AGAINST-THE-MONEY reason in words, like the market-VWAP rule.
+4. **The head's briefs (19:45 / 07:15 / 09:08) carry a ROTATION TABLE:** the overnight cause, where FII money is likely to go
+   (laggard / under-owned vs EXTREME sectors from the sector RSI table), the CE and PE candidates per sector, and the 09:20 checks
+   that confirm or kill each. Test: the Sunday 19:45 brief is compared by the desk with EVENT_MEMORY section K (the desk's manual read
+   of 21 Nov) - report what it matched and what it missed.
+
 ## 21 Nov 08:15 IST - naming + a rotation check for the briefs
 - Use "US OVERNIGHT SUMMARY" on pages and briefs (not "US close card"); India's own 15:30 close stays "the close".
 - Rotation check every brief and at 09:20: insurers (HDFCLIFE, SBILIFE, ICICIPRULI, LICI) vs BANKNIFTY. Insurers are NOT in BANKNIFTY
