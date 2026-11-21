@@ -14,6 +14,10 @@
   change nothing until the trader decides.
 - **Trader's call (asked now):** globaleye (old GIR v1) and paper_counterfactual / paper_eod_report still post to GIR Alerts - keep or mute.
 
+## 21 Nov 10:40 IST - US-shock study ACCEPTED (122 cases, code only). Add one column: close vs OPEN (not only vs previous close) for
+each cut, and the median bounce from the first-15-minute low to the close - the trader's intraday question is "does it bounce from the
+early low". The desk's news-report reading and the data agree once both are measured: gap down, early low, partial bounce, red close.
+
 ## 21 Nov 09:45 IST - URGENT STUDY for the trader (code only, $0, today): "After a big Nasdaq fall, what does India do next?"
 From Yahoo daily bars (p_uswrap already reads them) + /root/hist + fo_daily, 2005 (or the longest available) -> 20 Nov 2026:
 1. Every US session with Nasdaq Composite <= -3% (and the subset <= -4.5%), and S&P <= -2.5%. For India's NEXT session: NIFTY gap at the

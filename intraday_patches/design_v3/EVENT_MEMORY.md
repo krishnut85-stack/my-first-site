@@ -283,3 +283,12 @@ it in Indian IT. So IT is coming up. This is one of the history."
   to -1.5%, close above the open more likely; bear tail (open -2.5 to -3%) needs FIIs to sell; bull tail (flat / up) needs FII buying.
   Signals: GIFT discount < 300 pts and the opening low holding; BANKNIFTY holding about 64,000 and beating NIFTY; Asia / Nasdaq futures
   stabilising, India VIX < 20. NOT PROVEN (n small); the server's us_shock_study on 20 years of data will refine it.
+- **K 20-YEAR STUDY 21 Nov (server, us_shock_study.md, Sep 2007 - 19 Nov 2026, code only) - SUPERSEDES the news-report base rates above:**
+  After Nasdaq <= -3% (n 122): India opened lower 81%, closed lower 73%, opened lower but closed positive 18%; median gap -0.87%, close
+  -0.92%. Nasdaq <= -4.5% (n 31): 89% / 77% / 19%; gap -1.85%, close -1.68%. Friday US fall -> Monday India (n 20): 93% / 85% / 14%;
+  gap -1.73%, close -1.38% (the close is a little better than the open, but still red). India up on the US-fall day: still closed lower
+  86% (vs 67%). Low inside the first 15 minutes in 9 of 13 recent minute-data cases. Best sectors FMCG (-0.21%), pharma (-0.43%); worst
+  metal (-1.02%), IT (-1.17%; weakest of NIFTY / BANKNIFTY / IT in 24 of 29 cuts) - but in 2026 IT rose after both AI sell-offs (6 and
+  20 Nov). Back to the previous close within 5 sessions 55-65%. Exact 20 Nov match (Friday, 2nd US down day, India up, Asia -5-6%): 4 cases.
+  Reconciled: news sample "closed above its open" and data "rarely closed above the previous close" are both true - typical day = gap
+  down, early low, partial bounce, close still red. Server to confirm close-vs-open directly.
