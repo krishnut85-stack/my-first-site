@@ -254,3 +254,18 @@ it in Indian IT. So IT is coming up. This is one of the history."
 - Monday 23 Nov is EXPIRY (stocks: December strikes; NIFTY: next weekly) and Tuesday 24 Nov is a holiday.
 - Watch before deciding: US futures (open Sunday evening US time), KOSPI / Taiwan at their Monday open, GIFT NIFTY from about 06:30 IST,
   the FII figure for 20 Nov, morning TV. The briefs decide; no pre-set side. Two-thirds of moves start at 09:15 - wait for 09:20.
+- **K update 21 Nov 08:00 IST - the desk's read (search-result text; sources in DESK_REVIEW / chat):**
+  - Wire closes (AP / UPI / CNBC): S&P 6,910.39 (-3.70%), Nasdaq 22,617.73 (-5.28%), Dow 48,147.33 (-1.93%); Nasdaq-100 -5.6% (about
+    -19.8% from high); SOX -10.7%. S&P 7 straight down days, -8.6% on the week. (The trader's app showed CFD prices at 16:30 EST.)
+  - Causes reported: (1) Reuters: SEC staff examining Nvidia's accounting - NVDA about -14% (10-Q already delayed; board probe);
+    (2) Anthropic IPO (listed 19 Nov) sold off about 9-13% on day 2; (3) Fed December hike odds high after hot CPI; (4) Nvidia CEO
+    exit (12 Nov) + chip export licence rules, AMD short report; (5) Trump threat of a tax on AI data centres built abroad.
+  - Cross-asset: US 10y about 4.93% (down), VIX 30-40, gold about -2.8% (-9% on the week, not a haven), copper worst week since Apr
+    2025, oil soft. Asia Fri: Taiex -6.2%, KOSPI -5.2%, Nikkei about -5% - while India ROSE (+1.1%, Bank Nifty +2.49%) = rotation into India.
+  - Rotation read (rallyscan to 19 Nov): PSU banks EXTREME (avg RSI 78.3; PNB 87.7, SBIN 82.9, MAHABANK 80.2); private banks stretched,
+    not EXTREME on 19 Nov; but NSDL: financials took Rs 43,102 cr of the record Rs 84,291 cr FPI buying in 1H Nov. Laggard
+    destinations ranked: insurers / NBFC (HDFCLIFE, SBILIFE, SHRIRAMFIN), capital goods & defence (BEL, HAL, BHEL), auto ancillaries
+    (MOTHERSON, BOSCHLTD), power utilities / telecom (NTPC, POWERGRID, INDUSTOWER); defensives (FMCG, pharma) if FIIs turn sellers.
+  - PE candidates: semis / EMS (DIXON, KAYNES, CGPOWER), power T&D data-centre trade (GVT&D, CGPOWER), ER&D / mid IT that ran on
+    20 Nov (PERSISTENT, TATAELXSI, COFORGE), metals (HINDALCO, VEDL, HINDCOPPER, NATIONALUM), gold lenders (MUTHOOTFIN, MANAPPURAM).
+    IT majors mixed. All NOT PROVEN; Monday's GIFT NIFTY, KOSPI / Taiwan open, the 20 Nov FII figure and 09:20 sector VWAP decide.
