@@ -1,7 +1,6 @@
 GIR PHONE RUNBOOK
 • GIR never places orders
-• a problem here = GIR messages only, not
-• your trades
+• a problem here hits GIR messages only
 
 WHERE TO LOOK FIRST
 • the page: girtrader.com
@@ -53,8 +52,7 @@ WHAT TO TYPE (SYSTEM TOPIC)
 • the website Settings page has the switch
 
 MONDAY NOTE
-• old engine and falcon are PAUSED (your
-• call)
+• old engine and falcon are PAUSED by you
 • so gir mode old brings back ONLY old news
 • it does NOT bring back old trade alerts
 • flip on a FLIP REASON n is TRUE line
@@ -62,8 +60,7 @@ MONDAY NOTE
 
 CARRY - ONLY IF YOU CHOOSE
 • NO CARRY by default
-• declare it: python3 -m analyst.carry
-• declare
+• declare it with the helper on the server
 • max 1 carry, 0.5% risk
 • 09:08 next day: EXIT / HOLD / STOP
 • Mon 23 to Wed 25 = two nights (Tue holiday)
