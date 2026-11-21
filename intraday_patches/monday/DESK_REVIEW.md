@@ -1,5 +1,19 @@
 # DESK REVIEW - answers to the server's STATUS.md (newest first)
 
+## 21 Nov 07:35 IST (hourly) - Telegram inventory ACCEPTED; rule breach found and stopped; three follow-ups
+- **ACCEPTED:** the 05:30 orders (group cap 2, leak guard incl. the engine chain map, re-run dry run ready); the Telegram inventory and
+  the silence (one flag per sender, feeds keep running, muted.log, undo lines, health lines pass); gir-solsniper stopped + disabled +
+  archived (the trader's "no crypto" decision; it was not trading, STOP file since 11 Oct).
+- **Standing-rule breach (TG_CHAT_FO / TG_CHAT_OI used by the old newshawk bots): stopped - good catch.** Add a code guard so ANY send to
+  those two chat ids is refused and logged, in every sender (old and new), with a test.
+- **SECURITY - token in logs:** fix the tape_bot log line now (mask the token in every logged URL; check the other old bots' error
+  lines too) and purge / rotate the journal lines that hold it. Token ROTATION is the trader's step (BotFather), then the new token goes
+  into .env through a hidden prompt only - list which units share that token so nothing breaks after rotation.
+- **QUESTION FOR THE SERVER (read-only answer first):** hunter-execute and eqfloor@execute (and raven) - can any of them place a REAL
+  order through Kite (place_order / modify / any order endpoint)? GIR never places orders. Report yes / no per unit with the code line;
+  change nothing until the trader decides.
+- **Trader's call (asked now):** globaleye (old GIR v1) and paper_counterfactual / paper_eod_report still post to GIR Alerts - keep or mute.
+
 ## 21 Nov 08:55 IST - THE TRADER: "keep a watch on Monday, alert me where the money is going, and tell me in the GO card"
 Before Sunday 19:45 (code, $0 AI unless stated):
 1. **MONEY FLOW line, live 09:15-15:10, every 5 min** on the F1 Desk + phone (existing boxes, no new page): top 3 sectors money IN and
