@@ -28,6 +28,19 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 22 Nov 00:05 IST (real time) - THE TRADER: "I want to work with GIR. Simple instruction: make money - MAKE DECISIONS. I have not got one
+trade message on Telegram." The desk must DECIDE, not only watch. Binding for the Sun 19:45 brief and every trading day:
+1. SUNDAY 19:45 BRIEF = A DECISION SHEET, sent to Trade now (after the 18:30 ring test): market call for Monday (gap + session lean, with the
+   GIFT vs NQ line), then TOP 3 CE and TOP 3 PE share ideas, each one line: share + option (strike, expiry) + the EXACT trigger that turns it
+   into BUY ("above X with RVOL >= 1.5 after 09:30") + stop + target + why (the fresh reason, source) + grade. Plus "AVOID" names. Short,
+   one line each, his format. No idea without a trigger price.
+2. 07:15 and 09:08: update the same sheet (keep / drop / new, why) - never a new random list.
+3. LIVE: when a sheet trigger fires and the checks pass -> BUY NOW at once (grade A). Grade B -> "READY - your call" line with the same
+   facts (his choice), never silence.
+4. NEVER SILENT: if no BUY NOW by 10:30, send one line "NO TRADE YET - why (e.g. gap fade, no volume) - next look 11:30"; same at 13:00.
+   15:15 one-line day summary: what was called, what happened.
+5. Every call scored at 15:45 and in the Friday week-1 scorecard. Trust is built on that score.
+
 ## 21 Nov 23:50 IST (real time) - THE TRADER IS FINDING PAGE FAULTS HIMSELF (3 tonight: F6 positions cut, old Friday plan as live, World
 drivers frozen at Fri 15:29). Not acceptable. BEFORE SUN 15:00: DATA FRESHNESS AUDIT of every number on every page (23 pages, desktop +
 phone): for each number its source, its timestamp, LIVE / CLOSED / STALE, and a check against an outside source (NSE indices + F&O
