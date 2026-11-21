@@ -28,6 +28,23 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 12:25 IST - THE TRADER: "no blind picks - not 'it went up today, so CE tomorrow'". ANTI-CHASE + EVIDENCE GATE (code + H prompt)
+1. **Anti-chase:** a CE on a share that rose >= 3% in the last session (or a PE after a >= 3% fall) needs a NEW reason dated after that move
+   (fresh news / filing / flow / event) OR a tested continuation base rate (n >= 30, hit rate >= 55% and >= 5 pts over random). Without one
+   it can only be "WATCH on a pullback", never a BUY NOW, a carry or a look-ahead READY. "Led the sector on Friday" / "long build-up" /
+   "momentum" do not count as reasons on their own.
+2. **Evidence gate for every call and look-ahead idea:** (a) >= 2 independent reasons from DIFFERENT benches with evidence ids; (b) a tested
+   base rate with n vs random (or "STORY ONLY - not tested", which caps the grade); (c) the Devil's objection answered with evidence. If the
+   history base rate points the OTHER way (e.g. IT after a big Nasdaq fall: -1.17%, weakest in 24 of 29 cuts), the call must say why this
+   time differs WITH evidence and its n, else it is downgraded.
+3. **Grade on every card:** A = all three + price agrees at the trigger (only A can ring BUY NOW); B = two of three (WATCH, page + brief);
+   C = story only (page only). The grade and the missing piece are printed on the card.
+4. Monday outlook re-checked under this gate: PERSISTENT CE (reasons: led IT Friday with long build-up = momentum; IT laggard by RSI +
+   rotation table; "low-AI Indian IT" story; history AGAINST, only 2 counter-cases in 2026) -> grade B / C, WATCH only. INDUSINDBK CE
+   (FII flow + governance clean-up + flow-to-private-banks lesson; ran +8.59% - needs a new reason or a pullback hold) -> B, WATCH.
+   DIXON / VEDL / MUTHOOTFIN PE (world move after the Indian close + sector links + history for metals) -> B, A only if price agrees at 09:20.
+   Send the re-graded list to GIR Trade now as a short update before Sunday 19:45.
+
 ## 21 Nov 12:10 IST - THE TRADER: "think ahead like brokers - continuity, every day, alerts BEFORE the move". THE LOOK-AHEAD BOOK
 A standing, multi-day idea book (horizon 1-10 sessions), separate from intraday BUY NOW:
 1. **Each idea:** share / sector, side (CE / PE), horizon, the chain of events (e.g. "metals falling -> input costs down -> auto margins up
