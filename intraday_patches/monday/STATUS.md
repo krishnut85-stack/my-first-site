@@ -485,3 +485,16 @@ Last update: 20:55 IST
   The shock lines and credit P1 show live once the desk builder publishes desk.shocks / meter.p1 (in progress).
 - 10:06 - OLD-SYSTEM AI OFF (the trader's yes): flag set, 10 old services restarted (all active, no errors), their non-AI feeds keep running. Every AI call on the key now goes through the desk's $8 gate (J11). Baseline of today's old parts at the switch: decider $0.069, decider big news $0.054, news reader $0.024, headline map $0.008, reader $0.000. These must not grow; checked again at the next pull and on Monday ("old paths = $0").
 - 10:06 - REBOOT (kernel 6.8.0-151): the trader chose AFTER MONDAY (Monday evening). The kernel is installed and waits. When it happens, Claude Code ("claude remote-control" in tmux) must be started again by hand.
+- 10:08 - J6 COMPLETE:
+  - Old senders silenced (12 flags, 07:10 work); old trading programs paused; old-system AI off.
+  - The old timers that burst in the same minute as the new engine are slowed / moved (systemd override files, undo = delete the file + daemon-reload):
+    - gir-govwatch every 2 min -> every 10 min;
+    - falcon 09:30-16:00 IST every 5 min moved 2 min off the 5-minute marks;
+    - gir-crosscheck's market-hour runs moved 3 min off the marks (evening runs unchanged).
+  - raven-manage paused.
+- 10:08 - J7 FALLBACK SWITCH (IN PROGRESS). /usr/local/bin/gir: "gir mode new" (Monday default: new desk speaks, old senders muted, old AI off), "gir mode old" (old alerts back, old AI on, new desk trade lines quiet), "gir status".
+  - Flags only, read on every send / call, so a flip works in seconds with no restart. Muted lines are DROPPED, not queued, so a flip never dumps a backlog.
+  - TG_CHAT_FO / OI stay forbidden in both modes; system P1 + world-shock lines stay on in both.
+  - Status now: mode new, 12 / 12 old senders muted, old AI OFF.
+  - Desk builder adding: the desk's DESK_TG_OFF lever, the trader's Telegram command (/gir mode old | new | status, accepted only from his own Telegram user id), and the flip test in the Sunday mock.
+  - The flip has NOT been tested live yet: flipping to "old" now would send real old alerts to his channels. It is tested both ways in the Sunday mock (F2). The written reasons to flip (no card 15 min after 09:15, more than 6 rings in 15 min, a wrong-side ring) are for the desk to write (MONDAY_READY J7: D writes reasons, T approves).
