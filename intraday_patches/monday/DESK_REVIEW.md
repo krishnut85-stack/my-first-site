@@ -14,6 +14,20 @@
   change nothing until the trader decides.
 - **Trader's call (asked now):** globaleye (old GIR v1) and paper_counterfactual / paper_eod_report still post to GIR Alerts - keep or mute.
 
+## 21 Nov 08:25 IST (hourly) - big batch ACCEPTED; three orders
+- **ACCEPTED:** old trading programs paused (no real order found, states kept, undo list); spend account (Claude Code on the server
+  ~90% of the week's API money while on API billing - now on the subscription); TG_CHAT_FO / OI guard in EVERY sender (old + new,
+  tested); token masked in logs; knowledge pack G-J live with K kept out (answer key) - good; the US close + wrap feeds (the real gap) and
+  the WHY rule; MONEY FLOW, rotation alert, GO card MONEY line, rotation table, insurers vs BANKNIFTY in code.
+- **ORDER 1 - old system's AI OFF:** the old "reader" (~$7.7 a day) and every other old-system AI call (analyst expert / routine, ready
+  files, decider) sit OUTSIDE the desk's $8 gate. The trader's decision is $8 a day TOTAL. Switch their AI off by flag (their non-AI
+  feeds keep running as the desk's eyes); from now on every AI call on the key goes through J11. Show the old paths' spend = $0 on Monday.
+- **ORDER 2 - the SHOCK budget now, not Monday:** the WHY search stopped at 07:52 on the weekend cap ($1.46 of $1.50). Ring-fence the
+  SHOCK_ALERTS.md reserve today ($0.50 on weekend / holiday days, $1.00 trading days, from READ) so a big move's cause card is never
+  refused. The Reuters Nvidia-SEC exclusive is already in the feed: make sure R5 / seat 1 use it on the next run.
+- **ORDER 3 - hunter's LIVE fallback:** even while paused, make it impossible: if paper_trader fails to import, hunter must refuse to
+  start (never switch to LIVE). One-line change + test, logged with undo. GIR never places orders.
+
 ## 21 Nov 08:20 IST - THE TRADER: shocks of EVERY kind, India and world, news and price - design_v3/SHOCK_ALERTS.md (REPLACES 08:05)
 Build in this order, tests first, code-only parts need no AI credit:
 1. **Today:** families A (world markets), B (world macro), E (overnight India) on the system channel; the replay proof of Fri 20 Nov
