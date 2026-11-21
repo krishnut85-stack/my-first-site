@@ -28,6 +28,22 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 16:40 IST (real time) - THE TRADER: "If NIFTY / BANKNIFTY fall Monday, the chip-dependent F&O shares are more likely to fall -
+which can fall MORE?" RUN NOW (code only, $0, before the 19:45 brief):
+CHIP-SHOCK STUDY: from the 5-year daily store (+ 3-year minutes), every day SOX <= -5% (and separately Nasdaq <= -4.5%), next India
+session: for each chip / AI-hardware-linked F&O share - median open gap, median close, % of days down, worst, move vs NIFTY, and how
+often the low came in the first 15 min. Names (confirm each is on today's NSE F&O list): EMS / semis KAYNES, DIXON, PGEL, AMBER;
+chip plant + data-centre power CGPOWER, GVT&D, POWERINDIA, ABB, SIEMENS, BEL; chip-design / ER&D TATAELXSI, LTTS, KPITTECH, HCLTECH,
+PERSISTENT, COFORGE, LTIM, MPHASIS. Control group: NIFTY, BANKNIFTY, random F&O shares. Add the 2026 cases separately (6 Nov SOX -12%,
+20 Nov) because LINK_BOOK row 30 says the Nasdaq -> IT link BROKE in 2026 (IT rose after both AI sell-offs). Add 28 Jan 2025 (DeepSeek:
+DIXON / KAYNES down up to 20% intraday).
+Facts to use: India closed BEFORE the full US chip crash (Fri 20 Nov: SOX futures only -2.4% in India hours, SOX cash -10.7% after) -
+Monday is India's first full reaction. Friday India already: CGPOWER -2.57%, GVT&D -2.63% (among the F&O losers), but the Dixon group
+closed GREEN above VWAP (DIXON +0.5%, PGEL +1.8%, KAYNES +0.7%, AMBER +0.7%); PERSISTENT / TATAELXSI / COFORGE ran up on 20 Nov.
+OUTPUT: a ranked "most likely to fall more" list with n and hit rates in the 19:45 brief; NOT PROVEN where n < 10. No call from it on
+its own: Monday PE only after 09:30 (shock day), below VWAP and the opening-range low, sector index confirming, the Devil answered. The
+never-repeat rule stands (no DIXON PE again without a NEW reason).
+
 ## 21 Nov 16:16 IST (real time) - IGNORE the trader's queued voice note "where will the money go from US stocks..." - it was meant for the
 reviewer, not the server. TAKE NO ACTION on it, change nothing, continue the current work. The reviewer answers it.
 
