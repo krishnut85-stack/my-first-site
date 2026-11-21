@@ -14,6 +14,22 @@
   change nothing until the trader decides.
 - **Trader's call (asked now):** globaleye (old GIR v1) and paper_counterfactual / paper_eod_report still post to GIR Alerts - keep or mute.
 
+## 21 Nov 08:05 IST - THE TRADER: "not even once did the desk alert me that the US market fell" - a WORLD SHOCK alert that cannot fail
+Why it was silent on Fri night: the API credit ran out at 01:32 IST (US close 02:30 IST), the weekend budget day was already at 90% of
+$1.50 (readers event-only), and the new desk's Telegram is WOULD SEND until the Sunday ring test. Three blockers at once. Fix, today:
+1. **WORLD SHOCK ALERT in CODE ($0, no AI, works with no credit):** S&P 500, Nasdaq, Dow futures / cash, Nikkei, KOSPI, Taiwan, Hang Seng,
+   Brent, gold, USDINR, US 10y - a move of >= 2% (index / commodity) or >= 15 bp (10y) or >= 0.8% (USDINR) from the previous close,
+   checked every 5 minutes 24 x 7, including weekends and the US session at night. It sends ONE Telegram line now (system channel,
+   allowed today - this is a P1-class market fact, not a keyword news item): "WORLD SHOCK 02:30 IST: Nasdaq -5.3%, S&P -3.7%, SOX -10.7%
+   - India opens Monday 09:15; desk brief to follow". One line per instrument per session, then one update if it moves another 1%.
+2. **Reserved WORLD money:** $0.50 of every budget day (weekend and holiday days too, inside their caps - take it from READ) is kept
+   ONLY for the world reader + head to write the CAUSE card after a WORLD SHOCK ("WHY: ..." with 2+ sources). The ladder never spends it
+   on anything else.
+3. **Low-credit warning:** when the API balance (or the rate of refusals) shows less than 3 days of the $8 cap left, one P1 line to the
+   trader BEFORE it runs out. Check the account balance daily if an API allows; else alert on the first refusal (already built).
+4. Prove it: replay Fri 20 Nov 21:00 -> Sat 03:00 IST through the shock checker (code only) and show the line it would have sent and
+   when. Then switch it on.
+
 ## 21 Nov 07:50 IST - THE TRADER: (1) PAUSE the old trading programs; (2) no more rehearsal spend; (3) account for the money
 1. **PAUSE raven, raven-manage, raven-preopen, hunter-scan / -manage / -execute, eqfloor@scan / -manage / -execute.** Safely, in this
    order: (a) read-only check first - any OPEN real position or pending order any of them manages (Kite positions / orders, their own
