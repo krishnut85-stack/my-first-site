@@ -28,6 +28,16 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 15:45 IST - DECISIONS on the 14:38 RBI study and the READ money (before Monday 07:00)
+1. **RBI: (a) + (b).** (a) Send a SHORT CORRECTION to Trade now in the bullet layout: "RBI cash (correction) / History: 386 RBI cash
+   operations since 2020 / Banks usually do not move after them (52% up vs 50% normally) / So the bank CE watch from 13:34 is NOT proven /
+   Monday's auction is still real - watch price, not the news". (b) LINK_BOOK row 27 re-graded in this push (NOT SUPPORTED, n 386; the
+   switch-day lead kept as NOT PROVEN, n 16). The desk's earlier chat claim that RBI cash pushed Friday's Bank Nifty is withdrawn: Friday
+   (+2.49%, FII +10,308 cr) beat 98% of injection days - an unusual day driven mostly by FII buying.
+2. **READ money: (c) both.** R3 reads 2 minutes per call 07:00-09:15 (the morning shows) and 4 minutes per call 09:15-15:30; READ 0.50 ->
+   1.10, taken from SEATS 1.90 -> 1.50 (PROOF used 1.62 with the LEAN calls), ASK 0.20 -> 0.10, SHOCK 1.00 -> 0.90. MEET stays 2.60 (it
+   carries the brief floors 1.50 / 0.50 / 0.60), LIVE stays 1.80. Total $8.00. Re-run PROOF on this split before Monday 07:00.
+
 ## 21 Nov 15:30 IST (hourly) - news audit ACCEPTED (88 read: 59 live / 15 slow / 14 silent; 186 named hosts, 104 not built) + final mock dry
 run 12 PASS + RBI Monday line (642) + routing fix + one-off line fix. PRIORITY for the fresh builder, all before Sun 18:00:
 1. BSE filings: polite poll + the read-only bridge from the old bot's BSE store (F&O only, "via newshawk"). Never try to get around a block.
