@@ -28,6 +28,17 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 14:00 IST - THE TRADER APPROVED THE DESIGN ("go ahead with the changes"): explainers/gir_new_flow.png is the FROZEN design
+until the week-1 review on Fri 27 Nov. Build what is on it; fix only what Monday's live results show broken; no new features in between.
+BUILD ORDER (Monday-critical first, the rest in parallel by a second builder, light load, $0 AI unless stated):
+ A. Before Sunday 17:00 mock: agreement loop + "BUY only on agreed A calls" (12:50) · one-line bullet layout (13:00) · anti-chase refined +
+    runner check (13:45) · 12-driver checklist (done) · open / session lean split (11:55) · PROOF with the new $8 split · Monday outlook
+    re-sent in the final format.
+ B. Before Monday 08:30: 14:45 TOMORROW / CARRY card (with the gap study) · RBI liquidity shock + seat 9 card (11:00) · market-depth recorder
+    tested (starts 09:15) · Sunday mock + ring test + 19:45 brief.
+ C. In parallel from today (not blocking Monday): models M1 / M2 / M3 · RBI liquidity study · look-ahead book · free upgrades 2-8 (13:30).
+Report each item in STATUS as done / testing / not started.
+
 ## 21 Nov 13:45 IST - THE TRADER: "don't block the 10% / 20% runners". ANTI-CHASE REFINED (replaces 12:25 point 1)
 The rule never blocks a big mover that has a reason. It blocks only "it rose yesterday, so CE today" with nothing new.
 1. ALLOWED at any size of move: (a) a FRESH catalyst today - results, filing, order win, block / bulk deal, regulator / government news,
