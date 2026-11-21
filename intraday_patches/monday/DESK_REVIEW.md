@@ -28,6 +28,42 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 14:40 IST - GAP REVIEW (independent F&O-dealer + reliability reviews). These are ADDED to the frozen design now, so nothing
+"could have been added" later. Build list B is extended; all are small and mostly code, $0.
+**CRITICAL - before Mon 09:15:**
+ 1. HEARTBEAT: an 08:30 "READY" line, then one System-topic line every 30 min in market hours (last tick age, cards, rings, AI $). "No
+    line for 35 min" joins the J7 flip reasons.
+ 2. TELEGRAM SEND FAILURES: check every send's reply (ok=true); retry once; count failures on the health page; a failure streak = P1 by the
+    second channel (item 3).
+ 3. OUTSIDE MONITOR (the trader signs up himself - free UptimeRobot or healthchecks.io, alerts to his email / phone app, NOT the Telegram
+    bot): it watches /status.json + the last-tick age + "a Telegram send succeeded in the last 35 min". Server side: expose those fields.
+ 4. TOKEN ROTATION PLAN: the FULL sender list incl. gir-v2desk (tgdesk.py), gir-v2tgcmd, shock / credit / Kite-check / ring-test paths; the
+    trader rotates on Sunday BEFORE the 18:30 ring test; new token into both variables (hidden prompt), restart the list, one test line
+    from each sender.
+ 5. MARKET-HOURS CHANGE FREEZE 09:00-15:35 (J16): no restarts / deploys except `gir mode`; a lock file the restart helpers check; the
+    builder stays read-only in that window (fixes queue for 15:40).
+ 6. 09:15 CPU: apply option A on Sunday (pause falcon + old engine2), Nice / OOMScoreAdjust priority for feed, engine, desk; memory caps on
+    recorders (depth recorder already has its load guard).
+ 7. RESTART PROOF: Restart=on-failure with a burst limit + an alarm when a unit gives up; run the J13 kill test on Sunday.
+ 8. QUICK CHECKS: NTP synchronized (J12); 08:30 Kite cold-start test with 0 rate-limit errors (J14); stop apt-daily-upgrade until Mon
+    16:00; the 08:20 Kite-check alarm really rings; the 08:20 check also reads HIS positions / orders / funds, and the first fill must move
+    the trade counter within 10 s, else every card says "risk gates blind".
+ 9. SHOCK-DAY OPTION PRICE CHECK (in code): WAIT until 09:30 when India VIX is up > 10% or ATM IV > 1.3x its recent level; prefer 1 ITM.
+10. CARRY RULE (reconciles 15:10 vs carry): a DECLARED carry is marked OVERNIGHT and skips the 15:10 alarm; max 1 carry, 0.5% risk sized
+    on a gap through the stop; counts in the next day's loss lock; a 09:08 "carried position: exit / hold / stop" card; two-night warning
+    before holidays (Mon 23 -> Wed 25).
+11. PHONE RUNBOOK for the trader (one page, also as a Telegram pinned message): no messages / page down / Kite key DEGRADED / AI credit
+    empty vs provider down / Telegram dead / what to type (gir mode old) / who to call.
+**IMPORTANT - this week:** second P1 channel (email / push) for server down, Kite down, credit empty, Telegram failing · guarded mid-day
+Kite re-login command · websocket stale -> automatic REST-quote fallback · nightly off-server backup of the desk board, ledger, thesis book,
+budget counters, flags + a DigitalOcean snapshot before Monday evening's reboot + the post-reboot checklist · disk: cap journald, phone
+alarm at 85% · AI P1 wording "provider down" vs "credit empty" · HIS trade journal (Kite tradebook at 15:35: plan vs actual, GIR call or
+own, exit reason, R after charges; Friday rule-break review) · hard block on buying options into a company's own results / board meeting
+within one session unless IV < 70th percentile · MSCI 30 Nov + FTSE December rebalance lists on the calendar · earnings-call transcript
+reader before the January season.
+**NICE:** price-band field, ASM / GSM watch, SAST / insider / pledge reader, break-even move on the card, "same driver" check for two PEs on one
+shock, tax ledger, US times from the New York zone, vacuum old journal lines after rotation.
+
 ## 21 Nov 14:15 IST (hourly) - ACCEPTED: PROOF_1030 ($6.13, no LIVE refusal), evidence gate + grades (636), bullet layout in code (637,
 tgformat.py, every path), look-ahead book seeded, LEAN split, mock / ring-test prep, the GAP-PREDICT study (honest: nothing at 14:45
 predicts the sign; the US night does). H_head_analyst.md now carries the evidence-gate rule (this push).
