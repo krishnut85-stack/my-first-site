@@ -2,7 +2,7 @@
 
 One row per checklist item (MONDAY_READY.md). Proof files are in this folder. An item without proof is NOT DONE.
 
-Last update: 00:24 IST
+Last update: 00:28 IST
 
 | item | status | note | proof | time |
 |---|---|---|---|---|
@@ -71,6 +71,7 @@ Last update: 00:24 IST
 ## WAITING FOR TRADER (approve in the morning; overnight rule: steps needing approval are skipped and listed here, all other work carries on)
 - 00:24: TWO SITES STILL READ BY POSING AS A BROWSER (robots.txt says no): Yahoo's chart API and Nasdaq's API. Replacements are BUILT and running in shadow since 23:39 (NO_DISGUISE_REPLACEMENTS.md): Bitcoin / Ether from Kraken (price within 0.07%, shock flags agreed 9/9); US closes / money map / world quotes from finance.yahoo.com pages robots allows (19/19 funds identical, 26/28 quotes exact) - but still Yahoo's data, so rule on Yahoo's terms too; peers' results dates from Yahoo quote pages (found AVGO 9 Dec that Nasdaq missed; Micron 16 vs 17 Dec to confirm). IMPORTANT: the US 2-year shock gauge has been DEAD since ~13 Oct (Yahoo's 2-year future stopped trading - the 15 bp check never ran); US Treasury's daily par yield replaces it (4.63%, -13 bp on 20 Nov; daily only, ~03:00-05:00 IST). Choose: switch now (recommended at least for the 2-year gauge and crypto) or keep the old feeds. Also asked: repeat the NSE / BSE declared-name test once in market hours (all 17 endpoints answered the declared name on Saturday night) before switching them. The Supreme Court site needed no replacement - switched to the declared name (00:24).
 - 00:04: UNMASKED SCREENSHOTS IN GIT HISTORY. The reviewer removed F_newsfilter_shots / F_sort_shots / F_search_shots from the branch tip (00:20), but the earlier commits still hold them (header P&L strip, and the News page 'YOUR 3 TRADES' box with your rupee P&L). Removing them from history needs a history rewrite of the branch (force push) - your yes needed, as the desk said. Recommended: yes, rewrite only intraday_patches/monday/F_*_shots from history.
+- 00:28: NIFTY TREND-DAY LINE EXPIRY: BANKNIFTY lines say Dec ATM CE / PE (your order); NIFTY lines use the NEXT WEEKLY ATM (the index desk's risk rule, index options next weekly 1 Dec). Keep weekly for NIFTY, or December for both?
 ANSWERED (desk 22:35): RBI lines stay LIVE on Telegram (rule 8) · Friday / weekend slow mode only after the 19:45 brief - building · F&O-company items never hidden, non-market ones in a folded "company - minor" lane under that share - building · GitHub token -> credential helper after the Sunday rotation - will do then.
 
 
