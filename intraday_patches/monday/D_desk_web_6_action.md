@@ -1,6 +1,6 @@
 # D desk web 6_action - Monday item 6 - F1 ACTION panel + THEME rows (and desk-trade IDEAS / DRIVERS)
 
-Run 21 Nov 2026 01:36 IST. Design: design_v3/DESK_WEB_CHANGES.md (replaces DESK_TEAM 6; the approved v3 boxes stay, the desk adds words and rows inside them).
+Run 21 Nov 2026 09:14 IST. Design: design_v3/DESK_WEB_CHANGES.md (replaces DESK_TEAM 6; the approved v3 boxes stay, the desk adds words and rows inside them).
 Data: the desk.* facts of DESK_api.md v2 (meter.cap 8, meter.lean, brief.stale / stale_why / failed_slot). Real input only (mouse / keyboard / wheel at 1366x768 and 1600x900; CDP finger touches at 390x844).
 Two data states: **fixture** = a TEST COPY of gir-preview on 127.0.0.1:8103 reading a fixture desk state.json (DESK_api v2 shape, every text
 "FIXTURE", cap 8, lean on; the live state.json never touched; the STALE rows flip that fixture's view.stale / brief.stale) - inside only; **live** = the real store, inside
@@ -18,26 +18,26 @@ static/desk-hunt.js (backups .bak2048 / .bak2104 / .bak2115): ACTION gets one mo
 | control | page | viewport | where | result | evidence |
 |---|---|---|---|---|---|
 | desk-hunt ACTION: IDEAS n chip (no wrap at 1366) | F1 ACTION (fixture) | 1366x768 | inside | PASS | IDEA 4 · fits True · row 26px |
-| IDEAS = the head's ideas: GO NOW = FIRED / BUY NOW, GET READY = ARMED, CANCELLED with its reason | F1 ACTION (fixture) | 1366x768 | inside | PASS | ['23:07 GO NOW SBIN CALL ENTER only if FIXTURE: a pullback to ', '23:07 GET READY ICICIBANK CALL ENTER only if FIXTURE: a 1-mi', '23:07 STANDS INFY PUT ENTER only if FIXTURE: back below VWAP', '23:07 CANCELLED TCS PUT cancelled: FIXTURE: IT held VWAP for'] |
+| IDEAS = the head's ideas: GO NOW = FIRED / BUY NOW, GET READY = ARMED, CANCELLED with its reason | F1 ACTION (fixture) | 1366x768 | inside | PASS | ['06:44 GO NOW SBIN CALL ENTER only if FIXTURE: a pullback to ', '06:44 GET READY ICICIBANK CALL ENTER only if FIXTURE: a 1-mi', '06:44 STANDS INFY PUT ENTER only if FIXTURE: back below VWAP', '06:44 CANCELLED TCS PUT cancelled: FIXTURE: IT held VWAP for'] |
 | THEME rows on top of the Sectors panel = the head's themes | F1 ACTION (fixture) | 1366x768 | inside | PASS | THEME FIXTURE: AI IPO -> FII ro… CALL CONF |
 | no cut text (F1 ACTION + THEME, fixture) | F1 ACTION (fixture) | 1366x768 | inside | PASS | 0 cut cells · prose with a tooltip allowed: 4 |
 | desk-trade: IDEAS chip = the head's book; DRIVERS row = the head's themes | desk-trade ACTION (fixture) | 1366x768 | inside | PASS | chip IDEA 4 · rows 4 · drivers THEME FIXTURE: AI IPO -> FII rotation -… → SBIN CE, HDFCBANK CE, INFY PE / ROTAT |
 | no cut text (desk-trade ACTION + DRIVERS, fixture) | desk-trade ACTION (fixture) | 1366x768 | inside | PASS | 0 cut cells · prose with a tooltip allowed: 4 |
-| head not running: IDEAS 0 says so; THEME rows keep the engine legs | F1 ACTION (live) | 1366x768 | inside | PASS | head analyst not running - no desk ideas / head analyst not running - no desk ideas / THEME silver −4.74% metals & mining CALL MIXED Hang Seng (Ch |
+| head running (live): IDEAS = the head's book (rows, or "the head has no idea in its book now"); no fixture text | F1 ACTION (live) | 1366x768 | inside | PASS | the head analyst's ideas (desk.ideas): GET READY = ARMED, GO / the head has no idea in its book now / THEME silver −4.74% metals & mining CALL MIXED Hang Seng (Ch |
 | no cut text (F1 ACTION, live) | F1 ACTION (live) | 1366x768 | inside | PASS | 0 cut cells · prose with a tooltip allowed: 0 |
 | page errors | F1 ACTION (live) | 1366x768 | inside | PASS | none |
 | desk-hunt ACTION: IDEAS n chip (no wrap at 1600) | F1 ACTION (fixture) | 1600x900 | inside | PASS | IDEA 4 · fits True · row 26px |
-| IDEAS = the head's ideas: GO NOW = FIRED / BUY NOW, GET READY = ARMED, CANCELLED with its reason | F1 ACTION (fixture) | 1600x900 | inside | PASS | ['23:09 GO NOW SBIN CALL ENTER only if FIXTURE: a pullback to ', '23:09 GET READY ICICIBANK CALL ENTER only if FIXTURE: a 1-mi', '23:09 STANDS INFY PUT ENTER only if FIXTURE: back below VWAP', '23:09 CANCELLED TCS PUT cancelled: FIXTURE: IT held VWAP for'] |
+| IDEAS = the head's ideas: GO NOW = FIRED / BUY NOW, GET READY = ARMED, CANCELLED with its reason | F1 ACTION (fixture) | 1600x900 | inside | PASS | ['06:47 GO NOW SBIN CALL ENTER only if FIXTURE: a pullback to ', '06:47 GET READY ICICIBANK CALL ENTER only if FIXTURE: a 1-mi', '06:47 STANDS INFY PUT ENTER only if FIXTURE: back below VWAP', '06:47 CANCELLED TCS PUT cancelled: FIXTURE: IT held VWAP for'] |
 | THEME rows on top of the Sectors panel = the head's themes | F1 ACTION (fixture) | 1600x900 | inside | PASS | THEME FIXTURE: AI IPO -> FII ro… CALL CONF |
 | no cut text (F1 ACTION + THEME, fixture) | F1 ACTION (fixture) | 1600x900 | inside | PASS | 0 cut cells · prose with a tooltip allowed: 4 |
 | desk-trade: IDEAS chip = the head's book; DRIVERS row = the head's themes | desk-trade ACTION (fixture) | 1600x900 | inside | PASS | chip IDEAS 4 · rows 4 · drivers THEME FIXTURE: AI IPO -> FII rotation -… → SBIN CE, HDFCBANK CE, INFY PE / ROTAT |
 | no cut text (desk-trade ACTION + DRIVERS, fixture) | desk-trade ACTION (fixture) | 1600x900 | inside | PASS | 0 cut cells · prose with a tooltip allowed: 3 |
-| head not running: IDEAS 0 says so; THEME rows keep the engine legs | F1 ACTION (live) | 1600x900 | inside | PASS | head analyst not running - no desk ideas / head analyst not running - no desk ideas / THEME silver −4.74% metals & mining CALL MIXED Hang Seng (Ch |
+| head running (live): IDEAS = the head's book (rows, or "the head has no idea in its book now"); no fixture text | F1 ACTION (live) | 1600x900 | inside | PASS | the head analyst's ideas (desk.ideas): GET READY = ARMED, GO / the head has no idea in its book now / THEME silver −4.74% metals & mining CALL MIXED Hang Seng (Ch |
 | no cut text (F1 ACTION, live) | F1 ACTION (live) | 1600x900 | inside | PASS | 0 cut cells · prose with a tooltip allowed: 0 |
 | page errors | F1 ACTION (live) | 1600x900 | inside | PASS | none |
-| head not running: IDEAS 0 says so; THEME rows keep the engine legs | F1 ACTION (live) | 1366x768 | outside | PASS | head analyst not running - no desk ideas / head analyst not running - no desk ideas / THEME silver −4.74% metals & mining CALL MIXED Hang Seng (Ch |
+| head running (live): IDEAS = the head's book (rows, or "the head has no idea in its book now"); no fixture text | F1 ACTION (live) | 1366x768 | outside | PASS | the head analyst's ideas (desk.ideas): GET READY = ARMED, GO / the head has no idea in its book now / THEME silver −4.74% metals & mining CALL MIXED Hang Seng (Ch |
 | no cut text (F1 ACTION, live) | F1 ACTION (live) | 1366x768 | outside | PASS | 0 cut cells · prose with a tooltip allowed: 0 |
 | page errors | F1 ACTION (live) | 1366x768 | outside | PASS | none |
-| head not running: IDEAS 0 says so; THEME rows keep the engine legs | F1 ACTION (live) | 1600x900 | outside | PASS | head analyst not running - no desk ideas / head analyst not running - no desk ideas / THEME silver −4.74% metals & mining CALL MIXED Hang Seng (Ch |
+| head running (live): IDEAS = the head's book (rows, or "the head has no idea in its book now"); no fixture text | F1 ACTION (live) | 1600x900 | outside | PASS | the head analyst's ideas (desk.ideas): GET READY = ARMED, GO / the head has no idea in its book now / THEME silver −4.74% metals & mining CALL MIXED Hang Seng (Ch |
 | no cut text (F1 ACTION, live) | F1 ACTION (live) | 1600x900 | outside | PASS | 0 cut cells · prose with a tooltip allowed: 0 |
 | page errors | F1 ACTION (live) | 1600x900 | outside | PASS | none |

@@ -447,3 +447,39 @@ Last update: 20:55 IST
     - "gircrypto login lines": root's .bashrc still jumped into the archived gircrypto folder at every SSH login and printed the removed crypto services. Block disabled (backup kept).
   - FOUND - WATCHDOG FLOOD on GIR Alerts: gir-watchdog (5-min timer) has sent "paper_exit_monitor.service is DOWN" on every run since at least 20 Nov evening, and since the trader's pause of the old trading programs it also says "raven.service is DOWN". That is ~290 lines a day into GIR Alerts. gir-watchdog is untouched by standing rule, so this needs the trader's word: (a) remove raven / paper_exit_monitor from its list (they are paused / not used), or (b) mute its repeats (one line per new problem), or (c) leave it.
   - ITEMS 2-5, 7 + the Sunday mock harness: desk builder (credit warning, shocks A-J, flood control, old AI off, mock mode) and pages builder (item 4), IN PROGRESS.
+- 10:03 - THE TRADER'S ANSWERS APPLIED:
+  - WATCHDOG: raven + paper_exit_monitor removed from gir-watchdog's checks (his word); the next run finished OK, so the 5-minute "DOWN" lines in GIR Alerts stop. Backup kept.
+  - CREDIT BALANCE: the last top-up = $50 (number only, v2/data/desk/credit_topup.json). The estimate now reads $49.61 left = about 6.2 days at the $8 cap. The first warning comes below $24 (about 3 days from now), the second below $8; plus the daily 19:30 line.
+  - SERVER: the full upgrade installed the new kernel 6.8.0-151 (REBOOT REQUIRED); 10 systemd packages are held by Ubuntu's phased rollout (normal; they come later). All GIR services are ENABLED and return at boot. NOTE: Claude Code itself (the server-side session doing this work, "claude remote-control" in tmux) does NOT restart by itself after a reboot; the trader would need to SSH in and start it again. The reboot waits for his final yes on timing. gir-fullaudit has been failing since Fri 19:24 (before any of today's changes).
+- 10:03 - DESK BUILDER, the trader's 08:45 list items 1-5 (desk tests 125; restarts after hours; BUILD_LOG rows 08:41 / 08:52 / 08:55 / 09:02 / 09:16 with undo):
+  1. ONE $8 GATE: every v2 AI call now asks J11 first (v2/j11check.py: refused when the desk is down, the provider refused, or the cap would pass); "v2 analyst" and "v2 prediction" count on READ. The OLD-system AI switch is BUILT and TESTED (intraday/ai_gate.py, flag /home/globalbot/ai_off/OLD_AI_OFF, guards in llmread / analyst / llm / whydesk / overnight / moverswhy; test 0 client calls), but NOT ON. It needs the flag + a restart of 10 old services (gir-analyst, -earlyteam, -eventwatch, -headsup, -newshunt, -ready, -desk, -exchange, -newsroom, -dash). The builder's restart was refused by the permission system, so this waits for the trader's yes.
+  2. SHOCK BUDGET LIVE: trading days $1.00 ($8 split now MEET 2.60 / SEATS 2.20 / LIVE 1.40 / READ 0.50 / ASK 0.30 / SHOCK 1.00), weekend / holiday $0.50; only R5 + seat 1 + the head may spend it, only for the CAUSE card; outside the ladder. It already paid for a live cause card at 08:50 ($0.10), C:0c3bbe5b: "LIKELY: doubt about the AI trade after Anthropic's post-debut stumble, US money rushing into value stocks; rates second" (Reuters wrap + Sacramento Bee wrap + R5's card on Nvidia's longest losing streak since the financial crisis). The Reuters "Nvidia accounting / SEC" exclusive is now kept in a hot file and read FIRST by R5 and the world / money / devil seats.
+  3. CREDIT WARNING THAT NEEDS NO CREDIT (analyst/credit.py): the first refusal sends ONE line "P1 AI CREDIT EMPTY - top up at console.anthropic.com; GIR runs on rules; shock alerts still on" to the system channel + footer + phone; the running balance (above); the 19:30 daily line. test_credit.py.
+  4. WORLD SHOCK A / B / E LIVE (code, $0, 24x7, system channel): Yahoo 5-min quotes for the US / Asia / Europe indices and futures, SOX, US 10y, DXY, USDJPY / CNY, Brent, gold, silver, copper, natural gas, the INFY / WIT / HDB / IBN ADRs, USDINR, GIFT NIFTY; one line per instrument per session + one update at another 1%; a "US close" line once; seeded silently at 09:04 (no burst of old news); stale quotes never alert. test_shock.py.
+     PROOF - Fri 20 Nov 21:00 -> Sat 03:00 IST replayed through the same checker (the times it WOULD have sent):
+     - 21:00 OVERNIGHT INDIA SHOCK: HDB ADR +4.8%, INFY ADR +4.5%
+     - 21:00 WORLD MACRO SHOCK: natural gas +12.1%
+     - 21:00 WORLD SHOCK: SOX -6.4%, Taiwan -6.0%, Nikkei -5.2%, KOSPI -4.2%, DAX -2.4%, Nasdaq -2.0%, Nasdaq fut -1.4%, S&P -1.0%
+     - 21:55 updates: natural gas +13.3%, SOX -7.5%
+     - 22:05 Nasdaq fut -2.5%; 22:10 Nasdaq -3.2%; 22:30 S&P 500 -2.1%; 00:40 S&P fut -2.1%
+     - 02:25 WORLD SHOCK (US close): SOX -10.6%, Nasdaq -5.2%, S&P 500 -3.6%, Dow -1.9%
+     Each line ends "- India opens Mon 09:15; desk brief to follow". (The first line holds the Asian / European closes because the replay starts at 21:00; live they ring at their own time.)
+  5. SHOCKS C / D / F / G / H / I / J on the PAGE (AMBER / RED; Telegram after the ring test):
+     - C India market (index 0.7% in 15 min / 1.5% on the day, sector 1.5% in 15 min, VIX +10%);
+     - D F&O share (3% in 5 min with RVOL >= 3; new ban name; band hit and pre-open IEP gap NOT BUILT, no fields in the store);
+     - F flows (FII / DII cash >= Rs 5,000 cr; FII index futures +/- 1 lakh contracts);
+     - G India official (RBI / SEBI / PIB / Parliament / courts / NSE-BSE circulars; RED when an F&O share, a rate, a tax or an F&O rule is named; forces an R4 read);
+     - H company surprise (11-second filings path, F&O only; RED only when the price reacts; forces an R1 read);
+     - I world news (RED only after a world price shock in the hour);
+     - J calendar surprise (HIGH-impact US / China actual vs forecast; the "outside the scenarios" half NOT BUILT, seat 34 has no scenarios file yet).
+     Flood control on every family: max 8 RED a day, quiet night 23:00-06:30 (only A / B / E and official G / I ring), one line per story per day. 15:45 score: India shocks CONTINUED / REVERSED, world lines INDIA FOLLOWED / DID NOT FOLLOW. Backtest on 3 days of feed history: G 10 rows (2 RED: the GODFRYPHLP F&O exclusion), H ~5 (AMBER), I 1 (the Reuters Nvidia piece, AMBER).
+  NEXT: item 6, the Sunday MOCK mode (dry run with Telegram OFF first); the page keys for shocks / credit (desk.shocks, meter.p1) so the live pages show them.
+- 10:03 - PAGES BUILDER, item 4 DONE on /preview: 136 PASS / 0 FAIL at 1366 / 1600 / 390 (109 inside with fixture + live store, 27 outside through the login); desk-web suite re-run 144 / 0. Proof: D_money.md / .json, D_money_shots/ (P&L masked).
+  - F1: a MONEY row + 4 pair chips + the 09:20 row in the Sectors panel head.
+  - GO card (F1 + phone CALL): MARKET, MONEY ("into banks now: no (-0.62%, breadth 22% up / 72% down, turnover 1.8x vs its normal)"), AGAINST THE MONEY / MARKET in red.
+  - Rotation alert rows labelled "not a BUY NOW · NOT PROVEN".
+  - Phone NOW top block: P1 lines (red), shock lines, the desk word, MONEY.
+  - Footer: the desk's P1 first.
+  - STALE chip.
+  - Fixed on the way: the ROTATION row's "null", the phone label spacing, P1 lines in white.
+  The shock lines and credit P1 show live once the desk builder publishes desk.shocks / meter.p1 (in progress).

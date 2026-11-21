@@ -1,0 +1,1090 @@
+[
+ {
+  "control": "MONEY row: into / out of (first sector + \"+n\") and its time",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "l1 df-mny|MONEY in INSURANCE +1 · out BANKS +1 08:55"
+ },
+ {
+  "control": "hover the MONEY line: the full line + per sector avg %, breadth, turnover \"vs its normal\", % above VWAP",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "MONEY: into INSURANCE, CAPITAL GOODS · out of BANKS, IT / IN  insurance +1.12%, breadth 75% up, turnover 1.6x vs its normal, 75% above VWAP / IN  capital goods +0.84%, breadth 70% up, turnover 1.3x vs"
+ },
+ {
+  "control": "hover a pair chip: its numbers (insurers vs BANKNIFTY: % / above VWAP / BANKNIFTY vs VWAP / the read / FINNIFTY note)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "INS>BNF -> insurers vs BANKNIFTY: insurers +1.12%, 75% above VWAP · BANKNIFTY below VWAP (-0.30%) → money moving from banks to insurers (insurers are NOT in BANKNIFTY (the"
+ },
+ {
+  "control": "the 4 pairs as compact chips",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['INS>BNF', 'PVT<PSU', 'IT<ER&D', 'DEF=NIFTY']"
+ },
+ {
+  "control": "the 09:20 rotation line (insurers vs BANKNIFTY) + all 4 checks on hover",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "09:20 insurers vs BNF: money banks → insurers · insurers vs BANKNIFTY: money moving from banks to insurers / insurers vs BANKNIFTY: insurers +1.12%, 75% above VWAP · BA"
+ },
+ {
+  "control": "ROTATION window click still works, the MONEY rows stay",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['1H ▾', True]"
+ },
+ {
+  "control": "no cut text (F1 MONEY fixture)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "GO card: MONEY line next to FROM / AGAINST (into this sector now: yes / no / mixed, breadth, turnover vs its normal)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "[['cl wrapl df-money', 'MONEYinto banks now: no (-0.62%, breadth 22% up / 72% down, turnover 1.8x vs its normal)', 'rgb(142, 151, 163)', 'df-mf df-mf-no']]"
+ },
+ {
+  "control": "GO card: \"AGAINST THE MONEY: <reason>\" in the AGAINST-THE-MARKET style (red label)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "[['cl wrapl df-agm', 'AGAINST THE MONEYFIXTURE: SBIN Q2 beat, weight 4 - a stock-specific reason against the bank outflow', 'rgb(255, 90, 82)', '']]"
+ },
+ {
+  "control": "GO card: the MARKET witness line (index vs VWAP), its note on hover",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['MARKETNIFTY above VWAP (+0.41%) · BANKNIFTY below VWAP (-0.30%)']"
+ },
+ {
+  "control": "no cut text (F1 GO card MONEY)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "no against_money -> no AGAINST THE MONEY line, MONEY stays",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "[True, 0]"
+ },
+ {
+  "control": "ROTATION ALERT: the head's one line, labelled ROTATION hh:mm · not a BUY NOW · NOT PROVEN",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "ROTATION 08:56 not a BUY NOW NOT PROVEN | FIXTURE rotation: money out of BANKS into INSURANCE (breadth 72% down, turnover 1.8x) - wa"
+ },
+ {
+  "control": "no cut text (F1 rotation alert)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "an ordinary desk view is not labelled a rotation alert",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "False"
+ },
+ {
+  "control": "no MONEY yet: \"MONEY not yet (from 09:15)\" and \"09:20 rotation check: not yet\"",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['MONEY not yet (from 09:15)', '09:20 rotation check: not yet']"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "footer: \"desk ON · LEAN - next brief Sun 19:45\" (desk.meter.next_brief)",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "health DOWN · optquote MISSING · desk ON · LEAN - next brief Sun 19:45"
+ },
+ {
+  "control": "P1: the desk's \"P1 AI CREDIT EMPTY ...\" line in the footer, red, not cut",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['health DOWN · optquote MISSING · P1 AI CREDIT EMPTY - top up at console.anthropic.com; GIR runs on rules; shock alerts still on', 'rgb(255, 90, 82)', True]"
+ },
+ {
+  "control": "SHOCK lines on F1: one line per story (the latest WORLD read), RED first then AMBER, the cause on hover",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['SHOCK 08:52 WORLD · Nasdaq -5.3%, S&P -3.7%, SOX -10.7% · India opens ', 'shock 08:46 INDIA · BANKNIFTY -0.8% in 15 min · FIXTURE']"
+ },
+ {
+  "control": "hover a SHOCK line: the full line + WHY + family + RED / AMBER",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "WORLD · Nasdaq -5.3%, S&P -3.7%, SOX -10.7% · India opens Mon 09:15 · watch PE: DIXON, KAYNES · FIXTURE / WHY: FIXTURE - SEC probe of a mega-cap chip maker (3 s"
+ },
+ {
+  "control": "no cut text (F1 SHOCK lines)",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 2"
+ },
+ {
+  "control": "STALE: the desk heartbeat old -> MONEY row STALE chip; footer \"desk OFF · <why>\"",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['MONEY in INSURANCE +1 · out BANKS +1 08:56 STALE', 'health DOWN · optquote MISSING · desk OFF · gir-v2desk not running (heartbeat 303 s old)']"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "live: the MONEY row (\"not yet (from 09:15)\" or the last value with its time) + the 09:20 row",
+  "page": "F1 MONEY",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "l1 df-mny|MONEY not yet (from 09:15) / l1 df-r920|09:20 rotation check: not yet"
+ },
+ {
+  "control": "live: the ROTATION row never prints \"null\"",
+  "page": "F1 MONEY",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "l1|ROTATION 30M ▾ no % in this window F3 › / l1 df-mny|MONEY not yet (from 09:15)"
+ },
+ {
+  "control": "no cut text (F1 MONEY live)",
+  "page": "F1 MONEY",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 MONEY",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 MONEY",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "live footer: \"desk ON - next brief <day hh:mm>\" (or a mode / the P1 line / desk OFF with its reason)",
+  "page": "desk word / P1 (live)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "ealth DOWN · optquote MISSING · desk ON · rules only ($1.5 reached) - next brief Sun 19:45"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk word / P1 (live)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk word / P1 (live)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "MONEY row: into / out of (first sector + \"+n\") and its time",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "l1 df-mny|MONEY in INSURANCE +1 · out BANKS +1 08:57"
+ },
+ {
+  "control": "hover the MONEY line: the full line + per sector avg %, breadth, turnover \"vs its normal\", % above VWAP",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "MONEY: into INSURANCE, CAPITAL GOODS · out of BANKS, IT / IN  insurance +1.12%, breadth 75% up, turnover 1.6x vs its normal, 75% above VWAP / IN  capital goods +0.84%, breadth 70% up, turnover 1.3x vs"
+ },
+ {
+  "control": "hover a pair chip: its numbers (insurers vs BANKNIFTY: % / above VWAP / BANKNIFTY vs VWAP / the read / FINNIFTY note)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "INS>BNF -> insurers vs BANKNIFTY: insurers +1.12%, 75% above VWAP · BANKNIFTY below VWAP (-0.30%) → money moving from banks to insurers (insurers are NOT in BANKNIFTY (the"
+ },
+ {
+  "control": "the 4 pairs as compact chips",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['INS>BNF', 'PVT<PSU', 'IT<ER&D', 'DEF=NIFTY']"
+ },
+ {
+  "control": "the 09:20 rotation line (insurers vs BANKNIFTY) + all 4 checks on hover",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "09:20 insurers vs BNF: money banks → insurers · insurers vs BANKNIFTY: money moving from banks to insurers / insurers vs BANKNIFTY: insurers +1.12%, 75% above VWAP · BA"
+ },
+ {
+  "control": "ROTATION window click still works, the MONEY rows stay",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['1H ▾', True]"
+ },
+ {
+  "control": "no cut text (F1 MONEY fixture)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "GO card: MONEY line next to FROM / AGAINST (into this sector now: yes / no / mixed, breadth, turnover vs its normal)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "[['cl wrapl df-money', 'MONEYinto banks now: no (-0.62%, breadth 22% up / 72% down, turnover 1.8x vs its normal)', 'rgb(142, 151, 163)', 'df-mf df-mf-no']]"
+ },
+ {
+  "control": "GO card: \"AGAINST THE MONEY: <reason>\" in the AGAINST-THE-MARKET style (red label)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "[['cl wrapl df-agm', 'AGAINST THE MONEYFIXTURE: SBIN Q2 beat, weight 4 - a stock-specific reason against the bank outflow', 'rgb(255, 90, 82)', '']]"
+ },
+ {
+  "control": "GO card: the MARKET witness line (index vs VWAP), its note on hover",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['MARKETNIFTY above VWAP (+0.41%) · BANKNIFTY below VWAP (-0.30%)']"
+ },
+ {
+  "control": "no cut text (F1 GO card MONEY)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "no against_money -> no AGAINST THE MONEY line, MONEY stays",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "[True, 0]"
+ },
+ {
+  "control": "ROTATION ALERT: the head's one line, labelled ROTATION hh:mm · not a BUY NOW · NOT PROVEN",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "ROTATION 08:58 not a BUY NOW NOT PROVEN | FIXTURE rotation: money out of BANKS into INSURANCE (breadth 72% down, turnover 1.8x) - wa"
+ },
+ {
+  "control": "no cut text (F1 rotation alert)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "an ordinary desk view is not labelled a rotation alert",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "False"
+ },
+ {
+  "control": "no MONEY yet: \"MONEY not yet (from 09:15)\" and \"09:20 rotation check: not yet\"",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['MONEY not yet (from 09:15)', '09:20 rotation check: not yet']"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "footer: \"desk ON · LEAN - next brief Sun 19:45\" (desk.meter.next_brief)",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "health DOWN · optquote MISSING · desk ON · LEAN - next brief Sun 19:45"
+ },
+ {
+  "control": "P1: the desk's \"P1 AI CREDIT EMPTY ...\" line in the footer, red, not cut",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['health DOWN · optquote MISSING · P1 AI CREDIT EMPTY - top up at console.anthropic.com; GIR runs on rules; shock alerts still on', 'rgb(255, 90, 82)', True]"
+ },
+ {
+  "control": "SHOCK lines on F1: one line per story (the latest WORLD read), RED first then AMBER, the cause on hover",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['SHOCK 08:54 WORLD · Nasdaq -5.3%, S&P -3.7%, SOX -10.7% · India opens ', 'shock 08:48 INDIA · BANKNIFTY -0.8% in 15 min · FIXTURE']"
+ },
+ {
+  "control": "hover a SHOCK line: the full line + WHY + family + RED / AMBER",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "WORLD · Nasdaq -5.3%, S&P -3.7%, SOX -10.7% · India opens Mon 09:15 · watch PE: DIXON, KAYNES · FIXTURE / WHY: FIXTURE - SEC probe of a mega-cap chip maker (3 s"
+ },
+ {
+  "control": "no cut text (F1 SHOCK lines)",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 1"
+ },
+ {
+  "control": "STALE: the desk heartbeat old -> MONEY row STALE chip; footer \"desk OFF · <why>\"",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['MONEY in INSURANCE +1 · out BANKS +1 08:58 STALE', 'health DOWN · optquote MISSING · desk OFF · gir-v2desk not running (heartbeat 304 s old)']"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "live: the MONEY row (\"not yet (from 09:15)\" or the last value with its time) + the 09:20 row",
+  "page": "F1 MONEY",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "l1 df-mny|MONEY not yet (from 09:15) / l1 df-r920|09:20 rotation check: not yet"
+ },
+ {
+  "control": "live: the ROTATION row never prints \"null\"",
+  "page": "F1 MONEY",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "l1|ROTATION 30M ▾ no % in this window F3 › / l1 df-mny|MONEY not yet (from 09:15)"
+ },
+ {
+  "control": "no cut text (F1 MONEY live)",
+  "page": "F1 MONEY",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 MONEY",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 MONEY",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "live footer: \"desk ON - next brief <day hh:mm>\" (or a mode / the P1 line / desk OFF with its reason)",
+  "page": "desk word / P1 (live)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "ealth DOWN · optquote MISSING · desk ON · rules only ($1.5 reached) - next brief Sun 19:45"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk word / P1 (live)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk word / P1 (live)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "MONEY row: into / out of (first sector + \"+n\") and its time",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "l1 df-mny|MONEY in INSURANCE +1 · out BANKS +1 08:59"
+ },
+ {
+  "control": "the 4 pairs as compact chips",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['INS>BNF', 'PVT<PSU', 'IT<ER&D', 'DEF=NIFTY']"
+ },
+ {
+  "control": "the 09:20 rotation line (insurers vs BANKNIFTY) + all 4 checks on hover",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "09:20 insurers vs BNF: money banks → insurers · insurers vs BANKNIFTY: money moving from banks to insurers / insurers vs BANKNIFTY: insurers +1.12%, 75% above VWAP · BA"
+ },
+ {
+  "control": "ROTATION window click still works, the MONEY rows stay",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['1H ▾', True]"
+ },
+ {
+  "control": "no cut text (F1 MONEY fixture)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "GO card: MONEY line next to FROM / AGAINST (into this sector now: yes / no / mixed, breadth, turnover vs its normal)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "[['cl wrapl df-money', 'MONEYinto banks now: no (-0.62%, breadth 22% up / 72% down, turnover 1.8x vs its normal)', 'rgb(142, 151, 163)', 'df-mf df-mf-no']]"
+ },
+ {
+  "control": "GO card: \"AGAINST THE MONEY: <reason>\" in the AGAINST-THE-MARKET style (red label)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "[['cl wrapl df-agm', 'AGAINST THE MONEYFIXTURE: SBIN Q2 beat, weight 4 - a stock-specific reason against the bank outflow', 'rgb(255, 90, 82)', '']]"
+ },
+ {
+  "control": "GO card: the MARKET witness line (index vs VWAP), its note on hover",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['MARKETNIFTY above VWAP (+0.41%) · BANKNIFTY below VWAP (-0.30%)']"
+ },
+ {
+  "control": "no cut text (F1 GO card MONEY)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "no against_money -> no AGAINST THE MONEY line, MONEY stays",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "[True, 0]"
+ },
+ {
+  "control": "ROTATION ALERT: the head's one line, labelled ROTATION hh:mm · not a BUY NOW · NOT PROVEN",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "ROTATION 09:00 not a BUY NOW NOT PROVEN | FIXTURE rotation: money out of BANKS into INSURANCE (breadth 72% down, turnover 1.8x) - wa"
+ },
+ {
+  "control": "no cut text (F1 rotation alert)",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "an ordinary desk view is not labelled a rotation alert",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "False"
+ },
+ {
+  "control": "no MONEY yet: \"MONEY not yet (from 09:15)\" and \"09:20 rotation check: not yet\"",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['MONEY not yet (from 09:15)', '09:20 rotation check: not yet']"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "phone NOW shows the same desk word as the footer: \"desk ON · LEAN - next brief Sun 19:45\"",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['desk ON · LEAN - next brief Sun 19:45', 'MONEY into INSURANCE, CAPITAL GOODS · out of BANKS, IT · last 08:59']"
+ },
+ {
+  "control": "phone NOW card: P1 lines first (red), then one SHOCK line per story (RED first), then MONEY",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['P1 AI CREDIT EMPTY - top up at console.anthropic.com; GIR ru', 'P1 AI provider refused: credit - AI OFF, rules only (next pr', 'SHOCK 08:56 WORLD · Nasdaq -5.3%, S&P -3.7%, SOX -10.7% · In', 'shock 08:50 INDIA · BANKNIFTY -0.8% in 15 min · FIXTURE', 'MONEY into INSURANCE, CAPITAL GOODS · out of BANKS, IT · las']"
+ },
+ {
+  "control": "no cut text (phone P1 + SHOCK)",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk word / P1 / SHOCK (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "NOW: desk word then the MONEY line at the top (above the prediction block), full sector names + \"last hh:mm\" when closed",
+  "page": "phone MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['ln df-now df-dw df-top|desk ON · LEAN - next brief Sun 19:45', 'ln df-now df-mnow df-top|MONEY into INSURANCE, CAPITAL GOODS · out of BANKS, IT · last 09:00', 'pb-phone|TODAY · PREDICTION NOT PROVEN (day 0 of 20) - the code layer names shares that move, the s', 'pur|NOW · your open trades, nearest stop first share', 'hero hx|no exit waiting GIR follows your 3 trades']"
+ },
+ {
+  "control": "CALL (finger): MONEY line + AGAINST THE MONEY on the head's card",
+  "page": "phone MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['MONEYinto banks now: no (-0.62%, breadth 22% up / 72% down, turnover 1.8x vs its normal)', 'AGAINST THE MONEYFIXTURE: SBIN Q2 beat, weight 4 - a stock-specific reason against the bank outflow']"
+ },
+ {
+  "control": "no cut text (phone CALL MONEY)",
+  "page": "phone MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "ALERTS (finger): the rotation alert as a head line, NOT PROVEN",
+  "page": "phone MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "ROTATION GIR ANALYST 09:01 NOT PROVEN FIXTURE rotation: money out of BANKS into INSURANCE (breadth 72% down, turnover 1.8x) - watch HDFCLIFE"
+ },
+ {
+  "control": "no cut text (phone ALERTS rotation)",
+  "page": "phone MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "NOW: the rotation alert line under MONEY (NOT PROVEN)",
+  "page": "phone MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['ROTATION 09:01 FIXTURE rotation: money out of BANKS into INSURANCE (breadth 72% down, turnover 1.8x) - watch HDFCLIFE / SBILIFE CE, HDFCBANK / AXISBANK PE NOT PROVEN']"
+ },
+ {
+  "control": "NOW, no MONEY yet: \"MONEY not yet (from 09:15)\"",
+  "page": "phone MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "MONEY not yet (from 09:15)"
+ },
+ {
+  "control": "0 page errors",
+  "page": "phone MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "phone MONEY (fixture)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "live: the MONEY row (\"not yet (from 09:15)\" or the last value with its time) + the 09:20 row",
+  "page": "F1 MONEY",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "l1 df-mny|MONEY not yet (from 09:15) / l1 df-r920|09:20 rotation check: not yet"
+ },
+ {
+  "control": "live: the ROTATION row never prints \"null\"",
+  "page": "F1 MONEY",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "l1|ROTATION 30M ▾ no % in this window F3 › / l1 df-mny|MONEY not yet (from 09:15)"
+ },
+ {
+  "control": "no cut text (F1 MONEY live)",
+  "page": "F1 MONEY",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 MONEY",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 MONEY",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "live phone NOW: the desk word (or P1) and MONEY at the top",
+  "page": "desk word / P1 (live)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['desk ON · rules only ($1.5 reached) - next brief Sun 19:45', 'MONEY not yet (from 09:15)']"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk word / P1 (live)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk word / P1 (live)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "live: NOW opens with the desk word + the MONEY line (\"not yet (from 09:15)\" or the last value with its time), above the prediction",
+  "page": "phone MONEY",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['ln df-now df-dw df-top|desk ON · rules only ($1.5 reached) - next brief Sun 19:45', 'ln df-now df-mnow df-top|MONEY not yet (from 09:15)', 'pb-phone|TODAY · PREDICTION NOT PROVEN (day 0 of 20) - the code layer names shares that move, the s']"
+ },
+ {
+  "control": "0 page errors",
+  "page": "phone MONEY",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "phone MONEY",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "live: the MONEY row (\"not yet (from 09:15)\" or the last value with its time) + the 09:20 row",
+  "page": "F1 MONEY",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "l1 df-mny|MONEY not yet (from 09:15) / l1 df-r920|09:20 rotation check: not yet"
+ },
+ {
+  "control": "live: the ROTATION row never prints \"null\"",
+  "page": "F1 MONEY",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "l1|ROTATION 30M ▾ no % in this window F3 › / l1 df-mny|MONEY not yet (from 09:15)"
+ },
+ {
+  "control": "no cut text (F1 MONEY live)",
+  "page": "F1 MONEY",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 MONEY",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 MONEY",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "live footer: \"desk ON - next brief <day hh:mm>\" (or a mode / the P1 line / desk OFF with its reason)",
+  "page": "desk word / P1 (live)",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "ealth DOWN · optquote MISSING · desk ON · rules only ($1.5 reached) - next brief Sun 19:45"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk word / P1 (live)",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk word / P1 (live)",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "live: the MONEY row (\"not yet (from 09:15)\" or the last value with its time) + the 09:20 row",
+  "page": "F1 MONEY",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "l1 df-mny|MONEY not yet (from 09:15) / l1 df-r920|09:20 rotation check: not yet"
+ },
+ {
+  "control": "live: the ROTATION row never prints \"null\"",
+  "page": "F1 MONEY",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "l1|ROTATION 30M ▾ no % in this window F3 › / l1 df-mny|MONEY not yet (from 09:15)"
+ },
+ {
+  "control": "no cut text (F1 MONEY live)",
+  "page": "F1 MONEY",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 MONEY",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 MONEY",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "live footer: \"desk ON - next brief <day hh:mm>\" (or a mode / the P1 line / desk OFF with its reason)",
+  "page": "desk word / P1 (live)",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "ealth DOWN · optquote MISSING · desk ON · rules only ($1.5 reached) - next brief Sun 19:45"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk word / P1 (live)",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk word / P1 (live)",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "live: the MONEY row (\"not yet (from 09:15)\" or the last value with its time) + the 09:20 row",
+  "page": "F1 MONEY",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "l1 df-mny|MONEY not yet (from 09:15) / l1 df-r920|09:20 rotation check: not yet"
+ },
+ {
+  "control": "live: the ROTATION row never prints \"null\"",
+  "page": "F1 MONEY",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "l1|ROTATION 30M ▾ no % in this window F3 › / l1 df-mny|MONEY not yet (from 09:15)"
+ },
+ {
+  "control": "no cut text (F1 MONEY live)",
+  "page": "F1 MONEY",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "0 cut cells · prose with a tooltip: 0"
+ },
+ {
+  "control": "0 page errors",
+  "page": "F1 MONEY",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "F1 MONEY",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "live phone NOW: the desk word (or P1) and MONEY at the top",
+  "page": "desk word / P1 (live)",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "['desk ON · rules only ($1.5 reached) - next brief Sun 19:45', 'MONEY not yet (from 09:15)']"
+ },
+ {
+  "control": "0 page errors",
+  "page": "desk word / P1 (live)",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "desk word / P1 (live)",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "live: NOW opens with the desk word + the MONEY line (\"not yet (from 09:15)\" or the last value with its time), above the prediction",
+  "page": "phone MONEY",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "['ln df-now df-dw df-top|desk ON · rules only ($1.5 reached) - next brief Sun 19:45', 'ln df-now df-mnow df-top|MONEY not yet (from 09:15)', 'pb-phone|TODAY · PREDICTION NOT PROVEN (day 0 of 20) - the code layer names shares that move, the s']"
+ },
+ {
+  "control": "0 page errors",
+  "page": "phone MONEY",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "phone MONEY",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "390 px"
+ }
+]

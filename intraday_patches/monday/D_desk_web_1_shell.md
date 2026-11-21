@@ -1,6 +1,6 @@
 # D desk web 1_shell - Monday item 1 - shell values: P&L strip "AI $ of $<desk.meter.cap>", footer AI word = desk mode
 
-Run 21 Nov 2026 01:36 IST. Design: design_v3/DESK_WEB_CHANGES.md (replaces DESK_TEAM 6; the approved v3 boxes stay, the desk adds words and rows inside them).
+Run 21 Nov 2026 09:14 IST. Design: design_v3/DESK_WEB_CHANGES.md (replaces DESK_TEAM 6; the approved v3 boxes stay, the desk adds words and rows inside them).
 Data: the desk.* facts of DESK_api.md v2 (meter.cap 8, meter.lean, brief.stale / stale_why / failed_slot). Real input only (mouse / keyboard / wheel at 1366x768 and 1600x900; CDP finger touches at 390x844).
 Two data states: **fixture** = a TEST COPY of gir-preview on 127.0.0.1:8103 reading a fixture desk state.json (DESK_api v2 shape, every text
 "FIXTURE", cap 8, lean on; the live state.json never touched; the STALE rows flip that fixture's view.stale / brief.stale) - inside only; **live** = the real store, inside
@@ -17,9 +17,9 @@ static/shell.js: the P&L strip reads "AI $<desk.meter.total> of $<desk.meter.cap
 
 | control | page | viewport | where | result | evidence |
 |---|---|---|---|---|---|
-| shell: P&L strip "AI $ of $<meter.cap>" (8), footer desk mode LEAN (meter.lean) | F1 desk (fixture) | 1366x768 | inside | PASS | footer "alth DOWN · optquote MISSING · desk LEAN" · strip AI "AI $1.84 of $8" |
-| footer AI word: desk OFF while the head is not running | F1 desk (live) | 1366x768 | inside | PASS | WN · optquote MISSING · desk OFF · head analyst not running (starting) |
-| shell: P&L strip "AI $ of $<meter.cap>" (8), footer desk mode LEAN (meter.lean) | F1 desk (fixture) | 1600x900 | inside | PASS | footer "alth DOWN · optquote MISSING · desk LEAN" · strip AI "AI $1.84 of $8" |
-| footer AI word: desk OFF while the head is not running | F1 desk (live) | 1600x900 | inside | PASS | WN · optquote MISSING · desk OFF · head analyst not running (starting) |
-| footer AI word: desk OFF while the head is not running | F1 desk (live) | 1366x768 | outside | PASS | WN · optquote MISSING · desk OFF · head analyst not running (starting) |
-| footer AI word: desk OFF while the head is not running | F1 desk (live) | 1600x900 | outside | PASS | WN · optquote MISSING · desk OFF · head analyst not running (starting) |
+| shell: P&L strip "AI $ of $<meter.cap>" (8), footer desk mode LEAN (meter.lean) | F1 desk (fixture) | 1366x768 | inside | PASS | footer " · desk ON · LEAN - next brief Sun 19:45" · strip AI "AI $1.84 of $8" |
+| footer AI word (live, head running): "desk ON ..." (next brief / mode) or the P1 line | F1 desk (live) | 1366x768 | inside | PASS |  · optquote MISSING · desk ON · rules only ($1.5 reached) - next brief Sun 19:45 |
+| shell: P&L strip "AI $ of $<meter.cap>" (8), footer desk mode LEAN (meter.lean) | F1 desk (fixture) | 1600x900 | inside | PASS | footer " · desk ON · LEAN - next brief Sun 19:45" · strip AI "AI $1.84 of $8" |
+| footer AI word (live, head running): "desk ON ..." (next brief / mode) or the P1 line | F1 desk (live) | 1600x900 | inside | PASS |  · optquote MISSING · desk ON · rules only ($1.5 reached) - next brief Sun 19:45 |
+| footer AI word (live, head running): "desk ON ..." (next brief / mode) or the P1 line | F1 desk (live) | 1366x768 | outside | PASS |  · optquote MISSING · desk ON · rules only ($1.5 reached) - next brief Sun 19:45 |
+| footer AI word (live, head running): "desk ON ..." (next brief / mode) or the P1 line | F1 desk (live) | 1600x900 | outside | PASS |  · optquote MISSING · desk ON · rules only ($1.5 reached) - next brief Sun 19:45 |

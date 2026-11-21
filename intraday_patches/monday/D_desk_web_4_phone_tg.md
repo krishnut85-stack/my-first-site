@@ -1,6 +1,6 @@
 # D desk web 4_phone_tg - Monday item 4 - phone + Telegram
 
-Run 21 Nov 2026 01:36 IST. Design: design_v3/DESK_WEB_CHANGES.md (replaces DESK_TEAM 6; the approved v3 boxes stay, the desk adds words and rows inside them).
+Run 21 Nov 2026 09:14 IST. Design: design_v3/DESK_WEB_CHANGES.md (replaces DESK_TEAM 6; the approved v3 boxes stay, the desk adds words and rows inside them).
 Data: the desk.* facts of DESK_api.md v2 (meter.cap 8, meter.lean, brief.stale / stale_why / failed_slot). Real input only (mouse / keyboard / wheel at 1366x768 and 1600x900; CDP finger touches at 390x844).
 Two data states: **fixture** = a TEST COPY of gir-preview on 127.0.0.1:8103 reading a fixture desk state.json (DESK_api v2 shape, every text
 "FIXTURE", cap 8, lean on; the live state.json never touched; the STALE rows flip that fixture's view.stale / brief.stale) - inside only; **live** = the real store, inside
@@ -17,13 +17,13 @@ phone.js: CALL = the head's card with FROM / AGAINST / NOT PROVEN in place of th
 
 | control | page | viewport | where | result | evidence |
 |---|---|---|---|---|---|
-| NOW in a trade: the GIR block carries the head's manage note | phone (fixture) | 390x844 | inside | PASS | e stop not known ltp 13.50 10h GIR HOLD ANALYST 01:25 · NOT PROVEN FIXTURE: thesis intact - banks breadth negative for this name EXIT LINE · |
-| CALL: FROM / AGAINST / NOT PROVEN, the head's card | phone (fixture) | 390x844 | inside | PASS | FROMFLOWS (India) · Banks · CONNECTIONS / THEMESNOT PROVEN AGAINST(Devil) FIXTURE: banks already priced the flows ✓ ban  |
+| NOW in a trade: the GIR block carries the head's manage note | phone (fixture) | 390x844 | inside | PASS | e stop not known ltp 13.50 18h GIR HOLD ANALYST 09:03 · NOT PROVEN FIXTURE: thesis intact - banks breadth negative for this name EXIT LINE · |
+| CALL: FROM / AGAINST / NOT PROVEN, the head's card | phone (fixture) | 390x844 | inside | PASS | FROMFLOWS (India) · Banks · CONNECTIONS / THEMESNOT PROVEN AGAINST(Devil) FIXTURE: banks already priced the flows MARKET |
 | CALL: WHY 2 lines + "more" (finger) | phone (fixture) | 390x844 | inside | PASS | 2 -> 3 lines |
 | CALL: one blue CONNECTION line | phone (fixture) | 390x844 | inside | PASS | present |
 | no cut text (phone CALL, fixture) | phone (fixture) | 390x844 | inside | PASS | 0 cut cells · prose with a tooltip allowed: 0 |
-| ALERTS: the brief note (changed first, Themes max 3) | phone (fixture) | 390x844 | inside | PASS | BRIEF 07:15 for 2026-11-23 · 22:10 NOT PROVEN changed: TCS PE CANCELLED FIXTURE: banks lead on foreign buying, IT under pressure from the US |
-| ALERTS brief.stale: "STALE · <why>", never blank | phone (fixture) | 390x844 | inside | PASS | BRIEF 07:15 for 2026-11-23 · 22:10 NOT PROVEN STALE STALE · FIXTURE: the 09:08 brief failed (head timeout) - the 07:15 brief is shown change |
+| ALERTS: the brief note (changed first, Themes max 3) | phone (fixture) | 390x844 | inside | PASS | BRIEF 07:15 for 2026-11-23 · 05:48 NOT PROVEN changed: TCS PE CANCELLED FIXTURE: banks lead on foreign buying, IT under pressure from the US |
+| ALERTS brief.stale: "STALE · <why>", never blank | phone (fixture) | 390x844 | inside | PASS | BRIEF 07:15 for 2026-11-23 · 05:48 NOT PROVEN STALE STALE · FIXTURE: the 09:08 brief failed (head timeout) - the 07:15 brief is shown change |
 | no cut text (phone ALERTS, fixture) | phone (fixture) | 390x844 | inside | PASS | 0 cut cells · prose with a tooltip allowed: 0 |
 | head not running: CALL keeps the old card, no brief note | phone (live) | 390x844 | inside | PASS | brief note False |
 | no sideways scroll at 390 (phone) | phone (live) | 390x844 | inside | PASS | 390 |

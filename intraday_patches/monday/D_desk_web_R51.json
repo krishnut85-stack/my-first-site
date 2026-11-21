@@ -5,7 +5,7 @@
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "GO NOW · SBIN CALL 1,000 29 DEC GIR ANALYST 01:23 · next look 01:34 · 3m ago MUST SEE valid 01:37 \tPREMIUM 1,000 CE\tSHARE TRIGGER\t33.00\t991."
+  "evidence": "GO NOW · SBIN CALL 1,000 29 DEC GIR ANALYST 09:00 · next look 09:11 · 4m ago MUST SEE valid 09:14 \tPREMIUM 1,000 CE\tSHARE TRIGGER\t33.00\t991."
  },
  {
   "control": "FROM (seats) + AGAINST (Devil) + NOT PROVEN in place of the weight",
@@ -13,7 +13,7 @@
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "FROMFLOWS (India) · Banks · CONNECTIONS / THEMESNOT PROVEN AGAINST(Devil) FIXTURE: banks already priced the flows ✓ ban ✓ quote age HOLD2 lo"
+  "evidence": "FROMFLOWS (India) · Banks · CONNECTIONS / THEMESNOT PROVEN AGAINST(Devil) FIXTURE: banks already priced the flows MARKETNIFTY above VWAP (+0"
  },
  {
   "control": "WHY with seat chip + source (max 3) and one blue CONNECTION line",
@@ -53,7 +53,7 @@
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "footer \"alth DOWN · optquote MISSING · desk LEAN\" · strip AI \"AI\n$1.84\nof $8\""
+  "evidence": "footer \" · desk ON · LEAN - next brief Sun 19:45\" · strip AI \"AI\n$1.84\nof $8\""
  },
  {
   "control": "no cut text (F1 GO NOW card, fixture)",
@@ -69,23 +69,23 @@
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "WAIT: analyst stale · SBIN CALL 1,000 29 DEC GIR ANALYST 01:23 · next look 01:34 STALE · 4m ago MUST SEE valid 01:37 \tPR"
+  "evidence": "WAIT: analyst stale · SBIN CALL 1,000 29 DEC GIR ANALYST 09:01 · next look 09:12 STALE · 3m ago MUST SEE valid 09:15 \tPR"
  },
  {
-  "control": "head not running: the engine card under its old labels + grey \"analyst not running\"",
+  "control": "head running (live): no \"analyst not running\" chip on the card; GIR ANALYST header only on a desk BUY NOW",
   "page": "F1 desk (live)",
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "NO CARD watch 0 · log 0 not shown LATEST DECISION no CRITICAL or MUST SEE call now analyst not running no engine card ei"
+  "evidence": "NO CARD watch 0 · log 0 not shown LATEST DECISION no CRITICAL or MUST SEE call now Cards show CRITICAL and MUST SEE call"
  },
  {
-  "control": "footer AI word: desk OFF while the head is not running",
+  "control": "footer AI word (live, head running): \"desk ON ...\" (next brief / mode) or the P1 line",
   "page": "F1 desk (live)",
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "WN · optquote MISSING · desk OFF · head analyst not running (starting)"
+  "evidence": " · optquote MISSING · desk ON · rules only ($1.5 reached) - next brief Sun 19:45"
  },
  {
   "control": "no cut text (F1, live)",
@@ -109,7 +109,7 @@
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "ltp · 10h · bid/ask – IV – now · – in · θ – /lot GIR HOLD FIXTURE: thesis intact - banks breadth negative for this name GIR ANALYST 01:21 · NOT PROVEN KITE MODIFY SL-L → LIMIT bid − 1 tick bid – · one"
+  "evidence": "ltp · 18h · bid/ask – IV – now · – in · θ – /lot GIR HOLD FIXTURE: thesis intact - banks breadth negative for this name GIR ANALYST 08:59 · NOT PROVEN KITE MODIFY SL-L → LIMIT bid − 1 tick bid – · one"
  },
  {
   "control": "no cut text (desk-trade GIR row, fixture)",
@@ -125,7 +125,7 @@
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "NOW 846.00 VS STOP – – room – P&L P&L curve not known 13.05 → 13.50 ltp · 10h · bid/ask – IV – now · – in · θ – /lot GIR"
+  "evidence": "NOW 846.00 VS STOP – – room – P&L P&L curve not known 13.05 → 13.50 ltp · 18h · bid/ask – IV – now · – in · θ – /lot GIR"
  },
  {
   "control": "no cut text (desk-trade GIR row, live)",
@@ -141,7 +141,7 @@
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "00 · ₹16,965 · spread – · depth – IV – → – 20d – GIR HOLD FIXTURE: thesis intact - banks breadth negative for this name GIR ANALYST 01:21 · NOT PROVEN KITE MODIFY SL-L – → LIMIT bid − 1 tick bid – not"
+  "evidence": "00 · ₹16,965 · spread – · depth – IV – → – 20d – GIR HOLD FIXTURE: thesis intact - banks breadth negative for this name GIR ANALYST 08:59 · NOT PROVEN KITE MODIFY SL-L – → LIMIT bid − 1 tick bid – not"
  },
  {
   "control": "no cut text (F6 GIR row, fixture)",
@@ -181,7 +181,7 @@
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "leans UP\n·\nFIXTURE: banks lead on foreign buying, IT under pressure fr | analyst 07:15 · made 22:06 · ▸ changed | FIXTURE: banks lead on foreign buying, IT under pressure from the US s"
+  "evidence": "leans UP\n·\nFIXTURE: banks lead on foreign buying, IT under pressure fr | analyst 07:15 · made 05:44 · ▸ changed | FIXTURE: banks lead on foreign buying, IT under pressure from the US s"
  },
  {
   "control": "19:45 table: the head's ideas first, CE and PE both, CANCELLED struck",
@@ -229,15 +229,15 @@
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "analyst 07:15 · made 22:07 · STALE · FIXTURE: the 09:08 brief failed (head timeo | STALE STALE · FIXTURE: the 09:08 brief failed (head timeout) - the 07:15 brief i"
+  "evidence": "analyst 07:15 · made 05:44 · STALE · FIXTURE: the 09:08 brief failed (head timeo | STALE STALE · FIXTURE: the 09:08 brief failed (head timeout) - the 07:15 brief i"
  },
  {
-  "control": "head not running: the old band and table, PRE-FLIGHT says the desk is not running",
+  "control": "head running (live): PRE-FLIGHT \"Desk n of N seats running · mode · $ of cap\"",
   "page": "Morning (live)",
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "0 | ○\nDesk not running · 46 seats · $1.35 of $1.5 | 19:45 watch 2026-11-20 20:49 IST · for 23 Nov · SHADOW - wri"
+  "evidence": "0 | ✓\nDesk 44 of 46 seats running · LEAN · $1.92 of $1.5 | 19:45 watch 2026-11-20 20:49 IST · for 23 Nov · SHADOW - written to fi"
  },
  {
   "control": "no cut text (Morning, live)",
@@ -245,7 +245,7 @@
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "0 cut cells · prose with a tooltip allowed: 0"
+  "evidence": "0 cut cells · prose with a tooltip allowed: 1"
  },
  {
   "control": "page errors",
@@ -269,7 +269,7 @@
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "['23:07 GO NOW SBIN CALL ENTER only if FIXTURE: a pullback to ', '23:07 GET READY ICICIBANK CALL ENTER only if FIXTURE: a 1-mi', '23:07 STANDS INFY PUT ENTER only if FIXTURE: back below VWAP', '23:07 CANCELLED TCS PUT cancelled: FIXTURE: IT held VWAP for']"
+  "evidence": "['06:44 GO NOW SBIN CALL ENTER only if FIXTURE: a pullback to ', '06:44 GET READY ICICIBANK CALL ENTER only if FIXTURE: a 1-mi', '06:44 STANDS INFY PUT ENTER only if FIXTURE: back below VWAP', '06:44 CANCELLED TCS PUT cancelled: FIXTURE: IT held VWAP for']"
  },
  {
   "control": "THEME rows on top of the Sectors panel = the head's themes",
@@ -304,12 +304,12 @@
   "evidence": "0 cut cells · prose with a tooltip allowed: 4"
  },
  {
-  "control": "head not running: IDEAS 0 says so; THEME rows keep the engine legs",
+  "control": "head running (live): IDEAS = the head's book (rows, or \"the head has no idea in its book now\"); no fixture text",
   "page": "F1 ACTION (live)",
   "viewport": "1366x768",
   "where": "inside",
   "result": "PASS",
-  "evidence": "head analyst not running - no desk ideas | head analyst not running - no desk ideas | THEME silver −4.74% metals & mining CALL MIXED Hang Seng (Ch"
+  "evidence": "the head analyst's ideas (desk.ideas): GET READY = ARMED, GO | the head has no idea in its book now | THEME silver −4.74% metals & mining CALL MIXED Hang Seng (Ch"
  },
  {
   "control": "no cut text (F1 ACTION, live)",
@@ -357,7 +357,7 @@
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "GO NOW · SBIN CALL 1,000 29 DEC GIR ANALYST 01:25 · next look 01:36 · 4m ago MUST SEE valid 01:39 \tPREMIUM 1,000 CE\tSHARE TRIGGER\t33.00\t991."
+  "evidence": "GO NOW · SBIN CALL 1,000 29 DEC GIR ANALYST 09:03 · next look 09:14 · 3m ago MUST SEE valid 09:17 \tPREMIUM 1,000 CE\tSHARE TRIGGER\t33.00\t991."
  },
  {
   "control": "FROM (seats) + AGAINST (Devil) + NOT PROVEN in place of the weight",
@@ -365,7 +365,7 @@
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "FROMFLOWS (India) · Banks · CONNECTIONS / THEMESNOT PROVEN AGAINST(Devil) FIXTURE: banks already priced the flows ✓ ban ✓ quote age HOLD2 lo"
+  "evidence": "FROMFLOWS (India) · Banks · CONNECTIONS / THEMESNOT PROVEN AGAINST(Devil) FIXTURE: banks already priced the flows MARKETNIFTY above VWAP (+0"
  },
  {
   "control": "WHY with seat chip + source (max 3) and one blue CONNECTION line",
@@ -405,7 +405,7 @@
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "footer \"alth DOWN · optquote MISSING · desk LEAN\" · strip AI \"AI\n$1.84\nof $8\""
+  "evidence": "footer \" · desk ON · LEAN - next brief Sun 19:45\" · strip AI \"AI\n$1.84\nof $8\""
  },
  {
   "control": "no cut text (F1 GO NOW card, fixture)",
@@ -421,23 +421,23 @@
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "WAIT: analyst stale · SBIN CALL 1,000 29 DEC GIR ANALYST 01:25 · next look 01:36 STALE · 4m ago MUST SEE valid 01:39 \tPR"
+  "evidence": "WAIT: analyst stale · SBIN CALL 1,000 29 DEC GIR ANALYST 09:03 · next look 09:14 STALE · 3m ago MUST SEE valid 09:17 \tPR"
  },
  {
-  "control": "head not running: the engine card under its old labels + grey \"analyst not running\"",
+  "control": "head running (live): no \"analyst not running\" chip on the card; GIR ANALYST header only on a desk BUY NOW",
   "page": "F1 desk (live)",
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "NO CARD watch 0 · log 0 not shown LATEST DECISION no CRITICAL or MUST SEE call now analyst not running no engine card ei"
+  "evidence": "NO CARD watch 0 · log 0 not shown LATEST DECISION no CRITICAL or MUST SEE call now Cards show CRITICAL and MUST SEE call"
  },
  {
-  "control": "footer AI word: desk OFF while the head is not running",
+  "control": "footer AI word (live, head running): \"desk ON ...\" (next brief / mode) or the P1 line",
   "page": "F1 desk (live)",
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "WN · optquote MISSING · desk OFF · head analyst not running (starting)"
+  "evidence": " · optquote MISSING · desk ON · rules only ($1.5 reached) - next brief Sun 19:45"
  },
  {
   "control": "no cut text (F1, live)",
@@ -461,7 +461,7 @@
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": " · bid/ask – IV – now · – at entry · θ – per lot GIR HOLD FIXTURE: thesis intact - banks breadth negative for this name GIR ANALYST 01:23 · NOT PROVEN KITE MODIFY SL-L → LIMIT bid − 1 tick bid – · one"
+  "evidence": " · bid/ask – IV – now · – at entry · θ – per lot GIR HOLD FIXTURE: thesis intact - banks breadth negative for this name GIR ANALYST 09:01 · NOT PROVEN KITE MODIFY SL-L → LIMIT bid − 1 tick bid – · one"
  },
  {
   "control": "no cut text (desk-trade GIR row, fixture)",
@@ -477,7 +477,7 @@
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "NOW 846.00 VS STOP – – room – P&L P&L curve not known 13.05 → 13.50 ltp · 10h · bid/ask – IV – now · – at entry · θ – pe"
+  "evidence": "NOW 846.00 VS STOP – – room – P&L P&L curve not known 13.05 → 13.50 ltp · 18h · bid/ask – IV – now · – at entry · θ – pe"
  },
  {
   "control": "no cut text (desk-trade GIR row, live)",
@@ -493,7 +493,7 @@
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "00 · ₹16,965 · spread – · depth – IV – → – 20d – GIR HOLD FIXTURE: thesis intact - banks breadth negative for this name GIR ANALYST 01:23 · NOT PROVEN KITE MODIFY SL-L – → LIMIT bid − 1 tick bid – · o"
+  "evidence": "00 · ₹16,965 · spread – · depth – IV – → – 20d – GIR HOLD FIXTURE: thesis intact - banks breadth negative for this name GIR ANALYST 09:01 · NOT PROVEN KITE MODIFY SL-L – → LIMIT bid − 1 tick bid – · o"
  },
  {
   "control": "no cut text (F6 GIR row, fixture)",
@@ -509,7 +509,7 @@
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "NOW 846.00 VS STOP – share · 10h stop – prem · target – / – – room – P&L P&L curve not known 13.05 → 13.50 ltp · bid/ask"
+  "evidence": "NOW 846.00 VS STOP – share · 18h stop – prem · target – / – – room – P&L P&L curve not known 13.05 → 13.50 ltp · bid/ask"
  },
  {
   "control": "no cut text (F6 GIR row, live)",
@@ -533,7 +533,7 @@
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "leans UP\n·\nFIXTURE: banks lead on foreign buying, IT under pressure fr | analyst 07:15 · made 22:08 · ▸ changed | FIXTURE: banks lead on foreign buying, IT under pressure from the US s"
+  "evidence": "leans UP\n·\nFIXTURE: banks lead on foreign buying, IT under pressure fr | analyst 07:15 · made 05:46 · ▸ changed | FIXTURE: banks lead on foreign buying, IT under pressure from the US s"
  },
  {
   "control": "19:45 table: the head's ideas first, CE and PE both, CANCELLED struck",
@@ -557,7 +557,7 @@
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "THEME NOT PROVEN 23:08 · CONFIRMING FIXTURE: AI IPO -> FII rotation -> banks CE SBIN LEADER CE HDFCBANK FOLLOWER PE INFY"
+  "evidence": "THEME NOT PROVEN 06:46 · CONFIRMING FIXTURE: AI IPO -> FII rotation -> banks CE SBIN LEADER CE HDFCBANK FOLLOWER PE INFY"
  },
  {
   "control": "PRE-FLIGHT: \"Desk n of N seats running · mode · $ of cap\"",
@@ -581,15 +581,15 @@
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "analyst 07:15 · made 22:09 · STALE · FIXTURE: the 09:08 brief failed (head timeo | STALE STALE · FIXTURE: the 09:08 brief failed (head timeout) - the 07:15 brief i"
+  "evidence": "analyst 07:15 · made 05:46 · STALE · FIXTURE: the 09:08 brief failed (head timeo | STALE STALE · FIXTURE: the 09:08 brief failed (head timeout) - the 07:15 brief i"
  },
  {
-  "control": "head not running: the old band and table, PRE-FLIGHT says the desk is not running",
+  "control": "head running (live): PRE-FLIGHT \"Desk n of N seats running · mode · $ of cap\"",
   "page": "Morning (live)",
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "0 | ○\nDesk not running · 46 seats · $1.35 of $1.5 | 19:45 watch 2026-11-20 20:49 IST · for 23 Nov · SHADOW - wri"
+  "evidence": "0 | ✓\nDesk 44 of 46 seats running · LEAN · $1.92 of $1.5 | 19:45 watch 2026-11-20 20:49 IST · for 23 Nov · SHADOW - written to fi"
  },
  {
   "control": "no cut text (Morning, live)",
@@ -597,7 +597,7 @@
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "0 cut cells · prose with a tooltip allowed: 0"
+  "evidence": "0 cut cells · prose with a tooltip allowed: 1"
  },
  {
   "control": "page errors",
@@ -621,7 +621,7 @@
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "['23:09 GO NOW SBIN CALL ENTER only if FIXTURE: a pullback to ', '23:09 GET READY ICICIBANK CALL ENTER only if FIXTURE: a 1-mi', '23:09 STANDS INFY PUT ENTER only if FIXTURE: back below VWAP', '23:09 CANCELLED TCS PUT cancelled: FIXTURE: IT held VWAP for']"
+  "evidence": "['06:47 GO NOW SBIN CALL ENTER only if FIXTURE: a pullback to ', '06:47 GET READY ICICIBANK CALL ENTER only if FIXTURE: a 1-mi', '06:47 STANDS INFY PUT ENTER only if FIXTURE: back below VWAP', '06:47 CANCELLED TCS PUT cancelled: FIXTURE: IT held VWAP for']"
  },
  {
   "control": "THEME rows on top of the Sectors panel = the head's themes",
@@ -656,12 +656,12 @@
   "evidence": "0 cut cells · prose with a tooltip allowed: 3"
  },
  {
-  "control": "head not running: IDEAS 0 says so; THEME rows keep the engine legs",
+  "control": "head running (live): IDEAS = the head's book (rows, or \"the head has no idea in its book now\"); no fixture text",
   "page": "F1 ACTION (live)",
   "viewport": "1600x900",
   "where": "inside",
   "result": "PASS",
-  "evidence": "head analyst not running - no desk ideas | head analyst not running - no desk ideas | THEME silver −4.74% metals & mining CALL MIXED Hang Seng (Ch"
+  "evidence": "the head analyst's ideas (desk.ideas): GET READY = ARMED, GO | the head has no idea in its book now | THEME silver −4.74% metals & mining CALL MIXED Hang Seng (Ch"
  },
  {
   "control": "no cut text (F1 ACTION, live)",
@@ -709,7 +709,7 @@
   "viewport": "390x844",
   "where": "inside",
   "result": "PASS",
-  "evidence": "e stop not known ltp 13.50 10h GIR HOLD ANALYST 01:25 · NOT PROVEN FIXTURE: thesis intact - banks breadth negative for this name EXIT LINE ·"
+  "evidence": "e stop not known ltp 13.50 18h GIR HOLD ANALYST 09:03 · NOT PROVEN FIXTURE: thesis intact - banks breadth negative for this name EXIT LINE ·"
  },
  {
   "control": "CALL: FROM / AGAINST / NOT PROVEN, the head's card",
@@ -717,7 +717,7 @@
   "viewport": "390x844",
   "where": "inside",
   "result": "PASS",
-  "evidence": "FROMFLOWS (India) · Banks · CONNECTIONS / THEMESNOT PROVEN AGAINST(Devil) FIXTURE: banks already priced the flows ✓ ban "
+  "evidence": "FROMFLOWS (India) · Banks · CONNECTIONS / THEMESNOT PROVEN AGAINST(Devil) FIXTURE: banks already priced the flows MARKET"
  },
  {
   "control": "CALL: WHY 2 lines + \"more\" (finger)",
@@ -749,7 +749,7 @@
   "viewport": "390x844",
   "where": "inside",
   "result": "PASS",
-  "evidence": "BRIEF 07:15 for 2026-11-23 · 22:10 NOT PROVEN changed: TCS PE CANCELLED FIXTURE: banks lead on foreign buying, IT under pressure from the US"
+  "evidence": "BRIEF 07:15 for 2026-11-23 · 05:48 NOT PROVEN changed: TCS PE CANCELLED FIXTURE: banks lead on foreign buying, IT under pressure from the US"
  },
  {
   "control": "ALERTS brief.stale: \"STALE · <why>\", never blank",
@@ -757,7 +757,7 @@
   "viewport": "390x844",
   "where": "inside",
   "result": "PASS",
-  "evidence": "BRIEF 07:15 for 2026-11-23 · 22:10 NOT PROVEN STALE STALE · FIXTURE: the 09:08 brief failed (head timeout) - the 07:15 brief is shown change"
+  "evidence": "BRIEF 07:15 for 2026-11-23 · 05:48 NOT PROVEN STALE STALE · FIXTURE: the 09:08 brief failed (head timeout) - the 07:15 brief is shown change"
  },
  {
   "control": "no cut text (phone ALERTS, fixture)",
@@ -816,20 +816,20 @@
   "evidence": "pages: 23"
  },
  {
-  "control": "head not running: the engine card under its old labels + grey \"analyst not running\"",
+  "control": "head running (live): no \"analyst not running\" chip on the card; GIR ANALYST header only on a desk BUY NOW",
   "page": "F1 desk (live)",
   "viewport": "1366x768",
   "where": "outside",
   "result": "PASS",
-  "evidence": "NO CARD watch 0 · log 0 not shown LATEST DECISION no CRITICAL or MUST SEE call now analyst not running no engine card ei"
+  "evidence": "NO CARD watch 0 · log 0 not shown LATEST DECISION no CRITICAL or MUST SEE call now Cards show CRITICAL and MUST SEE call"
  },
  {
-  "control": "footer AI word: desk OFF while the head is not running",
+  "control": "footer AI word (live, head running): \"desk ON ...\" (next brief / mode) or the P1 line",
   "page": "F1 desk (live)",
   "viewport": "1366x768",
   "where": "outside",
   "result": "PASS",
-  "evidence": "WN · optquote MISSING · desk OFF · head analyst not running (starting)"
+  "evidence": " · optquote MISSING · desk ON · rules only ($1.5 reached) - next brief Sun 19:45"
  },
  {
   "control": "no cut text (F1, live)",
@@ -853,7 +853,7 @@
   "viewport": "1366x768",
   "where": "outside",
   "result": "PASS",
-  "evidence": "NOW 846.00 VS STOP – – room – P&L P&L curve not known 13.05 → 13.50 ltp · 10h · bid/ask – IV – now · – in · θ – /lot GIR"
+  "evidence": "NOW 846.00 VS STOP – – room – P&L P&L curve not known 13.05 → 13.50 ltp · 18h · bid/ask – IV – now · – in · θ – /lot GIR"
  },
  {
   "control": "no cut text (desk-trade GIR row, live)",
@@ -888,12 +888,12 @@
   "evidence": "none"
  },
  {
-  "control": "head not running: the old band and table, PRE-FLIGHT says the desk is not running",
+  "control": "head running (live): PRE-FLIGHT \"Desk n of N seats running · mode · $ of cap\"",
   "page": "Morning (live)",
   "viewport": "1366x768",
   "where": "outside",
   "result": "PASS",
-  "evidence": "0 | ○\nDesk not running · 46 seats · $1.35 of $1.5 | 19:45 watch 2026-11-20 20:49 IST · for 23 Nov · SHADOW - wri"
+  "evidence": "0 | ✓\nDesk 44 of 46 seats running · LEAN · $1.92 of $1.5 | 19:45 watch 2026-11-20 20:49 IST · for 23 Nov · SHADOW - written to fi"
  },
  {
   "control": "no cut text (Morning, live)",
@@ -901,7 +901,7 @@
   "viewport": "1366x768",
   "where": "outside",
   "result": "PASS",
-  "evidence": "0 cut cells · prose with a tooltip allowed: 0"
+  "evidence": "0 cut cells · prose with a tooltip allowed: 1"
  },
  {
   "control": "page errors",
@@ -912,12 +912,12 @@
   "evidence": "none"
  },
  {
-  "control": "head not running: IDEAS 0 says so; THEME rows keep the engine legs",
+  "control": "head running (live): IDEAS = the head's book (rows, or \"the head has no idea in its book now\"); no fixture text",
   "page": "F1 ACTION (live)",
   "viewport": "1366x768",
   "where": "outside",
   "result": "PASS",
-  "evidence": "head analyst not running - no desk ideas | head analyst not running - no desk ideas | THEME silver −4.74% metals & mining CALL MIXED Hang Seng (Ch"
+  "evidence": "the head analyst's ideas (desk.ideas): GET READY = ARMED, GO | the head has no idea in its book now | THEME silver −4.74% metals & mining CALL MIXED Hang Seng (Ch"
  },
  {
   "control": "no cut text (F1 ACTION, live)",
@@ -960,20 +960,20 @@
   "evidence": "pages: 23"
  },
  {
-  "control": "head not running: the engine card under its old labels + grey \"analyst not running\"",
+  "control": "head running (live): no \"analyst not running\" chip on the card; GIR ANALYST header only on a desk BUY NOW",
   "page": "F1 desk (live)",
   "viewport": "1600x900",
   "where": "outside",
   "result": "PASS",
-  "evidence": "NO CARD watch 0 · log 0 not shown LATEST DECISION no CRITICAL or MUST SEE call now analyst not running no engine card ei"
+  "evidence": "NO CARD watch 0 · log 0 not shown LATEST DECISION no CRITICAL or MUST SEE call now Cards show CRITICAL and MUST SEE call"
  },
  {
-  "control": "footer AI word: desk OFF while the head is not running",
+  "control": "footer AI word (live, head running): \"desk ON ...\" (next brief / mode) or the P1 line",
   "page": "F1 desk (live)",
   "viewport": "1600x900",
   "where": "outside",
   "result": "PASS",
-  "evidence": "WN · optquote MISSING · desk OFF · head analyst not running (starting)"
+  "evidence": " · optquote MISSING · desk ON · rules only ($1.5 reached) - next brief Sun 19:45"
  },
  {
   "control": "no cut text (F1, live)",
@@ -997,7 +997,7 @@
   "viewport": "1600x900",
   "where": "outside",
   "result": "PASS",
-  "evidence": "NOW 846.00 VS STOP – – room – P&L P&L curve not known 13.05 → 13.50 ltp · 10h · bid/ask – IV – now · – at entry · θ – pe"
+  "evidence": "NOW 846.00 VS STOP – – room – P&L P&L curve not known 13.05 → 13.50 ltp · 18h · bid/ask – IV – now · – at entry · θ – pe"
  },
  {
   "control": "no cut text (desk-trade GIR row, live)",
@@ -1013,7 +1013,7 @@
   "viewport": "1600x900",
   "where": "outside",
   "result": "PASS",
-  "evidence": "NOW 846.00 VS STOP – share · 10h stop – prem · target – / – – room – P&L P&L curve not known 13.05 → 13.50 ltp · bid/ask"
+  "evidence": "NOW 846.00 VS STOP – share · 18h stop – prem · target – / – – room – P&L P&L curve not known 13.05 → 13.50 ltp · bid/ask"
  },
  {
   "control": "no cut text (F6 GIR row, live)",
@@ -1032,12 +1032,12 @@
   "evidence": "none"
  },
  {
-  "control": "head not running: the old band and table, PRE-FLIGHT says the desk is not running",
+  "control": "head running (live): PRE-FLIGHT \"Desk n of N seats running · mode · $ of cap\"",
   "page": "Morning (live)",
   "viewport": "1600x900",
   "where": "outside",
   "result": "PASS",
-  "evidence": "0 | ○\nDesk not running · 46 seats · $1.35 of $1.5 | 19:45 watch 2026-11-20 20:49 IST · for 23 Nov · SHADOW - wri"
+  "evidence": "0 | ✓\nDesk 44 of 46 seats running · LEAN · $1.92 of $1.5 | 19:45 watch 2026-11-20 20:49 IST · for 23 Nov · SHADOW - written to fi"
  },
  {
   "control": "no cut text (Morning, live)",
@@ -1045,7 +1045,7 @@
   "viewport": "1600x900",
   "where": "outside",
   "result": "PASS",
-  "evidence": "0 cut cells · prose with a tooltip allowed: 0"
+  "evidence": "0 cut cells · prose with a tooltip allowed: 1"
  },
  {
   "control": "page errors",
@@ -1056,12 +1056,12 @@
   "evidence": "none"
  },
  {
-  "control": "head not running: IDEAS 0 says so; THEME rows keep the engine legs",
+  "control": "head running (live): IDEAS = the head's book (rows, or \"the head has no idea in its book now\"); no fixture text",
   "page": "F1 ACTION (live)",
   "viewport": "1600x900",
   "where": "outside",
   "result": "PASS",
-  "evidence": "head analyst not running - no desk ideas | head analyst not running - no desk ideas | THEME silver −4.74% metals & mining CALL MIXED Hang Seng (Ch"
+  "evidence": "the head analyst's ideas (desk.ideas): GET READY = ARMED, GO | the head has no idea in its book now | THEME silver −4.74% metals & mining CALL MIXED Hang Seng (Ch"
  },
  {
   "control": "no cut text (F1 ACTION, live)",
