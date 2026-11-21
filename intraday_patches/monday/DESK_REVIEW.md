@@ -14,6 +14,23 @@
   change nothing until the trader decides.
 - **Trader's call (asked now):** globaleye (old GIR v1) and paper_counterfactual / paper_eod_report still post to GIR Alerts - keep or mute.
 
+## 21 Nov 10:30 IST (hourly) - big batch ACCEPTED; one money fix; the J7 reasons (desk writes them, trader approves)
+- **ACCEPTED:** watchdog (a); credit balance from the $50 top-up with the warnings; one $8 gate (J11) for every v2 call; old-system AI
+  OFF (baseline frozen - "old paths = $0" check on Monday); credit warning without credit; WORLD SHOCK A / B / E live with the Fri 20 Nov
+  proof (US close line at 02:25 - exactly what the trader wanted); C / D / F / G / H / I / J on the page with flood control and 15:45
+  scoring; pages item 4 (136 PASS); J6 complete; J7 switch (flags, dropped not queued, FO / OI forbidden in both modes); reboot Monday
+  evening; the 20-year US-shock study and its lesson.
+- **MONEY FIX - LIVE is now too small.** The new split gives LIVE $1.40, but PROOF_2220c needed LIVE $2.60 for a day (head looks 11 /
+  $2.34). Change: SEATS 2.20 -> 1.90 (the conference runs on the LEAN combined calls anyway), ASK 0.30 -> 0.20, LIVE 1.40 -> 1.80; and
+  SHOCK money NOT spent by 11:00 IST rolls into LIVE for the rest of the day (a shock after 11:00 can still use what is left of SHOCK
+  first). Re-run PROOF with this split: pass = no LIVE refusal before 14:30, both morning briefs delivered, total <= $8.
+- **J7 - REASONS TO FLIP TO "gir mode old" (desk's text, for the trader to approve):** flip if ANY of these happens on a trading day:
+  (1) the new desk has written no brief by 09:10 or no card by 09:30 (it is down or starved); (2) more than 6 rings in 15 minutes
+  (a flood); (3) a BUY NOW on the wrong side of a clear move (e.g. CE while NIFTY and the sector are both below VWAP and falling) that the
+  desk does not withdraw within 5 minutes; (4) the page or phone shows P1 "AI CREDIT EMPTY" or "desk OFF" in market hours; (5) prices
+  STALE on more than 5 names for over 3 minutes. Flip back to "gir mode new" when the cause is fixed. Put these on the J7 Settings button.
+- Missing pieces noted (fine for Monday): D's band-hit and pre-open IEP-gap fields, J's scenario file; the close-vs-open column (asked).
+
 ## 21 Nov 10:40 IST - US-shock study ACCEPTED (122 cases, code only). Add one column: close vs OPEN (not only vs previous close) for
 each cut, and the median bounce from the first-15-minute low to the close - the trader's intraday question is "does it bounce from the
 early low". The desk's news-report reading and the data agree once both are measured: gap down, early low, partial bounce, red close.
