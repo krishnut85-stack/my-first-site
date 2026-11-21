@@ -1,0 +1,1269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GIR · ⇧F2 World drivers</title>
+<!-- GIR v3 · Shift+F2 WORLD DRIVERS & THEME · FINAL pass (R44-R49; sector figures = F2 Sectors final, R49 whole-sector basis) · Thu 19 Nov 2026 11:42:40 (state S4 SHOCK) · design mockup - illustrative values.
+     Shell (market strip, MY F&O P&L, tab bar, footer) = v3/shell.html verbatim + shellwork/state.js 'S4' {clock 11:42:40}; footer health
+     wording per SHELL.md 6 (LIMITED · IOC STALE 14s). No page-scoped shell CSS. Figures = CONFERENCE section 4 / F2 Sectors final. -->
+<style>
+/* ===================== SHELL CSS START (copy verbatim) ===================== */
+/* colour tokens = CONFERENCE 1.5 (fixed meanings). DARK is the default; LIGHT = <html data-theme="light"> (or the same attribute,
+   or class th-light, on <body>); AUTO = data-theme="auto" follows the OS. Pages never redefine a token. */
+:root{color-scheme:dark;
+  --bg:#0B0D10; --panel:#12151A; --panel-2:#181C22; --panel-3:#1E232B; --line:#262C35; --line-2:#323A45; --text:#E7EAEE; --text-2:#B3BAC4;
+  --text-3:#8E97A3; --up:#34C47C; --up-bg:rgba(52,196,124,.12); --up-line:rgba(52,196,124,.60); --up-rgb:52,196,124; --down:#F2615D;
+  --down-bg:rgba(242,97,93,.12); --down-line:rgba(242,97,93,.60); --down-rgb:242,97,93; --lb:#34C47C; --lb-bg:rgba(52,196,124,.22); --sb:#F2615D;
+  --sb-bg:rgba(242,97,93,.22); --sc:#8FE3B5; --sc-ink:#8FE3B5; --lu:#FF9E9A; --lu-ink:#FF9E9A; --action:#F5A524; --action-ink:#14110A;
+  --action-line:rgba(245,165,36,.55); --action-bg:rgba(245,165,36,.09); --go:#F5A524; --warn:#F5A524; --info:#6CB2FF; --info-bg:rgba(108,178,255,.10);
+  --info-line:rgba(108,178,255,.38); --stale:#6B7380; --stripe:repeating-linear-gradient(135deg, rgba(140,148,160,.28) 0 3px, transparent 3px 7px);
+  --danger:#FF5A52; --danger-bg:rgba(255,90,82,.14); --danger-ink:#1A0806; --leader:#36C5D0; --leader-bg:rgba(54,197,208,.13); --dep:#B79CFF;
+  --dep-bg:rgba(183,156,255,.13); --lag:#EE8AC0; --lag-bg:rgba(238,138,192,.13); --held:#E7EAEE; --held-ink:#0B0D10; --replay:#9B87F5;
+  --acc-mkt:#6CB2FF; --acc-call:#F5A524; --acc-mine:#E7EAEE; --acc-sys:#6B7380; --hover-strip:#151920; --ks-edge:#7E8691; --shadow:0 8px 24px
+  rgba(0,0,0,.5); --ban-hover:rgba(255,90,82,.24);
+  --sans: Inter, "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", "DejaVu Sans Mono", Consolas, monospace;
+  /* shell geometry - pages position their content from these, never from magic numbers */
+  --sh-mkt:80px; --sh-pnl:30px; --sh-tabs:52px; --sh-top:162px; --sh-foot:22px; --sh-gut:12px;
+}
+[data-theme="light"],body.th-light{color-scheme:light;
+  --bg:#ECEFF3; --panel:#FFFFFF; --panel-2:#F6F7F9; --panel-3:#E3E7EC; --line:#D9DEE5; --line-2:#C3CAD4; --text:#10141A; --text-2:#3B4450;
+  --text-3:#5A6470; --up:#08804A; --up-bg:rgba(8,128,74,.10); --up-line:rgba(8,128,74,.55); --up-rgb:8,128,74; --down:#C42B27;
+  --down-bg:rgba(196,43,39,.09); --down-line:rgba(196,43,39,.55); --down-rgb:196,43,39; --lb:#08804A; --lb-bg:rgba(8,128,74,.16); --sb:#C42B27;
+  --sb-bg:rgba(196,43,39,.15); --sc:#5FC28E; --sc-ink:#08804A; --lu:#EE8D89; --lu-ink:#C42B27; --action:#9A5A00; --action-ink:#14110A;
+  --action-line:rgba(184,110,0,.60); --action-bg:rgba(245,165,36,.14); --go:#F5A524; --warn:#D98A00; --info:#1763BF; --info-bg:rgba(23,99,191,.08);
+  --info-line:rgba(23,99,191,.42); --stale:#7A828E; --stripe:repeating-linear-gradient(135deg, rgba(110,118,130,.22) 0 3px, transparent 3px 7px);
+  --danger:#CC2A22; --danger-bg:rgba(204,42,34,.09); --danger-ink:#FFFFFF; --leader:#087680; --leader-bg:rgba(10,127,138,.09); --dep:#6743D6;
+  --dep-bg:rgba(103,67,214,.08); --lag:#B2367A; --lag-bg:rgba(178,54,122,.08); --held:#10141A; --held-ink:#FFFFFF; --replay:#6A4FD6; --acc-mkt:#1763BF;
+  --acc-call:#C77D00; --acc-mine:#10141A; --acc-sys:#7A828E; --hover-strip:#F1F3F6; --ks-edge:#232A33; --shadow:0 8px 24px rgba(20,30,45,.16);
+  --ban-hover:rgba(204,42,34,.16);
+}
+@media (prefers-color-scheme: light){ [data-theme="auto"]{color-scheme:light;
+  --bg:#ECEFF3; --panel:#FFFFFF; --panel-2:#F6F7F9; --panel-3:#E3E7EC; --line:#D9DEE5; --line-2:#C3CAD4; --text:#10141A; --text-2:#3B4450;
+  --text-3:#5A6470; --up:#08804A; --up-bg:rgba(8,128,74,.10); --up-line:rgba(8,128,74,.55); --up-rgb:8,128,74; --down:#C42B27;
+  --down-bg:rgba(196,43,39,.09); --down-line:rgba(196,43,39,.55); --down-rgb:196,43,39; --lb:#08804A; --lb-bg:rgba(8,128,74,.16); --sb:#C42B27;
+  --sb-bg:rgba(196,43,39,.15); --sc:#5FC28E; --sc-ink:#08804A; --lu:#EE8D89; --lu-ink:#C42B27; --action:#9A5A00; --action-ink:#14110A;
+  --action-line:rgba(184,110,0,.60); --action-bg:rgba(245,165,36,.14); --go:#F5A524; --warn:#D98A00; --info:#1763BF; --info-bg:rgba(23,99,191,.08);
+  --info-line:rgba(23,99,191,.42); --stale:#7A828E; --stripe:repeating-linear-gradient(135deg, rgba(110,118,130,.22) 0 3px, transparent 3px 7px);
+  --danger:#CC2A22; --danger-bg:rgba(204,42,34,.09); --danger-ink:#FFFFFF; --leader:#087680; --leader-bg:rgba(10,127,138,.09); --dep:#6743D6;
+  --dep-bg:rgba(103,67,214,.08); --lag:#B2367A; --lag-bg:rgba(178,54,122,.08); --held:#10141A; --held-ink:#FFFFFF; --replay:#6A4FD6; --acc-mkt:#1763BF;
+  --acc-call:#C77D00; --acc-mine:#10141A; --acc-sys:#7A828E; --hover-strip:#F1F3F6; --ks-edge:#232A33; --shadow:0 8px 24px rgba(20,30,45,.16);
+  --ban-hover:rgba(204,42,34,.16);
+} }
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13px;line-height:1.3}
+body{background:var(--bg)}
+
+/* ---------- the colour table as shared classes (CONFERENCE 1.5) - pages use these, never their own colours for these meanings ---------- */
+.sh-c{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 6px;border:1px solid transparent;border-radius:3px;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.03em;line-height:1;white-space:nowrap;vertical-align:middle;flex:none}
+.sh-c-ce{color:var(--up);border-color:var(--up-line);background:var(--up-bg)}
+.sh-c-pe{color:var(--down);border-color:var(--down-line);background:var(--down-bg)}
+.sh-c-lb{color:var(--lb);background:var(--lb-bg)}
+.sh-c-sb{color:var(--sb);background:var(--sb-bg)}
+.sh-c-sc{color:var(--sc-ink);border-color:var(--sc)}
+.sh-c-lu{color:var(--lu-ink);border-color:var(--lu)}
+.sh-c-go{color:var(--action-ink);background:var(--go);border-color:var(--go);font-weight:800}
+.sh-c-ready{color:var(--action);border-color:var(--action-line);background:var(--action-bg)}
+.sh-c-book{color:var(--action);border-color:var(--action-line)}
+.sh-c-exit{color:var(--danger-ink);background:var(--danger);border-color:var(--danger);font-weight:800}
+.sh-c-leader{color:var(--leader);border-color:var(--leader);background:var(--leader-bg)}
+.sh-c-dep{color:var(--dep);border-color:var(--dep);background:var(--dep-bg)}
+.sh-c-lag{color:var(--lag);border-color:var(--lag);background:var(--lag-bg)}
+.sh-c-lag .dn,.sh-c-lag .up{font-weight:800}
+.sh-c-held{color:var(--held-ink);background:var(--held);border-color:var(--held);font-weight:800}
+.sh-c-info{color:var(--info);border-color:var(--info-line);background:var(--info-bg)}
+.sh-c-stale{color:var(--text-2);border-color:var(--stale);background:var(--stripe)}
+.sh-c-replay{color:var(--replay);border-color:var(--replay)}
+/* heat rows: alpha .06 + .06 per 1 % move, max .24. Set --m to the absolute % move, e.g. style="--m:2.48" */
+.sh-heat-up{background:rgba(var(--up-rgb), min(.24, calc(.06 + .06 * var(--m, 0))))}
+.sh-heat-dn{background:rgba(var(--down-rgb), min(.24, calc(.06 + .06 * var(--m, 0))))}
+/* panel header accents (3 px left): market data / a live GIR call / his trades or risk / system */
+.sh-acc-mkt{box-shadow:inset 3px 0 0 var(--acc-mkt)} .sh-acc-call{box-shadow:inset 3px 0 0 var(--acc-call)}
+.sh-acc-mine{box-shadow:inset 3px 0 0 var(--acc-mine)} .sh-acc-sys{box-shadow:inset 3px 0 0 var(--acc-sys)}
+a{color:inherit;text-decoration:none}
+.n{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
+.up{color:var(--up)} .dn{color:var(--down)}
+kbd{font-family:var(--mono);font-size:11px;color:var(--text-2);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:3px;padding:0 4px;line-height:14px;display:inline-block;white-space:nowrap}
+:focus-visible{outline:1px solid var(--text);outline-offset:2px}
+
+#sh-mkt,#sh-pnl,#sh-tabs,#sh-foot{position:fixed;left:0;right:0;white-space:nowrap;z-index:50}
+.sh-sep{width:1px;align-self:stretch;background:var(--line);flex:none}
+.sh-lb{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+.sh-age{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:-0.02em}
+.sh-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--info);flex:none}
+.sh-meter{width:48px;height:6px;background:var(--panel-3);border-radius:1px;overflow:hidden;flex:none}
+.sh-meter i{display:block;height:100%;background:var(--info)}
+.sh-meter.warn i{background:var(--warn)}
+/* stale look for any strip item: add class sh-stale to the item and put "STALE 12s" in its .sh-age */
+.sh-stale{background:var(--stripe)}
+.sh-stale .n,.sh-stale .sh-px{color:var(--stale)!important}
+
+/* ---------- R01 market strip ---------- */
+#sh-mkt{top:0;height:var(--sh-mkt);background:var(--panel-2)}
+.sh-m1{height:44px;display:flex;align-items:stretch;border-bottom:1px solid var(--line);padding:0 0 0 4px}
+.sh-ix,.sh-mi{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:0 8px;border-right:1px solid var(--line);flex:none}
+.sh-ix:hover{background:var(--panel-3)}
+.sh-l1{display:flex;align-items:center;gap:8px;height:14px}
+.sh-nm{font-size:11px;font-weight:600;letter-spacing:.05em;color:var(--text-2)}
+.sh-spk{color:var(--text-2);margin-left:auto;flex:none}
+.sh-l2{display:flex;align-items:baseline;gap:6px}
+.sh-px{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-0.02em;color:var(--text)}
+.sh-ch{font-size:12px}
+.sh-pc{font-size:13px;font-weight:600}
+.sh-status{margin-left:auto;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:2px;padding:0 12px;border-left:1px solid var(--line);flex:none}
+.sh-st1,.sh-st2{display:flex;align-items:center;gap:7px}
+.sh-mstate{height:18px;display:inline-flex;align-items:center;padding:0 6px;border:1px solid var(--info-line);color:var(--info);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.05em}
+.sh-phase{font-size:12px;color:var(--text-2)} .sh-phase b{color:var(--text);font-weight:600}
+.sh-clock{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-0.02em}
+.sh-ist{font-size:11px;color:var(--text-3)}
+.sh-m2{height:36px;display:flex;align-items:stretch;padding:0 0 0 4px;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-2)}
+.sh-t2{display:flex;flex-direction:column;justify-content:center;gap:1px;padding:0 10px;border-right:1px solid var(--line);flex:none}
+a.sh-t2:hover{background:var(--panel-3)}
+.sh-t2l{display:flex;align-items:center;gap:6px;height:14px}
+.sh-t2l .sh-lb{letter-spacing:.04em}
+.sh-t2v{display:flex;align-items:center;gap:5px;height:18px}
+.sh-t2v .n{font-size:13px}
+.sh-t2v .v{color:var(--text)}
+.sh-xw{height:14px;display:inline-flex;align-items:center;padding:0 4px;border:1px solid var(--text-3);border-radius:2px;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--text);line-height:1}
+.sh-ban{height:18px;display:inline-flex;align-items:center;gap:4px;padding:0 6px;border:1px solid var(--danger);background:var(--danger-bg);color:var(--danger);border-radius:9px;font-size:11px;font-weight:700;letter-spacing:.04em;cursor:pointer}
+.sh-ban:hover{background:var(--ban-hover)}
+
+/* ---------- R02 my F&O P&L strip ---------- */
+#sh-pnl{top:var(--sh-mkt);height:var(--sh-pnl);background:var(--panel);border-bottom:1px solid var(--line-2);display:flex;align-items:center;padding:0 12px;font-size:12px;cursor:pointer}
+#sh-pnl:hover{background:var(--hover-strip)}
+.sh-pt{display:flex;align-items:center;gap:5px;padding:0 8px;height:18px;border-right:1px solid var(--line);flex:none}
+.sh-pt:first-child{padding-left:0}
+.sh-pt .n{font-size:13px}
+.sh-ptitle{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text);padding:0 7px;height:18px;line-height:16px;border:1px solid var(--line-2);border-radius:3px}
+.sh-big{font-family:var(--mono);font-size:16px;font-weight:700;letter-spacing:-0.02em}
+.sh-brk{color:var(--text-2)} .sh-brk .n{font-size:12px}
+.sh-go{margin-left:auto;display:flex;align-items:center;gap:6px;color:var(--text-2);font-size:12px;padding-left:10px;flex:none}
+.sh-go b{color:var(--text);font-weight:600;letter-spacing:.04em}
+
+/* ---------- R03 tab bar ---------- */
+#sh-tabs{top:calc(var(--sh-mkt) + var(--sh-pnl));height:var(--sh-tabs);background:var(--panel-2);border-bottom:1px solid var(--line-2);display:flex;align-items:stretch}
+.sh-mark{width:54px;flex:none;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding-left:12px;border-right:1px solid var(--line)}
+.sh-mark b{font-size:16px;font-weight:800;letter-spacing:.14em;line-height:18px}
+.sh-mark span{font-size:11px;color:var(--text-3);line-height:13px}
+.sh-grid{display:grid;grid-template-rows:26px 25px;grid-auto-columns:auto;align-items:stretch;flex:none}
+.sh-rl{display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text-3);border-right:1px solid var(--line)}
+.sh-rl1{grid-row:1;grid-column:1;border-bottom:1px solid var(--line)}
+.sh-rl2{grid-row:2;grid-column:1;color:var(--text)}
+.sh-rl2 span{border:1px solid var(--text-2);border-radius:3px;padding:0 4px;line-height:16px;background:var(--panel-3)}
+.sh-tab{display:flex;align-items:center;gap:6px;padding:0 6px;color:var(--text-2);border-right:1px solid var(--line);cursor:pointer}
+.sh-grid>.sh-tab[style*="grid-row:1;"]{border-bottom:1px solid var(--line)}
+.sh-tab:hover{background:var(--panel-3)}
+.sh-tl{font-size:13px;color:var(--text-2)}
+.sh-k{color:var(--text-2)}
+.sh-ks{background:var(--text-2);color:var(--bg);border-color:var(--text-2);border-bottom-color:var(--ks-edge);font-weight:700}
+.sh-free{cursor:default}
+.sh-free:hover{background:none}
+.sh-free .sh-tl{font-size:11px;color:var(--text-3)}
+.sh-free .sh-ks{background:none;color:var(--text-3);border-color:var(--line-2);font-weight:400}
+.sh-f5{flex-direction:column;justify-content:center;align-items:flex-start;gap:3px;background:repeating-linear-gradient(135deg, rgba(140,148,160,.07) 0 3px, transparent 3px 7px)}
+.sh-f5a{display:flex;align-items:center;gap:6px}
+.sh-f5a .sh-tl{font-size:12px;color:var(--text-3)}
+.sh-koff{color:var(--text-3);text-decoration:line-through}
+.sh-f5b{font-size:11px;color:var(--text-3)}
+.sh-right{flex:1;min-width:0;display:grid;grid-template-rows:26px 25px;grid-template-columns:minmax(0,1fr);border-left:1px solid var(--line-2)} /* fix (market r2): the track keeps its share at 1366 when the "/" box shows its placeholder */
+.sh-r1,.sh-r2{display:flex;align-items:stretch;justify-content:flex-start}
+.sh-r1{border-bottom:1px solid var(--line)}
+.sh-r1 .sh-tab:last-child{border-right:0}
+.sh-r2{align-items:center;gap:6px;padding:0 12px 0 8px}
+.sh-cmd{container-type:inline-size;position:relative;flex:1;max-width:300px;min-width:136px;height:20px;border:1px solid var(--line-2);border-radius:3px;background:var(--bg);display:flex;align-items:center;gap:6px;padding:0 6px;cursor:text}
+.sh-cmd kbd{line-height:12px}
+.sh-ph{font-size:12px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis}
+/* conference fix (1366 "/" clip): the placeholder picks the longest form that fits the box, never an ellipsis:
+   "symbol, contract, verb" -> "symbol, verb" -> "symbol" (the box shrinks when SOUND reads MUTED 9:42 or OFF) */
+.sh-ph-c,.sh-ph-v{display:none}
+@container (min-width:96px){.sh-ph-v{display:inline}}
+@container (min-width:150px){.sh-ph-c{display:inline}}
+.sh-typed{display:none;font-family:var(--mono);font-size:13px;color:var(--text)}
+.sh-typed i{display:inline-block;width:7px;height:14px;background:var(--text-2);vertical-align:-2px;margin-left:1px}
+.sh-btn{height:20px;display:inline-flex;align-items:center;gap:5px;padding:0 7px;border:1px solid var(--line-2);border-radius:3px;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--text-2);background:none;cursor:pointer;flex:none;font-family:var(--sans)}
+.sh-btn:hover{background:var(--panel-3)}
+.sh-btn .on{color:var(--text)}
+.sh-btn svg{flex:none}
+.sh-al{font-size:11px;color:var(--text-2);flex:none}
+.sh-al .n{color:var(--text);font-size:12px}
+/* search suggestions (R04): shown while typing; in pages it opens from script, in this file from body.demo */
+.sh-sugg{display:none;position:absolute;top:24px;right:-1px;width:480px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;box-shadow:var(--shadow);z-index:60;white-space:normal;cursor:default}
+.sh-sg-h{height:24px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;border-bottom:1px solid var(--line)}
+.sh-sg-r{display:grid;grid-template-columns:100px 1fr 72px 60px;align-items:center;column-gap:8px;height:44px;padding:0 10px;border-bottom:1px solid var(--line)}
+.sh-sg-r.sel{background:var(--panel-3);box-shadow:inset 2px 0 0 var(--text)}
+.sh-sg-s{font-size:15px;font-weight:600;color:var(--text)}
+.sh-sg-s em{font-style:normal;text-decoration:underline;text-underline-offset:3px}
+.sh-sg-d{font-size:12px;color:var(--text-2);line-height:1.35}
+.sh-sg-d span{color:var(--text-3);font-size:11px}
+.sh-sg-p{text-align:right;font-size:13px}
+.sh-sg-v{display:flex;gap:6px;flex-wrap:wrap;padding:7px 10px;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-2)}
+.sh-sg-v span{border:1px solid var(--line-2);border-radius:3px;padding:0 5px;line-height:18px}
+.sh-sg-f{padding:5px 10px;font-size:11px;color:var(--text-3)}
+/* sound legend popover (R10) - opens under the LEGEND button */
+.sh-pop{display:none;position:absolute;z-index:60;background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;box-shadow:var(--shadow);white-space:normal}
+
+/* active tab: ONE body class page-<slug> lights the matching tab (generated list) */
+.page-morning .sh-tab[data-tab="morning"],
+.page-desk-hunt .sh-tab[data-tab="desk"],
+.page-desk-trade .sh-tab[data-tab="desk"],
+.page-plan-card .sh-tab[data-tab="desk"],
+.page-plan-card .sh-tab[data-tab="plan-card"],
+.page-sectors .sh-tab[data-tab="sectors"],
+.page-rotation .sh-tab[data-tab="rotation"],
+.page-news .sh-tab[data-tab="news"],
+.page-positions .sh-tab[data-tab="positions"],
+.page-share .sh-tab[data-tab="share"],
+.page-analyst .sh-tab[data-tab="analyst"],
+.page-chain .sh-tab[data-tab="chain"],
+.page-futures-oi .sh-tab[data-tab="futures-oi"],
+.page-world .sh-tab[data-tab="world"],
+.page-calendar .sh-tab[data-tab="calendar"],
+.page-journal .sh-tab[data-tab="journal"],
+.page-reference .sh-tab[data-tab="reference"],
+.page-scorecard .sh-tab[data-tab="scorecard"],
+.page-health .sh-tab[data-tab="health"],
+.page-replay .sh-tab[data-tab="replay"],
+.page-settings .sh-tab[data-tab="settings"],
+.page-help .sh-tab[data-tab="help"],
+.page-market .sh-tab[data-tab="market"]{background:var(--panel-3);color:var(--text);box-shadow:inset 0 -2px 0 var(--text)}
+.page-morning .sh-tab[data-tab="morning"] .sh-tl,
+.page-desk-hunt .sh-tab[data-tab="desk"] .sh-tl,
+.page-desk-trade .sh-tab[data-tab="desk"] .sh-tl,
+.page-plan-card .sh-tab[data-tab="desk"] .sh-tl,
+.page-plan-card .sh-tab[data-tab="plan-card"] .sh-tl,
+.page-sectors .sh-tab[data-tab="sectors"] .sh-tl,
+.page-rotation .sh-tab[data-tab="rotation"] .sh-tl,
+.page-news .sh-tab[data-tab="news"] .sh-tl,
+.page-positions .sh-tab[data-tab="positions"] .sh-tl,
+.page-share .sh-tab[data-tab="share"] .sh-tl,
+.page-analyst .sh-tab[data-tab="analyst"] .sh-tl,
+.page-chain .sh-tab[data-tab="chain"] .sh-tl,
+.page-futures-oi .sh-tab[data-tab="futures-oi"] .sh-tl,
+.page-world .sh-tab[data-tab="world"] .sh-tl,
+.page-calendar .sh-tab[data-tab="calendar"] .sh-tl,
+.page-journal .sh-tab[data-tab="journal"] .sh-tl,
+.page-reference .sh-tab[data-tab="reference"] .sh-tl,
+.page-scorecard .sh-tab[data-tab="scorecard"] .sh-tl,
+.page-health .sh-tab[data-tab="health"] .sh-tl,
+.page-replay .sh-tab[data-tab="replay"] .sh-tl,
+.page-settings .sh-tab[data-tab="settings"] .sh-tl,
+.page-help .sh-tab[data-tab="help"] .sh-tl,
+.page-market .sh-tab[data-tab="market"] .sh-tl{color:var(--text)}
+/* conference fix (1366 clip): the active tab is NOT bold, so the tab grid has the same width on every page and the right block
+   ("/" box, sound, legend, P1 / P2) never loses pixels to a bold label */
+
+/* ---------- main ---------- */
+#page{position:fixed;left:0;right:0;top:var(--sh-top);bottom:var(--sh-foot);overflow:hidden}
+
+/* ---------- footer ---------- */
+#sh-foot{bottom:0;height:var(--sh-foot);background:var(--panel-2);border-top:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 12px;font-size:11px;color:var(--text-3)}
+#sh-foot .sh-sebi{font-size:12px;color:var(--text-2)}
+#sh-foot .sh-fs{width:1px;height:11px;background:var(--line-2);flex:none}
+#sh-foot .sh-keys{display:flex;align-items:center;gap:5px}
+#sh-foot kbd{line-height:12px}
+#sh-foot .sh-mock{margin-left:auto;color:var(--text-2)}
+.sh-n1366{display:none}
+
+/* ---------- 1366 rule (below 1500 px): drop, never wrap ---------- */
+@media (max-width:1499px){
+  .sh-wide{display:none!important}
+  .sh-n1366{display:inline-flex}
+  .sh-tab{padding:0 5px;gap:5px}
+  .sh-mark{width:48px;padding-left:9px}
+  .sh-tl{font-size:12px}
+  .sh-ix,.sh-mi{padding:0 8px}
+  .sh-t2,.sh-pt{padding:0 5px}
+  .sh-pt{gap:4px}
+  .sh-meter{width:34px} /* room for the short realised / open / costs, stk fut and the holiday */
+  .sh-cmd{max-width:200px;min-width:80px}
+  .sh-r2{gap:5px;padding-left:6px} .sh-btn{padding:0 5px} /* room for "MUTED 9:42" + "P1 1 · P2 1" without a clip */
+}
+/* ===================== SHELL CSS END ===================== */
+
+/* ===================== PAGE CSS: ⇧F2 WORLD DRIVERS & THEME (round 3) - no shell rules here; colours = shell tokens (CONFERENCE 1.5) ===================== */
+:root{--warn-line:#8A8F99;--track:#1A1F27;--thumb:#7C8796;--row:#1B2027}
+[data-theme=light]{--track:#E3E7EC;--thumb:#8E97A3;--row:#E6E9EE;--warn-line:#7A828E}
+#pg{position:absolute;left:12px;right:12px;top:8px;bottom:8px;display:grid;grid-template-rows:24px 98px minmax(0,1fr);gap:8px}
+.pn{background:var(--panel);border:1px solid var(--line);border-radius:4px;display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden}
+.ph{flex:none;height:24px;display:flex;align-items:center;gap:6px;padding:0 5px 0 9px;background:var(--panel-2);border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden}
+.pt{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);flex:none}
+.pa{margin-left:auto;display:flex;align-items:center;gap:5px;flex:none}
+.pb{flex:1 1 auto;min-height:0;overflow-y:scroll;overflow-x:hidden}
+.pb::-webkit-scrollbar{width:10px}
+.pb::-webkit-scrollbar-track{background:var(--track);border-left:1px solid var(--line-2)}
+.pb::-webkit-scrollbar-thumb{background:var(--thumb);border-radius:5px;border:2px solid var(--track);min-height:26px}
+.more{flex:none;height:17px;display:flex;align-items:center;gap:6px;padding:0 8px;font-size:11px;color:var(--text-2);border-top:1px solid var(--line);background:var(--panel-2);white-space:nowrap;overflow:hidden}
+.more b{color:var(--text);font-weight:600}
+.more .nm{color:var(--text);font-weight:600}
+.more.none{color:var(--text-3)}
+.sbtn{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line-2);border-radius:3px;color:var(--text-2);cursor:pointer;flex:none;background:var(--panel)}
+.sbtn:hover{background:var(--panel-3);color:var(--text)}
+.sbtn svg{display:block}
+.ldot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--info);flex:none}
+.age{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:-0.02em;white-space:nowrap}
+.t2{color:var(--text-2)} .t3{color:var(--text-3)}
+.am{color:var(--action)} .no{color:var(--danger)}
+b.up,b.dn{font-weight:700}
+a.lk,a.sym,a.sl{color:var(--text);font-weight:600;text-decoration:underline dotted;text-decoration-color:var(--text-3);text-underline-offset:3px;text-decoration-thickness:1px;cursor:pointer}
+a.lk:hover,a.sym:hover,a.sl:hover{text-decoration-style:solid;text-decoration-color:var(--text)}
+a.lk:focus-visible,a.sym:focus-visible,a.sl:focus-visible,.chip:focus-visible,.btn:focus-visible{outline:2px solid var(--info);outline-offset:1px}
+.sym{font-size:15px;font-weight:700;letter-spacing:.01em}
+/* small chips (17 px) in the colours of table 1.5 */
+.c{height:17px;display:inline-flex;align-items:center;gap:3px;padding:0 5px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.03em;border:1px solid var(--line-2);color:var(--text-2);white-space:nowrap;flex:none;line-height:1}
+.c.gr{border-color:var(--action-line);color:var(--action);background:var(--action-bg)}
+.c.book{border-color:var(--action-line);color:var(--action)}
+.c.exit{border-color:var(--danger);color:var(--danger-ink);background:var(--danger);font-weight:800}
+.c.blk{border-color:var(--stale);color:var(--text-2);background:var(--stripe)}
+.c.inf{border-color:var(--info-line);color:var(--info)}
+.c.al{border-color:var(--info-line);color:var(--info);background:var(--info-bg)}
+.c.held{border-color:var(--held);color:var(--held-ink);background:var(--held);font-weight:800}
+.c.wnc{border:1px dashed var(--warn-line);color:var(--text)}
+.c.stl{background:var(--stripe);border-color:var(--stale);color:var(--text-2)}
+.c.cls{color:var(--text-3);border-color:var(--line-2)}
+.wn{color:var(--text)} .wt{color:var(--text-2)}
+/* role tags (LEADER cyan, DEPENDENT lavender, LAGGARD pink + ▼▲ suffix), build-up chips (LB / SB fill, SC / LU outline), CE / PE chips */
+.rtag{display:inline-flex;align-items:center;gap:3px;height:15px;padding:0 4px;border:1px solid var(--line-2);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.02em;color:var(--text-2);white-space:nowrap;line-height:1;width:max-content}
+.rtag.ld{color:var(--leader);border-color:var(--leader);background:var(--leader-bg)}
+.rtag.dp{color:var(--dep);border-color:var(--dep);background:var(--dep-bg)}
+.rtag.lg{color:var(--lag);border-color:var(--lag);background:var(--lag-bg)}
+.rtag .up,.rtag .dn{font-weight:800}
+.bu{display:inline-flex;align-items:center;height:16px;padding:0 4px;border-radius:3px;border:1px solid transparent;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:-0.02em;text-decoration:none;white-space:nowrap}
+.bu.lb{color:var(--lb);background:var(--lb-bg)} .bu.sb{color:var(--sb);background:var(--sb-bg)}
+.bu.sc{color:var(--sc-ink);border-color:var(--sc)} .bu.lu{color:var(--lu-ink);border-color:var(--lu)}
+.oc{display:inline-flex;align-items:center;height:16px;padding:0 4px;border-radius:3px;border:1px solid;font-family:var(--sans);font-size:12px;font-weight:700;white-space:nowrap;letter-spacing:0}
+.oc.pe{color:var(--down);border-color:var(--down-line);background:var(--down-bg)}
+.oc.ce{color:var(--up);border-color:var(--up-line);background:var(--up-bg)}
+.oc.big{height:22px;font-size:15px;padding:0 6px;vertical-align:2px}
+.chip{height:20px;display:inline-flex;align-items:center;gap:4px;padding:0 5px;border:1px solid var(--line-2);border-radius:3px;font-size:12px;color:var(--text-2);cursor:pointer;flex:none;background:none;font-family:var(--sans);white-space:nowrap}
+.chip:hover{background:var(--panel-3)}
+.chip .n{font-size:12px;color:var(--text)}
+.chip.on{background:var(--panel-3);border-color:var(--text-2);color:var(--text);box-shadow:inset 0 -2px 0 var(--text)}
+.chip.zero{color:var(--text-3);border-style:dashed}
+.chip.zero .n{color:var(--text-3)}
+.chip[data-f="gr"]{border-color:var(--action-line);color:var(--action);background:var(--action-bg)}
+.chip.blkc{border-color:var(--stale);background:var(--stripe)}
+.chip.buc{font-family:var(--mono);font-weight:700;padding:0 5px}
+.chip.buc.lb{color:var(--lb);background:var(--lb-bg);border-color:transparent} .chip.buc.sb{color:var(--sb);background:var(--sb-bg);border-color:transparent}
+.chip.buc.sc{color:var(--sc-ink);border-color:var(--sc)} .chip.buc.lu{color:var(--lu-ink);border-color:var(--lu)}
+.chip.buc .n{color:inherit}
+.chip.buc.zero{opacity:.75}
+.btn{height:19px;display:inline-flex;align-items:center;gap:5px;padding:0 6px;border:1px solid var(--line-2);border-radius:3px;font-size:11px;font-weight:600;letter-spacing:.03em;color:var(--text-2);background:none;cursor:pointer;flex:none;font-family:var(--sans);white-space:nowrap}
+.btn:hover{background:var(--panel-3);color:var(--text)}
+.vs{width:1px;height:14px;background:var(--line-2);flex:none}
+.n1366{display:none}
+@media (max-width:1499px){ .wide{display:none !important} .n1366{display:inline} .wide2{display:none} }
+/* heat bar: 3 px from the centre line of a heat row (left = down, right = up) */
+.hb{position:absolute;bottom:0;height:3px;border-radius:1px;pointer-events:none}
+.hb.dn{right:50%;background:var(--down)} .hb.up{left:50%;background:var(--up)}
+
+/* ---- row 1: purpose bar ---- */
+#purp{display:flex;align-items:center;gap:10px;white-space:nowrap;overflow:hidden;border-bottom:1px solid var(--line);padding:0 2px}
+#purp h1{font-size:15px;font-weight:700;letter-spacing:.02em;color:var(--text);flex:none;display:flex;align-items:center;gap:7px;margin:0}
+#purp .why{font-size:13px;color:var(--text-2);flex:none}
+#purp .rt{margin-left:auto;display:flex;align-items:center;gap:6px;flex:none;font-size:12px;color:var(--text-2)}
+@media (max-width:1499px){ #purp{gap:6px} #purp .rt{gap:4px} .cyc{padding:0 4px;gap:1px} .cyc .st{margin-left:4px} #purp h1{gap:5px;font-size:14px} }
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:3px;overflow:hidden;flex:none}
+.seg span{height:18px;display:inline-flex;align-items:center;padding:0 7px;font-size:11px;font-weight:700;letter-spacing:.03em;color:var(--text-3);cursor:pointer}
+.seg span.on{background:var(--panel-3);color:var(--text);box-shadow:inset 0 -2px 0 var(--text)}
+.cyc{flex:none;display:flex;align-items:center;gap:2px;height:20px;font-size:11px;color:var(--text-3);padding:0 6px;border:1px solid var(--line-2);border-radius:3px;background:var(--panel-2);white-space:nowrap}
+.cyc a{color:var(--text-2);font-family:var(--mono);font-size:11px;padding:0 1px;border:1px solid var(--line-2);border-radius:3px;line-height:13px}
+.cyc a:hover{color:var(--text);background:var(--panel-3)}
+.cyc .here{color:var(--bg);background:var(--text-2);font-weight:700;border-color:var(--text-2)}
+.cyc .st{color:var(--text);font-weight:700;letter-spacing:0;margin-left:5px}
+
+/* ---- row 2: THE WORLD SAYS (hero) + basket shock ---- */
+#bandB{display:grid;grid-template-columns:minmax(0,1.32fr) minmax(0,1fr);gap:8px;min-height:0}
+@media (max-width:1499px){ #bandB{grid-template-columns:minmax(0,1.36fr) minmax(0,1fr)} }
+#anl{background:var(--panel);border:1px solid var(--action-line);border-radius:4px;padding:1px 10px 0 12px;display:grid;grid-template-rows:18px 26px 17px 17px 17px;min-width:0;overflow:hidden}
+#anl>div{white-space:nowrap;overflow:hidden;min-width:0;display:flex;align-items:center;gap:6px}
+#anl .l0 .btn{height:17px}
+#anl .lb{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--action)}
+#anl .src{font-size:11px;color:var(--text-3)}
+#anl .big{font-size:20px;font-weight:700;color:var(--text);line-height:26px;gap:0;white-space:pre}
+#anl .big .pe{color:var(--down);font-weight:800}
+#anl .big .dn{color:var(--down)}
+#anl .big a.lk{font-weight:700}
+@media (max-width:1499px){ #anl .big{font-size:18px} }
+#anl .ln{font-size:12px;line-height:17px;color:var(--text-2)}
+#anl .ln .k{font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--text-3);width:46px;flex:none}
+#anl .ln b{color:var(--text);font-weight:600}
+#anl .ln.lt{font-size:13px;color:var(--text)}
+#anl .ln.lt .vd{font-family:var(--mono);font-weight:700;color:var(--text);letter-spacing:-0.03em}
+@media (max-width:1499px){ #anl .ln.lt{font-size:12px} #anl .ln.lt .vd{letter-spacing:-0.05em} #anl .ln .k{width:42px} }
+#shock{background:var(--panel);border:1px solid var(--line-2);border-radius:4px;padding:1px 10px 0 12px;display:grid;grid-template-rows:19px 19px 18px 18px 18px;min-width:0;overflow:hidden;box-shadow:inset 3px 0 0 var(--info)}
+#shock>div{display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;min-width:0;font-size:12px;color:var(--text-2)}
+#shock .l1 a.sym{font-size:14px}
+#shock .pcs{font-family:var(--mono);font-size:13px;font-weight:700;margin-right:3px}
+@media (max-width:1499px){ #shock .l1{gap:3px} #shock .l1 a.sym{font-size:13px} }
+#shock b{color:var(--text);font-weight:600}
+#shock .t{font-family:var(--mono);font-size:12px;color:var(--text)}
+.wk{font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--info);border:1px solid var(--info-line);border-radius:3px;padding:0 3px;line-height:13px;margin-right:4px;flex:none}
+
+/* ---- row 3: three columns ---- */
+#cols{display:grid;grid-template-columns:428px minmax(0,1fr) 430px;gap:8px;min-height:0}
+#lcol,#rcol{display:flex;flex-direction:column;gap:8px;min-height:0;min-width:0}
+@media (max-width:1499px){ #cols{grid-template-columns:358px minmax(0,1fr) 372px} }
+
+/* ---- WORLD DRIVERS: heat rows ---- */
+#drv{flex:none}
+#drb{flex:0 0 288px}
+@media (max-width:1499px){ #drb{flex:0 0 192px} }
+.dgrid{display:grid;grid-template-columns:minmax(0,1fr) 62px 56px 48px 32px 50px 32px;column-gap:4px;align-items:center;padding:0 4px 0 9px}
+@media (max-width:1499px){ .dgrid{grid-template-columns:minmax(0,1fr) 54px 48px 40px 28px 46px 28px;column-gap:3px;padding-left:7px} .dr .nm i{margin-left:2px} }
+.dhd{flex:none;height:18px;border-bottom:1px solid var(--line);font-size:11px;color:var(--text-3);letter-spacing:.03em;text-transform:uppercase;font-weight:600;padding-right:14px}
+.dhd span{white-space:nowrap}
+.r{text-align:right}
+.dr{position:relative;height:calc(16px + var(--gx,0px));cursor:pointer;border-bottom:1px solid var(--row)}
+.dr:hover{outline:1px solid var(--line-2);outline-offset:-1px}
+.dr.sel{box-shadow:inset 3px 0 0 var(--text)}
+.dr.g1{border-top:1px solid var(--line-2)}
+.dr .nm{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden}
+.dr.sub .nm{font-weight:600}
+.dr .nm i{font-style:normal;font-size:11px;font-weight:500;color:var(--text-3);margin-left:4px}
+.dr .lst{font-family:var(--mono);font-size:12px;color:var(--text);text-align:right;white-space:nowrap;letter-spacing:-0.03em}
+.dr .p1{font-family:var(--mono);font-size:13px;font-weight:700;text-align:right;white-space:nowrap;letter-spacing:-0.03em}
+.dr .p2{font-family:var(--mono);font-size:12px;text-align:right;white-space:nowrap;letter-spacing:-0.03em}
+.dr .zz{font-family:var(--mono);font-size:12px;color:var(--text-2);text-align:right;letter-spacing:-0.03em}
+.dr .ag{font-family:var(--mono);font-size:11px;color:var(--text-3);text-align:right;white-space:nowrap}
+@media (max-width:1499px){ .dr .nm{font-size:12px} .dr .p1{font-size:12px} .dr .lst,.dr .p2,.dr .zz{font-size:11px} }
+.dr.dim .nm,.dr.dim .lst{opacity:.8}
+.dr.late .nm,.dr.late .p1,.dr.late .p2,.dr.late .lst,.dr.late .zz{color:var(--text-3) !important}
+.dr.cls .p1,.dr.cls .lst{color:var(--text-3) !important}
+.x{font-size:11px;font-weight:700;letter-spacing:.02em;padding:0 3px;border-radius:3px;height:15px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;font-family:var(--mono)}
+.x.on{border:1px solid var(--info-line);color:var(--info);background:var(--info-bg)}
+.x.off{color:var(--text-3)}
+.x.cls{color:var(--text-3);border:1px solid var(--line-2);font-family:var(--sans);font-weight:500;letter-spacing:0;padding:0 2px}
+.x.late{color:var(--text-3);border:1px dashed var(--stale);font-family:var(--sans);padding:0 2px}
+.ring{display:inline-block;width:7px;height:7px;border-radius:50%;border:1.5px solid var(--stale);box-sizing:border-box;margin-right:2px;vertical-align:0}
+
+/* ---- SENSITIVITY MATRIX ---- */
+#mxp{flex:1 1 auto}
+.mx{display:grid;grid-template-columns:88px repeat(9,minmax(0,1fr));padding:0 4px 0 9px;column-gap:1px}
+@media (max-width:1499px){ .mx{grid-template-columns:82px repeat(9,minmax(0,1fr));padding-left:7px} .mxr .sn{font-size:11px} }
+.mxh{flex:none;border-bottom:1px solid var(--line);height:28px;align-items:center;padding-right:14px}
+.mxh>span:first-child{white-space:normal;line-height:12px}
+.mxh span{font-size:11px;color:var(--text-3);font-weight:600;text-align:center;line-height:13px;white-space:nowrap;letter-spacing:-0.07em}
+.mxh span:first-child{text-align:left}
+.mxh span.sel{color:var(--text);box-shadow:inset 0 -2px 0 var(--text)}
+.mxh .mv{display:block;font-family:var(--mono);font-size:11px;font-weight:600}
+.mxr{height:calc(20px + var(--gx,0px));border-bottom:1px solid var(--row);align-items:center}
+.mxr .sn{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden}
+.mc{font-family:var(--mono);font-size:11px;text-align:center;color:var(--text-3);height:17px;line-height:17px;border-radius:2px;cursor:pointer;letter-spacing:-0.04em}
+.mc.s1{color:var(--text-2)}
+.mc.s2{color:var(--text);background:var(--panel-3);font-weight:600}
+.mc.s3{color:var(--text);background:#2A3446;font-weight:700}
+[data-theme=light] .mc.s3{background:#C9DAF0}
+.mc.rl{color:var(--text-3);font-style:italic;background:repeating-linear-gradient(135deg,rgba(140,148,160,.16) 0 2px,transparent 2px 5px)}
+.mc.sel{outline:2px solid var(--text);outline-offset:-2px}
+.mc.today{box-shadow:inset 0 -2px 0 var(--info)}
+.mxp-pol{grid-column:2 / -1;font-size:11px;color:var(--text-3);padding-left:4px;white-space:nowrap;overflow:hidden}
+.mxd{flex:none;border-top:1px solid var(--line-2);background:var(--panel-2);padding:2px 9px 3px 9px;font-size:12px;line-height:15px;color:var(--text-2);white-space:nowrap;overflow:hidden}
+.mxd b{color:var(--text);font-weight:600}
+.kk{display:inline-block;width:14px;height:10px;border-radius:2px;vertical-align:-1px;margin-right:3px}
+
+/* ---- THEME MAP ---- */
+.tbar{flex:none;display:flex;align-items:center;gap:3px;padding:3px 6px 3px 9px;border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden;height:28px;box-sizing:border-box}
+.bul{font-size:11px;color:var(--text-2);font-weight:600;flex:none;margin-left:2px}
+@media (max-width:1499px){ .tbar{gap:3px;padding-left:7px} .tbar .chip{padding:0 4px} }
+.dd{position:relative;flex:none}
+.dd .chip{font-weight:700;color:var(--text);border-color:var(--text-2)}
+.ddm{display:none;position:absolute;left:0;top:23px;z-index:45;background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,.5);padding:4px 0;min-width:220px}
+.ddm.open{display:block}
+.ddm div{padding:4px 10px;font-size:12px;color:var(--text-2);cursor:pointer;display:flex;justify-content:space-between;gap:12px}
+.ddm div:hover{background:var(--panel-3);color:var(--text)}
+/* the answer to "where are OI build-up and the F&O movers?" - always visible, one click each */
+.allbar{flex:none;display:flex;align-items:center;gap:5px;height:24px;padding:0 6px 0 9px;border-bottom:1px solid var(--line);background:var(--info-bg);white-space:nowrap;overflow:hidden;box-shadow:inset 3px 0 0 var(--info)}
+.allbar .ak{font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--info);flex:none}
+.alk{display:inline-flex;align-items:center;gap:4px;height:19px;padding:0 5px;border:1px solid var(--info-line);border-radius:3px;font-size:12px;font-weight:700;color:var(--text);text-decoration:none;background:var(--panel);flex:none}
+.alk:hover{border-color:var(--info)}
+.alk .up,.alk .dn{font-family:var(--mono);font-weight:700}
+.alk .bx{font-family:var(--mono);font-size:11px;font-weight:700;padding:0 3px;border-radius:2px;line-height:14px;border:1px solid transparent}
+.alk .bx.lb{color:var(--lb);background:var(--lb-bg)} .alk .bx.sb{color:var(--sb);background:var(--sb-bg)} .alk .bx.sc{color:var(--sc-ink);border-color:var(--sc)} .alk .bx.lu{color:var(--lu-ink);border-color:var(--lu)}
+@media (max-width:1499px){ .allbar{gap:4px;padding-left:7px} .alk{padding:0 4px;gap:3px} }
+/* pinned: his own trades */
+#hold{flex:none;border-bottom:1px solid var(--line-2)}
+.hr{padding:2px 8px 2px 11px;border-bottom:1px solid var(--line)}
+.hr:last-child{border-bottom:0}
+.hr.near{background:var(--danger-bg)}
+.hr .h1,.hr .h2{display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;min-width:0}
+.hr .h1{height:20px;font-size:12px;color:var(--text-2)}
+.hr .h2{height:16px;font-size:12px;color:var(--text-2)}
+.hr .m{font-family:var(--mono);font-size:12px;color:var(--text);letter-spacing:-0.03em}
+.hr .pl{font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:-0.03em}
+.hr .rt{margin-left:auto;display:flex;align-items:center;gap:5px;flex:none}
+.hr b{color:var(--text);font-weight:600}
+@media (max-width:1499px){ .hr .h2{display:none} .hr{padding:1px 6px 1px 9px} .hr .h1{gap:5px} }
+/* theme index: one ranked heat line per theme */
+#tidx{flex:none;border-bottom:1px solid var(--line-2)}
+.ti{position:relative;display:grid;grid-template-columns:12px 92px 46px 50px minmax(0,0.9fr) 20px 66px minmax(0,1fr);column-gap:6px;align-items:center;height:18px;padding:0 8px 0 9px;border-bottom:1px solid var(--row);cursor:pointer;font-size:12px;line-height:16px;color:var(--text-2);white-space:nowrap}
+@media (max-width:1499px){ .ti{grid-template-columns:10px 90px 36px 48px 76px 18px 66px minmax(0,1fr);column-gap:5px;height:16px;padding-left:7px} }
+.ti:hover{outline:1px solid var(--line-2);outline-offset:-1px}
+.ti.sel{box-shadow:inset 3px 0 0 var(--text)}
+.ti>span{overflow:hidden;min-width:0}
+.ti .rk{font-family:var(--mono);font-size:11px;color:var(--text-3)}
+.ti .dv{font-weight:800;color:var(--text);letter-spacing:.02em;font-size:12px}
+.ti .p{font-family:var(--mono);font-weight:700;text-align:right;font-size:12px}
+.mb{position:relative;height:10px;border-left:0}
+.mb::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line-2)}
+.mb i{position:absolute;top:3px;height:4px;border-radius:1px}
+.mb i.dn{right:50%;background:var(--down)} .mb i.up{left:50%;background:var(--up)}
+.ti .nn{font-family:var(--mono);font-size:11px;color:var(--text-3);text-align:right}
+.ti .bc b{color:var(--text);font-weight:600}
+.ti .c{height:15px}
+.shd{flex:none;display:grid;column-gap:4px;padding:0 22px 0 23px;height:16px;align-items:center;border-bottom:1px solid var(--line);font-size:11px;color:var(--text-3);letter-spacing:.03em;font-weight:600;white-space:nowrap;background:var(--panel)}
+.og{display:grid;grid-template-columns:104px 50px 40px 54px 44px minmax(0,1fr) 92px 100px;column-gap:4px;align-items:center}
+@media (max-width:1499px){ .og{grid-template-columns:96px 44px 36px 48px 40px minmax(0,1fr) 84px 90px} }
+.tb{border-bottom:1px solid var(--line-2)}
+.tbh{display:flex;align-items:center;gap:6px;height:calc(20px + var(--gx,0px));padding:0 8px 0 9px;background:var(--panel-2);border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden;font-size:12px;color:var(--text-2);cursor:pointer;box-shadow:inset 3px 0 0 var(--line-2)}
+.tbh .dv{font-size:12px;font-weight:800;color:var(--text);letter-spacing:.03em;flex:none}
+.tbh .p{font-family:var(--mono);font-size:13px;font-weight:700;flex:none}
+.tbh b{color:var(--text);font-weight:600}
+.tbh .c{height:16px}
+.grp{display:flex;align-items:center;gap:6px;height:calc(18px + var(--gx,0px));padding:0 8px 0 14px;font-size:12px;color:var(--text-2);white-space:nowrap;overflow:hidden;border-bottom:1px solid var(--row)}
+.grp a.sl{font-size:11px;font-weight:800;letter-spacing:.05em}
+.grp .p{font-family:var(--mono);font-weight:700;font-size:13px}
+.grp .m{font-family:var(--mono);color:var(--text)}
+.sr{padding:calc(3px + var(--gx,0px) / 2) 12px calc(4px + var(--gx,0px) / 2) 14px;border-bottom:1px solid var(--row)}
+.sr.near{box-shadow:inset 3px 0 0 var(--danger)}
+.sr.held{box-shadow:inset 3px 0 0 var(--held)}
+.sr.sel{background:var(--panel-3);box-shadow:inset 3px 0 0 var(--action)}
+.sr.stale{background:var(--stripe)}
+.r1{display:grid;grid-template-columns:minmax(0,1fr) 80px 70px 64px 92px 82px 54px;column-gap:4px;align-items:center;height:34px}
+@media (max-width:1499px){ .r1{grid-template-columns:minmax(0,1fr) 82px 60px 56px 76px 66px 50px} }
+.r1 .s1{display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:0;white-space:nowrap;line-height:15px}
+.r1 .ltp{font-family:var(--mono);font-size:13px;color:var(--text);text-align:right;letter-spacing:-0.03em}
+.r1 .pc{font-family:var(--mono);font-size:14px;font-weight:700;text-align:right;letter-spacing:-0.03em}
+.r1 .st{display:flex;flex-direction:column;align-items:flex-end;line-height:14px;white-space:nowrap}
+.r1 .st .v{font-family:var(--mono);font-size:12px;color:var(--text)}
+.r1 .st .h{font-size:11px;color:var(--text-3);font-family:var(--mono);letter-spacing:-0.03em}
+.r1 .st .h.rt{font-style:italic}
+.r1 .bc{text-align:right}
+.r1 .ac{display:flex;justify-content:flex-start}
+.r2{margin-left:8px;height:18px;font-family:var(--mono);font-size:12px;color:var(--text-2);letter-spacing:-0.03em;white-space:nowrap}
+.r2>span{overflow:hidden}
+.r2 .o{font-family:var(--sans);letter-spacing:0}
+.r2 .pr{color:var(--text);font-weight:600}
+.r2 .np{grid-column:1 / -1;font-family:var(--sans);letter-spacing:0;overflow:hidden}
+.r2 .np b{font-weight:700}
+.r3{margin-left:8px;font-size:12px;line-height:15px;color:var(--text-2);margin-top:1px}
+.r3 b{color:var(--text);font-weight:600}
+.r3 .m,.tline .m{font-family:var(--mono);color:var(--text);letter-spacing:-0.03em}
+.tline{padding:calc(2px + var(--gx,0px) / 2) 8px calc(3px + var(--gx,0px) / 2) 14px;font-size:12px;line-height:16px;color:var(--text-2);border-bottom:1px solid var(--row)}
+.tline b{color:var(--text);font-weight:600}
+.tline.why{white-space:nowrap;overflow:hidden;background:var(--info-bg)}
+.legend{flex:none;border-top:1px solid var(--line);padding:0 8px;height:22px;display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-2);white-space:nowrap;overflow:hidden}
+.legend .bu{height:15px}
+
+/* ---- CALL CARD ---- */
+#card{flex:0 0 392px;border:1px solid var(--action-line)}
+@media (max-width:1499px){ #card{flex:0 0 354px} #mkts #evb,#mkts .more{display:none} #rcol.evopen #card{flex-basis:250px} #rcol.evopen #mkts .more{display:flex} #rcol.evopen #mkts #evb{display:block} }
+@media (min-width:1500px){ #rcol.night #card{flex-basis:300px} }
+#card .ph{background:var(--action-bg)}
+.ctt{flex:none;display:flex;align-items:center;gap:8px;padding:3px 10px 0 10px;white-space:nowrap;overflow:hidden}
+.ctt .h1{font-size:20px;font-weight:700;color:var(--text);line-height:26px;display:flex;align-items:center;gap:8px}
+.ctt .src{margin-left:auto;font-size:11px;color:var(--text-3)}
+.csub{flex:none;padding:0 10px 3px 10px;font-size:12px;line-height:15px;color:var(--text-2);white-space:nowrap;overflow:hidden}
+.cnav{flex:none;display:flex;border-top:1px solid var(--line);border-bottom:1px solid var(--line);height:21px}
+.cnav span{flex:1;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--text-3);cursor:pointer;border-right:1px solid var(--line);white-space:nowrap}
+.cnav span:last-child{border-right:0}
+.cnav span.on{color:var(--text);background:var(--panel-3);box-shadow:inset 0 -2px 0 var(--action)}
+.cb{padding:3px 20px 4px 10px;font-size:12px;line-height:15px;color:var(--text-2)}
+.cb b{color:var(--text);font-weight:600}
+.cb .m{font-family:var(--mono);color:var(--text);letter-spacing:-0.03em}
+#cb .u{padding-top:calc(var(--gx,0px) / 2);padding-bottom:calc(var(--gx,0px) / 2)}
+#cb tr.u > td,#cb tr.u > th{padding-top:calc(var(--gx,0px) / 2);padding-bottom:calc(var(--gx,0px) / 2)}
+.cb .verd{font-size:13px}
+.cb .small{font-size:12px}
+.psr{display:grid;grid-template-columns:56px 116px 1fr;align-items:baseline}
+.psr .hh{font-size:11px;color:var(--text-3);letter-spacing:.04em;font-weight:600;line-height:15px}
+.psr .lb{font-size:11px;color:var(--text-3);letter-spacing:.05em;text-transform:uppercase;font-weight:600;line-height:18px}
+.psr .v{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--text);letter-spacing:-0.03em;line-height:18px;white-space:nowrap}
+.psr .v i{font-style:normal;font-family:var(--sans);font-size:11px;color:var(--text-3);font-weight:500;margin-left:5px;letter-spacing:0}
+.psr .lvv{font-size:13px;color:var(--text-2);font-weight:500}
+.decr{display:grid;grid-template-columns:1fr 1fr;column-gap:6px;white-space:nowrap;background:var(--panel-2);border-left:1px solid var(--line-2);border-right:1px solid var(--line-2);padding-left:6px;padding-right:6px}
+#cb .decr.u{padding-top:calc(1px + var(--gx,0px) / 2);padding-bottom:calc(1px + var(--gx,0px) / 2)}
+.decr.d1{border-top:1px solid var(--line-2);border-radius:3px 3px 0 0;margin-top:3px}
+.decr.d3{border-bottom:1px solid var(--line-2);border-radius:0 0 3px 3px;margin-bottom:3px}
+.decr>span{overflow:hidden}
+.decr .sp{grid-column:1 / -1}
+.hold{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:2px 0;font-size:12px;line-height:15px;color:var(--text)}
+.hold .am{font-weight:700}
+.vt{display:flex;flex-wrap:nowrap;gap:3px;align-items:center;margin:2px 0;white-space:nowrap}
+.vt .c{font-family:var(--mono);font-weight:600;height:16px;padding:0 3px}
+.vt .c.ag{border-color:var(--info-line);color:var(--info)}
+.vt .c.dis{border-color:var(--danger);color:var(--danger)}
+.vt .lb2{font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--text-3)}
+.vt .vtx{font-size:12px;color:var(--text-2);margin-right:2px}
+@media (max-width:1499px){ .vt{gap:2px} .vt .c{padding:0 2px} }
+.gts{display:flex;flex-wrap:wrap;gap:3px;margin:2px 0}
+.gt{font-size:11px;font-weight:600;color:var(--up);border:1px solid var(--up-line);border-radius:3px;padding:0 3px;line-height:14px;white-space:nowrap}
+.gt.wnn{color:var(--text);border:1px dashed var(--warn-line)}
+.whyl{background:var(--info-bg);margin:2px 0}
+.sub2{font-size:11px;color:var(--text);letter-spacing:.06em;text-transform:uppercase;font-weight:800;display:flex;justify-content:space-between;gap:6px;border-top:1px solid var(--line-2);margin-top:5px;box-shadow:inset 0 2px 0 var(--action-line)}
+#cb .sub2.u{padding-top:calc(4px + var(--gx,0px) / 2)}
+.sub2 span,.sub3 span{text-transform:none;letter-spacing:0;font-weight:400;color:var(--text-3)}
+.sub3{font-size:11px;color:var(--text-2);letter-spacing:.05em;text-transform:uppercase;font-weight:700;display:flex;justify-content:space-between;gap:6px;margin-top:3px}
+table.sc2{border-collapse:collapse;width:100%;table-layout:fixed;font-family:var(--mono);font-size:12px;letter-spacing:-0.05em}
+table.sc2 col.c0{width:60px}
+table.sc2 th{font-family:var(--sans);font-size:11px;color:var(--text-3);font-weight:600;text-align:right;padding:0 2px;white-space:nowrap;letter-spacing:0;line-height:16px}
+table.sc2 td{text-align:right;padding:0 2px;color:var(--text-2);white-space:nowrap;border-top:1px solid var(--line);line-height:16px}
+table.sc2 td:first-child,table.sc2 th:first-child{text-align:left;font-family:var(--sans);color:var(--text-3);font-size:11px;letter-spacing:0}
+table.sc2 td.up{color:var(--up)} table.sc2 td.dn{color:var(--down)}
+table.sc2 .pk{background:var(--panel-3);color:var(--text);font-weight:700}
+table.sc2 .wr{text-decoration:underline dashed var(--warn-line);color:var(--text)}
+table.sc2 th.tgh{color:var(--text-2);text-align:center;border-bottom:1px solid var(--line-2)}
+table.sc2 .bu{height:14px;font-size:11px}
+.nk{flex:none;display:flex;gap:3px;align-items:center;padding:0 8px;height:25px;border-top:1px solid var(--line-2);background:var(--panel-2);white-space:nowrap;overflow:hidden}
+.nk .btn kbd{font-size:11px}
+@media (max-width:1499px){ .nk{gap:2px;padding:0 6px} .nk .btn{padding:0 3px;gap:3px} }
+
+/* ---- OTHER MARKETS · EVENTS (data only: no headlines - R44) ---- */
+#mkts{flex:1 1 auto}
+.mk{flex:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--line)}
+.mk>span{padding:0 7px;border-right:1px solid var(--row);border-bottom:1px solid var(--row);display:flex;justify-content:space-between;align-items:center;gap:4px;height:19px;min-width:0;white-space:nowrap}
+.mk>span:nth-child(4n){border-right:0}
+.mk .an{font-size:11px;color:var(--text-2);font-weight:600}
+.mk .av{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:-0.03em}
+.tnext{flex:none;height:19px;display:flex;align-items:center;gap:5px;padding:0 8px;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-2);white-space:nowrap;overflow:hidden}
+.tnext b{color:var(--text);font-weight:600;font-family:var(--mono);letter-spacing:-0.03em}
+.tnext .k{font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--info)}
+.ev{display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:5px;padding:calc(1px + var(--gx,0px) / 2) 8px calc(1px + var(--gx,0px) / 2) 8px;border-bottom:1px solid var(--row);font-size:12px;line-height:13px;color:var(--text-2)}
+.ev.hdr{font-size:11px;color:var(--text-3);font-weight:600;letter-spacing:.02em}
+.ev .tm{font-family:var(--mono);font-size:12px;color:var(--text-3);letter-spacing:-0.03em}
+.ev b{color:var(--text);font-weight:600}
+.ev .one{white-space:nowrap;overflow:hidden}
+#mkts.night .mk{display:none}
+#mkts:not(.night) .ev[data-k=ngt],#mkts.night .ev[data-k=now]{display:none}
+.ev.nx .tm{color:var(--info);font-weight:600}
+
+/* 1366: the theme index scrolls with the blocks (first view still shows it); a theme click brings its block to the top */
+#tmb > #tidx{border-bottom:1px solid var(--line-2)}
+.allbar .bx{margin-right:0}
+#tmb > .shd{position:sticky;top:0;z-index:3;padding-right:12px;padding-left:23px}
+
+/* ===================== FINAL PASS (R44-R49) ===================== */
+/* R49 basis + breadth on every sector line */
+.bas{font-size:11px;color:var(--text-2);letter-spacing:.01em;flex:none;padding:0 5px;height:16px;display:inline-flex;align-items:center;border:1px solid var(--line-2);border-radius:3px;background:var(--panel-2)}
+.bth{font-size:12px;color:var(--text-2);flex:none}
+.bth b{font-family:var(--mono);color:var(--text);font-weight:600;letter-spacing:-0.03em}
+.bt{font-size:12px;color:var(--text-2);flex:none;margin-left:auto}
+.bt .m{font-family:var(--mono);color:var(--text)}
+.bys{font-size:12px;color:var(--text-2);flex:none;white-space:nowrap}
+.c.nar{border:1px dashed var(--text-3);color:var(--text);background:transparent;font-weight:700}
+.grp{height:calc(20px + var(--gx,0px))}
+/* theme index: header + whole-sector cell + breadth both ways */
+.ti{grid-template-columns:12px 86px 40px 50px minmax(0,1fr) 122px minmax(0,1.12fr)}
+@media (max-width:1499px){ .ti{grid-template-columns:10px 80px 30px 46px minmax(0,1fr) 108px minmax(0,1.02fr);column-gap:5px} }
+.ti.tih{height:16px;cursor:default;background:var(--panel-2);font-size:11px;font-weight:600;letter-spacing:.03em;color:var(--text-3);border-bottom:1px solid var(--line)}
+.ti.tih:hover{outline:0}
+.ti.tih .r{text-align:right}
+.ti .sc2{color:var(--text);font-weight:600}
+.ti .sc2 .bs{font-size:11px;color:var(--text-3);font-weight:500}
+.ti .br{font-family:var(--mono);font-size:12px;color:var(--text);display:flex;align-items:center;gap:0;letter-spacing:-0.03em}
+.ti .br .c{margin-left:5px;font-family:var(--sans);letter-spacing:.02em;height:15px;padding:0 4px}
+.ti .bc{display:flex;align-items:center;gap:5px}
+/* basket shock card: five even lines, the R49 sector line third */
+#shock{grid-template-rows:19px 18px 18px 18px 18px}
+#shock .l2 a.sl{font-size:11px;font-weight:800;letter-spacing:.05em}
+#shock .l2 .pcs{margin-right:0}
+#shock .l3 .wk,#shock .l4 .c{flex:none}
+@media (max-width:1499px){
+  .ti{grid-template-columns:10px 78px 0 46px minmax(0,1.04fr) 112px minmax(0,1fr)}
+  .ti .mb{visibility:hidden}
+  .gts{flex-wrap:nowrap;gap:2px} .gt{padding:0 2px;letter-spacing:-0.01em}
+}
+.alk .fk{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--info);border:1px solid var(--info-line);border-radius:2px;padding:0 3px;line-height:13px}
+.hr{padding:3px 8px 3px 11px}
+.hr .h1{height:22px}
+@media (max-width:1499px){
+  .allbar{gap:3px;padding:0 4px 0 5px}
+  .alk{padding:0 3px;gap:2px;letter-spacing:-0.025em}
+  .alk .bx{padding:0 2px;letter-spacing:-0.03em}
+  .alk .fk{padding:0 2px}
+  .hr{padding:1px 6px 1px 9px} .hr .h1{height:21px}
+}
+@media (max-width:1499px){
+  .ti{grid-template-columns:10px 58px 0 44px 138px 118px minmax(0,1fr)}
+  .ti .br .c{margin-left:4px;padding:0 3px;letter-spacing:0}
+  .ti .bc{gap:4px}
+}
+
+</style>
+</head>
+<body class="page-world">
+<!-- ===================== SHELL TOP START (copy verbatim) ===================== -->
+<!-- R01 MARKET STRIP - identical on every page. Click an index = MARKET screen. Values illustrative (Thu 19 Nov 2026, 11:40:30). -->
+<header id="sh-mkt" aria-label="Market strip">
+  <div class="sh-m1">
+      <a class="sh-ix" href="market.html#NIFTY" title="NIFTY 50: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">NIFTY 50</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,4.1 3.4,2.0 4.8,3.4 6.1,5.8 7.5,7.6 8.9,6.3 10.3,8.2 11.7,9.4 13.0,7.9 14.4,9.0 15.8,8.5 17.2,6.7 18.6,4.3 19.9,4.4 21.3,5.7 22.7,6.2 24.1,6.7 25.4,6.4 26.8,8.0 28.2,6.4 29.6,8.8 31.0,7.4 32.3,10.2 33.7,11.5 35.1,12.0 36.5,12.0 37.9,11.6 39.2,10.9 40.6,9.7 42.0,10.7" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="10.7" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">24,486.20</span><span class="sh-ch n dn sh-wide">−152.76</span><span class="sh-pc n dn">▼ −0.62%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#BANKNIFTY" title="BANKNIFTY: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">BANKNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,12.0 3.4,10.2 4.8,8.9 6.1,8.2 7.5,7.9 8.9,7.8 10.3,7.7 11.7,7.0 13.0,7.3 14.4,8.9 15.8,8.5 17.2,10.5 18.6,9.1 19.9,7.7 21.3,7.0 22.7,8.6 24.1,7.6 25.4,6.1 26.8,6.8 28.2,5.7 29.6,3.9 31.0,2.0 32.3,2.7 33.7,3.4 35.1,3.8 36.5,2.5 37.9,2.5 39.2,4.4 40.6,3.7 42.0,2.4" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="2.4" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">52,140.50</span><span class="sh-ch n dn sh-wide">−109.73</span><span class="sh-pc n dn">▼ −0.21%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#SENSEX" title="SENSEX: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">SENSEX</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,12.0 3.4,11.7 4.8,10.5 6.1,10.1 7.5,9.3 8.9,9.6 10.3,8.5 11.7,8.0 13.0,7.6 14.4,6.7 15.8,6.0 17.2,6.7 18.6,5.9 19.9,6.2 21.3,6.3 22.7,6.7 24.1,5.6 25.4,4.7 26.8,4.1 28.2,3.0 29.6,2.5 31.0,2.5 32.3,2.1 33.7,2.0 35.1,3.3 36.5,3.0 37.9,2.4 39.2,2.0 40.6,2.7 42.0,2.2" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="2.2" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">80,412.65</span><span class="sh-ch n dn sh-wide">−469.11</span><span class="sh-pc n dn">▼ −0.58%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#FINNIFTY" title="FINNIFTY: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">FINNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,5.9 3.4,2.0 4.8,4.8 6.1,4.5 7.5,3.6 8.9,2.3 10.3,6.0 11.7,8.6 13.0,5.4 14.4,3.0 15.8,6.1 17.2,7.8 18.6,10.6 19.9,7.9 21.3,9.7 22.7,9.0 24.1,7.1 25.4,9.0 26.8,9.2 28.2,11.3 29.6,9.9 31.0,12.0 32.3,9.7 33.7,6.4 35.1,7.8 36.5,5.7 37.9,6.7 39.2,9.7 40.6,8.9 42.0,8.7" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="8.7" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">23,905.40</span><span class="sh-ch n dn sh-wide">−38.31</span><span class="sh-pc n dn">▼ −0.16%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#MIDCPNIFTY" title="MIDCPNIFTY: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">MIDCPNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,2.0 3.4,3.3 4.8,2.9 6.1,3.9 7.5,2.9 8.9,3.2 10.3,3.6 11.7,3.6 13.0,3.6 14.4,3.6 15.8,4.6 17.2,4.7 18.6,5.9 19.9,6.8 21.3,6.5 22.7,7.2 24.1,8.3 25.4,8.3 26.8,8.3 28.2,9.1 29.6,9.2 31.0,9.4 32.3,10.5 33.7,9.6 35.1,10.2 36.5,11.4 37.9,12.0 39.2,12.0 40.6,12.0 42.0,11.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="11.0" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">12,640.15</span><span class="sh-ch n dn sh-wide">−131.55</span><span class="sh-pc n dn">▼ −1.03%</span></span>
+      </a>
+    <div class="sh-mi" title="India VIX, change from previous close">
+      <span class="sh-l1"><span class="sh-nm">INDIA VIX</span></span>
+      <span class="sh-l2"><span class="sh-px n">14.82</span><span class="sh-pc n up">▲ +2.84%</span></span>
+    </div>
+    <div class="sh-mi" title="GIFT Nifty (NSE IX), trades pre-open and at night; gap vs NIFTY 50 spot">
+      <span class="sh-l1"><span class="sh-nm">GIFT NIFTY</span><span class="sh-age">prem +44</span></span>
+      <span class="sh-l2"><span class="sh-px n">24,530.5</span><span class="sh-pc n dn">▼ −0.55%</span></span>
+    </div>
+    <div class="sh-status" title="Market status from the exchange clock · phase · time to the 15:10 exit · worst age of the strip's live prices">
+      <span class="sh-st1"><span class="sh-mstate">OPEN</span><span class="sh-phase"><b>ENTRY</b> · <span class="n">3h 27m</span> to 15:10</span></span>
+      <span class="sh-st2"><span class="sh-clock">11:42:40</span><span class="sh-ist">IST</span><span class="sh-dot"></span><span class="sh-age" style="color:var(--text-2)">data 0.4s</span></span>
+    </div>
+  </div>
+  <div class="sh-m2">
+    <span class="sh-t2" title="US dollar / rupee spot"><span class="sh-t2l"><span class="sh-lb">USD/INR</span></span><span class="sh-t2v"><span class="n v">88.94</span><span class="n up">▲ +0.08%</span></span></span>
+    <span class="sh-t2" title="Brent crude, $ per barrel; feed age 1m"><span class="sh-t2l"><span class="sh-lb">Brent</span><span class="sh-age">$/bbl · 1m</span></span><span class="sh-t2v"><span class="n v">63.84</span><span class="n dn">▼ −1.10%</span></span></span>
+    <span class="sh-t2" title="Gold, MCX near month, ₹ per 10 g"><span class="sh-t2l"><span class="sh-lb">Gold MCX</span><span class="sh-age">₹/10g</span></span><span class="sh-t2v"><span class="n v">1,24,610</span><span class="n dn">▼ −1.62%</span></span></span>
+    <span class="sh-t2" title="FII / DII cash market net, ₹ crore. In the day: yesterday's NSE provisional figure; after ~18:00 today's provisional replaces it (yesterday's final then shows on hover)"><span class="sh-t2l"><span class="sh-lb">FII/DII cash</span><span class="sh-age">₹cr · 18 Nov prov</span></span><span class="sh-t2v"><span>FII</span><span class="n v">−1,842</span><span>· DII</span><span class="n v">+1,315</span></span></span>
+    <span class="sh-t2" title="FII F&amp;O net from NSE participant data, ₹ crore, 18 Nov: index futures −2,110 · stock futures +640 (at 1366 wide: stk) · detail on Futures &amp; OI, F10"><span class="sh-t2l"><span class="sh-lb">FII F&amp;O</span><span class="sh-age">₹cr · 18 Nov</span></span><span class="sh-t2v"><span>idx fut</span><span class="n v">−2,110</span><span class="sh-wide" style="display:inline-flex;gap:5px">· stk fut <span class="n v">+640</span></span><span class="sh-n1366" style="gap:4px">· stk <span class="n v">+640</span></span></span></span>
+    <span class="sh-t2" title="Put-call ratio of open interest, as of 11:39"><span class="sh-t2l"><span class="sh-lb">PCR (OI)</span><span class="sh-age">11:39</span></span><span class="sh-t2v"><span>NIFTY</span><span class="n v">0.92</span><span>· BANKNIFTY</span><span class="n v">1.08</span></span></span>
+    <span class="sh-t2" title="Advancing / declining F&amp;O shares (unchanged 4)"><span class="sh-t2l"><span class="sh-lb">A/D F&amp;O</span><span class="sh-age">of 222</span></span><span class="sh-t2v"><span class="n v">▲ 61</span><span class="n v">▼ 157</span></span></span>
+    <a class="sh-t2" href="calendar.html#expiry" title="Stock F&amp;O expiry from the contract master; sessions left incl. today; moved from Tue 24 Nov (holiday)"><span class="sh-t2l"><span class="sh-xw" title="EXPIRY WEEK: next month is the default strike month; in-the-money stock options are physically settled - exit before expiry day">EXPIRY WEEK</span><span class="sh-age">next 29 Dec</span></span><span class="sh-t2v"><span class="v">Mon 23 Nov</span><span class="sh-wide" style="color:var(--text-3)">(Tue 24 holiday)</span><span class="sh-n1366" style="color:var(--text-3)">(Tue 24 hol)</span><span>·</span><span class="n v">3</span><span>sessions left</span></span></a>
+    <span class="sh-t2" style="border-right:0;border-left:1px solid var(--line);margin-left:auto;padding-right:12px"><span class="sh-t2l"><span class="sh-lb">F&amp;O ban</span><span class="sh-age sh-wide">tap = list</span></span><span class="sh-t2v"><a class="sh-ban" href="futures-oi.html#mwpl" title="F&amp;O ban list - tap for the list. Ban at 95% MWPL · in ban: close only (only close existing positions, no new ones).">BAN 2</a><span class="sh-age sh-wide">&gt;85% 3</span></span></span>
+  </div>
+</header>
+
+<!-- R02 MY F&O P&L - always visible. Rupees net of costs (realised + open; costs = charges + est. exit slippage, always split in the tooltip). Whole strip = link to F6 MY TRADES. -->
+<a id="sh-pnl" href="positions.html" aria-label="My F&amp;O P&amp;L - opens MY TRADES">
+  <span class="sh-pt"><span class="sh-ptitle" title="tap = MY TRADES (F6)">MY F&amp;O P&amp;L ›</span><span class="sh-lb">today</span><span class="sh-big dn">−₹650</span><span class="n dn">−0.1R</span></span>
+    <span class="sh-pt sh-brk sh-wide" title="TODAY = realised + open. Open is valued at the bid less estimated exit costs; realised uses actual fills and charges. Costs ₹840 = charges ₹211 (statutory, round trip, from the ONE charges table in Settings › Charges, dated: MANAPPURAM ₹125 + HINDALCO ₹86) + est. exit slippage ₹629 (MANAPPURAM ₹295 + HINDALCO ₹334). Per trade: MANAPPURAM +₹2,430 net of ₹420 costs · HINDALCO −₹3,080 net of ₹420 costs">realised <span class="n">₹0</span> · open <span class="n">−₹650</span> net of <span class="n">₹840</span> costs</span><span class="sh-pt sh-brk sh-n1366" style="gap:4px" title="TODAY = realised + open. Open is valued at the bid less estimated exit costs; realised uses actual fills and charges. Costs ₹840 = charges ₹211 (statutory, round trip, from the ONE charges table in Settings › Charges, dated: MANAPPURAM ₹125 + HINDALCO ₹86) + est. exit slippage ₹629 (MANAPPURAM ₹295 + HINDALCO ₹334). Per trade: MANAPPURAM +₹2,430 net of ₹420 costs · HINDALCO −₹3,080 net of ₹420 costs">real <span class="n">₹0</span> · open <span class="n">−₹650</span> · costs <span class="n">₹840</span></span>
+  <span class="sh-pt" title="Open positions (max 2). If every open position hit its SHARE stop now: −₹8,020 net of costs (HINDALCO −₹4,060 + MANAPPURAM −₹3,960 = −1.6R) - lock room ₹1,980. At the Kite backstops (SL-L): −₹9,090 (−1.8R) - lock room ₹910"><span class="sh-lb">open</span><span class="n" style="color:var(--text);font-weight:600">2</span><span>· at share stops</span><span class="n" style="color:var(--text)">−₹8,020</span></span>
+  <span class="sh-pt"><span class="sh-lb">trades</span><span class="n" style="color:var(--text);font-weight:600">2 of 3</span></span>
+  <span class="sh-pt" title="Week to date (Mon 16 Nov to today) in rupees, net of costs, today included. 1R = ₹5,000"><span class="sh-lb">week</span><span class="n dn">−₹4,755</span><span class="n dn" style="font-size:12px">−0.95R</span></span>
+  <span class="sh-pt" title="November to date in rupees, net of costs, today included. 1R = ₹5,000"><span class="sh-lb">month</span><span class="n up">+₹5,045</span><span class="n up" style="font-size:12px">+1.01R</span></span>
+  <span class="sh-pt" title="Rupees left before the day loss lock (−2% = −₹10,000; also 2 losses in a row, weekly −6%). Lock room = what is left if every open position hits its share stop. Meter amber from 75%, LOCKED chip at 100%. Exits always stay usable."><span class="sh-lb sh-wide">loss lock</span><span class="sh-lb sh-n1366">lock</span><span class="n" style="color:var(--text);font-weight:600">₹9,350</span><span>left</span><span class="sh-meter"><i style="width:7%"></i></span></span>
+  <span class="sh-pt" style="border-right:0" title="AI spend today vs the $20 daily cap; by model on Scorecard (Shift+F8)"><span class="sh-lb">AI</span><span class="n" style="color:var(--text)">$4.10</span><span>of $20</span><span class="sh-meter sh-wide"><i style="width:21%"></i></span></span>
+</a>
+
+<!-- R03 TAB BAR - one list (REQUIREMENTS section D). Row 1 = plain F-keys, row 2 = SHIFT + F-keys (filled ⇧ keycaps). No key twice. -->
+<nav id="sh-tabs" aria-label="Pages">
+  <a class="sh-mark" href="desk-hunt.html" title="girtrader.com"><b>GIR</b></a>
+  <div class="sh-grid">
+        <span class="sh-rl sh-rl1">F-KEY</span>
+        <span class="sh-rl sh-rl2"><span>SHIFT +</span></span>
+        <a class="sh-tab" data-tab="desk" href="desk-hunt.html" style="grid-row:1;grid-column:2" title="F1 · Desk - hunting / in a trade: the one screen for 09:15-15:10"><kbd class="sh-k">F1</kbd><span class="sh-tl">Desk</span></a>
+        <a class="sh-tab" data-tab="sectors" href="sectors.html" style="grid-row:1;grid-column:3" title="F2 · Sectors board, accordion, F&O movers"><kbd class="sh-k">F2</kbd><span class="sh-tl">Sectors</span></a>
+        <a class="sh-tab" data-tab="rotation" href="rotation.html" style="grid-row:1;grid-column:4" title="F3 · Rotation 15M / 30M / 1H / TODAY: money out of X into Y"><kbd class="sh-k">F3</kbd><span class="sh-tl">Rotation</span></a>
+        <a class="sh-tab" data-tab="news" href="news.html" style="grid-row:1;grid-column:5" title="F4 · One news list"><kbd class="sh-k">F4</kbd><span class="sh-tl">News</span></a>
+        <span class="sh-tab sh-f5" style="grid-row:1 / span 2;grid-column:6" title="F5 (and Shift+F5) would reload the browser and could drop live prices mid-trade, so GIR blocks it. Reload = Ctrl+Shift+R (asks first while a position is open). See ? Help."><span class="sh-f5a"><kbd class="sh-k sh-koff">F5</kbd><span class="sh-tl">off</span></span><span class="sh-f5b"><span class="sh-wide">reload blocked</span><span class="sh-n1366">no reload</span></span></span>
+        <a class="sh-tab" data-tab="positions" href="positions.html" style="grid-row:1;grid-column:7" title="F6 · Positions & Risk = MY TRADES: P&L, exits"><kbd class="sh-k">F6</kbd><span class="sh-tl">My trades</span></a>
+        <a class="sh-tab" data-tab="share" href="share.html" style="grid-row:1;grid-column:8" title="F7 · Share page: chart, levels, chain, futures, news, WHY"><kbd class="sh-k">F7</kbd><span class="sh-tl">Share</span></a>
+        <a class="sh-tab" data-tab="analyst" href="analyst.html" style="grid-row:1;grid-column:9" title="F8 · Analyst: latest decision, ASK drawer"><kbd class="sh-k">F8</kbd><span class="sh-tl">Analyst</span></a>
+        <a class="sh-tab" data-tab="chain" href="chain.html" style="grid-row:1;grid-column:10" title="F9 · Option chain + OI scenarios"><kbd class="sh-k">F9</kbd><span class="sh-tl">Chain</span></a>
+        <a class="sh-tab" data-tab="futures-oi" href="futures-oi.html" style="grid-row:1;grid-column:11" title="F10 · Futures & OI + MONEY: LB/SB/SC/LU, futures by month, F&O money, BIG MONEY, tape"><kbd class="sh-k">F10</kbd><span class="sh-tl">Fut & OI</span></a>
+        <a class="sh-tab" data-tab="morning" href="morning.html" style="grid-row:2;grid-column:2" title="Shift+F1 · Morning & pre-flight (+ PRE-OPEN 09:00-09:08)"><kbd class="sh-k sh-ks">⇧F1</kbd><span class="sh-tl">Morning</span></a>
+        <a class="sh-tab" data-tab="world" href="world.html" style="grid-row:2;grid-column:3" title="Shift+F2 · World drivers + THEME"><kbd class="sh-k sh-ks">⇧F2</kbd><span class="sh-tl">World</span></a>
+        <span class="sh-tab sh-free" style="grid-row:2;grid-column:4" title="Shift+F3 is not used"><kbd class="sh-k sh-ks">⇧F3</kbd><span class="sh-tl">not used</span></span>
+        <a class="sh-tab" data-tab="calendar" href="calendar.html" style="grid-row:2;grid-column:5" title="Shift+F4 · Calendar: results, events, ex-dates, expiry, Parliament business"><kbd class="sh-k sh-ks">⇧F4</kbd><span class="sh-tl">Calendar</span></a>
+        <a class="sh-tab" data-tab="journal" href="journal.html" style="grid-row:2;grid-column:7" title="Shift+F6 · Journal: every trade, notes, mistakes, rules kept"><kbd class="sh-k sh-ks">⇧F6</kbd><span class="sh-tl">Journal</span></a>
+        <a class="sh-tab" data-tab="reference" href="reference.html" style="grid-row:2;grid-column:8" title="Shift+F7 · Reference: F&O list, lots, sectors map, policy baskets, aliases"><kbd class="sh-k sh-ks">⇧F7</kbd><span class="sh-tl">Reference</span></a>
+        <a class="sh-tab" data-tab="scorecard" href="scorecard.html" style="grid-row:2;grid-column:9" title="Shift+F8 · Calls & Scorecard: 15:45 audit, misses, cost"><kbd class="sh-k sh-ks">⇧F8</kbd><span class="sh-tl">Scorecard</span></a>
+        <a class="sh-tab" data-tab="health" href="health.html" style="grid-row:2;grid-column:10" title="Shift+F9 · Health: every service and feed, data age, Kite login"><kbd class="sh-k sh-ks">⇧F9</kbd><span class="sh-tl">Health</span></a>
+        <a class="sh-tab" data-tab="replay" href="replay.html" style="grid-row:2;grid-column:11" title="Shift+F10 · Replay any past day, minute by minute"><kbd class="sh-k sh-ks">⇧F10</kbd><span class="sh-tl">Replay</span></a>
+  </div>
+  <div class="sh-right">
+    <div class="sh-r1">
+      <a class="sh-tab" data-tab="settings" href="settings.html" title="Ctrl+, · Charter & Settings: his rules, sounds, Telegram, limits" style="border-left:1px solid var(--line)"><kbd class="sh-k">Ctrl ,</kbd><span class="sh-tl">Settings</span></a>
+      <a class="sh-tab" data-tab="help" href="help.html" title="? · Help: every page's purpose, keys (why F5 is off), colours, sounds"><kbd class="sh-k">?</kbd><span class="sh-tl">Help</span></a>
+      <a class="sh-tab" data-tab="market" href="market.html" title="MARKET: NIFTY / BANKNIFTY trading screen. No F-key: type /NIFTY or click an index in the strip"><kbd class="sh-k">/NIFTY</kbd><span class="sh-tl">Market</span></a>
+      <a class="sh-tab sh-wide" data-tab="plan-card" href="plan-card.html" title="Space on a call · Plan card drawer (Desk)"><kbd class="sh-k">Space</kbd><span class="sh-tl">Plan card</span></a>
+    </div>
+    <div class="sh-r2">
+      <label class="sh-cmd" title="/ = command line: symbol (TITAN), contract (HINDALCO 680 PE), verbs (TITAN OC, TITAN FUT, METALS, GOLD, NEWS TITAN, STATUS); free text searches news. Never sends an order.">
+        <kbd>/</kbd><span class="sh-ph">symbol<span class="sh-ph-c">, contract</span><span class="sh-ph-v">, verb</span></span><span class="sh-typed">TIT<i></i></span>
+        <span class="sh-sugg" role="listbox" aria-label="Suggestions">
+          <span class="sh-sg-h"><span class="sh-lb">2 F&amp;O shares match "TIT"</span><span class="sh-age">as you type · 2+ letters</span></span>
+          <span class="sh-sg-r sel" role="option"><span class="sh-sg-s"><em>TIT</em>AN</span><span class="sh-sg-d">Titan Company<br><span>Jewellers &amp; gold loans · lot 175</span></span><span class="sh-sg-p n">3,398.20</span><span class="sh-sg-p n dn">−2.48%</span></span>
+          <span class="sh-sg-r" role="option"><span class="sh-sg-s"><em>TIT</em>AGARH</span><span class="sh-sg-d">Titagarh Rail Systems<br><span>Railways &amp; capital goods · lot 725</span></span><span class="sh-sg-p n">912.35</span><span class="sh-sg-p n dn">−0.84%</span></span>
+          <span class="sh-sg-v"><span class="n">TITAN OC</span><span class="n">TITAN FUT</span><span class="n">NEWS TITAN</span><span class="n">LOG TITAN</span><span>search news for "TIT"</span></span>
+          <span class="sh-sg-f"><kbd>↑</kbd> <kbd>↓</kbd> choose · <kbd>Enter</kbd> open the share page · <kbd>Tab</kbd> complete · <kbd>Esc</kbd> close</span>
+        </span>
+      </label>
+      <button class="sh-btn" title="SOUND ON (at 1366 wide the button reads speaker + ON). Sound on / off. Exits on an open position (STOP, BOOK HALF, EXIT, 15:10) can never be muted. M mutes GO NOW / GET READY for 10 min."><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 4h2.5L7 1v10L3.5 8H1z" fill="currentColor"/><path d="M8.6 3.6a3.4 3.4 0 0 1 0 4.8M10 2.2a5.4 5.4 0 0 1 0 7.6" stroke="currentColor" fill="none" stroke-width="1.1"/></svg><span class="on"><span class="sh-wide">SOUND </span>ON</span></button>
+      <button class="sh-btn" title="Sound legend: which alert makes which sound">♪ LEGEND</button>
+      <span class="sh-al" title="Unacknowledged alerts (A then Enter acknowledges)">P1 <span class="n">0</span> · P2 <span class="n">1</span></span>
+    </div>
+  </div>
+</nav>
+<!-- ===================== SHELL TOP END ===================== -->
+
+<main id="page">
+<div id="pg">
+
+<div id="purp">
+  <h1><kbd class="sh-k sh-ks">⇧F2</kbd>WORLD · drivers &amp; THEME</h1>
+  <span class="why"><span class="wide">which world move drives which sector, share and option today</span><span class="n1366">world → sector → share → option</span></span>
+  <span class="rt">
+<div class="cyc" title="R41 the trade cycle: one key per step"><span class="st" style="margin-left:0">PREP</span><a href="morning.html">⇧F1</a><a class="here">⇧F2</a><a href="calendar.html">⇧F4</a><span class="st">FIND</span><a href="sectors.html">F2</a><a href="rotation.html">F3</a><a href="news.html">F4</a><a href="futures-oi.html" title="F&amp;O money, BIG MONEY, tape, build-up">F10</a><span class="st">SHARE</span><a href="share.html#TITAN">F7</a><span class="st">STRIKE</span><a href="chain.html#TITAN">F9</a><span class="st">PLAN</span><a href="plan-card.html">Space</a><span class="st">ENTER</span><span>Kite</span><span class="st">MANAGE</span><a href="positions.html">F6</a><span class="st">REVIEW</span><a href="journal.html">⇧F6</a><a href="scorecard.html">⇧F8</a></div>
+    <span class="vs"></span>
+    <span class="seg" id="view" title="LIVE = moves since 09:15 and since our 15:30 close. NIGHT = the overnight events 15:30 → 09:15 first."><span class="on">LIVE</span><span>NIGHT</span></span>
+    <a class="btn" href="help.html#world" title="Help: columns, the sensitivity matrix, roles, the LIVE rule, where is…">?</a>
+  </span>
+</div>
+
+<div id="bandB">
+  <div id="anl" class="sh-acc-call" title="The page's answer. The analyst's latest decision updates in place, never blinks; every earlier one is on F8.">
+    <div class="l0"><span class="lb">THE WORLD SAYS · 11:42:40</span><span class="src"><span class="wide">analyst 11:42:38 · 2 s ago · woken by the basket shock</span><span class="n1366">analyst 11:42:38 · 2 s</span></span>
+      <span style="margin-left:auto;display:flex;gap:5px"><button class="btn" title="ASK opens in a side drawer over the right column only; nothing is pushed away">ASK ›</button><a class="btn" href="analyst.html">F8 all</a></span></div>
+    <div class="big"><span class="pe">PE day</span> · GOLD <span class="dn">−1.62 %</span> → jewellers &amp; gold loans · <a class="lk" href="share.html#TITAN" title="open the TITAN share page (F7)">TITAN</a> PE 3,400 <span class="wide">on the bounce · 1 lot fits</span><span class="n1366">· 1 lot</span></div>
+    <div class="ln lt"><span class="k">LATEST</span><span class="c blk">BLOCKED</span><a class="lk" href="share.html#ANGELONE" title="open the ANGELONE share page (F7)">ANGELONE</a> PE 2,300 · 29 Dec · <span class="n">118.40</span> · <span class="vd" title="lock room = ₹10,000 lock − ₹650 lost today = ₹9,350 left; minus a further ₹7,370 if both open positions hit their share stops (−₹8,020 at stops) = ₹1,980">0 lots now · lock room ₹1,980 &lt; max −₹3,830</span></div>
+    <div class="ln"><span class="k">YOURS</span><span class="c exit">EXIT</span><a class="lk" href="share.html#HINDALCO" title="open the HINDALCO share page (F7)">HINDALCO</a> not done<span class="wide"> since 11:39:40</span><span class="n1366"></span> → <b>MODIFY SL-L → LIMIT 14.45</b> · <span class="c book">BOOK</span><a class="lk" href="share.html#MANAPPURAM" title="open the MANAPPURAM share page (F7)">MANAPPURAM</a> <span class="wide">stalled → 1 lot at bid 14.20</span><span class="n1366">1 lot at 14.20</span></div>
+    <div class="ln"><span class="k">NEXT</span><b>1 trade left</b> · fits: TITAN ₹1,898 or SUNPHARMA ₹1,906 · <span class="wide"><a class="lk" href="market.html#NIFTY">NIFTY</a> &lt; VWAP 24,531, <a class="lk" href="market.html#BANKNIFTY">BANKNIFTY</a> &gt; VWAP → <b>no index trade</b></span><span class="n1366"><b>no index trade</b> (mixed)</span></div>
+  </div>
+  <div id="shock" title="POLICY driver: 3+ shares of one policy basket moving the same way 1%+ inside 60 s on a volume burst = BASKET SHOCK. GET READY only, never GO NOW on price alone (GIR_SPEC S12).">
+    <div class="l0"><span class="c al">! BASKET SHOCK</span><b style="font-size:13px">SEBI → BROKERS falling together</b><span class="t3"><span class="wide">· basket 5 of 6</span><span class="n1366">· 5 of 6</span></span><span style="margin-left:auto" class="age"><span class="ldot" style="margin-right:3px"></span>card 11:42:08 · 32 s</span></div>
+    <div class="l1"><a class="sym" href="share.html#ANGELONE" title="open the ANGELONE share page (F7)">ANGELONE</a><span class="pcs dn">−2.4</span><a class="sym" href="share.html#BSE" title="open the BSE share page (F7)">BSE</a><span class="pcs dn">−2.0</span><a class="sym" href="share.html#CDSL" title="open the CDSL share page (F7)">CDSL</a><span class="pcs dn">−1.7</span><a class="sym" href="share.html#MCX" title="open the MCX share page (F7)">MCX</a><span class="pcs dn">−1.3</span><a class="sym" href="share.html#MOTILALOFS" title="open the MOTILALOFS share page (F7)">MOTILALOFS</a><span class="pcs dn">−1.1</span><span class="t3"><span class="wide">52 s % · vol 4.1x</span><span class="n1366">52 s %</span></span></div>
+    <div class="l2 r49"><a class="sl" href="sectors.html#brokers"><span class="wide">BROKERS &amp; EXCHANGES</span><span class="n1366">BROKERS</span></a><span class="pcs dn">−1.34%</span><span class="bas" title="R49: all 12 listed brokers and exchanges, free-float weighted = −1.34 % (F2 Sectors); the 4 F&amp;O names fall and 3 of the 8 others fall too (MOTILALOFS, 360ONE, IIFLCAPS): sector-wide, not F&amp;O-only">all 12 listed</span><span class="bth" title="breadth over all listed shares of the sector · over its F&amp;O shares">breadth <b class="n">7/12</b> all · F&amp;O <b class="n">4/4</b></span><span class="bys" title="not F&amp;O-only: besides the 4 F&amp;O names (4/4 down), 3 of the 8 non-F&amp;O brokers fall too - MOTILALOFS −1.10 · 360ONE −0.40 · IIFLCAPS −0.30 - so the move is sector-wide, not NARROW (R49)"><span class="wide">+ 3 of 8 non-F&amp;O</span><span class="n1366">+3 non-F&amp;O</span></span></div>
+    <div class="l3"><span class="wk">why</span><span class="t">11:42:31</span><b>CNBC-TV18</b>“SEBI mulls MTF limits - sources” · <b>no decision yet</b><span class="wide"> · 2nd source: <b>none yet</b></span><span class="n1366"></span></div>
+    <div class="l4" title="first move 11:41:56 · BASKET SHOCK card 11:42:08 · 2,300 PE burst 11:42:20 · CNBC-TV18 11:42:31 (+35 s) · GET READY ANGELONE 11:42:38 → BLOCKED (lock room) · no 2nd independent source yet">move <span class="t">11:41:56</span> → card +12 s <span class="wide">“news not found yet” → source +35 s → ANGELONE <span class="c blk">BLOCKED · lock room</span></span><span class="n1366">→ source +35 s · 2nd: <b>none</b> · ANGELONE <span class="c blk">BLOCKED</span></span></div>
+  </div>
+</div>
+
+<div id="cols">
+  <div id="lcol">
+    <section class="pn" id="drv">
+      <div class="ph sh-acc-mkt"><span class="pt"><span class="wide">WORLD DRIVERS</span><span class="n1366">DRIVERS</span></span><span class="chip on" data-g="all">all <span class="n">18</span></span><span class="chip" data-g="on">live <span class="n">5</span></span><span class="chip" data-g="cls" title="3 closed (US 10y, SOX, INFY ADR) + 1 late (DXY, 15 min delayed) - none of the 4 is live">closed <span class="n">3</span> · late <span class="n">1</span></span>
+        <span class="pa"><span class="ldot"></span><span class="age">2s</span><span class="sbtn" data-t="drb" data-d="-1" title="scroll up"><svg width="8" height="6" viewBox="0 0 8 6"><path d="M4 0L8 6H0z" fill="currentColor"/></svg></span><span class="sbtn" data-t="drb" data-d="1" title="scroll down"><svg width="8" height="6" viewBox="0 0 8 6"><path d="M0 0h8L4 6z" fill="currentColor"/></svg></span></span></div>
+      <div class="dgrid dhd"><span>driver</span><span class="r">last</span><span class="r">15:30→</span><span class="r">9:15→</span><span class="r">z</span><span class="r">live?</span><span class="r">age</span></div>
+      <div class="pb" id="drb" data-label="drivers" data-total="18" data-unit=".dr"><div class="dgrid dr sh-heat-dn g1 sel" style="--m:1.58" data-t="gold" data-st="on" data-nm="Gold" title="COMEX gold $/oz, the world driver: −1.58 % since our 15:30 close (FOMC minutes 00:30). Line ±1.5 % (20-day vol) → 1.1×, LIVE. COMEX OPEN.">
+    <span class="nm">Gold<i><span class="wide">COMEX $</span><span class="n1366">$</span></i></span><span class="lst">4,012.6</span><span class="p1 dn">−1.58%</span><span class="p2 dn">−1.02</span><span class="zz">−2.0</span>
+    <span class="r"><span class="x on">1.1×</span></span><span class="ag">2s</span></div><div class="dgrid dr sh-heat-dn sub" style="--m:1.62" data-t="gold" data-st="on" data-nm="Gold ₹" title="MCX gold ₹/10 g −1.62 % = COMEX $ −1.58 % + rupee +0.08 % + MCX basis −0.12 %. β on this page is measured against MCX ₹. MCX OPEN.">
+    <span class="nm"><span class="t3">↳ </span>Gold<i><span class="wide">MCX ₹</span><span class="n1366">₹</span></i></span><span class="lst">1,24,610</span><span class="p1 dn">−1.62%</span><span class="p2 dn">−1.10</span><span class="zz">−2.0</span>
+    <span class="r"><span class="x on">1.1×</span></span><span class="ag">1s</span></div><div class="dgrid dr sh-heat-dn" style="--m:0.92" data-t="copper" data-st="on" data-nm="Copper" title="LME 3-month copper $/t −0.92 % now; low −1.81 % at 10:12 = a 5-month low → LIVE by the 5-month-low rule (now only 0.46× its ±2 % line). Faded since 11:30; MCX-copper +0.4 % since 11:20. LME OPEN.">
+    <span class="nm">Copper<i><span class="wide">LME</span></i></span><span class="lst">10,214</span><span class="p1 dn">−0.92%</span><span class="p2 dn">−0.40</span><span class="zz">−1.1</span>
+    <span class="r"><span class="x on">5m low</span></span><span class="ag">4s</span></div><div class="dgrid dr sh-heat-dn" style="--m:1.92" data-t="ndx" data-st="on" data-nm="Nasdaq" title="Nasdaq-100 futures, CME Globex OPEN. Line ±1.5 % → 1.3×, LIVE. NIFTY IT −0.95 % moves with NIFTY (RS −0.33): no own theme.">
+    <span class="nm">Nasdaq<i><span class="wide">fut</span></i></span><span class="lst">20,940</span><span class="p1 dn">−1.92%</span><span class="p2 dn">−0.10</span><span class="zz">−1.6</span>
+    <span class="r"><span class="x on">1.3×</span></span><span class="ag">9s</span></div><div class="dgrid dr sh-heat-dn" style="--m:0.55" data-t="ndx" data-st="on" data-nm="GIFT NIFTY" title="GIFT Nifty (NSE IX), +44 over NIFTY spot. Line ±0.5 % → 1.1×. Click the name = the NIFTY / BANKNIFTY screen.">
+    <span class="nm"><a class="lk" href="market.html#NIFTY" style="font-weight:700">GIFT NIFTY</a></span><span class="lst">24,530.5</span><span class="p1 dn">−0.55%</span><span class="p2 dn">−0.21</span><span class="zz">−1.1</span>
+    <span class="r"><span class="x on">1.1×</span></span><span class="ag">0.8s</span></div><div class="dgrid dr sh-heat-dn g1 dim" style="--m:2.48" data-t="below" data-st="off" data-nm="Silver" title="COMEX silver $/oz −2.48 %. Bigger than gold, but its line is ±3 % (20-day vol 1.9× gold's) → z −1.3, below its line: context only.">
+    <span class="nm">Silver<i><span class="wide">COMEX $</span><span class="n1366">$</span></i></span><span class="lst">50.12</span><span class="p1 dn">−2.48%</span><span class="p2 dn">−1.92</span><span class="zz">−1.3</span>
+    <span class="r"><span class="x off">0.8×</span></span><span class="ag">2s</span></div><div class="dgrid dr sh-heat-dn sub dim" style="--m:2.40" data-t="below" data-st="off" data-nm="Silver ₹" title="MCX silver ₹/kg −2.40 % = COMEX $ −2.48 % + rupee +0.08 %.">
+    <span class="nm"><span class="t3">↳ </span>Silver<i><span class="wide">MCX ₹</span><span class="n1366">₹</span></i></span><span class="lst">1,47,920</span><span class="p1 dn">−2.40%</span><span class="p2 dn">−1.85</span><span class="zz">−1.3</span>
+    <span class="r"><span class="x off">0.8×</span></span><span class="ag">1s</span></div><div class="dgrid dr sh-heat-dn dim" style="--m:1.10" data-t="below" data-st="off" data-nm="Aluminium" title="LME 3-month aluminium $/t. Below its ±2 % line. HINDALCO's bigger driver (alu β 0.95).">
+    <span class="nm"><span class="wide">Aluminium</span><span class="n1366">Alu</span><i><span class="wide">LME</span></i></span><span class="lst">2,618</span><span class="p1 dn">−1.10%</span><span class="p2 dn">−0.40</span><span class="zz">−1.0</span>
+    <span class="r"><span class="x off">0.55×</span></span><span class="ag">4s</span></div><div class="dgrid dr sh-heat-dn dim" style="--m:0.92" data-t="below" data-st="off" data-nm="Zinc" title="Zinc LME · move since our 15:30 IST close and since 09:15 · z vs 20-day vol">
+    <span class="nm">Zinc<i><span class="wide">LME</span></i></span><span class="lst">2,904</span><span class="p1 dn">−0.92%</span><span class="p2 dn">−0.30</span><span class="zz">−0.7</span>
+    <span class="r"><span class="x off">0.6×</span></span><span class="ag">4s</span></div><div class="dgrid dr sh-heat-dn dim" style="--m:0.80" data-t="below" data-st="off" data-nm="Iron ore" title="Dalian iron ore ¥/t, OPEN. The steel driver (with SHFE rebar).">
+    <span class="nm">Iron ore<i><span class="wide">DCE</span></i></span><span class="lst">768.0</span><span class="p1 dn">−0.80%</span><span class="p2 dn">−0.20</span><span class="zz">−0.6</span>
+    <span class="r"><span class="x off">0.27×</span></span><span class="ag">9s</span></div><div class="dgrid dr sh-heat-dn dim" style="--m:0.64" data-t="below" data-st="off" data-nm="Rebar" title="SHFE steel rebar ¥/t, OPEN.">
+    <span class="nm">Rebar<i><span class="wide">SHFE</span></i></span><span class="lst">3,118</span><span class="p1 dn">−0.64%</span><span class="p2 dn">−0.12</span><span class="zz">−0.5</span>
+    <span class="r"><span class="x off">0.2×</span></span><span class="ag">9s</span></div><div class="dgrid dr sh-heat-dn dim" style="--m:1.10" data-t="crude" data-st="off" data-nm="Brent" title="ICE Brent Jan $/bbl, 1 min old (the feed's normal pace). Below its ±2 % line.">
+    <span class="nm">Brent<i><span class="wide">ICE</span></i></span><span class="lst">63.84</span><span class="p1 dn">−1.10%</span><span class="p2 dn">−0.90</span><span class="zz">−0.9</span>
+    <span class="r"><span class="x off">0.55×</span></span><span class="ag">1m</span></div><div class="dgrid dr sh-heat-up dim" style="--m:0.08" data-t="below" data-st="off" data-nm="USD/INR" title="The rupee driver. Up = weaker rupee.">
+    <span class="nm">USD/INR<i><span class="wide">NSE</span></i></span><span class="lst">88.94</span><span class="p1 up">+0.08%</span><span class="p2 up">+0.08</span><span class="zz">+0.4</span>
+    <span class="r"><span class="x off">0.27×</span></span><span class="ag">1s</span></div><div class="dgrid dr sh-heat-dn dim" style="--m:0.40" data-t="below" data-st="off" data-nm="IN10y" title="India 10-year G-sec yield (CCIL). The yields driver for banks and realty.">
+    <span class="nm">IN10y<i><span class="wide">CCIL</span></i></span><span class="lst">6.45%</span><span class="p1 dn">−3bp</span><span class="p2 t2">−1bp</span><span class="zz">−0.8</span>
+    <span class="r"><span class="x off">0.3×</span></span><span class="ag">30s</span></div><div class="dgrid dr g1 late" style="--m:0.54" data-t="below" data-st="late" data-nm="DXY" title="DXY from ICE is DELAYED 15 min: grey, never counted LIVE, context only - not used for any call.">
+    <span class="nm">DXY<i><span class="wide">ICE</span></i></span><span class="lst">106.06</span><span class="p1 t3">+0.54%</span><span class="p2 t3">+0.08</span><span class="zz">+1.4</span>
+    <span class="r"><span class="x late">LATE</span></span><span class="ag"><i class="ring"></i>15m</span></div><div class="dgrid dr cls" style="--m:0.40" data-t="below" data-st="cls" data-nm="US 10y" title="US 10-year Treasury, cash market CLOSED (last 02:30 IST).">
+    <span class="nm">US 10y<i><span class="wide">cash</span></i></span><span class="lst">4.38%</span><span class="p1 t3">+4bp</span><span class="p2 t2">closed</span><span class="zz">+0.9</span>
+    <span class="r"><span class="x cls">closed</span></span><span class="ag">9h</span></div><div class="dgrid dr cls" style="--m:2.60" data-t="ndx" data-st="cls" data-nm="SOX" title="Philadelphia semiconductor index, US cash CLOSED 9 h. Priced in at our open; live US risk comes from Nasdaq futures.">
+    <span class="nm">SOX<i><span class="wide">cash</span></i></span><span class="lst">4,812</span><span class="p1 t3">−2.60%</span><span class="p2 t3">closed</span><span class="zz">−1.5</span>
+    <span class="r"><span class="x cls">closed</span></span><span class="ag">9h</span></div><div class="dgrid dr cls" style="--m:2.30" data-t="ndx" data-st="cls" data-nm="INFY ADR" title="Infosys ADR close −2.30 % $ = −1.9 % in ₹ vs the NSE close. NYSE CLOSED 9 h.">
+    <span class="nm">INFY ADR</span><span class="lst">$18.94</span><span class="p1 t3">−2.30%</span><span class="p2 t3">closed</span><span class="zz">−1.2</span>
+    <span class="r"><span class="x cls">closed</span></span><span class="ag">9h</span></div></div>
+      <div class="more" data-for="drb" title="LIVE = the move is at least its line (×, from each driver's 20-day volatility) OR |z| ≥ 2 OR a 5-month high / low. A late (delayed) or closed feed never counts. 16 drivers; gold and silver are shown in COMEX $ and MCX ₹." data-keep="&lt;span class=&quot;t2&quot;&gt;· &lt;b&gt;LIVE&lt;/b&gt; ≥ line or |z| ≥ 2 or 5-mo high/low&lt;/span&gt;"></div>
+    </section>
+    <section class="pn" id="mxp">
+      <div class="ph sh-acc-mkt"><span class="pt">SENSITIVITY β</span><span class="t3" style="font-size:11px"><span class="wide">120 d · whole sectors</span><span class="n1366">120 d · whole</span></span>
+        <span class="pa"><span class="age">upd 18 Nov 19:40</span><span class="sbtn" data-t="mxb" data-d="-1" title="scroll up"><svg width="8" height="6" viewBox="0 0 8 6"><path d="M4 0L8 6H0z" fill="currentColor"/></svg></span><span class="sbtn" data-t="mxb" data-d="1" title="scroll down"><svg width="8" height="6" viewBox="0 0 8 6"><path d="M0 0h8L4 6z" fill="currentColor"/></svg></span></span></div>
+      <div class="mx mxh"><span title="rows = sectors, columns = drivers with today's move · cells = same-day β, − = inverse">sector ↓<br>driver →</span><span class="sel" title="gold MCX ₹"><span class="wide">Gold</span><span class="n1366">Gold</span><span class="mv dn">−1.6</span></span><span class="" title="silver MCX ₹"><span class="wide">Silver</span><span class="n1366">Silv</span><span class="mv dn">−2.4</span></span><span class="" title="copper LME (low −1.8 at 10:12)"><span class="wide">Copper</span><span class="n1366">Cu</span><span class="mv dn">−0.9</span></span><span class="" title="aluminium LME"><span class="wide">Alu</span><span class="n1366">Alu</span><span class="mv dn">−1.1</span></span><span class="" title="iron ore DCE"><span class="wide">Ore</span><span class="n1366">Ore</span><span class="mv dn">−0.8</span></span><span class="" title="Brent"><span class="wide">Brent</span><span class="n1366">Brnt</span><span class="mv dn">−1.1</span></span><span class="" title="USD/INR"><span class="wide">₹/$</span><span class="n1366">₹/$</span><span class="mv up">+0.1</span></span><span class="" title="India 10y yield"><span class="wide">IN10y</span><span class="n1366">IN10y</span><span class="mv dn">−3bp</span></span><span class="" title="Nasdaq-100 futures"><span class="wide">NDX</span><span class="n1366">NDX</span><span class="mv dn">−1.9</span></span></div>
+      <div class="pb" id="mxb" data-label="sectors" data-total="13" data-unit=".mxr"><div class="mx mxr" data-nm="Jewel·loans"><span class="sn"><a class="sl" href="sectors.html#jewellers" style="font-weight:600" title="Jewellers & gold loans - whole sector (NSE index or all listed shares, R49)"><span class="wide">Jewel &amp; loans</span><span class="n1366">Jewel·loans</span></a></span><span class="mc s3 today sel" data-d="Gold" data-s="Jewellers & gold loans" data-b="+0.95" data-h="70" data-lo="56" data-hi="81" data-n="48" data-g="+0.64" data-p="per 1%" title="Gold → Jewellers & gold loans: same-day β +0.95 per 1% · same direction 70% (56-81%, n=48) · next-day gap β 0.64">.95</span><span class="mc s1" data-d="Silver" data-s="Jewellers & gold loans" data-b="+0.18" data-h="52" data-lo="38" data-hi="65" data-n="48" data-g="+0.10" data-p="per 1%" title="Silver → Jewellers & gold loans: same-day β +0.18 per 1% · same direction 52% (38-65%, n=48) · next-day gap β 0.1">.18</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc s1" data-d="Brent" data-s="Jewellers & gold loans" data-b="−0.05" data-h="50" data-lo="35" data-hi="65" data-n="40" data-g="0.00" data-p="per 1%" title="Brent → Jewellers & gold loans: same-day β −0.05 per 1% · same direction 50% (35-65%, n=40) · next-day gap β 0">−.05</span><span class="mc s1" data-d="₹/$" data-s="Jewellers & gold loans" data-b="−0.28" data-h="55" data-lo="40" data-hi="69" data-n="40" data-g="−0.20" data-p="per 1%" title="₹/$ → Jewellers & gold loans: same-day β −0.28 per 1% · same direction 55% (40-69%, n=40) · next-day gap β -0.2">−.28</span><span class="mc s1" data-d="IN10y" data-s="Jewellers & gold loans" data-b="−0.20" data-h="55" data-lo="40" data-hi="69" data-n="44" data-g="−0.15" data-p="per +10 bp" title="IN10y → Jewellers & gold loans: same-day β −0.20 per +10 bp · same direction 55% (40-69%, n=44) · next-day gap β -0.15">−.20</span><span class="mc" title="no measured link">·</span></div><div class="mx mxr" data-nm="Cables"><span class="sn"><a class="sl" href="sectors.html#cables" style="font-weight:600" title="Cables & wires - whole sector (NSE index or all listed shares, R49)"><span class="wide">Cables &amp; wires</span><span class="n1366">Cables</span></a></span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc s3 today" data-d="Copper" data-s="Cables & wires" data-b="+0.74" data-h="64" data-lo="49" data-hi="77" data-n="44" data-g="+0.52" data-p="per 1%" title="Copper → Cables & wires: same-day β +0.74 per 1% · same direction 64% (49-77%, n=44) · next-day gap β 0.52">.74</span><span class="mc s1" data-d="Alu" data-s="Cables & wires" data-b="+0.30" data-h="55" data-lo="40" data-hi="69" data-n="44" data-g="+0.20" data-p="per 1%" title="Alu → Cables & wires: same-day β +0.30 per 1% · same direction 55% (40-69%, n=44) · next-day gap β 0.2">.30</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span></div><div class="mx mxr" data-nm="Metals"><span class="sn"><a class="sl" href="sectors.html#metals" style="font-weight:600" title="Metals - whole sector (NSE index or all listed shares, R49)">Metals</a></span><span class="mc" title="no measured link">·</span><span class="mc s1" data-d="Silver" data-s="Metals" data-b="+0.35" data-h="58" data-lo="44" data-hi="70" data-n="52" data-g="+0.30" data-p="per 1%" title="Silver → Metals: same-day β +0.35 per 1% · same direction 58% (44-70%, n=52) · next-day gap β 0.3">.35</span><span class="mc s3 today" data-d="Copper" data-s="Metals" data-b="+0.88" data-h="69" data-lo="55" data-hi="80" data-n="52" data-g="+0.66" data-p="per 1%" title="Copper → Metals: same-day β +0.88 per 1% · same direction 69% (55-80%, n=52) · next-day gap β 0.66">.88</span><span class="mc s2" data-d="Alu" data-s="Metals" data-b="+0.62" data-h="63" data-lo="49" data-hi="75" data-n="52" data-g="+0.40" data-p="per 1%" title="Alu → Metals: same-day β +0.62 per 1% · same direction 63% (49-75%, n=52) · next-day gap β 0.4">.62</span><span class="mc s2" data-d="Ore" data-s="Metals" data-b="+0.40" data-h="58" data-lo="44" data-hi="70" data-n="52" data-g="+0.30" data-p="per 1%" title="Ore → Metals: same-day β +0.40 per 1% · same direction 58% (44-70%, n=52) · next-day gap β 0.3">.40</span><span class="mc" title="no measured link">·</span><span class="mc s1" data-d="₹/$" data-s="Metals" data-b="+0.20" data-h="54" data-lo="41" data-hi="67" data-n="52" data-g="+0.10" data-p="per 1%" title="₹/$ → Metals: same-day β +0.20 per 1% · same direction 54% (41-67%, n=52) · next-day gap β 0.1">.20</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span></div><div class="mx mxr" data-nm="Pharma"><span class="sn"><a class="sl" href="sectors.html#pharma" style="font-weight:600" title="Pharma - whole sector (NSE index or all listed shares, R49)">Pharma</a></span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc s1" data-d="₹/$" data-s="Pharma" data-b="+0.35" data-h="57" data-lo="44" data-hi="69" data-n="60" data-g="+0.20" data-p="per 1%" title="₹/$ → Pharma: same-day β +0.35 per 1% · same direction 57% (44-69%, n=60) · next-day gap β 0.2">.35</span><span class="mc" title="no measured link">·</span><span class="mc s1" data-d="NDX" data-s="Pharma" data-b="+0.10" data-h="51" data-lo="39" data-hi="63" data-n="60" data-g="+0.10" data-p="per 1%" title="NDX → Pharma: same-day β +0.10 per 1% · same direction 51% (39-63%, n=60) · next-day gap β 0.1">.10</span></div><div class="mx mxr" data-nm="Brokers"><span class="sn"><a class="sl" href="sectors.html#brokers" style="font-weight:600" title="Brokers - whole sector (NSE index or all listed shares, R49)">Brokers</a></span><span class="mxp-pol">SEBI policy basket · no price driver · S12</span></div><div class="mx mxr" data-nm="Oil marketing"><span class="sn"><a class="sl" href="sectors.html#omc" style="font-weight:600" title="Oil marketing - whole sector (NSE index or all listed shares, R49)">Oil marketing</a></span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc s3" data-d="Brent" data-s="Oil marketing" data-b="−0.85" data-h="72" data-lo="59" data-hi="82" data-n="55" data-g="−0.60" data-p="per 1%" title="Brent → Oil marketing: same-day β −0.85 per 1% · same direction 72% (59-82%, n=55) · next-day gap β -0.6">−.85</span><span class="mc s2" data-d="₹/$" data-s="Oil marketing" data-b="−0.40" data-h="58" data-lo="45" data-hi="70" data-n="55" data-g="−0.30" data-p="per 1%" title="₹/$ → Oil marketing: same-day β −0.40 per 1% · same direction 58% (45-70%, n=55) · next-day gap β -0.3">−.40</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span></div><div class="mx mxr" data-nm="Steel"><span class="sn"><a class="sl" href="sectors.html#steel" style="font-weight:600" title="Steel - whole sector (NSE index or all listed shares, R49)">Steel</a></span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc s1" data-d="Copper" data-s="Steel" data-b="+0.30" data-h="54" data-lo="40" data-hi="67" data-n="50" data-g="+0.20" data-p="per 1%" title="Copper → Steel: same-day β +0.30 per 1% · same direction 54% (40-67%, n=50) · next-day gap β 0.2">.30</span><span class="mc s1" data-d="Alu" data-s="Steel" data-b="+0.20" data-h="52" data-lo="39" data-hi="65" data-n="50" data-g="+0.10" data-p="per 1%" title="Alu → Steel: same-day β +0.20 per 1% · same direction 52% (39-65%, n=50) · next-day gap β 0.1">.20</span><span class="mc s2" data-d="Ore" data-s="Steel" data-b="+0.55" data-h="62" data-lo="48" data-hi="74" data-n="50" data-g="+0.41" data-p="per 1%" title="Ore → Steel: same-day β +0.55 per 1% · same direction 62% (48-74%, n=50) · next-day gap β 0.41">.55</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span></div><div class="mx mxr" data-nm="IT"><span class="sn"><a class="sl" href="sectors.html#it" style="font-weight:600" title="IT - whole sector (NSE index or all listed shares, R49)">IT</a></span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc s2" data-d="₹/$" data-s="IT" data-b="+0.45" data-h="58" data-lo="45" data-hi="70" data-n="60" data-g="+0.30" data-p="per 1%" title="₹/$ → IT: same-day β +0.45 per 1% · same direction 58% (45-70%, n=60) · next-day gap β 0.3">.45</span><span class="mc" title="no measured link">·</span><span class="mc s1" data-d="NDX" data-s="IT" data-b="+0.38" data-h="54" data-lo="42" data-hi="66" data-n="60" data-g="+0.30" data-p="per 1%" title="NDX → IT: same-day β +0.38 per 1% · same direction 54% (42-66%, n=60) · next-day gap β 0.3">.38</span></div><div class="mx mxr" data-nm="Paints"><span class="sn"><a class="sl" href="sectors.html#paints" style="font-weight:600" title="Paints - whole sector (NSE index or all listed shares, R49)">Paints</a></span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc s2" data-d="Brent" data-s="Paints" data-b="−0.45" data-h="61" data-lo="47" data-hi="73" data-n="50" data-g="−0.30" data-p="per 1%" title="Brent → Paints: same-day β −0.45 per 1% · same direction 61% (47-73%, n=50) · next-day gap β -0.3">−.45</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span></div><div class="mx mxr" data-nm="Aviation"><span class="sn"><a class="sl" href="sectors.html#aviation" style="font-weight:600" title="Aviation - whole sector (NSE index or all listed shares, R49)">Aviation</a></span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc rl" data-d="Brent" data-s="Aviation" data-b="−0.70" data-h="64" data-lo="45" data-hi="80" data-n="26" data-g="−0.50" data-p="per 1%" title="Brent → Aviation: same-day β −0.70 per 1% · same direction 64% (45-80%, n=26) · next-day gap β -0.5 · n < 30: rule of thumb">−.70</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span></div><div class="mx mxr" data-nm="Upstream oil"><span class="sn"><a class="sl" href="sectors.html#oilgas" style="font-weight:600" title="Upstream oil - whole sector (NSE index or all listed shares, R49)">Upstream oil</a></span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc s2" data-d="Brent" data-s="Upstream oil" data-b="+0.60" data-h="68" data-lo="55" data-hi="79" data-n="55" data-g="+0.40" data-p="per 1%" title="Brent → Upstream oil: same-day β +0.60 per 1% · same direction 68% (55-79%, n=55) · next-day gap β 0.4">.60</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span></div><div class="mx mxr" data-nm="Banks"><span class="sn"><a class="sl" href="sectors.html#banks" style="font-weight:600" title="Banks - whole sector (NSE index or all listed shares, R49)">Banks</a></span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc s1" data-d="₹/$" data-s="Banks" data-b="−0.15" data-h="53" data-lo="39" data-hi="67" data-n="44" data-g="−0.10" data-p="per 1%" title="₹/$ → Banks: same-day β −0.15 per 1% · same direction 53% (39-67%, n=44) · next-day gap β -0.1">−.15</span><span class="mc s2" data-d="IN10y" data-s="Banks" data-b="−0.40" data-h="60" data-lo="45" data-hi="73" data-n="44" data-g="−0.30" data-p="per +10 bp" title="IN10y → Banks: same-day β −0.40 per +10 bp · same direction 60% (45-73%, n=44) · next-day gap β -0.3">−.40</span><span class="mc" title="no measured link">·</span></div><div class="mx mxr" data-nm="Realty"><span class="sn"><a class="sl" href="sectors.html#realty" style="font-weight:600" title="Realty - whole sector (NSE index or all listed shares, R49)">Realty</a></span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc" title="no measured link">·</span><span class="mc rl" data-d="IN10y" data-s="Realty" data-b="−0.65" data-h="63" data-lo="45" data-hi="78" data-n="28" data-g="−0.50" data-p="per +10 bp" title="IN10y → Realty: same-day β −0.65 per +10 bp · same direction 63% (45-78%, n=28) · next-day gap β -0.5 · n < 30: rule of thumb">−.65</span><span class="mc" title="no measured link">·</span></div></div>
+      <div class="more" data-for="mxb" data-keep="&lt;span class=&quot;t3&quot;&gt;· &lt;i class=&quot;kk&quot; style=&quot;background:#2A3446&quot;&gt;&lt;/i&gt;strong · &lt;i class=&quot;kk&quot; style=&quot;box-shadow:inset 0 -2px 0 var(--info)&quot;&gt;&lt;/i&gt;live&lt;/span&gt;"></div>
+      <div class="mxd" id="mxd"><div><b>GOLD → JEWEL &amp; LOANS</b> β <b class="n">+0.95</b> · 70% (56‑81) n=48<span class="wide"> · gap β <span class="n">+0.64</span></span><span class="n1366"></span></div></div>
+    </section>
+  </div>
+
+  <section class="pn" id="tmap">
+    <div class="ph sh-acc-call"><span class="pt">THEME · driver → sector → every F&amp;O share</span><span class="t3" style="font-size:11px"><span class="wide">agent 11:42:20 · $0.31 · <a class="lk" href="morning.html#plan" style="font-weight:500;color:var(--text-2)">thesis 07:15</a></span><span class="n1366">agent 11:42:20</span></span>
+      <span class="pa"><span class="ldot"></span><span class="age">0.4s</span><span class="sbtn" data-t="tmb" data-d="-1" title="scroll up"><svg width="8" height="6" viewBox="0 0 8 6"><path d="M4 0L8 6H0z" fill="currentColor"/></svg></span><span class="sbtn" data-t="tmb" data-d="1" title="scroll down"><svg width="8" height="6" viewBox="0 0 8 6"><path d="M0 0h8L4 6z" fill="currentColor"/></svg></span></span></div>
+    <div class="tbar">
+      <span class="dd"><button class="chip" id="ddAll" title="Filters this page to one sector (R36)"><span class="wide">ALL SECTORS 22</span><span class="n1366">ALL 22</span> ▾</button>
+        <span class="ddm" id="ddm"><div data-s="all">All sectors <span class="t3">22</span></div><div data-s="jewellers">Jewellers <span class="t3">2</span></div><div data-s="goldloans">Gold loans <span class="t3">2</span></div><div data-s="brokers">Brokers &amp; exchanges <span class="t3">6</span></div><div data-s="cables">Cables &amp; wires <span class="t3">3</span></div><div data-s="metals">Metals <span class="t3">11</span></div><div data-s="pharma">Pharma <span class="t3">10</span></div><div data-s="omc">Oil marketing <span class="t3">3</span></div><div data-s="it">IT <span class="t3">6</span></div><div data-s="steel">Steel <span class="t3">5</span></div></span></span>
+      <span class="chip zero" data-f="go" title="No GO NOW yet: no theme share has hit its trigger with every gate passed (TITAN waits for the bounce to VWAP 3,421, then a 5-min close &lt; 3,414)">GO NOW <span class="n">0</span></span>
+      <span class="chip" data-f="gr" title="TITAN PE and SUNPHARMA CE: both fit the lock room - 1 trade left, pick one"><span class="wide">GET READY</span><span class="n1366">READY</span> <span class="n">2</span></span>
+      <span class="chip blkc" data-f="bl" title="ANGELONE, KALYANKJIL, DIVISLAB: max loss above the lock room ₹1,980 → 0 lots (hard block)">BLOCKED <span class="n">3</span></span>
+      <span class="chip" data-f="held">mine <span class="n">2</span></span>
+      <span class="vs"></span>
+      <span class="bul" title="23 theme shares carry a build-up tag. These four chips count only the shares drawn in the themes below (their futures build-up) - NOT the market. The market-wide build-up of all 222 is one click away on F10.">B/U in themes:</span>
+      <span class="chip buc lb" data-f="LB">LB <span class="n">5</span></span><span class="chip buc sb" data-f="SB">SB <span class="n">10</span></span><span class="chip buc sc zero" data-f="SC" title="short covering: none in these themes now (market-wide SC 27 on F10)">SC <span class="n">0</span></span><span class="chip buc lu" data-f="LU">LU <span class="n">8</span></span>
+    </div>
+    <div class="allbar" title="The trader asked: where are OI build-up and the F&amp;O movers? Both lists of ALL 222 F&amp;O shares are one click away.">
+      <a class="alk" href="sectors.html#movers" title="F2 Sectors · F&amp;O MOVERS: UP 61 / DOWN 157 / ALL 222, sorted by day %">F&amp;O MOVERS <span class="up">▲61</span> <span class="dn">▼157</span> <span class="fk">F2</span></a>
+      <a class="alk" href="futures-oi.html#buildup" title="F10 Fut &amp; OI · OI BUILD-UP list with LB / SB / SC / LU filters and alerts, all 222">OI BUILD-UP all 222<span class="bx lb">LB 38</span><span class="bx sb">SB 96</span><span class="bx sc">SC 27</span><span class="bx lu">LU 61</span> <span class="fk">F10</span></a>
+      <a class="alk" href="futures-oi.html#months" title="F10 Fut &amp; OI · futures by month (near / next / far): price, OI, OI change, basis, rollover">fut OI by month <span class="fk">F10</span></a>
+    </div>
+    <div id="hold" class="sh-acc-mine" title="Your open trades, pinned above every theme. Click = MY TRADES (F6).">
+      <div class="hr near" title="EXIT 11:39:40 · acked 11:39:52 · not done → Kite: MODIFY SL-L → LIMIT 14.45 (one order) · copper bounced"><div class="h1"><span class="c held">HELD</span><a class="sym" href="share.html#HINDALCO" title="open the HINDALCO share page (F7)">HINDALCO</a><span class="c exit">EXIT · not done</span><span class="oc pe">PE 680 Dec ×1</span><span><span class="m">16.40</span> → <span class="wide">bid </span><span class="n1366"></span><span class="m">14.50</span><span class="wide"> / ask <span class="m">14.60</span></span><span class="n1366"></span></span><span class="pl dn">−₹3,080</span><span class="pl dn" style="font-size:12px">−0.6R</span><span class="rt"><a class="lk" href="positions.html" style="font-size:11px">F6 ›</a></span></div></div>
+      <div class="hr" title="stalled 11:40:12 → BOOK 1 lot (= all) at bid 14.20 · or stop → entry 13.25 · MWPL 86 %: close only, cannot add"><div class="h1"><span class="c held">HELD</span><a class="sym" href="share.html#MANAPPURAM" title="open the MANAPPURAM share page (F7)">MANAPPURAM</a><span class="c book">BOOK</span><span class="oc pe">PE 285 Dec ×1</span><span><span class="m">13.25</span> → <span class="wide">bid </span><span class="n1366"></span><span class="m">14.20</span><span class="wide"> / ask <span class="m">14.30</span></span><span class="n1366"></span></span><span class="pl up">+₹2,430</span><span class="pl up" style="font-size:12px">+0.5R</span><span class="rt"><a class="lk" href="positions.html" style="font-size:11px">F6 ›</a></span></div></div>
+    </div>
+    <div id="tidx"><div class="ti tih" title="R49: the sector % and breadth are the WHOLE sector - its NSE index, or all its listed shares free-float weighted - never the F&amp;O names alone"><span>#</span><span>theme</span><span class="r" style="grid-column:span 2"><span class="wide">driver move</span><span class="n1366">driver</span></span><span>sector · basis</span><span>breadth all · F&amp;O</span><span>leg · plan</span></div><div class="ti sh-heat-dn sel" style="--m:2.01" data-i="gold" title="click = open this theme below (in place)"><span class="rk">1</span><span class="dv">GOLD</span><span class="mb" title="the driver's move, bar from the centre line (±3 % = full)"><i class="dn" style="width:27.0%"></i></span><span class="p dn">−1.62%</span><span class="sc2"><span class="wide">Jewel &amp; loans</span><span class="n1366">Jewel·loans</span> <span class="n dn" style="font-weight:700">−2.01</span> <span class="bs">all 14</span></span><span class="br"><span class="n">11/14</span><span class="t3"><span class="wide"> · </span><span class="n1366">·</span></span><span class="n">4/4</span></span><span class="bc"><span class="c inf" title="07:15 thesis leg L1: intact">L1 ✓</span><span class="wide"><b>TITAN</b> PE · 1 lot fits</span><span class="n1366"><b>TITAN</b> PE fits</span></span></div><div class="ti sh-heat-dn" style="--m:1.34" data-i="sebi" title="click = open this theme below (in place)"><span class="rk">2</span><span class="dv"><span class="wide">POLICY·SEBI</span><span class="n1366">SEBI</span></span><span class="mb" title="the driver's move, bar from the centre line (±3 % = full)"></span><span class="p t2"><span class="t2" style="font-weight:600">news</span></span><span class="sc2">Brokers <span class="n dn" style="font-weight:700">−1.34</span> <span class="bs">all 12</span></span><span class="br"><span class="n">7/12</span><span class="t3"><span class="wide"> · </span><span class="n1366">·</span></span><span class="n">4/4</span></span><span class="bc"><span class="c al"><span class="wide">! SHOCK</span><span class="n1366">SHOCK</span></span><b>ANGELONE</b> 0 lots</span></div><div class="ti sh-heat-dn" style="--m:1.28" data-i="copper" title="click = open this theme below (in place)"><span class="rk">3</span><span class="dv">COPPER</span><span class="mb" title="the driver's move, bar from the centre line (±3 % = full)"><i class="dn" style="width:15.3%"></i></span><span class="p dn">−0.92%</span><span class="sc2">Metals <span class="n dn" style="font-weight:700">−1.28</span> <span class="bs">index</span></span><span class="br"><span class="n">13/15</span><span class="t3"><span class="wide"> · </span><span class="n1366">·</span></span><span class="n">9/11</span></span><span class="bc"><span class="c wnc" title="07:15 thesis leg L2: faded since 11:30"><span class="wide">L2 faded</span><span class="n1366">L2 fade</span></span><b class="no">HINDALCO EXIT</b></span></div><div class="ti sh-heat-up" style="--m:0.98" data-i="pharma" title="click = open this theme below (in place)"><span class="rk">4</span><span class="dv">PHARMA</span><span class="mb" title="the driver's move, bar from the centre line (±3 % = full)"></span><span class="p t2"><span class="t2" style="font-weight:600">story</span></span><span class="sc2">Pharma <span class="n up" style="font-weight:700">+0.98</span> <span class="bs">index</span></span><span class="br"><span class="n">16/20</span><span class="t3"><span class="wide"> · </span><span class="n1366">·</span></span><span class="n">9/10</span></span><span class="bc"><span class="c inf" title="07:15 thesis leg L3: intact">L3 ✓</span><b>SUNPHARMA</b> CE fits</span></div><div class="ti sh-heat-up" style="--m:0.30" data-i="crude" title="click = open this theme below (in place)"><span class="rk">5</span><span class="dv">CRUDE</span><span class="mb" title="the driver's move, bar from the centre line (±3 % = full)"><i class="dn" style="width:18.3%"></i></span><span class="p dn">−1.10%</span><span class="sc2">Oil mktg <span class="n up" style="font-weight:700">+0.30</span> <span class="bs">all 5</span></span><span class="br"><span class="n">3/5</span><span class="t3"><span class="wide"> · </span><span class="n1366">·</span></span><span class="n">3/3</span><span class="c nar" title="NARROW - F&amp;O-only move: the sector's F&amp;O names move, most of its other listed shares do not (R49)">NARROW</span></span><span class="bc"><span class="c">none</span><span class="c stl" title="IOC data 14 s old: stale = a hard block until it ticks">IOC STALE 14s</span></span></div><div class="ti sh-heat-dn" style="--m:0.95" data-i="ndx" title="click = open this theme below (in place)"><span class="rk">6</span><span class="dv">NASDAQ</span><span class="mb" title="the driver's move, bar from the centre line (±3 % = full)"><i class="dn" style="width:32.0%"></i></span><span class="p dn">−1.92%</span><span class="sc2">IT <span class="n dn" style="font-weight:700">−0.95</span> <span class="bs">index</span></span><span class="br"><span class="n">9/10</span><span class="t3"><span class="wide"> · </span><span class="n1366">·</span></span><span class="n">9/10</span></span><span class="bc"><span class="c"><span class="wide">no theme</span><span class="n1366">none</span></span><span class="wide">nothing to do</span><span class="n1366">nothing</span></span></div><div class="ti" style="--m:0.00" data-i="below" title="click = open this theme below (in place)"><span class="rk">7</span><span class="dv"><span class="wide">BELOW LINE</span><span class="n1366">BELOW</span></span><span class="mb" title="the driver's move, bar from the centre line (±3 % = full)"></span><span class="p t2"><span class="t2" style="font-weight:600">-</span></span><span class="sc2"><span class="t3">context only</span></span><span class="br"><span class="t3">-</span></span><span class="bc"><span class="c">none</span><span class="wide">nothing to do</span><span class="n1366">nothing</span></span></div></div>
+    <div class="shd og"><span>option</span><span>bid</span><span>sprd</span><span>depth</span><span>IV/20d</span><span>trigger</span><span>stop sh/prem</span><span>target sh/prem</span></div>
+    <div class="pb" id="tmb" data-label="rows" data-unit=".sr,.grp,.tline,.tbh,.ti" data-cap="26"><div class="tb" id="tb-gold" data-secs="jewellers goldloans">
+  <div class="tbh" data-i="gold" data-nm="GOLD"><span class="dv">1 · GOLD</span><span class="p dn">−1.62%</span><span>MCX ₹ = COMEX $ <span class="dn">−1.58</span> + ₹ <span class="up">+0.08</span> + basis <span class="dn">−0.12</span><span class="wide"> · <b>₹186 cr shorts 2.8x</b></span><span class="n1366"></span></span></div>
+  <div class="tline why" data-nm="why"><span class="wk">why</span><span class="m">00:30</span> · <b>FOMC minutes</b> · <span class="wide">“fewer cuts in 2027” · hawkish +1.2σ → COMEX gold −1.58 % since our close</span><span class="n1366">“fewer cuts in 2027” → gold −1.58 %</span></div>
+  <div class="grp" data-nm="Jewellers &amp; gold loans"><a class="sl" href="sectors.html#jewellers"><span class="wide">JEWELLERS &amp; GOLD LOANS</span><span class="n1366">JEWEL &amp; GOLD LOANS</span></a><span class="p dn">−2.01%</span><span class="bas" title="R49: no NSE index for this sector → all 14 listed jewellers and gold-loan companies, free-float weighted: TITAN 58 % × −2.48 + MUTHOOTFIN 11 % × −1.95 + KALYANKJIL 9 % × −0.62 + MANAPPURAM 7 % × −2.30 + 10 non-F&amp;O 15 % × −0.93 = −2.01 % (same as F2 Sectors)"><span class="wide">all 14 listed · free-float</span><span class="n1366">all 14 listed</span></span><span class="bth" title="breadth over all listed shares of the sector · over its F&amp;O shares">breadth <b class="n">11/14</b> all · F&amp;O <b class="n">4/4</b></span><span class="bt" title="sector β to MCX gold 0.95 (70 %, n=48) → implied −1.54 % · actual −2.01 % = 131 % followed">β <span class="m">0.95</span> → <b>131%</b></span></div>
+  <div class="sr sel" data-act="gr" data-bu="SB" data-nm="TITAN" id="sr-TITAN">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#TITAN" title="open the TITAN share page (F7)">TITAN</a><span class="rtag ld">LEADER · EXTENDED</span></span><span class="ac"><span class="c gr" title="GET READY: the plan fits every hard gate; wait for the trigger">GET READY</span></span>
+      <span class="ltp">3,398.20</span><span class="pc dn">−2.48%</span><span class="st"><span class="v">β 1.31</span><span class="h" title="same-direction hit rate 68%, 95% range 54-79%, n=48 days">68% n48</span></span><span class="st"><span class="v t2">→ −2.12</span><span class="h">117% done</span></span><span class="bc"><a class="bu sb" href="futures-oi.html#SB" title="short build-up: price down, OI up (fresh shorts) · 3/3 = futures months agreeing · click = the SB list of all 222 on F10">SB 3/3</a></span></div>
+    <div class="r2 og"><span class="o"><span class="oc pe">PE 3,400 Dec</span></span><span class="pr">135.40</span><span class="">0.4%</span><span class="">41 lots</span><span class="">1.00x</span><span class=""><3,414 ↺</span><span class="">3,436/118.80</span><span class="">3,356/157.20</span></div><div class="r3"><span title="max loss = (128.60 − 118.80) × 175 = ₹1,715 + costs ₹183 (charges ₹87 + est. exit slippage ₹96) = ₹1,898">entry ≈<span class="m">128.60</span> × 175 = <span class="m">₹22,505</span> · max <span class="m">₹1,898</span><span class="wide"> 0.4R</span><span class="n1366"></span></span> · <b>1 lot fits<span class="wide"> the lock room ₹1,980</span><span class="n1366"></span></b><span class="wide"> · ↺ bounce to VWAP 3,421</span><span class="n1366"> · ↺ VWAP</span></div></div>
+  <div class="sr" data-act="bl" data-bu="LU" data-nm="KALYANKJIL" id="sr-KALYANKJIL">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#KALYANKJIL" title="open the KALYANKJIL share page (F7)">KALYANKJIL</a><span class="rtag lg">LAGGARD<span class="wide"> <span class="dn">▼ CATCH-DOWN</span></span><span class="n1366"> <span class="dn">▼ CATCH-DN</span></span></span></span><span class="ac"><span class="c blk" title="lock room = ₹10,000 lock − ₹650 lost today = ₹9,350 left; minus a further ₹7,370 if both open positions hit their share stops (−₹8,020 at stops) = ₹1,980. The max loss of this plan is bigger → 0 lots now (a hard block, R12). It frees when your two open trades are closed.">BLOCKED</span></span>
+      <span class="ltp">524.80</span><span class="pc dn">−0.62%</span><span class="st"><span class="v">β 1.62</span><span class="h" title="same-direction hit rate 61%, 95% range 46-74%, n=41 days">61% n41</span></span><span class="st"><span class="v t2">→ −2.62</span><span class="h">2.0 to go</span></span><span class="bc"><a class="bu lu" href="futures-oi.html#LU" title="long unwinding: price down, OI down (longs leaving) · 1/3 = futures months agreeing · click = the LU list of all 222 on F10">LU 1/3</a></span></div>
+    <div class="r2 og"><span class="o"><span class="oc pe">PE 525 Dec</span></span><span class="pr">23.45</span><span class="">0.9%</span><span class="">26 lots</span><span class="">1.10x</span><span class=""><521.60</span><span class="">528.60/21.75</span><span class="">512.00/30.60</span></div><div class="r3"><span title="max loss = (25.25 − 21.75) × 1,350 = ₹4,725 + costs ₹245 = ₹4,970">entry ≈<span class="m">25.25</span> × 1,350 = <span class="m">₹34,088</span> · max <span class="m">₹4,970</span></span> <span class="wide">&gt; lock room ₹1,980 → <b>0 lots now</b> · 520 PE too wide</span><span class="n1366">&gt; lock room → <b>0 lots</b></span></div></div>
+  <div class="sr held" data-act="held" data-bu="SB" data-nm="MANAPPURAM" id="sr-MANAPPURAM">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#MANAPPURAM" title="open the MANAPPURAM share page (F7)">MANAPPURAM</a><span class="rtag dp">DEPENDENT</span></span><span class="ac"><span class="c held">HELD</span></span>
+      <span class="ltp">284.50</span><span class="pc dn">−2.30%</span><span class="st"><span class="v">β 1.18</span><span class="h" title="same-direction hit rate 66%, 95% range 52-78%, n=48 days">66% n48</span></span><span class="st"><span class="v t2">→ −1.91</span><span class="h">120% done</span></span><span class="bc"><a class="bu sb" href="futures-oi.html#SB" title="short build-up: price down, OI up (fresh shorts) · 3/3 = futures months agreeing · click = the SB list of all 222 on F10">SB 3/3</a></span></div>
+    <div class="r2 og"><span class="np"><b style="color:var(--text)"><span class="wide">you hold PE 285 Dec ×1</span><span class="n1366">PE 285 ×1</span></b> · 13.25 → bid 14.20 · <b class="up">+₹2,430</b> · <b class="am">BOOK</b> <span class="wide">(stalled 11:40:12) </span><span class="n1366"></span>pinned ↑ · MWPL 86%</span></div></div>
+  <div class="sr" data-act="none" data-bu="SB" data-nm="MUTHOOTFIN" id="sr-MUTHOOTFIN">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#MUTHOOTFIN" title="open the MUTHOOTFIN share page (F7)">MUTHOOTFIN</a><span class="rtag dp">DEPENDENT</span></span><span class="ac"><span class="c cls">no plan</span></span>
+      <span class="ltp">2,155.60</span><span class="pc dn">−1.95%</span><span class="st"><span class="v">β 0.97</span><span class="h" title="same-direction hit rate 63%, 95% range 49-75%, n=48 days">63% n48</span></span><span class="st"><span class="v t2">→ −1.57</span><span class="h">124% done</span></span><span class="bc"><a class="bu sb" href="futures-oi.html#SB" title="short build-up: price down, OI up (fresh shorts) · 2/3 = futures months agreeing · click = the SB list of all 222 on F10">SB 2/3</a></span></div>
+    <div class="r2 og"><span class="np">no plan · 1 gold PE at a time - <span class="wide">TITAN is the gold pick (same driver as your MANAPPURAM)</span><span class="n1366">TITAN is the gold pick</span></span></div></div>
+  <div class="tline" data-nm="replay">replay ⇧F10: gold ≤ −1.5 % days, extended leader on the bounce: <b>n=46 · hit 59% (45-72) · avg +0.7R</b> · <a class="lk" href="replay.html">⇧F10</a></div>
+</div>
+<div class="tb" id="tb-sebi" data-secs="brokers">
+  <div class="tbh" data-i="sebi" data-nm="POLICY·SEBI"><span class="dv">2 · POLICY · SEBI</span><span class="c al">! SHOCK 11:42</span><span>“MTF limits - sources” · <b>no decision yet</b> · 2nd source: none<span class="wide"> · SEBI site: nothing</span><span class="n1366"></span></span></div>
+  <div class="tline why" data-nm="why"><span class="wk">why</span><span class="m">11:42:31</span> · <b>CNBC-TV18</b> · <span class="wide">“SEBI mulls MTF limits - sources” · +35 s after the first move (11:41:56)</span><span class="n1366">“SEBI mulls MTF limits - sources” · +35 s</span> · <a class="lk" href="news.html#policy">F4</a></div>
+  <div class="grp" data-nm="Brokers"><a class="sl" href="sectors.html#brokers"><span class="wide">BROKERS &amp; EXCHANGES</span><span class="n1366">BROKERS &amp; EXCH</span></a><span class="p dn">−1.34%</span><span class="bas" title="R49: all 12 listed brokers and exchanges, free-float weighted: BSE 30 % × −1.88 + MCX 17 % × −1.30 + CDSL 15 % × −1.62 + ANGELONE 10 % × −2.10 + 8 non-F&amp;O 28 % × −0.35 = −1.34 % (same as F2 Sectors) · the SEBI-MTF policy basket is 6 shares: 5 moved in 52 s"><span class="wide">all 12 listed · free-float</span><span class="n1366">all 12 listed</span></span><span class="bth" title="breadth over all listed shares of the sector · over its F&amp;O shares">breadth <b class="n">7/12</b> all · F&amp;O <b class="n">4/4</b></span><span class="bys" title="not F&amp;O-only: besides the 4 F&amp;O names (4/4 down), 3 of the 8 non-F&amp;O brokers fall too - MOTILALOFS −1.10 · 360ONE −0.40 · IIFLCAPS −0.30 - so the move is sector-wide, not NARROW (R49)"><span class="wide">+ 3 of 8 non-F&amp;O</span><span class="n1366">+3 non-F&amp;O</span></span></div>
+  <div class="sr" data-act="bl" data-bu="SB" data-nm="ANGELONE" id="sr-ANGELONE">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#ANGELONE" title="open the ANGELONE share page (F7)">ANGELONE</a><span class="rtag ld">LEADER</span></span><span class="ac"><span class="c blk" title="lock room = ₹10,000 lock − ₹650 lost today = ₹9,350 left; minus a further ₹7,370 if both open positions hit their share stops (−₹8,020 at stops) = ₹1,980. The max loss of this plan is bigger → 0 lots now (a hard block, R12). It frees when your two open trades are closed.">BLOCKED</span></span>
+      <span class="ltp">2,296.50</span><span class="pc dn">−2.10%</span><span class="st"><span class="v t3">policy</span><span class="h">no price β</span></span><span class="st"><span class="v t2">52s −2.4%</span><span class="h">alarm −0.2</span></span><span class="bc"><a class="bu sb" href="futures-oi.html#SB" title="short build-up: price down, OI up (fresh shorts) · 2/3 = futures months agreeing · click = the SB list of all 222 on F10">SB 2/3</a></span></div>
+    <div class="r2 og"><span class="o"><span class="oc pe">PE 2,300 Dec</span></span><span class="pr">118.40</span><span class="">0.8%</span><span class="">18 lots</span><span class="">1.30x</span><span class=""><2,290 +src</span><span class="">2,320/106.60</span><span class="">2,240/147.60</span></div><div class="r3"><span title="max loss = (121.60 − 106.60) × 250 = ₹3,750 + charges ₹80 = ₹3,830">entry ≈<span class="m">121.60</span> × 250 = <span class="m">₹30,400</span> · max <span class="m">₹3,830</span></span> &gt; <span class="wide">lock room ₹1,980 → <b>0 lots now</b> · +src = 2nd independent source</span><span class="n1366">lock room → <b>0 lots</b> · +src = 2nd source</span></div></div>
+  <div class="sr" data-act="watch" data-bu="LU" data-nm="BSE" id="sr-BSE">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#BSE" title="open the BSE share page (F7)">BSE</a><span class="rtag fo">FOLLOWER</span></span><span class="ac"><span class="c">watch</span></span>
+      <span class="ltp">2,604.10</span><span class="pc dn">−1.88%</span><span class="st"><span class="v t3">policy</span><span class="h">no price β</span></span><span class="st"><span class="v t2">52s −2.0%</span><span class="h">alarm −0.1</span></span><span class="bc"><a class="bu lu" href="futures-oi.html#LU" title="long unwinding: price down, OI down (longs leaving) · 2/3 = futures months agreeing · click = the LU list of all 222 on F10">LU 2/3</a></span></div>
+    <div class="r2 og"><span class="np">watch: PE 2,600 Dec 96.80 · <span class="wide">R:R 1.4 &lt; 1.5 · LU = longs leaving, not fresh shorts</span><span class="n1366">R:R 1.4 · longs leaving</span></span></div></div>
+  <div class="sr" data-act="watch" data-bu="LU" data-nm="CDSL" id="sr-CDSL">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#CDSL" title="open the CDSL share page (F7)">CDSL</a><span class="rtag fo">FOLLOWER</span></span><span class="ac"><span class="c">watch</span></span>
+      <span class="ltp">1,512.30</span><span class="pc dn">−1.62%</span><span class="st"><span class="v t3">policy</span><span class="h">no price β</span></span><span class="st"><span class="v t2">52s −1.7%</span><span class="h">longs out</span></span><span class="bc"><a class="bu lu" href="futures-oi.html#LU" title="long unwinding: price down, OI down (longs leaving) · 1/3 = futures months agreeing · click = the LU list of all 222 on F10">LU 1/3</a></span></div>
+    <div class="r2 og"><span class="np">watch: PE 1,520 Dec 44.10 · sprd 0.8% · no fresh shorts</span></div></div>
+  <div class="sr" data-act="watch" data-bu="LU" data-nm="MCX" id="sr-MCX">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#MCX" title="open the MCX share page (F7)">MCX</a><span class="rtag fo">FOLLOWER</span></span><span class="ac"><span class="c">watch</span></span>
+      <span class="ltp">7,904.00</span><span class="pc dn">−1.30%</span><span class="st"><span class="v t3">policy</span><span class="h">no price β</span></span><span class="st"><span class="v t2">52s −1.3%</span><span class="h">≠ MCX-gold</span></span><span class="bc"><a class="bu lu" href="futures-oi.html#LU" title="long unwinding: price down, OI down (longs leaving) · 1/3 = futures months agreeing · click = the LU list of all 222 on F10">LU 1/3</a></span></div>
+    <div class="r2 og"><span class="np">watch: PE 7,900 Dec 212.50 · the share, not MCX prices</span></div></div>
+  <div class="tline" data-nm="non-F&amp;O">not F&amp;O (no option, data only): <a class="lk" href="share.html#MOTILALOFS" title="open the MOTILALOFS share page (F7)">MOTILALOFS</a> −1.10 (in the basket) · <a class="lk" href="share.html#360ONE" title="open the 360ONE share page (F7)">360ONE</a> −0.40 (basket, small) · IIFLCAPS −0.30 · 3 of the 8 non-F&amp;O fall, 5 flat → <b>not NARROW</b>: the fall reaches past the F&amp;O names</div>
+  <div class="tline" data-nm="history">past SEBI-MTF stories (n=5, rule of thumb): brokers −1.5 % to −3 % on day 1 · a denial snapped back 3 of 5 times · 18 Nov: ANGELONE 2,450 CE −₹3,400</div>
+</div>
+<div class="tb" id="tb-copper" data-secs="cables metals">
+  <div class="tbh" data-i="copper" data-nm="COPPER"><span class="dv">3 · COPPER</span><span class="p dn">−0.92%</span><span><span class="wide">low −1.81 % at 10:12 (5-month low) · leg faded 11:30</span><span class="n1366">low −1.81 % 10:12 · faded</span></span><span class="c wnc">⚑ <span class="wide">shares still near lows</span><span class="n1366">shares at lows</span></span></div>
+  <div class="tline why" data-nm="why"><span class="wk">why</span><span class="m">10:14</span> · <b>Moneycontrol live blog</b> · <span class="wide">“copper hits 5-month low” · since faded to −0.92 %</span><span class="n1366">“copper 5-month low” · faded</span></div>
+  <div class="grp" data-nm="Cables"><a class="sl" href="sectors.html#cables">CABLES &amp; WIRES</a><span class="p dn">−1.16%</span><span class="bas" title="R49: all 9 listed cables &amp; wires makers, free-float: POLYCAB 45 % × −1.60 + KEI 22 % × −1.45 + HAVELLS 15 % × −0.70 + 6 non-F&amp;O 18 % × −0.10 = −1.16 % (same as F2 Sectors) · copper is a COST for them"><span class="wide">all 9 listed · free-float</span><span class="n1366">all 9 listed</span></span><span class="bth" title="breadth over all listed shares of the sector · over its F&amp;O shares">breadth <b class="n">4/9</b> all · F&amp;O <b class="n">3/3</b></span><span class="c nar" title="NARROW - F&amp;O-only move: the sector's F&amp;O names move, most of its other listed shares do not (R49)">NARROW<span class="wide"> · F&amp;O-only</span><span class="n1366"></span></span><span class="bt" title="β to copper 0.74 (64 %, n=44) → implied now −0.68 % · actual −1.16 % = 171 %">β <span class="m">0.74</span> → <b>171%</b></span></div>
+  <div class="sr" data-act="none" data-bu="SB" data-nm="POLYCAB" id="sr-POLYCAB">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#POLYCAB" title="open the POLYCAB share page (F7)">POLYCAB</a><span class="rtag ld">LEADER · EXTENDED</span></span><span class="ac"><span class="c cls">no plan</span></span>
+      <span class="ltp">6,884.00</span><span class="pc dn">−1.60%</span><span class="st"><span class="v">β 1.05</span><span class="h" title="same-direction hit rate 66%, 95% range 51-78%, n=44 days">66% n44</span></span><span class="st"><span class="v t2">→ −0.97</span><span class="h">165% done</span></span><span class="bc"><a class="bu sb" href="futures-oi.html#SB" title="short build-up: price down, OI up (fresh shorts) · 3/3 = futures months agreeing · click = the SB list of all 222 on F10">SB 3/3</a></span></div>
+    <div class="r2 og"><span class="np">no new plan: <span class="wide">leg faded 11:30 · re-arms below the 10:12 low · 11:23 GO NOW expired 11:31</span><span class="n1366">leg faded · re-arms below 10:12 low</span></span></div><div class="r3"><span class="wide">if it re-arms: </span><span class="n1366"></span>PE 6,900 Dec ≈<span class="m">172.00</span> × 125 = <span class="m">₹21,500</span> · max <span class="m">₹2,585</span> &gt; <span class="wide">lock room ₹1,980</span><span class="n1366">lock room</span></div></div>
+  <div class="sr" data-act="none" data-bu="LU" data-nm="KEI" id="sr-KEI">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#KEI" title="open the KEI share page (F7)">KEI</a><span class="rtag fo">FOLLOWER</span></span><span class="ac"><span class="c cls">no plan</span></span>
+      <span class="ltp">3,962.40</span><span class="pc dn">−1.45%</span><span class="st"><span class="v">β 0.98</span><span class="h" title="same-direction hit rate 61%, 95% range 46-74%, n=44 days">61% n44</span></span><span class="st"><span class="v t2">→ −0.90</span><span class="h">161% done</span></span><span class="bc"><a class="bu lu" href="futures-oi.html#LU" title="long unwinding: price down, OI down (longs leaving) · 2/3 = futures months agreeing · click = the LU list of all 222 on F10">LU 2/3</a></span></div>
+    <div class="r2 og"><span class="np">no plan: LU = longs leaving · depth 4 lots (thin)</span></div></div>
+  <div class="sr" data-act="none" data-bu="LU" data-nm="HAVELLS" id="sr-HAVELLS">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#HAVELLS" title="open the HAVELLS share page (F7)">HAVELLS</a><span class="rtag fo">FOLLOWER</span></span><span class="ac"><span class="c cls">no plan</span></span>
+      <span class="ltp">1,498.20</span><span class="pc dn">−0.70%</span><span class="st"><span class="v">β 0.48</span><span class="h" title="same-direction hit rate 55%, 95% range 40-69%, n=44 days">55% n44</span></span><span class="st"><span class="v t2">→ −0.44</span><span class="h">159% done</span></span><span class="bc"><a class="bu lu" href="futures-oi.html#LU" title="long unwinding: price down, OI down (longs leaving) · 1/3 = futures months agreeing · click = the LU list of all 222 on F10">LU 1/3</a></span></div>
+    <div class="r2 og"><span class="np">no plan: RVOL 0.9 · copper is a small part of its costs</span></div></div>
+  <div class="grp" data-nm="Metals"><a class="sl" href="sectors.html#metals">METALS</a><span class="p dn">−1.28%</span><span class="bas" title="R49: NIFTY METAL index (NSE, 15 shares, free-float) −1.28 % · breadth 13/15 · the 11 F&amp;O metals shares 9/11 down (same as F2 Sectors)"><span class="wide">NIFTY METAL index (15)</span><span class="n1366">NIFTY METAL</span></span><span class="bth" title="breadth over all listed shares of the sector · over its F&amp;O shares">breadth <b class="n">13/15</b> all · F&amp;O <b class="n">9/11</b></span><span class="bt" title="copper β 0.88 → implied −0.81 % · plus aluminium −1.10 %">Cu β <span class="m">0.88</span> + alu</span></div>
+  <div class="sr near" data-act="held" data-bu="SB" data-nm="HINDALCO" id="sr-HINDALCO">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#HINDALCO" title="open the HINDALCO share page (F7)">HINDALCO</a><span class="rtag dp">DEPENDENT · alu</span></span><span class="ac"><span class="c held">HELD</span></span>
+      <span class="ltp">684.70</span><span class="pc dn">−1.11%</span><span class="st"><span class="v">β 0.62 <span class="t3" style="font-size:11px">Cu</span></span><span class="h" title="same-direction hit rate 58%, 95% range 44-70%, n=52 days">58% n52</span></span><span class="st"><span class="v t2">→ −0.57</span><span class="h">alu β 0.95</span></span><span class="bc"><a class="bu sb" href="futures-oi.html#SB" title="short build-up: price down, OI up (fresh shorts) · 2/3 = futures months agreeing · click = the SB list of all 222 on F10">SB 2/3</a></span></div>
+    <div class="r2 og"><span class="np"><b style="color:var(--text)"><span class="wide">you hold PE 680 Dec ×1</span><span class="n1366">PE 680 ×1</span></b> · 16.40 → bid 14.50 · <b class="dn">−₹3,080</b> · <b class="no">EXIT not done</b> → pinned ↑</span></div></div>
+  <div class="sr" data-act="none" data-bu="SB" data-nm="HINDCOPPER" id="sr-HINDCOPPER">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#HINDCOPPER" title="open the HINDCOPPER share page (F7)">HINDCOPPER</a><span class="rtag ld">LEADER · copper</span></span><span class="ac"><span class="c cls">no plan</span></span>
+      <span class="ltp">312.45</span><span class="pc dn">−1.70%</span><span class="st"><span class="v">β 1.40 <span class="t3" style="font-size:11px">Cu</span></span><span class="h" title="same-direction hit rate 58%, 95% range 44-71%, n=50 days">58% n50</span></span><span class="st"><span class="v t2">→ −1.29</span><span class="h">132% done</span></span><span class="bc"><a class="bu sb" href="futures-oi.html#SB" title="short build-up: price down, OI up (fresh shorts) · 2/3 = futures months agreeing · click = the SB list of all 222 on F10">SB 2/3</a></span></div>
+    <div class="r2 og"><span class="np">no new plan · <span class="wide">MWPL 91 % (&gt; 85 %): may enter the ban tomorrow · exits always allowed</span><span class="n1366">MWPL 91 %: ban risk tomorrow</span></span></div></div>
+  <div class="sr" data-act="none" data-bu="SB" data-nm="NATIONALUM" id="sr-NATIONALUM">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#NATIONALUM" title="open the NATIONALUM share page (F7)">NATIONALUM</a><span class="rtag dp">DEPENDENT · alu</span></span><span class="ac"><span class="c cls">no plan</span></span>
+      <span class="ltp">204.35</span><span class="pc dn">−1.50%</span><span class="st"><span class="v">β 1.10 <span class="t3" style="font-size:11px">alu</span></span><span class="h" title="same-direction hit rate 62%, 95% range 48-74%, n=50 days">62% n50</span></span><span class="st"><span class="v t2">→ −1.21</span><span class="h">124% done</span></span><span class="bc"><a class="bu sb" href="futures-oi.html#SB" title="short build-up: price down, OI up (fresh shorts) · 2/3 = futures months agreeing · click = the SB list of all 222 on F10">SB 2/3</a></span></div>
+    <div class="r2 og"><span class="np">no plan: driver is aluminium (below its line) · wait for VWAP</span></div></div>
+  <div class="sr" data-act="none" data-bu="SB" data-nm="VEDL" id="sr-VEDL">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#VEDL" title="open the VEDL share page (F7)">VEDL</a><span class="rtag dp">DEPENDENT · mix</span></span><span class="ac"><span class="c cls">no plan</span></span>
+      <span class="ltp">452.10</span><span class="pc dn">−0.62%</span><span class="st"><span class="v">β 0.80 <span class="t3" style="font-size:11px">Cu</span></span><span class="h" title="same-direction hit rate 60%, 95% range 46-72%, n=52 days">60% n52</span></span><span class="st"><span class="v t2">→ −0.74</span><span class="h">84% done</span></span><span class="bc"><a class="bu sb" href="futures-oi.html#SB" title="short build-up: price down, OI up (fresh shorts) · 1/3 = futures months agreeing · click = the SB list of all 222 on F10">SB 1/3</a></span></div>
+    <div class="r2 og"><span class="np">no plan: lags copper · RVOL 0.8 · copper / alu / zinc mix · MWPL 82%</span></div></div>
+</div>
+<div class="tb" id="tb-pharma" data-secs="pharma">
+  <div class="tbh" data-i="pharma" data-nm="PHARMA"><span class="dv">4 · PHARMA · STORY</span><span class="p up">+0.98%</span><span><b>₹142 cr longs 2.1x</b> · <span class="wide">ROTATION 30M: out of IT, AUTO → into PHARMA</span><span class="n1366">ROTATION in</span> <a class="lk" href="rotation.html">F3</a></span></div>
+  <div class="tline why" data-nm="why"><span class="wk">why</span><span class="m">08:40</span> · <b>Reuters</b> · <span class="wide">“US tariff waiver for generic drugs” · ₹/$ β explains only +0.03 → a story, not a driver</span><span class="n1366">“US tariff waiver for generics” → a story</span></div>
+  <div class="grp" data-nm="Pharma"><a class="sl" href="sectors.html#pharma">PHARMA</a><span class="p up">+0.98%</span><span class="bas" title="R49: NIFTY PHARMA index (NSE, 20 shares) +0.98 % · breadth 16/20 · F&amp;O 9/10 up (same as F2 Sectors)"><span class="wide">NIFTY PHARMA index (20)</span><span class="n1366">NIFTY PHARMA</span></span><span class="bth" title="breadth over all listed shares of the sector · over its F&amp;O shares">breadth <b class="n">16/20</b> all · F&amp;O <b class="n">9/10</b></span><span class="bt">LB 7/10 · <span class="wide">ROT CONFIRMED 16m</span><span class="n1366">ROT 16m</span></span></div>
+  <div class="sr" data-act="gr" data-bu="LB" data-nm="SUNPHARMA" id="sr-SUNPHARMA">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#SUNPHARMA" title="open the SUNPHARMA share page (F7)">SUNPHARMA</a><span class="rtag ld">LEADER</span></span><span class="ac"><span class="c gr" title="GET READY: the plan fits every hard gate; wait for the trigger">GET READY</span></span>
+      <span class="ltp">1,806.40</span><span class="pc up">+1.42%</span><span class="st"><span class="v">β 0.42 <span class="t3" style="font-size:11px">₹</span></span><span class="h" title="same-direction hit rate 58%, 95% range 45-70%, n=60 days">58% n60</span></span><span class="st"><span class="v t2">story-led</span><span class="h">+1.42 own</span></span><span class="bc"><a class="bu lb" href="futures-oi.html#LB" title="long build-up: price up, OI up · 3/3 = futures months agreeing · click = the LB list of all 222 on F10">LB 3/3</a></span></div>
+    <div class="r2 og"><span class="o"><span class="oc ce">CE 1,840 Dec</span></span><span class="pr">46.80</span><span class="">1.0%</span><span class="">33 lots</span><span class="">1.00x</span><span class="">VWAP 1,798 ↺</span><span class="">1,786/38.70</span><span class="">1,837/60.10</span></div><div class="r3"><span title="max loss = (43.70 − 38.70) × 350 = ₹1,750 + costs ₹156 = ₹1,906">entry ≈<span class="m">43.70</span> × 350 = <span class="m">₹15,295</span> · max <span class="m">₹1,906</span><span class="wide"> 0.4R</span><span class="n1366"></span></span> · <b>1 lot fits<span class="wide"> the lock room ₹1,980</span><span class="n1366"></span></b><span class="wide"> · ↺ VWAP pullback holds</span><span class="n1366"> · ↺ VWAP</span></div></div>
+  <div class="sr" data-act="bl" data-bu="LU" data-nm="DIVISLAB" id="sr-DIVISLAB">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#DIVISLAB" title="open the DIVISLAB share page (F7)">DIVISLAB</a><span class="rtag lg">LAGGARD <span class="up">▲ CATCH-UP</span></span></span><span class="ac"><span class="c blk" title="lock room = ₹10,000 lock − ₹650 lost today = ₹9,350 left; minus a further ₹7,370 if both open positions hit their share stops (−₹8,020 at stops) = ₹1,980. The max loss of this plan is bigger → 0 lots now (a hard block, R12). It frees when your two open trades are closed.">BLOCKED</span></span>
+      <span class="ltp">5,960.00</span><span class="pc dn">−0.20%</span><span class="st"><span class="v">β 0.30 <span class="t3" style="font-size:11px">₹</span></span><span class="h" title="same-direction hit rate 55%, 95% range 42-67%, n=60 days">55% n60</span></span><span class="st"><span class="v t2">vs +0.98</span><span class="h">1.18 to go</span></span><span class="bc"><a class="bu lu" href="futures-oi.html#LU" title="long unwinding: price down, OI down (longs leaving) · 1/3 = futures months agreeing · click = the LU list of all 222 on F10">LU 1/3</a></span></div>
+    <div class="r2 og"><span class="o"><span class="oc ce">CE 6,000 Dec</span></span><span class="pr">194.20</span><span class="">0.6%</span><span class="">12 lots</span><span class="">1.10x</span><span class="">>5,985</span><span class="">5,928/180.90</span><span class="">6,080/250.60</span></div><div class="r3"><span title="max loss = (206.90 − 180.90) × 100 = ₹2,600 + costs ₹150 = ₹2,750">entry ≈<span class="m">206.90</span> × 100 = <span class="m">₹20,690</span> · max <span class="m">₹2,750</span></span> &gt; <span class="wide">lock room ₹1,980 → <b>0 lots now</b> · checks 5/5 ✓</span><span class="n1366">lock room → <b>0 lots</b></span></div></div>
+  <div class="sr" data-act="watch" data-bu="LB" data-nm="LUPIN" id="sr-LUPIN">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#LUPIN" title="open the LUPIN share page (F7)">LUPIN</a><span class="rtag ld">LEADER · EXTENDED</span></span><span class="ac"><span class="c">watch</span></span>
+      <span class="ltp">2,111.40</span><span class="pc up">+1.70%</span><span class="st"><span class="v">β 0.38 <span class="t3" style="font-size:11px">₹</span></span><span class="h" title="same-direction hit rate 56%, 95% range 43-68%, n=60 days">56% n60</span></span><span class="st"><span class="v t2">1.25 ATR</span><span class="h">1.1x day</span></span><span class="bc"><a class="bu lb" href="futures-oi.html#LB" title="long build-up: price up, OI up · 2/3 = futures months agreeing · click = the LB list of all 222 on F10">LB 2/3</a></span></div>
+    <div class="r2 og"><span class="np">watch: CE 2,100 Dec 58.40 · <span class="wide">moved 1.1x its normal day → only on a pullback to VWAP 2,092</span><span class="n1366">only on a pullback to 2,092</span></span></div></div>
+  <div class="sr" data-act="none" data-bu="LB" data-nm="BIOCON" id="sr-BIOCON">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#BIOCON" title="open the BIOCON share page (F7)">BIOCON</a><span class="rtag fo">FOLLOWER</span></span><span class="ac"><span class="c cls">no plan</span></span>
+      <span class="ltp">372.15</span><span class="pc up">+1.10%</span><span class="st"><span class="v">β 0.25 <span class="t3" style="font-size:11px">₹</span></span><span class="h" title="same-direction hit rate 52%, 95% range 40-64%, n=60 days">52% n60</span></span><span class="st"><span class="v t2"></span><span class="h"></span></span><span class="bc"><a class="bu lb" href="futures-oi.html#LB" title="long build-up: price up, OI up · 1/3 = futures months agreeing · click = the LB list of all 222 on F10">LB 1/3</a></span></div>
+    <div class="r2 og"><span class="np"><span class="wn">⚠</span> <span class="wt"><span class="wide">RESULTS TOMORROW · IV 1.4x 20d: inflated premium → smaller size or skip</span><span class="n1366">results tomorrow · IV 1.4x</span></span></span></div></div>
+  <div class="sr" data-act="none" data-bu="LB" data-nm="ZYDUSLIFE" id="sr-ZYDUSLIFE">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#ZYDUSLIFE" title="open the ZYDUSLIFE share page (F7)">ZYDUSLIFE</a><span class="rtag fo">FOLLOWER</span></span><span class="ac"><span class="c cls">no plan</span></span>
+      <span class="ltp">1,012.10</span><span class="pc up">+1.40%</span><span class="st"><span class="v">β 0.28 <span class="t3" style="font-size:11px">₹</span></span><span class="h" title="same-direction hit rate 53%, 95% range 41-65%, n=60 days">53% n60</span></span><span class="st"><span class="v t2"></span><span class="h"></span></span><span class="bc"><a class="bu lb" href="futures-oi.html#LB" title="long build-up: price up, OI up · 1/3 = futures months agreeing · click = the LB list of all 222 on F10">LB 1/3</a></span></div>
+    <div class="r2 og"><span class="np">no plan: follower, RVOL 1.2 (needs 1.5)</span></div></div>
+  <div class="sr" data-act="none" data-bu="SC" data-nm="CIPLA" id="sr-CIPLA">
+    <div class="r1"><span class="s1"><a class="sym" href="share.html#CIPLA" title="open the CIPLA share page (F7)">CIPLA</a><span class="rtag fo">FOLLOWER</span></span><span class="ac"><span class="c cls">no plan</span></span>
+      <span class="ltp">1,544.80</span><span class="pc up">+1.25%</span><span class="st"><span class="v">β 0.33 <span class="t3" style="font-size:11px">₹</span></span><span class="h" title="same-direction hit rate 56%, 95% range 43-68%, n=60 days">56% n60</span></span><span class="st"><span class="v t2"></span><span class="h"></span></span><span class="bc"><a class="bu sc" href="futures-oi.html#SC" title="short covering: price up, OI down · 1/3 = futures months agreeing · click = the SC list of all 222 on F10">SC 1/3</a></span></div>
+    <div class="r2 og"><span class="np">dropped from the 07:15 plan: RVOL 1.1 (needs 1.5)</span></div></div>
+  <div class="tline" data-nm="4 more">4 more, no plan: <a class="lk" href="share.html#GLENMARK" title="open the GLENMARK share page (F7)">GLENMARK</a> +1.63 · <a class="lk" href="share.html#TORNTPHARM" title="open the TORNTPHARM share page (F7)">TORNTPHARM</a> +0.85 · <a class="lk" href="share.html#DRREDDY" title="open the DRREDDY share page (F7)">DRREDDY</a> +0.80 · <a class="lk" href="share.html#AUROPHARMA" title="open the AUROPHARMA share page (F7)">AUROPHARMA</a> +0.55</div>
+</div>
+<div class="tb" id="tb-crude" data-secs="omc">
+  <div class="tbh" data-i="crude" data-nm="CRUDE"><span class="dv">5 · CRUDE · BRENT</span><span class="p dn">−1.10%</span><span>z −0.9 · 0.55× · NO THEME · <span class="wide">a COST for OMCs (inverse, 72% n=55)</span><span class="n1366">OMC cost (inverse)</span></span></div>
+  <div class="sr stale" data-act="stale" data-bu="" data-nm="IOC"><div class="r1"><span class="s1"><a class="sym" href="share.html#IOC" title="open the IOC share page (F7)">IOC</a><span class="rtag fo">OMC</span></span><span class="ac"><span class="c stl">STALE 14s</span></span><span class="ltp t3">146.20</span><span class="pc t3">+0.10%</span><span class="st"><span class="v t3">β −0.85</span><span class="h">11:42:26</span></span><span class="st"><span class="v t3">blocked</span><span class="h">till tick</span></span><span class="bc t3">-</span></div>
+    <div class="r2 og"><span class="np">no call: <b style="color:var(--text)">stale data</b> - hard block until IOC ticks (feed K2) · grey = 14 s old</span></div></div>
+  <div class="grp" data-nm="Oil marketing"><a class="sl" href="sectors.html#omc">OIL MARKETING</a><span class="p up">+0.30%</span><span class="bas" title="R49: all 5 listed refiners and OMCs, free-float: IOC 35 % × +0.10 + BPCL 30 % × +0.60 + HPCL 25 % × +0.50 + MRPL 6 % × −0.40 + CPCL 4 % × −0.30 = +0.30 % (same as F2 Sectors)"><span class="wide">all 5 listed · free-float</span><span class="n1366">all 5 listed</span></span><span class="bth" title="breadth over all listed shares of the sector · over its F&amp;O shares">breadth <b class="n">3/5</b> all · F&amp;O <b class="n">3/3</b></span><span class="c nar" title="NARROW - F&amp;O-only move: the sector's F&amp;O names move, most of its other listed shares do not (R49)">NARROW<span class="wide"> · F&amp;O-only</span><span class="n1366"></span></span></div>
+  <div class="tline" data-nm="OMC"><a class="lk" href="share.html#BPCL" title="open the BPCL share page (F7)">BPCL</a> +0.60 · <a class="lk" href="share.html#HINDPETRO" title="open the HINDPETRO share page (F7)">HINDPETRO</a> +0.50 · paints <a class="lk" href="share.html#ASIANPAINT" title="open the ASIANPAINT share page (F7)">ASIANPAINT</a> +0.40 · aviation <a class="lk" href="share.html#INDIGO" title="open the INDIGO share page (F7)">INDIGO</a> +0.80 · upstream <a class="lk" href="share.html#ONGC" title="open the ONGC share page (F7)">ONGC</a> −0.70 → nothing to do</div>
+</div>
+<div class="tb" id="tb-ndx" data-secs="it">
+  <div class="tbh" data-i="ndx" data-nm="NASDAQ"><span class="dv">6 · NASDAQ · SOX</span><span class="p dn">−1.92%</span><span>futures 1.3× · SOX −2.6 % closed · <span class="wide">IT moves with NIFTY (RS −0.33) → no own theme</span><span class="n1366">IT = NIFTY (RS −0.33)</span></span></div>
+  <div class="grp" data-nm="IT"><a class="sl" href="sectors.html#it">IT</a><span class="p dn">−0.95%</span><span class="bas" title="R49: NIFTY IT index (NSE, 10 shares) −0.95 % · RS −0.33 vs NIFTY = moves with the market (neutral on F2 Sectors)"><span class="wide">NIFTY IT index (10)</span><span class="n1366">NIFTY IT</span></span><span class="bth" title="breadth over all listed shares of the sector · over its F&amp;O shares">breadth <b class="n">9/10</b> all · F&amp;O <b class="n">9/10</b></span></div>
+  <div class="tline" data-nm="IT"><a class="lk" href="share.html#INFY" title="open the INFY share page (F7)">INFY</a> −1.05 (ADR −1.9 % ₹) · <a class="lk" href="share.html#LTIM" title="open the LTIM share page (F7)">LTIM</a> −1.10 · <a class="lk" href="share.html#TECHM" title="open the TECHM share page (F7)">TECHM</a> −0.98 · <a class="lk" href="share.html#HCLTECH" title="open the HCLTECH share page (F7)">HCLTECH</a> −0.90 · <a class="lk" href="share.html#WIPRO" title="open the WIPRO share page (F7)">WIPRO</a> −0.85 · <a class="lk" href="share.html#TCS" title="open the TCS share page (F7)">TCS</a> −0.80 → nothing to do</div>
+</div>
+<div class="tb" id="tb-below" data-secs="metals steel banks realty">
+  <div class="tbh" data-i="below" data-nm="BELOW LINE"><span class="dv">7 · BELOW THEIR LINE</span><span>silver · aluminium · steel · rupee · yields · DXY (late) → no theme</span></div>
+  <div class="tline" data-nm="silver"><b>SILVER</b> MCX −2.40 % (COMEX −2.48) is z −1.3: its line is ±3 % → <a class="lk" href="share.html#HINDZINC" title="open the HINDZINC share page (F7)">HINDZINC</a> −1.20 → nothing to do</div>
+  <div class="tline" data-nm="alu"><b>ALUMINIUM</b> −1.10 % · adds to L2: <a class="lk" href="share.html#NATIONALUM" title="open the NATIONALUM share page (F7)">NATIONALUM</a> −1.50 · <a class="lk" href="share.html#HINDALCO" title="open the HINDALCO share page (F7)">HINDALCO</a> −1.11 (your PE, alu β 0.95) · <a class="lk" href="share.html#VEDL" title="open the VEDL share page (F7)">VEDL</a> −0.62</div>
+  <div class="tline" data-nm="steel"><b>IRON ORE</b> −0.80 % → steel (in NIFTY METAL, above): <a class="lk" href="share.html#SAIL" title="open the SAIL share page (F7)">SAIL</a> −1.38 (MWPL 88%) · <a class="lk" href="share.html#JINDALSTEL" title="open the JINDALSTEL share page (F7)">JINDALSTEL</a> −1.02 · <a class="lk" href="share.html#TATASTEEL" title="open the TATASTEEL share page (F7)">TATASTEEL</a> −0.90 · <a class="lk" href="share.html#JSWSTEEL" title="open the JSWSTEEL share page (F7)">JSWSTEEL</a> −0.70</div>
+  <div class="tline" data-nm="rupee"><b>RUPEE</b> +0.08 % (too small) · <b>YIELDS</b> IN10y −3 bp: NIFTY REALTY −0.80 % (<a class="lk" href="share.html#DLF" title="open the DLF share page (F7)">DLF</a> −0.96 · <a class="lk" href="share.html#GODREJPROP" title="open the GODREJPROP share page (F7)">GODREJPROP</a> −1.30) - the driver disagrees · <b>DXY</b> 15 min late</div>
+</div></div>
+    <div class="more" data-for="tmb"></div>
+  </section>
+
+  <div id="rcol">
+    <section class="pn" id="card">
+      <div class="ph sh-acc-call"><span class="c gr">GET READY</span><span class="rtag ld">LEADER</span><span class="pt" style="color:var(--text)">EXTENDED</span><span class="age" style="color:var(--text-2)"><span class="wide">11:36:12 · 6m 28s</span><span class="n1366">6m 28s</span></span><span class="pa"><span class="sbtn" data-t="cb" data-d="-1" title="scroll up"><svg width="8" height="6" viewBox="0 0 8 6"><path d="M4 0L8 6H0z" fill="currentColor"/></svg></span><span class="sbtn" data-t="cb" data-d="1" title="scroll down"><svg width="8" height="6" viewBox="0 0 8 6"><path d="M0 0h8L4 6z" fill="currentColor"/></svg></span></span></div>
+      <div class="ctt"><span class="h1"><a class="sym" style="font-size:20px" href="share.html#TITAN" title="open the TITAN share page (F7)">TITAN</a> <span class="oc pe big">PE 3,400</span> 29 Dec</span><span class="src" title="Nov expires Mon 23 Nov (Tue 24 holiday): fast theta and an ITM stock option is physically settled - exit before expiry day">src: analyst ✓<span class="wide"> · Dec</span><span class="n1366"></span></span></div>
+      <div class="csub">gold <span class="n dn">−1.62</span> → <span class="wide">jewellers &amp; loans</span><span class="n1366">jewel·loans</span> <span class="n dn">−2.01</span> → TITAN <span class="n dn">−2.48</span> · β 1.31<span class="wide"> · 117%</span><span class="n1366"></span></div>
+      <div class="cnav"><span class="on" data-a="s-plan">PLAN</span><span data-a="s-oi">OI &amp; FUT</span><span data-a="s-strk">STRIKES</span><span data-a="s-vote">VOTE</span><span data-a="s-next">NEXT</span></div>
+      <div class="pb" id="cb" data-label="lines" data-unit="#cb .u" data-cap="6">
+        <div class="cb">
+          <div class="u verd"><b class="am" title="trend day: TITAN is 1.35 ATR extended (R13) → enter only on the bounce to VWAP 3,421 / the first lower high, 1 lot (minimum)">EXTENDED · <span class="wide">enter on the bounce to VWAP 3,414-3,421</span><span class="n1366">bounce to VWAP 3,414-3,421</span></b></div>
+          <div class="u psr hdr"><span></span><span class="hh">PREMIUM</span><span class="hh">SHARE</span></div>
+          <div class="u psr"><span class="lb">trigger</span><span class="v">≈128.60</span><span class="v">3,414<i>5-min close below</i></span></div>
+          <div class="u psr"><span class="lb">stop</span><span class="v">≈118.80</span><span class="v">3,436<i>GOVERNS</i></span></div>
+          <div class="u psr"><span class="lb">target</span><span class="v">≈157.20</span><span class="v">3,356<i>wall 3,350</i></span></div>
+          <div class="u psr"><span class="lb">now</span><span class="v"><span class="lvv">135.40/135.95</span></span><span class="v"><span class="lvv">3,398.20</span><i>0.4s</i></span></div>
+          <div class="u vt"><span class="lb2">VOTE</span><span class="vtx"><b>4 of 5 agree</b><span class="wide"> · 0.82</span><span class="n1366"></span></span><span class="c ag" title="agent 1, hit rate 58% (n=212)">1 ✓</span><span class="c ag">2 ✓</span><span class="c dis" title="agent 3 votes against: oversold, wait">3 ✗</span><span class="c ag">news ✓</span><span class="c ag">money ✓</span></div>
+          <div class="u gts"><span class="gt" title="bid/ask spread">✓ sprd 0.4%</span><span class="gt" title="lots at the best 5">✓ depth 41</span><span class="gt" title="IV vs its 20-day average">✓ IV 1.00x</span><span class="gt" title="market-wide position limit used">✓ MWPL 41%</span><span class="gt wnn" title="trade 3 of 3 = your last today">⚠ <span class="wide">trade 3 of 3</span><span class="n1366">3 of 3</span></span></div>
+          <div class="u decr d1 d3"><span class="sp" title="lock room = ₹10,000 lock − ₹650 lost today = ₹9,350 left; minus a further ₹7,370 if both open positions hit their share stops (−₹8,020 at stops) = ₹1,980"><span class="wide">lock room ₹1,980</span><span class="n1366">lock ₹1,980</span> vs max ₹1,898 → <b>1 lot fits · ₹82 spare</b></span></div>
+          <div class="u hold" data-nm="HOLD rule"><span class="am">HOLD</span> to 3,356 or 14:30 · time stop 12:45 if &lt; +0.5R · exit 15:10. <b>Don’t exit before the stop or the target unless GIR says EXIT.</b></div>
+          <div class="u small" data-nm="no chase 131">no chase above <b>131.00</b> (share 3,408) · 1 lot (minimum) = 0.4R</div>
+          <div class="u decr d1 d3" data-nm="cost · R:R"><span>cost <b>₹22,505</b><span class="wide"> = 128.60 × 175</span><span class="n1366"></span></span><span title="(128.60 − 118.80) × 175 = ₹1,715 + costs ₹183 · premium only, no margin · 1R = ₹5,000">max loss <b>₹1,898 = 0.4R</b></span><span title="(157.20 − 128.60) × 175 = ₹5,005 − costs ₹183 = ₹4,822 · R:R 2.5 after costs">target <b>+₹4,822 = 1.0R</b><span class="wide"> · R:R 2.5</span><span class="n1366"></span></span><span title="charges ₹87 from the ONE charges table (Settings › Charges) + est. exit slippage ₹96"><span class="wide">costs ₹183 = ₹87 + ₹96</span><span class="n1366">R:R 2.5 · costs ₹183</span></span></div>
+          <div class="u whyl" data-nm="why"><span class="wk">why</span><span class="m">10:12</span> · <b>CNBC-TV18</b> · mgmt: “gold fall not affecting demand” · against the PE, noise (wt 2) · <a class="lk" href="news.html#TITAN">F4</a></div>
+          <div class="u gw" data-nm="1 gold PE"><span class="wn">⚠</span> <span class="wt">gold: you hold MANAPPURAM - BOOK it first (1 gold PE at a time)</span></div>
+          <div class="u">source: analyst ← theme, money, sector agents · valid till 12:15 or share &gt; 3,436</div>
+          <div class="u"><b>29 Dec, not 23 Nov:</b> Nov θ ₹156/h vs ₹47/h · Nov ITM settles PHYSICAL → exit before expiry day</div>
+
+          <div class="u sub2 hdr" data-nm="OI &amp; FUT" id="s-oi">OPTIONS &amp; FUTURES · TITAN<span>chain 0.9s · futures 1s</span></div>
+          <div class="u sub3 hdr">FUTURES BY MONTH<span>data, not the trade · rollover 41%</span></div>
+          <table class="sc2 fut"><colgroup><col class="c0"><col><col><col><col><col></colgroup>
+            <tr class="u"><th>month</th><th>price</th><th>OI</th><th>OI chg</th><th>basis</th><th>b/u</th></tr>
+            <tr class="u"><td>NOV 23</td><td>3,400.10</td><td>98.4 L</td><td>+9%</td><td>+1.9</td><td><a class="bu sb" href="futures-oi.html#SB" title="short build-up: price down, OI up (fresh shorts) ·  = futures months agreeing · click = the SB list of all 222 on F10">SB</a></td></tr>
+            <tr class="u"><td>DEC 29</td><td>3,421.30</td><td>42.1 L</td><td>+14%</td><td>+23.1</td><td><a class="bu sb" href="futures-oi.html#SB" title="short build-up: price down, OI up (fresh shorts) ·  = futures months agreeing · click = the SB list of all 222 on F10">SB</a></td></tr>
+            <tr class="u"><td>JAN 25</td><td>3,442.80</td><td>3.2 L</td><td>+4%</td><td>+44.6</td><td><a class="bu sb" href="futures-oi.html#SB" title="short build-up: price down, OI up (fresh shorts) ·  = futures months agreeing · click = the SB list of all 222 on F10">SB</a></td></tr>
+          </table>
+          <div class="u">fresh shorts in all three months = a real short build-up, not rollover · <a class="lk" href="futures-oi.html#TITAN">F10 ›</a></div>
+          <div class="u sub3 hdr">OI CHANGE BY STRIKE · Nov<span>CE writing ▲ · PE writing ▼</span></div>
+          <table class="sc2"><colgroup><col class="c0"><col><col><col style="width:40%"></colgroup>
+            <tr class="u"><th>strike</th><th>CE OI</th><th>PE OI</th><th style="text-align:left;padding-left:8px">read</th></tr>
+            <tr class="u"><td>3,450</td><td class="up">+36%</td><td class="dn">−12%</td><td style="text-align:left;padding-left:8px">call wall</td></tr>
+            <tr class="u"><td>3,400</td><td class="up">+31%</td><td class="dn">−8%</td><td style="text-align:left;padding-left:8px">puts leave</td></tr>
+            <tr class="u"><td>3,350</td><td class="up">+6%</td><td class="up">+54%</td><td style="text-align:left;padding-left:8px">put wall</td></tr>
+          </table>
+          <div class="u">target 3,356 sits in front of the 3,350 put wall · UNUSUAL 11:31: 3,350 PE Nov ×6 in 2 min</div>
+          <div class="u">PCR 0.71 · max pain 3,400 - context only · <a class="lk" href="chain.html#TITAN">F9 chain + OI scenarios ›</a></div>
+
+          <div class="u sub2 hdr" data-nm="STRIKES" id="s-strk">STRIKE CHOOSER<span>lot 175 · ★ GIR’s pick</span></div>
+          <table class="sc2"><colgroup><col class="c0"><col><col><col><col><col><col></colgroup>
+            <tr class="u"><th></th><th colspan="3" class="tgh">23 NOV · 3 left</th><th colspan="3" class="tgh">29 DEC · default</th></tr>
+            <tr class="u"><th>strike</th><th>3,450</th><th>3,400</th><th>3,350</th><th>3,450</th><th class="pk">3,400 ★</th><th>3,350</th></tr>
+            <tr class="u"><td>premium</td><td>72.40</td><td>44.70</td><td>22.10</td><td>165.20</td><td class="pk">135.40</td><td>109.30</td></tr>
+            <tr class="u"><td>delta</td><td>−0.72</td><td>−0.51</td><td>−0.30</td><td>−0.56</td><td class="pk">−0.49</td><td>−0.42</td></tr>
+            <tr class="u"><td>θ ₹/h lot</td><td>120</td><td>156</td><td>110</td><td>40</td><td class="pk">47</td><td>44</td></tr>
+            <tr class="u"><td>IV/20d</td><td>1.07</td><td>1.07</td><td>1.12</td><td>1.00</td><td class="pk">1.00</td><td>1.04</td></tr>
+            <tr class="u"><td>spread</td><td>0.9%</td><td>0.6%</td><td class="wr">1.4%</td><td>0.8%</td><td class="pk">0.4%</td><td>0.9%</td></tr>
+            <tr class="u"><td>depth lots</td><td>38</td><td>96</td><td>64</td><td>22</td><td class="pk">41</td><td>30</td></tr>
+            <tr class="u"><td>OI chg</td><td>−12%</td><td>−8%</td><td>+54%</td><td>−4%</td><td class="pk">−3%</td><td>+31%</td></tr>
+            <tr class="u"><td>BE pts</td><td>5.2</td><td>7.6</td><td>9.1</td><td>3.9</td><td class="pk">4.1</td><td>4.6</td></tr>
+            <tr class="u"><td>₹ 1 lot</td><td>12.7k</td><td>7.8k</td><td>3.9k</td><td>28.9k</td><td class="pk">23.7k</td><td>19.1k</td></tr>
+            <tr class="u"><td>charges</td><td>66</td><td>60</td><td>55</td><td>95</td><td class="pk">87</td><td>80</td></tr>
+          </table>
+          <div class="u">★ why: Δ 0.49, sprd 0.4 %, θ ₹47/h vs ₹156 on Nov, BE 4.1 pts by 15:10</div>
+          <div class="u">γ, vega, IV rank: <a class="lk" href="plan-card.html">all columns · Space ›</a></div>
+
+          <div class="u sub2 hdr" data-nm="VOTE" id="s-vote">THE VOTE · 4 OF 5 AGREE<span>weighted 0.82 · GO ≥ 0.65</span></div>
+          <div class="u vt"><span class="c ag" title="n=212 calls">agent 1 ✓ 58%</span><span class="c ag" title="n=198">agent 2 ✓ 61%</span><span class="c dis" title="n=175">agent 3 ✗ 52%</span></div>
+          <div class="u vt"><span class="c ag" title="n=140">news ✓ 55%</span><span class="c ag" title="n=230">money ✓ 57%</span><span class="c" title="the auditor checks the call; it does not vote">auditor PE · checks</span></div>
+          <div class="u">against: agent 3 “oversold, wait” · weights = 60-day hit rates</div>
+
+          <div class="u sub2 hdr" data-nm="NEXT" id="s-next">AFTER YOU ENTER, GIR FOLLOWS UP<span>your trades only</span></div>
+          <div class="u"><b>+0.5R</b> (≈138.60 / 3,394) → trail the stop to entry 128.60</div>
+          <div class="u"><span class="am">BOOK</span> at 3,356 / 157.20, or when the move stalls (3 bars)</div>
+          <div class="u"><span class="no">EXIT</span> on a 5-min close above 3,436 · ♪ two low notes</div>
+          <div class="u">time stop 12:45 · 15:10 exit for anything left</div>
+          <div class="u">ENTER in Kite (GIR never places orders) → <a class="lk" href="positions.html">F6</a> → <a class="lk" href="journal.html">⇧F6</a></div>
+        </div></div>
+      <div class="more" data-for="cb"></div>
+      <div class="nk"><a class="btn" href="plan-card.html" style="border-color:var(--action-line);color:var(--action)"><kbd>Space</kbd>plan</a><a class="btn" href="chain.html#TITAN"><kbd>F9</kbd>chain</a><a class="btn" href="share.html#TITAN"><kbd>Enter</kbd>share</a><span class="btn"><kbd>W</kbd>why</span><span class="btn"><kbd>S</kbd>skip</span></div>
+    </section>
+
+    <section class="pn" id="mkts">
+      <div class="ph sh-acc-mkt"><span class="pt"><span class="wide">OTHER MARKETS · EVENTS</span><span class="n1366">MARKETS</span></span><span class="chip on" data-k="now">next <span class="n">5</span></span><span class="chip" data-k="ngt"><span class="wide">overnight</span><span class="n1366">night</span> <span class="n">6</span></span>
+        <span class="pa"><a class="lk" href="calendar.html" style="font-size:11px;font-weight:600;color:var(--text-2)" title="every event and its time: ⇧F4 Calendar">⇧F4</a><span class="ldot"></span><span class="age">4s</span><span class="sbtn" data-t="evb" data-d="-1" title="scroll up"><svg width="8" height="6" viewBox="0 0 8 6"><path d="M4 0L8 6H0z" fill="currentColor"/></svg></span><span class="sbtn" data-t="evb" data-d="1" title="scroll down"><svg width="8" height="6" viewBox="0 0 8 6"><path d="M0 0h8L4 6z" fill="currentColor"/></svg></span></span></div>
+      <div class="mk" id="mkg" title="other markets now, % vs their own previous close (data, not news)">
+        <span class="sh-heat-dn" style="--m:1.42"><span class="an">Nikkei</span><span class="av dn">−1.42</span></span><span class="sh-heat-dn" style="--m:1.88"><span class="an">Kospi</span><span class="av dn">−1.88</span></span><span class="sh-heat-dn" style="--m:1.06"><span class="an"><span class="wide">Hang Seng</span><span class="n1366">HSI</span></span><span class="av dn">−1.06</span></span><span class="sh-heat-dn" style="--m:0.38"><span class="an"><span class="wide">Shanghai</span><span class="n1366">SSE</span></span><span class="av dn">−0.38</span></span><span class="sh-heat-dn" style="--m:1.61"><span class="an">TAIEX</span><span class="av dn">−1.61</span></span><span class="sh-heat-dn" style="--m:0.84"><span class="an">S&amp;P fut</span><span class="av dn">−0.84</span></span><span class="sh-heat-dn" style="--m:1.21"><span class="an">SHFE Cu</span><span class="av dn">−1.21</span></span><span class="sh-heat-dn" style="--m:0.8"><span class="an">DCE ore</span><span class="av dn">−0.80</span></span>
+      </div>
+      <div class="pb" id="evb" data-label="events" data-unit=".ev">
+        <div class="ev nx" data-k="now" data-nm="LME"><span class="tm">18:30</span><span class="one"><b>LME official close</b> · copper, alu → <b>L2</b> · in 6h 48m</span></div>
+        <div class="ev nx" data-k="now" data-nm="US claims"><span class="tm">19:00</span><span class="one"><b>US jobless claims</b> · DXY → gold (L1)</span></div>
+        <div class="ev nx" data-k="now" data-nm="EIA"><span class="tm">21:00</span><span class="one"><b>EIA crude stocks</b> · Brent → OMCs</span></div>
+        <div class="ev nx" data-k="now" data-nm="Fed"><span class="tm">22:30</span><span class="one"><b>Fed speaker</b> · DXY, Nasdaq → IT</span></div>
+        <div class="ev nx" data-k="now" data-nm="China LPR"><span class="tm">07:00</span><span class="one"><b>China LPR</b> (Fri) · metals, steel</span></div>
+        <div class="ev" data-k="ngt" data-nm="FOMC"><span class="tm">00:30</span><span class="one"><b>FOMC minutes</b> hawkish → gold $ −1.58 % → <b>L1</b></span></div>
+        <div class="ev" data-k="ngt" data-nm="US close"><span class="tm">02:30</span><span class="one"><b>US close</b> Nasdaq −2.2 %, SOX −2.6 % → IT priced</span></div>
+        <div class="ev" data-k="ngt" data-nm="China"><span class="tm">07:30</span><span class="one"><b>China home sales</b> −9 % vs −7 % → metals</span></div>
+        <div class="ev" data-k="ngt" data-nm="re-check"><span class="tm">09:00</span><span class="one"><b>re-check</b> gold held −1.5 % in Asia → L1 kept</span></div>
+        <div class="ev" data-k="ngt" data-nm="LME 18 Nov"><span class="tm">18:30</span><span class="one"><b>LME 18 Nov</b> copper 10,240 $/t, low since Jul → <b>L2</b></span></div>
+        <div class="ev" data-k="ngt" data-nm="US housing"><span class="tm">19:00</span><span class="one"><b>US housing starts</b> 1.31M vs 1.34M (−0.8σ) → noise</span></div>
+      </div>
+      <div class="more" data-for="evb"></div>
+    </section>
+  </div>
+</div>
+</div>
+</main>
+
+<!-- ===================== SHELL FOOTER START (copy verbatim) ===================== -->
+<footer id="sh-foot">
+  <a href="health.html" style="display:flex;align-items:center;gap:5px" title="ONE wording on every page: health READY / LIMITED / DOWN (the Health page's own words) · the worst item and its age · AI full / lite / off. Opens Health (Shift+F9)"><span class="sh-dot" style="width:7px;height:7px;background:var(--stale)"></span>health LIMITED · IOC STALE <span class="n">14s</span> · AI full</a><span class="sh-fs"></span>
+  <span class="sh-keys"><kbd>/</kbd>search <kbd>?</kbd>help <kbd>Space</kbd>plan card <kbd>Esc</kbd>close<span class="sh-wide" style="display:inline-flex;gap:5px;align-items:center"><kbd>A</kbd>+<kbd>Enter</kbd>ack <kbd>M</kbd>mute</span></span>
+  <a href="phone.html" title="the phone version: girtrader.com/m (four screens)">phone /m</a><span class="sh-fs"></span>
+  <span class="sh-mock">design mockup - illustrative values</span>
+</footer>
+<!-- ===================== SHELL FOOTER END ===================== -->
+<script>
+// page behaviour (mockup). r3 list rule: every scroll list shows WHOLE units only, never ends on a section header (orphan), and never
+// leaves a hole: the space under the last whole unit is shared out evenly between the visible units (--gx, capped), so the list fills
+// its panel. The list is never shrunk (no collapsed viewports). The "more" bar names what is hidden ("▼ 5 more: BSE · CDSL · …").
+(function(){
+  const $ = (s, r) => (r || document).querySelector(s), $$ = (s, r) => [...(r || document).querySelectorAll(s)];
+  const HDR = '.tbh,.grp,.sub2,.sub3,.hdr';
+  const shown = e => e.getClientRects().length && e.offsetParent !== null;
+  function snap(pb) {
+    const more = $('.more[data-for="' + pb.id + '"]');
+    const us = $$(pb.dataset.unit, pb).filter(shown);
+    us.forEach(u => u.style.removeProperty('--gx'));
+    pb.style.flex = '';
+    const avail = pb.clientHeight, t0 = pb.getBoundingClientRect().top;
+    const R = u => { const r = u.getBoundingClientRect(); return [r.top - t0, r.bottom - t0]; };
+    const off = stickOff(pb);
+    let vis = us.filter(u => { const [a, b] = R(u); return a >= off - 1 && b <= avail + 0.5; });
+    const overflow = us.some(u => R(u)[1] > avail + 0.5);
+    if (overflow) while (vis.length > 1 && vis[vis.length - 1].matches(HDR)) vis.pop();   // no orphan header at the bottom
+    {
+      const lastB = vis.length ? R(vis[vis.length - 1])[1] : 0, gap = avail - lastB;
+      if (vis.length && gap > 0.5) {
+        const gv = vis.filter(u => !u.matches('.ti'));   // the theme index keeps its row height
+        const ex2 = gv.length ? Math.min(Math.floor(gap / gv.length * 4) / 4, +(pb.dataset.cap || 12)) : 0;
+        let e2 = ex2; gv.forEach(u => u.style.setProperty('--gx', e2 + 'px'));
+        while (e2 > 0 && R(vis[vis.length - 1])[1] > avail + 0.5) { e2 = Math.max(0, e2 - 0.25); gv.forEach(u => u.style.setProperty('--gx', e2 + 'px')); }
+      }
+      const nb = vis.length ? R(vis[vis.length - 1])[1] : avail;
+      if (overflow && nb < avail - 0.5) pb.style.flex = '0 0 ' + Math.ceil(nb) + 'px'; // only when the cap was hit (rare): then the bar sits under the row
+    }
+    if (!more) return;
+    const cutB = vis.length ? R(vis[vis.length - 1])[1] : 0;
+    const hidden = us.filter(u => !vis.includes(u) && R(u)[0] >= cutB - 1);
+    const above = us.filter(u => R(u)[1] <= 1).length;
+    const keep = more.dataset.keep || '';
+    if (!hidden.length && !above) { more.classList.add('none'); more.innerHTML = 'all ' + (pb.dataset.total || us.length) + ' shown' + keep; return; }
+    more.classList.remove('none');
+    const names = [...new Set(hidden.filter(u => !u.matches('.tline')).map(u => u.dataset.nm).filter(Boolean))];
+    const head = hidden.length ? '▼ <b>' + hidden.length + ' more</b>' + (pb.dataset.total ? ' of ' + pb.dataset.total : '') : 'end of list';
+    const tail = (above ? ' · ▲ ' + above + ' above' : '') + '<span style="margin-left:auto;padding-left:6px">▲▼</span>';
+    let k = Math.min(names.length, 6);
+    const draw = () => { more.innerHTML = head + (k ? ': <span class="nm">' + names.slice(0, k).join(' · ') + (k < names.length ? ' …' : '') + '</span>' : '') + (k ? '' : keep) + tail; };
+    draw(); while (k > 0 && more.scrollWidth > more.clientWidth + 1) { k--; draw(); }
+  }
+  // 1366: move the theme index into the scroll list (it scrolls away when a theme is opened); 1600: pinned above the list
+  const placeIdx = () => { const ti = $('#tidx'), tmb = $('#tmb'), narrow = innerWidth < 1500;
+    const shd = $('#tmap .shd');
+    if (narrow && ti.parentElement !== tmb) { tmb.insertBefore(ti, tmb.firstChild); tmb.insertBefore(shd, ti.nextSibling); }
+    if (!narrow && ti.parentElement === tmb) { $('#tmap').insertBefore(shd, tmb); $('#tmap').insertBefore(ti, shd); } };
+  // the option-column header is sticky inside the 1366 list: whole-row maths start under it
+  const stickOff = pb => { const h = pb.querySelector(':scope > .shd'); if (!h) return 0; const d = h.getBoundingClientRect().top - pb.getBoundingClientRect().top; return d <= 0.5 ? h.offsetHeight : 0; };
+  window.__stickOff = stickOff;
+  placeIdx(); addEventListener('resize', placeIdx);
+  const snapAll = () => $$('.pb').forEach(snap);
+  window.__snapAll = snapAll;
+  const goTo = (pb, t) => { $$(pb.dataset.unit, pb).forEach(u => u.style.removeProperty('--gx')); pb.style.flex = '';
+    const sh = pb.querySelector(':scope > .shd'), shH = sh && t && (sh.compareDocumentPosition(t) & 4) ? sh.offsetHeight : 0;
+    const want = t ? Math.round(t.getBoundingClientRect().top - pb.getBoundingClientRect().top + pb.scrollTop) - shH : 0;
+    const max = pb.scrollHeight - pb.clientHeight; let st = want;
+    if (want > max) { const tops = $$(pb.dataset.unit, pb).filter(shown).map(u => u.getBoundingClientRect().top - pb.getBoundingClientRect().top + pb.scrollTop).filter(v => v <= max + 0.5);
+      st = tops.length ? Math.max(...tops.filter(v => v - shH <= max + 0.5).map(v => v - shH), 0) : max; }   // near the end: start on a whole unit, never a half row at the top
+    pb.scrollTop = st; snap(pb); };
+  window.__scrollTo = (id, sel) => { const pb = document.getElementById(id); goTo(pb, sel ? $(sel, pb) : null); };
+  let tm; $$('.pb').forEach(pb => pb.addEventListener('scroll', () => { clearTimeout(tm); tm = setTimeout(() => snap(pb), 120); }));
+  addEventListener('resize', snapAll);
+  $$('.sbtn').forEach(b => b.addEventListener('click', () => { const t = document.getElementById(b.dataset.t); if (t) t.scrollBy({ top: 120 * (+b.dataset.d), behavior: 'smooth' }); }));
+  // theme index / block header / driver row: open that theme in place (R22)
+  const openTheme = id => { $$('.ti').forEach(x => x.classList.toggle('sel', x.dataset.i === id)); goTo($('#tmb'), $('#tb-' + id)); };
+  window.__openTheme = openTheme;
+  $$('.ti[data-i]').forEach(t => t.addEventListener('click', e => { if (e.target.closest('a')) return; openTheme(t.dataset.i); }));
+  $$('.tbh').forEach(h => h.addEventListener('click', e => { if (e.target.closest('a')) return; openTheme(h.dataset.i); }));
+  $$('.dr').forEach(r => r.addEventListener('click', e => { if (e.target.closest('a')) return; $$('.dr').forEach(x => x.classList.remove('sel')); r.classList.add('sel'); openTheme(r.dataset.t); }));
+  $$('#drv .chip[data-g]').forEach(c => c.addEventListener('click', () => { $$('#drv .chip[data-g]').forEach(x => x.classList.toggle('on', x === c)); const g = c.dataset.g;
+    $$('#drb .dr').forEach(r => { const s = r.dataset.st; r.style.display = g === 'all' || s === g || (g === 'cls' && (s === 'cls' || s === 'late')) ? '' : 'none'; }); goTo($('#drb')); }));
+  // R36 ALL SECTORS really filters the theme map
+  const dd = $('#ddm');
+  $('#ddAll').addEventListener('click', e => { e.stopPropagation(); dd.classList.toggle('open'); });
+  document.addEventListener('click', () => dd.classList.remove('open'));
+  $$('#ddm div').forEach(o => o.addEventListener('click', () => { const s = o.dataset.s;
+    $$('#tmb .tb').forEach(b => { b.style.display = s === 'all' || (b.dataset.secs || '').split(' ').includes(s) ? '' : 'none'; });
+    $('#ddAll').textContent = (s === 'all' ? (innerWidth < 1500 ? 'ALL 22' : 'ALL SECTORS 22') : o.firstChild.textContent.trim().toUpperCase()) + ' ▾'; dd.classList.remove('open'); goTo($('#tmb')); }));
+  // call and build-up chips: counts are taken from the rows, so a chip can never disagree with its list
+  const match = (r, f) => r.dataset.act === f || r.dataset.bu === f;
+  $$('#tmap .chip[data-f]').forEach(c => { const n = c.querySelector('.n'); if (n && c.dataset.f !== 'go') { const v = $$('#tmb .sr').filter(r => match(r, c.dataset.f)).length; n.textContent = v; c.classList.toggle('zero', !v); } });
+  $$('#tmap .chip[data-f]').forEach(c => c.addEventListener('click', () => { const was = c.classList.contains('on'); $$('#tmap .chip[data-f]').forEach(x => x.classList.remove('on')); const f = was ? '' : c.dataset.f; if (!was) c.classList.add('on');
+    $$('#tmb .sr').forEach(r => { r.style.display = !f || match(r, f) ? '' : 'none'; }); goTo($('#tmb')); }));
+  // sensitivity matrix: a cell -> its line
+  $$('.mc[data-b]').forEach(m => m.addEventListener('click', () => { $$('.mc').forEach(x => x.classList.remove('sel')); m.classList.add('sel'); const d = m.dataset;
+    $('#mxd').firstElementChild.innerHTML = '<b>' + d.d.toUpperCase() + ' → ' + d.s.toUpperCase() + '</b> β <b class="n">' + d.b + '</b> ' + d.p + ' · ' + d.h + '% (' + d.lo + '‑' + d.hi + ') n=' + d.n + (+d.n < 30 ? ' · <b>rule of thumb</b>' : ''); }));
+  // markets: now / overnight; LIVE / NIGHT
+  const mk = k => { $$('#mkts .chip[data-k]').forEach(x => x.classList.toggle('on', x.dataset.k === k)); $('#mkts').classList.toggle('night', k === 'ngt'); $('#rcol').classList.toggle('night', k === 'ngt'); $('#rcol').classList.add('evopen'); snapAll(); goTo($('#evb')); };
+  if (innerWidth < 1500) $$('#mkts .chip[data-k]').forEach(x => x.classList.toggle('on', false));   // 1366: the event list opens on a chip click
+  $$('#mkts .chip[data-k]').forEach(c => c.addEventListener('click', () => mk(c.dataset.k)));
+  $$('#view span').forEach(v => v.addEventListener('click', () => { $$('#view span').forEach(x => x.classList.toggle('on', x === v)); mk(v.textContent.startsWith('NIGHT') ? 'ngt' : 'now'); }));
+  window.__night = () => $$('#view span')[1].click();
+  // card tabs: one click to each block of the ONE card body (nothing hidden behind a tab)
+  $$('.cnav span').forEach(s => s.addEventListener('click', () => { $$('.cnav span').forEach(o => o.classList.toggle('on', o === s)); goTo($('#cb'), s.dataset.a === 's-plan' ? null : document.getElementById(s.dataset.a)); }));
+  document.addEventListener('keydown', e => { const s = $('.sh-sugg'); if (!s) return;
+    if (e.key === '/') { e.preventDefault(); s.style.display = s.style.display === 'block' ? 'none' : 'block'; }
+    if (e.key === 'Escape') { s.style.display = 'none'; dd.classList.remove('open'); } });
+  snapAll(); requestAnimationFrame(snapAll);
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+{
+ "t": "2026-11-21T15:39:29+05:30",
+ "passed": 33,
+ "of": 33,
+ "all_pass": true,
+ "tmp": "/tmp/depthtest_duxyf1dm",
+ "results": [
+  {
+   "test": "T1 features: one row per second",
+   "pass": true,
+   "detail": "ts 1795408225"
+  },
+  {
+   "test": "T1 features: imbalance, spread, size jump, large order, trade side, OI change exact",
+   "pass": true,
+   "detail": "all 15 match"
+  },
+  {
+   "test": "T1 features: lag from exchange time",
+   "pass": true,
+   "detail": "median lag 400 ms"
+  },
+  {
+   "test": "T6 may_start: Sat / holiday / before 09:45 (incl. 09:15) / from 15:31 refused; 09:45-15:30 on trading days allowed",
+   "pass": true,
+   "detail": "8 cases"
+  },
+  {
+   "test": "T6 live folder before Mon 23 Nov 09:45 refused (Fri 20 Nov 10:00 tried)",
+   "pass": true,
+   "detail": "before go-live (Mon 23 Nov 09:45 IST) - not recording"
+  },
+  {
+   "test": "T6 fake clock can never write the live folder",
+   "pass": true,
+   "detail": "a fake clock never writes to the live folder"
+  },
+  {
+   "test": "T6 stops itself at 15:31",
+   "pass": true,
+   "detail": "15:31 after 5.0 s at 2x"
+  },
+  {
+   "test": "T4 30-day roll: 2026-10-01 and 2026-10-20 (older than 30 days) removed",
+   "pass": true,
+   "detail": "2026-11-10 2026-11-20"
+  },
+  {
+   "test": "T4 cap: oldest days removed until under the cap",
+   "pass": true,
+   "detail": "5.0 MB left, kept ['2026-11-10', '2026-11-20']"
+  },
+  {
+   "test": "T4 80% alert line",
+   "pass": true,
+   "detail": "ALERT disk: depth folder 0.01 GB = 71% of the 0.01 GB cap"
+  },
+  {
+   "test": "T4 cap reached -> recorder stops (never deletes today)",
+   "pass": true,
+   "detail": "disk cap"
+  },
+  {
+   "test": "T5 the recorder's OWN CPU 40% of a core (> 25%) -> stops, logged",
+   "pass": true,
+   "detail": "load guard: the recorder's own CPU (share of one core) 40% over the last 10 s (limit > 25%)"
+  },
+  {
+   "test": "T5 server 90% busy (Friday's normal 86-92%) + own 1% -> keeps recording",
+   "pass": true,
+   "detail": "test run length"
+  },
+  {
+   "test": "T5 server CPU pinned 98% (>= 97%) -> stops, logged",
+   "pass": true,
+   "detail": "load guard: server CPU pinned 98% over the last 10 s (limit >= 97%)"
+  },
+  {
+   "test": "T5 live feed 100 s behind -> stops for the session, logged",
+   "pass": true,
+   "detail": "load guard: live feed lags: quotes_live.json 110 s old (limit 30 s, 3 checks)"
+  },
+  {
+   "test": "T5 guard stop + REPORT line in the log",
+   "pass": true,
+   "detail": "REPORT: the load guard stopped the recorder (attempt 1) - one retry at 10:30"
+  },
+  {
+   "test": "T7 guard stop 09:50 -> 10:10 refused -> 10:30 retry (attempt 2) -> stop again -> 11:00 refused, off for the day",
+   "pass": true,
+   "detail": "[('09:50:00', 'stopped', 1, 'load guard: server CPU pinned 99% over the last 10 s (limit '), ('10:10:00', 'not started', None, 'the load guard stopped it - the one retry is at 10:30'), ('10:30:00', 'stopped', 2, 'load guard: server CPU pinned 99% over the last 10 s (limit '), ('11:00:00', 'not started', None, 'the load guard stopped it twice today - left off for the day')]"
+  },
+  {
+   "test": "T7 'LEFT OFF FOR THE DAY' reported in the log",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "test": "T7 a session that ended normally is never retried the same day",
+   "pass": true,
+   "detail": "already ran today (15:31)"
+  },
+  {
+   "test": "T3 tail: follows the growing gzip and the 09 -> 10 hour roll",
+   "pass": true,
+   "detail": "1919 rows from 1919 instrument-seconds written, hours ['09', '10'], 34 instruments, 4 files; stop: test run length"
+  },
+  {
+   "test": "T2 plan (reduced list, DESK_REVIEW 16:00): the 30 most liquid shares + index futures (expiry day: near + next), no watch-list",
+   "pass": true,
+   "detail": "30 spot, 4 fut; option series {'NIFTY': '2026-11-23', 'BANKNIFTY': '2026-11-23'}"
+  },
+  {
+   "test": "T2 replay loaded (real recorded 5-level quotes)",
+   "pass": true,
+   "detail": "7743 quotes of 34 instruments in 3 s"
+  },
+  {
+   "test": "T2 ws: subscribed + FULL mode set on connect",
+   "pass": true,
+   "detail": "140 tokens in FULL"
+  },
+  {
+   "test": "T2 ws: rows for shares, index futures and ATM +-1 options",
+   "pass": true,
+   "detail": "16763 rows, 138 instruments {'spot': 30, 'fut': 4, 'opt': 104}, stop: test run length"
+  },
+  {
+   "test": "T2 file roll: one zstd parquet per chunk (2 min in the test, 10 min live)",
+   "pass": true,
+   "detail": "7 files 0944 0946 0948 0950 0952 0954 0956"
+  },
+  {
+   "test": "T2 compression zstd",
+   "pass": true,
+   "detail": "ZSTD"
+  },
+  {
+   "test": "T2 nothing before 09:45:00 recorded",
+   "pass": true,
+   "detail": "09:45:01"
+  },
+  {
+   "test": "T2 ATM +-1 (3 strikes x CE/PE) re-centred as the index moved",
+   "pass": true,
+   "detail": "32 centre lines"
+  },
+  {
+   "test": "T2 feature sanity on real quotes",
+   "pass": true,
+   "detail": "imb5 range -0.98..0.98, 14046 rows with a trade side, 1392 with a large bid"
+  },
+  {
+   "test": "T2 size + load",
+   "pass": true,
+   "detail": "909 KB for 12 market minutes -> about 29 MB a day at this rate, x30 days = 0.9 GB (cap 3 GB); recorder CPU 3.1 s for 720 s of market data played in 72 s"
+  },
+  {
+   "test": "_size_mb_day",
+   "pass": true,
+   "detail": "29.4"
+  },
+  {
+   "test": "T2 ws refused (no free slot) -> stops for the session, no retry",
+   "pass": true,
+   "detail": "websocket refused (1006) - no free slot or bad token; not retrying"
+  },
+  {
+   "test": "T2 ws mode without ws_slot_free -> does not connect",
+   "pass": true,
+   "detail": "no free ws slot"
+  },
+  {
+   "test": "LIVE FILES UNCHANGED (41 checked: girdata/depth, rec/2026-11-20, liquid60, config, lookahead, instr)",
+   "pass": true,
+   "detail": ""
+  }
+ ]
+}

@@ -1,0 +1,1138 @@
+{
+ "made": "2026-11-21T09:56:34",
+ "rule_doc": "M1 (07:30 gap model) vs THE SIMPLE HISTORY LINE, on the SAME unseen days (DESK_REVIEW 21 Nov 16:00 point 3). Code only, no network.\nTHE LINE (rule): NQ futures move from India's close (15:30 IST) to 07:30 IST next morning - M1's own window. |move| >= 1% -> call the gap's\nsign = the move's sign; smaller -> no call. (The desk's quoted '81% (186 cases)' is the gap study's NQ 14:30 -> 09:00 IST window, which ends\nafter the 07:15 brief; it is shown for reference on the same days.)\nM1 = the walk-forward probabilities of the saved 07:30 models (intraday: with the NQ / ES / SOX night moves; daily: S&P / Nasdaq cash), each\nunseen year scored by a model trained only on earlier years. Unseen days = 2025 and 2026 (the NQ 60m history starts Jul 2024).\nPASS (M1 beats the line), all of:\n  (1) MATCHED COVERAGE: per year M1 calls only its k most confident days, k = the line's calls that year; pooled hit rate beats the line's\n      with a one-sided two-proportion p < 0.025;\n  (2) BOTH SIDES: at matched coverage M1's GAP-UP calls and GAP-DOWN calls each hit more often than the line's up / down calls;\n  (3) more than half the years: M1's matched-coverage hit rate beats the line's in each year (2 of 2);\n  (4) Brier on the line's call days: M1's p beats the line's p (= the line's hit rate on the training years).\nAlso shown: head-to-head on the line's call days, M1 on the days the line makes no call, and a long-history proxy (Nasdaq Composite cash\nnight move >= 1% vs the daily M1, unseen years 2015-2026).\nRun (venv): nice -n 15 /home/globalbot/venvs/gir-models/bin/python m1_vs_line.py  -> appends to models_M1.md, writes m1_vs_line.json",
+ "results": [
+  {
+   "name": "NIFTY: M1 intraday (lr) vs the line (NQ 15:30 -> 07:30 IST, >= 1%)",
+   "years": [
+    {
+     "year": 2025,
+     "days": 243,
+     "line_calls": 73,
+     "coverage": 0.3,
+     "line_p": 0.718,
+     "line_hit": 0.836,
+     "m1_matched_hit": 0.767,
+     "line_up": "34/40",
+     "line_dn": "27/33",
+     "m1m_up": "44/60",
+     "m1m_dn": "12/13",
+     "m1_on_line_days": 0.781,
+     "m1_on_no_call_days": "106/170",
+     "m1_all_days": "163/243",
+     "m1_beats_line": false
+    },
+    {
+     "year": 2026,
+     "days": 212,
+     "line_calls": 75,
+     "coverage": 0.354,
+     "line_p": 0.795,
+     "line_hit": 0.76,
+     "m1_matched_hit": 0.84,
+     "line_up": "33/39",
+     "line_dn": "24/36",
+     "m1m_up": "35/40",
+     "m1m_dn": "28/35",
+     "m1_on_line_days": 0.72,
+     "m1_on_no_call_days": "93/137",
+     "m1_all_days": "147/212",
+     "m1_beats_line": true
+    }
+   ],
+   "pooled": {
+    "line": {
+     "hit": 0.7973,
+     "n": 148
+    },
+    "m1m": {
+     "hit": 0.8041,
+     "n": 148
+    },
+    "line_up": {
+     "hit": 0.8481,
+     "n": 79
+    },
+    "line_dn": {
+     "hit": 0.7391,
+     "n": 69
+    },
+    "m1m_up": {
+     "hit": 0.79,
+     "n": 100
+    },
+    "m1m_dn": {
+     "hit": 0.8333,
+     "n": 48
+    },
+    "h2h_m1": {
+     "hit": 0.75,
+     "n": 148
+    },
+    "m1_rest": {
+     "hit": 0.6482,
+     "n": 307
+    },
+    "m1_all": {
+     "hit": 0.6813,
+     "n": 455
+    },
+    "p_matched": 0.4422,
+    "mcnemar_on_line_days": {
+     "m1_only_right": 6,
+     "line_only_right": 13,
+     "p": 0.932
+    },
+    "brier_line_days": {
+     "m1": 0.1806,
+     "line": 0.1676,
+     "n": 148
+    },
+    "checks": {
+     "1_matched_p<0.025": false,
+     "2_both_sides": false,
+     "3_years": "1 of 2",
+     "3_more_than_half": false,
+     "4_brier": false
+    },
+    "PASS": false
+   },
+   "target": "NIFTY",
+   "m1": "M1 intraday (lr)",
+   "line": "NQ 15:30 -> 07:30 IST"
+  },
+  {
+   "name": "NIFTY: M1 daily (lr) vs the line (NQ 15:30 -> 07:30 IST, >= 1%)",
+   "years": [
+    {
+     "year": 2025,
+     "days": 243,
+     "line_calls": 73,
+     "coverage": 0.3,
+     "line_p": 0.718,
+     "line_hit": 0.822,
+     "m1_matched_hit": 0.808,
+     "line_up": "34/40",
+     "line_dn": "26/33",
+     "m1m_up": "52/65",
+     "m1m_dn": "7/8",
+     "m1_on_line_days": 0.795,
+     "m1_on_no_call_days": "102/170",
+     "m1_all_days": "160/243",
+     "m1_beats_line": false
+    },
+    {
+     "year": 2026,
+     "days": 212,
+     "line_calls": 75,
+     "coverage": 0.354,
+     "line_p": 0.795,
+     "line_hit": 0.733,
+     "m1_matched_hit": 0.76,
+     "line_up": "33/39",
+     "line_dn": "22/36",
+     "m1m_up": "53/70",
+     "m1m_dn": "4/5",
+     "m1_on_line_days": 0.733,
+     "m1_on_no_call_days": "71/137",
+     "m1_all_days": "126/212",
+     "m1_beats_line": true
+    }
+   ],
+   "pooled": {
+    "line": {
+     "hit": 0.777,
+     "n": 148
+    },
+    "m1m": {
+     "hit": 0.7838,
+     "n": 148
+    },
+    "line_up": {
+     "hit": 0.8481,
+     "n": 79
+    },
+    "line_dn": {
+     "hit": 0.6957,
+     "n": 69
+    },
+    "m1m_up": {
+     "hit": 0.7778,
+     "n": 135
+    },
+    "m1m_dn": {
+     "hit": 0.8462,
+     "n": 13
+    },
+    "h2h_m1": {
+     "hit": 0.7635,
+     "n": 148
+    },
+    "m1_rest": {
+     "hit": 0.5635,
+     "n": 307
+    },
+    "m1_all": {
+     "hit": 0.6286,
+     "n": 455
+    },
+    "p_matched": 0.4442,
+    "mcnemar_on_line_days": {
+     "m1_only_right": 13,
+     "line_only_right": 15,
+     "p": 0.6116
+    },
+    "brier_line_days": {
+     "m1": 0.1632,
+     "line": 0.1785,
+     "n": 148
+    },
+    "checks": {
+     "1_matched_p<0.025": false,
+     "2_both_sides": false,
+     "3_years": "1 of 2",
+     "3_more_than_half": false,
+     "4_brier": true
+    },
+    "PASS": false
+   },
+   "target": "NIFTY",
+   "m1": "M1 daily (lr)",
+   "line": "NQ 15:30 -> 07:30 IST"
+  },
+  {
+   "name": "NIFTY: M1 intraday vs the study's window (NQ 14:30 -> 09:00 IST, ends after the 07:15 brief - reference only)",
+   "years": [
+    {
+     "year": 2025,
+     "days": 243,
+     "line_calls": 74,
+     "coverage": 0.305,
+     "line_p": 0.714,
+     "line_hit": 0.851,
+     "m1_matched_hit": 0.757,
+     "line_up": "34/40",
+     "line_dn": "29/34",
+     "m1m_up": "44/60",
+     "m1m_dn": "12/14",
+     "m1_on_line_days": 0.797,
+     "m1_on_no_call_days": "104/169",
+     "m1_all_days": "163/243",
+     "m1_beats_line": false
+    },
+    {
+     "year": 2026,
+     "days": 212,
+     "line_calls": 73,
+     "coverage": 0.344,
+     "line_p": 0.802,
+     "line_hit": 0.822,
+     "m1_matched_hit": 0.849,
+     "line_up": "33/38",
+     "line_dn": "27/35",
+     "m1m_up": "35/39",
+     "m1m_dn": "27/34",
+     "m1_on_line_days": 0.781,
+     "m1_on_no_call_days": "90/139",
+     "m1_all_days": "147/212",
+     "m1_beats_line": true
+    }
+   ],
+   "pooled": {
+    "line": {
+     "hit": 0.8367,
+     "n": 147
+    },
+    "m1m": {
+     "hit": 0.8027,
+     "n": 147
+    },
+    "line_up": {
+     "hit": 0.859,
+     "n": 78
+    },
+    "line_dn": {
+     "hit": 0.8116,
+     "n": 69
+    },
+    "m1m_up": {
+     "hit": 0.798,
+     "n": 99
+    },
+    "m1m_dn": {
+     "hit": 0.8125,
+     "n": 48
+    },
+    "h2h_m1": {
+     "hit": 0.7891,
+     "n": 147
+    },
+    "m1_rest": {
+     "hit": 0.6299,
+     "n": 308
+    },
+    "m1_all": {
+     "hit": 0.6813,
+     "n": 455
+    },
+    "p_matched": 0.7759,
+    "mcnemar_on_line_days": {
+     "m1_only_right": 5,
+     "line_only_right": 12,
+     "p": 0.9425
+    },
+    "brier_line_days": {
+     "m1": 0.1677,
+     "line": 0.1461,
+     "n": 147
+    },
+    "checks": {
+     "1_matched_p<0.025": false,
+     "2_both_sides": false,
+     "3_years": "1 of 2",
+     "3_more_than_half": false,
+     "4_brier": false
+    },
+    "PASS": false
+   },
+   "target": "NIFTY",
+   "m1": "M1 intraday",
+   "line": "NQ 14:30 -> 09:00 IST (reference)"
+  },
+  {
+   "name": "NIFTY: M1 daily vs PROXY line (Nasdaq Composite cash night move >= 1%), unseen 2015-2026",
+   "years": [
+    {
+     "year": 2015,
+     "days": 244,
+     "line_calls": 72,
+     "coverage": 0.295,
+     "line_p": 0.879,
+     "line_hit": 0.847,
+     "m1_matched_hit": 0.875,
+     "line_up": "35/37",
+     "line_dn": "26/35",
+     "m1m_up": "41/43",
+     "m1m_dn": "22/29",
+     "m1_on_line_days": 0.847,
+     "m1_on_no_call_days": "114/172",
+     "m1_all_days": "175/244",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2016,
+     "days": 244,
+     "line_calls": 56,
+     "coverage": 0.23,
+     "line_p": 0.874,
+     "line_hit": 0.857,
+     "m1_matched_hit": 0.893,
+     "line_up": "30/32",
+     "line_dn": "18/24",
+     "m1m_up": "44/47",
+     "m1m_dn": "6/9",
+     "m1_on_line_days": 0.857,
+     "m1_on_no_call_days": "127/188",
+     "m1_all_days": "175/244",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2017,
+     "days": 248,
+     "line_calls": 24,
+     "coverage": 0.097,
+     "line_p": 0.872,
+     "line_hit": 0.917,
+     "m1_matched_hit": 0.875,
+     "line_up": "14/15",
+     "line_dn": "8/9",
+     "m1m_up": "21/24",
+     "m1m_dn": "0/0",
+     "m1_on_line_days": 0.875,
+     "m1_on_no_call_days": "173/224",
+     "m1_all_days": "194/248",
+     "m1_beats_line": false
+    },
+    {
+     "year": 2018,
+     "days": 245,
+     "line_calls": 80,
+     "coverage": 0.327,
+     "line_p": 0.874,
+     "line_hit": 0.787,
+     "m1_matched_hit": 0.912,
+     "line_up": "35/39",
+     "line_dn": "28/41",
+     "m1m_up": "56/60",
+     "m1m_dn": "17/20",
+     "m1_on_line_days": 0.775,
+     "m1_on_no_call_days": "126/165",
+     "m1_all_days": "188/245",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2019,
+     "days": 241,
+     "line_calls": 72,
+     "coverage": 0.299,
+     "line_p": 0.862,
+     "line_hit": 0.778,
+     "m1_matched_hit": 0.833,
+     "line_up": "41/45",
+     "line_dn": "15/27",
+     "m1m_up": "57/64",
+     "m1m_dn": "3/8",
+     "m1_on_line_days": 0.792,
+     "m1_on_no_call_days": "122/169",
+     "m1_all_days": "179/241",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2020,
+     "days": 250,
+     "line_calls": 118,
+     "coverage": 0.472,
+     "line_p": 0.853,
+     "line_hit": 0.797,
+     "m1_matched_hit": 0.864,
+     "line_up": "62/71",
+     "line_dn": "32/47",
+     "m1m_up": "84/96",
+     "m1m_dn": "18/22",
+     "m1_on_line_days": 0.788,
+     "m1_on_no_call_days": "102/132",
+     "m1_all_days": "195/250",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2021,
+     "days": 248,
+     "line_calls": 76,
+     "coverage": 0.306,
+     "line_p": 0.844,
+     "line_hit": 0.737,
+     "m1_matched_hit": 0.895,
+     "line_up": "38/42",
+     "line_dn": "18/34",
+     "m1m_up": "63/71",
+     "m1m_dn": "5/5",
+     "m1_on_line_days": 0.776,
+     "m1_on_no_call_days": "131/172",
+     "m1_all_days": "190/248",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2022,
+     "days": 248,
+     "line_calls": 158,
+     "coverage": 0.637,
+     "line_p": 0.834,
+     "line_hit": 0.835,
+     "m1_matched_hit": 0.892,
+     "line_up": "68/72",
+     "line_dn": "64/86",
+     "m1m_up": "103/117",
+     "m1m_dn": "38/41",
+     "m1_on_line_days": 0.861,
+     "m1_on_no_call_days": "63/90",
+     "m1_all_days": "199/248",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2023,
+     "days": 246,
+     "line_calls": 94,
+     "coverage": 0.382,
+     "line_p": 0.834,
+     "line_hit": 0.872,
+     "m1_matched_hit": 0.904,
+     "line_up": "50/54",
+     "line_dn": "32/40",
+     "m1m_up": "85/94",
+     "m1m_dn": "0/0",
+     "m1_on_line_days": 0.809,
+     "m1_on_no_call_days": "115/152",
+     "m1_all_days": "191/246",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2024,
+     "days": 249,
+     "line_calls": 84,
+     "coverage": 0.337,
+     "line_p": 0.838,
+     "line_hit": 0.821,
+     "m1_matched_hit": 0.917,
+     "line_up": "48/50",
+     "line_dn": "21/34",
+     "m1m_up": "73/78",
+     "m1m_dn": "4/6",
+     "m1_on_line_days": 0.821,
+     "m1_on_no_call_days": "105/165",
+     "m1_all_days": "174/249",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2025,
+     "days": 249,
+     "line_calls": 78,
+     "coverage": 0.313,
+     "line_p": 0.837,
+     "line_hit": 0.756,
+     "m1_matched_hit": 0.808,
+     "line_up": "35/43",
+     "line_dn": "24/35",
+     "m1m_up": "56/70",
+     "m1m_dn": "7/8",
+     "m1_on_line_days": 0.808,
+     "m1_on_no_call_days": "102/171",
+     "m1_all_days": "165/249",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2026,
+     "days": 219,
+     "line_calls": 89,
+     "coverage": 0.406,
+     "line_p": 0.832,
+     "line_hit": 0.753,
+     "m1_matched_hit": 0.719,
+     "line_up": "38/49",
+     "line_dn": "29/40",
+     "m1m_up": "58/82",
+     "m1m_dn": "6/7",
+     "m1_on_line_days": 0.719,
+     "m1_on_no_call_days": "64/130",
+     "m1_all_days": "128/219",
+     "m1_beats_line": false
+    }
+   ],
+   "pooled": {
+    "line": {
+     "hit": 0.8082,
+     "n": 1001
+    },
+    "m1m": {
+     "hit": 0.8661,
+     "n": 1001
+    },
+    "line_up": {
+     "hit": 0.8998,
+     "n": 549
+    },
+    "line_dn": {
+     "hit": 0.6969,
+     "n": 452
+    },
+    "m1m_up": {
+     "hit": 0.8759,
+     "n": 846
+    },
+    "m1m_dn": {
+     "hit": 0.8129,
+     "n": 155
+    },
+    "h2h_m1": {
+     "hit": 0.8082,
+     "n": 1001
+    },
+    "m1_rest": {
+     "hit": 0.6964,
+     "n": 1930
+    },
+    "m1_all": {
+     "hit": 0.7346,
+     "n": 2931
+    },
+    "p_matched": 0.0002,
+    "mcnemar_on_line_days": {
+     "m1_only_right": 42,
+     "line_only_right": 42,
+     "p": 0.4782
+    },
+    "brier_line_days": {
+     "m1": 0.145,
+     "line": 0.1567,
+     "n": 1001
+    },
+    "checks": {
+     "1_matched_p<0.025": true,
+     "2_both_sides": false,
+     "3_years": "10 of 12",
+     "3_more_than_half": true,
+     "4_brier": true
+    },
+    "PASS": false
+   },
+   "target": "NIFTY",
+   "m1": "M1 daily",
+   "line": "Nasdaq cash night (proxy, 12 years)"
+  },
+  {
+   "name": "BANKNIFTY: M1 intraday (lr) vs the line (NQ 15:30 -> 07:30 IST, >= 1%)",
+   "years": [
+    {
+     "year": 2025,
+     "days": 243,
+     "line_calls": 73,
+     "coverage": 0.3,
+     "line_p": 0.769,
+     "line_hit": 0.767,
+     "m1_matched_hit": 0.808,
+     "line_up": "32/40",
+     "line_dn": "24/33",
+     "m1m_up": "48/60",
+     "m1m_dn": "11/13",
+     "m1_on_line_days": 0.808,
+     "m1_on_no_call_days": "97/170",
+     "m1_all_days": "156/243",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2026,
+     "days": 212,
+     "line_calls": 75,
+     "coverage": 0.354,
+     "line_p": 0.768,
+     "line_hit": 0.747,
+     "m1_matched_hit": 0.773,
+     "line_up": "32/39",
+     "line_dn": "24/36",
+     "m1m_up": "27/36",
+     "m1m_dn": "31/39",
+     "m1_on_line_days": 0.76,
+     "m1_on_no_call_days": "86/137",
+     "m1_all_days": "143/212",
+     "m1_beats_line": true
+    }
+   ],
+   "pooled": {
+    "line": {
+     "hit": 0.7568,
+     "n": 148
+    },
+    "m1m": {
+     "hit": 0.7905,
+     "n": 148
+    },
+    "line_up": {
+     "hit": 0.8101,
+     "n": 79
+    },
+    "line_dn": {
+     "hit": 0.6957,
+     "n": 69
+    },
+    "m1m_up": {
+     "hit": 0.7812,
+     "n": 96
+    },
+    "m1m_dn": {
+     "hit": 0.8077,
+     "n": 52
+    },
+    "h2h_m1": {
+     "hit": 0.7838,
+     "n": 148
+    },
+    "m1_rest": {
+     "hit": 0.5961,
+     "n": 307
+    },
+    "m1_all": {
+     "hit": 0.6571,
+     "n": 455
+    },
+    "p_matched": 0.2437,
+    "mcnemar_on_line_days": {
+     "m1_only_right": 9,
+     "line_only_right": 5,
+     "p": 0.1748
+    },
+    "brier_line_days": {
+     "m1": 0.1865,
+     "line": 0.1842,
+     "n": 148
+    },
+    "checks": {
+     "1_matched_p<0.025": false,
+     "2_both_sides": false,
+     "3_years": "2 of 2",
+     "3_more_than_half": true,
+     "4_brier": false
+    },
+    "PASS": false
+   },
+   "target": "BANKNIFTY",
+   "m1": "M1 intraday (lr)",
+   "line": "NQ 15:30 -> 07:30 IST"
+  },
+  {
+   "name": "BANKNIFTY: M1 daily (gbt) vs the line (NQ 15:30 -> 07:30 IST, >= 1%)",
+   "years": [
+    {
+     "year": 2025,
+     "days": 243,
+     "line_calls": 73,
+     "coverage": 0.3,
+     "line_p": 0.769,
+     "line_hit": 0.767,
+     "m1_matched_hit": 0.712,
+     "line_up": "33/40",
+     "line_dn": "23/33",
+     "m1m_up": "49/70",
+     "m1m_dn": "3/3",
+     "m1_on_line_days": 0.767,
+     "m1_on_no_call_days": "91/170",
+     "m1_all_days": "147/243",
+     "m1_beats_line": false
+    },
+    {
+     "year": 2026,
+     "days": 212,
+     "line_calls": 75,
+     "coverage": 0.354,
+     "line_p": 0.768,
+     "line_hit": 0.747,
+     "m1_matched_hit": 0.707,
+     "line_up": "32/39",
+     "line_dn": "24/36",
+     "m1m_up": "47/68",
+     "m1m_dn": "6/7",
+     "m1_on_line_days": 0.68,
+     "m1_on_no_call_days": "72/137",
+     "m1_all_days": "123/212",
+     "m1_beats_line": false
+    }
+   ],
+   "pooled": {
+    "line": {
+     "hit": 0.7568,
+     "n": 148
+    },
+    "m1m": {
+     "hit": 0.7095,
+     "n": 148
+    },
+    "line_up": {
+     "hit": 0.8228,
+     "n": 79
+    },
+    "line_dn": {
+     "hit": 0.6812,
+     "n": 69
+    },
+    "m1m_up": {
+     "hit": 0.6957,
+     "n": 138
+    },
+    "m1m_dn": {
+     "hit": 0.9,
+     "n": 10
+    },
+    "h2h_m1": {
+     "hit": 0.723,
+     "n": 148
+    },
+    "m1_rest": {
+     "hit": 0.5309,
+     "n": 307
+    },
+    "m1_all": {
+     "hit": 0.5934,
+     "n": 455
+    },
+    "p_matched": 0.8212,
+    "mcnemar_on_line_days": {
+     "m1_only_right": 10,
+     "line_only_right": 15,
+     "p": 0.8159
+    },
+    "brier_line_days": {
+     "m1": 0.1791,
+     "line": 0.1842,
+     "n": 148
+    },
+    "checks": {
+     "1_matched_p<0.025": false,
+     "2_both_sides": false,
+     "3_years": "0 of 2",
+     "3_more_than_half": false,
+     "4_brier": true
+    },
+    "PASS": false
+   },
+   "target": "BANKNIFTY",
+   "m1": "M1 daily (gbt)",
+   "line": "NQ 15:30 -> 07:30 IST"
+  },
+  {
+   "name": "BANKNIFTY: M1 intraday vs the study's window (NQ 14:30 -> 09:00 IST, ends after the 07:15 brief - reference only)",
+   "years": [
+    {
+     "year": 2025,
+     "days": 243,
+     "line_calls": 74,
+     "coverage": 0.305,
+     "line_p": 0.738,
+     "line_hit": 0.797,
+     "m1_matched_hit": 0.811,
+     "line_up": "33/40",
+     "line_dn": "26/34",
+     "m1m_up": "48/60",
+     "m1m_dn": "12/14",
+     "m1_on_line_days": 0.838,
+     "m1_on_no_call_days": "94/169",
+     "m1_all_days": "156/243",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2026,
+     "days": 212,
+     "line_calls": 73,
+     "coverage": 0.344,
+     "line_p": 0.776,
+     "line_hit": 0.795,
+     "m1_matched_hit": 0.767,
+     "line_up": "31/38",
+     "line_dn": "27/35",
+     "m1m_up": "27/36",
+     "m1m_dn": "29/37",
+     "m1_on_line_days": 0.808,
+     "m1_on_no_call_days": "84/139",
+     "m1_all_days": "143/212",
+     "m1_beats_line": false
+    }
+   ],
+   "pooled": {
+    "line": {
+     "hit": 0.7959,
+     "n": 147
+    },
+    "m1m": {
+     "hit": 0.7891,
+     "n": 147
+    },
+    "line_up": {
+     "hit": 0.8205,
+     "n": 78
+    },
+    "line_dn": {
+     "hit": 0.7681,
+     "n": 69
+    },
+    "m1m_up": {
+     "hit": 0.7812,
+     "n": 96
+    },
+    "m1m_dn": {
+     "hit": 0.8039,
+     "n": 51
+    },
+    "h2h_m1": {
+     "hit": 0.8231,
+     "n": 147
+    },
+    "m1_rest": {
+     "hit": 0.5779,
+     "n": 308
+    },
+    "m1_all": {
+     "hit": 0.6571,
+     "n": 455
+    },
+    "p_matched": 0.5572,
+    "mcnemar_on_line_days": {
+     "m1_only_right": 10,
+     "line_only_right": 6,
+     "p": 0.1908
+    },
+    "brier_line_days": {
+     "m1": 0.179,
+     "line": 0.1644,
+     "n": 147
+    },
+    "checks": {
+     "1_matched_p<0.025": false,
+     "2_both_sides": false,
+     "3_years": "1 of 2",
+     "3_more_than_half": false,
+     "4_brier": false
+    },
+    "PASS": false
+   },
+   "target": "BANKNIFTY",
+   "m1": "M1 intraday",
+   "line": "NQ 14:30 -> 09:00 IST (reference)"
+  },
+  {
+   "name": "BANKNIFTY: M1 daily vs PROXY line (Nasdaq Composite cash night move >= 1%), unseen 2015-2026",
+   "years": [
+    {
+     "year": 2015,
+     "days": 246,
+     "line_calls": 72,
+     "coverage": 0.293,
+     "line_p": 0.88,
+     "line_hit": 0.875,
+     "m1_matched_hit": 0.917,
+     "line_up": "36/37",
+     "line_dn": "27/35",
+     "m1m_up": "46/49",
+     "m1m_dn": "20/23",
+     "m1_on_line_days": 0.875,
+     "m1_on_no_call_days": "117/174",
+     "m1_all_days": "180/246",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2016,
+     "days": 246,
+     "line_calls": 55,
+     "coverage": 0.224,
+     "line_p": 0.879,
+     "line_hit": 0.8,
+     "m1_matched_hit": 0.855,
+     "line_up": "26/31",
+     "line_dn": "18/24",
+     "m1m_up": "39/46",
+     "m1m_dn": "8/9",
+     "m1_on_line_days": 0.818,
+     "m1_on_no_call_days": "124/191",
+     "m1_all_days": "169/246",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2017,
+     "days": 248,
+     "line_calls": 24,
+     "coverage": 0.097,
+     "line_p": 0.87,
+     "line_hit": 0.875,
+     "m1_matched_hit": 0.875,
+     "line_up": "12/15",
+     "line_dn": "9/9",
+     "m1m_up": "21/24",
+     "m1m_dn": "0/0",
+     "m1_on_line_days": 0.875,
+     "m1_on_no_call_days": "161/224",
+     "m1_all_days": "182/248",
+     "m1_beats_line": false
+    },
+    {
+     "year": 2018,
+     "days": 246,
+     "line_calls": 80,
+     "coverage": 0.325,
+     "line_p": 0.87,
+     "line_hit": 0.75,
+     "m1_matched_hit": 0.85,
+     "line_up": "31/39",
+     "line_dn": "29/41",
+     "m1m_up": "53/64",
+     "m1m_dn": "15/16",
+     "m1_on_line_days": 0.738,
+     "m1_on_no_call_days": "113/166",
+     "m1_all_days": "172/246",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2019,
+     "days": 242,
+     "line_calls": 72,
+     "coverage": 0.298,
+     "line_p": 0.853,
+     "line_hit": 0.736,
+     "m1_matched_hit": 0.75,
+     "line_up": "36/45",
+     "line_dn": "17/27",
+     "m1m_up": "51/64",
+     "m1m_dn": "3/8",
+     "m1_on_line_days": 0.708,
+     "m1_on_no_call_days": "118/170",
+     "m1_all_days": "169/242",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2020,
+     "days": 250,
+     "line_calls": 118,
+     "coverage": 0.472,
+     "line_p": 0.84,
+     "line_hit": 0.763,
+     "m1_matched_hit": 0.831,
+     "line_up": "56/71",
+     "line_dn": "34/47",
+     "m1m_up": "89/108",
+     "m1m_dn": "9/10",
+     "m1_on_line_days": 0.763,
+     "m1_on_no_call_days": "100/132",
+     "m1_all_days": "190/250",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2021,
+     "days": 248,
+     "line_calls": 76,
+     "coverage": 0.306,
+     "line_p": 0.829,
+     "line_hit": 0.711,
+     "m1_matched_hit": 0.829,
+     "line_up": "36/42",
+     "line_dn": "18/34",
+     "m1m_up": "60/73",
+     "m1m_dn": "3/3",
+     "m1_on_line_days": 0.75,
+     "m1_on_no_call_days": "121/172",
+     "m1_all_days": "178/248",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2022,
+     "days": 248,
+     "line_calls": 158,
+     "coverage": 0.637,
+     "line_p": 0.818,
+     "line_hit": 0.829,
+     "m1_matched_hit": 0.867,
+     "line_up": "67/72",
+     "line_dn": "64/86",
+     "m1m_up": "94/109",
+     "m1m_dn": "43/49",
+     "m1_on_line_days": 0.854,
+     "m1_on_no_call_days": "57/90",
+     "m1_all_days": "192/248",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2023,
+     "days": 246,
+     "line_calls": 94,
+     "coverage": 0.382,
+     "line_p": 0.82,
+     "line_hit": 0.809,
+     "m1_matched_hit": 0.904,
+     "line_up": "47/54",
+     "line_dn": "29/40",
+     "m1m_up": "77/85",
+     "m1m_dn": "8/9",
+     "m1_on_line_days": 0.787,
+     "m1_on_no_call_days": "107/152",
+     "m1_all_days": "181/246",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2024,
+     "days": 249,
+     "line_calls": 84,
+     "coverage": 0.337,
+     "line_p": 0.819,
+     "line_hit": 0.75,
+     "m1_matched_hit": 0.857,
+     "line_up": "45/50",
+     "line_dn": "18/34",
+     "m1m_up": "69/81",
+     "m1m_dn": "3/3",
+     "m1_on_line_days": 0.81,
+     "m1_on_no_call_days": "85/165",
+     "m1_all_days": "153/249",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2025,
+     "days": 249,
+     "line_calls": 78,
+     "coverage": 0.313,
+     "line_p": 0.814,
+     "line_hit": 0.692,
+     "m1_matched_hit": 0.705,
+     "line_up": "31/43",
+     "line_dn": "23/35",
+     "m1m_up": "51/74",
+     "m1m_dn": "4/4",
+     "m1_on_line_days": 0.744,
+     "m1_on_no_call_days": "93/171",
+     "m1_all_days": "151/249",
+     "m1_beats_line": true
+    },
+    {
+     "year": 2026,
+     "days": 219,
+     "line_calls": 89,
+     "coverage": 0.406,
+     "line_p": 0.806,
+     "line_hit": 0.719,
+     "m1_matched_hit": 0.708,
+     "line_up": "37/49",
+     "line_dn": "27/40",
+     "m1m_up": "56/81",
+     "m1m_dn": "7/8",
+     "m1_on_line_days": 0.697,
+     "m1_on_no_call_days": "64/130",
+     "m1_all_days": "126/219",
+     "m1_beats_line": false
+    }
+   ],
+   "pooled": {
+    "line": {
+     "hit": 0.773,
+     "n": 1000
+    },
+    "m1m": {
+     "hit": 0.829,
+     "n": 1000
+    },
+    "line_up": {
+     "hit": 0.8394,
+     "n": 548
+    },
+    "line_dn": {
+     "hit": 0.6925,
+     "n": 452
+    },
+    "m1m_up": {
+     "hit": 0.8228,
+     "n": 858
+    },
+    "m1m_dn": {
+     "hit": 0.8662,
+     "n": 142
+    },
+    "h2h_m1": {
+     "hit": 0.783,
+     "n": 1000
+    },
+    "m1_rest": {
+     "hit": 0.6505,
+     "n": 1937
+    },
+    "m1_all": {
+     "hit": 0.6956,
+     "n": 2937
+    },
+    "p_matched": 0.0009,
+    "mcnemar_on_line_days": {
+     "m1_only_right": 34,
+     "line_only_right": 24,
+     "p": 0.1061
+    },
+    "brier_line_days": {
+     "m1": 0.1594,
+     "line": 0.1791,
+     "n": 1000
+    },
+    "checks": {
+     "1_matched_p<0.025": true,
+     "2_both_sides": false,
+     "3_years": "10 of 12",
+     "3_more_than_half": true,
+     "4_brier": true
+    },
+    "PASS": false
+   },
+   "target": "BANKNIFTY",
+   "m1": "M1 daily",
+   "line": "Nasdaq cash night (proxy, 12 years)"
+  }
+ ]
+}

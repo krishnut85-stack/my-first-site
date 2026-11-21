@@ -1,0 +1,247 @@
+{
+ "run": "FULL3",
+ "layer": "stub",
+ "days": [
+  "2026-11-20"
+ ],
+ "made_ist": "2026-11-21 04:39:17",
+ "edge": {
+  "2026-11-20": {
+   "line": "EDGE 2026-11-20 2026-11-20: 41 names a day (32 knowledge-driven) \u00b7 TOP-5 by the analyst's own rank: >=1% 0/5 0% vs 22% lift 0.0, >=2% 0/5 0% vs 9% lift 0.0 \u00b7 all names >=1% 11/41 27% vs 26% lift 1.02, >=2% 3/41 7% vs 10% lift 0.75 \u00b7 knowledge >=2% 2/32 6% vs 8% lift 0.78 \u00b7 all names >=2% to the next close not known yet (2026-11-23 has not closed / no data) \u00b7 old system >=2% 25/288 9% vs 8% lift 1.1 (288 names)",
+   "names_per_day": {
+    "analyst ideas": 6,
+    "news row (C3, silent)": 22,
+    "prediction loop (lists, fired movers)": 18,
+    "ALL": 41,
+    "OLD system": 288,
+    "INDEX": 0
+   },
+   "top5_headline": {
+    "by": "list order",
+    "names": [
+     "HEROMOTOCO PE 19:47",
+     "BANKBARODA CE 19:47",
+     "PNB CE 07:17",
+     "ALKEM PE 07:17",
+     "TCS PE 19:47"
+    ],
+    "n": 5,
+    "hit1_close": 0,
+    "hit2_close": 0,
+    "proof": "NOT PROVEN (n = 5)",
+    "1_close": {
+     "n": 5,
+     "hits": 0,
+     "hit_rate": 0.0,
+     "base_rate": 0.221,
+     "lift": 0.0
+    },
+    "2_close": {
+     "n": 5,
+     "hits": 0,
+     "hit_rate": 0.0,
+     "base_rate": 0.086,
+     "lift": 0.0
+    },
+    "1_next": "not known (no next close yet)",
+    "2_next": "not known (no next close yet)",
+    "whose": "the analyst's own rank"
+   },
+   "by_side": {
+    "CE": {
+     "names": 25,
+     "analyst_names": 2,
+     "top5": {
+      "by": "score / points",
+      "names": [
+       "SYRMA CE 09:20",
+       "AMBER CE 09:20",
+       "MAXHEALTH CE 10:23",
+       "BDL CE 10:28",
+       "APOLLOHOSP CE 10:29"
+      ],
+      "n": 5,
+      "hit1_close": 1,
+      "hit2_close": 0,
+      "proof": "NOT PROVEN (n = 5)",
+      "1_close": {
+       "n": 5,
+       "hits": 1,
+       "hit_rate": 0.2,
+       "base_rate": 0.423,
+       "lift": 0.47
+      },
+      "2_close": {
+       "n": 5,
+       "hits": 0,
+       "hit_rate": 0.0,
+       "base_rate": 0.161,
+       "lift": 0.0
+      },
+      "1_next": "not known (no next close yet)",
+      "2_next": "not known (no next close yet)"
+     }
+    },
+    "PE": {
+     "names": 16,
+     "analyst_names": 4,
+     "top5": {
+      "by": "score / points",
+      "names": [
+       "VEDL PE 09:00",
+       "KAYNES PE 09:20",
+       "KALYANKJIL PE 10:08",
+       "PAYTM PE 11:11",
+       "BAJFINANCE PE 12:01"
+      ],
+      "n": 5,
+      "hit1_close": 1,
+      "hit2_close": 1,
+      "proof": "NOT PROVEN (n = 5)",
+      "1_close": {
+       "n": 5,
+       "hits": 1,
+       "hit_rate": 0.2,
+       "base_rate": 0.069,
+       "lift": 2.91
+      },
+      "2_close": {
+       "n": 5,
+       "hits": 1,
+       "hit_rate": 0.2,
+       "base_rate": 0.013,
+       "lift": 15.57
+      },
+      "1_next": "not known (no next close yet)",
+      "2_next": "not known (no next close yet)"
+     }
+    }
+   },
+   "error": null
+  }
+ },
+ "budget_days": [
+  {
+   "budget_day": "2026-11-18 15:40 -> 2026-11-19 15:40",
+   "session": "2026-11-19",
+   "usd": 0.007,
+   "calls": 4,
+   "refused": 0,
+   "by": {
+    "READ": 0.007
+   },
+   "steps": {},
+   "cap": 8.0,
+   "floors": [
+    [
+     "19:45",
+     1.2,
+     0.0
+    ],
+    [
+     "22:45",
+     0.2,
+     0.0
+    ],
+    [
+     "07:15",
+     0.6,
+     0.0
+    ],
+    [
+     "09:08",
+     0.6,
+     0.0
+    ]
+   ],
+   "brief_cost": {},
+   "live_by_hour": {},
+   "live_by_caller": {}
+  },
+  {
+   "budget_day": "2026-11-19 15:40 -> 2026-11-20 15:40",
+   "session": "2026-11-20",
+   "usd": 7.061,
+   "calls": 452,
+   "refused": 108,
+   "by": {
+    "LIVE": 1.774,
+    "MEET": 2.523,
+    "READ": 0.927,
+    "SEATS": 1.837
+   },
+   "steps": {
+    "first refusal": "2026-11-20 07:17 (brief floor: the 07:15 brief has $0.54 of its $2.00 (incl. what earlier briefs left) and $)",
+    "MEET bucket full": "2026-11-20 07:17",
+    "LEAN (combined seat calls)": "2026-11-20 09:16 - SEATS $1.45",
+    "first LIVE refusal": "2026-11-20 13:35 (WAIT: AI live budget used - rules view only ($1.64 of $1.78 LIVE spent)"
+   },
+   "cap": 8.0,
+   "live_by_hour": {
+    "09:00": 0.785,
+    "10:00": 0.252,
+    "11:00": 0.124,
+    "12:00": 0.456,
+    "13:00": 0.136,
+    "14:00": 0.0,
+    "15:00": 0.0,
+    "16:00": 0.021
+   },
+   "live_by_caller": {
+    "H head": {
+     "calls": 105,
+     "usd": 1.152,
+     "refused": 96
+    },
+    "36 seat": {
+     "calls": 8,
+     "usd": 0.601,
+     "refused": 1
+    },
+    "15 seat": {
+     "calls": 1,
+     "usd": 0.021,
+     "refused": 0
+    }
+   },
+   "brief_cost": {
+    "19:45": 1.619,
+    "07:15": 1.584,
+    "09:08": 0.765
+   },
+   "floors": [
+    [
+     "19:45",
+     1.2,
+     1.016
+    ],
+    [
+     "22:45",
+     0.2,
+     0.0
+    ],
+    [
+     "07:15",
+     0.6,
+     0.923
+    ],
+    [
+     "09:08",
+     0.6,
+     0.584
+    ]
+   ]
+  }
+ ],
+ "replay_tick_min": 15,
+ "rules": "20nov",
+ "buckets": {
+  "MEET": 1.8,
+  "LIVE": 1.5,
+  "READ": 1.6,
+  "SEATS": 2.8,
+  "ASK": 0.3
+ },
+ "sim_cost": false,
+ "knowledge": "knowledge snapshot: NOT controlled (prompts written 20 Nov evening may contain outcomes)"
+}

@@ -1,0 +1,6 @@
+{"channel": "FAKE analyst brief", "day": "2026-11-20", "priority": 1, "rank": 1, "s": "RELIANCE", "side": "CE", "source": "broker call", "t": "19:47", "ts": 1795097820.0, "why": "FAKE: a weight-4 broker item names the share"}
+{"channel": "FAKE analyst brief", "day": "2026-11-20", "priority": 1, "rank": 2, "s": "HEROMOTOCO", "side": "PE", "source": "results", "t": "19:47", "ts": 1795097820.0, "why": "FAKE: a weight-3 results item names the share"}
+{"channel": "FAKE analyst brief", "day": "2026-11-20", "priority": 1, "rank": 3, "s": "INDIGO", "side": "PE", "source": "news", "t": "19:47", "ts": 1795097820.0, "why": "FAKE: a weight-3 news item names the share"}
+{"channel": "FAKE analyst brief", "day": "2026-11-20", "priority": 1, "rank": 4, "s": "POLYCAB", "side": "CE", "source": "news", "t": "19:47", "ts": 1795097820.0, "why": "FAKE: a weight-3 news item names the share"}
+{"channel": "FAKE analyst brief", "day": "2026-11-20", "priority": 1, "rank": 1, "s": "VOLTAS", "side": "CE", "source": "news", "t": "22:46", "ts": 1795108560.0, "why": "FAKE: a weight-3 news item names the share"}
+{"channel": "FAKE analyst brief", "day": "2026-11-20", "priority": 1, "rank": 2, "s": "MANAPPURAM", "side": "PE", "source": "news", "t": "22:46", "ts": 1795108560.0, "why": "FAKE: a weight-3 news item names the share"}

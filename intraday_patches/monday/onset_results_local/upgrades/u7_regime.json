@@ -1,0 +1,118 @@
+{
+ "counts": {
+  "discovery": {
+   "HIGHVOL": 37,
+   "TREND_UP": 106,
+   "TREND_DOWN": 14,
+   "RANGE": 251
+  },
+  "unseen": {
+   "HIGHVOL": 197,
+   "TREND_UP": 62,
+   "TREND_DOWN": 50,
+   "RANGE": 409
+  }
+ },
+ "q": [
+  {
+   "q": "Q1 next-5-session NIFTY |move|: HIGHVOL vs the rest",
+   "r": {
+    "discovery": {
+     "n_hv": 37,
+     "abs5_hv": 1.717,
+     "abs5_other": 1.441,
+     "t": 1.27
+    },
+    "unseen": {
+     "n_hv": 192,
+     "abs5_hv": 1.732,
+     "abs5_other": 1.364,
+     "t": 3.02
+    }
+   },
+   "key": "t",
+   "holds": false
+  },
+  {
+   "q": "Q4 NIFTY next-5-session return: TREND_UP vs TREND_DOWN",
+   "r": {
+    "discovery": {
+     "n_up": 106,
+     "n_down": 14,
+     "ret5_up": 0.489,
+     "ret5_down": 1.283,
+     "t": -1.96
+    },
+    "unseen": {
+     "n_up": 62,
+     "n_down": 50,
+     "ret5_up": -0.395,
+     "ret5_down": 0.055,
+     "t": -1.26
+    }
+   },
+   "key": "t",
+   "holds": false
+  },
+  {
+   "q": "Q2 share breakout 3-session follow-through (%, with the breakout): TREND_UP vs RANGE",
+   "r": {
+    "discovery": {
+     "n_trend": 2494,
+     "n_range": 3004,
+     "f3_trend": 0.331,
+     "f3_range": 0.367,
+     "up_trend": 0.501,
+     "up_range": 0.523,
+     "t": -0.35
+    },
+    "unseen": {
+     "n_trend": 1179,
+     "n_range": 5767,
+     "f3_trend": -0.202,
+     "f3_range": 0.076,
+     "up_trend": 0.474,
+     "up_range": 0.494,
+     "t": -2.39
+    }
+   },
+   "key": "t",
+   "extra": {
+    "discovery": {
+     "n_hv": 813,
+     "f3_hv": 0.765
+    },
+    "unseen": {
+     "n_hv": 2626,
+     "f3_hv": 0.476
+    }
+   },
+   "holds": false
+  },
+  {
+   "q": "Q3 share breakdown 3-session follow-through (%, with the breakdown): TREND_DOWN vs RANGE",
+   "r": {
+    "discovery": {
+     "n_trend": 530,
+     "n_range": 2096,
+     "f3_trend": -1.821,
+     "f3_range": -0.013,
+     "t": -8.51
+    },
+    "unseen": {
+     "n_trend": 1487,
+     "n_range": 3727,
+     "f3_trend": -0.33,
+     "f3_range": -0.205,
+     "t": -1.01
+    }
+   },
+   "key": "t",
+   "holds": false
+  }
+ ],
+ "today": {
+  "date": "2026-11-20",
+  "regime": "HIGHVOL"
+ }
+}

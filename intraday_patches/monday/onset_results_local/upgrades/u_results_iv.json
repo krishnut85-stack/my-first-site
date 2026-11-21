@@ -1,0 +1,90 @@
+{
+ "rows": 41396,
+ "events": 862,
+ "table": [
+  {
+   "kind": "event",
+   "bucket": "IV < 70th pct",
+   "n": 173,
+   "iv_change_pct": 1.2,
+   "CE": {
+    "mean": -1.5,
+    "median": -7.2,
+    "win": 0.422
+   },
+   "PE": {
+    "mean": 4.5,
+    "median": -2.4,
+    "win": 0.486
+   },
+   "STRADDLE": {
+    "mean": 1.5,
+    "median": -2.0,
+    "win": 0.445
+   }
+  },
+  {
+   "kind": "event",
+   "bucket": "IV >= 70th pct",
+   "n": 689,
+   "iv_change_pct": -3.5,
+   "CE": {
+    "mean": 0.5,
+    "median": -5.2,
+    "win": 0.444
+   },
+   "PE": {
+    "mean": -4.6,
+    "median": -9.3,
+    "win": 0.405
+   },
+   "STRADDLE": {
+    "mean": -2.0,
+    "median": -3.7,
+    "win": 0.338
+   }
+  },
+  {
+   "kind": "control",
+   "bucket": "IV < 70th pct",
+   "n": 22763,
+   "iv_change_pct": 1.5,
+   "CE": {
+    "mean": -2.3,
+    "median": -7.6,
+    "win": 0.391
+   },
+   "PE": {
+    "mean": 0.5,
+    "median": -3.6,
+    "win": 0.453
+   },
+   "STRADDLE": {
+    "mean": -0.9,
+    "median": -3.4,
+    "win": 0.312
+   }
+  },
+  {
+   "kind": "control",
+   "bucket": "IV >= 70th pct",
+   "n": 12883,
+   "iv_change_pct": -0.5,
+   "CE": {
+    "mean": -1.0,
+    "median": -5.2,
+    "win": 0.425
+   },
+   "PE": {
+    "mean": -4.3,
+    "median": -9.0,
+    "win": 0.389
+   },
+   "STRADDLE": {
+    "mean": -2.6,
+    "median": -4.2,
+    "win": 0.285
+   }
+  }
+ ]
+}

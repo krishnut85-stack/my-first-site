@@ -1,0 +1,250 @@
+{
+ "run": "PROOF_F3",
+ "layer": "stub",
+ "days": [
+  "2026-11-20"
+ ],
+ "made_ist": "2026-11-21 01:04:56",
+ "edge": {
+  "2026-11-20": {
+   "line": "EDGE 2026-11-20 2026-11-20: 41 names a day (32 knowledge-driven) \u00b7 TOP-5 by the analyst's own rank: >=1% 1/5 20% vs 22% lift 0.9, >=2% 1/5 20% vs 9% lift 2.32 \u00b7 all names >=1% 10/41 24% vs 27% lift 0.91, >=2% 3/41 7% vs 10% lift 0.73 \u00b7 knowledge >=2% 3/32 9% vs 8% lift 1.13 \u00b7 all names >=2% to the next close not known yet (2026-11-23 has not closed / no data) \u00b7 old system >=2% 25/288 9% vs 8% lift 1.1 (288 names)",
+   "names_per_day": {
+    "analyst ideas": 6,
+    "news row (C3, silent)": 22,
+    "prediction loop (lists, fired movers)": 18,
+    "ALL": 41,
+    "OLD system": 288,
+    "INDEX": 0
+   },
+   "top5_headline": {
+    "by": "AI priority",
+    "names": [
+     "RELIANCE CE 19:47",
+     "ALKEM PE 07:17",
+     "HEROMOTOCO PE 19:47",
+     "MARUTI CE 07:17",
+     "INDIGO PE 19:47"
+    ],
+    "n": 5,
+    "hit1_close": 1,
+    "hit2_close": 1,
+    "proof": "NOT PROVEN (n = 5)",
+    "1_close": {
+     "n": 5,
+     "hits": 1,
+     "hit_rate": 0.2,
+     "base_rate": 0.221,
+     "lift": 0.9
+    },
+    "2_close": {
+     "n": 5,
+     "hits": 1,
+     "hit_rate": 0.2,
+     "base_rate": 0.086,
+     "lift": 2.32
+    },
+    "1_next": "not known (no next close yet)",
+    "2_next": "not known (no next close yet)",
+    "whose": "the analyst's own rank"
+   },
+   "by_side": {
+    "CE": {
+     "names": 26,
+     "analyst_names": 3,
+     "top5": {
+      "by": "AI priority",
+      "names": [
+       "RELIANCE CE 19:47",
+       "MARUTI CE 07:17",
+       "POLYCAB CE 19:47",
+       "SYRMA CE 09:20",
+       "AMBER CE 09:20"
+      ],
+      "n": 5,
+      "hit1_close": 2,
+      "hit2_close": 1,
+      "proof": "NOT PROVEN (n = 5)",
+      "1_close": {
+       "n": 5,
+       "hits": 2,
+       "hit_rate": 0.4,
+       "base_rate": 0.396,
+       "lift": 1.01
+      },
+      "2_close": {
+       "n": 5,
+       "hits": 1,
+       "hit_rate": 0.2,
+       "base_rate": 0.169,
+       "lift": 1.18
+      },
+      "1_next": "not known (no next close yet)",
+      "2_next": "not known (no next close yet)"
+     }
+    },
+    "PE": {
+     "names": 15,
+     "analyst_names": 3,
+     "top5": {
+      "by": "AI priority",
+      "names": [
+       "ALKEM PE 07:17",
+       "HEROMOTOCO PE 19:47",
+       "INDIGO PE 19:47",
+       "VEDL PE 09:00",
+       "KAYNES PE 09:20"
+      ],
+      "n": 5,
+      "hit1_close": 1,
+      "hit2_close": 1,
+      "proof": "NOT PROVEN (n = 5)",
+      "1_close": {
+       "n": 5,
+       "hits": 1,
+       "hit_rate": 0.2,
+       "base_rate": 0.122,
+       "lift": 1.64
+      },
+      "2_close": {
+       "n": 5,
+       "hits": 1,
+       "hit_rate": 0.2,
+       "base_rate": 0.037,
+       "lift": 5.45
+      },
+      "1_next": "not known (no next close yet)",
+      "2_next": "not known (no next close yet)"
+     }
+    }
+   },
+   "error": null
+  }
+ },
+ "budget_days": [
+  {
+   "budget_day": "2026-11-18 15:40 -> 2026-11-19 15:40",
+   "session": "2026-11-19",
+   "usd": 0.025,
+   "calls": 8,
+   "refused": 0,
+   "by": {
+    "READ": 0.025
+   },
+   "steps": {},
+   "cap": 8.0,
+   "floors": [
+    [
+     "19:45",
+     1.1,
+     0.0
+    ],
+    [
+     "22:45",
+     0.3,
+     0.0
+    ],
+    [
+     "07:15",
+     0.6,
+     0.0
+    ],
+    [
+     "09:08",
+     0.6,
+     0.0
+    ]
+   ],
+   "brief_cost": {},
+   "live_by_hour": {},
+   "live_by_caller": {}
+  },
+  {
+   "budget_day": "2026-11-19 15:40 -> 2026-11-20 15:40",
+   "session": "2026-11-20",
+   "usd": 6.977,
+   "calls": 596,
+   "refused": 285,
+   "by": {
+    "LIVE": 1.943,
+    "MEET": 2.284,
+    "READ": 0.8,
+    "SEATS": 1.949
+   },
+   "steps": {
+    "first refusal": "2026-11-19 19:47 (brief floor: the 19:45 brief has $1.10 of its $1.10 (incl. what earlier briefs left) and $)",
+    "READ bucket full": "2026-11-20 05:46",
+    "LEAN (combined seat calls)": "2026-11-20 07:17 - SEATS $1.14",
+    "SEATS event-only": "2026-11-20 09:37"
+   },
+   "cap": 8.0,
+   "live_by_hour": {
+    "04:00": 0.043,
+    "06:00": 0.043,
+    "09:00": 0.57,
+    "10:00": 0.256,
+    "11:00": 0.128,
+    "12:00": 0.128,
+    "13:00": 0.256,
+    "14:00": 0.128,
+    "15:00": 0.264,
+    "17:00": 0.043,
+    "20:00": 0.043,
+    "23:00": 0.043
+   },
+   "live_by_caller": {
+    "H head": {
+     "calls": 11,
+     "usd": 1.408,
+     "refused": 0
+    },
+    "36 seat": {
+     "calls": 3,
+     "usd": 0.28,
+     "refused": 0
+    },
+    "15 seat": {
+     "calls": 12,
+     "usd": 0.256,
+     "refused": 0
+    }
+   },
+   "brief_cost": {
+    "19:45": 1.035,
+    "07:15": 1.497,
+    "09:08": 1.047
+   },
+   "floors": [
+    [
+     "19:45",
+     1.1,
+     0.493
+    ],
+    [
+     "22:45",
+     0.3,
+     0.0
+    ],
+    [
+     "07:15",
+     0.6,
+     0.896
+    ],
+    [
+     "09:08",
+     0.6,
+     0.896
+    ]
+   ]
+  }
+ ],
+ "replay_tick_min": 15,
+ "rules": "2220",
+ "buckets": {
+  "MEET": 2.6,
+  "SEATS": 2.2,
+  "LIVE": 2.1,
+  "READ": 0.8,
+  "ASK": 0.3
+ },
+ "sim_cost": true
+}

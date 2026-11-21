@@ -1,0 +1,658 @@
+[
+ {
+  "control": "real gir-preview 8100: refuses without the website session (GET status gives no data, POST flip 403, forged cookie both ways)",
+  "page": "GIR MODE API",
+  "viewport": "",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "200 {\"ok\": false, \"signed_in\": false, \"why\": / 403 / 403 / 200"
+ },
+ {
+  "control": "test copy 8105: refuses without the website session (GET status gives no data, POST flip 403, forged cookie both ways)",
+  "page": "GIR MODE API",
+  "viewport": "",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "200 {\"ok\": false, \"signed_in\": false, \"why\": / 403 / 403 / 200"
+ },
+ {
+  "control": "the real mode never changed by the refusals",
+  "page": "GIR MODE API",
+  "viewport": "",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "never flipped"
+ },
+ {
+  "control": "real 8100, signed in: GET status reads the real mode (read only)",
+  "page": "GIR MODE API",
+  "viewport": "",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "{'mode': 'new', 'never_flipped': True, 'muted': '12 of 12', 'old_ai': 'OFF', 'desk_lines': 'ON', 'last': ['2026-11-21 10:47:15 IST web REFUSED mode request: no valid website session (from 64.227.155.177)', '2026-11-21 10:48:32 IST web REFUSED mode request: no valid website session (from 127.0.0.1)', '2026-11-21 10:48:32 IST web REFUSED mode request: no valid website session (from 127.0.0.1)']}"
+ },
+ {
+  "control": "signed in but no switch header / a shell-text mode / no confirm word -> refused",
+  "page": "GIR MODE API",
+  "viewport": "",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "403 / 400 / 400"
+ },
+ {
+  "control": "test copy: POST mode old runs the (test) script: mode old, 0 of 12 muted, old AI ON, desk lines OFF",
+  "page": "GIR MODE API",
+  "viewport": "",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "200 · {'mode': 'old', 'muted': '0 of 12', 'old_ai': 'ON', 'desk_lines': 'OFF'} · flags muted 0"
+ },
+ {
+  "control": "test copy: POST mode new -> 12 of 12 muted; the log has who / when for each web flip",
+  "page": "GIR MODE API",
+  "viewport": "",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "['2026-11-21 10:48:43 IST web request: mode NEW by the signed-in website session from 127.0.0.1 (gir-preview Settings button)', '2026-11-21 10:48:43 IST mode NEW (by root)']"
+ },
+ {
+  "control": "the real mode is still unchanged after the test flips",
+  "page": "GIR MODE API",
+  "viewport": "",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "never flipped"
+ },
+ {
+  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: 2026-11-21 10:48:43 IST mode NEW ("
+ },
+ {
+  "control": "the trader's approved reasons to flip, word for word (wrapped, one numbered reason per line)",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
+ },
+ {
+  "control": "two buttons; the one for the current mode is disabled",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "NEW desk [['Switch to OLD alerts', False], ['Back to NEW desk', True]]"
+ },
+ {
+  "control": "no cut text (Settings GIR MODE test copy)",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut · prose with a tooltip: 1"
+ },
+ {
+  "control": "click \"Switch to OLD alerts\": the confirm step shows (what changes) and NOTHING is sent yet",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Switch to OLD alerts now? The old senders and the old AI come back at once; the desk's tra · test mode still new"
+ },
+ {
+  "control": "CONFIRM · OLD (test copy): the panel reads OLD alerts, 0 of 12 muted, old AI ON; the test flags flipped",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "GIR MODE fallback switch · instant · no backlog OLD alerts old senders muted 0 of 12 old AI ON desk trade lines OFF last flip: 2026-11-21 10:48:57 IST mode OLD "
+ },
+ {
+  "control": "no cut text (Settings GIR MODE after OLD)",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut · prose with a tooltip: 1"
+ },
+ {
+  "control": "Back to NEW desk + CONFIRM (test copy): NEW desk, 12 of 12 muted",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: 2026-11-21 10:"
+ },
+ {
+  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: never flipped (NEW is the default)"
+ },
+ {
+  "control": "the trader's approved reasons to flip, word for word (wrapped, one numbered reason per line)",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
+ },
+ {
+  "control": "two buttons; the one for the current mode is disabled",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "NEW desk [['Switch to OLD alerts', False], ['Back to NEW desk', True]]"
+ },
+ {
+  "control": "no cut text (Settings GIR MODE real)",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut · prose with a tooltip: 0"
+ },
+ {
+  "control": "real page: the button only opens the built-in confirm step; Cancel closes it and nothing changed",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "True -> False · mode never flipped"
+ },
+ {
+  "control": "0 page errors",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "1366x768",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: 2026-11-21 10:49:06 IST mode NEW ("
+ },
+ {
+  "control": "the trader's approved reasons to flip, word for word (wrapped, one numbered reason per line)",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
+ },
+ {
+  "control": "two buttons; the one for the current mode is disabled",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "NEW desk [['Switch to OLD alerts', False], ['Back to NEW desk', True]]"
+ },
+ {
+  "control": "no cut text (Settings GIR MODE test copy)",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut · prose with a tooltip: 0"
+ },
+ {
+  "control": "click \"Switch to OLD alerts\": the confirm step shows (what changes) and NOTHING is sent yet",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Switch to OLD alerts now? The old senders and the old AI come back at once; the desk's tra · test mode still new"
+ },
+ {
+  "control": "CONFIRM · OLD (test copy): the panel reads OLD alerts, 0 of 12 muted, old AI ON; the test flags flipped",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "GIR MODE fallback switch · instant · no backlog OLD alerts old senders muted 0 of 12 old AI ON desk trade lines OFF last flip: 2026-11-21 10:49:27 IST mode OLD "
+ },
+ {
+  "control": "no cut text (Settings GIR MODE after OLD)",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut · prose with a tooltip: 0"
+ },
+ {
+  "control": "Back to NEW desk + CONFIRM (test copy): NEW desk, 12 of 12 muted",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: 2026-11-21 10:"
+ },
+ {
+  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: never flipped (NEW is the default)"
+ },
+ {
+  "control": "the trader's approved reasons to flip, word for word (wrapped, one numbered reason per line)",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
+ },
+ {
+  "control": "two buttons; the one for the current mode is disabled",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "NEW desk [['Switch to OLD alerts', False], ['Back to NEW desk', True]]"
+ },
+ {
+  "control": "no cut text (Settings GIR MODE real)",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut · prose with a tooltip: 0"
+ },
+ {
+  "control": "real page: the button only opens the built-in confirm step; Cancel closes it and nothing changed",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "True -> False · mode never flipped"
+ },
+ {
+  "control": "0 page errors",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "1600x900",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: 2026-11-21 10:49:36 IST mode NEW ("
+ },
+ {
+  "control": "the trader's approved reasons to flip, word for word (wrapped, one numbered reason per line)",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
+ },
+ {
+  "control": "two buttons; the one for the current mode is disabled",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "NEW desk [['Switch to OLD alerts', False], ['Back to NEW desk', True]]"
+ },
+ {
+  "control": "no cut text (Settings GIR MODE test copy)",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut · prose with a tooltip: 0"
+ },
+ {
+  "control": "click \"Switch to OLD alerts\": the confirm step shows (what changes) and NOTHING is sent yet",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Switch to OLD alerts now? The old senders and the old AI come back at once; the desk's tra · test mode still new"
+ },
+ {
+  "control": "CONFIRM · OLD (test copy): the panel reads OLD alerts, 0 of 12 muted, old AI ON; the test flags flipped",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "GIR MODE fallback switch · instant · no backlog OLD alerts old senders muted 0 of 12 old AI ON desk trade lines OFF last flip: 2026-11-21 10:50:04 IST mode OLD "
+ },
+ {
+  "control": "no cut text (Settings GIR MODE after OLD)",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut · prose with a tooltip: 0"
+ },
+ {
+  "control": "Back to NEW desk + CONFIRM (test copy): NEW desk, 12 of 12 muted",
+  "page": "Settings GIR MODE (test copy)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: 2026-11-21 10:"
+ },
+ {
+  "control": "GIR MODE panel: the mode + old senders muted n of 12 + old AI + desk trade lines",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: never flipped (NEW is the default)"
+ },
+ {
+  "control": "the trader's approved reasons to flip, word for word (wrapped, one numbered reason per line)",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
+ },
+ {
+  "control": "two buttons; the one for the current mode is disabled",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "NEW desk [['Switch to OLD alerts', False], ['Back to NEW desk', True]]"
+ },
+ {
+  "control": "no cut text (Settings GIR MODE real)",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "0 cut · prose with a tooltip: 0"
+ },
+ {
+  "control": "real page: the button only opens the built-in confirm step; Cancel closes it and nothing changed",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "True -> False · mode never flipped"
+ },
+ {
+  "control": "0 page errors",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "Settings GIR MODE (real)",
+  "viewport": "390x844",
+  "where": "inside",
+  "result": "PASS",
+  "evidence": "390 px"
+ },
+ {
+  "control": "outside, not signed in: the status read is refused (no status data: {ok false, signed_in false}, or the login page)",
+  "page": "GIR MODE API",
+  "viewport": "",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "200 {\"ok\": false, \"signed_in\": false, \"why\": \"sign in on the website first"
+ },
+ {
+  "control": "outside, not signed in: POST refused",
+  "page": "GIR MODE API",
+  "viewport": "",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "403"
+ },
+ {
+  "control": "outside, signed in (Caddy route): GET status shows the real mode",
+  "page": "GIR MODE API",
+  "viewport": "",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "200 {'mode': 'new', 'never_flipped': True, 'muted': '12 of 12', 'old_ai': 'OFF', 'desk_lines': 'ON', 'last': ['2026-11-21 10:48:32 IST web REFUSED mode request: no valid website session (from 127.0.0.1)', '2026-11-21 10:48:32 IST web REFUSED mode request: no valid website session (from 127.0.0.1)', '2026-11-21 10:50:27 IST web REFUSED mode request: no valid website session (from 64.227.155.177)']}"
+ },
+ {
+  "control": "outside, signed in: POST without the switch header (403), without the confirm word (400), with a shell-text mode (400) - all refused, mode unchanged",
+  "page": "GIR MODE API",
+  "viewport": "",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "403 / 400 / 400 · mode never flipped"
+ },
+ {
+  "control": "outside, forged cookie: POST refused",
+  "page": "GIR MODE API",
+  "viewport": "",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "403"
+ },
+ {
+  "control": "outside, signed in: the panel shows the real mode, no \"website route pending\"",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: never flipped (NEW is the default)"
+ },
+ {
+  "control": "outside: the approved reasons to flip, word for word",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
+ },
+ {
+  "control": "outside: \"last flip\" shows only real flips (never a refused web request)",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "last flip: never flipped (NEW is the default)"
+ },
+ {
+  "control": "outside: two buttons, the current mode's disabled",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "[['Switch to OLD alerts', False], ['Back to NEW desk', True]]"
+ },
+ {
+  "control": "no cut text (Settings GIR MODE outside)",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "0 cut · prose with a tooltip: 0"
+ },
+ {
+  "control": "outside: the button opens the built-in confirm step; Cancel closes it; nothing sent, the real mode unchanged (never confirmed)",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "Switch to OLD alerts now? The old senders and the old AI com -> closed True · mode never flipped"
+ },
+ {
+  "control": "0 page errors",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1366x768",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "1366 px"
+ },
+ {
+  "control": "outside, signed in: the panel shows the real mode, no \"website route pending\"",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: never flipped (NEW is the default)"
+ },
+ {
+  "control": "outside: the approved reasons to flip, word for word",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
+ },
+ {
+  "control": "outside: \"last flip\" shows only real flips (never a refused web request)",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "last flip: never flipped (NEW is the default)"
+ },
+ {
+  "control": "outside: two buttons, the current mode's disabled",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "[['Switch to OLD alerts', False], ['Back to NEW desk', True]]"
+ },
+ {
+  "control": "no cut text (Settings GIR MODE outside)",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "0 cut · prose with a tooltip: 0"
+ },
+ {
+  "control": "outside: the button opens the built-in confirm step; Cancel closes it; nothing sent, the real mode unchanged (never confirmed)",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "Switch to OLD alerts now? The old senders and the old AI com -> closed True · mode never flipped"
+ },
+ {
+  "control": "0 page errors",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "1600x900",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "1600 px"
+ },
+ {
+  "control": "outside, signed in: the panel shows the real mode, no \"website route pending\"",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "GIR MODE fallback switch · instant · no backlog NEW desk old senders muted 12 of 12 old AI OFF desk trade lines ON last flip: never flipped (NEW is the default)"
+ },
+ {
+  "control": "outside: the approved reasons to flip, word for word",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "Flip to OLD alerts if ANY of these happens on a trading day: (1) no new-desk brief by 09:10 or no card by 09:30; (2) mor …"
+ },
+ {
+  "control": "outside: \"last flip\" shows only real flips (never a refused web request)",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "last flip: never flipped (NEW is the default)"
+ },
+ {
+  "control": "outside: two buttons, the current mode's disabled",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "[['Switch to OLD alerts', False], ['Back to NEW desk', True]]"
+ },
+ {
+  "control": "no cut text (Settings GIR MODE outside)",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "0 cut · prose with a tooltip: 0"
+ },
+ {
+  "control": "outside: the button opens the built-in confirm step; Cancel closes it; nothing sent, the real mode unchanged (never confirmed)",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "Switch to OLD alerts now? The old senders and the old AI com -> closed True · mode never flipped"
+ },
+ {
+  "control": "0 page errors",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "none"
+ },
+ {
+  "control": "no sideways scroll",
+  "page": "Settings GIR MODE (outside)",
+  "viewport": "390x844",
+  "where": "outside",
+  "result": "PASS",
+  "evidence": "390 px"
+ }
+]

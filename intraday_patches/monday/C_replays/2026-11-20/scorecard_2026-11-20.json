@@ -1,0 +1,2476 @@
+{
+ "session": "2026-11-20",
+ "universe": 218,
+ "base": {
+  "CE": 0.344,
+  "PE": 0.064
+ },
+ "versions": {
+  "N19": {
+   "by": {
+    "CE bounce": {
+     "n": 1,
+     "big_right": 0,
+     "wrong_side": 0,
+     "flat": 1,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -34.4
+    },
+    "MOVER": {
+     "n": 25,
+     "fired": 0,
+     "big_right": 0,
+     "wrong_side": 0,
+     "tradable": 0,
+     "early": 0,
+     "moved_2pct_either": 11,
+     "flat": 0,
+     "precision": 0.0,
+     "beat_base_pts": null
+    }
+   },
+   "rows": [
+    {
+     "sym": "AMBER",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "electronics & hardware",
+     "label": "SIDE OPEN",
+     "best_up": 2.99,
+     "best_down": 0.51,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "BLUESTARCO",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "consumer durables",
+     "label": "SIDE OPEN",
+     "best_up": 3.46,
+     "best_down": 0.49,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "IREDA",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "nbfc & finance",
+     "label": "SIDE OPEN",
+     "best_up": 2.59,
+     "best_down": 0.77,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "ASHOKLEY",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.05,
+     "best_down": 1.12,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "VOLTAS",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "consumer durables",
+     "label": "SIDE OPEN",
+     "best_up": 2.02,
+     "best_down": 0.02,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "PAYTM",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "nbfc & finance",
+     "label": "SIDE OPEN",
+     "best_up": 2.33,
+     "best_down": 0.35,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "TMPV",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.68,
+     "best_down": 0.4,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "EICHERMOT",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.61,
+     "best_down": 0.15,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "CROMPTON",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "consumer durables",
+     "label": "SIDE OPEN",
+     "best_up": 2.17,
+     "best_down": 0.85,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "DELHIVERY",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "services",
+     "label": "SIDE OPEN",
+     "best_up": 1.27,
+     "best_down": 0.75,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "HYUNDAI",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 0.86,
+     "best_down": 0.78,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "BANKBARODA",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "SIDE OPEN",
+     "best_up": 1.7,
+     "best_down": 0.53,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "INOXWIND",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "capital goods",
+     "label": "SIDE OPEN",
+     "best_up": 0.09,
+     "best_down": 2.65,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "BANKINDIA",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "SIDE OPEN",
+     "best_up": 2.43,
+     "best_down": 0.7,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "M&M",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.44,
+     "best_down": 0.25,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "IDFCFIRSTB",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "SIDE OPEN",
+     "best_up": 2.26,
+     "best_down": 0.75,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "PNB",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "SIDE OPEN",
+     "best_up": 0.55,
+     "best_down": 1.86,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "POLYCAB",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "capital goods",
+     "label": "SIDE OPEN",
+     "best_up": 0.61,
+     "best_down": 1.89,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "MUTHOOTFIN",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "nbfc & finance",
+     "label": "SIDE OPEN",
+     "best_up": 2.28,
+     "best_down": 1.55,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "MAHABANK",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "SIDE OPEN",
+     "best_up": 1.64,
+     "best_down": 1.36,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "BDL",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "capital goods",
+     "label": "SIDE OPEN",
+     "best_up": 0.61,
+     "best_down": 0.69,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "BHARATFORG",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.33,
+     "best_down": 1.94,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "FORCEMOT",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.04,
+     "best_down": 0.57,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "CUMMINSIND",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "capital goods",
+     "label": "SIDE OPEN",
+     "best_up": 1.62,
+     "best_down": 0.03,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "KALYANKJIL",
+     "side": "BOTH",
+     "version": "N19",
+     "list": "MOVER (side open)",
+     "sector": "consumer durables",
+     "label": "SIDE OPEN",
+     "best_up": 0.0,
+     "best_down": 4.92,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "PIIND",
+     "side": "CE",
+     "version": "N19",
+     "list": "CE BOUNCE (on the turn)",
+     "grade": "BOUNCE",
+     "sector": "chemicals",
+     "open": 1630.0,
+     "gap_its_way": 0.0,
+     "best_its_way": 0.14,
+     "worst_against": 0.92,
+     "close_1510_its_way": -0.79,
+     "k_2pct": null,
+     "half_done_at": "10:15",
+     "label": "FLAT"
+    }
+   ]
+  },
+  "C22": {
+   "by": {
+    "CE scored": {
+     "n": 1,
+     "big_right": 0,
+     "wrong_side": 1,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -34.4
+    },
+    "CE watch": {
+     "n": 1,
+     "big_right": 0,
+     "wrong_side": 1,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -34.4
+    },
+    "CE bounce": {
+     "n": 1,
+     "big_right": 0,
+     "wrong_side": 0,
+     "flat": 1,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -34.4
+    },
+    "MOVER": {
+     "n": 25,
+     "fired": 0,
+     "big_right": 0,
+     "wrong_side": 0,
+     "tradable": 0,
+     "early": 0,
+     "moved_2pct_either": 11,
+     "flat": 0,
+     "precision": 0.0,
+     "beat_base_pts": null
+    }
+   },
+   "rows": [
+    {
+     "sym": "KALYANKJIL",
+     "side": "CE",
+     "version": "C22",
+     "list": "SCORED",
+     "grade": "MEDIUM",
+     "sector": "consumer durables",
+     "open": 648.9,
+     "gap_its_way": -1.83,
+     "best_its_way": 0.0,
+     "worst_against": 4.92,
+     "close_1510_its_way": -4.06,
+     "k_2pct": null,
+     "half_done_at": null,
+     "label": "WRONG SIDE"
+    },
+    {
+     "sym": "TITAN",
+     "side": "CE",
+     "version": "C22",
+     "list": "WATCH ONLY - below the bar",
+     "grade": "WEAK",
+     "sector": "consumer durables",
+     "open": 4595.0,
+     "gap_its_way": -2.23,
+     "best_its_way": 0.51,
+     "worst_against": 1.55,
+     "close_1510_its_way": 0.18,
+     "k_2pct": null,
+     "half_done_at": "09:20",
+     "label": "WRONG SIDE"
+    },
+    {
+     "sym": "AMBER",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "electronics & hardware",
+     "label": "SIDE OPEN",
+     "best_up": 2.99,
+     "best_down": 0.51,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "BLUESTARCO",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "consumer durables",
+     "label": "SIDE OPEN",
+     "best_up": 3.46,
+     "best_down": 0.49,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "IREDA",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "nbfc & finance",
+     "label": "SIDE OPEN",
+     "best_up": 2.59,
+     "best_down": 0.77,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "ASHOKLEY",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.05,
+     "best_down": 1.12,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "VOLTAS",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "consumer durables",
+     "label": "SIDE OPEN",
+     "best_up": 2.02,
+     "best_down": 0.02,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "PAYTM",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "nbfc & finance",
+     "label": "SIDE OPEN",
+     "best_up": 2.33,
+     "best_down": 0.35,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "TMPV",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.68,
+     "best_down": 0.4,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "EICHERMOT",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.61,
+     "best_down": 0.15,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "CROMPTON",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "consumer durables",
+     "label": "SIDE OPEN",
+     "best_up": 2.17,
+     "best_down": 0.85,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "DELHIVERY",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "services",
+     "label": "SIDE OPEN",
+     "best_up": 1.27,
+     "best_down": 0.75,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "HYUNDAI",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 0.86,
+     "best_down": 0.78,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "BANKBARODA",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "SIDE OPEN",
+     "best_up": 1.7,
+     "best_down": 0.53,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "INOXWIND",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "capital goods",
+     "label": "SIDE OPEN",
+     "best_up": 0.09,
+     "best_down": 2.65,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "BANKINDIA",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "SIDE OPEN",
+     "best_up": 2.43,
+     "best_down": 0.7,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "M&M",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.44,
+     "best_down": 0.25,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "IDFCFIRSTB",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "SIDE OPEN",
+     "best_up": 2.26,
+     "best_down": 0.75,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "PNB",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "SIDE OPEN",
+     "best_up": 0.55,
+     "best_down": 1.86,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "POLYCAB",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "capital goods",
+     "label": "SIDE OPEN",
+     "best_up": 0.61,
+     "best_down": 1.89,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "MUTHOOTFIN",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "nbfc & finance",
+     "label": "SIDE OPEN",
+     "best_up": 2.28,
+     "best_down": 1.55,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "MAHABANK",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "SIDE OPEN",
+     "best_up": 1.64,
+     "best_down": 1.36,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "BDL",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "capital goods",
+     "label": "SIDE OPEN",
+     "best_up": 0.61,
+     "best_down": 0.69,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "BHARATFORG",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.33,
+     "best_down": 1.94,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "FORCEMOT",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.04,
+     "best_down": 0.57,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "CUMMINSIND",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "capital goods",
+     "label": "SIDE OPEN",
+     "best_up": 1.62,
+     "best_down": 0.03,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "MARUTI",
+     "side": "BOTH",
+     "version": "C22",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 2.67,
+     "best_down": 0.54,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "PIIND",
+     "side": "CE",
+     "version": "C22",
+     "list": "CE BOUNCE (on the turn)",
+     "grade": "BOUNCE",
+     "sector": "chemicals",
+     "open": 1630.0,
+     "gap_its_way": 0.0,
+     "best_its_way": 0.14,
+     "worst_against": 0.92,
+     "close_1510_its_way": -0.79,
+     "k_2pct": null,
+     "half_done_at": "10:15",
+     "label": "FLAT"
+    }
+   ]
+  },
+  "U07": {
+   "by": {
+    "CE scored": {
+     "n": 3,
+     "big_right": 0,
+     "wrong_side": 1,
+     "flat": 2,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -34.4
+    },
+    "CE bounce": {
+     "n": 1,
+     "big_right": 0,
+     "wrong_side": 0,
+     "flat": 1,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -34.4
+    },
+    "MOVER": {
+     "n": 25,
+     "fired": 0,
+     "big_right": 0,
+     "wrong_side": 0,
+     "tradable": 0,
+     "early": 0,
+     "moved_2pct_either": 11,
+     "flat": 0,
+     "precision": 0.0,
+     "beat_base_pts": null
+    }
+   },
+   "rows": [
+    {
+     "sym": "KALYANKJIL",
+     "side": "CE",
+     "version": "U07",
+     "list": "SCORED",
+     "grade": "MEDIUM",
+     "sector": "consumer durables",
+     "open": 648.9,
+     "gap_its_way": -1.83,
+     "best_its_way": 0.0,
+     "worst_against": 4.92,
+     "close_1510_its_way": -4.06,
+     "k_2pct": null,
+     "half_done_at": null,
+     "label": "WRONG SIDE"
+    },
+    {
+     "sym": "TMPV",
+     "side": "CE",
+     "version": "U07",
+     "list": "SCORED",
+     "grade": "MEDIUM",
+     "sector": "auto",
+     "open": 262.3,
+     "gap_its_way": -0.46,
+     "best_its_way": 1.68,
+     "worst_against": 0.4,
+     "close_1510_its_way": 0.69,
+     "k_2pct": null,
+     "half_done_at": "09:18",
+     "label": "FLAT"
+    },
+    {
+     "sym": "WAAREEENER",
+     "side": "CE",
+     "version": "U07",
+     "list": "SCORED",
+     "grade": "MEDIUM",
+     "sector": "capital goods",
+     "open": 2419.0,
+     "gap_its_way": -0.58,
+     "best_its_way": 1.61,
+     "worst_against": 0.62,
+     "close_1510_its_way": 1.24,
+     "k_2pct": null,
+     "half_done_at": "09:45",
+     "label": "FLAT"
+    },
+    {
+     "sym": "AMBER",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "electronics & hardware",
+     "label": "SIDE OPEN",
+     "best_up": 2.99,
+     "best_down": 0.51,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "BLUESTARCO",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "consumer durables",
+     "label": "SIDE OPEN",
+     "best_up": 3.46,
+     "best_down": 0.49,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "IREDA",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "nbfc & finance",
+     "label": "SIDE OPEN",
+     "best_up": 2.59,
+     "best_down": 0.77,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "ASHOKLEY",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.05,
+     "best_down": 1.12,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "VOLTAS",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "consumer durables",
+     "label": "SIDE OPEN",
+     "best_up": 2.02,
+     "best_down": 0.02,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "PAYTM",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "nbfc & finance",
+     "label": "SIDE OPEN",
+     "best_up": 2.33,
+     "best_down": 0.35,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "EICHERMOT",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.61,
+     "best_down": 0.15,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "CROMPTON",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "consumer durables",
+     "label": "SIDE OPEN",
+     "best_up": 2.17,
+     "best_down": 0.85,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "DELHIVERY",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "services",
+     "label": "SIDE OPEN",
+     "best_up": 1.27,
+     "best_down": 0.75,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "HYUNDAI",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 0.86,
+     "best_down": 0.78,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "BANKBARODA",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "SIDE OPEN",
+     "best_up": 1.7,
+     "best_down": 0.53,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "INOXWIND",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "capital goods",
+     "label": "SIDE OPEN",
+     "best_up": 0.09,
+     "best_down": 2.65,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "BANKINDIA",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "SIDE OPEN",
+     "best_up": 2.43,
+     "best_down": 0.7,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "M&M",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.44,
+     "best_down": 0.25,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "IDFCFIRSTB",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "SIDE OPEN",
+     "best_up": 2.26,
+     "best_down": 0.75,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "PNB",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "SIDE OPEN",
+     "best_up": 0.55,
+     "best_down": 1.86,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "POLYCAB",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "capital goods",
+     "label": "SIDE OPEN",
+     "best_up": 0.61,
+     "best_down": 1.89,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "MUTHOOTFIN",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "nbfc & finance",
+     "label": "SIDE OPEN",
+     "best_up": 2.28,
+     "best_down": 1.55,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "MAHABANK",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "SIDE OPEN",
+     "best_up": 1.64,
+     "best_down": 1.36,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "BDL",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "capital goods",
+     "label": "SIDE OPEN",
+     "best_up": 0.61,
+     "best_down": 0.69,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "BHARATFORG",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.33,
+     "best_down": 1.94,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "FORCEMOT",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 1.04,
+     "best_down": 0.57,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "CUMMINSIND",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "capital goods",
+     "label": "SIDE OPEN",
+     "best_up": 1.62,
+     "best_down": 0.03,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "MARUTI",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "SIDE OPEN",
+     "best_up": 2.67,
+     "best_down": 0.54,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "RVNL",
+     "side": "BOTH",
+     "version": "U07",
+     "list": "MOVER (side open)",
+     "sector": "construction",
+     "label": "SIDE OPEN",
+     "best_up": 1.17,
+     "best_down": 1.11,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "PIIND",
+     "side": "CE",
+     "version": "U07",
+     "list": "CE BOUNCE (on the turn)",
+     "grade": "BOUNCE",
+     "sector": "chemicals",
+     "open": 1630.0,
+     "gap_its_way": 0.0,
+     "best_its_way": 0.14,
+     "worst_against": 0.92,
+     "close_1510_its_way": -0.79,
+     "k_2pct": null,
+     "half_done_at": "10:15",
+     "label": "FLAT"
+    }
+   ]
+  },
+  "P09": {
+   "by": {
+    "CE scored": {
+     "n": 4,
+     "big_right": 1,
+     "wrong_side": 1,
+     "flat": 2,
+     "tradable": 0,
+     "precision": 0.25,
+     "beat_base_pts": -9.4
+    },
+    "CE bounce": {
+     "n": 1,
+     "big_right": 0,
+     "wrong_side": 1,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -34.4
+    },
+    "PE scored": {
+     "n": 3,
+     "big_right": 0,
+     "wrong_side": 2,
+     "flat": 1,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -6.4
+    },
+    "MOVER": {
+     "n": 25,
+     "fired": 10,
+     "big_right": 6,
+     "wrong_side": 0,
+     "tradable": 1,
+     "early": 1,
+     "moved_2pct_either": 10,
+     "flat": 4,
+     "precision": 0.6,
+     "beat_base_pts": null
+    }
+   },
+   "rows": [
+    {
+     "sym": "WAAREEENER",
+     "side": "CE",
+     "version": "P09",
+     "list": "SCORED",
+     "grade": "MEDIUM",
+     "sector": "capital goods",
+     "open": 2419.0,
+     "gap_its_way": -0.58,
+     "best_its_way": 1.61,
+     "worst_against": 0.62,
+     "close_1510_its_way": 1.24,
+     "k_2pct": null,
+     "half_done_at": "09:45",
+     "label": "FLAT"
+    },
+    {
+     "sym": "KALYANKJIL",
+     "side": "CE",
+     "version": "P09",
+     "list": "SCORED",
+     "grade": "MEDIUM",
+     "sector": "consumer durables",
+     "open": 648.9,
+     "gap_its_way": -1.83,
+     "best_its_way": 0.0,
+     "worst_against": 4.92,
+     "close_1510_its_way": -4.06,
+     "k_2pct": null,
+     "half_done_at": null,
+     "label": "WRONG SIDE"
+    },
+    {
+     "sym": "TMPV",
+     "side": "CE",
+     "version": "P09",
+     "list": "SCORED",
+     "grade": "MEDIUM",
+     "sector": "auto",
+     "open": 262.3,
+     "gap_its_way": -0.46,
+     "best_its_way": 1.68,
+     "worst_against": 0.4,
+     "close_1510_its_way": 0.69,
+     "k_2pct": null,
+     "half_done_at": "09:18",
+     "label": "FLAT",
+     "tradable": "NO +1% IN 60 MIN",
+     "move_left_pct": 0.98,
+     "move_left_share": 59.0,
+     "how_early": "EARLY (before half done)"
+    },
+    {
+     "sym": "BANKINDIA",
+     "side": "CE",
+     "version": "P09",
+     "list": "SCORED",
+     "grade": "MEDIUM",
+     "sector": "banks",
+     "open": 160.5,
+     "gap_its_way": -0.86,
+     "best_its_way": 2.43,
+     "worst_against": 0.7,
+     "close_1510_its_way": 2.14,
+     "k_2pct": 197,
+     "half_done_at": "12:02",
+     "label": "BIG RIGHT",
+     "tradable": "RIGHT-NOT-TRADABLE (no trigger)"
+    },
+    {
+     "sym": "MUTHOOTFIN",
+     "side": "PE",
+     "version": "P09",
+     "list": "SCORED",
+     "grade": "MEDIUM",
+     "sector": "nbfc & finance",
+     "open": 2519.0,
+     "gap_its_way": 3.78,
+     "best_its_way": 1.55,
+     "worst_against": 2.28,
+     "close_1510_its_way": -1.16,
+     "k_2pct": null,
+     "half_done_at": "09:15",
+     "label": "WRONG SIDE"
+    },
+    {
+     "sym": "ALKEM",
+     "side": "PE",
+     "version": "P09",
+     "list": "SCORED",
+     "grade": "MEDIUM",
+     "sector": "pharma",
+     "open": 5154.5,
+     "gap_its_way": -0.18,
+     "best_its_way": 0.79,
+     "worst_against": 0.38,
+     "close_1510_its_way": -0.34,
+     "k_2pct": null,
+     "half_done_at": "09:15",
+     "label": "FLAT"
+    },
+    {
+     "sym": "MANAPPURAM",
+     "side": "PE",
+     "version": "P09",
+     "list": "SCORED",
+     "grade": "MEDIUM",
+     "sector": "nbfc & finance",
+     "open": 273.0,
+     "gap_its_way": 3.48,
+     "best_its_way": 0.92,
+     "worst_against": 3.35,
+     "close_1510_its_way": -2.22,
+     "k_2pct": null,
+     "half_done_at": "09:15",
+     "label": "WRONG SIDE"
+    },
+    {
+     "sym": "AMBER",
+     "side": "CE",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "grade": "MOVER",
+     "sector": "electronics & hardware",
+     "fired": true,
+     "open": 6630.0,
+     "gap_its_way": -1.0,
+     "best_its_way": 2.99,
+     "worst_against": 0.51,
+     "close_1510_its_way": 1.48,
+     "k_2pct": 35,
+     "half_done_at": "09:36",
+     "label": "BIG RIGHT",
+     "tradable": "RIGHT-TRADABLE",
+     "move_left_pct": 1.07,
+     "move_left_share": 36.0,
+     "how_early": "LATE (after half done)"
+    },
+    {
+     "sym": "BLUESTARCO",
+     "side": "CE",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "grade": "MOVER",
+     "sector": "consumer durables",
+     "fired": true,
+     "open": 1759.1,
+     "gap_its_way": -0.28,
+     "best_its_way": 3.46,
+     "worst_against": 0.49,
+     "close_1510_its_way": 2.25,
+     "k_2pct": 0,
+     "half_done_at": "09:15",
+     "label": "BIG RIGHT",
+     "tradable": "STOPPED -0.6%",
+     "move_left_pct": 1.68,
+     "move_left_share": 48.0,
+     "how_early": "LATE (after half done)"
+    },
+    {
+     "sym": "IREDA",
+     "side": "CE",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "grade": "MOVER",
+     "sector": "nbfc & finance",
+     "fired": true,
+     "open": 129.0,
+     "gap_its_way": -0.62,
+     "best_its_way": 2.59,
+     "worst_against": 0.77,
+     "close_1510_its_way": 2.01,
+     "k_2pct": 5,
+     "half_done_at": "09:17",
+     "label": "BIG RIGHT",
+     "tradable": "NO +1% IN 60 MIN",
+     "move_left_pct": 1.36,
+     "move_left_share": 52.0,
+     "how_early": "LATE (after half done)"
+    },
+    {
+     "sym": "ASHOKLEY",
+     "side": "BOTH",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "NOT TRIGGERED",
+     "best_up": 1.05,
+     "best_down": 1.12,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "VOLTAS",
+     "side": "CE",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "grade": "MOVER",
+     "sector": "consumer durables",
+     "fired": true,
+     "open": 1232.1,
+     "gap_its_way": -0.4,
+     "best_its_way": 2.02,
+     "worst_against": 0.02,
+     "close_1510_its_way": 0.81,
+     "k_2pct": 42,
+     "half_done_at": "09:15",
+     "label": "BIG RIGHT",
+     "tradable": "STOPPED -0.6%",
+     "move_left_pct": 1.01,
+     "move_left_share": 50.0,
+     "how_early": "LATE (after half done)"
+    },
+    {
+     "sym": "PAYTM",
+     "side": "BOTH",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "sector": "nbfc & finance",
+     "label": "NOT TRIGGERED",
+     "best_up": 2.33,
+     "best_down": 0.35,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "EICHERMOT",
+     "side": "CE",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "grade": "MOVER",
+     "sector": "auto",
+     "fired": true,
+     "open": 8000.0,
+     "gap_its_way": -0.73,
+     "best_its_way": 1.61,
+     "worst_against": 0.15,
+     "close_1510_its_way": 1.34,
+     "k_2pct": null,
+     "half_done_at": "09:39",
+     "label": "FLAT",
+     "tradable": "NO +1% IN 60 MIN",
+     "move_left_pct": 0.59,
+     "move_left_share": 36.0,
+     "how_early": "LATE (after half done)"
+    },
+    {
+     "sym": "CROMPTON",
+     "side": "CE",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "grade": "MOVER",
+     "sector": "consumer durables",
+     "fired": true,
+     "open": 218.9,
+     "gap_its_way": -0.5,
+     "best_its_way": 2.17,
+     "worst_against": 0.85,
+     "close_1510_its_way": 1.83,
+     "k_2pct": 199,
+     "half_done_at": "09:18",
+     "label": "BIG RIGHT",
+     "tradable": "STOPPED -0.6%",
+     "move_left_pct": 1.28,
+     "move_left_share": 59.0,
+     "how_early": "EARLY (before half done)"
+    },
+    {
+     "sym": "DELHIVERY",
+     "side": "BOTH",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "sector": "services",
+     "label": "NOT TRIGGERED",
+     "best_up": 1.27,
+     "best_down": 0.75,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "HYUNDAI",
+     "side": "CE",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "grade": "MOVER",
+     "sector": "auto",
+     "fired": true,
+     "open": 2219.0,
+     "gap_its_way": -0.01,
+     "best_its_way": 0.86,
+     "worst_against": 0.78,
+     "close_1510_its_way": 0.68,
+     "k_2pct": null,
+     "half_done_at": "09:22",
+     "label": "FLAT",
+     "tradable": "STOPPED -0.6%",
+     "move_left_pct": 0.01,
+     "move_left_share": 2.0,
+     "how_early": "LATE (after half done)"
+    },
+    {
+     "sym": "BANKBARODA",
+     "side": "CE",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "grade": "MOVER",
+     "sector": "banks",
+     "fired": true,
+     "open": 283.0,
+     "gap_its_way": -1.01,
+     "best_its_way": 1.7,
+     "worst_against": 0.53,
+     "close_1510_its_way": 1.37,
+     "k_2pct": null,
+     "half_done_at": "09:24",
+     "label": "FLAT",
+     "tradable": "STOPPED -0.6%",
+     "move_left_pct": 1.17,
+     "move_left_share": 69.0,
+     "how_early": "LATE (after half done)"
+    },
+    {
+     "sym": "INOXWIND",
+     "side": "BOTH",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "sector": "capital goods",
+     "label": "NOT TRIGGERED",
+     "best_up": 0.09,
+     "best_down": 2.65,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "M&M",
+     "side": "CE",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "grade": "MOVER",
+     "sector": "auto",
+     "fired": true,
+     "open": 3487.9,
+     "gap_its_way": -0.6,
+     "best_its_way": 1.44,
+     "worst_against": 0.25,
+     "close_1510_its_way": 1.06,
+     "k_2pct": null,
+     "half_done_at": "09:15",
+     "label": "FLAT",
+     "tradable": "NO +1% IN 60 MIN",
+     "move_left_pct": 0.85,
+     "move_left_share": 59.0,
+     "how_early": "LATE (after half done)"
+    },
+    {
+     "sym": "IDFCFIRSTB",
+     "side": "BOTH",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "NOT TRIGGERED",
+     "best_up": 2.26,
+     "best_down": 0.75,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "PNB",
+     "side": "BOTH",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "NOT TRIGGERED",
+     "best_up": 0.55,
+     "best_down": 1.86,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "POLYCAB",
+     "side": "BOTH",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "sector": "capital goods",
+     "label": "NOT TRIGGERED",
+     "best_up": 0.61,
+     "best_down": 1.89,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "MAHABANK",
+     "side": "BOTH",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "sector": "banks",
+     "label": "NOT TRIGGERED",
+     "best_up": 1.64,
+     "best_down": 1.36,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "BDL",
+     "side": "BOTH",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "sector": "capital goods",
+     "label": "NOT TRIGGERED",
+     "best_up": 0.61,
+     "best_down": 0.69,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "BHARATFORG",
+     "side": "BOTH",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "NOT TRIGGERED",
+     "best_up": 1.33,
+     "best_down": 1.94,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "FORCEMOT",
+     "side": "BOTH",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "NOT TRIGGERED",
+     "best_up": 1.04,
+     "best_down": 0.57,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "CUMMINSIND",
+     "side": "BOTH",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "sector": "capital goods",
+     "label": "NOT TRIGGERED",
+     "best_up": 1.62,
+     "best_down": 0.03,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "MARUTI",
+     "side": "CE",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "grade": "MOVER",
+     "sector": "auto",
+     "fired": true,
+     "open": 13579.0,
+     "gap_its_way": -0.07,
+     "best_its_way": 2.67,
+     "worst_against": 0.54,
+     "close_1510_its_way": 2.42,
+     "k_2pct": 97,
+     "half_done_at": "09:20",
+     "label": "BIG RIGHT",
+     "tradable": "NO +1% IN 60 MIN",
+     "move_left_pct": 1.71,
+     "move_left_share": 64.0,
+     "how_early": "LATE (after half done)"
+    },
+    {
+     "sym": "IRFC",
+     "side": "BOTH",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "sector": "nbfc & finance",
+     "label": "NOT TRIGGERED",
+     "best_up": 1.2,
+     "best_down": 0.88,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "POLICYBZR",
+     "side": "BOTH",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "sector": "nbfc & finance",
+     "label": "NOT TRIGGERED",
+     "best_up": 2.2,
+     "best_down": 1.59,
+     "moved_2pct_either": true
+    },
+    {
+     "sym": "HEROMOTOCO",
+     "side": "BOTH",
+     "version": "P09",
+     "list": "MOVER (side open)",
+     "sector": "auto",
+     "label": "NOT TRIGGERED",
+     "best_up": 1.41,
+     "best_down": 0.27,
+     "moved_2pct_either": false
+    },
+    {
+     "sym": "PIIND",
+     "side": "CE",
+     "version": "P09",
+     "list": "CE BOUNCE (on the turn)",
+     "grade": "BOUNCE",
+     "sector": "chemicals",
+     "open": 1630.0,
+     "gap_its_way": 0.0,
+     "best_its_way": 0.14,
+     "worst_against": 0.92,
+     "close_1510_its_way": -0.79,
+     "k_2pct": null,
+     "half_done_at": "10:15",
+     "label": "WRONG SIDE"
+    }
+   ]
+  }
+ },
+ "early_cards": {
+  "side_lines": 1,
+  "mover_lines": 1
+ },
+ "baselines": {
+  "yesterdays_movers_CE": {
+   "n": 8,
+   "big_right": 7,
+   "precision": 0.875
+  },
+  "yesterdays_movers_PE": {
+   "n": 8,
+   "big_right": 0,
+   "precision": 0.0
+  },
+  "volatility_only_8": {
+   "CE_right": 2,
+   "PE_right": 2,
+   "n": 8,
+   "note": "the same 8 names on both sides"
+  }
+ },
+ "ideas": {
+  "CE": {
+   "n": 3,
+   "big_right": 1,
+   "moved_against": 0,
+   "precision": 0.333,
+   "right_names": [
+    "BAJFINANCE"
+   ]
+  },
+  "PE": {
+   "n": 19,
+   "big_right": 1,
+   "moved_against": 7,
+   "precision": 0.053,
+   "right_names": [
+    "KEI"
+   ]
+  }
+ },
+ "base_either_way": 0.404,
+ "missed_2pct": 82,
+ "missed_3pct": [
+  [
+   "INDUSINDBK",
+   "CE",
+   10.0
+  ],
+  [
+   "COFORGE",
+   "CE",
+   7.0
+  ],
+  [
+   "TATAELXSI",
+   "CE",
+   6.5
+  ],
+  [
+   "CUB",
+   "CE",
+   6.2
+  ],
+  [
+   "PERSISTENT",
+   "CE",
+   6.2
+  ],
+  [
+   "RBLBANK",
+   "CE",
+   5.4
+  ],
+  [
+   "LTM",
+   "CE",
+   5.2
+  ],
+  [
+   "AXISBANK",
+   "CE",
+   5.1
+  ],
+  [
+   "ANGELONE",
+   "CE",
+   5.0
+  ],
+  [
+   "KALYANKJIL",
+   "PE",
+   4.9
+  ],
+  [
+   "APOLLOHOSP",
+   "CE",
+   4.8
+  ],
+  [
+   "MPHASIS",
+   "CE",
+   4.6
+  ],
+  [
+   "NAUKRI",
+   "CE",
+   4.3
+  ],
+  [
+   "PNBHOUSING",
+   "CE",
+   4.2
+  ],
+  [
+   "APLAPOLLO",
+   "PE",
+   4.1
+  ],
+  [
+   "TCS",
+   "CE",
+   3.9
+  ],
+  [
+   "UNIONBANK",
+   "CE",
+   3.9
+  ],
+  [
+   "HDFCBANK",
+   "CE",
+   3.8
+  ],
+  [
+   "LICHSGFIN",
+   "CE",
+   3.8
+  ],
+  [
+   "WIPRO",
+   "CE",
+   3.8
+  ],
+  [
+   "GMRAIRPORT",
+   "CE",
+   3.7
+  ],
+  [
+   "HINDALCO",
+   "CE",
+   3.7
+  ],
+  [
+   "COROMANDEL",
+   "CE",
+   3.6
+  ],
+  [
+   "HINDZINC",
+   "CE",
+   3.5
+  ],
+  [
+   "KOTAKBANK",
+   "CE",
+   3.5
+  ],
+  [
+   "BAJFINANCE",
+   "CE",
+   3.4
+  ],
+  [
+   "MANAPPURAM",
+   "CE",
+   3.4
+  ],
+  [
+   "PGEL",
+   "CE",
+   3.4
+  ],
+  [
+   "TECHM",
+   "CE",
+   3.3
+  ],
+  [
+   "FORTIS",
+   "CE",
+   3.1
+  ],
+  [
+   "JSWSTEEL",
+   "PE",
+   3.1
+  ],
+  [
+   "DLF",
+   "CE",
+   3.0
+  ],
+  [
+   "FEDERALBNK",
+   "CE",
+   3.0
+  ],
+  [
+   "GODREJPROP",
+   "CE",
+   3.0
+  ],
+  [
+   "ICICIGI",
+   "CE",
+   3.0
+  ]
+ ],
+ "day_movers_2pct": {
+  "CE": 75,
+  "PE": 14
+ },
+ "confirmations": {
+  "confirmed": 2,
+  "rung": 2,
+  "late": 8,
+  "failed": 4,
+  "not_predicted_rows": 36,
+  "silent_cards": 4
+ },
+ "market": {
+  "called": "MIXED",
+  "real": "UP",
+  "nifty_open_to_1510": 1.44,
+  "right": false
+ },
+ "text": "MARKET CALL: MIXED - wrong (NIFTY open->15:10 +1.44%, real UP)\nPREDICTED N19 \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -34 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 11 (all names 40%)\nPREDICTED C22 \u00b7 CE scored 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -34 pts \u00b7 CE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -34 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -34 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 11 (all names 40%)\nPREDICTED U07 \u00b7 CE scored 3: right 0 (0 tradable), flat 2, wrong 1 \u00b7 beat the day -34 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -34 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 11 (all names 40%)\nPREDICTED P09 \u00b7 CE scored 4: right 1 (0 tradable), flat 2, wrong 1 \u00b7 beat the day -9 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -34 pts \u00b7 PE scored 3: right 0 (0 tradable), flat 1, wrong 2 \u00b7 beat the day -6 pts \u00b7 MOVER (side open) 25: fired 10 (early 1), right side 6 (1 tradable), wrong 0, flat 4 \u00b7 moved 2% either way 10 (all names 40%)\nEARLY CARDS (trigger before half the move): side lines 1 \u00b7 MOVER lines 1 \u00b7 total 2 (E2 pass mark 10)\nCONFIRMATIONS 2 (rung 2) \u00b7 too late 8 \u00b7 failed 4 \u00b7 silent cards 4 \u00b7 NOT PREDICTED movers shown 36\nBASE RATE: CE 34% / PE 6% of 218 F&O names moved 2% its way \u00b7 day movers CE 75 / PE 14\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 3 named, 1 moved 2% its way, 0 2% against \u00b7 PE 19 named, 1 its way, 7 against\nMISSED 2%+ movers 82 \u00b7 3%+: INDUSINDBK CE 10.0%, COFORGE CE 7.0%, TATAELXSI CE 6.5%, CUB CE 6.2%, PERSISTENT CE 6.2%, RBLBANK CE 5.4%, LTM CE 5.2%, AXISBANK CE 5.1%, ANGELONE CE 5.0%, KALYANKJIL PE 4.9%\nBASELINES: yesterday's movers CE 7 / PE 0 \u00b7 volatility-only 8: CE 2 / PE 2 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)\nEDGE (desk 18:00) 2026-11-20 \u00b7 names 18 (with a reason 7, price-only 11) \u00b7 base CE 1%/2%: 51%/21% \u00b7 PE: 2%/1%\n  TV           n  1 \u00b7 its way >=1% 100% \u00b7 >=2% 100% (base 21%, lift 4.84) \u00b7 wrong side   0% \u00b7 next close >=1%: not known \u00b7 move left 2.4% \u00b7 ahead of the half move 167 min\n  news         n  5 \u00b7 its way >=1%  20% \u00b7 >=2%   0% (base  9%, lift 0.0) \u00b7 wrong side  40% \u00b7 next close >=1%: not known \u00b7 move left 0.9% \u00b7 ahead of the half move 0 min\n  price-only   n 11 \u00b7 its way >=1%   9% \u00b7 >=2%   0% (base 21%, lift 0.0) \u00b7 wrong side   0% \u00b7 next close >=1%: not known \u00b7 move left 1.0% \u00b7 ahead of the half move -10 min\n  results      n  1 \u00b7 its way >=1%   0% \u00b7 >=2%   0% (base 21%, lift 0.0) \u00b7 wrong side   0% \u00b7 next close >=1%: not known \u00b7 move left 1.7% \u00b7 ahead of the half move 3 min\n  TOP 5 by rank: >=1% 20% \u00b7 >=2% 0% (base 13%) \u00b7 wrong 20%",
+ "news": [
+  {
+   "id": "NC:e35a6df51c",
+   "lead": "VEDL",
+   "side": "DOWN",
+   "verified": "UNVERIFIED (one source, class B)",
+   "state": "ROW",
+   "abnormal_its_way": {
+    "+5": 1.01,
+    "+15": 1.24,
+    "+30": 0.48,
+    "+60": 0.02
+   },
+   "right_30": true
+  },
+  {
+   "id": "NC:11eded317e",
+   "lead": "SYRMA",
+   "side": "UP",
+   "verified": "UNVERIFIED (one source, class B)",
+   "state": "ROW",
+   "abnormal_its_way": {
+    "+5": -0.1,
+    "+15": 0.35,
+    "+30": 0.97,
+    "+60": 0.57
+   },
+   "right_30": true
+  },
+  {
+   "id": "NC:0245ef0bde",
+   "lead": "MUTHOOTFIN",
+   "side": "DOWN",
+   "verified": "UNVERIFIED (one source, class B)",
+   "state": "ROW",
+   "abnormal_its_way": {
+    "+5": 0.07,
+    "+15": 0.18,
+    "+30": 0.07,
+    "+60": 0.21
+   },
+   "right_30": true
+  },
+  {
+   "id": "NC:0b45b2c65e",
+   "lead": "MAXHEALTH",
+   "side": "UP",
+   "verified": "UNVERIFIED (one source, class B)",
+   "state": "ROW",
+   "abnormal_its_way": {
+    "+5": -0.26,
+    "+15": -0.31,
+    "+30": -1.13,
+    "+60": -0.73
+   },
+   "right_30": false
+  },
+  {
+   "id": "NC:2223962ef8",
+   "lead": "BDL",
+   "side": "UP",
+   "verified": "UNVERIFIED (one source, class C)",
+   "state": "ROW",
+   "abnormal_its_way": {
+    "+5": -0.01,
+    "+15": 0.15,
+    "+30": -0.02,
+    "+60": -0.11
+   },
+   "right_30": false
+  },
+  {
+   "id": "NC:8925c66e8b",
+   "lead": "MAXHEALTH",
+   "side": "UP",
+   "verified": "UNVERIFIED (one source, class B)",
+   "state": "ROW",
+   "abnormal_its_way": {
+    "+5": -0.17,
+    "+15": -0.37,
+    "+30": -0.71,
+    "+60": -0.2
+   },
+   "right_30": false
+  },
+  {
+   "id": "NC:a5292d2d2d",
+   "lead": "MUTHOOTFIN",
+   "side": "UP",
+   "verified": "UNVERIFIED (one source, class B)",
+   "state": "ROW",
+   "abnormal_its_way": {
+    "+5": 0.07,
+    "+15": 0.04,
+    "+30": -0.06,
+    "+60": -0.63
+   },
+   "right_30": false
+  },
+  {
+   "id": "NC:cdb23f227f",
+   "lead": "LUPIN",
+   "side": "UP",
+   "verified": "UNVERIFIED (one source, class C)",
+   "state": "ROW",
+   "abnormal_its_way": {
+    "+5": -0.01,
+    "+15": -0.2,
+    "+30": 0.04,
+    "+60": -0.03
+   },
+   "right_30": true
+  },
+  {
+   "id": "NC:b542bfee75",
+   "lead": "VEDL",
+   "side": "DOWN",
+   "verified": "UNVERIFIED - TV ONLY",
+   "state": "ROW",
+   "abnormal_its_way": {
+    "+5": 0.34,
+    "+15": -0.08,
+    "+30": -0.15,
+    "+60": -0.22
+   },
+   "right_30": false
+  },
+  {
+   "id": "NC:5890fa4bce",
+   "lead": "PAYTM",
+   "side": "DOWN",
+   "verified": "UNVERIFIED (one source, class C)",
+   "state": "ROW",
+   "abnormal_its_way": {
+    "+5": -0.05,
+    "+15": 0.22,
+    "+30": 0.66,
+    "+60": 1.15
+   },
+   "right_30": true
+  },
+  {
+   "id": "NC:c52f097679",
+   "lead": "NHPC",
+   "side": "UP",
+   "verified": "UNVERIFIED (one source, class C)",
+   "state": "ROW",
+   "abnormal_its_way": {
+    "+5": -0.22,
+    "+15": 0.09,
+    "+30": 0.02,
+    "+60": 0.1
+   },
+   "right_30": true
+  },
+  {
+   "id": "NC:7340819012",
+   "lead": "EICHERMOT",
+   "side": "UP",
+   "verified": "UNVERIFIED (one source, class C)",
+   "state": "ROW",
+   "abnormal_its_way": {
+    "+5": -0.11,
+    "+15": -0.4,
+    "+30": -0.2,
+    "+60": -0.4
+   },
+   "right_30": false
+  },
+  {
+   "id": "NC:f29fa60a3f",
+   "lead": "BAJFINANCE",
+   "side": "DOWN",
+   "verified": "UNVERIFIED (one source, class B)",
+   "state": "ROW",
+   "abnormal_its_way": {
+    "+5": -0.16,
+    "+15": -0.22,
+    "+30": -0.53,
+    "+60": -0.19
+   },
+   "right_30": false
+  },
+  {
+   "id": "NC:2cb67ad8a7",
+   "lead": "BIOCON",
+   "side": "UP",
+   "verified": "UNVERIFIED (one source, class C)",
+   "state": "ROW",
+   "abnormal_its_way": {
+    "+5": -0.09,
+    "+15": -0.28,
+    "+30": -0.31,
+    "+60": 0.07
+   },
+   "right_30": false
+  },
+  {
+   "id": "NC:0776170805",
+   "lead": "TATASTEEL",
+   "side": "DOWN",
+   "verified": "UNVERIFIED (one source, class B)",
+   "state": "ROW",
+   "abnormal_its_way": {
+    "+5": 0.12,
+    "+15": 0.21,
+    "+30": 0.17,
+    "+60": 0.2
+   },
+   "right_30": true
+  },
+  {
+   "id": "NC:1d1821ecbe",
+   "lead": "VEDL",
+   "side": "DOWN",
+   "verified": "UNVERIFIED (one source, class B)",
+   "state": "ROW",
+   "abnormal_its_way": {
+    "+5": -0.04,
+    "+15": -0.17,
+    "+30": -0.1,
+    "+60": 0.2
+   },
+   "right_30": false
+  }
+ ],
+ "bottom_top": [
+  {
+   "at": "10:44",
+   "call": "APOLLOHOSP",
+   "kind": "ORDINARY",
+   "text": "BOTTOM view by Macquarie on APOLLOHOSP - not already falling, so an ordinary TV / broker call",
+   "ring": false
+  },
+  {
+   "at": "12:12",
+   "call": "hospitals & diagnostics",
+   "kind": "ORDINARY",
+   "text": "BOTTOM view by unnamed voice on hospitals & diagnostics - not already falling, so an ordinary TV / broker call",
+   "ring": false
+  }
+ ],
+ "bt_episodes": [],
+ "edge": {
+  "session": "2026-11-20",
+  "rows": [
+   {
+    "sym": "WAAREEENER",
+    "side": "CE",
+    "list": "SCORED",
+    "source": "news",
+    "rank": 1,
+    "named_at": "evening / 09:08 (09:15 open)",
+    "move_1510": 1.24,
+    "move_next_close": null,
+    "hit1": true,
+    "hit2": false,
+    "wrong": false,
+    "move_left_pct": 1.61,
+    "minutes_ahead_of_half_move": 30
+   },
+   {
+    "sym": "KALYANKJIL",
+    "side": "CE",
+    "list": "SCORED",
+    "source": "news",
+    "rank": 2,
+    "named_at": "evening / 09:08 (09:15 open)",
+    "move_1510": -4.06,
+    "move_next_close": null,
+    "hit1": false,
+    "hit2": false,
+    "wrong": true,
+    "move_left_pct": 0.0,
+    "minutes_ahead_of_half_move": null
+   },
+   {
+    "sym": "TMPV",
+    "side": "CE",
+    "list": "SCORED",
+    "source": "results",
+    "rank": 3,
+    "named_at": "evening / 09:08 (09:15 open)",
+    "move_1510": 0.69,
+    "move_next_close": null,
+    "hit1": false,
+    "hit2": false,
+    "wrong": false,
+    "move_left_pct": 1.68,
+    "minutes_ahead_of_half_move": 3
+   },
+   {
+    "sym": "BANKINDIA",
+    "side": "CE",
+    "list": "SCORED",
+    "source": "TV",
+    "rank": 6,
+    "named_at": "evening / 09:08 (09:15 open)",
+    "move_1510": 2.14,
+    "move_next_close": null,
+    "hit1": true,
+    "hit2": true,
+    "wrong": false,
+    "move_left_pct": 2.43,
+    "minutes_ahead_of_half_move": 167
+   },
+   {
+    "sym": "MUTHOOTFIN",
+    "side": "PE",
+    "list": "SCORED",
+    "source": "news",
+    "rank": 4,
+    "named_at": "evening / 09:08 (09:15 open)",
+    "move_1510": -1.16,
+    "move_next_close": null,
+    "hit1": false,
+    "hit2": false,
+    "wrong": false,
+    "move_left_pct": 1.55,
+    "minutes_ahead_of_half_move": 0
+   },
+   {
+    "sym": "ALKEM",
+    "side": "PE",
+    "list": "SCORED",
+    "source": "news",
+    "rank": 5,
+    "named_at": "evening / 09:08 (09:15 open)",
+    "move_1510": -0.34,
+    "move_next_close": null,
+    "hit1": false,
+    "hit2": false,
+    "wrong": false,
+    "move_left_pct": 0.79,
+    "minutes_ahead_of_half_move": 0
+   },
+   {
+    "sym": "MANAPPURAM",
+    "side": "PE",
+    "list": "SCORED",
+    "source": "news",
+    "rank": 7,
+    "named_at": "evening / 09:08 (09:15 open)",
+    "move_1510": -2.22,
+    "move_next_close": null,
+    "hit1": false,
+    "hit2": false,
+    "wrong": true,
+    "move_left_pct": 0.92,
+    "minutes_ahead_of_half_move": 0
+   },
+   {
+    "sym": "AMBER",
+    "side": "CE",
+    "list": "MOVER (side open)",
+    "source": "price-only",
+    "rank": 9,
+    "named_at": "09:47",
+    "move_1510": -0.41,
+    "move_next_close": null,
+    "hit1": false,
+    "hit2": false,
+    "wrong": false,
+    "move_left_pct": 1.07,
+    "minutes_ahead_of_half_move": -10
+   },
+   {
+    "sym": "BLUESTARCO",
+    "side": "CE",
+    "list": "MOVER (side open)",
+    "source": "price-only",
+    "rank": 10,
+    "named_at": "10:02",
+    "move_1510": 0.48,
+    "move_next_close": null,
+    "hit1": false,
+    "hit2": false,
+    "wrong": false,
+    "move_left_pct": 0.82,
+    "minutes_ahead_of_half_move": -46
+   },
+   {
+    "sym": "IREDA",
+    "side": "CE",
+    "list": "MOVER (side open)",
+    "source": "price-only",
+    "rank": 11,
+    "named_at": "09:43",
+    "move_1510": 0.78,
+    "move_next_close": null,
+    "hit1": false,
+    "hit2": false,
+    "wrong": false,
+    "move_left_pct": 1.02,
+    "minutes_ahead_of_half_move": -25
+   },
+   {
+    "sym": "VOLTAS",
+    "side": "CE",
+    "list": "MOVER (side open)",
+    "source": "price-only",
+    "rank": 13,
+    "named_at": "09:31",
+    "move_1510": -0.18,
+    "move_next_close": null,
+    "hit1": false,
+    "hit2": false,
+    "wrong": false,
+    "move_left_pct": 1.01,
+    "minutes_ahead_of_half_move": -15
+   },
+   {
+    "sym": "EICHERMOT",
+    "side": "CE",
+    "list": "MOVER (side open)",
+    "source": "price-only",
+    "rank": 15,
+    "named_at": "09:47",
+    "move_1510": 0.32,
+    "move_next_close": null,
+    "hit1": false,
+    "hit2": false,
+    "wrong": false,
+    "move_left_pct": 0.59,
+    "minutes_ahead_of_half_move": -7
+   },
+   {
+    "sym": "CROMPTON",
+    "side": "CE",
+    "list": "MOVER (side open)",
+    "source": "price-only",
+    "rank": 16,
+    "named_at": "09:18",
+    "move_1510": 0.94,
+    "move_next_close": null,
+    "hit1": false,
+    "hit2": false,
+    "wrong": false,
+    "move_left_pct": 1.28,
+    "minutes_ahead_of_half_move": 1
+   },
+   {
+    "sym": "HYUNDAI",
+    "side": "CE",
+    "list": "MOVER (side open)",
+    "source": "price-only",
+    "rank": 18,
+    "named_at": "10:01",
+    "move_1510": -0.17,
+    "move_next_close": null,
+    "hit1": false,
+    "hit2": false,
+    "wrong": false,
+    "move_left_pct": 0.0,
+    "minutes_ahead_of_half_move": -38
+   },
+   {
+    "sym": "BANKBARODA",
+    "side": "CE",
+    "list": "MOVER (side open)",
+    "source": "price-only",
+    "rank": 19,
+    "named_at": "09:32",
+    "move_1510": 0.85,
+    "move_next_close": null,
+    "hit1": false,
+    "hit2": false,
+    "wrong": false,
+    "move_left_pct": 1.17,
+    "minutes_ahead_of_half_move": -7
+   },
+   {
+    "sym": "M&M",
+    "side": "CE",
+    "list": "MOVER (side open)",
+    "source": "price-only",
+    "rank": 21,
+    "named_at": "09:46",
+    "move_1510": 0.48,
+    "move_next_close": null,
+    "hit1": false,
+    "hit2": false,
+    "wrong": false,
+    "move_left_pct": 0.66,
+    "minutes_ahead_of_half_move": -30
+   },
+   {
+    "sym": "MARUTI",
+    "side": "CE",
+    "list": "MOVER (side open)",
+    "source": "price-only",
+    "rank": 30,
+    "named_at": "09:31",
+    "move_1510": 1.46,
+    "move_next_close": null,
+    "hit1": true,
+    "hit2": false,
+    "wrong": false,
+    "move_left_pct": 1.71,
+    "minutes_ahead_of_half_move": -10
+   },
+   {
+    "sym": "PIIND",
+    "side": "CE",
+    "list": "CE BOUNCE (on the turn)",
+    "source": "price-only",
+    "rank": 8,
+    "named_at": "evening / 09:08 (09:15 open)",
+    "move_1510": -0.79,
+    "move_next_close": null,
+    "hit1": false,
+    "hit2": false,
+    "wrong": false,
+    "move_left_pct": 0.14,
+    "minutes_ahead_of_half_move": 60
+   }
+  ],
+  "by_source": {
+   "news": {
+    "n": 5,
+    "hit1": 0.2,
+    "hit2": 0.0,
+    "base1": 0.217,
+    "base2": 0.091,
+    "lift2": 0.0,
+    "wrong": 0.4,
+    "next_close_its_way_1pct": "not known",
+    "median_move_left": 0.92,
+    "median_minutes_ahead_of_half_move": 0
+   },
+   "results": {
+    "n": 1,
+    "hit1": 0.0,
+    "hit2": 0.0,
+    "base1": 0.509,
+    "base2": 0.206,
+    "lift2": 0.0,
+    "wrong": 0.0,
+    "next_close_its_way_1pct": "not known",
+    "median_move_left": 1.68,
+    "median_minutes_ahead_of_half_move": 3
+   },
+   "TV": {
+    "n": 1,
+    "hit1": 1.0,
+    "hit2": 1.0,
+    "base1": 0.509,
+    "base2": 0.206,
+    "lift2": 4.84,
+    "wrong": 0.0,
+    "next_close_its_way_1pct": "not known",
+    "median_move_left": 2.43,
+    "median_minutes_ahead_of_half_move": 167
+   },
+   "price-only": {
+    "n": 11,
+    "hit1": 0.091,
+    "hit2": 0.0,
+    "base1": 0.509,
+    "base2": 0.206,
+    "lift2": 0.0,
+    "wrong": 0.0,
+    "next_close_its_way_1pct": "not known",
+    "median_move_left": 1.01,
+    "median_minutes_ahead_of_half_move": -10
+   }
+  },
+  "reasoned": {
+   "n": 7,
+   "hit1": 0.286,
+   "hit2": 0.143,
+   "base1": 0.301,
+   "base2": 0.124,
+   "lift2": 1.15,
+   "wrong": 0.286,
+   "next_close_its_way_1pct": "not known",
+   "median_move_left": 1.55,
+   "median_minutes_ahead_of_half_move": 1
+  },
+  "price_only": {
+   "n": 11,
+   "hit1": 0.091,
+   "hit2": 0.0,
+   "base1": 0.509,
+   "base2": 0.206,
+   "lift2": 0.0,
+   "wrong": 0.0,
+   "next_close_its_way_1pct": "not known",
+   "median_move_left": 1.01,
+   "median_minutes_ahead_of_half_move": -10
+  },
+  "top5": {
+   "n": 5,
+   "hit1": 0.2,
+   "hit2": 0.0,
+   "base1": 0.315,
+   "base2": 0.129,
+   "lift2": 0.0,
+   "wrong": 0.2,
+   "next_close_its_way_1pct": "not known",
+   "median_move_left": 1.55,
+   "median_minutes_ahead_of_half_move": 1
+  },
+  "names_a_day": 18,
+  "base": {
+   "CE1": 0.509,
+   "CE2": 0.206,
+   "PE1": 0.023,
+   "PE2": 0.014
+  },
+  "text": "EDGE (desk 18:00) 2026-11-20 \u00b7 names 18 (with a reason 7, price-only 11) \u00b7 base CE 1%/2%: 51%/21% \u00b7 PE: 2%/1%\n  TV           n  1 \u00b7 its way >=1% 100% \u00b7 >=2% 100% (base 21%, lift 4.84) \u00b7 wrong side   0% \u00b7 next close >=1%: not known \u00b7 move left 2.4% \u00b7 ahead of the half move 167 min\n  news         n  5 \u00b7 its way >=1%  20% \u00b7 >=2%   0% (base  9%, lift 0.0) \u00b7 wrong side  40% \u00b7 next close >=1%: not known \u00b7 move left 0.9% \u00b7 ahead of the half move 0 min\n  price-only   n 11 \u00b7 its way >=1%   9% \u00b7 >=2%   0% (base 21%, lift 0.0) \u00b7 wrong side   0% \u00b7 next close >=1%: not known \u00b7 move left 1.0% \u00b7 ahead of the half move -10 min\n  results      n  1 \u00b7 its way >=1%   0% \u00b7 >=2%   0% (base 21%, lift 0.0) \u00b7 wrong side   0% \u00b7 next close >=1%: not known \u00b7 move left 1.7% \u00b7 ahead of the half move 3 min\n  TOP 5 by rank: >=1% 20% \u00b7 >=2% 0% (base 13%) \u00b7 wrong 20%"
+ }
+}

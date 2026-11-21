@@ -1,0 +1,265 @@
+{
+ "days": [
+  "2026-11-08",
+  "2026-11-20"
+ ],
+ "n_days": 10,
+ "discovery_to": "2026-11-16",
+ "levels": [
+  {
+   "level": "agent",
+   "sources": 14,
+   "n_discovery": 7069,
+   "n_unseen": 6335,
+   "base_rate_discovery": 0.4813,
+   "unseen_hit_top_third": 0.5102,
+   "n_top": 2560,
+   "unseen_hit_bottom_third": 0.4848,
+   "n_bottom": 2232,
+   "z": 1.75,
+   "brier_trust": 0.2494,
+   "brier_base": 0.2501,
+   "corr_sources_n30": 0.751,
+   "n_sources_n30": 11,
+   "table": [
+    {
+     "source": "rule:roof breaking - writers runnin",
+     "trust": 0.5361,
+     "n_disc": 136,
+     "unseen_hit": 0.685,
+     "n_unseen": 146
+    },
+    {
+     "source": "rule:big money buying futures",
+     "trust": 0.5252,
+     "n_disc": 84,
+     "unseen_hit": 0.675,
+     "n_unseen": 114
+    },
+    {
+     "source": "strikes",
+     "trust": 0.4968,
+     "n_disc": 2103,
+     "unseen_hit": 0.491,
+     "n_unseen": 1579
+    },
+    {
+     "source": "walls",
+     "trust": 0.4907,
+     "n_disc": 884,
+     "unseen_hit": 0.485,
+     "n_unseen": 682
+    },
+    {
+     "source": "rule:rising fast",
+     "trust": 0.4877,
+     "n_disc": 51,
+     "unseen_hit": 0.453,
+     "n_unseen": 53
+    },
+    {
+     "source": "auditor",
+     "trust": 0.483,
+     "n_disc": 1913,
+     "unseen_hit": 0.48,
+     "n_unseen": 1490
+    },
+    {
+     "source": "futures",
+     "trust": 0.4747,
+     "n_disc": 390,
+     "unseen_hit": 0.499,
+     "n_unseen": 849
+    },
+    {
+     "source": "SUDDEN",
+     "trust": 0.4653,
+     "n_disc": 1101,
+     "unseen_hit": 0.497,
+     "n_unseen": 1040
+    },
+    {
+     "source": "rule:floor breaking - writers runni",
+     "trust": 0.4122,
+     "n_disc": 64,
+     "unseen_hit": 0.405,
+     "n_unseen": 131
+    },
+    {
+     "source": "rule:big money selling futures",
+     "trust": 0.3539,
+     "n_disc": 75,
+     "unseen_hit": 0.435,
+     "n_unseen": 85
+    },
+    {
+     "source": "reader",
+     "trust": 0.3447,
+     "n_disc": 182,
+     "unseen_hit": 0.402,
+     "n_unseen": 127
+    }
+   ],
+   "beats_random": false
+  },
+  {
+   "level": "agent+sector",
+   "sources": 248,
+   "n_discovery": 7069,
+   "n_unseen": 6335,
+   "base_rate_discovery": 0.4813,
+   "unseen_hit_top_third": 0.4963,
+   "n_top": 2184,
+   "unseen_hit_bottom_third": 0.4838,
+   "n_bottom": 2131,
+   "z": 0.82,
+   "brier_trust": 0.2506,
+   "brier_base": 0.2501,
+   "corr_sources_n30": -0.208,
+   "n_sources_n30": 62,
+   "table": [
+    {
+     "source": "strikes/auto-anc",
+     "trust": 0.5794,
+     "n_disc": 76,
+     "unseen_hit": 0.433,
+     "n_unseen": 60
+    },
+    {
+     "source": "walls/auto",
+     "trust": 0.553,
+     "n_disc": 39,
+     "unseen_hit": 0.419,
+     "n_unseen": 43
+    },
+    {
+     "source": "walls/fmcg",
+     "trust": 0.5522,
+     "n_disc": 59,
+     "unseen_hit": 0.46,
+     "n_unseen": 50
+    },
+    {
+     "source": "auditor/auto-anc",
+     "trust": 0.5514,
+     "n_disc": 70,
+     "unseen_hit": 0.433,
+     "n_unseen": 60
+    },
+    {
+     "source": "SUDDEN/fmcg",
+     "trust": 0.5463,
+     "n_disc": 80,
+     "unseen_hit": 0.462,
+     "n_unseen": 78
+    },
+    {
+     "source": "walls/nbfc",
+     "trust": 0.5368,
+     "n_disc": 65,
+     "unseen_hit": 0.556,
+     "n_unseen": 45
+    },
+    {
+     "source": "SUDDEN/cement-infra",
+     "trust": 0.5317,
+     "n_disc": 47,
+     "unseen_hit": 0.469,
+     "n_unseen": 49
+    },
+    {
+     "source": "strikes/metals",
+     "trust": 0.5288,
+     "n_disc": 106,
+     "unseen_hit": 0.427,
+     "n_unseen": 75
+    },
+    {
+     "source": "strikes/auto",
+     "trust": 0.5283,
+     "n_disc": 108,
+     "unseen_hit": 0.5,
+     "n_unseen": 76
+    },
+    {
+     "source": "SUDDEN/auto",
+     "trust": 0.5269,
+     "n_disc": 59,
+     "unseen_hit": 0.5,
+     "n_unseen": 52
+    },
+    {
+     "source": "strikes/consumer",
+     "trust": 0.5245,
+     "n_disc": 189,
+     "unseen_hit": 0.521,
+     "n_unseen": 142
+    },
+    {
+     "source": "strikes/cement-infra",
+     "trust": 0.5231,
+     "n_disc": 115,
+     "unseen_hit": 0.44,
+     "n_unseen": 91
+    },
+    {
+     "source": "futures/banks",
+     "trust": 0.5154,
+     "n_disc": 53,
+     "unseen_hit": 0.519,
+     "n_unseen": 81
+    },
+    {
+     "source": "SUDDEN/chemicals",
+     "trust": 0.5108,
+     "n_disc": 38,
+     "unseen_hit": 0.412,
+     "n_unseen": 34
+    },
+    {
+     "source": "auditor/auto",
+     "trust": 0.5095,
+     "n_disc": 99,
+     "unseen_hit": 0.44,
+     "n_unseen": 75
+    },
+    {
+     "source": "auditor/consumer",
+     "trust": 0.5058,
+     "n_disc": 173,
+     "unseen_hit": 0.508,
+     "n_unseen": 132
+    },
+    {
+     "source": "auditor/fmcg",
+     "trust": 0.5009,
+     "n_disc": 123,
+     "unseen_hit": 0.471,
+     "n_unseen": 102
+    },
+    {
+     "source": "auditor/pharma",
+     "trust": 0.5009,
+     "n_disc": 119,
+     "unseen_hit": 0.473,
+     "n_unseen": 91
+    },
+    {
+     "source": "auditor/nbfc",
+     "trust": 0.5008,
+     "n_disc": 129,
+     "unseen_hit": 0.456,
+     "n_unseen": 103
+    },
+    {
+     "source": "strikes/pharma",
+     "trust": 0.5008,
+     "n_disc": 137,
+     "unseen_hit": 0.495,
+     "n_unseen": 99
+    }
+   ],
+   "beats_random": false
+  }
+ ]
+}

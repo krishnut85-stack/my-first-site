@@ -1,0 +1,7 @@
+PROOF overlay on PROOF_1600 (budget day 19 Nov 15:40 -> 20 Nov 15:40, NEW split {"MEET": 2.6, "SEATS": 1.5, "LIVE": 1.8, "READ": 1.1, "ASK": 0.1, "SHOCK": 0.9})
+total $6.35 | by bucket {'LIVE': 2.13, 'MEET': 2.28, 'READ': 0.84, 'SEATS': 1.08}
+refused calls by bucket {'SEATS': 13, 'MEET': 1}
+first refusal MEET at 09:10: brief floor: the 09:08 brief has $0.78 of its $2.60 (incl. what earlier briefs left) and $0.60 is kept for the head and 
+first refusal SEATS at 07:17: SEATS at 72% of $1.50 - event calls only
+R3 (new cadence, real tape): 190 calls, 0 refused, 0 refused 07:00-09:15, $0.188; calls 07:00-09:15: 66, 09:15-15:30: 94
+head brief calls (MEET): {"19:47": "delivered", "07:17": "delivered", "09:10": "delivered"}

@@ -1,0 +1,24 @@
+/home/globalbot/intraday/v2/engine/core.py
+2026-11-16 engine steps 384 in 81.8s (0.21 s/step)
+   ('CE', 'GET READY', 'log') 208
+   ('CE', 'GO NOW', 'log') 5
+   ('CE', 'GO NOW', 'pub') 5
+   ('PE', 'GET READY', 'log') 848
+   ('PE', 'GO NOW', 'log') 12
+   ('PE', 'GO NOW', 'pub') 171
+  rings 7 Counter({'PE': 3, 'CE': 3, '': 1})
+   setup ('PE', "breakout of the day's low") 774
+   setup ('PE', 'opening-range breakout') 161
+   setup ('CE', 'opening-range breakout') 103
+   setup ('CE', "breakout of the day's high") 79
+   setup ('PE', 'first VWAP pullback') 68
+   setup ('CE', 'first VWAP pullback') 36
+   setup ('PE', 'sector laggard') 18
+   setup ('PE', 'first VWAP pullback (trend day, E5)') 8
+   setup ('PE', 'sector line (opening: one line per sector)') 2
+  rr values (top) [(2.0, 1233), (None, 16)] distinct 2
+  zero lots 0 of 1249 []
+  rings without premium 2
+  ring notes [('new on the cards (no sound) - the best n', 174)]
+  cancels 705 pub cancels 1
+  15-min max rings 3

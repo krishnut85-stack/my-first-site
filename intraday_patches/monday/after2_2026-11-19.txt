@@ -1,0 +1,26 @@
+/home/globalbot/intraday/v2/engine_next/core.py
+2026-11-19 next steps 384 in 88.8s (0.23 s/step)
+   ('CE', 'GET READY', 'log') 842
+   ('PE', 'GET READY', 'log') 321
+   ('PE', 'GET READY', 'pub') 4
+  rings 3 Counter({'CE': 1, '': 1, 'PE': 1})
+   setup ('CE', "breakout of the day's high") 345
+   setup ('CE', 'opening-range breakout') 173
+   setup ('CE', "yesterday's-high break") 148
+   setup ('PE', 'opening-range breakout') 107
+   setup ('PE', "yesterday's-low break") 94
+   setup ('CE', 'day-high break') 52
+   setup ('PE', "breakout of the day's low") 43
+   setup ('CE', 'first VWAP pullback') 40
+   setup ('PE', 'first VWAP pullback') 35
+   setup ('CE', 'sector laggard') 27
+   setup ('CE', 'first VWAP pullback (trend day, E5)') 23
+   setup ('CE', 'VWAP reclaim') 23
+   setup ('PE', 'VWAP loss') 16
+   setup ('PE', 'pre-open (09:08) on the watch list') 11
+  rr values (top) [(1.0, 77), (2.5, 25), (1.08, 15), (None, 14), (1.34, 13)] distinct 248
+  zero lots 1153 of 1167 [('no premium - not tradable', 827), ('no premium - not tradable; R:R', 326)]
+  rings without premium 0
+  ring notes [('no ring: not tradable (no premium - not ', 4), ('no ring: this idea already rang at 09:31', 3), ('no ring: this idea already rang at 09:15', 2)]
+  cancels 803 pub cancels 2
+  15-min max rings 2

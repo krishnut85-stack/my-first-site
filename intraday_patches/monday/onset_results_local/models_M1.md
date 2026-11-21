@@ -1,0 +1,241 @@
+# M1 NEXT-DAY GAP - walk-forward results (2026-11-21)
+
+Target: P(next session opens above today's close). Train on older years only, test once on each later unseen year, Platt-calibrated.
+PASS = on the unseen years pooled: accuracy beats the base rate (training years' majority side) with one-sided p < 0.025, Brier beats the base rate's, and it beats the base rate in at least half of the years. Else: OFF the cards, predict() says "no edge".
+Best of logistic regression (lr) / gradient-boosted trees (gbt) shown; both are in models_M1.json.
+
+## Summary
+
+| set | decision time | n days | model | unseen acc | base rate | Brier vs base | p | years beaten | verdict |
+|---|---|---|---|---|---|---|---|---|---|
+| NIFTY_daily | 14:45 IST | 4131 | lr | 66.6% (n 2931) | 66.6% | 0.2256 vs 0.2241 | 0.5074 | 0/12 | 0.666 (n 2931) / 0.666 | None (n 0) / 0.334 | **no edge** |
+| NIFTY_daily | evening / 07:30 IST | 4131 | lr | 73.5% (n 2931) | 66.6% | 0.1816 vs 0.2241 | 0.0000 | 12/12 | 0.7521 (n 2328) / 0.666 | 0.6667 (n 603) / 0.334 | **PASS** |
+| BANKNIFTY_daily | 14:45 IST | 4147 | lr | 62.0% (n 2937) | 62.0% | 0.2369 vs 0.2364 | 0.5073 | 0/12 | 0.6197 (n 2937) / 0.6197 | None (n 0) / 0.3803 | **no edge** |
+| BANKNIFTY_daily | evening / 07:30 IST | 4147 | gbt | 69.6% (n 2937) | 62.0% | 0.1973 vs 0.2364 | 0.0000 | 12/12 | 0.7069 (n 2238) / 0.6197 | 0.6595 (n 699) / 0.3803 | **PASS** |
+| NIFTY_kite | 14:45 IST | 1224 | lr | 61.0% (n 963) | 61.0% | 0.2405 vs 0.2398 | 0.5130 | 0/4 | 0.6096 (n 963) / 0.6096 | None (n 0) / 0.3904 | **no edge** |
+| NIFTY_kite | evening / 07:30 IST | 1224 | gbt | 69.3% (n 963) | 61.0% | 0.1983 vs 0.2398 | 0.0000 | 4/4 | 0.6922 (n 757) / 0.6096 | 0.6942 (n 206) / 0.3904 | **PASS** |
+| BANKNIFTY_kite | 14:45 IST | 1224 | lr | 56.7% (n 963) | 56.7% | 0.2482 vs 0.2472 | 0.5122 | 0/4 | 0.567 (n 963) / 0.567 | None (n 0) / 0.433 | **no edge** |
+| BANKNIFTY_kite | evening / 07:30 IST | 1224 | gbt | 65.6% (n 963) | 56.7% | 0.2181 vs 0.2472 | 0.0000 | 4/4 | 0.6525 (n 705) / 0.567 | 0.6667 (n 258) / 0.433 | **PASS** |
+| IT_kite | 14:45 IST | 1224 | lr | 58.9% (n 963) | 58.9% | 0.2441 vs 0.2441 | 0.5130 | 0/4 | 0.5888 (n 963) / 0.5888 | None (n 0) / 0.4112 | **no edge** |
+| IT_kite | evening / 07:30 IST | 1224 | gbt | 68.7% (n 963) | 58.9% | 0.2059 vs 0.2441 | 0.0000 | 4/4 | 0.6956 (n 680) / 0.5888 | 0.6678 (n 283) / 0.4112 | **PASS** |
+| PVT_BANK_kite | 14:45 IST | 1224 | lr | 55.9% (n 963) | 55.9% | 0.2494 vs 0.2482 | 0.5127 | 0/4 | 0.5587 (n 963) / 0.5587 | None (n 0) / 0.4413 | **no edge** |
+| PVT_BANK_kite | evening / 07:30 IST | 1224 | gbt | 64.4% (n 963) | 55.9% | 0.2178 vs 0.2482 | 0.0000 | 4/4 | 0.6449 (n 673) / 0.5587 | 0.6414 (n 290) / 0.4413 | **PASS** |
+| PSU_BANK_kite | 14:45 IST | 1224 | lr | 70.9% (n 963) | 70.9% | 0.2119 vs 0.2113 | 0.5145 | 0/4 | 0.7092 (n 963) / 0.7092 | None (n 0) / 0.2908 | **no edge** |
+| PSU_BANK_kite | evening / 07:30 IST | 1224 | lr | 72.4% (n 963) | 70.9% | 0.1892 vs 0.2113 | 0.1693 | 3/4 | 0.7284 (n 913) / 0.7092 | 0.64 (n 50) / 0.2908 | **no edge** |
+| FIN_SERVICE_kite | 14:45 IST | 1224 | lr | 56.2% (n 963) | 56.2% | 0.2484 vs 0.2474 | 0.5124 | 0/4 | 0.5618 (n 963) / 0.5618 | None (n 0) / 0.4382 | **no edge** |
+| FIN_SERVICE_kite | evening / 07:30 IST | 1224 | gbt | 66.7% (n 963) | 56.2% | 0.2120 vs 0.2474 | 0.0000 | 4/4 | 0.6608 (n 684) / 0.5618 | 0.681 (n 279) / 0.4382 | **PASS** |
+| PHARMA_kite | 14:45 IST | 1224 | lr | 70.4% (n 963) | 70.4% | 0.2117 vs 0.2108 | 0.5140 | 0/4 | 0.704 (n 963) / 0.704 | None (n 0) / 0.296 | **no edge** |
+| PHARMA_kite | evening / 07:30 IST | 1224 | lr | 74.6% (n 963) | 70.4% | 0.1835 vs 0.2108 | 0.0026 | 4/4 | 0.748 (n 873) / 0.704 | 0.7222 (n 90) / 0.296 | **PASS** |
+| FMCG_kite | 14:45 IST | 1224 | lr | 67.8% (n 963) | 67.8% | 0.2232 vs 0.2211 | 0.5137 | 0/4 | 0.6781 (n 963) / 0.6781 | None (n 0) / 0.3219 | **no edge** |
+| FMCG_kite | evening / 07:30 IST | 1224 | lr | 71.0% (n 963) | 67.8% | 0.1992 vs 0.2211 | 0.0177 | 4/4 | 0.712 (n 882) / 0.6781 | 0.6914 (n 81) / 0.3219 | **PASS** |
+| AUTO_kite | 14:45 IST | 1224 | lr | 69.2% (n 963) | 69.2% | 0.2199 vs 0.2177 | 0.5142 | 0/4 | 0.6916 (n 963) / 0.6916 | None (n 0) / 0.3084 | **no edge** |
+| AUTO_kite | evening / 07:30 IST | 1224 | gbt | 72.9% (n 963) | 69.2% | 0.1874 vs 0.2177 | 0.0066 | 4/4 | 0.7336 (n 867) / 0.6916 | 0.6875 (n 96) / 0.3084 | **PASS** |
+| METAL_kite | 14:45 IST | 1224 | lr | 70.6% (n 963) | 70.6% | 0.2131 vs 0.2126 | 0.5141 | 0/4 | 0.7061 (n 963) / 0.7061 | None (n 0) / 0.2939 | **no edge** |
+| METAL_kite | evening / 07:30 IST | 1224 | gbt | 74.2% (n 963) | 70.6% | 0.1802 vs 0.2126 | 0.0073 | 4/4 | 0.7565 (n 842) / 0.7061 | 0.6446 (n 121) / 0.2939 | **PASS** |
+| REALTY_kite | 14:45 IST | 1224 | lr | 68.7% (n 963) | 68.7% | 0.2189 vs 0.2177 | 0.5135 | 0/4 | 0.6874 (n 963) / 0.6874 | None (n 0) / 0.3126 | **no edge** |
+| REALTY_kite | evening / 07:30 IST | 1224 | gbt | 73.2% (n 963) | 68.7% | 0.1874 vs 0.2177 | 0.0016 | 4/4 | 0.7365 (n 854) / 0.6874 | 0.6972 (n 109) / 0.3126 | **PASS** |
+| ENERGY_kite | 14:45 IST | 1224 | lr | 71.3% (n 963) | 71.3% | 0.2101 vs 0.2083 | 0.5141 | 0/4 | 0.7134 (n 963) / 0.7134 | None (n 0) / 0.2866 | **no edge** |
+| ENERGY_kite | evening / 07:30 IST | 1224 | lr | 74.4% (n 963) | 71.3% | 0.1778 vs 0.2083 | 0.0211 | 4/4 | 0.754 (n 866) / 0.7134 | 0.6495 (n 97) / 0.2866 | **PASS** |
+| NIFTY_intraday | 14:45 IST | 588 | lr | 52.7% (n 465) | 53.5% | 0.2518 vs 0.2531 | 0.6624 | 0/2 | 0.533 (n 439) / 0.5355 | 0.4231 (n 26) / 0.4645 | **no edge** |
+| NIFTY_intraday | evening / 07:30 IST | 588 | lr | 68.6% (n 465) | 53.5% | 0.2068 vs 0.2531 | 0.0000 | 2/2 | 0.6746 (n 295) / 0.5355 | 0.7059 (n 170) / 0.4645 | **PASS** |
+| BANKNIFTY_intraday | 14:45 IST | 588 | gbt | 54.4% (n 465) | 50.5% | 0.2460 vs 0.2503 | 0.0524 | 2/2 | 0.5315 (n 365) / 0.5054 | 0.59 (n 100) / 0.4946 | **no edge** |
+| BANKNIFTY_intraday | evening / 07:30 IST | 588 | lr | 66.0% (n 465) | 50.5% | 0.2182 vs 0.2503 | 0.0000 | 2/2 | 0.637 (n 281) / 0.5054 | 0.6957 (n 184) / 0.4946 | **PASS** |
+
+## By unseen year (chosen model)
+
+**NIFTY_daily 1445** (lr, data 2010-02-03 to 2026-11-19)  
+year: 2015 n244 66% vs 66% · 2016 n244 68% vs 68% · 2017 n248 75% vs 75% · 2018 n245 71% vs 71% · 2019 n241 71% vs 71% · 2020 n250 71% vs 71% · 2021 n248 72% vs 72% · 2022 n248 60% vs 60% · 2023 n246 68% vs 68% · 2024 n249 66% vs 66% · 2025 n249 59% vs 59% · 2026 n219 49% vs 49%  
+top inputs: rsi14_prev(+), dist20_prev(-), ndx_prev(-), asia_min_D(+), asia_D(-), usdinr_prev(-)  
+expected size (ridge): MAE 0.36 / 0.36 / 0.23 / 0.33 / 0.25 / 0.77 / 0.39 / 0.56 / 0.26 / 0.30 / 0.29 / 0.46 vs naive 0.35 / 0.36 / 0.23 / 0.33 / 0.25 / 0.76 / 0.38 / 0.56 / 0.25 / 0.30 / 0.29 / 0.46 (pct points) by year
+
+**NIFTY_daily 0730** (lr, data 2010-02-03 to 2026-11-19)  
+year: 2015 n244 72% vs 66% · 2016 n244 72% vs 68% · 2017 n248 78% vs 75% · 2018 n245 77% vs 71% · 2019 n241 74% vs 71% · 2020 n250 78% vs 71% · 2021 n248 77% vs 72% · 2022 n248 80% vs 60% · 2023 n246 78% vs 68% · 2024 n249 70% vs 66% · 2025 n249 66% vs 59% · 2026 n219 58% vs 49%  
+top inputs: spx_night(+), rsi14_D(+), rsi14_prev(-), asia_D(-), spx_prev(+), ndx_night(+)  
+expected size (ridge): MAE 0.28 / 0.31 / 0.22 / 0.28 / 0.26 / 0.66 / 0.33 / 0.38 / 0.21 / 0.28 / 0.30 / 0.40 vs naive 0.35 / 0.36 / 0.23 / 0.33 / 0.25 / 0.76 / 0.38 / 0.56 / 0.25 / 0.30 / 0.29 / 0.46 (pct points) by year
+
+**BANKNIFTY_daily 1445** (lr, data 2010-02-03 to 2026-11-19)  
+year: 2015 n246 60% vs 60% · 2016 n246 64% vs 64% · 2017 n248 72% vs 72% · 2018 n246 62% vs 62% · 2019 n242 68% vs 68% · 2020 n250 66% vs 66% · 2021 n248 66% vs 66% · 2022 n248 58% vs 58% · 2023 n246 66% vs 66% · 2024 n249 58% vs 58% · 2025 n249 53% vs 53% · 2026 n219 48% vs 48%  
+top inputs: dist20_prev(-), rsi14_prev(+), nights(+), asia_min_D(+), asia_D(-), friday(-)  
+expected size (ridge): MAE 0.47 / 0.48 / 0.29 / 0.39 / 0.33 / 1.03 / 0.52 / 0.65 / 0.33 / 0.37 / 0.33 / 0.50 vs naive 0.47 / 0.48 / 0.29 / 0.39 / 0.32 / 1.01 / 0.52 / 0.65 / 0.32 / 0.37 / 0.33 / 0.50 (pct points) by year
+
+**BANKNIFTY_daily 0730** (gbt, data 2010-02-03 to 2026-11-19)  
+year: 2015 n246 73% vs 60% · 2016 n246 69% vs 64% · 2017 n248 73% vs 72% · 2018 n246 70% vs 62% · 2019 n242 70% vs 68% · 2020 n250 76% vs 66% · 2021 n248 72% vs 66% · 2022 n248 77% vs 58% · 2023 n246 74% vs 66% · 2024 n249 61% vs 58% · 2025 n249 61% vs 53% · 2026 n219 58% vs 48%  
+top inputs: spx_night, ndx_night, asia_D, us10y_night, asia_min_D, idx_D_ret  
+expected size (ridge): MAE 0.40 / 0.44 / 0.28 / 0.37 / 0.34 / 0.88 / 0.43 / 0.48 / 0.28 / 0.37 / 0.37 / 0.46 vs naive 0.47 / 0.48 / 0.29 / 0.39 / 0.32 / 1.01 / 0.52 / 0.65 / 0.32 / 0.37 / 0.33 / 0.50 (pct points) by year
+
+**NIFTY_kite 1445** (lr, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 68% vs 68% · 2024 n249 66% vs 66% · 2025 n249 59% vs 59% · 2026 n219 49% vs 49%  
+top inputs: asia_D(-), asia_min_D(+), usdinr_prev(-), spx_prev(-), friday(-), nights(+)  
+expected size (ridge): MAE 0.29 / 0.31 / 0.30 / 0.47 vs naive 0.26 / 0.30 / 0.28 / 0.45 (pct points) by year
+
+**NIFTY_kite 0730** (gbt, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 75% vs 68% · 2024 n249 70% vs 66% · 2025 n249 66% vs 59% · 2026 n219 65% vs 49%  
+top inputs: spx_night, asia_D, ndx_night, idx_D_ret, idx_prev_ret, us10y_night  
+expected size (ridge): MAE 0.24 / 0.29 / 0.28 / 0.39 vs naive 0.26 / 0.30 / 0.28 / 0.45 (pct points) by year
+
+**BANKNIFTY_kite 1445** (lr, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 66% vs 66% · 2024 n249 58% vs 58% · 2025 n249 53% vs 53% · 2026 n219 48% vs 48%  
+top inputs: nights(+), friday(-), asia_D(-), spx_prev(-), gap_D(+), rsi14_prev(-)  
+expected size (ridge): MAE 0.37 / 0.37 / 0.33 / 0.51 vs naive 0.34 / 0.37 / 0.32 / 0.49 (pct points) by year
+
+**BANKNIFTY_kite 0730** (gbt, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 76% vs 66% · 2024 n249 61% vs 58% · 2025 n249 61% vs 53% · 2026 n219 64% vs 48%  
+top inputs: spx_night, idx_D_ret, asia_D, us10y_night, wti_prev, asia_min_D  
+expected size (ridge): MAE 0.31 / 0.37 / 0.33 / 0.46 vs naive 0.34 / 0.37 / 0.32 / 0.49 (pct points) by year
+
+**IT_kite 1445** (lr, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 65% vs 65% · 2024 n249 61% vs 61% · 2025 n249 58% vs 58% · 2026 n219 50% vs 50%  
+top inputs: dist20_prev(+), rsi14_prev(-), friday(-), asia_D(-), idx_prev_ret(-), gold_prev(-)  
+expected size (ridge): MAE 0.40 / 0.46 / 0.47 / 0.77 vs naive 0.36 / 0.43 / 0.46 / 0.75 (pct points) by year
+
+**IT_kite 0730** (gbt, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 78% vs 65% · 2024 n249 70% vs 61% · 2025 n249 65% vs 58% · 2026 n219 61% vs 50%  
+top inputs: spx_night, asia_D, ndx_night, asia_min_D, usdinr_prev, us10y_night  
+expected size (ridge): MAE 0.30 / 0.41 / 0.42 / 0.71 vs naive 0.36 / 0.43 / 0.46 / 0.75 (pct points) by year
+
+**PVT_BANK_kite 1445** (lr, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 65% vs 65% · 2024 n249 57% vs 57% · 2025 n249 53% vs 53% · 2026 n219 48% vs 48%  
+top inputs: asia_D(-), gap_D(+), friday(-), spx_prev(-), nights(+), dxy_prev(+)  
+expected size (ridge): MAE 0.38 / 0.37 / 0.34 / 0.52 vs naive 0.34 / 0.36 / 0.33 / 0.51 (pct points) by year
+
+**PVT_BANK_kite 0730** (gbt, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 74% vs 65% · 2024 n249 59% vs 57% · 2025 n249 62% vs 53% · 2026 n219 63% vs 48%  
+top inputs: spx_night, wti_prev, idx_D_ret, asia_D, us10y_night, asia_min_D  
+expected size (ridge): MAE 0.31 / 0.37 / 0.35 / 0.47 vs naive 0.34 / 0.36 / 0.33 / 0.51 (pct points) by year
+
+**PSU_BANK_kite 1445** (lr, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 77% vs 77% · 2024 n249 75% vs 75% · 2025 n249 73% vs 73% · 2026 n219 57% vs 57%  
+top inputs: rsi14_prev(+), dist20_prev(-), spx_prev(-), friday(-), asia_D(-), asia_min_D(+)  
+expected size (ridge): MAE 0.40 / 0.40 / 0.35 / 0.55 vs naive 0.34 / 0.39 / 0.33 / 0.53 (pct points) by year
+
+**PSU_BANK_kite 0730** (lr, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 80% vs 77% · 2024 n249 74% vs 75% · 2025 n249 75% vs 73% · 2026 n219 60% vs 57%  
+top inputs: spx_night(+), rsi14_D(+), asia_D(-), dist20_D(-), vix_prev(-), us10y_night(-)  
+expected size (ridge): MAE 0.33 / 0.38 / 0.36 / 0.47 vs naive 0.34 / 0.39 / 0.33 / 0.53 (pct points) by year
+
+**FIN_SERVICE_kite 1445** (lr, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 64% vs 64% · 2024 n249 59% vs 59% · 2025 n249 53% vs 53% · 2026 n219 48% vs 48%  
+top inputs: nights(+), friday(-), spx_prev(-), gap_D(+), gold_prev(-), asia_D(-)  
+expected size (ridge): MAE 0.37 / 0.36 / 0.33 / 0.52 vs naive 0.33 / 0.36 / 0.32 / 0.51 (pct points) by year
+
+**FIN_SERVICE_kite 0730** (gbt, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 74% vs 64% · 2024 n249 64% vs 59% · 2025 n249 61% vs 53% · 2026 n219 68% vs 48%  
+top inputs: spx_night, idx_D_ret, us10y_night, asia_D, idx_prev_ret, asia_min_D  
+expected size (ridge): MAE 0.32 / 0.36 / 0.33 / 0.46 vs naive 0.33 / 0.36 / 0.32 / 0.51 (pct points) by year
+
+**PHARMA_kite 1445** (lr, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 75% vs 75% · 2024 n249 77% vs 77% · 2025 n249 69% vs 69% · 2026 n219 59% vs 59%  
+top inputs: spx_prev(-), gap_D(+), gold_prev(-), friday(-), ndx_prev(+), asia_D(-)  
+expected size (ridge): MAE 0.21 / 0.26 / 0.29 / 0.33 vs naive 0.20 / 0.26 / 0.29 / 0.32 (pct points) by year
+
+**PHARMA_kite 0730** (lr, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 79% vs 75% · 2024 n249 79% vs 77% · 2025 n249 73% vs 69% · 2026 n219 66% vs 59%  
+top inputs: spx_night(+), asia_D(-), idx_D_ret(+), vix_prev(-), gold_prev(-), vix_D(+)  
+expected size (ridge): MAE 0.19 / 0.23 / 0.28 / 0.31 vs naive 0.20 / 0.26 / 0.29 / 0.32 (pct points) by year
+
+**FMCG_kite 1445** (lr, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 75% vs 75% · 2024 n249 72% vs 72% · 2025 n249 65% vs 65% · 2026 n219 58% vs 58%  
+top inputs: rsi14_prev(+), dist20_prev(-), gold_prev(-), ndx_prev(-), idx_prev_ret(-), spx_prev(+)  
+expected size (ridge): MAE 0.21 / 0.25 / 0.26 / 0.34 vs naive 0.19 / 0.24 / 0.25 / 0.33 (pct points) by year
+
+**FMCG_kite 0730** (lr, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 78% vs 75% · 2024 n249 74% vs 72% · 2025 n249 69% vs 65% · 2026 n219 62% vs 58%  
+top inputs: spx_night(+), rsi14_D(+), vix_prev(-), vix_D(+), spx_prev(+), ndx_prev(-)  
+expected size (ridge): MAE 0.19 / 0.24 / 0.26 / 0.29 vs naive 0.19 / 0.24 / 0.25 / 0.33 (pct points) by year
+
+**AUTO_kite 1445** (lr, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 81% vs 81% · 2024 n249 70% vs 70% · 2025 n249 67% vs 67% · 2026 n219 57% vs 57%  
+top inputs: rsi14_prev(+), ndx_prev(-), asia_D(-), dist20_prev(-), dxy_prev(-), gap_D(+)  
+expected size (ridge): MAE 0.27 / 0.33 / 0.36 / 0.54 vs naive 0.24 / 0.33 / 0.35 / 0.53 (pct points) by year
+
+**AUTO_kite 0730** (gbt, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 85% vs 81% · 2024 n249 73% vs 70% · 2025 n249 71% vs 67% · 2026 n219 62% vs 57%  
+top inputs: spx_night, asia_D, ndx_night, idx_D_ret, dist20_D, wti_night  
+expected size (ridge): MAE 0.22 / 0.30 / 0.36 / 0.46 vs naive 0.24 / 0.33 / 0.35 / 0.53 (pct points) by year
+
+**METAL_kite 1445** (lr, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 77% vs 77% · 2024 n249 77% vs 77% · 2025 n249 68% vs 68% · 2026 n219 59% vs 59%  
+top inputs: rsi14_prev(+), asia_min_D(+), spx_prev(-), dist20_prev(-), friday(-), vix_prev(-)  
+expected size (ridge): MAE 0.42 / 0.41 / 0.41 / 0.58 vs naive 0.38 / 0.40 / 0.41 / 0.57 (pct points) by year
+
+**METAL_kite 0730** (gbt, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 82% vs 77% · 2024 n249 78% vs 77% · 2025 n249 72% vs 68% · 2026 n219 64% vs 59%  
+top inputs: spx_night, ndx_night, idx_prev_ret, rsi14_D, asia_D, us10y_night  
+expected size (ridge): MAE 0.32 / 0.36 / 0.39 / 0.51 vs naive 0.38 / 0.40 / 0.41 / 0.57 (pct points) by year
+
+**REALTY_kite 1445** (lr, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 75% vs 75% · 2024 n249 73% vs 73% · 2025 n249 72% vs 72% · 2026 n219 53% vs 53%  
+top inputs: rsi14_prev(+), dist20_prev(-), spx_prev(-), gap_D(+), us10y_prev(-), asia_min_D(+)  
+expected size (ridge): MAE 0.31 / 0.46 / 0.40 / 0.56 vs naive 0.26 / 0.46 / 0.39 / 0.53 (pct points) by year
+
+**REALTY_kite 0730** (gbt, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 80% vs 75% · 2024 n249 76% vs 73% · 2025 n249 74% vs 72% · 2026 n219 62% vs 53%  
+top inputs: spx_night, ndx_night, idx_D_ret, rsi14_D, ndx_prev, us10y_night  
+expected size (ridge): MAE 0.28 / 0.41 / 0.38 / 0.48 vs naive 0.26 / 0.46 / 0.39 / 0.53 (pct points) by year
+
+**ENERGY_kite 1445** (lr, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 75% vs 75% · 2024 n249 73% vs 73% · 2025 n249 76% vs 76% · 2026 n219 61% vs 61%  
+top inputs: spx_prev(-), rsi14_prev(+), vix_prev(-), gap_D(+), ndx_prev(+), usdinr_prev(-)  
+expected size (ridge): MAE 0.35 / 0.37 / 0.33 / 0.38 vs naive 0.32 / 0.38 / 0.32 / 0.37 (pct points) by year
+
+**ENERGY_kite 0730** (lr, data 2021-12-15 to 2026-11-19)  
+year: 2023 n246 76% vs 75% · 2024 n249 74% vs 73% · 2025 n249 80% vs 76% · 2026 n219 66% vs 61%  
+top inputs: spx_night(+), vix_prev(-), rsi14_D(+), vix_D(+), spx_prev(-), idx_D_ret(+)  
+expected size (ridge): MAE 0.31 / 0.34 / 0.31 / 0.32 vs naive 0.32 / 0.38 / 0.32 / 0.37 (pct points) by year
+
+**NIFTY_intraday 1445** (lr, data 2024-07-04 to 2026-11-19)  
+year: 2025 n248 58% vs 59% · 2026 n217 47% vs 47%  
+top inputs: asia(-), nights(+), idx_1445(+), niy(+), friday(-), asia_min(+)  
+expected size (ridge): MAE 0.49 vs naive 0.46 (pct points) by year
+
+**NIFTY_intraday 0730** (lr, data 2024-07-04 to 2026-11-19)  
+year: 2025 n248 68% vs 59% · 2026 n217 70% vs 47%  
+top inputs: es_eve(+), sox_eve(-), asia(-), gc_eve(+), cl_eve(-), dxy_eve(-)  
+expected size (ridge): MAE 0.41 vs naive 0.46 (pct points) by year
+
+**BANKNIFTY_intraday 1445** (gbt, data 2024-07-04 to 2026-11-19)  
+year: 2025 n248 54% vs 52% · 2026 n217 55% vs 48%  
+top inputs: nifty1430, asia, inr, zn, asia_min, niy  
+expected size (ridge): MAE 0.54 vs naive 0.50 (pct points) by year
+
+**BANKNIFTY_intraday 0730** (lr, data 2024-07-04 to 2026-11-19)  
+year: 2025 n248 65% vs 52% · 2026 n217 68% vs 48%  
+top inputs: es_eve(+), niy_eve(+), friday(-), sox_eve(-), nights(+), cl_eve(-)  
+expected size (ridge): MAE 0.46 vs naive 0.50 (pct points) by year
+
+## Notes
+
+- 14:45 inputs: the intraday set uses the futures / Europe / FX values at 14:30 IST (Yahoo 60m bars end on the UTC hour); NIFTY / BANKNIFTY at 14:45 from minute data. The daily sets use only values final before 14:45 (Asia closes, previous US session, drivers' previous day, India's D-1 state).
+- 07:30 inputs add the US session(s) between India's close and the next open, India's own day move, drivers on those dates; the intraday set adds NQ / ES / SOX / Nikkei futures, gold, crude, USDINR, 10y from 15:30 IST to 07:30 IST.
+- daily NIFTY / BANKNIFTY before 15 Nov 2021 use Yahoo ^NSEI / ^NSEBANK day bars (opens checked: only 25 of 4,175 equal the previous close).
+- Model choice (lr vs gbt) is made on the same unseen years; the p-value threshold is halved for that.
+- Saved: v2/models/artifacts/m1_<set>_<time>.json; call v2/models/predict.py predict('M1', ...).
+
+## M1 vs THE SIMPLE HISTORY LINE (DESK_REVIEW 21 Nov 16:00 point 3) - 2026-11-21
+
+THE LINE: NQ futures from India's close (15:30 IST) to 07:30 IST; a move of 1%+ calls the gap's sign, smaller = no call. Same unseen days for both (2025 + 2026; each M1 year is scored by a model trained on earlier years only). The desk's '81% (186 cases)' comes from the gap study's 14:30 -> 09:00 IST window (ends after the 07:15 brief) - shown as a reference row.
+PASS needs all four: (1) at the SAME coverage (M1's k most confident days, k = the line's calls) M1's hit rate beats the line's, one-sided p < 0.025; (2) both sides - M1's gap-UP and gap-DOWN calls each beat the line's; (3) more than half the years (2 of 2); (4) better Brier on the line's call days.
+
+| comparison | line calls (coverage) | line hit | M1 hit, same coverage | p | UP: M1 / line | DOWN: M1 / line | years M1 better | Brier M1 / line | M1 on the line's days | M1 on no-call days | M1 all days | verdict |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| NIFTY: M1 intraday (lr) vs the line (NQ 15:30 -> 07:30 IST, >= 1%) | 148 (33%) | 0.7973 | 0.8041 | 0.4422 | 0.79 / 0.8481 | 0.8333 / 0.7391 | 1 of 2 | 0.1806 / 0.1676 | 0.75 (n 148) | 0.6482 (n 307) | 0.6813 (n 455) | **FAIL** |
+| NIFTY: M1 daily (lr) vs the line (NQ 15:30 -> 07:30 IST, >= 1%) | 148 (33%) | 0.777 | 0.7838 | 0.4442 | 0.7778 / 0.8481 | 0.8462 / 0.6957 | 1 of 2 | 0.1632 / 0.1785 | 0.7635 (n 148) | 0.5635 (n 307) | 0.6286 (n 455) | **FAIL** |
+| NIFTY: M1 intraday vs the study's window (NQ 14:30 -> 09:00 IST, ends after the 07:15 brief - reference only) | 147 (32%) | 0.8367 | 0.8027 | 0.7759 | 0.798 / 0.859 | 0.8125 / 0.8116 | 1 of 2 | 0.1677 / 0.1461 | 0.7891 (n 147) | 0.6299 (n 308) | 0.6813 (n 455) | **FAIL** |
+| NIFTY: M1 daily vs PROXY line (Nasdaq Composite cash night move >= 1%), unseen 2015-2026 | 1001 (34%) | 0.8082 | 0.8661 | 0.0002 | 0.8759 / 0.8998 | 0.8129 / 0.6969 | 10 of 12 | 0.145 / 0.1567 | 0.8082 (n 1001) | 0.6964 (n 1930) | 0.7346 (n 2931) | **FAIL** |
+| BANKNIFTY: M1 intraday (lr) vs the line (NQ 15:30 -> 07:30 IST, >= 1%) | 148 (33%) | 0.7568 | 0.7905 | 0.2437 | 0.7812 / 0.8101 | 0.8077 / 0.6957 | 2 of 2 | 0.1865 / 0.1842 | 0.7838 (n 148) | 0.5961 (n 307) | 0.6571 (n 455) | **FAIL** |
+| BANKNIFTY: M1 daily (gbt) vs the line (NQ 15:30 -> 07:30 IST, >= 1%) | 148 (33%) | 0.7568 | 0.7095 | 0.8212 | 0.6957 / 0.8228 | 0.9 / 0.6812 | 0 of 2 | 0.1791 / 0.1842 | 0.723 (n 148) | 0.5309 (n 307) | 0.5934 (n 455) | **FAIL** |
+| BANKNIFTY: M1 intraday vs the study's window (NQ 14:30 -> 09:00 IST, ends after the 07:15 brief - reference only) | 147 (32%) | 0.7959 | 0.7891 | 0.5572 | 0.7812 / 0.8205 | 0.8039 / 0.7681 | 1 of 2 | 0.179 / 0.1644 | 0.8231 (n 147) | 0.5779 (n 308) | 0.6571 (n 455) | **FAIL** |
+| BANKNIFTY: M1 daily vs PROXY line (Nasdaq Composite cash night move >= 1%), unseen 2015-2026 | 1000 (34%) | 0.773 | 0.829 | 0.0009 | 0.8228 / 0.8394 | 0.8662 / 0.6925 | 10 of 12 | 0.1594 / 0.1791 | 0.783 (n 1000) | 0.6505 (n 1937) | 0.6956 (n 2937) | **FAIL** |
+
+By year (line calls / line hit / M1 hit at the same coverage / M1 on the line's days / M1 on no-call days):
+
+- NIFTY: M1 intraday (lr) vs the line (NQ 15:30 -> 07:30 IST, >= 1%): 2025: 73 calls of 243 days, line 0.836, M1 0.767, M1 on line days 0.781, M1 no-call days 106/170 · 2026: 75 calls of 212 days, line 0.76, M1 0.84, M1 on line days 0.72, M1 no-call days 93/137
+- NIFTY: M1 daily (lr) vs the line (NQ 15:30 -> 07:30 IST, >= 1%): 2025: 73 calls of 243 days, line 0.822, M1 0.808, M1 on line days 0.795, M1 no-call days 102/170 · 2026: 75 calls of 212 days, line 0.733, M1 0.76, M1 on line days 0.733, M1 no-call days 71/137
+- NIFTY: M1 intraday vs the study's window (NQ 14:30 -> 09:00 IST, ends after the 07:15 brief - reference only): 2025: 74 calls of 243 days, line 0.851, M1 0.757, M1 on line days 0.797, M1 no-call days 104/169 · 2026: 73 calls of 212 days, line 0.822, M1 0.849, M1 on line days 0.781, M1 no-call days 90/139
+- NIFTY: M1 daily vs PROXY line (Nasdaq Composite cash night move >= 1%), unseen 2015-2026: M1 vs line by year: 2015 0.875 vs 0.847 · 2016 0.893 vs 0.857 · 2017 0.875 vs 0.917 · 2018 0.912 vs 0.787 · 2019 0.833 vs 0.778 · 2020 0.864 vs 0.797 · 2021 0.895 vs 0.737 · 2022 0.892 vs 0.835 · 2023 0.904 vs 0.872 · 2024 0.917 vs 0.821 · 2025 0.808 vs 0.756 · 2026 0.719 vs 0.753
+- BANKNIFTY: M1 intraday (lr) vs the line (NQ 15:30 -> 07:30 IST, >= 1%): 2025: 73 calls of 243 days, line 0.767, M1 0.808, M1 on line days 0.808, M1 no-call days 97/170 · 2026: 75 calls of 212 days, line 0.747, M1 0.773, M1 on line days 0.76, M1 no-call days 86/137
+- BANKNIFTY: M1 daily (gbt) vs the line (NQ 15:30 -> 07:30 IST, >= 1%): 2025: 73 calls of 243 days, line 0.767, M1 0.712, M1 on line days 0.767, M1 no-call days 91/170 · 2026: 75 calls of 212 days, line 0.747, M1 0.707, M1 on line days 0.68, M1 no-call days 72/137
+- BANKNIFTY: M1 intraday vs the study's window (NQ 14:30 -> 09:00 IST, ends after the 07:15 brief - reference only): 2025: 74 calls of 243 days, line 0.797, M1 0.811, M1 on line days 0.838, M1 no-call days 94/169 · 2026: 73 calls of 212 days, line 0.795, M1 0.767, M1 on line days 0.808, M1 no-call days 84/139
+- BANKNIFTY: M1 daily vs PROXY line (Nasdaq Composite cash night move >= 1%), unseen 2015-2026: M1 vs line by year: 2015 0.917 vs 0.875 · 2016 0.855 vs 0.8 · 2017 0.875 vs 0.875 · 2018 0.85 vs 0.75 · 2019 0.75 vs 0.736 · 2020 0.831 vs 0.763 · 2021 0.829 vs 0.711 · 2022 0.867 vs 0.829 · 2023 0.904 vs 0.809 · 2024 0.857 vs 0.75 · 2025 0.705 vs 0.692 · 2026 0.708 vs 0.719
+
+**VERDICT for the 07:15 brief (NIFTY, the line's own window): FAIL.** Per the desk's 16:00 decision the 07:15 brief carries the simple tested line instead; its hit rate in the 15:30 -> 07:30 window on these unseen days is in the table (the 81% / 186 figure belongs to the 14:30 -> 09:00 window).

@@ -1,0 +1,94 @@
+=== RALLY SCAN (rallyscan.py) · data to Thu 19 Nov 2026 · 218 F&O shares
+1 THE RALLY: NIFTY Thu 08 Oct 2026 close 22232 -> Thu 19 Nov 2026 close 25514 = +14.8%
+
+2 SECTORS over the rally (median move of the sector's F&O shares · members up / all · top 3 shares) - ranked:
+  *auto                    +18.2%  up 10/11  top: ATHERENERG +38%, M&M +28%, FORCEMOT +22%
+  *cement-infra            +17.5%  up 11/11  top: PHOENIXLTD +26%, GODREJPROP +23%, DLF +20%
+  *banks                   +15.7%  up 19/22  top: PNB +35%, SBIN +23%, UNIONBANK +22%
+  *oil-gas                 +14.6%  up  6/7   top: HINDPETRO +19%, IOC +17%, PETRONET +17%
+  *healthcare              +14.2%  up  3/3   top: MAXHEALTH +19%, APOLLOHOSP +14%, FORTIS +5%
+   conglomerate            +12.9%  up  5/5   top: RELIANCE +17%, LT +16%, ADANIPORTS +13%
+   capital-mkts            +12.5%  up 12/12  top: MOTILALOFS +20%, HDFCAMC +19%, 360ONE +15%
+   it                      +12.0%  up 11/12  top: TATAELXSI +24%, WIPRO +16%, TECHM +15%
+   chemicals                +9.6%  up  6/8   top: NAVINFLUOR +21%, UPL +17%, COROMANDEL +17%
+   pharma                   +9.1%  up 12/13  top: GLENMARK +19%, DRREDDY +19%, DIVISLAB +19%
+   nbfc                     +7.3%  up 14/15  top: IREDA +26%, CHOLAFIN +22%, BAJFINANCE +15%
+   power                    +6.4%  up  9/11  top: ADANIENSOL +17%, ADANIGREEN +15%, ADANIPOWER +12%
+   insurance                +6.4%  up  7/7   top: BAJAJFINSV +10%, SBILIFE +8%, LICI +7%
+   consumer                 +5.1%  up 12/17  top: INDHOTEL +26%, KALYANKJIL +19%, HAVELLS +17%
+   auto-anc                 +4.6%  up  5/9   top: UNOMINDA +28%, BOSCHLTD +14%, SONACOMS +14%
+   fmcg                     +4.5%  up 12/15  top: TATACONSUM +21%, ITC +18%, MARICO +18%
+   telecom-media            +3.6%  up  2/3   top: BHARTIARTL +20%, INDUSTOWER +4%, IDEA -6%
+   capital-goods            -0.2%  up 12/24  top: VOLTAS +20%, BLUESTARCO +15%, PGEL +12%
+   metals                   -0.5%  up  5/11  top: JSWSTEEL +13%, JINDALSTEL +10%, TATASTEEL +6%
+  (* = the top 5 that pushed hardest by their own move; the store has no index weights, so banks' big NIFTY weight is not
+   counted here - a bank move of +15% adds far more NIFTY points than a small sector's +40%)
+
+3 OVERBOUGHT F&O shares (daily RSI14 >= 70) - 36 shares; EXTREME = RSI >= 80 or >= 10% above the 20-day average:
+  share        sector               RSI  >20dma  >50dma off 52wH     rally 
+  PNB          banks               87.7  +18.7%  +27.5%    +0.0%    +34.8% EXTREME
+  SBIN         banks               82.9  +13.1%  +16.4%    -5.9%    +23.2% EXTREME
+  MAHABANK     banks               80.2  +15.3%  +17.8%    +0.0%    +19.1% EXTREME
+  UNIONBANK    banks               79.8   +9.4%  +15.2%    +0.0%    +22.3% 
+  BANKBARODA   banks               78.3  +12.5%  +17.9%    -9.2%    +21.1% EXTREME
+  TATACONSUM   fmcg                77.8   +8.8%  +13.4%   -10.0%    +20.7% 
+  KOTAKBANK    banks               77.3   +7.2%  +13.8%    +0.0%    +15.7% 
+  IREDA        nbfc                76.6  +18.6%  +18.9%   -13.7%    +25.7% EXTREME
+  MARICO       fmcg                76.5   +7.3%  +11.5%    -0.2%    +17.5% 
+  RELIANCE     conglomerate        75.7   +7.7%  +10.7%   -13.6%    +16.9% 
+  ITC          fmcg                75.2   +9.1%  +12.2%   -22.8%    +17.9% 
+  ICICIBANK    banks               75.0   +8.1%  +14.2%    +0.0%    +19.5% 
+  HDFCBANK     banks               74.9   +9.6%  +12.6%   -18.6%    +18.6% 
+  ATHERENERG   auto                74.5   +9.1%  +19.9%    -0.8%    +37.9% 
+  MAXHEALTH    healthcare          74.3  +13.8%  +10.5%   -11.9%    +19.2% EXTREME
+  BANKINDIA    banks               74.3  +14.2%  +17.3%    -5.6%    +22.2% EXTREME
+  GAIL         oil-gas             74.0   +6.7%   +9.8%    +0.0%    +14.6% 
+  BHARTIARTL   telecom-media       73.9   +5.5%  +12.8%    -0.7%    +19.8% 
+  DRREDDY      pharma              73.9   +3.6%  +11.1%    -0.2%    +18.8% 
+  M&M          auto                73.9  +13.1%  +16.3%    -7.6%    +27.8% EXTREME
+  MARUTI       auto                73.5  +11.4%  +13.0%   -21.6%    +20.3% EXTREME
+  FORCEMOT     auto                73.4  +11.5%  +15.5%   -21.0%    +22.3% EXTREME
+  BLUESTARCO   capital-goods       72.9  +11.5%  +13.6%   -12.3%    +15.4% EXTREME
+  VOLTAS       capital-goods       72.8  +15.3%  +13.9%   -20.9%    +19.6% EXTREME
+  LT           conglomerate        72.7   +5.9%   +9.0%    -4.8%    +16.1% 
+  UNOMINDA     auto-anc            72.4  +13.3%  +17.2%    +0.0%    +28.0% EXTREME
+  ULTRACEMCO   cement-infra        72.1   +6.7%  +11.8%    -2.0%    +20.2% 
+  NAVINFLUOR   chemicals           72.0  +13.6%  +18.1%    -0.5%    +21.4% EXTREME
+  PETRONET     oil-gas             71.9   +8.1%  +13.2%    -0.6%    +16.8% 
+  AXISBANK     banks               71.7   +7.8%   +9.7%    -1.7%    +10.9% 
+  CANBK        banks               71.7   +9.5%  +11.0%   -11.6%    +15.7% 
+  INDIANB      banks               71.6   +6.5%  +10.5%    -2.3%    +16.7% 
+  PHOENIXLTD   cement-infra        71.2   +7.9%  +13.7%    -1.2%    +25.7% 
+  ANANDRATHI   capital-mkts        70.6   +2.4%   +6.9%    -0.6%    +10.5% 
+  DLF          cement-infra        70.3   +6.6%  +12.1%    -0.3%    +20.3% 
+  CHOLAFIN     nbfc                70.2  +10.8%  +11.5%    -3.2%    +21.6% EXTREME
+
+5 MARKET CAP since the NIFTY low (Rs crore; shares issued x price; 218 of 218 shares have a share count):
+  value added by all F&O shares: Rs 3,590,419 cr
+  banks                  at low    4,946,683  now    5,828,529  added     881,845  (24.6% of all value added)
+  conglomerate           at low    3,028,398  now    3,460,857  added     432,459  (12.0% of all value added)
+  auto                   at low    1,849,978  now    2,188,742  added     338,764  ( 9.4% of all value added)
+  it                     at low    2,127,126  now    2,376,296  added     249,169  ( 6.9% of all value added)
+  telecom-media          at low    1,357,524  now    1,574,645  added     217,121  ( 6.0% of all value added)
+  cement-infra           at low    1,093,306  now    1,285,395  added     192,089  ( 5.4% of all value added)
+  nbfc                   at low    1,802,639  now    1,988,686  added     186,046  ( 5.2% of all value added)
+  pharma                 at low    1,730,526  now    1,903,805  added     173,279  ( 4.8% of all value added)
+  fmcg                   at low    1,914,750  now    2,087,391  added     172,640  ( 4.8% of all value added)
+  power                  at low    1,614,080  now    1,758,546  added     144,465  ( 4.0% of all value added)
+  consumer               at low    1,893,907  now    2,021,685  added     127,777  ( 3.6% of all value added)
+  oil-gas                at low      862,254  now      953,694  added      91,440  ( 2.5% of all value added)
+  insurance              at low    1,229,660  now    1,318,636  added      88,976  ( 2.5% of all value added)
+  capital-mkts           at low      613,857  now      694,862  added      81,005  ( 2.3% of all value added)
+  metals                 at low    1,619,960  now    1,674,717  added      54,756  ( 1.5% of all value added)
+  chemicals              at low      790,568  now      837,860  added      47,292  ( 1.3% of all value added)
+  auto-anc               at low      814,228  now      849,209  added      34,980  ( 1.0% of all value added)
+  healthcare             at low      252,809  now      287,594  added      34,785  ( 1.0% of all value added)
+  others                 at low      215,065  now      246,491  added      31,426  ( 0.9% of all value added)
+  capital-goods          at low    2,147,781  now    2,157,880  added      10,098  ( 0.3% of all value added)
+  NOTE: market cap added is the rise in value, not money actually put in; shares issued are today's count (a split or
+  bonus since the low would distort it - check any share with a jump).
+
+4 OVERSOLD F&O shares (RSI14 <= 30) - 2: PIIND 25 (chemicals), PAGEIND 28 (consumer)
+
+READ: overbought is not a sell signal by itself - strong shares stay overbought in a rally. CE: avoid chasing EXTREME names; buy
+pullbacks to VWAP / the 20-day average. PE: only when an overbought share breaks yesterday's low below VWAP with volume.

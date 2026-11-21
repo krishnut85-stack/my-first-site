@@ -1,0 +1,484 @@
+{
+ "made": "2026-11-21T07:41:23",
+ "effects": [
+  {
+   "effect": "NIFTY in the monthly expiry week (to expiry day)",
+   "note": "",
+   "discovery": {
+    "n_in": 512,
+    "mean_in": -0.025,
+    "mean_out": 0.057,
+    "up_in": 0.508,
+    "up_out": 0.529,
+    "abs_in": 0.734,
+    "abs_out": 0.738,
+    "t_mean": -1.66,
+    "t_abs": -0.11
+   },
+   "unseen": {
+    "n_in": 452,
+    "mean_in": 0.013,
+    "mean_out": 0.061,
+    "up_in": 0.489,
+    "up_out": 0.553,
+    "abs_in": 0.76,
+    "abs_out": 0.717,
+    "t_mean": -0.76,
+    "t_abs": 0.88
+   },
+   "holds_mean": false,
+   "holds_abs": false,
+   "unseen_only_mean": false
+  },
+  {
+   "effect": "NIFTY on monthly expiry day",
+   "note": "",
+   "discovery": {
+    "n_in": 108,
+    "mean_in": 0.016,
+    "mean_out": 0.039,
+    "up_in": 0.546,
+    "up_out": 0.523,
+    "abs_in": 0.787,
+    "abs_out": 0.734,
+    "t_mean": -0.24,
+    "t_abs": 0.88
+   },
+   "unseen": {
+    "n_in": 95,
+    "mean_in": 0.001,
+    "mean_out": 0.053,
+    "up_in": 0.463,
+    "up_out": 0.542,
+    "abs_in": 0.75,
+    "abs_out": 0.725,
+    "t_mean": -0.45,
+    "t_abs": 0.29
+   },
+   "holds_mean": false,
+   "holds_abs": false,
+   "unseen_only_mean": false
+  },
+  {
+   "effect": "NIFTY on the day before an NSE holiday (weekday closure)",
+   "note": "",
+   "discovery": {
+    "n_in": 130,
+    "mean_in": 0.194,
+    "mean_out": 0.028,
+    "up_in": 0.638,
+    "up_out": 0.517,
+    "abs_in": 0.67,
+    "abs_out": 0.741,
+    "t_mean": 2.05,
+    "t_abs": -1.28
+   },
+   "unseen": {
+    "n_in": 118,
+    "mean_in": 0.089,
+    "mean_out": 0.048,
+    "up_in": 0.525,
+    "up_out": 0.539,
+    "abs_in": 0.752,
+    "abs_out": 0.725,
+    "t_mean": 0.39,
+    "t_abs": 0.35
+   },
+   "holds_mean": false,
+   "holds_abs": false,
+   "unseen_only_mean": false
+  },
+  {
+   "effect": "NIFTY on the day after an NSE holiday",
+   "note": "",
+   "discovery": {
+    "n_in": 129,
+    "mean_in": 0.231,
+    "mean_out": 0.026,
+    "up_in": 0.597,
+    "up_out": 0.519,
+    "abs_in": 0.958,
+    "abs_out": 0.723,
+    "t_mean": 1.85,
+    "t_abs": 3.23
+   },
+   "unseen": {
+    "n_in": 119,
+    "mean_in": -0.091,
+    "mean_out": 0.06,
+    "up_in": 0.487,
+    "up_out": 0.541,
+    "abs_in": 0.994,
+    "abs_out": 0.709,
+    "t_mean": -1.12,
+    "t_abs": 2.91
+   },
+   "holds_mean": false,
+   "holds_abs": true,
+   "unseen_only_mean": false
+  },
+  {
+   "effect": "NIFTY gap after an NSE holiday (open vs previous close)",
+   "note": "",
+   "discovery": {
+    "n_in": 129,
+    "mean_in": 0.255,
+    "mean_out": 0.091,
+    "up_in": 0.698,
+    "up_out": 0.644,
+    "abs_in": 0.488,
+    "abs_out": 0.341,
+    "t_mean": 2.76,
+    "t_abs": 3.22
+   },
+   "unseen": {
+    "n_in": 119,
+    "mean_in": 0.177,
+    "mean_out": 0.1,
+    "up_in": 0.622,
+    "up_out": 0.651,
+    "abs_in": 0.582,
+    "abs_out": 0.415,
+    "t_mean": 0.94,
+    "t_abs": 2.63
+   },
+   "holds_mean": false,
+   "holds_abs": true,
+   "unseen_only_mean": false
+  },
+  {
+   "effect": "NIFTY on the first 2 sessions of a month",
+   "note": "",
+   "discovery": {
+    "n_in": 214,
+    "mean_in": 0.1,
+    "mean_out": 0.031,
+    "up_in": 0.523,
+    "up_out": 0.524,
+    "abs_in": 0.766,
+    "abs_out": 0.734,
+    "t_mean": 0.91,
+    "t_abs": 0.64
+   },
+   "unseen": {
+    "n_in": 190,
+    "mean_in": 0.161,
+    "mean_out": 0.038,
+    "up_in": 0.589,
+    "up_out": 0.533,
+    "abs_in": 0.866,
+    "abs_out": 0.712,
+    "t_mean": 1.32,
+    "t_abs": 2.3
+   },
+   "holds_mean": false,
+   "holds_abs": false,
+   "unseen_only_mean": false
+  },
+  {
+   "effect": "NIFTY in results season (10th of Jan/Apr/Jul/Oct to 15th of the next month)",
+   "note": "",
+   "discovery": {
+    "n_in": 878,
+    "mean_in": 0.017,
+    "mean_out": 0.052,
+    "up_in": 0.508,
+    "up_out": 0.534,
+    "abs_in": 0.718,
+    "abs_out": 0.749,
+    "t_mean": -0.84,
+    "t_abs": -1.13
+   },
+   "unseen": {
+    "n_in": 788,
+    "mean_in": 0.047,
+    "mean_out": 0.053,
+    "up_in": 0.523,
+    "up_out": 0.549,
+    "abs_in": 0.683,
+    "abs_out": 0.756,
+    "t_mean": -0.13,
+    "t_abs": -2.08
+   },
+   "holds_mean": false,
+   "holds_abs": false,
+   "unseen_only_mean": false
+  },
+  {
+   "effect": "NIFTY budget day +-1 session",
+   "note": "hand list of budget dates",
+   "discovery": {
+    "n_in": 27,
+    "mean_in": 0.238,
+    "mean_out": 0.036,
+    "up_in": 0.556,
+    "up_out": 0.523,
+    "abs_in": 1.115,
+    "abs_out": 0.732,
+    "t_mean": 0.74,
+    "t_abs": 2.23
+   },
+   "unseen": {
+    "n_in": 30,
+    "mean_in": 0.298,
+    "mean_out": 0.046,
+    "up_in": 0.5,
+    "up_out": 0.539,
+    "abs_in": 1.045,
+    "abs_out": 0.722,
+    "t_mean": 0.95,
+    "t_abs": 1.71
+   },
+   "holds_mean": false,
+   "holds_abs": false,
+   "unseen_only_mean": false
+  },
+  {
+   "effect": "NIFTY on Monday",
+   "note": "",
+   "discovery": {
+    "n_in": 443,
+    "mean_in": 0.072,
+    "mean_out": 0.03,
+    "up_in": 0.546,
+    "up_out": 0.518,
+    "abs_in": 0.756,
+    "abs_out": 0.732,
+    "t_mean": 0.78,
+    "t_abs": 0.67
+   },
+   "unseen": {
+    "n_in": 387,
+    "mean_in": -0.07,
+    "mean_out": 0.08,
+    "up_in": 0.561,
+    "up_out": 0.533,
+    "abs_in": 0.877,
+    "abs_out": 0.689,
+    "t_mean": -2.0,
+    "t_abs": 3.26
+   },
+   "holds_mean": false,
+   "holds_abs": false,
+   "unseen_only_mean": true
+  },
+  {
+   "effect": "NIFTY on Tuesday",
+   "note": "",
+   "discovery": {
+    "n_in": 444,
+    "mean_in": 0.001,
+    "mean_out": 0.047,
+    "up_in": 0.523,
+    "up_out": 0.524,
+    "abs_in": 0.716,
+    "abs_out": 0.742,
+    "t_mean": -0.9,
+    "t_abs": -0.73
+   },
+   "unseen": {
+    "n_in": 390,
+    "mean_in": 0.164,
+    "mean_out": 0.022,
+    "up_in": 0.546,
+    "up_out": 0.536,
+    "abs_in": 0.672,
+    "abs_out": 0.74,
+    "t_mean": 2.44,
+    "t_abs": -1.55
+   },
+   "holds_mean": false,
+   "holds_abs": false,
+   "unseen_only_mean": true
+  },
+  {
+   "effect": "NIFTY on Wednesday",
+   "note": "",
+   "discovery": {
+    "n_in": 442,
+    "mean_in": 0.069,
+    "mean_out": 0.03,
+    "up_in": 0.518,
+    "up_out": 0.525,
+    "abs_in": 0.665,
+    "abs_out": 0.755,
+    "t_mean": 0.81,
+    "t_abs": -2.82
+   },
+   "unseen": {
+    "n_in": 389,
+    "mean_in": 0.099,
+    "mean_out": 0.038,
+    "up_in": 0.55,
+    "up_out": 0.535,
+    "abs_in": 0.649,
+    "abs_out": 0.746,
+    "t_mean": 1.09,
+    "t_abs": -2.37
+   },
+   "holds_mean": false,
+   "holds_abs": true,
+   "unseen_only_mean": false
+  },
+  {
+   "effect": "NIFTY on Thursday",
+   "note": "",
+   "discovery": {
+    "n_in": 438,
+    "mean_in": 0.012,
+    "mean_out": 0.044,
+    "up_in": 0.516,
+    "up_out": 0.526,
+    "abs_in": 0.757,
+    "abs_out": 0.732,
+    "t_mean": -0.61,
+    "t_abs": 0.74
+   },
+   "unseen": {
+    "n_in": 393,
+    "mean_in": 0.008,
+    "mean_out": 0.061,
+    "up_in": 0.527,
+    "up_out": 0.541,
+    "abs_in": 0.7,
+    "abs_out": 0.733,
+    "t_mean": -0.89,
+    "t_abs": -0.76
+   },
+   "holds_mean": false,
+   "holds_abs": false,
+   "unseen_only_mean": false
+  },
+  {
+   "effect": "NIFTY on Friday",
+   "note": "",
+   "discovery": {
+    "n_in": 434,
+    "mean_in": 0.036,
+    "mean_out": 0.038,
+    "up_in": 0.516,
+    "up_out": 0.526,
+    "abs_in": 0.79,
+    "abs_out": 0.723,
+    "t_mean": -0.04,
+    "t_abs": 1.85
+   },
+   "unseen": {
+    "n_in": 385,
+    "mean_in": 0.055,
+    "mean_out": 0.049,
+    "up_in": 0.509,
+    "up_out": 0.545,
+    "abs_in": 0.74,
+    "abs_out": 0.723,
+    "t_mean": 0.1,
+    "t_abs": 0.39
+   },
+   "holds_mean": false,
+   "holds_abs": false,
+   "unseen_only_mean": false
+  },
+  {
+   "effect": "AUTO minus NIFTY on the first 2 sessions of a month (auto sales)",
+   "note": "Kite AUTO Nov 2021 ->: discovery 2021-2023, unseen 2024-2026",
+   "discovery": {
+    "n_in": 50,
+    "mean_in": -0.306,
+    "mean_out": 0.095,
+    "up_in": 0.32,
+    "up_out": 0.539,
+    "abs_in": 0.673,
+    "abs_out": 0.588,
+    "t_mean": -3.31,
+    "t_abs": 1.06
+   },
+   "unseen": {
+    "n_in": 70,
+    "mean_in": 0.099,
+    "mean_out": 0.035,
+    "up_in": 0.5,
+    "up_out": 0.534,
+    "abs_in": 0.685,
+    "abs_out": 0.594,
+    "t_mean": 0.57,
+    "t_abs": 1.26
+   },
+   "holds_mean": false,
+   "holds_abs": false,
+   "unseen_only_mean": false
+  },
+  {
+   "effect": "BANKNIFTY on RBI MPC decision days",
+   "note": "42 MPC days parsed from RBI press-release lists 2020-2026; discovery 2020-2022, unseen 2023-2026",
+   "discovery": {
+    "n_in": 19,
+    "mean_in": 0.525,
+    "mean_out": 0.069,
+    "up_in": 0.632,
+    "up_out": 0.529,
+    "abs_in": 1.111,
+    "abs_out": 1.278,
+    "t_mean": 1.44,
+    "t_abs": -0.78
+   },
+   "unseen": {
+    "n_in": 23,
+    "mean_in": 0.391,
+    "mean_out": 0.039,
+    "up_in": 0.609,
+    "up_out": 0.53,
+    "abs_in": 0.805,
+    "abs_out": 0.688,
+    "t_mean": 1.23,
+    "t_abs": 0.48
+   },
+   "holds_mean": false,
+   "holds_abs": false,
+   "unseen_only_mean": false
+  }
+ ],
+ "mpc_days": [
+  "2020-02-06",
+  "2020-03-27",
+  "2020-05-22",
+  "2020-08-06",
+  "2020-10-09",
+  "2020-12-04",
+  "2021-02-05",
+  "2021-03-26",
+  "2021-06-04",
+  "2021-08-06",
+  "2021-10-08",
+  "2021-12-08",
+  "2022-01-28",
+  "2022-04-08",
+  "2022-04-29",
+  "2022-06-08",
+  "2022-08-05",
+  "2022-09-30",
+  "2022-12-07",
+  "2023-02-09",
+  "2023-04-06",
+  "2023-06-08",
+  "2023-08-11",
+  "2023-10-06",
+  "2023-12-08",
+  "2024-02-08",
+  "2024-04-05",
+  "2024-06-07",
+  "2024-08-09",
+  "2024-10-09",
+  "2024-12-06",
+  "2025-02-07",
+  "2025-04-09",
+  "2025-06-06",
+  "2025-08-06",
+  "2025-10-01",
+  "2025-12-05",
+  "2026-02-06",
+  "2026-04-08",
+  "2026-06-05",
+  "2026-08-05",
+  "2026-10-07"
+ ]
+}

@@ -1,0 +1,30 @@
+/home/globalbot/intraday/v2/engine/core.py
+2026-11-19 engine steps 384 in 84.3s (0.22 s/step)
+   ('CE', 'GET READY', 'log') 911
+   ('CE', 'GO NOW', 'log') 42
+   ('CE', 'GO NOW', 'pub') 146
+   ('PE', 'GET READY', 'log') 205
+   ('PE', 'GET READY', 'pub') 17
+   ('PE', 'GO NOW', 'log') 10
+   ('PE', 'GO NOW', 'pub') 5
+  rings 32 Counter({'PE': 21, 'CE': 10, '': 1})
+   setup ('CE', "breakout of the day's high") 626
+   setup ('CE', 'opening-range breakout') 257
+   setup ('PE', 'opening-range breakout') 124
+   setup ('CE', 'first VWAP pullback') 90
+   setup ('CE', 'first VWAP pullback (trend day, E5)') 86
+   setup ('PE', "breakout of the day's low") 52
+   setup ('CE', 'sector laggard') 27
+   setup ('PE', 'own news (E12, DIVERGENT) - first VWAP pullback') 20
+   setup ('PE', 'first VWAP pullback') 18
+   setup ('PE', 'pre-open (09:08) on the watch list') 13
+   setup ('CE', "own news (E12, DIVERGENT) - breakout of the day's high") 6
+   setup ('PE', "own news (E12, DIVERGENT) - breakout of the day's low") 4
+   setup ('CE', 'pre-open (09:08) on the watch list') 3
+   setup ('CE', 'sector line (opening: one line per sector)') 3
+  rr values (top) [(2.0, 1320), (None, 16)] distinct 2
+  zero lots 0 of 1336 []
+  rings without premium 24
+  ring notes [('new on the cards (no sound) - the best n', 144)]
+  cancels 768 pub cancels 4
+  15-min max rings 3

@@ -1,0 +1,5126 @@
+{
+ "made": "2026-11-21 13:58 IST",
+ "scope": "every news / information source GIR reads on 21 Nov 2026 (v2 + old system still running) and every host in design_v3 WEB_SOURCES.md + COLLECTION_PLAN.md",
+ "status_rules": {
+  "LIVE": "polls succeed and items flowed on the last weekday with median lag <= 10 min (or a dated daily file arrived on time)",
+  "SLOW": "works, but median lag > 10 min, partial coverage, or only through Google News",
+  "SILENT": "polled but nothing arrives when the last weekday says it should (blocked, dead feed, or broken parse)",
+  "NOT BUILT": "planned in the design docs, nobody reads it"
+ },
+ "weekend_note": "Audit run Saturday 21 Nov ~13:50 IST. Indian sources are quiet on Saturdays, so 'last item' and 'silent' were judged against Friday 20 Nov (items_fri_20nov).",
+ "counts": {
+  "LIVE": 59,
+  "SILENT": 14,
+  "SLOW": 15,
+  "NOT BUILT": 20
+ },
+ "doc_host_counts": {
+  "NOT BUILT": 104,
+  "LIVE": 34,
+  "PARTIAL": 20,
+  "NOT NEEDED": 10,
+  "BLOCKED": 15,
+  "DEAD": 3
+ },
+ "sources": [
+  {
+   "name": "NSE company filings (v2)",
+   "category": "NSE/BSE filings",
+   "system": "v2",
+   "service": "gir-v2filings / v2/feeds/filings.py",
+   "host": "www.nseindia.com",
+   "poll_s": 4,
+   "poll_note": "4 s 09:00-15:30 trading days; 15 s 15:30-23:00; 60 s 07:00-09:00 and weekends 07:00-22:00; off 22:00-07:00",
+   "store": "v2/data/filings.jsonl (F&O only) + filings_lag.jsonl (all)",
+   "last_item_ist": "2026-11-21T12:49+05:30",
+   "last_item_note": "2026-11-21 12:49 (F&O); 13:44 (any company)",
+   "items_24h": 52,
+   "items_fri_20nov": 63,
+   "median_lag_min": 0.4,
+   "lag_note": "exchange dissemination time vs first seen, n=124; all companies 0.38 min (n=743)",
+   "cards_24h": 19,
+   "cards_note": "R1 18 + 1",
+   "status": "LIVE",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "07:00-22:00",
+   "measured": true,
+   "proven": true,
+   "notes": "NSE blocks cloud machines; this server reads it fine. 352 filings (all companies) in 24 h."
+  },
+  {
+   "name": "BSE company filings (v2)",
+   "category": "NSE/BSE filings",
+   "system": "v2",
+   "service": "gir-v2filings / v2/feeds/filings.py",
+   "host": "api.bseindia.com",
+   "poll_s": 4,
+   "poll_note": "same clock as NSE (4 s / 15 s / 60 s)",
+   "store": "v2/data/filings.jsonl + filings_lag.jsonl",
+   "last_item_ist": "2026-11-20T16:11+05:30",
+   "last_item_note": "2026-11-20 16:11 (F&O); 16:15 (any)",
+   "items_24h": 16,
+   "items_fri_20nov": 32,
+   "median_lag_min": 0.7,
+   "lag_note": "n=85, before the block",
+   "cards_24h": 16,
+   "cards_note": "R1, all before the block",
+   "status": "SILENT",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "07:00-22:00",
+   "measured": true,
+   "proven": true,
+   "notes": "BLOCKED: api.bseindia.com answers HTTP 403 to v2 since Fri 20 Nov 16:16 IST (60 block lines, now backing off 15 min each time). The old newshawk-filings bot still gets page 1 from the same host (507 items in 24 h), so the block is client-specific, not a full IP ban."
+  },
+  {
+   "name": "NSE circulars (v2)",
+   "category": "NSE/BSE filings (exchange rules)",
+   "system": "v2",
+   "service": "gir-v2sources / p_circulars.py",
+   "host": "www.nseindia.com",
+   "poll_s": 60,
+   "poll_note": "60 s 09:00-15:30 weekdays; 300 s 07:00-23:00; 1800 s night",
+   "store": "v2/data/ext/circulars.jsonl (kind nse_circular)",
+   "last_item_ist": "2026-11-20T21:32+05:30",
+   "last_item_note": "2026-11-20 21:32",
+   "items_24h": 32,
+   "items_fri_20nov": 36,
+   "median_lag_min": null,
+   "lag_note": "not measurable: NSE gives a date only",
+   "cards_24h": 1,
+   "cards_note": "R5, both exchanges together",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "07:00-23:00 weekdays",
+   "measured": true,
+   "proven": true,
+   "notes": "Saturday quiet is normal (no NSE circulars on weekends)."
+  },
+  {
+   "name": "BSE notices (v2)",
+   "category": "NSE/BSE filings (exchange rules)",
+   "system": "v2",
+   "service": "gir-v2sources / p_circulars.py",
+   "host": "www.bseindia.com",
+   "poll_s": 60,
+   "poll_note": "same as NSE circulars",
+   "store": "v2/data/ext/circulars.jsonl (kind bse_notice)",
+   "last_item_ist": "2026-11-21T13:22+05:30",
+   "last_item_note": "2026-11-21 13:22",
+   "items_24h": 42,
+   "items_fri_20nov": 48,
+   "median_lag_min": 2.9,
+   "lag_note": "n=39 since the 20 Nov 16:13 time-zone fix; rows before it were 5.5 h off (GMT label bug, fixed)",
+   "cards_24h": 0,
+   "cards_note": "(counted in NSE circulars row)",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Insider trades PIT Reg 7 (NSE)",
+   "category": "NSE/BSE filings (insider)",
+   "system": "v2",
+   "service": "gir-v2sources / p_insider.py",
+   "host": "www.nseindia.com",
+   "poll_s": 120,
+   "poll_note": "120 s 08:00-22:00 weekdays; 900 s otherwise",
+   "store": "v2/data/ext/insider.jsonl (kind insider)",
+   "last_item_ist": "2026-11-21T13:17+05:30",
+   "last_item_note": "2026-11-21 13:17",
+   "items_24h": 36,
+   "items_fri_20nov": 50,
+   "median_lag_min": 1.2,
+   "lag_note": "n=73",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "SAST Reg 29 (NSE)",
+   "category": "NSE/BSE filings (stake changes)",
+   "system": "v2",
+   "service": "gir-v2sources / p_insider.py",
+   "host": "www.nseindia.com",
+   "poll_s": 120,
+   "poll_note": "120 s / 900 s",
+   "store": "v2/data/ext/insider.jsonl (kind sast)",
+   "last_item_ist": "2026-11-20T18:34+05:30",
+   "last_item_note": "2026-11-20 18:34",
+   "items_24h": 21,
+   "items_fri_20nov": 21,
+   "median_lag_min": 1.8,
+   "lag_note": "n=38",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Pledge events SAST Reg 31 (NSE)",
+   "category": "NSE/BSE filings (pledge)",
+   "system": "v2",
+   "service": "gir-v2sources / p_insider.py",
+   "host": "www.nseindia.com",
+   "poll_s": 120,
+   "poll_note": "120 s / 900 s; full pledge table 08:15 and 19:30",
+   "store": "v2/data/ext/insider.jsonl (kind pledge_event) + pledge_fo.json",
+   "last_item_ist": "2026-11-19T15:38+05:30",
+   "last_item_note": "2026-11-19 15:38 (first-run rows only)",
+   "items_24h": 0,
+   "items_fri_20nov": 0,
+   "median_lag_min": null,
+   "lag_note": "no new rows to measure",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "SILENT",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": false,
+   "notes": "No new pledge event since the first poll on 19 Nov, including all of Friday. May be the F&O-only filter, may be a broken path; needs a look. pledge_fo.json (the full table) was rewritten 21 Nov 08:52 IST."
+  },
+  {
+   "name": "BSE insider feed",
+   "category": "NSE/BSE filings (insider)",
+   "system": "v2",
+   "service": "gir-v2sources / p_insider.py",
+   "host": "www.bseindia.com",
+   "poll_s": 120,
+   "poll_note": "120 s / 900 s",
+   "store": "v2/data/ext/insider.jsonl (kind insider_bse)",
+   "last_item_ist": "2026-11-20T20:47+05:30",
+   "last_item_note": "2026-11-20 20:47",
+   "items_24h": 4,
+   "items_fri_20nov": 5,
+   "median_lag_min": null,
+   "lag_note": "feed has no time",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Block-deal window trades (live)",
+   "category": "deals (block)",
+   "system": "v2",
+   "service": "gir-v2sources / p_blockdeals.py",
+   "host": "www.nseindia.com + api.bseindia.com",
+   "poll_s": 30,
+   "poll_note": "30 s in 08:44-09:03 and 14:04-14:23 weekdays",
+   "store": "v2/data/ext/blockdeals.jsonl (kind block_live)",
+   "last_item_ist": "2026-11-20T14:10+05:30",
+   "last_item_note": "2026-11-20 14:10",
+   "items_24h": 2,
+   "items_fri_20nov": 4,
+   "median_lag_min": 0.2,
+   "lag_note": "n=4",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "08:44-09:03, 14:04-14:23 weekdays",
+   "measured": true,
+   "proven": true,
+   "notes": "BSE half may now hit the same 403 as v2 filings (not seen yet: the BSE block began after Friday's windows)."
+  },
+  {
+   "name": "Bulk / block / short-sell lists (EOD)",
+   "category": "deals (bulk/block) / FII-DII names",
+   "system": "v2",
+   "service": "gir-v2sources / p_blockdeals.py",
+   "host": "www.nseindia.com",
+   "poll_s": 600,
+   "poll_note": "600 s 16:00-20:30 weekdays",
+   "store": "v2/data/ext/blockdeals.jsonl (kinds block, short)",
+   "last_item_ist": "2026-11-20T18:36+05:30",
+   "last_item_note": "2026-11-20 18:36",
+   "items_24h": 63,
+   "items_fri_20nov": 63,
+   "median_lag_min": null,
+   "lag_note": "lists carry a date only",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "16:00-20:30 weekdays",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Trump posts (Truth Social mirror)",
+   "category": "world (US policy)",
+   "system": "v2",
+   "service": "gir-v2sources / p_trump.py",
+   "host": "trumpstruth.org",
+   "poll_s": 45,
+   "poll_note": "45 s 18:00-09:00 IST, 60 s in the day (conditional GET)",
+   "store": "v2/data/ext/trump.jsonl (kind truth)",
+   "last_item_ist": "2026-11-20T18:35+05:30",
+   "last_item_note": "2026-11-20 18:35",
+   "items_24h": 1,
+   "items_fri_20nov": 16,
+   "median_lag_min": 1.4,
+   "lag_note": "n=29",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "SILENT",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": false,
+   "notes": "Polls succeed (status OK, one 429 at 08:52) but only 1 post in the last 24 h vs 16 on Friday; 19 h without a post is unusual. Cannot tell without a live fetch whether the mirror is stale or there were no posts. Check the mirror against truthsocial.com by hand."
+  },
+  {
+   "name": "White House presidential actions",
+   "category": "world (US policy)",
+   "system": "v2",
+   "service": "gir-v2sources / p_trump.py",
+   "host": "www.whitehouse.gov",
+   "poll_s": 60,
+   "poll_note": "60 s night / 60 s day",
+   "store": "v2/data/ext/trump.jsonl (kind whitehouse)",
+   "last_item_ist": "2026-11-21T08:02+05:30",
+   "last_item_note": "2026-11-21 08:02",
+   "items_24h": 2,
+   "items_fri_20nov": 0,
+   "median_lag_min": 0.5,
+   "lag_note": "n=2",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "US Federal Register public inspection",
+   "category": "world (US policy)",
+   "system": "v2",
+   "service": "gir-v2sources / p_fedreg.py",
+   "host": "www.federalregister.gov",
+   "poll_s": 60,
+   "poll_note": "60 s 18:00-02:00 IST, 600 s otherwise",
+   "store": "v2/data/ext/fedreg.jsonl",
+   "last_item_ist": "2026-11-20T19:16+05:30",
+   "last_item_note": "2026-11-20 19:16",
+   "items_24h": 10,
+   "items_fri_20nov": 10,
+   "median_lag_min": 1.2,
+   "lag_note": "n=20; trade-word filter",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "Weekend quiet is normal (no US filings on Saturday)."
+  },
+  {
+   "name": "FinancialJuice free headlines",
+   "category": "wires (world macro squawk)",
+   "system": "v2",
+   "service": "gir-v2sources / p_fjuice.py",
+   "host": "www.financialjuice.com",
+   "poll_s": 60,
+   "poll_note": "60 s, conditional GET",
+   "store": "v2/data/ext/fjuice.jsonl",
+   "last_item_ist": "2026-11-21T13:12+05:30",
+   "last_item_note": "2026-11-21 13:12",
+   "items_24h": 240,
+   "items_fri_20nov": 366,
+   "median_lag_min": 0.8,
+   "lag_note": "vs the free feed's own time, n=578, p90 1.8; the delay of the free feed vs the paid squawk is not measurable",
+   "cards_24h": 31,
+   "cards_note": "R5 30 + R2 1",
+   "status": "LIVE",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "investingLive headlines (ex-ForexLive)",
+   "category": "wires (world macro)",
+   "system": "v2",
+   "service": "gir-v2sources / p_world.py",
+   "host": "investinglive.com",
+   "poll_s": 60,
+   "poll_note": "60 s, conditional GET",
+   "store": "v2/data/ext/world.jsonl (kind investinglive)",
+   "last_item_ist": "2026-11-21T04:33+05:30",
+   "last_item_note": "2026-11-21 04:33",
+   "items_24h": 27,
+   "items_fri_20nov": 21,
+   "median_lag_min": 33.8,
+   "lag_note": "n=25, p90 55; the feed itself publishes late",
+   "cards_24h": 7,
+   "cards_note": "R5 (payload says 'world': investingLive + Treasury + LME together)",
+   "status": "SLOW",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "US Treasury par yields",
+   "category": "world closes (rates)",
+   "system": "v2",
+   "service": "gir-v2sources / p_world.py",
+   "host": "home.treasury.gov",
+   "poll_s": 1800,
+   "poll_note": "1800 s 02:00-08:00 IST",
+   "store": "v2/data/ext/world.jsonl (kind us_treasury) + world_now.json",
+   "last_item_ist": "2026-11-21T02:30+05:30",
+   "last_item_note": "2026-11-21 02:30",
+   "items_24h": 2,
+   "items_fri_20nov": 1,
+   "median_lag_min": null,
+   "lag_note": "daily close, date only",
+   "cards_24h": 0,
+   "cards_note": "(in investingLive row)",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "02:00-08:00",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "LME official prices (Westmetall)",
+   "category": "commodities",
+   "system": "v2",
+   "service": "gir-v2sources / p_world.py",
+   "host": "www.westmetall.com",
+   "poll_s": 1800,
+   "poll_note": "1800 s 17:00-22:00 weekdays",
+   "store": "v2/data/ext/world.jsonl (kind lme_official)",
+   "last_item_ist": "2026-11-21T07:50+05:30",
+   "last_item_note": "2026-11-21 07:50",
+   "items_24h": 2,
+   "items_fri_20nov": 1,
+   "median_lag_min": null,
+   "lag_note": "date only",
+   "cards_24h": 0,
+   "cards_note": "(in investingLive row)",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "17:00-22:00 weekdays",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "US / Asia closes + live quotes (Yahoo chart API)",
+   "category": "world closes / commodities",
+   "system": "v2",
+   "service": "gir-v2sources / p_uswrap.py",
+   "host": "query1.finance.yahoo.com",
+   "poll_s": 300,
+   "poll_note": "quotes 300 s 24x7 (world_quotes.json); closes 900 s",
+   "store": "v2/data/ext/world_quotes.json, us_overnight.json, uswrap.jsonl summary rows",
+   "last_item_ist": "2026-11-21T13:48+05:30",
+   "last_item_note": "2026-11-21 13:48 (quotes file)",
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": "quote time not stored",
+   "cards_24h": null,
+   "cards_note": "summary rows counted in the US wrap row",
+   "status": "LIVE",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "28 quotes (S&P, Nasdaq, Dow, SOX, Nikkei, KOSPI, Taiwan, HSI, Brent, WTI, gold, DXY ...). Added 21 Nov 07:49 IST."
+  },
+  {
+   "name": "US close wrap stories",
+   "category": "world wraps / closes",
+   "system": "v2",
+   "service": "gir-v2sources / p_uswrap.py",
+   "host": "news.google.com (Reuters / CNBC wraps), www.nasdaq.com, www.investing.com, feeds.content.dowjones.io, economictimes.indiatimes.com, www.moneycontrol.com",
+   "poll_s": 300,
+   "poll_note": "300 s",
+   "store": "v2/data/ext/uswrap.jsonl + uswrap_hot.jsonl",
+   "last_item_ist": "2026-11-21T13:44+05:30",
+   "last_item_note": "2026-11-21 13:44",
+   "items_24h": 95,
+   "items_fri_20nov": 0,
+   "median_lag_min": 55.2,
+   "lag_note": "Nasdaq.com 55 min (n=5); Google News Reuters wrap 771 min and US-markets search 1190 min (catch-up of old stories at start); MarketWatch and ET US-stocks gave 0 rows; Moneycontrol international RSS is dead (newest item Apr 2024)",
+   "cards_24h": 19,
+   "cards_note": "R5",
+   "status": "SLOW",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "Built 21 Nov 07:49 after the US close of Fri 20 Nov never reached GIR. Reuters and CNBC only through Google News (cnbc.com 403, Reuters no RSS)."
+  },
+  {
+   "name": "India 10-yr G-sec yield (Trading Economics)",
+   "category": "RBI / rates",
+   "system": "v2",
+   "service": "gir-v2sources / p_bonds.py",
+   "host": "tradingeconomics.com",
+   "poll_s": 120,
+   "poll_note": "120 s 09:00-17:30 weekdays, 1800 s otherwise",
+   "store": "v2/data/ext/bonds.jsonl (g10, rate_driver) + bonds_now.json",
+   "last_item_ist": "2026-11-21T09:02+05:30",
+   "last_item_note": "2026-11-21 09:02",
+   "items_24h": 8,
+   "items_fri_20nov": 7,
+   "median_lag_min": null,
+   "lag_note": "page has no quote time",
+   "cards_24h": 3,
+   "cards_note": "R5 2 + R2 1 (bonds rows)",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "CCIL (the official NDS-OM source) blocks this server (403); TE is a stand-in."
+  },
+  {
+   "name": "RBI liquidity / auctions (bonds poller)",
+   "category": "RBI",
+   "system": "v2",
+   "service": "gir-v2sources / p_bonds.py",
+   "host": "www.rbi.org.in",
+   "poll_s": 300,
+   "poll_note": "300 s 08:30-20:00, 1800 s otherwise",
+   "store": "v2/data/ext/bonds.jsonl (kind rbi)",
+   "last_item_ist": "2026-11-20T19:52+05:30",
+   "last_item_note": "2026-11-20 19:52",
+   "items_24h": 5,
+   "items_fri_20nov": 10,
+   "median_lag_min": 8.9,
+   "lag_note": "n=12",
+   "cards_24h": 0,
+   "cards_note": "(in 10-yr row)",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "RBI press releases / notifications / speeches",
+   "category": "RBI",
+   "system": "v2",
+   "service": "gir-v2sources / p_regs.py",
+   "host": "www.rbi.org.in",
+   "poll_s": 60,
+   "poll_note": "60 s 07:00-23:00 (speeches 300 s); 600 s at night",
+   "store": "v2/data/ext/regs.jsonl (kind rbi_press)",
+   "last_item_ist": "2026-11-20T19:52+05:30",
+   "last_item_note": "2026-11-20 19:52",
+   "items_24h": 13,
+   "items_fri_20nov": 13,
+   "median_lag_min": 6.4,
+   "lag_note": "n=5",
+   "cards_24h": 0,
+   "cards_note": "R4 policy reader got none: regs rows are typed 'world' by the snapshot (see gaps)",
+   "status": "LIVE",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "Notifications RSS newest item is 11 Nov (no new rows since start); speeches 0 rows. Saturday quiet is normal."
+  },
+  {
+   "name": "SEBI What's New + circulars listing",
+   "category": "SEBI",
+   "system": "v2",
+   "service": "gir-v2sources / p_regs.py",
+   "host": "www.sebi.gov.in",
+   "poll_s": 60,
+   "poll_note": "60 s 07:00-23:00; 600 s at night",
+   "store": "v2/data/ext/regs.jsonl (kind sebi)",
+   "last_item_ist": "2026-11-20T19:12+05:30",
+   "last_item_note": "2026-11-20 19:12",
+   "items_24h": 16,
+   "items_fri_20nov": 16,
+   "median_lag_min": null,
+   "lag_note": "not measurable: SEBI pages give a date only",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "SEBI's own RSS has 0 items; the listing pages are used."
+  },
+  {
+   "name": "TRAI RSS",
+   "category": "regulators",
+   "system": "v2",
+   "service": "gir-v2sources / p_regs.py",
+   "host": "www.trai.gov.in",
+   "poll_s": 60,
+   "poll_note": "60 s / 600 s",
+   "store": "v2/data/ext/regs.jsonl (kind trai)",
+   "last_item_ist": "2026-11-20T18:26+05:30",
+   "last_item_note": "2026-11-20 18:26",
+   "items_24h": 8,
+   "items_fri_20nov": 8,
+   "median_lag_min": 2.8,
+   "lag_note": "n=1",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "CCI press releases",
+   "category": "regulators",
+   "system": "v2",
+   "service": "gir-v2sources / p_regs.py",
+   "host": "www.cci.gov.in",
+   "poll_s": 60,
+   "poll_note": "60 s / 600 s",
+   "store": "v2/data/ext/regs.jsonl (kind cci)",
+   "last_item_ist": null,
+   "last_item_note": "none since start (20 Nov 15:37)",
+   "items_24h": 0,
+   "items_fri_20nov": 0,
+   "median_lag_min": null,
+   "lag_note": "no rows",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": false,
+   "notes": "Polls parse (status ok) but 4 x HTTP 429 in 2 days; no new release since start; the old newshawk CCI scrape has nothing since 10 Nov either, so probably just no releases."
+  },
+  {
+   "name": "PIB English releases",
+   "category": "PIB / government",
+   "system": "v2",
+   "service": "gir-v2sources / p_regs.py",
+   "host": "www.pib.gov.in",
+   "poll_s": 60,
+   "poll_note": "60 s 07:00-23:00; 600 s at night; each new release page read once for its time",
+   "store": "v2/data/ext/regs.jsonl (kind pib)",
+   "last_item_ist": "2026-11-21T13:44+05:30",
+   "last_item_note": "2026-11-21 13:44",
+   "items_24h": 48,
+   "items_fri_20nov": 40,
+   "median_lag_min": 5.7,
+   "lag_note": "n=43, p90 7.4",
+   "cards_24h": 0,
+   "cards_note": "0 cards: typed 'world' -> R5, never R4",
+   "status": "LIVE",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Parliament (sansad.in JSON)",
+   "category": "Parliament",
+   "system": "v2",
+   "service": "gir-v2sources / p_regs.py",
+   "host": "sansad.in",
+   "poll_s": 120,
+   "poll_note": "press 120 s, bills 600 s, session list 6 h, daily calendar 120 s on sitting days only",
+   "store": "v2/data/ext/regs.jsonl (kind parliament)",
+   "last_item_ist": "2026-11-20T16:19+05:30",
+   "last_item_note": "2026-11-20 16:19",
+   "items_24h": 1,
+   "items_fri_20nov": 1,
+   "median_lag_min": 7.3,
+   "lag_note": "n=1",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "Parliament is not sitting (Winter Session not yet in sansad.in data)."
+  },
+  {
+   "name": "LiveLaw court news sitemap",
+   "category": "courts",
+   "system": "v2",
+   "service": "gir-v2sources / p_regs.py",
+   "host": "www.livelaw.in",
+   "poll_s": 120,
+   "poll_note": "120 s / 600 s",
+   "store": "v2/data/ext/regs.jsonl (kind court)",
+   "last_item_ist": "2026-11-21T11:17+05:30",
+   "last_item_note": "2026-11-21 11:17",
+   "items_24h": 3,
+   "items_fri_20nov": 0,
+   "median_lag_min": 1.8,
+   "lag_note": "n=2; only F&O / regulator matters kept",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Supreme Court cause lists",
+   "category": "courts",
+   "system": "v2",
+   "service": "gir-v2sources / p_sci.py",
+   "host": "www.sci.gov.in + api.sci.gov.in",
+   "poll_s": 1200,
+   "poll_note": "1200 s 16:00-23:40 and 06:00-08:30, 3 h otherwise",
+   "store": "v2/data/ext/sci.jsonl + sci_tags_<date>.json; PDFs in girdata/ext/sci",
+   "last_item_ist": "2026-11-21T05:47+05:30",
+   "last_item_note": "2026-11-21 05:47",
+   "items_24h": 19,
+   "items_fri_20nov": 0,
+   "median_lag_min": null,
+   "lag_note": "lists are dated ahead; no publish time",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "e-Gazette (page watch)",
+   "category": "government (gazette)",
+   "system": "v2",
+   "service": "gir-v2sources / p_pagewatch.py",
+   "host": "egazette.gov.in",
+   "poll_s": 300,
+   "poll_note": "300 s 07:00-23:00, 3600 s at night",
+   "store": "v2/data/ext/pagewatch.jsonl (kind egazette)",
+   "last_item_ist": null,
+   "last_item_note": "none (seeded 20 Nov, 0 new links)",
+   "items_24h": 0,
+   "items_fri_20nov": 0,
+   "median_lag_min": null,
+   "lag_note": "pages give no time",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "SILENT",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": false,
+   "notes": "Blind: the home page shows only 10 links; the Extraordinary list sits behind an ASP.NET postback that a plain GET does not reach."
+  },
+  {
+   "name": "CBIC GST / CDSCO / APTEL (page watch)",
+   "category": "GST / regulators / courts",
+   "system": "v2",
+   "service": "gir-v2sources / p_pagewatch.py",
+   "host": "cbic-gst.gov.in, cdsco.gov.in, aptel.gov.in",
+   "poll_s": 900,
+   "poll_note": "900 s 07:00-23:00, 3600 s at night",
+   "store": "v2/data/ext/pagewatch.jsonl",
+   "last_item_ist": null,
+   "last_item_note": "none (seeded 20 Nov, 0 new links)",
+   "items_24h": 0,
+   "items_fri_20nov": 0,
+   "median_lag_min": null,
+   "lag_note": "pages give no time",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": false,
+   "notes": "All three fetch OK (79 / 53+53 / 9 links) but no new link since the seed; cannot prove they would catch one."
+  },
+  {
+   "name": "AERA / GERC (page watch)",
+   "category": "regulators (airport / state power)",
+   "system": "v2",
+   "service": "gir-v2sources / p_pagewatch.py",
+   "host": "aera.gov.in, gercin.org",
+   "poll_s": 900,
+   "poll_note": "AERA 900 s; GERC 6 h",
+   "store": "v2/data/ext/pagewatch.jsonl (kinds aera, gercin)",
+   "last_item_ist": "2026-11-21T11:05+05:30",
+   "last_item_note": "2026-11-21 11:05",
+   "items_24h": 17,
+   "items_fri_20nov": 6,
+   "median_lag_min": null,
+   "lag_note": "pages give no time",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "AERA read timed out at 13:4x today (retries)."
+  },
+  {
+   "name": "Index providers (NSE Indices, BSE index, FTSE)",
+   "category": "calendar (index changes)",
+   "system": "v2",
+   "service": "gir-v2sources / p_indexes.py",
+   "host": "www.niftyindices.com, www.bseindia.com, research.ftserussell.com",
+   "poll_s": 900,
+   "poll_note": "NSE + BSE 900 s, FTSE 1800 s, MSCI 6 h (blocked)",
+   "store": "v2/data/ext/indexes.jsonl + index_calendar.json",
+   "last_item_ist": "2026-11-20T22:56+05:30",
+   "last_item_note": "2026-11-20 22:56",
+   "items_24h": 4,
+   "items_fri_20nov": 4,
+   "median_lag_min": null,
+   "lag_note": "NSE gives a date only",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "MSCI answers a bot challenge (blocked); MSCI dates kept by hand."
+  },
+  {
+   "name": "DIPAM OFS pages",
+   "category": "government (OFS)",
+   "system": "v2",
+   "service": "gir-v2sources / p_ofs.py",
+   "host": "www.dipam.gov.in",
+   "poll_s": 600,
+   "poll_note": "600 s 07:00-22:00, 3600 s otherwise",
+   "store": "v2/data/ext/ofs.jsonl (not created yet)",
+   "last_item_ist": null,
+   "last_item_note": "none since start (19 Nov)",
+   "items_24h": 0,
+   "items_fri_20nov": 0,
+   "median_lag_min": null,
+   "lag_note": "no rows",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": false,
+   "notes": "Polls OK; no new link since the seed, so ofs.jsonl does not exist yet. Exchange OFS notices also come through the circulars poller."
+  },
+  {
+   "name": "NSDL FPI daily + red-flag + fortnight",
+   "category": "NSDL / FII",
+   "system": "v2",
+   "service": "gir-v2sources / p_nsdl.py",
+   "host": "www.fpi.nsdl.co.in",
+   "poll_s": 1800,
+   "poll_note": "1800 s 18:00-23:30 and 07:00-09:00, 3 h otherwise",
+   "store": "v2/data/ext/nsdl.jsonl + nsdl_fpi.json",
+   "last_item_ist": "2026-11-20T16:27+05:30",
+   "last_item_note": "2026-11-20 16:27 (daily); fortnight 15 Nov",
+   "items_24h": 1,
+   "items_fri_20nov": 1,
+   "median_lag_min": null,
+   "lag_note": "data is dated, T+1",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "once a day",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Economic week + NSE board meetings calendar",
+   "category": "summits / calendar",
+   "system": "v2",
+   "service": "gir-v2sources / p_calendar.py",
+   "host": "nfs.faireconomy.media + www.nseindia.com",
+   "poll_s": 10800,
+   "poll_note": "3 h",
+   "store": "v2/data/ext/calendar.json",
+   "last_item_ist": "2026-11-21T12:03+05:30",
+   "last_item_note": "2026-11-21 12:03 (file made)",
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": "calendar file, not a stream",
+   "cards_24h": null,
+   "cards_note": "calendar, read by seats not readers",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "126 econ rows, 25 board meetings. India data (CPI / IIP / GDP / PMI) missing: no calendar_india.json hand list."
+  },
+  {
+   "name": "Wires: ET news sitemap (v2)",
+   "category": "wires / publishers",
+   "system": "v2",
+   "service": "gir-v2sources / p_wires.py",
+   "host": "economictimes.indiatimes.com",
+   "poll_s": 20,
+   "poll_note": "20 s 07:00-23:00, 300 s otherwise",
+   "store": "v2/data/ext/wires.jsonl",
+   "last_item_ist": "2026-11-21T13:40+05:30",
+   "last_item_note": "2026-11-21 13:40",
+   "items_24h": 47,
+   "items_fri_20nov": 21,
+   "median_lag_min": 1.8,
+   "lag_note": "n=44; rows only for F&O names or market words",
+   "cards_24h": null,
+   "cards_note": "17 cards from v2 wires in all (R5 16 + R2 1); the card does not say which part",
+   "status": "LIVE",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Wires: CNBC-TV18 Google-News sitemap (v2)",
+   "category": "wires / publishers",
+   "system": "v2",
+   "service": "gir-v2sources / p_wires.py",
+   "host": "www.cnbctv18.com",
+   "poll_s": 45,
+   "poll_note": "45 s 07:00-23:00, 300 s otherwise",
+   "store": "v2/data/ext/wires.jsonl",
+   "last_item_ist": "2026-11-21T10:34+05:30",
+   "last_item_note": "2026-11-21 10:34",
+   "items_24h": 13,
+   "items_fri_20nov": 11,
+   "median_lag_min": 1.9,
+   "lag_note": "n=11; rows only for F&O names or market words",
+   "cards_24h": null,
+   "cards_note": "17 cards from v2 wires in all (R5 16 + R2 1); the card does not say which part",
+   "status": "LIVE",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Wires: CNBC-TV18 latest RSS (v2)",
+   "category": "wires / publishers",
+   "system": "v2",
+   "service": "gir-v2sources / p_wires.py",
+   "host": "www.cnbctv18.com",
+   "poll_s": 30,
+   "poll_note": "30 s 07:00-23:00, 300 s otherwise",
+   "store": "v2/data/ext/wires.jsonl",
+   "last_item_ist": "2026-11-21T13:39+05:30",
+   "last_item_note": "2026-11-21 13:39",
+   "items_24h": 5,
+   "items_fri_20nov": 4,
+   "median_lag_min": 4.3,
+   "lag_note": "n=4; rows only for F&O names or market words",
+   "cards_24h": null,
+   "cards_note": "17 cards from v2 wires in all (R5 16 + R2 1); the card does not say which part",
+   "status": "LIVE",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Wires: Business Standard latest RSS (v2)",
+   "category": "wires / publishers",
+   "system": "v2",
+   "service": "gir-v2sources / p_wires.py",
+   "host": "www.business-standard.com",
+   "poll_s": 30,
+   "poll_note": "30 s 07:00-23:00, 300 s otherwise",
+   "store": "v2/data/ext/wires.jsonl",
+   "last_item_ist": "2026-11-20T23:40+05:30",
+   "last_item_note": "2026-11-20 23:40",
+   "items_24h": 10,
+   "items_fri_20nov": 10,
+   "median_lag_min": 8.9,
+   "lag_note": "n=9; rows only for F&O names or market words",
+   "cards_24h": null,
+   "cards_note": "17 cards from v2 wires in all (R5 16 + R2 1); the card does not say which part",
+   "status": "LIVE",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": " Saturday: no market-word story since Fri 23:40 (the old system's BS feeds agree)."
+  },
+  {
+   "name": "Wires: Business Standard markets RSS (v2)",
+   "category": "wires / publishers",
+   "system": "v2",
+   "service": "gir-v2sources / p_wires.py",
+   "host": "www.business-standard.com",
+   "poll_s": 60,
+   "poll_note": "60 s 07:00-23:00, 300 s otherwise",
+   "store": "v2/data/ext/wires.jsonl",
+   "last_item_ist": "2026-11-20T20:50+05:30",
+   "last_item_note": "2026-11-20 20:50",
+   "items_24h": 4,
+   "items_fri_20nov": 4,
+   "median_lag_min": 10.6,
+   "lag_note": "n=3; rows only for F&O names or market words",
+   "cards_24h": null,
+   "cards_note": "17 cards from v2 wires in all (R5 16 + R2 1); the card does not say which part",
+   "status": "SLOW",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Wires: Moneycontrol news sitemap (v2)",
+   "category": "wires / publishers",
+   "system": "v2",
+   "service": "gir-v2sources / p_wires.py",
+   "host": "www.moneycontrol.com",
+   "poll_s": 60,
+   "poll_note": "60 s 07:00-23:00, 300 s otherwise",
+   "store": "v2/data/ext/wires.jsonl",
+   "last_item_ist": "2026-11-21T12:55+05:30",
+   "last_item_note": "2026-11-21 12:55",
+   "items_24h": 26,
+   "items_fri_20nov": 19,
+   "median_lag_min": 2.6,
+   "lag_note": "n=24; rows only for F&O names or market words",
+   "cards_24h": null,
+   "cards_note": "17 cards from v2 wires in all (R5 16 + R2 1); the card does not say which part",
+   "status": "LIVE",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "HTTP 403 to this server 00:00-07:00 IST on 21 Nov (16 refusals), fine again after 07:00."
+  },
+  {
+   "name": "TV analyst-call detector (v2)",
+   "category": "TV / broker calls",
+   "system": "v2",
+   "service": "gir-v2tvcalls / v2/tv/tvcalls.py",
+   "host": "(reads data/tv.db)",
+   "poll_s": 10,
+   "poll_note": "follows the TV transcript",
+   "store": "v2/data/tvcalls.jsonl",
+   "last_item_ist": "2026-11-20T15:42+05:30",
+   "last_item_note": "2026-11-20 15:42",
+   "items_24h": 0,
+   "items_fri_20nov": 50,
+   "median_lag_min": null,
+   "lag_note": "derived from TV text",
+   "cards_24h": null,
+   "cards_note": "TV cards counted in the TV rows",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "09:00-15:30 weekdays",
+   "measured": true,
+   "proven": true,
+   "notes": "Weekend: no calls (expected)."
+  },
+  {
+   "name": "Broker calls register (v2, derived)",
+   "category": "broker calls",
+   "system": "v2",
+   "service": "gir-v2newsmap / v2/newsmap/brokers.py",
+   "host": "(reads news.db, ext, tv.db, tvcalls)",
+   "poll_s": null,
+   "poll_note": "rebuilt by newsmap",
+   "store": "v2/data/broker_calls.json",
+   "last_item_ist": "2026-11-21T07:19+05:30",
+   "last_item_note": "2026-11-21 07:19",
+   "items_24h": 6,
+   "items_fri_20nov": 24,
+   "median_lag_min": null,
+   "lag_note": "derived",
+   "cards_24h": null,
+   "cards_note": "",
+   "status": "SLOW",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "254 calls in 72 threads; 3-day sources: TV 15, ET/MC wires 12, Google News 5. No direct broker research feed exists (see not-live list)."
+  },
+  {
+   "name": "TV CNBC-TV18 speech-to-text",
+   "category": "TV speech-to-text",
+   "system": "old (read by v2)",
+   "service": "gir-tvwatch / tvwatch.py + v2/tv/tvstt_dg.py",
+   "host": "www.youtube.com (yt-dlp) + api.deepgram.com",
+   "poll_s": 10,
+   "poll_note": "continuous 10-s segments; 07:00-18:00 NSE days, or any time an escalation is active",
+   "store": "data/tv.db table tv (ch=CNBC-TV18), 10-day retention; audio not kept",
+   "last_item_ist": "2026-11-21T13:37+05:30",
+   "last_item_note": "2026-11-21 13:37",
+   "items_24h": 3640,
+   "items_fri_20nov": 5024,
+   "median_lag_min": 0.2,
+   "lag_note": "estimate: 10-s segment + Deepgram ~1.8 s; no broadcast time exists",
+   "cards_24h": 4,
+   "cards_note": "R6 4 (R3 TV reader made none from CNBC)",
+   "status": "LIVE",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "07:00-18:00 NSE days",
+   "measured": true,
+   "proven": true,
+   "notes": "Fri 09:00-15:30: 389.7 of 390 min captured. Listening on Saturday because the v2 news reader set an escalation at 12:49 IST."
+  },
+  {
+   "name": "TV ET NOW speech-to-text",
+   "category": "TV speech-to-text",
+   "system": "old (read by v2)",
+   "service": "gir-tvwatch / tvwatch.py",
+   "host": "www.youtube.com + api.deepgram.com",
+   "poll_s": 10,
+   "poll_note": "continuous 10-s segments",
+   "store": "data/tv.db table tv (ch=ET NOW)",
+   "last_item_ist": "2026-11-21T13:37+05:30",
+   "last_item_note": "2026-11-21 13:37",
+   "items_24h": 3637,
+   "items_fri_20nov": 5019,
+   "median_lag_min": 0.2,
+   "lag_note": "estimate (as above)",
+   "cards_24h": 1,
+   "cards_note": "R3 1",
+   "status": "LIVE",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "07:00-18:00 NSE days",
+   "measured": true,
+   "proven": true,
+   "notes": "Fri 09:00-15:30: 390 of 390 min."
+  },
+  {
+   "name": "NSE announcements (old exchange.py)",
+   "category": "NSE/BSE filings",
+   "system": "old",
+   "service": "gir-exchange / exchange.py",
+   "host": "www.nseindia.com + nsearchives.nseindia.com",
+   "poll_s": 15,
+   "poll_note": "15 s 07:30-22:00 every day",
+   "store": "filings.db table filings",
+   "last_item_ist": "2026-11-21T12:49+05:30",
+   "last_item_note": "2026-11-21 12:49",
+   "items_24h": 52,
+   "items_fri_20nov": 63,
+   "median_lag_min": 0.7,
+   "lag_note": "n=207",
+   "cards_24h": null,
+   "cards_note": "not a v2 input (v2 uses its own filings feed)",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "Duplicate of the v2 NSE feed; BSE not read by design."
+  },
+  {
+   "name": "Google News per share (newsroom scouts)",
+   "category": "wires (aggregator)",
+   "system": "old (read by v2)",
+   "service": "gir-newsroom / newsroom.py",
+   "host": "news.google.com",
+   "poll_s": 6,
+   "poll_note": "6 s between calls (~25 min per 219-share round); hot movers every 180 s 09:00-15:35; 07:00-23:30",
+   "store": "news.db items src='GOOGLE NEWS'",
+   "last_item_ist": "2026-11-21T13:25+05:30",
+   "last_item_note": "2026-11-21 13:25 (seen 13:33)",
+   "items_24h": 671,
+   "items_fri_20nov": 774,
+   "median_lag_min": 95.9,
+   "lag_note": "n=2180 (Google's own pubDate vs first seen)",
+   "cards_24h": 84,
+   "cards_note": "R2 70 + R1 8 + R6 6",
+   "status": "SLOW",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "07:00-23:30",
+   "measured": true,
+   "proven": true,
+   "notes": "The desk's biggest card source, and the slowest: median 1.6 h after publication. 191 HTTP 429 since Fri 00:00."
+  },
+  {
+   "name": "Old macro.py direct RSS: ET (5 feeds)",
+   "category": "wires / publishers",
+   "system": "old (read by v2)",
+   "service": "gir-newsroom thread macro.py",
+   "host": "economictimes.indiatimes.com",
+   "poll_s": 60,
+   "poll_note": "60 s",
+   "store": "data/macro.json + news.db WIRE (F&O-named only)",
+   "last_item_ist": "2026-11-21T11:21+05:30",
+   "last_item_note": "2026-11-21 11:21",
+   "items_24h": 2,
+   "items_fri_20nov": 3,
+   "median_lag_min": 19.4,
+   "lag_note": "n=4 (F&O-named subset)",
+   "cards_24h": null,
+   "cards_note": "28 WIRE cards for all macro feeds together (R2 27 + R1 1)",
+   "status": "SLOW",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "ET RSS is cached 2-10 min; the v2 sitemap reader is faster."
+  },
+  {
+   "name": "Old macro.py: Moneycontrol RSS (4 feeds)",
+   "category": "wires / publishers",
+   "system": "old",
+   "service": "macro.py (+ newshunt)",
+   "host": "www.moneycontrol.com",
+   "poll_s": 60,
+   "poll_note": "60 s",
+   "store": "macro.json / news.db WIRE",
+   "last_item_ist": null,
+   "last_item_note": "never stored",
+   "items_24h": 0,
+   "items_fri_20nov": 0,
+   "median_lag_min": null,
+   "lag_note": "not measurable",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "SILENT",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "DEAD feed (newest item April 2024) still polled every 60 s by macro.py, newshunt and newshawk. Replace with the sitemap (v2 already does)."
+  },
+  {
+   "name": "Old macro.py: live blogs (MC, CNBC-TV18, ET)",
+   "category": "wires / broker calls",
+   "system": "old (read by v2)",
+   "service": "macro.py liveblog_*",
+   "host": "www.moneycontrol.com, www.cnbctv18.com, economictimes.indiatimes.com",
+   "poll_s": 60,
+   "poll_note": "60 s",
+   "store": "news.db WIRE, macro.json",
+   "last_item_ist": "2026-11-20T16:01+05:30",
+   "last_item_note": "2026-11-20 16:01",
+   "items_24h": 21,
+   "items_fri_20nov": 109,
+   "median_lag_min": 1.0,
+   "lag_note": "MC 1.0 (n=188), CNBC 0.8 (n=47), ET 65.6 (n=31)",
+   "cards_24h": 2,
+   "cards_note": "R2 2 (Moneycontrol Live Blog)",
+   "status": "LIVE",
+   "core": true,
+   "silent_threshold_min": 30,
+   "alarm_window_ist": "09:00-16:00 weekdays",
+   "measured": true,
+   "proven": true,
+   "notes": "Market-day only (no Saturday blogs; CNBC blog link 404 today). ET's blog is slow."
+  },
+  {
+   "name": "Old macro.py: CNBC-TV18 / Mint / BusinessLine / ET Now / TradingView RSS",
+   "category": "wires / publishers",
+   "system": "old (read by v2)",
+   "service": "macro.py",
+   "host": "www.cnbctv18.com, www.livemint.com, www.thehindubusinessline.com, www.etnownews.com, news-headlines.tradingview.com",
+   "poll_s": 60,
+   "poll_note": "60 s",
+   "store": "news.db WIRE, macro.json",
+   "last_item_ist": "2026-11-21T12:56+05:30",
+   "last_item_note": "2026-11-21 12:56",
+   "items_24h": 22,
+   "items_fri_20nov": 39,
+   "median_lag_min": 4.6,
+   "lag_note": "CNBC 4.6, Mint 2.2, BusinessLine 3.8, ET Now 2.2, TradingView 5.7 (F&O-named subsets)",
+   "cards_24h": 1,
+   "cards_note": "R2 1 (ET Now) + share of the 28 WIRE cards",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Old macro.py: BS / NDTV Profit / Business Today RSS",
+   "category": "wires / publishers",
+   "system": "old (read by v2)",
+   "service": "macro.py",
+   "host": "www.business-standard.com, feeds.feedburner.com (NDTV Profit), www.businesstoday.in",
+   "poll_s": 60,
+   "poll_note": "60 s",
+   "store": "news.db WIRE, macro.json",
+   "last_item_ist": "2026-11-21T13:08+05:30",
+   "last_item_note": "2026-11-21 13:08",
+   "items_24h": 13,
+   "items_fri_20nov": 23,
+   "median_lag_min": 11.6,
+   "lag_note": "BS 10.4, NDTV Profit 37.9, Business Today 11.6",
+   "cards_24h": null,
+   "cards_note": "share of the 28 WIRE cards",
+   "status": "SLOW",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Old macro.py: The Hindu Business + TOI Business RSS",
+   "category": "wires / publishers",
+   "system": "old",
+   "service": "macro.py",
+   "host": "www.thehindu.com, timesofindia.indiatimes.com",
+   "poll_s": 60,
+   "poll_note": "60 s",
+   "store": "news.db WIRE",
+   "last_item_ist": null,
+   "last_item_note": "never stored",
+   "items_24h": 0,
+   "items_fri_20nov": 0,
+   "median_lag_min": null,
+   "lag_note": "not measurable",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "SILENT",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "Answer HTTP 200 (60 and 20 items) but no F&O-named row has ever been stored."
+  },
+  {
+   "name": "Old macro.py: Google News searches (13 feeds)",
+   "category": "wires (aggregator) / world",
+   "system": "old (read by v2)",
+   "service": "macro.py",
+   "host": "news.google.com",
+   "poll_s": 60,
+   "poll_note": "60-180 s",
+   "store": "news.db WIRE, macro.json",
+   "last_item_ist": "2026-11-21T13:36+05:30",
+   "last_item_note": "2026-11-21 13:36",
+   "items_24h": 79,
+   "items_fri_20nov": 77,
+   "median_lag_min": 6.1,
+   "lag_note": "n=235",
+   "cards_24h": null,
+   "cards_note": "share of the 28 WIRE cards",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "site:zeebiz returns 0 items; FE and ET Auto 1 each."
+  },
+  {
+   "name": "Old macro.py: RBI + SEBI RSS",
+   "category": "RBI / SEBI",
+   "system": "old",
+   "service": "macro.py",
+   "host": "www.rbi.org.in, www.sebi.gov.in",
+   "poll_s": 120,
+   "poll_note": "120 s",
+   "store": "macro.json",
+   "last_item_ist": null,
+   "last_item_note": "not measurable",
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": "n=0 items parsed at 13:33",
+   "cards_24h": 0,
+   "cards_note": "",
+   "status": "SILENT",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": false,
+   "proven": true,
+   "notes": "HTTP 200 but 0 items parsed for both (SEBI RSS is empty; RBI parse fails). v2 p_regs covers both."
+  },
+  {
+   "name": "Old govwatch (PIB / RBI / SEBI / IRDAI)",
+   "category": "PIB / RBI / SEBI / regulators",
+   "system": "old",
+   "service": "gir-govwatch timer / govwatch.py",
+   "host": "pib.gov.in, rbi.org.in, sebi.gov.in, irdai.gov.in, news.google.com",
+   "poll_s": 600,
+   "poll_note": "600 s (was 120 s until 20 Nov)",
+   "store": "data/govwatch.json (seen keys, no times)",
+   "last_item_ist": null,
+   "last_item_note": "last alert 2026-11-21 11:30",
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": "store keeps no times",
+   "cards_24h": null,
+   "cards_note": "not a v2 input",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": false,
+   "proven": true,
+   "notes": "Reads irdai.gov.in although its robots.txt says Disallow: / (v2 skips IRDAI for that reason)."
+  },
+  {
+   "name": "Old regwatch (30 regulator pages)",
+   "category": "regulators",
+   "system": "old",
+   "service": "gir-regwatch timer / regwatch.py",
+   "host": "irdai, sebi, rbi, cci, fda.gov, trai, enforcementdirectorate, cercind, pngrb, nppaindia, dgca, prsindia, sansad",
+   "poll_s": 120,
+   "poll_note": "120 s",
+   "store": "data/regwatch.json (seen keys, no times)",
+   "last_item_ist": null,
+   "last_item_note": "last alert ~2026-11-20 15:11",
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": "store keeps no times; fetch failures not logged",
+   "cards_24h": null,
+   "cards_note": "not a v2 input",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": false,
+   "proven": true,
+   "notes": "The only reader of fda.gov, cercind, pngrb, ED and prsindia; health cannot be measured."
+  },
+  {
+   "name": "Old shockwatch (Google News shock words)",
+   "category": "regulators / governance",
+   "system": "old",
+   "service": "gir-shockwatch timer / shockwatch.py",
+   "host": "news.google.com",
+   "poll_s": 300,
+   "poll_note": "300 s",
+   "store": "data/shockwatch.json (seen, no times)",
+   "last_item_ist": null,
+   "last_item_note": "last alert 2026-11-21 13:05",
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": "queries are when:1h",
+   "cards_24h": null,
+   "cards_note": "not a v2 input",
+   "status": "SLOW",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": false,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Old earlyteam world news (12 Google News queries)",
+   "category": "world / summits / commodities",
+   "system": "old",
+   "service": "gir-earlyteam / earlyteam.py",
+   "host": "news.google.com",
+   "poll_s": 600,
+   "poll_note": "600 s",
+   "store": "data/worldnews.json (400 cap / 24 h)",
+   "last_item_ist": "2026-11-21T13:10+05:30",
+   "last_item_note": "2026-11-21 13:10",
+   "items_24h": 400,
+   "items_fri_20nov": 255,
+   "median_lag_min": null,
+   "lag_note": "no first-seen time per item",
+   "cards_24h": null,
+   "cards_note": "not a v2 input",
+   "status": "SLOW",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "APEC, Trump-Xi, US-China, Fed, tariffs, OPEC, rupee, chips, Middle East. Cap reached (400)."
+  },
+  {
+   "name": "Old earlyteam Yahoo prices",
+   "category": "world closes / commodities",
+   "system": "old",
+   "service": "gir-earlyteam / overnight / analyst",
+   "host": "query1/query2.finance.yahoo.com",
+   "poll_s": 300,
+   "poll_note": "300 s 24x7",
+   "store": "data/earlyteam.json, data/overnight.json",
+   "last_item_ist": "2026-11-21T13:35+05:30",
+   "last_item_note": "2026-11-21 13:35",
+   "items_24h": 284,
+   "items_fri_20nov": 122,
+   "median_lag_min": null,
+   "lag_note": "quote time not stored",
+   "cards_24h": null,
+   "cards_note": "not a v2 input",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Old overnight Google News (papers, world wires, commodities)",
+   "category": "world wraps / commodities",
+   "system": "old",
+   "service": "gir-overnight timer / overnight.py",
+   "host": "news.google.com",
+   "poll_s": null,
+   "poll_note": "timer 07:00 / 08:35 / 15:50 Mon-Fri",
+   "store": "data/overnight.json (AI-picked list only)",
+   "last_item_ist": "2026-11-20T08:35+05:30",
+   "last_item_note": "2026-11-20 08:35 (list)",
+   "items_24h": 0,
+   "items_fri_20nov": 21,
+   "median_lag_min": null,
+   "lag_note": "raw headlines not kept",
+   "cards_24h": null,
+   "cards_note": "not a v2 input",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "weekday timers",
+   "measured": false,
+   "proven": true,
+   "notes": "Its AI step is behind the OLD_AI_OFF flag since 21 Nov 10:06."
+  },
+  {
+   "name": "Old newshunt (sector jump -> reason)",
+   "category": "wires / policy (Google News)",
+   "system": "old",
+   "service": "gir-newshunt / newshunt.py",
+   "host": "news.google.com (+ macro RSS)",
+   "poll_s": 60,
+   "poll_note": "tick 15 s; policy lane 60 s market / 300 s outside",
+   "store": "data/newshunt.json",
+   "last_item_ist": "2026-11-20T15:37+05:30",
+   "last_item_note": "2026-11-20 15:37",
+   "items_24h": 2,
+   "items_fri_20nov": 67,
+   "median_lag_min": 47.5,
+   "lag_note": "n=67",
+   "cards_24h": null,
+   "cards_note": "not a v2 input",
+   "status": "SLOW",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Old policymap (policy stories -> shares)",
+   "category": "regulators (derived)",
+   "system": "old (read by v2)",
+   "service": "gir-policymap / policymap.py",
+   "host": "(reads macro.json)",
+   "poll_s": 30,
+   "poll_note": "30 s",
+   "store": "news.db src='POLICY'",
+   "last_item_ist": "2026-11-19T18:11+05:30",
+   "last_item_note": "2026-11-19 18:11",
+   "items_24h": 0,
+   "items_fri_20nov": 0,
+   "median_lag_min": 41.2,
+   "lag_note": "older rows",
+   "cards_24h": 1,
+   "cards_note": "R4 1",
+   "status": "SILENT",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "No output since 19 Nov 18:18: each share needs an AI read and the old AI is off."
+  },
+  {
+   "name": "Old moverswhy (why the big movers moved)",
+   "category": "wires (Google News)",
+   "system": "old",
+   "service": "gir-moverswhy timer",
+   "host": "news.google.com",
+   "poll_s": 900,
+   "poll_note": "900 s 09:30-15:15 weekdays",
+   "store": "data/moverswhy.json",
+   "last_item_ist": "2026-11-20T15:15+05:30",
+   "last_item_note": "2026-11-20 15:15",
+   "items_24h": 0,
+   "items_fri_20nov": 20,
+   "median_lag_min": null,
+   "lag_note": "-",
+   "cards_24h": null,
+   "cards_note": "not a v2 input",
+   "status": "SILENT",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "weekdays",
+   "measured": true,
+   "proven": true,
+   "notes": "All 20 rows of the last run say 'error' (AI read failed); the fetch itself runs."
+  },
+  {
+   "name": "Old expect.py (brokers' numbers for results)",
+   "category": "broker calls",
+   "system": "old",
+   "service": "gir-expect timer / expect.py",
+   "host": "news.google.com + publisher pages",
+   "poll_s": null,
+   "poll_note": "timer 07:45 and 22:15",
+   "store": "data/expect.db",
+   "last_item_ist": null,
+   "last_item_note": "newest number published 2026-11-11",
+   "items_24h": 0,
+   "items_fri_20nov": 0,
+   "median_lag_min": null,
+   "lag_note": "-",
+   "cards_24h": null,
+   "cards_note": "not a v2 input",
+   "status": "SILENT",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "0 broker numbers found in the last 7 days."
+  },
+  {
+   "name": "FII / DII cash (NSE provisional)",
+   "category": "FII / DII",
+   "system": "old (read by v2)",
+   "service": "gir-intraday engine2 + gir-dash dashserve",
+   "host": "www.nseindia.com /api/fiidiiTradeReact",
+   "poll_s": 1200,
+   "poll_note": "engine start ~09:04; page server refreshes at most every 1200 s on request",
+   "store": "dash_state.json ctx.fiidii; v2 desk copy desk/fii_daily.json",
+   "last_item_ist": null,
+   "last_item_note": "data for 20 Nov (desk copy seen 20 Nov 19:23)",
+   "items_24h": null,
+   "items_fri_20nov": 1,
+   "median_lag_min": null,
+   "lag_note": "daily figure",
+   "cards_24h": null,
+   "cards_note": "read by the flows seat, not readers",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "once a day",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "FII / DII F&O participant OI + delivery + MWPL",
+   "category": "FII / DII",
+   "system": "old (read by v2)",
+   "service": "gir-whydesk timer (nsextra)",
+   "host": "nsearchives.nseindia.com",
+   "poll_s": null,
+   "poll_note": "timer 15:50 / 19:40 / 22:30 Mon-Fri",
+   "store": "data/extra.db (part, deliv, mwpl)",
+   "last_item_ist": null,
+   "last_item_note": "trade date 2026-11-20",
+   "items_24h": null,
+   "items_fri_20nov": 1,
+   "median_lag_min": null,
+   "lag_note": "daily file",
+   "cards_24h": null,
+   "cards_note": "read by seats",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "once a day",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Named FII / DII deals (bulk / block CSV)",
+   "category": "FII / DII / deals",
+   "system": "old",
+   "service": "gir-dash instflow + whydesk",
+   "host": "nsearchives.nseindia.com",
+   "poll_s": null,
+   "poll_note": "after the close",
+   "store": "data/instdeals/<day>.json",
+   "last_item_ist": null,
+   "last_item_note": "trade date 2026-11-20",
+   "items_24h": null,
+   "items_fri_20nov": 1,
+   "median_lag_min": null,
+   "lag_note": "daily file",
+   "cards_24h": null,
+   "cards_note": "not a v2 input",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "once a day",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "NSDL FPI by sector (fortnightly)",
+   "category": "NSDL",
+   "system": "old (read by v2)",
+   "service": "gir-whydesk timer / fpisec.py",
+   "host": "www.fpi.nsdl.co.in",
+   "poll_s": null,
+   "poll_note": "timer 15:50 / 19:40 / 22:30 Mon-Fri",
+   "store": "data/fpisec.json",
+   "last_item_ist": null,
+   "last_item_note": "fortnight ending 2026-11-15",
+   "items_24h": 0,
+   "items_fri_20nov": 0,
+   "median_lag_min": null,
+   "lag_note": "fortnightly",
+   "cards_24h": null,
+   "cards_note": "read by models / p_nsdl",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "fortnightly",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Results calendar (NSE event calendar, BSE fallback)",
+   "category": "summits / calendar",
+   "system": "old (read by v2)",
+   "service": "gir-intraday engine2 / chains.py",
+   "host": "www.nseindia.com, api.bseindia.com",
+   "poll_s": null,
+   "poll_note": "once a day at engine start",
+   "store": "chains.db results_cal",
+   "last_item_ist": null,
+   "last_item_note": "fetched 2026-11-20 09:09",
+   "items_24h": null,
+   "items_fri_20nov": 1,
+   "median_lag_min": null,
+   "lag_note": "calendar",
+   "cards_24h": null,
+   "cards_note": "read by v2/kb/watch.py",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "once a day",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Article bodies (Google link -> publisher page)",
+   "category": "wires (full text)",
+   "system": "old",
+   "service": "newsbody.py / newsfresh (on demand)",
+   "host": "news.google.com + publisher hosts",
+   "poll_s": null,
+   "poll_note": "on demand",
+   "store": "data/newsbody.db",
+   "last_item_ist": "2026-11-21T13:36+05:30",
+   "last_item_note": "2026-11-21 13:36",
+   "items_24h": 473,
+   "items_fri_20nov": 682,
+   "median_lag_min": null,
+   "lag_note": "support fetch",
+   "cards_24h": null,
+   "cards_note": "support for readers",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "299 of 473 with text in 24 h."
+  },
+  {
+   "name": "newshawk: NSE announcements RSS",
+   "category": "NSE/BSE filings",
+   "system": "old newshawk (Telegram muted)",
+   "service": "newshawk / news_alert_bot.py",
+   "host": "nsearchives.nseindia.com",
+   "poll_s": 90,
+   "poll_note": "90 s, 24 h",
+   "store": "newshawk/ledger.db live_news + news_seen.db",
+   "last_item_ist": "2026-11-21T12:52+05:30",
+   "last_item_note": "2026-11-21 12:52",
+   "items_24h": 24,
+   "items_fri_20nov": 28,
+   "median_lag_min": 0.5,
+   "lag_note": "n=64 (F&O-named)",
+   "cards_24h": null,
+   "cards_note": "not wired to v2",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "NSE board-meeting / insider RSS also read; Results / Buyback / Circulars RSS never stored a row."
+  },
+  {
+   "name": "newshawk: ET / Mint / BS / Livemint RSS",
+   "category": "wires / publishers",
+   "system": "old newshawk (Telegram muted)",
+   "service": "newshawk / news_alert_bot.py",
+   "host": "economictimes.indiatimes.com, www.livemint.com, www.business-standard.com",
+   "poll_s": 90,
+   "poll_note": "90 s",
+   "store": "ledger.db live_news",
+   "last_item_ist": "2026-11-21T12:35+05:30",
+   "last_item_note": "2026-11-21 12:35",
+   "items_24h": 16,
+   "items_fri_20nov": 36,
+   "median_lag_min": 10.0,
+   "lag_note": "ET 17.5, ET stocks 27.9, Mint 3.0, BS 10.0 (F&O-named)",
+   "cards_24h": null,
+   "cards_note": "not wired to v2",
+   "status": "SLOW",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "newshawk: Moneycontrol RSS (3 feeds)",
+   "category": "wires / publishers",
+   "system": "old newshawk (Telegram muted)",
+   "service": "newshawk",
+   "host": "www.moneycontrol.com",
+   "poll_s": 90,
+   "poll_note": "90 s",
+   "store": "ledger.db live_news",
+   "last_item_ist": null,
+   "last_item_note": "never (0 rows since 3 Oct)",
+   "items_24h": 0,
+   "items_fri_20nov": 0,
+   "median_lag_min": null,
+   "lag_note": "-",
+   "cards_24h": null,
+   "cards_note": "not wired to v2",
+   "status": "SILENT",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "Dead feed, still polled."
+  },
+  {
+   "name": "newshawk: Google News (Nifty, Reuters markets, regulators, drafts, courts, healthcare)",
+   "category": "wires / regulators / courts (aggregator)",
+   "system": "old newshawk (Telegram muted)",
+   "service": "newshawk / news_alert_bot.py",
+   "host": "news.google.com",
+   "poll_s": 90,
+   "poll_note": "90 s",
+   "store": "ledger.db live_news",
+   "last_item_ist": "2026-11-21T12:23+05:30",
+   "last_item_note": "2026-11-21 12:23",
+   "items_24h": 93,
+   "items_fri_20nov": 102,
+   "median_lag_min": 12.5,
+   "lag_note": "Nifty 10.5, Reuters 15.2, regulators 12.5, drafts 36.0, SC 9.2, healthcare 14.8; NCLT query only re-surfaces old items",
+   "cards_24h": null,
+   "cards_note": "not wired to v2",
+   "status": "SLOW",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "~120 HTTP 429 in 72 h across these queries."
+  },
+  {
+   "name": "newshawk: RBI / SEBI RSS (+ regwatch)",
+   "category": "RBI / SEBI",
+   "system": "old newshawk (Telegram muted)",
+   "service": "newshawk + newshawk-regwatch",
+   "host": "www.rbi.org.in, www.sebi.gov.in",
+   "poll_s": 90,
+   "poll_note": "90 s / 120 s",
+   "store": "ledger.db live_news; regwatch_seen.db",
+   "last_item_ist": "2026-11-20T19:53+05:30",
+   "last_item_note": "2026-11-20 19:53",
+   "items_24h": 38,
+   "items_fri_20nov": 43,
+   "median_lag_min": null,
+   "lag_note": "ambiguous: two bots write the same source name, one with fetch time",
+   "cards_24h": null,
+   "cards_note": "not wired to v2",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": false,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "newshawk: CNBC Top / Finance RSS",
+   "category": "world wraps",
+   "system": "old newshawk (Telegram muted)",
+   "service": "newshawk",
+   "host": "www.cnbc.com",
+   "poll_s": 90,
+   "poll_note": "90 s, in 60-min back-off",
+   "store": "ledger.db live_news",
+   "last_item_ist": "2026-11-15T18:30+05:30",
+   "last_item_note": "2026-11-15 18:30",
+   "items_24h": 0,
+   "items_fri_20nov": 0,
+   "median_lag_min": null,
+   "lag_note": "-",
+   "cards_24h": null,
+   "cards_note": "not wired to v2",
+   "status": "SILENT",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "BLOCKED: HTTP 403 on every try (100+ failures)."
+  },
+  {
+   "name": "newshawk: Yahoo Finance RSS",
+   "category": "world wraps",
+   "system": "old newshawk (Telegram muted)",
+   "service": "newshawk",
+   "host": "finance.yahoo.com",
+   "poll_s": 90,
+   "poll_note": "90 s, back-off",
+   "store": "ledger.db live_news",
+   "last_item_ist": null,
+   "last_item_note": "never",
+   "items_24h": 0,
+   "items_fri_20nov": 0,
+   "median_lag_min": null,
+   "lag_note": "-",
+   "cards_24h": null,
+   "cards_note": "not wired to v2",
+   "status": "SILENT",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "DEAD: HTTP 404 (180 failures)."
+  },
+  {
+   "name": "newshawk: MarketWatch top stories RSS",
+   "category": "world wraps",
+   "system": "old newshawk (Telegram muted)",
+   "service": "newshawk",
+   "host": "feeds.content.dowjones.io",
+   "poll_s": 90,
+   "poll_note": "90 s",
+   "store": "ledger.db live_news",
+   "last_item_ist": "2026-11-21T01:33+05:30",
+   "last_item_note": "2026-11-21 01:33",
+   "items_24h": 2,
+   "items_fri_20nov": 0,
+   "median_lag_min": 2.5,
+   "lag_note": "n=8",
+   "cards_24h": null,
+   "cards_note": "not wired to v2",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "10 read timeouts in 72 h."
+  },
+  {
+   "name": "newshawk: Investing.com news RSS",
+   "category": "world wraps / commodities",
+   "system": "old newshawk (Telegram muted)",
+   "service": "newshawk",
+   "host": "www.investing.com",
+   "poll_s": 90,
+   "poll_note": "90 s",
+   "store": "ledger.db live_news",
+   "last_item_ist": "2026-11-21T04:42+05:30",
+   "last_item_note": "2026-11-21 04:42",
+   "items_24h": 20,
+   "items_fri_20nov": 16,
+   "median_lag_min": 7.4,
+   "lag_note": "n=51",
+   "cards_24h": null,
+   "cards_note": "not wired to v2",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "investing.com is said to block cloud machines; this RSS still answers here (quotes pages 403 per p_bonds)."
+  },
+  {
+   "name": "newshawk-regwatch: PIB / IRDAI / RBI notifications / CCI / TRAI / GST Council / DGCA",
+   "category": "PIB / regulators",
+   "system": "old newshawk (Telegram muted)",
+   "service": "newshawk-regwatch / regwatch_bot.py",
+   "host": "pib.gov.in, irdai.gov.in, www.rbi.org.in, www.cci.gov.in, www.trai.gov.in, gstcouncil.gov.in, www.dgca.gov.in",
+   "poll_s": 120,
+   "poll_note": "120-360 s",
+   "store": "regwatch_seen.db",
+   "last_item_ist": null,
+   "last_item_note": "PIB 2026-11-21 13:05; IRDAI 20 Nov 20:05; CCI 10 Nov; TRAI 17 Nov; GST 9 Oct; DGCA 13 Nov",
+   "items_24h": 66,
+   "items_fri_20nov": 68,
+   "median_lag_min": null,
+   "lag_note": "fetch time only",
+   "cards_24h": null,
+   "cards_note": "not wired to v2",
+   "status": "SLOW",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "PIB fine; CCI/DGCA/TRAI timeouts and 5xx; GST Council scraper likely broken (nothing for 6 weeks)."
+  },
+  {
+   "name": "newshawk-regwatch + regnews: Google News regulator / court / USFDA queries",
+   "category": "regulators / courts / USFDA",
+   "system": "old newshawk (Telegram muted)",
+   "service": "newshawk-regwatch + regnews / regnews_bot.py",
+   "host": "news.google.com",
+   "poll_s": 240,
+   "poll_note": "240-360 s",
+   "store": "regwatch_seen.db; regnews.db",
+   "last_item_ist": "2026-11-21T13:37+05:30",
+   "last_item_note": "2026-11-21 13:37",
+   "items_24h": 1149,
+   "items_fri_20nov": 1458,
+   "median_lag_min": null,
+   "lag_note": "fetch time only",
+   "cards_24h": null,
+   "cards_note": "not wired to v2",
+   "status": "SLOW",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "~450 HTTP 429 in 72 h (regnews alone); neither bot honours the shared Google cool-down."
+  },
+  {
+   "name": "newshawk-filings: BSE announcements API",
+   "category": "NSE/BSE filings",
+   "system": "old newshawk (Telegram muted)",
+   "service": "newshawk-filings / filings_bot.py",
+   "host": "api.bseindia.com",
+   "poll_s": 180,
+   "poll_note": "180 s, pages 1-3",
+   "store": "filings_seen.db",
+   "last_item_ist": "2026-11-21T13:37+05:30",
+   "last_item_note": "2026-11-21 13:37",
+   "items_24h": 507,
+   "items_fri_20nov": 630,
+   "median_lag_min": null,
+   "lag_note": "BSE time not stored",
+   "cards_24h": null,
+   "cards_note": "not wired to v2",
+   "status": "SLOW",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "Page 2 answers 403 since Fri 16:16 (same moment v2 was blocked); only the newest ~50 per cycle are read. The ONLY live BSE filings reader on the server right now."
+  },
+  {
+   "name": "newshawk-whales: NSE bulk / block CSV",
+   "category": "deals",
+   "system": "old newshawk (Telegram muted)",
+   "service": "newshawk-whales / whales_bot.py",
+   "host": "nsearchives.nseindia.com",
+   "poll_s": 300,
+   "poll_note": "300 s weekdays",
+   "store": "whales_seen.db",
+   "last_item_ist": "2026-11-20T18:36+05:30",
+   "last_item_note": "2026-11-20 18:36",
+   "items_24h": 112,
+   "items_fri_20nov": 112,
+   "median_lag_min": null,
+   "lag_note": "dated rows",
+   "cards_24h": null,
+   "cards_note": "not wired to v2",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "weekdays",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "newshawk-ahead: F&O ban list + NSE RSS daily",
+   "category": "NSE (ban list / calendar)",
+   "system": "old newshawk (Telegram muted)",
+   "service": "newshawk-ahead / ahead_bot.py",
+   "host": "nsearchives.nseindia.com",
+   "poll_s": null,
+   "poll_note": "once a day 07:45",
+   "store": "ahead_state.json",
+   "last_item_ist": null,
+   "last_item_note": "ran 2026-11-21 07:45",
+   "items_24h": 1,
+   "items_fri_20nov": 1,
+   "median_lag_min": null,
+   "lag_note": "-",
+   "cards_24h": null,
+   "cards_note": "not wired to v2",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "once a day",
+   "measured": true,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "newshawk-xstream: X filtered stream (TV + govt + wires accounts)",
+   "category": "X / social",
+   "system": "old newshawk (Telegram muted)",
+   "service": "newshawk-xstream / x_stream_bot.py",
+   "host": "api.x.com",
+   "poll_s": 300,
+   "poll_note": "push stream; reconnect every 300 s while failing",
+   "store": "x_feed.db posts",
+   "last_item_ist": "2026-10-29T16:50+05:30",
+   "last_item_note": "2026-10-29 16:50",
+   "items_24h": 0,
+   "items_fri_20nov": 0,
+   "median_lag_min": null,
+   "lag_note": "-",
+   "cards_24h": null,
+   "cards_note": "not wired to v2",
+   "status": "SILENT",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "24x7",
+   "measured": true,
+   "proven": true,
+   "notes": "DEAD: HTTP 402 CreditsDepleted every 5 min; the X account has no API credits (old xagent also off for the same reason)."
+  },
+  {
+   "name": "newshawk ledger refill / radar / evening / preopen",
+   "category": "calendar / backfill",
+   "system": "old newshawk (Telegram muted)",
+   "service": "timers",
+   "host": "news.google.com, www.nseindia.com",
+   "poll_s": null,
+   "poll_note": "daily timers",
+   "store": "ledger.db events; radar_events.json; preopen_log.csv",
+   "last_item_ist": null,
+   "last_item_note": "refill 2026-11-20 20:04; preopen 20 Nov 09:10",
+   "items_24h": 6,
+   "items_fri_20nov": 11,
+   "median_lag_min": null,
+   "lag_note": "backfill",
+   "cards_24h": null,
+   "cards_note": "not wired to v2",
+   "status": "LIVE",
+   "core": false,
+   "silent_threshold_min": 120,
+   "alarm_window_ist": "daily",
+   "measured": false,
+   "proven": true,
+   "notes": ""
+  },
+  {
+   "name": "Global peers' results (US / Asia peers of Indian F&O names: Accenture, Cognizant, TSMC, Nvidia, steel / pharma peers)",
+   "category": "global peers' results",
+   "system": "planned",
+   "service": null,
+   "host": "SEC EDGAR / company IR / Nasdaq earnings calendar",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "not built; only ADR prices (Yahoo) and US wrap stories",
+   "suggested_date": "Sat 28 Nov"
+  },
+  {
+   "name": "Broker research reports (target / rating changes, morning notes)",
+   "category": "broker calls",
+   "system": "planned",
+   "service": null,
+   "host": "trendlyne.com, icicidirect.com, motilaloswal.com, kotaksecurities.com",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "not built; broker calls only from TV text and headlines (v2 broker_calls.json)",
+   "suggested_date": "Trendlyne needs the trader's yes (paid); public PDFs Phase 2 (by 12 Dec)"
+  },
+  {
+   "name": "CNBC Awaaz speech-to-text",
+   "category": "TV speech-to-text",
+   "system": "planned",
+   "service": null,
+   "host": "hindi.cnbctv18.com / YouTube",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "not built (only CNBC-TV18 and ET NOW are transcribed)",
+   "suggested_date": "Phase 2 (by 12 Dec); adds Deepgram cost - trader's yes"
+  },
+  {
+   "name": "Sansad TV live speech-to-text",
+   "category": "TV / Parliament",
+   "system": "planned",
+   "service": null,
+   "host": "hls.media.nic.in",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "not built (sansadtv.nic.in times out from here; the HLS host was never tried)",
+   "suggested_date": "before the Winter Session starts (early Dec)"
+  },
+  {
+   "name": "RBI / PIB / SEBI press conferences live (YouTube auto-start)",
+   "category": "TV / regulators",
+   "system": "planned",
+   "service": null,
+   "host": "youtube.com channel RSS",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "not built",
+   "suggested_date": "Phase 2 (by 12 Dec); before the 5 Dec RBI policy if possible"
+  },
+  {
+   "name": "Telegram public channels listener / t.me preview",
+   "category": "wires (push)",
+   "system": "planned",
+   "service": null,
+   "host": "t.me",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "not built",
+   "suggested_date": "Phase 2 (by 12 Dec)"
+  },
+  {
+   "name": "Reuters direct (sitemap)",
+   "category": "wires",
+   "system": "planned",
+   "service": null,
+   "host": "www.reuters.com",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "blocked: 401 bot wall; Reuters only via Google News (slow)",
+   "suggested_date": "not planned (do not evade); keep Google News"
+  },
+  {
+   "name": "Bloomberg headlines",
+   "category": "wires",
+   "system": "planned",
+   "service": null,
+   "host": "www.bloomberg.com",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "bot-blocked; only Google News site: queries",
+   "suggested_date": "needs the trader's yes (paid ~$35/mo)"
+  },
+  {
+   "name": "Federal Reserve statements / speeches RSS",
+   "category": "world (central banks)",
+   "system": "planned",
+   "service": null,
+   "host": "www.federalreserve.gov",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "not built",
+   "suggested_date": "Tue 24 Nov (add to p_world)"
+  },
+  {
+   "name": "BIS central-banker speeches RSS / BoJ / PBoC",
+   "category": "world (central banks)",
+   "system": "planned",
+   "service": null,
+   "host": "www.bis.org, www.boj.or.jp, pbc.gov.cn",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "not built",
+   "suggested_date": "Sat 28 Nov"
+  },
+  {
+   "name": "EIA weekly petroleum / OPEC statements",
+   "category": "commodities",
+   "system": "planned",
+   "service": null,
+   "host": "www.eia.gov, www.opec.org",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "not built live (EIA only in a history script)",
+   "suggested_date": "Sat 28 Nov"
+  },
+  {
+   "name": "GST Council decisions",
+   "category": "GST",
+   "system": "planned",
+   "service": null,
+   "host": "www.gstcouncil.gov.in",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "not built in v2; old newshawk scraper broken (nothing for 6 weeks)",
+   "suggested_date": "Tue 24 Nov (page watch)"
+  },
+  {
+   "name": "DGFT / DGTR notices (export curbs, anti-dumping)",
+   "category": "government",
+   "system": "planned",
+   "service": null,
+   "host": "www.dgft.gov.in, www.dgtr.gov.in",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "not built (DGTR only via Google News in newshawk)",
+   "suggested_date": "Sat 28 Nov"
+  },
+  {
+   "name": "Tribunals: NCLT / NCLAT / SAT / TDSAT / NGT / CESTAT / Delhi HC cause lists",
+   "category": "courts",
+   "system": "planned",
+   "service": null,
+   "host": "nclt.gov.in, nclat.nic.in, satweb.sat.gov.in, tdsat.gov.in, greentribunal.gov.in, cestat.gov.in, delhihighcourt.nic.in",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "not built (NCLT has a captcha)",
+   "suggested_date": "Phase 2 (by 12 Dec)"
+  },
+  {
+   "name": "India data calendar (CPI / IIP / GDP / PMI release times)",
+   "category": "summits / calendar",
+   "system": "planned",
+   "service": null,
+   "host": "www.mospi.gov.in, pmi.spglobal.com",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "not built: calendar_india.json hand list missing (GDP is due 30 Nov)",
+   "suggested_date": "Tue 24 Nov (hand list), MOSPI page watch Sat 28 Nov"
+  },
+  {
+   "name": "ET Prime article reader",
+   "category": "wires (paywalled)",
+   "system": "planned",
+   "service": null,
+   "host": "economictimes.indiatimes.com (ET Prime)",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "login is kept alive (gir-v2etprime, LIVE at 07:15) but no reader uses the session for articles",
+   "suggested_date": "decide: build or stop the keep-alive (Sat 28 Nov)"
+  },
+  {
+   "name": "Prediction-market odds (Fed, tariffs, war)",
+   "category": "world",
+   "system": "planned",
+   "service": null,
+   "host": "gamma-api.polymarket.com, api.elections.kalshi.com",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "not built: needs a fixed market list from the desk",
+   "suggested_date": "Sat 28 Nov, after the desk gives the list"
+  },
+  {
+   "name": "GDELT geopolitics feed",
+   "category": "world",
+   "system": "planned",
+   "service": null,
+   "host": "api.gdeltproject.org",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "only a study script; no live feed",
+   "suggested_date": "Phase 2 (by 12 Dec)"
+  },
+  {
+   "name": "SEC EDGAR / Business Wire / PR Newswire (ADR names, US clients)",
+   "category": "global peers / wires",
+   "system": "planned",
+   "service": null,
+   "host": "www.sec.gov, businesswire.com, prnewswire.com",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "not built (SEC needs a contact User-Agent)",
+   "suggested_date": "Phase 2 (by 12 Dec)"
+  },
+  {
+   "name": "X (Twitter) accounts: TV, government, DIPAM, CCI",
+   "category": "X / social",
+   "system": "planned",
+   "service": null,
+   "host": "api.x.com",
+   "poll_s": null,
+   "poll_note": null,
+   "store": null,
+   "last_item_ist": null,
+   "last_item_note": null,
+   "items_24h": null,
+   "items_fri_20nov": null,
+   "median_lag_min": null,
+   "lag_note": null,
+   "cards_24h": null,
+   "cards_note": null,
+   "status": "NOT BUILT",
+   "core": false,
+   "silent_threshold_min": null,
+   "alarm_window_ist": null,
+   "measured": false,
+   "proven": false,
+   "notes": "both readers off: HTTP 402, no API credits",
+   "suggested_date": "needs the trader's yes (buy credits)"
+  }
+ ],
+ "doc_hosts": [
+  {
+   "host": "accessdata.fda.gov",
+   "state": "NOT BUILT",
+   "why": "FDA import alerts not read",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "COL:175",
+    "WEB:247",
+    "WEB:94"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "aera.gov.in",
+   "state": "LIVE",
+   "why": "v2 pagewatch (rows today; one read timeout)",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:390",
+    "WEB:490",
+    "WEB:554"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_pagewatch.py"
+   ]
+  },
+  {
+   "host": "aljazeera.com",
+   "state": "NOT BUILT",
+   "why": "Middle East RSS not read",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:136"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "amfiindia.com",
+   "state": "NOT BUILT",
+   "why": "AMFI monthly flows not read",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:121",
+    "WEB:393",
+    "WEB:488",
+    "WEB:561"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "api.bls.gov",
+   "state": "NOT BUILT",
+   "why": "US CPI / payroll actuals: only via FinancialJuice / investingLive headlines",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "WEB:105"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "api.bseindia.com",
+   "state": "PARTIAL",
+   "why": "v2 filings BLOCKED (403 since Fri 16:16); old newshawk-filings reads page 1 only (13:37 today)",
+   "suggested_date": "fix now: ask why BSE refuses v2's client (headers / cookie); until then wire newshawk's BSE rows into v2 - before Mon 23 Nov 09:00",
+   "in_docs": [
+    "WEB:174",
+    "WEB:42",
+    "WEB:57"
+   ],
+   "code_refs": [
+    "intraday/chains.py",
+    "intraday/v2/sources/p_blockdeals.py",
+    "intraday/v2/kb/fetch_archive.py",
+    "intraday/v2/feeds/filings.py"
+   ]
+  },
+  {
+   "host": "api.elections.kalshi.com",
+   "state": "NOT BUILT",
+   "why": "needs a market list",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:97"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "api.fda.gov",
+   "state": "NOT BUILT",
+   "why": "openFDA not read",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "COL:175"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "api.sci.gov.in",
+   "state": "LIVE",
+   "why": "v2 p_sci cause-list PDFs (05:47 today)",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:310",
+    "WEB:311",
+    "WEB:401",
+    "WEB:431"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_sci.py"
+   ]
+  },
+  {
+   "host": "api.stlouisfed.org",
+   "state": "NOT BUILT",
+   "why": "FRED needs a free key (sign-up not done)",
+   "suggested_date": "needs the trader's yes (sign-up for a free key)",
+   "in_docs": [
+    "WEB:106",
+    "WEB:239"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "apnews.com",
+   "state": "NOT BUILT",
+   "why": "AP wire not read",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:195",
+    "WEB:251",
+    "WEB:82"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "aptel.gov.in",
+   "state": "PARTIAL",
+   "why": "v2 pagewatch polls OK, 0 new links since 20 Nov (unproven)",
+   "suggested_date": "check on the next weekday",
+   "in_docs": [
+    "WEB:410",
+    "WEB:481",
+    "WEB:555",
+    "WEB:558"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_pagewatch.py"
+   ]
+  },
+  {
+   "host": "archive.pib.gov.in",
+   "state": "NOT NEEDED",
+   "why": "archive search; live PIB RSS is read",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:338",
+    "WEB:516"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "barandbench.com",
+   "state": "NOT BUILT",
+   "why": "only in a check script; LiveLaw is read instead",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:234",
+    "WEB:403",
+    "WEB:459",
+    "WEB:536"
+   ],
+   "code_refs": [
+    "newshawk/check_sources.py"
+   ]
+  },
+  {
+   "host": "bis.org",
+   "state": "NOT BUILT",
+   "why": "central-banker speeches RSS",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:102",
+    "WEB:213"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "bloomberg.com",
+   "state": "BLOCKED",
+   "why": "bot wall; Google News site: only",
+   "suggested_date": "needs the trader's yes",
+   "in_docs": [
+    "WEB:147",
+    "WEB:170"
+   ],
+   "code_refs": [
+    "intraday/overnight.py",
+    "intraday/newsroom.py",
+    "intraday/newsclean.py"
+   ]
+  },
+  {
+   "host": "bls.gov",
+   "state": "NOT BUILT",
+   "why": "as api.bls.gov",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "WEB:105"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "boj.or.jp",
+   "state": "NOT BUILT",
+   "why": "BoJ decisions",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:133"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "bombayhighcourt.nic.in",
+   "state": "BLOCKED",
+   "why": "times out from this server",
+   "suggested_date": "Phase 2 (by 12 Dec) (retry)",
+   "in_docs": [
+    "WEB:406",
+    "WEB:484"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_pagewatch.py"
+   ]
+  },
+  {
+   "host": "bseindia.com",
+   "state": "LIVE",
+   "why": "notices.xml 13:22 today; insider + index feeds",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:153",
+    "WEB:18",
+    "WEB:40",
+    "WEB:57"
+   ],
+   "code_refs": [
+    "intraday/chains.py",
+    "intraday/newsroom.py",
+    "intraday/newsclean.py",
+    "intraday/v2/sources/p_insider.py"
+   ]
+  },
+  {
+   "host": "business-standard.com",
+   "state": "LIVE",
+   "why": "v2 wires + old macro + newshawk (last Fri 23:40; quiet Saturday)",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:154",
+    "WEB:17",
+    "WEB:38"
+   ],
+   "code_refs": [
+    "intraday/stories.json",
+    "intraday/overnight.py",
+    "intraday/newsroom.py",
+    "intraday/macro.py"
+   ]
+  },
+  {
+   "host": "cabsec.gov.in",
+   "state": "NOT BUILT",
+   "why": "not confirmed by the plan either",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:443"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "cbic-gst.gov.in",
+   "state": "PARTIAL",
+   "why": "v2 pagewatch polls OK (79 links), 0 new since 20 Nov (unproven)",
+   "suggested_date": "check on the next weekday",
+   "in_docs": [
+    "WEB:345",
+    "WEB:463",
+    "WEB:549"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_pagewatch.py"
+   ]
+  },
+  {
+   "host": "cci.gov.in",
+   "state": "PARTIAL",
+   "why": "v2 p_regs parses but 429s and 0 rows since start; probably no releases",
+   "suggested_date": "Tue 24 Nov (NSE holiday - small add to an existing poller) (slow it to 300 s to stop the 429s)",
+   "in_docs": [
+    "WEB:386",
+    "WEB:457",
+    "WEB:458",
+    "WEB:548"
+   ],
+   "code_refs": [
+    "intraday/regwatch.py",
+    "intraday/newsroom.py",
+    "intraday/v2/sources/p_regs.py",
+    "newshawk/regwatch_config.json"
+   ]
+  },
+  {
+   "host": "ccilindia.com",
+   "state": "BLOCKED",
+   "why": "403 Akamai on every path; Trading Economics used instead",
+   "suggested_date": "not planned (keep TE; do not evade)",
+   "in_docs": [
+    "WEB:185",
+    "WEB:232",
+    "WEB:68"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_bonds.py"
+   ]
+  },
+  {
+   "host": "cdnbbsr.s3waas.gov.in",
+   "state": "NOT BUILT",
+   "why": "ministry PDF host",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:315",
+    "WEB:355",
+    "WEB:495"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "cdsco.gov.in",
+   "state": "PARTIAL",
+   "why": "v2 pagewatch polls OK (53+53 links), 0 new since 20 Nov (unproven)",
+   "suggested_date": "check on the next weekday",
+   "in_docs": [
+    "WEB:142",
+    "WEB:368",
+    "WEB:388",
+    "WEB:473"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_pagewatch.py"
+   ]
+  },
+  {
+   "host": "cea.nic.in",
+   "state": "NOT BUILT",
+   "why": "power demand / generation",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:356",
+    "WEB:391",
+    "WEB:496",
+    "WEB:560"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "cercind.gov.in",
+   "state": "PARTIAL",
+   "why": "old regwatch.py only (health not measurable); newshawk CERC via Google News",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch) (v2 page watch)",
+   "in_docs": [
+    "WEB:384",
+    "WEB:465",
+    "WEB:466",
+    "WEB:552"
+   ],
+   "code_refs": [
+    "intraday/regwatch.py",
+    "newshawk/regwatch_config.json"
+   ]
+  },
+  {
+   "host": "cestat.gov.in",
+   "state": "NOT BUILT",
+   "why": "cause lists",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "WEB:413",
+    "WEB:486",
+    "WEB:558"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "chemicals.gov.in",
+   "state": "NOT BUILT",
+   "why": "QCO orders",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:371",
+    "WEB:442"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "chinamoney.com.cn",
+   "state": "NOT BUILT",
+   "why": "China rates (plan WP job)",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "COL:194"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "chittorgarh.com",
+   "state": "NOT BUILT",
+   "why": "IPO / QIP calendar",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:137"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "civilaviation.gov.in",
+   "state": "NOT BUILT",
+   "why": "releases",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:367",
+    "WEB:504"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "cmegroup.com",
+   "state": "BLOCKED",
+   "why": "bot-blocked on cloud machines (plan); not tried",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:150",
+    "WEB:170"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "cnbc.com",
+   "state": "BLOCKED",
+   "why": "403 to this server (newshawk 100+ failures); CNBC wraps via Google News only",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:189",
+    "WEB:74"
+   ],
+   "code_refs": [
+    "intraday/overnight.py",
+    "intraday/v2/sources/p_uswrap.py",
+    "newshawk/news_config.json"
+   ]
+  },
+  {
+   "host": "cnbctv18.com",
+   "state": "LIVE",
+   "why": "v2 sitemap + RSS (13:39 today), old macro, live blog",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:155",
+    "WEB:17",
+    "WEB:39",
+    "WEB:43"
+   ],
+   "code_refs": [
+    "intraday/stories.json",
+    "intraday/newsroom.py",
+    "intraday/macro.py",
+    "intraday/newsclean.py"
+   ]
+  },
+  {
+   "host": "coal.gov.in",
+   "state": "NOT BUILT",
+   "why": "coal auctions",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:365",
+    "WEB:501",
+    "WEB:562"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "coal.nic.in",
+   "state": "NOT BUILT",
+   "why": "coal press PDFs",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:365",
+    "WEB:502"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "commerce.gov.in",
+   "state": "NOT BUILT",
+   "why": "monthly trade data",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:139"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "dea.gov.in",
+   "state": "NOT BUILT",
+   "why": "borrowing calendar",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:344",
+    "WEB:442"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "delhihighcourt.nic.in",
+   "state": "NOT BUILT",
+   "why": "cause lists",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "WEB:405",
+    "WEB:483",
+    "WEB:558"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "dgca.gov.in",
+   "state": "PARTIAL",
+   "why": "old regwatch.py + newshawk scrape (5xx errors, nothing since 13 Nov); v2 skips (script-only portal)",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:110",
+    "WEB:389",
+    "WEB:489",
+    "WEB:561"
+   ],
+   "code_refs": [
+    "intraday/regwatch.py",
+    "newshawk/regwatch_config.json"
+   ]
+  },
+  {
+   "host": "dgft.gov.in",
+   "state": "NOT BUILT",
+   "why": "export / import notices",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:141",
+    "WEB:350",
+    "WEB:460",
+    "WEB:548"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "dgtr.gov.in",
+   "state": "PARTIAL",
+   "why": "only Google News in newshawk",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:351",
+    "WEB:461",
+    "WEB:462",
+    "WEB:552"
+   ],
+   "code_refs": [
+    "newshawk/regwatch_config.json"
+   ]
+  },
+  {
+   "host": "dipam.gov.in",
+   "state": "LIVE",
+   "why": "v2 p_ofs polls OK; no new link since 19 Nov (unproven)",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:209",
+    "WEB:244",
+    "WEB:270",
+    "WEB:348"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_ofs.py"
+   ]
+  },
+  {
+   "host": "dot.gov.in",
+   "state": "NOT BUILT",
+   "why": "telecom what's new",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:366",
+    "WEB:476",
+    "WEB:553"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "drdo.gov.in",
+   "state": "NOT BUILT",
+   "why": "low value",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:117"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "drewry.co.uk",
+   "state": "NOT BUILT",
+   "why": "freight index",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:143"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "eaindustry.nic.in",
+   "state": "NOT BUILT",
+   "why": "core-sector data",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:138"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "economictimes.indiatimes.com",
+   "state": "LIVE",
+   "why": "v2 sitemap (13:40 today), old macro RSS + live blog, newshawk",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:154",
+    "WEB:18",
+    "WEB:37"
+   ],
+   "code_refs": [
+    "intraday/stories.json",
+    "intraday/macro.py",
+    "intraday/newsclean.py",
+    "intraday/v2/news/etprime_login.py"
+   ]
+  },
+  {
+   "host": "egazette.gov.in",
+   "state": "PARTIAL",
+   "why": "v2 pagewatch is blind: the Extraordinary list needs an ASP.NET postback",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch) (form post or another listing page)",
+   "in_docs": [
+    "WEB:140",
+    "WEB:342",
+    "WEB:450",
+    "WEB:549"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_pagewatch.py"
+   ]
+  },
+  {
+   "host": "eia.gov",
+   "state": "NOT BUILT",
+   "why": "weekly petroleum status: only a history script (kb/fetch_free.py), no live read",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:212",
+    "WEB:98"
+   ],
+   "code_refs": [
+    "intraday/v2/kb/fetch_free.py"
+   ]
+  },
+  {
+   "host": "elibrary.sansad.in",
+   "state": "NOT BUILT",
+   "why": "committee reports",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:329",
+    "WEB:513"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "english.news.cn",
+   "state": "NOT BUILT",
+   "why": "Xinhua readouts",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:134"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "eparlib.nic.in",
+   "state": "NOT NEEDED",
+   "why": "archive",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:328"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "eparlib.sansad.in",
+   "state": "BLOCKED",
+   "why": "times out from this server",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:328",
+    "WEB:512"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_pagewatch.py"
+   ]
+  },
+  {
+   "host": "etnownews.com",
+   "state": "LIVE",
+   "why": "old macro ET Now RSS (Fri 15:04) + TV ET NOW transcript",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:200",
+    "WEB:87"
+   ],
+   "code_refs": [
+    "intraday/newsclean.py"
+   ]
+  },
+  {
+   "host": "fada.in",
+   "state": "NOT BUILT",
+   "why": "monthly retail auto sales",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:114"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "fda.gov",
+   "state": "PARTIAL",
+   "why": "old regwatch.py only (FDA press RSS 404 for v2); USFDA via Google News in newshawk",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch) (warning-letter page watch in v2)",
+   "in_docs": [
+    "COL:175",
+    "WEB:208",
+    "WEB:247",
+    "WEB:93"
+   ],
+   "code_refs": [
+    "intraday/regwatch.py",
+    "newshawk/regwatch_config.json"
+   ]
+  },
+  {
+   "host": "federalregister.gov",
+   "state": "LIVE",
+   "why": "v2 p_fedreg (Fri 19:16; weekend quiet)",
+   "suggested_date": "",
+   "in_docs": [
+    "COL:176",
+    "WEB:181",
+    "WEB:230",
+    "WEB:64"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_fedreg.py"
+   ]
+  },
+  {
+   "host": "federalreserve.gov",
+   "state": "NOT BUILT",
+   "why": "Fed RSS",
+   "suggested_date": "Tue 24 Nov (NSE holiday - small add to an existing poller)",
+   "in_docs": [
+    "COL:178",
+    "WEB:193",
+    "WEB:80"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "feeds.a.dj.com",
+   "state": "DEAD",
+   "why": "WSJ RSS frozen since Jan 2025; MarketWatch via feeds.content.dowjones.io is read instead",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:194",
+    "WEB:251",
+    "WEB:81"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_world.py"
+   ]
+  },
+  {
+   "host": "feeds.reuters.com",
+   "state": "DEAD",
+   "why": "Reuters RSS retired",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "COL:252",
+    "COL:546",
+    "COL:572"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "fert.gov.in",
+   "state": "NOT BUILT",
+   "why": "NBS rates",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:370",
+    "WEB:442"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "financialexpress.com",
+   "state": "PARTIAL",
+   "why": "only a Google News site: query (1 item in 24 h)",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch) (FE sitemap / RSS)",
+   "in_docs": [
+    "WEB:204",
+    "WEB:91"
+   ],
+   "code_refs": [
+    "intraday/overnight.py",
+    "intraday/newsroom.py",
+    "intraday/macro.py",
+    "intraday/newsclean.py"
+   ]
+  },
+  {
+   "host": "financialjuice.com",
+   "state": "LIVE",
+   "why": "v2 p_fjuice (13:12 today)",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:179",
+    "WEB:226",
+    "WEB:62"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_fjuice.py"
+   ]
+  },
+  {
+   "host": "financialservices.gov.in",
+   "state": "NOT BUILT",
+   "why": "DFS what's new",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:343",
+    "WEB:470",
+    "WEB:549"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "forexlive.com",
+   "state": "NOT NEEDED",
+   "why": "renamed investinglive.com (read)",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:44"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "fpi.nsdl.co.in",
+   "state": "LIVE",
+   "why": "v2 p_nsdl + old fpisec (20 Nov data)",
+   "suggested_date": "",
+   "in_docs": [
+    "COL:213",
+    "WEB:186",
+    "WEB:237",
+    "WEB:69"
+   ],
+   "code_refs": [
+    "intraday/fpisec.py",
+    "intraday/v2/sources/p_nsdl.py",
+    "intraday/v2/kb/fetch_archive.py"
+   ]
+  },
+  {
+   "host": "fred.stlouisfed.org",
+   "state": "NOT BUILT",
+   "why": "FRED CSV not read",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "WEB:107"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "fssai.gov.in",
+   "state": "PARTIAL",
+   "why": "only Google News in newshawk",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:372",
+    "WEB:388",
+    "WEB:475",
+    "WEB:553"
+   ],
+   "code_refs": [
+    "newshawk/regwatch_config.json"
+   ]
+  },
+  {
+   "host": "gamma-api.polymarket.com",
+   "state": "NOT BUILT",
+   "why": "needs the desk's market list",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:210",
+    "WEB:254",
+    "WEB:96"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "gercin.org",
+   "state": "LIVE",
+   "why": "v2 pagewatch (rows 04:28 today)",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:420",
+    "WEB:519",
+    "WEB:562"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_pagewatch.py"
+   ]
+  },
+  {
+   "host": "greentribunal.gov.in",
+   "state": "NOT BUILT",
+   "why": "NGT orders",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "WEB:409",
+    "WEB:485"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "grid-india.in",
+   "state": "NOT BUILT",
+   "why": "power reports",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:112",
+    "WEB:357",
+    "WEB:391",
+    "WEB:498"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "gstcouncil.gov.in",
+   "state": "PARTIAL",
+   "why": "old newshawk scraper broken (nothing since 9 Oct); v2 none",
+   "suggested_date": "Tue 24 Nov (NSE holiday - small add to an existing poller) (page watch)",
+   "in_docs": [
+    "WEB:119",
+    "WEB:347",
+    "WEB:464",
+    "WEB:547"
+   ],
+   "code_refs": [
+    "newshawk/regwatch_config.json"
+   ]
+  },
+  {
+   "host": "hindi.cnbctv18.com",
+   "state": "NOT BUILT",
+   "why": "CNBC Awaaz",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "WEB:201",
+    "WEB:43",
+    "WEB:88"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "hls.media.nic.in",
+   "state": "NOT BUILT",
+   "why": "Sansad TV HLS for speech-to-text",
+   "suggested_date": "before the Winter Session (early Dec)",
+   "in_docs": [
+    "WEB:317",
+    "WEB:330",
+    "WEB:524",
+    "WEB:544"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "home.treasury.gov",
+   "state": "LIVE",
+   "why": "v2 p_world (02:30 today)",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:188",
+    "WEB:239",
+    "WEB:73"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_world.py",
+    "intraday/v2/kb/fetch_free.py"
+   ]
+  },
+  {
+   "host": "hq.sinajs.cn",
+   "state": "NOT BUILT",
+   "why": "China quotes (plan WP job)",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "COL:154"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "ibbi.gov.in",
+   "state": "NOT BUILT",
+   "why": "IBC orders",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:387",
+    "WEB:487",
+    "WEB:553"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "ibjarates.com",
+   "state": "NOT BUILT",
+   "why": "gold / silver rates",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:130"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "icicidirect.com",
+   "state": "NOT BUILT",
+   "why": "public research PDFs",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "WEB:124"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "iexindia.com",
+   "state": "NOT BUILT",
+   "why": "power exchange prices",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:207",
+    "WEB:92"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "ifsca.gov.in",
+   "state": "NOT BUILT",
+   "why": "GIFT City rules (low value)",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:382",
+    "WEB:493"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "incometaxindia.gov.in",
+   "state": "NOT BUILT",
+   "why": "CBDT notifications",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:346",
+    "WEB:471",
+    "WEB:554"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "indianrailways.gov.in",
+   "state": "BLOCKED",
+   "why": "403 to this server",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:362",
+    "WEB:506"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_pagewatch.py"
+   ]
+  },
+  {
+   "host": "investing.com",
+   "state": "PARTIAL",
+   "why": "newshawk news RSS answers (04:42 today) and uswrap wraps; quote pages 403",
+   "suggested_date": "not planned for quotes",
+   "in_docs": [
+    "COL:622",
+    "WEB:149",
+    "WEB:170"
+   ],
+   "code_refs": [
+    "intraday/stories.json",
+    "intraday/newslag.txt",
+    "intraday/newsroom.py",
+    "intraday/v2/sources/p_uswrap.py"
+   ]
+  },
+  {
+   "host": "investinglive.com",
+   "state": "LIVE",
+   "why": "v2 p_world (slow feed, median 34 min)",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:180",
+    "WEB:228",
+    "WEB:44",
+    "WEB:63"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_world.py"
+   ]
+  },
+  {
+   "host": "iocl.com",
+   "state": "NOT BUILT",
+   "why": "fuel price page (plan J49)",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "COL:192"
+   ],
+   "code_refs": [
+    "intraday/v2/newsmap/exposure_v0.json",
+    "intraday/v2/newsmap/ref/exposure_research_1119.json"
+   ]
+  },
+  {
+   "host": "irdai.gov.in",
+   "state": "PARTIAL",
+   "why": "robots.txt Disallow: / - v2 respects it; the OLD govwatch and newshawk-regwatch still read it (last 20 Nov 20:05)",
+   "suggested_date": "decide (Sat 28 Nov): stop the old readers or get a written OK; use PIB / news meanwhile",
+   "in_docs": [
+    "WEB:380",
+    "WEB:455",
+    "WEB:456",
+    "WEB:550"
+   ],
+   "code_refs": [
+    "intraday/govwatch.py",
+    "intraday/regwatch.py",
+    "intraday/newsroom.py",
+    "intraday/newsclean.py"
+   ]
+  },
+  {
+   "host": "kerc.karnataka.gov.in",
+   "state": "NOT BUILT",
+   "why": "host not verified",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:423",
+    "WEB:441"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "kotaksecurities.com",
+   "state": "NOT BUILT",
+   "why": "public research",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "WEB:126"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "livelaw.in",
+   "state": "LIVE",
+   "why": "v2 p_regs sitemap (11:17 today)",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:206",
+    "WEB:234",
+    "WEB:271",
+    "WEB:313"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_regs.py",
+    "newshawk/check_sources.py"
+   ]
+  },
+  {
+   "host": "livemint.com",
+   "state": "LIVE",
+   "why": "old macro + newshawk RSS (12:35 today); not in v2 wires",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:154",
+    "WEB:18",
+    "WEB:39"
+   ],
+   "code_refs": [
+    "intraday/stories.json",
+    "intraday/newsroom.py",
+    "intraday/macro.py",
+    "intraday/newsclean.py"
+   ]
+  },
+  {
+   "host": "lme.com",
+   "state": "NOT NEEDED",
+   "why": "Westmetall gives LME official prices (read)",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "COL:153",
+    "COL:517",
+    "COL:584",
+    "WEB:151"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "loksabha.nic.in",
+   "state": "NOT NEEDED",
+   "why": "legacy, replaced by sansad.in",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:332",
+    "WEB:441"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "loksabhaph.nic.in",
+   "state": "NOT NEEDED",
+   "why": "legacy",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:332",
+    "WEB:441"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "mca.gov.in",
+   "state": "BLOCKED",
+   "why": "403 to this server",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:349",
+    "WEB:472",
+    "WEB:554"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_pagewatch.py"
+   ]
+  },
+  {
+   "host": "mcxindia.com",
+   "state": "NOT NEEDED",
+   "why": "MCX comes through Kite",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:120"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "meity.gov.in",
+   "state": "NOT BUILT",
+   "why": "IT rules / semiconductor approvals",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:352",
+    "WEB:442"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "merc.gov.in",
+   "state": "NOT BUILT",
+   "why": "Maharashtra power orders",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:419",
+    "WEB:518",
+    "WEB:562"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "mines.gov.in",
+   "state": "NOT BUILT",
+   "why": "auction tranches",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:364",
+    "WEB:442",
+    "WEB:562"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "mnre.gov.in",
+   "state": "NOT BUILT",
+   "why": "ALMM orders",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:355",
+    "WEB:494",
+    "WEB:554"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "mod.gov.in",
+   "state": "NOT BUILT",
+   "why": "mostly mirrored on PIB (read)",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:116",
+    "WEB:353",
+    "WEB:505"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "moneycontrol.com",
+   "state": "LIVE",
+   "why": "v2 news sitemap (12:55 today; 403 00:00-07:00); the old RSS is DEAD but still polled by 3 readers",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:153",
+    "WEB:18",
+    "WEB:34",
+    "WEB:35"
+   ],
+   "code_refs": [
+    "intraday/stories.json",
+    "intraday/newsroom.py",
+    "intraday/macro.py",
+    "intraday/newsclean.py"
+   ]
+  },
+  {
+   "host": "mopng.gov.in",
+   "state": "NOT BUILT",
+   "why": "windfall tax / gas price orders",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:358",
+    "WEB:442"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "morth.gov.in",
+   "state": "NOT BUILT",
+   "why": "low F&O impact",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:360",
+    "WEB:508"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "morth.nic.in",
+   "state": "NOT BUILT",
+   "why": "low F&O impact",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:360",
+    "WEB:509"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "mospi.gov.in",
+   "state": "NOT BUILT",
+   "why": "release calendar (GDP 30 Nov)",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "COL:135",
+    "WEB:118"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "motilaloswal.com",
+   "state": "NOT BUILT",
+   "why": "public research",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "WEB:125"
+   ],
+   "code_refs": [
+    "intraday/v2/newsmap/exposure_v0.json",
+    "intraday/v2/newsmap/ref/exposure_research_1119.json"
+   ]
+  },
+  {
+   "host": "msci.com",
+   "state": "BLOCKED",
+   "why": "bot challenge; MSCI dates kept by hand",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:245",
+    "WEB:77"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_indexes.py"
+   ]
+  },
+  {
+   "host": "nasdaq.com",
+   "state": "LIVE",
+   "why": "v2 uswrap (13:44 today; slow, 55 min)",
+   "suggested_date": "",
+   "in_docs": [
+    "COL:158",
+    "COL:518",
+    "COL:705"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_uswrap.py",
+    "intraday/v2/kb/fetch_free.py"
+   ]
+  },
+  {
+   "host": "nclat.nic.in",
+   "state": "NOT BUILT",
+   "why": "cause lists",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "WEB:408",
+    "WEB:479",
+    "WEB:555",
+    "WEB:557"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "nclt.gov.in",
+   "state": "NOT BUILT",
+   "why": "captcha on orders",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "COL:160",
+    "WEB:407",
+    "WEB:480"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "ndtvprofit.com",
+   "state": "PARTIAL",
+   "why": "sitemap 403 to this server; the feedburner RSS is read (13:08 today, ~38 min late)",
+   "suggested_date": "not planned for the sitemap",
+   "in_docs": [
+    "WEB:155",
+    "WEB:163",
+    "WEB:17",
+    "WEB:19"
+   ],
+   "code_refs": [
+    "intraday/stories.json",
+    "intraday/newsroom.py",
+    "intraday/newsclean.py"
+   ]
+  },
+  {
+   "host": "news.google.com",
+   "state": "LIVE",
+   "why": "many readers; heavy 429 throttling; slow by design",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:199",
+    "WEB:86"
+   ],
+   "code_refs": [
+    "intraday/shockwatch.py",
+    "intraday/stories.json",
+    "intraday/why.py",
+    "intraday/newsbody.py"
+   ]
+  },
+  {
+   "host": "newsonair.gov.in",
+   "state": "NOT BUILT",
+   "why": "AIR (second witness for PIB)",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:340",
+    "WEB:468",
+    "WEB:555"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "nfs.faireconomy.media",
+   "state": "LIVE",
+   "why": "v2 p_calendar (12:03 today)",
+   "suggested_date": "",
+   "in_docs": [
+    "COL:158",
+    "WEB:187",
+    "WEB:79"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_calendar.py"
+   ]
+  },
+  {
+   "host": "nhai.gov.in",
+   "state": "NOT BUILT",
+   "why": "tenders",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:361",
+    "WEB:391",
+    "WEB:507"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "niftyindices.com",
+   "state": "LIVE",
+   "why": "v2 p_indexes (Fri 22:56)",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:191",
+    "WEB:245",
+    "WEB:76"
+   ],
+   "code_refs": [
+    "intraday/secaudit.py",
+    "intraday/nsesec.py",
+    "intraday/fast.py",
+    "intraday/v2/sources/p_indexes.py"
+   ]
+  },
+  {
+   "host": "niftytrader.in",
+   "state": "NOT BUILT",
+   "why": "OI witness for the Outside Watch",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:127"
+   ],
+   "code_refs": [
+    "intraday/v2/newsmap/exposure_v0.json",
+    "intraday/v2/newsmap/ref/exposure_research_1119.json"
+   ]
+  },
+  {
+   "host": "nitter.net",
+   "state": "DEAD",
+   "why": "X mirror (not used)",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "COL:572"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "npci.org.in",
+   "state": "BLOCKED",
+   "why": "403 to this server",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:392",
+    "WEB:451",
+    "WEB:452",
+    "WEB:547"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_pagewatch.py"
+   ]
+  },
+  {
+   "host": "npp.gov.in",
+   "state": "NOT BUILT",
+   "why": "daily generation PDF",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:356",
+    "WEB:497",
+    "WEB:560"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "nppaindia.nic.in",
+   "state": "BLOCKED",
+   "why": "no DNS from this server; old regwatch.py still lists it",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:369",
+    "WEB:388",
+    "WEB:474"
+   ],
+   "code_refs": [
+    "intraday/regwatch.py",
+    "intraday/v2/sources/p_pagewatch.py",
+    "newshawk/regwatch_config.json"
+   ]
+  },
+  {
+   "host": "nsearchives.nseindia.com",
+   "state": "LIVE",
+   "why": "newshawk RSS (12:52 today), whales CSV, archive files",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:175",
+    "WEB:42",
+    "WEB:58"
+   ],
+   "code_refs": [
+    "intraday/oistudy.py",
+    "intraday/chains.py",
+    "intraday/banwatch.py",
+    "intraday/secaudit.py"
+   ]
+  },
+  {
+   "host": "nseindia.com",
+   "state": "LIVE",
+   "why": "v2 filings (12:49 today), circulars, insider; blocks cloud machines but not this server",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:155",
+    "WEB:162",
+    "WEB:18",
+    "WEB:19"
+   ],
+   "code_refs": [
+    "intraday/stories.json",
+    "intraday/preopen.py",
+    "intraday/exchange.py",
+    "intraday/why.py"
+   ]
+  },
+  {
+   "host": "nseix.com",
+   "state": "NOT NEEDED",
+   "why": "GIFT NIFTY comes through Kite",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:122"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "ofac.treasury.gov",
+   "state": "NOT BUILT",
+   "why": "sanctions actions",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:103"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "opec.org",
+   "state": "NOT BUILT",
+   "why": "OPEC+ statements",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:99"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "opstra.definedge.com",
+   "state": "NOT BUILT",
+   "why": "IV witness (login for real time)",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:128"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "pbc.gov.cn",
+   "state": "NOT BUILT",
+   "why": "PBoC",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "COL:195"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "pfrda.org.in",
+   "state": "NOT BUILT",
+   "why": "low value",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:381",
+    "WEB:492"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "pib.gov.in",
+   "state": "LIVE",
+   "why": "v2 p_regs (13:44 today), newshawk-regwatch, old govwatch",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:184",
+    "WEB:277",
+    "WEB:278",
+    "WEB:279"
+   ],
+   "code_refs": [
+    "intraday/govwatch.py",
+    "intraday/newsroom.py",
+    "intraday/newsclean.py",
+    "intraday/v2/sources/p_regs.py"
+   ]
+  },
+  {
+   "host": "pmi.spglobal.com",
+   "state": "NOT BUILT",
+   "why": "PMI release times",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "COL:195"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "pmindia.gov.in",
+   "state": "NOT NEEDED",
+   "why": "Cabinet mirrored on PIB (read)",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:341",
+    "WEB:515"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "pngrb.gov.in",
+   "state": "PARTIAL",
+   "why": "old regwatch.py only (unmeasured)",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:385",
+    "WEB:467",
+    "WEB:552"
+   ],
+   "code_refs": [
+    "intraday/regwatch.py"
+   ]
+  },
+  {
+   "host": "policyholder.gov.in",
+   "state": "BLOCKED",
+   "why": "robots Disallow: /",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:380",
+    "WEB:491",
+    "WEB:550"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_regs.py",
+    "intraday/v2/sources/p_pagewatch.py"
+   ]
+  },
+  {
+   "host": "powermin.gov.in",
+   "state": "NOT BUILT",
+   "why": "announcements",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:354",
+    "WEB:477",
+    "WEB:552"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "ppac.gov.in",
+   "state": "NOT BUILT",
+   "why": "fuel prices / gas price",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:131",
+    "WEB:359",
+    "WEB:500",
+    "WEB:560"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "prsindia.org",
+   "state": "PARTIAL",
+   "why": "old regwatch.py only (v2 has a parser but it is not in the poll list)",
+   "suggested_date": "before the Winter Session (early Dec)",
+   "in_docs": [
+    "WEB:331",
+    "WEB:469",
+    "WEB:545"
+   ],
+   "code_refs": [
+    "intraday/regwatch.py",
+    "intraday/v2/sources/p_regs.py"
+   ]
+  },
+  {
+   "host": "public.api.bsky.app",
+   "state": "NOT BUILT",
+   "why": "low value",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:145"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "pulse.zerodha.com",
+   "state": "NOT BUILT",
+   "why": "news aggregator (Outside Watch)",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:196",
+    "WEB:83"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "query1.finance.yahoo.com",
+   "state": "LIVE",
+   "why": "v2 uswrap quotes (13:48 today), old earlyteam",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:176",
+    "WEB:59"
+   ],
+   "code_refs": [
+    "intraday/sectorplan.py",
+    "intraday/morning.py",
+    "intraday/v2/analyst/shock.py",
+    "intraday/v2/sources/p_uswrap.py"
+   ]
+  },
+  {
+   "host": "rajyasabha.nic.in",
+   "state": "NOT NEEDED",
+   "why": "legacy",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:332",
+    "WEB:441"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "rbi.org.in",
+   "state": "LIVE",
+   "why": "v2 p_regs + p_bonds (Fri 19:52), newshawk",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:183",
+    "WEB:270",
+    "WEB:287",
+    "WEB:288"
+   ],
+   "code_refs": [
+    "intraday/govwatch.py",
+    "intraday/regwatch.py",
+    "intraday/newsroom.py",
+    "intraday/macro.py"
+   ]
+  },
+  {
+   "host": "report.grid-india.in",
+   "state": "NOT BUILT",
+   "why": "daily PSP PDFs",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:113",
+    "WEB:357",
+    "WEB:499"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "results.eci.gov.in",
+   "state": "NOT BUILT",
+   "why": "counting days only",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:144"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "reuters.com",
+   "state": "BLOCKED",
+   "why": "401 bot wall; via Google News only",
+   "suggested_date": "not planned",
+   "in_docs": [
+    "WEB:146",
+    "WEB:170"
+   ],
+   "code_refs": [
+    "intraday/stories.json",
+    "intraday/overnight.py",
+    "intraday/newsroom.py",
+    "intraday/newsclean.py"
+   ]
+  },
+  {
+   "host": "rsdebate.nic.in",
+   "state": "NOT BUILT",
+   "why": "debate archive",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:327",
+    "WEB:511"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "rsdoc.nic.in",
+   "state": "NOT BUILT",
+   "why": "RS questions back end",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:326",
+    "WEB:510"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "sansad.in",
+   "state": "LIVE",
+   "why": "v2 p_regs (not sitting)",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:100",
+    "WEB:211",
+    "WEB:270",
+    "WEB:290"
+   ],
+   "code_refs": [
+    "intraday/regwatch.py",
+    "intraday/v2/sources/p_regs.py",
+    "intraday/v2/sources/p_pagewatch.py"
+   ]
+  },
+  {
+   "host": "sansadtv.nic.in",
+   "state": "BLOCKED",
+   "why": "times out from this server; use hls.media.nic.in",
+   "suggested_date": "before the Winter Session (early Dec)",
+   "in_docs": [
+    "WEB:101",
+    "WEB:330",
+    "WEB:514"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_pagewatch.py"
+   ]
+  },
+  {
+   "host": "sat.gov.in",
+   "state": "NOT BUILT",
+   "why": "SAT orders",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "COL:160"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "satweb.sat.gov.in",
+   "state": "NOT BUILT",
+   "why": "SAT orders",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "WEB:411",
+    "WEB:478",
+    "WEB:555"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "sci.gov.in",
+   "state": "LIVE",
+   "why": "v2 p_sci (05:47 today)",
+   "suggested_date": "",
+   "in_docs": [
+    "COL:160",
+    "WEB:205",
+    "WEB:234",
+    "WEB:270"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_sci.py",
+    "newshawk/check_sources.py"
+   ]
+  },
+  {
+   "host": "scmp.com",
+   "state": "NOT BUILT",
+   "why": "China news RSS",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:135"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "scobserver.in",
+   "state": "NOT BUILT",
+   "why": "pending SC matters",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:404",
+    "WEB:517"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "sebi.gov.in",
+   "state": "LIVE",
+   "why": "v2 p_regs listings (Fri 19:12); the RSS is empty",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:182",
+    "WEB:270",
+    "WEB:280",
+    "WEB:378"
+   ],
+   "code_refs": [
+    "intraday/govwatch.py",
+    "intraday/regwatch.py",
+    "intraday/newsroom.py",
+    "intraday/mfsec.py"
+   ]
+  },
+  {
+   "host": "sec.gov",
+   "state": "NOT BUILT",
+   "why": "EDGAR (needs a contact User-Agent)",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "WEB:108"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "siam.in",
+   "state": "NOT BUILT",
+   "why": "monthly auto data",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:115"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "static.pib.gov.in",
+   "state": "NOT BUILT",
+   "why": "PDF host behind PIB releases",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:279",
+    "WEB:339",
+    "WEB:449"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "stats.gov.cn",
+   "state": "NOT BUILT",
+   "why": "China data releases",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "COL:195"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "steel.gov.in",
+   "state": "NOT BUILT",
+   "why": "releases",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:363",
+    "WEB:503"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "stooq.com",
+   "state": "NOT BUILT",
+   "why": "only in the old morning.py (not running); Yahoo is read",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:177",
+    "WEB:60"
+   ],
+   "code_refs": [
+    "intraday/morning.py"
+   ]
+  },
+  {
+   "host": "t.me",
+   "state": "NOT BUILT",
+   "why": "public channel preview",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "WEB:198",
+    "WEB:85"
+   ],
+   "code_refs": [
+    "intraday/newsroom.py"
+   ]
+  },
+  {
+   "host": "taxinformation.cbic.gov.in",
+   "state": "NOT BUILT",
+   "why": "customs / ADD notifications",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:345",
+    "WEB:442"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "tdsat.gov.in",
+   "state": "NOT BUILT",
+   "why": "cause lists",
+   "suggested_date": "Phase 2 (by 12 Dec)",
+   "in_docs": [
+    "WEB:412",
+    "WEB:482",
+    "WEB:557"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "thehindubusinessline.com",
+   "state": "LIVE",
+   "why": "old macro RSS (12:56 today)",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:203",
+    "WEB:90"
+   ],
+   "code_refs": [
+    "intraday/stories.json",
+    "intraday/overnight.py",
+    "intraday/newsroom.py",
+    "intraday/macro.py"
+   ]
+  },
+  {
+   "host": "tis.nhai.gov.in",
+   "state": "NOT BUILT",
+   "why": "toll info",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:361"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "tnerc.tn.gov.in",
+   "state": "BLOCKED",
+   "why": "certificate expired 22 Oct 2026",
+   "suggested_date": "not planned until the site fixes it",
+   "in_docs": [
+    "WEB:421",
+    "WEB:520",
+    "WEB:562"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_pagewatch.py"
+   ]
+  },
+  {
+   "host": "trai.gov.in",
+   "state": "LIVE",
+   "why": "v2 p_regs RSS (Fri 18:26)",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:109",
+    "WEB:383",
+    "WEB:453",
+    "WEB:454"
+   ],
+   "code_refs": [
+    "intraday/regwatch.py",
+    "intraday/v2/sources/p_regs.py",
+    "newshawk/regwatch_config.json"
+   ]
+  },
+  {
+   "host": "trendlyne.com",
+   "state": "NOT BUILT",
+   "why": "broker reports (paid)",
+   "suggested_date": "needs the trader's yes",
+   "in_docs": [
+    "WEB:123"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "trumpstruth.org",
+   "state": "PARTIAL",
+   "why": "v2 p_trump polls OK but only 1 post in 24 h vs 16 Friday - check the mirror",
+   "suggested_date": "check by hand before Sun 19:45",
+   "in_docs": [
+    "WEB:178",
+    "WEB:224",
+    "WEB:61"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_trump.py"
+   ]
+  },
+  {
+   "host": "ukmto.org",
+   "state": "NOT BUILT",
+   "why": "shipping security advisories",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:132"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "uperc.org",
+   "state": "NOT BUILT",
+   "why": "UP power orders",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:422",
+    "WEB:521",
+    "WEB:562"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "ustr.gov",
+   "state": "NOT BUILT",
+   "why": "US trade releases",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:104"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "vahan.parivahan.gov.in",
+   "state": "NOT BUILT",
+   "why": "registrations (dashboard)",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:111"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "web.sensibull.com",
+   "state": "NOT BUILT",
+   "why": "login likely",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:129"
+   ],
+   "code_refs": []
+  },
+  {
+   "host": "westmetall.com",
+   "state": "LIVE",
+   "why": "v2 p_world LME (07:50 today)",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:190",
+    "WEB:242",
+    "WEB:75"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_world.py",
+    "intraday/v2/kb/fetch_westmetall.py",
+    "intraday/v2/kb/history.local-1119/sources.json"
+   ]
+  },
+  {
+   "host": "whitehouse.gov",
+   "state": "LIVE",
+   "why": "v2 p_trump (08:02 today)",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:192",
+    "WEB:250",
+    "WEB:78"
+   ],
+   "code_refs": [
+    "intraday/v2/sources/p_trump.py"
+   ]
+  },
+  {
+   "host": "youtube.com",
+   "state": "LIVE",
+   "why": "TV stream capture for CNBC-TV18 / ET NOW (13:37 today); cloud machines get bot checks, this server does not",
+   "suggested_date": "",
+   "in_docs": [
+    "WEB:148",
+    "WEB:170"
+   ],
+   "code_refs": [
+    "intraday/tvwatch.py"
+   ]
+  },
+  {
+   "host": "zeebiz.com",
+   "state": "PARTIAL",
+   "why": "only a Google News site: query that returns 0 items",
+   "suggested_date": "Sat 28 Nov (new small poller / page watch)",
+   "in_docs": [
+    "WEB:202",
+    "WEB:89"
+   ],
+   "code_refs": [
+    "intraday/newsroom.py",
+    "intraday/macro.py",
+    "intraday/newsclean.py"
+   ]
+  },
+  {
+   "host": "zerodha.com",
+   "state": "NOT BUILT",
+   "why": "bulletin RSS (exchange circulars are read directly)",
+   "suggested_date": "Phase 3 (Jan 2027)",
+   "in_docs": [
+    "WEB:197",
+    "WEB:84"
+   ],
+   "code_refs": [
+    "intraday/kite2.py"
+   ]
+  }
+ ]
+}

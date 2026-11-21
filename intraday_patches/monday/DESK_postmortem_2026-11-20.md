@@ -1,0 +1,171 @@
+# POST-MORTEM 2026-11-20 - run FULL3 (code only; FAKE / real as the run was) - made 21 Nov 03:37 IST
+
+Movers: the NSE CM bhavcopy, previous close -> close, F&O shares, >= 2%, top 10 each side (218 F&O shares priced). Card and look times are the replay's virtual IST times (the board day 2026-11-20 holds the evening before and the session). 'In the head's input' is reconstructed with the snapshot rule (latest card per seat up to the look + 15 / 35 / 36 of the last 2 hours); reader items reach the head as ranked knowledge rows, so for reader cards it says 'item in the store', not 'seen'.
+
+## UP movers (a CE would have worked)
+- **INDUSINDBK +8.59%** - named by 4 card(s)
+  - 2026-11-19 19:16 seat R2 FACT s1: IndusInd Bank taps Mastercard for outbound remittances [loser A product route with no stated volume or fee is too small to move the bank] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 19:16 (reader card)
+  - 2026-11-19 22:01 seat R2 FACT s2: IndusInd Bank promoters restructure share pledges to refinance [winner Pledge restructuring for refinancing can ease promoter-level overhang on ] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 22:01 (reader card)
+  - 2026-11-20 08:46 seat R2 FACT s1: IndusInd Bank met eight funds in Chennai after its Singapore roadshow, a routine investor meeting [winner Investor outreach only; no earnings, policy or flow fact attached] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 08:46 (reader card)
+  - 2026-11-20 12:05 seat 36 OBJECTION s3: BANKBARODA CE: the bank move is mostly a one-day FII flow and an INDUSINDBK jump, and the Moody's upgrade is a [named in text] - sources desk board seat 10_flows, desk board seat 19_banks - in the head's input at trigger 12:05, heartbeat 12:50
+  - verdict: NOT picked - cards named it but no head idea followed
+- **CUB +6.25%** - named by 1 card(s)
+  - 2026-11-19 17:01 seat R2 FACT s2: City Union Bank halts NEFT and RTGS gateways as a precaution amid a security issue [loser Operational and security lapse raises regulator and customer trust risk.] - sources newsmap, newsmap - item in the store from 17:01 (reader card)
+  - verdict: NOT picked - cards named it but no head idea followed (and none of them was in a head look's input)
+- **APOLLOHOSP +5.29%** - named by 1 card(s)
+  - 2026-11-20 09:33 seat 22 VIEW s3: Hospitals surge on a falling market with near-full breadth; pharma flat. Hospitals are a company-news and brok [winner broad hospital strength on a weak market; pullback entry above VWAP only;] - sources GIR mover line (code), GIR sector basket (code), GIR world driver (code), Google News: Alkem USFDA warning letter, wire: Nomura note on Alkem warning letter (repeat), wire: UBS midcap picks list (repeat) - in the head's input at heartbeat 10:11, heartbeat 10:56, heartbeat 11:41, trigger 12:05
+  - verdict: NOT picked - cards named it but no head idea followed
+- **AXISBANK +4.72%** - named by 1 card(s)
+  - 2026-11-20 00:46 seat R2 FACT s2: Axis Bank expects faster MSME loan growth in the second half of the year [winner management guidance points to faster lending growth] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 00:46 (reader card)
+  - verdict: NOT picked - cards named it but no head idea followed (and none of them was in a head look's input)
+- **UNIONBANK +4.21%** - NO card named it
+  - verdict: NOT picked - no card named it (nothing in the desk's knowledge led to it)
+- **PERSISTENT +4.15%** - named by 2 card(s)
+  - 2026-11-19 17:01 seat R2 FACT s2: Persistent Systems allots QIP shares; large banks lead the demand [winner Funding done with strong institutional demand removes an overhang for the] - sources newsmap, newsmap - item in the store from 17:01 (reader card)
+  - 2026-11-20 09:37 seat 21 VIEW s3: Indian IT rallies against a falling Nasdaq and chips; breadth is wide and every name is above VWAP, but the ca [idea CE VWAP_RECLAIM] - sources Desk board - seat 1 card, EVENT_MEMORY - COFORGE index_change episodes, GIR snapshot - COFORGE mover (code), GIR snapshot - INFY mover (code), GIR snapshot - IT sector basket (code), GIR snapshot - MPHASIS mover (code), GIR snapshot - Nasdaq close (code), GIR snapshot - PERSISTENT mover (code), GIR snapshot - SOX close (code), GIR snapshot - TCS mover (code), GIR snapshot - USDINR (code), Google News - Kaynes Q2 results and EMS fall - in the head's input at heartbeat 10:11, heartbeat 10:56, heartbeat 11:41, trigger 12:05
+  - verdict: NOT picked - cards named it but no head idea followed
+- **MAXHEALTH +3.88%** - named by 2 card(s)
+  - 2026-11-20 09:16 seat 31 VIEW s2: Short build-up on total OI in gold-loan lenders and metals with price down; no long build-up of size; no chain [named in text] - sources Desk board, seat 19 card, Kite futures OI via recorder - in the head's input at trigger 09:20, trigger 09:23, trigger 09:26, heartbeat 10:11
+  - 2026-11-20 09:33 seat 22 VIEW s3: Hospitals surge on a falling market with near-full breadth; pharma flat. Hospitals are a company-news and brok [winner open interest building with price, but overbought, so pullback only; idea] - sources GIR mover line (code), GIR sector basket (code), GIR world driver (code), Google News: Alkem USFDA warning letter, wire: Nomura note on Alkem warning letter (repeat), wire: UBS midcap picks list (repeat) - in the head's input at heartbeat 10:11, heartbeat 10:56, heartbeat 11:41, trigger 12:05
+  - verdict: NOT picked - cards named it but no head idea followed
+- **ANGELONE +3.52%** - named by 1 card(s)
+  - 2026-11-19 16:46 seat R2 THEME s3: Centre weighs raising the derivatives tax while cutting the share transaction levy, a risk for exchanges and b [loser F&O-heavy broking revenue is exposed] - sources newsmap, newsmap - item in the store from 16:46 (reader card)
+  - verdict: NOT picked - cards named it but no head idea followed (and none of them was in a head look's input)
+- **TATAELXSI +3.36%** - NO card named it
+  - verdict: NOT picked - no card named it (nothing in the desk's knowledge led to it)
+- **PNBHOUSING +3.21%** - NO card named it
+  - verdict: NOT picked - no card named it (nothing in the desk's knowledge led to it)
+
+## DOWN movers (a PE would have worked)
+- **KALYANKJIL -3.37%** - named by 5 card(s)
+  - 2026-11-20 02:16 seat R6 FACT s3: STORY BACK: Gold near a multi-month low again; lenders fell on the last gold-fall episode, jewellers gained [winner Gold falls help jewellers on demand; the move is weeks-slow, so only a sa] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 02:16 (reader card)
+  - 2026-11-20 02:46 seat R2 THEME s2: Gold slides near a long low, pressuring gold lenders while jewellers gain [winner named as gaining in the report; demand channel over weeks] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 02:46 (reader card)
+  - 2026-11-20 09:46 seat 32 VIEW s2: regimes: EXTREME none; oversold KALYANKJIL,APLAPOLLO,VEDL,TITAN,TATASTEEL,SWIGGY [named in text] - sources - - NOT in any head look's input
+  - 2026-11-20 14:16 seat R2 THEME s2: Gold and silver prices slump; gold lenders Muthoot and Manappuram seen weak, Hindustan Zinc tumbles [winner Cheaper gold lifts jewellers; the link is weeks-long] - sources newsmap, newsmap - item in the store from 14:16 (reader card)
+  - 2026-11-20 15:31 seat R2 THEME s2: Gold and silver slide with jewellers marked down; read gold lenders as the other side of a bullion fall [winner Same jewellers channel as TITAN; the tape already marked them down] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 15:31 (reader card)
+  - verdict: NOT picked - cards named it but no head idea followed (and none of them was in a head look's input)
+- **MCX -3.02%** - named by 6 card(s)
+  - 2026-11-19 16:46 seat R2 THEME s2: Gold and silver futures slide on MCX as hawkish Fed signals lift rate and dollar worries [named in text] - sources newsmap, newsmap - item in the store from 16:46 (reader card)
+  - 2026-11-19 16:46 seat R2 THEME s3: Centre weighs raising the derivatives tax while cutting the share transaction levy, a risk for exchanges and b [loser Commodity derivatives could be caught in the same tax change] - sources newsmap, newsmap - item in the store from 16:46 (reader card)
+  - 2026-11-19 16:46 seat R2 FACT s2: UBS keeps Buy on MCX and raises its target, citing improving volume resilience [winner A broker target raise on volume resilience supports sentiment] - sources newsmap, newsmap - item in the store from 16:46 (reader card)
+  - 2026-11-20 09:37 seat 20 VIEW s3: Gold lenders lead the NBFC group lower on a softer gold price; MCX weak; rest of NBFC and insurers flat with b [named in text] - sources CNBC-TV18 speech-to-text, Desk board - seat 19 card, GIR snapshot - gold London, GIR snapshot - movers, GIR snapshot - sector baskets - in the head's input at heartbeat 10:11, heartbeat 10:56, heartbeat 11:41, trigger 12:05
+  - 2026-11-20 13:31 seat 32 VIEW s2: regimes: EXTREME none; oversold MCX [named in text] - sources - - NOT in any head look's input
+  - 2026-11-20 14:16 seat R2 THEME s2: Gold and silver prices slump; gold lenders Muthoot and Manappuram seen weak, Hindustan Zinc tumbles [named in text] - sources newsmap, newsmap - item in the store from 14:16 (reader card)
+  - verdict: NOT picked - cards named it but no head idea followed
+- **SWIGGY -2.78%** - named by 1 card(s)
+  - 2026-11-20 09:46 seat 32 VIEW s2: regimes: EXTREME none; oversold KALYANKJIL,APLAPOLLO,VEDL,TITAN,TATASTEEL,SWIGGY [named in text] - sources - - NOT in any head look's input
+  - verdict: NOT picked - cards named it but no head idea followed (and none of them was in a head look's input)
+- **INOXWIND -2.65%** - named by 5 card(s)
+  - 2026-11-19 19:16 seat R2 FACT s2: Inox Wind says cash flow now ranks above FY27 revenue guidance [loser A shift away from revenue guidance reads as a mild negative, not yet prove] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 19:16 (reader card)
+  - 2026-11-19 19:16 seat R6 FACT s2: STORY BACK: Inox Wind guidance now framed on cash flow after its last results episode [loser Guidance framing moved to cash flow; the past results reactions are a prio] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 19:16 (reader card)
+  - 2026-11-20 07:16 seat R1 FACT s2: Inox Wind Q2 profit fall and CEO exit are already in the tape; the stock had fallen sharply before first sight [loser Weak quarter read by the market, but the move has already happened and thi] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 07:16 (reader card)
+  - 2026-11-20 07:17 seat 26 VIEW s2: Capex shares lead a broad rally; defence gets a missile deal and a capex-hike story, but a repeat theme needs  [loser profit fall and CEO exit; a gap-down is not chased] - sources Google News: Barak missile upgrade deal, Google News: Inox Wind results, Google News: defence capex hike beneficiaries, sector tape capital goods, sector tape cement, sector tape construction - in the head's input at brief 07:17, heartbeat 09:15, trigger 09:20, trigger 09:23
+  - 2026-11-20 14:01 seat R1 FACT s2: Inox Wind fell on weak Q2 results as renewable stocks sold off on sector sentiment [winner Q2 results are weak and the stock has already fallen, so further downside] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 14:01 (reader card)
+  - verdict: NOT picked - cards named it but no head idea followed
+- **GVT&D -2.63%** - named by 2 card(s)
+  - 2026-11-20 09:31 seat 32 VIEW s2: regimes: EXTREME none; oversold VEDL,APLAPOLLO,GVT&D,TATASTEEL,POWERINDIA,ENRIN [named in text] - sources - - NOT in any head look's input
+  - 2026-11-20 09:37 seat 26 VIEW s2: Capital goods and infra sold on broad short build-up with no order or policy trigger; cement and realty hold s [named in text] - sources GIR movers - ENRIN (code), GIR movers - GVT&D (code), GIR movers - POWERINDIA (code), GIR snapshot - sector baskets (code), Google News - Motilal Oswal buy on Polycab, Wire - Jefferies on Ambuja Cements - in the head's input at heartbeat 10:11, heartbeat 10:56, heartbeat 11:41, trigger 12:05
+  - verdict: NOT picked - cards named it but no head idea followed
+- **MUTHOOTFIN -2.58%** - named by 10 card(s)
+  - 2026-11-19 16:16 seat R2 THEME s2: Gold slides to a multi-month low, hitting gold-loan lenders and jewellery names on a Fed-linked move [loser Lower gold prices cut loan collateral value and sentiment for gold lenders] - sources newsmap, newsmap - item in the store from 16:16 (reader card)
+  - 2026-11-19 16:31 seat R2 THEME s1: Gold and silver slip on a hawkish Fed, pressuring gold lenders and favouring rate-sensitive banks only if yiel [loser Lower gold lowers the collateral value for gold lenders.] - sources newsmap, newsmap - item in the store from 16:31 (reader card)
+  - 2026-11-19 16:46 seat R2 THEME s2: Gold and silver futures slide on MCX as hawkish Fed signals lift rate and dollar worries [loser Falling gold weighs on gold-loan sentiment and collateral value] - sources newsmap, newsmap - item in the store from 16:46 (reader card)
+  - 2026-11-20 02:46 seat R2 THEME s2: Gold slides near a long low, pressuring gold lenders while jewellers gain [loser gold-loan collateral value falls with gold; same-day gap risk] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 02:46 (reader card)
+  - 2026-11-20 09:16 seat 31 VIEW s2: Short build-up on total OI in gold-loan lenders and metals with price down; no long build-up of size; no chain [named in text] - sources Desk board, seat 19 card, Kite futures OI via recorder - in the head's input at trigger 09:20, trigger 09:23, trigger 09:26, heartbeat 10:11
+  - 2026-11-20 09:16 seat 32 VIEW s2: regimes: EXTREME none; oversold MUTHOOTFIN,HINDZINC,MANAPPURAM,NATIONALUM,VEDL,APLAPOLLO [named in text] - sources - - in the head's input at trigger 09:20, trigger 09:23, trigger 09:26
+  - ... 4 more cards
+  - verdict: NOT picked - cards named it but no head idea followed
+- **CGPOWER -2.57%** - NO card named it
+  - verdict: NOT picked - no card named it (nothing in the desk's knowledge led to it)
+- **VEDL -2.32%** - named by 9 card(s)
+  - 2026-11-19 16:01 seat R2 THEME s2: Copper slides to a seven-month low while AC makers rally and copper producers lag [loser copper price is part of its revenue mix] - sources newsmap, newsmap - item in the store from 16:01 (reader card)
+  - 2026-11-19 16:16 seat R2 THEME s2: Copper at a seven-month low lifts Voltas sharply, a cost-relief read for copper-using makers, while miners los [loser Lower base-metal prices hit the miner.] - sources newsmap, newsmap - item in the store from 16:16 (reader card)
+  - 2026-11-20 02:01 seat R2 FACT s2: India opens aluminium dumping probe on imports from four Asian countries; Hindalco, Vedanta eyed [winner Domestic aluminium producer; same channel, weaker link to the trade actio] - sources GOOGLE NEWS, GOOGLE NEWS - item in the store from 02:01 (reader card)
+  - 2026-11-20 09:16 seat 32 VIEW s2: regimes: EXTREME none; oversold MUTHOOTFIN,HINDZINC,MANAPPURAM,NATIONALUM,VEDL,APLAPOLLO [named in text] - sources - - in the head's input at trigger 09:20, trigger 09:23, trigger 09:26
+  - 2026-11-20 09:31 seat 32 VIEW s2: regimes: EXTREME none; oversold VEDL,APLAPOLLO,GVT&D,TATASTEEL,POWERINDIA,ENRIN [named in text] - sources - - NOT in any head look's input
+  - 2026-11-20 09:46 seat 32 VIEW s2: regimes: EXTREME none; oversold KALYANKJIL,APLAPOLLO,VEDL,TITAN,TATASTEEL,SWIGGY [named in text] - sources - - NOT in any head look's input
+  - ... 3 more cards
+  - verdict: NOT picked - cards named it but no head idea followed
+- **ENRIN -2.19%** - named by 2 card(s)
+  - 2026-11-20 09:31 seat 32 VIEW s2: regimes: EXTREME none; oversold VEDL,APLAPOLLO,GVT&D,TATASTEEL,POWERINDIA,ENRIN [named in text] - sources - - NOT in any head look's input
+  - 2026-11-20 09:37 seat 26 VIEW s2: Capital goods and infra sold on broad short build-up with no order or policy trigger; cement and realty hold s [named in text] - sources GIR movers - ENRIN (code), GIR movers - GVT&D (code), GIR movers - POWERINDIA (code), GIR snapshot - sector baskets (code), Google News - Motilal Oswal buy on Polycab, Wire - Jefferies on Ambuja Cements - in the head's input at heartbeat 10:11, heartbeat 10:56, heartbeat 11:41, trigger 12:05
+  - verdict: NOT picked - cards named it but no head idea followed
+- **RVNL -2.05%** - named by 2 card(s)
+  - 2026-11-19 19:47 seat 26 VIEW s2: Capex baskets rallied with the market on broad breadth; rail and cable names led, news is order-book colour, s [named in text] - sources GIR snapshot - capital goods basket (code), GIR snapshot - cement basket (code), GIR snapshot - construction basket (code), Polycab investment plan via Google News, Titagarh order book via wire - in the head's input at brief 19:47, brief 22:46
+  - 2026-11-20 11:16 seat 32 VIEW s2: regimes: EXTREME none; oversold RVNL [named in text] - sources - - in the head's input at heartbeat 11:41, trigger 12:05, heartbeat 12:50
+  - verdict: NOT picked - cards named it but no head idea followed
+
+## SEAT CONSENSUS at each brief (what the code list WOULD have held - desk 02:30) and picked / not picked
+- **2026-11-19 19:47 brief 19:45** (price agreement = the 2026-11-19 session's close; top 5 enforced by the new rule):
+  - *1. BANKBARODA CE - 2 card(s) (2.0 weighted), 2 bench(es); benches Reasoning, Sectors; strength 4.0; cards C:3c75c921,C:ede87fbf · PICKED (NEW 19:47) · day +0.38%
+  - *2. HEROMOTOCO PE - 4 card(s) (4.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 9.0; cards C:ef86da06,C:650d5144,C:7447dea9,C:ede87fbf · PICKED (NEW 19:47) · day -0.36%
+  - *3. MANAPPURAM PE - 4 card(s) (4.0 weighted), 2 bench(es); benches Readers, Sectors; strength 7.0; cards C:efd6aada,C:00fcba9a,C:a099d2ee,C:01520e0c · NOT picked · day -0.83%
+  - *4. POLYCAB CE - 3 card(s) (3.0 weighted), 2 bench(es); benches Readers, Sectors; strength 6.0; cards C:6283012c,C:e8f9abc3,C:52ccc619 · NOT picked · day +0.26%
+  - *5. PAYTM PE - 2 card(s) (2.0 weighted), 2 bench(es); benches Readers, Sectors; strength 4.0; cards C:6cd9ac6f,C:01520e0c · NOT picked · day +0.82%
+  -  6. TCS PE - single source: C:4796bd0a OFFICIAL card + price agrees [single source]; benches Reasoning, Sectors; strength 3.0; cards C:4796bd0a,C:ede87fbf · via group IT -> GIR sector map 'it' · PICKED (NEW 19:47) · day +1.43%
+  -  7. TVSMOTOR CE - single source: C:7447dea9 OFFICIAL card + price agrees [single source]; benches Reasoning, Sectors; strength 3.0; cards C:7447dea9,C:ede87fbf · via group AUTO_ANC -> GIR sector map 'auto' · NOT picked · day -0.25%
+  -  8. ALKEM PE - 4 card(s) (4.0 weighted), 1 bench(es); benches Readers; strength 13.0; cards C:d997423f,C:00d29a2f,C:af314b41,C:cbd45eca · NOT picked · day +0.78%
+  -  9. ATHERENERG CE - 3 card(s) (2.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 4.0; cards C:ef86da06,C:7447dea9,C:ede87fbf · via group AUTO_ANC -> GIR sector map 'auto' · NOT picked · day +0.55%
+  -  10. ADANIENSOL PE - single source: C:ddab279b OFFICIAL card + price agrees [single source]; benches Sectors; strength 2.0; cards C:ddab279b · NOT picked · day +1.25%
+  -  11. BHARTIARTL CE - single source: C:b3b50726 OFFICIAL card + price agrees [single source]; benches Sectors; strength 2.0; cards C:b3b50726 · NOT picked · day +0.83%
+  -  12. INFY PE - single source: C:ede87fbf OFFICIAL card + price agrees [single source]; benches Reasoning; strength 2.0; cards C:ede87fbf · NOT picked · day +0.56%
+  -  13. VOLTAS CE - 4 card(s) (4.0 weighted), 1 bench(es); benches Readers; strength 8.0; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:941e86d6 · NOT picked · day -0.16%
+  -  14. HINDALCO PE - 5 card(s) (4.0 weighted), 1 bench(es); benches Readers; strength 8.0; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:935d7b2f,C:941e86d6 · via group METAL -> GIR sector map 'metals & mining'; group METALS -> GIR sector map 'metals & mining' · NOT picked · day +2.14%
+  -  15. VEDL PE - 4 card(s) (3.0 weighted), 1 bench(es); benches Readers; strength 6.0; cards C:6283012c,C:e8f9abc3,C:935d7b2f,C:941e86d6 · via group METAL -> GIR sector map 'metals & mining'; group METALS -> GIR sector map 'metals & mining' · NOT picked · day -2.32%
+- **2026-11-19 22:46 brief 22:45** (price agreement = the 2026-11-19 session's close; top 5 enforced by the new rule):
+  - *1. BANKBARODA CE - 2 card(s) (2.0 weighted), 2 bench(es); benches Reasoning, Sectors; strength 4.0; cards C:3c75c921,C:ede87fbf · PICKED (NEW 19:47) · day +0.38%
+  - *2. TCS PE - 4 card(s) (3.5 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 7.0; cards C:4796bd0a,C:ede87fbf,C:78d14d08,C:a83bc8b4 · via group IT -> GIR sector map 'it' · PICKED (NEW 19:47) · day +1.43%
+  - *3. MANAPPURAM PE - 5 card(s) (5.0 weighted), 2 bench(es); benches Readers, Sectors; strength 9.0; cards C:efd6aada,C:00fcba9a,C:a099d2ee,C:01520e0c,C:8caabf55 · NOT picked · day -0.83%
+  - *4. HEROMOTOCO PE - 4 card(s) (4.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 9.0; cards C:ef86da06,C:650d5144,C:7447dea9,C:ede87fbf · PICKED (NEW 19:47) · day -0.36%
+  - *5. POLYCAB CE - 3 card(s) (3.0 weighted), 2 bench(es); benches Readers, Sectors; strength 6.0; cards C:6283012c,C:e8f9abc3,C:52ccc619 · NOT picked · day +0.26%
+  -  6. PNB CE - 3 card(s) (2.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 5.0; cards C:3c75c921,C:ede87fbf,C:2c4e5aa4 · via group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · NOT picked · day +0.31%
+  -  7. PAYTM PE - 2 card(s) (2.0 weighted), 2 bench(es); benches Readers, Sectors; strength 4.0; cards C:6cd9ac6f,C:01520e0c · NOT picked · day +0.82%
+  -  8. INFY PE - single source: C:ede87fbf OFFICIAL card + price agrees [single source]; benches Readers, Reasoning; strength 3.0; cards C:ede87fbf,C:78d14d08 · via group IT -> GIR sector map 'it' · NOT picked · day +0.56%
+  -  9. TVSMOTOR CE - single source: C:7447dea9 OFFICIAL card + price agrees [single source]; benches Reasoning, Sectors; strength 3.0; cards C:7447dea9,C:ede87fbf · via group AUTO_ANC -> GIR sector map 'auto' · NOT picked · day -0.25%
+  -  10. ALKEM PE - 5 card(s) (5.0 weighted), 1 bench(es); benches Readers; strength 15.0; cards C:d997423f,C:00d29a2f,C:af314b41,C:cbd45eca,C:9248330c · NOT picked · day +0.78%
+  -  11. ATHERENERG CE - 3 card(s) (2.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 4.0; cards C:ef86da06,C:7447dea9,C:ede87fbf · via group AUTO_ANC -> GIR sector map 'auto' · NOT picked · day +0.55%
+  -  12. ADANIENSOL PE - single source: C:ddab279b OFFICIAL card + price agrees [single source]; benches Sectors; strength 2.0; cards C:ddab279b · NOT picked · day +1.25%
+  -  13. BHARTIARTL CE - single source: C:b3b50726 OFFICIAL card + price agrees [single source]; benches Sectors; strength 2.0; cards C:b3b50726 · NOT picked · day +0.83%
+  -  14. VOLTAS CE - 4 card(s) (4.0 weighted), 1 bench(es); benches Readers; strength 8.0; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:941e86d6 · NOT picked · day -0.16%
+  -  15. HINDALCO PE - 5 card(s) (4.0 weighted), 1 bench(es); benches Readers; strength 8.0; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:935d7b2f,C:941e86d6 · via group METAL -> GIR sector map 'metals & mining'; group METALS -> GIR sector map 'metals & mining' · NOT picked · day +2.14%
+- **2026-11-20 07:17 brief 07:15** (price agreement = the 2026-11-19 session's close; top 5 enforced by the new rule):
+  - *1. BANKBARODA CE - 5 card(s) (4.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 8.0; cards C:3c75c921,C:ede87fbf,C:dfa16c73,C:40311e5f,C:af536ca8 · via group BANKS -> GIR sector map 'banks'; group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · PICKED (NEW 19:47) · day +0.38%
+  - *2. NATIONALUM PE - 4 card(s) (3.0 weighted), 3 bench(es); benches Commodities, Readers, Sectors; strength 6.0; cards C:935d7b2f,C:941e86d6,C:bf194899,C:04ba885a · via group METAL -> GIR sector map 'metals & mining'; group METALS -> GIR sector map 'metals & mining' · PICKED (NEW 07:17) · day -1.24%
+  - *3. ALKEM PE - 9 card(s) (9.0 weighted), 2 bench(es); benches Readers, Sectors; strength 23.0; cards C:d997423f,C:00d29a2f,C:af314b41,C:cbd45eca,C:9248330c · PICKED (NEW 07:17) · day +0.78%
+  - *4. VOLTAS CE - 11 card(s) (11.0 weighted), 2 bench(es); benches Commodities, Readers; strength 22.0; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:941e86d6,C:0e8f5278 · NOT picked · day -0.16%
+  - *5. TCS PE - 6 card(s) (4.5 weighted), 4 bench(es); benches Readers, Reasoning, Sectors, World; strength 9.0; cards C:4796bd0a,C:ede87fbf,C:78d14d08,C:a83bc8b4,C:87c391b2 · via group IT -> GIR sector map 'it' · PICKED (NEW 19:47) · day +1.43%
+  -  6. INFY PE - 5 card(s) (3.5 weighted), 4 bench(es); benches Readers, Reasoning, Sectors, World; strength 7.0; cards C:ede87fbf,C:78d14d08,C:6d15bf7a,C:87c391b2,C:b8496b18 · via group IT -> GIR sector map 'it' · NOT picked · day +0.56%
+  -  7. MANAPPURAM PE - 8 card(s) (7.5 weighted), 2 bench(es); benches Readers, Sectors; strength 15.0; cards C:efd6aada,C:00fcba9a,C:a099d2ee,C:01520e0c,C:8caabf55 · via group NBFC -> GIR sector map 'nbfc & finance' · NOT picked · day -0.83%
+  -  8. HEROMOTOCO PE - 4 card(s) (4.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 9.0; cards C:ef86da06,C:650d5144,C:7447dea9,C:ede87fbf · PICKED (NEW 19:47) · day -0.36%
+  -  9. PAYTM PE - 5 card(s) (4.5 weighted), 2 bench(es); benches Readers, Sectors; strength 8.0; cards C:6cd9ac6f,C:01520e0c,C:110730fe,C:40311e5f,C:81513cff · via group NBFC -> GIR sector map 'nbfc & finance' · NOT picked · day +0.82%
+  -  10. INOXWIND PE - 4 card(s) (4.0 weighted), 2 bench(es); benches Readers, Sectors; strength 8.0; cards C:025534c0,C:618730b2,C:8e6f6b3f,C:308caa97 · NOT picked · day -2.65%
+  -  11. PNB CE - 5 card(s) (3.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 7.0; cards C:3c75c921,C:ede87fbf,C:2c4e5aa4,C:40311e5f,C:af536ca8 · via group BANKS -> GIR sector map 'banks'; group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · PICKED (NEW 07:17) · day +0.31%
+  -  12. BEL CE - 3 card(s) (3.0 weighted), 2 bench(es); benches Readers, Sectors; strength 6.0; cards C:fc8a80db,C:5022bd1d,C:308caa97 · NOT picked · day -0.54%
+  -  13. POLYCAB CE - 3 card(s) (3.0 weighted), 2 bench(es); benches Readers, Sectors; strength 6.0; cards C:6283012c,C:e8f9abc3,C:52ccc619 · NOT picked · day +0.26%
+  -  14. CANBK CE - 4 card(s) (2.5 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 5.0; cards C:3c75c921,C:ede87fbf,C:40311e5f,C:af536ca8 · via group BANKS -> GIR sector map 'banks'; group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · NOT picked · day +2.12%
+  -  15. TVSMOTOR CE - 4 card(s) (2.5 weighted), 3 bench(es); benches Commodities, Reasoning, Sectors; strength 5.0; cards C:7447dea9,C:ede87fbf,C:bf194899,C:4f1b95d1 · via group AUTO -> GIR sector map 'auto'; group AUTO_ANC -> GIR sector map 'auto' · NOT picked · day -0.25%
+- **2026-11-20 09:10 brief 09:08 - this brief FAILED in the run** (price agreement = the 2026-11-19 session's close; top 5 enforced by the new rule):
+  - *1. BANKBARODA CE - 5 card(s) (4.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 8.0; cards C:3c75c921,C:ede87fbf,C:dfa16c73,C:40311e5f,C:af536ca8 · via group BANKS -> GIR sector map 'banks'; group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · PICKED (NEW 19:47) · day +0.38%
+  - *2. NATIONALUM PE - 4 card(s) (3.0 weighted), 3 bench(es); benches Commodities, Readers, Sectors; strength 6.0; cards C:935d7b2f,C:941e86d6,C:bf194899,C:04ba885a · via group METAL -> GIR sector map 'metals & mining'; group METALS -> GIR sector map 'metals & mining' · PICKED (NEW 07:17) · day -1.24%
+  - *3. ALKEM PE - 9 card(s) (9.0 weighted), 2 bench(es); benches Readers, Sectors; strength 23.0; cards C:d997423f,C:00d29a2f,C:af314b41,C:cbd45eca,C:9248330c · PICKED (NEW 07:17) · day +0.78%
+  - *4. VOLTAS CE - 11 card(s) (11.0 weighted), 2 bench(es); benches Commodities, Readers; strength 22.0; cards C:6283012c,C:e8f9abc3,C:ab7bc390,C:941e86d6,C:0e8f5278 · NOT picked · day -0.16%
+  - *5. TCS PE - 6 card(s) (4.5 weighted), 4 bench(es); benches Readers, Reasoning, Sectors, World; strength 9.0; cards C:4796bd0a,C:ede87fbf,C:78d14d08,C:a83bc8b4,C:87c391b2 · via group IT -> GIR sector map 'it' · PICKED (NEW 19:47) · day +1.43%
+  -  6. INFY PE - 5 card(s) (3.5 weighted), 4 bench(es); benches Readers, Reasoning, Sectors, World; strength 7.0; cards C:ede87fbf,C:78d14d08,C:6d15bf7a,C:87c391b2,C:b8496b18 · via group IT -> GIR sector map 'it' · NOT picked · day +0.56%
+  -  7. MANAPPURAM PE - 9 card(s) (8.0 weighted), 2 bench(es); benches Readers, Sectors; strength 16.0; cards C:efd6aada,C:00fcba9a,C:a099d2ee,C:01520e0c,C:8caabf55 · via group GOLDLOAN -> sector board GROUPS 'jewellers & gold loans' (engine/config.py) + SECTOR_LINKS gold-loan / jewellers row; group NBFC -> GIR sector map 'nbfc & finance' · NOT picked · day -0.83%
+  -  8. HEROMOTOCO PE - 4 card(s) (4.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 9.0; cards C:ef86da06,C:650d5144,C:7447dea9,C:ede87fbf · PICKED (NEW 19:47) · day -0.36%
+  -  9. BEL CE - 4 card(s) (4.0 weighted), 2 bench(es); benches Readers, Sectors; strength 8.0; cards C:fc8a80db,C:5022bd1d,C:308caa97,C:19cb529e · NOT picked · day -0.54%
+  -  10. PAYTM PE - 5 card(s) (4.5 weighted), 2 bench(es); benches Readers, Sectors; strength 8.0; cards C:6cd9ac6f,C:01520e0c,C:110730fe,C:40311e5f,C:81513cff · via group NBFC -> GIR sector map 'nbfc & finance' · NOT picked · day +0.82%
+  -  11. INOXWIND PE - 4 card(s) (4.0 weighted), 2 bench(es); benches Readers, Sectors; strength 8.0; cards C:025534c0,C:618730b2,C:8e6f6b3f,C:308caa97 · NOT picked · day -2.65%
+  -  12. PNB CE - 5 card(s) (3.0 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 7.0; cards C:3c75c921,C:ede87fbf,C:2c4e5aa4,C:40311e5f,C:af536ca8 · via group BANKS -> GIR sector map 'banks'; group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · PICKED (NEW 07:17) · day +0.31%
+  -  13. POLYCAB CE - 3 card(s) (3.0 weighted), 2 bench(es); benches Readers, Sectors; strength 6.0; cards C:6283012c,C:e8f9abc3,C:52ccc619 · NOT picked · day +0.26%
+  -  14. CANBK CE - 4 card(s) (2.5 weighted), 3 bench(es); benches Readers, Reasoning, Sectors; strength 5.0; cards C:3c75c921,C:ede87fbf,C:40311e5f,C:af536ca8 · via group BANKS -> GIR sector map 'banks'; group BANKS_PSU -> PSU banks (SECTOR_LINKS L10 + the public-sector banks of the F&O list) · NOT picked · day +2.12%
+  -  15. TVSMOTOR CE - 4 card(s) (2.5 weighted), 3 bench(es); benches Commodities, Reasoning, Sectors; strength 5.0; cards C:7447dea9,C:ede87fbf,C:bf194899,C:4f1b95d1 · via group AUTO -> GIR sector map 'auto'; group AUTO_ANC -> GIR sector map 'auto' · NOT picked · day -0.25%
+
+## The head's ideas (reasons and source card ids)
+- 2026-11-19 19:47 NEW HEROMOTOCO PE · day -0.36% · source results · cards C:650d5144,C:7447dea9,C:ede87fbf,C:b411c518 · Hero MotoCorp reported a sharp fall in net profit after the session [K:67b07670,C:650d5144]; The share rallied +5.77% with the full auto sector on no company news, so the weak print is not in today's price [MV:HEROMOTOCO,SEC:auto]; Auto seat says leaders are extended, with pullback entries only, and
+- 2026-11-19 19:47 NEW BANKBARODA CE · day +0.38% · source sector_view · cards C:3c75c921,C:ede87fbf,C:b411c518 · Banks beat NIFTY, led by PSU banks; Bank of Baroda was among the leaders at +1.65% for BANKNIFTY [SEC:banks,C:3c75c921]; Moody's affirmed the ratings and upgraded the baseline credit assessment (unverified report) [K:b18774dd]; Foreign cash buying of 5993 on the day, with the five-day sum not yet kn
+- 2026-11-19 19:47 NEW TCS PE · day +1.43% · source sector_view · cards C:4796bd0a,C:ede87fbf,C:af3945b4,C:b411c518 · IT closed lower while NIFTY rose +1.14%; the tape flagged IT against the index [C:af3945b4,SEC:it,MV:TCS]; The IT seat and the connections seat both read the lag as AI-disruption fear, not a rupee story [C:4796bd0a,C:ede87fbf]; A brand-value report names TCS among the biggest losers from the AI gap 
+- 2026-11-20 07:17 NEW PNB CE · day +0.31% · source filing · cards C:af536ca8 · PNB filed a Moody's rating upgrade with the exchange in the evening, after the session closed [K:95800015]; Moody's also upgraded Canara Bank's baseline credit assessment overnight, so the rating view covers PSU banks broadly, not one name [K:8abc1971]; Banks led on wide breadth with PSU names swing
+- 2026-11-20 07:17 NEW ALKEM PE · day +0.78% · source news · cards C:caebff05,C:ae1ad4ea · A news item reports a USFDA warning letter for Alkem's Daman facility; it is not yet verified by a filing [K:da8cfb82]; The matcher finds a new regulator story with no past Alkem regulator episode, so it is a first hit [C:caebff05]; The pharma seat reads it as company-specific, with a clean chit for
+- 2026-11-20 07:17 NEW NATIONALUM PE · day -1.24% · source world · cards C:bf194899,C:04ba885a · LME aluminium -0.70% and copper -1.71% fell overnight while the dollar was flat [DRV:aluminium,DRV:copper,DRV:dxy]; The base-metals seat reads producers under pressure, with no fresh user trade [C:bf194899]; The metals seat sees early weakness in names including NALCO, but the code basket closed up,
+- 2026-11-20 09:20 CANCELLED TCS PE · day +1.43% · source - · cards - · TCS opened higher, trades above VWAP and leads a red NIFTY. IT breadth is broad on the up side, which is the cancel condition.

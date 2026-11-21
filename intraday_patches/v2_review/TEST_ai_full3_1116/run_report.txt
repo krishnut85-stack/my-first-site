@@ -1,0 +1,6 @@
+run <server>/girdata/replay/out/TEST_ai_full3_1116: 54 movers 2%+
+  AI share of triage rows: 414 of 414 (100%); rules fallbacks: {}
+  rings 73 (09:15-09:45: 7); by hour {'09': 11, '10': 15, '11': 8, '12': 18, '13': 12, '14': 9}
+  early / late / missed / wrong - cards: 1 / 22 / 31 / 0 · cards + WATCH: 1 / 30 / 23 / 0 · old system: 22 / 21 / 10 / 1
+  AI: 172 calls, $0.131, {('triage', 'routine-tier model'): 151, ('second', 'routine-tier model'): 17, ('final', 'final-tier model'): 4}, stop reasons {'end_turn': 172}
+  lanes: {'MUST SEE': 171, 'WATCH': 242, 'LOG': 1}

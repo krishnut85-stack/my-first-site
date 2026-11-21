@@ -1,0 +1,1332 @@
+{
+ "made_ist": "2026-11-21 21:52",
+ "base": "NEWS_COVERAGE_AUDIT 21 Nov 13:58 IST",
+ "counts_before": {
+  "NOT BUILT": 104,
+  "LIVE": 34,
+  "PARTIAL": 20,
+  "NOT NEEDED": 10,
+  "BLOCKED": 15,
+  "DEAD": 3
+ },
+ "counts_now": {
+  "LIVE": 93,
+  "NOT NEEDED": 16,
+  "PARTIAL": 7,
+  "BLOCKED": 39,
+  "NOT BUILT": 28,
+  "DEAD": 3
+ },
+ "moves": {
+  "NOT BUILT -> LIVE": 49,
+  "NOT BUILT -> NOT NEEDED": 6,
+  "NOT BUILT -> BLOCKED": 22,
+  "PARTIAL -> LIVE": 10,
+  "PARTIAL -> BLOCKED": 2,
+  "PARTIAL -> NOT BUILT": 1
+ },
+ "hosts": [
+  {
+   "host": "accessdata.fda.gov",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW worldoff fda_ia: FDA import-alert list (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "aera.gov.in",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 pagewatch (rows today; one read timeout)",
+   "flag": ""
+  },
+  {
+   "host": "aljazeera.com",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW worldoff: Al Jazeera RSS (10 min), kept to market words (oil, Hormuz, Iran, sanctions, war ...)",
+   "flag": ""
+  },
+  {
+   "host": "amfiindia.com",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages: AMFI monthly page (6 h)",
+   "flag": ""
+  },
+  {
+   "host": "api.bls.gov",
+   "was": "NOT BUILT",
+   "now": "NOT NEEDED",
+   "why": "bls.gov release RSS is read (NEW worldoff); the numbers come through FinancialJuice; the API needs a key for volume",
+   "flag": ""
+  },
+  {
+   "host": "api.bseindia.com",
+   "was": "PARTIAL",
+   "now": "PARTIAL",
+   "why": "v2 direct still 403 (back-off 15 min); BSE filings reach v2 through the newshawk-filings bridge (built 21 Nov)",
+   "flag": ""
+  },
+  {
+   "host": "api.elections.kalshi.com",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW odds poller: Kalshi 'Fed decision' next two meetings (15 min) -> odds_now.json, row on a >= 10-point move",
+   "flag": ""
+  },
+  {
+   "host": "api.fda.gov",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW worldoff openfda: drug recalls (enforcement) newest 25 (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "api.sci.gov.in",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_sci cause-list PDFs (05:47 today)",
+   "flag": ""
+  },
+  {
+   "host": "api.stlouisfed.org",
+   "was": "NOT BUILT",
+   "now": "NOT NEEDED",
+   "why": "not needed: fred.stlouisfed.org's public CSV works without a key (read)",
+   "flag": ""
+  },
+  {
+   "host": "apnews.com",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "403 to a declared reader (not evaded)",
+   "flag": ""
+  },
+  {
+   "host": "aptel.gov.in",
+   "was": "PARTIAL",
+   "now": "PARTIAL",
+   "why": "v2 pagewatch polls OK, no new link since 20 Nov (unproven)",
+   "flag": ""
+  },
+  {
+   "host": "archive.pib.gov.in",
+   "was": "NOT NEEDED",
+   "now": "NOT NEEDED",
+   "why": "archive search; live PIB RSS is read",
+   "flag": ""
+  },
+  {
+   "host": "barandbench.com",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages: Bar & Bench RSS (15 min), kept to regulator / court / tax matters",
+   "flag": ""
+  },
+  {
+   "host": "bis.org",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW worldoff: BIS central-banker speeches RSS (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "bloomberg.com",
+   "was": "BLOCKED",
+   "now": "BLOCKED",
+   "why": "bot wall; Google News site: only",
+   "flag": ""
+  },
+  {
+   "host": "bls.gov",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW worldoff: BLS latest-release RSS (30 min)",
+   "flag": ""
+  },
+  {
+   "host": "boj.or.jp",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "v2 cbanks (built 21 Nov 16:19): BoJ what's-new RSS",
+   "flag": ""
+  },
+  {
+   "host": "bombayhighcourt.nic.in",
+   "was": "BLOCKED",
+   "now": "BLOCKED",
+   "why": "times out from this server",
+   "flag": ""
+  },
+  {
+   "host": "bseindia.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "notices.xml 13:22 today; insider + index feeds",
+   "flag": ""
+  },
+  {
+   "host": "business-standard.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 wires + old macro + newshawk (last Fri 23:40; quiet Saturday)",
+   "flag": ""
+  },
+  {
+   "host": "cabsec.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages (6 h)",
+   "flag": ""
+  },
+  {
+   "host": "cbic-gst.gov.in",
+   "was": "PARTIAL",
+   "now": "PARTIAL",
+   "why": "v2 pagewatch polls OK, no new link since 20 Nov (unproven)",
+   "flag": ""
+  },
+  {
+   "host": "cci.gov.in",
+   "was": "PARTIAL",
+   "now": "LIVE",
+   "why": "v2 regs press JSON slowed 60 -> 300 s (the 429s); NEW govpages cci_orders page (30 min)",
+   "flag": ""
+  },
+  {
+   "host": "ccilindia.com",
+   "was": "BLOCKED",
+   "now": "BLOCKED",
+   "why": "403 Akamai on every path; Trading Economics used instead",
+   "flag": ""
+  },
+  {
+   "host": "cdnbbsr.s3waas.gov.in",
+   "was": "NOT BUILT",
+   "now": "NOT NEEDED",
+   "why": "PDF host behind the ministry pages that are read",
+   "flag": ""
+  },
+  {
+   "host": "cdsco.gov.in",
+   "was": "PARTIAL",
+   "now": "PARTIAL",
+   "why": "v2 pagewatch polls OK, no new link since 20 Nov (unproven)",
+   "flag": ""
+  },
+  {
+   "host": "cea.nic.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages: CEA (power) home links (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "cercind.gov.in",
+   "was": "PARTIAL",
+   "now": "LIVE",
+   "why": "NEW govpages: home (30 min), recent orders + draft regulations (60 min) - was read only by the parked gir-regwatch",
+   "flag": ""
+  },
+  {
+   "host": "cestat.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "chemicals.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "chinamoney.com.cn",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "script-only page; data API not found",
+   "flag": ""
+  },
+  {
+   "host": "chittorgarh.com",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW newslane: IPO list (60 min) -> R2",
+   "flag": ""
+  },
+  {
+   "host": "civilaviation.gov.in",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "403 to a declared reader (not evaded); DGCA itself is read",
+   "flag": ""
+  },
+  {
+   "host": "cmegroup.com",
+   "was": "BLOCKED",
+   "now": "BLOCKED",
+   "why": "bot-blocked on cloud machines (plan); not tried",
+   "flag": ""
+  },
+  {
+   "host": "cnbc.com",
+   "was": "BLOCKED",
+   "now": "BLOCKED",
+   "why": "403 to this server (newshawk 100+ failures); CNBC wraps via Google News only",
+   "flag": ""
+  },
+  {
+   "host": "cnbctv18.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 sitemap + RSS (13:39 today), old macro, live blog",
+   "flag": ""
+  },
+  {
+   "host": "coal.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "coal.nic.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "commerce.gov.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "press-release page answers 404; the right listing URL not found tonight (trade data reaches GIR via PIB)",
+   "flag": ""
+  },
+  {
+   "host": "dea.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "delhihighcourt.nic.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "dgca.gov.in",
+   "was": "PARTIAL",
+   "now": "LIVE",
+   "why": "NEW govpages: DGCA portal home links (30 min) - was read only by the parked regwatch readers",
+   "flag": ""
+  },
+  {
+   "host": "dgft.gov.in",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "403 to a declared reader (page and robots.txt) - not evaded",
+   "flag": ""
+  },
+  {
+   "host": "dgtr.gov.in",
+   "was": "PARTIAL",
+   "now": "LIVE",
+   "why": "v2 pagewatch dgtr (built 21 Nov 17:30, 30 min)",
+   "flag": ""
+  },
+  {
+   "host": "dipam.gov.in",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_ofs polls OK; no new link since 19 Nov (unproven)",
+   "flag": ""
+  },
+  {
+   "host": "dot.gov.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "script-only page (Next.js, no items in the HTML); data API not found",
+   "flag": ""
+  },
+  {
+   "host": "drdo.gov.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "redirects to a Hindi IDN host; low value - not built",
+   "flag": ""
+  },
+  {
+   "host": "drewry.co.uk",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW worldoff: World Container Index page links (6 h)",
+   "flag": ""
+  },
+  {
+   "host": "eaindustry.nic.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages: Office of the Economic Adviser (WPI) (6 h)",
+   "flag": ""
+  },
+  {
+   "host": "economictimes.indiatimes.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 sitemap (13:40 today), old macro RSS + live blog, newshawk",
+   "flag": ""
+  },
+  {
+   "host": "egazette.gov.in",
+   "was": "PARTIAL",
+   "now": "LIVE",
+   "why": "NEW egazette poller: the Extraordinary list via the site's own View-All form, every 5 min; land / ROB notices learnt silently",
+   "flag": ""
+  },
+  {
+   "host": "eia.gov",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "v2 energy (built 21 Nov 16:19): EIA weekly petroleum report issue list",
+   "flag": ""
+  },
+  {
+   "host": "elibrary.sansad.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "script-only page; data API not found",
+   "flag": ""
+  },
+  {
+   "host": "english.news.cn",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW worldoff: Xinhua business RSS (15 min), market words only",
+   "flag": ""
+  },
+  {
+   "host": "eparlib.nic.in",
+   "was": "NOT NEEDED",
+   "now": "NOT NEEDED",
+   "why": "archive",
+   "flag": ""
+  },
+  {
+   "host": "eparlib.sansad.in",
+   "was": "BLOCKED",
+   "now": "BLOCKED",
+   "why": "times out from this server",
+   "flag": ""
+  },
+  {
+   "host": "etnownews.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "old macro ET Now RSS (Fri 15:04) + TV ET NOW transcript",
+   "flag": ""
+  },
+  {
+   "host": "fada.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "press-release page answers 404; URL not found tonight",
+   "flag": ""
+  },
+  {
+   "host": "fda.gov",
+   "was": "PARTIAL",
+   "now": "LIVE",
+   "why": "NEW worldoff: FDA press RSS (30 min) + warning-letters page (60 min); the FDA warning-letter RSS is 404",
+   "flag": ""
+  },
+  {
+   "host": "federalregister.gov",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_fedreg (Fri 19:16; weekend quiet)",
+   "flag": ""
+  },
+  {
+   "host": "federalreserve.gov",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "v2 cbanks (built 21 Nov 16:19): Fed press + speeches RSS",
+   "flag": ""
+  },
+  {
+   "host": "feeds.a.dj.com",
+   "was": "DEAD",
+   "now": "DEAD",
+   "why": "WSJ RSS frozen since Jan 2025; MarketWatch via feeds.content.dowjones.io is read instead",
+   "flag": ""
+  },
+  {
+   "host": "feeds.reuters.com",
+   "was": "DEAD",
+   "now": "DEAD",
+   "why": "Reuters RSS retired",
+   "flag": ""
+  },
+  {
+   "host": "fert.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "financialexpress.com",
+   "was": "PARTIAL",
+   "now": "BLOCKED",
+   "why": "403 to a declared reader on every path (news sitemap, sitemap, feed, robots.txt) - not evaded",
+   "flag": ""
+  },
+  {
+   "host": "financialjuice.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_fjuice (13:12 today)",
+   "flag": ""
+  },
+  {
+   "host": "financialservices.gov.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "what's-new page 404 and robots.txt 403; URL not found",
+   "flag": ""
+  },
+  {
+   "host": "forexlive.com",
+   "was": "NOT NEEDED",
+   "now": "NOT NEEDED",
+   "why": "renamed investinglive.com (read)",
+   "flag": ""
+  },
+  {
+   "host": "fpi.nsdl.co.in",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_nsdl + old fpisec (20 Nov data)",
+   "flag": ""
+  },
+  {
+   "host": "fred.stlouisfed.org",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW worldoff fred_hy: the real US high-yield spread (ICE BofA via FRED public CSV), daily",
+   "flag": ""
+  },
+  {
+   "host": "fssai.gov.in",
+   "was": "PARTIAL",
+   "now": "NOT BUILT",
+   "why": "script-only page (754 bytes, no items in the HTML); its data API not found; the parked readers read it only via Google News",
+   "flag": ""
+  },
+  {
+   "host": "gamma-api.polymarket.com",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW odds poller: Polymarket top-200 markets by volume, kept to market events (15 min)",
+   "flag": ""
+  },
+  {
+   "host": "gercin.org",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 pagewatch (rows 04:28 today)",
+   "flag": ""
+  },
+  {
+   "host": "greentribunal.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages: NGT (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "grid-india.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "script-only page; data API not found",
+   "flag": ""
+  },
+  {
+   "host": "gstcouncil.gov.in",
+   "was": "PARTIAL",
+   "now": "LIVE",
+   "why": "v2 pagewatch gstcouncil + press-release (built 21 Nov, 15 min)",
+   "flag": ""
+  },
+  {
+   "host": "hindi.cnbctv18.com",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "Hindi headlines: the F&O name matcher is English-only, so a sitemap would yield no rows; Awaaz TV needs speech-to-text",
+   "flag": ""
+  },
+  {
+   "host": "hls.media.nic.in",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "times out from this server",
+   "flag": ""
+  },
+  {
+   "host": "home.treasury.gov",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_world (02:30 today)",
+   "flag": ""
+  },
+  {
+   "host": "hq.sinajs.cn",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "403 to a declared reader",
+   "flag": ""
+  },
+  {
+   "host": "ibbi.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages: IBBI what's new (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "ibjarates.com",
+   "was": "NOT BUILT",
+   "now": "NOT NEEDED",
+   "why": "a gold-rate page, not news (gold comes from Yahoo / MCX via Kite)",
+   "flag": ""
+  },
+  {
+   "host": "icicidirect.com",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW newslane: ICICI Direct research list (60 min) -> R2",
+   "flag": ""
+  },
+  {
+   "host": "iexindia.com",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages: IEX home links (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "ifsca.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "incometaxindia.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages: Income Tax / CBDT (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "indianrailways.gov.in",
+   "was": "BLOCKED",
+   "now": "BLOCKED",
+   "why": "403 to this server",
+   "flag": ""
+  },
+  {
+   "host": "investing.com",
+   "was": "PARTIAL",
+   "now": "PARTIAL",
+   "why": "news RSS read by v2 uswrap; quote pages 403 (not planned)",
+   "flag": ""
+  },
+  {
+   "host": "investinglive.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_world (slow feed, median 34 min)",
+   "flag": ""
+  },
+  {
+   "host": "iocl.com",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "redirect loop (307) to this server",
+   "flag": ""
+  },
+  {
+   "host": "irdai.gov.in",
+   "was": "PARTIAL",
+   "now": "BLOCKED",
+   "why": "robots.txt Disallow: / - NOT read (the trader's order: say so, do not read); IRDAI news reaches GIR via PIB and the publishers",
+   "flag": ""
+  },
+  {
+   "host": "kerc.karnataka.gov.in",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "TLS chain fails - not bypassed",
+   "flag": ""
+  },
+  {
+   "host": "kotaksecurities.com",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "research moved to kotakneo.com (404); not built",
+   "flag": ""
+  },
+  {
+   "host": "livelaw.in",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_regs sitemap (11:17 today)",
+   "flag": ""
+  },
+  {
+   "host": "livemint.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "old macro + newshawk RSS (12:35 today); not in v2 wires",
+   "flag": ""
+  },
+  {
+   "host": "lme.com",
+   "was": "NOT NEEDED",
+   "now": "NOT NEEDED",
+   "why": "Westmetall gives LME official prices (read)",
+   "flag": ""
+  },
+  {
+   "host": "loksabha.nic.in",
+   "was": "NOT NEEDED",
+   "now": "NOT NEEDED",
+   "why": "legacy, replaced by sansad.in",
+   "flag": ""
+  },
+  {
+   "host": "loksabhaph.nic.in",
+   "was": "NOT NEEDED",
+   "now": "NOT NEEDED",
+   "why": "legacy",
+   "flag": ""
+  },
+  {
+   "host": "mca.gov.in",
+   "was": "BLOCKED",
+   "now": "BLOCKED",
+   "why": "403 to this server",
+   "flag": ""
+  },
+  {
+   "host": "mcxindia.com",
+   "was": "NOT NEEDED",
+   "now": "NOT NEEDED",
+   "why": "MCX comes through Kite",
+   "flag": ""
+  },
+  {
+   "host": "meity.gov.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "script-only page (Next.js); data API not found",
+   "flag": ""
+  },
+  {
+   "host": "merc.gov.in",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "robots.txt Disallow - not read",
+   "flag": ""
+  },
+  {
+   "host": "mines.gov.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "script-only page (Angular); data API not found",
+   "flag": ""
+  },
+  {
+   "host": "mnre.gov.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "script-only page; data API not found",
+   "flag": ""
+  },
+  {
+   "host": "mod.gov.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "script-only page; defence releases are mirrored on PIB (read)",
+   "flag": ""
+  },
+  {
+   "host": "moneycontrol.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 news sitemap (12:55 today; 403 00:00-07:00); the old RSS is DEAD but still polled by 3 readers",
+   "flag": ""
+  },
+  {
+   "host": "mopng.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages: petroleum ministry (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "morth.gov.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "script-only page; data API not found",
+   "flag": ""
+  },
+  {
+   "host": "morth.nic.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "redirects to morth.gov.in (script-only)",
+   "flag": ""
+  },
+  {
+   "host": "mospi.gov.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "script-only page (React; 5.8 MB bundle, no public list API found); MoSPI releases reach GIR via PIB + the indiacal poller",
+   "flag": ""
+  },
+  {
+   "host": "motilaloswal.com",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "script-only research page; not built",
+   "flag": ""
+  },
+  {
+   "host": "msci.com",
+   "was": "BLOCKED",
+   "now": "BLOCKED",
+   "why": "bot challenge; MSCI dates kept by hand",
+   "flag": ""
+  },
+  {
+   "host": "nasdaq.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 uswrap (13:44 today; slow, 55 min)",
+   "flag": ""
+  },
+  {
+   "host": "nclat.nic.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "v2 pagewatch nclat cause list + judgments (built 21 Nov 17:35)",
+   "flag": ""
+  },
+  {
+   "host": "nclt.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages: NCLT home links (30 min) - answers this server tonight (robots.txt 403 = no rules)",
+   "flag": ""
+  },
+  {
+   "host": "ndtvprofit.com",
+   "was": "PARTIAL",
+   "now": "PARTIAL",
+   "why": "news sitemap 403 to this server; feedburner RSS read by the kept newsroom (old macro.py)",
+   "flag": ""
+  },
+  {
+   "host": "news.google.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "many readers; heavy 429 throttling; slow by design",
+   "flag": "ROBOTS: news.google.com/robots.txt says 'Disallow: /' (RSS search included) for every generic agent; the kept newsroom and v2 uswrap still read it with a browser User-Agent - desk decision needed. The parked regnews / regwatch Google-News queries were NOT rebuilt for this reason."
+  },
+  {
+   "host": "newsonair.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages: AIR news home (30 min)",
+   "flag": ""
+  },
+  {
+   "host": "nfs.faireconomy.media",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_calendar (12:03 today)",
+   "flag": ""
+  },
+  {
+   "host": "nhai.gov.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "script-only page; data API not found",
+   "flag": ""
+  },
+  {
+   "host": "niftyindices.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_indexes (Fri 22:56)",
+   "flag": ""
+  },
+  {
+   "host": "niftytrader.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "an OI witness page, not a news source (Kite OI is read); not built",
+   "flag": ""
+  },
+  {
+   "host": "nitter.net",
+   "was": "DEAD",
+   "now": "DEAD",
+   "why": "X mirror (not used)",
+   "flag": ""
+  },
+  {
+   "host": "npci.org.in",
+   "was": "BLOCKED",
+   "now": "BLOCKED",
+   "why": "403 to this server",
+   "flag": ""
+  },
+  {
+   "host": "npp.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages: National Power Portal (6 h)",
+   "flag": ""
+  },
+  {
+   "host": "nppaindia.nic.in",
+   "was": "BLOCKED",
+   "now": "BLOCKED",
+   "why": "no DNS from this server; old regwatch.py still lists it",
+   "flag": ""
+  },
+  {
+   "host": "nsearchives.nseindia.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "newshawk RSS (12:52 today), whales CSV, archive files",
+   "flag": ""
+  },
+  {
+   "host": "nseindia.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 filings (12:49 today), circulars, insider; blocks cloud machines but not this server",
+   "flag": ""
+  },
+  {
+   "host": "nseix.com",
+   "was": "NOT NEEDED",
+   "now": "NOT NEEDED",
+   "why": "GIFT NIFTY comes through Kite",
+   "flag": ""
+  },
+  {
+   "host": "ofac.treasury.gov",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW worldoff: OFAC recent actions (30 min)",
+   "flag": ""
+  },
+  {
+   "host": "opec.org",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "403 to a declared reader (not evaded)",
+   "flag": ""
+  },
+  {
+   "host": "opstra.definedge.com",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "login needed",
+   "flag": ""
+  },
+  {
+   "host": "pbc.gov.cn",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "robots.txt Disallow - not read",
+   "flag": ""
+  },
+  {
+   "host": "pfrda.org.in",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "robots.txt Disallow - not read",
+   "flag": ""
+  },
+  {
+   "host": "pib.gov.in",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_regs (13:44 today), newshawk-regwatch, old govwatch",
+   "flag": ""
+  },
+  {
+   "host": "pmi.spglobal.com",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "403 to a declared reader",
+   "flag": ""
+  },
+  {
+   "host": "pmindia.gov.in",
+   "was": "NOT NEEDED",
+   "now": "NOT NEEDED",
+   "why": "Cabinet mirrored on PIB (read)",
+   "flag": ""
+  },
+  {
+   "host": "pngrb.gov.in",
+   "was": "PARTIAL",
+   "now": "LIVE",
+   "why": "NEW govpages: PNGRB home links (30 min; the what's-new page is script-loaded) - was read only by the parked gir-regwatch",
+   "flag": ""
+  },
+  {
+   "host": "policyholder.gov.in",
+   "was": "BLOCKED",
+   "now": "BLOCKED",
+   "why": "robots Disallow: /",
+   "flag": ""
+  },
+  {
+   "host": "powermin.gov.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "script-only page (Next.js); data API not found; CERC / CEA / IEX / NPP are read",
+   "flag": ""
+  },
+  {
+   "host": "ppac.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "prsindia.org",
+   "was": "PARTIAL",
+   "now": "LIVE",
+   "why": "v2 regs now polls the PRS bill tracker (30 min; parser was there, not polled) - was read only by the parked gir-regwatch",
+   "flag": ""
+  },
+  {
+   "host": "public.api.bsky.app",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "works, but no account list exists in the plan ('low value until coverage grows')",
+   "flag": ""
+  },
+  {
+   "host": "pulse.zerodha.com",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW wires part: Zerodha Pulse RSS (120 s, generic UA) -> R2",
+   "flag": ""
+  },
+  {
+   "host": "query1.finance.yahoo.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 uswrap quotes (13:48 today), old earlyteam",
+   "flag": ""
+  },
+  {
+   "host": "rajyasabha.nic.in",
+   "was": "NOT NEEDED",
+   "now": "NOT NEEDED",
+   "why": "legacy",
+   "flag": ""
+  },
+  {
+   "host": "rbi.org.in",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_regs + p_bonds (Fri 19:52), newshawk",
+   "flag": ""
+  },
+  {
+   "host": "report.grid-india.in",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "connection error from this server",
+   "flag": ""
+  },
+  {
+   "host": "results.eci.gov.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "used on counting days only; no counting day scheduled",
+   "flag": ""
+  },
+  {
+   "host": "reuters.com",
+   "was": "BLOCKED",
+   "now": "BLOCKED",
+   "why": "401 bot wall; via Google News only",
+   "flag": ""
+  },
+  {
+   "host": "rsdebate.nic.in",
+   "was": "NOT BUILT",
+   "now": "NOT NEEDED",
+   "why": "redirects to sansad.in (read)",
+   "flag": ""
+  },
+  {
+   "host": "rsdoc.nic.in",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "back-end API answers 405 to GET; not built",
+   "flag": ""
+  },
+  {
+   "host": "sansad.in",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_regs (not sitting)",
+   "flag": ""
+  },
+  {
+   "host": "sansadtv.nic.in",
+   "was": "BLOCKED",
+   "now": "BLOCKED",
+   "why": "times out from this server; use hls.media.nic.in",
+   "flag": ""
+  },
+  {
+   "host": "sat.gov.in",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "503 from this server (satweb.sat.gov.in is read instead)",
+   "flag": ""
+  },
+  {
+   "host": "satweb.sat.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages: SAT (30 min)",
+   "flag": ""
+  },
+  {
+   "host": "sci.gov.in",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_sci (05:47 today)",
+   "flag": ""
+  },
+  {
+   "host": "scmp.com",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW worldoff: SCMP RSS (15 min), market words only",
+   "flag": ""
+  },
+  {
+   "host": "scobserver.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages: SC Observer (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "sebi.gov.in",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_regs listings (Fri 19:12); the RSS is empty",
+   "flag": ""
+  },
+  {
+   "host": "sec.gov",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW worldoff: SEC press-release RSS (30 min, generic UA - answered 200)",
+   "flag": ""
+  },
+  {
+   "host": "siam.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages: SIAM press releases (6 h)",
+   "flag": ""
+  },
+  {
+   "host": "static.pib.gov.in",
+   "was": "NOT BUILT",
+   "now": "NOT NEEDED",
+   "why": "PDF host behind PIB (PIB is read)",
+   "flag": ""
+  },
+  {
+   "host": "stats.gov.cn",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "connection reset from this server",
+   "flag": ""
+  },
+  {
+   "host": "steel.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW govpages (60 min)",
+   "flag": ""
+  },
+  {
+   "host": "stooq.com",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "robots.txt Disallow - not read",
+   "flag": ""
+  },
+  {
+   "host": "t.me",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "works for public channels, but the plan names no channel list (t.me/s/cnbctv18 has no public preview)",
+   "flag": ""
+  },
+  {
+   "host": "taxinformation.cbic.gov.in",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "TLS chain fails - not bypassed",
+   "flag": ""
+  },
+  {
+   "host": "tdsat.gov.in",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "v2 pagewatch TDSAT cause list + judgments (built 21 Nov 17:35)",
+   "flag": ""
+  },
+  {
+   "host": "thehindubusinessline.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "old macro RSS (12:56 today)",
+   "flag": ""
+  },
+  {
+   "host": "tis.nhai.gov.in",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "times out from this server",
+   "flag": ""
+  },
+  {
+   "host": "tnerc.tn.gov.in",
+   "was": "BLOCKED",
+   "now": "BLOCKED",
+   "why": "certificate expired 22 Oct 2026",
+   "flag": ""
+  },
+  {
+   "host": "trai.gov.in",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_regs RSS (Fri 18:26)",
+   "flag": ""
+  },
+  {
+   "host": "trendlyne.com",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "paid - needs the trader's yes",
+   "flag": ""
+  },
+  {
+   "host": "trumpstruth.org",
+   "was": "PARTIAL",
+   "now": "PARTIAL",
+   "why": "v2 p_trump reads the mirror; the mirror's own newest post is Fri 20 Nov 13:03 UTC (18:33 IST) = GIR's last row - the mirror is quiet / stale, not GIR; trumpstruth.org now redirects to www.trumpstruth.org",
+   "flag": ""
+  },
+  {
+   "host": "ukmto.org",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "403 to a declared reader (not evaded)",
+   "flag": ""
+  },
+  {
+   "host": "uperc.org",
+   "was": "NOT BUILT",
+   "now": "NOT BUILT",
+   "why": "script-only page; data API not found",
+   "flag": ""
+  },
+  {
+   "host": "ustr.gov",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW worldoff: USTR press releases (30 min)",
+   "flag": ""
+  },
+  {
+   "host": "vahan.parivahan.gov.in",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "broken (chunked) reply to this server",
+   "flag": ""
+  },
+  {
+   "host": "web.sensibull.com",
+   "was": "NOT BUILT",
+   "now": "BLOCKED",
+   "why": "login needed",
+   "flag": ""
+  },
+  {
+   "host": "westmetall.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_world LME (07:50 today)",
+   "flag": ""
+  },
+  {
+   "host": "whitehouse.gov",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "v2 p_trump (08:02 today)",
+   "flag": ""
+  },
+  {
+   "host": "youtube.com",
+   "was": "LIVE",
+   "now": "LIVE",
+   "why": "TV stream capture for CNBC-TV18 / ET NOW (13:37 today); cloud machines get bot checks, this server does not",
+   "flag": ""
+  },
+  {
+   "host": "zeebiz.com",
+   "was": "PARTIAL",
+   "now": "LIVE",
+   "why": "NEW wires part: Zee Business news sitemap (60 s, generic UA)",
+   "flag": ""
+  },
+  {
+   "host": "zerodha.com",
+   "was": "NOT BUILT",
+   "now": "LIVE",
+   "why": "NEW newslane: Zerodha bulletin RSS (6 h), F&O / margin / circular words -> R2",
+   "flag": ""
+  }
+ ]
+}

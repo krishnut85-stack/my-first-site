@@ -1,0 +1,3609 @@
+{
+ "study": {
+  "made": "2026-11-20T15:57:51+05:30",
+  "train": [
+   "2022-02-09",
+   "2025-11-14"
+  ],
+  "heldout_from": "2025-11-14",
+  "label": "next session 2%+ from the open (daily high / low; tradable-leg approximation)",
+  "weights": {
+   "F01": {
+    "kind": "dir",
+    "w": 0.0,
+    "gap_pts": -0.98,
+    "years_same_sign": "3 of 4",
+    "n": 79113
+   },
+   "F02": {
+    "kind": "dir",
+    "w": -1.0,
+    "gap_pts": -2.25,
+    "years_same_sign": "4 of 4",
+    "n": 79089
+   },
+   "F03": {
+    "kind": "dir",
+    "w": 0.0,
+    "gap_pts": 0.89,
+    "years_same_sign": "3 of 4",
+    "n": 81428
+   },
+   "F04": {
+    "kind": "dir",
+    "w": -1.0,
+    "gap_pts": -2.88,
+    "years_same_sign": "4 of 4",
+    "n": 78807
+   },
+   "F05": {
+    "kind": "dir",
+    "w": 1.0,
+    "gap_pts": 2.02,
+    "years_same_sign": "4 of 4",
+    "n": 79355
+   },
+   "F06": {
+    "kind": "dir",
+    "w": 1.0,
+    "gap_pts": 1.64,
+    "years_same_sign": "4 of 4",
+    "n": 79425
+   },
+   "F07": {
+    "kind": "dir",
+    "w": 0.0,
+    "gap_pts": 0.12,
+    "years_same_sign": "3 of 4",
+    "n": 79119
+   },
+   "F08": {
+    "kind": "dir",
+    "w": 0.0,
+    "gap_pts": -0.37,
+    "years_same_sign": "3 of 4",
+    "n": 79113
+   },
+   "F09": {
+    "kind": "dir",
+    "w": 0.0,
+    "gap_pts": -0.58,
+    "years_same_sign": "4 of 4",
+    "n": 80214
+   },
+   "F10": {
+    "kind": "mag",
+    "w": 1.0,
+    "gap_pts": 46.04,
+    "years_same_sign": "4 of 4",
+    "n": 79119
+   },
+   "F11": {
+    "kind": "mag",
+    "w": 1.0,
+    "gap_pts": 12.51,
+    "years_same_sign": "4 of 4",
+    "n": 79113
+   },
+   "F12": {
+    "kind": "mag",
+    "w": -1.0,
+    "gap_pts": -4.08,
+    "years_same_sign": "4 of 4",
+    "n": 80150
+   },
+   "F13": {
+    "kind": "mag",
+    "w": 1.0,
+    "gap_pts": 22.25,
+    "years_same_sign": "4 of 4",
+    "n": 79113
+   },
+   "F14": {
+    "kind": "mag",
+    "w": 1.0,
+    "gap_pts": 22.68,
+    "years_same_sign": "4 of 4",
+    "n": 79089
+   }
+  },
+  "heldout": {
+   "CE": {
+    "precision_top8": 0.28884462151394424,
+    "base_rate": 0.2123798384443876,
+    "volatility_only_top8": 0.35806772908366535,
+    "lift_vs_base": 1.3600378624903193,
+    "lift_vs_volatility": 0.8066759388038943,
+    "lines": 2008
+   },
+   "PE": {
+    "precision_top8": 0.3456175298804781,
+    "base_rate": 0.2347856281296831,
+    "volatility_only_top8": 0.425796812749004,
+    "lift_vs_base": 1.4720557328559198,
+    "lift_vs_volatility": 0.8116959064327486,
+    "lines": 2008
+   },
+   "direction_named": {
+    "right": 0.5010940919037199,
+    "n": 2285
+   },
+   "direction_strongest_fifth": {
+    "right": 0.5045045045045045,
+    "n": 4773
+   },
+   "days": 251
+  },
+  "features": {
+   "F01": [
+    "day return",
+    "dir"
+   ],
+   "F02": [
+    "5-day return",
+    "dir"
+   ],
+   "F03": [
+    "close location in the day's range",
+    "dir"
+   ],
+   "F04": [
+    "return vs its sector (relative strength)",
+    "dir"
+   ],
+   "F05": [
+    "sector median return today",
+    "dir"
+   ],
+   "F06": [
+    "sector 3-day run",
+    "dir"
+   ],
+   "F07": [
+    "room to the 20-day high minus room to the 20-day low (ATR)",
+    "dir"
+   ],
+   "F08": [
+    "volume on the day's side (RVOL x sign)",
+    "dir"
+   ],
+   "F09": [
+    "futures build-up (long +1 / short cover +0.5 / long unwind -0.5 / short -1)",
+    "dir"
+   ],
+   "F10": [
+    "ATR14 % (how much it usually moves)",
+    "mag"
+   ],
+   "F11": [
+    "RVOL at the close (day volume / 20-day median)",
+    "mag"
+   ],
+   "F12": [
+    "NR7 inside / narrow day",
+    "mag"
+   ],
+   "F13": [
+    "size of today's move (absolute day return)",
+    "mag"
+   ],
+   "F14": [
+    "size of the 5-day move (absolute)",
+    "mag"
+   ]
+  },
+  "verdict": "NOT PROVEN"
+ },
+ "tests": [
+  {
+   "session": "2026-11-20",
+   "scorecard": {
+    "session": "2026-11-20",
+    "universe": 218,
+    "base": {
+     "CE": 0.344,
+     "PE": 0.064
+    },
+    "early_cards": {
+     "side_lines": 1,
+     "mover_lines": 1
+    },
+    "baselines": {
+     "yesterdays_movers_CE": {
+      "n": 8,
+      "big_right": 7,
+      "precision": 0.875
+     },
+     "yesterdays_movers_PE": {
+      "n": 8,
+      "big_right": 0,
+      "precision": 0.0
+     },
+     "volatility_only_8": {
+      "CE_right": 2,
+      "PE_right": 2,
+      "n": 8,
+      "note": "the same 8 names on both sides"
+     }
+    },
+    "ideas": {
+     "CE": {
+      "n": 3,
+      "big_right": 1,
+      "moved_against": 0,
+      "precision": 0.333,
+      "right_names": [
+       "BAJFINANCE"
+      ]
+     },
+     "PE": {
+      "n": 19,
+      "big_right": 1,
+      "moved_against": 7,
+      "precision": 0.053,
+      "right_names": [
+       "KEI"
+      ]
+     }
+    },
+    "base_either_way": 0.404,
+    "missed_2pct": 82,
+    "missed_3pct": [
+     [
+      "INDUSINDBK",
+      "CE",
+      10.0
+     ],
+     [
+      "COFORGE",
+      "CE",
+      7.0
+     ],
+     [
+      "TATAELXSI",
+      "CE",
+      6.5
+     ],
+     [
+      "CUB",
+      "CE",
+      6.2
+     ],
+     [
+      "PERSISTENT",
+      "CE",
+      6.2
+     ],
+     [
+      "RBLBANK",
+      "CE",
+      5.4
+     ],
+     [
+      "LTM",
+      "CE",
+      5.2
+     ],
+     [
+      "AXISBANK",
+      "CE",
+      5.1
+     ],
+     [
+      "ANGELONE",
+      "CE",
+      5.0
+     ],
+     [
+      "KALYANKJIL",
+      "PE",
+      4.9
+     ],
+     [
+      "APOLLOHOSP",
+      "CE",
+      4.8
+     ],
+     [
+      "MPHASIS",
+      "CE",
+      4.6
+     ],
+     [
+      "NAUKRI",
+      "CE",
+      4.3
+     ],
+     [
+      "PNBHOUSING",
+      "CE",
+      4.2
+     ],
+     [
+      "APLAPOLLO",
+      "PE",
+      4.1
+     ],
+     [
+      "TCS",
+      "CE",
+      3.9
+     ],
+     [
+      "UNIONBANK",
+      "CE",
+      3.9
+     ],
+     [
+      "HDFCBANK",
+      "CE",
+      3.8
+     ],
+     [
+      "LICHSGFIN",
+      "CE",
+      3.8
+     ],
+     [
+      "WIPRO",
+      "CE",
+      3.8
+     ],
+     [
+      "GMRAIRPORT",
+      "CE",
+      3.7
+     ],
+     [
+      "HINDALCO",
+      "CE",
+      3.7
+     ],
+     [
+      "COROMANDEL",
+      "CE",
+      3.6
+     ],
+     [
+      "HINDZINC",
+      "CE",
+      3.5
+     ],
+     [
+      "KOTAKBANK",
+      "CE",
+      3.5
+     ],
+     [
+      "BAJFINANCE",
+      "CE",
+      3.4
+     ],
+     [
+      "MANAPPURAM",
+      "CE",
+      3.4
+     ],
+     [
+      "PGEL",
+      "CE",
+      3.4
+     ],
+     [
+      "TECHM",
+      "CE",
+      3.3
+     ],
+     [
+      "FORTIS",
+      "CE",
+      3.1
+     ],
+     [
+      "JSWSTEEL",
+      "PE",
+      3.1
+     ],
+     [
+      "DLF",
+      "CE",
+      3.0
+     ],
+     [
+      "FEDERALBNK",
+      "CE",
+      3.0
+     ],
+     [
+      "GODREJPROP",
+      "CE",
+      3.0
+     ],
+     [
+      "ICICIGI",
+      "CE",
+      3.0
+     ]
+    ],
+    "day_movers_2pct": {
+     "CE": 75,
+     "PE": 14
+    },
+    "confirmations": {
+     "confirmed": 2,
+     "rung": 2,
+     "late": 8,
+     "failed": 4,
+     "not_predicted_rows": 36,
+     "silent_cards": 4
+    },
+    "market": {
+     "called": "MIXED",
+     "real": "UP",
+     "nifty_open_to_1510": 1.44,
+     "right": false
+    },
+    "text": "MARKET CALL: MIXED - wrong (NIFTY open->15:10 +1.44%, real UP)\nPREDICTED N19 \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -34 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 11 (all names 40%)\nPREDICTED C22 \u00b7 CE scored 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -34 pts \u00b7 CE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -34 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -34 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 11 (all names 40%)\nPREDICTED U07 \u00b7 CE scored 3: right 0 (0 tradable), flat 2, wrong 1 \u00b7 beat the day -34 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -34 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 11 (all names 40%)\nPREDICTED P09 \u00b7 CE scored 4: right 1 (0 tradable), flat 2, wrong 1 \u00b7 beat the day -9 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -34 pts \u00b7 PE scored 3: right 0 (0 tradable), flat 1, wrong 2 \u00b7 beat the day -6 pts \u00b7 MOVER (side open) 25: fired 10 (early 1), right side 6 (1 tradable), wrong 0, flat 4 \u00b7 moved 2% either way 10 (all names 40%)\nEARLY CARDS (trigger before half the move): side lines 1 \u00b7 MOVER lines 1 \u00b7 total 2 (E2 pass mark 10)\nCONFIRMATIONS 2 (rung 2) \u00b7 too late 8 \u00b7 failed 4 \u00b7 silent cards 4 \u00b7 NOT PREDICTED movers shown 36\nBASE RATE: CE 34% / PE 6% of 218 F&O names moved 2% its way \u00b7 day movers CE 75 / PE 14\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 3 named, 1 moved 2% its way, 0 2% against \u00b7 PE 19 named, 1 its way, 7 against\nMISSED 2%+ movers 82 \u00b7 3%+: INDUSINDBK CE 10.0%, COFORGE CE 7.0%, TATAELXSI CE 6.5%, CUB CE 6.2%, PERSISTENT CE 6.2%, RBLBANK CE 5.4%, LTM CE 5.2%, AXISBANK CE 5.1%, ANGELONE CE 5.0%, KALYANKJIL PE 4.9%\nBASELINES: yesterday's movers CE 7 / PE 0 \u00b7 volatility-only 8: CE 2 / PE 2 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)\nEDGE (desk 18:00) 2026-11-20 \u00b7 names 18 (with a reason 7, price-only 11) \u00b7 base CE 1%/2%: 51%/21% \u00b7 PE: 2%/1%\n  TV           n  1 \u00b7 its way >=1% 100% \u00b7 >=2% 100% (base 21%, lift 4.84) \u00b7 wrong side   0% \u00b7 next close >=1%: not known \u00b7 move left 2.4% \u00b7 ahead of the half move 167 min\n  news         n  5 \u00b7 its way >=1%  20% \u00b7 >=2%   0% (base  9%, lift 0.0) \u00b7 wrong side  40% \u00b7 next close >=1%: not known \u00b7 move left 0.9% \u00b7 ahead of the half move 0 min\n  price-only   n 11 \u00b7 its way >=1%   9% \u00b7 >=2%   0% (base 21%, lift 0.0) \u00b7 wrong side   0% \u00b7 next close >=1%: not known \u00b7 move left 1.0% \u00b7 ahead of the half move -10 min\n  results      n  1 \u00b7 its way >=1%   0% \u00b7 >=2%   0% (base 21%, lift 0.0) \u00b7 wrong side   0% \u00b7 next close >=1%: not known \u00b7 move left 1.7% \u00b7 ahead of the half move 3 min\n  TOP 5 by rank: >=1% 20% \u00b7 >=2% 0% (base 13%) \u00b7 wrong 20%",
+    "news": [
+     {
+      "id": "NC:e35a6df51c",
+      "lead": "VEDL",
+      "side": "DOWN",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": 1.01,
+       "+15": 1.24,
+       "+30": 0.48,
+       "+60": 0.02
+      },
+      "right_30": true
+     },
+     {
+      "id": "NC:11eded317e",
+      "lead": "SYRMA",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.1,
+       "+15": 0.35,
+       "+30": 0.97,
+       "+60": 0.57
+      },
+      "right_30": true
+     },
+     {
+      "id": "NC:0245ef0bde",
+      "lead": "MUTHOOTFIN",
+      "side": "DOWN",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": 0.07,
+       "+15": 0.18,
+       "+30": 0.07,
+       "+60": 0.21
+      },
+      "right_30": true
+     },
+     {
+      "id": "NC:0b45b2c65e",
+      "lead": "MAXHEALTH",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.26,
+       "+15": -0.31,
+       "+30": -1.13,
+       "+60": -0.73
+      },
+      "right_30": false
+     },
+     {
+      "id": "NC:2223962ef8",
+      "lead": "BDL",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class C)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.01,
+       "+15": 0.15,
+       "+30": -0.02,
+       "+60": -0.11
+      },
+      "right_30": false
+     },
+     {
+      "id": "NC:8925c66e8b",
+      "lead": "MAXHEALTH",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.17,
+       "+15": -0.37,
+       "+30": -0.71,
+       "+60": -0.2
+      },
+      "right_30": false
+     },
+     {
+      "id": "NC:a5292d2d2d",
+      "lead": "MUTHOOTFIN",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": 0.07,
+       "+15": 0.04,
+       "+30": -0.06,
+       "+60": -0.63
+      },
+      "right_30": false
+     },
+     {
+      "id": "NC:cdb23f227f",
+      "lead": "LUPIN",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class C)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.01,
+       "+15": -0.2,
+       "+30": 0.04,
+       "+60": -0.03
+      },
+      "right_30": true
+     },
+     {
+      "id": "NC:b542bfee75",
+      "lead": "VEDL",
+      "side": "DOWN",
+      "verified": "UNVERIFIED - TV ONLY",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": 0.34,
+       "+15": -0.08,
+       "+30": -0.15,
+       "+60": -0.22
+      },
+      "right_30": false
+     },
+     {
+      "id": "NC:5890fa4bce",
+      "lead": "PAYTM",
+      "side": "DOWN",
+      "verified": "UNVERIFIED (one source, class C)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.05,
+       "+15": 0.22,
+       "+30": 0.66,
+       "+60": 1.15
+      },
+      "right_30": true
+     },
+     {
+      "id": "NC:c52f097679",
+      "lead": "NHPC",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class C)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.22,
+       "+15": 0.09,
+       "+30": 0.02,
+       "+60": 0.1
+      },
+      "right_30": true
+     },
+     {
+      "id": "NC:7340819012",
+      "lead": "EICHERMOT",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class C)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.11,
+       "+15": -0.4,
+       "+30": -0.2,
+       "+60": -0.4
+      },
+      "right_30": false
+     },
+     {
+      "id": "NC:f29fa60a3f",
+      "lead": "BAJFINANCE",
+      "side": "DOWN",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.16,
+       "+15": -0.22,
+       "+30": -0.53,
+       "+60": -0.19
+      },
+      "right_30": false
+     },
+     {
+      "id": "NC:2cb67ad8a7",
+      "lead": "BIOCON",
+      "side": "UP",
+      "verified": "UNVERIFIED (one source, class C)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.09,
+       "+15": -0.28,
+       "+30": -0.31,
+       "+60": 0.07
+      },
+      "right_30": false
+     },
+     {
+      "id": "NC:0776170805",
+      "lead": "TATASTEEL",
+      "side": "DOWN",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": 0.12,
+       "+15": 0.21,
+       "+30": 0.17,
+       "+60": 0.2
+      },
+      "right_30": true
+     },
+     {
+      "id": "NC:1d1821ecbe",
+      "lead": "VEDL",
+      "side": "DOWN",
+      "verified": "UNVERIFIED (one source, class B)",
+      "state": "ROW",
+      "abnormal_its_way": {
+       "+5": -0.04,
+       "+15": -0.17,
+       "+30": -0.1,
+       "+60": 0.2
+      },
+      "right_30": false
+     }
+    ],
+    "bottom_top": [
+     {
+      "at": "10:44",
+      "call": "APOLLOHOSP",
+      "kind": "ORDINARY",
+      "text": "BOTTOM view by Macquarie on APOLLOHOSP - not already falling, so an ordinary TV / broker call",
+      "ring": false
+     },
+     {
+      "at": "12:12",
+      "call": "hospitals & diagnostics",
+      "kind": "ORDINARY",
+      "text": "BOTTOM view by unnamed voice on hospitals & diagnostics - not already falling, so an ordinary TV / broker call",
+      "ring": false
+     }
+    ],
+    "bt_episodes": [],
+    "edge": {
+     "session": "2026-11-20",
+     "rows": [
+      {
+       "sym": "WAAREEENER",
+       "side": "CE",
+       "list": "SCORED",
+       "source": "news",
+       "rank": 1,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": 1.24,
+       "move_next_close": null,
+       "hit1": true,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.61,
+       "minutes_ahead_of_half_move": 30
+      },
+      {
+       "sym": "KALYANKJIL",
+       "side": "CE",
+       "list": "SCORED",
+       "source": "news",
+       "rank": 2,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": -4.06,
+       "move_next_close": null,
+       "hit1": false,
+       "hit2": false,
+       "wrong": true,
+       "move_left_pct": 0.0,
+       "minutes_ahead_of_half_move": null
+      },
+      {
+       "sym": "TMPV",
+       "side": "CE",
+       "list": "SCORED",
+       "source": "results",
+       "rank": 3,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": 0.69,
+       "move_next_close": null,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.68,
+       "minutes_ahead_of_half_move": 3
+      },
+      {
+       "sym": "BANKINDIA",
+       "side": "CE",
+       "list": "SCORED",
+       "source": "TV",
+       "rank": 6,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": 2.14,
+       "move_next_close": null,
+       "hit1": true,
+       "hit2": true,
+       "wrong": false,
+       "move_left_pct": 2.43,
+       "minutes_ahead_of_half_move": 167
+      },
+      {
+       "sym": "MUTHOOTFIN",
+       "side": "PE",
+       "list": "SCORED",
+       "source": "news",
+       "rank": 4,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": -1.16,
+       "move_next_close": null,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.55,
+       "minutes_ahead_of_half_move": 0
+      },
+      {
+       "sym": "ALKEM",
+       "side": "PE",
+       "list": "SCORED",
+       "source": "news",
+       "rank": 5,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": -0.34,
+       "move_next_close": null,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.79,
+       "minutes_ahead_of_half_move": 0
+      },
+      {
+       "sym": "MANAPPURAM",
+       "side": "PE",
+       "list": "SCORED",
+       "source": "news",
+       "rank": 7,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": -2.22,
+       "move_next_close": null,
+       "hit1": false,
+       "hit2": false,
+       "wrong": true,
+       "move_left_pct": 0.92,
+       "minutes_ahead_of_half_move": 0
+      },
+      {
+       "sym": "AMBER",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 9,
+       "named_at": "09:47",
+       "move_1510": -0.41,
+       "move_next_close": null,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.07,
+       "minutes_ahead_of_half_move": -10
+      },
+      {
+       "sym": "BLUESTARCO",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 10,
+       "named_at": "10:02",
+       "move_1510": 0.48,
+       "move_next_close": null,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.82,
+       "minutes_ahead_of_half_move": -46
+      },
+      {
+       "sym": "IREDA",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 11,
+       "named_at": "09:43",
+       "move_1510": 0.78,
+       "move_next_close": null,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.02,
+       "minutes_ahead_of_half_move": -25
+      },
+      {
+       "sym": "VOLTAS",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 13,
+       "named_at": "09:31",
+       "move_1510": -0.18,
+       "move_next_close": null,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.01,
+       "minutes_ahead_of_half_move": -15
+      },
+      {
+       "sym": "EICHERMOT",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 15,
+       "named_at": "09:47",
+       "move_1510": 0.32,
+       "move_next_close": null,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.59,
+       "minutes_ahead_of_half_move": -7
+      },
+      {
+       "sym": "CROMPTON",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 16,
+       "named_at": "09:18",
+       "move_1510": 0.94,
+       "move_next_close": null,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.28,
+       "minutes_ahead_of_half_move": 1
+      },
+      {
+       "sym": "HYUNDAI",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 18,
+       "named_at": "10:01",
+       "move_1510": -0.17,
+       "move_next_close": null,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.0,
+       "minutes_ahead_of_half_move": -38
+      },
+      {
+       "sym": "BANKBARODA",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 19,
+       "named_at": "09:32",
+       "move_1510": 0.85,
+       "move_next_close": null,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.17,
+       "minutes_ahead_of_half_move": -7
+      },
+      {
+       "sym": "M&M",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 21,
+       "named_at": "09:46",
+       "move_1510": 0.48,
+       "move_next_close": null,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.66,
+       "minutes_ahead_of_half_move": -30
+      },
+      {
+       "sym": "MARUTI",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 30,
+       "named_at": "09:31",
+       "move_1510": 1.46,
+       "move_next_close": null,
+       "hit1": true,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.71,
+       "minutes_ahead_of_half_move": -10
+      },
+      {
+       "sym": "PIIND",
+       "side": "CE",
+       "list": "CE BOUNCE (on the turn)",
+       "source": "price-only",
+       "rank": 8,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": -0.79,
+       "move_next_close": null,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.14,
+       "minutes_ahead_of_half_move": 60
+      }
+     ],
+     "by_source": {
+      "news": {
+       "n": 5,
+       "hit1": 0.2,
+       "hit2": 0.0,
+       "base1": 0.217,
+       "base2": 0.091,
+       "lift2": 0.0,
+       "wrong": 0.4,
+       "next_close_its_way_1pct": "not known",
+       "median_move_left": 0.92,
+       "median_minutes_ahead_of_half_move": 0
+      },
+      "results": {
+       "n": 1,
+       "hit1": 0.0,
+       "hit2": 0.0,
+       "base1": 0.509,
+       "base2": 0.206,
+       "lift2": 0.0,
+       "wrong": 0.0,
+       "next_close_its_way_1pct": "not known",
+       "median_move_left": 1.68,
+       "median_minutes_ahead_of_half_move": 3
+      },
+      "TV": {
+       "n": 1,
+       "hit1": 1.0,
+       "hit2": 1.0,
+       "base1": 0.509,
+       "base2": 0.206,
+       "lift2": 4.84,
+       "wrong": 0.0,
+       "next_close_its_way_1pct": "not known",
+       "median_move_left": 2.43,
+       "median_minutes_ahead_of_half_move": 167
+      },
+      "price-only": {
+       "n": 11,
+       "hit1": 0.091,
+       "hit2": 0.0,
+       "base1": 0.509,
+       "base2": 0.206,
+       "lift2": 0.0,
+       "wrong": 0.0,
+       "next_close_its_way_1pct": "not known",
+       "median_move_left": 1.01,
+       "median_minutes_ahead_of_half_move": -10
+      }
+     },
+     "reasoned": {
+      "n": 7,
+      "hit1": 0.286,
+      "hit2": 0.143,
+      "base1": 0.301,
+      "base2": 0.124,
+      "lift2": 1.15,
+      "wrong": 0.286,
+      "next_close_its_way_1pct": "not known",
+      "median_move_left": 1.55,
+      "median_minutes_ahead_of_half_move": 1
+     },
+     "price_only": {
+      "n": 11,
+      "hit1": 0.091,
+      "hit2": 0.0,
+      "base1": 0.509,
+      "base2": 0.206,
+      "lift2": 0.0,
+      "wrong": 0.0,
+      "next_close_its_way_1pct": "not known",
+      "median_move_left": 1.01,
+      "median_minutes_ahead_of_half_move": -10
+     },
+     "top5": {
+      "n": 5,
+      "hit1": 0.2,
+      "hit2": 0.0,
+      "base1": 0.315,
+      "base2": 0.129,
+      "lift2": 0.0,
+      "wrong": 0.2,
+      "next_close_its_way_1pct": "not known",
+      "median_move_left": 1.55,
+      "median_minutes_ahead_of_half_move": 1
+     },
+     "names_a_day": 18,
+     "base": {
+      "CE1": 0.509,
+      "CE2": 0.206,
+      "PE1": 0.023,
+      "PE2": 0.014
+     },
+     "text": "EDGE (desk 18:00) 2026-11-20 \u00b7 names 18 (with a reason 7, price-only 11) \u00b7 base CE 1%/2%: 51%/21% \u00b7 PE: 2%/1%\n  TV           n  1 \u00b7 its way >=1% 100% \u00b7 >=2% 100% (base 21%, lift 4.84) \u00b7 wrong side   0% \u00b7 next close >=1%: not known \u00b7 move left 2.4% \u00b7 ahead of the half move 167 min\n  news         n  5 \u00b7 its way >=1%  20% \u00b7 >=2%   0% (base  9%, lift 0.0) \u00b7 wrong side  40% \u00b7 next close >=1%: not known \u00b7 move left 0.9% \u00b7 ahead of the half move 0 min\n  price-only   n 11 \u00b7 its way >=1%   9% \u00b7 >=2%   0% (base 21%, lift 0.0) \u00b7 wrong side   0% \u00b7 next close >=1%: not known \u00b7 move left 1.0% \u00b7 ahead of the half move -10 min\n  results      n  1 \u00b7 its way >=1%   0% \u00b7 >=2%   0% (base 21%, lift 0.0) \u00b7 wrong side   0% \u00b7 next close >=1%: not known \u00b7 move left 1.7% \u00b7 ahead of the half move 3 min\n  TOP 5 by rank: >=1% 20% \u00b7 >=2% 0% (base 13%) \u00b7 wrong 20%"
+    }
+   },
+   "p09": {
+    "CE scored": {
+     "n": 4,
+     "big_right": 1,
+     "wrong_side": 1,
+     "flat": 2,
+     "tradable": 0,
+     "precision": 0.25,
+     "beat_base_pts": -9.4
+    },
+    "CE bounce": {
+     "n": 1,
+     "big_right": 0,
+     "wrong_side": 1,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -34.4
+    },
+    "PE scored": {
+     "n": 3,
+     "big_right": 0,
+     "wrong_side": 2,
+     "flat": 1,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -6.4
+    },
+    "MOVER": {
+     "n": 25,
+     "fired": 10,
+     "big_right": 6,
+     "wrong_side": 0,
+     "tradable": 1,
+     "early": 1,
+     "moved_2pct_either": 10,
+     "flat": 4,
+     "precision": 0.6,
+     "beat_base_pts": null
+    }
+   }
+  },
+  {
+   "session": "2026-11-16",
+   "scorecard": {
+    "session": "2026-11-16",
+    "universe": 218,
+    "base": {
+     "CE": 0.115,
+     "PE": 0.303
+    },
+    "early_cards": {
+     "side_lines": 0,
+     "mover_lines": 1
+    },
+    "baselines": {
+     "yesterdays_movers_CE": {
+      "n": 8,
+      "big_right": 0,
+      "precision": 0.0
+     },
+     "yesterdays_movers_PE": {
+      "n": 8,
+      "big_right": 2,
+      "precision": 0.25
+     },
+     "volatility_only_8": {
+      "CE_right": 0,
+      "PE_right": 5,
+      "n": 8,
+      "note": "the same 8 names on both sides"
+     }
+    },
+    "ideas": {
+     "CE": {
+      "n": 11,
+      "big_right": 1,
+      "moved_against": 4,
+      "precision": 0.091,
+      "right_names": [
+       "TECHM"
+      ]
+     },
+     "PE": {
+      "n": 19,
+      "big_right": 6,
+      "moved_against": 2,
+      "precision": 0.316,
+      "right_names": [
+       "JINDALSTEL",
+       "MCX",
+       "NATIONALUM",
+       "SAIL",
+       "TATASTEEL",
+       "VEDL"
+      ]
+     }
+    },
+    "base_either_way": 0.413,
+    "missed_2pct": 88,
+    "missed_3pct": [
+     [
+      "KAYNES",
+      "PE",
+      11.1
+     ],
+     [
+      "PREMIERENE",
+      "PE",
+      7.4
+     ],
+     [
+      "AMBER",
+      "PE",
+      7.3
+     ],
+     [
+      "LAURUSLABS",
+      "PE",
+      7.3
+     ],
+     [
+      "INOXWIND",
+      "PE",
+      7.2
+     ],
+     [
+      "MAXHEALTH",
+      "CE",
+      6.3
+     ],
+     [
+      "WAAREEENER",
+      "PE",
+      5.6
+     ],
+     [
+      "KALYANKJIL",
+      "CE",
+      5.1
+     ],
+     [
+      "FORTIS",
+      "CE",
+      5.0
+     ],
+     [
+      "PATANJALI",
+      "PE",
+      4.6
+     ],
+     [
+      "PGEL",
+      "PE",
+      4.4
+     ],
+     [
+      "SYRMA",
+      "PE",
+      4.3
+     ],
+     [
+      "TMPV",
+      "PE",
+      4.3
+     ],
+     [
+      "ATHERENERG",
+      "CE",
+      3.9
+     ],
+     [
+      "ITC",
+      "CE",
+      3.9
+     ],
+     [
+      "KARURVYSYA",
+      "CE",
+      3.7
+     ],
+     [
+      "DIVISLAB",
+      "PE",
+      3.7
+     ],
+     [
+      "POLICYBZR",
+      "PE",
+      3.7
+     ],
+     [
+      "POWERINDIA",
+      "PE",
+      3.7
+     ],
+     [
+      "LODHA",
+      "PE",
+      3.6
+     ],
+     [
+      "SUZLON",
+      "PE",
+      3.5
+     ],
+     [
+      "TATACONSUM",
+      "CE",
+      3.3
+     ],
+     [
+      "SAIL",
+      "PE",
+      3.3
+     ],
+     [
+      "GVT&D",
+      "PE",
+      3.2
+     ],
+     [
+      "KPITTECH",
+      "PE",
+      3.2
+     ],
+     [
+      "PAYTM",
+      "PE",
+      3.2
+     ],
+     [
+      "HDFCLIFE",
+      "CE",
+      3.0
+     ],
+     [
+      "MUTHOOTFIN",
+      "PE",
+      3.0
+     ],
+     [
+      "SIEMENS",
+      "PE",
+      3.0
+     ]
+    ],
+    "day_movers_2pct": {
+     "CE": 25,
+     "PE": 66
+    },
+    "confirmations": {
+     "confirmed": 2,
+     "rung": 0,
+     "late": 3,
+     "failed": 2,
+     "not_predicted_rows": 18,
+     "silent_cards": 0
+    },
+    "market": {
+     "called": "MIXED",
+     "real": "MIXED",
+     "nifty_open_to_1510": 0.23,
+     "right": true
+    },
+    "text": "MARKET CALL: MIXED - right (NIFTY open->15:10 +0.23%, real MIXED)\nPREDICTED N19 \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -12 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 14 (all names 41%)\nPREDICTED C22 \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -12 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 14 (all names 41%)\nPREDICTED U07 \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -12 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 14 (all names 41%)\nPREDICTED P09 \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -12 pts \u00b7 MOVER (side open) 25: fired 5 (early 1), right side 3 (2 tradable), wrong 1, flat 1 \u00b7 moved 2% either way 14 (all names 41%)\nEARLY CARDS (trigger before half the move): side lines 0 \u00b7 MOVER lines 1 \u00b7 total 1 (E2 pass mark 10)\nCONFIRMATIONS 2 (rung 0) \u00b7 too late 3 \u00b7 failed 2 \u00b7 silent cards 0 \u00b7 NOT PREDICTED movers shown 18\nBASE RATE: CE 12% / PE 30% of 218 F&O names moved 2% its way \u00b7 day movers CE 25 / PE 66\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 11 named, 1 moved 2% its way, 4 2% against \u00b7 PE 19 named, 6 its way, 2 against\nMISSED 2%+ movers 88 \u00b7 3%+: KAYNES PE 11.1%, PREMIERENE PE 7.4%, AMBER PE 7.3%, LAURUSLABS PE 7.3%, INOXWIND PE 7.2%, MAXHEALTH CE 6.3%, WAAREEENER PE 5.6%, KALYANKJIL CE 5.1%, FORTIS CE 5.0%, PATANJALI PE 4.6%\nBASELINES: yesterday's movers CE 0 / PE 2 \u00b7 volatility-only 8: CE 0 / PE 5 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)\nEDGE (desk 18:00) 2026-11-16 \u00b7 names 6 (with a reason 0, price-only 6) \u00b7 base CE 1%/2%: 11%/4% \u00b7 PE: 40%/17%\n  price-only   n  6 \u00b7 its way >=1%  17% \u00b7 >=2%   0% (base 15%, lift 0.0) \u00b7 wrong side   0% \u00b7 next close >=1%: 67% \u00b7 move left 0.9% \u00b7 ahead of the half move -6 min\n  TOP 5 by rank: >=1% 20% \u00b7 >=2% 0% (base 14%) \u00b7 wrong 0%",
+    "news": [],
+    "bottom_top": [],
+    "bt_episodes": [],
+    "edge": {
+     "session": "2026-11-16",
+     "rows": [
+      {
+       "sym": "CUMMINSIND",
+       "side": "PE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 5,
+       "named_at": "10:41",
+       "move_1510": 0.14,
+       "move_next_close": 3.86,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.83,
+       "minutes_ahead_of_half_move": -21
+      },
+      {
+       "sym": "MANAPPURAM",
+       "side": "PE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 9,
+       "named_at": "09:18",
+       "move_1510": -0.1,
+       "move_next_close": 1.69,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.53,
+       "minutes_ahead_of_half_move": -2
+      },
+      {
+       "sym": "ABB",
+       "side": "PE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 13,
+       "named_at": "09:26",
+       "move_1510": 0.39,
+       "move_next_close": -0.38,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.36,
+       "minutes_ahead_of_half_move": -10
+      },
+      {
+       "sym": "COCHINSHIP",
+       "side": "PE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 17,
+       "named_at": "09:18",
+       "move_1510": 1.5,
+       "move_next_close": 1.82,
+       "hit1": true,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.97,
+       "minutes_ahead_of_half_move": 8
+      },
+      {
+       "sym": "ASHOKLEY",
+       "side": "PE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 26,
+       "named_at": "10:41",
+       "move_1510": -0.21,
+       "move_next_close": 5.06,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.32,
+       "minutes_ahead_of_half_move": -85
+      },
+      {
+       "sym": "PIIND",
+       "side": "CE",
+       "list": "CE BOUNCE (on the turn)",
+       "source": "price-only",
+       "rank": 1,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": -1.41,
+       "move_next_close": -2.38,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.08,
+       "minutes_ahead_of_half_move": 0
+      }
+     ],
+     "by_source": {
+      "price-only": {
+       "n": 6,
+       "hit1": 0.167,
+       "hit2": 0.0,
+       "base1": 0.35,
+       "base2": 0.148,
+       "lift2": 0.0,
+       "wrong": 0.0,
+       "next_close_its_way_1pct": 0.667,
+       "median_move_left": 0.95,
+       "median_minutes_ahead_of_half_move": -6
+      }
+     },
+     "reasoned": null,
+     "price_only": {
+      "n": 6,
+      "hit1": 0.167,
+      "hit2": 0.0,
+      "base1": 0.35,
+      "base2": 0.148,
+      "lift2": 0.0,
+      "wrong": 0.0,
+      "next_close_its_way_1pct": 0.667,
+      "median_move_left": 0.95,
+      "median_minutes_ahead_of_half_move": -6
+     },
+     "top5": {
+      "n": 5,
+      "hit1": 0.2,
+      "hit2": 0.0,
+      "base1": 0.34,
+      "base2": 0.143,
+      "lift2": 0.0,
+      "wrong": 0.0,
+      "next_close_its_way_1pct": 0.6,
+      "median_move_left": 1.36,
+      "median_minutes_ahead_of_half_move": -2
+     },
+     "names_a_day": 6,
+     "base": {
+      "CE1": 0.106,
+      "CE2": 0.037,
+      "PE1": 0.399,
+      "PE2": 0.17
+     },
+     "text": "EDGE (desk 18:00) 2026-11-16 \u00b7 names 6 (with a reason 0, price-only 6) \u00b7 base CE 1%/2%: 11%/4% \u00b7 PE: 40%/17%\n  price-only   n  6 \u00b7 its way >=1%  17% \u00b7 >=2%   0% (base 15%, lift 0.0) \u00b7 wrong side   0% \u00b7 next close >=1%: 67% \u00b7 move left 0.9% \u00b7 ahead of the half move -6 min\n  TOP 5 by rank: >=1% 20% \u00b7 >=2% 0% (base 14%) \u00b7 wrong 0%"
+    }
+   },
+   "p09": {
+    "CE bounce": {
+     "n": 1,
+     "big_right": 0,
+     "wrong_side": 1,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -11.5
+    },
+    "MOVER": {
+     "n": 25,
+     "fired": 5,
+     "big_right": 3,
+     "wrong_side": 1,
+     "tradable": 2,
+     "early": 1,
+     "moved_2pct_either": 14,
+     "flat": 1,
+     "precision": 0.6,
+     "beat_base_pts": null
+    }
+   }
+  },
+  {
+   "session": "2026-11-18",
+   "scorecard": {
+    "session": "2026-11-18",
+    "universe": 218,
+    "base": {
+     "CE": 0.087,
+     "PE": 0.257
+    },
+    "early_cards": {
+     "side_lines": 0,
+     "mover_lines": 1
+    },
+    "baselines": {
+     "yesterdays_movers_CE": {
+      "n": 8,
+      "big_right": 0,
+      "precision": 0.0
+     },
+     "yesterdays_movers_PE": {
+      "n": 8,
+      "big_right": 4,
+      "precision": 0.5
+     },
+     "volatility_only_8": {
+      "CE_right": 1,
+      "PE_right": 5,
+      "n": 8,
+      "note": "the same 8 names on both sides"
+     }
+    },
+    "ideas": {
+     "CE": {
+      "n": 24,
+      "big_right": 1,
+      "moved_against": 6,
+      "precision": 0.042,
+      "right_names": [
+       "PGEL"
+      ]
+     },
+     "PE": {
+      "n": 32,
+      "big_right": 5,
+      "moved_against": 1,
+      "precision": 0.156,
+      "right_names": [
+       "DIXON",
+       "NATIONALUM",
+       "POLYCAB",
+       "SAIL",
+       "VEDL"
+      ]
+     }
+    },
+    "base_either_way": 0.33,
+    "missed_2pct": 71,
+    "missed_3pct": [
+     [
+      "ANGELONE",
+      "PE",
+      5.7
+     ],
+     [
+      "IREDA",
+      "CE",
+      5.0
+     ],
+     [
+      "SWIGGY",
+      "PE",
+      5.0
+     ],
+     [
+      "SAIL",
+      "PE",
+      4.4
+     ],
+     [
+      "TITAN",
+      "PE",
+      4.2
+     ],
+     [
+      "BSE",
+      "PE",
+      4.1
+     ],
+     [
+      "POLYCAB",
+      "PE",
+      4.0
+     ],
+     [
+      "NAVINFLUOR",
+      "CE",
+      3.8
+     ],
+     [
+      "MANAPPURAM",
+      "PE",
+      3.8
+     ],
+     [
+      "DIXON",
+      "PE",
+      3.7
+     ],
+     [
+      "KFINTECH",
+      "PE",
+      3.4
+     ],
+     [
+      "PIIND",
+      "PE",
+      3.4
+     ],
+     [
+      "DATAPATTNS",
+      "PE",
+      3.3
+     ],
+     [
+      "CIPLA",
+      "CE",
+      3.2
+     ],
+     [
+      "CAMS",
+      "PE",
+      3.1
+     ],
+     [
+      "HAVELLS",
+      "PE",
+      3.1
+     ],
+     [
+      "INOXWIND",
+      "PE",
+      3.1
+     ],
+     [
+      "MUTHOOTFIN",
+      "PE",
+      3.1
+     ],
+     [
+      "BIOCON",
+      "CE",
+      3.0
+     ],
+     [
+      "GAIL",
+      "CE",
+      3.0
+     ],
+     [
+      "MOTHERSON",
+      "PE",
+      3.0
+     ]
+    ],
+    "day_movers_2pct": {
+     "CE": 19,
+     "PE": 56
+    },
+    "confirmations": {
+     "confirmed": 2,
+     "rung": 0,
+     "late": 4,
+     "failed": 5,
+     "not_predicted_rows": 13,
+     "silent_cards": 1
+    },
+    "market": {
+     "called": "MIXED",
+     "real": "DOWN",
+     "nifty_open_to_1510": -0.6,
+     "right": false
+    },
+    "text": "MARKET CALL: MIXED - wrong (NIFTY open->15:10 -0.60%, real DOWN)\nPREDICTED N19 \u00b7 CE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 PE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +74 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 33%)\nPREDICTED C22 \u00b7 CE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 PE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +74 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 33%)\nPREDICTED U07 \u00b7 CE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 PE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +74 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 33%)\nPREDICTED P09 \u00b7 CE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 CE bounce 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -9 pts \u00b7 PE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +74 pts \u00b7 MOVER (side open) 25: fired 6 (early 1), right side 4 (2 tradable), wrong 1, flat 1 \u00b7 moved 2% either way 12 (all names 33%)\nEARLY CARDS (trigger before half the move): side lines 0 \u00b7 MOVER lines 1 \u00b7 total 1 (E2 pass mark 10)\nCONFIRMATIONS 2 (rung 0) \u00b7 too late 4 \u00b7 failed 5 \u00b7 silent cards 1 \u00b7 NOT PREDICTED movers shown 13\nBASE RATE: CE 9% / PE 26% of 218 F&O names moved 2% its way \u00b7 day movers CE 19 / PE 56\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 24 named, 1 moved 2% its way, 6 2% against \u00b7 PE 32 named, 5 its way, 1 against\nMISSED 2%+ movers 71 \u00b7 3%+: ANGELONE PE 5.7%, IREDA CE 5.0%, SWIGGY PE 5.0%, SAIL PE 4.4%, TITAN PE 4.2%, BSE PE 4.1%, POLYCAB PE 4.0%, NAVINFLUOR CE 3.8%, MANAPPURAM PE 3.8%, DIXON PE 3.7%\nBASELINES: yesterday's movers CE 0 / PE 4 \u00b7 volatility-only 8: CE 1 / PE 5 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)\nEDGE (desk 18:00) 2026-11-18 \u00b7 names 9 (with a reason 1, price-only 8) \u00b7 base CE 1%/2%: 5%/3% \u00b7 PE: 45%/18%\n  price-only   n  8 \u00b7 its way >=1%  25% \u00b7 >=2%  25% (base 12%, lift 2.05) \u00b7 wrong side  38% \u00b7 next close >=1%: 12% \u00b7 move left 1.0% \u00b7 ahead of the half move -1 min\n  sector-chain n  1 \u00b7 its way >=1%   0% \u00b7 >=2%   0% (base  3%, lift 0.0) \u00b7 wrong side 100% \u00b7 next close >=1%: 100% \u00b7 move left 0.0% \u00b7 ahead of the half move 0 min\n  TOP 5 by rank: >=1% 40% \u00b7 >=2% 40% (base 12%) \u00b7 wrong 40%",
+    "news": [],
+    "bottom_top": [],
+    "bt_episodes": [],
+    "edge": {
+     "session": "2026-11-18",
+     "rows": [
+      {
+       "sym": "TMPV",
+       "side": "CE",
+       "list": "WATCH ONLY - below the bar",
+       "source": "sector-chain",
+       "rank": 1,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": -2.45,
+       "move_next_close": 1.66,
+       "hit1": false,
+       "hit2": false,
+       "wrong": true,
+       "move_left_pct": 0.04,
+       "minutes_ahead_of_half_move": 0
+      },
+      {
+       "sym": "DIXON",
+       "side": "PE",
+       "list": "WATCH ONLY - below the bar",
+       "source": "price-only",
+       "rank": 2,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": 3.39,
+       "move_next_close": 0.25,
+       "hit1": true,
+       "hit2": true,
+       "wrong": false,
+       "move_left_pct": 3.68,
+       "minutes_ahead_of_half_move": 29
+      },
+      {
+       "sym": "ASHOKLEY",
+       "side": "PE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 4,
+       "named_at": "09:19",
+       "move_1510": -1.49,
+       "move_next_close": -5.18,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.15,
+       "minutes_ahead_of_half_move": -1
+      },
+      {
+       "sym": "KALYANKJIL",
+       "side": "PE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 6,
+       "named_at": "09:26",
+       "move_1510": 3.2,
+       "move_next_close": 1.97,
+       "hit1": true,
+       "hit2": true,
+       "wrong": false,
+       "move_left_pct": 4.23,
+       "minutes_ahead_of_half_move": 35
+      },
+      {
+       "sym": "CUMMINSIND",
+       "side": "PE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 17,
+       "named_at": "09:27",
+       "move_1510": 0.44,
+       "move_next_close": -3.56,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.85,
+       "minutes_ahead_of_half_move": 0
+      },
+      {
+       "sym": "ADANIENSOL",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 18,
+       "named_at": "09:23",
+       "move_1510": -3.18,
+       "move_next_close": -2.55,
+       "hit1": false,
+       "hit2": false,
+       "wrong": true,
+       "move_left_pct": 0.21,
+       "minutes_ahead_of_half_move": -7
+      },
+      {
+       "sym": "PAGEIND",
+       "side": "PE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 23,
+       "named_at": "09:18",
+       "move_1510": 0.15,
+       "move_next_close": -0.79,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.09,
+       "minutes_ahead_of_half_move": -2
+      },
+      {
+       "sym": "ANGELONE",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 26,
+       "named_at": "09:31",
+       "move_1510": -4.78,
+       "move_next_close": -6.54,
+       "hit1": false,
+       "hit2": false,
+       "wrong": true,
+       "move_left_pct": 0.1,
+       "minutes_ahead_of_half_move": -14
+      },
+      {
+       "sym": "PIIND",
+       "side": "CE",
+       "list": "CE BOUNCE (on the turn)",
+       "source": "price-only",
+       "rank": 3,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": -2.82,
+       "move_next_close": -2.74,
+       "hit1": false,
+       "hit2": false,
+       "wrong": true,
+       "move_left_pct": 0.0,
+       "minutes_ahead_of_half_move": null
+      }
+     ],
+     "by_source": {
+      "sector-chain": {
+       "n": 1,
+       "hit1": 0.0,
+       "hit2": 0.0,
+       "base1": 0.05,
+       "base2": 0.028,
+       "lift2": 0.0,
+       "wrong": 1.0,
+       "next_close_its_way_1pct": 1.0,
+       "median_move_left": 0.04,
+       "median_minutes_ahead_of_half_move": 0
+      },
+      "price-only": {
+       "n": 8,
+       "hit1": 0.25,
+       "hit2": 0.25,
+       "base1": 0.303,
+       "base2": 0.122,
+       "lift2": 2.05,
+       "wrong": 0.375,
+       "next_close_its_way_1pct": 0.125,
+       "median_move_left": 0.97,
+       "median_minutes_ahead_of_half_move": -1
+      }
+     },
+     "reasoned": {
+      "n": 1,
+      "hit1": 0.0,
+      "hit2": 0.0,
+      "base1": 0.05,
+      "base2": 0.028,
+      "lift2": 0.0,
+      "wrong": 1.0,
+      "next_close_its_way_1pct": 1.0,
+      "median_move_left": 0.04,
+      "median_minutes_ahead_of_half_move": 0
+     },
+     "price_only": {
+      "n": 8,
+      "hit1": 0.25,
+      "hit2": 0.25,
+      "base1": 0.303,
+      "base2": 0.122,
+      "lift2": 2.05,
+      "wrong": 0.375,
+      "next_close_its_way_1pct": 0.125,
+      "median_move_left": 0.97,
+      "median_minutes_ahead_of_half_move": -1
+     },
+     "top5": {
+      "n": 5,
+      "hit1": 0.4,
+      "hit2": 0.4,
+      "base1": 0.293,
+      "base2": 0.118,
+      "lift2": 3.38,
+      "wrong": 0.4,
+      "next_close_its_way_1pct": 0.4,
+      "median_move_left": 1.15,
+      "median_minutes_ahead_of_half_move": 14
+     },
+     "names_a_day": 9,
+     "base": {
+      "CE1": 0.05,
+      "CE2": 0.028,
+      "PE1": 0.454,
+      "PE2": 0.179
+     },
+     "text": "EDGE (desk 18:00) 2026-11-18 \u00b7 names 9 (with a reason 1, price-only 8) \u00b7 base CE 1%/2%: 5%/3% \u00b7 PE: 45%/18%\n  price-only   n  8 \u00b7 its way >=1%  25% \u00b7 >=2%  25% (base 12%, lift 2.05) \u00b7 wrong side  38% \u00b7 next close >=1%: 12% \u00b7 move left 1.0% \u00b7 ahead of the half move -1 min\n  sector-chain n  1 \u00b7 its way >=1%   0% \u00b7 >=2%   0% (base  3%, lift 0.0) \u00b7 wrong side 100% \u00b7 next close >=1%: 100% \u00b7 move left 0.0% \u00b7 ahead of the half move 0 min\n  TOP 5 by rank: >=1% 40% \u00b7 >=2% 40% (base 12%) \u00b7 wrong 40%"
+    }
+   },
+   "p09": {
+    "CE watch": {
+     "n": 1,
+     "big_right": 0,
+     "wrong_side": 1,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -8.7
+    },
+    "CE bounce": {
+     "n": 1,
+     "big_right": 0,
+     "wrong_side": 1,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -8.7
+    },
+    "PE watch": {
+     "n": 1,
+     "big_right": 1,
+     "wrong_side": 0,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 1.0,
+     "beat_base_pts": 74.3
+    },
+    "MOVER": {
+     "n": 25,
+     "fired": 6,
+     "big_right": 4,
+     "wrong_side": 1,
+     "tradable": 2,
+     "early": 1,
+     "moved_2pct_either": 12,
+     "flat": 1,
+     "precision": 0.667,
+     "beat_base_pts": null
+    }
+   }
+  },
+  {
+   "session": "2026-11-19",
+   "scorecard": {
+    "session": "2026-11-19",
+    "universe": 218,
+    "base": {
+     "CE": 0.33,
+     "PE": 0.06
+    },
+    "early_cards": {
+     "side_lines": 0,
+     "mover_lines": 2
+    },
+    "baselines": {
+     "yesterdays_movers_CE": {
+      "n": 8,
+      "big_right": 2,
+      "precision": 0.25
+     },
+     "yesterdays_movers_PE": {
+      "n": 8,
+      "big_right": 1,
+      "precision": 0.125
+     },
+     "volatility_only_8": {
+      "CE_right": 3,
+      "PE_right": 1,
+      "n": 8,
+      "note": "the same 8 names on both sides"
+     }
+    },
+    "ideas": {
+     "CE": {
+      "n": 21,
+      "big_right": 18,
+      "moved_against": 0,
+      "precision": 0.857,
+      "right_names": [
+       "AMBER",
+       "ASHOKLEY",
+       "BAJAJ-AUTO",
+       "BLUESTARCO",
+       "CROMPTON",
+       "DIXON",
+       "EICHERMOT",
+       "HAVELLS",
+       "HEROMOTOCO",
+       "INDIGO",
+       "KALYANKJIL",
+       "M&M"
+      ]
+     },
+     "PE": {
+      "n": 25,
+      "big_right": 1,
+      "moved_against": 7,
+      "precision": 0.04,
+      "right_names": [
+       "MCX"
+      ]
+     }
+    },
+    "base_either_way": 0.385,
+    "missed_2pct": 80,
+    "missed_3pct": [
+     [
+      "VOLTAS",
+      "CE",
+      9.1
+     ],
+     [
+      "BLUESTARCO",
+      "CE",
+      7.8
+     ],
+     [
+      "AMBER",
+      "CE",
+      7.7
+     ],
+     [
+      "IREDA",
+      "CE",
+      7.7
+     ],
+     [
+      "PAYTM",
+      "PE",
+      7.5
+     ],
+     [
+      "MARUTI",
+      "CE",
+      7.0
+     ],
+     [
+      "PGEL",
+      "CE",
+      6.9
+     ],
+     [
+      "UNITDSPR",
+      "CE",
+      6.2
+     ],
+     [
+      "HAVELLS",
+      "CE",
+      6.0
+     ],
+     [
+      "COLPAL",
+      "CE",
+      5.5
+     ],
+     [
+      "HYUNDAI",
+      "CE",
+      5.5
+     ],
+     [
+      "POLICYBZR",
+      "PE",
+      5.5
+     ],
+     [
+      "M&M",
+      "CE",
+      5.1
+     ],
+     [
+      "CROMPTON",
+      "CE",
+      4.8
+     ],
+     [
+      "EICHERMOT",
+      "CE",
+      4.7
+     ],
+     [
+      "HEROMOTOCO",
+      "CE",
+      4.6
+     ],
+     [
+      "PNB",
+      "CE",
+      4.4
+     ],
+     [
+      "BRITANNIA",
+      "CE",
+      4.3
+     ],
+     [
+      "TVSMOTOR",
+      "CE",
+      4.3
+     ],
+     [
+      "HINDUNILVR",
+      "CE",
+      4.1
+     ],
+     [
+      "IDFCFIRSTB",
+      "CE",
+      4.1
+     ],
+     [
+      "UPL",
+      "CE",
+      4.1
+     ],
+     [
+      "DABUR",
+      "CE",
+      4.0
+     ],
+     [
+      "PNBHOUSING",
+      "CE",
+      4.0
+     ],
+     [
+      "IRFC",
+      "CE",
+      3.9
+     ],
+     [
+      "KEI",
+      "CE",
+      3.8
+     ],
+     [
+      "BAJAJ-AUTO",
+      "CE",
+      3.7
+     ],
+     [
+      "SYRMA",
+      "CE",
+      3.6
+     ],
+     [
+      "IEX",
+      "CE",
+      3.5
+     ],
+     [
+      "BANDHANBNK",
+      "CE",
+      3.4
+     ],
+     [
+      "BANKBARODA",
+      "CE",
+      3.4
+     ],
+     [
+      "DIXON",
+      "CE",
+      3.4
+     ],
+     [
+      "CANBK",
+      "CE",
+      3.3
+     ],
+     [
+      "GODREJCP",
+      "CE",
+      3.3
+     ],
+     [
+      "HINDALCO",
+      "CE",
+      3.1
+     ],
+     [
+      "RVNL",
+      "CE",
+      3.1
+     ],
+     [
+      "MOTILALOFS",
+      "PE",
+      3.1
+     ],
+     [
+      "BANKINDIA",
+      "CE",
+      3.0
+     ],
+     [
+      "ICICILIFE",
+      "CE",
+      3.0
+     ]
+    ],
+    "day_movers_2pct": {
+     "CE": 72,
+     "PE": 13
+    },
+    "confirmations": {
+     "confirmed": 2,
+     "rung": 1,
+     "late": 6,
+     "failed": 5,
+     "not_predicted_rows": 34,
+     "silent_cards": 7
+    },
+    "market": {
+     "called": "MIXED",
+     "real": "UP",
+     "nifty_open_to_1510": 0.66,
+     "right": false
+    },
+    "text": "MARKET CALL: MIXED - wrong (NIFTY open->15:10 +0.66%, real UP)\nPREDICTED N19 \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -33 pts \u00b7 PE watch 3: right 1 (0 tradable), flat 2, wrong 0 \u00b7 beat the day +27 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 38%)\nPREDICTED C22 \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -33 pts \u00b7 PE watch 3: right 1 (0 tradable), flat 2, wrong 0 \u00b7 beat the day +27 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 38%)\nPREDICTED U07 \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -33 pts \u00b7 PE watch 3: right 1 (0 tradable), flat 2, wrong 0 \u00b7 beat the day +27 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 38%)\nPREDICTED P09 \u00b7 CE bounce 1: right 0 (0 tradable), flat 1, wrong 0 \u00b7 beat the day -33 pts \u00b7 PE watch 3: right 1 (0 tradable), flat 0, wrong 2 \u00b7 beat the day +27 pts \u00b7 MOVER (side open) 25: fired 9 (early 2), right side 3 (3 tradable), wrong 5, flat 1 \u00b7 moved 2% either way 13 (all names 38%)\nEARLY CARDS (trigger before half the move): side lines 0 \u00b7 MOVER lines 2 \u00b7 total 2 (E2 pass mark 10)\nCONFIRMATIONS 2 (rung 1) \u00b7 too late 6 \u00b7 failed 5 \u00b7 silent cards 7 \u00b7 NOT PREDICTED movers shown 34\nBASE RATE: CE 33% / PE 6% of 218 F&O names moved 2% its way \u00b7 day movers CE 72 / PE 13\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 21 named, 18 moved 2% its way, 0 2% against \u00b7 PE 25 named, 1 its way, 7 against\nMISSED 2%+ movers 80 \u00b7 3%+: VOLTAS CE 9.1%, BLUESTARCO CE 7.8%, AMBER CE 7.7%, IREDA CE 7.7%, PAYTM PE 7.5%, MARUTI CE 7.0%, PGEL CE 6.9%, UNITDSPR CE 6.2%, HAVELLS CE 6.0%, COLPAL CE 5.5%\nBASELINES: yesterday's movers CE 2 / PE 1 \u00b7 volatility-only 8: CE 3 / PE 1 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)\nEDGE (desk 18:00) 2026-11-19 \u00b7 names 13 (with a reason 0, price-only 13) \u00b7 base CE 1%/2%: 42%/21% \u00b7 PE: 8%/0%\n  price-only   n 13 \u00b7 its way >=1%  23% \u00b7 >=2%   0% (base 12%, lift 0.0) \u00b7 wrong side   0% \u00b7 next close >=1%: 38% \u00b7 move left 1.0% \u00b7 ahead of the half move -1 min\n  TOP 5 by rank: >=1% 20% \u00b7 >=2% 0% (base 5%) \u00b7 wrong 0%",
+    "news": [],
+    "bottom_top": [],
+    "bt_episodes": [],
+    "edge": {
+     "session": "2026-11-19",
+     "rows": [
+      {
+       "sym": "POWERINDIA",
+       "side": "PE",
+       "list": "WATCH ONLY - below the bar",
+       "source": "price-only",
+       "rank": 1,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": 0.16,
+       "move_next_close": 2.29,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.94,
+       "minutes_ahead_of_half_move": 0
+      },
+      {
+       "sym": "360ONE",
+       "side": "PE",
+       "list": "WATCH ONLY - below the bar",
+       "source": "price-only",
+       "rank": 2,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": 0.9,
+       "move_next_close": 0.17,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.15,
+       "minutes_ahead_of_half_move": 103
+      },
+      {
+       "sym": "MOTILALOFS",
+       "side": "PE",
+       "list": "WATCH ONLY - below the bar",
+       "source": "price-only",
+       "rank": 3,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": 1.53,
+       "move_next_close": 2.17,
+       "hit1": true,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 3.08,
+       "minutes_ahead_of_half_move": 0
+      },
+      {
+       "sym": "MANAPPURAM",
+       "side": "PE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 5,
+       "named_at": "09:17",
+       "move_1510": -1.93,
+       "move_next_close": -1.37,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.5,
+       "minutes_ahead_of_half_move": -1
+      },
+      {
+       "sym": "ASHOKLEY",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 8,
+       "named_at": "09:34",
+       "move_1510": 1.25,
+       "move_next_close": -0.42,
+       "hit1": true,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 2.14,
+       "minutes_ahead_of_half_move": 3
+      },
+      {
+       "sym": "MOTHERSON",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 10,
+       "named_at": "10:23",
+       "move_1510": 0.01,
+       "move_next_close": 1.58,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.57,
+       "minutes_ahead_of_half_move": -44
+      },
+      {
+       "sym": "KALYANKJIL",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 13,
+       "named_at": "10:07",
+       "move_1510": 1.18,
+       "move_next_close": -1.74,
+       "hit1": true,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.18,
+       "minutes_ahead_of_half_move": -29
+      },
+      {
+       "sym": "PIIND",
+       "side": "PE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 15,
+       "named_at": "09:17",
+       "move_1510": -1.35,
+       "move_next_close": 1.19,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.32,
+       "minutes_ahead_of_half_move": -1
+      },
+      {
+       "sym": "TMPV",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 18,
+       "named_at": "10:04",
+       "move_1510": 0.91,
+       "move_next_close": 2.66,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.54,
+       "minutes_ahead_of_half_move": -4
+      },
+      {
+       "sym": "PAGEIND",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 24,
+       "named_at": "09:45",
+       "move_1510": 0.18,
+       "move_next_close": -0.18,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.01,
+       "minutes_ahead_of_half_move": 2
+      },
+      {
+       "sym": "BDL",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 26,
+       "named_at": "09:19",
+       "move_1510": 0.04,
+       "move_next_close": 0.19,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.03,
+       "minutes_ahead_of_half_move": -2
+      },
+      {
+       "sym": "TITAN",
+       "side": "PE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 29,
+       "named_at": "09:22",
+       "move_1510": -1.88,
+       "move_next_close": -0.83,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.71,
+       "minutes_ahead_of_half_move": -6
+      },
+      {
+       "sym": "KAYNES",
+       "side": "CE",
+       "list": "CE BOUNCE (on the turn)",
+       "source": "price-only",
+       "rank": 4,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": -0.08,
+       "move_next_close": 0.92,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.36,
+       "minutes_ahead_of_half_move": 18
+      }
+     ],
+     "by_source": {
+      "price-only": {
+       "n": 13,
+       "hit1": 0.231,
+       "hit2": 0.0,
+       "base1": 0.265,
+       "base2": 0.116,
+       "lift2": 0.0,
+       "wrong": 0.0,
+       "next_close_its_way_1pct": 0.385,
+       "median_move_left": 1.03,
+       "median_minutes_ahead_of_half_move": -1
+      }
+     },
+     "reasoned": null,
+     "price_only": {
+      "n": 13,
+      "hit1": 0.231,
+      "hit2": 0.0,
+      "base1": 0.265,
+      "base2": 0.116,
+      "lift2": 0.0,
+      "wrong": 0.0,
+      "next_close_its_way_1pct": 0.385,
+      "median_move_left": 1.03,
+      "median_minutes_ahead_of_half_move": -1
+     },
+     "top5": {
+      "n": 5,
+      "hit1": 0.2,
+      "hit2": 0.0,
+      "base1": 0.15,
+      "base2": 0.046,
+      "lift2": 0.0,
+      "wrong": 0.0,
+      "next_close_its_way_1pct": 0.4,
+      "median_move_left": 1.15,
+      "median_minutes_ahead_of_half_move": 0
+     },
+     "names_a_day": 13,
+     "base": {
+      "CE1": 0.422,
+      "CE2": 0.211,
+      "PE1": 0.083,
+      "PE2": 0.005
+     },
+     "text": "EDGE (desk 18:00) 2026-11-19 \u00b7 names 13 (with a reason 0, price-only 13) \u00b7 base CE 1%/2%: 42%/21% \u00b7 PE: 8%/0%\n  price-only   n 13 \u00b7 its way >=1%  23% \u00b7 >=2%   0% (base 12%, lift 0.0) \u00b7 wrong side   0% \u00b7 next close >=1%: 38% \u00b7 move left 1.0% \u00b7 ahead of the half move -1 min\n  TOP 5 by rank: >=1% 20% \u00b7 >=2% 0% (base 5%) \u00b7 wrong 0%"
+    }
+   },
+   "p09": {
+    "CE bounce": {
+     "n": 1,
+     "big_right": 0,
+     "wrong_side": 0,
+     "flat": 1,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -33.0
+    },
+    "PE watch": {
+     "n": 3,
+     "big_right": 1,
+     "wrong_side": 2,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 0.333,
+     "beat_base_pts": 27.4
+    },
+    "MOVER": {
+     "n": 25,
+     "fired": 9,
+     "big_right": 3,
+     "wrong_side": 5,
+     "tradable": 3,
+     "early": 2,
+     "moved_2pct_either": 13,
+     "flat": 1,
+     "precision": 0.333,
+     "beat_base_pts": null
+    }
+   }
+  },
+  {
+   "session": "2026-10-29",
+   "scorecard": {
+    "session": "2026-10-29",
+    "universe": 218,
+    "base": {
+     "CE": 0.284,
+     "PE": 0.083
+    },
+    "early_cards": {
+     "side_lines": 0,
+     "mover_lines": 1
+    },
+    "baselines": {
+     "yesterdays_movers_CE": {
+      "n": 8,
+      "big_right": 3,
+      "precision": 0.375
+     },
+     "yesterdays_movers_PE": {
+      "n": 8,
+      "big_right": 2,
+      "precision": 0.25
+     },
+     "volatility_only_8": {
+      "CE_right": 2,
+      "PE_right": 0,
+      "n": 8,
+      "note": "the same 8 names on both sides"
+     }
+    },
+    "ideas": {
+     "CE": {
+      "n": 2,
+      "big_right": 0,
+      "moved_against": 0,
+      "precision": 0.0,
+      "right_names": []
+     },
+     "PE": {
+      "n": 5,
+      "big_right": 0,
+      "moved_against": 1,
+      "precision": 0.0,
+      "right_names": []
+     }
+    },
+    "base_either_way": 0.362,
+    "missed_2pct": 75,
+    "missed_3pct": [
+     [
+      "PNBHOUSING",
+      "PE",
+      6.8
+     ],
+     [
+      "ADANIENT",
+      "CE",
+      4.8
+     ],
+     [
+      "CUB",
+      "CE",
+      4.7
+     ],
+     [
+      "JSWENERGY",
+      "CE",
+      4.6
+     ],
+     [
+      "UNITDSPR",
+      "CE",
+      4.6
+     ],
+     [
+      "POWERGRID",
+      "CE",
+      4.5
+     ],
+     [
+      "MANAPPURAM",
+      "CE",
+      4.3
+     ],
+     [
+      "ADANIENSOL",
+      "CE",
+      4.2
+     ],
+     [
+      "CDSL",
+      "CE",
+      4.1
+     ],
+     [
+      "ETERNAL",
+      "CE",
+      4.0
+     ],
+     [
+      "TVSMOTOR",
+      "PE",
+      3.7
+     ],
+     [
+      "ADANIPORTS",
+      "CE",
+      3.6
+     ],
+     [
+      "HEROMOTOCO",
+      "PE",
+      3.6
+     ],
+     [
+      "PAYTM",
+      "CE",
+      3.5
+     ],
+     [
+      "BLUESTARCO",
+      "CE",
+      3.4
+     ],
+     [
+      "HYUNDAI",
+      "CE",
+      3.4
+     ],
+     [
+      "SUZLON",
+      "PE",
+      3.4
+     ],
+     [
+      "ADANIPOWER",
+      "CE",
+      3.3
+     ],
+     [
+      "PHOENIXLTD",
+      "CE",
+      3.3
+     ],
+     [
+      "ITC",
+      "CE",
+      3.2
+     ],
+     [
+      "360ONE",
+      "CE",
+      3.1
+     ],
+     [
+      "ADANIGREEN",
+      "CE",
+      3.1
+     ],
+     [
+      "FORCEMOT",
+      "CE",
+      3.1
+     ],
+     [
+      "KOTAKBANK",
+      "CE",
+      3.1
+     ],
+     [
+      "PIDILITIND",
+      "CE",
+      3.1
+     ],
+     [
+      "PIDILITIND",
+      "PE",
+      3.1
+     ],
+     [
+      "NHPC",
+      "CE",
+      3.0
+     ],
+     [
+      "RECLTD",
+      "CE",
+      3.0
+     ],
+     [
+      "KPITTECH",
+      "PE",
+      3.0
+     ]
+    ],
+    "day_movers_2pct": {
+     "CE": 62,
+     "PE": 18
+    },
+    "confirmations": {
+     "confirmed": 0,
+     "rung": 0,
+     "late": 6,
+     "failed": 5,
+     "not_predicted_rows": 25,
+     "silent_cards": 0
+    },
+    "market": {
+     "called": "MIXED",
+     "real": "UP",
+     "nifty_open_to_1510": 0.66,
+     "right": false
+    },
+    "text": "MARKET CALL: MIXED - wrong (NIFTY open->15:10 +0.66%, real UP)\nPREDICTED N19 \u00b7 CE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +72 pts \u00b7 CE bounce 4: right 1 (0 tradable), flat 0, wrong 3 \u00b7 beat the day -3 pts \u00b7 PE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -8 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 36%)\nPREDICTED C22 \u00b7 CE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +72 pts \u00b7 CE bounce 4: right 1 (0 tradable), flat 0, wrong 3 \u00b7 beat the day -3 pts \u00b7 PE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -8 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 36%)\nPREDICTED U07 \u00b7 CE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +72 pts \u00b7 CE bounce 4: right 1 (0 tradable), flat 0, wrong 3 \u00b7 beat the day -3 pts \u00b7 PE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -8 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 13 (all names 36%)\nPREDICTED P09 \u00b7 CE watch 1: right 1 (0 tradable), flat 0, wrong 0 \u00b7 beat the day +72 pts \u00b7 CE bounce 4: right 1 (0 tradable), flat 0, wrong 3 \u00b7 beat the day -3 pts \u00b7 PE watch 1: right 0 (0 tradable), flat 0, wrong 1 \u00b7 beat the day -8 pts \u00b7 MOVER (side open) 25: fired 6 (early 1), right side 3 (1 tradable), wrong 2, flat 1 \u00b7 moved 2% either way 13 (all names 36%)\nEARLY CARDS (trigger before half the move): side lines 0 \u00b7 MOVER lines 1 \u00b7 total 1 (E2 pass mark 10)\nCONFIRMATIONS 0 (rung 0) \u00b7 too late 6 \u00b7 failed 5 \u00b7 silent cards 0 \u00b7 NOT PREDICTED movers shown 25\nBASE RATE: CE 28% / PE 8% of 218 F&O names moved 2% its way \u00b7 day movers CE 62 / PE 18\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 2 named, 0 moved 2% its way, 0 2% against \u00b7 PE 5 named, 0 its way, 1 against\nMISSED 2%+ movers 75 \u00b7 3%+: PNBHOUSING PE 6.8%, ADANIENT CE 4.8%, CUB CE 4.7%, JSWENERGY CE 4.6%, UNITDSPR CE 4.6%, POWERGRID CE 4.5%, MANAPPURAM CE 4.3%, ADANIENSOL CE 4.2%, CDSL CE 4.1%, ETERNAL CE 4.0%\nBASELINES: yesterday's movers CE 3 / PE 2 \u00b7 volatility-only 8: CE 2 / PE 0 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)\nEDGE (desk 18:00) 2026-10-29 \u00b7 names 12 (with a reason 1, price-only 11) \u00b7 base CE 1%/2%: 32%/14% \u00b7 PE: 13%/3%\n  price-only   n 11 \u00b7 its way >=1%  18% \u00b7 >=2%   9% (base 13%, lift 0.69) \u00b7 wrong side   9% \u00b7 next close >=1%: 18% \u00b7 move left 0.8% \u00b7 ahead of the half move 0 min\n  sector-chain n  1 \u00b7 its way >=1% 100% \u00b7 >=2%   0% (base 14%, lift 0.0) \u00b7 wrong side   0% \u00b7 next close >=1%: 0% \u00b7 move left 2.5% \u00b7 ahead of the half move 0 min\n  TOP 5 by rank: >=1% 20% \u00b7 >=2% 0% (base 12%) \u00b7 wrong 0%",
+    "news": [],
+    "bottom_top": [],
+    "bt_episodes": [],
+    "edge": {
+     "session": "2026-10-29",
+     "rows": [
+      {
+       "sym": "KAYNES",
+       "side": "CE",
+       "list": "WATCH ONLY - below the bar",
+       "source": "sector-chain",
+       "rank": 1,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": 1.8,
+       "move_next_close": -0.38,
+       "hit1": true,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 2.48,
+       "minutes_ahead_of_half_move": 0
+      },
+      {
+       "sym": "PATANJALI",
+       "side": "PE",
+       "list": "WATCH ONLY - below the bar",
+       "source": "price-only",
+       "rank": 2,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": -0.42,
+       "move_next_close": 1.12,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.95,
+       "minutes_ahead_of_half_move": 0
+      },
+      {
+       "sym": "PGEL",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 8,
+       "named_at": "09:27",
+       "move_1510": -2.16,
+       "move_next_close": -2.7,
+       "hit1": false,
+       "hit2": false,
+       "wrong": true,
+       "move_left_pct": 0.39,
+       "minutes_ahead_of_half_move": -10
+      },
+      {
+       "sym": "APLAPOLLO",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 13,
+       "named_at": "09:29",
+       "move_1510": -0.89,
+       "move_next_close": -3.0,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.31,
+       "minutes_ahead_of_half_move": -10
+      },
+      {
+       "sym": "BIOCON",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 22,
+       "named_at": "09:32",
+       "move_1510": -1.24,
+       "move_next_close": -0.8,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.75,
+       "minutes_ahead_of_half_move": 0
+      },
+      {
+       "sym": "BANDHANBNK",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 29,
+       "named_at": "09:38",
+       "move_1510": 1.13,
+       "move_next_close": -1.95,
+       "hit1": true,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 2.27,
+       "minutes_ahead_of_half_move": -22
+      },
+      {
+       "sym": "UPL",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 30,
+       "named_at": "10:10",
+       "move_1510": -0.62,
+       "move_next_close": -5.63,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.44,
+       "minutes_ahead_of_half_move": -33
+      },
+      {
+       "sym": "SYRMA",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 31,
+       "named_at": "09:19",
+       "move_1510": 5.39,
+       "move_next_close": 1.95,
+       "hit1": true,
+       "hit2": true,
+       "wrong": false,
+       "move_left_pct": 5.69,
+       "minutes_ahead_of_half_move": 8
+      },
+      {
+       "sym": "YESBANK",
+       "side": "CE",
+       "list": "CE BOUNCE (on the turn)",
+       "source": "price-only",
+       "rank": 5,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": -1.54,
+       "move_next_close": -2.95,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.06,
+       "minutes_ahead_of_half_move": 0
+      },
+      {
+       "sym": "SWIGGY",
+       "side": "CE",
+       "list": "CE BOUNCE (on the turn)",
+       "source": "price-only",
+       "rank": 4,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": -0.24,
+       "move_next_close": -4.02,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.49,
+       "minutes_ahead_of_half_move": 0
+      },
+      {
+       "sym": "NAM-INDIA",
+       "side": "CE",
+       "list": "CE BOUNCE (on the turn)",
+       "source": "price-only",
+       "rank": 3,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": -0.55,
+       "move_next_close": -2.18,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 2.51,
+       "minutes_ahead_of_half_move": 0
+      },
+      {
+       "sym": "KEI",
+       "side": "CE",
+       "list": "CE BOUNCE (on the turn)",
+       "source": "price-only",
+       "rank": 6,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": -0.99,
+       "move_next_close": -2.1,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.06,
+       "minutes_ahead_of_half_move": 0
+      }
+     ],
+     "by_source": {
+      "sector-chain": {
+       "n": 1,
+       "hit1": 1.0,
+       "hit2": 0.0,
+       "base1": 0.317,
+       "base2": 0.142,
+       "lift2": 0.0,
+       "wrong": 0.0,
+       "next_close_its_way_1pct": 0.0,
+       "median_move_left": 2.48,
+       "median_minutes_ahead_of_half_move": 0
+      },
+      "price-only": {
+       "n": 11,
+       "hit1": 0.182,
+       "hit2": 0.091,
+       "base1": 0.3,
+       "base2": 0.132,
+       "lift2": 0.69,
+       "wrong": 0.091,
+       "next_close_its_way_1pct": 0.182,
+       "median_move_left": 0.75,
+       "median_minutes_ahead_of_half_move": 0
+      }
+     },
+     "reasoned": {
+      "n": 1,
+      "hit1": 1.0,
+      "hit2": 0.0,
+      "base1": 0.317,
+      "base2": 0.142,
+      "lift2": 0.0,
+      "wrong": 0.0,
+      "next_close_its_way_1pct": 0.0,
+      "median_move_left": 2.48,
+      "median_minutes_ahead_of_half_move": 0
+     },
+     "price_only": {
+      "n": 11,
+      "hit1": 0.182,
+      "hit2": 0.091,
+      "base1": 0.3,
+      "base2": 0.132,
+      "lift2": 0.69,
+      "wrong": 0.091,
+      "next_close_its_way_1pct": 0.182,
+      "median_move_left": 0.75,
+      "median_minutes_ahead_of_half_move": 0
+     },
+     "top5": {
+      "n": 5,
+      "hit1": 0.2,
+      "hit2": 0.0,
+      "base1": 0.28,
+      "base2": 0.12,
+      "lift2": 0.0,
+      "wrong": 0.0,
+      "next_close_its_way_1pct": 0.2,
+      "median_move_left": 0.95,
+      "median_minutes_ahead_of_half_move": 0
+     },
+     "names_a_day": 12,
+     "base": {
+      "CE1": 0.317,
+      "CE2": 0.142,
+      "PE1": 0.133,
+      "PE2": 0.032
+     },
+     "text": "EDGE (desk 18:00) 2026-10-29 \u00b7 names 12 (with a reason 1, price-only 11) \u00b7 base CE 1%/2%: 32%/14% \u00b7 PE: 13%/3%\n  price-only   n 11 \u00b7 its way >=1%  18% \u00b7 >=2%   9% (base 13%, lift 0.69) \u00b7 wrong side   9% \u00b7 next close >=1%: 18% \u00b7 move left 0.8% \u00b7 ahead of the half move 0 min\n  sector-chain n  1 \u00b7 its way >=1% 100% \u00b7 >=2%   0% (base 14%, lift 0.0) \u00b7 wrong side   0% \u00b7 next close >=1%: 0% \u00b7 move left 2.5% \u00b7 ahead of the half move 0 min\n  TOP 5 by rank: >=1% 20% \u00b7 >=2% 0% (base 12%) \u00b7 wrong 0%"
+    }
+   },
+   "p09": {
+    "CE watch": {
+     "n": 1,
+     "big_right": 1,
+     "wrong_side": 0,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 1.0,
+     "beat_base_pts": 71.6
+    },
+    "CE bounce": {
+     "n": 4,
+     "big_right": 1,
+     "wrong_side": 3,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 0.25,
+     "beat_base_pts": -3.4
+    },
+    "PE watch": {
+     "n": 1,
+     "big_right": 0,
+     "wrong_side": 1,
+     "flat": 0,
+     "tradable": 0,
+     "precision": 0.0,
+     "beat_base_pts": -8.3
+    },
+    "MOVER": {
+     "n": 25,
+     "fired": 6,
+     "big_right": 3,
+     "wrong_side": 2,
+     "tradable": 1,
+     "early": 1,
+     "moved_2pct_either": 13,
+     "flat": 1,
+     "precision": 0.5,
+     "beat_base_pts": null
+    }
+   }
+  },
+  {
+   "session": "2026-10-27",
+   "scorecard": {
+    "session": "2026-10-27",
+    "universe": 218,
+    "base": {
+     "CE": 0.326,
+     "PE": 0.055
+    },
+    "early_cards": {
+     "side_lines": 0,
+     "mover_lines": 3
+    },
+    "baselines": {
+     "yesterdays_movers_CE": {
+      "n": 8,
+      "big_right": 4,
+      "precision": 0.5
+     },
+     "yesterdays_movers_PE": {
+      "n": 8,
+      "big_right": 1,
+      "precision": 0.125
+     },
+     "volatility_only_8": {
+      "CE_right": 5,
+      "PE_right": 0,
+      "n": 8,
+      "note": "the same 8 names on both sides"
+     }
+    },
+    "ideas": {
+     "CE": {
+      "n": 18,
+      "big_right": 5,
+      "moved_against": 1,
+      "precision": 0.278,
+      "right_names": [
+       "BEL",
+       "COROMANDEL",
+       "HAL",
+       "JSWSTEEL",
+       "SAIL"
+      ]
+     },
+     "PE": {
+      "n": 25,
+      "big_right": 2,
+      "moved_against": 4,
+      "precision": 0.08,
+      "right_names": [
+       "HINDUNILVR",
+       "PIDILITIND"
+      ]
+     }
+    },
+    "base_either_way": 0.376,
+    "missed_2pct": 78,
+    "missed_3pct": [
+     [
+      "DATAPATTNS",
+      "CE",
+      8.4
+     ],
+     [
+      "PGEL",
+      "CE",
+      7.7
+     ],
+     [
+      "SONACOMS",
+      "CE",
+      7.4
+     ],
+     [
+      "MANKIND",
+      "CE",
+      6.9
+     ],
+     [
+      "GVT&D",
+      "CE",
+      5.4
+     ],
+     [
+      "MOTILALOFS",
+      "CE",
+      5.1
+     ],
+     [
+      "APLAPOLLO",
+      "CE",
+      5.0
+     ],
+     [
+      "CUB",
+      "CE",
+      5.0
+     ],
+     [
+      "AMBUJACEM",
+      "PE",
+      4.8
+     ],
+     [
+      "MAHABANK",
+      "CE",
+      4.5
+     ],
+     [
+      "NAVINFLUOR",
+      "CE",
+      4.4
+     ],
+     [
+      "JSWENERGY",
+      "CE",
+      4.2
+     ],
+     [
+      "RADICO",
+      "CE",
+      4.0
+     ],
+     [
+      "ANGELONE",
+      "CE",
+      3.9
+     ],
+     [
+      "DIVISLAB",
+      "CE",
+      3.9
+     ],
+     [
+      "RECLTD",
+      "PE",
+      3.9
+     ],
+     [
+      "BANDHANBNK",
+      "CE",
+      3.8
+     ],
+     [
+      "BHARATFORG",
+      "CE",
+      3.8
+     ],
+     [
+      "NAM-INDIA",
+      "CE",
+      3.8
+     ],
+     [
+      "POWERINDIA",
+      "CE",
+      3.8
+     ],
+     [
+      "UNITDSPR",
+      "CE",
+      3.7
+     ],
+     [
+      "ALKEM",
+      "CE",
+      3.5
+     ],
+     [
+      "GODFRYPHLP",
+      "CE",
+      3.5
+     ],
+     [
+      "HYUNDAI",
+      "CE",
+      3.5
+     ],
+     [
+      "SYRMA",
+      "CE",
+      3.5
+     ],
+     [
+      "ADANIENSOL",
+      "CE",
+      3.1
+     ],
+     [
+      "LODHA",
+      "CE",
+      3.1
+     ],
+     [
+      "TATACONSUM",
+      "CE",
+      3.1
+     ],
+     [
+      "BHARTIARTL",
+      "CE",
+      3.0
+     ],
+     [
+      "GODREJPROP",
+      "CE",
+      3.0
+     ],
+     [
+      "KALYANKJIL",
+      "PE",
+      3.0
+     ]
+    ],
+    "day_movers_2pct": {
+     "CE": 71,
+     "PE": 12
+    },
+    "confirmations": {
+     "confirmed": 1,
+     "rung": 0,
+     "late": 5,
+     "failed": 2,
+     "not_predicted_rows": 34,
+     "silent_cards": 0
+    },
+    "market": {
+     "called": "MIXED",
+     "real": "MIXED",
+     "nifty_open_to_1510": 0.09,
+     "right": true
+    },
+    "text": "MARKET CALL: MIXED - right (NIFTY open->15:10 +0.09%, real MIXED)\nPREDICTED N19 \u00b7 CE bounce 4: right 2 (0 tradable), flat 1, wrong 1 \u00b7 beat the day +17 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 14 (all names 38%)\nPREDICTED C22 \u00b7 CE bounce 4: right 2 (0 tradable), flat 1, wrong 1 \u00b7 beat the day +17 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 14 (all names 38%)\nPREDICTED U07 \u00b7 CE bounce 4: right 2 (0 tradable), flat 1, wrong 1 \u00b7 beat the day +17 pts \u00b7 MOVER (side open) 25: fired 0 (early 0), right side 0 (0 tradable), wrong 0, flat 0 \u00b7 moved 2% either way 14 (all names 38%)\nPREDICTED P09 \u00b7 CE bounce 4: right 2 (0 tradable), flat 1, wrong 1 \u00b7 beat the day +17 pts \u00b7 MOVER (side open) 25: fired 6 (early 3), right side 4 (2 tradable), wrong 2, flat 0 \u00b7 moved 2% either way 14 (all names 38%)\nEARLY CARDS (trigger before half the move): side lines 0 \u00b7 MOVER lines 3 \u00b7 total 3 (E2 pass mark 10)\nCONFIRMATIONS 1 (rung 0) \u00b7 too late 5 \u00b7 failed 2 \u00b7 silent cards 0 \u00b7 NOT PREDICTED movers shown 34\nBASE RATE: CE 33% / PE 6% of 218 F&O names moved 2% its way \u00b7 day movers CE 71 / PE 12\nKNOWLEDGE CHAINS (IDEA, weight 0): CE 18 named, 5 moved 2% its way, 1 2% against \u00b7 PE 25 named, 2 its way, 4 against\nMISSED 2%+ movers 78 \u00b7 3%+: DATAPATTNS CE 8.4%, PGEL CE 7.7%, SONACOMS CE 7.4%, MANKIND CE 6.9%, GVT&D CE 5.4%, MOTILALOFS CE 5.1%, APLAPOLLO CE 5.0%, CUB CE 5.0%, AMBUJACEM PE 4.8%, MAHABANK CE 4.5%\nBASELINES: yesterday's movers CE 4 / PE 1 \u00b7 volatility-only 8: CE 5 / PE 0 right\nNOT PROVEN until 20 trading days show +8 pts over baselines (E7)\nEDGE (desk 18:00) 2026-10-27 \u00b7 names 10 (with a reason 0, price-only 10) \u00b7 base CE 1%/2%: 38%/17% \u00b7 PE: 9%/2%\n  price-only   n 10 \u00b7 its way >=1%  30% \u00b7 >=2%  20% (base 17%, lift 1.18) \u00b7 wrong side   0% \u00b7 next close >=1%: 40% \u00b7 move left 1.5% \u00b7 ahead of the half move 4 min\n  TOP 5 by rank: >=1% 40% \u00b7 >=2% 40% (base 17%) \u00b7 wrong 0%",
+    "news": [],
+    "bottom_top": [],
+    "bt_episodes": [],
+    "edge": {
+     "session": "2026-10-27",
+     "rows": [
+      {
+       "sym": "ATHERENERG",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 5,
+       "named_at": "09:17",
+       "move_1510": 2.07,
+       "move_next_close": 0.83,
+       "hit1": true,
+       "hit2": true,
+       "wrong": false,
+       "move_left_pct": 4.01,
+       "minutes_ahead_of_half_move": 27
+      },
+      {
+       "sym": "AMBER",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 12,
+       "named_at": "09:27",
+       "move_1510": 0.49,
+       "move_next_close": 3.15,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.42,
+       "minutes_ahead_of_half_move": -3
+      },
+      {
+       "sym": "SHRIRAMFIN",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 13,
+       "named_at": "09:23",
+       "move_1510": -0.85,
+       "move_next_close": -0.61,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.48,
+       "minutes_ahead_of_half_move": 0
+      },
+      {
+       "sym": "ADANIGREEN",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 14,
+       "named_at": "09:17",
+       "move_1510": 0.91,
+       "move_next_close": 1.2,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.58,
+       "minutes_ahead_of_half_move": 2
+      },
+      {
+       "sym": "BANKINDIA",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 17,
+       "named_at": "09:27",
+       "move_1510": 0.6,
+       "move_next_close": 2.22,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.25,
+       "minutes_ahead_of_half_move": -10
+      },
+      {
+       "sym": "KFINTECH",
+       "side": "CE",
+       "list": "MOVER (side open)",
+       "source": "price-only",
+       "rank": 18,
+       "named_at": "09:26",
+       "move_1510": 1.49,
+       "move_next_close": -1.38,
+       "hit1": true,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 2.39,
+       "minutes_ahead_of_half_move": 2
+      },
+      {
+       "sym": "YESBANK",
+       "side": "CE",
+       "list": "CE BOUNCE (on the turn)",
+       "source": "price-only",
+       "rank": 3,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": -1.44,
+       "move_next_close": -2.25,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 0.69,
+       "minutes_ahead_of_half_move": 22
+      },
+      {
+       "sym": "DIXON",
+       "side": "CE",
+       "list": "CE BOUNCE (on the turn)",
+       "source": "price-only",
+       "rank": 4,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": 0.29,
+       "move_next_close": 1.79,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 1.04,
+       "minutes_ahead_of_half_move": 45
+      },
+      {
+       "sym": "NAM-INDIA",
+       "side": "CE",
+       "list": "CE BOUNCE (on the turn)",
+       "source": "price-only",
+       "rank": 1,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": 2.56,
+       "move_next_close": 0.37,
+       "hit1": true,
+       "hit2": true,
+       "wrong": false,
+       "move_left_pct": 3.81,
+       "minutes_ahead_of_half_move": 109
+      },
+      {
+       "sym": "INOXWIND",
+       "side": "CE",
+       "list": "CE BOUNCE (on the turn)",
+       "source": "price-only",
+       "rank": 2,
+       "named_at": "evening / 09:08 (09:15 open)",
+       "move_1510": 0.85,
+       "move_next_close": 0.51,
+       "hit1": false,
+       "hit2": false,
+       "wrong": false,
+       "move_left_pct": 2.18,
+       "minutes_ahead_of_half_move": 7
+      }
+     ],
+     "by_source": {
+      "price-only": {
+       "n": 10,
+       "hit1": 0.3,
+       "hit2": 0.2,
+       "base1": 0.381,
+       "base2": 0.17,
+       "lift2": 1.18,
+       "wrong": 0.0,
+       "next_close_its_way_1pct": 0.4,
+       "median_move_left": 1.5,
+       "median_minutes_ahead_of_half_move": 4
+      }
+     },
+     "reasoned": null,
+     "price_only": {
+      "n": 10,
+      "hit1": 0.3,
+      "hit2": 0.2,
+      "base1": 0.381,
+      "base2": 0.17,
+      "lift2": 1.18,
+      "wrong": 0.0,
+      "next_close_its_way_1pct": 0.4,
+      "median_move_left": 1.5,
+      "median_minutes_ahead_of_half_move": 4
+     },
+     "top5": {
+      "n": 5,
+      "hit1": 0.4,
+      "hit2": 0.4,
+      "base1": 0.381,
+      "base2": 0.17,
+      "lift2": 2.36,
+      "wrong": 0.0,
+      "next_close_its_way_1pct": 0.2,
+      "median_move_left": 2.18,
+      "median_minutes_ahead_of_half_move": 27
+     },
+     "names_a_day": 10,
+     "base": {
+      "CE1": 0.381,
+      "CE2": 0.17,
+      "PE1": 0.087,
+      "PE2": 0.023
+     },
+     "text": "EDGE (desk 18:00) 2026-10-27 \u00b7 names 10 (with a reason 0, price-only 10) \u00b7 base CE 1%/2%: 38%/17% \u00b7 PE: 9%/2%\n  price-only   n 10 \u00b7 its way >=1%  30% \u00b7 >=2%  20% (base 17%, lift 1.18) \u00b7 wrong side   0% \u00b7 next close >=1%: 40% \u00b7 move left 1.5% \u00b7 ahead of the half move 4 min\n  TOP 5 by rank: >=1% 40% \u00b7 >=2% 40% (base 17%) \u00b7 wrong 0%"
+    }
+   },
+   "p09": {
+    "CE bounce": {
+     "n": 4,
+     "big_right": 2,
+     "wrong_side": 1,
+     "flat": 1,
+     "tradable": 0,
+     "precision": 0.5,
+     "beat_base_pts": 17.4
+    },
+    "MOVER": {
+     "n": 25,
+     "fired": 6,
+     "big_right": 4,
+     "wrong_side": 2,
+     "tradable": 2,
+     "early": 3,
+     "moved_2pct_either": 14,
+     "flat": 0,
+     "precision": 0.667,
+     "beat_base_pts": null
+    }
+   }
+  }
+ ],
+ "tuning": "days 14 all-names 2pct-either base 45%\nN= 5 lines  70 moved2%  47 (67%) fired  17 early   1/day 0.1 right   8 wrong   7 tradable   4 (right-of-fired 47%)\nN= 8 lines 112 moved2%  73 (65%) fired  23 early   2/day 0.1 right  12 wrong   7 tradable   5 (right-of-fired 52%)\nN=10 lines 140 moved2%  91 (65%) fired  29 early   4/day 0.3 right  15 wrong   8 tradable   8 (right-of-fired 52%)\nN=12 lines 168 moved2% 105 (62%) fired  34 early   7/day 0.5 right  19 wrong   8 tradable  11 (right-of-fired 56%)\nN=15 lines 210 moved2% 133 (63%) fired  46 early  11/day 0.8 right  26 wrong  10 tradable  15 (right-of-fired 57%)\nN=20 lines 280 moved2% 174 (62%) fired  62 early  15/day 1.1 right  36 wrong  13 tradable  19 (right-of-fired 58%)\nN=25 lines 350 moved2% 213 (61%) fired  83 early  23/day 1.6 right  51 wrong  17 tradable  25 (right-of-fired 61%)\n",
+ "test_N": "days 6 all-names 2pct-either base 38%\nN= 5 lines  30 moved2%  19 (63%) fired  11 early   3/day 0.5 right  10 wrong   1 tradable   4 (right-of-fired 91%)\nN= 8 lines  48 moved2%  28 (58%) fired  17 early   4/day 0.7 right  13 wrong   2 tradable   4 (right-of-fired 76%)\nN=10 lines  60 moved2%  35 (58%) fired  21 early   5/day 0.8 right  14 wrong   4 tradable   5 (right-of-fired 67%)\nN=12 lines  72 moved2%  42 (58%) fired  24 early   5/day 0.8 right  15 wrong   5 tradable   5 (right-of-fired 62%)\nN=15 lines  90 moved2%  50 (56%) fired  30 early   6/day 1.0 right  18 wrong   7 tradable   7 (right-of-fired 60%)\nN=20 lines 120 moved2%  60 (50%) fired  34 early   8/day 1.3 right  19 wrong   7 tradable   9 (right-of-fired 56%)\nN=25 lines 150 moved2%  76 (51%) fired  42 early   9/day 1.5 right  23 wrong  11 tradable  11 (right-of-fired 55%)\n",
+ "replay_lists": {
+  "what": "point-in-time replay lists of the prediction loop (v2/predict/replay.py): every version N19/C22/U07/P09 of every line, made as if on the evening before, inputs only by first-seen time; fields per line incl. source and rank (desk 18:00)",
+  "days": {
+   "2026-10-27": {
+    "lists_flat": "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/lists_2026-10-27.jsonl",
+    "predictions_full": "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/store/predictions.jsonl",
+    "events": "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/store/prediction_event.jsonl",
+    "news_calls": "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/store/news_calls.jsonl",
+    "latest_versions": [
+     "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/store/latest_2026-10-27_C22.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/store/latest_2026-10-27_N19.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/store/latest_2026-10-27_P09.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/store/latest_2026-10-27_U07.json"
+    ],
+    "scorecard": "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/scorecard_2026-10-27.json",
+    "replay": "/home/globalbot/girdata/review/monday/C_replays/2026-10-27/replay_2026-10-27.json",
+    "n_rows": 116
+   },
+   "2026-10-29": {
+    "lists_flat": "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/lists_2026-10-29.jsonl",
+    "predictions_full": "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/store/predictions.jsonl",
+    "events": "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/store/prediction_event.jsonl",
+    "news_calls": "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/store/news_calls.jsonl",
+    "latest_versions": [
+     "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/store/latest_2026-10-29_C22.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/store/latest_2026-10-29_N19.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/store/latest_2026-10-29_P09.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/store/latest_2026-10-29_U07.json"
+    ],
+    "scorecard": "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/scorecard_2026-10-29.json",
+    "replay": "/home/globalbot/girdata/review/monday/C_replays/2026-10-29/replay_2026-10-29.json",
+    "n_rows": 124
+   },
+   "2026-11-16": {
+    "lists_flat": "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/lists_2026-11-16.jsonl",
+    "predictions_full": "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/store/predictions.jsonl",
+    "events": "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/store/prediction_event.jsonl",
+    "news_calls": "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/store/news_calls.jsonl",
+    "latest_versions": [
+     "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/store/latest_2026-11-16_C22.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/store/latest_2026-11-16_N19.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/store/latest_2026-11-16_P09.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/store/latest_2026-11-16_U07.json"
+    ],
+    "scorecard": "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/scorecard_2026-11-16.json",
+    "replay": "/home/globalbot/girdata/review/monday/C_replays/2026-11-16/replay_2026-11-16.json",
+    "n_rows": 104
+   },
+   "2026-11-18": {
+    "lists_flat": "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/lists_2026-11-18.jsonl",
+    "predictions_full": "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/store/predictions.jsonl",
+    "events": "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/store/prediction_event.jsonl",
+    "news_calls": "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/store/news_calls.jsonl",
+    "latest_versions": [
+     "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/store/latest_2026-11-18_C22.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/store/latest_2026-11-18_N19.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/store/latest_2026-11-18_P09.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/store/latest_2026-11-18_U07.json"
+    ],
+    "scorecard": "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/scorecard_2026-11-18.json",
+    "replay": "/home/globalbot/girdata/review/monday/C_replays/2026-11-18/replay_2026-11-18.json",
+    "n_rows": 112
+   },
+   "2026-11-19": {
+    "lists_flat": "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/lists_2026-11-19.jsonl",
+    "predictions_full": "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/store/predictions.jsonl",
+    "events": "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/store/prediction_event.jsonl",
+    "news_calls": "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/store/news_calls.jsonl",
+    "latest_versions": [
+     "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/store/latest_2026-11-19_C22.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/store/latest_2026-11-19_N19.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/store/latest_2026-11-19_P09.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/store/latest_2026-11-19_U07.json"
+    ],
+    "scorecard": "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/scorecard_2026-11-19.json",
+    "replay": "/home/globalbot/girdata/review/monday/C_replays/2026-11-19/replay_2026-11-19.json",
+    "n_rows": 116
+   },
+   "2026-11-20": {
+    "lists_flat": "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/lists_2026-11-20.jsonl",
+    "predictions_full": "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/store/predictions.jsonl",
+    "events": "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/store/prediction_event.jsonl",
+    "news_calls": "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/store/news_calls.jsonl",
+    "latest_versions": [
+     "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/store/latest_2026-11-20_C22.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/store/latest_2026-11-20_N19.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/store/latest_2026-11-20_P09.json",
+     "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/store/latest_2026-11-20_U07.json"
+    ],
+    "scorecard": "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/scorecard_2026-11-20.json",
+    "replay": "/home/globalbot/girdata/review/monday/C_replays/2026-11-20/replay_2026-11-20.json",
+    "n_rows": 116
+   }
+  }
+ },
+ "edge_by_source_6days": {
+  "news": {
+   "n": 5,
+   "hit1": 1,
+   "hit2": 0,
+   "wrong": 2
+  },
+  "results": {
+   "n": 1,
+   "hit1": 0,
+   "hit2": 0,
+   "wrong": 0
+  },
+  "TV": {
+   "n": 1,
+   "hit1": 1,
+   "hit2": 1,
+   "wrong": 0
+  },
+  "price-only": {
+   "n": 59,
+   "hit1": 12,
+   "hit2": 5,
+   "wrong": 4
+  },
+  "sector-chain": {
+   "n": 2,
+   "hit1": 1,
+   "hit2": 0,
+   "wrong": 1
+  }
+ }
+}

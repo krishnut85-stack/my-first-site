@@ -1,0 +1,1229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GIR · Charter &amp; Settings (Ctrl ,)</title>
+<!--
+  GIR v3 FINAL · Ctrl+, · CHARTER & SETTINGS · Thu 19 Nov 2026 11:44:20 IST (CONFERENCE state S4, positions still open).
+  Shell copied verbatim from shell.html; only SHELL.md section 6 state values change (clock 11:44:20, 3h 26m to 15:10, P1 1 · P2 1).
+  Every rupee figure = CONFERENCE section 4 (costs ₹420 a trade = charges + est. exit slippage; the ONE charges table is on this page).
+  Body states for the drawings: st-eve = after 15:35 (16:20:05, close shell) · st-drw = CHANGE A RULE drawer ·
+  <html data-theme="light"> = LIGHT theme. Source: settingsfinal/build.js + page.css + page.html + page.js.
+-->
+<style>
+/* ===================== SHELL CSS START (copy verbatim) ===================== */
+/* colour tokens = CONFERENCE 1.5 (fixed meanings). DARK is the default; LIGHT = <html data-theme="light"> (or the same attribute,
+   or class th-light, on <body>); AUTO = data-theme="auto" follows the OS. Pages never redefine a token. */
+:root{color-scheme:dark;
+  --bg:#0B0D10; --panel:#12151A; --panel-2:#181C22; --panel-3:#1E232B; --line:#262C35; --line-2:#323A45; --text:#E7EAEE; --text-2:#B3BAC4;
+  --text-3:#8E97A3; --up:#34C47C; --up-bg:rgba(52,196,124,.12); --up-line:rgba(52,196,124,.60); --up-rgb:52,196,124; --down:#F2615D;
+  --down-bg:rgba(242,97,93,.12); --down-line:rgba(242,97,93,.60); --down-rgb:242,97,93; --lb:#34C47C; --lb-bg:rgba(52,196,124,.22); --sb:#F2615D;
+  --sb-bg:rgba(242,97,93,.22); --sc:#8FE3B5; --sc-ink:#8FE3B5; --lu:#FF9E9A; --lu-ink:#FF9E9A; --action:#F5A524; --action-ink:#14110A;
+  --action-line:rgba(245,165,36,.55); --action-bg:rgba(245,165,36,.09); --go:#F5A524; --warn:#F5A524; --info:#6CB2FF; --info-bg:rgba(108,178,255,.10);
+  --info-line:rgba(108,178,255,.38); --stale:#6B7380; --stripe:repeating-linear-gradient(135deg, rgba(140,148,160,.28) 0 3px, transparent 3px 7px);
+  --danger:#FF5A52; --danger-bg:rgba(255,90,82,.14); --danger-ink:#1A0806; --leader:#36C5D0; --leader-bg:rgba(54,197,208,.13); --dep:#B79CFF;
+  --dep-bg:rgba(183,156,255,.13); --lag:#EE8AC0; --lag-bg:rgba(238,138,192,.13); --held:#E7EAEE; --held-ink:#0B0D10; --replay:#9B87F5;
+  --acc-mkt:#6CB2FF; --acc-call:#F5A524; --acc-mine:#E7EAEE; --acc-sys:#6B7380; --hover-strip:#151920; --ks-edge:#7E8691; --shadow:0 8px 24px
+  rgba(0,0,0,.5); --ban-hover:rgba(255,90,82,.24);
+  --sans: Inter, "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", "DejaVu Sans Mono", Consolas, monospace;
+  /* shell geometry - pages position their content from these, never from magic numbers */
+  --sh-mkt:80px; --sh-pnl:30px; --sh-tabs:52px; --sh-top:162px; --sh-foot:22px; --sh-gut:12px;
+}
+[data-theme="light"],body.th-light{color-scheme:light;
+  --bg:#ECEFF3; --panel:#FFFFFF; --panel-2:#F6F7F9; --panel-3:#E3E7EC; --line:#D9DEE5; --line-2:#C3CAD4; --text:#10141A; --text-2:#3B4450;
+  --text-3:#5A6470; --up:#08804A; --up-bg:rgba(8,128,74,.10); --up-line:rgba(8,128,74,.55); --up-rgb:8,128,74; --down:#C42B27;
+  --down-bg:rgba(196,43,39,.09); --down-line:rgba(196,43,39,.55); --down-rgb:196,43,39; --lb:#08804A; --lb-bg:rgba(8,128,74,.16); --sb:#C42B27;
+  --sb-bg:rgba(196,43,39,.15); --sc:#5FC28E; --sc-ink:#08804A; --lu:#EE8D89; --lu-ink:#C42B27; --action:#9A5A00; --action-ink:#14110A;
+  --action-line:rgba(184,110,0,.60); --action-bg:rgba(245,165,36,.14); --go:#F5A524; --warn:#D98A00; --info:#1763BF; --info-bg:rgba(23,99,191,.08);
+  --info-line:rgba(23,99,191,.42); --stale:#7A828E; --stripe:repeating-linear-gradient(135deg, rgba(110,118,130,.22) 0 3px, transparent 3px 7px);
+  --danger:#CC2A22; --danger-bg:rgba(204,42,34,.09); --danger-ink:#FFFFFF; --leader:#087680; --leader-bg:rgba(10,127,138,.09); --dep:#6743D6;
+  --dep-bg:rgba(103,67,214,.08); --lag:#B2367A; --lag-bg:rgba(178,54,122,.08); --held:#10141A; --held-ink:#FFFFFF; --replay:#6A4FD6; --acc-mkt:#1763BF;
+  --acc-call:#C77D00; --acc-mine:#10141A; --acc-sys:#7A828E; --hover-strip:#F1F3F6; --ks-edge:#232A33; --shadow:0 8px 24px rgba(20,30,45,.16);
+  --ban-hover:rgba(204,42,34,.16);
+}
+@media (prefers-color-scheme: light){ [data-theme="auto"]{color-scheme:light;
+  --bg:#ECEFF3; --panel:#FFFFFF; --panel-2:#F6F7F9; --panel-3:#E3E7EC; --line:#D9DEE5; --line-2:#C3CAD4; --text:#10141A; --text-2:#3B4450;
+  --text-3:#5A6470; --up:#08804A; --up-bg:rgba(8,128,74,.10); --up-line:rgba(8,128,74,.55); --up-rgb:8,128,74; --down:#C42B27;
+  --down-bg:rgba(196,43,39,.09); --down-line:rgba(196,43,39,.55); --down-rgb:196,43,39; --lb:#08804A; --lb-bg:rgba(8,128,74,.16); --sb:#C42B27;
+  --sb-bg:rgba(196,43,39,.15); --sc:#5FC28E; --sc-ink:#08804A; --lu:#EE8D89; --lu-ink:#C42B27; --action:#9A5A00; --action-ink:#14110A;
+  --action-line:rgba(184,110,0,.60); --action-bg:rgba(245,165,36,.14); --go:#F5A524; --warn:#D98A00; --info:#1763BF; --info-bg:rgba(23,99,191,.08);
+  --info-line:rgba(23,99,191,.42); --stale:#7A828E; --stripe:repeating-linear-gradient(135deg, rgba(110,118,130,.22) 0 3px, transparent 3px 7px);
+  --danger:#CC2A22; --danger-bg:rgba(204,42,34,.09); --danger-ink:#FFFFFF; --leader:#087680; --leader-bg:rgba(10,127,138,.09); --dep:#6743D6;
+  --dep-bg:rgba(103,67,214,.08); --lag:#B2367A; --lag-bg:rgba(178,54,122,.08); --held:#10141A; --held-ink:#FFFFFF; --replay:#6A4FD6; --acc-mkt:#1763BF;
+  --acc-call:#C77D00; --acc-mine:#10141A; --acc-sys:#7A828E; --hover-strip:#F1F3F6; --ks-edge:#232A33; --shadow:0 8px 24px rgba(20,30,45,.16);
+  --ban-hover:rgba(204,42,34,.16);
+} }
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13px;line-height:1.3}
+body{background:var(--bg)}
+
+/* ---------- the colour table as shared classes (CONFERENCE 1.5) - pages use these, never their own colours for these meanings ---------- */
+.sh-c{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 6px;border:1px solid transparent;border-radius:3px;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.03em;line-height:1;white-space:nowrap;vertical-align:middle;flex:none}
+.sh-c-ce{color:var(--up);border-color:var(--up-line);background:var(--up-bg)}
+.sh-c-pe{color:var(--down);border-color:var(--down-line);background:var(--down-bg)}
+.sh-c-lb{color:var(--lb);background:var(--lb-bg)}
+.sh-c-sb{color:var(--sb);background:var(--sb-bg)}
+.sh-c-sc{color:var(--sc-ink);border-color:var(--sc)}
+.sh-c-lu{color:var(--lu-ink);border-color:var(--lu)}
+.sh-c-go{color:var(--action-ink);background:var(--go);border-color:var(--go);font-weight:800}
+.sh-c-ready{color:var(--action);border-color:var(--action-line);background:var(--action-bg)}
+.sh-c-book{color:var(--action);border-color:var(--action-line)}
+.sh-c-exit{color:var(--danger-ink);background:var(--danger);border-color:var(--danger);font-weight:800}
+.sh-c-leader{color:var(--leader);border-color:var(--leader);background:var(--leader-bg)}
+.sh-c-dep{color:var(--dep);border-color:var(--dep);background:var(--dep-bg)}
+.sh-c-lag{color:var(--lag);border-color:var(--lag);background:var(--lag-bg)}
+.sh-c-lag .dn,.sh-c-lag .up{font-weight:800}
+.sh-c-held{color:var(--held-ink);background:var(--held);border-color:var(--held);font-weight:800}
+.sh-c-info{color:var(--info);border-color:var(--info-line);background:var(--info-bg)}
+.sh-c-stale{color:var(--text-2);border-color:var(--stale);background:var(--stripe)}
+.sh-c-replay{color:var(--replay);border-color:var(--replay)}
+/* heat rows: alpha .06 + .06 per 1 % move, max .24. Set --m to the absolute % move, e.g. style="--m:2.48" */
+.sh-heat-up{background:rgba(var(--up-rgb), min(.24, calc(.06 + .06 * var(--m, 0))))}
+.sh-heat-dn{background:rgba(var(--down-rgb), min(.24, calc(.06 + .06 * var(--m, 0))))}
+/* panel header accents (3 px left): market data / a live GIR call / his trades or risk / system */
+.sh-acc-mkt{box-shadow:inset 3px 0 0 var(--acc-mkt)} .sh-acc-call{box-shadow:inset 3px 0 0 var(--acc-call)}
+.sh-acc-mine{box-shadow:inset 3px 0 0 var(--acc-mine)} .sh-acc-sys{box-shadow:inset 3px 0 0 var(--acc-sys)}
+a{color:inherit;text-decoration:none}
+.n{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
+.up{color:var(--up)} .dn{color:var(--down)}
+kbd{font-family:var(--mono);font-size:11px;color:var(--text-2);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:3px;padding:0 4px;line-height:14px;display:inline-block;white-space:nowrap}
+:focus-visible{outline:1px solid var(--text);outline-offset:2px}
+
+#sh-mkt,#sh-pnl,#sh-tabs,#sh-foot{position:fixed;left:0;right:0;white-space:nowrap;z-index:50}
+.sh-sep{width:1px;align-self:stretch;background:var(--line);flex:none}
+.sh-lb{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+.sh-age{font-family:var(--mono);font-size:11px;color:var(--text-3);letter-spacing:-0.02em}
+.sh-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--info);flex:none}
+.sh-meter{width:48px;height:6px;background:var(--panel-3);border-radius:1px;overflow:hidden;flex:none}
+.sh-meter i{display:block;height:100%;background:var(--info)}
+.sh-meter.warn i{background:var(--warn)}
+/* stale look for any strip item: add class sh-stale to the item and put "STALE 12s" in its .sh-age */
+.sh-stale{background:var(--stripe)}
+.sh-stale .n,.sh-stale .sh-px{color:var(--stale)!important}
+
+/* ---------- R01 market strip ---------- */
+#sh-mkt{top:0;height:var(--sh-mkt);background:var(--panel-2)}
+.sh-m1{height:44px;display:flex;align-items:stretch;border-bottom:1px solid var(--line);padding:0 0 0 4px}
+.sh-ix,.sh-mi{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:0 8px;border-right:1px solid var(--line);flex:none}
+.sh-ix:hover{background:var(--panel-3)}
+.sh-l1{display:flex;align-items:center;gap:8px;height:14px}
+.sh-nm{font-size:11px;font-weight:600;letter-spacing:.05em;color:var(--text-2)}
+.sh-spk{color:var(--text-2);margin-left:auto;flex:none}
+.sh-l2{display:flex;align-items:baseline;gap:6px}
+.sh-px{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-0.02em;color:var(--text)}
+.sh-ch{font-size:12px}
+.sh-pc{font-size:13px;font-weight:600}
+.sh-status{margin-left:auto;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:2px;padding:0 12px;border-left:1px solid var(--line);flex:none}
+.sh-st1,.sh-st2{display:flex;align-items:center;gap:7px}
+.sh-mstate{height:18px;display:inline-flex;align-items:center;padding:0 6px;border:1px solid var(--info-line);color:var(--info);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.05em}
+.sh-phase{font-size:12px;color:var(--text-2)} .sh-phase b{color:var(--text);font-weight:600}
+.sh-clock{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-0.02em}
+.sh-ist{font-size:11px;color:var(--text-3)}
+.sh-m2{height:36px;display:flex;align-items:stretch;padding:0 0 0 4px;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-2)}
+.sh-t2{display:flex;flex-direction:column;justify-content:center;gap:1px;padding:0 10px;border-right:1px solid var(--line);flex:none}
+a.sh-t2:hover{background:var(--panel-3)}
+.sh-t2l{display:flex;align-items:center;gap:6px;height:14px}
+.sh-t2l .sh-lb{letter-spacing:.04em}
+.sh-t2v{display:flex;align-items:center;gap:5px;height:18px}
+.sh-t2v .n{font-size:13px}
+.sh-t2v .v{color:var(--text)}
+.sh-xw{height:14px;display:inline-flex;align-items:center;padding:0 4px;border:1px solid var(--text-3);border-radius:2px;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--text);line-height:1}
+.sh-ban{height:18px;display:inline-flex;align-items:center;gap:4px;padding:0 6px;border:1px solid var(--danger);background:var(--danger-bg);color:var(--danger);border-radius:9px;font-size:11px;font-weight:700;letter-spacing:.04em;cursor:pointer}
+.sh-ban:hover{background:var(--ban-hover)}
+
+/* ---------- R02 my F&O P&L strip ---------- */
+#sh-pnl{top:var(--sh-mkt);height:var(--sh-pnl);background:var(--panel);border-bottom:1px solid var(--line-2);display:flex;align-items:center;padding:0 12px;font-size:12px;cursor:pointer}
+#sh-pnl:hover{background:var(--hover-strip)}
+.sh-pt{display:flex;align-items:center;gap:5px;padding:0 8px;height:18px;border-right:1px solid var(--line);flex:none}
+.sh-pt:first-child{padding-left:0}
+.sh-pt .n{font-size:13px}
+.sh-ptitle{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text);padding:0 7px;height:18px;line-height:16px;border:1px solid var(--line-2);border-radius:3px}
+.sh-big{font-family:var(--mono);font-size:16px;font-weight:700;letter-spacing:-0.02em}
+.sh-brk{color:var(--text-2)} .sh-brk .n{font-size:12px}
+.sh-go{margin-left:auto;display:flex;align-items:center;gap:6px;color:var(--text-2);font-size:12px;padding-left:10px;flex:none}
+.sh-go b{color:var(--text);font-weight:600;letter-spacing:.04em}
+
+/* ---------- R03 tab bar ---------- */
+#sh-tabs{top:calc(var(--sh-mkt) + var(--sh-pnl));height:var(--sh-tabs);background:var(--panel-2);border-bottom:1px solid var(--line-2);display:flex;align-items:stretch}
+.sh-mark{width:54px;flex:none;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding-left:12px;border-right:1px solid var(--line)}
+.sh-mark b{font-size:16px;font-weight:800;letter-spacing:.14em;line-height:18px}
+.sh-mark span{font-size:11px;color:var(--text-3);line-height:13px}
+.sh-grid{display:grid;grid-template-rows:26px 25px;grid-auto-columns:auto;align-items:stretch;flex:none}
+.sh-rl{display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text-3);border-right:1px solid var(--line)}
+.sh-rl1{grid-row:1;grid-column:1;border-bottom:1px solid var(--line)}
+.sh-rl2{grid-row:2;grid-column:1;color:var(--text)}
+.sh-rl2 span{border:1px solid var(--text-2);border-radius:3px;padding:0 4px;line-height:16px;background:var(--panel-3)}
+.sh-tab{display:flex;align-items:center;gap:6px;padding:0 6px;color:var(--text-2);border-right:1px solid var(--line);cursor:pointer}
+.sh-grid>.sh-tab[style*="grid-row:1;"]{border-bottom:1px solid var(--line)}
+.sh-tab:hover{background:var(--panel-3)}
+.sh-tl{font-size:13px;color:var(--text-2)}
+.sh-k{color:var(--text-2)}
+.sh-ks{background:var(--text-2);color:var(--bg);border-color:var(--text-2);border-bottom-color:var(--ks-edge);font-weight:700}
+.sh-free{cursor:default}
+.sh-free:hover{background:none}
+.sh-free .sh-tl{font-size:11px;color:var(--text-3)}
+.sh-free .sh-ks{background:none;color:var(--text-3);border-color:var(--line-2);font-weight:400}
+.sh-f5{flex-direction:column;justify-content:center;align-items:flex-start;gap:3px;background:repeating-linear-gradient(135deg, rgba(140,148,160,.07) 0 3px, transparent 3px 7px)}
+.sh-f5a{display:flex;align-items:center;gap:6px}
+.sh-f5a .sh-tl{font-size:12px;color:var(--text-3)}
+.sh-koff{color:var(--text-3);text-decoration:line-through}
+.sh-f5b{font-size:11px;color:var(--text-3)}
+.sh-right{flex:1;min-width:0;display:grid;grid-template-rows:26px 25px;grid-template-columns:minmax(0,1fr);border-left:1px solid var(--line-2)} /* fix (market r2): the track keeps its share at 1366 when the "/" box shows its placeholder */
+.sh-r1,.sh-r2{display:flex;align-items:stretch;justify-content:flex-start}
+.sh-r1{border-bottom:1px solid var(--line)}
+.sh-r1 .sh-tab:last-child{border-right:0}
+.sh-r2{align-items:center;gap:6px;padding:0 12px 0 8px}
+.sh-cmd{container-type:inline-size;position:relative;flex:1;max-width:300px;min-width:136px;height:20px;border:1px solid var(--line-2);border-radius:3px;background:var(--bg);display:flex;align-items:center;gap:6px;padding:0 6px;cursor:text}
+.sh-cmd kbd{line-height:12px}
+.sh-ph{font-size:12px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis}
+/* conference fix (1366 "/" clip): the placeholder picks the longest form that fits the box, never an ellipsis:
+   "symbol, contract, verb" -> "symbol, verb" -> "symbol" (the box shrinks when SOUND reads MUTED 9:42 or OFF) */
+.sh-ph-c,.sh-ph-v{display:none}
+@container (min-width:96px){.sh-ph-v{display:inline}}
+@container (min-width:150px){.sh-ph-c{display:inline}}
+.sh-typed{display:none;font-family:var(--mono);font-size:13px;color:var(--text)}
+.sh-typed i{display:inline-block;width:7px;height:14px;background:var(--text-2);vertical-align:-2px;margin-left:1px}
+.sh-btn{height:20px;display:inline-flex;align-items:center;gap:5px;padding:0 7px;border:1px solid var(--line-2);border-radius:3px;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--text-2);background:none;cursor:pointer;flex:none;font-family:var(--sans)}
+.sh-btn:hover{background:var(--panel-3)}
+.sh-btn .on{color:var(--text)}
+.sh-btn svg{flex:none}
+.sh-al{font-size:11px;color:var(--text-2);flex:none}
+.sh-al .n{color:var(--text);font-size:12px}
+/* search suggestions (R04): shown while typing; in pages it opens from script, in this file from body.demo */
+.sh-sugg{display:none;position:absolute;top:24px;right:-1px;width:480px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;box-shadow:var(--shadow);z-index:60;white-space:normal;cursor:default}
+.sh-sg-h{height:24px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;border-bottom:1px solid var(--line)}
+.sh-sg-r{display:grid;grid-template-columns:100px 1fr 72px 60px;align-items:center;column-gap:8px;height:44px;padding:0 10px;border-bottom:1px solid var(--line)}
+.sh-sg-r.sel{background:var(--panel-3);box-shadow:inset 2px 0 0 var(--text)}
+.sh-sg-s{font-size:15px;font-weight:600;color:var(--text)}
+.sh-sg-s em{font-style:normal;text-decoration:underline;text-underline-offset:3px}
+.sh-sg-d{font-size:12px;color:var(--text-2);line-height:1.35}
+.sh-sg-d span{color:var(--text-3);font-size:11px}
+.sh-sg-p{text-align:right;font-size:13px}
+.sh-sg-v{display:flex;gap:6px;flex-wrap:wrap;padding:7px 10px;border-bottom:1px solid var(--line);font-size:12px;color:var(--text-2)}
+.sh-sg-v span{border:1px solid var(--line-2);border-radius:3px;padding:0 5px;line-height:18px}
+.sh-sg-f{padding:5px 10px;font-size:11px;color:var(--text-3)}
+/* sound legend popover (R10) - opens under the LEGEND button */
+.sh-pop{display:none;position:absolute;z-index:60;background:var(--panel-2);border:1px solid var(--line-2);border-radius:4px;box-shadow:var(--shadow);white-space:normal}
+
+/* active tab: ONE body class page-<slug> lights the matching tab (generated list) */
+.page-morning .sh-tab[data-tab="morning"],
+.page-desk-hunt .sh-tab[data-tab="desk"],
+.page-desk-trade .sh-tab[data-tab="desk"],
+.page-plan-card .sh-tab[data-tab="desk"],
+.page-plan-card .sh-tab[data-tab="plan-card"],
+.page-sectors .sh-tab[data-tab="sectors"],
+.page-rotation .sh-tab[data-tab="rotation"],
+.page-news .sh-tab[data-tab="news"],
+.page-positions .sh-tab[data-tab="positions"],
+.page-share .sh-tab[data-tab="share"],
+.page-analyst .sh-tab[data-tab="analyst"],
+.page-chain .sh-tab[data-tab="chain"],
+.page-futures-oi .sh-tab[data-tab="futures-oi"],
+.page-world .sh-tab[data-tab="world"],
+.page-calendar .sh-tab[data-tab="calendar"],
+.page-journal .sh-tab[data-tab="journal"],
+.page-reference .sh-tab[data-tab="reference"],
+.page-scorecard .sh-tab[data-tab="scorecard"],
+.page-health .sh-tab[data-tab="health"],
+.page-replay .sh-tab[data-tab="replay"],
+.page-settings .sh-tab[data-tab="settings"],
+.page-help .sh-tab[data-tab="help"],
+.page-market .sh-tab[data-tab="market"]{background:var(--panel-3);color:var(--text);box-shadow:inset 0 -2px 0 var(--text)}
+.page-morning .sh-tab[data-tab="morning"] .sh-tl,
+.page-desk-hunt .sh-tab[data-tab="desk"] .sh-tl,
+.page-desk-trade .sh-tab[data-tab="desk"] .sh-tl,
+.page-plan-card .sh-tab[data-tab="desk"] .sh-tl,
+.page-plan-card .sh-tab[data-tab="plan-card"] .sh-tl,
+.page-sectors .sh-tab[data-tab="sectors"] .sh-tl,
+.page-rotation .sh-tab[data-tab="rotation"] .sh-tl,
+.page-news .sh-tab[data-tab="news"] .sh-tl,
+.page-positions .sh-tab[data-tab="positions"] .sh-tl,
+.page-share .sh-tab[data-tab="share"] .sh-tl,
+.page-analyst .sh-tab[data-tab="analyst"] .sh-tl,
+.page-chain .sh-tab[data-tab="chain"] .sh-tl,
+.page-futures-oi .sh-tab[data-tab="futures-oi"] .sh-tl,
+.page-world .sh-tab[data-tab="world"] .sh-tl,
+.page-calendar .sh-tab[data-tab="calendar"] .sh-tl,
+.page-journal .sh-tab[data-tab="journal"] .sh-tl,
+.page-reference .sh-tab[data-tab="reference"] .sh-tl,
+.page-scorecard .sh-tab[data-tab="scorecard"] .sh-tl,
+.page-health .sh-tab[data-tab="health"] .sh-tl,
+.page-replay .sh-tab[data-tab="replay"] .sh-tl,
+.page-settings .sh-tab[data-tab="settings"] .sh-tl,
+.page-help .sh-tab[data-tab="help"] .sh-tl,
+.page-market .sh-tab[data-tab="market"] .sh-tl{color:var(--text)}
+/* conference fix (1366 clip): the active tab is NOT bold, so the tab grid has the same width on every page and the right block
+   ("/" box, sound, legend, P1 / P2) never loses pixels to a bold label */
+
+/* ---------- main ---------- */
+#page{position:fixed;left:0;right:0;top:var(--sh-top);bottom:var(--sh-foot);overflow:hidden}
+
+/* ---------- footer ---------- */
+#sh-foot{bottom:0;height:var(--sh-foot);background:var(--panel-2);border-top:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 12px;font-size:11px;color:var(--text-3)}
+#sh-foot .sh-sebi{font-size:12px;color:var(--text-2)}
+#sh-foot .sh-fs{width:1px;height:11px;background:var(--line-2);flex:none}
+#sh-foot .sh-keys{display:flex;align-items:center;gap:5px}
+#sh-foot kbd{line-height:12px}
+#sh-foot .sh-mock{margin-left:auto;color:var(--text-2)}
+.sh-n1366{display:none}
+
+/* ---------- 1366 rule (below 1500 px): drop, never wrap ---------- */
+@media (max-width:1499px){
+  .sh-wide{display:none!important}
+  .sh-n1366{display:inline-flex}
+  .sh-tab{padding:0 5px;gap:5px}
+  .sh-mark{width:48px;padding-left:9px}
+  .sh-tl{font-size:12px}
+  .sh-ix,.sh-mi{padding:0 8px}
+  .sh-t2,.sh-pt{padding:0 5px}
+  .sh-pt{gap:4px}
+  .sh-meter{width:34px} /* room for the short realised / open / costs, stk fut and the holiday */
+  .sh-cmd{max-width:200px;min-width:80px}
+  .sh-r2{gap:5px;padding-left:6px} .sh-btn{padding:0 5px} /* room for "MUTED 9:42" + "P1 1 · P2 1" without a clip */
+}
+/* ===================== SHELL CSS END ===================== */
+
+/* ===================== PAGE: Charter & Settings (final) ===================== */
+body:not(.st-eve) .ev{display:none!important} body.st-eve .mk{display:none!important}
+.n13{display:none}
+@media (max-width:1499px){ .w16{display:none!important} .n13{display:inline} }
+.t2{color:var(--text-2)} .t3{color:var(--text-3)} .nw{white-space:nowrap}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
+.sym{color:var(--text);font-weight:600;border-bottom:1px dotted var(--line-2)}
+.sym:hover{border-bottom-color:var(--text-2)}
+.ilk{color:var(--info)} .ilk:hover{text-decoration:underline}
+.sp{flex:1 1 auto}
+button{font-family:var(--sans);color:inherit;background:none;border:0;cursor:pointer}
+
+.st{position:absolute;left:var(--sh-gut);right:var(--sh-gut);top:8px;bottom:8px;display:flex;flex-direction:column;gap:8px}
+
+/* ---------- title row ---------- */
+.ttl{height:30px;flex:none;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.ttl .kk{font-size:12px;line-height:18px;padding:0 6px;color:var(--text);border-color:var(--text-3)}
+.ttl h1{font-size:15px;font-weight:700;letter-spacing:.06em}
+.ttl .purp{font-size:14px;font-weight:600;color:var(--text);margin-left:6px}
+.seg{display:inline-flex;align-items:center;height:26px;border:1px solid var(--line-2);border-radius:4px;overflow:hidden;flex:none}
+.seg .segl{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--text-3);padding:0 8px;height:100%;display:flex;align-items:center;border-right:1px solid var(--line-2)}
+.seg button{height:100%;padding:0 10px;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--text-2)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.on{background:var(--text);color:var(--bg)}
+.btn{height:26px;display:inline-flex;align-items:center;gap:5px;padding:0 10px;border:1px solid var(--line-2);border-radius:4px;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--text-2);background:var(--panel);flex:none;white-space:nowrap}
+.btn:hover{color:var(--text);border-color:var(--text-3)}
+.btn.q{width:26px;justify-content:center;padding:0;border-radius:50%}
+.btn.on{color:var(--text);border-color:var(--text-2)}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+
+/* ---------- hero ---------- */
+.hero{flex:none;height:96px;background:var(--panel);border:1px solid var(--line);border-radius:4px;box-shadow:inset 3px 0 0 var(--acc-mine);display:flex;flex-direction:column;overflow:hidden}
+.h-top{flex:1;display:flex;min-height:0}
+.h-main{flex:1;min-width:0;padding:9px 16px 0 18px;display:flex;flex-direction:column;gap:6px;white-space:nowrap}
+.h1{font-size:21px;font-weight:500;letter-spacing:-0.01em;line-height:28px;color:var(--text-2)}
+.h1 b{color:var(--text);font-weight:700}
+.h1 .hl{color:var(--text);font-weight:700;border-bottom:2px solid var(--danger)}
+.h1 .hl.ok{border-bottom-color:var(--up)}
+.h2{font-size:13px;color:var(--text-2);display:flex;align-items:center;gap:6px}
+.h2 b{color:var(--text);font-weight:600}
+.tiles{display:flex;flex:none;border-left:1px solid var(--line)}
+.tile{display:flex;flex-direction:column;justify-content:center;gap:3px;padding:0 14px;min-width:116px;border-right:1px solid var(--line);white-space:nowrap}
+.tile:last-child{border-right:0}
+.tile:hover{background:var(--hover-strip)}
+.tile .l{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+.tile .v{font-family:var(--mono);font-size:18px;font-weight:600;letter-spacing:-0.02em;color:var(--text);line-height:22px}
+.tile .v small{font-family:var(--sans);font-size:12px;font-weight:500;color:var(--text-2);letter-spacing:0}
+.tile .s{font-size:12px;color:var(--text-2);display:flex;align-items:center;gap:6px}
+.tile .s b{font-weight:700}
+.tile .sh-meter{width:40px}
+.h-bot{flex:none;height:32px;border-top:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 14px 0 18px;white-space:nowrap;background:var(--panel-2)}
+.go{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px 0 4px;border:1px solid var(--line-2);border-radius:4px;font-size:13px;font-weight:600;color:var(--text)}
+.go:hover{border-color:var(--text-3)}
+.go .sh-c{height:18px;padding:0 4px;font-size:11px}
+.go .sh-c+.sh-c{margin-left:-3px}
+.go .mv{display:inline-flex;gap:1px;font-size:12px;padding-left:4px}
+.cyc{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;letter-spacing:.03em;color:var(--text-2)}
+.cyc a{display:inline-flex;align-items:center;gap:4px}
+.cyc a:hover{color:var(--text)}
+.cyc i{font-style:normal;color:var(--text-3)}
+
+/* tags (page-local words, colours per CONFERENCE 1.5) */
+.tg{display:inline-flex;align-items:center;height:18px;padding:0 5px;border:1px solid;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.05em;line-height:1;white-space:nowrap;flex:none;vertical-align:middle}
+.tg.hard{color:var(--danger);border-color:var(--danger);background:var(--danger-bg)}
+.tg.lock{color:var(--danger);border-color:var(--danger)}
+.tg.warn{color:var(--action);border-color:var(--action-line)}
+.tg.alw{color:var(--text);border-color:var(--text-2)}
+.tg.off{color:var(--text-3);border-color:var(--line-2)}
+.tg.info{color:var(--info);border-color:var(--info-line);background:var(--info-bg)}
+
+/* ---------- grid + panels ---------- */
+.grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.col{display:flex;flex-direction:column;gap:8px;min-height:0}
+.col #p-gate{flex:1}
+.pn{background:var(--panel);border:1px solid var(--line);border-radius:4px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.ph{flex:none;height:32px;display:flex;align-items:center;gap:8px;padding:0 8px 0 13px;background:var(--panel-2);border-bottom:1px solid var(--line);white-space:nowrap}
+.ph .t{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text)}
+.ph .k{font-size:12px;color:var(--text-3)}
+.ph .age{display:inline-flex;align-items:center;gap:5px;margin-left:auto}
+.ph .age .sh-dot{width:7px;height:7px}
+.ph .ud{display:inline-flex;gap:3px}
+.ph .ud button{width:20px;height:20px;border:1px solid var(--line-2);border-radius:3px;font-size:11px;line-height:1;color:var(--text-2);display:flex;align-items:center;justify-content:center}
+.ph .ud button:hover{color:var(--text);border-color:var(--text-3)}
+.ph .ud button[disabled]{opacity:.35;cursor:default}
+.sw{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 7px 0 3px;border:1px solid var(--line-2);border-radius:10px;font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--text-3);flex:none;white-space:nowrap}
+.sw i{width:12px;height:12px;border-radius:50%;background:var(--text-3)}
+.sw.on{color:var(--text);border-color:var(--info-line);background:var(--info-bg)}
+.sw.on i{background:var(--info)}
+.sw.fix{color:var(--text);border-color:var(--text-2);border-style:solid}
+.sw.fix i{background:var(--text);border-radius:2px;width:10px;height:10px;margin-left:1px}
+.chips{flex:none;height:32px;display:flex;align-items:center;gap:4px;padding:0 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.chips button{height:22px;padding:0 8px;border:1px solid var(--line-2);border-radius:3px;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--text-2);position:relative}
+.chips button:hover{color:var(--text)}
+.chips button.on{color:var(--text);background:var(--panel-3);border-color:var(--gc,var(--text-2));box-shadow:inset 0 -2px 0 var(--gc,var(--text))}
+.chips .cn{font-family:var(--mono);font-weight:500;color:var(--text-3);margin-left:4px;font-size:11px}
+.fx{flex:none;border-bottom:1px solid var(--line)}
+.bw{flex:1;min-height:0;position:relative;overflow:hidden}
+.pb{position:absolute;left:0;top:0;right:14px;bottom:0;overflow:hidden}
+.vsb{position:absolute;right:3px;top:5px;bottom:5px;width:8px;background:var(--line);border-radius:2px}
+.vsb i{position:absolute;left:0;right:0;background:var(--text-3);border-radius:2px;min-height:14px}
+.more{flex:none;height:28px;display:flex;align-items:center;gap:8px;padding:0 10px 0 13px;border-top:1px solid var(--line);background:var(--panel-2);white-space:nowrap;font-size:12px;color:var(--text-2)}
+.more .mv{flex:1;min-width:0;overflow:hidden;white-space:nowrap}
+.more .mv b{color:var(--text);font-weight:700}
+.more .pos{font-family:var(--mono);font-size:11px;color:var(--text-3);flex:none}
+
+/* group colours */
+[data-c="red"]{--gc:var(--danger)} [data-c="amber"]{--gc:var(--action)} [data-c="blue"]{--gc:var(--info)}
+[data-c="grey"]{--gc:var(--text-3)} [data-c="white"]{--gc:var(--text)} [data-c="green"]{--gc:var(--up)}
+
+/* rows */
+.gh{display:flex;align-items:center;gap:8px;height:26px;padding:0 12px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--gc);box-shadow:inset 3px 0 0 var(--gc);background:linear-gradient(90deg,color-mix(in srgb,var(--gc) 13%,transparent),transparent 70%);border-bottom:1px solid var(--line);white-space:nowrap}
+.gh .gs{font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--text-3)}
+.r{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;row-gap:3px;padding:6px 12px;border-bottom:1px solid var(--line);align-items:center}
+.r .a{font-size:14px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:7px;min-width:0;white-space:nowrap}
+.r .v{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:-0.02em;color:var(--text);text-align:right;white-space:nowrap;display:flex;align-items:center;gap:6px;justify-content:flex-end}
+.r .d{grid-column:1/-1;font-size:13px;color:var(--text-2);line-height:1.38}
+.r .d b{color:var(--text);font-weight:600}
+.r.hot{background:var(--danger-bg);box-shadow:inset 3px 0 0 var(--danger)}
+.r.off .a{color:var(--text-3);font-weight:500}
+.r .d .fix{color:var(--text)}
+/* rules */
+.rr{grid-template-columns:20px minmax(0,1fr) auto}
+.rr .no{font-family:var(--mono);font-size:12px;color:var(--text-3);align-self:center}
+.rr .d{grid-column:2/-1}
+.rr .q{grid-column:2/-1;display:none;font-size:13px;color:var(--text);font-style:italic;line-height:1.38}
+.rr.open .q{display:block}
+.rr{cursor:pointer}
+.rr:hover{background:var(--hover-strip)}
+.one{padding:10px 13px 10px 14px;box-shadow:inset 3px 0 0 var(--text);background:var(--panel-2)}
+.one .l{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-2)}
+.one .q{font-size:15px;font-weight:600;color:var(--text);line-height:1.35;margin:4px 0 4px}
+.one .s{font-size:12px;color:var(--text-2)}
+/* history / decisions */
+.r .tm{font-family:var(--mono);font-size:12px;color:var(--text-3)}
+/* lock ladder (the picture) */
+.lad{padding:9px 12px 10px}
+.lad .lh{display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);margin-bottom:6px}
+.lad .lh .t3{font-weight:600;letter-spacing:.04em}
+.lrw{display:grid;grid-template-columns:86px minmax(0,1fr) 66px 84px;column-gap:8px;align-items:center;height:23px;font-size:13px}
+.lrw .lb{color:var(--text-2);white-space:nowrap}
+.lrw .bt{position:relative;height:10px;background:var(--panel-3);border-radius:2px}
+.lrw .bt i{position:absolute;left:0;top:0;bottom:0;border-radius:2px 0 0 2px;background:rgba(var(--down-rgb),.55)}
+.lrw .bt i.ov{background:var(--danger);border-radius:0 2px 2px 0}
+.lrw .bt .lk{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--danger)}
+.lrw .am{font-family:var(--mono);font-weight:600;text-align:right;white-space:nowrap}
+.lrw .rm{font-family:var(--mono);font-size:12px;text-align:right;white-space:nowrap;color:var(--text-2)}
+.lrw .rm.bad{color:var(--danger);font-weight:700}
+.lrw.hd{height:16px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3)}
+.lrw.hd .am,.lrw.hd .rm{font-family:var(--sans);font-size:11px;color:var(--text-3)}
+.lrw.hd .lkl{position:relative;height:16px}
+.lrw.hd .lkl span{position:absolute;transform:translateX(-50%);color:var(--danger);font-weight:700;white-space:nowrap}
+.lad .flat{font-size:13px;color:var(--text-2);line-height:1.5}
+/* tones */
+.tn{display:grid;grid-template-columns:22px 26px minmax(0,1fr) auto;column-gap:9px;row-gap:3px;align-items:center;padding:7px 12px;border-bottom:1px solid var(--line)}
+.tn .d{grid-column:3/-1}
+.tn .nb{width:22px;height:22px;border:1px solid var(--line-2);border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:700}
+.tn svg{display:block}
+.tn .nm{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap}
+.tn .nm small{font-size:12px;font-weight:500;color:var(--text-3)}
+.tn .d{font-size:13px;color:var(--text-2);line-height:1.38}
+.tn .d b{color:var(--text);font-weight:600}
+.test{height:22px;padding:0 8px;border:1px solid var(--line-2);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--text-2);white-space:nowrap}
+.test:hover{color:var(--text);border-color:var(--text-3)}
+.test.play{color:var(--info);border-color:var(--info-line)}
+/* ring log */
+.lg{display:grid;grid-template-columns:62px minmax(0,1fr);column-gap:8px;align-items:start;padding:7px 12px;border-bottom:1px solid var(--line);font-size:13px;color:var(--text-2);line-height:1.38}
+.lg .tm{font-family:var(--mono);color:var(--text);font-weight:600}
+.lg b{color:var(--text);font-weight:700}
+.lg .x{color:var(--danger);font-weight:700}
+.lg .tm{display:flex;flex-direction:column;line-height:18px}
+.lg .tb{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--text-3);white-space:nowrap;line-height:15px}
+.lg.sil .tm,.lg.sil b{color:var(--text-3)}
+.lg.ex{box-shadow:inset 3px 0 0 var(--danger)}
+/* appearance */
+#p-app{flex:none}
+.apb{padding:10px 12px 12px;display:flex;flex-direction:column;gap:9px}
+.apr{display:flex;align-items:center;gap:10px;white-space:nowrap}
+.apr .seg{height:26px}
+.apr .t2{font-size:12px}
+.spx{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.spc{border:1px solid var(--line-2);border-radius:4px;background:var(--bg);padding:6px 8px;display:flex;flex-direction:column;gap:5px;color:var(--text);cursor:pointer}
+.spc.on{outline:2px solid var(--info);outline-offset:1px}
+.spc .sl{display:flex;align-items:center;gap:5px;white-space:nowrap;font-size:12px}
+.spc .sl .nm2{font-weight:700;font-size:12px}
+.spc .sl .tl{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text-2);min-width:38px}
+.spc .sh-c{height:18px;padding:0 4px;font-size:11px}
+/* drawer */
+.drw{position:absolute;right:0;top:142px;bottom:0;width:388px;background:var(--panel);border:1px solid var(--line-2);border-radius:4px;box-shadow:var(--shadow);z-index:45;display:none;flex-direction:column}
+body.st-drw .drw{display:flex}
+.drw .dh{height:32px;display:flex;align-items:center;gap:8px;padding:0 8px 0 13px;border-bottom:1px solid var(--line);background:var(--panel-2);font-size:12px;letter-spacing:.06em}
+.drw .db{padding:12px 14px;display:flex;flex-direction:column;gap:9px;overflow:hidden;font-size:13px}
+.drw .db>*{flex:none}
+.drw .dh b{white-space:nowrap}
+.drw .dn1{font-size:16px;font-weight:700}
+.drw .dn1.s14{font-size:14px}
+.drw .ov{display:flex;align-items:center;gap:12px}
+.drw .ov>div{display:flex;flex-direction:column;gap:3px}
+.drw .ov b{font-size:20px}
+.drw .ov input{width:64px;height:28px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:3px;color:var(--text);font-family:var(--mono);font-size:16px;padding:0 8px}
+.drw .arw{color:var(--text-3);font-size:16px;padding-top:14px}
+.drw textarea{height:42px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:3px;color:var(--text);font-family:var(--sans);font-size:13px;padding:6px 8px;resize:none}
+.drw .why{padding:8px 10px;border:1px solid var(--line-2);border-radius:3px;line-height:1.4;color:var(--text-2)}
+.drw .why b{color:var(--text)}
+.drw .why.ok{border-color:var(--up-line)}
+.drw .row{display:flex;gap:8px;flex-wrap:wrap}
+.drw hr{border:0;border-top:1px solid var(--line)}
+
+/* ---------- 1366 ---------- */
+@media (max-width:1499px){
+  .ttl{gap:8px}
+  .ttl h1{font-size:14px}
+  .ttl .purp{font-size:13px;margin-left:2px}
+  .seg button{padding:0 8px}
+  .btn{padding:0 8px}
+  .hero{height:88px}
+  .h-main{padding:6px 12px 0 16px;gap:4px}
+  .h1{font-size:19px;line-height:25px}
+  .tile{min-width:0;padding:0 10px;gap:1px}
+  .chips{gap:3px}
+  .chips button{padding:0 6px}
+  .cyc a kbd{padding:0 3px}
+  .tile .v{font-size:16px}
+  .tile .sh-meter{width:30px}
+  .h-bot{gap:8px;padding:0 10px 0 16px}
+  .cyc{gap:4px}
+  .lrw{grid-template-columns:76px minmax(0,1fr) 62px 78px;column-gap:6px;height:20px}
+  .lrw.hd{height:15px}
+  .lad{padding:7px 12px 7px}
+  .lad .lh{margin-bottom:3px}
+  .ph{gap:6px}
+  .tn{grid-template-columns:22px 26px minmax(0,1fr) auto;column-gap:7px}
+  .drw{width:330px;top:134px}
+  .drw .db{gap:7px;padding:10px 12px}
+  .drw .dh .sh-age{display:none}
+}
+.drw .ov>.t2{font-size:12px;line-height:1.6;padding-top:12px}
+.lg.bk{box-shadow:inset 3px 0 0 var(--action)}
+.drw{bottom:auto;max-height:calc(100% - 142px)}
+@media (max-width:1499px){ .drw{max-height:calc(100% - 134px)} }
+
+</style>
+</head>
+<body class="page-settings">
+
+<!-- ===================== SHELL TOP START (copy verbatim) ===================== -->
+<!-- R01 MARKET STRIP - identical on every page. Click an index = MARKET screen. Values illustrative (Thu 19 Nov 2026, 11:40:30). -->
+<header id="sh-mkt" aria-label="Market strip">
+  <div class="sh-m1">
+      <a class="sh-ix" href="market.html#NIFTY" title="NIFTY 50: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">NIFTY 50</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,4.1 3.4,2.0 4.8,3.4 6.1,5.8 7.5,7.6 8.9,6.3 10.3,8.2 11.7,9.4 13.0,7.9 14.4,9.0 15.8,8.5 17.2,6.7 18.6,4.3 19.9,4.4 21.3,5.7 22.7,6.2 24.1,6.7 25.4,6.4 26.8,8.0 28.2,6.4 29.6,8.8 31.0,7.4 32.3,10.2 33.7,11.5 35.1,12.0 36.5,12.0 37.9,11.6 39.2,10.9 40.6,9.7 42.0,10.7" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="10.7" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">24,486.20</span><span class="sh-ch n dn sh-wide">−152.76</span><span class="sh-pc n dn">▼ −0.62%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#BANKNIFTY" title="BANKNIFTY: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">BANKNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,12.0 3.4,10.2 4.8,8.9 6.1,8.2 7.5,7.9 8.9,7.8 10.3,7.7 11.7,7.0 13.0,7.3 14.4,8.9 15.8,8.5 17.2,10.5 18.6,9.1 19.9,7.7 21.3,7.0 22.7,8.6 24.1,7.6 25.4,6.1 26.8,6.8 28.2,5.7 29.6,3.9 31.0,2.0 32.3,2.7 33.7,3.4 35.1,3.8 36.5,2.5 37.9,2.5 39.2,4.4 40.6,3.7 42.0,2.4" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="2.4" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">52,140.50</span><span class="sh-ch n dn sh-wide">−109.73</span><span class="sh-pc n dn">▼ −0.21%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#SENSEX" title="SENSEX: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">SENSEX</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,12.0 3.4,11.7 4.8,10.5 6.1,10.1 7.5,9.3 8.9,9.6 10.3,8.5 11.7,8.0 13.0,7.6 14.4,6.7 15.8,6.0 17.2,6.7 18.6,5.9 19.9,6.2 21.3,6.3 22.7,6.7 24.1,5.6 25.4,4.7 26.8,4.1 28.2,3.0 29.6,2.5 31.0,2.5 32.3,2.1 33.7,2.0 35.1,3.3 36.5,3.0 37.9,2.4 39.2,2.0 40.6,2.7 42.0,2.2" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="2.2" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">80,412.65</span><span class="sh-ch n dn sh-wide">−469.11</span><span class="sh-pc n dn">▼ −0.58%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#FINNIFTY" title="FINNIFTY: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">FINNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,5.9 3.4,2.0 4.8,4.8 6.1,4.5 7.5,3.6 8.9,2.3 10.3,6.0 11.7,8.6 13.0,5.4 14.4,3.0 15.8,6.1 17.2,7.8 18.6,10.6 19.9,7.9 21.3,9.7 22.7,9.0 24.1,7.1 25.4,9.0 26.8,9.2 28.2,11.3 29.6,9.9 31.0,12.0 32.3,9.7 33.7,6.4 35.1,7.8 36.5,5.7 37.9,6.7 39.2,9.7 40.6,8.9 42.0,8.7" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="8.7" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">23,905.40</span><span class="sh-ch n dn sh-wide">−38.31</span><span class="sh-pc n dn">▼ −0.16%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#MIDCPNIFTY" title="MIDCPNIFTY: price · change from previous close · % · sparkline since 09:15. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">MIDCPNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,2.0 3.4,3.3 4.8,2.9 6.1,3.9 7.5,2.9 8.9,3.2 10.3,3.6 11.7,3.6 13.0,3.6 14.4,3.6 15.8,4.6 17.2,4.7 18.6,5.9 19.9,6.8 21.3,6.5 22.7,7.2 24.1,8.3 25.4,8.3 26.8,8.3 28.2,9.1 29.6,9.2 31.0,9.4 32.3,10.5 33.7,9.6 35.1,10.2 36.5,11.4 37.9,12.0 39.2,12.0 40.6,12.0 42.0,11.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="11.0" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n">12,640.15</span><span class="sh-ch n dn sh-wide">−131.55</span><span class="sh-pc n dn">▼ −1.03%</span></span>
+      </a>
+    <div class="sh-mi" title="India VIX, change from previous close">
+      <span class="sh-l1"><span class="sh-nm">INDIA VIX</span></span>
+      <span class="sh-l2"><span class="sh-px n">14.82</span><span class="sh-pc n up">▲ +2.84%</span></span>
+    </div>
+    <div class="sh-mi" title="GIFT Nifty (NSE IX), trades pre-open and at night; gap vs NIFTY 50 spot">
+      <span class="sh-l1"><span class="sh-nm">GIFT NIFTY</span><span class="sh-age">prem +44</span></span>
+      <span class="sh-l2"><span class="sh-px n">24,530.5</span><span class="sh-pc n dn">▼ −0.55%</span></span>
+    </div>
+    <div class="sh-status" title="Market status from the exchange clock · phase · time to the 15:10 exit · worst age of the strip's live prices">
+      <span class="sh-st1"><span class="sh-mstate">OPEN</span><span class="sh-phase"><b>ENTRY</b> · <span class="n">3h 26m</span> to 15:10</span></span>
+      <span class="sh-st2"><span class="sh-clock">11:44:20</span><span class="sh-ist">IST</span><span class="sh-dot"></span><span class="sh-age" style="color:var(--text-2)">data 0.4s</span></span>
+    </div>
+  </div>
+  <div class="sh-m2">
+    <span class="sh-t2" title="US dollar / rupee spot"><span class="sh-t2l"><span class="sh-lb">USD/INR</span></span><span class="sh-t2v"><span class="n v">88.94</span><span class="n up">▲ +0.08%</span></span></span>
+    <span class="sh-t2" title="Brent crude, $ per barrel; feed age 1m"><span class="sh-t2l"><span class="sh-lb">Brent</span><span class="sh-age">$/bbl · 1m</span></span><span class="sh-t2v"><span class="n v">63.84</span><span class="n dn">▼ −1.10%</span></span></span>
+    <span class="sh-t2" title="Gold, MCX near month, ₹ per 10 g"><span class="sh-t2l"><span class="sh-lb">Gold MCX</span><span class="sh-age">₹/10g</span></span><span class="sh-t2v"><span class="n v">1,24,610</span><span class="n dn">▼ −1.62%</span></span></span>
+    <span class="sh-t2" title="FII / DII cash market net, ₹ crore. In the day: yesterday's NSE provisional figure; after ~18:00 today's provisional replaces it (yesterday's final then shows on hover)"><span class="sh-t2l"><span class="sh-lb">FII/DII cash</span><span class="sh-age">₹cr · 18 Nov prov</span></span><span class="sh-t2v"><span>FII</span><span class="n v">−1,842</span><span>· DII</span><span class="n v">+1,315</span></span></span>
+    <span class="sh-t2" title="FII F&amp;O net from NSE participant data, ₹ crore, 18 Nov: index futures −2,110 · stock futures +640 (at 1366 wide: stk) · detail on Futures &amp; OI, F10"><span class="sh-t2l"><span class="sh-lb">FII F&amp;O</span><span class="sh-age">₹cr · 18 Nov</span></span><span class="sh-t2v"><span>idx fut</span><span class="n v">−2,110</span><span class="sh-wide" style="display:inline-flex;gap:5px">· stk fut <span class="n v">+640</span></span><span class="sh-n1366" style="gap:4px">· stk <span class="n v">+640</span></span></span></span>
+    <span class="sh-t2" title="Put-call ratio of open interest, as of 11:39"><span class="sh-t2l"><span class="sh-lb">PCR (OI)</span><span class="sh-age">11:39</span></span><span class="sh-t2v"><span>NIFTY</span><span class="n v">0.92</span><span>· BANKNIFTY</span><span class="n v">1.08</span></span></span>
+    <span class="sh-t2" title="Advancing / declining F&amp;O shares (unchanged 4)"><span class="sh-t2l"><span class="sh-lb">A/D F&amp;O</span><span class="sh-age">of 222</span></span><span class="sh-t2v"><span class="n v">▲ 61</span><span class="n v">▼ 157</span></span></span>
+    <a class="sh-t2" href="calendar.html#expiry" title="Stock F&amp;O expiry from the contract master; sessions left incl. today; moved from Tue 24 Nov (holiday)"><span class="sh-t2l"><span class="sh-xw" title="EXPIRY WEEK: next month is the default strike month; in-the-money stock options are physically settled - exit before expiry day">EXPIRY WEEK</span><span class="sh-age">next 29 Dec</span></span><span class="sh-t2v"><span class="v">Mon 23 Nov</span><span class="sh-wide" style="color:var(--text-3)">(Tue 24 holiday)</span><span class="sh-n1366" style="color:var(--text-3)">(Tue 24 hol)</span><span>·</span><span class="n v">3</span><span>sessions left</span></span></a>
+    <span class="sh-t2" style="border-right:0;border-left:1px solid var(--line);margin-left:auto;padding-right:12px"><span class="sh-t2l"><span class="sh-lb">F&amp;O ban</span><span class="sh-age sh-wide">tap = list</span></span><span class="sh-t2v"><a class="sh-ban" href="futures-oi.html#mwpl" title="F&amp;O ban list - tap for the list. Ban at 95% MWPL · in ban: close only (only close existing positions, no new ones).">BAN 2</a><span class="sh-age sh-wide">&gt;85% 3</span></span></span>
+  </div>
+</header>
+
+<!-- R02 MY F&O P&L - always visible. Rupees net of costs (realised + open; costs = charges + est. exit slippage, always split in the tooltip). Whole strip = link to F6 MY TRADES. -->
+<a id="sh-pnl" href="positions.html" aria-label="My F&amp;O P&amp;L - opens MY TRADES">
+  <span class="sh-pt"><span class="sh-ptitle" title="tap = MY TRADES (F6)">MY F&amp;O P&amp;L ›</span><span class="sh-lb">today</span><span class="sh-big dn">−₹650</span><span class="n dn">−0.1R</span></span>
+    <span class="sh-pt sh-brk sh-wide" title="TODAY = realised + open. Open is valued at the bid less estimated exit costs; realised uses actual fills and charges. Costs ₹840 = charges ₹211 (statutory, round trip, from the ONE charges table in Settings › Charges, dated: MANAPPURAM ₹125 + HINDALCO ₹86) + est. exit slippage ₹629 (MANAPPURAM ₹295 + HINDALCO ₹334). Per trade: MANAPPURAM +₹2,430 net of ₹420 costs · HINDALCO −₹3,080 net of ₹420 costs">realised <span class="n">₹0</span> · open <span class="n">−₹650</span> net of <span class="n">₹840</span> costs</span><span class="sh-pt sh-brk sh-n1366" style="gap:4px" title="TODAY = realised + open. Open is valued at the bid less estimated exit costs; realised uses actual fills and charges. Costs ₹840 = charges ₹211 (statutory, round trip, from the ONE charges table in Settings › Charges, dated: MANAPPURAM ₹125 + HINDALCO ₹86) + est. exit slippage ₹629 (MANAPPURAM ₹295 + HINDALCO ₹334). Per trade: MANAPPURAM +₹2,430 net of ₹420 costs · HINDALCO −₹3,080 net of ₹420 costs">real <span class="n">₹0</span> · open <span class="n">−₹650</span> · costs <span class="n">₹840</span></span>
+  <span class="sh-pt" title="Open positions (max 2). If every open position hit its SHARE stop now: −₹8,020 net of costs (HINDALCO −₹4,060 + MANAPPURAM −₹3,960 = −1.6R) - lock room ₹1,980. At the Kite backstops (SL-L): −₹9,090 (−1.8R) - lock room ₹910"><span class="sh-lb">open</span><span class="n" style="color:var(--text);font-weight:600">2</span><span>· at share stops</span><span class="n" style="color:var(--text)">−₹8,020</span></span>
+  <span class="sh-pt"><span class="sh-lb">trades</span><span class="n" style="color:var(--text);font-weight:600">2 of 3</span></span>
+  <span class="sh-pt" title="Week to date (Mon 16 Nov to today) in rupees, net of costs, today included. 1R = ₹5,000"><span class="sh-lb">week</span><span class="n dn">−₹4,755</span><span class="n dn" style="font-size:12px">−0.95R</span></span>
+  <span class="sh-pt" title="November to date in rupees, net of costs, today included. 1R = ₹5,000"><span class="sh-lb">month</span><span class="n up">+₹5,045</span><span class="n up" style="font-size:12px">+1.01R</span></span>
+  <span class="sh-pt" title="Rupees left before the day loss lock (−2% = −₹10,000; also 2 losses in a row, weekly −6%). Lock room = what is left if every open position hits its share stop. Meter amber from 75%, LOCKED chip at 100%. Exits always stay usable."><span class="sh-lb sh-wide">loss lock</span><span class="sh-lb sh-n1366">lock</span><span class="n" style="color:var(--text);font-weight:600">₹9,350</span><span>left</span><span class="sh-meter"><i style="width:7%"></i></span></span>
+  <span class="sh-pt" style="border-right:0" title="AI spend today vs the $20 daily cap; by model on Scorecard (Shift+F8)"><span class="sh-lb">AI</span><span class="n" style="color:var(--text)">$4.10</span><span>of $20</span><span class="sh-meter sh-wide"><i style="width:21%"></i></span></span>
+</a>
+
+<!-- R03 TAB BAR - one list (REQUIREMENTS section D). Row 1 = plain F-keys, row 2 = SHIFT + F-keys (filled ⇧ keycaps). No key twice. -->
+<nav id="sh-tabs" aria-label="Pages">
+  <a class="sh-mark" href="desk-hunt.html" title="girtrader.com"><b>GIR</b></a>
+  <div class="sh-grid">
+        <span class="sh-rl sh-rl1">F-KEY</span>
+        <span class="sh-rl sh-rl2"><span>SHIFT +</span></span>
+        <a class="sh-tab" data-tab="desk" href="desk-hunt.html" style="grid-row:1;grid-column:2" title="F1 · Desk - hunting / in a trade: the one screen for 09:15-15:10"><kbd class="sh-k">F1</kbd><span class="sh-tl">Desk</span></a>
+        <a class="sh-tab" data-tab="sectors" href="sectors.html" style="grid-row:1;grid-column:3" title="F2 · Sectors board, accordion, F&O movers"><kbd class="sh-k">F2</kbd><span class="sh-tl">Sectors</span></a>
+        <a class="sh-tab" data-tab="rotation" href="rotation.html" style="grid-row:1;grid-column:4" title="F3 · Rotation 15M / 30M / 1H / TODAY: money out of X into Y"><kbd class="sh-k">F3</kbd><span class="sh-tl">Rotation</span></a>
+        <a class="sh-tab" data-tab="news" href="news.html" style="grid-row:1;grid-column:5" title="F4 · One news list"><kbd class="sh-k">F4</kbd><span class="sh-tl">News</span></a>
+        <span class="sh-tab sh-f5" style="grid-row:1 / span 2;grid-column:6" title="F5 (and Shift+F5) would reload the browser and could drop live prices mid-trade, so GIR blocks it. Reload = Ctrl+Shift+R (asks first while a position is open). See ? Help."><span class="sh-f5a"><kbd class="sh-k sh-koff">F5</kbd><span class="sh-tl">off</span></span><span class="sh-f5b"><span class="sh-wide">reload blocked</span><span class="sh-n1366">no reload</span></span></span>
+        <a class="sh-tab" data-tab="positions" href="positions.html" style="grid-row:1;grid-column:7" title="F6 · Positions & Risk = MY TRADES: P&L, exits"><kbd class="sh-k">F6</kbd><span class="sh-tl">My trades</span></a>
+        <a class="sh-tab" data-tab="share" href="share.html" style="grid-row:1;grid-column:8" title="F7 · Share page: chart, levels, chain, futures, news, WHY"><kbd class="sh-k">F7</kbd><span class="sh-tl">Share</span></a>
+        <a class="sh-tab" data-tab="analyst" href="analyst.html" style="grid-row:1;grid-column:9" title="F8 · Analyst: latest decision, ASK drawer"><kbd class="sh-k">F8</kbd><span class="sh-tl">Analyst</span></a>
+        <a class="sh-tab" data-tab="chain" href="chain.html" style="grid-row:1;grid-column:10" title="F9 · Option chain + OI scenarios"><kbd class="sh-k">F9</kbd><span class="sh-tl">Chain</span></a>
+        <a class="sh-tab" data-tab="futures-oi" href="futures-oi.html" style="grid-row:1;grid-column:11" title="F10 · Futures & OI + MONEY: LB/SB/SC/LU, futures by month, F&O money, BIG MONEY, tape"><kbd class="sh-k">F10</kbd><span class="sh-tl">Fut & OI</span></a>
+        <a class="sh-tab" data-tab="morning" href="morning.html" style="grid-row:2;grid-column:2" title="Shift+F1 · Morning & pre-flight (+ PRE-OPEN 09:00-09:08)"><kbd class="sh-k sh-ks">⇧F1</kbd><span class="sh-tl">Morning</span></a>
+        <a class="sh-tab" data-tab="world" href="world.html" style="grid-row:2;grid-column:3" title="Shift+F2 · World drivers + THEME"><kbd class="sh-k sh-ks">⇧F2</kbd><span class="sh-tl">World</span></a>
+        <span class="sh-tab sh-free" style="grid-row:2;grid-column:4" title="Shift+F3 is not used"><kbd class="sh-k sh-ks">⇧F3</kbd><span class="sh-tl">not used</span></span>
+        <a class="sh-tab" data-tab="calendar" href="calendar.html" style="grid-row:2;grid-column:5" title="Shift+F4 · Calendar: results, events, ex-dates, expiry, Parliament business"><kbd class="sh-k sh-ks">⇧F4</kbd><span class="sh-tl">Calendar</span></a>
+        <a class="sh-tab" data-tab="journal" href="journal.html" style="grid-row:2;grid-column:7" title="Shift+F6 · Journal: every trade, notes, mistakes, rules kept"><kbd class="sh-k sh-ks">⇧F6</kbd><span class="sh-tl">Journal</span></a>
+        <a class="sh-tab" data-tab="reference" href="reference.html" style="grid-row:2;grid-column:8" title="Shift+F7 · Reference: F&O list, lots, sectors map, policy baskets, aliases"><kbd class="sh-k sh-ks">⇧F7</kbd><span class="sh-tl">Reference</span></a>
+        <a class="sh-tab" data-tab="scorecard" href="scorecard.html" style="grid-row:2;grid-column:9" title="Shift+F8 · Calls & Scorecard: 15:45 audit, misses, cost"><kbd class="sh-k sh-ks">⇧F8</kbd><span class="sh-tl">Scorecard</span></a>
+        <a class="sh-tab" data-tab="health" href="health.html" style="grid-row:2;grid-column:10" title="Shift+F9 · Health: every service and feed, data age, Kite login"><kbd class="sh-k sh-ks">⇧F9</kbd><span class="sh-tl">Health</span></a>
+        <a class="sh-tab" data-tab="replay" href="replay.html" style="grid-row:2;grid-column:11" title="Shift+F10 · Replay any past day, minute by minute"><kbd class="sh-k sh-ks">⇧F10</kbd><span class="sh-tl">Replay</span></a>
+  </div>
+  <div class="sh-right">
+    <div class="sh-r1">
+      <a class="sh-tab" data-tab="settings" href="settings.html" title="Ctrl+, · Charter & Settings: his rules, sounds, Telegram, limits" style="border-left:1px solid var(--line)"><kbd class="sh-k">Ctrl ,</kbd><span class="sh-tl">Settings</span></a>
+      <a class="sh-tab" data-tab="help" href="help.html" title="? · Help: every page's purpose, keys (why F5 is off), colours, sounds"><kbd class="sh-k">?</kbd><span class="sh-tl">Help</span></a>
+      <a class="sh-tab" data-tab="market" href="market.html" title="MARKET: NIFTY / BANKNIFTY trading screen. No F-key: type /NIFTY or click an index in the strip"><kbd class="sh-k">/NIFTY</kbd><span class="sh-tl">Market</span></a>
+      <a class="sh-tab sh-wide" data-tab="plan-card" href="plan-card.html" title="Space on a call · Plan card drawer (Desk)"><kbd class="sh-k">Space</kbd><span class="sh-tl">Plan card</span></a>
+    </div>
+    <div class="sh-r2">
+      <label class="sh-cmd" title="/ = command line: symbol (TITAN), contract (HINDALCO 680 PE), verbs (TITAN OC, TITAN FUT, METALS, GOLD, NEWS TITAN, STATUS); free text searches news. Never sends an order.">
+        <kbd>/</kbd><span class="sh-ph">symbol<span class="sh-ph-c">, contract</span><span class="sh-ph-v">, verb</span></span><span class="sh-typed">TIT<i></i></span>
+        <span class="sh-sugg" role="listbox" aria-label="Suggestions">
+          <span class="sh-sg-h"><span class="sh-lb">2 F&amp;O shares match "TIT"</span><span class="sh-age">as you type · 2+ letters</span></span>
+          <span class="sh-sg-r sel" role="option"><span class="sh-sg-s"><em>TIT</em>AN</span><span class="sh-sg-d">Titan Company<br><span>Jewellers &amp; gold loans · lot 175</span></span><span class="sh-sg-p n">3,398.20</span><span class="sh-sg-p n dn">−2.48%</span></span>
+          <span class="sh-sg-r" role="option"><span class="sh-sg-s"><em>TIT</em>AGARH</span><span class="sh-sg-d">Titagarh Rail Systems<br><span>Railways &amp; capital goods · lot 725</span></span><span class="sh-sg-p n">912.35</span><span class="sh-sg-p n dn">−0.84%</span></span>
+          <span class="sh-sg-v"><span class="n">TITAN OC</span><span class="n">TITAN FUT</span><span class="n">NEWS TITAN</span><span class="n">LOG TITAN</span><span>search news for "TIT"</span></span>
+          <span class="sh-sg-f"><kbd>↑</kbd> <kbd>↓</kbd> choose · <kbd>Enter</kbd> open the share page · <kbd>Tab</kbd> complete · <kbd>Esc</kbd> close</span>
+        </span>
+      </label>
+      <button class="sh-btn" title="SOUND ON (at 1366 wide the button reads speaker + ON). Sound on / off. Exits on an open position (STOP, BOOK HALF, EXIT, 15:10) can never be muted. M mutes GO NOW / GET READY for 10 min."><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 4h2.5L7 1v10L3.5 8H1z" fill="currentColor"/><path d="M8.6 3.6a3.4 3.4 0 0 1 0 4.8M10 2.2a5.4 5.4 0 0 1 0 7.6" stroke="currentColor" fill="none" stroke-width="1.1"/></svg><span class="on"><span class="sh-wide">SOUND </span>ON</span></button>
+      <button class="sh-btn" title="Sound legend: which alert makes which sound">♪ LEGEND</button>
+      <span class="sh-al" title="Unacknowledged alerts (A then Enter acknowledges)"><span style="color:var(--danger);font-weight:700">P1 <span class="n">1</span></span> · P2 <span class="n">1</span></span>
+    </div>
+  </div>
+</nav>
+<!-- ===================== SHELL TOP END ===================== -->
+
+<!-- PAGE CONTENT: main#page = 1600 x 716 at 1600x900; 1366 x 584 at 1366x768 -->
+<main id="page">
+<div class="st">
+
+  <!-- title row: key · name · one-line purpose (R06) · theme switch (R46) · actions -->
+  <div class="ttl">
+    <kbd class="kk">Ctrl ,</kbd>
+    <h1>CHARTER &amp; SETTINGS</h1>
+    <span class="sh-age"><span class="mk">11:44:20</span><span class="ev">16:20:05</span></span>
+    <span class="purp"><span class="w16">Your rules in your own words: every limit, sound and message GIR obeys.</span><span class="n13">Your rules: every limit, sound and message GIR obeys.</span></span>
+    <span class="sp"></span>
+    <span class="seg" role="group" aria-label="theme" title="Appearance (R46): DARK, LIGHT or AUTO (follows the computer) for every page and the phone. Colours keep their meanings in both."><span class="segl">THEME</span><button class="thb" data-th="dark">DARK</button><button class="thb" data-th="light">LIGHT</button><button class="thb" data-th="auto">AUTO</button></span>
+    <button class="btn" id="evebtn" title="How this page looks after 15:35 (16:20:05): loosening allowed, applies from the next session. Click again for 11:44:20.">AFTER 15:35 ›</button>
+    <button class="btn" id="chgbtn" title="CHANGE A RULE: stricter applies at once; looser opens 15:35 and applies from the next session with a typed reason">CHANGE<span class="w16">&nbsp;A RULE</span> <kbd>E</kbd></button>
+    <a class="btn" href="journal.html#review" title="Sunday review: every rule kept or broken this week and every change to this charter">WEEKLY REVIEW ›</a>
+    <a class="btn q" href="help.html#settings" title="? Help: every limit, tag, tone and key on this page">?</a>
+  </div>
+
+  <!-- HERO: the page's one answer -->
+  <section class="hero" aria-label="charter in force">
+    <div class="h-top">
+      <div class="h-main">
+        <div class="h1"><span class="mk"><b>Charter v13</b> in force · <span class="hl">tighten only</span> until 15:35</span><span class="ev"><b>Charter v13</b> in force · <span class="hl ok">you can edit</span> · looser applies Fri 09:00</span></div>
+        <div class="h2"><span class="tg alw" title="ALWAYS: no setting reaches it">ALWAYS</span> <span class="w16">never off:</span> <b>stale-data block</b> · <b>loss lock</b> · <b>15:10 flat</b> · <b>your exit alarms</b> · <b>calls only to you</b></div>
+      </div>
+      <div class="tiles">
+        <a class="tile" href="#" data-jump="p-lim:0" title="Day loss lock −2% of ₹5,00,000 = −₹10,000, net of costs. Today −₹650 (open, net of ₹840 costs) → ₹9,350 left.">
+          <span class="l">Lock left</span>
+          <span class="v mk">₹9,350</span><span class="v ev">₹10,000</span>
+          <span class="s mk"><span class="sh-meter"><i style="width:7%"></i></span> 7% used</span><span class="s ev">day <b class="up">+₹5,387</b></span></a>
+        <a class="tile" href="#" data-jump="p-lim:0" title="If both open positions hit their SHARE stops now: MANAPPURAM −₹3,960 + HINDALCO −₹4,060 = −₹8,020 (net of ₹420 costs each). Lock room left ₹1,980 = the most a new trade may risk.">
+          <span class="l">Room at stops</span>
+          <span class="v mk">₹1,980</span><span class="v ev">₹10,000</span>
+          <span class="s mk">stops <b class="n dn">−₹8,020</b></span><span class="s ev">nothing open</span></a>
+        <a class="tile" href="#" data-jump="p-lim:1" title="Trades today incl. off-plan fills (limit 3, 2 open at a time, 1 per driver)">
+          <span class="l">Trades</span>
+          <span class="v mk">2 <small>of 3</small></span><span class="v ev">3 <small>of 3</small></span>
+          <span class="s mk">next max <b class="n">₹1,980</b></span><span class="s ev">flat since 13:52</span></a>
+        <a class="tile" href="#" data-jump="p-snd:0" title="SOUND ON for GO NOW and GET READY. Your exit tones cannot be muted while a position is open.">
+          <span class="l">Sound</span>
+          <span class="v">ON <small>3 tones</small></span>
+          <span class="s mk">exits locked on</span><span class="s ev">market closed</span></a>
+        <a class="tile" href="#" data-jump="p-snd:2" title="Decisions bot + system bot, private chat with you only">
+          <span class="l">Telegram</span>
+          <span class="v">2 <small>bots</small></span>
+          <span class="s">only to you</span></a>
+        <a class="tile" href="#" data-jump="p-rules:1" title="At most one loosening a week; it opens after 15:35 and applies from the next session. 0 of 1 used this week.">
+          <span class="l">Next loosen</span>
+          <span class="v mk">15:35 <small>today</small></span><span class="v ev">now <small>open</small></span>
+          <span class="s">0 of 1 this week</span></a>
+      </div>
+    </div>
+    <div class="h-bot">
+      <span class="sh-lb">Where to see</span>
+      <a class="go" href="futures-oi.html#buildup" title="F10 Fut &amp; OI: the LONG BUILD-UP lists with the LB / SB / SC / LU filters and alerts"><span class="sh-c sh-c-lb">LB</span><span class="sh-c sh-c-sb">SB</span><span class="sh-c sh-c-sc">SC</span><span class="sh-c sh-c-lu">LU</span><span>OI build-up</span><kbd>F10</kbd><span class="w16">Fut &amp; OI</span> ›</a>
+      <a class="go" href="sectors.html#movers" title="F2 Sectors: F&amp;O MOVERS with the UP / DOWN / ALL tabs"><span class="mv"><span class="up">▲</span><span class="dn">▼</span></span><span>F&amp;O movers</span><kbd>F2</kbd><span class="w16">Sectors</span> ›</a>
+      <span class="sp"></span>
+      <span class="sh-lb"><span class="w16">Trade cycle</span><span class="n13">Cycle</span></span>
+      <nav class="cyc" aria-label="trade cycle">
+        <a href="morning.html">PREPARE <kbd>⇧F1</kbd></a><i>›</i><a href="sectors.html">FIND <kbd>F2</kbd></a><i>›</i><a href="share.html">SHARE <kbd>F7</kbd></a><i>›</i><a href="chain.html">STRIKE <kbd>F9</kbd></a><i>›</i><a href="plan-card.html">PLAN <kbd>Space</kbd></a><i>›</i><a href="plan-card.html#kite">ENTER <span class="t3">Kite</span></a><i>›</i><a href="positions.html">MANAGE <kbd>F6</kbd></a><i>›</i><a href="journal.html">REVIEW <kbd>⇧F6</kbd></a>
+      </nav>
+    </div>
+  </section>
+
+  <!-- four columns, five panels; every list: group chips, drawn bar, ▲▼, whole rows, "▼ n more: names" -->
+  <div class="grid">
+    <section class="pn" id="p-rules"></section>
+    <section class="pn" id="p-lim"></section>
+    <div class="col">
+      <section class="pn" id="p-gate"></section>
+      <section class="pn" id="p-app"></section>
+    </div>
+    <section class="pn" id="p-snd"></section>
+  </div>
+
+  <!-- CHANGE A RULE drawer: over the right column only; shell, hero and the other panels stay visible -->
+  <aside class="drw" id="drw" aria-label="change a rule">
+    <div class="dh"><b>CHANGE A RULE</b><span class="sh-age">every change logged</span><span class="sp"></span><button class="btn" id="drwx">Esc ✕</button></div>
+    <div class="db">
+      <div class="dn1">Trades a day</div>
+      <div class="t2">limit on trades per day, incl. off-plan fills · today <span class="mk">2 of 3</span><span class="ev">3 of 3</span></div>
+      <div class="ov"><div><span class="sh-lb">now</span><b class="n">3</b></div><span class="arw">→</span><div><span class="sh-lb">new</span><input value="4" aria-label="new value"></div><span class="t2"><span class="tg warn">LOOSER</span><br>typed reason · next session</span></div>
+      <span class="sh-lb">Your reason (typed, required)</span>
+      <textarea placeholder="Why should this limit be looser? (shown in the Sunday review)"></textarea>
+      <div class="why mk"><b>Not now: market hours.</b> Loosening opens <b>15:35</b> and applies from <b>Fri 20 Nov 09:00</b> · 0 of 1 used this week.</div>
+      <div class="why ev ok"><b>Possible now.</b> Applies from <b>Fri 20 Nov 09:00</b>, logged with your reason. Uses this week's one loosening.</div>
+      <div class="row"><button class="btn mk" disabled>SEND · locked until 15:35</button><button class="btn on ev">SEND · APPLIES FRI 09:00</button><button class="btn" id="drwc">CANCEL</button></div>
+      <hr>
+      <div class="t2"><b>Stricter instead?</b> <span class="tg alw">TIGHTER</span> 3 → 2 applies <b>at once</b>, any time, no reason needed.</div>
+      <div class="row"><button class="btn on">SET 2 TRADES NOW <kbd>Enter</kbd></button></div>
+    </div>
+  </aside>
+</div>
+
+</main>
+
+<!-- ===================== SHELL FOOTER START (copy verbatim) ===================== -->
+<footer id="sh-foot">
+  <a href="health.html" style="display:flex;align-items:center;gap:5px" title="ONE wording on every page: health READY / LIMITED / DOWN (the Health page's own words) · the worst item and its age · AI full / lite / off. Opens Health (Shift+F9)"><span class="sh-dot" style="width:7px;height:7px"></span>health READY · worst K3 <span class="n">1.2s</span> · AI full</a><span class="sh-fs"></span>
+  <span class="sh-keys"><kbd>/</kbd>search <kbd>?</kbd>help <kbd>Space</kbd>plan card <kbd>Esc</kbd>close<span class="sh-wide" style="display:inline-flex;gap:5px;align-items:center"><kbd>A</kbd>+<kbd>Enter</kbd>ack <kbd>M</kbd>mute</span></span>
+  <a href="phone.html" title="the phone version: girtrader.com/m (four screens)">phone /m</a><span class="sh-fs"></span>
+  <span class="sh-mock">design mockup - illustrative values</span>
+</footer>
+<!-- ===================== SHELL FOOTER END ===================== -->
+
+<template id="tpl-eve">
+<!-- ===================== SHELL TOP START (copy verbatim) ===================== -->
+<!-- R01 MARKET STRIP - identical on every page. Click an index = MARKET screen. Values illustrative (Thu 19 Nov 2026, 11:40:30). -->
+<header id="sh-mkt" aria-label="Market strip">
+  <div class="sh-m1">
+      <a class="sh-ix" href="market.html#NIFTY" title="NIFTY 50: 19 Nov close, as of 15:30 (market closed) · change from 18 Nov close · % · sparkline 09:15-15:30. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">NIFTY 50</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,4.1 3.4,2.0 4.8,3.4 6.1,5.8 7.5,7.6 8.9,6.3 10.3,8.2 11.7,9.4 13.0,7.9 14.4,9.0 15.8,8.5 17.2,6.7 18.6,4.3 19.9,4.4 21.3,5.7 22.7,6.2 24.1,6.7 25.4,6.4 26.8,8.0 28.2,6.4 29.6,8.8 31.0,7.4 32.3,10.2 33.7,11.5 35.1,12.0 36.5,12.0 37.9,11.6 39.2,10.9 40.6,9.7 42.0,10.7" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="10.7" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n" style="color:var(--text-3)">24,431.95</span><span class="sh-ch n dn sh-wide">−207.00</span><span class="sh-pc n dn">▼ −0.84%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#BANKNIFTY" title="BANKNIFTY: 19 Nov close, as of 15:30 (market closed) · change from 18 Nov close · % · sparkline 09:15-15:30. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">BANKNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,12.0 3.4,10.2 4.8,8.9 6.1,8.2 7.5,7.9 8.9,7.8 10.3,7.7 11.7,7.0 13.0,7.3 14.4,8.9 15.8,8.5 17.2,10.5 18.6,9.1 19.9,7.7 21.3,7.0 22.7,8.6 24.1,7.6 25.4,6.1 26.8,6.8 28.2,5.7 29.6,3.9 31.0,2.0 32.3,2.7 33.7,3.4 35.1,3.8 36.5,2.5 37.9,2.5 39.2,4.4 40.6,3.7 42.0,2.4" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="2.4" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n" style="color:var(--text-3)">52,078.40</span><span class="sh-ch n dn sh-wide">−171.85</span><span class="sh-pc n dn">▼ −0.33%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#SENSEX" title="SENSEX: 19 Nov close, as of 15:30 (market closed) · change from 18 Nov close · % · sparkline 09:15-15:30. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">SENSEX</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,12.0 3.4,11.7 4.8,10.5 6.1,10.1 7.5,9.3 8.9,9.6 10.3,8.5 11.7,8.0 13.0,7.6 14.4,6.7 15.8,6.0 17.2,6.7 18.6,5.9 19.9,6.2 21.3,6.3 22.7,6.7 24.1,5.6 25.4,4.7 26.8,4.1 28.2,3.0 29.6,2.5 31.0,2.5 32.3,2.1 33.7,2.0 35.1,3.3 36.5,3.0 37.9,2.4 39.2,2.0 40.6,2.7 42.0,2.2" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="2.2" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n" style="color:var(--text-3)">80,212.30</span><span class="sh-ch n dn sh-wide">−669.45</span><span class="sh-pc n dn">▼ −0.83%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#FINNIFTY" title="FINNIFTY: 19 Nov close, as of 15:30 (market closed) · change from 18 Nov close · % · sparkline 09:15-15:30. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">FINNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,5.9 3.4,2.0 4.8,4.8 6.1,4.5 7.5,3.6 8.9,2.3 10.3,6.0 11.7,8.6 13.0,5.4 14.4,3.0 15.8,6.1 17.2,7.8 18.6,10.6 19.9,7.9 21.3,9.7 22.7,9.0 24.1,7.1 25.4,9.0 26.8,9.2 28.2,11.3 29.6,9.9 31.0,12.0 32.3,9.7 33.7,6.4 35.1,7.8 36.5,5.7 37.9,6.7 39.2,9.7 40.6,8.9 42.0,8.7" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="8.7" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n" style="color:var(--text-3)">23,861.15</span><span class="sh-ch n dn sh-wide">−82.55</span><span class="sh-pc n dn">▼ −0.34%</span></span>
+      </a>
+      <a class="sh-ix" href="market.html#MIDCPNIFTY" title="MIDCPNIFTY: 19 Nov close, as of 15:30 (market closed) · change from 18 Nov close · % · sparkline 09:15-15:30. Click = MARKET screen">
+        <span class="sh-l1"><span class="sh-nm">MIDCPNIFTY</span><svg class="sh-spk" width="44" height="14" viewBox="0 0 44 14" aria-hidden="true"><polyline points="2.0,2.0 3.4,3.3 4.8,2.9 6.1,3.9 7.5,2.9 8.9,3.2 10.3,3.6 11.7,3.6 13.0,3.6 14.4,3.6 15.8,4.6 17.2,4.7 18.6,5.9 19.9,6.8 21.3,6.5 22.7,7.2 24.1,8.3 25.4,8.3 26.8,8.3 28.2,9.1 29.6,9.2 31.0,9.4 32.3,10.5 33.7,9.6 35.1,10.2 36.5,11.4 37.9,12.0 39.2,12.0 40.6,12.0 42.0,11.0" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="42.0" cy="11.0" r="1.5" fill="currentColor"/></svg></span>
+        <span class="sh-l2"><span class="sh-px n" style="color:var(--text-3)">12,598.40</span><span class="sh-ch n dn sh-wide">−173.30</span><span class="sh-pc n dn">▼ −1.36%</span></span>
+      </a>
+    <div class="sh-mi" title="India VIX: 19 Nov close (as of 15:30), change from 18 Nov close 14.41">
+      <span class="sh-l1"><span class="sh-nm">INDIA VIX</span></span>
+      <span class="sh-l2"><span class="sh-px n" style="color:var(--text-3)">14.95</span><span class="sh-pc n up">▲ +3.75%</span></span>
+    </div>
+    <div class="sh-mi" title="GIFT Nifty (NSE IX), trades pre-open and at night; gap vs NIFTY 50 spot">
+      <span class="sh-l1"><span class="sh-nm">GIFT NIFTY</span><span class="sh-age">prem +20</span></span>
+      <span class="sh-l2"><span class="sh-px n">24,452.0</span><span class="sh-pc n dn">▼ −0.87%</span></span>
+    </div>
+    <div class="sh-status" title="Market status from the exchange clock · phase · time to the 15:10 exit · worst age of the strip's live prices">
+      <span class="sh-st1"><span class="sh-mstate" style="border-color:var(--line-2);color:var(--text-3)">CLOSED</span><span class="sh-phase"><b>REVIEW</b> · opens Fri <span class="n">09:15</span></span></span>
+      <span class="sh-st2"><span class="sh-clock">16:20:05</span><span class="sh-ist">IST</span><span class="sh-dot" style="background:var(--text-3)"></span><span class="sh-age" style="color:var(--text-2)">as of 15:30</span></span>
+    </div>
+  </div>
+  <div class="sh-m2">
+    <span class="sh-t2" title="US dollar / rupee spot"><span class="sh-t2l"><span class="sh-lb">USD/INR</span></span><span class="sh-t2v"><span class="n v">88.97</span><span class="n up">▲ +0.11%</span></span></span>
+    <span class="sh-t2" title="Brent crude, $ per barrel; feed age 1m"><span class="sh-t2l"><span class="sh-lb">Brent</span><span class="sh-age">$/bbl · 1m</span></span><span class="sh-t2v"><span class="n v">63.62</span><span class="n dn">▼ −1.44%</span></span></span>
+    <span class="sh-t2" title="Gold, MCX near month, ₹ per 10 g"><span class="sh-t2l"><span class="sh-lb">Gold MCX</span><span class="sh-age">₹/10g</span></span><span class="sh-t2v"><span class="n v">1,24,560</span><span class="n dn">▼ −1.66%</span></span></span>
+    <span class="sh-t2" title="FII / DII cash market net, ₹ crore. In the day: yesterday's NSE provisional figure; after ~18:00 today's provisional replaces it (yesterday's final then shows on hover)"><span class="sh-t2l"><span class="sh-lb">FII/DII cash</span><span class="sh-age">₹cr · 18 Nov prov</span></span><span class="sh-t2v"><span>FII</span><span class="n v">−1,842</span><span>· DII</span><span class="n v">+1,315</span></span></span>
+    <span class="sh-t2" title="FII F&amp;O net from NSE participant data, ₹ crore, 18 Nov: index futures −2,110 · stock futures +640 (at 1366 wide: stk) · detail on Futures &amp; OI, F10"><span class="sh-t2l"><span class="sh-lb">FII F&amp;O</span><span class="sh-age">₹cr · 18 Nov</span></span><span class="sh-t2v"><span>idx fut</span><span class="n v">−2,110</span><span class="sh-wide" style="display:inline-flex;gap:5px">· stk fut <span class="n v">+640</span></span><span class="sh-n1366" style="gap:4px">· stk <span class="n v">+640</span></span></span></span>
+    <span class="sh-t2" title="Put-call ratio of open interest at the 15:30 close"><span class="sh-t2l"><span class="sh-lb">PCR (OI)</span><span class="sh-age">15:30</span></span><span class="sh-t2v"><span>NIFTY</span><span class="n v">0.88</span><span>· BANKNIFTY</span><span class="n v">1.04</span></span></span>
+    <span class="sh-t2" title="Advancing / declining F&amp;O shares at the 15:30 close (unchanged 3)"><span class="sh-t2l"><span class="sh-lb">A/D F&amp;O</span><span class="sh-age">of 222</span></span><span class="sh-t2v"><span class="n v">▲ 54</span><span class="n v">▼ 165</span></span></span>
+    <a class="sh-t2" href="calendar.html#expiry" title="Stock F&amp;O expiry from the contract master; sessions left incl. today; moved from Tue 24 Nov (holiday)"><span class="sh-t2l"><span class="sh-xw" title="EXPIRY WEEK: next month is the default strike month; in-the-money stock options are physically settled - exit before expiry day">EXPIRY WEEK</span><span class="sh-age">next 29 Dec</span></span><span class="sh-t2v"><span class="v">Mon 23 Nov</span><span class="sh-wide" style="color:var(--text-3)">(Tue 24 holiday)</span><span class="sh-n1366" style="color:var(--text-3)">(Tue 24 hol)</span><span>·</span><span class="n v">2</span><span>sessions left</span></span></a>
+    <span class="sh-t2" style="border-right:0;border-left:1px solid var(--line);margin-left:auto;padding-right:12px"><span class="sh-t2l"><span class="sh-lb">F&amp;O ban</span><span class="sh-age sh-wide">tap = list</span></span><span class="sh-t2v"><a class="sh-ban" href="futures-oi.html#mwpl" title="F&amp;O ban list - tap for the list. Ban at 95% MWPL · in ban: close only (only close existing positions, no new ones).">BAN 2</a><span class="sh-age sh-wide">&gt;85% 3</span></span></span>
+  </div>
+</header>
+
+<!-- R02 MY F&O P&L - always visible. Rupees net of costs (realised + open; costs = charges + est. exit slippage, always split in the tooltip). Whole strip = link to F6 MY TRADES. -->
+<a id="sh-pnl" href="positions.html" aria-label="My F&amp;O P&amp;L - opens MY TRADES">
+  <span class="sh-pt"><span class="sh-ptitle" title="tap = MY TRADES (F6)">MY F&amp;O P&amp;L ›</span><span class="sh-lb">today</span><span class="sh-big up">+₹5,387</span><span class="n up">+1.08R</span></span>
+    <span class="sh-pt sh-brk sh-wide" title="TODAY = realised + open. 19 Nov: 3 trades, all closed, so realised uses actual fills and charges (no slippage estimate left). Charges #48 MANAPPURAM ₹125 + #49 HINDALCO ₹86 + #50 TITAN ₹87 = ₹298 (GIR estimate until the 19 Nov contract note ~18:00) - from the ONE charges table (Settings › Charges, dated)">realised <span class="n">+₹5,387</span> · open <span class="n">₹0</span> · charges <span class="n">₹298</span></span><span class="sh-pt sh-brk sh-n1366" style="gap:4px" title="TODAY = realised + open. 19 Nov: 3 trades, all closed, so realised uses actual fills and charges (no slippage estimate left). Charges #48 MANAPPURAM ₹125 + #49 HINDALCO ₹86 + #50 TITAN ₹87 = ₹298 (GIR estimate until the 19 Nov contract note ~18:00) - from the ONE charges table (Settings › Charges, dated)">real <span class="n">+₹5,387</span> · open <span class="n">₹0</span> · chg <span class="n">₹298</span></span>
+  <span class="sh-pt" title="Open positions (max 2): none - flat since 13:52 (#50 TITAN out 13:52)"><span class="sh-lb">open</span><span class="n" style="color:var(--text);font-weight:600">0</span><span>· at share stops</span><span class="n" style="color:var(--text)">₹0</span></span>
+  <span class="sh-pt"><span class="sh-lb">trades</span><span class="n" style="color:var(--text);font-weight:600">3 of 3</span></span>
+  <span class="sh-pt" title="Week to date (Mon 16 Nov to today) in rupees, net of costs, today included. 1R = ₹5,000"><span class="sh-lb">week</span><span class="n up">+₹1,282</span><span class="n up" style="font-size:12px">+0.26R</span></span>
+  <span class="sh-pt" title="November to date in rupees, net of costs, today included. 1R = ₹5,000"><span class="sh-lb">month</span><span class="n up">+₹11,082</span><span class="n up" style="font-size:12px">+2.22R</span></span>
+  <span class="sh-pt" title="Day loss lock at −2% = −₹10,000 (also: 2 losses in a row, weekly −6%). 19 Nov: not hit, day closed +₹5,387. Last lock: 18 Nov 11:31 - 2 losses in a row. Resets 09:00."><span class="sh-lb sh-wide">loss lock</span><span class="sh-lb sh-n1366">lock</span><span class="n" style="color:var(--text);font-weight:600">₹10,000</span><span>left</span><span class="sh-meter"><i style="width:0%"></i></span></span>
+  <span class="sh-pt" style="border-right:0" title="AI spend today vs the $20 daily cap; by model on Scorecard (Shift+F8)"><span class="sh-lb">AI</span><span class="n" style="color:var(--text)">$7.69</span><span>of $20</span><span class="sh-meter sh-wide"><i style="width:38%"></i></span></span>
+</a>
+
+<!-- R03 TAB BAR - one list (REQUIREMENTS section D). Row 1 = plain F-keys, row 2 = SHIFT + F-keys (filled ⇧ keycaps). No key twice. -->
+<nav id="sh-tabs" aria-label="Pages">
+  <a class="sh-mark" href="desk-hunt.html" title="girtrader.com"><b>GIR</b></a>
+  <div class="sh-grid">
+        <span class="sh-rl sh-rl1">F-KEY</span>
+        <span class="sh-rl sh-rl2"><span>SHIFT +</span></span>
+        <a class="sh-tab" data-tab="desk" href="desk-hunt.html" style="grid-row:1;grid-column:2" title="F1 · Desk - hunting / in a trade: the one screen for 09:15-15:10"><kbd class="sh-k">F1</kbd><span class="sh-tl">Desk</span></a>
+        <a class="sh-tab" data-tab="sectors" href="sectors.html" style="grid-row:1;grid-column:3" title="F2 · Sectors board, accordion, F&O movers"><kbd class="sh-k">F2</kbd><span class="sh-tl">Sectors</span></a>
+        <a class="sh-tab" data-tab="rotation" href="rotation.html" style="grid-row:1;grid-column:4" title="F3 · Rotation 15M / 30M / 1H / TODAY: money out of X into Y"><kbd class="sh-k">F3</kbd><span class="sh-tl">Rotation</span></a>
+        <a class="sh-tab" data-tab="news" href="news.html" style="grid-row:1;grid-column:5" title="F4 · One news list"><kbd class="sh-k">F4</kbd><span class="sh-tl">News</span></a>
+        <span class="sh-tab sh-f5" style="grid-row:1 / span 2;grid-column:6" title="F5 (and Shift+F5) would reload the browser and could drop live prices mid-trade, so GIR blocks it. Reload = Ctrl+Shift+R (asks first while a position is open). See ? Help."><span class="sh-f5a"><kbd class="sh-k sh-koff">F5</kbd><span class="sh-tl">off</span></span><span class="sh-f5b"><span class="sh-wide">reload blocked</span><span class="sh-n1366">no reload</span></span></span>
+        <a class="sh-tab" data-tab="positions" href="positions.html" style="grid-row:1;grid-column:7" title="F6 · Positions & Risk = MY TRADES: P&L, exits"><kbd class="sh-k">F6</kbd><span class="sh-tl">My trades</span></a>
+        <a class="sh-tab" data-tab="share" href="share.html" style="grid-row:1;grid-column:8" title="F7 · Share page: chart, levels, chain, futures, news, WHY"><kbd class="sh-k">F7</kbd><span class="sh-tl">Share</span></a>
+        <a class="sh-tab" data-tab="analyst" href="analyst.html" style="grid-row:1;grid-column:9" title="F8 · Analyst: latest decision, ASK drawer"><kbd class="sh-k">F8</kbd><span class="sh-tl">Analyst</span></a>
+        <a class="sh-tab" data-tab="chain" href="chain.html" style="grid-row:1;grid-column:10" title="F9 · Option chain + OI scenarios"><kbd class="sh-k">F9</kbd><span class="sh-tl">Chain</span></a>
+        <a class="sh-tab" data-tab="futures-oi" href="futures-oi.html" style="grid-row:1;grid-column:11" title="F10 · Futures & OI + MONEY: LB/SB/SC/LU, futures by month, F&O money, BIG MONEY, tape"><kbd class="sh-k">F10</kbd><span class="sh-tl">Fut & OI</span></a>
+        <a class="sh-tab" data-tab="morning" href="morning.html" style="grid-row:2;grid-column:2" title="Shift+F1 · Morning & pre-flight (+ PRE-OPEN 09:00-09:08)"><kbd class="sh-k sh-ks">⇧F1</kbd><span class="sh-tl">Morning</span></a>
+        <a class="sh-tab" data-tab="world" href="world.html" style="grid-row:2;grid-column:3" title="Shift+F2 · World drivers + THEME"><kbd class="sh-k sh-ks">⇧F2</kbd><span class="sh-tl">World</span></a>
+        <span class="sh-tab sh-free" style="grid-row:2;grid-column:4" title="Shift+F3 is not used"><kbd class="sh-k sh-ks">⇧F3</kbd><span class="sh-tl">not used</span></span>
+        <a class="sh-tab" data-tab="calendar" href="calendar.html" style="grid-row:2;grid-column:5" title="Shift+F4 · Calendar: results, events, ex-dates, expiry, Parliament business"><kbd class="sh-k sh-ks">⇧F4</kbd><span class="sh-tl">Calendar</span></a>
+        <a class="sh-tab" data-tab="journal" href="journal.html" style="grid-row:2;grid-column:7" title="Shift+F6 · Journal: every trade, notes, mistakes, rules kept"><kbd class="sh-k sh-ks">⇧F6</kbd><span class="sh-tl">Journal</span></a>
+        <a class="sh-tab" data-tab="reference" href="reference.html" style="grid-row:2;grid-column:8" title="Shift+F7 · Reference: F&O list, lots, sectors map, policy baskets, aliases"><kbd class="sh-k sh-ks">⇧F7</kbd><span class="sh-tl">Reference</span></a>
+        <a class="sh-tab" data-tab="scorecard" href="scorecard.html" style="grid-row:2;grid-column:9" title="Shift+F8 · Calls & Scorecard: 15:45 audit, misses, cost"><kbd class="sh-k sh-ks">⇧F8</kbd><span class="sh-tl">Scorecard</span></a>
+        <a class="sh-tab" data-tab="health" href="health.html" style="grid-row:2;grid-column:10" title="Shift+F9 · Health: every service and feed, data age, Kite login"><kbd class="sh-k sh-ks">⇧F9</kbd><span class="sh-tl">Health</span></a>
+        <a class="sh-tab" data-tab="replay" href="replay.html" style="grid-row:2;grid-column:11" title="Shift+F10 · Replay any past day, minute by minute"><kbd class="sh-k sh-ks">⇧F10</kbd><span class="sh-tl">Replay</span></a>
+  </div>
+  <div class="sh-right">
+    <div class="sh-r1">
+      <a class="sh-tab" data-tab="settings" href="settings.html" title="Ctrl+, · Charter & Settings: his rules, sounds, Telegram, limits" style="border-left:1px solid var(--line)"><kbd class="sh-k">Ctrl ,</kbd><span class="sh-tl">Settings</span></a>
+      <a class="sh-tab" data-tab="help" href="help.html" title="? · Help: every page's purpose, keys (why F5 is off), colours, sounds"><kbd class="sh-k">?</kbd><span class="sh-tl">Help</span></a>
+      <a class="sh-tab" data-tab="market" href="market.html" title="MARKET: NIFTY / BANKNIFTY trading screen. No F-key: type /NIFTY or click an index in the strip"><kbd class="sh-k">/NIFTY</kbd><span class="sh-tl">Market</span></a>
+      <a class="sh-tab sh-wide" data-tab="plan-card" href="plan-card.html" title="Space on a call · Plan card drawer (Desk)"><kbd class="sh-k">Space</kbd><span class="sh-tl">Plan card</span></a>
+    </div>
+    <div class="sh-r2">
+      <label class="sh-cmd" title="/ = command line: symbol (TITAN), contract (HINDALCO 680 PE), verbs (TITAN OC, TITAN FUT, METALS, GOLD, NEWS TITAN, STATUS); free text searches news. Never sends an order.">
+        <kbd>/</kbd><span class="sh-ph">symbol<span class="sh-ph-c">, contract</span><span class="sh-ph-v">, verb</span></span><span class="sh-typed">TIT<i></i></span>
+        <span class="sh-sugg" role="listbox" aria-label="Suggestions">
+          <span class="sh-sg-h"><span class="sh-lb">2 F&amp;O shares match "TIT"</span><span class="sh-age">as you type · 2+ letters</span></span>
+          <span class="sh-sg-r sel" role="option"><span class="sh-sg-s"><em>TIT</em>AN</span><span class="sh-sg-d">Titan Company<br><span>Jewellers &amp; gold loans · lot 175</span></span><span class="sh-sg-p n">3,398.20</span><span class="sh-sg-p n dn">−2.48%</span></span>
+          <span class="sh-sg-r" role="option"><span class="sh-sg-s"><em>TIT</em>AGARH</span><span class="sh-sg-d">Titagarh Rail Systems<br><span>Railways &amp; capital goods · lot 725</span></span><span class="sh-sg-p n">912.35</span><span class="sh-sg-p n dn">−0.84%</span></span>
+          <span class="sh-sg-v"><span class="n">TITAN OC</span><span class="n">TITAN FUT</span><span class="n">NEWS TITAN</span><span class="n">LOG TITAN</span><span>search news for "TIT"</span></span>
+          <span class="sh-sg-f"><kbd>↑</kbd> <kbd>↓</kbd> choose · <kbd>Enter</kbd> open the share page · <kbd>Tab</kbd> complete · <kbd>Esc</kbd> close</span>
+        </span>
+      </label>
+      <button class="sh-btn" title="SOUND ON (at 1366 wide the button reads speaker + ON). Sound on / off. Exits on an open position (STOP, BOOK HALF, EXIT, 15:10) can never be muted. M mutes GO NOW / GET READY for 10 min."><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 4h2.5L7 1v10L3.5 8H1z" fill="currentColor"/><path d="M8.6 3.6a3.4 3.4 0 0 1 0 4.8M10 2.2a5.4 5.4 0 0 1 0 7.6" stroke="currentColor" fill="none" stroke-width="1.1"/></svg><span class="on"><span class="sh-wide">SOUND </span>ON</span></button>
+      <button class="sh-btn" title="Sound legend: which alert makes which sound">♪ LEGEND</button>
+      <span class="sh-al" title="Unacknowledged alerts (A then Enter acknowledges)">P1 <span class="n">0</span> · P2 <span class="n">0</span></span>
+    </div>
+  </div>
+</nav>
+<!-- ===================== SHELL TOP END ===================== -->
+<!-- ===================== SHELL FOOTER START (copy verbatim) ===================== -->
+<footer id="sh-foot">
+  <a href="health.html" style="display:flex;align-items:center;gap:5px" title="ONE wording on every page: health READY / LIMITED / DOWN (the Health page's own words) · the worst item and its age · AI full / lite / off. Opens Health (Shift+F9)"><span class="sh-dot" style="width:7px;height:7px"></span>health READY · feeds closed 15:30 · AI full</a><span class="sh-fs"></span>
+  <span class="sh-keys"><kbd>/</kbd>search <kbd>?</kbd>help <kbd>Space</kbd>plan card <kbd>Esc</kbd>close<span class="sh-wide" style="display:inline-flex;gap:5px;align-items:center"><kbd>A</kbd>+<kbd>Enter</kbd>ack <kbd>M</kbd>mute</span></span>
+  <a href="phone.html" title="the phone version: girtrader.com/m (four screens)">phone /m</a><span class="sh-fs"></span>
+  <span class="sh-mock">design mockup - illustrative values</span>
+</footer>
+<!-- ===================== SHELL FOOTER END ===================== -->
+</template>
+
+<script>
+/* GIR v3 FINAL · Charter & Settings (Ctrl+,) · Thu 19 Nov 2026 11:44:20 IST = CONFERENCE state S4 (positions still open).
+   Every figure = CONFERENCE section 4 or derived from it (formulas in the titles). Capital ₹5,00,000 · 1R = ₹5,000 · lock −2% = −₹10,000.
+   Open: #48 MANAPPURAM 285 PE Dec 1 × 3,000, in 13.25, bid 14.20 → +₹2,430 net of ₹420 costs (₹125 charges + ₹295 slippage).
+         #49 HINDALCO 680 PE Dec 1 × 1,400, in 16.40, bid 14.50 → −₹3,080 net of ₹420 costs (₹86 + ₹334).
+   At share stops: MANAPPURAM 288.60 ≈ 12.07 → −₹3,960 · HINDALCO 686.10 ≈ 13.80 → −₹4,060 · = −₹8,020, lock room ₹1,980.
+   Kite backstops: MANAPPURAM SL-L 11.90 / lim 11.40 · HINDALCO SL-L 13.40 / lim 12.90.
+     at triggers −₹4,470 − ₹4,620 = −₹9,090 (room ₹910) · at limits −₹5,970 − ₹5,320 = −₹11,290 (over ₹1,290).
+     fix: HINDALCO SL-L 14.40 / lim 13.90 → −₹3,920 at the limit → −₹9,890 in all, fits (room ₹110). */
+const $ = id => document.getElementById(id);
+const S = s => `<a class="sym" href="share.html#${s}">${s}</a>`;
+const M = (a, b) => `<span class="mk">${a}</span><span class="ev">${b}</span>`;
+const TG = {
+  hard: '<span class="tg hard" title="HARD: GIR removes the plan card. Only three kinds: ban, the loss lock, stale data">HARD</span>',
+  lock: '<span class="tg lock" title="a loss-lock trigger: part of the HARD loss lock">LOCK</span>',
+  warn: '<span class="tg warn" title="WARNING: you can still take it; GIR says why and what to do instead">WARN</span>',
+  alw: '<span class="tg alw" title="ALWAYS: no setting reaches it">ALWAYS</span>',
+};
+const sw = s => s === 'fix' ? '<span class="sw fix" title="cannot be switched off"><i></i>ALWAYS</span>'
+  : `<button class="sw${s ? ' on' : ''}" title="switch on / off"><i></i>${s ? 'ON' : 'OFF'}</button>`;
+const C = (cls, t) => `<span class="sh-c sh-c-${cls}">${t}</span>`;
+
+/* row builders: r(name, value, desc, opts) */
+const r = (a, v, d, o = {}) => ({ html: `<div class="r${o.cls ? ' ' + o.cls : ''}"${o.t ? ` title="${o.t}"` : ''}><span class="a">${a}</span><span class="v">${v || ''}</span>${d ? `<div class="d">${d}</div>` : ''}</div>`, short: o.s || a.replace(/<[^>]+>/g, '').trim() });
+
+/* =================== 1 · MY RULES · HISTORY · DECISIONS =================== */
+const RULES = [
+  ['METHOD', '', 'driver → sector → <b>every</b> share → role', "It's sector-driven. Find which sector goes up or down from the macro, Indian and market news, study every share in it, pick the ones in position, tell me GO NOW, and give it time."],
+  ['ROLES', '', `${C('leader', 'LEADER')} ${C('dep', 'DEP')} ${C('lag', 'LAGGARD <span class="dn">▼</span>')} <span class="nw">· mirror</span>`, 'In a falling sector, PE on the leaders falling with short build-up, the dependents, and the laggard still up - it catches down. Mirror it for CE.'],
+  ['OPTIONS FIRST', '', `I buy ${C('ce', 'CE')} / ${C('pe', 'PE')} · futures are data`, 'I buy CE / PE, about 90% of the time. Futures are data, not the trade.'],
+  ['HARD = 3 KINDS', 'hard', 'only ban · loss lock · stale data', "Don't tell me NOT TRADABLE. Tell me why and what to do instead."],
+  ['EXTENDED', 'warn', 'stays LEADER · enter on the VWAP bounce', 'TITAN fell the most and you called it extended. On a trend day it keeps going.'],
+  ['HOLD', '', 'to stop or target, unless GIR says EXIT', "Every call tells me how long to hold. Don't let me exit before the stop or the target unless GIR says EXIT."],
+  ['FOLLOW-UP', '', `${C('book', 'BOOK')} ${C('exit', 'EXIT')} only on trades I took`, 'Follow up: book when the move stalls or hits the target, EXIT on a real reversal - only on trades I took.'],
+  ['FLAT 15:10', 'alw', '14:30 no new · 15:05 at bid · 15:10 flat', 'Flat by 15:10.'],
+  ['LOSS LOCK', 'hard', '−₹10,000 or 2 losses in a row → till 09:00', 'When I have lost my limit for the day, stop me.'],
+  ['3 TRADES', 'warn', '2 open · 1 per driver · a 4th asks why', 'Three trades a day, two at a time, never two bets on one sector or one driver.'],
+  ['ONE SOUND', '', '3 tones, one player, the rest silent', 'One sound per alert. Only GO NOW, GET READY on a sector call and my own exits ring.'],
+  ['TELEGRAM', '', '2 bots, my chat only, the rest off', 'Telegram is a nuisance. One channel for decisions; the rest off.'],
+  ['AI $20', '', 'a day · checked before every call', '$20 a day on AI, used wisely, never silent.'],
+  ['ACTION', '', 'every output ends in an action per share', 'Every analyst message ends in an action per share - GO NOW, GET READY, HOLD, BOOK, EXIT or nothing to do.'],
+  ['VOTE', '', 'weighted by hit rate · "?" = did not vote', 'Weigh the votes by who has been right, and show me who disagrees.'],
+  ['NOTHING LOST', '', 'every old box has a home · <a class="ilk" href="help.html#old">? Help</a>', 'Nothing from the old page may be lost.'],
+];
+const ruleRow = (x, i) => ({ html: `<div class="r rr" data-rule="${i + 1}" title="click: my words"><span class="no">${i + 1}</span><span class="a">${x[0]}</span><span class="v">${x[1] ? TG[x[1]] : ''}</span><div class="d">${x[2]}</div><div class="q">"${x[3]}"</div></div>`, short: x[0] });
+const HIST = [
+  ['19 Nov 11:38', 'TIGHTER · v13', 'Open backstops must fit the lock room', 'at once · at their limits they came to −₹11,290', 'v13 BACKSTOPS'],
+  ['19 Nov 08:40', 'CHECK', 'Charges table re-verified', 'STT 0.1% sell · matches the 18 Nov contract note', 'CHARGES CHECK'],
+  ['18 Nov 20:40', 'v12', 'Charter v12 accepted for trial day 1', 'you read it and pressed ACCEPT', 'v12'],
+  ['18 Nov 20:10', 'SET-UP', 'AI cap $5 → $20 a day', 'before trial day 1: not this week\'s loosening', 'AI CAP'],
+  ['18 Nov 19:30', 'TIGHTER', 'A weak thesis leg cannot give GO NOW', 'at once · the call shows WATCH and why', 'THESIS LEG'],
+  ['18 Nov 19:30', 'METHOD', 'EXTENDED: block → warning + bounce', `${S('TITAN')}, 18 Nov's biggest faller, was kept out`, 'EXTENDED'],
+  ['18 Nov 18:50', 'TIGHTER', 'Telegram: decisions only', '1,111 MOVES messages on 18 Nov', 'TELEGRAM'],
+  ['18 Nov 18:50', 'TIGHTER', 'One sound per alert', 'old and new alarms rang together', 'ONE SOUND'],
+  ['18 Nov 18:20', 'TIGHTER', 'Give-back 50% added to the lock', 'after the 11:31 lock (2 losses in a row)', 'GIVE-BACK'],
+];
+const DEC = [
+  ['Premium out: warn at 10% or 25%?', `now ₹62,710 = <b>12.5%</b> of capital`, 'PREMIUM OUT'],
+  ['Monthly drawdown ladder', '−10 / −15 / −20% → 0.5R, paper, review', 'DRAWDOWN'],
+  ['Safety fixes in the trial week', 'stale greying, broker-stop check, expiry file', 'SAFETY FIXES'],
+  ['Kite Connect: 4 apps, 1 account', 'verify the terms before relying on them', 'KITE TERMS'],
+  ['A second free broker feed', 'open a Vendor B account or not', 'VENDOR B'],
+  ['World data for night drivers', 'a small budget, or keep delayed sources', 'WORLD DATA'],
+  ['X agent', 'switch on once X credits are added', 'X AGENT'],
+  ['gir-watchdog fails every 5 min', 'paper_exit_monitor is off: your call', 'WATCHDOG'],
+];
+const PANELS = {};
+PANELS['p-rules'] = {
+  t: 'My rules', k: 'in my words', age: 'v13', acc: 'mine',
+  fx: `<div class="one" title="chosen at the Sunday review; shown on the Desk under the call card all week">
+    <div class="l">This week's one rule</div>
+    <div class="q">"Don't let me exit before the stop or the target unless GIR says EXIT."</div>
+    <div class="s">set 18 Nov (${S('TITAN')} early exit) · ${M('kept on 2 trades today', 'kept on 3 trades today')}</div></div>`,
+  groups: [
+    { c: 'RULES', col: 'white', h: '16 rules', s: 'click one for my words', rows: RULES.map(ruleRow) },
+    { c: 'HISTORY', col: 'grey', h: 'Charter history', s: 'newest first', rows: HIST.map(x => r(`<span class="tm">${x[0]}</span><span class="tg ${x[1].startsWith('TIGHTER') ? 'alw' : 'off'}">${x[1]}</span>`, '', `<b>${x[2]}</b> · ${x[3]}`, { s: x[4] })) },
+    { c: 'DECISIONS', col: 'white', h: 'Waiting for you', s: 'GIR reminds, never acts', rows: DEC.map(x => r(x[0], M('<span class="tg off">after 15:35</span>', '<button class="test">DECIDE</button>'), x[1], { s: x[2] })) },
+  ],
+};
+
+/* =================== 2 · LIMITS · LOSS LOCK (picture: the lock ladder) =================== */
+const SCALE = 12000, LOCKP = 10000 / SCALE * 100;
+const lr = (lb, amt, room, bad, t) => {
+  const w = Math.min(amt, 10000) / SCALE * 100, ov = amt > 10000 ? (amt - 10000) / SCALE * 100 : 0;
+  return `<div class="lrw" title="${t}"><span class="lb">${lb}</span><span class="bt"><i style="width:${w}%"></i>${ov ? `<i class="ov" style="left:${w}%;width:${ov}%"></i>` : ''}<span class="lk" style="left:calc(${LOCKP}% - 1px)"></span></span><span class="am dn">−₹${amt.toLocaleString('en-IN')}</span><span class="rm${bad ? ' bad' : ''}">${room}</span></div>`;
+};
+PANELS['p-lim'] = {
+  t: 'Limits · loss lock', k: '1R ₹5,000', age: M('11:44:20', '<span class="w16">as of </span>close'), acc: 'mine',
+  fx: `<div class="lad">
+    <div class="lh"><span>If both close now</span><span class="t3">net of ₹420 costs each</span></div>
+    <div class="mk">
+    <div class="lrw hd"><span></span><span class="lkl"><span style="left:${LOCKP}%">LOCK −₹10,000</span></span><span class="am">day</span><span class="rm">room</span></div>
+    ${lr('now', 650, '₹9,350', 0, 'TODAY = realised ₹0 + open −₹650 (MANAPPURAM +₹2,430, HINDALCO −₹3,080, each net of ₹420 costs)')}
+    ${lr('share stops', 8020, '₹1,980', 0, 'GIR\'s exits at the SHARE stops: MANAPPURAM 288.60 (≈12.07) −₹3,960 + HINDALCO 686.10 (≈13.80) −₹4,060')}
+    ${lr('backstops', 9090, '₹910', 0, 'Kite SL-L triggers: MANAPPURAM 11.90 −₹4,470 + HINDALCO 13.40 −₹4,620')}
+    ${lr('at limits', 11290, 'over ₹1,290', 1, 'worst fill of a resting SL-L = its LIMIT price: MANAPPURAM 11.40 −₹5,970 + HINDALCO 12.90 −₹5,320')}
+    </div>
+    <div class="ev flat">Flat since 13:52 · day <b class="up">+₹5,387</b> net (charges ₹298) · the lock was never near today · <b>₹10,000</b> room for Fri 20 Nov.</div>
+  </div>`,
+  groups: [
+    { c: 'LOCK', col: 'red', h: 'Loss lock · hard blocks', s: 'HARD · till 09:00', rows: [
+      r(`Backstops fit room ${TG.lock}`, M('<span class="dn">over ₹1,290</span>', '✓'), M(`new trades blocked · fix: ${S('HINDALCO')} SL-L <b class="nw">14.40 / 13.90</b> → −₹9,890 ✓, or take GIR's EXIT`, 'flat · nothing open to check'), { cls: 'hot', s: 'BACKSTOPS', t: 'Rule v13 (19 Nov 11:38): every open Kite backstop, filled at its LIMIT price, must still leave the day above −₹10,000. Now: MANAPPURAM 11.40 −₹5,970 + HINDALCO 12.90 −₹5,320 = −₹11,290, over by ₹1,290 → new trades blocked (LOCK); open trades only get a WARN, GIR never touches an order. Fix: HINDALCO SL-L 14.40 / lim 13.90 → (16.40 − 13.90) × 1,400 + ₹420 = −₹3,920; with MANAPPURAM −₹5,970 = −₹9,890, inside the lock.' }),
+      r(`Day loss −2% ${TG.lock}`, '−₹10,000', M('today <b class="dn">−₹650</b> · <b>₹9,350 left</b> · 7% used', 'today <b class="up">+₹5,387</b> · not hit'), { s: 'DAY LOSS' }),
+      r(`2 losses in a row ${TG.lock}`, '2', M('0 closed today · last lock 18 Nov 11:31', `1 loss today (${S('HINDALCO')}) · never 2 in a row`), { s: '2 IN A ROW' }),
+      r(`Full stop-outs ${TG.lock}`, '2 a day', M('0 of 2 today', '0 of 2 today'), { s: 'STOP-OUTS' }),
+      r(`Give-back ${TG.lock}`, '50%', M('of the day\'s peak once ≥ +1R · not armed', 'armed 13:52 at +₹5,387 · kept'), { s: 'GIVE-BACK' }),
+      r(`Stale data ${TG.hard}`, '> 5 s', 'a quote older than 5 s greys the call and blocks it, with the reason', { s: 'STALE' }),
+      r(`Ban ${TG.hard}`, 'MWPL 95%', `in ban: close only · ${S('MANAPPURAM')} 86% (held): can close, cannot add`, { s: 'BAN' }),
+    ] },
+    { c: 'SIZE', col: 'white', h: 'Size', s: '1R = 1% of ₹5,00,000', rows: [
+      r('Risk per trade', '1R ₹5,000', 'loss at the stop, net of costs', { s: '1R' }),
+      r('Lots', '≤ 1R', 'never more than 1R; 1 lot (minimum) when a lot fits', { s: 'LOTS' }),
+      r(`Trades ${TG.warn}`, '3 a day', M('2 used · 2 open (the max) · 1 per driver', '3 used · flat since 13:52'), { s: 'TRADES' }),
+      r('New trade max loss', '≤ room', M(`now ₹1,980 → ${S('ANGELONE')} 2,300 PE: 0 lots`, '₹10,000 room for Fri'), { s: 'MAX LOSS' }),
+      r(`Premium out ${TG.warn}`, '≤ 10%', M('now ₹62,710 = 12.5% of capital · warned 11:02', 'flat · ₹0 out'), { s: 'PREMIUM OUT' }),
+      r('Size changes', 'monthly', 'one step a month, never after a big win', { s: 'SIZE CHANGES' }),
+    ] },
+    { c: 'CLOCK', col: 'white', h: 'Clock', s: 'flat by 15:10', rows: [
+      r('First entry', '09:20', 'GAP DAY (GIFT gap ≥ ±0.6%): 09:45 · today normal', { s: '09:20' }),
+      r('New entries stop', '14:30', 'exits, BOOK and trail still work', { s: '14:30' }),
+      r('Exit band', '15:00', '15:05 exit at bid · 15:08 EXIT ALL', { s: '15:00' }),
+      r(`Flat ${TG.alw}`, '15:10', 'the flat check rings until you acknowledge', { s: '15:10' }),
+      r('GO NOW valid', '10 min', 'past the trigger by 0.3 ATR or premium +8% → wait', { s: 'GO NOW 10 MIN' }),
+      r('Cooling', '20 min', M('after a losing exit: no new call for 20 min', 'today 11:45 → 12:05 after HINDALCO'), { s: 'COOLING' }),
+    ] },
+  ],
+};
+
+/* =================== 3 · OPTION GATE · EXPIRY · INDEX · CHARGES =================== */
+PANELS['p-gate'] = {
+  t: 'Option gate', k: 'every call', age: M('11:44:20', '<span class="w16">as of </span>close'), acc: 'sys',
+  groups: [
+    { c: 'GATE', col: 'amber', h: 'Strike gate', s: 'fail = WARN + the better strike', rows: [
+      r('Strike month', 'Dec', M('Nov buys close today · expiry Mon 23 Nov', 'Nov closed for new buys · Dec only'), { s: 'MONTH' }),
+      r('Strikes compared', 'ATM · ITM · OTM', 'this and next expiry · GIR picks one, says why', { s: 'STRIKES' }),
+      r('Delta', '0.45-0.65', 'ATM or 1 ITM; never far OTM', { s: 'DELTA' }),
+      r('Premium', '≥ ₹10', 'one ₹0.05 tick is ≤ 0.5% of it', { s: 'PREMIUM' }),
+      r('Spread', '≤ 1% · 3 ticks', `${S('HINDALCO')} 14.50 / 14.60 = 0.7% ✓`, { s: 'SPREAD' }),
+      r('Depth, best 5', '≥ 4× lots', `${S('HINDALCO')} bid side 22 lots vs your 1 ✓`, { s: 'DEPTH' }),
+      r('Strike volume', '≥ 500', 'contracts by 10:00 (250 by 09:45)', { s: 'VOLUME' }),
+      r('IV vs 20-day', '≤ 1.3×', 'above it, or an event in 1 session → IV-crush WARN', { s: 'IV' }),
+      r('θ budget', '≤ 20%', 'θ ₹/h per lot × hours held vs the target gain', { s: 'THETA' }),
+      r('Break-even', '≤ ½ move', 'share pts needed by 15:10 vs half the move left', { s: 'BREAK-EVEN' }),
+      r('R:R after costs', '≥ 1.5', 'costs = charges + est. exit slippage', { s: 'R:R' }),
+      r(`Target vs OI wall ${TG.warn}`, 'before it', `${S('MANAPPURAM')} T1 280.30, before the 280 put wall`, { s: 'OI WALL' }),
+      r(`MWPL ${TG.warn}`, '≥ 85%', `${S('MANAPPURAM')} 86% · ban at 95% · in ban: close only`, { s: 'MWPL' }),
+      r('Thin strike', 'suggest', 'GIR names the better strike; the share stays', { s: 'LIQUIDITY' }),
+    ] },
+    { c: 'EXPIRY', col: 'amber', h: 'Expiry', s: 'Nov = Mon 23 Nov', rows: [
+      r('Nov expiry', 'Mon 23 Nov', 'moved from Tue 24 (holiday) · Dec = Tue 29 Dec', { s: 'NOV EXPIRY' }),
+      r('Default month', 'Dec', 'from T-5; Nov only if it passes the gate', { s: 'DEFAULT DEC' }),
+      r('Last 2 sessions', 'no new Nov', M('Fri 20 and Mon 23 · today is the last Nov buy', 'Fri 20 and Mon 23 · Nov buys closed'), { s: 'LAST 2' }),
+      r('Physical', 'exit ITM', 'a Nov strike: PHYSICAL · exit ITM before expiry day', { s: 'PHYSICAL' }),
+      r('Your positions', M('Dec ✓', 'flat'), M(`${S('HINDALCO')} and ${S('MANAPPURAM')} are Dec`, 'all three of today\'s trades were Dec'), { s: 'YOURS' }),
+    ] },
+    { c: 'INDEX', col: 'blue', h: 'Index options', s: 'on days you choose', rows: [
+      r('NIFTY', `lot 65 ${sw(0)}`, 'weekly Tue (this week Mon 23) · same 1R', { s: 'NIFTY' }),
+      r('BANKNIFTY', `lot 30 ${sw(0)}`, 'monthly only · Tue 29 Dec', { s: 'BANKNIFTY' }),
+      r('SENSEX', `lot 20 ${sw(0)}`, 'weekly Thu (BSE)', { s: 'SENSEX' }),
+      r('FINNIFTY · MIDCPNIFTY', `60 · 120 ${sw(0)}`, 'monthly', { s: 'FIN · MIDCP' }),
+      r('Lot sizes', 'contract file', 'read from NSE / BSE at 08:30 daily, never typed', { s: 'LOT FILE' }),
+    ] },
+    { c: 'CHARGES', col: 'grey', h: 'Charges · one table', s: 'verified 19 Nov 08:40', rows: [
+      r('STT · sell premium', '0.1%', '', { s: 'STT', t: 'Securities transaction tax on options: 0.1% of the sell premium, per the Finance Act 2026 schedule. Verified 19 Nov 08:40 against the 18 Nov contract note.' }),
+      r('Exchange · NSE, both sides', '0.03503%', '', { s: 'EXCHANGE' }),
+      r('Brokerage · Zerodha', '₹20 / order', '', { s: 'BROKERAGE' }),
+      r('GST · on fees above', '18%', '', { s: 'GST', t: '18% of brokerage + exchange charges + SEBI fee' }),
+      r('SEBI fee', '₹10 / crore', '', { s: 'SEBI' }),
+      r('Stamp duty · buy side', '0.003%', '', { s: 'STAMP' }),
+      r('Slippage allowance · exit', '1 tick + ½ spread', '', { s: 'SLIPPAGE', t: 'estimated exit slippage per lot: one tick plus half the bid/ask spread, times the lot · #48 MANAPPURAM ₹295 · #49 HINDALCO ₹334' }),
+      r(`Charges #48 ${S('MANAPPURAM')}`, '₹125', '', { s: '#48', t: '1 lot × 3,000 · in 13.25 (₹39,750) · out 14.20 (₹42,600) · STT 0.1% × 42,600 = 42.60 · exchange 0.03503% × 82,350 = 28.85 · GST 18% × (40 + 28.85 + 0.08) = 12.41 · stamp 0.003% × 39,750 = 1.19 · SEBI 0.08 · brokerage 2 × ₹20 = 40.00 · total ₹125.13' }),
+      r('Costs = charges + slippage', '₹420 a trade', '#48 ₹125 + ₹295 · #49 ₹86 + ₹334 · always split', { s: 'COSTS' }),
+    ] },
+  ],
+};
+
+/* =================== 4 · SOUND · TELEGRAM · PHONE (R10) =================== */
+const wave = n => n === 1 ? '<svg width="26" height="18" viewBox="0 0 26 18" aria-hidden="true"><rect x="3" y="1" width="4" height="16" rx="1" fill="var(--info)"/><rect x="10" y="7" width="4" height="10" rx="1" fill="var(--info)" opacity=".7"/><rect x="17" y="11" width="4" height="6" rx="1" fill="var(--info)" opacity=".45"/></svg>'
+  : n === 2 ? '<svg width="26" height="18" viewBox="0 0 26 18" aria-hidden="true"><rect x="3" y="10" width="4" height="7" rx="1" fill="var(--info)"/><rect x="10" y="14" width="4" height="3" rx="1" fill="var(--info)" opacity=".45"/></svg>'
+  : '<svg width="26" height="18" viewBox="0 0 26 18" aria-hidden="true"><rect x="3" y="7" width="4" height="10" rx="1" fill="var(--danger)"/><rect x="10" y="7" width="4" height="10" rx="1" fill="var(--danger)"/><path d="M18 9a4 4 0 1 1 4 4" fill="none" stroke="var(--danger)" stroke-width="1.6"/><path d="M22 15l0-3 -3 0" fill="none" stroke="var(--danger)" stroke-width="1.4"/></svg>';
+const tone = (n, nm, sm, d, short) => ({ html: `<div class="tn"><span class="nb">${n}</span>${wave(n)}<div class="nm">${nm}${sm ? ` <small>${sm}</small>` : ''}</div><button class="test" data-t="${n}">▶ TEST</button><div class="d">${d}</div></div>`, short });
+const lg = (t, txt, tb, cls, short, ev) => ({ html: `<div class="lg${cls ? ' ' + cls : ''}${ev ? ' ev' : ''}"><span class="tm">${t}<span class="tb">${tb}</span></span><span>${txt}</span></div>`, short });
+PANELS['p-snd'] = {
+  t: 'Sound · Telegram', k: '', age: M('11:44:20', '<span class="w16">as of </span>close'), acc: 'sys',
+  extra: '<button class="sw on" id="sndsw" title="Sound for GO NOW and GET READY. Your exit tones stay on while a position is open."><i></i>ON</button>',
+  groups: [
+    { c: 'TONES', col: 'blue', h: 'Three tones', s: 'the sound never says the direction', rows: [
+      tone(1, 'GO NOW', '', 'one bright chime, <b>once</b>', 'GO NOW'),
+      tone(2, 'GET READY', 'sector', 'one soft low tick, <b>once</b> · share-level silent', 'GET READY'),
+      tone(3, 'MY EXIT', 'own trades', 'two low notes <b>every 60 s</b> until <kbd>A</kbd>+<kbd>Enter</kbd> · <b>never muted</b> while you hold', 'MY EXIT'),
+      r('Mute', '<kbd>M</kbd> 10 min', 'GO NOW + GET READY only; your exits never', { s: 'MUTE' }),
+      r('Volume', '70%', 'test a tone after a change', { s: 'VOLUME' }),
+      r(`Replay ${TG.alw}`, 'silent', 'no sound, Telegram or push in Replay', { s: 'REPLAY' }),
+    ] },
+    { c: 'RINGS', col: 'blue', h: 'Today\'s rings', s: 'silent lines grey', rows: [
+      lg('10:05:00', `<b>GO NOW</b> ${S('MANAPPURAM')} 285 PE · taken 10:06`, 'tone 1', '', '10:05 GO NOW'),
+      lg('10:58:10', `<b>GO NOW</b> ${S('HINDALCO')} 680 PE · taken 11:02`, 'tone 1', '', '10:58 GO NOW'),
+      lg('11:39:40', `<b>EXIT</b> ${S('HINDALCO')} · acked 11:39:52, <span class="x">not done</span> → P1`, 'tone 3', 'ex', '11:39 EXIT'),
+      lg('11:40:12', `<b>BOOK</b> ${S('MANAPPURAM')} · stalled · not acked = P2`, 'tone 3', 'bk', '11:40 BOOK'),
+      lg('11:42:08', `<b>BASKET SHOCK</b> BROKERS · news not found yet`, 'silent', 'sil', '11:42 SHOCK'),
+      lg('11:42:38', `<b>GET READY</b> ${S('ANGELONE')} 2,300 PE · CNBC-TV18 11:42:31`, 'tone 2', '', '11:42 GET READY'),
+      lg('11:43:05', `<b>GO NOW</b> ${S('ANGELONE')} · suppressed: room ₹1,980 &lt; max loss`, 'silent', 'sil', '11:43 SUPPRESSED'),
+      lg('next', `<b>PHONE CALL</b> P1 EXIT ${S('HINDALCO')} in 20 s if still open`, 'call', 'ex mk', 'PHONE CALL'),
+      lg('11:44:40', `<b>PHONE CALL</b> P1 ${S('HINDALCO')} · out 11:45:05 <b class="dn">−₹2,746</b>`, 'call', 'ex', '11:44 CALL', 1),
+      lg('12:29:04', `<b>GO NOW</b> ${S('TITAN')} 3,400 PE · bounce, 5-min close &lt; 3,414`, 'tone 1', '', '12:29 GO NOW', 1),
+      lg('13:52:00', `<b>BOOK</b> ${S('TITAN')} at target · out 160.00 <b class="up">+₹5,408</b>`, 'tone 3', 'bk', '13:52 BOOK', 1),
+      lg('15:10:00', '<b>FLAT</b> check passed · nothing open', 'silent', 'sil', '15:10 FLAT', 1),
+    ] },
+    { c: 'TELEGRAM', col: 'blue', h: 'Telegram', s: '2 bots · your private chat only', rows: [
+      r('Decisions bot', '<span class="sh-dot"></span> connected', `calls and your exits · ${M('7', '11')} today`, { s: 'DECISIONS BOT' }),
+      r('GO NOW', sw(1), 'sent as WATCH: entry, wrong-if, valid till', { s: 'GO NOW' }),
+      r('GET READY', sw(1), 'sector or basket calls only · share-level silent', { s: 'GET READY' }),
+      r('Your exits', sw('fix'), 'STOP · BOOK · EXIT · 15:00 / 15:05 / 15:08', { s: 'EXITS' }),
+      r('Loss lock reached', sw('fix'), 'with the Zerodha kill-switch steps', { s: 'LOCK' }),
+      r('15:45 scorecard', sw(1), 'what was said, what moved, AI spend', { s: 'SCORECARD' }),
+      r('System bot', '<span class="sh-dot"></span> connected', 'GIR\'s own health only, never a trade call', { s: 'SYSTEM BOT' }),
+      r('GIR down', sw('fix'), 'an outside watcher, if GIR is silent 3 min', { s: 'DEAD-MAN' }),
+      r('Calls only to you', sw('fix'), 'no groups, no channels, no forwarding', { s: 'ONLY YOU' }),
+      r('MOVES', sw(0), '1,111 messages on 18 Nov', { cls: 'off', s: 'MOVES' }),
+      r('News', sw(0), 'lives on F4 News', { cls: 'off', s: 'NEWS' }),
+      r('EARLY · RUNNING', sw(0), 'noise', { cls: 'off', s: 'EARLY' }),
+    ] },
+    { c: 'PHONE', col: 'blue', h: 'Phone /m', s: 'push, same three tones', rows: [
+      r('P1 on your position', sw('fix'), 'three long vibrations, full text on the lock screen', { s: 'P1' }),
+      r('Acked, not done', 'P1 again', '2 min after the ack; 5 min after GIR said it → a call', { s: 'NOT DONE' }),
+      r('One ack clears all', sw('fix'), 'page, phone and Telegram together', { s: 'ONE ACK' }),
+      r('Lock screen now', '', M(`P1 · EXIT ${S('HINDALCO')} 680 PE · bid 14.50 · 684.70 vs stop 686.10`, 'nothing open · next push 07:15 plan, Fri'), { s: 'LOCK SCREEN' }),
+      r('GET READY', sw(0), 'silent on the phone', { cls: 'off', s: 'GET READY' }),
+    ] },
+    { c: 'VOTE', col: 'blue', h: 'Vote · feed · silent lists', s: 'page only', rows: [
+      r('Votes by hit rate', sw(1), '"n of N agree" · "?" = did not vote', { s: 'VOTE' }),
+      r('Hidden in ACTION', '2 types', 'EARLY "first 15 min noisy" and RUNNING', { s: 'HIDDEN' }),
+      r(`${C('lb', 'LB')} ${C('sb', 'SB')} ${C('sc', 'SC')} ${C('lu', 'LU')}`, 'silent', '<a class="ilk" href="futures-oi.html#buildup">lists + filters on F10 Fut &amp; OI ›</a>', { s: 'BUILD-UP' }),
+      r(`<span class="up">▲</span><span class="dn">▼</span> F&amp;O movers`, 'silent', '<a class="ilk" href="sectors.html#movers">UP · DOWN · ALL on F2 Sectors ›</a>', { s: 'MOVERS' }),
+      r('News', 'silent', 'on F4 News; never a sound here', { s: 'NEWS' }),
+    ] },
+  ],
+};
+
+/* =================== render =================== */
+const ST = {};
+function build(id) {
+  const o = PANELS[id], el = $(id);
+  el.innerHTML = `<div class="ph sh-acc-${o.acc}"><span class="t">${o.t}</span>${o.k ? `<span class="k">${o.k}</span>` : ''}${o.extra || ''}<span class="age"><span class="sh-dot"></span><span class="sh-age">${o.age}</span></span><span class="ud"><button data-d="-1" aria-label="up" title="up (whole rows)">▲</button><button data-d="1" aria-label="down" title="down (whole rows)">▼</button></span></div>
+  <div class="chips">${o.groups.map((g, i) => `<button data-g="${i}" data-c="${g.col}">${g.c}</button>`).join('')}</div>
+  ${o.fx ? `<div class="fx">${o.fx}</div>` : ''}
+  <div class="bw"><div class="pb">${o.groups.map((g, i) => `<div class="gh" data-c="${g.col}" data-g="${i}">${g.h}${g.s ? `<span class="gs">${g.s}</span>` : ''}</div>` + g.rows.map(x => x.html.replace(/^<div class="/, `<div data-g="${i}" data-s="${x.short.replace(/"/g, '&quot;')}" class="`)).join('')).join('')}</div><div class="vsb" aria-hidden="true"><i></i></div></div>
+  <div class="more"><span class="mv"></span><span class="pos"></span></div>`;
+  ST[id] = { start: 0 };
+  el.querySelectorAll('.chips button').forEach(b => b.onclick = () => jump(id, +b.dataset.g));
+  el.querySelectorAll('.ud button').forEach(b => b.onclick = () => page(id, +b.dataset.d));
+  el.querySelectorAll('.rr').forEach(x => x.onclick = e => { if (e.target.closest('a')) return; x.classList.toggle('open'); lay(id); });
+}
+function shown(k) { return !(k.classList.contains('ev') && !document.body.classList.contains('st-eve')) && !(k.classList.contains('mk') && document.body.classList.contains('st-eve')); }
+function all(id) { return [...$(id).querySelector('.pb').children].filter(shown); }
+function lay(id) {
+  const el = $(id), pb = el.querySelector('.pb'), K = all(id), st = ST[id];
+  [...pb.children].forEach(k => { k.style.removeProperty('display'); k.style.paddingTop = ''; k.style.paddingBottom = ''; });
+  [...pb.children].forEach(k => { if (!shown(k)) k.style.setProperty('display', 'none', 'important'); });
+  st.start = Math.max(0, Math.min(st.start, K.length - 1));
+  K.forEach((k, i) => { if (i < st.start) k.style.display = 'none'; });
+  const H = pb.clientHeight; let used = 0, end = st.start;
+  for (let i = st.start; i < K.length; i++) { const h = K[i].offsetHeight; if (used + h > H) break; used += h; end = i + 1; }
+  if (end < K.length && end - 1 > st.start && K[end - 1].classList.contains('gh')) { used -= K[end - 1].offsetHeight; end--; }
+  for (let i = end; i < K.length; i++) K[i].style.display = 'none';
+  // spread the leftover (< one row) evenly over the visible rows, so the panel bottom is never a ragged hole
+  const vis = K.slice(st.start, end).filter(k => !k.classList.contains('gh'));
+  let left = H - used;
+  if (end < K.length && vis.length && left > 0) {
+    const per = Math.floor(left / vis.length); let rem = left - per * vis.length;
+    vis.forEach(k => { const cs = getComputedStyle(k); const add = per + (rem-- > 0 ? 1 : 0); const t = Math.floor(add / 2);
+      k.style.paddingTop = (parseFloat(cs.paddingTop) + t) + 'px'; k.style.paddingBottom = (parseFloat(cs.paddingBottom) + add - t) + 'px'; });
+  }
+  st.end = end;
+  const rows = K.filter(k => !k.classList.contains('gh')), N = rows.length;
+  const before = K.slice(0, st.start).filter(k => !k.classList.contains('gh')).length;
+  const inView = vis.length, after = K.slice(end).filter(k => !k.classList.contains('gh'));
+  el.querySelector('.pos').textContent = `${N ? before + 1 : 0}-${before + inView} of ${N}`;
+  const th = el.querySelector('.vsb i'); th.style.top = (before / N * 100) + '%'; th.style.height = (inView / N * 100) + '%';
+  const mv = el.querySelector('.mv');
+  if (after.length) {
+    const names = after.map(k => k.dataset.s);
+    for (let k = names.length; k >= 1; k--) {
+      mv.innerHTML = `▼ <b>${after.length} more</b>: ${names.slice(0, k).join(' · ')}${k < names.length ? ` + ${names.length - k}` : ''}`;
+      if (mv.scrollWidth <= mv.clientWidth) break;
+      if (k === 1) mv.innerHTML = `▼ <b>${after.length} more</b>`;
+    }
+  } else mv.innerHTML = before ? `end of list · <b>▲ ${before} above</b>` : 'all shown';
+  const ud = el.querySelectorAll('.ud button'); ud[0].disabled = st.start === 0; ud[1].disabled = end >= K.length;
+  const g = K[st.start] ? K[st.start].dataset.g : '0';
+  el.querySelectorAll('.chips button').forEach(b => b.classList.toggle('on', b.dataset.g === g));
+}
+function jump(id, g) { const K = all(id); const i = K.findIndex(k => k.classList.contains('gh') && k.dataset.g === String(g)); ST[id].start = Math.max(0, i); lay(id); }
+function page(id, d) {
+  const st = ST[id], K = all(id);
+  if (d > 0) { if (st.end >= K.length) return; st.start = st.end; }
+  else { const H = $(id).querySelector('.pb').clientHeight; K.forEach(k => { k.style.display = ''; k.style.paddingTop = ''; k.style.paddingBottom = ''; });
+    let used = 0, i = st.start; while (i > 0 && used + K[i - 1].offsetHeight <= H) { used += K[i - 1].offsetHeight; i--; } st.start = i; }
+  lay(id);
+}
+const IDS = ['p-rules', 'p-lim', 'p-gate', 'p-snd'];
+IDS.forEach(build);
+
+/* appearance panel (R46): DARK / LIGHT / AUTO + both specimens */
+const spec = th => `<div class="spc" data-theme="${th}" data-th="${th}" title="${th.toUpperCase()}: same meanings, ${th} values">
+  <div class="sl"><span class="tl">${th.toUpperCase()}</span><span class="nm2 w16">TITAN</span><span class="n dn">−2.48%</span>${C('pe', 'PE')}</div>
+  <div class="sl">${C('lb', 'LB')}${C('sb', 'SB')}${C('leader', 'LEADER')}<span class="w16">${C('dep', 'DEP')}</span></div></div>`;
+$('p-app').innerHTML = `<div class="ph sh-acc-sys"><span class="t">Appearance</span><span class="k">every page + the phone</span></div>
+  <div class="apb"><div class="apr"><span class="seg" role="group" aria-label="theme"><button class="thb" data-th="dark">DARK</button><button class="thb" data-th="light">LIGHT</button><button class="thb" data-th="auto">AUTO</button></span><span class="t2"><span class="w16">AUTO follows the computer</span><span class="n13">AUTO = the computer's</span></span></div>
+  <div class="spx">${spec('dark')}${spec('light')}</div></div>`;
+
+function theme(th) {
+  document.documentElement.setAttribute('data-theme', th);
+  document.querySelectorAll('.thb').forEach(b => b.classList.toggle('on', b.dataset.th === th));
+  document.querySelectorAll('.spc').forEach(b => b.classList.toggle('on', b.dataset.th === th || (th === 'auto' && b.dataset.th === (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'))));
+}
+document.querySelectorAll('.thb, .spc').forEach(b => b.addEventListener('click', () => theme(b.dataset.th)));
+
+/* after 15:35 view: swap the shell bands for the 19 Nov close preset (state_close19.js) */
+const IDB = ['sh-mkt', 'sh-pnl', 'sh-tabs', 'sh-foot'];
+let dayBands = null, eveBands = null;
+function eve(on) {
+  if (!dayBands) { dayBands = IDB.map(i => $(i)); const t = $('tpl-eve').content.cloneNode(true); eveBands = IDB.map(i => t.getElementById(i)); }
+  const from = on ? dayBands : eveBands, to = on ? eveBands : dayBands;
+  from.forEach((el, i) => { if (el && el.isConnected && to[i]) el.replaceWith(to[i]); });
+  document.body.classList.toggle('st-eve', on);
+  $('evebtn').innerHTML = on ? '‹ BACK TO 11:44:20' : 'AFTER 15:35 ›';
+  IDS.forEach(id => { ST[id].start = 0; lay(id); });
+}
+$('evebtn').onclick = () => eve(!document.body.classList.contains('st-eve'));
+const drw = on => document.body.classList.toggle('st-drw', on);
+$('chgbtn').onclick = () => drw(!document.body.classList.contains('st-drw'));
+$('drwx').onclick = $('drwc').onclick = () => drw(false);
+document.addEventListener('keydown', e => { if (e.target.closest('input,textarea')) return; if (e.key === 'Escape') drw(false); if (e.key === 'e' || e.key === 'E') drw(true); });
+document.querySelectorAll('.tile[data-jump]').forEach(t => t.addEventListener('click', e => { e.preventDefault(); const [id, g] = t.dataset.jump.split(':'); jump(id, +g); }));
+document.querySelectorAll('.test[data-t]').forEach(b => b.onclick = () => { b.classList.add('play'); b.textContent = '♪ PLAYING'; setTimeout(() => { b.classList.remove('play'); b.textContent = '▶ TEST'; }, 1200); });
+$('sndsw').onclick = function () { const on = !this.classList.contains('on'); this.classList.toggle('on', on); this.innerHTML = `<i></i>${on ? 'ON' : 'OFF'}`; };
+
+/* drawing states from the URL: ?eve ?drw ?theme=light ?jump=p-gate:3,p-snd:2 */
+const Q = new URLSearchParams(location.search);
+theme(Q.get('theme') || 'dark');
+const layAll = () => IDS.forEach(lay);
+window.addEventListener('resize', layAll);
+document.fonts && document.fonts.ready ? document.fonts.ready.then(() => { layAll(); boot(); }) : (layAll(), boot());
+function boot() {
+  if (Q.has('eve')) eve(true);
+  if (Q.has('drw')) drw(true);
+  if (Q.get('jump')) Q.get('jump').split(',').forEach(j => { const [id, g] = j.split(':'); jump(id, +g); });
+  if (Q.get('open')) { const x = document.querySelector(`.rr[data-rule="${Q.get('open')}"]`); if (x) { x.classList.add('open'); lay('p-rules'); } }
+}
+window.GIR = { lay, jump, page, eve, theme };
+
+</script>
+</body>
+</html>

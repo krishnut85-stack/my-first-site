@@ -1,0 +1,5 @@
+Fri TV 2026-11-20 07:00-15:30: 5637 text segments (CNBC-TV18 + ET NOW), 917089 chars
+trading day OLD {"R3 calls (chunks)": 257, "items": 993, "segments reaching R3": "3709 of 5637 (66%)", "text reaching R3": "64%"}
+trading day NEW {"R3 calls (chunks)": 257, "items": 989, "segments reaching R3": "5637 of 5637 (100%)", "text reaching R3": "100%"}
+holiday/weekend slow mode OLD {"R3 calls (chunks)": 25, "items": 200, "segments reaching R3": "657 of 5637 (12%)", "text reaching R3": "12%"}
+holiday/weekend slow mode NEW {"R3 calls (chunks)": 26, "items": 185, "segments reaching R3": "973 of 5637 (17%)", "text reaching R3": "17%"}

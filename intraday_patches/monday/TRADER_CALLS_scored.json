@@ -1,0 +1,2564 @@
+{
+ "made": "2026-11-20T17:02+05:30",
+ "source": "TRADER READ",
+ "label": "IDEA - NOT PROVEN (small n)",
+ "hit_rate": {
+  "CE": {
+   "right_primary": {
+    "hits": 10,
+    "n": 14
+   },
+   "right_close": {
+    "hits": 10,
+    "n": 14
+   },
+   "right_next": {
+    "hits": 7,
+    "n": 12
+   },
+   "right_vs_nifty_primary": {
+    "hits": 7,
+    "n": 14
+   },
+   "right_vs_nifty_close": {
+    "hits": 8,
+    "n": 14
+   },
+   "right_vs_nifty_next": {
+    "hits": 6,
+    "n": 12
+   }
+  },
+  "PE": {
+   "right_primary": {
+    "hits": 7,
+    "n": 18
+   },
+   "right_close": {
+    "hits": 7,
+    "n": 18
+   },
+   "right_next": {
+    "hits": 11,
+    "n": 18
+   },
+   "right_vs_nifty_primary": {
+    "hits": 10,
+    "n": 18
+   },
+   "right_vs_nifty_close": {
+    "hits": 8,
+    "n": 18
+   },
+   "right_vs_nifty_next": {
+    "hits": 13,
+    "n": 18
+   }
+  },
+  "CE_before_20nov": {
+   "right_primary": {
+    "hits": 8,
+    "n": 12
+   },
+   "right_close": {
+    "hits": 8,
+    "n": 12
+   },
+   "right_next": {
+    "hits": 7,
+    "n": 12
+   },
+   "right_vs_nifty_primary": {
+    "hits": 7,
+    "n": 12
+   },
+   "right_vs_nifty_close": {
+    "hits": 8,
+    "n": 12
+   },
+   "right_vs_nifty_next": {
+    "hits": 6,
+    "n": 12
+   }
+  },
+  "PE_before_20nov": {
+   "right_primary": {
+    "hits": 7,
+    "n": 18
+   },
+   "right_close": {
+    "hits": 7,
+    "n": 18
+   },
+   "right_next": {
+    "hits": 11,
+    "n": 18
+   },
+   "right_vs_nifty_primary": {
+    "hits": 10,
+    "n": 18
+   },
+   "right_vs_nifty_close": {
+    "hits": 8,
+    "n": 18
+   },
+   "right_vs_nifty_next": {
+    "hits": 13,
+    "n": 18
+   }
+  }
+ },
+ "rules": "main horizon = that day's close from the time he said it (pre-open / holiday / weekend = next session's open); #33 = the 20 Nov close; group reads = median of F&O members; vs NIFTY = move minus NIFTY over the same window",
+ "reads": [
+  {
+   "id": "R02",
+   "row": 2,
+   "said": "Sun 8 Nov 07:35",
+   "want": "UP",
+   "note": "First tradable price after 07:35 = the 8 Nov Muhurat session open (14:20); next day = Mon 9 Nov.",
+   "name": "DIVISLAB",
+   "ce_pe": "CE",
+   "entry_day": "2026-11-08",
+   "entry_at": "open",
+   "next_day": "2026-11-09",
+   "nifty": {
+    "entry": 25070.45,
+    "to_close": -0.34,
+    "to_next_close": -0.1
+   },
+   "members": {
+    "DIVISLAB": {
+     "entry": 10850.0,
+     "to_close": 2.28,
+     "to_next_close": 6.59
+    }
+   },
+   "move_to_close": 2.28,
+   "n": 1,
+   "move_to_next_close": 6.59,
+   "alt_basis": "prevclose",
+   "alt_to_close": 7.52,
+   "alt_to_next_close": 12.06,
+   "alt_nifty": {
+    "to_close": -0.18,
+    "to_next_close": 0.06
+   },
+   "sector": "pharma",
+   "sector_to_close": -0.04,
+   "sector_n": 13,
+   "sector_to_next_close": 1.92,
+   "vs_nifty_close": 2.62,
+   "vs_nifty_next": 6.69,
+   "vs_sector_close": 2.32,
+   "vs_sector_next": 4.67,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": true,
+   "right_next": true,
+   "right_vs_nifty_close": true,
+   "right_vs_nifty_next": true,
+   "right_primary": true,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R03",
+   "row": 3,
+   "said": "Sun 8 Nov 20:45 / Mon 9 Nov 10:38",
+   "want": null,
+   "note": "'Keep a close watch' on the board meeting: no direction given - move shown, not counted.",
+   "name": "DATAPATTNS",
+   "ce_pe": null,
+   "entry_day": "2026-11-09",
+   "entry_at": "10:38",
+   "next_day": "2026-11-11",
+   "nifty": {
+    "entry": 24909.9,
+    "to_close": 0.54,
+    "to_next_close": 1.39
+   },
+   "members": {
+    "DATAPATTNS": {
+     "entry": 3942.3,
+     "to_close": 2.1,
+     "to_next_close": 2.78
+    }
+   },
+   "move_to_close": 2.1,
+   "n": 1,
+   "move_to_next_close": 2.78,
+   "alt_basis": "open",
+   "alt_to_close": 9.97,
+   "alt_to_next_close": 10.71,
+   "alt_nifty": {
+    "to_close": -0.13,
+    "to_next_close": 0.71
+   },
+   "sector": "capital-goods",
+   "sector_to_close": 0.73,
+   "sector_n": 25,
+   "sector_to_next_close": 2.19,
+   "vs_nifty_close": 1.56,
+   "vs_nifty_next": 1.39,
+   "vs_sector_close": 1.37,
+   "vs_sector_next": 0.59,
+   "counted": false,
+   "primary": "to_close",
+   "right_close": null,
+   "right_next": null,
+   "right_vs_nifty_close": null,
+   "right_vs_nifty_next": null,
+   "right_primary": null,
+   "right_vs_nifty_primary": null
+  },
+  {
+   "id": "R04",
+   "row": 4,
+   "said": "Mon 9 Nov 08:46",
+   "want": "UP",
+   "note": "Pre-open: from the 9 Nov open (alt: from the 8 Nov Muhurat close).",
+   "name": "EICHERMOT",
+   "ce_pe": "CE",
+   "entry_day": "2026-11-09",
+   "entry_at": "open",
+   "next_day": "2026-11-11",
+   "nifty": {
+    "entry": 25076.4,
+    "to_close": -0.13,
+    "to_next_close": 0.71
+   },
+   "members": {
+    "EICHERMOT": {
+     "entry": 7651.0,
+     "to_close": -0.29,
+     "to_next_close": -0.77
+    }
+   },
+   "move_to_close": -0.29,
+   "n": 1,
+   "move_to_next_close": -0.77,
+   "alt_basis": "prevclose",
+   "alt_to_close": -0.29,
+   "alt_to_next_close": -0.77,
+   "alt_nifty": {
+    "to_close": 0.23,
+    "to_next_close": 1.08
+   },
+   "sector": "auto",
+   "sector_to_close": -0.2,
+   "sector_n": 11,
+   "sector_to_next_close": 1.23,
+   "vs_nifty_close": -0.16,
+   "vs_nifty_next": -1.48,
+   "vs_sector_close": -0.09,
+   "vs_sector_next": -2.0,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": false,
+   "right_next": false,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": false,
+   "right_primary": false,
+   "right_vs_nifty_primary": false
+  },
+  {
+   "id": "R05",
+   "row": 5,
+   "said": "Mon 9 Nov 11:18",
+   "want": "UP",
+   "note": null,
+   "name": "COCHINSHIP",
+   "ce_pe": "CE",
+   "entry_day": "2026-11-09",
+   "entry_at": "11:18",
+   "next_day": "2026-11-11",
+   "nifty": {
+    "entry": 24894.2,
+    "to_close": 0.6,
+    "to_next_close": 1.45
+   },
+   "members": {
+    "COCHINSHIP": {
+     "entry": 1255.8,
+     "to_close": 2.72,
+     "to_next_close": -4.28
+    }
+   },
+   "move_to_close": 2.72,
+   "n": 1,
+   "move_to_next_close": -4.28,
+   "alt_basis": "open",
+   "alt_to_close": 3.91,
+   "alt_to_next_close": -3.18,
+   "alt_nifty": {
+    "to_close": -0.13,
+    "to_next_close": 0.71
+   },
+   "sector": "capital-goods",
+   "sector_to_close": 0.47,
+   "sector_n": 25,
+   "sector_to_next_close": 2.14,
+   "vs_nifty_close": 2.12,
+   "vs_nifty_next": -5.73,
+   "vs_sector_close": 2.25,
+   "vs_sector_next": -6.42,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": true,
+   "right_next": false,
+   "right_vs_nifty_close": true,
+   "right_vs_nifty_next": false,
+   "right_primary": true,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R06",
+   "row": 6,
+   "said": "Mon 9 Nov 22:46",
+   "want": "DOWN",
+   "note": "Warning 'overbought - no CE' scored as the PE side (right = it did not rise). 10 Nov was an NSE holiday, so from the 11 Nov open.",
+   "name": "GLENMARK",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-11",
+   "entry_at": "open",
+   "next_day": "2026-11-12",
+   "nifty": {
+    "entry": 25337.8,
+    "to_close": -0.33,
+    "to_next_close": -0.15
+   },
+   "members": {
+    "GLENMARK": {
+     "entry": 2670.0,
+     "to_close": 0.27,
+     "to_next_close": -0.38
+    }
+   },
+   "move_to_close": 0.27,
+   "n": 1,
+   "move_to_next_close": -0.38,
+   "alt_basis": "prevclose",
+   "alt_to_close": 0.23,
+   "alt_to_next_close": -0.42,
+   "alt_nifty": {
+    "to_close": 0.84,
+    "to_next_close": 1.02
+   },
+   "sector": "pharma",
+   "sector_to_close": -0.92,
+   "sector_n": 13,
+   "sector_to_next_close": -1.62,
+   "vs_nifty_close": 0.6,
+   "vs_nifty_next": -0.23,
+   "vs_sector_close": 1.19,
+   "vs_sector_next": 1.24,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": false,
+   "right_next": true,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": true,
+   "right_primary": false,
+   "right_vs_nifty_primary": false
+  },
+  {
+   "id": "R07",
+   "row": 7,
+   "said": "Tue 10 Nov 14:50",
+   "want": "DOWN",
+   "note": "10 Nov was an NSE holiday (Diwali-Balipratipada): first tradable price = 11 Nov open; alt = from the 9 Nov close (before the results).",
+   "name": "COCHINSHIP",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-11",
+   "entry_at": "open",
+   "next_day": "2026-11-12",
+   "nifty": {
+    "entry": 25337.8,
+    "to_close": -0.33,
+    "to_next_close": -0.15
+   },
+   "members": {
+    "COCHINSHIP": {
+     "entry": 1200.0,
+     "to_close": 0.17,
+     "to_next_close": -0.33
+    }
+   },
+   "move_to_close": 0.17,
+   "n": 1,
+   "move_to_next_close": -0.33,
+   "alt_basis": "prevclose",
+   "alt_to_close": -6.82,
+   "alt_to_next_close": -7.29,
+   "alt_nifty": {
+    "to_close": 0.84,
+    "to_next_close": 1.02
+   },
+   "sector": "capital-goods",
+   "sector_to_close": 0.48,
+   "sector_n": 25,
+   "sector_to_next_close": 0.72,
+   "vs_nifty_close": 0.5,
+   "vs_nifty_next": -0.18,
+   "vs_sector_close": -0.31,
+   "vs_sector_next": -1.05,
+   "range_after_to_20nov": {
+    "high": 1222.0,
+    "low": 1122.0,
+    "to": "2026-11-20"
+   },
+   "level": {
+    "rule": "<= 1180",
+    "first_day_reached": "2026-11-13"
+   },
+   "counted": true,
+   "primary": "to_close",
+   "right_close": false,
+   "right_next": true,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": true,
+   "right_primary": false,
+   "right_vs_nifty_primary": false
+  },
+  {
+   "id": "R08",
+   "row": 8,
+   "said": "Wed 11 Nov 09:40",
+   "want": "UP",
+   "note": null,
+   "name": "SWIGGY",
+   "ce_pe": "CE",
+   "entry_day": "2026-11-11",
+   "entry_at": "09:40",
+   "next_day": "2026-11-12",
+   "nifty": {
+    "entry": 25396.45,
+    "to_close": -0.56,
+    "to_next_close": -0.38
+   },
+   "members": {
+    "SWIGGY": {
+     "entry": 195.96,
+     "to_close": -3.53,
+     "to_next_close": -1.92
+    }
+   },
+   "move_to_close": -3.53,
+   "n": 1,
+   "move_to_next_close": -1.92,
+   "alt_basis": "open",
+   "alt_to_close": -1.28,
+   "alt_to_next_close": 0.37,
+   "alt_nifty": {
+    "to_close": -0.33,
+    "to_next_close": -0.15
+   },
+   "sector": "consumer",
+   "sector_to_close": -0.38,
+   "sector_n": 20,
+   "sector_to_next_close": -0.19,
+   "vs_nifty_close": -2.97,
+   "vs_nifty_next": -1.54,
+   "vs_sector_close": -3.15,
+   "vs_sector_next": -1.73,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": false,
+   "right_next": false,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": false,
+   "right_primary": false,
+   "right_vs_nifty_primary": false
+  },
+  {
+   "id": "R09",
+   "row": 9,
+   "said": "Thu 12 Nov 09:41",
+   "want": "UP",
+   "note": "Floor 4,200: lowest price after 09:41 shown.",
+   "name": "DATAPATTNS",
+   "ce_pe": "CE",
+   "entry_day": "2026-11-12",
+   "entry_at": "09:41",
+   "next_day": "2026-11-13",
+   "nifty": {
+    "entry": 25349.3,
+    "to_close": -0.2,
+    "to_next_close": -0.81
+   },
+   "members": {
+    "DATAPATTNS": {
+     "entry": 4221.6,
+     "to_close": 0.22,
+     "to_next_close": 1.1
+    }
+   },
+   "move_to_close": 0.22,
+   "n": 1,
+   "move_to_next_close": 1.1,
+   "alt_basis": "open",
+   "alt_to_close": 3.96,
+   "alt_to_next_close": 4.86,
+   "alt_nifty": {
+    "to_close": 0.34,
+    "to_next_close": -0.27
+   },
+   "sector": "capital-goods",
+   "sector_to_close": -0.69,
+   "sector_n": 25,
+   "sector_to_next_close": -0.94,
+   "vs_nifty_close": 0.42,
+   "vs_nifty_next": 1.91,
+   "vs_sector_close": 0.91,
+   "vs_sector_next": 2.04,
+   "range_after_to_20nov": {
+    "high": 4324.4,
+    "low": 4040.0,
+    "to": "2026-11-20"
+   },
+   "level": {
+    "rule": ">= 4200",
+    "first_day_reached": null,
+    "kind": "floor",
+    "broke_floor_on": "2026-11-12"
+   },
+   "counted": true,
+   "primary": "to_close",
+   "right_close": true,
+   "right_next": true,
+   "right_vs_nifty_close": true,
+   "right_vs_nifty_next": true,
+   "right_primary": true,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R10",
+   "row": 10,
+   "said": "Thu 12 Nov 14:32",
+   "want": "UP",
+   "note": null,
+   "name": "POLICYBZR",
+   "ce_pe": "CE",
+   "entry_day": "2026-11-12",
+   "entry_at": "14:32",
+   "next_day": "2026-11-13",
+   "nifty": {
+    "entry": 25238.8,
+    "to_close": 0.24,
+    "to_next_close": -0.37
+   },
+   "members": {
+    "POLICYBZR": {
+     "entry": 1029.6,
+     "to_close": 1.99,
+     "to_next_close": 7.32
+    }
+   },
+   "move_to_close": 1.99,
+   "n": 1,
+   "move_to_next_close": 7.32,
+   "alt_basis": "open",
+   "alt_to_close": 7.26,
+   "alt_to_next_close": 12.87,
+   "alt_nifty": {
+    "to_close": 0.34,
+    "to_next_close": -0.27
+   },
+   "sector": "consumer",
+   "sector_to_close": 0.15,
+   "sector_n": 20,
+   "sector_to_next_close": -0.18,
+   "vs_nifty_close": 1.75,
+   "vs_nifty_next": 7.69,
+   "vs_sector_close": 1.84,
+   "vs_sector_next": 7.5,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": true,
+   "right_next": true,
+   "right_vs_nifty_close": true,
+   "right_vs_nifty_next": true,
+   "right_primary": true,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R11",
+   "row": 11,
+   "said": "Fri 13 Nov 06:37 (again 15:24, 16:38)",
+   "want": "UP",
+   "note": "First words 06:37 on 13 Nov, so from the 13 Nov open; next day = Mon 16 Nov, the day he named.",
+   "name": "POLICYBZR",
+   "ce_pe": "CE",
+   "entry_day": "2026-11-13",
+   "entry_at": "open",
+   "next_day": "2026-11-16",
+   "nifty": {
+    "entry": 25209.85,
+    "to_close": -0.26,
+    "to_next_close": 0.32
+   },
+   "members": {
+    "POLICYBZR": {
+     "entry": 1040.4,
+     "to_close": 6.21,
+     "to_next_close": 3.92
+    }
+   },
+   "move_to_close": 6.21,
+   "n": 1,
+   "move_to_next_close": 3.92,
+   "alt_basis": "prevclose",
+   "alt_to_close": 5.23,
+   "alt_to_next_close": 2.96,
+   "alt_nifty": {
+    "to_close": -0.61,
+    "to_next_close": -0.03
+   },
+   "sector": "consumer",
+   "sector_to_close": -0.33,
+   "sector_n": 20,
+   "sector_to_next_close": 0.01,
+   "vs_nifty_close": 6.47,
+   "vs_nifty_next": 3.6,
+   "vs_sector_close": 6.54,
+   "vs_sector_next": 3.91,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": true,
+   "right_next": true,
+   "right_vs_nifty_close": true,
+   "right_vs_nifty_next": true,
+   "right_primary": true,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R12",
+   "row": 12,
+   "said": "Fri 13 Nov 11:48",
+   "want": "DOWN",
+   "note": null,
+   "name": "NMDC",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-13",
+   "entry_at": "11:48",
+   "next_day": "2026-11-16",
+   "nifty": {
+    "entry": 25150.85,
+    "to_close": -0.03,
+    "to_next_close": 0.56
+   },
+   "members": {
+    "NMDC": {
+     "entry": 69.38,
+     "to_close": 0.61,
+     "to_next_close": -0.66
+    }
+   },
+   "move_to_close": 0.61,
+   "n": 1,
+   "move_to_next_close": -0.66,
+   "alt_basis": "open",
+   "alt_to_close": -0.09,
+   "alt_to_next_close": -1.35,
+   "alt_nifty": {
+    "to_close": -0.26,
+    "to_next_close": 0.32
+   },
+   "sector": "metals",
+   "sector_to_close": 0.16,
+   "sector_n": 11,
+   "sector_to_next_close": -1.61,
+   "vs_nifty_close": 0.64,
+   "vs_nifty_next": -1.22,
+   "vs_sector_close": 0.45,
+   "vs_sector_next": 0.95,
+   "range_after_to_20nov": {
+    "high": 69.98,
+    "low": 66.64,
+    "to": "2026-11-20"
+   },
+   "level": {
+    "rule": "<= 65",
+    "first_day_reached": null
+   },
+   "counted": true,
+   "primary": "to_close",
+   "right_close": false,
+   "right_next": true,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": true,
+   "right_primary": false,
+   "right_vs_nifty_primary": false
+  },
+  {
+   "id": "R13",
+   "row": 13,
+   "said": "Fri 13 Nov 12:33",
+   "want": "UP",
+   "note": null,
+   "name": "POWERINDIA",
+   "ce_pe": "CE",
+   "entry_day": "2026-11-13",
+   "entry_at": "12:33",
+   "next_day": "2026-11-16",
+   "nifty": {
+    "entry": 25112.8,
+    "to_close": 0.13,
+    "to_next_close": 0.71
+   },
+   "members": {
+    "POWERINDIA": {
+     "entry": 32060.0,
+     "to_close": -1.45,
+     "to_next_close": -3.67
+    }
+   },
+   "move_to_close": -1.45,
+   "n": 1,
+   "move_to_next_close": -3.67,
+   "alt_basis": "open",
+   "alt_to_close": 5.35,
+   "alt_to_next_close": 2.98,
+   "alt_nifty": {
+    "to_close": -0.26,
+    "to_next_close": 0.32
+   },
+   "sector": "capital-goods",
+   "sector_to_close": -0.53,
+   "sector_n": 25,
+   "sector_to_next_close": -1.42,
+   "vs_nifty_close": -1.58,
+   "vs_nifty_next": -4.38,
+   "vs_sector_close": -0.92,
+   "vs_sector_next": -2.25,
+   "range_after_to_20nov": {
+    "high": 32090.0,
+    "low": 29675.0,
+    "to": "2026-11-20"
+   },
+   "level": {
+    "rule": ">= 33000",
+    "first_day_reached": null
+   },
+   "counted": true,
+   "primary": "to_close",
+   "right_close": false,
+   "right_next": false,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": false,
+   "right_primary": false,
+   "right_vs_nifty_primary": false
+  },
+  {
+   "id": "R14",
+   "row": 14,
+   "said": "Fri 13 Nov 13:00",
+   "want": "DOWN",
+   "note": null,
+   "name": "HINDALCO",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-13",
+   "entry_at": "13:00",
+   "next_day": "2026-11-16",
+   "nifty": {
+    "entry": 25111.6,
+    "to_close": 0.13,
+    "to_next_close": 0.71
+   },
+   "members": {
+    "HINDALCO": {
+     "entry": 947.1,
+     "to_close": -0.37,
+     "to_next_close": -2.51
+    }
+   },
+   "move_to_close": -0.37,
+   "n": 1,
+   "move_to_next_close": -2.51,
+   "alt_basis": "open",
+   "alt_to_close": -1.09,
+   "alt_to_next_close": -3.22,
+   "alt_nifty": {
+    "to_close": -0.26,
+    "to_next_close": 0.32
+   },
+   "sector": "metals",
+   "sector_to_close": 0.02,
+   "sector_n": 11,
+   "sector_to_next_close": -1.93,
+   "vs_nifty_close": -0.5,
+   "vs_nifty_next": -3.22,
+   "vs_sector_close": -0.39,
+   "vs_sector_next": -0.58,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": true,
+   "right_next": true,
+   "right_vs_nifty_close": true,
+   "right_vs_nifty_next": true,
+   "right_primary": true,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R15",
+   "row": 15,
+   "said": "Fri 13 Nov 13:04-13:51",
+   "want": "UP",
+   "note": "Conditional: CE only above 200. Counted only if 200 traded after 13:51 (checked to 20 Nov). 200 traded on 2026-11-13 (trigger 200.0 at 14:40); scored from 200.",
+   "name": "RVNL",
+   "ce_pe": "CE",
+   "entry_day": "2026-11-13",
+   "entry_at": "trigger 200.0 at 14:40",
+   "next_day": "2026-11-16",
+   "nifty": {
+    "entry": 25111.7,
+    "to_close": 0.13,
+    "to_next_close": 0.71
+   },
+   "members": {
+    "RVNL": {
+     "entry": 200.0,
+     "to_close": -0.27,
+     "to_next_close": -2.82
+    }
+   },
+   "move_to_close": -0.27,
+   "n": 1,
+   "move_to_next_close": -2.82,
+   "alt_basis": "open",
+   "alt_to_close": -2.89,
+   "alt_to_next_close": -5.37,
+   "alt_nifty": {
+    "to_close": -0.26,
+    "to_next_close": 0.32
+   },
+   "sector": "capital-goods",
+   "sector_to_close": 0.1,
+   "sector_n": 25,
+   "sector_to_next_close": -0.93,
+   "vs_nifty_close": -0.4,
+   "vs_nifty_next": -3.53,
+   "vs_sector_close": -0.37,
+   "vs_sector_next": -1.89,
+   "range_after_to_20nov": {
+    "high": 200.14,
+    "low": 187.23,
+    "to": "2026-11-20"
+   },
+   "trigger_fired": "2026-11-13",
+   "counted": true,
+   "primary": "to_close",
+   "right_close": false,
+   "right_next": false,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": false,
+   "right_primary": false,
+   "right_vs_nifty_primary": false
+  },
+  {
+   "id": "R16",
+   "row": 16,
+   "said": "Sat 14 Nov 22:57",
+   "want": "DOWN",
+   "note": "His condition (NIFTY down, money pulled out) not modelled: scored from the 16 Nov open.",
+   "name": "PATANJALI",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-16",
+   "entry_at": "open",
+   "next_day": "2026-11-17",
+   "nifty": {
+    "entry": 25206.15,
+    "to_close": 0.34,
+    "to_next_close": 0.72
+   },
+   "members": {
+    "PATANJALI": {
+     "entry": 425.0,
+     "to_close": -5.72,
+     "to_next_close": -4.75
+    }
+   },
+   "move_to_close": -5.72,
+   "n": 1,
+   "move_to_next_close": -4.75,
+   "alt_basis": "prevclose",
+   "alt_to_close": -4.82,
+   "alt_to_next_close": -3.85,
+   "alt_nifty": {
+    "to_close": 0.58,
+    "to_next_close": 0.97
+   },
+   "sector": "fmcg",
+   "sector_to_close": 0.68,
+   "sector_n": 15,
+   "sector_to_next_close": 0.95,
+   "vs_nifty_close": -6.06,
+   "vs_nifty_next": -5.47,
+   "vs_sector_close": -6.4,
+   "vs_sector_next": -5.7,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": true,
+   "right_next": true,
+   "right_vs_nifty_close": true,
+   "right_vs_nifty_next": true,
+   "right_primary": true,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R17",
+   "row": 17,
+   "said": "Sat 14 Nov 17:46",
+   "want": "DOWN",
+   "note": "'Resistance at 1,100' scored as the PE side (no CE) from the 16 Nov open; 1,100 check on the close.",
+   "name": "POLICYBZR",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-16",
+   "entry_at": "open",
+   "next_day": "2026-11-17",
+   "nifty": {
+    "entry": 25206.15,
+    "to_close": 0.34,
+    "to_next_close": 0.72
+   },
+   "members": {
+    "POLICYBZR": {
+     "entry": 1119.9,
+     "to_close": -3.46,
+     "to_next_close": -6.05
+    }
+   },
+   "move_to_close": -3.46,
+   "n": 1,
+   "move_to_next_close": -6.05,
+   "alt_basis": "prevclose",
+   "alt_to_close": -2.15,
+   "alt_to_next_close": -4.79,
+   "alt_nifty": {
+    "to_close": 0.58,
+    "to_next_close": 0.97
+   },
+   "sector": "consumer",
+   "sector_to_close": 0.71,
+   "sector_n": 20,
+   "sector_to_next_close": 0.22,
+   "vs_nifty_close": -3.8,
+   "vs_nifty_next": -6.77,
+   "vs_sector_close": -4.17,
+   "vs_sector_next": -6.27,
+   "range_after_to_20nov": {
+    "high": 1121.4,
+    "low": 970.4,
+    "to": "2026-11-20"
+   },
+   "level": {
+    "rule": "< 1100",
+    "first_day_reached": "2026-11-16",
+    "kind": "cap",
+    "close_below_cap_on_entry_day": true
+   },
+   "counted": true,
+   "primary": "to_close",
+   "right_close": true,
+   "right_next": true,
+   "right_vs_nifty_close": true,
+   "right_vs_nifty_next": true,
+   "right_primary": true,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R18",
+   "row": 18,
+   "said": "Sun 15 Nov 10:28",
+   "want": "DOWN",
+   "note": null,
+   "name": "TMPV",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-16",
+   "entry_at": "open",
+   "next_day": "2026-11-17",
+   "nifty": {
+    "entry": 25206.15,
+    "to_close": 0.34,
+    "to_next_close": 0.72
+   },
+   "members": {
+    "TMPV": {
+     "entry": 272.1,
+     "to_close": -3.56,
+     "to_next_close": -4.74
+    }
+   },
+   "move_to_close": -3.56,
+   "n": 1,
+   "move_to_next_close": -4.74,
+   "alt_basis": "prevclose",
+   "alt_to_close": -8.7,
+   "alt_to_next_close": -9.81,
+   "alt_nifty": {
+    "to_close": 0.58,
+    "to_next_close": 0.97
+   },
+   "sector": "auto",
+   "sector_to_close": -1.06,
+   "sector_n": 11,
+   "sector_to_next_close": -0.73,
+   "vs_nifty_close": -3.9,
+   "vs_nifty_next": -5.46,
+   "vs_sector_close": -2.5,
+   "vs_sector_next": -4.01,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": true,
+   "right_next": true,
+   "right_vs_nifty_close": true,
+   "right_vs_nifty_next": true,
+   "right_primary": true,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R19",
+   "row": 19,
+   "said": "Sun 15 Nov 11:06",
+   "want": "DOWN",
+   "note": null,
+   "name": "RELIANCE",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-16",
+   "entry_at": "open",
+   "next_day": "2026-11-17",
+   "nifty": {
+    "entry": 25206.15,
+    "to_close": 0.34,
+    "to_next_close": 0.72
+   },
+   "members": {
+    "RELIANCE": {
+     "entry": 1339.7,
+     "to_close": 0.38,
+     "to_next_close": 2.04
+    }
+   },
+   "move_to_close": 0.38,
+   "n": 1,
+   "move_to_next_close": 2.04,
+   "alt_basis": "prevclose",
+   "alt_to_close": 0.38,
+   "alt_to_next_close": 2.04,
+   "alt_nifty": {
+    "to_close": 0.58,
+    "to_next_close": 0.97
+   },
+   "sector": "oil-gas",
+   "sector_to_close": 0.41,
+   "sector_n": 8,
+   "sector_to_next_close": 0.82,
+   "vs_nifty_close": 0.04,
+   "vs_nifty_next": 1.32,
+   "vs_sector_close": -0.03,
+   "vs_sector_next": 1.22,
+   "range_after_to_20nov": {
+    "high": 1383.0,
+    "low": 1333.8,
+    "to": "2026-11-20"
+   },
+   "level": {
+    "rule": "<= 1320",
+    "first_day_reached": null
+   },
+   "counted": true,
+   "primary": "to_close",
+   "right_close": false,
+   "right_next": false,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": false,
+   "right_primary": false,
+   "right_vs_nifty_primary": false
+  },
+  {
+   "id": "R20",
+   "row": 20,
+   "said": "Mon 16 Nov 09:47",
+   "want": "UP",
+   "note": null,
+   "name": "KAYNES",
+   "ce_pe": "CE",
+   "entry_day": "2026-11-16",
+   "entry_at": "09:47",
+   "next_day": "2026-11-17",
+   "nifty": {
+    "entry": 25317.7,
+    "to_close": -0.11,
+    "to_next_close": 0.28
+   },
+   "members": {
+    "KAYNES": {
+     "entry": 2829.5,
+     "to_close": 5.32,
+     "to_next_close": 1.01
+    }
+   },
+   "move_to_close": 5.32,
+   "n": 1,
+   "move_to_next_close": 1.01,
+   "alt_basis": "open",
+   "alt_to_close": -3.47,
+   "alt_to_next_close": -7.42,
+   "alt_nifty": {
+    "to_close": 0.34,
+    "to_next_close": 0.72
+   },
+   "sector": "capital-goods",
+   "sector_to_close": -0.44,
+   "sector_n": 25,
+   "sector_to_next_close": -1.35,
+   "vs_nifty_close": 5.43,
+   "vs_nifty_next": 0.73,
+   "vs_sector_close": 5.76,
+   "vs_sector_next": 2.36,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": true,
+   "right_next": true,
+   "right_vs_nifty_close": true,
+   "right_vs_nifty_next": true,
+   "right_primary": true,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R21",
+   "row": 21,
+   "said": "Mon 16 Nov 21:47",
+   "want": "UP",
+   "note": "Conditional on capital goods turning up - not counted; ABB and the capital-goods median shown.",
+   "name": "ABB",
+   "ce_pe": "CE",
+   "entry_day": "2026-11-17",
+   "entry_at": "open",
+   "next_day": "2026-11-18",
+   "nifty": {
+    "entry": 25277.3,
+    "to_close": 0.44,
+    "to_next_close": -0.2
+   },
+   "members": {
+    "ABB": {
+     "entry": 6925.0,
+     "to_close": -0.03,
+     "to_next_close": -1.07
+    }
+   },
+   "move_to_close": -0.03,
+   "n": 1,
+   "move_to_next_close": -1.07,
+   "alt_basis": "prevclose",
+   "alt_to_close": 0.41,
+   "alt_to_next_close": -0.64,
+   "alt_nifty": {
+    "to_close": 0.38,
+    "to_next_close": -0.25
+   },
+   "sector": "capital-goods",
+   "sector_to_close": -0.49,
+   "sector_n": 25,
+   "sector_to_next_close": -2.11,
+   "vs_nifty_close": -0.47,
+   "vs_nifty_next": -0.87,
+   "vs_sector_close": 0.46,
+   "vs_sector_next": 1.04,
+   "counted": false,
+   "condition_check": [
+    {
+     "day": "2026-11-17",
+     "capital_goods_median_day": -0.57,
+     "ABB_day": 0.41
+    },
+    {
+     "day": "2026-11-18",
+     "capital_goods_median_day": -1.24,
+     "ABB_day": -1.04
+    },
+    {
+     "day": "2026-11-19",
+     "capital_goods_median_day": 1.88,
+     "ABB_day": 1.46
+    },
+    {
+     "day": "2026-11-20",
+     "capital_goods_median_day": -0.16,
+     "ABB_day": 0.01
+    }
+   ],
+   "primary": "to_close",
+   "right_close": false,
+   "right_next": false,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": false,
+   "right_primary": false,
+   "right_vs_nifty_primary": false
+  },
+  {
+   "id": "R22a",
+   "row": 22,
+   "said": "Tue 17 Nov 00:47",
+   "want": null,
+   "note": "A flow statement; he said it is not a CE / PE reason by itself - shown, not counted.",
+   "name": "IT (FII buying)",
+   "ce_pe": null,
+   "entry_day": "2026-11-17",
+   "entry_at": "open",
+   "next_day": "2026-11-18",
+   "nifty": {
+    "entry": 25277.3,
+    "to_close": 0.44,
+    "to_next_close": -0.2
+   },
+   "members": {
+    "TCS": {
+     "entry": 2395.0,
+     "to_close": 0.48,
+     "to_next_close": -0.65
+    },
+    "INFY": {
+     "entry": 1141.0,
+     "to_close": -0.96,
+     "to_next_close": -2.82
+    },
+    "WIPRO": {
+     "entry": 192.2,
+     "to_close": -1.2,
+     "to_next_close": -3.67
+    },
+    "HCLTECH": {
+     "entry": 1375.0,
+     "to_close": -1.4,
+     "to_next_close": -2.2
+    },
+    "TECHM": {
+     "entry": 1770.0,
+     "to_close": -0.45,
+     "to_next_close": -1.13
+    },
+    "MPHASIS": {
+     "entry": 2432.0,
+     "to_close": 0.53,
+     "to_next_close": -1.44
+    },
+    "COFORGE": {
+     "entry": 2012.0,
+     "to_close": 1.44,
+     "to_next_close": 1.84
+    },
+    "PERSISTENT": {
+     "entry": 5950.0,
+     "to_close": -0.66,
+     "to_next_close": -1.56
+    },
+    "OFSS": {
+     "entry": 9900.0,
+     "to_close": -1.61,
+     "to_next_close": -2.08
+    },
+    "KPITTECH": {
+     "entry": 536.3,
+     "to_close": -0.87,
+     "to_next_close": -2.71
+    },
+    "TATAELXSI": {
+     "entry": 3758.0,
+     "to_close": -1.26,
+     "to_next_close": -2.34
+    },
+    "SAGILITY": {
+     "entry": 43.25,
+     "to_close": 1.48,
+     "to_next_close": 4.39
+    }
+   },
+   "move_to_close": -0.77,
+   "n": 12,
+   "move_to_next_close": -1.82,
+   "alt_basis": "prevclose",
+   "alt_to_close": -0.96,
+   "alt_to_next_close": -2.08,
+   "alt_nifty": {
+    "to_close": 0.38,
+    "to_next_close": -0.25
+   },
+   "sector": "(the basket is the sector)",
+   "sector_to_close": null,
+   "sector_to_next_close": null,
+   "vs_nifty_close": -1.21,
+   "vs_nifty_next": -1.62,
+   "vs_sector_close": null,
+   "vs_sector_next": null,
+   "counted": false,
+   "primary": "to_close",
+   "right_close": null,
+   "right_next": null,
+   "right_vs_nifty_close": null,
+   "right_vs_nifty_next": null,
+   "right_primary": null,
+   "right_vs_nifty_primary": null
+  },
+  {
+   "id": "R22b",
+   "row": 22,
+   "said": "Tue 17 Nov 00:47",
+   "want": null,
+   "note": "As R22a - shown, not counted.",
+   "name": "Oil & gas (FII selling)",
+   "ce_pe": null,
+   "entry_day": "2026-11-17",
+   "entry_at": "open",
+   "next_day": "2026-11-18",
+   "nifty": {
+    "entry": 25277.3,
+    "to_close": 0.44,
+    "to_next_close": -0.2
+   },
+   "members": {
+    "RELIANCE": {
+     "entry": 1339.0,
+     "to_close": 2.09,
+     "to_next_close": 1.79
+    },
+    "ONGC": {
+     "entry": 225.65,
+     "to_close": -0.94,
+     "to_next_close": -0.29
+    },
+    "BPCL": {
+     "entry": 306.8,
+     "to_close": -0.33,
+     "to_next_close": -0.42
+    },
+    "HINDPETRO": {
+     "entry": 389.0,
+     "to_close": 0.14,
+     "to_next_close": -0.66
+    },
+    "IOC": {
+     "entry": 144.1,
+     "to_close": 1.01,
+     "to_next_close": -0.19
+    },
+    "GAIL": {
+     "entry": 187.0,
+     "to_close": 0.0,
+     "to_next_close": 1.6
+    },
+    "PETRONET": {
+     "entry": 328.2,
+     "to_close": -0.03,
+     "to_next_close": -0.82
+    },
+    "OIL": {
+     "entry": 439.0,
+     "to_close": -1.25,
+     "to_next_close": -0.8
+    }
+   },
+   "move_to_close": -0.01,
+   "n": 8,
+   "move_to_next_close": -0.35,
+   "alt_basis": "prevclose",
+   "alt_to_close": 0.4,
+   "alt_to_next_close": -0.14,
+   "alt_nifty": {
+    "to_close": 0.38,
+    "to_next_close": -0.25
+   },
+   "sector": "(the basket is the sector)",
+   "sector_to_close": null,
+   "sector_to_next_close": null,
+   "vs_nifty_close": -0.45,
+   "vs_nifty_next": -0.15,
+   "vs_sector_close": null,
+   "vs_sector_next": null,
+   "counted": false,
+   "primary": "to_close",
+   "right_close": null,
+   "right_next": null,
+   "right_vs_nifty_close": null,
+   "right_vs_nifty_next": null,
+   "right_primary": null,
+   "right_vs_nifty_primary": null
+  },
+  {
+   "id": "R23",
+   "row": 23,
+   "said": "Tue 17 Nov 07:36",
+   "want": "DOWN",
+   "note": null,
+   "name": "Steel (TATASTEEL, JSWSTEEL)",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-17",
+   "entry_at": "open",
+   "next_day": "2026-11-18",
+   "nifty": {
+    "entry": 25277.3,
+    "to_close": 0.44,
+    "to_next_close": -0.2
+   },
+   "members": {
+    "TATASTEEL": {
+     "entry": 181.0,
+     "to_close": 0.28,
+     "to_next_close": -1.1
+    },
+    "JSWSTEEL": {
+     "entry": 1320.0,
+     "to_close": 0.91,
+     "to_next_close": -0.31
+    }
+   },
+   "move_to_close": 0.59,
+   "n": 2,
+   "move_to_next_close": -0.71,
+   "alt_basis": "prevclose",
+   "alt_to_close": -0.3,
+   "alt_to_next_close": -1.59,
+   "alt_nifty": {
+    "to_close": 0.38,
+    "to_next_close": -0.25
+   },
+   "sector": "metals (without the basket)",
+   "sector_to_close": 1.12,
+   "sector_n": 9,
+   "sector_to_next_close": -2.55,
+   "vs_nifty_close": 0.15,
+   "vs_nifty_next": -0.51,
+   "vs_sector_close": -0.53,
+   "vs_sector_next": 1.84,
+   "breadth_right_close": "0/2",
+   "breadth_right_next": "2/2",
+   "counted": true,
+   "primary": "to_close",
+   "right_close": false,
+   "right_next": true,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": true,
+   "right_primary": false,
+   "right_vs_nifty_primary": false
+  },
+  {
+   "id": "R24",
+   "row": 24,
+   "said": "Tue 17 Nov 09:05",
+   "want": "DOWN",
+   "note": null,
+   "name": "Private banks (F&O)",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-17",
+   "entry_at": "open",
+   "next_day": "2026-11-18",
+   "nifty": {
+    "entry": 25277.3,
+    "to_close": 0.44,
+    "to_next_close": -0.2
+   },
+   "members": {
+    "AXISBANK": {
+     "entry": 1348.5,
+     "to_close": 1.52,
+     "to_next_close": 0.85
+    },
+    "BANDHANBNK": {
+     "entry": 172.7,
+     "to_close": 1.11,
+     "to_next_close": -1.53
+    },
+    "FEDERALBNK": {
+     "entry": 363.45,
+     "to_close": 0.65,
+     "to_next_close": -0.85
+    },
+    "HDFCBANK": {
+     "entry": 811.0,
+     "to_close": 0.49,
+     "to_next_close": -0.35
+    },
+    "ICICIBANK": {
+     "entry": 1585.0,
+     "to_close": 0.86,
+     "to_next_close": 1.03
+    },
+    "IDFCFIRSTB": {
+     "entry": 81.25,
+     "to_close": 2.88,
+     "to_next_close": 1.48
+    },
+    "INDUSINDBK": {
+     "entry": 915.55,
+     "to_close": 1.69,
+     "to_next_close": -0.4
+    },
+    "KOTAKBANK": {
+     "entry": 494.5,
+     "to_close": 0.56,
+     "to_next_close": 0.07
+    },
+    "YESBANK": {
+     "entry": 18.0,
+     "to_close": -0.83,
+     "to_next_close": -1.78
+    },
+    "AUBANK": {
+     "entry": 969.0,
+     "to_close": 2.49,
+     "to_next_close": 0.83
+    },
+    "RBLBANK": {
+     "entry": 381.0,
+     "to_close": 2.39,
+     "to_next_close": 1.71
+    },
+    "CUB": {
+     "entry": 232.45,
+     "to_close": -0.02,
+     "to_next_close": -0.11
+    },
+    "KARURVYSYA": {
+     "entry": 391.05,
+     "to_close": 0.63,
+     "to_next_close": -1.04
+    },
+    "UJJIVANSFB": {
+     "entry": 60.15,
+     "to_close": 1.75,
+     "to_next_close": 1.83
+    }
+   },
+   "move_to_close": 0.99,
+   "n": 14,
+   "move_to_next_close": -0.02,
+   "alt_basis": "prevclose",
+   "alt_to_close": 1.02,
+   "alt_to_next_close": -0.08,
+   "alt_nifty": {
+    "to_close": 0.38,
+    "to_next_close": -0.25
+   },
+   "sector": "banks (without the basket)",
+   "sector_to_close": 1.65,
+   "sector_n": 8,
+   "sector_to_next_close": 2.27,
+   "vs_nifty_close": 0.55,
+   "vs_nifty_next": 0.18,
+   "vs_sector_close": -0.66,
+   "vs_sector_next": -2.29,
+   "breadth_right_close": "2/14",
+   "breadth_right_next": "7/14",
+   "counted": true,
+   "primary": "to_close",
+   "right_close": false,
+   "right_next": true,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": false,
+   "right_primary": false,
+   "right_vs_nifty_primary": false
+  },
+  {
+   "id": "R25",
+   "row": 25,
+   "said": "Tue 17 Nov 12:15",
+   "want": "UP",
+   "note": "He asked about 18 Nov: the next-day close (18 Nov) is the main horizon.",
+   "name": "ADANIENSOL",
+   "ce_pe": "CE",
+   "entry_day": "2026-11-17",
+   "entry_at": "12:15",
+   "next_day": "2026-11-18",
+   "nifty": {
+    "entry": 25498.75,
+    "to_close": -0.44,
+    "to_next_close": -1.06
+   },
+   "members": {
+    "ADANIENSOL": {
+     "entry": 1473.3,
+     "to_close": 1.38,
+     "to_next_close": 1.13
+    }
+   },
+   "move_to_close": 1.38,
+   "n": 1,
+   "move_to_next_close": 1.13,
+   "alt_basis": "open",
+   "alt_to_close": 2.87,
+   "alt_to_next_close": 2.62,
+   "alt_nifty": {
+    "to_close": 0.44,
+    "to_next_close": -0.2
+   },
+   "sector": "power",
+   "sector_to_close": 0.1,
+   "sector_n": 11,
+   "sector_to_next_close": -0.53,
+   "vs_nifty_close": 1.82,
+   "vs_nifty_next": 2.19,
+   "vs_sector_close": 1.28,
+   "vs_sector_next": 1.66,
+   "counted": true,
+   "primary": "to_next_close",
+   "right_close": true,
+   "right_next": true,
+   "right_vs_nifty_close": true,
+   "right_vs_nifty_next": true,
+   "right_primary": true,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R26",
+   "row": 26,
+   "said": "Tue 17 Nov 12:16",
+   "want": null,
+   "note": "Watch (OI up, price flat): no direction - shown, not counted.",
+   "name": "HEROMOTOCO",
+   "ce_pe": null,
+   "entry_day": "2026-11-17",
+   "entry_at": "12:16",
+   "next_day": "2026-11-18",
+   "nifty": {
+    "entry": 25498.0,
+    "to_close": -0.43,
+    "to_next_close": -1.06
+   },
+   "members": {
+    "HEROMOTOCO": {
+     "entry": 5351.0,
+     "to_close": -0.41,
+     "to_next_close": -1.83
+    }
+   },
+   "move_to_close": -0.41,
+   "n": 1,
+   "move_to_next_close": -1.83,
+   "alt_basis": "open",
+   "alt_to_close": -0.54,
+   "alt_to_next_close": -1.96,
+   "alt_nifty": {
+    "to_close": 0.44,
+    "to_next_close": -0.2
+   },
+   "sector": "auto",
+   "sector_to_close": -0.41,
+   "sector_n": 11,
+   "sector_to_next_close": -2.03,
+   "vs_nifty_close": 0.02,
+   "vs_nifty_next": -0.77,
+   "vs_sector_close": 0.0,
+   "vs_sector_next": 0.2,
+   "counted": false,
+   "primary": "to_close",
+   "right_close": null,
+   "right_next": null,
+   "right_vs_nifty_close": null,
+   "right_vs_nifty_next": null,
+   "right_primary": null,
+   "right_vs_nifty_primary": null
+  },
+  {
+   "id": "R27",
+   "row": 27,
+   "said": "Tue 17 Nov 12:30",
+   "want": "DOWN",
+   "note": "Said after the fall had started ('fell from 8 to 1 percent').",
+   "name": "ANGELONE",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-17",
+   "entry_at": "12:30",
+   "next_day": "2026-11-18",
+   "nifty": {
+    "entry": 25488.05,
+    "to_close": -0.39,
+    "to_next_close": -1.02
+   },
+   "members": {
+    "ANGELONE": {
+     "entry": 367.45,
+     "to_close": -4.8,
+     "to_next_close": -7.93
+    }
+   },
+   "move_to_close": -4.8,
+   "n": 1,
+   "move_to_next_close": -7.93,
+   "alt_basis": "open",
+   "alt_to_close": 0.45,
+   "alt_to_next_close": -2.86,
+   "alt_nifty": {
+    "to_close": 0.44,
+    "to_next_close": -0.2
+   },
+   "sector": "capital-mkts",
+   "sector_to_close": -1.48,
+   "sector_n": 12,
+   "sector_to_next_close": -3.19,
+   "vs_nifty_close": -4.41,
+   "vs_nifty_next": -6.91,
+   "vs_sector_close": -3.32,
+   "vs_sector_next": -4.74,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": true,
+   "right_next": true,
+   "right_vs_nifty_close": true,
+   "right_vs_nifty_next": true,
+   "right_primary": true,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R28",
+   "row": 28,
+   "said": "Wed 18 Nov 08:13",
+   "want": "DOWN",
+   "note": null,
+   "name": "MANAPPURAM",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-18",
+   "entry_at": "open",
+   "next_day": "2026-11-19",
+   "nifty": {
+    "entry": 25323.15,
+    "to_close": -0.38,
+    "to_next_close": 0.75
+   },
+   "members": {
+    "MANAPPURAM": {
+     "entry": 291.5,
+     "to_close": -2.92,
+     "to_next_close": -2.97
+    }
+   },
+   "move_to_close": -2.92,
+   "n": 1,
+   "move_to_next_close": -2.97,
+   "alt_basis": "prevclose",
+   "alt_to_close": -4.59,
+   "alt_to_next_close": -4.64,
+   "alt_nifty": {
+    "to_close": -0.63,
+    "to_next_close": 0.5
+   },
+   "sector": "nbfc",
+   "sector_to_close": -1.15,
+   "sector_n": 16,
+   "sector_to_next_close": 0.15,
+   "vs_nifty_close": -2.54,
+   "vs_nifty_next": -3.72,
+   "vs_sector_close": -1.77,
+   "vs_sector_next": -3.12,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": true,
+   "right_next": true,
+   "right_vs_nifty_close": true,
+   "right_vs_nifty_next": true,
+   "right_primary": true,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R29",
+   "row": 29,
+   "said": "Wed 18 Nov 12:20 (his trade was earlier, time not known)",
+   "want": "DOWN",
+   "note": "Scored from 12:20, the time of his message; alt = from the open (his trade time is unknown).",
+   "name": "TITAN",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-18",
+   "entry_at": "12:20",
+   "next_day": "2026-11-19",
+   "nifty": {
+    "entry": 25246.55,
+    "to_close": -0.07,
+    "to_next_close": 1.06
+   },
+   "members": {
+    "TITAN": {
+     "entry": 4683.9,
+     "to_close": -0.76,
+     "to_next_close": 0.34
+    }
+   },
+   "move_to_close": -0.76,
+   "n": 1,
+   "move_to_next_close": 0.34,
+   "alt_basis": "open",
+   "alt_to_close": -4.77,
+   "alt_to_next_close": -3.71,
+   "alt_nifty": {
+    "to_close": -0.38,
+    "to_next_close": 0.75
+   },
+   "sector": "consumer",
+   "sector_to_close": -0.43,
+   "sector_n": 20,
+   "sector_to_next_close": 0.82,
+   "vs_nifty_close": -0.69,
+   "vs_nifty_next": -0.72,
+   "vs_sector_close": -0.33,
+   "vs_sector_next": -0.48,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": true,
+   "right_next": false,
+   "right_vs_nifty_close": true,
+   "right_vs_nifty_next": true,
+   "right_primary": true,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R30",
+   "row": 30,
+   "said": "Wed 18 Nov 12:20",
+   "want": "DOWN",
+   "note": "Said after the share had already crossed -3% (11:40).",
+   "name": "KALYANKJIL",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-18",
+   "entry_at": "12:20",
+   "next_day": "2026-11-19",
+   "nifty": {
+    "entry": 25246.55,
+    "to_close": -0.07,
+    "to_next_close": 1.06
+   },
+   "members": {
+    "KALYANKJIL": {
+     "entry": 647.3,
+     "to_close": 0.42,
+     "to_next_close": 2.12
+    }
+   },
+   "move_to_close": 0.42,
+   "n": 1,
+   "move_to_next_close": 2.12,
+   "alt_basis": "open",
+   "alt_to_close": -4.8,
+   "alt_to_next_close": -3.19,
+   "alt_nifty": {
+    "to_close": -0.38,
+    "to_next_close": 0.75
+   },
+   "sector": "consumer",
+   "sector_to_close": -0.43,
+   "sector_n": 20,
+   "sector_to_next_close": 0.82,
+   "vs_nifty_close": 0.49,
+   "vs_nifty_next": 1.06,
+   "vs_sector_close": 0.85,
+   "vs_sector_next": 1.3,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": false,
+   "right_next": false,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": false,
+   "right_primary": false,
+   "right_vs_nifty_primary": false
+  },
+  {
+   "id": "R31",
+   "row": 31,
+   "said": "Thu 19 Nov 09:13",
+   "want": "DOWN",
+   "note": null,
+   "name": "UNITDSPR",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-19",
+   "entry_at": "open",
+   "next_day": "2026-11-20",
+   "nifty": {
+    "entry": 25186.8,
+    "to_close": 1.3,
+    "to_next_close": 2.44
+   },
+   "members": {
+    "UNITDSPR": {
+     "entry": 1393.4,
+     "to_close": 4.78,
+     "to_next_close": 5.35
+    }
+   },
+   "move_to_close": 4.78,
+   "n": 1,
+   "move_to_next_close": 5.35,
+   "alt_basis": "prevclose",
+   "alt_to_close": 1.32,
+   "alt_to_next_close": 1.87,
+   "alt_nifty": {
+    "to_close": 1.14,
+    "to_next_close": 2.27
+   },
+   "sector": "fmcg",
+   "sector_to_close": 1.72,
+   "sector_n": 15,
+   "sector_to_next_close": 2.41,
+   "vs_nifty_close": 3.48,
+   "vs_nifty_next": 2.91,
+   "vs_sector_close": 3.06,
+   "vs_sector_next": 2.94,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": false,
+   "right_next": false,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": false,
+   "right_primary": false,
+   "right_vs_nifty_primary": false
+  },
+  {
+   "id": "R32",
+   "row": 32,
+   "said": "Thu 19 Nov 12:52",
+   "want": "DOWN",
+   "note": "Asked as a question ('correct? I don't understand'); counted, as in the desk's table.",
+   "name": "Banks (F&O)",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-19",
+   "entry_at": "12:52",
+   "next_day": "2026-11-20",
+   "nifty": {
+    "entry": 25369.05,
+    "to_close": 0.57,
+    "to_next_close": 1.7
+   },
+   "members": {
+    "AXISBANK": {
+     "entry": 1372.9,
+     "to_close": 0.58,
+     "to_next_close": 5.47
+    },
+    "BANDHANBNK": {
+     "entry": 174.78,
+     "to_close": 0.13,
+     "to_next_close": 0.2
+    },
+    "BANKBARODA": {
+     "entry": 280.37,
+     "to_close": 1.97,
+     "to_next_close": 2.3
+    },
+    "CANBK": {
+     "entry": 135.38,
+     "to_close": 0.48,
+     "to_next_close": 2.56
+    },
+    "FEDERALBNK": {
+     "entry": 364.7,
+     "to_close": -0.05,
+     "to_next_close": 2.41
+    },
+    "HDFCBANK": {
+     "entry": 816.15,
+     "to_close": 0.69,
+     "to_next_close": 4.03
+    },
+    "ICICIBANK": {
+     "entry": 1596.6,
+     "to_close": 0.77,
+     "to_next_close": 2.75
+    },
+    "IDFCFIRSTB": {
+     "entry": 85.67,
+     "to_close": 0.44,
+     "to_next_close": 1.55
+    },
+    "INDUSINDBK": {
+     "entry": 915.85,
+     "to_close": 0.85,
+     "to_next_close": 8.97
+    },
+    "KOTAKBANK": {
+     "entry": 499.1,
+     "to_close": 0.78,
+     "to_next_close": 2.95
+    },
+    "PNB": {
+     "entry": 154.65,
+     "to_close": 0.13,
+     "to_next_close": 0.39
+    },
+    "SBIN": {
+     "entry": 1146.0,
+     "to_close": 0.87,
+     "to_next_close": 2.1
+    },
+    "YESBANK": {
+     "entry": 17.91,
+     "to_close": -0.39,
+     "to_next_close": 0.22
+    },
+    "AUBANK": {
+     "entry": 980.95,
+     "to_close": 0.3,
+     "to_next_close": 0.11
+    },
+    "INDIANB": {
+     "entry": 940.25,
+     "to_close": 0.72,
+     "to_next_close": 0.93
+    },
+    "UNIONBANK": {
+     "entry": 208.33,
+     "to_close": 0.8,
+     "to_next_close": 4.16
+    },
+    "BANKINDIA": {
+     "entry": 161.97,
+     "to_close": -0.04,
+     "to_next_close": 1.23
+    },
+    "RBLBANK": {
+     "entry": 387.25,
+     "to_close": 0.43,
+     "to_next_close": 2.78
+    },
+    "CUB": {
+     "entry": 232.21,
+     "to_close": 0.84,
+     "to_next_close": 7.36
+    },
+    "KARURVYSYA": {
+     "entry": 388.45,
+     "to_close": -1.15,
+     "to_next_close": -2.99
+    },
+    "MAHABANK": {
+     "entry": 97.89,
+     "to_close": 0.09,
+     "to_next_close": 1.03
+    },
+    "UJJIVANSFB": {
+     "entry": 60.63,
+     "to_close": -0.03,
+     "to_next_close": -1.7
+    }
+   },
+   "move_to_close": 0.46,
+   "n": 22,
+   "move_to_next_close": 2.2,
+   "alt_basis": "open",
+   "alt_to_close": 1.52,
+   "alt_to_next_close": 3.69,
+   "alt_nifty": {
+    "to_close": 1.3,
+    "to_next_close": 2.44
+   },
+   "sector": "(the basket is the sector)",
+   "sector_to_close": null,
+   "sector_to_next_close": null,
+   "vs_nifty_close": -0.11,
+   "vs_nifty_next": 0.5,
+   "vs_sector_close": null,
+   "vs_sector_next": null,
+   "breadth_right_close": "5/22",
+   "breadth_right_next": "2/22",
+   "counted": true,
+   "primary": "to_close",
+   "right_close": false,
+   "right_next": false,
+   "right_vs_nifty_close": true,
+   "right_vs_nifty_next": false,
+   "right_primary": false,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R33a",
+   "row": 33,
+   "said": "Thu 19 Nov 14:44",
+   "want": "DOWN",
+   "note": "He meant 20 Nov: the 20 Nov close (next-day column) is the one that counts for this read.",
+   "name": "Auto (F&O)",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-19",
+   "entry_at": "14:44",
+   "next_day": "2026-11-20",
+   "nifty": {
+    "entry": 25469.05,
+    "to_close": 0.18,
+    "to_next_close": 1.3
+   },
+   "members": {
+    "MARUTI": {
+     "entry": 13458.0,
+     "to_close": 0.97,
+     "to_next_close": 3.9
+    },
+    "M&M": {
+     "entry": 3500.6,
+     "to_close": 0.24,
+     "to_next_close": 1.37
+    },
+    "BAJAJ-AUTO": {
+     "entry": 10790.0,
+     "to_close": 0.25,
+     "to_next_close": -0.31
+    },
+    "HEROMOTOCO": {
+     "entry": 5519.0,
+     "to_close": 0.67,
+     "to_next_close": 0.02
+    },
+    "EICHERMOT": {
+     "entry": 8046.5,
+     "to_close": 0.15,
+     "to_next_close": 0.74
+    },
+    "TVSMOTOR": {
+     "entry": 4543.7,
+     "to_close": 1.27,
+     "to_next_close": 0.89
+    },
+    "ASHOKLEY": {
+     "entry": 167.2,
+     "to_close": -0.63,
+     "to_next_close": -2.21
+    },
+    "TMPV": {
+     "entry": 261.65,
+     "to_close": 0.71,
+     "to_next_close": 1.78
+    },
+    "ATHERENERG": {
+     "entry": 1909.0,
+     "to_close": 0.83,
+     "to_next_close": 1.36
+    },
+    "FORCEMOT": {
+     "entry": 20318.0,
+     "to_close": 0.62,
+     "to_next_close": -0.21
+    },
+    "HYUNDAI": {
+     "entry": 2204.0,
+     "to_close": 0.69,
+     "to_next_close": 0.38
+    }
+   },
+   "move_to_close": 0.67,
+   "n": 11,
+   "move_to_next_close": 0.74,
+   "sector": "(the basket is the sector)",
+   "sector_to_close": null,
+   "sector_to_next_close": null,
+   "vs_nifty_close": 0.49,
+   "vs_nifty_next": -0.56,
+   "vs_sector_close": null,
+   "vs_sector_next": null,
+   "breadth_right_close": "1/11",
+   "breadth_right_next": "3/11",
+   "counted": true,
+   "primary": "to_next_close",
+   "right_close": false,
+   "right_next": false,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": true,
+   "right_primary": false,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R33b",
+   "row": 33,
+   "said": "Thu 19 Nov 14:44",
+   "want": "DOWN",
+   "note": "VOLTAS, BLUESTARCO, HAVELLS, CROMPTON, DIXON, AMBER, PGEL, TITAN, KALYANKJIL. Scored on the 20 Nov close.",
+   "name": "Consumer durables / ACs (F&O)",
+   "ce_pe": "PE",
+   "entry_day": "2026-11-19",
+   "entry_at": "14:44",
+   "next_day": "2026-11-20",
+   "nifty": {
+    "entry": 25469.05,
+    "to_close": 0.18,
+    "to_next_close": 1.3
+   },
+   "members": {
+    "VOLTAS": {
+     "entry": 1230.1,
+     "to_close": 0.56,
+     "to_next_close": 0.4
+    },
+    "BLUESTARCO": {
+     "entry": 1766.8,
+     "to_close": -0.16,
+     "to_next_close": 1.36
+    },
+    "HAVELLS": {
+     "entry": 1196.8,
+     "to_close": 0.33,
+     "to_next_close": 0.43
+    },
+    "CROMPTON": {
+     "entry": 218.41,
+     "to_close": 0.73,
+     "to_next_close": 2.42
+    },
+    "DIXON": {
+     "entry": 13053.0,
+     "to_close": 0.01,
+     "to_next_close": 0.05
+    },
+    "AMBER": {
+     "entry": 6723.5,
+     "to_close": -0.39,
+     "to_next_close": 0.25
+    },
+    "PGEL": {
+     "entry": 575.3,
+     "to_close": 0.51,
+     "to_next_close": 2.21
+    },
+    "TITAN": {
+     "entry": 4662.4,
+     "to_close": 0.81,
+     "to_next_close": -1.07
+    },
+    "KALYANKJIL": {
+     "entry": 655.75,
+     "to_close": 0.8,
+     "to_next_close": -2.6
+    }
+   },
+   "move_to_close": 0.51,
+   "n": 9,
+   "move_to_next_close": 0.4,
+   "sector": "consumer (without the basket)",
+   "sector_to_close": 0.14,
+   "sector_n": 12,
+   "sector_to_next_close": 0.77,
+   "vs_nifty_close": 0.33,
+   "vs_nifty_next": -0.9,
+   "vs_sector_close": 0.37,
+   "vs_sector_next": -0.37,
+   "breadth_right_close": "2/9",
+   "breadth_right_next": "2/9",
+   "counted": true,
+   "primary": "to_next_close",
+   "right_close": false,
+   "right_next": false,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": true,
+   "right_primary": false,
+   "right_vs_nifty_primary": true
+  },
+  {
+   "id": "R33c",
+   "row": 33,
+   "said": "Thu 19 Nov 14:44",
+   "want": "UP",
+   "note": "'It will again come back' - read as metals up after the 52-week low; implied, scored on the 20 Nov close.",
+   "name": "Metals 'come back' (F&O)",
+   "ce_pe": "CE",
+   "entry_day": "2026-11-19",
+   "entry_at": "14:44",
+   "next_day": "2026-11-20",
+   "nifty": {
+    "entry": 25469.05,
+    "to_close": 0.18,
+    "to_next_close": 1.3
+   },
+   "members": {
+    "TATASTEEL": {
+     "entry": 181.06,
+     "to_close": -0.09,
+     "to_next_close": -1.8
+    },
+    "JSWSTEEL": {
+     "entry": 1326.1,
+     "to_close": 0.81,
+     "to_next_close": 0.27
+    },
+    "HINDALCO": {
+     "entry": 903.8,
+     "to_close": 0.69,
+     "to_next_close": 2.83
+    },
+    "VEDL": {
+     "entry": 243.3,
+     "to_close": 0.16,
+     "to_next_close": -2.77
+    },
+    "JINDALSTEL": {
+     "entry": 1111.4,
+     "to_close": 0.28,
+     "to_next_close": 1.13
+    },
+    "SAIL": {
+     "entry": 164.22,
+     "to_close": 0.13,
+     "to_next_close": 0.23
+    },
+    "NMDC": {
+     "entry": 67.94,
+     "to_close": 0.38,
+     "to_next_close": 0.94
+    },
+    "NATIONALUM": {
+     "entry": 303.1,
+     "to_close": 1.29,
+     "to_next_close": 0.36
+    },
+    "HINDZINC": {
+     "entry": 526.1,
+     "to_close": 0.55,
+     "to_next_close": -0.71
+    },
+    "APLAPOLLO": {
+     "entry": 2184.8,
+     "to_close": -1.69,
+     "to_next_close": -3.65
+    },
+    "COALINDIA": {
+     "entry": 392.8,
+     "to_close": -0.33,
+     "to_next_close": -0.73
+    }
+   },
+   "move_to_close": 0.28,
+   "n": 11,
+   "move_to_next_close": 0.23,
+   "sector": "(the basket is the sector)",
+   "sector_to_close": null,
+   "sector_to_next_close": null,
+   "vs_nifty_close": 0.1,
+   "vs_nifty_next": -1.07,
+   "vs_sector_close": null,
+   "vs_sector_next": null,
+   "breadth_right_close": "8/11",
+   "breadth_right_next": "6/11",
+   "counted": true,
+   "primary": "to_next_close",
+   "right_close": true,
+   "right_next": true,
+   "right_vs_nifty_close": true,
+   "right_vs_nifty_next": false,
+   "right_primary": true,
+   "right_vs_nifty_primary": false
+  },
+  {
+   "id": "N1",
+   "row": "20N-a",
+   "said": "Fri 20 Nov 07:45",
+   "want": "UP",
+   "note": "HAL, BEL, BDL, MAZDOCK, COCHINSHIP, SOLARINDS, DATAPATTNS, BHARATFORG (ASTRAMICRO is not F&O). Sector = capital goods without the 8.",
+   "name": "Defence F&O (8)",
+   "ce_pe": "CE",
+   "entry_day": "2026-11-20",
+   "entry_at": "open",
+   "next_day": null,
+   "nifty": {
+    "entry": 25368.0,
+    "to_close": 1.71,
+    "to_next_close": null
+   },
+   "members": {
+    "HAL": {
+     "entry": 4762.1,
+     "to_close": 0.54,
+     "to_next_close": null
+    },
+    "BEL": {
+     "entry": 402.75,
+     "to_close": -0.34,
+     "to_next_close": null
+    },
+    "BDL": {
+     "entry": 1030.4,
+     "to_close": 0.4,
+     "to_next_close": null
+    },
+    "MAZDOCK": {
+     "entry": 1842.0,
+     "to_close": 0.05,
+     "to_next_close": null
+    },
+    "COCHINSHIP": {
+     "entry": 1138.2,
+     "to_close": -1.18,
+     "to_next_close": null
+    },
+    "SOLARINDS": {
+     "entry": 18800.0,
+     "to_close": -0.46,
+     "to_next_close": null
+    },
+    "DATAPATTNS": {
+     "entry": 4120.0,
+     "to_close": 2.33,
+     "to_next_close": null
+    },
+    "BHARATFORG": {
+     "entry": 1725.1,
+     "to_close": 1.36,
+     "to_next_close": null
+    }
+   },
+   "move_to_close": 0.23,
+   "n": 8,
+   "move_to_next_close": null,
+   "alt_basis": "prevclose",
+   "alt_to_close": -0.09,
+   "alt_to_next_close": null,
+   "alt_nifty": {
+    "to_close": 1.12,
+    "to_next_close": null
+   },
+   "sector": "capital-goods (without the basket)",
+   "sector_to_close": 0.9,
+   "sector_n": 19,
+   "sector_to_next_close": null,
+   "vs_nifty_close": -1.48,
+   "vs_nifty_next": null,
+   "vs_sector_close": -0.67,
+   "vs_sector_next": null,
+   "breadth_right_close": "5/8",
+   "breadth_right_next": null,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": true,
+   "right_next": null,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": null,
+   "right_primary": true,
+   "right_vs_nifty_primary": false
+  },
+  {
+   "id": "N2",
+   "row": "20N-b",
+   "said": "Fri 20 Nov 07:45",
+   "want": "UP",
+   "note": "DIXON, KAYNES, PGEL, AMBER, SYRMA.",
+   "name": "DIXON + EMS group (F&O)",
+   "ce_pe": "CE",
+   "entry_day": "2026-11-20",
+   "entry_at": "open",
+   "next_day": null,
+   "nifty": {
+    "entry": 25368.0,
+    "to_close": 1.71,
+    "to_next_close": null
+   },
+   "members": {
+    "DIXON": {
+     "entry": 12940.0,
+     "to_close": 0.93,
+     "to_next_close": null,
+     "sector": "consumer",
+     "sector_to_close": 0.75,
+     "sector_to_next_close": null
+    },
+    "KAYNES": {
+     "entry": 2870.0,
+     "to_close": 1.45,
+     "to_next_close": null,
+     "sector": "capital-goods",
+     "sector_to_close": 0.4,
+     "sector_to_next_close": null
+    },
+    "PGEL": {
+     "entry": 569.9,
+     "to_close": 3.18,
+     "to_next_close": null,
+     "sector": "capital-goods",
+     "sector_to_close": 0.4,
+     "sector_to_next_close": null
+    },
+    "AMBER": {
+     "entry": 6630.0,
+     "to_close": 1.66,
+     "to_next_close": null,
+     "sector": "consumer",
+     "sector_to_close": 0.75,
+     "sector_to_next_close": null
+    },
+    "SYRMA": {
+     "entry": 1500.0,
+     "to_close": 0.93,
+     "to_next_close": null,
+     "sector": "auto-anc",
+     "sector_to_close": 0.51,
+     "sector_to_next_close": null
+    }
+   },
+   "move_to_close": 1.45,
+   "n": 5,
+   "move_to_next_close": null,
+   "alt_basis": "prevclose",
+   "alt_to_close": 0.64,
+   "alt_to_next_close": null,
+   "alt_nifty": {
+    "to_close": 1.12,
+    "to_next_close": null
+   },
+   "sector": "each member vs its own sector median (without the group)",
+   "sector_to_close": null,
+   "sector_to_next_close": null,
+   "vs_nifty_close": -0.26,
+   "vs_nifty_next": null,
+   "vs_sector_close": 0.91,
+   "vs_sector_next": null,
+   "breadth_right_close": "5/5",
+   "breadth_right_next": null,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": true,
+   "right_next": null,
+   "right_vs_nifty_close": false,
+   "right_vs_nifty_next": null,
+   "right_primary": true,
+   "right_vs_nifty_primary": false
+  },
+  {
+   "id": "N3",
+   "row": "20N-c",
+   "said": "Fri 20 Nov 07:45 (photo)",
+   "want": "UP",
+   "note": "AZAD (Azad Engineering, not F&O). NSE bulk deals of Wed 18 Nov: buyers Norges Bank (FII) 473,088 + ValueQuest funds 1,147,000 = 1,620,088 shares at 2,286 (the headline's 2.51% fits an equity of ~6.45 crore shares; share count not checked here); the promoter sold 3,500,000. Thu 19 Nov close 2,410.2, +3.94% (the 'jumps 4%'). Thursday's own NSE bulk / block files (19 Nov) hold no aerospace / defence share.",
+   "name": "AZAD",
+   "ce_pe": "CE",
+   "entry_day": "2026-11-20",
+   "entry_at": "open",
+   "next_day": null,
+   "nifty": {
+    "entry": 25368.0,
+    "to_close": 1.71,
+    "to_next_close": null
+   },
+   "members": {
+    "AZAD": {
+     "entry": null,
+     "to_close": null,
+     "to_next_close": null
+    }
+   },
+   "move_to_close": null,
+   "n": 0,
+   "move_to_next_close": null,
+   "alt_basis": "prevclose",
+   "alt_to_close": null,
+   "alt_to_next_close": null,
+   "alt_nifty": {
+    "to_close": 1.12,
+    "to_next_close": null
+   },
+   "sector": "capital-goods",
+   "sector_to_close": 0.54,
+   "sector_n": 25,
+   "sector_to_next_close": null,
+   "vs_nifty_close": null,
+   "vs_nifty_next": null,
+   "vs_sector_close": null,
+   "vs_sector_next": null,
+   "counted": true,
+   "primary": "to_close",
+   "right_close": null,
+   "right_next": null,
+   "right_vs_nifty_close": null,
+   "right_vs_nifty_next": null,
+   "right_primary": null,
+   "right_vs_nifty_primary": null
+  }
+ ]
+}
