@@ -28,6 +28,18 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 23:45 IST (real time) - WORLD DRIVERS PAGE (Shift+F2) IS FROZEN AT FRI 15:29 (trader's phone screenshot, Sat 23:35)
+Every row says LATE 32h and shows the move up to India's close: SOX -2.41%, Nasdaq fut -1.57%, gold -3.01%. The real overnight moves were
+SOX -10.73%, Nasdaq -5.28%, NQ futures about -4%, BTC -6%, GIFT NIFTY 25,836 (+0.14% vs NIFTY) at 02:44. A trader reading this on the
+weekend is told the US fall was small. FIX before the Sun 16:00 freeze:
+1. Each driver shows its LATEST value with its own time (US cash close Fri 02:30 IST, NQ / ES last quote, LME / COMEX close, BTC live,
+   GIFT NIFTY night-session close) and a column "SINCE INDIA'S CLOSE (Fri 15:30)" - that column IS the gap signal.
+2. Add rows: GIFT NIFTY (vs NIFTY close, points + %), Bitcoin (weekend gauge), US HY proxy, Fed odds - from the B2 / money-map feeds
+   that already exist.
+3. Weekend / holiday: MCX / CDS rows say "market closed - normal", not "missing"; a value that is old because its market is shut says
+   "closed, last Fri 23:30" in grey, not red LATE.
+4. Same fix on the Morning page driver cards and the top strip (GIFT NIFTY "not known" -> the night close with its time).
+
 ## 21 Nov 23:40 IST (real time) - ORDER FLOW (trader asked after a reel selling "order flow" software). Free version from our own data:
 from the depth recorder (Kite 5 levels from Mon 09:45) + ticks: per share and per minute - buy vs sell aggression (trades at ask vs at bid
 = delta), book imbalance (bid qty vs ask qty, top 5), large-order prints, absorption (price holds while heavy selling hits). STUDY after
