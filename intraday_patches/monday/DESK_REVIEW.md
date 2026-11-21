@@ -28,6 +28,22 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 16:20 IST (real time) - THE TRADER (Bitcoin reel): "rising borrowing costs added pressure - looks like something is happening."
+FACT CHECK (Reuters 20 Nov, checked): Bitcoin fell below $60,000 for the first time since July, then to about $56,800, lowest in two
+years; Ether -5%; spot Bitcoin ETFs -$582 mn. Reuters' causes: AI-spending profit worries, RISING BORROWING COSTS, regulation risk after
+the US midterms, the Nvidia CEO exit. "Borrowing costs" here means: Fed December hike priced ~92%, US 30-year mortgage 7.28%, 10y
+near 5% (on Friday itself the 10y FELL 12 bp, to about 4.93% - money ran to bonds). Our EVENT_MEMORY K already has the Fed-hike story;
+what was MISSING is a live risk gauge.
+BUILD NOW (code, $0): SHOCK_ALERTS family B2 - Bitcoin / Ether + borrowing-cost gauges (US 2y, Fed odds, US high-yield spread, Japan
+10y, India 10y, call rate), 24 x 7. Bitcoin is the only big risk market trading on Saturday and Sunday: the Sunday 19:45 brief and
+the Monday 07:15 brief carry one line "WEEKEND RISK GAUGE: BTC x% since Fri 15:30 IST".
+STUDY FIRST, before it is used in any call (lesson of the RBI mistake): Bitcoin's Fri 15:30 -> Mon 08:30 IST move vs the Monday NIFTY
+gap and close (2017 onward; all Mondays, and Mondays after a US fall >= 2%); does Bitcoin add anything on top of the Nasdaq-futures line?
+Also: high-yield spread jumps vs India's next day. Until the study passes, the brief says "information only, not proven".
+Shares to watch IF borrowing costs keep rising (judgement, NOT PROVEN): NBFC / housing finance (BAJFINANCE, CHOLAFIN, SHRIRAMFIN,
+LICHSGFIN, MUTHOOTFIN), real estate (DLF, GODREJPROP, LODHA), high-valuation new-age (PAYTM, POLICYBZR, NYKAA, ETERNAL). PE side only
+with a fresh trigger and price confirmation - the normal rules.
+
 ## 21 Nov 16:05 IST (real time) - THE TRADER: "All the work can be done now. Why are we saying before Monday? Everything can be
 continued." NO "AFTER MONDAY" LIST ANY MORE. Everything starts now and keeps going through the weekend, in this order:
   1. the 15:55 gap-review safety items, 2. the index desk + its tests + the Monday index plan, 3. the RBI correction confirm + the PROOF

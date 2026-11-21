@@ -10,6 +10,7 @@ sources first and explained by the AI from a reserved budget.
 |---|---|---|---|
 | **A. World market shock** | S&P, Nasdaq, Dow (cash + futures), SOX, Nikkei, KOSPI, Taiwan, Hang Seng, Shanghai, Europe (DAX / FTSE) | >= 2% from previous close, or >= 1% inside 30 min | code, every 5 min, 24 x 7 |
 | **B. World macro shock** | US 10y, DXY, USDJPY, USDCNY, Brent, gold, silver, copper, natural gas | 10y >= 15 bp; DXY >= 1%; USDJPY >= 1.5%; CNY >= 0.5%; Brent / copper >= 3%; gold / silver >= 2% | code |
+| **B2. Risk-appetite and borrowing-cost gauges (added 21 Nov, trader)** | Bitcoin and Ether (the only big risk market open on Sat / Sun - the WEEKEND gauge), US 2y, Fed-hike odds (CME FedWatch), US high-yield spread, Japan 10y, India 10y G-sec, call rate | BTC >= 5% in 24 h or >= 3% in 1 h; 2-year low / high; US 2y >= 15 bp; Fed odds move >= 20 pts; HY spread >= 25 bp in a day or above 400 bp; India 10y >= 8 bp | code, every 5 min, 24 x 7 |
 | **C. India market shock (09:00-15:30)** | NIFTY, BANKNIFTY, FINNIFTY, MIDCPNIFTY, every sector index, India VIX | index >= 0.7% inside 15 min or >= 1.5% on the day; sector >= 1.5% inside 15 min; VIX +10% | code, every minute |
 | **D. F&O share shock** | all F&O shares | >= 3% inside 5 min with RVOL >= 3; upper / lower band hit; added to the F&O ban list; pre-open IEP gap >= 3% (with the thin pre-open rule, IEP on real volume only) | code |
 | **E. Overnight India** | GIFT NIFTY, ADRs (INFY, WIT, HDB, IBN), USDINR NDF | GIFT >= 1%; ADR >= 3%; USDINR >= 0.8% | code |
