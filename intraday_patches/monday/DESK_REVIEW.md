@@ -28,6 +28,19 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 16:05 IST (real time) - THE TRADER: "All the work can be done now. Why are we saying before Monday? Everything can be
+continued." NO "AFTER MONDAY" LIST ANY MORE. Everything starts now and keeps going through the weekend, in this order:
+  1. the 15:55 gap-review safety items, 2. the index desk + its tests + the Monday index plan, 3. the RBI correction confirm + the PROOF
+  re-run, 4. EVERYTHING that was on the "after Monday" list: M2 into grades, M3, look-ahead stages by the head, free upgrades 2-8, his
+  trade journal, backups + snapshot, second P1 channel, disk alarm, results-IV block, MSCI 30 Nov list, earnings-call reader, and the
+  not-built news sources (India data calendar, Fed / ECB / BoJ, global peers' results, GST Council, EIA / OPEC, CNBC Awaaz / Sansad TV,
+  broker PDFs). Free sources only; anything paid waits for his yes.
+The ONLY real limits: (a) Sunday 17:00 mock / 18:30 ring test / 19:45 brief keep their times; (b) no change to the LIVE services
+Mon 09:00-15:35 - work goes on in preview / shadow during the day and is switched in after 15:35 once its tests pass; (c) every new
+piece is tested before it goes live, so nothing half-built breaks Monday's desk. Building costs nothing from the $8 AI cap (it runs on
+his subscription). The reboot: may move to SUNDAY before the 17:00 mock if the trader agrees (it then doubles as the restart proof).
+Report in STATUS every hour: each item as DONE / TESTING / BUILDING / NOT STARTED.
+
 ## 21 Nov 15:55 IST (real time) - PENDING LIST for the server, one place (note: the desk's entries stamped 16:00-17:15 were written
 between 15:20 and 15:50 - clock slip on the desk side; their content stands).
 NOT YET SEEN IN STATUS - the 14:40 GAP-REVIEW CRITICAL items (do these FIRST, before the index build):
