@@ -28,6 +28,21 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 22:05 IST (real time) - ANSWERS to the server's 4 replay decisions (trader + reviewer). Friday replay: critical items carded 5,
+none in time - not acceptable. Apply now:
+1. RBI cash operations: YES - every RBI liquidity operation >= Rs 25,000 cr (VRR / VRRR / OMO / FX swap, notice AND result) gets a card
+   and one Trade now line (amount, bids / cover, window, reversal date), labelled "information - not a bank CE signal (386-case study)".
+   "Procedural" is never a reason to stay silent (trader rule 8).
+2. World headlines when the cap is nearly used: YES - a world / India shock item (families A / B / E / G / I with price confirming, or a
+   top-tier wire naming a mega-cap / central bank) is read from the SHOCK bucket, never queued behind READ. The free code SHOCK line goes
+   out regardless of any cap. Nothing like the Nvidia probe / US close may sit unread for hours again.
+3. Backlog at start: YES - clear it newest and most important first (official > top-tier wire > F&O-named > the rest), last 18 h only,
+   group duplicates into one card, inside READ; anything older than 18 h is summarised in one line, not read item by item.
+4. Google News robots.txt: STOP the browser disguise now. GIR does not evade a site's rules (same as the 403 / robots rule everywhere
+   else). Replace it with the publishers' own feeds (ET, Moneycontrol, Business Standard, FE, Zee Biz, CNBC-TV18 sitemaps / RSS) matched
+   to the 218 F&O names + NSE / BSE filings - they are also far faster (1.8-2.6 min vs 96 min). Report per-share coverage before / after.
+Then re-run the Friday replay and report "critical items carded in time: x of y" again.
+
 ## 21 Nov 21:30 IST (real time, hourly) - VERDICTS after the reboot
 ACCEPTED: reboot 20:20, up 20:22 on kernel 6.8.0-151; postreboot.sh 96 PASS / 0 FAIL (POSTREBOOT_2047.txt): 17 new units + 13 feeders
 active, 28 timers with next runs (Kite login Mon 07:40, depth 09:45, pre-open 08:59, NFO instruments 08:05), m2prep ran 20:40, remote-control
