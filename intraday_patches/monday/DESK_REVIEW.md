@@ -14,6 +14,18 @@
   change nothing until the trader decides.
 - **Trader's call (asked now):** globaleye (old GIR v1) and paper_counterfactual / paper_eod_report still post to GIR Alerts - keep or mute.
 
+## 21 Nov 09:45 IST - URGENT STUDY for the trader (code only, $0, today): "After a big Nasdaq fall, what does India do next?"
+From Yahoo daily bars (p_uswrap already reads them) + /root/hist + fo_daily, 2005 (or the longest available) -> 20 Nov 2026:
+1. Every US session with Nasdaq Composite <= -3% (and the subset <= -4.5%), and S&P <= -2.5%. For India's NEXT session: NIFTY gap at the
+   open (open vs previous close), the day's low and high vs previous close, the close; same for BANKNIFTY and NIFTY IT; minutes from the
+   open to the day's low (from minute data where /root/hist has it, 3 years).
+2. Split: (a) Friday US fall -> Monday India; (b) India had RISEN on the US-fall day (closed before the fall); (c) two US down days in a
+   row; (d) Asia already down >= 3% the same day.
+3. Base rates: % of cases India opened lower / closed lower / recovered from the open low to close positive / recovered within 5 days;
+   median and worst gap; which sector indices held up best (bank, pvt bank, PSU bank, IT, pharma, FMCG, auto, metal, realty).
+4. File onset_results/us_shock_study.md (+ .json), and give the head the summary as an EVENT_MEMORY-style lesson (NOT PROVEN,
+   with n) for the Sunday 19:45 brief. Report in STATUS as soon as it is done.
+
 ## 21 Nov 09:30 IST (hourly) - ACCEPTED: hunter LIVE fallback blocked (3 tests), swap 4 GB, 21 updates (70 services still up),
 gircrypto login block disabled. Two items need the trader's word (asked now): (1) the reboot for the 14 kept-back packages (kernel +
 systemd) - desk advice: YES, Sunday 12:00-13:00 IST, then check every GIR service, the feeds, girtrader.com and the desk BEFORE the 17:00
