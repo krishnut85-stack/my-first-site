@@ -14,6 +14,16 @@
   change nothing until the trader decides.
 - **Trader's call (asked now):** globaleye (old GIR v1) and paper_counterfactual / paper_eod_report still post to GIR Alerts - keep or mute.
 
+## 21 Nov 11:30 IST - DO NOW: the trader has had ZERO messages from the new desk
+1) Switch the new desk's Telegram ON today (his one desk channel) for: world / India shock lines, RBI / official alerts, cause (WHY)
+   cards and briefs. BUY NOW cards stay off until Monday 09:15 (market closed). TG_CHAT_FO / TG_CHAT_OI stay forbidden.
+2) Within the hour the HEAD ANALYST writes and SENDS a "MONDAY OUTLOOK" brief to that channel (weekend SHOCK / MEET money) using the
+   12-DRIVER CHECKLIST (11:20 entry): why the US fell (sources), what history says for Monday's open (us_shock_lesson), where money is
+   likely to go (rotation), RBI liquidity (the 20 Nov Rs 75,000 cr injection; the 3-day repo is repaid on Monday 23 Nov, so another
+   injection is likely), the CE and PE watch lists by sector, the 09:20 checks, NOT PROVEN.
+3) From now on the desk itself sends every shock, RBI / official alert and brief. Report in STATUS the minute the first message is
+   delivered to his Telegram.
+
 ## 21 Nov 11:20 IST - THE TRADER: "you chase whatever I name - copper, auto, RBI - that is not a human analyst". A FIXED DRIVER CHECKLIST.
 Every brief (19:45 / 07:15 / 09:08 and the Saturday-Sunday outlook) MUST carry all 12 drivers, one line each, with the CE / PE meaning and
 the F&O names - or "no change" - and the validator rejects a brief that skips one. Live, a change in ANY driver is a card / alert:
