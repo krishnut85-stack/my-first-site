@@ -901,3 +901,43 @@ Last update: 20:55 IST
   3. MSCI / FTSE: v2/data/ext/index_rebalance.json from MSCI's official 11 Nov lists: India Standard IN ADANIGREEN, COFORGE, LICI, MEESHO / OUT PIIND; Small Cap 11 in / 29 out; effective at the close Mon 30 Nov; F&O names flagged. FTSE December dates only (effective Mon 21 Dec; the India names sit behind a FTSE Russell login, NOT read).
   4. SIZE hints: checks.iv_hint() (IV jump -> bigger next-day move; crush -> smaller), checks.holiday_hint() (Wed 25 Nov after the Tue 24 holiday: bigger moves usual), checks.results_history() (an event library of 2,665 results reactions on 217 shares: SIZE carries over (unseen t 4.29), direction does NOT). test_checks.py 9 / 9. Upgrade 2 (trust score for v2 seats) needs Monday's scorecard.
   5. TRANSCRIPTS (prep, no AI): from NSE / BSE filings (SEBI requires them): 211 files, 191 MB in girdata/ext/transcripts/ (Q2 FY27, 21 Sep - 21 Nov): full text for 162 of 218 F&O shares, link-only 26, scanned / short 8, nothing filed 22 (e.g. BHEL, COALINDIA, HAL, ITC, DMART). Not scheduled (a nightly timer is optional).
+- 16:55 - DESK_REVIEW 21 Nov 16:50 OLD PROGRAMS PARKED - DONE (proof: archive/park_1127/ before.txt, after.txt, keep.txt, park_units.txt, prior_state.txt, park.log, crontab_before.txt)
+  1. DEPENDENCY CHECK FIRST: every file the new desk / new page reads outside v2/ was traced to its writer. 9 old services + 7 timers FEED THE NEW DESK and stay ON, renamed "new-system feeders" (keep.txt):
+     gir-intraday (share prices every second + option strikes: quotes_live.json / pins_live.json -> the new page, recorders, depth guard, price-stale alarm) · gir-futlive (futures OI) · gir-seclive (sector baskets) ·
+     gir-dash (girtrader.com itself, sector board, ban list, index strip, /mypnl) · gir-pnlwatch (his positions every 3 s, read only -> fills, loss lock, risk gates) · gir-windwatch (option OI history) ·
+     gir-newsroom (news.db -> the new news reader) · gir-tvwatch (tv.db -> the TV reader) · newshawk-filings (BSE bridge) · timers: Kite login x4, ivhist (results-IV block), universe, whydesk (MWPL ban warning), ixrefresh (charts), lockguard, watchdog.
+     Two of them could still post to Telegram (windwatch -> Bigmovers; tvwatch via opencall) - both MUTED now (flags tg_off/windwatch.off, opencall_tg.off; tested: the send returns False and logs "muted"). Old senders muted: 14 of 14.
+  2. PARKED (stopped + disabled, code and units on disk until Fri 27 Nov): 74 units - 20 services (gir-analyst, gir-desk, gir-earlyteam, gir-eventwatch, gir-exchange, gir-headsup, gir-newshunt, gir-policymap, gir-ready, globaleye,
+     newshawk + ahead / optionwatch / regwatch / tape / whales / xstream, regnews, fno-study, elon) and 54 timers (falcon, earlybird, fno-bot, 34 old gir-* jobs, 13 newshawk-*, panel-evening / execute, paper_counterfactual / eod_report).
+     7 old cron lines commented "#PARK1127" (globaleye restart + premarket check, newshawk guard + carry check, elon x2, fno importer). gir-park status: running 0 of 74, enabled 0 of 74.
+  3. CHANGED vs the trader's CPU option A: the Sun 21:00 cron that would pause gir-intraday is now OFF (#PARKFIX1127). Reason: the new page and desk read gir-intraday's prices; pausing it would blank share prices and fire the price-stale P1.
+     Falcon is already parked, so option A's other half is done. gir-intraday stays silent (muted, old AI off).
+  4. WATCHDOG: only the globaleye check removed (backup watchdog.py.bak_park1127). gir-watchdog itself untouched.
+  5. "gir mode old" = COLD FALLBACK for week 1: it now also starts the 74 parked units again and restores the cron lines (gir-park unpark, run as its own systemd job so Telegram / Settings never time out; about 2-5 minutes),
+     then unmutes. "gir mode new" parks them again. gir status shows "old programs ... running N of 74". Settings page text (switch title, confirm text, a new "old programs running" chip), runbook + its Telegram copy updated (send gate clean).
+     NOT TESTED end to end: my round-trip test (unpark + re-park of 2 harmless timers) was refused by the session's permission check; I did not retry. Checked: script syntax, status, the park itself. Test needs the trader's yes.
+  6. CPU / MEMORY, Saturday idle (5 x 5 s samples): busy 23% -> 7%; load 1.10 -> 0.68; memory used 5,925 MB -> 3,438 MB (2.5 GB freed; globaleye alone held 1.6 GB); swap 720 -> 376 MB; running services 71 -> 51.
+     Kite key 1 loses 3 old websocket users (globaleye, newshawk tape, optionwatch). The Sunday 17:00 mock CPU is measured at the mock.
+  7. SUBSCRIPTIONS (who uses each; the server never logs in to cancel; keys removed from the old configs only after he says cancelled, never printed):
+     | service | used by | monthly cost | action |
+     |---|---|---|---|
+     | X (Twitter) API credits | OLD ONLY (newshawk-xstream, earlyteam's xagent - both parked) | up to about Rs 9,250 at the 900-posts-a-day cap (desk note) | CANCEL: developer.x.com/en/portal/dashboard -> Billing |
+     | Google Gemini API | OLD ONLY (globaleye, panel analyst, premarket check - all parked) | not recorded on the server (free tier or pay per use) | CANCEL / delete key: aistudio.google.com/apikey; billing: console.cloud.google.com/billing |
+     | Etherscan API | NOBODY (no program reads it) | free key | optional delete: etherscan.io/myapikey |
+     | Kite Connect, 4 apps | BOTH (key 1 = the price engine the new page reads; keys 3 / 4 = new option + quote feeds; key 2 = price engine sockets) | about Rs 500 per app, ~Rs 2,000 + GST (desk note, verify) | KEEP |
+     | Anthropic API | NEW (old AI off by flag) | cap $8 a trading day, $1.50 weekend / holiday | KEEP |
+     | Deepgram speech-to-text | NEW (TV reader) | about $5-7 a trading day | KEEP |
+     | ET Prime | NEW (morning pieces) | his annual plan (not on the server) | KEEP |
+     | DigitalOcean droplet + daily backups | BOTH | see the DO billing page (not on the server) | KEEP |
+     | News feeds (RSS, NSE / BSE / RBI / SEBI, Yahoo), Telegram, ntfy | NEW | free | KEEP |
+     Check on his side: if he still pays PythonAnywhere for the very old Global Eye copy, that is old only (pythonanywhere.com/account). Not visible from the server.
+     Not touched (not GIR, his other projects): garuda site + its watchdog cron, the sectorbot / mayura crons, redis, ttyd, the DigitalOcean agent.
+- 16:55 - BUILDERS DONE (rows for the item table):
+     | item | owner | status |
+     |---|---|---|
+     | B2 gauges + WEEKEND RISK GAUGE line (Fed odds blocked 403 at CME, HY spread / Japan 10y not reachable - written as "not available") | news builder | DONE (sources 10/10, gauges 6/6) |
+     | global money map card (22 Yahoo series; Fri 20 Nov seeded) | news builder | DONE |
+     | CHIP-SHOCK STUDY (33 events; KPITTECH, KAYNES, TATAELXSI, LTIM, POWERINDIA lag most; 2026: CGPOWER, POWERINDIA, GVT&D, KAYNES, PGEL) | study agent | DONE - NOT PROVEN, base rates |
+     | Bitcoin weekend study (adds nothing beyond the NQ line, n 116; footnote only on Monday 07:15) | study agent | DONE - NOT PROVEN |
+     | India calendar D9 / seat 34, "14 of 15 Mondays" line, results-IV block, SIZE ONLY block, journal, AI wording, heartbeat, /status.json, account read, carry rule, ntfy code | safety builder | DONE (269 tests) |
+     | predict.room() live wiring (needs 09:15-09:19 bars + 20-day first-5-min volume) | safety builder | NOT STARTED - CPU risk at 09:20; plan: precompute the 20-day volume tonight, read the bars from the recorder store |

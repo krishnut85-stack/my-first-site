@@ -45,13 +45,13 @@ GIR never places orders. If anything below happens, your own trading is not affe
 ## WHAT TO TYPE
 - In the GIR group, System topic:
   - /gir status = shows the mode and the reasons to flip
-  - /gir mode old = brings back the OLD news senders
+  - /gir mode old = COLD fallback: the parked old programs start again (about 2-5 minutes), then the old alerts speak
   - /gir mode new = back to the new desk (Monday default)
 - On the server (or ask the helper): gir mode old / gir mode new / gir status
 - The website Settings page has the same GIR MODE switch
-- MONDAY NOTE: the old engine (gir-intraday) and falcon are PAUSED (your decision)
-  - so "gir mode old" brings back ONLY the old NEWS senders
-  - it does NOT bring back old trade alerts
+- WEEK 1 NOTE (21 Nov 16:50 order): the old programs are PARKED (stopped) until Fri 27 Nov
+  - "gir mode old" starts them again: a cold start, about 2-5 minutes, then check with /gir status
+  - the old price engine stays ON (the new desk reads its prices), silent; falcon is parked
 - When to flip: the 6 reasons GIR sends as "FLIP REASON n is TRUE"
   - flip back to NEW when the cause is fixed
 

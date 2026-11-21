@@ -46,15 +46,16 @@ TELEGRAM DEAD
 
 WHAT TO TYPE (SYSTEM TOPIC)
 • /gir status = mode + reasons to flip
-• /gir mode old = OLD news senders back
+• /gir mode old = old programs restart
 • /gir mode new = the new desk (default)
 • on the server: gir mode old / new / status
 • the website Settings page has the switch
 
-MONDAY NOTE
-• old engine and falcon are PAUSED by you
-• so gir mode old brings back ONLY old news
-• it does NOT bring back old trade alerts
+WEEK 1 NOTE
+• old programs PARKED until Fri 27 Nov
+• gir mode old = cold start, 2-5 minutes
+• then check: /gir status
+• old price engine stays on, silent
 • flip on a FLIP REASON n is TRUE line
 • flip back to NEW when the cause is fixed
 
