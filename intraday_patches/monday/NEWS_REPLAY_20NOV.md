@@ -1,5 +1,41 @@
 # NEWS REPLAY - Friday 20 Nov 2026 through the v2 news path
 
+## CARDING REPLAY after the 22:05 and 22:35 changes (made Sat 21 Nov 22:37 IST)
+
+**Critical items carded in time: 10 of 10 with the desk running all day (A); 4 of 10 from the real 19:23 start (B).**
+Earlier tonight: 7 of 10 / 4 of 10. Friday's live desk: 0 of 10.
+
+- **In time** = a desk card within 10 minutes of GIR's first sight (overnight items: also before the next 09:15 open).
+- **(A)** the v2 desk with tonight's code running all day Fri 20 Nov from 00:00 on the same recorded tape; weekend slow mode only after the evening brief (20:00) as the trader decided at 22:35. **(B)** the real start Fri 19:23.
+- **$0, no AI:** a card counts when CODE makes it (RBI operations >= Rs 25,000 cr; a big mover's investor-meet filing) or when the live readers actually carded the same story when they read it (recorded answer). No recorded answer = not counted.
+- **No Google News** (item 4): rows that came via news.google.com are removed. IndusInd's two Google-News copies drop out; it is now seen through **the NSE filing 'Schedule of analysts / institutional investors meet', Fri 18:41:41** (confirmed from NSE's own announcement list; v2 filings logged it at 18:41 in filings_lag.jsonl - the row text itself was lost in the 22:10 truncation).
+
+| # | Item | First seen | How it is carded | Card (A) | In time (A) | Card (B) | In time (B) | Why not |
+|---|---|---|---|---|---|---|---|---|
+| 1 | RBI VRR result 10:20 | Fri 10:28 (ext:bonds) | code card (item 1: RBI op >= Rs 25,000 cr) + one Trade now line; gate PASS; facts 3-day VRR result for Fri 20 Nov / Allotted Rs 50,003 cr / Offered Rs 50,000 cr / Bids Rs 112,555 cr (2.25x cover) | Fri 10:29 | yes | - | no | shocknews seeds silently at desk start: a release seen before 19:23 gets no code card |
+| 2 | Second VRR notice 12:35 | Fri 12:43 (ext:bonds) | code card (item 1: RBI op >= Rs 25,000 cr) + one Trade now line; gate PASS; facts 3-day VRR notice for Fri 20 Nov / Size Rs 25,000 cr / Bids window 12:45-13:15 / Money lent to the banks | Fri 12:44 | yes | - | no | shocknews seeds silently at desk start: a release seen before 19:23 gets no code card |
+| 3 | Second VRR result 13:40 | Fri 13:43 (ext:bonds) | code card (item 1: RBI op >= Rs 25,000 cr) + one Trade now line; gate PASS; facts 3-day VRR result for Fri 20 Nov / Allotted Rs 25,007 cr / Offered Rs 25,000 cr / Bids Rs 48,040 cr (1.92x cover) | Fri 13:44 | yes | - | no | shocknews seeds silently at desk start: a release seen before 19:23 gets no code card |
+| 4 | 4-day VRR notice 19:25 | Fri 19:32 (ext:regs) | code card (item 1: RBI op >= Rs 25,000 cr) + one Trade now line; gate PASS; facts 4-day VRR notice for Mon 23 Nov / Size Rs 50,000 cr / Bids window 09:30-10:00 / Money lent to the banks | Fri 19:33 | yes | Fri 19:33 | yes |  |
+| 5 | Nvidia SEC probe (Reuters) | Sat 00:46 (ext:fjuice) | item 2: hot top-tier headline (Securities and Exchange Commission probe into NVIDIA is exploring potential acco) -> R5 read at once from the SHOCK bucket + free code line; recorded answer: Sat 18:21 R5: Nvidia falls on a | Sat 00:47 | yes | Sat 00:47 | yes |  |
+| 6 | Anthropic IPO slide | Fri 19:33 (ext:world) | R5 path (weekend slow mode at 19:33: OFF - 22:35 rule: slow mode only after the evening brief); recorded answer: Fri 21:41 R5: Anthropic shares slide after listing as gold breaks lower; read for gold-linked India name | Fri 19:34 | yes | Fri 19:34 | yes |  |
+| 7 | US close S&P -3.7% / Nasdaq -5.3% | Sat 02:35 (ext:fjuice) | item 2: hot top-tier headline (S&P 500, Dow Jones close in correction territory) -> R5 read at once from the SHOCK bucket + free code line; recorded answer: Sat 07:59 R5: US indexes extend their fall as Nasdaq leads loss | Sat 02:36 | yes | Sat 02:36 | yes |  |
+| 8 | IndusInd roadshows | Fri 18:41 (v2 filings (NSE): Schedule of analysts/institutional investo) | code card (22:35: big mover + investor-meet filing): MOVER + INVESTOR MEET 18:41 IST: INDUSINDBK +8.6% today - filed: IndusInd Bank Limited has informed the Exchange about Schedule of analysts/institutional investors mee | Fri 18:42 | yes | - | no | (B) 18:41 is before the desk start (code alerts seed silently at start) |
+| 9 | CII summit FPI line (SEBI chairman) | Fri 11:33 (newsread:CNBC-TV18 Live Blog) | R2 path; the 11:33 live-blog line is a reader item now (22:35: top-tier live blog naming SEBI / FPI -> weight 3): yes; recorded answer: Fri 21:08 R4: SEBI opens consultation on reviewing extra disclosure rules for foreig | Fri 11:34 | yes | - | no | (B) desk not running at 11:33 |
+| 10 | Gold -4.7% | Fri 10:20 (newsread:WIRE) | R2 path (WIRE 10:20, Friday session = no slow mode); recorded answer: Fri 21:08 R5: Domestic gold falls sharply, with the karat rate slipping below the one lakh rupee mark | Fri 10:21 | yes | - | no | (B) desk not running at 10:20 |
+
+**What changed for the three late items:**
+- Anthropic slide: weekend slow mode now starts only after the evening brief (20:00), so at Fri 19:33 R5 reads at the normal pace -> 19:34.
+- CII FPI line: a top-tier live blog / TV-desk line (CNBC-TV18 / Moneycontrol / ET live blogs, ET Now, ANI) naming FPI / FII / RBI / SEBI / repo / rates / Fed / GDP / inflation / tariff / a mega-cap is a reader item at weight 3 even when the v2 news reader gave it 1 or none -> R2 at 11:34 (was 11:46).
+- IndusInd roadshows: a code card when a share moving 3% or more files an investor-meet / roadshow intimation (the likely 'why') -> 18:42.
+
+**Still not in time (B, real 19:23 start): 6 items** - RBI VRR result 10:20, second VRR notice 12:35, second VRR result 13:40, CII 11:33, gold 10:20 and IndusInd 18:41 were all first seen BEFORE the desk existed, so no card could come within 10 minutes of first sight; at start the code alerts deliberately do not replay old releases (no burst of stale lines).
+
+Per item: `NEWS_REPLAY_20NOV.json` -> `carding`.
+
+---
+
+*Below: the 22:21 carding replay and the 21:50 path replay (kept for the record).*
+
 ## CARDING REPLAY after the trader's 22:05 decisions (made Sat 21 Nov 22:21 IST)
 
 **Critical items carded in time: 7 of 10** if the desk had been running all day (A); **4 of 10** with the real desk start Fri 19:23 (B).
