@@ -879,3 +879,18 @@ Last update: 20:55 IST
   The 4 new stores are on the source-silence alarm list (watched once they hold a first item; the weekly EIA never minute-alarmed).
   6. CNBC AWAAZ + SANSAD TV: NOT BUILT - NEEDS THE TRADER'S YES (paid): the capture already supports both (one line in data/tvwatch.json), but speech-to-text (Deepgram, multilingual) costs about $3.4 a day per channel for 07:00-18:00 = ~$7 a day for both, OUTSIDE the $8 AI cap; + ~$0.13 a day for the TV reader; and more CPU on a box already 86-92% busy in market hours.
   7. BROKER RESEARCH PDFs: NOT BUILT - licence check: ICICI Direct and HDFC Securities have "Disallow: /" lines in robots.txt; Motilal Oswal, Kotak Securities, Sharekhan and Geojit allow general crawling apart from a few files; the reports are usually marked "for clients / not for redistribution", so internal reading needs the trader's yes + a per-broker terms check. Suggested if yes: headline + target only from the allowed pages, no redistribution, the named analysts kept on each item.
+- 16:34 - HOURLY (desk 16:20 / 16:30 / 16:40). ACCEPTED: the weekend index tests (WATCH only Monday), 643 + 644 sent through the gate, PROOF_1600 PASS, my safety items (freeze, NTP, apt paused, journald cap, OnFailure alarm, CPU option A cron, backups, token list), the results-IV block (a warn-and-size rule: ATM into results with IV in the top 30% loses, CE median -5.2%, straddle -3.7%, 689 cases), news sources 1-5. SHOCK_ALERTS.md updated (family B2) and copied.
+  WATCH / FIX status:
+  1. CPU 86-92%: re-measured at the Sunday 17:00 mock (option A active from Sun 21:00, so the mock runs before it; the Monday 09:15 burst is measured live; if > 80%, the depth recorder drops names first). PENDING.
+  2. Safety builder items 1-3, 4, 5, 6, 8: deadline = DONE + tested by the Sunday 17:00 mock, or named misses. BUILDING.
+  3. MemoryMax 600M on gir-v2rec / gir-v2depth CHECKED against real peaks: gir-v2rec's highest peak since 17 Nov = 23 MB (incl. Friday's session); gir-v2depth in tail mode is far smaller (~0.2% CPU); gir-v2wsrec (no cap set) peaked at 209 MB. The cap cannot kill a recorder at 09:15. DONE.
+  4. ADDED to the item table:
+     | item | owner | status |
+     |---|---|---|
+     | B2 risk-appetite + borrowing-cost gauges (BTC / ETH weekend gauge, US 2y, Fed odds, HY spread, Japan / India 10y, call rate) + the "WEEKEND RISK GAUGE" brief line (information only until the study passes) | news builder | BUILDING |
+     | Bitcoin weekend study (BTC Fri 15:30 -> Mon 08:30 vs the NIFTY gap / close, on top of the NQ line; HY spread jumps) | study agent | BUILDING |
+     | CHIP-SHOCK STUDY (SOX <= -5% / Nasdaq <= -4.5% -> next India session for the EMS / chip-power / ER&D F&O names vs controls; 2026 cases + DeepSeek separately; a ranked "most likely to fall more" list for the Sunday 19:45 brief) | study agent | BUILDING (urgent) |
+     | global money map card (information only: US / world sector funds, Treasuries, gold, the dollar, BTC; top 3 up / down) | news builder | BUILDING |
+  5. TV channels (~$7 a day outside the cap) and broker PDFs (terms): waiting for THE TRADER's word; nothing built.
+  The 19:45 brief corrects the "93% (20 cases)" slip in 644 as "14 of 15 Mondays" (one line, no separate message).
+  The second P1 channel (ntfy) waits for the trader's topic.

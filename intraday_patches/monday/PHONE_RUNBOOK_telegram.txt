@@ -1,0 +1,74 @@
+GIR PHONE RUNBOOK
+• GIR never places orders
+• a problem here = GIR messages only, not
+• your trades
+
+WHERE TO LOOK FIRST
+• the page: girtrader.com
+• health check, no login:
+• girtrader.com/preview/api/gir/status.json
+• OK = all well, PROBLEM = it says what
+• phone alarm app ntfy = P1 alarms only
+
+NO MESSAGES FROM GIR
+• a HEARTBEAT line every 30 min, 09:30-15:30
+• none for 35 min = something is wrong
+• type in System: /gir status
+• no answer in 2 min: open the health check
+• want alerts now: /gir mode old
+
+THE PAGE IS DOWN
+• Telegram still works without it
+• the phone alarm says page server down
+• it restarts by itself
+• still down after 10 min: call
+
+KITE KEY DEGRADED
+• one Kite key failed the 08:20 check
+• its prices are STALE: no GO NOW on them
+• GIR retries at 08:25, 08:35, 08:45
+• RISK GATES BLIND = your account not read
+• then NO BUY at all - Kite is the truth
+
+AI - THREE DIFFERENT MESSAGES
+• AI CREDIT EMPTY = the money ran out
+• fix: top up at console.anthropic.com
+• AI KEY REFUSED = the key, not the money
+• fix: check the key at console.anthropic.com
+• AI PROVIDER DOWN = Anthropic not answering
+• fix: nothing, wait - GIR retries itself
+• in all three: GIR runs on rules
+• shock alerts stay on
+
+TELEGRAM DEAD
+• GIR retries every message once
+• 3 failures in 10 min = a phone alarm
+• the page and health check still work
+
+WHAT TO TYPE (SYSTEM TOPIC)
+• /gir status = mode + reasons to flip
+• /gir mode old = OLD news senders back
+• /gir mode new = the new desk (default)
+• on the server: gir mode old / new / status
+• the website Settings page has the switch
+
+MONDAY NOTE
+• old engine and falcon are PAUSED (your
+• call)
+• so gir mode old brings back ONLY old news
+• it does NOT bring back old trade alerts
+• flip on a FLIP REASON n is TRUE line
+• flip back to NEW when the cause is fixed
+
+CARRY - ONLY IF YOU CHOOSE
+• NO CARRY by default
+• declare it: python3 -m analyst.carry
+• declare
+• max 1 carry, 0.5% risk
+• 09:08 next day: EXIT / HOLD / STOP
+• Mon 23 to Wed 25 = two nights (Tue holiday)
+
+WHO TO CALL
+• name: ____________
+• phone: ____________
+• second person: ____________
