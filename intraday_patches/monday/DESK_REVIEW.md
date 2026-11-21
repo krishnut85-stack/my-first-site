@@ -28,6 +28,18 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 21 Nov 20:30 IST (real time, hourly) - VERDICTS on 19:48-20:20 (server clock); server rebooting since 20:20
+ACCEPTED:
+- OLD PLAN chip: real root cause found (the watch file's " IST" time ending was not parsed, so Friday's plan looked fresh). test 5/5.
+- F6 ALL POSITIONS: root cause slice(0, 2) in four places (cards, "+1 more", THESIS, chart) while the header counted all. Fixed.
+- Weekend footer "health DOWN" from MCX / CDS shut -> "market closed - normal" on non-trading days only, still red on weekday evenings. Right.
+- B6 real-model proof: 7 of 7 bad cards stopped, $0.56. J9 RVOL 09:15 print fixed.
+- D4: console / page errors 6 -> 0, failed requests 6 -> 0 on all 23 pages x 3 widths; screenshots masked.
+AFTER THE REBOOT (in this order): post-reboot checks PASS / FAIL; m2prep by hand if 20:40 was missed; finish the R51 re-run at 1600
+(partial: 19 FAIL / 20 NOT RUN - name each); cut cells 695 still (from 1179) - fix the ones on F1 / F2 / F6 / F7 / phone NOW first, the
+rest may stay as prose-with-tooltip; then the 20:10 sort bars, 20:15 search proof, 20:20 news filter, 20:30 sources + Friday replay -
+all before the Sun 16:00 page freeze (sources and the replay are not page work and may continue after it, outside market hours).
+
 ## 21 Nov 20:30 IST (real time) - THE TRADER: "We gave a long list of websites and not even one critical item came - I see nothing."
 He is right. Reasons on record (NEWS_COVERAGE_AUDIT 13:58): 104 of 186 listed hosts NOT BUILT; regulator rows went to the wrong reader
 (PIB 48 / RBI 13 / SEBI 16 items -> 0 cards; fixed today); BSE blocked for v2 (bridge fixed); the readers stopped at 08:50 today on the
