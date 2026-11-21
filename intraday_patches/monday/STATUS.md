@@ -555,3 +555,13 @@ Last update: 20:55 IST
   - THE DESK'S READING ("gap down, early low, partial bounce, red close"): the direction is right, but all four together are the MINORITY: 15% with minute data (2/13); the daily stand-in (gap down + red close + close >= 0.5% above the day's low) 32% (25/77). Correction from the first summary: the median low is 0.45% below the open, not ~1%.
   - The lesson file carries both new findings (first_seen kept at 21 Nov 10:18 IST).
 - 10:51 - J7 SETTINGS PANEL carries the trader's APPROVED reasons to flip, word for word (pages builder, 82 PASS / 0 FAIL at 1366 / 1600 / 390; inside 53, outside 29 through girtrader.com signed in; the text is checked against the approved wording at all three widths). Fixed on the way: the middle column now scrolls so OPTION GATE is not squeezed out; the "last flip" line shows only real flips ("never flipped (NEW is the default)" now), refused web requests stay in the log. Pages only, no restart; the real switch was never flipped. Proof D_gir_mode.md / .json, D_gir_mode_shots/outside/settings_gir_mode_panel_390.png (masked).
+- 11:08 - DESK 11:30 / 11:20 (the trader: "zero messages from the new desk"), IN PROGRESS NOW:
+  - CHANNEL (the trader's decision): "GIR Trade now" (TG_CHAT_TRADENOW) = the new desk's ONE channel, NEW DESK ONLY.
+  - OLD SYSTEM OUT OF TRADE NOW (done by me, tested): the old send queue (tgq) drops and logs any old send to Trade now; the old router (tglanes) never routes there; the old health lines (GIR DOWN / BACK / NOT LIVE / BUDGET / P1) now go to the GIR Live System topic. Test test_tradenow.py PASS. 11 old services restarted, all active; girtrader 0.04 s.
+  - DESK BUILDER (urgent, the mock is paused):
+    1. desk channel -> Trade now;
+    2. Telegram ON today for shock lines, RBI / official alerts, WHY cards and briefs, with BUY NOW / manage notes OFF until Mon 09:15 (hard check), FO / OI forbidden;
+    3. first message "From 21 Nov this channel = NEW GIR DESK ONLY";
+    4. the HEAD's MONDAY OUTLOOK with the 12-DRIVER CHECKLIST (world + cause, macro, India overnight, flows, RBI liquidity incl. the 20 Nov Rs 75,000 cr injection and the Monday repo repayment, government, companies, rotation, calendar, internals, history = the us_shock_lesson with n, the other side + risk), then MARKET LEAN, CE list, PE list, the 09:20 checks, NOT PROVEN;
+    5. the 12-driver checklist made permanent (the validator rejects a brief that skips a driver).
+  - The delivery time of the first message is reported here the minute Telegram confirms it.
