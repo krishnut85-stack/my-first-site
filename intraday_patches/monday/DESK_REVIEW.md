@@ -28,6 +28,30 @@ Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is
 3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
    was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
 
+## 22 Nov 00:50 IST (real time) - REVIEWER'S DECISION TEST (the desk's real replays 18 / 19 / 20 Nov + Saturday's messages, judged as an F&O
+options buyer). VERDICT: NOT YET. Zero BUY NOW in three sessions; 1 of 13 head ideas paid an ATM buyer (POLYCAB PE 18 Nov - early and right,
+held at WAIT all day); 0 of 31 big movers caught on 19-20 Nov; the head was refused for budget on most live looks (18 Nov 208 of 214, 20 Nov
+96 of 105) and 3 morning briefs failed; many correct SEAT cards never reached the head's input. Risk discipline and honest testing = good.
+THE 10 FIXES - before the Sun 19:45 brief, in this order (report each DONE + proof):
+1. HEAD BUDGET: reserve head money for 09:15-11:30 so no live head look or morning brief is ever refused. Rebalance inside $8 first; if it
+   cannot fit, report the exact $ needed per trading day for the TRADER to decide - do not change the cap yourself.
+2. MOVER WATCH: any F&O share +-3% with volume (RVOL >= 2) and its sector agreeing gets a head look within 5 min and a READY / NOT TAKING
+   line, both sides (would have caught INDUSINDBK, APOLLOHOSP, VOLTAS, PAYTM, the gold group).
+3. Every seat card that names a share goes into the head's next input (most misses were already carded by a seat).
+4. When an idea's own trigger is met, the head must decide: answer the Devil with the intraday base rate and a price path to BUY, or
+   NOT TAKING with the reason - never WAIT all day (POLYCAB 18 Nov).
+5. Anti-chase on the EVENING list too: no "yesterday's -4% loser -> PE" (or +4% winner -> CE) without a catalyst dated after the move.
+6. Every driver gives BOTH legs with the sign the tape shows (copper: cables PE and AC / EMS CE; gold down: lenders AND jewellers PE).
+7. Monday lean: show GIFT 25,836 (+0.14%, 02:44 Sat) vs the NQ line vs BTC -6% as "SIGNALS DISAGREE - no pre-set side, decide at 09:30";
+   every world number with its time. Correct 640-641 / 644 in the Sunday brief.
+8. Every brief starts with his OPEN POSITIONS (HDFCBANK, MOTILALOFS, UNIONBANK PE - December): HOLD / EXIT trigger each; block new ideas
+   that fight them (INDUSINDBK CE vs his bank PEs) or flag the conflict.
+9. Rebuild the Monday PE list from the chip-shock study's 2026 laggers (CGPOWER, POWERINDIA, GVT&D, KAYNES, KPITTECH, PGEL); demote DIXON.
+10. One message per idea per day; nothing from LINK_BOOK without a tested n or a "STORY ONLY" label (RBI -> bank CE is refuted, n 386);
+   targets / stops balanced (INDUSINDBK: target +0.6% vs stop -3.4% is wrong).
+Plus 00:35: the trend-day study + live "TREND DAY - your call" index line.
+Then re-run the 18 / 19 / 20 Nov replays with the fixes (knowledge snapshot controlled) and report: ideas, right-way, early, missed movers.
+
 ## 22 Nov 00:35 IST (real time) - THE TRADER: "It missed the BANKNIFTY and NIFTY - that very big move" (Fri 20 Nov: BANKNIFTY +2.49%, NIFTY +1.12%).
 Timeline (OUTSIDE_WATCH 20 Nov): gap down, NIFTY -0.66% near the open; 09:57 "sharp recovery in Nifty Bank" +600 pts, ICICI / Kotak record
 highs; 10:20 RBI Rs 50,003 cr VRR result (2.25x bids); 11:31 BANKNIFTY +0.53% at a record; 12:28 +1.69%; 13:24 +2.02%; 14:27 +2.39%, all
