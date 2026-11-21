@@ -14,6 +14,20 @@
   change nothing until the trader decides.
 - **Trader's call (asked now):** globaleye (old GIR v1) and paper_counterfactual / paper_eod_report still post to GIR Alerts - keep or mute.
 
+## 21 Nov 11:40 IST - THE TRADER: "the money is in the GAP - we must anticipate the day before". NEW OUTPUT: the 14:45 TOMORROW / CARRY CARD
+Gaps can only be caught by a position taken BEFORE the close. The 19:45 brief is too late to act on. Build (code + one head call, MEET):
+1. **14:45 IST every trading day - "TOMORROW'S GAP" card** to GIR Trade now: expected direction of tomorrow's open (UP / DOWN / FLAT) with a
+   base rate from history, the drivers already visible at 14:45 (US index futures + SOX / Nasdaq futures, Asia closes, Europe open,
+   GIFT NIFTY vs NIFTY, crude / gold / dollar / US 10y, FII cash so far, an overnight event: US data, Fed, results after hours, RBI /
+   government), and the 2-4 F&O names most exposed each side (sector link + this afternoon's VWAP side + RSI). Then: "CARRY: PE <names>
+   / CE <names> into tomorrow" or "NO CARRY - flat by 15:10". Carry is the trader's choice: it breaks the intraday-only rule, so label it
+   OVERNIGHT, smaller size, December strikes, and say the risk (weekend / holiday = two nights).
+2. **Study first (code only, $0, before Monday):** from history, how well do the signals visible at 14:45-15:10 IST predict the next
+   NIFTY / sector gap? US futures change during India hours, Asia close, Europe's first hour, GIFT NIFTY premium, FII provisional flow;
+   on Fridays vs other days; size of the next gap. Base rates with n. File onset_results/gap_predict_study.md + a NOT PROVEN lesson.
+3. **Check on Fri 20 Nov (honest):** at 14:45 Nasdaq futures were about -1.6%, SOX futures about -2.4%, Asia had closed -5% to -6%, DIXON
+   was slipping below VWAP into the close. What would the card have said? Report it in STATUS.
+
 ## 21 Nov 11:45 IST - URGENT STUDY (code only, $0, before Sunday 19:45): "If RBI injects cash, how much do banks move, and when?"
 Every RBI liquidity operation since 2020 from RBI press releases ("Money Market Operations", VRR / VRRR auction notices + results,
 OMO purchase / sale, FX buy-sell swaps, CRR changes, special liquidity windows): date, ANNOUNCEMENT time and RESULT time (IST), type,
