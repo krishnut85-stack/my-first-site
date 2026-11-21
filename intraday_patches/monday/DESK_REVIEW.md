@@ -14,6 +14,16 @@
   change nothing until the trader decides.
 - **Trader's call (asked now):** globaleye (old GIR v1) and paper_counterfactual / paper_eod_report still post to GIR Alerts - keep or mute.
 
+## 21 Nov 11:45 IST - URGENT STUDY (code only, $0, before Sunday 19:45): "If RBI injects cash, how much do banks move, and when?"
+Every RBI liquidity operation since 2020 from RBI press releases ("Money Market Operations", VRR / VRRR auction notices + results,
+OMO purchase / sale, FX buy-sell swaps, CRR changes, special liquidity windows): date, ANNOUNCEMENT time and RESULT time (IST), type,
+size (Rs cr), bids received / bid-cover, tenor. Measure BANKNIFTY, NIFTY PSU BANK, NIFTY PVT BANK and NIFTY from the announcement minute
+(and the result minute) to +30 min, +60 min, the close, and the next session (minute data where /root/hist has it, else daily).
+Split by size (< 25k / 25-75k / > 75k cr), by type (routine VRR vs structural OMO / CRR / swap), by bid-cover (>= 2x = tight), and by
+whether FIIs bought or sold that day. Base rates with n: % up, median move, best / worst. File onset_results/rbi_liquidity_study.md
+(+ .json) and a NOT PROVEN lesson for the head. Include 20 Nov 2026 (Rs 50k cr result about 10:00-10:20, Rs 25k cr at 13:40; BANKNIFTY
++2.49% with FII buying) as the latest row.
+
 ## 21 Nov 11:30 IST - DO NOW: the trader has had ZERO messages from the new desk
 1) Switch the new desk's Telegram ON today (his one desk channel) for: world / India shock lines, RBI / official alerts, cause (WHY)
    cards and briefs. BUY NOW cards stay off until Monday 09:15 (market closed). TG_CHAT_FO / TG_CHAT_OI stay forbidden.
